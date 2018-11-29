@@ -2,7 +2,7 @@ package mat.shared.measure.measuredetails.models;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public abstract class MeasureDetailsRichTextAbstractModel implements MeasureDetailsComponentModel, IsSerializable{
+public abstract class MeasureDetailsRichTextAbstractModel implements MeasureDetailsComponentModel, IsSerializable {
 	private String plainText;
 	
 	private String formattedText;

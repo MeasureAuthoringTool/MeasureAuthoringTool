@@ -2,7 +2,7 @@ package mat.shared.measure.measuredetails.models;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GeneralInformationModel implements MeasureDetailsComponentModel, IsSerializable{
+public class GeneralInformationModel implements MeasureDetailsComponentModel, IsSerializable {
 	private String measureName;
 	private String finalizedDate;
 	private boolean patientBased;
@@ -11,6 +11,20 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	private String eCQMVersionNumber;
 	private String compositeScoringMethod;
 	private String scoringMethod;
+	
+	public GeneralInformationModel() {
+	}
+	
+	public GeneralInformationModel(GeneralInformationModel model) {
+		this.measureName = model.getMeasureName();
+		this.finalizedDate = model.getFinalizedDate();
+		this.patientBased = model.isPatientBased();
+		this.guid = model.getGuid();
+		this.eCQMAbbreviatedTitle = model.geteCQMAbbreviatedTitle();
+		this.eCQMVersionNumber = model.geteCQMVersionNumber();
+		this.compositeScoringMethod = model.getCompositeScoringMethod();
+		this.scoringMethod = model.getScoringMethod();
+	}
 
 	public String getCompositeScoringMethod() {
 		return compositeScoringMethod;

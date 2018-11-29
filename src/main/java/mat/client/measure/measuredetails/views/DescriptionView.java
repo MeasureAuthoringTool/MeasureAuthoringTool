@@ -16,6 +16,14 @@ public class DescriptionView implements MeasureDetailViewInterface {
 	private DescriptionModel descriptionModel;
 	private DescriptionObserver observer;
 	
+	public DescriptionView(DescriptionModel descriptionModel) {
+		this.originalDescriptionModel = descriptionModel;
+		buildGeneralInformationModel(this.originalDescriptionModel);
+		buildDetailView();
+        addEventHandlers();
+	}
+	
+	
 	@Override
 	public Widget getWidget() {
 		return mainPanel;
@@ -60,24 +68,12 @@ public class DescriptionView implements MeasureDetailViewInterface {
 		return this.descriptionModel;
 	}
 	
-	
-
-	public DescriptionView(DescriptionModel descriptionModel) {
-		this.originalDescriptionModel = descriptionModel;
-		buildGeneralInformationModel(this.originalDescriptionModel);
-		
-		buildDetailView();
-		
-        addEventHandlers();
-	}
-	
 	private void addEventHandlers() {
 		measureDetailsRichTextEditor.getRichTextEditor().addSummernoteKeyUpHandler(event -> observer.handleDescriptionChanged());
 	}
 	
 	private void buildGeneralInformationModel(DescriptionModel originalDescriptionModel) {
-		this.descriptionModel = new DescriptionModel();
-		descriptionModel.setFormattedText(originalDescriptionModel.getFormattedText());
+		this.descriptionModel = new DescriptionModel(originalDescriptionModel);
 	}
 
 	@Override

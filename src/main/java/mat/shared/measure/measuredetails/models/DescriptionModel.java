@@ -2,7 +2,16 @@ package mat.shared.measure.measuredetails.models;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class DescriptionModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
+public class DescriptionModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable {
+	
+	public DescriptionModel() {
+
+	}
+	
+	public DescriptionModel(DescriptionModel model) {
+		this.setFormattedText(model.getFormattedText());
+		this.setPlainText(model.getPlainText());
+	}
 	
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
@@ -19,7 +28,7 @@ public class DescriptionModel extends MeasureDetailsRichTextAbstractModel implem
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+		
 	public void accept(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 		measureDetailsModelVisitor.visit(this);
 	}

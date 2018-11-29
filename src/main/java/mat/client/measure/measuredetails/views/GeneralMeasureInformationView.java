@@ -59,15 +59,7 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 	}
 
 	private void buildGeneralInformationModel(GeneralInformationModel originalGeneralInformationModel) {
-		this.generalInformationModel = new GeneralInformationModel();
-		generalInformationModel.setPatientBased(originalGeneralInformationModel.isPatientBased());
-		generalInformationModel.setMeasureName(originalGeneralInformationModel.getMeasureName());
-		generalInformationModel.setGuid(originalGeneralInformationModel.getGuid());
-		generalInformationModel.setFinalizedDate(originalGeneralInformationModel.getFinalizedDate());
-		generalInformationModel.seteCQMVersionNumber(originalGeneralInformationModel.geteCQMVersionNumber());
-		generalInformationModel.seteCQMAbbreviatedTitle(originalGeneralInformationModel.geteCQMAbbreviatedTitle());
-		generalInformationModel.setScoringMethod(originalGeneralInformationModel.getScoringMethod());
-		generalInformationModel.setCompositeScoringMethod(originalGeneralInformationModel.getCompositeScoringMethod());
+		this.generalInformationModel = new GeneralInformationModel(originalGeneralInformationModel);
 	}
 
 	@Override

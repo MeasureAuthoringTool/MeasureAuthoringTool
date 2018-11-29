@@ -15,7 +15,7 @@ public class DescriptionObserver {
 	}
 	
 	private DescriptionModel updateDescriptionModelFromView() {
-		DescriptionModel descriptionModel = descriptionView.getDescriptionModel();
+		DescriptionModel descriptionModel = (DescriptionModel) descriptionView.getMeasureDetailsComponentModel();
 		descriptionModel.setFormattedText(descriptionView.getRichTextEditor().getFormattedText());
 		descriptionModel.setPlainText(descriptionView.getRichTextEditor().getPlainText());
 		return descriptionModel;

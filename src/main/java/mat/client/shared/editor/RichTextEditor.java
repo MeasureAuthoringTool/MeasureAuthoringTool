@@ -14,7 +14,7 @@ public class RichTextEditor extends Summernote {
         
         
         this.setToolbar(new Toolbar()
-                  .addGroup(ToolbarButton.BOLD, ToolbarButton.ITALIC, ToolbarButton.UNDERLINE, ToolbarButton.SUB_SCRIPT, ToolbarButton.SUPER_SCRIPT, ToolbarButton.STRIKETHROUGH)
+                  .addGroup(ToolbarButton.BOLD, ToolbarButton.ITALIC, ToolbarButton.UNDERLINE, ToolbarButton.STRIKETHROUGH)
                   .addGroup(ToolbarButton.UNDO, ToolbarButton.REDO, ToolbarButton.CLEAR)
                   .addGroup(ToolbarButton.UL, ToolbarButton.OL, ToolbarButton.PARAGRAPH)
                   .addGroup(ToolbarButton.FONT_NAME, ToolbarButton.FONT_SIZE));
@@ -26,12 +26,12 @@ public class RichTextEditor extends Summernote {
 	public String getPlainText() {
 		return stripFormatting(this.getCode());
 	}
-	
+
 	public String getFormattedText() {
 		return this.getCode();
 	}
 
 	public String stripFormatting(String formatedText) {
-		return formatedText.replaceAll("<[^>]*>", "");
+		return formatedText.replaceAll("<[^>]*>", "").replaceAll("&nbsp;", " ");
 	}
 }

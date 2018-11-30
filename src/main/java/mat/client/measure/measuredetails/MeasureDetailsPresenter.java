@@ -269,7 +269,12 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
-				// TODO Auto-generated method stub
+				scoringType = MatContext.get().getCurrentMeasureScoringType();
+				navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
+				measureDetailsView.buildDetailView(measureDetailsModel, navigationPanel.getActiveMenuItem(), navigationPanel);
+				isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();
+				measureDetailsView.setReadOnly(isMeasureEditable);
+				measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
 				handleStateChanged();
 			}
 		};

@@ -153,4 +153,8 @@ public class MeasureDetailsNavigation {
 	public void setMenuItemMap(Map<MatDetailItem, MeasureDetailsAnchorListItem> menuItemMap) {
 		this.menuItemMap = menuItemMap;
 	}
+	
+	public MatDetailItem getActiveMenuItem() {
+		return activeMenuItem;
+	}
 }

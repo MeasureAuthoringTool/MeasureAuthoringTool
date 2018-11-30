@@ -21,7 +21,7 @@ public interface IDAO<T, ID extends Serializable> {
 	 *            the id
 	 * @return the t
 	 */
-	public abstract T find(ID id) ;
+	T find(ID id) ;
 
 	/**
 	 * Save (insert or update) T.
@@ -29,7 +29,7 @@ public interface IDAO<T, ID extends Serializable> {
 	 * @param entity
 	 *            the entity
 	 */
-	public abstract void save(T entity) ;
+	void save(T entity) ;
 
 	/**
 	 * Delete all objects of T identified with id(s) in.
@@ -37,8 +37,7 @@ public interface IDAO<T, ID extends Serializable> {
 	 * @param ids
 	 *            the ids
 	 */
-	@SuppressWarnings("unchecked")
-	public abstract void delete(ID...ids) ;
+	@SuppressWarnings("unchecked") void delete(ID...ids) ;
 
 	/**
 	 * Delete all objects of T.
@@ -46,54 +45,13 @@ public interface IDAO<T, ID extends Serializable> {
 	 * @param entities
 	 *            the entities
 	 */
-	@SuppressWarnings("unchecked")
-	public abstract void delete(T...entities) ;
+	@SuppressWarnings("unchecked") void delete(T...entities) ;
 
 	/**
 	 * Find all records of T.
 	 * 
 	 * @return the list
 	 */
-	public abstract List<T> find() ;
-
-
-	/**
-	 * Get the count of records matching the passed query.
-	 * 
-	 * @param query
-	 *            the query
-	 * @return the long
-	 */
-	public abstract long count(IQuery query) ;
-
-	/**
-	 * Find all records matching the passed query.
-	 * 
-	 * @param query
-	 *            the query
-	 * @return the list
-	 */
-	public abstract List<T> find(IQuery query) ;
-
-	/**
-	 * Find all IDs of records matching the passed query.
-	 * 
-	 * @param query
-	 *            the query
-	 * @return the list
-	 */
-	public abstract List<ID> findID(IQuery query) ;
-
-	/**
-	 * Find all IDs of records matching the passed query.
-	 * 
-	 * @param query
-	 *            the query
-	 * @param properties
-	 *            the properties
-	 * @return the list
-	 */
-	public abstract List<Object[]> find(IQuery query, String[] properties)
-			;
+	List<T> find() ;
 
 }

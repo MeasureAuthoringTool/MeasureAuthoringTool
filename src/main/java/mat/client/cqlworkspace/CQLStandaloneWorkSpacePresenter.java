@@ -238,28 +238,33 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		MatContext.get().getCQLLibraryService().getLibraryCQLFileData(MatContext.get().getCurrentCQLLibraryId(), new AsyncCallback<SaveUpdateCQLResult>() {
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
+				String formattedName = getFormattedCQLLibraryNameAndVersion(); 
 				if (result.isSuccess()) {
 					if ((result.getCqlString() != null) && !result.getCqlString().isEmpty()) {
 						aceEditor.clearAnnotations();
 						aceEditor.redisplay();
 						
-						for (CQLError error : result.getCqlErrors()) {
-							int line = error.getErrorInLine();
-							int column = error.getErrorAtOffeset();
-							aceEditor.addAnnotation(line - 1, column, error.getErrorMessage(), AceAnnotationType.ERROR);
+						if(result.getLibraryNameErrorsMap().get(formattedName) != null) {
+							for (CQLError error : result.getLibraryNameErrorsMap().get(formattedName)) {
+								int line = error.getErrorInLine();
+								int column = error.getErrorAtOffeset();
+								aceEditor.addAnnotation(line - 1, column, error.getErrorMessage(), AceAnnotationType.ERROR);
+							}
 						}
 						
-						for(CQLError warning : result.getCqlWarnings()) {
-							int line = warning.getErrorInLine();
-							int column = warning.getErrorAtOffeset();
-							aceEditor.addAnnotation(line - 1, column, warning.getErrorMessage(), AceAnnotationType.WARNING);
+
+						if(result.getLibraryNameWarningsMap().get(formattedName) != null) {
+							for (CQLError warning : result.getLibraryNameWarningsMap().get(formattedName)) {
+								int line = warning.getErrorInLine(); 
+								int column = warning.getErrorAtOffeset();
+								aceEditor.addAnnotation(line - 1, column, warning.getErrorMessage(), AceAnnotationType.WARNING);
+							}	
 						}
-						
+												
 						aceEditor.setText(result.getCqlString());
 						aceEditor.setAnnotations();
 						aceEditor.gotoLine(1);
 						aceEditor.redisplay();
-
 					}
 
 				}
@@ -2766,23 +2771,17 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
 			List<CQLError> errors = new ArrayList<>(); 
 			List<CQLError> warnings = new ArrayList<>(); 
-			
-			String libraryName = MatContext.get().getCurrentCQLLibraryeName();
-			String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
-			String formattedName = libraryName + "-" + libraryVersion.replace("v", "").replace("Draft", "").trim(); 
-			Window.alert(formattedName);
-			
-			if(result.getLibraryNameErrorsMap().get(formattedName) != null) {
-				errors.addAll(result.getLibraryNameErrorsMap().get(formattedName));
-			}
-			
-			if(result.getLibraryNameWarningsMap().get(formattedName) != null) {
-				warnings.addAll(result.getLibraryNameWarningsMap().get(formattedName));
-			}
+
+			addErrorsAndWarningsForParentLibrary(result, errors, warnings);
 			
 			if (!errors.isEmpty() || !warnings.isEmpty()) {
-				if(!result.getCqlErrors().isEmpty()) {
-					messagePanel.getWarningMessageAlert().createAlert(VIEW_CQL_ERROR_MESSAGE);
+				if(!warnings.isEmpty()) {
+					messagePanel.getWarningMessageAlert().createAlert(VIEW_CQL_WARNING_MESSAGE);
+					cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(warnings, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING);
+				}
+				if(!errors.isEmpty()) {
+					messagePanel.getWarningMessageAlert().clearAlert();
+					messagePanel.getErrorMessageAlert().createAlert(VIEW_CQL_ERROR_MESSAGE);
 					cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(errors, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR);
 				}
 				cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(warnings, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING);
@@ -2796,7 +2795,21 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				messagePanel.getSuccessMessageAlert().createAlert(VIEW_CQL_NO_ERRORS_MESSAGE);
 			}
 		}
-
+	}
+	
+	private void addErrorsAndWarningsForParentLibrary(SaveUpdateCQLResult result, List<CQLError> errors,
+			List<CQLError> warnings) {
+		String libraryName = MatContext.get().getCurrentCQLLibraryeName();
+		String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
+		String formattedName = libraryName + "-" + libraryVersion.replace("v", "").replace("Draft", "").trim(); 
+		
+		if(result.getLibraryNameErrorsMap().get(formattedName) != null) {
+			errors.addAll(result.getLibraryNameErrorsMap().get(formattedName));
+		}
+		
+		if(result.getLibraryNameWarningsMap().get(formattedName) != null) {
+			warnings.addAll(result.getLibraryNameWarningsMap().get(formattedName));
+		}
 	}
 	
 	private void unsetActiveMenuItem(String menuClickedBefore) {
@@ -3597,6 +3610,18 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 																		.getCQLLeftNavBarPanelView()
 																		.getIncludeLibraryMap()
 																		.get(selectedIncludeLibraryID);
+																
+																
+																AceEditor editor = cqlWorkspaceView.getIncludeView().getViewCQLEditor(); 
+																editor.clearAnnotations();
+																editor.removeAllMarkers();
+																
+																String formattedName = cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion();												
+																List<CQLError> errorsForLibrary = result.getLibraryNameErrorsMap().get(formattedName);
+																List<CQLError> warningsForLibrary = result.getLibraryNameWarningsMap().get(formattedName);											
+																CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(errorsForLibrary, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR, editor);
+																CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(warningsForLibrary, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING, editor);
+																editor.setAnnotations();
 
 																if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLLibraries().contains(
 																		cqlIncludeLibrary.getCqlLibraryName()+ "-"+ cqlIncludeLibrary.getVersion()+ "|"
@@ -4344,6 +4369,11 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().setSelectedIndex(-1);
 		}
 	}
-
-
+	
+	private String getFormattedCQLLibraryNameAndVersion() {
+		String libraryName = MatContext.get().getCurrentCQLLibraryeName();
+		String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
+		String formattedName = libraryName + "-" + libraryVersion.replace("v", "").replace("Draft", "").trim();
+		return formattedName;
+	}
 }

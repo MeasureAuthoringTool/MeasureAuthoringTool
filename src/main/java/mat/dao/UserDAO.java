@@ -149,4 +149,6 @@ public interface UserDAO extends IDAO<User, String> {
 	
 	public List<User> getAllUsers();
 	
+	List<User> getUsersListForSharingMeasureOrLibrary(String userName);
+	
 }

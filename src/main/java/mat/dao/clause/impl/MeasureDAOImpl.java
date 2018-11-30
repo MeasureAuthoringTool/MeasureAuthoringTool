@@ -12,29 +12,34 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Repository;
 
 import mat.client.measure.MeasureSearchFilterPanel;
-import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.search.GenericDAO;
 import mat.dao.service.DAOService;
 import mat.model.LockedUserInfo;
-import mat.model.MeasureAuditLog;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.Measure;
@@ -43,13 +48,25 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
 import mat.shared.MeasureSearchModel;
-import mat.shared.StringUtility;
 
 @Repository("measureDAO")
 public class MeasureDAOImpl extends GenericDAO<Measure, String> implements MeasureDAO {
 	
 	private static final int MAX_PAGE_SIZE = Integer.MAX_VALUE;
-
+	
+	private static final String OWNER = "owner";
+	private static final String DRAFT = "draft";
+	private static final String VERSION = "version";
+	private static final String MEASURE = "measure";
+	private static final String LAST_NAME = "lastName";
+	private static final String FIRST_NAME = "firstName";
+	private static final String SHARE_USER = "shareUser";
+	private static final String MEASURE_SET = "measureSet";
+	private static final String SECURITY_ROLE_USER = "3";
+	
+	@Autowired
+	private UserDAO userDAO; 
+	
 	public MeasureDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);
 	}
@@ -60,13 +77,15 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		public int compare(Measure o1, Measure o2) {
 			// 1 if either isDraft
 			// 2 version
-			int ret = o1.isDraft() ? -1 : o2.isDraft() ? 1 : compareDoubleStrings(o1.getVersion(), o2.getVersion());
-			return ret;
+			if(o1.isDraft()) {
+				return -1;
+			}
+			return o2.isDraft() ? 1 : compareDoubleStrings(o1.getVersion(), o2.getVersion());
 		}
 
 		private int compareDoubleStrings(String s1, String s2) {
-			Double d1 = Double.parseDouble(s1);
-			Double d2 = Double.parseDouble(s2);
+			final Double d1 = Double.parseDouble(s1);
+			final Double d2 = Double.parseDouble(s2);
 			return d2.compareTo(d1);
 		}
 	}
@@ -77,117 +96,58 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	class MeasureListComparator implements Comparator<List<Measure>> {
 		@Override
 		public int compare(List<Measure> o1, List<Measure> o2) {
-			String v1 = o1.get(0).getDescription();
-			String v2 = o2.get(0).getDescription();
+			final String v1 = o1.get(0).getDescription();
+			final String v2 = o2.get(0).getDescription();
 			return v1.compareToIgnoreCase(v2);
 		}
 	}
 
 	private static final Log logger = LogFactory.getLog(MeasureDAOImpl.class);
 
-	private ApplicationContext context = null;
-
 	private DAOService dAOService = null;
 
-	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
-
-	@Autowired
-	private UserDAO userDAO;
+	private static final long LOCK_THRESHOLD = TimeUnit.MINUTES.toMillis(3); // 3 minutes
 
 	public MeasureDAOImpl() {
 
-	}
-
-	public MeasureDAOImpl(ApplicationContext context) {
-		this.context = context;
 	}
 
 	public MeasureDAOImpl(DAOService dAOService) {
 		this.dAOService = dAOService;
 	}
 
-	private Criteria buildMeasureShareForUserCriteria(User user) {
-		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-
-		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		return mCriteria;
-	}
-
-	private Criteria buildMeasureShareForUserCriteriaWithFilter(User user, int filter) {
-		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-		if (filter == MeasureSearchFilterPanel.MY_MEASURES) {
-			mCriteria.add(Restrictions.or(Restrictions.eq("owner.id", user.getId()),
-					Restrictions.eq("share.shareUser.id", user.getId())));
-			mCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN);
-		}
-
-		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		return mCriteria;
-	}
-
-	private List<MeasureAuditLog> getMeasureAuditLogByMeasure(Measure measure) {
-		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureAuditLog.class);
-		mCriteria.add(Restrictions.or(Restrictions.eq("measure.id", measure.getId())));
-
-		return mCriteria.list();
-	}
-
 	@Override
 	public List<Measure> getMeasureListForMeasureOwner(User user) {
-		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-		mCriteria.add(Restrictions.eq("owner.id", user.getId()));
-		List<Measure> measureList = mCriteria.list();
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
+		final Root<Measure> root = query.from(Measure.class);
+		
+		query.select(root).where(cb.equal(root.get(OWNER).get("id"), user.getId()));
+		
+		final List<Measure> measureList = session.createQuery(query).getResultList();
+		
 		return sortMeasureListForMeasureOwner(measureList);
 	}
 
 	@Override
-	public int countMeasureShareInfoForUser(int filter, User user) {
-		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, filter);
-		List<Measure> ms = mCriteria.list();
-		ms = getAllMeasuresInSet(ms);
-		return ms.size();
-	}
-
-	@Override
-	public int countMeasureShareInfoForUser(String searchText, User user) {
-		String searchTextLC = searchText.toLowerCase().trim();
-
-		Criteria mCriteria = buildMeasureShareForUserCriteria(user);
-		List<Measure> ms = mCriteria.list();
-
-		ms = getAllMeasuresInSet(ms);
-
-		int count = 0;
-		for (Measure m : ms) {
-			boolean increment = m.getaBBRName().toLowerCase().contains(searchTextLC) ? true
-					: m.getDescription().toLowerCase().contains(searchTextLC) ? true : false;
-			if (increment) {
-				count++;
-			}
-		}
-		return count;
-	}
-
-	@Override
-	public int countMeasureShareInfoForUser(User user) {
-		Criteria mCriteria = buildMeasureShareForUserCriteria(user);
-		List<Measure> measureList = mCriteria.list();
-		measureList = getAllMeasuresInSet(measureList);
-		return measureList.size();
-	}
-
-	@Override
 	public int countUsersForMeasureShare() {
-		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(User.class);
-		criteria.add(Restrictions.eq("securityRole.id", "3"));
-		criteria.add(Restrictions.ne("id", LoggedInUserUtil.getLoggedInUser()));
-		criteria.setProjection(Projections.rowCount());
-		return ((Long) criteria.uniqueResult()).intValue();
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+		final Root<User> root = countQuery.from(User.class);
+		
+		countQuery = countQuery.select(cb.count(root)).where(cb.and(cb.equal(root.get("securityRole").get("id"), SECURITY_ROLE_USER), 
+				cb.notEqual(root.get("id"), LoggedInUserUtil.getLoggedInUser())));
+		
+		final Long count = session.createQuery(countQuery).getSingleResult();
+
+		return (count == null) ? 0 : Math.toIntExact(count);
 	}
 
 	@Override
 	public MeasureShareDTO extractDTOFromMeasure(Measure measure) {
-		MeasureShareDTO dto = new MeasureShareDTO();
+		final MeasureShareDTO dto = new MeasureShareDTO();
 
 		dto.setMeasureId(measure.getId());
 		dto.setMeasureName(measure.getDescription());
@@ -203,14 +163,14 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		dto.seteMeasureId(measure.geteMeasureId());
 		dto.setPrivateMeasure(measure.getIsPrivate());
 		dto.setRevisionNumber(measure.getRevisionNumber());
-		boolean isLocked = isLocked(measure.getLockedOutDate());
+		final boolean isLocked = isLocked(measure.getLockedOutDate());
 		dto.setLocked(isLocked);
 		if(measure.getPatientBased() != null) {
 			dto.setPatientBased(measure.getPatientBased());
 		}
 
 		if (isLocked && (measure.getLockedUser() != null)) {
-			LockedUserInfo lockedUserInfo = new LockedUserInfo();
+			final LockedUserInfo lockedUserInfo = new LockedUserInfo();
 			lockedUserInfo.setUserId(measure.getLockedUser().getId());
 			lockedUserInfo.setEmailAddress(measure.getLockedUser().getEmailAddress());
 			lockedUserInfo.setFirstName(measure.getLockedUser().getFirstName());
@@ -232,26 +192,22 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	 * @return {@link List} of {@link MeasureShareDTO}.
 	 */
 	private List<MeasureShareDTO> filterMeasureListForAdmin(final List<MeasureShareDTO> measureList) {
-		List<MeasureShareDTO> updatedMeasureList = new ArrayList<MeasureShareDTO>();
-		for (MeasureShareDTO measureShareDTO : measureList) {
-			if ((updatedMeasureList == null) || updatedMeasureList.isEmpty()) {
+		final List<MeasureShareDTO> updatedMeasureList = new ArrayList<>();
+		for (final MeasureShareDTO measureShareDTO : measureList) {
+			if (updatedMeasureList.isEmpty()) {
 				updatedMeasureList.add(measureShareDTO);
 			} else {
 				boolean found = false;
-				ListIterator<MeasureShareDTO> itr = updatedMeasureList.listIterator();
+				final ListIterator<MeasureShareDTO> itr = updatedMeasureList.listIterator();
 				while (itr.hasNext()) {
-					MeasureShareDTO shareDTO = itr.next();
+					final MeasureShareDTO shareDTO = itr.next();
 					if (measureShareDTO.getMeasureSetId().equals(shareDTO.getMeasureSetId())) {
 						found = true;
-						if (measureShareDTO.isDraft()) {
+						if (measureShareDTO.isDraft() || 
+								(!shareDTO.isDraft() && measureShareDTO.getFinalizedDate().compareTo(shareDTO.getFinalizedDate()) > 0)) {
 							itr.remove();
 							itr.add(measureShareDTO);
-						} else if (!shareDTO.isDraft()) {
-							if (measureShareDTO.getFinalizedDate().compareTo(shareDTO.getFinalizedDate()) > 0) {
-								itr.remove();
-								itr.add(measureShareDTO);
-							}
-						}
+						} 
 					}
 				}
 				if (!found) {
@@ -263,22 +219,17 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	}
 
 	@Override
-	public java.util.List<Measure> findByOwnerId(String measureOwnerId) {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(Measure.class);
-		criteria.add(Restrictions.eq("owner.id", measureOwnerId));
-		return criteria.list();
+	public List<Measure> findByOwnerId(String measureOwnerId) {
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
+		final Root<Measure> root = query.from(Measure.class);
+		
+		query.select(root).where(cb.equal(root.get(OWNER).get("id"), measureOwnerId));
+		
+		return session.createQuery(query).getResultList();
 	}
 	
-	@Override
-	public Measure findByMeasureId(String measureOwnerId) {
-		Session session = getSessionFactory().getCurrentSession();
-		String sql = "select m from Measure m where m.id=:measureid";
-		Query<Measure> query = session.createQuery(sql);
-		query.setParameter("measureid", measureOwnerId);
-		return query.getSingleResult();
-	}
-
 	@Override
 	public String findMaxOfMinVersion(String measureSetId, String version) {
 		logger.info("In MeasureDao.findMaxOfMinVersion()");
@@ -286,22 +237,20 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		double minVal = 0;
 		double maxVal = 0;
 		if (StringUtils.isNotBlank(version)) {
-			int decimalIndex = version.indexOf('.');
-			minVal = Integer.valueOf(version.substring(0, decimalIndex)).intValue();
+			final int decimalIndex = version.indexOf('.');
+			minVal = Integer.parseInt(version.substring(0, decimalIndex));
 			logger.info("Min value: " + minVal);
 			maxVal = minVal + 1;
 			logger.info("Max value: " + maxVal);
 		}
-		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-		logger.info("Query Using Measure Set Id:" + measureSetId);
-		mCriteria.add(Restrictions.eq("measureSet.id", measureSetId));
-		mCriteria.add(Restrictions.ne("draft", true));
-		mCriteria.addOrder(Order.asc("version"));
-		List<Measure> measureList = mCriteria.list();
+		
+		final List<Measure> measureList = getListOfVersionsForAMeasure(measureSetId);
+		
 		double tempVersion = 0;
-		if ((measureList != null) && (measureList.size() > 0)) {
+
+		if (CollectionUtils.isNotEmpty(measureList)) {
 			logger.info("Finding max of min version from the Measure List. Size:" + measureList.size());
-			for (Measure measure : measureList) {
+			for (final Measure measure : measureList) {
 				logger.info("Looping through Measures Id: " + measure.getId() + " Version: " + measure.getVersion());
 				if ((measure.getVersionNumber() > minVal) && (measure.getVersionNumber() < maxVal)) {
 					if (tempVersion < measure.getVersionNumber()) {
@@ -319,16 +268,47 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		return maxOfMinVersion;
 	}
 
+	private List<Measure> getListOfVersionsForAMeasure(String measureSetId){
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
+		final Root<Measure> root = query.from(Measure.class);
+		logger.info("Query Using Measure Set Id:" + measureSetId);
+		query.select(root).where(cb.and(cb.equal(root.get(MEASURE_SET).get("id"), measureSetId), cb.not(root.get(DRAFT))));
+		query.orderBy(cb.asc(root.get(VERSION)));
+		
+		return session.createQuery(query).getResultList();
+	}
+	
 	@Override
 	public String findMaxVersion(String measureSetId) {
-		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-		mCriteria.add(Restrictions.eq("measureSet.id", measureSetId));
-		mCriteria.add(Restrictions.ne("draft", true));
-		mCriteria.setProjection(Projections.max("version"));
-		String maxVersion = (String) mCriteria.list().get(0);
-		return maxVersion;
+		return getMaxVersion(measureSetId, null);
 	}
-
+	
+	private String getMaxVersion(String measureSetId, String ownerId) {
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+		final Root<Measure> root = query.from(Measure.class);
+		
+		final Predicate predicate = buildPredicateForMaxVersion(measureSetId, ownerId, cb, root);
+		
+		query.select(cb.max(root.get(VERSION)).as(String.class)).where(predicate);
+		
+		return session.createQuery(query).getSingleResult();
+	}
+	
+	private Predicate buildPredicateForMaxVersion(String measureSetId, String ownerId, CriteriaBuilder cb, Root<Measure> root) {
+		// add check to filter Draft's version number when finding max version number.
+		final Predicate p1 = cb.and(cb.equal(root.get(MEASURE_SET).get("id"), measureSetId), cb.not(root.get(DRAFT)));
+		Predicate p2 = null;
+		if(StringUtils.isNotBlank(ownerId)){
+			p2 = cb.equal(root.get(OWNER).get("id"), ownerId);
+		}
+		
+		return (p2 != null) ? cb.and(p1, p2) : p1;  
+	}
+	
 	/**
 	 * for all measure sets referenced in measures in ms, return all measures that
 	 * are members of the set.
@@ -339,87 +319,50 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	 */
 	@Override
 	public List<Measure> getAllMeasuresInSet(List<Measure> ms) {
-		if (!ms.isEmpty()) {
-			Set<String> measureSetIds = new HashSet<String>();
-			for (Measure m : ms) {
+		if (CollectionUtils.isNotEmpty(ms)) {
+			final Set<String> measureSetIds = new HashSet<>();
+			for (final Measure m : ms) {
 				measureSetIds.add(m.getMeasureSet().getId());
 			}
 
-			Criteria setCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-			setCriteria.add(Restrictions.in("measureSet.id", measureSetIds));
-			ms = setCriteria.list();
+			final Session session = getSessionFactory().getCurrentSession();
+			final CriteriaBuilder cb = session.getCriteriaBuilder();
+			final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
+			final Root<Measure> root = query.from(Measure.class);
+			
+			query.select(root).where(root.get(MEASURE_SET).get("id").in(measureSetIds));
+
+			ms = session.createQuery(query).getResultList();
 		}
 		return sortMeasureList(ms);
 	}
 
 	@Override
 	public int getMaxEMeasureId() {
-		Session session = getSessionFactory().getCurrentSession();
-		String sql = "select max(eMeasureId) from mat.model.clause.Measure";
-		Query query = session.createQuery(sql);
-		List<Integer> result = query.list();
-		if (!result.isEmpty()) {
-			return result.get(0).intValue();
-		} else {
-			return 0;
-		}
-
-	}
-
-	public List<MeasureShareDTO> getMeasuresForDraft(User user) {
-		List<MeasureShareDTO> orderedDTOList = getMeasureShareInfoForUser(user, 0, Integer.MAX_VALUE);
-
-		HashSet<String> hasDraft = new HashSet<String>();
-		for (MeasureShareDTO dto : orderedDTOList) {
-			if (dto.isDraft()) {
-				String setId = dto.getMeasureSetId();
-				hasDraft.add(setId);
-			}
-		}
-		List<MeasureShareDTO> dtoList = new ArrayList<MeasureShareDTO>();
-		for (MeasureShareDTO dto : orderedDTOList) {
-
-			boolean canDraft = dto
-					.isDraft()
-							? false
-							: hasDraft.contains(dto.getMeasureSetId()) ? false
-									: dto.isLocked() ? false
-											: user.getSecurityRole().getDescription()
-													.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)
-															? true
-															: dto.getOwnerUserId().equalsIgnoreCase(user.getId()) ? true
-																	: dto.getShareLevel() == null ? false
-																			: dto.getShareLevel().equalsIgnoreCase(
-																					ShareLevel.MODIFY_ID) ? true
-																							: false;
-
-			if (canDraft) {
-				dtoList.add(dto);
-			}
-		}
-		return dtoList;
-	}
-
-	@Override
-	public List<MeasureShareDTO> getMeasuresForDraft(User user, int startIndex, int pageSize) {
-		List<MeasureShareDTO> dtoList = getMeasuresForDraft(user);
-		if (pageSize < dtoList.size()) {
-			return dtoList.subList(startIndex, Math.min(startIndex + pageSize, dtoList.size()));
-		} else {
-			return dtoList;
-		}
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Integer> query = cb.createQuery(Integer.class);
+		final Root<Measure> root = query.from(Measure.class);
+		
+		query.select(cb.max(root.get("eMeasureId")));
+		
+		return session.createQuery(query).getSingleResult();
 	}
 
 	@Override
 	public List<MeasureShare> getMeasureShareForMeasure(String measureId) {
-		List<MeasureShare> measureShare = new ArrayList<MeasureShare>();
 		if (measureId == null) {
-			return null;
+			return Collections.emptyList();
 		}
-		Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureShare.class);
-		shareCriteria.add(Restrictions.eq("measure.id", measureId));
-		measureShare = shareCriteria.list();
-		return measureShare;
+
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<MeasureShare> query = cb.createQuery(MeasureShare.class);
+		final Root<MeasureShare> root = query.from(MeasureShare.class);
+
+		query.select(root).where(cb.equal(root.get(MEASURE).get("id"), measureId));
+		
+		return session.createQuery(query).getResultList();
 	}
 
 	/**
@@ -437,25 +380,16 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	 * @return the measure share info for measure
 	 */
 	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForMeasure(String userName, String measureId, int startIndex,
-			int pageSize) {
-		Criteria userCriteria = getSessionFactory().getCurrentSession().createCriteria(User.class);
-		userCriteria.add(Restrictions.eq("securityRole.id", "3"));
-		userCriteria.add(Restrictions.eq("status.id", "1"));
-		if (StringUtils.isNotBlank(userName)) {
-			userCriteria.add(Restrictions.or(Restrictions.ilike("firstName", "%" + userName + "%"),
-					Restrictions.ilike("lastName", "%" + userName + "%")));
-		}
-		userCriteria.add(Restrictions.ne("id", LoggedInUserUtil.getLoggedInUser()));
-		userCriteria.setFirstResult(startIndex);
-		userCriteria.addOrder(Order.asc("lastName"));
+	public List<MeasureShareDTO> getMeasureShareInfoForMeasure(String userName, String measureId, int startIndex, int pageSize) {
+		
+		final List<User> userResults = userDAO.getUsersListForSharingMeasureOrLibrary(userName);
 
-		List<User> userResults = userCriteria.list();
-		HashMap<String, MeasureShareDTO> userIdDTOMap = new HashMap<String, MeasureShareDTO>();
-		ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<MeasureShareDTO>();
+		final HashMap<String, MeasureShareDTO> userIdDTOMap = new HashMap<>();
+		
+		final ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<>();
 
-		for (User user : userResults) {
-			MeasureShareDTO dto = new MeasureShareDTO();
+		for (final User user : userResults) {
+			final MeasureShareDTO dto = new MeasureShareDTO();
 			dto.setUserId(user.getId());
 			dto.setFirstName(user.getFirstName());
 			dto.setLastName(user.getLastName());
@@ -464,14 +398,11 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 			orderedDTOList.add(dto);
 		}
 
-		if (orderedDTOList.size() > 0) {
-			Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureShare.class);
-			shareCriteria.add(Restrictions.in("shareUser.id", userIdDTOMap.keySet()));
-			shareCriteria.add(Restrictions.eq("measure.id", measureId));
-			List<MeasureShare> shareList = shareCriteria.list();
-			for (MeasureShare share : shareList) {
-				User shareUser = share.getShareUser();
-				MeasureShareDTO dto = userIdDTOMap.get(shareUser.getId());
+		if (CollectionUtils.isNotEmpty(orderedDTOList)) {
+			final List<MeasureShare> shareList = getShareList(null, measureId, userIdDTOMap);
+			for (final MeasureShare share : shareList) {
+				final User shareUser = share.getShareUser();
+				final MeasureShareDTO dto = userIdDTOMap.get(shareUser.getId());
 				dto.setShareLevel(share.getShareLevel().getId());
 			}
 		}
@@ -482,183 +413,151 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		}
 	}
 
-	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForMeasureAndUser(String user, String measureId) {
-		Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureShare.class);
-		shareCriteria.add(Restrictions.eq("shareUser.id", user));
-		shareCriteria.add(Restrictions.eq("measure.id", measureId));
-		List<MeasureShare> shareList = shareCriteria.list();
-		List<MeasureShareDTO> shareDTOList = new ArrayList<MeasureShareDTO>();
-		for (MeasureShare share : shareList) {
-			MeasureShareDTO dto = new MeasureShareDTO();
-			dto.setShareLevel(share.getShareLevel().getId());
-			dto.setMeasureId(measureId);
-			dto.setOwnerUserId(user);
-			shareDTOList.add(dto);
+	private Predicate getPredicateForShareList(String userId, String measureId, HashMap<String, MeasureShareDTO> userIdDTOMap, 
+			CriteriaBuilder cb, Root<MeasureShare> root){
+		if(StringUtils.isNotBlank(userId)) {
+			return cb.equal(root.get(SHARE_USER).get("id"), userId);
 		}
-		return shareDTOList;
+		return cb.and(root.get(SHARE_USER).get("id").in(userIdDTOMap.keySet()), cb.equal(root.get(MEASURE).get("id"), measureId));
+	}
+	
+	private List<MeasureShare> getShareList(String userId, String measureId, HashMap<String, MeasureShareDTO> userIdDTOMap){
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<MeasureShare> query = cb.createQuery(MeasureShare.class);
+		final Root<MeasureShare> root = query.from(MeasureShare.class);
+		
+		final Predicate predicate = getPredicateForShareList(userId, measureId, userIdDTOMap, cb, root);
+		
+		query.select(root).where(predicate);
+
+		return session.createQuery(query).getResultList();
 	}
 
 	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForUser(String searchText, User user, int startIndex,
-			int pageSize) {
+	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(String searchText, int startIndex, int pageSize, int filter) {
+		final String searchTextLC = searchText.toLowerCase().trim();
+		
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
+		final Root<Measure> root = query.from(Measure.class);
 
-		String searchTextLC = searchText.toLowerCase().trim();
-
-		Criteria mCriteria = buildMeasureShareForUserCriteria(user);
-		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
-
-		mCriteria.setFirstResult(startIndex);
-
-		Map<String, MeasureShareDTO> measureIdDTOMap = new HashMap<String, MeasureShareDTO>();
-		ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<MeasureShareDTO>();
-		List<Measure> measureResultList = mCriteria.list();
-
-		if (!user.getSecurityRole().getId().equals("2")) {
-			measureResultList = getAllMeasuresInSet(measureResultList);
+		query.select(root).distinct(true);
+		
+		if (StringUtils.isNotBlank(searchText)) {
+			query.where(getSearchByMeasureOrOwnerNamePredicate(searchTextLC, cb, root));
 		}
-		measureResultList = sortMeasureList(measureResultList);
+		
+		query.orderBy(cb.desc(root.get(MEASURE_SET).get("id")), cb.desc(root.get(DRAFT)), cb.desc(root.get(VERSION)));
 
-		StringUtility su = new StringUtility();
-		for (Measure measure : measureResultList) {
+		final ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<>();
+		final List<Measure> measureResultList = session.createQuery(query).getResultList();
 
-			boolean matchesSearch = searchResultsForMeasure(searchTextLC, su, measure);
-
-			if (matchesSearch) {
-				MeasureShareDTO dto = extractDTOFromMeasure(measure);
-				measureIdDTOMap.put(measure.getId(), dto);
-				orderedDTOList.add(dto);
-			}
-		}
-		Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureShare.class);
-		shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
-
-		List<MeasureShare> shareList = shareCriteria.list();
-
-		if (orderedDTOList.size() > 0) {
-
-			HashMap<String, String> measureSetIdToShareLevel = new HashMap<String, String>();
-			for (MeasureShare share : shareList) {
-				String msid = share.getMeasure().getMeasureSet().getId();
-				String shareLevel = share.getShareLevel().getId();
-
-				String existingShareLevel = measureSetIdToShareLevel.get(msid);
-				if ((existingShareLevel == null) || ShareLevel.VIEW_ONLY_ID.equals(existingShareLevel)) {
-					measureSetIdToShareLevel.put(msid, shareLevel);
-				}
-			}
-			for (MeasureShareDTO dto : orderedDTOList) {
-				String msid = dto.getMeasureSetId();
-				String shareLevel = measureSetIdToShareLevel.get(msid);
-				if (shareLevel != null) {
-					dto.setShareLevel(shareLevel);
-				}
-			}
-		}
-		if (pageSize < orderedDTOList.size()) {
-			return orderedDTOList.subList(0, pageSize);
-		} else {
-			return orderedDTOList;
-		}
-	}
-
-	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForUser(User user, int startIndex, int pageSize) {
-		return getMeasureShareInfoForUser("", user, startIndex, pageSize);
-	}
-
-	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(String searchText, int startIndex, int pageSize,
-			int filter) {
-		String searchTextLC = searchText.toLowerCase().trim();
-		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
-		mCriteria.setFirstResult(startIndex);
-
-		ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<MeasureShareDTO>();
-		List<Measure> measureResultList = mCriteria.list();
-
-		measureResultList = getAllMeasuresInSet(measureResultList);
-		StringUtility su = new StringUtility();
-
-		for (Measure measure : measureResultList) {
-
-			if (searchResultsForMeasure(searchTextLC, su, measure)) {
-				MeasureShareDTO dto = extractDTOFromMeasure(measure);
-				orderedDTOList.add(dto);
-			}
+		for (final Measure measure : measureResultList) {
+			final MeasureShareDTO dto = extractDTOFromMeasure(measure);
+			orderedDTOList.add(dto);
 		}
 		return filterMeasureListForAdmin(orderedDTOList);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel,
-			User user) {
-
-		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, measureSearchModel.isMyMeasureSearch());
-		
-		List<Measure> measureResultList = fetchMeasureResultListForCritera(mCriteria, measureSearchModel, user);
-		
+	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel, User user) {
+		final List<Measure> measureResultList = fetchMeasureResultListForCritera(measureSearchModel.isMyMeasureSearch(), measureSearchModel.getSearchTerm(), user);
 		return getOrderedDTOListFromMeasureResults(measureSearchModel, user, measureResultList);
 	}
-
+	
+	private List<Measure> fetchMeasureResultListForCritera(int filter, String searchText, User user) {
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
+		final Root<Measure> root = query.from(Measure.class);
+		
+		final Predicate predicate = buildPredicateForMeasureSearch(filter, searchText, user.getId(), cb, root);
+		
+		query.select(root).where(predicate).distinct(true);
+		
+		List<Measure> measureResultList = session.createQuery(query).getResultList();
+				
+		if (!user.getSecurityRole().getId().equals("2")) {
+			measureResultList = getAllMeasuresInSet(measureResultList);
+		}
+		measureResultList = sortMeasureList(measureResultList);
+		return measureResultList;
+	}
+	
+	private Predicate buildPredicateForMeasureSearch(int filter, String searchText, String userId, CriteriaBuilder cb, Root<Measure> root) {
+		final List<Predicate> predicatesList = new ArrayList<>();
+		
+		if (filter == MeasureSearchFilterPanel.MY_MEASURES) {
+			final Join<Measure, MeasureShare> childJoin = root.join("shares", JoinType.LEFT);
+			predicatesList.add(cb.or(cb.equal(root.get(OWNER).get("id"), userId), cb.equal(childJoin.get(SHARE_USER).get("id"), userId)));
+		}
+		
+		if (StringUtils.isNotBlank(searchText)) {
+			predicatesList.add(getSearchByMeasureOrOwnerNamePredicate(searchText, cb, root));
+		}
+		
+		return cb.and(predicatesList.toArray(new Predicate[predicatesList.size()]));
+	}
+	
 	private List<MeasureShareDTO> getOrderedDTOListFromMeasureResults(MeasureSearchModel measureSearchModel, User user,
 			List<Measure> measureResultList) {
-		ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<MeasureShareDTO>();
-		Map<String, MeasureShareDTO> measureSetIdDraftableMap = new HashMap<String, MeasureShareDTO>();
-		for (Measure measure : measureResultList) {
-			if (advanceSearchResultsForMeasure(measureSearchModel, measure)) {
-				MeasureShareDTO dto = extractDTOFromMeasure(measure);
-				boolean isDraft = dto.isDraft();
-				if (isDraft) {
+		
+		final ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<>();
+		
+		final Map<String, MeasureShareDTO> measureSetIdDraftableMap = new HashMap<>();
+		
+		for (final Measure measure : measureResultList) {
+				final MeasureShareDTO dto = extractDTOFromMeasure(measure);
+				if (dto.isDraft()) {
 					measureSetIdDraftableMap.put(dto.getMeasureSetId(), dto);
 				}
 				orderedDTOList.add(dto);
-			}
 		}
 		
-		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId().equals("3")
-				&& (measureSearchModel.isMyMeasureSearch() == MeasureSearchModel.ALL_MEASURES);
-		Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureShare.class);
-		shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
-		List<MeasureShare> shareList = shareCriteria.list();
-		if (orderedDTOList.size() > 0) {
-			HashMap<String, String> measureSetIdToShareLevel = new HashMap<String, String>();
-			for (MeasureShare share : shareList) {
-				String msid = share.getMeasure().getMeasureSet().getId();
-				String shareLevel = share.getShareLevel().getId();
+		final boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId().equals("3") && (measureSearchModel.isMyMeasureSearch() == MeasureSearchModel.ALL_MEASURES);
+		
+		if (CollectionUtils.isNotEmpty(orderedDTOList)) {
+			final List<MeasureShare> shareList = getShareList(user.getId(), null, null);
+			final HashMap<String, String> measureSetIdToShareLevel = new HashMap<>();
+			for (final MeasureShare share : shareList) {
+				final String msid = share.getMeasure().getMeasureSet().getId();
+				final String shareLevel = share.getShareLevel().getId();
 
-				String existingShareLevel = measureSetIdToShareLevel.get(msid);
+				final String existingShareLevel = measureSetIdToShareLevel.get(msid);
 				if ((existingShareLevel == null) || ShareLevel.VIEW_ONLY_ID.equals(existingShareLevel)) {
 					measureSetIdToShareLevel.put(msid, shareLevel);
 				}
 			}
 
-			for (Iterator<MeasureShareDTO> iterator = orderedDTOList.iterator(); iterator.hasNext();) {
-				MeasureShareDTO dto = iterator.next();
-				String msid = dto.getMeasureSetId();
+			for (final Iterator<MeasureShareDTO> iterator = orderedDTOList.iterator(); iterator.hasNext();) {
+				final MeasureShareDTO dto = iterator.next();
+				final String msid = dto.getMeasureSetId();
 
-				String shareLevel = measureSetIdToShareLevel.get(msid);
+				final String shareLevel = measureSetIdToShareLevel.get(msid);
 				if (isNormalUserAndAllMeasures && dto.isPrivateMeasure() && !dto.getOwnerUserId().equals(user.getId())
 						&& ((shareLevel == null) || !shareLevel.equals(ShareLevel.MODIFY_ID))) {
 					iterator.remove();
 					continue;
 				}
-				boolean hasDraft = measureSetIdDraftableMap.containsKey(msid);
+				
+				final boolean hasDraft = measureSetIdDraftableMap.containsKey(msid);
 				boolean isSharedToEdit = false;
+				
 				if (shareLevel != null) {
 					dto.setShareLevel(shareLevel);
 					isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel);
 				}
-				String userRole = LoggedInUserUtil.getLoggedInUserRole();
-				boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
-				boolean isOwner = LoggedInUserUtil.getLoggedInUser().equals(dto.getOwnerUserId());
-				boolean isEditable = (isOwner || isSuperUser || isSharedToEdit);
+				
+				final String userRole = LoggedInUserUtil.getLoggedInUserRole();
+				final boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
+				final boolean isOwner = LoggedInUserUtil.getLoggedInUser().equals(dto.getOwnerUserId());
+				final boolean isEditable = (isOwner || isSuperUser || isSharedToEdit);
+				
 				if (!dto.isLocked() && isEditable) {
 					if (hasDraft) {
-						MeasureShareDTO draftLibrary = measureSetIdDraftableMap.get(msid);
+						final MeasureShareDTO draftLibrary = measureSetIdDraftableMap.get(msid);
 						if (dto.getMeasureId().equals(draftLibrary.getMeasureId())) {
 							dto.setVersionable(true);
 							dto.setDraftable(false);
@@ -674,34 +573,13 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
 			}
 		}
+		
 		if (MAX_PAGE_SIZE < orderedDTOList.size()) {
 			return orderedDTOList.subList(0, MAX_PAGE_SIZE);
 		} else {
 			return orderedDTOList;
 		}
-	}
-
-	private List<Measure> fetchMeasureResultListForCritera(Criteria mCriteria, MeasureSearchModel measureSearchModel, User user) {
-		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
-		mCriteria.setFirstResult(0);
 		
-		@SuppressWarnings("unchecked")
-		List<Measure> measureResultList = mCriteria.list();
-		if (!user.getSecurityRole().getId().equals("2")) {
-			measureResultList = getAllMeasuresInSet(measureResultList);
-		}
-		measureResultList = sortMeasureList(measureResultList);
-		return measureResultList;
-	}
-	
-	private List<Measure> fetchComponentMeasureResultListForCritera(Criteria mCriteria, MeasureSearchModel measureSearchModel, User user) {
-		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
-		mCriteria.setFirstResult(0);
-		
-		@SuppressWarnings("unchecked")
-		List<Measure> measureResultList = mCriteria.list();
-		measureResultList = sortMeasureList(measureResultList);
-		return measureResultList;
 	}
 
 	/**
@@ -712,36 +590,27 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	 * @return false if current time - lockedOutDate < the lock threshold
 	 */
 	private boolean isLocked(Date lockedOutDate) {
-
-		boolean locked = false;
 		if (lockedOutDate == null) {
-			return locked;
+			return false;
 		}
+		final long timeDiff = System.currentTimeMillis() - lockedOutDate.getTime();
 
-		long currentTime = System.currentTimeMillis();
-		long lockedOutTime = lockedOutDate.getTime();
-		long timeDiff = currentTime - lockedOutTime;
-		locked = timeDiff < lockThreshold;
-
-		return locked;
+		return (timeDiff < LOCK_THRESHOLD);
 	}
 
 	@Override
 	public boolean isMeasureLocked(String measureId) {
-		Session session = getSessionFactory().getCurrentSession();
+		
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Timestamp> query = cb.createQuery(Timestamp.class);
+		final Root<Measure> root = query.from(Measure.class);
 
-		String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = :measureId";
+		query.select(root.get("lockedOutDate")).where(cb.equal(root.get("id"), measureId));
+		
+		final Timestamp lockedOutDate = session.createQuery(query).getSingleResult();
 
-		Query query = session.createQuery(sql);
-		query.setString("measureId", measureId);
-		List<Timestamp> result = query.list();
-		Timestamp lockedOutDate = null;
-		if (!result.isEmpty()) {
-			lockedOutDate = result.get(0);
-		}
-
-		boolean locked = isLocked(lockedOutDate);
-		return locked;
+		return isLocked(lockedOutDate);
 	}
 
 	/*
@@ -752,31 +621,29 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	 * column in the database. After updating the table,transaction has been
 	 * committed and session has been closed.
 	 */
-	// TODO:- We need to follow the same logic/concept while
-	// settingtheLockedDate.
 	@Override
 	public void resetLockDate(Measure m) {
-		Session session = getSessionFactory().getCurrentSession();
-		try {
-			String sql = "update mat.model.clause.Measure m set lockedOutDate  = :lockDate, lockedUser = :lockedUserId  where id = :measureId";
-			Query query = session.createQuery(sql);
-			query.setString("lockDate", null);
-			query.setString("lockedUserId", null);
-			query.setString("measureId", m.getId());
-			int rowCount = query.executeUpdate();
-		} finally {
-		}
-
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaUpdate<Measure> update = cb.createCriteriaUpdate(Measure.class);
+		final Root<Measure> root = update.from(Measure.class);
+		
+		update.set("lockedUser", null);
+		update.set("lockedOutDate", null);
+		update.where(cb.equal(root.get("id"), m.getId()));
+		
+		final int rowCount =  session.createQuery(update).executeUpdate();
+		logger.info("Updated Private column" + rowCount);
 	}
 
 	@Override
 	public int saveandReturnMaxEMeasureId(Measure measure) {
-		int eMeasureId = getMaxEMeasureId() + 1;
-		List<Measure> measuresToGetSetFor = new ArrayList<>(); 
+		final int eMeasureId = getMaxEMeasureId() + 1;
+		final List<Measure> measuresToGetSetFor = new ArrayList<>(); 
 		measuresToGetSetFor.add(measure);
 		
-		List<Measure> measuresInSet = getAllMeasuresInSet(measuresToGetSetFor);
-		for(Measure m : measuresInSet) {
+		final List<Measure> measuresInSet = getAllMeasuresInSet(measuresToGetSetFor);
+		for(final Measure m : measuresInSet) {
 			m.seteMeasureId(eMeasureId);
 			save(m);
 		}
@@ -796,114 +663,23 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		}
 	}
 
-	private boolean searchResultsForMeasure(String searchTextLC, StringUtility stringUtility, Measure measure) {
-		boolean matchesSearch = stringUtility.isEmptyOrNull(searchTextLC) ? true :
-		// measure name
-				measure.getDescription().toLowerCase().contains(searchTextLC) ? true :
-				// abbreviated measure name
-						measure.getaBBRName().toLowerCase().contains(searchTextLC) ? true
-								: (new Integer(measure.geteMeasureId())).toString().contains(searchTextLC) ? true :
-								// measure owner first name
-										measure.getOwner().getFirstName().toLowerCase().contains(searchTextLC) ? true :
-										// measure owner last name
-												measure.getOwner().getLastName().toLowerCase().contains(searchTextLC)
-														? true
-														: false;
-		return matchesSearch;
-	}
-
-
-	private boolean advanceSearchResultsForMeasure(MeasureSearchModel model, Measure measure) {
-
-		try {
-			if(StringUtils.isNotBlank(model.getSearchTerm())) {
-				String searchTerm = model.getSearchTerm().toLowerCase().trim();
-				String measureAbbName = measure.getaBBRName().toLowerCase();
-				String measureDesc = measure.getDescription().toLowerCase();
-				String owner = measure.getOwner().getFirstName().toLowerCase() + " " + measure.getOwner().getLastName().toLowerCase();
-				String measureId = new Integer(measure.geteMeasureId()).toString();
-				if (!measureAbbName.contains(searchTerm) && !measureDesc.contains(searchTerm) && !owner.contains(searchTerm) && !measureId.contains(searchTerm)) {
-					return false;
-				}
-			}
-			
-			if (MeasureSearchModel.VersionMeasureType.DRAFT.equals(model.isDraft()) && !measure.isDraft()) {
-				return false;
-			}
-			if (MeasureSearchModel.VersionMeasureType.VERSION.equals(model.isDraft()) && measure.isDraft()) {
-				return false;
-			}
-			//TODO in MAT-9216 add this code back in!
-			/*
-			//null check is necessary because measures prior to 5.0 do not have patient based indicator and it will be null in the database
-			if(!MeasureSearchModel.PatientBasedType.ALL.equals(model.isPatientBased()) && measure.getPatientBased() == null) {
-				return false;
-			}
-
-			if (MeasureSearchModel.PatientBasedType.PATIENT.equals(model.isPatientBased()) && !measure.getPatientBased()) {
-				return false;
-			}
-			if (MeasureSearchModel.PatientBasedType.NOT_PATIENT.equals(model.isPatientBased()) && measure.getPatientBased()) {
-	
-				return false;
-			}
-			if (model.getScoringTypes().size() > 0) {
-				if (!model.getScoringTypes().contains(measure.getMeasureScoring().toLowerCase())) {
-					return false;
-				}
-			}
-			if(StringUtils.isNotBlank(model.getOwner())) {
-				String userFullName = measure.getOwner().getFirstName() + measure.getOwner().getLastName();
-				if (!userFullName.toLowerCase().contains(model.getOwner().toLowerCase())) {
-					return false;
-				}
-			}
-	
-			if (StringUtils.isNotEmpty(model.getModifiedOwner())) {
-				if(measure.getLastModifiedBy() == null) {
-					return false;
-				}
-				User user =  measure.getLastModifiedBy();
-				String lastModifiedByName = user.getFirstName() + " " + user.getLastName();
-				if (!lastModifiedByName.toLowerCase().contains(model.getModifiedOwner().toLowerCase())) {
-					return false;
-				}
-			}
-			if (model.getModifiedDate() > 0) {
-				if(measure.getLastModifiedOn() == null) {
-					return false;
-				}
-				int date = model.getModifiedDate();
-	
-				Timestamp time = new Timestamp(System.currentTimeMillis());
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(time);
-	
-				// multiply by negative one to subtract
-				cal.add(Calendar.DAY_OF_WEEK, -1 * date);
-	
-				time = new Timestamp(cal.getTime().getTime());
-				
-				Timestamp modifiedTime =  measure.getLastModifiedOn();
-				if (modifiedTime.before(time)) {
-					return false;
-				}
-			}*/
-		}
-		catch(Exception e) {
-			logger.error("Measure search Failed " + e);
-			return false;
-		}
-		return true;
+	private Predicate getSearchByMeasureOrOwnerNamePredicate(String searchText, CriteriaBuilder cb, Root<Measure> root) {
+		final String lowerCaseSearchText = searchText.toLowerCase();
+		
+		return cb.or(cb.like(cb.lower(root.get("aBBRName")), "%" + lowerCaseSearchText + "%"),
+				cb.like(cb.lower(root.get("description")), "%" + lowerCaseSearchText + "%"),
+				cb.like(cb.lower(root.get(OWNER).get(FIRST_NAME)), "%" + lowerCaseSearchText + "%"),
+				cb.like(cb.lower(root.get(OWNER).get(LAST_NAME)), "%" + lowerCaseSearchText + "%"),
+				cb.like(root.get("eMeasureId").as(String.class), "%" + lowerCaseSearchText + "%"));
 	}
 
 	private List<Measure> sortMeasureList(List<Measure> measureResultList) {
 		// generate sortable lists
-		List<List<Measure>> measureLists = new ArrayList<List<Measure>>();
-		for (Measure m : measureResultList) {
+		final List<List<Measure>> measureLists = new ArrayList<>();
+		for (final Measure m : measureResultList) {
 			boolean hasList = false;
-			for (List<Measure> mlist : measureLists) {
-				String msetId = mlist.get(0).getMeasureSet().getId();
+			for (final List<Measure> mlist : measureLists) {
+				final String msetId = mlist.get(0).getMeasureSet().getId();
 				if (m.getMeasureSet().getId().equalsIgnoreCase(msetId)) {
 					mlist.add(m);
 					hasList = true;
@@ -912,21 +688,21 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 			}
 
 			if (!hasList) {
-				List<Measure> mlist = new ArrayList<Measure>();
+				final List<Measure> mlist = new ArrayList<>();
 				mlist.add(m);
 				measureLists.add(mlist);
 			}
 		}
 		// sort
-		for (List<Measure> mlist : measureLists) {
+		for (final List<Measure> mlist : measureLists) {
 			Collections.sort(mlist, new MeasureComparator());
 		}
 		Collections.sort(measureLists, new MeasureListComparator());
 		
 		// compile list
-		List<Measure> retList = new ArrayList<Measure>();
-		for (List<Measure> mlist : measureLists) {
-			for (Measure m : mlist) {
+		final List<Measure> retList = new ArrayList<>();
+		for (final List<Measure> mlist : measureLists) {
+			for (final Measure m : mlist) {
 				retList.add(m);
 			}
 		}
@@ -942,11 +718,11 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	 */
 	public List<Measure> sortMeasureListForMeasureOwner(List<Measure> measureResultList) {
 		// generate sortable lists
-		List<List<Measure>> measureLists = new ArrayList<List<Measure>>();
-		for (Measure m : measureResultList) {
+		final List<List<Measure>> measureLists = new ArrayList<>();
+		for (final Measure m : measureResultList) {
 			boolean hasList = false;
-			for (List<Measure> mlist : measureLists) {
-				String msetId = mlist.get(0).getMeasureSet().getId();
+			for (final List<Measure> mlist : measureLists) {
+				final String msetId = mlist.get(0).getMeasureSet().getId();
 				if (m.getMeasureSet().getId().equalsIgnoreCase(msetId)) {
 					mlist.add(m);
 					hasList = true;
@@ -955,18 +731,18 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 			}
 
 			if (!hasList) {
-				List<Measure> mlist = new ArrayList<Measure>();
+				final List<Measure> mlist = new ArrayList<>();
 				mlist.add(m);
 				measureLists.add(mlist);
 			}
 		}
 		Collections.sort(measureLists, new MeasureListComparator());
 		// compile list
-		List<Measure> retList = new ArrayList<Measure>();
-		for (List<Measure> mlist : measureLists) {
+		final List<Measure> retList = new ArrayList<>();
+		for (final List<Measure> mlist : measureLists) {
 			boolean isDraftAvailable = false;
 			Measure measure = null;
-			for (Measure m : mlist) {
+			for (final Measure m : mlist) {
 				measure = m;
 				if (m.isDraft()) {
 					isDraftAvailable = true;
@@ -974,16 +750,11 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 					break;
 				}
 			}
-			if (!isDraftAvailable && (measure != null)) {
-				Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-				mCriteria.add(Restrictions.eq("measureSet.id", measure.getMeasureSet().getId()));
-				mCriteria.add(Restrictions.eq("owner.id", measure.getOwner().getId()));
-				// add check to filter Draft's version number when finding max version number.
-				mCriteria.add(Restrictions.ne("draft", true));
-				mCriteria.setProjection(Projections.max("version"));
-				String maxVersion = (String) mCriteria.list().get(0);
-				for (Measure m : mlist) {
-					measure = m;
+			if (!isDraftAvailable && measure != null) {
+				
+				final String maxVersion =  getMaxVersion(measure.getMeasureSet().getId(), measure.getOwner().getId());
+				
+				for (final Measure m : mlist) {
 					if (!m.isDraft() && m.getVersion().equalsIgnoreCase(maxVersion)) {
 						retList.add(m);
 						break;
@@ -1002,90 +773,100 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	 */
 	@Override
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
-		Session session = getSessionFactory().getCurrentSession();
-		try {
-			String sql = "update mat.model.clause.Measure m set isPrivate  = :isPrivate where id = :measureId";
-			Query query = session.createQuery(sql);
-			query.setBoolean("isPrivate", isPrivate);
-			query.setString("measureId", measureId);
-			int rowCount = query.executeUpdate();
-			logger.info("Updated Private column" + rowCount);
-		} finally {
-		}
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaUpdate<Measure> update = cb.createCriteriaUpdate(Measure.class);
+		final Root<Measure> root = update.from(Measure.class);
+		
+		update.set("isPrivate", isPrivate);
+		update.where(cb.equal(root.get("id"), measureId));
+		
+		final int rowCount =  session.createQuery(update).executeUpdate();
+		logger.info("Updated Private column" + rowCount);
 	}
 
 	@Override
 	public boolean getMeasure(String measureId) {
-		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-		mCriteria.add(Restrictions.eq("id", measureId));
-		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		List<Measure> measure = mCriteria.list();
-		boolean isMeasureDeleted = false;
-		if (measure.size() > 0) {
-			isMeasureDeleted = true;
-		}
-		return isMeasureDeleted;
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Long> query = cb.createQuery(Long.class); 
+		final Root<Measure> root = query.from(Measure.class);
+		
+		query.select(cb.countDistinct(root)).where(cb.equal(root.get("id"), measureId));
+		
+		return (session.createQuery(query).getSingleResult() > 0);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ShareLevel findShareLevelForUser(String measureId, String userID, String measureSetId) {
-
 		ShareLevel shareLevel = null;
-		List<String> measureIds = getMeasureSetForSharedMeasure(measureId, measureSetId);
-		Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureShare.class);
-		shareCriteria.add(Restrictions.eq("shareUser.id", userID));
-		shareCriteria.add(Restrictions.in("measure.id", measureIds));
-		List<MeasureShare> shareList = shareCriteria.list();
-		if (!shareList.isEmpty()) {
+		
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<MeasureShare> query = cb.createQuery(MeasureShare.class);
+		final Root<MeasureShare> root = query.from(MeasureShare.class);
+		
+		final Subquery<Measure> sq = query.subquery(Measure.class);
+		final Root<Measure> lib = sq.from(Measure.class);
+
+		sq.select(lib.get("id")).where(cb.equal(lib.get(MEASURE_SET).get("id"), measureSetId));
+		
+		query.select(root).where(cb.and(cb.equal(root.get(SHARE_USER).get("id"), userID)), 
+				cb.in(root.get(MEASURE).get("id")).value(sq));
+		
+		final List<MeasureShare> shareList = session.createQuery(query).getResultList();
+		
+		if (CollectionUtils.isNotEmpty(shareList)) {
 			shareLevel = shareList.get(0).getShareLevel();
 		}
 
 		return shareLevel;
 	}
 
-	@SuppressWarnings("unchecked")
-	private List<String> getMeasureSetForSharedMeasure(String measureId, String measureSetId) {
+	@Override
+	public List<MeasureShareDTO> getComponentMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel, User user) {
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
+		final Root<Measure> root = query.from(Measure.class);
+		
+		final Predicate predicate = buildPredicateForCompositeMeasure(measureSearchModel, cb, root);
+		
+		query.select(root).where(predicate).distinct(true);
 
-		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-		mCriteria.add(Restrictions.eq("measureSet.id", measureSetId));
-		List<String> measureIds = new ArrayList<String>();
-		List<Measure> measureList = mCriteria.list();
-		for (Measure measure : measureList) {
-			measureIds.add(measure.getId());
-		}
-
-		return measureIds;
+		List<Measure> measureResultList = session.createQuery(query).getResultList();
+		
+		measureResultList = sortMeasureList(measureResultList);
+		
+		return getOrderedDTOListFromMeasureResults(measureSearchModel, user, measureResultList); 
 	}
 
-	@Override
-	public List<MeasureShareDTO> getComponentMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel,
-			User user) {		
-		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, measureSearchModel.isMyMeasureSearch());
-		if(measureSearchModel.getQdmVersion() != null) {
-			mCriteria.add(Restrictions.and(Restrictions.eq("qdmVersion", measureSearchModel.getQdmVersion())));
+	private Predicate buildPredicateForCompositeMeasure(MeasureSearchModel measureSearchModel, CriteriaBuilder cb, Root<Measure> root) {
+		final List<Predicate> predicatesList = new ArrayList<>();
+
+		if(StringUtils.isNotBlank(measureSearchModel.getQdmVersion())) {
+			predicatesList.add(cb.equal(root.get("qdmVersion"), measureSearchModel.getQdmVersion()));
 		}
-		
-		if(measureSearchModel.isOmitCompositeMeasure() != null && measureSearchModel.isOmitCompositeMeasure()) {
-			mCriteria.add(Restrictions.and(Restrictions.ne("isCompositeMeasure", true)));
+		//Filter out draft measures
+		predicatesList.add(cb.not(root.get(DRAFT)));
+
+		if(BooleanUtils.isTrue(measureSearchModel.isOmitCompositeMeasure())) {
+			predicatesList.add(cb.not(root.get("isCompositeMeasure")));
 		}
 		
 		if(measureSearchModel.getMeasureSetId() != null) {
-			mCriteria.add(Restrictions.and(Restrictions.eq("measureSet.id", measureSearchModel.getMeasureSetId())));
+			predicatesList.add(cb.equal(root.get(MEASURE_SET).get("id"), measureSearchModel.getMeasureSetId()));
 		}
 		
-		List<Measure> measureResultList = fetchComponentMeasureResultListForCritera(mCriteria, measureSearchModel, user);
-		measureResultList = getCQLMeasures(measureResultList);
-		return getOrderedDTOListFromMeasureResults(measureSearchModel, user, measureResultList);
+		if(StringUtils.isNotBlank(measureSearchModel.getSearchTerm())) {
+			predicatesList.add(getSearchByMeasureOrOwnerNamePredicate(measureSearchModel.getSearchTerm(), cb, root));
+		}
+
+		//Filtering out Non-CQL measures
+		final Expression<Integer> relVerInt = cb.substring(root.get("releaseVersion"), 2, 1).as(Integer.class);
+		predicatesList.add(cb.greaterThanOrEqualTo(relVerInt, 5));
+		
+		return cb.and(predicatesList.toArray(new Predicate[predicatesList.size()]));
 	}
 
-	private List<Measure> getCQLMeasures(List<Measure> measureResultList) {
-		List<Measure> cqlMeasures = new ArrayList<Measure>();
-		for(Measure measureResult: measureResultList) {
-			if(!StringUtility.isEmptyOrNull(measureResult.getReleaseVersion()) && MatContext.get().isCQLMeasure(measureResult.getReleaseVersion())) {
-				cqlMeasures.add(measureResult);
-			}
-		}
-		return cqlMeasures;
-	}
 }

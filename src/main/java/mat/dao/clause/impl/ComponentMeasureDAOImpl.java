@@ -17,7 +17,6 @@ import org.springframework.stereotype.Repository;
 import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.clause.ComponentMeasure;
-import mat.model.clause.Measure;
 
 @Repository("componentMeasuresDAO")
 public class ComponentMeasureDAOImpl extends GenericDAO<ComponentMeasure, String> implements ComponentMeasuresDAO{
@@ -30,21 +29,21 @@ public class ComponentMeasureDAOImpl extends GenericDAO<ComponentMeasure, String
 	
 	@Override
 	public void saveComponentMeasures(List<ComponentMeasure> componentMeasuresList) {
-		for(ComponentMeasure component : componentMeasuresList) {
+		for(final ComponentMeasure component : componentMeasuresList) {
 			super.save(component);	
 		}
 	}
 	
 	@Override
 	public void updateComponentMeasures(String measureId, List<ComponentMeasure> componentMeasuresList) {
-		String hql = "DELETE from mat.model.clause.ComponentMeasure where compositeMeasure.id = :compositeMeasureId";
+		final String hql = "DELETE from mat.model.clause.ComponentMeasure where compositeMeasure.id = :compositeMeasureId";
 		try {
-			Session session = getSessionFactory().getCurrentSession();
-			Query<?> query = session.createQuery(hql);
+			final Session session = getSessionFactory().getCurrentSession();
+			final Query<?> query = session.createQuery(hql);
 			query.setParameter("compositeMeasureId", measureId);
 			query.executeUpdate();			
 			saveComponentMeasures(componentMeasuresList);			
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			logger.error("Error updating component measures: " + e);
 		}
 		
@@ -52,15 +51,15 @@ public class ComponentMeasureDAOImpl extends GenericDAO<ComponentMeasure, String
 
 	@Override
 	public List<ComponentMeasure> findByComponentMeasureId(String measureId) {
-		Session session = getSessionFactory().getCurrentSession();
+		final Session session = getSessionFactory().getCurrentSession();
 
 		//Create CriteriaBuilder
-		CriteriaBuilder builder = session.getCriteriaBuilder();
+		final CriteriaBuilder builder = session.getCriteriaBuilder();
 		
 		//Create CriteriaQuery
-		CriteriaQuery<ComponentMeasure> query = builder.createQuery(ComponentMeasure.class);
+		final CriteriaQuery<ComponentMeasure> query = builder.createQuery(ComponentMeasure.class);
 		
-		Root<ComponentMeasure> root = query.from(ComponentMeasure.class);
+		final Root<ComponentMeasure> root = query.from(ComponentMeasure.class);
 		
 		query.where(builder.equal(root.get("componentMeasure").get("id"), measureId));
 		

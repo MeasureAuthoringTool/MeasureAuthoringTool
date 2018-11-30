@@ -1,14 +1,18 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.In;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +26,9 @@ import mat.server.LoggedInUserUtil;
 @Repository("cqlLibraryAuditLogDAO")
 public class CQLLibraryAuditLogDAOImpl extends GenericDAO<CQLAuditLog, String> implements mat.dao.CQLLibraryAuditLogDAO{
 	
+	private static final String ACTIVITY_TYPE = "activityType";
+	private static final String USER_COMMENT = "User Comment";
+	
 	public CQLLibraryAuditLogDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);
 	}
@@ -31,7 +38,7 @@ public class CQLLibraryAuditLogDAOImpl extends GenericDAO<CQLAuditLog, String> i
 		Session session = null;
 		boolean result = false;
 		try {
-			CQLAuditLog cqlAuditLog = new CQLAuditLog();
+			final CQLAuditLog cqlAuditLog = new CQLAuditLog();
 			cqlAuditLog.setActivityType(event);
 			cqlAuditLog.setTime(new Date());
 			cqlAuditLog.setCqlLibrary(cqlLibrary);
@@ -41,7 +48,7 @@ public class CQLLibraryAuditLogDAOImpl extends GenericDAO<CQLAuditLog, String> i
 			session.saveOrUpdate(cqlAuditLog);			
 			result = true;
 		}
-		catch (Exception e) { 
+		catch (final Exception e) { 
 			e.printStackTrace();
 		}
     	return result;
@@ -52,40 +59,58 @@ public class CQLLibraryAuditLogDAOImpl extends GenericDAO<CQLAuditLog, String> i
 	 * @see mat.dao.CQLLibraryAuditLogDAO#searchHistory(java.lang.String, int, int, java.util.List)
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public SearchHistoryDTO searchHistory(String cqlId, int startIndex, int numberOfRows,List<String> filterList){
-		List<AuditLogDTO> logResults = new ArrayList<AuditLogDTO>();
-		SearchHistoryDTO searchHistoryDTO = new SearchHistoryDTO();
-		
-		Criteria logCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLAuditLog.class);
-		logCriteria.add(Restrictions.eq("cqlLibrary.id", cqlId));
-		logCriteria.add(Restrictions.ne("activityType", "User Comment"));
-		
-		for(String filter : filterList){
-			logCriteria.add(Restrictions.ne("activityType", filter));
-		}
-		
-		if(numberOfRows > 0){
-			logCriteria.setFirstResult(startIndex);
-			logCriteria.setMaxResults(numberOfRows);
-		}
-		logCriteria.addOrder(Order.desc("time"));
-		
-		List<CQLAuditLog> results = logCriteria.list();
 
-		for(CQLAuditLog auditLog: results){
-			AuditLogDTO dto = new AuditLogDTO();
-			dto.setId(auditLog.getId());
-			dto.setActivityType(auditLog.getActivityType());
-			dto.setAdditionlInfo(auditLog.getAdditionalInfo());
-			dto.setEventTs(auditLog.getTime());
-			dto.setUserId(auditLog.getUserId());
-			logResults.add(dto);
+		final SearchHistoryDTO searchHistoryDTO = new SearchHistoryDTO();
+
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<AuditLogDTO> query = cb.createQuery(AuditLogDTO.class);
+		final Root<CQLAuditLog> root = query.from(CQLAuditLog.class);
+
+		final Predicate predicate = getPredicateForAuditLog(cqlId, filterList, cb, root);
+
+		query.select(cb.construct(
+						AuditLogDTO.class, 
+						 root.get("id"),
+						 root.get(ACTIVITY_TYPE),
+						 root.get("userId"),
+						 root.get("time"),
+						 root.get("additionalInfo")));
+		query.where(predicate);
+		query.orderBy(cb.desc(root.get("time")));
+
+		final TypedQuery<AuditLogDTO> q = session.createQuery(query);
+
+		if(numberOfRows > 0){
+			q.setFirstResult(startIndex);
+			q.setMaxResults(numberOfRows);
 		}
+
+		final List<AuditLogDTO> logResults = q.getResultList();
+
+		searchHistoryDTO.setLogs(logResults);
+
 		searchHistoryDTO.setLogs(logResults);
 		searchHistoryDTO.setTotalResults(logResults.size());
 		return searchHistoryDTO; 
 	}
 	
+	
+	private Predicate getPredicateForAuditLog(String cqlId, List<String> filterList, CriteriaBuilder cb, Root<CQLAuditLog> root) {
+		final Predicate p1 = cb.equal(root.get("cqlLibrary").get("id"), cqlId);
+		Predicate p2 = null;
+		
+		if(CollectionUtils.isNotEmpty(filterList)) {
+			final In<String> in = cb.in(root.get(ACTIVITY_TYPE));
+			filterList.add(USER_COMMENT);
+			filterList.forEach(in::value);
+			p2 = cb.not(in);
+		} else {
+			p2 = cb.notEqual(root.get(ACTIVITY_TYPE), USER_COMMENT);
+		}
+		
+		return cb.and(p1, p2);
+	}
 		
 }

@@ -19,4 +19,6 @@ public interface OrganizationDAO extends IDAO<Organization, Long> {
 	Organization findById(String id);
 
 	void updateOrganization(Organization organization);
+	
+	List<Organization> getActiveOrganizationForAdminCSVReport();
 }

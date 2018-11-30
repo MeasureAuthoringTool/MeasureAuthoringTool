@@ -64,6 +64,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		}
 				
 		final List<String> qdmDatatypeList = new ArrayList<>(); 
+		Collections.sort(datatypeList);
 		qdmDatatypeList.addAll(datatypeList);
 		datatypeList.remove("attribute");
 		

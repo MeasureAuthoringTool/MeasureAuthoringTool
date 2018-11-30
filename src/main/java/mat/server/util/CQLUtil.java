@@ -574,7 +574,7 @@ public class CQLUtil {
 		
 		// get the strings for parsing
 		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "");
-		libraryMap.put(cqlModel.getUsingName() + "-" + cqlModel.getVersionUsed(), parentCQLString);
+		libraryMap.put(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed(), parentCQLString);
 		for (String cqlLibName : cqlLibNameMap.keySet()) {
 			CQLModel includedCQLModel = CQLUtilityClass.getCQLModelFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
 
@@ -1052,7 +1052,6 @@ public class CQLUtil {
 								libNode.setAttribute("alias", grandChildLib.getAliasName());
 								libNode.setAttribute("name", grandChildLib.getCqlLibraryName());
 								libNode.setAttribute("version", grandChildLib.getVersion());
-								System.out.println("SET ID: " +  grandChildLib.getSetId());
 								libNode.setAttribute("setId", cqlLibraryDAO.find(grandChildLib.getCqlLibraryId()).getSet_id());
 								libNode.setAttribute("isUnUsedGrandChild", "true");
 								//Marking if the library is part of a component measure

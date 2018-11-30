@@ -14,6 +14,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -28,6 +29,7 @@ import mat.model.Organization;
 import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
+import mat.server.LoggedInUserUtil;
 import mat.server.model.MatUserDetails;
 
 
@@ -36,6 +38,9 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(UserDAOImpl.class);
+	
+	private static final String STATUS_ACTIVE = "1";
+	private static final String SECURITY_ROLE_USER = "3";
 	
 	public UserDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);
@@ -338,30 +343,28 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	 */
 	@Override
 	public String getRandomSecurityQuestion(String userLoginId) {
-		
-		User user = findByLoginId(userLoginId);
-		String question = null;
-		if (null == user) {
-			question = getRandomSecurityQuestion();
-		}else{
-			Session session = getSessionFactory().getCurrentSession();
-			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-			CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
-		    Root<UserSecurityQuestion> userSecurityQuestionsRoot = criteriaQuery.from(UserSecurityQuestion.class);
-		    Root<SecurityQuestions> securityQuestionsRoot = criteriaQuery.from(SecurityQuestions.class);
-		    Root<User> userRoot = criteriaQuery.from(User.class);
-		    criteriaQuery.select(criteriaBuilder.count(userSecurityQuestionsRoot)).where(criteriaBuilder.and(
-		    		criteriaBuilder.equal(userSecurityQuestionsRoot.get("securityQuestionId"), securityQuestionsRoot.get("questionId")),
-		    		criteriaBuilder.equal(userSecurityQuestionsRoot.get("userId"), userRoot.get("id")),
-		    		criteriaBuilder.equal(userRoot.get("id"), user.getId())));
-		    int count = session.createQuery(criteriaQuery).uniqueResult().intValue();
-		    CriteriaQuery<UserSecurityQuestion> securityQuestionsQuery = criteriaBuilder.createQuery(UserSecurityQuestion.class);
-		    userSecurityQuestionsRoot = securityQuestionsQuery.from(UserSecurityQuestion.class);
-		    securityQuestionsQuery.select(userSecurityQuestionsRoot);
-			question=session.createQuery(securityQuestionsQuery).setFirstResult(new Random().nextInt(count)).setMaxResults(1).uniqueResult().getSecurityQuestions().getQuestion();
-		}
-		
-		return question;
+		final User user = findByLoginId(userLoginId);
+
+		return (null == user) ?  getRandomSecurityQuestion() : getRandomSecurityQuestionByUserId(user);
+	}
+	
+	private String getRandomSecurityQuestionByUserId(User user) {
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+		final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+	    Root<UserSecurityQuestion> userSecurityQuestionsRoot = criteriaQuery.from(UserSecurityQuestion.class);
+	    final Root<SecurityQuestions> securityQuestionsRoot = criteriaQuery.from(SecurityQuestions.class);
+	    final Root<User> userRoot = criteriaQuery.from(User.class);
+	    criteriaQuery.select(criteriaBuilder.count(userSecurityQuestionsRoot)).where(criteriaBuilder.and(
+	    		criteriaBuilder.equal(userSecurityQuestionsRoot.get("securityQuestionId"), securityQuestionsRoot.get("questionId")),
+	    		criteriaBuilder.equal(userSecurityQuestionsRoot.get("userId"), userRoot.get("id")),
+	    		criteriaBuilder.equal(userRoot.get("id"), user.getId())));
+	    final int count = session.createQuery(criteriaQuery).uniqueResult().intValue();
+	    final CriteriaQuery<UserSecurityQuestion> securityQuestionsQuery = criteriaBuilder.createQuery(UserSecurityQuestion.class);
+	    userSecurityQuestionsRoot = securityQuestionsQuery.from(UserSecurityQuestion.class);
+	    securityQuestionsQuery.select(userSecurityQuestionsRoot).where(criteriaBuilder.equal(userSecurityQuestionsRoot.get("userId"), user.getId()));
+	    
+		return session.createQuery(securityQuestionsQuery).setFirstResult(new Random().nextInt(count)).setMaxResults(1).uniqueResult().getSecurityQuestions().getQuestion();
 	}
 	
 	/**
@@ -386,13 +389,12 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	 */
 	@Override
 	public List<User> searchForNonTerminatedUser() {
-		Session session = getSessionFactory().getCurrentSession();
-		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<User> userCriteriaQuery = criteriaBuilder.createQuery(User.class);
-        final Root<User> userRoot = userCriteriaQuery.from(User.class);
-        criteriaBuilder.notEqual(userRoot.get("status").get("id"), "2");
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+		final CriteriaQuery<User> userCriteriaQuery = criteriaBuilder.createQuery(User.class);
+		final Root<User> userRoot = userCriteriaQuery.from(User.class);
+		userCriteriaQuery.select(userRoot).where(criteriaBuilder.notEqual(userRoot.get("status").get("statusId"), "2"));
 		userCriteriaQuery.orderBy(criteriaBuilder.asc(userRoot.get("lastName")));
-		userCriteriaQuery.select(userRoot);
 		return session.createQuery(userCriteriaQuery).getResultList();
 	}
 	
@@ -407,5 +409,32 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 		return session.createQuery(userCriteriaQuery).getResultList();
 	}
 	
+	public List<User> getUsersListForSharingMeasureOrLibrary(String userName){
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<User> query = cb.createQuery(User.class);
+		final Root<User> root = query.from(User.class);
+		
+		final Predicate predicate = getPredicateForUsersToShareMeasure(userName, cb, root);
+		
+		query.select(root).where(predicate);
+		query.orderBy(cb.asc(root.get("lastName")));
+		
+		return session.createQuery(query).getResultList();
+	}
+	
+	private Predicate getPredicateForUsersToShareMeasure(String userName, CriteriaBuilder cb, Root<User> root) {
+		final Predicate p1 = cb.and(cb.equal(root.get("securityRole").get("id"), SECURITY_ROLE_USER),  
+							  cb.equal(root.get("status").get("statusId"), STATUS_ACTIVE), 
+							  cb.notEqual(root.get("id"), LoggedInUserUtil.getLoggedInUser()));
+		Predicate p2 = null;
+		if (StringUtils.isNotBlank(userName)) {
+			final String lowerCaseSearchText = userName.toLowerCase();
+			p2 = cb.or(cb.like(cb.lower(root.get("firstName")), "%" + lowerCaseSearchText + "%"),
+					   cb.like(cb.lower(root.get("lastName")), "%" + lowerCaseSearchText + "%"));
+		}
+
+		return (p2 != null) ? cb.and(p1, p2) : p1;   
+	}
 	
 }

@@ -34,6 +34,7 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
+import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
 import mat.server.humanreadable.cql.HumanReadableCodeModel;
 import mat.server.humanreadable.cql.HumanReadableExpressionModel;
 import mat.server.humanreadable.cql.HumanReadableModel;
@@ -42,9 +43,8 @@ import mat.server.humanreadable.cql.HumanReadablePopulationModel;
 import mat.server.humanreadable.cql.HumanReadableTerminologyModel;
 import mat.server.humanreadable.cql.HumanReadableValuesetModel;
 import mat.server.humanreadable.qdm.HQMFHumanReadableGenerator;
-import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
-import mat.server.util.CQLUtil.CQLArtifactHolder;	
 import mat.server.util.CQLUtil;
+import mat.server.util.CQLUtil.CQLArtifactHolder;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.LibHolderObject;
@@ -130,7 +130,19 @@ public class HumanReadableGenerator {
 				List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList = new ArrayList<>(); 
 				valuesetAndCodeDataCriteriaList.addAll(model.getValuesetDataCriteriaList());
 				valuesetAndCodeDataCriteriaList.addAll(model.getCodeDataCriteriaList());
-				valuesetAndCodeDataCriteriaList.sort(Comparator.comparing(HumanReadableTerminologyModel::getDataCriteriaDisplay));				
+
+				Collections.sort(valuesetAndCodeDataCriteriaList, new Comparator<HumanReadableTerminologyModel>() {
+
+					@Override
+					public int compare(HumanReadableTerminologyModel o1, HumanReadableTerminologyModel o2) {
+						
+						String o1String = o1.getDatatype() + ": " + o1.getName();
+						String o2String = o2.getDatatype() + ": " + o2.getName();
+						return o1String.compareToIgnoreCase(o2String);
+					}
+				});
+				
+				
 				model.setValuesetAndCodeDataCriteriaList(valuesetAndCodeDataCriteriaList);
 				
 				html = humanReadableGenerator.generate(model);

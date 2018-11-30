@@ -67,8 +67,6 @@ public class DAOService {
 	@Autowired
 	private ListObjectDAO listObjectDAO;
 	@Autowired
-	private ListObjectLTDAO listObjectLTDAO;
-	@Autowired
 	private MatFlagDAO matFlagDAO;
 	@Autowired
 	private MeasureAuditLogDAO measureAuditLogDAO;
@@ -165,10 +163,6 @@ public class DAOService {
 	
 	public ListObjectDAO getListObjectDAO() {
 		return listObjectDAO;
-	}
-	
-	public ListObjectLTDAO getListObjectLTDAO() {
-		return listObjectLTDAO;
 	}
 	
 	public MatFlagDAO getMatFlagDAO() {
@@ -293,10 +287,6 @@ public class DAOService {
 	
 	public void setListObjectDAO(ListObjectDAO listObjectDAO) {
 		this.listObjectDAO = listObjectDAO;
-	}
-	
-	public void setListObjectLTDAO(ListObjectLTDAO listObjectLTDAO) {
-		this.listObjectLTDAO = listObjectLTDAO;
 	}
 	
 	public void setMatFlagDAO(MatFlagDAO matFlagDAO) {

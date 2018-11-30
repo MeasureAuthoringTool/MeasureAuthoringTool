@@ -3,8 +3,8 @@ package mat.client.measure.measuredetails;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.constants.Pull;
-import org.gwtbootstrap3.extras.summernote.client.event.SummernoteKeyUpEvent;
 
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -20,11 +20,11 @@ import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SpacerWidget;
 
 public class MeasureDetailsView {
 	private VerticalPanel mainPanel = new VerticalPanel();
@@ -98,7 +98,7 @@ public class MeasureDetailsView {
 		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsComponent, currentMeasureDetail);
 		currentRichTextEditor = componentDetailView.getRichTextEditor();
 		if(currentRichTextEditor != null) {
-			currentRichTextEditor.addSummernoteKeyUpHandler(keyUpEvent -> handleRichTextTabOut(keyUpEvent));
+			currentRichTextEditor.addKeyUpHandler(keyUpEvent -> handleRichTextTabOut(keyUpEvent));
 		}
 		widgetComponentPanel.add(componentDetailView.getWidget());
 		widgetComponentPanel.setWidth("100%");
@@ -113,7 +113,7 @@ public class MeasureDetailsView {
 		DOM.getElementById("measureDetailsView_HeadingContent").focus();
 	}
 	
-	private void handleRichTextTabOut(SummernoteKeyUpEvent keyUpEvent) {
+	private void handleRichTextTabOut(KeyUpEvent keyUpEvent) {
 		if(keyUpEvent.getNativeEvent().getCtrlKey() && keyUpEvent.getNativeEvent().getShiftKey() && keyUpEvent.getNativeEvent().getKeyCode() == 9) {
             keyUpEvent.getNativeEvent().preventDefault();
             DOM.getElementById("measureDetailsView_HeadingContent").focus();

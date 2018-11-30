@@ -142,6 +142,7 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 					setScoringChoices(result);
 					measureScoringInput.setValueMetadata(generalInformationModel.getScoringMethod());
 					setPatientBasedInputOptions(MatContext.get().getPatientBasedIndicatorOptions(generalInformationModel.getScoringMethod()));
+					patientBasedInput.setSelectedIndex(generalInformationModel.isPatientBased() ? 1 : 0);
 				}
 			});
 		}
@@ -273,7 +274,6 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 		patientBasedInput.setVisibleItemCount(1);
 		patientBasedInput.setWidth("18em");
 		resetPatientBasedInput();
-		patientBasedInput.setSelectedIndex(generalInformationModel.isPatientBased() ? 1 : 0);
 	}
 
 	public void resetPatientBasedInput() {

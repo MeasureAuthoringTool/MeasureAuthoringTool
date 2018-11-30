@@ -268,6 +268,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 
 	private GeneralInformationModel buildGeneralInformationModel() {
 		GeneralInformationModel generalInformationModel = new GeneralInformationModel();
+		generalInformationModel.seteMeasureId(manageMeasureDetailModel.geteMeasureId());
 		generalInformationModel.setMeasureName(manageMeasureDetailModel.getName());
 		generalInformationModel.seteCQMAbbreviatedTitle(manageMeasureDetailModel.getShortName());
 		generalInformationModel.setFinalizedDate(manageMeasureDetailModel.getFinalizedDate());
@@ -292,6 +293,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		}
 		manageMeasureDetailModel.setId(measureDetailsModel.getId());
 		manageMeasureDetailModel.setMeasureId(measureDetailsModel.getMeasureId());
+		manageMeasureDetailModel.seteMeasureId(getEMeasureId());
 		manageMeasureDetailModel.setRevisionNumber(measureDetailsModel.getRevisionNumber());
 		manageMeasureDetailModel.setClinicalRecomms(getClinicalRecommendation());
 		manageMeasureDetailModel.setCopyright(getCopyright());
@@ -326,6 +328,13 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		manageMeasureDetailModel.setSupplementalData(getSupplementalData());
 		manageMeasureDetailModel.setTransmissionFormat(getTransmissionFormat());
 		return manageMeasureDetailModel;
+	}
+
+	private int getEMeasureId() {
+		if(measureDetailsModel.getGeneralInformationModel() != null) {
+			return measureDetailsModel.getGeneralInformationModel().geteMeasureId();
+		}
+		return 0;
 	}
 
 	private String getCompositeScoringMethod() {

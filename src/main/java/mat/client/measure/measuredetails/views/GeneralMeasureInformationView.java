@@ -47,13 +47,13 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 	private ListBoxMVP  measureScoringInput = new ListBoxMVP();
 	private ListBoxMVP compositeScoringMethodInput = new ListBoxMVP();
 	private ListBoxMVP patientBasedInput = new ListBoxMVP();
-	private TextBox eMeasureIdentifierInput = new TextBox();
 	private GeneralMeasureInformationObserver observer;
 	List<CompositeMeasureScoreDTO> compositeChoices;
 	private HelpBlock helpBlock = new HelpBlock();
 	private FormGroup messageFormGrp = new FormGroup();
 	private Button generateEMeasureIDButton = new Button("Generate Identifier");
-    
+	private TextBox eMeasureIdentifierInput = new TextBox();
+   
 	public GeneralMeasureInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel, List<CompositeMeasureScoreDTO> compositeChoices) {
 		originalModel = originalGeneralInformationModel;
 		buildGeneralInformationModel(originalGeneralInformationModel);
@@ -64,6 +64,15 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 
 	private void buildGeneralInformationModel(GeneralInformationModel originalGeneralInformationModel) {
 		this.generalInformationModel = new GeneralInformationModel(originalGeneralInformationModel);
+		generalInformationModel.seteMeasureId(originalGeneralInformationModel.geteMeasureId());
+		generalInformationModel.setPatientBased(originalGeneralInformationModel.isPatientBased());
+		generalInformationModel.setMeasureName(originalGeneralInformationModel.getMeasureName());
+		generalInformationModel.setGuid(originalGeneralInformationModel.getGuid());
+		generalInformationModel.setFinalizedDate(originalGeneralInformationModel.getFinalizedDate());
+		generalInformationModel.seteCQMVersionNumber(originalGeneralInformationModel.geteCQMVersionNumber());
+		generalInformationModel.seteCQMAbbreviatedTitle(originalGeneralInformationModel.geteCQMAbbreviatedTitle());
+		generalInformationModel.setScoringMethod(originalGeneralInformationModel.getScoringMethod());
+		generalInformationModel.setCompositeScoringMethod(originalGeneralInformationModel.getCompositeScoringMethod());
 	}
 
 	@Override
@@ -147,13 +156,18 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 		eMeasureIdentifierInput.setId("eMeasureIdentifierInput_TextBox");
 		eMeasureIdentifierInput.setTitle("Generated Identifier");
 		eMeasureIdentifierInput.setWidth("150px");
+
+		if(generalInformationModel.geteMeasureId() != 0) {
+			eMeasureIdentifierInput.setText(String.valueOf(generalInformationModel.geteMeasureId()));
+			eMeasureIdentifierInput.setValue(String.valueOf(generalInformationModel.geteMeasureId()));
+			generateEMeasureIDButton.setEnabled(false);
+		}
 		
 		horizontalPanel.add(eMeasureIdentifierInput);
 		horizontalPanel.add(generateEMeasureIDButton);
 		horizontalPanel.add(eMeasureIdentifierInput);
 		horizontalPanel.add(generateEMeasureIDButton);
 		generateEMeasureIDButton.setType(ButtonType.PRIMARY);
-		//TODO handle enabled/disabled
 		generateEMeasureIDButton.getElement().getStyle().setProperty("marginLeft", "5px");
 		generateEMeasureIDButton.getElement().setId("generateeMeasureIDButton_Button");
 		eMeasureIdentifierInput.setReadOnly(true);
@@ -188,6 +202,7 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 	}
 
 	private void addEventHandlers() {
+		getGenerateEMeasureIDButton().addClickHandler(event -> observer.generateAndSaveNewEmeasureid());
 		getMeasureScoringInput().addChangeHandler(event -> observer.handleMeasureScoringChanged());
 		getCompositeScoringMethodInput().addChangeHandler(event -> observer.handleCompositeScoringChanged());
 		getPatientBasedInput().addChangeHandler(event -> observer.handleInputChanged());
@@ -391,6 +406,7 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 		compositeScoringMethodInput.setEnabled(!readOnly);
 		measureScoringInput.setEnabled(!readOnly);
 		patientBasedInput.setEnabled(!readOnly);
+		generateEMeasureIDButton.setEnabled(!readOnly);
 	}
 
 	public HelpBlock getHelpBlock() {
@@ -530,4 +546,21 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 			patientBasedInput.addItem(option, option);
 		}
 	}
+	
+	public Button getGenerateEMeasureIDButton() {
+		return generateEMeasureIDButton;
+	}
+
+	public void setGenerateEMeasureIDButton(Button generateEMeasureIDButton) {
+		this.generateEMeasureIDButton = generateEMeasureIDButton;
+	}
+	
+	public TextBox geteMeasureIdentifierInput() {
+		return eMeasureIdentifierInput;
+	}
+
+	public void seteMeasureIdentifierInput(TextBox eMeasureIdentifierInput) {
+		this.eMeasureIdentifierInput = eMeasureIdentifierInput;
+	}
+
 }

@@ -1224,6 +1224,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return appliedQDMList;
 	}
 
+	@Deprecated
 	@Override
 	public final int generateAndSaveMaxEmeasureId(final ManageMeasureDetailModel measureModel) {
 		if (measureModel.isEditable() && measureModel.geteMeasureId() == 0) {
@@ -1237,12 +1238,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return -1;
 	}
 
-	/**
-	 * Save max emeasure idin measure xml.
-	 *
-	 * @param measureModel
-	 *            the measure model
-	 */
+	@Deprecated
 	public void saveMaxEmeasureIdinMeasureXML(ManageMeasureDetailModel measureModel) {
 
 		MeasureXmlModel model = getMeasureXmlForMeasure(measureModel.getId());
@@ -6235,4 +6231,30 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return currentMeasure.getIsCompositeMeasure();
 	}
 
+	@Override
+	public int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId) {
+		if (isEditable) {
+			MeasurePackageService service = measurePackageService;
+			Measure measure = service.getById(measureId);
+			int eMeasureId = service.saveAndReturnMaxEMeasureId(measure);
+			saveMaxEmeasureIdinMeasureXML(measureId, eMeasureId);
+			return eMeasureId;
+		}
+		return -1;
+	}
+	
+	public void saveMaxEmeasureIdinMeasureXML(String measureId, int eMeasureId) {
+		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
+		XmlProcessor xmlProcessor = new XmlProcessor(model.getXml());
+		try {
+			xmlProcessor.createEmeasureIdNode(eMeasureId);
+			String newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
+			model.setXml(newXml);
+
+		} catch (XPathExpressionException e) {
+			logger.debug("saveMaxEmeasureIdinMeasureXML:" + e.getMessage());
+		}
+
+		measurePackageService.saveMeasureXml(model);
+	}
 }

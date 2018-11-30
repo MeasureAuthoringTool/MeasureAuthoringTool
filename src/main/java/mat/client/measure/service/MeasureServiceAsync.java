@@ -749,4 +749,6 @@ public interface MeasureServiceAsync {
 	@Deprecated
 	void getMeasureAndLogRecentMeasure(String currentMeasureId, String loggedinUserId,
 			AsyncCallback<ManageMeasureDetailModel> asyncCallBackForMeasureAndLogRecentMeasure);
+
+	void generateAndSaveMaxEmeasureId(boolean isEditable, String measureId, AsyncCallback<Integer> asyncCallback);
 }

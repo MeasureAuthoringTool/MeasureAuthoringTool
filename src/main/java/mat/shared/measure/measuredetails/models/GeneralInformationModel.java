@@ -11,6 +11,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	private String eCQMVersionNumber;
 	private String compositeScoringMethod;
 	private String scoringMethod;
+	private int eMeasureId;
 	
 	public GeneralInformationModel() {
 	}
@@ -26,6 +27,12 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 		this.scoringMethod = model.getScoringMethod();
 	}
 
+	public int geteMeasureId() {
+		return eMeasureId;
+	}
+	public void seteMeasureId(int eMeasureId) {
+		this.eMeasureId = eMeasureId;
+	}
 	public String getCompositeScoringMethod() {
 		return compositeScoringMethod;
 	}

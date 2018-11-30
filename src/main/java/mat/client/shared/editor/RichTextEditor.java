@@ -6,7 +6,7 @@ public class RichTextEditor extends TextArea {
 	
 	public RichTextEditor(){
 		super();
-		this.setCharacterWidth(80);
+		this.setCharacterWidth(100);
 	    this.setVisibleLines(25);
 	}
 	

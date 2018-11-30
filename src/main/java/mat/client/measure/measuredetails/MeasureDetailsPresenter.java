@@ -24,8 +24,10 @@ import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.shared.ConstantMessages;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
+import mat.shared.measure.measuredetails.models.CopyrightModel;
 import mat.shared.measure.measuredetails.models.DescriptionModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
+import mat.shared.measure.measuredetails.models.MeasureDetailsRichTextAbstractModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 
 public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObserver {
@@ -282,9 +284,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private void updateNavPillStates() {
 		navigationPanel.getMenuItemMap().keySet().forEach(k -> {
 			MeasureDetailState navPillState = getStateForModelByKey(k);
-			MeasureDetailsAnchorListItem test = navigationPanel.getMenuItemMap().get(k);
-			if(test != null) {
-				test.setState(navPillState);
+			MeasureDetailsAnchorListItem anchorListItem = navigationPanel.getMenuItemMap().get(k);
+			if(anchorListItem != null) {
+				anchorListItem.setState(navPillState);
 			}
 			
 		});
@@ -293,10 +295,12 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private MeasureDetailState getStateForModelByKey(MatDetailItem k) {
 		if(k instanceof MeasureDetailsItems) {
 			switch((MeasureDetailsItems) k) {
-			case DESCRIPTION:
-				return getDescriptionState();
 			case GENERAL_MEASURE_INFORMATION:
 				return MeasureDetailState.INCOMPLETE;
+			case DESCRIPTION:
+				return getRichTextEditableTabState(measureDetailsModel.getDescriptionModel());
+			case COPYRIGHT:
+				return getRichTextEditableTabState(measureDetailsModel.getCopyrightModel());
 			default: 
 				return MeasureDetailState.BLANK;
 			}
@@ -306,11 +310,10 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		
 		return MeasureDetailState.BLANK;
 	}
-
-	private MeasureDetailState getDescriptionState() {
-		DescriptionModel descriptionModel = measureDetailsModel.getDescriptionModel();
-		if(descriptionModel != null) {
-			if(descriptionModel.getPlainText() == null || descriptionModel.getPlainText().isEmpty()) {
+	
+	private MeasureDetailState getRichTextEditableTabState(MeasureDetailsRichTextAbstractModel model) {
+		if(model != null) {
+			if(model.getPlainText() == null || model.getPlainText().isEmpty()) {
 				return MeasureDetailState.BLANK;
 			} else {
 				return MeasureDetailState.COMPLETE;

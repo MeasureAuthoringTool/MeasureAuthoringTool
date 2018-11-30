@@ -130,22 +130,22 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 		setCompositeScoringChoices(compositeChoices);
 		if(isCompositeMeasure) {
 			setCompositeScoringSelectedValue(generalInformationModel.getCompositeScoringMethod());
-		} else {
-			MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					Window.alert(MessageDelegate.s_ERR_RETRIEVE_SCORING_CHOICES);
-				}
+		} 
+			
+		MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MessageDelegate.s_ERR_RETRIEVE_SCORING_CHOICES);
+			}
 
-				@Override
-				public void onSuccess(List<? extends HasListBox> result) {
-					setScoringChoices(result);
-					measureScoringInput.setValueMetadata(generalInformationModel.getScoringMethod());
-					setPatientBasedInputOptions(MatContext.get().getPatientBasedIndicatorOptions(generalInformationModel.getScoringMethod()));
-					patientBasedInput.setSelectedIndex(generalInformationModel.isPatientBased() ? 1 : 0);
-				}
-			});
-		}
+			@Override
+			public void onSuccess(List<? extends HasListBox> result) {
+				setScoringChoices(result);
+				measureScoringInput.setValueMetadata(generalInformationModel.getScoringMethod());
+				setPatientBasedInputOptions(MatContext.get().getPatientBasedIndicatorOptions(generalInformationModel.getScoringMethod()));
+				patientBasedInput.setSelectedIndex(generalInformationModel.isPatientBased() ? 1 : 0);
+			}
+		});
 	}
 
 	private void addEventHandlers() {

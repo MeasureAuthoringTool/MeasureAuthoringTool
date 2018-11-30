@@ -31,7 +31,7 @@ public class MeasureDetailsViewFactory {
 			case COMPONENT_MEASURES:
 				return new ComponentMeasuresView();
 			case DESCRIPTION:
-				return buildDenominatorView(measureDetailsComponent.getDescriptionModel());
+				return buildDescriptionView(measureDetailsComponent.getDescriptionModel());
 			case DISCLAIMER:
 				return new DisclaimerView();
 			case MEASURE_TYPE:
@@ -103,7 +103,7 @@ public class MeasureDetailsViewFactory {
 		return generalInformationView;
 	}
 	
-	private DescriptionView buildDenominatorView(DescriptionModel descriptionModel) {
+	private DescriptionView buildDescriptionView(DescriptionModel descriptionModel) {
 		DescriptionView descriptionView = new DescriptionView(descriptionModel);
 		DescriptionObserver descriptionObserver = new DescriptionObserver(descriptionView);
 		descriptionView.setObserver(descriptionObserver);

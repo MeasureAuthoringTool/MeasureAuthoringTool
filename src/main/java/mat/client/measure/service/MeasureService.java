@@ -705,4 +705,6 @@ public interface MeasureService extends RemoteService {
 	
 	@Deprecated
 	public ManageMeasureDetailModel getMeasureAndLogRecentMeasure(String currentMeasureId, String loggedinUserId);
+	
+	public int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
 }

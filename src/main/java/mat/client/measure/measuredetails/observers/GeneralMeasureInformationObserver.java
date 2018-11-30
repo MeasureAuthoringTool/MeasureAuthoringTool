@@ -2,6 +2,9 @@ package mat.client.measure.measuredetails.observers;
 
 import java.util.List;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import mat.client.measure.measuredetails.views.GeneralMeasureInformationView;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
@@ -111,5 +114,34 @@ public class GeneralMeasureInformationObserver {
 			scoringMethodChanged = true;
 		}
 		return scoringMethodChanged;
+	}
+	
+	public void generateAndSaveNewEmeasureid() {
+		boolean isEditable = MatContext.get().getMeasureLockService().checkForEditPermission();
+		String measureId = MatContext.get().getCurrentMeasureId();
+		int eMeasureId = generalMeasureInformationView.getGeneralInformationModel().geteMeasureId();
+		if(isEditable && eMeasureId ==0){
+			//TODO implement the server side method
+			MatContext.get().getMeasureService().generateAndSaveMaxEmeasureId(isEditable, measureId, new AsyncCallback<Integer>() {
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					//TODO create error message //MatContext.get().getMessageDelegate().getGenericErrorMessage();
+					MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+				}
+				
+				@Override
+				public void onSuccess(Integer result) {
+					if(result > 0){
+						int maxEmeasureId = result.intValue();
+						generalMeasureInformationView.getGenerateEMeasureIDButton().setEnabled(false);
+						generalMeasureInformationView.geteMeasureIdentifierInput().setText(String.valueOf(maxEmeasureId));
+						generalMeasureInformationView.geteMeasureIdentifierInput().setValue(String.valueOf(maxEmeasureId));
+						generalMeasureInformationView.getGeneralInformationModel().seteMeasureId(maxEmeasureId);
+						generalMeasureInformationView.geteMeasureIdentifierInput().setFocus(true);
+					}
+				}
+			});
+		}
 	}
 }

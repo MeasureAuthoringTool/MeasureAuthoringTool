@@ -108,6 +108,7 @@ public interface MeasureLibraryService {
 	 *            the measure id
 	 * @return the int
 	 */
+	@Deprecated
 	int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId);
 	
 	/** Gets the all recent measure for user.
@@ -751,4 +752,6 @@ public interface MeasureLibraryService {
 	ValidateMeasureResult validateExports(String measureId) throws Exception;
 
 	Boolean isCompositeMeasure(String currentMeasureId);
+
+	int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
 }

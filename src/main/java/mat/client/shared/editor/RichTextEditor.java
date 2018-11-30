@@ -1,37 +1,28 @@
 package mat.client.shared.editor;
 
-import org.gwtbootstrap3.extras.summernote.client.ui.Summernote;
-import org.gwtbootstrap3.extras.summernote.client.ui.base.SummernoteFontName;
-import org.gwtbootstrap3.extras.summernote.client.ui.base.Toolbar;
-import org.gwtbootstrap3.extras.summernote.client.ui.base.ToolbarButton;
+import org.gwtbootstrap3.client.ui.TextArea;
 
-public class RichTextEditor extends Summernote {
+public class RichTextEditor extends TextArea {
 	
 	public RichTextEditor(){
 		super();
-		this.setFontNames(SummernoteFontName.ARIAL, SummernoteFontName.HELVETICA,SummernoteFontName.TAHOMA, 
-                SummernoteFontName.TIMES_NEW_ROMAN, SummernoteFontName.VERDANA );
-        
-        
-        this.setToolbar(new Toolbar()
-                  .addGroup(ToolbarButton.BOLD, ToolbarButton.ITALIC, ToolbarButton.UNDERLINE, ToolbarButton.STRIKETHROUGH)
-                  .addGroup(ToolbarButton.UNDO, ToolbarButton.REDO, ToolbarButton.CLEAR)
-                  .addGroup(ToolbarButton.UL, ToolbarButton.OL, ToolbarButton.PARAGRAPH)
-                  .addGroup(ToolbarButton.FONT_NAME, ToolbarButton.FONT_SIZE));
-        
-        
-        this.setDefaultHeight(350);
+		this.setCharacterWidth(80);
+	    this.setVisibleLines(25);
 	}
 	
 	public String getPlainText() {
-		return stripFormatting(this.getCode());
+		return stripFormatting(this.getText());
 	}
 
 	public String getFormattedText() {
-		return this.getCode();
+		return this.getText();
 	}
 
 	public String stripFormatting(String formatedText) {
 		return formatedText.replaceAll("<[^>]*>", "").replaceAll("&nbsp;", " ");
+	}
+	
+	public void setEditorText(String text) {
+		this.setText(text);
 	}
 }

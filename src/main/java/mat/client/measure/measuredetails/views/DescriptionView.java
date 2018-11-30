@@ -36,7 +36,7 @@ public class DescriptionView implements MeasureDetailViewInterface {
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
 		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Description Edit");
-		measureDetailsRichTextEditor.getRichTextEditor().setCode(this.descriptionModel.getFormattedText());
+		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.descriptionModel.getFormattedText());
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class DescriptionView implements MeasureDetailViewInterface {
 	}
 	
 	private void addEventHandlers() {
-		measureDetailsRichTextEditor.getRichTextEditor().addSummernoteKeyUpHandler(event -> observer.handleDescriptionChanged());
+		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleDescriptionChanged());
 	}
 	
 	private void buildGeneralInformationModel(DescriptionModel originalDescriptionModel) {

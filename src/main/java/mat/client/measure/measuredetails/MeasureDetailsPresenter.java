@@ -269,8 +269,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
-				scoringType = MatContext.get().getCurrentMeasureScoringType();
-				navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
+				scoringType = measureDetailsModel.getScoringType();
 				measureDetailsView.buildDetailView(measureDetailsModel, navigationPanel.getActiveMenuItem(), navigationPanel);
 				isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();
 				measureDetailsView.setReadOnly(isMeasureEditable);

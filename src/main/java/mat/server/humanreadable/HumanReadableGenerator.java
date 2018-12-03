@@ -121,28 +121,22 @@ public class HumanReadableGenerator {
 				model.setRiskAdjustmentVariables(getRiskAdjustmentVariables(processor));
 				model.setValuesetDataCriteriaList(getValuesetDataCriteria(processor));
 				model.setCodeDataCriteriaList(getCodeDataCriteria(processor));
-				model.setValuesetTerminologyList(getValuesetTerminology(processor));
-				model.setCodeTerminologyList(getCodeTerminology(processor));
+						
+				List<HumanReadableTerminologyModel> valuesetTerminologyList = getValuesetTerminology(processor);
+				sortTerminologyList(valuesetTerminologyList);
+				model.setValuesetTerminologyList(valuesetTerminologyList);
+
+				List<HumanReadableTerminologyModel> codeTerminologyList = getCodeTerminology(processor);
+				sortTerminologyList(codeTerminologyList);
+				model.setCodeTerminologyList(codeTerminologyList);
+				
 				model.setDefinitions(getDefinitions(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
 				model.setFunctions(getFunctions(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
-				
 				
 				List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList = new ArrayList<>(); 
 				valuesetAndCodeDataCriteriaList.addAll(model.getValuesetDataCriteriaList());
 				valuesetAndCodeDataCriteriaList.addAll(model.getCodeDataCriteriaList());
-
-				Collections.sort(valuesetAndCodeDataCriteriaList, new Comparator<HumanReadableTerminologyModel>() {
-
-					@Override
-					public int compare(HumanReadableTerminologyModel o1, HumanReadableTerminologyModel o2) {
-						
-						String o1String = o1.getDatatype() + ": " + o1.getName();
-						String o2String = o2.getDatatype() + ": " + o2.getName();
-						return o1String.compareToIgnoreCase(o2String);
-					}
-				});
-				
-				
+				sortDataCriteriaList(valuesetAndCodeDataCriteriaList);
 				model.setValuesetAndCodeDataCriteriaList(valuesetAndCodeDataCriteriaList);
 				
 				html = humanReadableGenerator.generate(model);
@@ -156,6 +150,29 @@ public class HumanReadableGenerator {
 		return html;
 	}
 
+	private void sortDataCriteriaList(List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList) {
+		Collections.sort(valuesetAndCodeDataCriteriaList, new Comparator<HumanReadableTerminologyModel>() {
+
+			@Override
+			public int compare(HumanReadableTerminologyModel o1, HumanReadableTerminologyModel o2) {
+				
+				String o1String = o1.getDatatype() + ": " + o1.getName();
+				String o2String = o2.getDatatype() + ": " + o2.getName();
+				return o1String.compareToIgnoreCase(o2String);
+			}
+		});
+	}
+
+	private void sortTerminologyList(List<HumanReadableTerminologyModel> terminologyList) throws XPathExpressionException {
+		Collections.sort(terminologyList, new Comparator<HumanReadableTerminologyModel>() {
+
+			@Override
+			public int compare(HumanReadableTerminologyModel o1, HumanReadableTerminologyModel o2) {
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}
+		});
+	}
+	
 	private List<String> getCQLIdentifiers(CQLModel cqlModel) {
 		List<String> identifiers = new ArrayList<>(); 
 		List<CQLDefinition> cqlDefinition = cqlModel.getDefinitionList();
@@ -373,7 +390,7 @@ public class HumanReadableGenerator {
 		return codes; 
 	}
 	
-	private List<HumanReadableValuesetModel> getValuesetTerminology(XmlProcessor processor) throws XPathExpressionException {
+	private List<HumanReadableTerminologyModel> getValuesetTerminology(XmlProcessor processor) throws XPathExpressionException {
 		Set<HumanReadableValuesetModel> valuesets = new HashSet<>(); 
 		NodeList elements = processor.findNodeList(processor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code=\"false\"]");
 		
@@ -386,12 +403,12 @@ public class HumanReadableGenerator {
 			valuesets.add(valueset);
 		}
 		
-		List<HumanReadableValuesetModel> valuesetList =  new ArrayList<>(valuesets);
-		valuesetList.sort(Comparator.comparing(HumanReadableValuesetModel::getTerminologyDisplay));
+		List<HumanReadableTerminologyModel> valuesetList =  new ArrayList<>(valuesets);
+		valuesetList.sort(Comparator.comparing(HumanReadableTerminologyModel::getTerminologyDisplay));
 		return valuesetList;
 	}
 	
-	private List<HumanReadableCodeModel> getCodeTerminology(XmlProcessor processor) throws XPathExpressionException {
+	private List<HumanReadableTerminologyModel> getCodeTerminology(XmlProcessor processor) throws XPathExpressionException {
 		Set<HumanReadableCodeModel> codes = new HashSet<>(); 
 		NodeList elements = processor.findNodeList(processor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code=\"true\"]");
 		for(int i = 0; i < elements.getLength(); i++) {
@@ -415,8 +432,8 @@ public class HumanReadableGenerator {
 			codes.add(model);
 		}  
 		
-		List<HumanReadableCodeModel> codesList =  new ArrayList<>(codes);
-		codesList.sort(Comparator.comparing(HumanReadableCodeModel::getTerminologyDisplay));
+		List<HumanReadableTerminologyModel> codesList =  new ArrayList<>(codes);
+		codesList.sort(Comparator.comparing(HumanReadableTerminologyModel::getTerminologyDisplay));
 		return codesList; 
 	}
 

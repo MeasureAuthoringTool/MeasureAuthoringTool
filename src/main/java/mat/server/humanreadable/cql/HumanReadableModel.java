@@ -10,8 +10,8 @@ public class HumanReadableModel {
 	private List<HumanReadablePopulationCriteriaModel> populationCriterias; 
 	private List<HumanReadableExpressionModel> supplementalDataElements; 
 	private List<HumanReadableExpressionModel> riskAdjustmentVariables; 
-	private List<HumanReadableCodeModel> codeTerminologyList;
-	private List<HumanReadableValuesetModel> valuesetTerminologyList; 
+	private List<HumanReadableTerminologyModel> codeTerminologyList;
+	private List<HumanReadableTerminologyModel> valuesetTerminologyList; 
 	private List<HumanReadableCodeModel> codeDataCriteriaList; 
 	private List<HumanReadableValuesetModel> valuesetDataCriteriaList; 
 	private List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList; 
@@ -23,7 +23,7 @@ public class HumanReadableModel {
 	
 	public HumanReadableModel(HumanReadableMeasureInformationModel measureInformationModel, List<HumanReadablePopulationCriteriaModel> populations, 
 			List<HumanReadableExpressionModel> definitions, List<HumanReadableExpressionModel> functions,
-			List<HumanReadableValuesetModel> valuesetTerminologyList, List<HumanReadableCodeModel> codeTerminologyList,
+			List<HumanReadableTerminologyModel> valuesetTerminologyList, List<HumanReadableTerminologyModel> codeTerminologyList,
 			List<HumanReadableValuesetModel> valuesetDataCriteriaList, List<HumanReadableCodeModel> codeDataCriteriaList,
 			List<HumanReadableExpressionModel> supplementalDataElements,  List<HumanReadableExpressionModel> riskAdjustmentVariables) {
 		this.measureInformation = measureInformationModel;
@@ -87,19 +87,19 @@ public class HumanReadableModel {
 		this.riskAdjustmentVariables = riskAdjustmentVariables;
 	}
 
-	public List<HumanReadableCodeModel> getCodeTerminologyList() {
+	public List<HumanReadableTerminologyModel> getCodeTerminologyList() {
 		return codeTerminologyList;
 	}
 
-	public void setCodeTerminologyList(List<HumanReadableCodeModel> codeTerminologyList) {
+	public void setCodeTerminologyList(List<HumanReadableTerminologyModel> codeTerminologyList) {
 		this.codeTerminologyList = codeTerminologyList;
 	}
 
-	public List<HumanReadableValuesetModel> getValuesetTerminologyList() {
+	public List<HumanReadableTerminologyModel> getValuesetTerminologyList() {
 		return valuesetTerminologyList;
 	}
 
-	public void setValuesetTerminologyList(List<HumanReadableValuesetModel> valuesetTerminologyList) {
+	public void setValuesetTerminologyList(List<HumanReadableTerminologyModel> valuesetTerminologyList) {
 		this.valuesetTerminologyList = valuesetTerminologyList;
 	}
 

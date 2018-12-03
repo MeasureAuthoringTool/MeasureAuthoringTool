@@ -24,8 +24,6 @@ import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.shared.ConstantMessages;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
-import mat.shared.measure.measuredetails.models.CopyrightModel;
-import mat.shared.measure.measuredetails.models.DescriptionModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsRichTextAbstractModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
@@ -271,12 +269,15 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
+				MatDetailItem activeMenuItem = navigationPanel.getActiveMenuItem();
 				scoringType = measureDetailsModel.getScoringType();
+				navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
 				measureDetailsView.buildDetailView(measureDetailsModel, navigationPanel.getActiveMenuItem(), navigationPanel);
 				isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();
 				measureDetailsView.setReadOnly(isMeasureEditable);
 				measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
 				handleStateChanged();
+				navigationPanel.setActiveMenuItem(activeMenuItem);
 			}
 		};
 	}

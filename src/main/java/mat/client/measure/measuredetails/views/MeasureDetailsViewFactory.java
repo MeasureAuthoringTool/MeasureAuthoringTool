@@ -1,13 +1,9 @@
 package mat.client.measure.measuredetails.views;
 
-import java.util.List;
-
-import mat.DTO.CompositeMeasureScoreDTO;
 import mat.client.measure.measuredetails.observers.CopyrightObserver;
 import mat.client.measure.measuredetails.observers.DescriptionObserver;
 import mat.client.measure.measuredetails.observers.DisclaimerObserver;
-import mat.client.measure.measuredetails.observers.GeneralMeasureInformationObserver;
-import mat.client.shared.MatContext;
+import mat.client.measure.measuredetails.observers.GeneralInformationObserver;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
@@ -29,15 +25,15 @@ public class MeasureDetailsViewFactory {
 		return instance;
 	}
 
-	public MeasureDetailViewInterface getMeasureDetailComponentView(MeasureDetailsModel measureDetailsComponent, MatDetailItem currentMeasureDetail) {
+	public MeasureDetailViewInterface getMeasureDetailComponentView(MeasureDetailsModel measureDetailsModel, MatDetailItem currentMeasureDetail) {
 		if(currentMeasureDetail instanceof MeasureDetailsConstants.MeasureDetailsItems) {
 			switch((MeasureDetailsItems) currentMeasureDetail) {
 			case COMPONENT_MEASURES:
 				return new ComponentMeasuresView();
 			case DESCRIPTION:
-				return buildDescriptionView(measureDetailsComponent.getDescriptionModel());
+				return buildDescriptionView(measureDetailsModel.getDescriptionModel());
 			case DISCLAIMER:
-				return buildDisclaimerView(measureDetailsComponent.getDisclaimerModel());
+				return buildDisclaimerView(measureDetailsModel.getDisclaimerModel());
 			case MEASURE_TYPE:
 				return new MeasureTypeView();
 			case STRATIFICATION:
@@ -67,12 +63,12 @@ public class MeasureDetailsViewFactory {
 			case STEWARD:
 				return new MeasureStewardView();
 			case COPYRIGHT:
-				return buildCopyrightView(measureDetailsComponent.getCopyrightModel());
+				return buildCopyrightView(measureDetailsModel.getCopyrightModel());
 			case POPULATIONS:
 				return new PopulationsView();
 			case GENERAL_MEASURE_INFORMATION:
 			default:
-				return buildGeneralMeasureInformationView(measureDetailsComponent.isComposite(), measureDetailsComponent.getGeneralInformationModel());
+				return buildGeneralMeasureInformationView(measureDetailsModel.isComposite(), measureDetailsModel.getGeneralInformationModel());
 			}
 		} else if ( currentMeasureDetail instanceof MeasureDetailsConstants.PopulationItems) {
 			switch((PopulationItems) currentMeasureDetail) {
@@ -96,13 +92,12 @@ public class MeasureDetailsViewFactory {
 				return new MeasureObservationsView();
 			}
 		}
-		return buildGeneralMeasureInformationView(measureDetailsComponent.isComposite(), measureDetailsComponent.getGeneralInformationModel());
+		return buildGeneralMeasureInformationView(measureDetailsModel.isComposite(), measureDetailsModel.getGeneralInformationModel());
 	}
 	
-	GeneralMeasureInformationView buildGeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel) {
-		List<CompositeMeasureScoreDTO> compositeChoices = MatContext.get().buildCompositeScoringChoiceList();
-		GeneralMeasureInformationView generalInformationView = new GeneralMeasureInformationView(isComposite, generalInformationModel, compositeChoices);
-		GeneralMeasureInformationObserver observer = new GeneralMeasureInformationObserver(generalInformationView);
+	GeneralInformationView buildGeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel) {
+		GeneralInformationView generalInformationView = new GeneralInformationView(isComposite, generalInformationModel);
+		GeneralInformationObserver observer = new GeneralInformationObserver(generalInformationView);
 		generalInformationView.setObserver(observer);
 		return generalInformationView;
 	}

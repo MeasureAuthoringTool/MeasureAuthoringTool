@@ -2,11 +2,13 @@ package mat.client.measure.measuredetails.views;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -18,7 +20,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.CompositeMeasureScoreDTO;
 import mat.client.codelist.HasListBox;
-import mat.client.measure.measuredetails.observers.GeneralMeasureInformationObserver;
+import mat.client.measure.measuredetails.observers.GeneralInformationObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -30,7 +32,7 @@ import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
-public class GeneralMeasureInformationView implements MeasureDetailViewInterface {
+public class GeneralInformationView implements MeasureDetailViewInterface {
 	private static final String EMPTY_STRING = "";
 	private static final String TEXT_BOX_WIDTH = "300px";
 	private FlowPanel mainPanel = new FlowPanel();
@@ -45,16 +47,18 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 	private ListBoxMVP  measureScoringInput = new ListBoxMVP();
 	private ListBoxMVP compositeScoringMethodInput = new ListBoxMVP();
 	private ListBoxMVP patientBasedInput = new ListBoxMVP();
-	private GeneralMeasureInformationObserver observer;
+	private GeneralInformationObserver observer;
 	List<CompositeMeasureScoreDTO> compositeChoices;
 	private HelpBlock helpBlock = new HelpBlock();
 	private FormGroup messageFormGrp = new FormGroup();
-    
-	public GeneralMeasureInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel, List<CompositeMeasureScoreDTO> compositeChoices) {
+	private Button generateEMeasureIDButton = new Button("Generate Identifier");
+	private TextBox eMeasureIdentifierInput = new TextBox();
+   
+	public GeneralInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel) {
 		originalModel = originalGeneralInformationModel;
 		buildGeneralInformationModel(originalGeneralInformationModel);
 		this.isCompositeMeasure = isComposite;
-		this.compositeChoices = compositeChoices;
+		compositeChoices = MatContext.get().buildCompositeScoringChoiceList();
 		buildDetailView();
 	}
 
@@ -89,7 +93,7 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 		messageFormGrp.getElement().setAttribute("role", "alert");
 		measureDetailForm.add(messageFormGrp);
 		detailPanel.add(measureDetailForm);
-		Grid panelGrid = new Grid(5, 2);
+		Grid panelGrid = new Grid(6, 2);
 		
 		VerticalPanel measureNamePanel = buildMeasureNamePanel();
 		panelGrid.setWidget(0, 0, measureNamePanel);
@@ -120,35 +124,80 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 		VerticalPanel eCQMVersionPanel = buildeCQMVersionPanel();
 		panelGrid.setWidget(4, 0, eCQMVersionPanel);
 		
+		VerticalPanel eCQMIdentifierPanel = buldeCQMIdentifierPanel();
+		panelGrid.setWidget(5, 0, eCQMIdentifierPanel);
+		
 		detailPanel.add(panelGrid);
 		mainPanel.add(detailPanel);
 		buildDropDowns();
 		addEventHandlers();
 	}
 
+	private VerticalPanel buldeCQMIdentifierPanel() {
+		VerticalPanel verticalPanel = new VerticalPanel();
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.getElement().setId("horizontalPanel_HorizontalFlowPanelLeft");
+		FormLabel eMeasureIdentifierInputLabel = new FormLabel();
+		eMeasureIdentifierInputLabel.setStyleName("bold");
+		eMeasureIdentifierInputLabel.setText( "eCQM Identifier (Measure Authoring Tool)");
+		eMeasureIdentifierInputLabel.setId("eMeasureIdentifierInputLabel");
+		eMeasureIdentifierInputLabel.setFor("eMeasureIdentifierInput_TextBox");
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(eMeasureIdentifierInputLabel);
+		eMeasureIdentifierInput.setId("eMeasureIdentifierInput_TextBox");
+		eMeasureIdentifierInput.setTitle("Generated Identifier");
+		eMeasureIdentifierInput.setWidth("150px");
+
+		if(generalInformationModel.geteMeasureId() != 0) {
+			eMeasureIdentifierInput.setText(String.valueOf(generalInformationModel.geteMeasureId()));
+			eMeasureIdentifierInput.setValue(String.valueOf(generalInformationModel.geteMeasureId()));
+			generateEMeasureIDButton.setEnabled(false);
+		}
+		
+		horizontalPanel.add(eMeasureIdentifierInput);
+		horizontalPanel.add(generateEMeasureIDButton);
+		horizontalPanel.add(eMeasureIdentifierInput);
+		horizontalPanel.add(generateEMeasureIDButton);
+		generateEMeasureIDButton.setType(ButtonType.PRIMARY);
+		generateEMeasureIDButton.getElement().getStyle().setProperty("marginLeft", "5px");
+		generateEMeasureIDButton.getElement().setId("generateeMeasureIDButton_Button");
+		eMeasureIdentifierInput.setReadOnly(true);
+		generateEMeasureIDButton.setEnabled(true);
+		String emeasureIdMSG = "Once an eCQM Identifier (Measure Authoring Tool) has been generated it may not be modified or removed for any draft or version of a measure.";
+		generateEMeasureIDButton.setTitle(emeasureIdMSG);
+		eMeasureIdentifierInput.setTitle(emeasureIdMSG);
+		verticalPanel.add(horizontalPanel);
+		return verticalPanel;
+	}
+
 	private void buildDropDowns() {
 		setCompositeScoringChoices(compositeChoices);
 		if(isCompositeMeasure) {
 			setCompositeScoringSelectedValue(generalInformationModel.getCompositeScoringMethod());
-		} 
-			
-		MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert(MessageDelegate.s_ERR_RETRIEVE_SCORING_CHOICES);
-			}
+		} else {
+			MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert(MessageDelegate.s_ERR_RETRIEVE_SCORING_CHOICES);
+				}
 
-			@Override
-			public void onSuccess(List<? extends HasListBox> result) {
-				setScoringChoices(result);
-				measureScoringInput.setValueMetadata(generalInformationModel.getScoringMethod());
-				setPatientBasedInputOptions(MatContext.get().getPatientBasedIndicatorOptions(generalInformationModel.getScoringMethod()));
-				patientBasedInput.setSelectedIndex(generalInformationModel.isPatientBased() ? 1 : 0);
-			}
-		});
+				@Override
+				public void onSuccess(List<? extends HasListBox> result) {
+					setScoringChoices(result);
+					measureScoringInput.setValueMetadata(generalInformationModel.getScoringMethod());
+					setPatientBasedInputOptions(MatContext.get().getPatientBasedIndicatorOptions(generalInformationModel.getScoringMethod()));
+					setPatientbasedIndicator();
+				}
+			});
+		}
 	}
 
+	private void setPatientbasedIndicator() {
+		patientBasedInput.setSelectedIndex(generalInformationModel.isPatientBased() ? 1 : 0);
+	}
+	
 	private void addEventHandlers() {
+		getGenerateEMeasureIDButton().addClickHandler(event -> observer.generateAndSaveNewEmeasureid());
 		getMeasureScoringInput().addChangeHandler(event -> observer.handleMeasureScoringChanged());
 		getCompositeScoringMethodInput().addChangeHandler(event -> observer.handleCompositeScoringChanged());
 		getPatientBasedInput().addChangeHandler(event -> observer.handleInputChanged());
@@ -352,6 +401,7 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 		compositeScoringMethodInput.setEnabled(!readOnly);
 		measureScoringInput.setEnabled(!readOnly);
 		patientBasedInput.setEnabled(!readOnly);
+		generateEMeasureIDButton.setEnabled(!readOnly);
 	}
 
 	public HelpBlock getHelpBlock() {
@@ -418,7 +468,7 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 		return measureScoringInput.getItemText(measureScoringInput.getSelectedIndex());
 	}
 
-	public void setObserver(GeneralMeasureInformationObserver observer) {
+	public void setObserver(GeneralInformationObserver observer) {
 		this.observer = observer;
 	}
 	
@@ -436,6 +486,7 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 		compositeScoringMethod = StringUtility.isEmptyOrNull(compositeScoringMethod) ? MatContext.PLEASE_SELECT : compositeScoringMethod;
 		setScoringChoices(MatContext.get().getSelectionMap().get(compositeScoringMethod));
 		measureScoringInput.setValueMetadata(generalInformationModel.getScoringMethod());
+		setPatientbasedIndicator();
 	}
 
 	@Override
@@ -491,4 +542,21 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 			patientBasedInput.addItem(option, option);
 		}
 	}
+	
+	public Button getGenerateEMeasureIDButton() {
+		return generateEMeasureIDButton;
+	}
+
+	public void setGenerateEMeasureIDButton(Button generateEMeasureIDButton) {
+		this.generateEMeasureIDButton = generateEMeasureIDButton;
+	}
+	
+	public TextBox geteMeasureIdentifierInput() {
+		return eMeasureIdentifierInput;
+	}
+
+	public void seteMeasureIdentifierInput(TextBox eMeasureIdentifierInput) {
+		this.eMeasureIdentifierInput = eMeasureIdentifierInput;
+	}
+
 }

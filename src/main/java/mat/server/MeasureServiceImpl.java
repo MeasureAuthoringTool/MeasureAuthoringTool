@@ -49,9 +49,6 @@ import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.shared.measure.measuredetails.translate.MeasureDetailModelMapper;
 
-/**
- * The Class MeasureServiceImpl.
- */
 public class MeasureServiceImpl extends SpringRemoteServiceServlet implements MeasureService {
 	
 	private static final long serialVersionUID = 2280421300224680146L;
@@ -75,6 +72,7 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 		this.getMeasureLibraryService().createAndSaveElementLookUp(list, measureID, expProfileToAllQDM);
 	}
 	
+	@Deprecated
 	@Override
 	public int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId) {
 		return this.getMeasureLibraryService().generateAndSaveMaxEmeasureId(measureId);
@@ -588,5 +586,10 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 			getMeasureLibraryService().recordRecentMeasureActivity(currentMeasureId, loggedinUserId);
 		}
 		return manageMeasureDetailModel;
+	}
+
+	@Override
+	public int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId) {
+		return this.getMeasureLibraryService().generateAndSaveMaxEmeasureId(isEditable, measureId);
 	}
 }

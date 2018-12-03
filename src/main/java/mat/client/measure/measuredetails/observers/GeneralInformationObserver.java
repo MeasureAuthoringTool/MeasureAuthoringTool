@@ -136,6 +136,7 @@ public class GeneralInformationObserver {
 						generalMeasureInformationView.geteMeasureIdentifierInput().setText(String.valueOf(maxEmeasureId));
 						generalMeasureInformationView.geteMeasureIdentifierInput().setValue(String.valueOf(maxEmeasureId));
 						generalMeasureInformationView.getGeneralInformationModel().seteMeasureId(maxEmeasureId);
+						generalMeasureInformationView.getGenerateEMeasureIDButton().setEnabled(false);
 						generalMeasureInformationView.geteMeasureIdentifierInput().setFocus(true);
 					}
 				}

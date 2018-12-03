@@ -1,13 +1,9 @@
 package mat.client.measure.measuredetails.views;
 
-import java.util.List;
-
-import mat.DTO.CompositeMeasureScoreDTO;
 import mat.client.measure.measuredetails.observers.CopyrightObserver;
 import mat.client.measure.measuredetails.observers.DescriptionObserver;
 import mat.client.measure.measuredetails.observers.DisclaimerObserver;
-import mat.client.measure.measuredetails.observers.GeneralMeasureInformationObserver;
-import mat.client.shared.MatContext;
+import mat.client.measure.measuredetails.observers.GeneralInformationObserver;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
@@ -37,7 +33,7 @@ public class MeasureDetailsViewFactory {
 			case DESCRIPTION:
 				return buildDescriptionView(measureDetailsModel.getDescriptionModel());
 			case DISCLAIMER:
-				return buildDisclaimerView(measureDetailsComponent.getDisclaimerModel());
+				return buildDisclaimerView(measureDetailsModel.getDisclaimerModel());
 			case MEASURE_TYPE:
 				return new MeasureTypeView();
 			case STRATIFICATION:
@@ -67,7 +63,7 @@ public class MeasureDetailsViewFactory {
 			case STEWARD:
 				return new MeasureStewardView();
 			case COPYRIGHT:
-				return buildCopyrightView(measureDetailsComponent.getCopyrightModel());
+				return buildCopyrightView(measureDetailsModel.getCopyrightModel());
 			case POPULATIONS:
 				return new PopulationsView();
 			case GENERAL_MEASURE_INFORMATION:
@@ -99,9 +95,9 @@ public class MeasureDetailsViewFactory {
 		return buildGeneralMeasureInformationView(measureDetailsModel.isComposite(), measureDetailsModel.getGeneralInformationModel());
 	}
 	
-	GeneralMeasureInformationView buildGeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel) {
-		GeneralMeasureInformationView generalInformationView = new GeneralMeasureInformationView(isComposite, generalInformationModel);
-		GeneralMeasureInformationObserver observer = new GeneralMeasureInformationObserver(generalInformationView);
+	GeneralInformationView buildGeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel) {
+		GeneralInformationView generalInformationView = new GeneralInformationView(isComposite, generalInformationModel);
+		GeneralInformationObserver observer = new GeneralInformationObserver(generalInformationView);
 		generalInformationView.setObserver(observer);
 		return generalInformationView;
 	}

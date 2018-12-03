@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.CompositeMeasureScoreDTO;
 import mat.client.codelist.HasListBox;
-import mat.client.measure.measuredetails.observers.GeneralMeasureInformationObserver;
+import mat.client.measure.measuredetails.observers.GeneralInformationObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -32,7 +32,7 @@ import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
-public class GeneralMeasureInformationView implements MeasureDetailViewInterface {
+public class GeneralInformationView implements MeasureDetailViewInterface {
 	private static final String EMPTY_STRING = "";
 	private static final String TEXT_BOX_WIDTH = "300px";
 	private FlowPanel mainPanel = new FlowPanel();
@@ -47,14 +47,14 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 	private ListBoxMVP  measureScoringInput = new ListBoxMVP();
 	private ListBoxMVP compositeScoringMethodInput = new ListBoxMVP();
 	private ListBoxMVP patientBasedInput = new ListBoxMVP();
-	private GeneralMeasureInformationObserver observer;
+	private GeneralInformationObserver observer;
 	List<CompositeMeasureScoreDTO> compositeChoices;
 	private HelpBlock helpBlock = new HelpBlock();
 	private FormGroup messageFormGrp = new FormGroup();
 	private Button generateEMeasureIDButton = new Button("Generate Identifier");
 	private TextBox eMeasureIdentifierInput = new TextBox();
    
-	public GeneralMeasureInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel) {
+	public GeneralInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel) {
 		originalModel = originalGeneralInformationModel;
 		buildGeneralInformationModel(originalGeneralInformationModel);
 		this.isCompositeMeasure = isComposite;
@@ -64,15 +64,6 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 
 	private void buildGeneralInformationModel(GeneralInformationModel originalGeneralInformationModel) {
 		this.generalInformationModel = new GeneralInformationModel(originalGeneralInformationModel);
-		generalInformationModel.seteMeasureId(originalGeneralInformationModel.geteMeasureId());
-		generalInformationModel.setPatientBased(originalGeneralInformationModel.isPatientBased());
-		generalInformationModel.setMeasureName(originalGeneralInformationModel.getMeasureName());
-		generalInformationModel.setGuid(originalGeneralInformationModel.getGuid());
-		generalInformationModel.setFinalizedDate(originalGeneralInformationModel.getFinalizedDate());
-		generalInformationModel.seteCQMVersionNumber(originalGeneralInformationModel.geteCQMVersionNumber());
-		generalInformationModel.seteCQMAbbreviatedTitle(originalGeneralInformationModel.geteCQMAbbreviatedTitle());
-		generalInformationModel.setScoringMethod(originalGeneralInformationModel.getScoringMethod());
-		generalInformationModel.setCompositeScoringMethod(originalGeneralInformationModel.getCompositeScoringMethod());
 	}
 
 	@Override
@@ -477,7 +468,7 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 		return measureScoringInput.getItemText(measureScoringInput.getSelectedIndex());
 	}
 
-	public void setObserver(GeneralMeasureInformationObserver observer) {
+	public void setObserver(GeneralInformationObserver observer) {
 		this.observer = observer;
 	}
 	

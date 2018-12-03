@@ -4,16 +4,16 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import mat.client.measure.measuredetails.views.GeneralMeasureInformationView;
+import mat.client.measure.measuredetails.views.GeneralInformationView;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
 import mat.shared.MatConstants;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 
 /* This class handles events that pertain to the general information view and do not need to be visible to the presenter */
-public class GeneralMeasureInformationObserver {
-	public GeneralMeasureInformationView generalMeasureInformationView;
-	public GeneralMeasureInformationObserver(GeneralMeasureInformationView generalMeasureInformationView) {
+public class GeneralInformationObserver {
+	public GeneralInformationView generalMeasureInformationView;
+	public GeneralInformationObserver(GeneralInformationView generalMeasureInformationView) {
 		this.generalMeasureInformationView = generalMeasureInformationView;
 	}
 	
@@ -120,7 +120,6 @@ public class GeneralMeasureInformationObserver {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		int eMeasureId = generalMeasureInformationView.getGeneralInformationModel().geteMeasureId();
 		if(isEditable && eMeasureId ==0){
-			//TODO implement the server side method
 			MatContext.get().getMeasureService().generateAndSaveMaxEmeasureId(isEditable, measureId, new AsyncCallback<Integer>() {
 				
 				@Override

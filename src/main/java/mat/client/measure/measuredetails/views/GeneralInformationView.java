@@ -401,6 +401,10 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		compositeScoringMethodInput.setEnabled(!readOnly);
 		measureScoringInput.setEnabled(!readOnly);
 		patientBasedInput.setEnabled(!readOnly);
+		setGenerateEMeasureButtonReadOnly(readOnly);
+	}
+
+	private void setGenerateEMeasureButtonReadOnly(boolean readOnly) {
 		if(generalInformationModel.geteMeasureId() != 0) {
 			generateEMeasureIDButton.setEnabled(false);
 		} else {

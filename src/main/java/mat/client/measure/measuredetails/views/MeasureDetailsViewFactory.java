@@ -3,14 +3,18 @@ package mat.client.measure.measuredetails.views;
 import java.util.List;
 
 import mat.DTO.CompositeMeasureScoreDTO;
+import mat.client.measure.measuredetails.observers.CopyrightObserver;
 import mat.client.measure.measuredetails.observers.DescriptionObserver;
+import mat.client.measure.measuredetails.observers.DisclaimerObserver;
 import mat.client.measure.measuredetails.observers.GeneralMeasureInformationObserver;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MeasureDetailsConstants.PopulationItems;
+import mat.shared.measure.measuredetails.models.CopyrightModel;
 import mat.shared.measure.measuredetails.models.DescriptionModel;
+import mat.shared.measure.measuredetails.models.DisclaimerModel;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 
@@ -33,7 +37,7 @@ public class MeasureDetailsViewFactory {
 			case DESCRIPTION:
 				return buildDescriptionView(measureDetailsModel.getDescriptionModel());
 			case DISCLAIMER:
-				return new DisclaimerView();
+				return buildDisclaimerView(measureDetailsComponent.getDisclaimerModel());
 			case MEASURE_TYPE:
 				return new MeasureTypeView();
 			case STRATIFICATION:
@@ -63,7 +67,7 @@ public class MeasureDetailsViewFactory {
 			case STEWARD:
 				return new MeasureStewardView();
 			case COPYRIGHT:
-				return new CopyrightView();
+				return buildCopyrightView(measureDetailsComponent.getCopyrightModel());
 			case POPULATIONS:
 				return new PopulationsView();
 			case GENERAL_MEASURE_INFORMATION:
@@ -107,5 +111,19 @@ public class MeasureDetailsViewFactory {
 		DescriptionObserver descriptionObserver = new DescriptionObserver(descriptionView);
 		descriptionView.setObserver(descriptionObserver);
 		return descriptionView;
+	}
+	
+	private CopyrightView buildCopyrightView(CopyrightModel copyrightModel) {
+		CopyrightView copyrightView = new CopyrightView(copyrightModel);
+		CopyrightObserver copyrightObserver = new CopyrightObserver(copyrightView);
+		copyrightView.setObserver(copyrightObserver);
+		return copyrightView;
+	}
+	
+	private DisclaimerView buildDisclaimerView(DisclaimerModel disclaimerModel) {
+		DisclaimerView disclaimerView = new DisclaimerView(disclaimerModel);
+		DisclaimerObserver disclaimerObserver = new DisclaimerObserver(disclaimerView);
+		disclaimerView.setObserver(disclaimerObserver);
+		return disclaimerView;
 	}
 }

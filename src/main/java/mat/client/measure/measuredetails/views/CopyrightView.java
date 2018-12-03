@@ -3,20 +3,29 @@ package mat.client.measure.measuredetails.views;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.measure.measuredetails.observers.CopyrightObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
+import mat.shared.measure.measuredetails.models.CopyrightModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
-public class CopyrightView implements MeasureDetailViewInterface{
+public class CopyrightView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();
+	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor; 
+	private CopyrightModel originalCopyrightModel; 
+	private CopyrightModel copyrightModel; 
+	private CopyrightObserver copyrightObserver; 
 	
-	public CopyrightView() {
+	public CopyrightView(CopyrightModel copyrightModel) {
+		this.originalCopyrightModel = copyrightModel;
+		buildCopyrightModel(this.originalCopyrightModel);
+		buildDetailView();
+		addEventHandlers();
 	}
 	
 	@Override
 	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return true;
+		return !this.copyrightModel.getFormattedText().isEmpty();
 	}
 	
 	public Widget getWidget() {
@@ -31,14 +40,14 @@ public class CopyrightView implements MeasureDetailViewInterface{
 
 	@Override
 	public void buildDetailView() {
-		// TODO Auto-generated method stub
-		
+		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
+		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Copyright Edit");
+		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.copyrightModel.getFormattedText());	
 	}
 
 	@Override
 	public void setReadOnly(boolean readOnly) {
-		// TODO Auto-generated method stub
-		
+		measureDetailsRichTextEditor.setReadOnly(readOnly);
 	}
 
 	@Override
@@ -49,25 +58,45 @@ public class CopyrightView implements MeasureDetailViewInterface{
 	@Override
 	public void resetForm() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.copyrightModel;
+	}
+	
+	public CopyrightModel getCopyrightModel() {
+		return copyrightModel;
+	}
+
+	public void setCopyrightModel(CopyrightModel copyrightModel) {
+		this.copyrightModel = copyrightModel;
 	}
 
 	@Override
 	public RichTextEditor getRichTextEditor() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.measureDetailsRichTextEditor.getRichTextEditor();
 	}
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-		
+		this.measureDetailsRichTextEditor.getRichTextEditor().setEditorText("");		
+	}
+	
+	public CopyrightObserver getObserver() {
+		return copyrightObserver;
 	}
 
+	public void setObserver(CopyrightObserver copyrightObserver) {
+		this.copyrightObserver = copyrightObserver;
+	}
+	
+	private void buildCopyrightModel(CopyrightModel originalCopyrightModel) {
+		this.copyrightModel = new CopyrightModel(originalCopyrightModel);
+	}
+
+	private void addEventHandlers() {
+		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> copyrightObserver.handleDescriptionChanged());
+	}
 }

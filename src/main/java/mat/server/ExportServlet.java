@@ -253,9 +253,9 @@ public class ExportServlet extends HttpServlet {
 			sb.append("\r\n");
 			sb.append("*******************************************************************************************************************/");
 			
-		} else {
-			sb.append(buildExceptionString(result.getCqlErrors(), "ERRORS:"));
-			sb.append(buildExceptionString(result.getCqlWarnings(), "WARNINGS:"));
+		} else {		
+			sb.append(buildExceptionString(result.getLibraryNameErrorsMap().get(result.getCqlModel().getFormattedName()), "ERRORS:"));
+			sb.append(buildExceptionString(result.getLibraryNameWarningsMap().get(result.getCqlModel().getFormattedName()), "WARNINGS:"));
 		}
 
 		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + result.getLibraryName() + ".txt");

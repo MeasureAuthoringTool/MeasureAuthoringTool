@@ -335,4 +335,8 @@ public class CQLModel implements IsSerializable{
 
 		return expressionList;
 	}
+	
+	public String getFormattedName() {
+		return this.libraryName + "-" + this.versionUsed;
+	}
 }

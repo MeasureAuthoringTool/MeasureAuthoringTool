@@ -25,13 +25,13 @@ public class MeasureDetailsViewFactory {
 		return instance;
 	}
 
-	public MeasureDetailViewInterface getMeasureDetailComponentView(MeasureDetailsModel measureDetailsComponent, MatDetailItem currentMeasureDetail) {
+	public MeasureDetailViewInterface getMeasureDetailComponentView(MeasureDetailsModel measureDetailsModel, MatDetailItem currentMeasureDetail) {
 		if(currentMeasureDetail instanceof MeasureDetailsConstants.MeasureDetailsItems) {
 			switch((MeasureDetailsItems) currentMeasureDetail) {
 			case COMPONENT_MEASURES:
 				return new ComponentMeasuresView();
 			case DESCRIPTION:
-				return buildDescriptionView(measureDetailsComponent.getDescriptionModel());
+				return buildDescriptionView(measureDetailsModel.getDescriptionModel());
 			case DISCLAIMER:
 				return new DisclaimerView();
 			case MEASURE_TYPE:
@@ -68,7 +68,7 @@ public class MeasureDetailsViewFactory {
 				return new PopulationsView();
 			case GENERAL_MEASURE_INFORMATION:
 			default:
-				return buildGeneralMeasureInformationView(measureDetailsComponent.isComposite(), measureDetailsComponent.getGeneralInformationModel());
+				return buildGeneralMeasureInformationView(measureDetailsModel.isComposite(), measureDetailsModel.getGeneralInformationModel());
 			}
 		} else if ( currentMeasureDetail instanceof MeasureDetailsConstants.PopulationItems) {
 			switch((PopulationItems) currentMeasureDetail) {
@@ -92,12 +92,11 @@ public class MeasureDetailsViewFactory {
 				return new MeasureObservationsView();
 			}
 		}
-		return buildGeneralMeasureInformationView(measureDetailsComponent.isComposite(), measureDetailsComponent.getGeneralInformationModel());
+		return buildGeneralMeasureInformationView(measureDetailsModel.isComposite(), measureDetailsModel.getGeneralInformationModel());
 	}
 	
 	GeneralMeasureInformationView buildGeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel) {
-		List<CompositeMeasureScoreDTO> compositeChoices = MatContext.get().buildCompositeScoringChoiceList();
-		GeneralMeasureInformationView generalInformationView = new GeneralMeasureInformationView(isComposite, generalInformationModel, compositeChoices);
+		GeneralMeasureInformationView generalInformationView = new GeneralMeasureInformationView(isComposite, generalInformationModel);
 		GeneralMeasureInformationObserver observer = new GeneralMeasureInformationObserver(generalInformationView);
 		generalInformationView.setObserver(observer);
 		return generalInformationView;

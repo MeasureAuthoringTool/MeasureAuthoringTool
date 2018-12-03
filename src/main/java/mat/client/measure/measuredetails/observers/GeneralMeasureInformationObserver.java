@@ -2,7 +2,6 @@ package mat.client.measure.measuredetails.observers;
 
 import java.util.List;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import mat.client.measure.measuredetails.views.GeneralMeasureInformationView;

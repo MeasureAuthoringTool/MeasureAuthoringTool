@@ -16,11 +16,14 @@ public class CopyrightModel extends MeasureDetailsRichTextAbstractModel implemen
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
 		CopyrightModel copyrightModel = (CopyrightModel) model;
-		if(copyrightModel == null || copyrightModel == null) {
+		if(copyrightModel == null) {
 			return false;
-		}
-		return this.getFormattedText().equals(copyrightModel.getFormattedText()) && 
+		} else if(copyrightModel.getFormattedText() != null && getFormattedText() != null) {
+			return this.getFormattedText().equals(copyrightModel.getFormattedText()) && 
 					this.getPlainText().equals(copyrightModel.getPlainText());
+		} else {
+			return copyrightModel.getFormattedText() == null && getFormattedText() == null;
+		}
 	}
 
 	@Override

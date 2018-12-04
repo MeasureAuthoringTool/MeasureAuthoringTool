@@ -85,14 +85,16 @@ public class MeasureDetailsNavigation {
 		navPills.getElement().setId("measureDetailsNavigation_measureDetailsNavigationPills");
 		List<MeasureDetailsItems> detailsList = Arrays.asList(MeasureDetailsItems.values());
 		for(MeasureDetailsItems measureDetail: detailsList) {
-			MeasureDetailsAnchorListItem anchorListItem = new MeasureDetailsPopulationAnchorListItem(measureDetail.abbreviatedName());
+			MeasureDetailsAnchorListItem anchorListItem;
 
 			if(measureDetail == MeasureDetailsItems.POPULATIONS) {
+				anchorListItem = new MeasureDetailsPopulationAnchorListItem(measureDetail.abbreviatedName());
 				anchorListItem.setIcon(IconType.PLUS);
 				anchorListItem.add(populationsCollapse);
 				anchorListItem.addClickHandler(event -> handlePopulationItemClick(anchorListItem, measureDetail));
 				navPills.add(anchorListItem);
 			} else {
+				anchorListItem = new MeasureDetailsAnchorListItem(measureDetail.abbreviatedName());
 				//if not a composite measure skip the component menu item
 				if(measureDetail == MeasureDetailsItems.COMPONENT_MEASURES && !isComposite) {
 					continue;

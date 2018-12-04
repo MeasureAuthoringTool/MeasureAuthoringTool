@@ -312,6 +312,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			switch((PopulationItems) k) {
 			case INITIAL_POPULATION:
 				return getRichTextEditableTabState(measureDetailsModel.getInitialPopulationModel());
+			case MEASURE_POPULATION:
+				return getRichTextEditableTabState(measureDetailsModel.getMeasurePopulationModel());
 			default: 
 				return MeasureDetailState.BLANK;
 			}		

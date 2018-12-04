@@ -5,6 +5,7 @@ import mat.client.measure.measuredetails.observers.DescriptionObserver;
 import mat.client.measure.measuredetails.observers.DisclaimerObserver;
 import mat.client.measure.measuredetails.observers.GeneralInformationObserver;
 import mat.client.measure.measuredetails.observers.InitialPopulationObserver;
+import mat.client.measure.measuredetails.observers.MeasurePopulationObserver;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
@@ -15,6 +16,7 @@ import mat.shared.measure.measuredetails.models.DisclaimerModel;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.measure.measuredetails.models.InitialPopulationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
+import mat.shared.measure.measuredetails.models.MeasurePopulationModel;
 
 public class MeasureDetailsViewFactory {
 	private static MeasureDetailsViewFactory instance;
@@ -77,7 +79,7 @@ public class MeasureDetailsViewFactory {
 			case INITIAL_POPULATION:
 				return buildInitialPopulationView(measureDetailsModel.getInitialPopulationModel());
 			case MEASURE_POPULATION:
-				return new MeasurePopulationView();
+				return buildMeasurePopulationView(measureDetailsModel.getMeasurePopulationModel());
 			case MEASURE_POPULATION_EXCLUSIONS:
 				return new MeasurePopulationEclusionsView();
 			case DENOMINATOR:
@@ -130,5 +132,12 @@ public class MeasureDetailsViewFactory {
 		InitialPopulationObserver initialPopulationObserver = new InitialPopulationObserver(initialPopulationView);
 		initialPopulationView.setObserver(initialPopulationObserver);
 		return initialPopulationView;
+	}
+	
+	private MeasurePopulationView buildMeasurePopulationView(MeasurePopulationModel measurePopulationModel) {
+		MeasurePopulationView measurePopulationView = new MeasurePopulationView(measurePopulationModel);
+		MeasurePopulationObserver measurePopulationObserver = new MeasurePopulationObserver(measurePopulationView);
+		measurePopulationView.setObserver(measurePopulationObserver); 
+		return measurePopulationView;
 	}
 }

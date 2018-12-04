@@ -4,6 +4,7 @@ import mat.client.measure.measuredetails.observers.CopyrightObserver;
 import mat.client.measure.measuredetails.observers.DescriptionObserver;
 import mat.client.measure.measuredetails.observers.DisclaimerObserver;
 import mat.client.measure.measuredetails.observers.GeneralInformationObserver;
+import mat.client.measure.measuredetails.observers.InitialPopulationObserver;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
@@ -12,6 +13,7 @@ import mat.shared.measure.measuredetails.models.CopyrightModel;
 import mat.shared.measure.measuredetails.models.DescriptionModel;
 import mat.shared.measure.measuredetails.models.DisclaimerModel;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
+import mat.shared.measure.measuredetails.models.InitialPopulationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 
 public class MeasureDetailsViewFactory {
@@ -73,7 +75,7 @@ public class MeasureDetailsViewFactory {
 		} else if ( currentMeasureDetail instanceof MeasureDetailsConstants.PopulationItems) {
 			switch((PopulationItems) currentMeasureDetail) {
 			case INITIAL_POPULATION:
-				return new InitialPopulationView();
+				return buildInitialPopulationView(measureDetailsModel.getInitialPopulationModel());
 			case MEASURE_POPULATION:
 				return new MeasurePopulationView();
 			case MEASURE_POPULATION_EXCLUSIONS:
@@ -95,7 +97,7 @@ public class MeasureDetailsViewFactory {
 		return buildGeneralMeasureInformationView(measureDetailsModel.isComposite(), measureDetailsModel.getGeneralInformationModel());
 	}
 	
-	GeneralInformationView buildGeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel) {
+	private GeneralInformationView buildGeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel) {
 		GeneralInformationView generalInformationView = new GeneralInformationView(isComposite, generalInformationModel);
 		GeneralInformationObserver observer = new GeneralInformationObserver(generalInformationView);
 		generalInformationView.setObserver(observer);
@@ -121,5 +123,12 @@ public class MeasureDetailsViewFactory {
 		DisclaimerObserver disclaimerObserver = new DisclaimerObserver(disclaimerView);
 		disclaimerView.setObserver(disclaimerObserver);
 		return disclaimerView;
+	}
+	
+	private InitialPopulationView buildInitialPopulationView(InitialPopulationModel initialPopulationModel) {
+		InitialPopulationView initialPopulationView = new InitialPopulationView(initialPopulationModel);
+		InitialPopulationObserver initialPopulationObserver = new InitialPopulationObserver(initialPopulationView);
+		initialPopulationView.setObserver(initialPopulationObserver);
+		return initialPopulationView;
 	}
 }

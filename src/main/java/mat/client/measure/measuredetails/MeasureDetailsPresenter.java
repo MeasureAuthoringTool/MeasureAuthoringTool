@@ -309,7 +309,12 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				return MeasureDetailState.BLANK;
 			}
 		} else if (k instanceof PopulationItems) {
-			return MeasureDetailState.BLANK;
+			switch((PopulationItems) k) {
+			case INITIAL_POPULATION:
+				return getRichTextEditableTabState(measureDetailsModel.getInitialPopulationModel());
+			default: 
+				return MeasureDetailState.BLANK;
+			}		
 		}
 		
 		return MeasureDetailState.BLANK;

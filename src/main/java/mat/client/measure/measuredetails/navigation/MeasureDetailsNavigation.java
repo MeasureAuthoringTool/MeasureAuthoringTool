@@ -85,9 +85,8 @@ public class MeasureDetailsNavigation {
 		navPills.getElement().setId("measureDetailsNavigation_measureDetailsNavigationPills");
 		List<MeasureDetailsItems> detailsList = Arrays.asList(MeasureDetailsItems.values());
 		for(MeasureDetailsItems measureDetail: detailsList) {
-			MeasureDetailsAnchorListItem anchorListItem = new MeasureDetailsAnchorListItem(measureDetail.abbreviatedName());
-			anchorListItem.getElement().setTitle(measureDetail.abbreviatedName());
-			menuItemMap.put(measureDetail, anchorListItem);
+			MeasureDetailsAnchorListItem anchorListItem = new MeasureDetailsPopulationAnchorListItem(measureDetail.abbreviatedName());
+
 			if(measureDetail == MeasureDetailsItems.POPULATIONS) {
 				anchorListItem.setIcon(IconType.PLUS);
 				anchorListItem.add(populationsCollapse);
@@ -101,6 +100,8 @@ public class MeasureDetailsNavigation {
 				navPills.add(anchorListItem);
 				anchorListItem.addClickHandler(event -> handleAnchorListItemClick(measureDetail));
 			}
+			anchorListItem.getElement().setTitle(measureDetail.abbreviatedName());
+			menuItemMap.put(measureDetail, anchorListItem);
 		}
 		navPills.setStacked(true);
 		return navPills;

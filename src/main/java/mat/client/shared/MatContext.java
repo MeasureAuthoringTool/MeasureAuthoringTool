@@ -505,6 +505,7 @@ public class MatContext implements IsSerializable {
 		return currentModule;
 	}
 
+	@Deprecated
 	public String getCurrentMeasureScoringType(){
 		if(currentMeasureInfo != null){
 			return currentMeasureInfo.getScoringType();

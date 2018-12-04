@@ -138,7 +138,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	private void displayMeasureDetailsView() {
-		this.scoringType = MatContext.get().getCurrentMeasureScoringType();
+		this.scoringType = measureDetailsModel.getScoringType();
 		navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
 		measureDetailsView.buildDetailView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
 		isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();
@@ -271,6 +271,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			public void onSuccess(SaveMeasureResult result) {
 				MatDetailItem activeMenuItem = navigationPanel.getActiveMenuItem();
 				scoringType = measureDetailsModel.getScoringType();
+				MatContext.get().setCurrentMeasureScoringType(scoringType);
 				navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
 				measureDetailsView.buildDetailView(measureDetailsModel, navigationPanel.getActiveMenuItem(), navigationPanel);
 				isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();

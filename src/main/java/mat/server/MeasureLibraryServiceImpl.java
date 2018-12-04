@@ -2389,6 +2389,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (model.getId() != null) {
 				setMeasureCreated(true);
 				measure = measurePackageService.getById(model.getId());
+				measure.setMeasureScoring(model.getMeasScoring());
+				measure.setPatientBased(model.isPatientBased());
 				measurePackageService.save(measure);
 			}
 			model.setRevisionNumber(measure.getRevisionNumber());

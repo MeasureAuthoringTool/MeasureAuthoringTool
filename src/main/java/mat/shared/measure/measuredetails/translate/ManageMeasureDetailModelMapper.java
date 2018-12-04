@@ -55,7 +55,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		measureDetailsModel.setRevisionNumber(manageMeasureDetailModel.getRevisionNumber());
 		measureDetailsModel.setOwnerUserId(manageMeasureDetailModel.getMeasureOwnerId());
 		measureDetailsModel.setComposite(isCompositeMeasure);
-		measureDetailsModel.setScoringType(manageMeasureDetailModel.getScoringAbbr());
+		measureDetailsModel.setScoringType(manageMeasureDetailModel.getMeasScoring());
 		measureDetailsModel.setGeneralInformationModel(buildGeneralInformationModel());
 		measureDetailsModel.setClinicalRecommendationModel(buildClinicalRecommendationModel());
 		measureDetailsModel.setDescriptionModel(buildDescriptionModel());

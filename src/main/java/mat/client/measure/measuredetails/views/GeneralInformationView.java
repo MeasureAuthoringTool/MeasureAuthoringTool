@@ -135,6 +135,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
 	private VerticalPanel buldeCQMIdentifierPanel() {
 		VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.getElement().addClassName("generalInformationPanel");
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		horizontalPanel.getElement().setId("horizontalPanel_HorizontalFlowPanelLeft");
 		FormLabel eMeasureIdentifierInputLabel = new FormLabel();

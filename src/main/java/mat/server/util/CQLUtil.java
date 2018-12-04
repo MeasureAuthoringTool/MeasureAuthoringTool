@@ -612,6 +612,7 @@ public class CQLUtil {
 			setCQLErrors(warnings, libraryNameWarningsMap, cte);
 		}
 		
+		parsedCQL.setCqlModel(cqlModel);
 		parsedCQL.setCqlErrors(errors);
 		parsedCQL.setCqlWarnings(warnings);
 		parsedCQL.setLibraryNameErrorsMap(libraryNameErrorsMap);

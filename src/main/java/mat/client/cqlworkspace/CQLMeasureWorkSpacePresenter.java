@@ -1828,10 +1828,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	}
 	
 	private void addErrorsAndWarningsForParentLibrary(SaveUpdateCQLResult result, List<CQLError> errors, List<CQLError> warnings) {
-		String libraryName = cqlWorkspaceView.getCqlGeneralInformationView().createCQLLibraryName(MatContext.get().getCurrentMeasureName());
-		String libraryVersion = getCurrentMeasureVersion();
-		String formattedName = libraryName + "-" + libraryVersion; 
-
+		String formattedName = result.getCqlModel().getFormattedName(); 
 		if(result.getLibraryNameErrorsMap().get(formattedName) != null) {
 			errors.addAll(result.getLibraryNameErrorsMap().get(formattedName));
 		}
@@ -3205,9 +3202,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		MatContext.get().getMeasureService().getMeasureCQLFileData(MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
 					@Override
 					public void onSuccess(SaveUpdateCQLResult result) {
-						String libraryName = cqlWorkspaceView.getCqlGeneralInformationView().createCQLLibraryName(MatContext.get().getCurrentMeasureName());
-						String libraryVersion = getCurrentMeasureVersion();
-						String formattedName = libraryName + "-" + libraryVersion; 
+						String formattedName = result.getCqlModel().getFormattedName();
 						if (result.isSuccess()) {
 							if ((result.getCqlString() != null) && !result.getCqlString().isEmpty()) {
 								aceEditor.clearAnnotations();
@@ -3630,8 +3625,9 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 									AceEditor editor = ((CQLMeasureWorkSpaceView) cqlWorkspaceView).getComponentView().getCQLAceEditor();
 									editor.clearAnnotations();
 									editor.removeAllMarkers();
-									List<CQLError> errorsForLibrary = result.getLibraryNameErrorsMap().get(componentMeasureTabObject.getLibraryName() + "-" + componentMeasureTabObject.getVersion());
-									List<CQLError> warningsForLibrary = result.getLibraryNameWarningsMap().get(componentMeasureTabObject.getLibraryName() + "-" + componentMeasureTabObject.getVersion());
+									String formattedName = componentMeasureTabObject.getLibraryName() + "-" + componentMeasureTabObject.getVersion();
+									List<CQLError> errorsForLibrary = result.getLibraryNameErrorsMap().get(formattedName);
+									List<CQLError> warningsForLibrary = result.getLibraryNameWarningsMap().get(formattedName);
 									CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(errorsForLibrary, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR, editor);
 									CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(warningsForLibrary, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING, editor);
 									

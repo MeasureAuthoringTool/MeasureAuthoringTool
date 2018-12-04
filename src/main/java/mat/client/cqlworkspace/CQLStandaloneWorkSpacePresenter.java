@@ -238,7 +238,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		MatContext.get().getCQLLibraryService().getLibraryCQLFileData(MatContext.get().getCurrentCQLLibraryId(), new AsyncCallback<SaveUpdateCQLResult>() {
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
-				String formattedName = getFormattedCQLLibraryNameAndVersion(); 
+				String formattedName = result.getCqlModel().getFormattedName();
 				if (result.isSuccess()) {
 					if ((result.getCqlString() != null) && !result.getCqlString().isEmpty()) {
 						aceEditor.clearAnnotations();
@@ -2797,11 +2797,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		}
 	}
 	
-	private void addErrorsAndWarningsForParentLibrary(SaveUpdateCQLResult result, List<CQLError> errors,
-			List<CQLError> warnings) {
-		String libraryName = MatContext.get().getCurrentCQLLibraryeName();
-		String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
-		String formattedName = libraryName + "-" + libraryVersion.replace("v", "").replace("Draft", "").trim(); 
+	private void addErrorsAndWarningsForParentLibrary(SaveUpdateCQLResult result, List<CQLError> errors, List<CQLError> warnings) {
+		String formattedName = result.getCqlModel().getFormattedName(); 
 		
 		if(result.getLibraryNameErrorsMap().get(formattedName) != null) {
 			errors.addAll(result.getLibraryNameErrorsMap().get(formattedName));
@@ -4368,12 +4365,5 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		} else if (currentSection.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().setSelectedIndex(-1);
 		}
-	}
-	
-	private String getFormattedCQLLibraryNameAndVersion() {
-		String libraryName = MatContext.get().getCurrentCQLLibraryeName();
-		String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
-		String formattedName = libraryName + "-" + libraryVersion.replace("v", "").replace("Draft", "").trim();
-		return formattedName;
 	}
 }

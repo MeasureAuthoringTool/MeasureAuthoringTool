@@ -2242,7 +2242,7 @@ public class CQLServiceImpl implements CQLService {
 		List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
 		SaveUpdateCQLResult parsedCQL = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
 		
-		String formattedName = cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed();
+		String formattedName = cqlModel.getFormattedName();
 		List<CQLError> libraryErrors = parsedCQL.getLibraryNameErrorsMap().get(formattedName); 
 		List<CQLError> expressionErrors = new ArrayList<>();
 		if (libraryErrors != null && !libraryErrors.isEmpty()) {
@@ -2368,7 +2368,7 @@ public class CQLServiceImpl implements CQLService {
 		}
 
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), exprList);
-		String formattedName = cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed();
+		String formattedName = cqlModel.getFormattedName();
 		// if there are no errors in the cql library, get the used cql artifacts
 		if (CollectionUtils.isEmpty(cqlResult.getCqlErrors())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xml);

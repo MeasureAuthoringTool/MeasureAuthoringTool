@@ -5,12 +5,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class DisclaimerModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable {
 
 	public DisclaimerModel() {
-		
+		super("", "");
 	}
 	
 	public DisclaimerModel(DisclaimerModel model) {
-		this.setFormattedText(model.getFormattedText());
-		this.setPlainText(model.getPlainText());
+		super(model.getPlainText(), model.getFormattedText());
 	}
 
 	@Override

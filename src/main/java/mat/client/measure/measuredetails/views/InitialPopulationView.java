@@ -5,6 +5,7 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.observers.InitialPopulationObserver;
+import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.InitialPopulationModel;
@@ -14,8 +15,8 @@ public class InitialPopulationView implements MeasureDetailViewInterface {
 
 	private FlowPanel mainPanel = new FlowPanel();
 	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor;
-	private InitialPopulationModel originalInitialPopulationModel;
-	private InitialPopulationModel initialPopulationModel;
+	private InitialPopulationModel model;
+	private InitialPopulationModel originalModel;
 	private InitialPopulationObserver observer;
 
 	public InitialPopulationView() {
@@ -23,10 +24,9 @@ public class InitialPopulationView implements MeasureDetailViewInterface {
 	}
 	
 	public InitialPopulationView(InitialPopulationModel initialPopulationModel) {
-		this.originalInitialPopulationModel = initialPopulationModel;
-		buildInitialPopulationModel(this.originalInitialPopulationModel);
+		this.originalModel = initialPopulationModel;
+		buildInitialPopulationModel(this.originalModel);
 		buildDetailView();
-		addEventHandlers();
 	}
 
 	@Override
@@ -49,7 +49,8 @@ public class InitialPopulationView implements MeasureDetailViewInterface {
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
 		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Initial Population Edit Edit");
-		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.initialPopulationModel.getFormattedText());		
+		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());	
+		addEventHandlers();
 	}
 
 	@Override
@@ -70,7 +71,7 @@ public class InitialPopulationView implements MeasureDetailViewInterface {
 
 	@Override
 	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
-		return this.initialPopulationModel;
+		return this.model;
 	}
 
 	@Override
@@ -90,20 +91,24 @@ public class InitialPopulationView implements MeasureDetailViewInterface {
 	public void setObserver(InitialPopulationObserver observer) {
 		this.observer = observer; 
 	}
-	
-	public InitialPopulationModel getInitialPopulationModel() {
-		return this.initialPopulationModel;
-	}
-	
-	public void setInitialPopulationModel(InitialPopulationModel initialPopulationModel) {
-		this.initialPopulationModel = initialPopulationModel;
-	}
-	
+		
 	private void addEventHandlers() {
-		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleDescriptionChanged());
+		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());
 	}
 	
 	private void buildInitialPopulationModel(InitialPopulationModel initialPopulationModel) {
-		this.initialPopulationModel = new InitialPopulationModel(initialPopulationModel);
+		this.model = new InitialPopulationModel(initialPopulationModel);
+	}
+
+	@Override
+	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {
+		this.model = (InitialPopulationModel) model; 	
+		this.originalModel = this.model;
+		buildInitialPopulationModel(this.originalModel);
+	}
+
+	@Override
+	public void setObserver(MeasureDetailsComponentObserver observer) {
+		this.observer = (InitialPopulationObserver) observer; 
 	}
 }

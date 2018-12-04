@@ -4,10 +4,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class MeasurePopulationExclusionsModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
 
-	@Override
-	public boolean equals(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		return false;
+	public MeasurePopulationExclusionsModel() {
+		super("", "");
+	}
+	
+	public MeasurePopulationExclusionsModel(MeasurePopulationExclusionsModel model) {
+		super(model.getPlainText(), model.getFormattedText());
 	}
 
 	@Override

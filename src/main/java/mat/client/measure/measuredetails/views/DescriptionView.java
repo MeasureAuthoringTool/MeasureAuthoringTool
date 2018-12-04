@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.observers.DescriptionObserver;
+import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.DescriptionModel;
@@ -16,11 +17,14 @@ public class DescriptionView implements MeasureDetailViewInterface {
 	private DescriptionModel descriptionModel;
 	private DescriptionObserver observer;
 	
+	public DescriptionView() {
+		
+	}
+	
 	public DescriptionView(DescriptionModel descriptionModel) {
 		this.originalDescriptionModel = descriptionModel;
 		buildGeneralInformationModel(this.originalDescriptionModel);
 		buildDetailView();
-        addEventHandlers();
 	}
 	
 	
@@ -45,6 +49,7 @@ public class DescriptionView implements MeasureDetailViewInterface {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
 		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Description Edit");
 		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.descriptionModel.getFormattedText());
+        addEventHandlers();
 	}
 
 	@Override
@@ -67,39 +72,35 @@ public class DescriptionView implements MeasureDetailViewInterface {
 	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
 		return this.descriptionModel;
 	}
-	
-	private void addEventHandlers() {
-		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleDescriptionChanged());
-	}
-	
-	private void buildGeneralInformationModel(DescriptionModel originalDescriptionModel) {
-		this.descriptionModel = new DescriptionModel(originalDescriptionModel);
-	}
 
 	@Override
 	public RichTextEditor getRichTextEditor() {
 		return measureDetailsRichTextEditor.getRichTextEditor();
 	}
 	
-	public DescriptionModel getDescriptionModel() {
-		return descriptionModel;
-	}
-
-	public void setDescriptionModel(DescriptionModel descriptionModel) {
-		this.descriptionModel = descriptionModel;
-	}
-
-	public DescriptionObserver getObserver() {
-		return observer;
-	}
-
-	public void setObserver(DescriptionObserver observer) {
-		this.observer = observer;
-	}
-
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
+	}
+	
+	@Override
+	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {
+		this.descriptionModel = (DescriptionModel) model; 
+		this.originalDescriptionModel = descriptionModel;
+		buildGeneralInformationModel(this.originalDescriptionModel);
+	}
+
+
+	@Override
+	public void setObserver(MeasureDetailsComponentObserver observer) {
+		this.observer = (DescriptionObserver) observer; 
+	}
+	
+	private void addEventHandlers() {
+		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());
+	}
+	
+	private void buildGeneralInformationModel(DescriptionModel originalDescriptionModel) {
+		this.descriptionModel = new DescriptionModel(originalDescriptionModel);
 	}
 }

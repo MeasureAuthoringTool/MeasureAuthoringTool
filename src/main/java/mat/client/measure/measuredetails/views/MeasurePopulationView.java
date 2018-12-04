@@ -4,6 +4,7 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.measure.measuredetails.observers.MeasurePopulationObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
@@ -14,8 +15,8 @@ public class MeasurePopulationView implements MeasureDetailViewInterface {
 
 	private FlowPanel mainPanel = new FlowPanel();
 	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor;
-	private MeasurePopulationModel measurePopulationModel;
-	private MeasurePopulationModel originalMeasurePopulationModel;
+	private MeasurePopulationModel model;
+	private MeasurePopulationModel originalModel;
 	private MeasurePopulationObserver observer;
 
 	public MeasurePopulationView() {
@@ -23,10 +24,9 @@ public class MeasurePopulationView implements MeasureDetailViewInterface {
 	}
 
 	public MeasurePopulationView(MeasurePopulationModel measurePopulationModel) {
-		this.originalMeasurePopulationModel = measurePopulationModel;
-		buildMeasurePopulationModel(this.originalMeasurePopulationModel);
+		this.originalModel = measurePopulationModel;
+		buildModel(this.originalModel);
 		buildDetailView();
-		addEventHandlers();
 	}
 	
 	@Override
@@ -49,7 +49,8 @@ public class MeasurePopulationView implements MeasureDetailViewInterface {
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
 		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Measure Population Edit Edit");
-		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.measurePopulationModel.getFormattedText());			
+		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());			
+		addEventHandlers();
 	}
 
 	@Override
@@ -70,7 +71,7 @@ public class MeasurePopulationView implements MeasureDetailViewInterface {
 
 	@Override
 	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
-		return this.measurePopulationModel;
+		return this.model;
 	}
 
 	@Override
@@ -81,30 +82,25 @@ public class MeasurePopulationView implements MeasureDetailViewInterface {
 	@Override
 	public void clear() {
 		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {
+		this.model = (MeasurePopulationModel) model; 
+		this.originalModel = this.model;
+		buildModel(this.originalModel);		
+	}
+
+	@Override
+	public void setObserver(MeasureDetailsComponentObserver observer) {
+		this.observer = (MeasurePopulationObserver) observer; 
 	}
 	
-	public MeasurePopulationObserver getObserver() {
-		return observer;
-	}
-	
-	public void setObserver(MeasurePopulationObserver observer) {
-		this.observer = observer; 
-	}
-	
-	private void buildMeasurePopulationModel(MeasurePopulationModel measurePopulationModel) {
-		this.measurePopulationModel = new MeasurePopulationModel(measurePopulationModel);		
-	}
-	
-	public MeasurePopulationModel getMeasurePopulationModel() {
-		return this.measurePopulationModel;
-	}
-	
-	public void setMeasurePopulationModel(MeasurePopulationModel measurePopulationModel) {
-		this.measurePopulationModel = measurePopulationModel;
+	private void buildModel(MeasurePopulationModel measurePopulationModel) {
+		this.model = new MeasurePopulationModel(measurePopulationModel);		
 	}
 	
 	private void addEventHandlers() {
-		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleDescriptionChanged());
+		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());
 	}
 }

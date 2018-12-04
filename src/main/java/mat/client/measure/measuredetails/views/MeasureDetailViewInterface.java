@@ -2,6 +2,7 @@ package mat.client.measure.measuredetails.views;
 
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
@@ -16,5 +17,7 @@ public interface MeasureDetailViewInterface {
 	public ConfirmationDialogBox getSaveConfirmation();
 	public void resetForm();
 	public MeasureDetailsComponentModel getMeasureDetailsComponentModel();
+	void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model);
 	public RichTextEditor getRichTextEditor();
+	void setObserver(MeasureDetailsComponentObserver observer);
 }

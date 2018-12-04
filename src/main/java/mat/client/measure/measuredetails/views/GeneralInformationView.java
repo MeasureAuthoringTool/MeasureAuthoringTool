@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.DTO.CompositeMeasureScoreDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.measuredetails.observers.GeneralInformationObserver;
+import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -566,6 +567,18 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
 	public void seteMeasureIdentifierInput(TextBox eMeasureIdentifierInput) {
 		this.eMeasureIdentifierInput = eMeasureIdentifierInput;
+	}
+
+	@Override
+	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setObserver(MeasureDetailsComponentObserver observer) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

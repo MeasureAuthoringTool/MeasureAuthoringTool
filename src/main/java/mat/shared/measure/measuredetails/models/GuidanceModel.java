@@ -1,11 +1,13 @@
 package mat.shared.measure.measuredetails.models;
 
 public class GuidanceModel extends MeasureDetailsRichTextAbstractModel{
-
-	@Override
-	public boolean equals(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		return false;
+	
+	public GuidanceModel() {
+		super("", "");
+	}
+	
+	public GuidanceModel(GuidanceModel model) {
+		super(model.getPlainText(), model.getFormattedText());
 	}
 
 	@Override

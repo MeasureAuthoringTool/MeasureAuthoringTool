@@ -1,23 +1,35 @@
 package mat.client.measure.measuredetails.observers;
 
 import mat.client.measure.measuredetails.views.CopyrightView;
+import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.shared.measure.measuredetails.models.CopyrightModel;
 
-public class CopyrightObserver {
-private CopyrightView copyrightView;
-	
-	public CopyrightObserver(CopyrightView copyrightView) {
-		this.copyrightView = copyrightView;
+public class CopyrightObserver implements MeasureDetailsComponentObserver {
+	private CopyrightView view;
+
+	public CopyrightObserver() {
+
+	}
+
+	public CopyrightObserver(CopyrightView view) {
+		this.view = view;
+	}
+
+	@Override
+	public void setView(MeasureDetailViewInterface view) {
+		this.view = (CopyrightView) view; 
 	}
 	
-	public void handleDescriptionChanged() {
-		copyrightView.setCopyrightModel(updateCopyrightModelFromView());
+	
+	@Override
+	public void handleValueChanged() {
+		view.setMeasureDetailsComponentModel(updateFromView());
 	}
 	
-	private CopyrightModel updateCopyrightModelFromView() {
-		CopyrightModel copyrightModel = (CopyrightModel) copyrightView.getCopyrightModel();
-		copyrightModel.setFormattedText(copyrightView.getRichTextEditor().getFormattedText());
-		copyrightModel.setPlainText(copyrightView.getRichTextEditor().getPlainText());
-		return copyrightModel;
+	private CopyrightModel updateFromView() {
+		CopyrightModel model = (CopyrightModel) view.getMeasureDetailsComponentModel();
+		model.setFormattedText(view.getRichTextEditor().getFormattedText());
+		model.setPlainText(view.getRichTextEditor().getPlainText());
+		return model;
 	}
 }

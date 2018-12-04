@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.observers.DisclaimerObserver;
+import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.DisclaimerModel;
@@ -12,15 +13,18 @@ import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 public class DisclaimerView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();
 	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor; 
-	private DisclaimerModel disclaimerModel; 
-	private DisclaimerModel originalDisclaimerModel; 
-	private DisclaimerObserver disclaimerObserver; 
+	private DisclaimerModel model; 
+	private DisclaimerModel originalModel; 
+	private DisclaimerObserver observer; 
+	
+	public DisclaimerView() {
+		
+	}
 	
 	public DisclaimerView(DisclaimerModel disclaimerModel) {
-		this.originalDisclaimerModel = disclaimerModel;
-		buildDisclaimerModel(this.originalDisclaimerModel);
+		this.originalModel = disclaimerModel;
+		buildModel(this.originalModel);
 		buildDetailView();
-		addEventHandlers();
 	}
 
 	@Override
@@ -30,7 +34,7 @@ public class DisclaimerView implements MeasureDetailViewInterface {
 
 	@Override
 	public boolean isComplete() {
-		return !this.disclaimerModel.getFormattedText().isEmpty();
+		return !this.model.getFormattedText().isEmpty();
 	}
 
 	@Override
@@ -43,7 +47,8 @@ public class DisclaimerView implements MeasureDetailViewInterface {
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
 		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Disclaimer Edit");
-		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.disclaimerModel.getFormattedText());
+		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());
+		addEventHandlers();
 	}
 
 	@Override
@@ -64,7 +69,7 @@ public class DisclaimerView implements MeasureDetailViewInterface {
 
 	@Override
 	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
-		return this.disclaimerModel;
+		return this.model;
 	}
 
 	@Override
@@ -77,27 +82,23 @@ public class DisclaimerView implements MeasureDetailViewInterface {
 		this.measureDetailsRichTextEditor.getRichTextEditor().setEditorText("");;		
 	}
 	
-	public DisclaimerModel getDisclaimerModel() {
-		return disclaimerModel;
+	@Override
+	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {
+		this.model = (DisclaimerModel) model; 
+		this.originalModel = this.model;
+		buildModel(this.originalModel);		
 	}
 
-	public void setDisclaimerModel(DisclaimerModel disclaimerModel) {
-		this.disclaimerModel = disclaimerModel;
-	}
-
-	public DisclaimerObserver getObserver() {
-		return disclaimerObserver;
-	}
-
-	public void setObserver(DisclaimerObserver disclaimerObserver) {
-		this.disclaimerObserver = disclaimerObserver;
+	@Override
+	public void setObserver(MeasureDetailsComponentObserver observer) {
+		this.observer = (DisclaimerObserver) observer; 
 	}
 	
-	private void buildDisclaimerModel(DisclaimerModel model) {
-		this.disclaimerModel = new DisclaimerModel(model);
+	private void buildModel(DisclaimerModel model) {
+		this.model = new DisclaimerModel(model);
 	}
 	
 	private void addEventHandlers() {
-		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> disclaimerObserver.handleDescriptionChanged());
+		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());
 	}
 }

@@ -1,23 +1,34 @@
 package mat.client.measure.measuredetails.observers;
 
+import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.measure.measuredetails.views.MeasurePopulationView;
 import mat.shared.measure.measuredetails.models.MeasurePopulationModel;
 
-public class MeasurePopulationObserver {
-	private MeasurePopulationView measurePopulationView;
+public class MeasurePopulationObserver implements MeasureDetailsComponentObserver {
+	private MeasurePopulationView view;
 	
-	public MeasurePopulationObserver(MeasurePopulationView measurePopulationView) {
-		this.measurePopulationView = measurePopulationView;
+	public MeasurePopulationObserver() {
+		
 	}
 	
-	public void handleDescriptionChanged() {
-		measurePopulationView.setMeasurePopulationModel(updateDescriptionModelFromView());
+	public MeasurePopulationObserver(MeasurePopulationView view) {
+		this.view = view;
 	}
 	
-	private MeasurePopulationModel updateDescriptionModelFromView() {
-		MeasurePopulationModel measurePopulationModel = (MeasurePopulationModel) measurePopulationView.getMeasureDetailsComponentModel();
-		measurePopulationModel.setFormattedText(measurePopulationView.getRichTextEditor().getFormattedText());
-		measurePopulationModel.setPlainText(measurePopulationView.getRichTextEditor().getPlainText());
-		return measurePopulationModel;
+	@Override 
+	public void handleValueChanged() {
+		view.setMeasureDetailsComponentModel(updateFromView());
+	}
+
+	@Override
+	public void setView(MeasureDetailViewInterface view) {
+		this.view = (MeasurePopulationView) view; 
+	}
+	
+	private MeasurePopulationModel updateFromView() {
+		MeasurePopulationModel model = (MeasurePopulationModel) view.getMeasureDetailsComponentModel();
+		model.setFormattedText(view.getRichTextEditor().getFormattedText());
+		model.setPlainText(view.getRichTextEditor().getPlainText());
+		return model;
 	}
 }

@@ -3,11 +3,12 @@ package mat.shared.measure.measuredetails.models;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class SupplementalDataElementsModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
-
-	@Override
-	public boolean equals(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		return false;
+	public SupplementalDataElementsModel() {
+		super("", "");
+	}
+	
+	public SupplementalDataElementsModel(SupplementalDataElementsModel model) {
+		super(model.getPlainText(), model.getFormattedText());
 	}
 
 	@Override

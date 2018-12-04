@@ -4,12 +4,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class MeasurePopulationModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
 	public MeasurePopulationModel() {
-
+		super("", "");
 	}
 	
 	public MeasurePopulationModel(MeasurePopulationModel model) {
-		this.setFormattedText(model.getFormattedText());
-		this.setPlainText(model.getPlainText());
+		super(model.getPlainText(), model.getFormattedText());
 	}
 	
 	@Override

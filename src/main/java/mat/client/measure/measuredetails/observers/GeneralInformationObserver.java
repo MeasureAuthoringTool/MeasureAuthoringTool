@@ -5,14 +5,19 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import mat.client.measure.measuredetails.views.GeneralInformationView;
+import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
 import mat.shared.MatConstants;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 
-/* This class handles events that pertain to the general information view and do not need to be visible to the presenter */
-public class GeneralInformationObserver {
-	public GeneralInformationView generalMeasureInformationView;
+/*  */
+/**
+ * This class handles events that pertain to the general information view and do not need to be visible to the presenter
+ */
+public class GeneralInformationObserver implements MeasureDetailsComponentObserver {
+	private GeneralInformationView generalMeasureInformationView;
+
 	public GeneralInformationObserver(GeneralInformationView generalMeasureInformationView) {
 		this.generalMeasureInformationView = generalMeasureInformationView;
 	}
@@ -142,5 +147,16 @@ public class GeneralInformationObserver {
 				}
 			});
 		}
+	}
+
+	@Override
+	public void handleValueChanged() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void setView(MeasureDetailViewInterface view) {
+		// TODO Auto-generated method stub
+		
 	}
 }

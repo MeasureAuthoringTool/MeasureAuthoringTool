@@ -4,6 +4,7 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
@@ -69,6 +70,18 @@ public class MeasurePopulationEclusionsView implements MeasureDetailViewInterfac
 
 	@Override
 	public void clear() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setObserver(MeasureDetailsComponentObserver observer) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.observers.CopyrightObserver;
+import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.CopyrightModel;
@@ -12,20 +13,23 @@ import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 public class CopyrightView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();
 	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor; 
-	private CopyrightModel originalCopyrightModel; 
-	private CopyrightModel copyrightModel; 
-	private CopyrightObserver copyrightObserver; 
+	private CopyrightModel model; 
+	private CopyrightModel originalModel; 
+	private CopyrightObserver observer; 
+	
+	public CopyrightView() {
+		
+	}
 	
 	public CopyrightView(CopyrightModel copyrightModel) {
-		this.originalCopyrightModel = copyrightModel;
-		buildCopyrightModel(this.originalCopyrightModel);
+		this.originalModel = copyrightModel;
+		buildModel(this.originalModel);
 		buildDetailView();
-		addEventHandlers();
 	}
 	
 	@Override
 	public boolean isComplete() {
-		return !this.copyrightModel.getFormattedText().isEmpty();
+		return !this.model.getFormattedText().isEmpty();
 	}
 	
 	public Widget getWidget() {
@@ -42,7 +46,8 @@ public class CopyrightView implements MeasureDetailViewInterface {
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
 		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Copyright Edit");
-		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.copyrightModel.getFormattedText());	
+		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());	
+		addEventHandlers();
 	}
 
 	@Override
@@ -63,17 +68,9 @@ public class CopyrightView implements MeasureDetailViewInterface {
 
 	@Override
 	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
-		return this.copyrightModel;
+		return this.model;
 	}
 	
-	public CopyrightModel getCopyrightModel() {
-		return copyrightModel;
-	}
-
-	public void setCopyrightModel(CopyrightModel copyrightModel) {
-		this.copyrightModel = copyrightModel;
-	}
-
 	@Override
 	public RichTextEditor getRichTextEditor() {
 		return this.measureDetailsRichTextEditor.getRichTextEditor();
@@ -84,19 +81,24 @@ public class CopyrightView implements MeasureDetailViewInterface {
 		this.measureDetailsRichTextEditor.getRichTextEditor().setEditorText("");		
 	}
 	
-	public CopyrightObserver getObserver() {
-		return copyrightObserver;
+	@Override
+	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {
+		this.model = (CopyrightModel) model; 
+		this.originalModel = this.model;
+		buildModel(this.originalModel);
 	}
 
-	public void setObserver(CopyrightObserver copyrightObserver) {
-		this.copyrightObserver = copyrightObserver;
+	@Override
+	public void setObserver(MeasureDetailsComponentObserver observer) {
+		this.observer = (CopyrightObserver) observer; 
+		
 	}
-	
-	private void buildCopyrightModel(CopyrightModel originalCopyrightModel) {
-		this.copyrightModel = new CopyrightModel(originalCopyrightModel);
+		
+	private void buildModel(CopyrightModel originalCopyrightModel) {
+		this.model = new CopyrightModel(originalCopyrightModel);
 	}
 
 	private void addEventHandlers() {
-		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> copyrightObserver.handleDescriptionChanged());
+		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());
 	}
 }

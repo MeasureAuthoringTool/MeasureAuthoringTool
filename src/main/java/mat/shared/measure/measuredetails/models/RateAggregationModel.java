@@ -4,10 +4,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class RateAggregationModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
 
-	@Override
-	public boolean equals(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		return false;
+	public RateAggregationModel() {
+		super("", "");
+	}
+	
+	public RateAggregationModel(RateAggregationModel model) {
+		super(model.getPlainText(), model.getFormattedText());
 	}
 
 	@Override

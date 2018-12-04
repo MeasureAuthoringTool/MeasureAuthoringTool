@@ -3,6 +3,7 @@ package mat.client.measure.measuredetails.views;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
@@ -66,6 +67,18 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 
 	@Override
 	public void clear() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setObserver(MeasureDetailsComponentObserver observer) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -4,10 +4,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class RationaleModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
 
-	@Override
-	public boolean equals(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		return false;
+	public RationaleModel() {
+		super("", "");
+	}
+	
+	public RationaleModel(RationaleModel model) {
+		super(model.getPlainText(), model.getFormattedText());
 	}
 
 	@Override

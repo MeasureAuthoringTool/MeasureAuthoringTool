@@ -3,11 +3,12 @@ package mat.shared.measure.measuredetails.models;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class StratificationModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
-
-	@Override
-	public boolean equals(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		return false;
+	public StratificationModel() {
+		super("", "");
+	}
+	
+	public StratificationModel(StratificationModel model) {
+		super(model.getPlainText(), model.getFormattedText());
 	}
 
 	@Override

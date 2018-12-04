@@ -314,6 +314,20 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				return getRichTextEditableTabState(measureDetailsModel.getInitialPopulationModel());
 			case MEASURE_POPULATION:
 				return getRichTextEditableTabState(measureDetailsModel.getMeasurePopulationModel());
+			case MEASURE_POPULATION_EXCLUSIONS:
+				return getRichTextEditableTabState(measureDetailsModel.getMeasurePopulationExclusionsModel());
+			case DENOMINATOR:
+				return getRichTextEditableTabState(measureDetailsModel.getDenominatorModel());
+			case DENOMINATOR_EXCLUSIONS:
+				return getRichTextEditableTabState(measureDetailsModel.getDenominatorExclusionsModel());
+			case NUMERATOR:
+				return getRichTextEditableTabState(measureDetailsModel.getNumeratorModel());
+			case NUMERATOR_EXCLUSIONS:
+				return getRichTextEditableTabState(measureDetailsModel.getNumeratorExclusionsModel());
+			case DENOMINATOR_EXCEPTIONS:
+				return getRichTextEditableTabState(measureDetailsModel.getDenominatorExceptionsModel());
+			case MEASURE_OBSERVATIONS:
+				return getRichTextEditableTabState(measureDetailsModel.getMeasureObservationsModel());
 			default: 
 				return MeasureDetailState.BLANK;
 			}		

@@ -1,12 +1,19 @@
 package mat.client.measure.measuredetails.views;
 
 import mat.client.measure.measuredetails.observers.CopyrightObserver;
+import mat.client.measure.measuredetails.observers.DenominatorExceptionsObserver;
+import mat.client.measure.measuredetails.observers.DenominatorExclusionsObserver;
+import mat.client.measure.measuredetails.observers.DenominatorObserver;
 import mat.client.measure.measuredetails.observers.DescriptionObserver;
 import mat.client.measure.measuredetails.observers.DisclaimerObserver;
 import mat.client.measure.measuredetails.observers.GeneralInformationObserver;
 import mat.client.measure.measuredetails.observers.InitialPopulationObserver;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
+import mat.client.measure.measuredetails.observers.MeasureObservationsObserver;
+import mat.client.measure.measuredetails.observers.MeasurePopulationExclusionsObserver;
 import mat.client.measure.measuredetails.observers.MeasurePopulationObserver;
+import mat.client.measure.measuredetails.observers.NumeratorExclusionsObserver;
+import mat.client.measure.measuredetails.observers.NumeratorObserver;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
@@ -77,8 +84,20 @@ public class MeasureDetailsViewFactory {
 				return buildRichTextEditorView(measureDetailsModel.getInitialPopulationModel(), new InitialPopulationView(), new InitialPopulationObserver());
 			case MEASURE_POPULATION:
 				return buildRichTextEditorView(measureDetailsModel.getMeasurePopulationModel(), new MeasurePopulationView(), new MeasurePopulationObserver());
-			default:
-				break;
+			case MEASURE_POPULATION_EXCLUSIONS:
+				return buildRichTextEditorView(measureDetailsModel.getMeasurePopulationExclusionsModel(), new MeasurePopulationEclusionsView(), new MeasurePopulationExclusionsObserver());
+			case DENOMINATOR:
+				return buildRichTextEditorView(measureDetailsModel.getDenominatorModel(), new DenominatorView(), new DenominatorObserver());
+			case DENOMINATOR_EXCLUSIONS:
+				return buildRichTextEditorView(measureDetailsModel.getDenominatorExclusionsModel(), new DenominatorExclusionsView(), new DenominatorExclusionsObserver());
+			case NUMERATOR:
+				return buildRichTextEditorView(measureDetailsModel.getNumeratorModel(), new NumeratorView(), new NumeratorObserver());
+			case NUMERATOR_EXCLUSIONS:
+				return buildRichTextEditorView(measureDetailsModel.getNumeratorExclusionsModel(), new NumeratorExclusionsView(), new NumeratorExclusionsObserver());
+			case DENOMINATOR_EXCEPTIONS:
+				return buildRichTextEditorView(measureDetailsModel.getDenominatorExceptionsModel(), new DenominatorExceptionsView(), new DenominatorExceptionsObserver());
+			case MEASURE_OBSERVATIONS:
+				return buildRichTextEditorView(measureDetailsModel.getMeasureObservationsModel(), new MeasureObservationsView(), new MeasureObservationsObserver());
 			}
 		}
 		return buildGeneralMeasureInformationView(measureDetailsModel.isComposite(), measureDetailsModel.getGeneralInformationModel());

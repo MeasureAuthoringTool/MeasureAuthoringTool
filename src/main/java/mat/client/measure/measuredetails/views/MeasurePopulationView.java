@@ -48,7 +48,7 @@ public class MeasurePopulationView implements MeasureDetailViewInterface {
 	@Override
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
-		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Measure Population Edit Edit");
+		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Measure Population Editor");
 		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());			
 		addEventHandlers();
 	}

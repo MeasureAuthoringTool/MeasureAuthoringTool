@@ -47,7 +47,7 @@ public class NumeratorExclusionsView implements MeasureDetailViewInterface {
 	@Override
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
-		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Numerator Exclusions Edit");
+		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Numerator Exclusions Editor");
 		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());	
 		addEventHandlers();		
 	}

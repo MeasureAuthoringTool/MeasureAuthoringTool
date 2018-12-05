@@ -12,19 +12,6 @@ public class MeasurePopulationModel extends MeasureDetailsRichTextAbstractModel 
 	}
 	
 	@Override
-	public boolean equals(MeasureDetailsComponentModel model) {
-		MeasurePopulationModel measurePopulationModel = (MeasurePopulationModel) model;
-		if(measurePopulationModel == null) {
-			return false;
-		} else if(measurePopulationModel.getFormattedText() != null && getFormattedText() != null) {
-			return this.getFormattedText().equals(measurePopulationModel.getFormattedText()) && 
-					this.getPlainText().equals(measurePopulationModel.getPlainText());
-		} else {
-			return measurePopulationModel.getFormattedText() == null && getFormattedText() == null;
-		}
-	}
-
-	@Override
 	public boolean isValid() {
 		// TODO Auto-generated method stub
 		return false;

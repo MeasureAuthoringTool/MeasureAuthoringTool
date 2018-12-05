@@ -1,5 +1,6 @@
 package mat.client.measure.measuredetails.views;
 
+import mat.client.measure.measuredetails.observers.ClinicalRecommendationObserver;
 import mat.client.measure.measuredetails.observers.CopyrightObserver;
 import mat.client.measure.measuredetails.observers.DenominatorExceptionsObserver;
 import mat.client.measure.measuredetails.observers.DenominatorExclusionsObserver;
@@ -57,7 +58,7 @@ public class MeasureDetailsViewFactory {
 			case RATIONALE:
 				return buildRichTextEditorView(measureDetailsModel.getRationaleModel(), new RationaleView(), new RationaleObserver());
 			case CLINICAL_RECOMMENDATION:
-				return new ClinicalRecommendationView();
+				return buildRichTextEditorView(measureDetailsModel.getClinicalRecommendationModel(), new ClinicalRecommendationView(), new ClinicalRecommendationObserver());
 			case IMPROVEMENT_NOTATION:
 				return new ImprovementNotationView();
 			case REFERENCES:

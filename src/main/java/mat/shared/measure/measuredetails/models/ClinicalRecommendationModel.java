@@ -7,6 +7,10 @@ public class ClinicalRecommendationModel extends MeasureDetailsRichTextAbstractM
 		super("", "");
 	}
 	
+	public ClinicalRecommendationModel(ClinicalRecommendationModel model) {
+		super(model.getPlainText(), model.getFormattedText());
+	}
+	
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
 		// TODO Auto-generated method stub

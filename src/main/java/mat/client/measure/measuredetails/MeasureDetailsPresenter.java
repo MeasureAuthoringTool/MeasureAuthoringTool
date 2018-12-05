@@ -313,6 +313,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				return getRichTextEditableTabState(measureDetailsModel.getRateAggregationModel());
 			case RATIONALE:
 				return getRichTextEditableTabState(measureDetailsModel.getRationaleModel());
+			case CLINICAL_RECOMMENDATION:
+				return getRichTextEditableTabState(measureDetailsModel.getClinicalRecommendationModel());
 			default: 
 				return MeasureDetailState.BLANK;
 			}

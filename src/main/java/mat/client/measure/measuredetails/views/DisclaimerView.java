@@ -46,7 +46,7 @@ public class DisclaimerView implements MeasureDetailViewInterface {
 	@Override
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
-		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Disclaimer Edit");
+		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Disclaimer Editor");
 		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());
 		addEventHandlers();
 	}

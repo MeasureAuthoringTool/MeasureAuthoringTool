@@ -220,7 +220,7 @@
         <include file="classpath:/liquibase/deploy_Sprint-125_MAT-8795_ALTER_TABLE_CQL_LIBRARY.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-127_MAT-8835_DROP_TABLE_MEASURE_NOTES.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-130_MAT-8901_EmailAuditLog.xml"/>
-<!--         <include file="classpath:/liquibase/deploy_Sprint-139_MAT-9033.xml"/> -->
+        <include file="classpath:/liquibase/deploy_Sprint-139_MAT-9033.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-140_MAT-9117_bpm_cql_unit_update.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-147_QDM_v5_4_updates.xml"/>
        	<include file="classpath:/liquibase/deploy_Sprint-147_QDM_v5_4_updates2.xml"/>

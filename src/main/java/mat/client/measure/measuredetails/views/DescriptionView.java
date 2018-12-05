@@ -47,7 +47,7 @@ public class DescriptionView implements MeasureDetailViewInterface {
 	@Override
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
-		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Description Edit");
+		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Description Editor");
 		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.descriptionModel.getFormattedText());
         addEventHandlers();
 	}

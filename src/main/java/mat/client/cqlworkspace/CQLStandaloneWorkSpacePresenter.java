@@ -580,14 +580,10 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 										.clearAnnotations();
 										cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor()
 										.removeAllMarkers();
-										if (SharedCQLWorkspaceUtility.validateCQLArtifact(result, cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor())) {
-											messagePanel.getSuccessMessageAlert().clearAlert();
-											messagePanel.getWarningMessageAlert().createAlert(buildSuccessfullySavedWithErrors(FUNCTION, functionName.trim()));
+										if (SharedCQLWorkspaceUtility.validateCQLArtifact(result, cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor(), messagePanel, FUNCTION, functionName.trim())) {
 											cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
 											cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
 										} else if (!result.isDatatypeUsedCorrectly()) {
-											messagePanel.getSuccessMessageAlert().clearAlert();
-											messagePanel.getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWarningBadDataTypeCombination());
 											if(result.isValidCQLWhileSavingExpression()){
 												cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setText(result.getFunction().getReturnType());
 												cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is " + result.getFunction().getReturnType());
@@ -596,8 +592,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 												cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
 											}
 										} else {
-											messagePanel.getWarningMessageAlert().clearAlert();
-											messagePanel.getSuccessMessageAlert().createAlert(buildSuccessfullySavedMessage(FUNCTION, functionName.trim()));
 											if(result.isValidCQLWhileSavingExpression()){
 												cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setText(result.getFunction().getReturnType());
 												cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is " + result.getFunction().getReturnType());
@@ -704,14 +698,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 										setIsPageDirty(false);
 										cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().clearAnnotations();
 										cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().removeAllMarkers();
-										if (SharedCQLWorkspaceUtility.validateCQLArtifact(result, cqlWorkspaceView.getCQLParametersView().getParameterAceEditor())) {
-											messagePanel.getWarningMessageAlert().createAlert(buildSuccessfullySavedWithErrors(DEFINITION, parameterName.trim()));
-										} else if (!result.isDatatypeUsedCorrectly()) {
-											messagePanel.getSuccessMessageAlert().clearAlert();
-											messagePanel.getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWarningBadDataTypeCombination());
-										} else {
-											messagePanel.getSuccessMessageAlert().createAlert(buildSuccessfullySavedMessage(PARAMETER, parameterName.trim()));
-										}
+										SharedCQLWorkspaceUtility.validateCQLArtifact(result, cqlWorkspaceView.getCQLParametersView().getParameterAceEditor(), messagePanel, PARAMETER, parameterName.trim());
 										cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().setAnnotations();
 										cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().redisplay();
 									} else if (result.getFailureReason() == SaveUpdateCQLResult.NAME_NOT_UNIQUE) {
@@ -816,13 +803,10 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 										cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
 										cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
 										cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getDefinition().getReturnType());
-										if (SharedCQLWorkspaceUtility.validateCQLArtifact(result, cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor())) {
-											messagePanel.getWarningMessageAlert().createAlert(buildSuccessfullySavedWithErrors(DEFINITION, definitionName.trim()));
+										if (SharedCQLWorkspaceUtility.validateCQLArtifact(result, cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor(), messagePanel, DEFINITION, definitionName.trim())) {
 											cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
 											cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
 										} else if (!result.isDatatypeUsedCorrectly()) {
-											messagePanel.getSuccessMessageAlert().clearAlert();
-											messagePanel.getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWarningBadDataTypeCombination());
 											if(result.isValidCQLWhileSavingExpression()){
 												cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getDefinition().getReturnType());
 												cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+result.getDefinition().getReturnType());
@@ -832,7 +816,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 											}
 
 										} else {
-											messagePanel.getSuccessMessageAlert().createAlert(buildSuccessfullySavedMessage(DEFINITION, definitionName.trim()));
 											if(result.isValidCQLWhileSavingExpression()){
 												cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getDefinition().getReturnType());
 												cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+result.getDefinition().getReturnType());

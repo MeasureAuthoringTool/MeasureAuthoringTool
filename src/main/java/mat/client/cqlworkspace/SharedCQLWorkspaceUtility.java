@@ -9,8 +9,11 @@ import org.gwtbootstrap3.client.ui.ListBox;
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility;
+import mat.client.shared.MatContext;
+import mat.client.shared.MessagePanel;
 import mat.shared.CQLError;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.StringUtility;
 
 public class SharedCQLWorkspaceUtility {
 	public static final String ERROR_PREFIX = "ERROR:";
@@ -22,11 +25,24 @@ public class SharedCQLWorkspaceUtility {
 		CQLAppliedValueSetUtility.loadPrograms(programBox);
 	}
 
-	public static boolean validateCQLArtifact(SaveUpdateCQLResult result, AceEditor aceEditor) {
+	public static boolean validateCQLArtifact(SaveUpdateCQLResult result, AceEditor aceEditor, MessagePanel messagePanel, String expressionName, String expressionType) {
 		result.getCqlErrors().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor));
-		result.getCqlWarnings().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor));
-
+		result.getCqlWarnings().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor));		
+		displayMessageBanner(result, messagePanel, expressionName, expressionType); 
 		return !result.getCqlErrors().isEmpty();
+	}
+
+	private static void displayMessageBanner(SaveUpdateCQLResult result, MessagePanel messagePanel, String expressionType, String expressionName) {
+		messagePanel.clearAlerts();
+		if(!result.getCqlErrors().isEmpty()) {
+			messagePanel.getErrorMessageAlert().createAlert(expressionType + " " + StringUtility.trimTextToSixtyChars(expressionName) + " successfully saved with errors.");
+		} else if(!result.getCqlWarnings().isEmpty()) {
+			messagePanel.getWarningMessageAlert().createAlert(expressionType + " " + StringUtility.trimTextToSixtyChars(expressionName) + " successfully saved with warnings.");
+		}  else if(!result.isDatatypeUsedCorrectly()) {
+			messagePanel.getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWarningBadDataTypeCombination());
+		} else {
+			messagePanel.getSuccessMessageAlert().createAlert(expressionType + " " + StringUtility.trimTextToSixtyChars(expressionName) + " successfully saved.");
+		}
 	}
 	
 	public static AceEditor setCQLWorkspaceExceptionAnnotations(String name, Map<String, List<CQLError>> expressionCQLErrorMap, 

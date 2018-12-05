@@ -309,6 +309,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				return getRichTextEditableTabState(measureDetailsModel.getStratificationModel());
 			case RISK_ADJUSTMENT:
 				return getRichTextEditableTabState(measureDetailsModel.getRiskAdjustmentModel());
+			case RATE_AGGREGATION:
+				return getRichTextEditableTabState(measureDetailsModel.getRateAggregationModel());
 			default: 
 				return MeasureDetailState.BLANK;
 			}

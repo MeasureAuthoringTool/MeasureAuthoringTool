@@ -14,6 +14,7 @@ import mat.client.measure.measuredetails.observers.MeasurePopulationExclusionsOb
 import mat.client.measure.measuredetails.observers.MeasurePopulationObserver;
 import mat.client.measure.measuredetails.observers.NumeratorExclusionsObserver;
 import mat.client.measure.measuredetails.observers.NumeratorObserver;
+import mat.client.measure.measuredetails.observers.RiskAdjustmentObserver;
 import mat.client.measure.measuredetails.observers.StratificationObserver;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
@@ -48,7 +49,7 @@ public class MeasureDetailsViewFactory {
 			case STRATIFICATION:
 				return buildRichTextEditorView(measureDetailsModel.getStratificationModel(), new StratificationView(), new StratificationObserver());
 			case RISK_ADJUSTMENT:
-				return new RiskAdjustmentView();
+				return buildRichTextEditorView(measureDetailsModel.getRiskAdjustmentModel(), new RiskAdjustmentView(), new RiskAdjustmentObserver());
 			case RATE_AGGREGATION:
 				return new RateAggregationView();
 			case RATIONALE:

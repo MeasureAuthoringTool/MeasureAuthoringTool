@@ -48,7 +48,7 @@ public class InitialPopulationView implements MeasureDetailViewInterface {
 	@Override
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
-		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Initial Population Edit Edit");
+		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Initial Population Editor");
 		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());	
 		addEventHandlers();
 	}

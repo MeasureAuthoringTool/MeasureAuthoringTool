@@ -2208,7 +2208,7 @@ public class CQLServiceImpl implements CQLService {
 
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
 
-		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, cqlExpressionName).toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, cqlExpressionName);
 
 		cqlModel.setLines(countLines(cqlFileString));
 
@@ -2218,7 +2218,7 @@ public class CQLServiceImpl implements CQLService {
 		int endLine = CQLUtilityClass.getSize();
 
 		if (expressionType.equalsIgnoreCase("parameter")) {
-			endLine = endLine + 1; // for parameters, the size is actually 1 more than reporetd.
+			endLine = endLine + 1; // for parameters, the size is actually 1 more than reported.
 			wholeDef = cqlExpressionName + " " + logic;
 			size = countLines(wholeDef);
 
@@ -2245,29 +2245,17 @@ public class CQLServiceImpl implements CQLService {
 		String formattedName = cqlModel.getFormattedName();
 		List<CQLError> libraryErrors = parsedCQL.getLibraryNameErrorsMap().get(formattedName); 
 		List<CQLError> expressionErrors = new ArrayList<>();
-		if (libraryErrors != null && !libraryErrors.isEmpty()) {
+		if (CollectionUtils.isNotEmpty(libraryErrors)) {
 			result.setValidCQLWhileSavingExpression(false);
-			for (CQLError cqlError : parsedCQL.getCqlErrors()) {
-				int errorStartLine = cqlError.getStartErrorInLine();
-				if ((errorStartLine >= startLine && errorStartLine <= endLine)) {
-					if (cqlError.getStartErrorInLine() == startLine) {
-						cqlError.setStartErrorInLine(cqlError.getStartErrorInLine() - startLine);
-					} else {
-						cqlError.setStartErrorInLine(cqlError.getStartErrorInLine() - startLine - 1);
-					}
-
-					if (cqlError.getEndErrorInLine() == startLine) {
-						cqlError.setEndErrorInLine(cqlError.getEndErrorInLine() - startLine);
-					} else {
-						cqlError.setEndErrorInLine(cqlError.getEndErrorInLine() - startLine - 1);
-					}
-
-					cqlError.setErrorMessage(cqlError.getErrorMessage());
-					expressionErrors.add(cqlError);
-				}
-			}
+			buildExpressionExceptionList(startLine, endLine, libraryErrors, expressionErrors);
 		}
 
+		List<CQLError> libraryWarnings = parsedCQL.getLibraryNameWarningsMap().get(formattedName);
+		List<CQLError> expressionWarnings = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(libraryWarnings)) {
+			buildExpressionExceptionList(startLine, endLine, libraryWarnings, expressionWarnings);
+		}
+		
 		if (expressionErrors.isEmpty()) {
 			result.setCqlObject(parsedCQL.getCqlObject());
 			boolean isValid = findValidDataTypeUsage(cqlModel, expressionName, expressionType, parsedCQL);
@@ -2282,8 +2270,33 @@ public class CQLServiceImpl implements CQLService {
 
 		result.setCqlModel(cqlModel);
 		result.setCqlErrors(expressionErrors);
+		result.setCqlWarnings(expressionWarnings);
 		result.setUsedCQLArtifacts(parsedCQL.getUsedCQLArtifacts());
 		return result;
+	}
+
+	private List<CQLError> buildExpressionExceptionList(int startLine, int endLine, List<CQLError> cqlErrors,
+			List<CQLError> expressionErrors) {
+		for (CQLError cqlError : cqlErrors) {
+			int errorStartLine = cqlError.getStartErrorInLine();
+			if ((errorStartLine >= startLine && errorStartLine <= endLine)) {
+				if (cqlError.getStartErrorInLine() == startLine) {
+					cqlError.setStartErrorInLine(cqlError.getStartErrorInLine() - startLine);
+				} else {
+					cqlError.setStartErrorInLine(cqlError.getStartErrorInLine() - startLine - 1);
+				}
+
+				if (cqlError.getEndErrorInLine() == startLine) {
+					cqlError.setEndErrorInLine(cqlError.getEndErrorInLine() - startLine);
+				} else {
+					cqlError.setEndErrorInLine(cqlError.getEndErrorInLine() - startLine - 1);
+				}
+
+				cqlError.setErrorMessage(cqlError.getErrorMessage());
+				expressionErrors.add(cqlError);
+			}
+		}
+		return expressionErrors;
 	}
 
 	private boolean findValidDataTypeUsage(CQLModel model, String expressionName, String expressionType, SaveUpdateCQLResult parsedCQL) {

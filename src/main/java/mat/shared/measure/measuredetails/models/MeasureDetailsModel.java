@@ -8,7 +8,6 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 	private String revisionNumber;
 	private String ownerUserId; 
 	private boolean isComposite;
-	private String scoringType;
 	private GeneralInformationModel generalInformationModel;
 	private MeasureStewardDeveloperModel measureStewardDeveloperModel;
 	private DescriptionModel descriptionModel;
@@ -258,13 +257,7 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 	public void setComposite(boolean isComposite) {
 		this.isComposite = isComposite;
 	}
-	public String getScoringType() {
-		return scoringType;
-	}
 
-	public void setScoringType(String scoringType) {
-		this.scoringType = scoringType;
-	}
 	public String getMeasureId() {
 		return measureId;
 	}

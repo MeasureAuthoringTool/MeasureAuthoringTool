@@ -13,12 +13,6 @@ public class DenominatorModel extends MeasureDetailsRichTextAbstractModel implem
 	}
 	
 	@Override
-	public boolean equals(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean isValid() {
 		// TODO Auto-generated method stub
 		return false;

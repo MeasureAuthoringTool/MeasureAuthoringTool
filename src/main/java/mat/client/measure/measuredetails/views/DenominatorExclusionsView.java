@@ -47,7 +47,7 @@ public class DenominatorExclusionsView implements MeasureDetailViewInterface {
 	@Override
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
-		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Measure Population Exclusions View");
+		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Denomiator Exclusions Editor");
 		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());	
 		addEventHandlers();		
 	}

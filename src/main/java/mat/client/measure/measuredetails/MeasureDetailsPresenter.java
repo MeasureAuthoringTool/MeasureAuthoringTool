@@ -305,6 +305,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				return getRichTextEditableTabState(measureDetailsModel.getCopyrightModel());
 			case DISCLAIMER:
 				return getRichTextEditableTabState(measureDetailsModel.getDisclaimerModel());
+			case STRATIFICATION:
+				return getRichTextEditableTabState(measureDetailsModel.getStratificationModel());
 			default: 
 				return MeasureDetailState.BLANK;
 			}
@@ -328,6 +330,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				return getRichTextEditableTabState(measureDetailsModel.getDenominatorExceptionsModel());
 			case MEASURE_OBSERVATIONS:
 				return getRichTextEditableTabState(measureDetailsModel.getMeasureObservationsModel());
+			
 			default: 
 				return MeasureDetailState.BLANK;
 			}		

@@ -85,7 +85,7 @@ public class MeasureDetailsViewFactory {
 			case MEASURE_POPULATION:
 				return buildRichTextEditorView(measureDetailsModel.getMeasurePopulationModel(), new MeasurePopulationView(), new MeasurePopulationObserver());
 			case MEASURE_POPULATION_EXCLUSIONS:
-				return buildRichTextEditorView(measureDetailsModel.getMeasurePopulationExclusionsModel(), new MeasurePopulationEclusionsView(), new MeasurePopulationExclusionsObserver());
+				return buildRichTextEditorView(measureDetailsModel.getMeasurePopulationExclusionsModel(), new MeasurePopulationExclusionsView(), new MeasurePopulationExclusionsObserver());
 			case DENOMINATOR:
 				return buildRichTextEditorView(measureDetailsModel.getDenominatorModel(), new DenominatorView(), new DenominatorObserver());
 			case DENOMINATOR_EXCLUSIONS:

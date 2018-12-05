@@ -1,20 +1,26 @@
 package mat.client.measure.measuredetails.observers;
 
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
+import mat.client.measure.measuredetails.views.MeasurePopulationExclusionsView;
+import mat.shared.measure.measuredetails.models.MeasurePopulationExclusionsModel;
 
 public class MeasurePopulationExclusionsObserver implements MeasureDetailsComponentObserver {
-
+	private MeasurePopulationExclusionsView view;
+	
 	@Override
 	public void handleValueChanged() {
-		// TODO Auto-generated method stub
-		
+		view.setMeasureDetailsComponentModel(updateFromView());
 	}
 
 	@Override
 	public void setView(MeasureDetailViewInterface view) {
-		// TODO Auto-generated method stub
-		
+		this.view = (MeasurePopulationExclusionsView) view; 
 	}
 	
-
+	private MeasurePopulationExclusionsModel updateFromView() {
+		MeasurePopulationExclusionsModel model = (MeasurePopulationExclusionsModel) view.getMeasureDetailsComponentModel();
+		model.setFormattedText(view.getRichTextEditor().getFormattedText());
+		model.setPlainText(view.getRichTextEditor().getPlainText());
+		return model;
+	}
 }

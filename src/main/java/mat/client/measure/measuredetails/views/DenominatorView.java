@@ -41,7 +41,7 @@ public class DenominatorView implements MeasureDetailViewInterface {
 	@Override
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
-		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Denominator Edit");
+		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Denominator Editor");
 		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());	
 		addEventHandlers();	
 	}

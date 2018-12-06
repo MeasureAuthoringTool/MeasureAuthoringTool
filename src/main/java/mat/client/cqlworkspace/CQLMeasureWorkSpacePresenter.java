@@ -1785,35 +1785,12 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			List<CQLError> warnings = new ArrayList<>(); 
 						
 			addErrorsAndWarningsForParentLibrary(result, errors, warnings);
-
-			if (!errors.isEmpty() || !warnings.isEmpty()) {
-				boolean isErrorAlert = false;
-				
-				if(!errors.isEmpty()) {
-					isErrorAlert = true;
-					messagePanel.getErrorMessageAlert().createAlert(VIEW_CQL_ERROR_MESSAGE);
-					cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(errors, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR);
-				}
-				
-				if(!warnings.isEmpty()) {
-					if(!isErrorAlert) {
-						messagePanel.getWarningMessageAlert().createAlert(VIEW_CQL_WARNING_MESSAGE);
-					}
-					cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(warnings, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING);
-				}
-				
-				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().setAnnotations();
-				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().redisplay();
-			} else if (!result.isDatatypeUsedCorrectly()) {
-				messagePanel.clearAlerts();
-				messagePanel.getErrorMessageAlert().createAlert(VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE);
-			} else {
-				messagePanel.getSuccessMessageAlert().setVisible(true);
-				messagePanel.getSuccessMessageAlert().createAlert(VIEW_CQL_NO_ERRORS_MESSAGE);
-			}
+			SharedCQLWorkspaceUtility.displayMessagesForViewCQL(result, cqlWorkspaceView.getViewCQLView().getCqlAceEditor(), messagePanel);
+			cqlWorkspaceView.getViewCQLView().getCqlAceEditor().setAnnotations();
+			cqlWorkspaceView.getViewCQLView().getCqlAceEditor().redisplay();			
 		}
+		
 		showSearchingBusy(false);
-
 	}
 	
 	private void addErrorsAndWarningsForParentLibrary(SaveUpdateCQLResult result, List<CQLError> errors, List<CQLError> warnings) {

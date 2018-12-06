@@ -25,22 +25,41 @@ public class SharedCQLWorkspaceUtility {
 		CQLAppliedValueSetUtility.loadPrograms(programBox);
 	}
 
-	public static boolean validateCQLArtifact(SaveUpdateCQLResult result, AceEditor aceEditor, MessagePanel messagePanel, String expressionName, String expressionType) {
+	public static boolean validateCQLArtifact(SaveUpdateCQLResult result, AceEditor aceEditor, MessagePanel messagePanel, String expressionType, String expressionName) {
 		result.getCqlErrors().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor));
 		result.getCqlWarnings().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor));		
-		displayMessageBanner(result, messagePanel, expressionName, expressionType); 
+		SharedCQLWorkspaceUtility.displayMessageBanner(result, messagePanel, expressionType, expressionName); 
 		return !result.getCqlErrors().isEmpty();
+	}
+	
+	public static void displayMessagesForViewCQL(SaveUpdateCQLResult result, AceEditor aceEditor, MessagePanel messagePanel) {
+		result.getCqlErrors().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor));
+		result.getCqlWarnings().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor));		
+		SharedCQLWorkspaceUtility.displayMessageBannerForViewCQL(result, messagePanel);
+	}
+
+	private static void displayMessageBannerForViewCQL(SaveUpdateCQLResult result, MessagePanel messagePanel) {
+		messagePanel.clearAlerts();
+		if(!result.getCqlErrors().isEmpty()) {
+			messagePanel.getErrorMessageAlert().createAlert(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE);
+		} else if(!result.isDatatypeUsedCorrectly()) {
+			messagePanel.getErrorMessageAlert().createAlert(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE);
+		} else if(!result.getCqlWarnings().isEmpty()) {
+			messagePanel.getWarningMessageAlert().createAlert(AbstractCQLWorkspacePresenter.VIEW_CQL_WARNING_MESSAGE);
+		}   else {
+			messagePanel.getSuccessMessageAlert().createAlert(AbstractCQLWorkspacePresenter.VIEW_CQL_NO_ERRORS_MESSAGE);
+		}
 	}
 
 	private static void displayMessageBanner(SaveUpdateCQLResult result, MessagePanel messagePanel, String expressionType, String expressionName) {
 		messagePanel.clearAlerts();
 		if(!result.getCqlErrors().isEmpty()) {
 			messagePanel.getErrorMessageAlert().createAlert(expressionType + " " + StringUtility.trimTextToSixtyChars(expressionName) + " successfully saved with errors.");
+		} else if(!result.isDatatypeUsedCorrectly()) {
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWarningBadDataTypeCombination());
 		} else if(!result.getCqlWarnings().isEmpty()) {
 			messagePanel.getWarningMessageAlert().createAlert(expressionType + " " + StringUtility.trimTextToSixtyChars(expressionName) + " successfully saved with warnings.");
-		}  else if(!result.isDatatypeUsedCorrectly()) {
-			messagePanel.getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWarningBadDataTypeCombination());
-		} else {
+		}   else {
 			messagePanel.getSuccessMessageAlert().createAlert(expressionType + " " + StringUtility.trimTextToSixtyChars(expressionName) + " successfully saved.");
 		}
 	}

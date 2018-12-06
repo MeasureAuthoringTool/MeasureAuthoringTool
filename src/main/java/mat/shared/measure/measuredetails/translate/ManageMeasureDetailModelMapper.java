@@ -162,8 +162,8 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 
 	private MeasureSetModel buildMeasureSetModel() {
 		MeasureSetModel measureSetModel = new MeasureSetModel();
-		measureSetModel.setPlainText(manageMeasureDetailModel.getMeasureSetId());
-		measureSetModel.setFormattedText(manageMeasureDetailModel.getMeasureSetId());
+		measureSetModel.setPlainText(manageMeasureDetailModel.getGroupName());
+		measureSetModel.setFormattedText(manageMeasureDetailModel.getGroupName());
 		return measureSetModel;
 	}
 
@@ -314,7 +314,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		manageMeasureDetailModel.setMeasureObservations(getMeasureObservations());
 		manageMeasureDetailModel.setMeasurePopulationExclusions(getMeasurePopulationEclusions());
 		manageMeasureDetailModel.setMeasurePopulation(getMeasurePopulation());
-		manageMeasureDetailModel.setMeasureSetId(getMeasureSetId());
+		manageMeasureDetailModel.setGroupName(getMeasureSetText());
 		manageMeasureDetailModel.setStewardSelectedList(getStewardList());
 		manageMeasureDetailModel.setMeasureTypeSelectedList(getMeasureTypeSelectedList());
 		manageMeasureDetailModel.setNumeratorExclusions(getNumeratorExclusions());
@@ -457,14 +457,14 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 
 	private List<MeasureSteward> getStewardList() {
 		if(measureDetailsModel.getMeasureStewardDeveloperModel() != null) {
-			measureDetailsModel.getMeasureStewardDeveloperModel().getMeasureStewardList();
+			return measureDetailsModel.getMeasureStewardDeveloperModel().getMeasureStewardList();
 		}
 		return null;
 	}
 
-	private String getMeasureSetId() {
+	private String getMeasureSetText() {
 		if(measureDetailsModel.getMeasureSetModel() != null) {
-			measureDetailsModel.getMeasureSetModel().getPlainText();
+			return measureDetailsModel.getMeasureSetModel().getPlainText();
 		}
 		return null;
 	}

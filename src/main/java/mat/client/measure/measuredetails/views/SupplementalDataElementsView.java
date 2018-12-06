@@ -3,27 +3,27 @@ package mat.client.measure.measuredetails.views;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.measure.measuredetails.observers.ImprovementNotationObserver;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
+import mat.client.measure.measuredetails.observers.SupplementalDataElementsObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
-import mat.shared.measure.measuredetails.models.ImprovementNotationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
+import mat.shared.measure.measuredetails.models.SupplementalDataElementsModel;
 
-public class ImprovementNotationView implements MeasureDetailViewInterface {
+public class SupplementalDataElementsView implements MeasureDetailViewInterface {
 	private final FlowPanel mainPanel = new FlowPanel();
 	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor;
-	private ImprovementNotationModel model;
-	private ImprovementNotationModel originalModel;
-	private ImprovementNotationObserver observer;
+	private SupplementalDataElementsModel model;
+	private SupplementalDataElementsModel originalModel;
+	private SupplementalDataElementsObserver observer;
 	
-	public ImprovementNotationView() {
+	public SupplementalDataElementsView() {
 		
 	}
 	
-	public ImprovementNotationView(ImprovementNotationModel model) {
+	public SupplementalDataElementsView(SupplementalDataElementsModel model) {
 		this.originalModel = model; 
-		this.model = new ImprovementNotationModel(this.originalModel);
+		this.model = new SupplementalDataElementsModel(this.originalModel);
 		buildDetailView();
 	}
 	
@@ -45,7 +45,7 @@ public class ImprovementNotationView implements MeasureDetailViewInterface {
 	@Override
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
-		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Improvement Notation Editor");
+		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Supplemental Data Elements Editor");
 		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());	
 		addEventHandlers();		
 	}
@@ -84,13 +84,13 @@ public class ImprovementNotationView implements MeasureDetailViewInterface {
 
 	@Override
 	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {
-		this.originalModel = (ImprovementNotationModel) model;
-		this.model = new ImprovementNotationModel(this.originalModel);
+		this.originalModel = (SupplementalDataElementsModel) model;
+		this.model = new SupplementalDataElementsModel(this.originalModel);
 	}
 
 	@Override
 	public void setObserver(MeasureDetailsComponentObserver observer) {
-		this.observer = (ImprovementNotationObserver) observer; 
+		this.observer = (SupplementalDataElementsObserver) observer; 
 	}
 
 	private void addEventHandlers() {

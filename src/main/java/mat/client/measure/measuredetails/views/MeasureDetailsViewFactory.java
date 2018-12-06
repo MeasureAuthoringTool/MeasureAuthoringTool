@@ -2,23 +2,29 @@ package mat.client.measure.measuredetails.views;
 
 import mat.client.measure.measuredetails.observers.ClinicalRecommendationObserver;
 import mat.client.measure.measuredetails.observers.CopyrightObserver;
+import mat.client.measure.measuredetails.observers.DefinitionObserver;
 import mat.client.measure.measuredetails.observers.DenominatorExceptionsObserver;
 import mat.client.measure.measuredetails.observers.DenominatorExclusionsObserver;
 import mat.client.measure.measuredetails.observers.DenominatorObserver;
 import mat.client.measure.measuredetails.observers.DescriptionObserver;
 import mat.client.measure.measuredetails.observers.DisclaimerObserver;
 import mat.client.measure.measuredetails.observers.GeneralInformationObserver;
+import mat.client.measure.measuredetails.observers.GuidanceObserver;
+import mat.client.measure.measuredetails.observers.ImprovementNotationObserver;
 import mat.client.measure.measuredetails.observers.InitialPopulationObserver;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.measure.measuredetails.observers.MeasureObservationsObserver;
 import mat.client.measure.measuredetails.observers.MeasurePopulationExclusionsObserver;
 import mat.client.measure.measuredetails.observers.MeasurePopulationObserver;
+import mat.client.measure.measuredetails.observers.MeasureSetObserver;
 import mat.client.measure.measuredetails.observers.NumeratorExclusionsObserver;
 import mat.client.measure.measuredetails.observers.NumeratorObserver;
 import mat.client.measure.measuredetails.observers.RateAggregationObserver;
 import mat.client.measure.measuredetails.observers.RationaleObserver;
 import mat.client.measure.measuredetails.observers.RiskAdjustmentObserver;
 import mat.client.measure.measuredetails.observers.StratificationObserver;
+import mat.client.measure.measuredetails.observers.SupplementalDataElementsObserver;
+import mat.client.measure.measuredetails.observers.TransmissionFormatObserver;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
@@ -60,19 +66,19 @@ public class MeasureDetailsViewFactory {
 			case CLINICAL_RECOMMENDATION:
 				return buildRichTextEditorView(measureDetailsModel.getClinicalRecommendationModel(), new ClinicalRecommendationView(), new ClinicalRecommendationObserver());
 			case IMPROVEMENT_NOTATION:
-				return new ImprovementNotationView();
+				return buildRichTextEditorView(measureDetailsModel.getImprovementNotationModel(), new ImprovementNotationView(), new ImprovementNotationObserver());
 			case REFERENCES:
 				return new ReferencesView();
 			case DEFINITION:
-				return new DefinitionView();
+				return buildRichTextEditorView(measureDetailsModel.getDefinitionModel(), new DefinitionView(), new DefinitionObserver());
 			case GUIDANCE:
-				return new GuidanceView();
+				return buildRichTextEditorView(measureDetailsModel.getGuidanceModel(), new GuidanceView(), new GuidanceObserver());
 			case TRANSMISSION_FORMAT:
-				return new TransmissionFormatView();
+				return buildRichTextEditorView(measureDetailsModel.getTransmissionFormatModel(), new TransmissionFormatView(), new TransmissionFormatObserver());
 			case SUPPLEMENTAL_DATA_ELEMENTS:
-				return new SupplementalDataView();
+				return buildRichTextEditorView(measureDetailsModel.getSupplementalDataElementsModel(), new SupplementalDataElementsView(), new SupplementalDataElementsObserver());
 			case MEASURE_SET:
-				return new MeasureSetView();
+				return buildRichTextEditorView(measureDetailsModel.getMeasureSetModel(), new MeasureSetView(), new MeasureSetObserver());
 			case STEWARD:
 				return new MeasureStewardView();
 			case COPYRIGHT:
@@ -109,8 +115,8 @@ public class MeasureDetailsViewFactory {
 	}
 	
 	private GeneralInformationView buildGeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel) {
-		GeneralInformationView generalInformationView = new GeneralInformationView(isComposite, generalInformationModel);
-		GeneralInformationObserver observer = new GeneralInformationObserver(generalInformationView);
+		final GeneralInformationView generalInformationView = new GeneralInformationView(isComposite, generalInformationModel);
+		final GeneralInformationObserver observer = new GeneralInformationObserver(generalInformationView);
 		generalInformationView.setObserver(observer);
 		return generalInformationView;
 	}

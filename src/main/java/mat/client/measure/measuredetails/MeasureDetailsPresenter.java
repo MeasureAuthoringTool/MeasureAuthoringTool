@@ -315,6 +315,18 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				return getRichTextEditableTabState(measureDetailsModel.getRationaleModel());
 			case CLINICAL_RECOMMENDATION:
 				return getRichTextEditableTabState(measureDetailsModel.getClinicalRecommendationModel());
+			case IMPROVEMENT_NOTATION:
+				return getRichTextEditableTabState(measureDetailsModel.getImprovementNotationModel());
+			case DEFINITION:
+				return getRichTextEditableTabState(measureDetailsModel.getDefinitionModel());
+			case GUIDANCE:
+				return getRichTextEditableTabState(measureDetailsModel.getGuidanceModel());
+			case TRANSMISSION_FORMAT:
+				return getRichTextEditableTabState(measureDetailsModel.getTransmissionFormatModel());
+			case SUPPLEMENTAL_DATA_ELEMENTS:
+				return getRichTextEditableTabState(measureDetailsModel.getSupplementalDataElementsModel());
+			case MEASURE_SET:
+				return getRichTextEditableTabState(measureDetailsModel.getMeasureSetModel());
 			default: 
 				return MeasureDetailState.BLANK;
 			}

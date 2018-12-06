@@ -2,6 +2,7 @@ package mat.client.measure.measuredetails.views;
 
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
@@ -13,11 +14,11 @@ public class PopulationsView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();
 
 	public PopulationsView() {
+		buildDetailView();
 	}
 
 	@Override
 	public boolean isComplete() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -27,20 +28,20 @@ public class PopulationsView implements MeasureDetailViewInterface {
 
 	@Override
 	public boolean hasUnsavedChanges() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void buildDetailView() {
-		// TODO Auto-generated method stub
-		
+		Label helpLabel = new Label("Click on the + sign on this tab to expand the populations available with the Scoring Type chosen for this "
+				+ "measure. Click on each population sub-tab to enter the descriptions for all of the populations used within your measure.");
+		helpLabel.getElement().setTabIndex(0);
+		helpLabel.setWidth("90%");
+		mainPanel.add(helpLabel);
 	}
 
 	@Override
 	public void setReadOnly(boolean readOnly) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -50,37 +51,27 @@ public class PopulationsView implements MeasureDetailViewInterface {
 
 	@Override
 	public void resetForm() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public RichTextEditor getRichTextEditor() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void setObserver(MeasureDetailsComponentObserver observer) {
-		// TODO Auto-generated method stub
-		
 	}
 }

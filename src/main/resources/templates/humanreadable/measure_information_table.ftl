@@ -135,7 +135,11 @@
 		
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Stratification</span></td>
-			<td style="width:80%" colspan="3">${model.measureInformation.stratification!""}</td>
+			<td style="width:80%" colspan="3">
+      			<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+       				<pre>${model.measureInformation.stratification!""}</pre>
+       			</div>
+  			</td>
 		</tr>
 		
 		<tr>
@@ -189,7 +193,11 @@
 			<#list model.measureInformation.references as reference>
 				<tr>
 					<td style="background-color:#656565; width:20%"><span class="td_label">Reference</span></td>
-					<td style="width:80%" colspan="3">${reference!""}</td>
+					<td style="width:80%" colspan="3">
+			      		<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+			       			<pre>${reference!""}</pre>
+			      		</div>
+		      		</td>
 				</tr>
 			</#list>
 			
@@ -202,7 +210,11 @@
 		
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Definition</span></td>
-			<td style="width:80%" colspan="3">${model.measureInformation.definition!""}</td>
+			<td style="width:80%" colspan="3">
+	      		<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	       			<pre>${model.measureInformation.definition!""}</pre>
+	      		</div>
+      		</td>
 		</tr>
 		
 		<tr>

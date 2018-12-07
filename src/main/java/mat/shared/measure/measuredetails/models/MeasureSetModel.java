@@ -17,12 +17,6 @@ public class MeasureSetModel extends MeasureDetailsRichTextAbstractModel impleme
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	@Override
-	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	
 	public void accept(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 		measureDetailsModelVisitor.visit(this);

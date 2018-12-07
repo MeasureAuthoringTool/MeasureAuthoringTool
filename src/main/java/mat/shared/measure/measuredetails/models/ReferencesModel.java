@@ -21,12 +21,6 @@ public class ReferencesModel implements MeasureDetailsComponentModel, IsSerializ
 		return false;
 	}
 
-	@Override
-	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
 	public void accept(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 		measureDetailsModelVisitor.visit(this);
 	}

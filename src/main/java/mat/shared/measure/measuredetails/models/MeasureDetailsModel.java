@@ -236,12 +236,6 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 		return false;
 	}
 
-	@Override
-	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	public String getOwnerUserId() {
 		return ownerUserId;
 	}

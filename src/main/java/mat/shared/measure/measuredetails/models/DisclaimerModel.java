@@ -24,11 +24,6 @@ public class DisclaimerModel extends MeasureDetailsRichTextAbstractModel impleme
 			return disclaimerModel.getFormattedText() == null && getFormattedText() == null;
 		}
 	}
-
-	@Override
-	public boolean isValid() {
-		return false;
-	}
 	
 	public void accept(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 		measureDetailsModelVisitor.visit(this);

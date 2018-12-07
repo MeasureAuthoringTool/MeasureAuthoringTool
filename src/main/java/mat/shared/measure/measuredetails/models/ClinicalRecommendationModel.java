@@ -16,12 +16,6 @@ public class ClinicalRecommendationModel extends MeasureDetailsRichTextAbstractM
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	@Override
-	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	
 	public void accept(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 		measureDetailsModelVisitor.visit(this);

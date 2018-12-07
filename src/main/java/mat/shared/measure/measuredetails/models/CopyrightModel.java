@@ -11,11 +11,6 @@ public class CopyrightModel extends MeasureDetailsRichTextAbstractModel implemen
 	public CopyrightModel(CopyrightModel model) {
 		super(model.getPlainText(), model.getFormattedText());
 	}
-
-	@Override
-	public boolean isValid() {
-		return false;
-	}
 	
 	public void accept(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 		measureDetailsModelVisitor.visit(this);

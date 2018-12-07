@@ -275,6 +275,8 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		generalInformationModel.setGuid(manageMeasureDetailModel.getMeasureSetId());
 		generalInformationModel.seteCQMVersionNumber(manageMeasureDetailModel.getVersionNumber());
 		generalInformationModel.setScoringMethod(manageMeasureDetailModel.getMeasScoring());
+		generalInformationModel.setNqfId(manageMeasureDetailModel.getNqfId());
+		generalInformationModel.setEndorseByNQF(manageMeasureDetailModel.getEndorseByNQF());
 		if(manageMeasureDetailModel instanceof ManageCompositeMeasureDetailModel) {
 			generalInformationModel.setCompositeScoringMethod(((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).getCompositeScoringMethod());
 		}
@@ -326,7 +328,23 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		manageMeasureDetailModel.setStratification(getStratification());
 		manageMeasureDetailModel.setSupplementalData(getSupplementalData());
 		manageMeasureDetailModel.setTransmissionFormat(getTransmissionFormat());
+		manageMeasureDetailModel.setNqfId(getNqfId());
+		manageMeasureDetailModel.setEndorseByNQF(getEndorsedByNQF());
 		return manageMeasureDetailModel;
+	}
+
+	private Boolean getEndorsedByNQF() {
+		if(measureDetailsModel.getGeneralInformationModel() != null) {
+			return measureDetailsModel.getGeneralInformationModel().getEndorseByNQF();
+		}
+		return null;
+	}
+
+	private String getNqfId() {
+		if(measureDetailsModel.getGeneralInformationModel() != null) {
+			return measureDetailsModel.getGeneralInformationModel().getNqfId();
+		}
+		return null;
 	}
 
 	private int getEMeasureId() {

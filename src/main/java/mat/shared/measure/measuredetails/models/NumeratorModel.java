@@ -12,12 +12,6 @@ public class NumeratorModel extends MeasureDetailsRichTextAbstractModel implemen
 		super(model.getPlainText(), model.getFormattedText());
 	}
 	
-	@Override
-	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
 	public void accept(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 		measureDetailsModelVisitor.visit(this);
 	}

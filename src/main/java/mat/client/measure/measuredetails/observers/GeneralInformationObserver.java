@@ -159,4 +159,10 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void handleEndorsedByNQFChanged() {
+		boolean endorsedByNQF = generalMeasureInformationView.getEndorsedByListBox().getSelectedIndex() == 1 ? true :  false;
+		generalMeasureInformationView.setNQFTitle(endorsedByNQF);
+		updateGeneralInformationModelFromView();
+	}
 }

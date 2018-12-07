@@ -29,6 +29,7 @@ import mat.client.shared.MessageDelegate;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.CompositeMethodScoringConstant;
+import mat.shared.MatConstants;
 import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
@@ -48,13 +49,15 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	private ListBoxMVP  measureScoringInput = new ListBoxMVP();
 	private ListBoxMVP compositeScoringMethodInput = new ListBoxMVP();
 	private ListBoxMVP patientBasedInput = new ListBoxMVP();
+	private ListBoxMVP endorsedByListBox = new ListBoxMVP();
 	private GeneralInformationObserver observer;
 	List<CompositeMeasureScoreDTO> compositeChoices;
 	private HelpBlock helpBlock = new HelpBlock();
 	private FormGroup messageFormGrp = new FormGroup();
 	private Button generateEMeasureIDButton = new Button("Generate Identifier");
 	private TextBox eMeasureIdentifierInput = new TextBox();
-   
+	private TextBox nQFIDInput = new TextBox();
+
 	public GeneralInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel) {
 		originalModel = originalGeneralInformationModel;
 		buildGeneralInformationModel(originalGeneralInformationModel);
@@ -90,11 +93,12 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		Form measureDetailForm = new Form();
 		helpBlock.setHeight("0px");
 		helpBlock.setWidth("0px");
+		helpBlock.setColor("transparent");
 		messageFormGrp.add(helpBlock);
 		messageFormGrp.getElement().setAttribute("role", "alert");
 		measureDetailForm.add(messageFormGrp);
 		detailPanel.add(measureDetailForm);
-		Grid panelGrid = new Grid(6, 2);
+		Grid panelGrid = new Grid(7, 2);
 		
 		VerticalPanel measureNamePanel = buildMeasureNamePanel();
 		panelGrid.setWidget(0, 0, measureNamePanel);
@@ -128,10 +132,80 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		VerticalPanel eCQMIdentifierPanel = buldeCQMIdentifierPanel();
 		panelGrid.setWidget(5, 0, eCQMIdentifierPanel);
 		
+		VerticalPanel nqfNumberPanel = buildNQFNumberPanel();
+		panelGrid.setWidget(6, 0, nqfNumberPanel);
+		
 		detailPanel.add(panelGrid);
 		mainPanel.add(detailPanel);
 		buildDropDowns();
 		addEventHandlers();
+	}
+
+	private VerticalPanel buildNQFNumberPanel() {
+		VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.getElement().addClassName("generalInformationPanel");
+		HorizontalPanel nqfNumberEndorsmentPanel = new HorizontalPanel();
+		VerticalPanel nqfNumberLeftVP = new VerticalPanel();
+		VerticalPanel nqfNumberRightVP = new VerticalPanel();
+		
+		FormLabel nQFIDInputLabel = new FormLabel();
+		nQFIDInputLabel.setText("NQF Number");
+		nqfNumberRightVP.add(nQFIDInputLabel);
+		nqfNumberRightVP.add(new SpacerWidget());
+		nqfNumberRightVP.add(nQFIDInput);
+		
+		nQFIDInputLabel.setId("nQFIDInputLabel");
+		nQFIDInputLabel.setFor("NQFIDInput_TextBox");
+		nQFIDInput.setId("NQFIDInput_TextBox");
+		nQFIDInput.getElement().setAttribute("style", "width:150px;margin-top:-10px;");
+		if(generalInformationModel.getNqfId() != null) {
+			nQFIDInput.setText(generalInformationModel.getNqfId());
+			nQFIDInput.setTitle(generalInformationModel.getNqfId());
+		} else {
+			nQFIDInput.setPlaceholder(MatConstants.ENTER_NQF_NUMBER);
+			nQFIDInput.setTitle(MatConstants.ENTER_NQF_NUMBER);
+		}
+		
+		FormLabel endorsedByNQFLabel = new FormLabel();
+		endorsedByNQFLabel.setText("Endorsed By NQF");
+		nqfNumberLeftVP.add(endorsedByNQFLabel);
+		endorsedByListBox.setWidth("150px");
+		endorsedByListBox.setId("endorsedByNQFListBox");
+		nqfNumberLeftVP.add(endorsedByListBox);
+		nqfNumberRightVP.getElement().setAttribute("style", "padding-left:10px;");
+		nqfNumberEndorsmentPanel.add(nqfNumberLeftVP);
+		nqfNumberEndorsmentPanel.add(nqfNumberRightVP);
+		verticalPanel.add(nqfNumberEndorsmentPanel);
+		resetEndorsedByListBox();
+
+		boolean endorsedByNQF = generalInformationModel.getEndorseByNQF() != null ? generalInformationModel.getEndorseByNQF() : false;
+		if(endorsedByNQF) {
+			endorsedByListBox.setSelectedIndex(endorsedByNQF ? 1 : 0);
+		}
+		
+		setNQFTitle(endorsedByNQF);
+		return verticalPanel;
+	}
+	
+	public void setNQFTitle(boolean endorsedByNQF) {
+		if(!endorsedByNQF) {
+			helpBlock.setText("You have chosen no; the NQF number field has been cleared. It now reads as Not Applicable and is disabled.");
+			nQFIDInput.setPlaceholder(MatConstants.NOT_APPLICABLE);
+			nQFIDInput.setTitle(MatConstants.NOT_APPLICABLE);
+			nQFIDInput.setText("");
+			nQFIDInput.setReadOnly(true);
+		} else {
+			helpBlock.setText("You have chosen yes, the NQF number field is now enabled and required.");
+			if(!StringUtility.isEmptyOrNull(nQFIDInput.getText())) {
+				String placeHolderText = nQFIDInput.getText();
+				nQFIDInput.setPlaceholder(placeHolderText);
+				nQFIDInput.setTitle(placeHolderText);
+			} else {
+				nQFIDInput.setPlaceholder(MatConstants.ENTER_NQF_NUMBER);
+				nQFIDInput.setTitle(MatConstants.ENTER_NQF_NUMBER);
+			}
+			nQFIDInput.setReadOnly(false);
+		}
 	}
 
 	private VerticalPanel buldeCQMIdentifierPanel() {
@@ -205,6 +279,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		getPatientBasedInput().addChangeHandler(event -> observer.handleInputChanged());
 		getECQMAbbrInput().addChangeHandler(event -> observer.handleInputChanged());
 		getMeasureNameInput().addChangeHandler(event -> observer.handleInputChanged());
+		getEndorsedByListBox().addChangeHandler(event -> observer.handleEndorsedByNQFChanged());
+		getnQFIDInput().addChangeHandler(event -> observer.handleInputChanged());
 	}
 
 	private VerticalPanel buildBlankPanel() {
@@ -403,6 +479,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		compositeScoringMethodInput.setEnabled(!readOnly);
 		measureScoringInput.setEnabled(!readOnly);
 		patientBasedInput.setEnabled(!readOnly);
+		endorsedByListBox.setEnabled(!readOnly);
 		setGenerateEMeasureButtonReadOnly(readOnly);
 	}
 
@@ -476,10 +553,6 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	
 	public String getMeasureScoringValue() {
 		return measureScoringInput.getItemText(measureScoringInput.getSelectedIndex());
-	}
-
-	public void setObserver(GeneralInformationObserver observer) {
-		this.observer = observer;
 	}
 	
 	public void setCompositeScoringSelectedValue(String compositeScoringMethod) {
@@ -570,15 +643,35 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	}
 
 	@Override
-	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {}
 
 	@Override
 	public void setObserver(MeasureDetailsComponentObserver observer) {
-		// TODO Auto-generated method stub
-		
+		this.observer = (GeneralInformationObserver) observer;
+	}
+	
+	public TextBox getnQFIDInput() {
+		return nQFIDInput;
+	}
+
+	public void setnQFIDInput(TextBox nQFIDInput) {
+		this.nQFIDInput = nQFIDInput;
+	}
+	
+	private void resetEndorsedByListBox() {
+		endorsedByListBox.clear();
+		endorsedByListBox.insertItem("No", "false","No");
+		endorsedByListBox.insertItem("Yes", "true","Yes");
+		endorsedByListBox.setSelectedIndex(0);
+		endorsedByListBox.setTitle("Endorsed By NQF List");
+	}
+	
+	public ListBoxMVP getEndorsedByListBox() {
+		return endorsedByListBox;
+	}
+
+	public void setEndorsedByListBox(ListBoxMVP endorsedByListBox) {
+		this.endorsedByListBox = endorsedByListBox;
 	}
 
 }

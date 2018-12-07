@@ -41,7 +41,4 @@ public abstract class MeasureDetailsRichTextAbstractModel implements MeasureDeta
 			return richTextEditorModel.getFormattedText() == null && getFormattedText() == null;
 		}
 	}
-
-	@Override
-	abstract public boolean isValid();
 }

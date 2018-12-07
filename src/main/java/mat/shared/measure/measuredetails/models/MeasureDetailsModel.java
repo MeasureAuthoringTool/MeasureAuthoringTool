@@ -1,6 +1,11 @@
 package mat.shared.measure.measuredetails.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import mat.shared.StringUtility;
 
 public class MeasureDetailsModel implements MeasureDetailsComponentModel, MeasureDetailsModelVisitor, IsSerializable  {
 	private String id;
@@ -275,142 +280,313 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 
 	@Override
-	public void accept(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 
 	}
 	
 	@Override
-	public void visit(ClinicalRecommendationModel clinicalRecommendationModel) {
+	public void updateModel(ClinicalRecommendationModel clinicalRecommendationModel) {
 		setClinicalRecommendationModel(clinicalRecommendationModel);
 	}
 
 	@Override
-	public void visit(CopyrightModel copyrightModel) {
+	public void updateModel(CopyrightModel copyrightModel) {
 		setCopyrightModel(copyrightModel);
 	}
 
 	@Override
-	public void visit(DefinitionModel definitionModel) {
+	public void updateModel(DefinitionModel definitionModel) {
 		setDefinitionModel(definitionModel);
 	}
 
 	@Override
-	public void visit(DenominatorExceptionsModel denominatorExceptionsModel) {
+	public void updateModel(DenominatorExceptionsModel denominatorExceptionsModel) {
 		setDenominatorExceptionsModel(denominatorExceptionsModel);
 	}
 
 	@Override
-	public void visit(DenominatorExclusionsModel denominatorExclusionsModel) {
+	public void updateModel(DenominatorExclusionsModel denominatorExclusionsModel) {
 		setDenominatorExclusionsModel(denominatorExclusionsModel);
 	}
 
 	@Override
-	public void visit(DenominatorModel denominatorModel) {
+	public void updateModel(DenominatorModel denominatorModel) {
 		setDenominatorModel(denominatorModel);
 	}
 	
 	@Override
-	public void visit(DescriptionModel descriptionModel) {
+	public void updateModel(DescriptionModel descriptionModel) {
 		setDescriptionModel(descriptionModel);
 	}
 
 	@Override
-	public void visit(DisclaimerModel disclaimerModel) {
+	public void updateModel(DisclaimerModel disclaimerModel) {
 		setDisclaimerModel(disclaimerModel);
 	}
 	
 	@Override
-	public void visit(GeneralInformationModel generalInformationModel) {
+	public void updateModel(GeneralInformationModel generalInformationModel) {
 		setGeneralInformationModel(generalInformationModel);
 	}
 
 	@Override
-	public void visit(GuidanceModel guidanceModel) {
+	public void updateModel(GuidanceModel guidanceModel) {
 		setGuidanceModel(guidanceModel);
 	}
 
 	@Override
-	public void visit(ImprovementNotationModel improvementNotationModel) {
+	public void updateModel(ImprovementNotationModel improvementNotationModel) {
 		setImprovementNotationModel(improvementNotationModel);
 	}
 
 	@Override
-	public void visit(InitialPopulationModel initialPopulationModel) {
+	public void updateModel(InitialPopulationModel initialPopulationModel) {
 		setInitialPopulationModel(initialPopulationModel);
 	}
 
 	@Override
-	public void visit(MeasureObservationsModel measureObservationsModel) {
+	public void updateModel(MeasureObservationsModel measureObservationsModel) {
 		setMeasureObservationsModel(measureObservationsModel);
 	}
 
 	@Override
-	public void visit(MeasurePopulationExclusionsModel measurePopulationExclusionsModel) {
+	public void updateModel(MeasurePopulationExclusionsModel measurePopulationExclusionsModel) {
 		setMeasurePopulationExclusionsModel(measurePopulationExclusionsModel);
 	}
 
 	@Override
-	public void visit(MeasurePopulationModel measurePopulationModel) {
+	public void updateModel(MeasurePopulationModel measurePopulationModel) {
 		setMeasurePopulationModel(measurePopulationModel);
 	}
 
 	@Override
-	public void visit(MeasureSetModel measureSetModel) {
+	public void updateModel(MeasureSetModel measureSetModel) {
 		setMeasureSetModel(measureSetModel);
 	}
 
 	@Override
-	public void visit(MeasureStewardDeveloperModel measureStewardDeveloperModel) {
+	public void updateModel(MeasureStewardDeveloperModel measureStewardDeveloperModel) {
 		setMeasureStewardDeveloperModel(measureStewardDeveloperModel);
 	}
 
 	@Override
-	public void visit(MeasureTypeModel measureTypeModel) {
+	public void updateModel(MeasureTypeModel measureTypeModel) {
 		setMeasureTypeModeModel(measureTypeModel);
 	}
 
 	@Override
-	public void visit(NumeratorExclusionsModel numeratorExclusionsModel) {
+	public void updateModel(NumeratorExclusionsModel numeratorExclusionsModel) {
 		setNumeratorExclusionsModel(numeratorExclusionsModel);
 	}
 
 	@Override
-	public void visit(NumeratorModel numeratorModel) {
+	public void updateModel(NumeratorModel numeratorModel) {
 		setNumeratorModel(numeratorModel);
 	}
 
 	@Override
-	public void visit(RateAggregationModel rateAggregationModel) {
+	public void updateModel(RateAggregationModel rateAggregationModel) {
 		setRateAggregationModel(rateAggregationModel);
 	}
 
 	@Override
-	public void visit(RationaleModel rationaleModel) {
+	public void updateModel(RationaleModel rationaleModel) {
 		setRationaleModel(rationaleModel);
 	}
 
 	@Override
-	public void visit(ReferencesModel referencesModel) {
+	public void updateModel(ReferencesModel referencesModel) {
 		setReferencesModel(referencesModel);
 	}
 
 	@Override
-	public void visit(RiskAdjustmentModel riskAdjustmentModel) {
+	public void updateModel(RiskAdjustmentModel riskAdjustmentModel) {
 		setRiskAdjustmentModel(riskAdjustmentModel);
 	}
 
 	@Override
-	public void visit(StratificationModel stratificationModel) {
+	public void updateModel(StratificationModel stratificationModel) {
 		setStratificationModel(stratificationModel);
 	}
 
 	@Override
-	public void visit(SupplementalDataElementsModel supplementalDataElementsModel) {
+	public void updateModel(SupplementalDataElementsModel supplementalDataElementsModel) {
 		setSupplementalDataElementsModel(supplementalDataElementsModel);
 	}
 
 	@Override
-	public void visit(TransmissionFormatModel transmissionFormatModel) {
+	public void updatemodel(TransmissionFormatModel transmissionFormatModel) {
 		setTransmissionFormatModel(transmissionFormatModel);
+	}
+
+	@Override
+	public List<String> validateModel(ClinicalRecommendationModel clinicalRecommendationModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(CopyrightModel copyrightModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(DefinitionModel definitionModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(DescriptionModel descriptionModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(DenominatorExceptionsModel denominatorExceptionsModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(DenominatorExclusionsModel denominatorExclusionsModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(DenominatorModel denominatorModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(GeneralInformationModel generalInformationModel) {
+		List<String> errorMessages = new ArrayList<>();
+		if(generalInformationModel.getEndorseByNQF() && StringUtility.isEmptyOrNull(generalInformationModel.getNqfId())) {
+			errorMessages.add("NQF Number is required when a measure is endorsed by NQF.");
+		}
+		return errorMessages;
+	}
+
+	@Override
+	public List<String> validateModel(GuidanceModel guidanceModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(ImprovementNotationModel improvementNotationModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(InitialPopulationModel initialPopulationModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(MeasureObservationsModel measureObservationsModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(MeasurePopulationExclusionsModel measurePopulationExclusionsModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(MeasurePopulationModel measurePopulationModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(MeasureSetModel measureSetModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(MeasureStewardDeveloperModel measureStewardDeveloperModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(MeasureTypeModel measureTypeModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(NumeratorExclusionsModel numeratorExclusionsModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(NumeratorModel numeratorModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(RateAggregationModel rateAggregationModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(RationaleModel rationaleModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(ReferencesModel referencesModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(RiskAdjustmentModel riskAdjustmentModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(StratificationModel stratificationModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(SupplementalDataElementsModel supplementalDataElementsModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(TransmissionFormatModel transmissionFormatModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(DisclaimerModel disclaimerModel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> validateModel(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -1,5 +1,7 @@
 package mat.shared.measure.measuredetails.models;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ClinicalRecommendationModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
@@ -17,7 +19,11 @@ public class ClinicalRecommendationModel extends MeasureDetailsRichTextAbstractM
 		return false;
 	}
 	
-	public void accept(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
-		measureDetailsModelVisitor.visit(this);
+	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+		measureDetailsModelVisitor.updateModel(this);
+	}
+	
+	public List<String> validateModel(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+		return measureDetailsModelVisitor.validateModel(this);
 	}
 }

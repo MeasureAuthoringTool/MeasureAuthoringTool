@@ -17,7 +17,7 @@ public class MessagePanel extends VerticalPanel {
 		add(errorMessageAlert);
 		add(warningConfirmationMessageAlert);
 		add(globalWarningConfirmationMessageAlert);
-		setStyleName("marginLeft15px");
+		clearAlerts();
 	}
 	
 	public MessageAlert getSuccessMessageAlert() {

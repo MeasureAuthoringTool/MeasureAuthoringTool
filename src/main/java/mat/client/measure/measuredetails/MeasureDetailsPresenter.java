@@ -1,5 +1,8 @@
 package mat.client.measure.measuredetails;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -248,14 +251,20 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	private void saveMeasureDetails() {
-		measureDetailsView.getMeasureDetailsComponentModel().accept(measureDetailsModel);
-		ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
-		ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
-		
-		if(measureDetailsModel.isComposite()) {
-			MatContext.get().getMeasureService().saveCompositeMeasure((ManageCompositeMeasureDetailModel) manageMeasureDetails, getSaveCallback());
+		List<String> validationErrors = measureDetailsView.getMeasureDetailsComponentModel().validateModel(measureDetailsModel);
+		if(validationErrors == null || validationErrors.isEmpty()) {
+			measureDetailsView.getMeasureDetailsComponentModel().update(measureDetailsModel);
+			ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
+			ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
+			
+			if(measureDetailsModel.isComposite()) {
+				MatContext.get().getMeasureService().saveCompositeMeasure((ManageCompositeMeasureDetailModel) manageMeasureDetails, getSaveCallback());
+			} else {
+				MatContext.get().getMeasureService().saveMeasureDetails(manageMeasureDetails, getSaveCallback());
+			}
 		} else {
-			MatContext.get().getMeasureService().saveMeasureDetails(manageMeasureDetails, getSaveCallback());
+			String validationErrorMessage = validationErrors.stream().collect(Collectors.joining("\n"));
+			measureDetailsView.displayErrorMessage(validationErrorMessage);
 		}
 	}
 
@@ -263,8 +272,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		return new AsyncCallback<SaveMeasureResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
+				measureDetailsView.displayErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 
 			@Override
@@ -277,6 +285,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();
 				measureDetailsView.setReadOnly(isMeasureEditable);
 				measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
+				measureDetailsView.displaySuccessMessage("Changes for the " +  measureDetailsView.getCurrentMeasureDetail().displayName() + " section have been successfully saved.");
 				handleStateChanged();
 				navigationPanel.setActiveMenuItem(activeMenuItem);
 			}

@@ -49,6 +49,8 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 		}
 		generalInformationModel.seteCQMAbbreviatedTitle(generalMeasureInformationView.getECQMAbbrInput().getText());
 		generalInformationModel.setMeasureName(generalMeasureInformationView.getMeasureNameInput().getText());
+		generalInformationModel.setEndorseByNQF(Boolean.parseBoolean(generalMeasureInformationView.getEndorsedByListBox().getValue()));
+		generalInformationModel.setNqfId(generalMeasureInformationView.getnQFIDInput().getText());
 		return generalInformationModel;
 	}
 	

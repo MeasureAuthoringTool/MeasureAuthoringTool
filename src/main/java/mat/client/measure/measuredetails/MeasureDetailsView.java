@@ -21,6 +21,7 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
@@ -40,6 +41,7 @@ public class MeasureDetailsView {
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
 	private MeasureDetailsModel measureDetailsComponent;
 	private RichTextEditor currentRichTextEditor;
+	private MessagePanel messagePanel;
 	
 	
 	public MeasureDetailsView(MeasureDetailsModel measureDetailsComponent, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
@@ -67,6 +69,8 @@ public class MeasureDetailsView {
 		headingPanel.add(headingHTML);
 		headingPanel.getElement().setId("measureDetailsView_HeadingPanel");
 		widgetComponentPanel.add(headingPanel);
+		messagePanel = new MessagePanel();
+		widgetComponentPanel.add(messagePanel);
 		widgetComponentPanel.add(new SpacerWidget());
 	}
 	
@@ -108,7 +112,7 @@ public class MeasureDetailsView {
 		setReadOnly(isMeasureEditable);
 		return widgetComponentPanel;
 	}
-	
+
 	public void setFocusOnHeader() {
 		DOM.getElementById("measureDetailsView_HeadingContent").focus();
 	}
@@ -156,6 +160,7 @@ public class MeasureDetailsView {
 	
 	public void clear() {
 		componentDetailView.clear();
+		messagePanel.clearAlerts();
 	}
 	
 	public ConfirmationDialogBox getSaveConfirmation() {
@@ -163,6 +168,7 @@ public class MeasureDetailsView {
 	}
 	
 	public void resetForm() {
+		messagePanel.clearAlerts();
 		componentDetailView.resetForm();
 	}
 	
@@ -175,5 +181,25 @@ public class MeasureDetailsView {
 
 	public void setSaveButton(SaveButton saveButton) {
 		this.saveButton = saveButton;
+	}
+	
+	public void displayErrorMessage(String message) {
+		messagePanel.getErrorMessageAlert().createAlert(message);
+	}
+	
+	public void displaySuccessMessage(String message) {
+		messagePanel.getSuccessMessageAlert().createAlert(message);
+	}
+	
+	public void displayWarning(String message) {
+		messagePanel.getWarningMessageAlert().createAlert(message);
+	}
+	
+	public MatDetailItem getCurrentMeasureDetail() {
+		return currentMeasureDetail;
+	}
+
+	public void setCurrentMeasureDetail(MatDetailItem currentMeasureDetail) {
+		this.currentMeasureDetail = currentMeasureDetail;
 	}
 }

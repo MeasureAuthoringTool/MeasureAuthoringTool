@@ -13,17 +13,16 @@ public class ClinicalRecommendationModel extends MeasureDetailsRichTextAbstractM
 		super(model.getPlainText(), model.getFormattedText());
 	}
 	
-	@Override
-	public boolean equals(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 		measureDetailsModelVisitor.updateModel(this);
 	}
 	
 	public List<String> validateModel(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 		return measureDetailsModelVisitor.validateModel(this);
+	}
+
+	@Override
+	public boolean isDirty(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+		return measureDetailsModelVisitor.isDirty(this);
 	}
 }

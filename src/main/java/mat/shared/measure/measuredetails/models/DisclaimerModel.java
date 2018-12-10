@@ -34,4 +34,9 @@ public class DisclaimerModel extends MeasureDetailsRichTextAbstractModel impleme
 	public List<String> validateModel(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 		return measureDetailsModelVisitor.validateModel(this);
 	}
+
+	@Override
+	public boolean isDirty(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+		return measureDetailsModelVisitor.isDirty(this);
+	}
 }

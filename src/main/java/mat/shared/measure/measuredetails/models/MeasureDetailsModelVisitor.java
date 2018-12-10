@@ -28,8 +28,9 @@ public interface MeasureDetailsModelVisitor {
 	public void updateModel(RiskAdjustmentModel riskAdjustmentModel);
 	public void updateModel(StratificationModel stratificationModel);
 	public void updateModel(SupplementalDataElementsModel supplementalDataElementsModel);
-	public void updatemodel(TransmissionFormatModel transmissionFormatModel);
+	public void updateModel(TransmissionFormatModel transmissionFormatModel);
 	public void updateModel(DisclaimerModel disclaimerModel);
+	
 	public List<String> validateModel(ClinicalRecommendationModel clinicalRecommendationModel);
 	public List<String> validateModel(CopyrightModel copyrightModel);
 	public List<String> validateModel(DefinitionModel definitionModel);
@@ -57,6 +58,35 @@ public interface MeasureDetailsModelVisitor {
 	public List<String> validateModel(SupplementalDataElementsModel supplementalDataElementsModel);
 	public List<String> validateModel(TransmissionFormatModel transmissionFormatModel);
 	public List<String> validateModel(DisclaimerModel disclaimerModel);
+
+
+	public boolean isDirty(ClinicalRecommendationModel clinicalRecommendationModel);
+	public boolean isDirty(CopyrightModel copyrightModel);
+	public boolean isDirty(DefinitionModel definitionModel);
+	public boolean isDirty(DescriptionModel descriptionModel);
+	public boolean isDirty(DenominatorExceptionsModel denominatorExceptionsModel);
+	public boolean isDirty(DenominatorExclusionsModel denominatorExclusionsModel);
+	public boolean isDirty(DenominatorModel denominatorModel);
+	public boolean isDirty(GeneralInformationModel generalInformationModel);
+	public boolean isDirty(GuidanceModel guidanceModel);
+	public boolean isDirty(ImprovementNotationModel improvementNotationModel);
+	public boolean isDirty(InitialPopulationModel initialPopulationModel);
+	public boolean isDirty(MeasureObservationsModel measureObservationsModel);
+	public boolean isDirty(MeasurePopulationExclusionsModel measurePopulationExclusionsModel);
+	public boolean isDirty(MeasurePopulationModel measurePopulationModel);
+	public boolean isDirty(MeasureSetModel measureSetModel);
+	public boolean isDirty(MeasureStewardDeveloperModel measureStewardDeveloperModel);
+	public boolean isDirty(MeasureTypeModel measureTypeModel);
+	public boolean isDirty(NumeratorExclusionsModel numeratorExclusionsModel);
+	public boolean isDirty(NumeratorModel numeratorModel);
+	public boolean isDirty(RateAggregationModel rateAggregationModel);
+	public boolean isDirty(RationaleModel rationaleModel);
+	public boolean isDirty(ReferencesModel referencesModel);
+	public boolean isDirty(RiskAdjustmentModel riskAdjustmentModel);
+	public boolean isDirty(StratificationModel stratificationModel);
+	public boolean isDirty(SupplementalDataElementsModel supplementalDataElementsModel);
+	public boolean isDirty(TransmissionFormatModel transmissionFormatModel);
+	public boolean isDirty(DisclaimerModel disclaimerModel);
 }
 
 

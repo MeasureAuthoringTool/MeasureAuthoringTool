@@ -3,7 +3,11 @@ package mat.client.measure.measuredetails;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -77,10 +81,45 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		return measureDetailsView.getWidget();
 	}
 
+	public MeasureDetailsView getView() {
+		return measureDetailsView;
+	}
+	
 	@Override
-	public void handleMenuItemClick(MatDetailItem menuItem) {
+	public void handleMenuItemClick(AnchorListItem anchorListItem, MatDetailItem menuItem) {
+		
+		if(isDirty()) {
+			measureDetailsView.displayDirtyCheck();
+			measureDetailsView.getMessagePanel().getWarningConfirmationNoButton().addClickHandler(event -> handleWarningConfirmationNoClick());
+			measureDetailsView.getMessagePanel().getWarningConfirmationYesButton().addClickHandler(event -> handleWarningConfirmationYesClick(anchorListItem, menuItem));
+			measureDetailsView.getMessagePanel().getWarningConfirmationYesButton().setFocus(true);
+			GWT.log(navigationPanel.getActiveMenuItem() + " is dirty");
+		} else {
+			navigateTo(anchorListItem, menuItem);
+		}
+	}
+
+	private void navigateTo(AnchorListItem anchorListItem, MatDetailItem menuItem) {		
 		measureDetailsView.buildDetailView(menuItem);
+		navigationPanel.setActiveMenuItem(menuItem);
 		measureDetailsView.setFocusOnHeader();
+	}
+	
+	private void handleWarningConfirmationYesClick(AnchorListItem anchorListItem, MatDetailItem menuItem) {
+		clearAlerts();
+		navigateTo(anchorListItem, menuItem);
+	}
+
+	private void handleWarningConfirmationNoClick() {
+		clearAlerts();
+	}
+
+	public boolean isDirty() {
+		if(measureDetailsView.getMeasureDetailsComponentModel() != null) {
+			return measureDetailsView.getMeasureDetailsComponentModel().isDirty(measureDetailsModel);
+		}
+		
+		return false; 
 	}
 	
 	@Override
@@ -186,6 +225,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private void clearAlerts() {
 		measureDetailsView.getErrorMessageAlert().clear();
 		measureDetailsView.getErrorMessageAlert().clearAlert();
+		measureDetailsView.getMessagePanel().clearAlerts();
 	}
 	
 	private void showErrorAlert(String message) {

@@ -96,6 +96,11 @@ public class MeasurePopulationExclusionsView implements MeasureDetailViewInterfa
 		this.observer = (MeasurePopulationExclusionsObserver) observer; 
 	}
 	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
+	
 	private void buildModel(MeasurePopulationExclusionsModel model) {
 		this.model = new MeasurePopulationExclusionsModel(model);
 	}

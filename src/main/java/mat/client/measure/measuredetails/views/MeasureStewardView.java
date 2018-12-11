@@ -82,5 +82,11 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -23,8 +23,8 @@ public class StratificationView implements MeasureDetailViewInterface {
 	}
 	
 	public StratificationView(StratificationModel model) {
-		this.model = model;
-		this.originalModel = this.model;
+		this.originalModel = model; 
+		buildModel(this.originalModel);
 		buildDetailView();
 	}
 	
@@ -95,6 +95,11 @@ public class StratificationView implements MeasureDetailViewInterface {
 	@Override
 	public void setObserver(MeasureDetailsComponentObserver observer) {
 		this.observer = (StratificationObserver) observer; 
+	}
+	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
 	}
 	
 	private void buildModel(StratificationModel model) {

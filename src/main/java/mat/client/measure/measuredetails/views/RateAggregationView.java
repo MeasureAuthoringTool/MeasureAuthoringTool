@@ -97,6 +97,11 @@ public class RateAggregationView implements MeasureDetailViewInterface {
 		this.observer = (RateAggregationObserver) observer; 
 	}
 	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
+	
 	private void buildModel(RateAggregationModel model) {
 		this.model = new RateAggregationModel(model);
 	}

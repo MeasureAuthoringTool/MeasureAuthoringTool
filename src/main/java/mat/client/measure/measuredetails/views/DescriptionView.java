@@ -96,6 +96,11 @@ public class DescriptionView implements MeasureDetailViewInterface {
 		this.observer = (DescriptionObserver) observer; 
 	}
 	
+	@Override
+	public DescriptionObserver getObserver() {
+		return observer;
+	}
+	
 	private void addEventHandlers() {
 		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());
 	}

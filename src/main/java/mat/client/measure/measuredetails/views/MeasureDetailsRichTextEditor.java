@@ -6,10 +6,12 @@ import org.gwtbootstrap3.client.ui.DropDownMenu;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.buttons.InfoToolBarButton;
 import mat.client.buttons.RichTextEditorInfoDropDownMenu;
 import mat.client.shared.editor.RichTextEditor;
+import mat.client.shared.editor.RichTextToolbar;
 
 public class MeasureDetailsRichTextEditor {
 	private RichTextEditor richTextEditor;
@@ -18,11 +20,16 @@ public class MeasureDetailsRichTextEditor {
 	
 	public MeasureDetailsRichTextEditor(FlowPanel mainPanel) {
 		richTextEditor = new RichTextEditor();
+		//RichTextToolbar toolBar = new RichTextToolbar(richTextEditor);
+		//toolBar.setWidth("100%");
 		HorizontalPanel infoPanel = new HorizontalPanel();
 		buildInfoButtonGroup();
 		infoPanel.add(infoButtonGroup);
-		HorizontalPanel textAreaPanel = new HorizontalPanel();
-        textAreaPanel.add(richTextEditor);
+		VerticalPanel textAreaPanel = new VerticalPanel();
+		//textAreaPanel.add(toolBar);
+		textAreaPanel.add(richTextEditor);
+		
+        
         textAreaPanel.setWidth("95%");
         mainPanel.add(infoPanel);
         mainPanel.add(textAreaPanel);

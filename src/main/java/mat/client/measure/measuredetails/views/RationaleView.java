@@ -97,6 +97,11 @@ public class RationaleView implements MeasureDetailViewInterface {
 		this.observer = (RationaleObserver) observer; 
 	}
 	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
+	
 	private void buildModel(RationaleModel model) {
 		this.model = new RationaleModel(model);
 	}

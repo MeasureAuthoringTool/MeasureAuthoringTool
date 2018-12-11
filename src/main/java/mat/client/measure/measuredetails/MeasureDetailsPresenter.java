@@ -251,6 +251,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	private void saveMeasureDetails() {
+		measureDetailsView.getComponentDetailView().getObserver().handleValueChanged();
 		List<String> validationErrors = measureDetailsView.getMeasureDetailsComponentModel().validateModel(measureDetailsModel);
 		if(validationErrors == null || validationErrors.isEmpty()) {
 			measureDetailsView.getMeasureDetailsComponentModel().update(measureDetailsModel);

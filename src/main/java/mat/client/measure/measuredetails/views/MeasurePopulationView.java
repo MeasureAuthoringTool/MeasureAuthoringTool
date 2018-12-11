@@ -96,6 +96,11 @@ public class MeasurePopulationView implements MeasureDetailViewInterface {
 		this.observer = (MeasurePopulationObserver) observer; 
 	}
 	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
+	
 	private void buildModel(MeasurePopulationModel measurePopulationModel) {
 		this.model = new MeasurePopulationModel(measurePopulationModel);		
 	}

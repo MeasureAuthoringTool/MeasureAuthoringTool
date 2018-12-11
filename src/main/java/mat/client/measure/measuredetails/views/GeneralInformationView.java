@@ -650,6 +650,11 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		this.observer = (GeneralInformationObserver) observer;
 	}
 	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
+	
 	public TextBox getnQFIDInput() {
 		return nQFIDInput;
 	}

@@ -83,10 +83,6 @@ public class InitialPopulationView implements MeasureDetailViewInterface {
 	public void clear() {
 		// TODO Auto-generated method stub
 	}
-
-	public InitialPopulationObserver getObserver() {
-		return observer;
-	}
 	
 	public void setObserver(InitialPopulationObserver observer) {
 		this.observer = observer; 
@@ -110,5 +106,10 @@ public class InitialPopulationView implements MeasureDetailViewInterface {
 	@Override
 	public void setObserver(MeasureDetailsComponentObserver observer) {
 		this.observer = (InitialPopulationObserver) observer; 
+	}
+	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
 	}
 }

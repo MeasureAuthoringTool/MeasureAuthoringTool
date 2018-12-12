@@ -94,6 +94,11 @@ public class DisclaimerView implements MeasureDetailViewInterface {
 		this.observer = (DisclaimerObserver) observer; 
 	}
 	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
+	
 	private void buildModel(DisclaimerModel model) {
 		this.model = new DisclaimerModel(model);
 	}

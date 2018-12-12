@@ -82,5 +82,10 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return null;
+	}
 
 }

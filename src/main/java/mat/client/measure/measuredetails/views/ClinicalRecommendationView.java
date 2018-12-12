@@ -97,6 +97,11 @@ public class ClinicalRecommendationView implements MeasureDetailViewInterface {
 		this.observer = (ClinicalRecommendationObserver) observer; 
 	}
 	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
+	
 	private void buildModel(ClinicalRecommendationModel model) {
 		this.model = new ClinicalRecommendationModel(model);
 	}

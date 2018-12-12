@@ -90,6 +90,11 @@ public class DenominatorView implements MeasureDetailViewInterface {
 		this.observer = (DenominatorObserver) observer; 		
 	}
 	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
+	
 	private void buildModel(DenominatorModel originalModel2) {
 		this.model = new DenominatorModel(model);
 	}

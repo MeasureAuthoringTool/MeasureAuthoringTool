@@ -97,6 +97,11 @@ public class DenominatorExceptionsView implements MeasureDetailViewInterface {
 	public void setObserver(MeasureDetailsComponentObserver observer) {
 		this.observer = (DenominatorExceptionsObserver) observer; 		
 	}
+	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
 
 	private void buildModel(DenominatorExceptionsModel model) {
 		this.model = new DenominatorExceptionsModel(model);

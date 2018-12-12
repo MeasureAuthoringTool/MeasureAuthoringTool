@@ -80,5 +80,10 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return null;
+	}
 
 }

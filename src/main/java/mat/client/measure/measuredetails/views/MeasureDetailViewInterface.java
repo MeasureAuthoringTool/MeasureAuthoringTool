@@ -20,4 +20,5 @@ public interface MeasureDetailViewInterface {
 	void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model);
 	public RichTextEditor getRichTextEditor();
 	void setObserver(MeasureDetailsComponentObserver observer);
+	MeasureDetailsComponentObserver getObserver();
 }

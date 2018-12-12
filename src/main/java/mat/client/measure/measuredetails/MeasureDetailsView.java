@@ -205,4 +205,8 @@ public class MeasureDetailsView {
 	public void setCurrentMeasureDetail(MatDetailItem currentMeasureDetail) {
 		this.currentMeasureDetail = currentMeasureDetail;
 	}
+
+	public MeasureDetailViewInterface getComponentDetailView() {
+		return componentDetailView;
+	}
 }

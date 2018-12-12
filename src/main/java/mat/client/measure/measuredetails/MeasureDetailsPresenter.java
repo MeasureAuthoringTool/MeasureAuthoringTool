@@ -262,6 +262,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	private void saveMeasureDetails() {
+		measureDetailsView.getComponentDetailView().getObserver().handleValueChanged();
 		measureDetailsView.getMeasureDetailsComponentModel().update(measureDetailsModel);
 		ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
 		ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();

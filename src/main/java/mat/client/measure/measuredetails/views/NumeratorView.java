@@ -96,6 +96,11 @@ public class NumeratorView implements MeasureDetailViewInterface {
 		this.observer = (NumeratorObserver) observer; 
 	}
 	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
+	
 	private void buildModel(NumeratorModel model) {
 		this.model = new NumeratorModel(model);
 	}

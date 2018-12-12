@@ -94,6 +94,11 @@ public class NumeratorExclusionsView implements MeasureDetailViewInterface {
 		this.observer = (NumeratorExclusionsObserver) observer; 
 	}
 	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
+	
 	private void buildModel(NumeratorExclusionsModel model) {
 		this.model = new NumeratorExclusionsModel(model);
 	}

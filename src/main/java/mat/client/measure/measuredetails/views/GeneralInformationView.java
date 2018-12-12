@@ -480,9 +480,15 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		measureScoringInput.setEnabled(!readOnly);
 		patientBasedInput.setEnabled(!readOnly);
 		endorsedByListBox.setEnabled(!readOnly);
-		nQFIDInput.setReadOnly(readOnly);
-		nQFIDInput.setEnabled(!readOnly);
+		setNQFIdInputReadOnly(readOnly);
 		setGenerateEMeasureButtonReadOnly(readOnly);
+	}
+
+	private void setNQFIdInputReadOnly(boolean readOnly) {
+		if(generalInformationModel.getEndorseByNQF() != null && generalInformationModel.getEndorseByNQF()) {
+			nQFIDInput.setReadOnly(readOnly);
+			nQFIDInput.setEnabled(!readOnly);
+		}
 	}
 
 	private void setGenerateEMeasureButtonReadOnly(boolean readOnly) {

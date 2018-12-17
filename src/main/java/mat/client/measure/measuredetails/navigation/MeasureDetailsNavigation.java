@@ -72,7 +72,7 @@ public class MeasureDetailsNavigation {
 					anchorListItem.getElement().getStyle().setMarginLeft(15, Unit.PX);
 					menuItemMap.put(populationDetail, anchorListItem);
 					navPills.add(anchorListItem);
-					anchorListItem.addClickHandler(event -> handleMenuItemClick(anchorListItem, populationDetail));
+					anchorListItem.addClickHandler(event -> handleMenuItemClick(populationDetail));
 				}
 			}
 		}
@@ -93,7 +93,7 @@ public class MeasureDetailsNavigation {
 				anchorListItem = new MeasureDetailsPopulationAnchorListItem(measureDetail.abbreviatedName());
 				anchorListItem.setIcon(IconType.PLUS);
 				anchorListItem.add(populationsCollapse);
-				anchorListItem.addClickHandler(event -> handleMenuItemClick(anchorListItem, measureDetail));
+				anchorListItem.addClickHandler(event -> handleMenuItemClick(measureDetail));
 				navPills.add(anchorListItem);
 			} else {
 				anchorListItem = new MeasureDetailsAnchorListItem(measureDetail.abbreviatedName());
@@ -102,7 +102,7 @@ public class MeasureDetailsNavigation {
 					continue;
 				}
 				navPills.add(anchorListItem);
-				anchorListItem.addClickHandler(event -> handleMenuItemClick(anchorListItem, measureDetail));
+				anchorListItem.addClickHandler(event -> handleMenuItemClick(measureDetail));
 			}
 			anchorListItem.getElement().setTitle(measureDetail.abbreviatedName());
 			menuItemMap.put(measureDetail, anchorListItem);
@@ -111,8 +111,8 @@ public class MeasureDetailsNavigation {
 		return navPills;
 	}
 	
-	private void handleMenuItemClick(AnchorListItem anchorListItem, MatDetailItem menuItem) {
-		observer.handleMenuItemClick(anchorListItem, menuItem);
+	private void handleMenuItemClick(MatDetailItem menuItem) {
+		observer.handleMenuItemClick(menuItem);
 	}
 
 	public void expandPopulationCollapse(AnchorListItem anchorListItem) {

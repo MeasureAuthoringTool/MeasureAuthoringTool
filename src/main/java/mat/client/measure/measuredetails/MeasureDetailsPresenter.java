@@ -3,9 +3,6 @@ package mat.client.measure.measuredetails;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -85,12 +82,12 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 	
 	@Override
-	public void handleMenuItemClick(AnchorListItem anchorListItem, MatDetailItem menuItem) {
-		
+	public void handleMenuItemClick(MatDetailItem menuItem) {
+		clearAlerts();
 		if(isDirty()) {
 			measureDetailsView.displayDirtyCheck();
 			measureDetailsView.getMessagePanel().getWarningConfirmationNoButton().addClickHandler(event -> handleWarningConfirmationNoClick());
-			measureDetailsView.getMessagePanel().getWarningConfirmationYesButton().addClickHandler(event -> handleWarningConfirmationYesClick(anchorListItem, menuItem));
+			measureDetailsView.getMessagePanel().getWarningConfirmationYesButton().addClickHandler(event -> handleWarningConfirmationYesClick(menuItem));
 			measureDetailsView.getMessagePanel().getWarningConfirmationYesButton().setFocus(true);
 		} else {
 			navigateTo(menuItem);
@@ -103,7 +100,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		measureDetailsView.setFocusOnHeader();
 	}
 	
-	private void handleWarningConfirmationYesClick(AnchorListItem anchorListItem, MatDetailItem menuItem) {
+	private void handleWarningConfirmationYesClick(MatDetailItem menuItem) {
 		clearAlerts();
 		navigateTo(menuItem);
 	}
@@ -221,8 +218,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	private void clearAlerts() {
-		measureDetailsView.getErrorMessageAlert().clear();
-		measureDetailsView.getErrorMessageAlert().clearAlert();
 		measureDetailsView.getMessagePanel().clearAlerts();
 	}
 	

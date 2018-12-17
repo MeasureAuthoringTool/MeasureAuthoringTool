@@ -92,6 +92,11 @@ public class ImprovementNotationView implements MeasureDetailViewInterface {
 	public void setObserver(MeasureDetailsComponentObserver observer) {
 		this.observer = (ImprovementNotationObserver) observer; 
 	}
+	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
 
 	private void addEventHandlers() {
 		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());		

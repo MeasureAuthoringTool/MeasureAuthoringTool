@@ -93,6 +93,11 @@ public class CopyrightView implements MeasureDetailViewInterface {
 		this.observer = (CopyrightObserver) observer; 
 		
 	}
+	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
 		
 	private void buildModel(CopyrightModel originalCopyrightModel) {
 		this.model = new CopyrightModel(originalCopyrightModel);

@@ -277,6 +277,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		generalInformationModel.setScoringMethod(manageMeasureDetailModel.getMeasScoring());
 		generalInformationModel.setNqfId(manageMeasureDetailModel.getNqfId());
 		generalInformationModel.setEndorseByNQF(manageMeasureDetailModel.getEndorseByNQF());
+		
 		if(manageMeasureDetailModel instanceof ManageCompositeMeasureDetailModel) {
 			generalInformationModel.setCompositeScoringMethod(((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).getCompositeScoringMethod());
 		}

@@ -74,4 +74,9 @@ public class PopulationsView implements MeasureDetailViewInterface {
 	@Override
 	public void setObserver(MeasureDetailsComponentObserver observer) {
 	}
+	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return null;
+	}
 }

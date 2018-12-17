@@ -183,14 +183,17 @@ public class MeasureDetailsView {
 	}
 	
 	public void displayErrorMessage(String message) {
+		messagePanel.clearAlerts();
 		messagePanel.getErrorMessageAlert().createAlert(message);
 	}
 	
 	public void displaySuccessMessage(String message) {
+		messagePanel.clearAlerts();
 		messagePanel.getSuccessMessageAlert().createAlert(message);
 	}
 	
 	public void displayWarning(String message) {
+		messagePanel.clearAlerts();
 		messagePanel.getWarningMessageAlert().createAlert(message);
 	}
 	
@@ -204,10 +207,13 @@ public class MeasureDetailsView {
 
 	public void setCurrentMeasureDetail(MatDetailItem currentMeasureDetail) {
 		this.currentMeasureDetail = currentMeasureDetail;
-	}
-	
+	}	
 	
 	public MessagePanel getMessagePanel() {
 		return messagePanel;
+	}
+	
+	public MeasureDetailViewInterface getComponentDetailView() {
+		return componentDetailView;
 	}
 }

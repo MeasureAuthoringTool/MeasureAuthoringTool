@@ -22,7 +22,7 @@ public class MeasureDetailsConstants {
 		RISK_ADJUSTMENT("Risk Adjustment", "Risk Adjustment"),
 		RATE_AGGREGATION("Rate Aggregation", "Rate Aggregation"),
 		RATIONALE("Rationale", "Rationale"),
-		CLINICAL_RECOMMENDATION("Clinical Recommendation", "Clinical Recommendation"),
+		CLINICAL_RECOMMENDATION("Clinical Recommendation", "Clinical Recommendation Statement"),
 		IMPROVEMENT_NOTATION("Improvement Notation", "Improvement Notation"),
 		REFERENCES("References", "References"),
 		DEFINITION("Definition", "Definition"),

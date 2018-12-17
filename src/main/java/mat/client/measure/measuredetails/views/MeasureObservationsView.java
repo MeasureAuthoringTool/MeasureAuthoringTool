@@ -97,6 +97,11 @@ public class MeasureObservationsView implements MeasureDetailViewInterface {
 		this.observer = (MeasureObservationsObserver) observer; 
 	}
 	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
+	
 	private void buildModel(MeasureObservationsModel model) {
 		this.model = new MeasureObservationsModel(model);
 	}

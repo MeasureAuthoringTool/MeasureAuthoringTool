@@ -442,9 +442,9 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		VerticalPanel compositeScoringPanel = new VerticalPanel();
 		compositeScoringPanel.getElement().addClassName("generalInformationPanel");
 		FormLabel compositeScoringLabel =  new FormLabel();
-		compositeScoringLabel.setText("Composite Scoring");
+		compositeScoringLabel.setText("Composite Scoring Method");
 		compositeScoringLabel.setTitle(compositeScoringLabel.getText());
-		compositeScoringLabel.setId("compositeScoringLabel");
+		compositeScoringLabel.setId("compositeScoringMethodLabel");
 		compositeScoringLabel.setFor("compositeScoringMethodInput");
 		compositeScoringPanel.add(compositeScoringLabel);
 		compositeScoringPanel.add(compositeScoringMethodInput);
@@ -480,7 +480,15 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		measureScoringInput.setEnabled(!readOnly);
 		patientBasedInput.setEnabled(!readOnly);
 		endorsedByListBox.setEnabled(!readOnly);
+		setNQFIdInputReadOnly(readOnly);
 		setGenerateEMeasureButtonReadOnly(readOnly);
+	}
+
+	private void setNQFIdInputReadOnly(boolean readOnly) {
+		if(generalInformationModel.getEndorseByNQF() != null && generalInformationModel.getEndorseByNQF()) {
+			nQFIDInput.setReadOnly(readOnly);
+			nQFIDInput.setEnabled(!readOnly);
+		}
 	}
 
 	private void setGenerateEMeasureButtonReadOnly(boolean readOnly) {
@@ -648,6 +656,11 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	@Override
 	public void setObserver(MeasureDetailsComponentObserver observer) {
 		this.observer = (GeneralInformationObserver) observer;
+	}
+	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
 	}
 	
 	public TextBox getnQFIDInput() {

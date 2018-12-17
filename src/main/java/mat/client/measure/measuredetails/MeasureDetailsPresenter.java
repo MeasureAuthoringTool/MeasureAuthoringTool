@@ -280,31 +280,37 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	@Override
 	public void handleSaveButtonClick() {
-		ConfirmationDialogBox confirmationDialog = measureDetailsView.getSaveConfirmation();
-		if(confirmationDialog != null) {
-			confirmationDialog.getYesButton().addClickHandler(event -> saveMeasureDetails());
-			confirmationDialog.show();
-			confirmationDialog.getYesButton().setFocus(true);
-		} else {
-			saveMeasureDetails();
-		}
-	}
-
-	private void saveMeasureDetails() {
 		List<String> validationErrors = measureDetailsView.getMeasureDetailsComponentModel().validateModel(measureDetailsModel);
 		if(validationErrors == null || validationErrors.isEmpty()) {
-			measureDetailsView.getMeasureDetailsComponentModel().update(measureDetailsModel);
-			ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
-			ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
-			
-			if(measureDetailsModel.isComposite()) {
-				MatContext.get().getMeasureService().saveCompositeMeasure((ManageCompositeMeasureDetailModel) manageMeasureDetails, getSaveCallback());
+			ConfirmationDialogBox confirmationDialog = measureDetailsView.getSaveConfirmation();
+			if(confirmationDialog != null) {
+				showSaveConfirmationDialog(confirmationDialog);
 			} else {
-				MatContext.get().getMeasureService().saveMeasureDetails(manageMeasureDetails, getSaveCallback());
+				saveMeasureDetails();
 			}
 		} else {
 			String validationErrorMessage = validationErrors.stream().collect(Collectors.joining("\n"));
 			measureDetailsView.displayErrorMessage(validationErrorMessage);
+		}
+	}
+
+	private void showSaveConfirmationDialog(ConfirmationDialogBox confirmationDialog) {
+		confirmationDialog.getYesButton().addClickHandler(event -> saveMeasureDetails());
+		confirmationDialog.getNoButton().addClickHandler(event -> measureDetailsView.resetForm());
+		confirmationDialog.show();
+		confirmationDialog.getYesButton().setFocus(true);
+	}
+
+	private void saveMeasureDetails() {
+		measureDetailsView.getComponentDetailView().getObserver().handleValueChanged();
+		measureDetailsView.getMeasureDetailsComponentModel().update(measureDetailsModel);
+		ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
+		ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
+
+		if(measureDetailsModel.isComposite()) {
+			MatContext.get().getMeasureService().saveCompositeMeasure((ManageCompositeMeasureDetailModel) manageMeasureDetails, getSaveCallback());
+		} else {
+			MatContext.get().getMeasureService().saveMeasureDetails(manageMeasureDetails, getSaveCallback());
 		}
 	}
 

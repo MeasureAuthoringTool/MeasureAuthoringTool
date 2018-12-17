@@ -98,6 +98,11 @@ public class RiskAdjustmentView implements MeasureDetailViewInterface {
 		this.observer = (RiskAdjustmentObserver) observer; 
 	}
 	
+	@Override
+	public MeasureDetailsComponentObserver getObserver() {
+		return observer;
+	}
+	
 	private void buildModel(RiskAdjustmentModel model) {
 		this.model = new RiskAdjustmentModel(model);
 	}

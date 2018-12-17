@@ -28,17 +28,19 @@ public class MeasureDetailsNavigation {
 	private MeasureDetailsObserver observer;
 	private PanelCollapse populationsCollapse;
 	private String scoringType;
+	private boolean isPatientBased;
 	private boolean isComposite;
 	private MatDetailItem activeMenuItem;
 
-	public MeasureDetailsNavigation(String scoringType, boolean isCompositeMeasure) {
-		buildNavigationMenu(scoringType, isComposite);
+	public MeasureDetailsNavigation(String scoringType, boolean isPatientBased, boolean isCompositeMeasure) {
+		buildNavigationMenu(scoringType, isPatientBased, isCompositeMeasure);
 		mainPanel.setWidth("250px");
 	}
 
-	public void buildNavigationMenu(String scoringType, boolean isCompositeMeasure) {
+	public void buildNavigationMenu(String scoringType, boolean isPatientBased, boolean isCompositeMeasure) {
 		mainPanel.clear();
 		this.isComposite = isCompositeMeasure;
+		this.isPatientBased = isPatientBased;
 		this.scoringType = scoringType;
 		menuItemMap = new HashMap<>();
 		populationsCollapse = buildPopulationCollapse();
@@ -64,9 +66,15 @@ public class MeasureDetailsNavigation {
 	public void buildPopulationNavPills(NavPills navPills) {
 		List<PopulationItems> populationsList = Arrays.asList(PopulationItems.values());
 		for(PopulationItems populationDetail: populationsList) {
-			List<String> applicableScoringTypes = populationDetail.getApplicableMeasureTypes();				
+			List<String> applicableScoringTypes = populationDetail.getApplicableMeasureTypes();		
 			for(String applicableScoringType : applicableScoringTypes) {
 				if(applicableScoringType.equalsIgnoreCase(scoringType)) {
+					
+					// don't add measure observation for ratio && patient based measures
+					if(populationDetail.equals(PopulationItems.MEASURE_OBSERVATIONS) && this.isPatientBased && this.scoringType.equalsIgnoreCase("ratio")) {
+						continue; 
+					}
+					
 					MeasureDetailsAnchorListItem anchorListItem = new MeasureDetailsAnchorListItem(populationDetail.abbreviatedName());
 					anchorListItem.setTitle(populationDetail.abbreviatedName());
 					anchorListItem.getElement().getStyle().setMarginLeft(15, Unit.PX);

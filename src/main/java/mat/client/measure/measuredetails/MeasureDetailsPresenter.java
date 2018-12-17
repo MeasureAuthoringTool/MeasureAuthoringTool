@@ -37,12 +37,13 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private String scoringType;
 	private boolean isCompositeMeasure;
 	private boolean isMeasureEditable;
+	private boolean isPatientBased;
 	private long lastRequestTime;
 	private DeleteConfirmDialogBox dialogBox;
 	MeasureDetailsModel measureDetailsModel;
 
 	public MeasureDetailsPresenter() {
-		navigationPanel = new MeasureDetailsNavigation(scoringType, isCompositeMeasure);
+		navigationPanel = new MeasureDetailsNavigation(scoringType, isPatientBased, isCompositeMeasure);
 		navigationPanel.setObserver(this);
 		measureDetailsModel = new MeasureDetailsModel();
 		measureDetailsView = new MeasureDetailsView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
@@ -55,6 +56,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		Mat.hideLoadingMessage();
 		navigationPanel.updateState(MeasureDetailState.BLANK);
 		this.scoringType = null;
+		isPatientBased = false;
 		isCompositeMeasure = false;
 		isMeasureEditable = true;
 	}
@@ -176,7 +178,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	private void displayMeasureDetailsView() {
 		this.scoringType = measureDetailsModel.getGeneralInformationModel().getScoringMethod();
-		navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
+		this.isPatientBased = measureDetailsModel.getGeneralInformationModel().isPatientBased();
+		navigationPanel.buildNavigationMenu(scoringType, isPatientBased, isCompositeMeasure);
 		measureDetailsView.buildDetailView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
 		isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();
 		measureDetailsView.setReadOnly(isMeasureEditable);
@@ -318,8 +321,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			public void onSuccess(SaveMeasureResult result) {
 				MatDetailItem activeMenuItem = navigationPanel.getActiveMenuItem();
 				scoringType = measureDetailsModel.getGeneralInformationModel().getScoringMethod();
+				isPatientBased = measureDetailsModel.getGeneralInformationModel().isPatientBased();
 				MatContext.get().setCurrentMeasureScoringType(scoringType);
-				navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
+				navigationPanel.buildNavigationMenu(scoringType, isPatientBased, isCompositeMeasure);
 				measureDetailsView.buildDetailView(measureDetailsModel, navigationPanel.getActiveMenuItem(), navigationPanel);
 				isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();
 				measureDetailsView.setReadOnly(isMeasureEditable);

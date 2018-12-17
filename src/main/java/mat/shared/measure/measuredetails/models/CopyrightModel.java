@@ -21,4 +21,9 @@ public class CopyrightModel extends MeasureDetailsRichTextAbstractModel implemen
 	public List<String> validateModel(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 		return measureDetailsModelVisitor.validateModel(this);
 	}
+
+	@Override
+	public boolean isDirty(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+		return measureDetailsModelVisitor.isDirty(this);
+	}
 }

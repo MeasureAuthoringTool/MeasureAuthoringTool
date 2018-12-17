@@ -77,10 +77,44 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		return measureDetailsView.getWidget();
 	}
 
+	public MeasureDetailsView getView() {
+		return measureDetailsView;
+	}
+	
 	@Override
 	public void handleMenuItemClick(MatDetailItem menuItem) {
+		clearAlerts();
+		if(isDirty()) {
+			measureDetailsView.displayDirtyCheck();
+			measureDetailsView.getMessagePanel().getWarningConfirmationNoButton().addClickHandler(event -> handleWarningConfirmationNoClick());
+			measureDetailsView.getMessagePanel().getWarningConfirmationYesButton().addClickHandler(event -> handleWarningConfirmationYesClick(menuItem));
+			measureDetailsView.getMessagePanel().getWarningConfirmationYesButton().setFocus(true);
+		} else {
+			navigateTo(menuItem);
+		}
+	}
+
+	private void navigateTo(MatDetailItem menuItem) {		
 		measureDetailsView.buildDetailView(menuItem);
+		navigationPanel.setActiveMenuItem(menuItem);
 		measureDetailsView.setFocusOnHeader();
+	}
+	
+	private void handleWarningConfirmationYesClick(MatDetailItem menuItem) {
+		clearAlerts();
+		navigateTo(menuItem);
+	}
+
+	private void handleWarningConfirmationNoClick() {
+		clearAlerts();
+	}
+
+	public boolean isDirty() {
+		if(measureDetailsView.getMeasureDetailsComponentModel() != null) {
+			return measureDetailsView.getMeasureDetailsComponentModel().isDirty(measureDetailsModel);
+		}
+		
+		return false; 
 	}
 	
 	@Override
@@ -184,8 +218,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	private void clearAlerts() {
-		measureDetailsView.getErrorMessageAlert().clear();
-		measureDetailsView.getErrorMessageAlert().clearAlert();
+		measureDetailsView.getMessagePanel().clearAlerts();
 	}
 	
 	private void showErrorAlert(String message) {

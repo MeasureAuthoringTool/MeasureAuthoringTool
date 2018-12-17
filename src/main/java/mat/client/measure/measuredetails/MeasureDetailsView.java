@@ -43,7 +43,6 @@ public class MeasureDetailsView {
 	private RichTextEditor currentRichTextEditor;
 	private MessagePanel messagePanel;
 	
-	
 	public MeasureDetailsView(MeasureDetailsModel measureDetailsComponent, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
 		currentMeasureDetail = measureDetail;
 		this.measureDetailsComponent = measureDetailsComponent;
@@ -198,14 +197,22 @@ public class MeasureDetailsView {
 		messagePanel.getWarningMessageAlert().createAlert(message);
 	}
 	
+	public void displayDirtyCheck() {
+		messagePanel.getWarningConfirmationMessageAlert().createWarningAlert();
+	}
+	
 	public MatDetailItem getCurrentMeasureDetail() {
 		return currentMeasureDetail;
 	}
 
 	public void setCurrentMeasureDetail(MatDetailItem currentMeasureDetail) {
 		this.currentMeasureDetail = currentMeasureDetail;
+	}	
+	
+	public MessagePanel getMessagePanel() {
+		return messagePanel;
 	}
-
+	
 	public MeasureDetailViewInterface getComponentDetailView() {
 		return componentDetailView;
 	}

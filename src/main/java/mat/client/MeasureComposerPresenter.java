@@ -341,6 +341,9 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		if(presenterList.get(selectedIndex) instanceof MetaDataPresenter) {
 			MetaDataPresenter presenter = (MetaDataPresenter) presenterList.get(selectedIndex);
 			return presenter.isMeasureDetailsValid();
+		} else if(presenterList.get(selectedIndex) instanceof MeasureDetailsPresenter) {
+			MeasureDetailsPresenter measureDetailsPresenter = (MeasureDetailsPresenter) presenterList.get(selectedIndex);
+			return !measureDetailsPresenter.isDirty();
 		} else if(presenterList.get(selectedIndex) instanceof CQLMeasureWorkSpacePresenter){
 			CQLMeasureWorkSpacePresenter presenter = (CQLMeasureWorkSpacePresenter) presenterList.get(selectedIndex);
 			return presenter.isCQLWorkspaceValid();
@@ -377,6 +380,9 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 			metaDataPresenter.getMetaDataDisplay().getBottomSuccessMessage().clearAlert();
 			metaDataPresenter.getMetaDataDisplay().getTopSuccessMessage().clearAlert();
 			saveButton = metaDataPresenter.getMetaDataDisplay().getBottomSaveButton();
+		} else if(presenterList.get(selectedIndex) instanceof MeasureDetailsPresenter) {
+			MeasureDetailsPresenter measureDetailsPresenter = (MeasureDetailsPresenter) presenterList.get(selectedIndex);
+			saveErrorMessageAlert = measureDetailsPresenter.getView().getMessagePanel().getGlobalWarningConfirmationMessageAlert();
 		} else if(presenterList.get(selectedIndex) instanceof CQLMeasureWorkSpacePresenter){
 			CQLMeasureWorkSpacePresenter cqlWorkSpacePresenter = (CQLMeasureWorkSpacePresenter) presenterList.get(selectedIndex);
 			CQLMeasureWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();

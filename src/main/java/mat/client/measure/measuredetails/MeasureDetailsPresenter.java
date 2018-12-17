@@ -7,7 +7,6 @@ import org.gwtbootstrap3.client.ui.AnchorListItem;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -95,11 +94,11 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			measureDetailsView.getMessagePanel().getWarningConfirmationYesButton().setFocus(true);
 			GWT.log(navigationPanel.getActiveMenuItem() + " is dirty");
 		} else {
-			navigateTo(anchorListItem, menuItem);
+			navigateTo(menuItem);
 		}
 	}
 
-	private void navigateTo(AnchorListItem anchorListItem, MatDetailItem menuItem) {		
+	private void navigateTo(MatDetailItem menuItem) {		
 		measureDetailsView.buildDetailView(menuItem);
 		navigationPanel.setActiveMenuItem(menuItem);
 		measureDetailsView.setFocusOnHeader();
@@ -107,7 +106,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	
 	private void handleWarningConfirmationYesClick(AnchorListItem anchorListItem, MatDetailItem menuItem) {
 		clearAlerts();
-		navigateTo(anchorListItem, menuItem);
+		navigateTo(menuItem);
 	}
 
 	private void handleWarningConfirmationNoClick() {

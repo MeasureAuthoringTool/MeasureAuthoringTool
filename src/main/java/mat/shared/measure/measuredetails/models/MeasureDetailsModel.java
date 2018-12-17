@@ -744,7 +744,6 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public boolean isDirty(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

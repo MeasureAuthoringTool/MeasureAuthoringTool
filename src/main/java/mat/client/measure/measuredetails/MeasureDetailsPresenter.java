@@ -92,7 +92,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			measureDetailsView.getMessagePanel().getWarningConfirmationNoButton().addClickHandler(event -> handleWarningConfirmationNoClick());
 			measureDetailsView.getMessagePanel().getWarningConfirmationYesButton().addClickHandler(event -> handleWarningConfirmationYesClick(anchorListItem, menuItem));
 			measureDetailsView.getMessagePanel().getWarningConfirmationYesButton().setFocus(true);
-			GWT.log(navigationPanel.getActiveMenuItem() + " is dirty");
 		} else {
 			navigateTo(menuItem);
 		}

@@ -442,9 +442,9 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		VerticalPanel compositeScoringPanel = new VerticalPanel();
 		compositeScoringPanel.getElement().addClassName("generalInformationPanel");
 		FormLabel compositeScoringLabel =  new FormLabel();
-		compositeScoringLabel.setText("Composite Scoring");
+		compositeScoringLabel.setText("Composite Scoring Method");
 		compositeScoringLabel.setTitle(compositeScoringLabel.getText());
-		compositeScoringLabel.setId("compositeScoringLabel");
+		compositeScoringLabel.setId("compositeScoringMethodLabel");
 		compositeScoringLabel.setFor("compositeScoringMethodInput");
 		compositeScoringPanel.add(compositeScoringLabel);
 		compositeScoringPanel.add(compositeScoringMethodInput);

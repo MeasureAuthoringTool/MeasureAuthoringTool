@@ -117,7 +117,7 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 		Column<MeasureType, Boolean> selectColumn = new Column<MeasureType, Boolean>(chbxCell) {
 			@Override
 			public Boolean getValue(MeasureType object) {
-				chbxCell.setTitle("Click checkbox to select: " + object.getDescription());
+				chbxCell.setTitle("Click checkbox to select " + object.getDescription());
 				boolean isSelected = false;
 				if (measureTypeModel.getMeasureTypeList().size() > 0) {
 					for (int i = 0; i < measureTypeModel.getMeasureTypeList().size(); i++) {

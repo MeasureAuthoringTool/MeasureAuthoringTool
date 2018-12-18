@@ -38,27 +38,29 @@ public class MeasureTypeModel implements MeasureDetailsComponentModel, IsSeriali
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
 		MeasureTypeModel measureTypeModel = (MeasureTypeModel) model; 
+		
+		List<MeasureType> measureTypeListToCompare = measureTypeModel.getMeasureTypeList();
+		if(measureTypeListToCompare == null) {
+			measureTypeListToCompare = new ArrayList<>(); 
+		}
+		
+		if(this.measureTypeList == null) {
+			this.measureTypeList = new ArrayList<>(); 
+		}
 
-		if(measureTypeModel.getMeasureTypeList() == null && this.measureTypeList == null) {
-			return true; 
-		} else if(measureTypeModel.getMeasureTypeList() == null && this.measureTypeList != null) {
+		this.measureTypeList.sort(Comparator.comparing(MeasureType::getDescription));
+		measureTypeListToCompare.sort(Comparator.comparing(MeasureType::getDescription));
+		
+		if(measureTypeList.size() != measureTypeListToCompare.size()) {
 			return false; 
-		} else if(measureTypeModel.getMeasureTypeList() != null && this.measureTypeList == null) {
-			return false; 
-		} else {
-			this.measureTypeList.sort(Comparator.comparing(MeasureType::getDescription));
-			measureTypeModel.getMeasureTypeList().sort(Comparator.comparing(MeasureType::getDescription));
-			
-			if(measureTypeList.size() != measureTypeModel.getMeasureTypeList().size()) {
+		}
+		
+		for(int i = 0; i < measureTypeList.size(); i++) {
+			if(!measureTypeList.get(i).getDescription().equalsIgnoreCase(measureTypeListToCompare.get(i).getDescription())) {
 				return false; 
 			}
-			
-			for(int i = 0; i < measureTypeList.size(); i++) {
-				if(!measureTypeList.get(i).getDescription().equalsIgnoreCase(measureTypeModel.getMeasureTypeList().get(i).getDescription())) {
-					return false; 
-				}
-			}
 		}
+
 		
 		return true; 
 	}

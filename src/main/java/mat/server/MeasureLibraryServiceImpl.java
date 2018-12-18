@@ -6032,12 +6032,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return compositeMeasureValidator.validateCompositeMeasure(manageCompositeMeasureDetailModel);
 	}
 
-	private List<MeasureType> getMeasureTypeForComposite() {
-		List<MeasureType> measureTypeList = new ArrayList<>(1);
-		MeasureType measureType = new MeasureType();
-		measureType.setAbbrName("COMPOSITE");
-		measureType.setDescription("Composite");
-		measureTypeList.add(measureType);
+	private List<MeasureType> getMeasureTypeForComposite(List<MeasureType> list) {
+		List<MeasureType> measureTypeList = new ArrayList<>();
+		if(CollectionUtils.isEmpty(list)) {
+			MeasureType measureType = new MeasureType();
+			measureType.setAbbrName("COMPOSITE");
+			measureType.setDescription("Composite");
+			measureTypeList.add(measureType);
+		} else {
+			measureTypeList.addAll(list);
+		}
+		
 		return measureTypeList;
 	}
 
@@ -6106,7 +6111,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			result.setSuccess(true);
 			result.setId(pkg.getId());
-			model.setMeasureTypeSelectedList(getMeasureTypeForComposite());
+			model.setMeasureTypeSelectedList(getMeasureTypeForComposite(model.getMeasureTypeSelectedList()));
 			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
 			createComponentMeasureAsLibraryInMeasureXML(pkg.getId(), model);
 			return result;

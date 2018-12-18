@@ -2,8 +2,6 @@ package mat.client.measure.measuredetails.views;
 
 import java.util.List;
 
-import org.gwtbootstrap3.client.ui.FormLabel;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.TableCaptionElement;
@@ -83,6 +81,7 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 		updateMeasureTypeSelectedList(this.measureTypeModel.getMeasureTypeList());
 		sortProvider.addDataDisplay(measureTypeCellTable);
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureTypeListSummary", "In the following Measure Type List table,Select is given in first Column and Measure Type is given in Second column");
+		panel.add(invisibleLabel);
 		measureTypeCellTable.getElement().setAttribute("id", "MeasureTypeListCellTable");
 		measureTypeCellTable.getElement().setAttribute("aria-describedby", "measureTypeListSummary");
 		measureTypeCellTable.setWidth("600px");
@@ -127,9 +126,8 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 							break;
 						}
 					}
-				} else {
-					isSelected = false;
-				}
+				} 
+				
 				return isSelected;
 			}
 		};

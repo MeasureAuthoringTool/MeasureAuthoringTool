@@ -17,7 +17,7 @@ public class MeasureDetailsAnchorListItem extends AnchorListItem{
 	public MeasureDetailsAnchorListItem(String text) {
 		super(text);
 		badge = new Badge();
-		badge.addStyleName("MeasureDetailsbadge");
+		badge.addStyleName("measureDetailsBadge");
 	}
 	
 	public void setState(MeasureDetailState state) {
@@ -46,9 +46,5 @@ public class MeasureDetailsAnchorListItem extends AnchorListItem{
 			this.add(badge, anchorElement);
 			break;
 		}
-	}
-
-	public MeasureDetailState getState() {
-		return state;
 	}
 }

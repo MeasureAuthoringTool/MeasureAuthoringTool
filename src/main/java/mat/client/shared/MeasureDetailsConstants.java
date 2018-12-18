@@ -83,4 +83,20 @@ public class MeasureDetailsConstants {
 		}
 	}
 
+	public static String getProportion() {
+		return PROPORTION;
+	}
+
+	public static String getRatio() {
+		return RATIO;
+	}
+
+	public static String getContinuousVariable() {
+		return CONTINUOUS_VARIABLE;
+	}
+
+	public static String getCohort() {
+		return COHORT;
+	}
+
 }

@@ -201,6 +201,7 @@ public class MeasureDetailsView {
 	}
 	
 	public void displayDirtyCheck() {
+		messagePanel.clearAlerts();
 		messagePanel.getWarningConfirmationMessageAlert().createWarningAlert();
 	}
 	

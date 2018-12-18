@@ -213,5 +213,9 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean, Boolean> {
 		}
 		
 	}
+	
+	public void setTitle(String title) {
+		this.checkBoxTitle = title; 
+	}
 }
 

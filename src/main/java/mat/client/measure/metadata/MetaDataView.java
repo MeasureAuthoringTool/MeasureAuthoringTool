@@ -1173,8 +1173,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		Label measureSearchHeader = new Label("Measure Type List");
 		measureSearchHeader.getElement().setId("measureTypeHeader_Label");
 		measureSearchHeader.setStyleName("invisibleTableCaption");
-		com.google.gwt.dom.client.TableElement elem = measureTypeCellTable
-				.getElement().cast();
+		com.google.gwt.dom.client.TableElement elem = measureTypeCellTable.getElement().cast();
 		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(measureSearchHeader.getElement());
@@ -1186,6 +1185,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				chbxCell) {
 			@Override
 			public Boolean getValue(MeasureType object) {
+				chbxCell.setTitle("Click checkbox to select: " + object.getDescription());
 				boolean isSelected = false;
 				if (measureTypeSelectedList.size() > 0) {
 					for (int i = 0; i < measureTypeSelectedList.size(); i++) {

@@ -400,6 +400,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			MatContext.get().getCQLConstants();
+			MatContext.get().getMeasureTypeListFromDataBase();
 			
 			measureLibrary = buildMeasureLibraryWidget(false);
 			title = ClientConstants.TITLE_MEASURE_LIB;

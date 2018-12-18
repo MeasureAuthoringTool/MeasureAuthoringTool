@@ -2,6 +2,7 @@ package mat.client.shared;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,6 +71,7 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
 import mat.model.GlobalCopyPasteObject;
+import mat.model.MeasureType;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLIdentifierObject;
@@ -217,6 +219,8 @@ public class MatContext implements IsSerializable {
 	private HashMap<String, String> programToLatestProfile = new HashMap<>();
 
 	private HashMap<String, List<? extends HasListBox>> selectionMap = new HashMap<>();
+	
+	private List<MeasureType> measureTypeList = new ArrayList<>(); 
 	
 	public void clearDVIMessages(){
 		if(qdsView !=null){
@@ -1475,5 +1479,30 @@ public class MatContext implements IsSerializable {
 			patientBasedList.add("Yes");
 		}
 		return patientBasedList;
+	}
+
+	public void getMeasureTypeListFromDataBase() {
+		getMeasureService().getAllMeasureTypes(new AsyncCallback<List<MeasureType>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(List<MeasureType> result) {
+				result.sort(Comparator.comparing(MeasureType::getDescription));
+				MatContext.get().setMeasureTypeList(result);
+			}
+		});
+	}
+	
+	public List<MeasureType> getMeasureTypeList() {
+		return measureTypeList;
+	}
+
+	public void setMeasureTypeList(List<MeasureType> measureTypeList) {
+		this.measureTypeList = measureTypeList;
 	}
 }

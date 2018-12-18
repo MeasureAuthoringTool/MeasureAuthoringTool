@@ -1,9 +1,12 @@
 package mat.client.measure.measuredetails;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -382,7 +385,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			case MEASURE_SET:
 				return getRichTextEditableTabState(measureDetailsModel.getMeasureSetModel());
 			case POPULATIONS:
-				return MeasureDetailState.INCOMPLETE;
+				return getPopulationsState(measureDetailsModel);
 			default: 
 				return MeasureDetailState.BLANK;
 			}
@@ -445,5 +448,49 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			}
 		}
 		return MeasureDetailState.BLANK;
+	}
+	
+	private MeasureDetailState getPopulationsState(MeasureDetailsModel measureDetailsModel) {
+		List<MeasureDetailsRichTextAbstractModel> applicableModels = new ArrayList<>();
+		if(scoringType.equals("Cohort")) {
+			applicableModels.add(measureDetailsModel.getInitialPopulationModel());
+		} else if (scoringType.equals("Continuous Variable")) {
+			applicableModels.add(measureDetailsModel.getInitialPopulationModel());
+			applicableModels.add(measureDetailsModel.getMeasurePopulationModel());
+			applicableModels.add(measureDetailsModel.getMeasurePopulationExclusionsModel());
+			applicableModels.add(measureDetailsModel.getMeasureObservationsModel());
+		} else if(scoringType.equals("Proportion")) {
+			applicableModels.add(measureDetailsModel.getInitialPopulationModel());
+			applicableModels.add(measureDetailsModel.getDenominatorModel());
+			applicableModels.add(measureDetailsModel.getDenominatorExclusionsModel());
+			applicableModels.add(measureDetailsModel.getNumeratorModel());
+			applicableModels.add(measureDetailsModel.getNumeratorExclusionsModel());
+			applicableModels.add(measureDetailsModel.getDenominatorExceptionsModel());
+		} else if (scoringType.equals("Ratio")) {
+			applicableModels.add(measureDetailsModel.getInitialPopulationModel());
+			applicableModels.add(measureDetailsModel.getDenominatorModel());
+			applicableModels.add(measureDetailsModel.getDenominatorExclusionsModel());
+			applicableModels.add(measureDetailsModel.getNumeratorModel());
+			applicableModels.add(measureDetailsModel.getNumeratorExclusionsModel());
+		}
+		
+		return calculateStateOffOfList(applicableModels);
+	}
+	
+	private MeasureDetailState calculateStateOffOfList(List<MeasureDetailsRichTextAbstractModel> applicableModels) {
+		int completedPopulationCount = 0;
+		for(MeasureDetailsRichTextAbstractModel model : applicableModels) {
+			if(getRichTextEditableTabState(model) == MeasureDetailState.COMPLETE) {
+				completedPopulationCount++;
+			}
+		}
+		
+		if(completedPopulationCount == 0) {
+			return MeasureDetailState.BLANK;
+		} else if(completedPopulationCount == applicableModels.size()) {
+			return MeasureDetailState.COMPLETE;
+		} else {
+			return MeasureDetailState.INCOMPLETE;
+		}
 	}
 }

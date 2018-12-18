@@ -98,7 +98,7 @@ public class MeasureDetailsNavigation {
 			MeasureDetailsAnchorListItem anchorListItem;
 
 			if(measureDetail == MeasureDetailsItems.POPULATIONS) {
-				anchorListItem = new MeasureDetailsPopulationAnchorListItem(measureDetail.abbreviatedName());
+				anchorListItem = new MeasureDetailsAnchorListItem(measureDetail.abbreviatedName());
 				anchorListItem.setIcon(IconType.PLUS);
 				anchorListItem.add(populationsCollapse);
 				anchorListItem.addClickHandler(event -> handleMenuItemClick(measureDetail));

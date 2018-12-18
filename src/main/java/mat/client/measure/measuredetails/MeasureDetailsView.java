@@ -46,11 +46,14 @@ public class MeasureDetailsView {
 	public MeasureDetailsView(MeasureDetailsModel measureDetailsComponent, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
 		currentMeasureDetail = measureDetail;
 		this.measureDetailsComponent = measureDetailsComponent;
-		mainPanel.add(errorAlert);
+		
+		HorizontalPanel errorPanel = new HorizontalPanel();
+		errorPanel.add(errorAlert);
+		mainPanel.add(errorPanel);
 		buildMeasureDetailsButtonPanel();
 
 		mainContentPanel.add(navigationPanel.getWidget());
-		mainContentPanel.setWidth("100%");
+		mainContentPanel.setWidth("850px");
 		widgetComponentPanel = buildDetailView(currentMeasureDetail);
 		mainContentPanel.add(widgetComponentPanel);
 		mainContentPanel.getElement().setId("measureDetailsView_ContentPanel");
@@ -69,6 +72,7 @@ public class MeasureDetailsView {
 		headingPanel.getElement().setId("measureDetailsView_HeadingPanel");
 		widgetComponentPanel.add(headingPanel);
 		messagePanel = new MessagePanel();
+		messagePanel.setWidth("100%");
 		widgetComponentPanel.add(messagePanel);
 		widgetComponentPanel.add(new SpacerWidget());
 	}
@@ -79,7 +83,6 @@ public class MeasureDetailsView {
 			saveButtonPanel.add(saveButton);
 			saveButtonPanel.setWidth("100%");
 			saveButton.setPull(Pull.RIGHT);
-			saveButton.setMarginRight(30);
 			widgetComponentPanel.add(saveButtonPanel);
 		}
 	}

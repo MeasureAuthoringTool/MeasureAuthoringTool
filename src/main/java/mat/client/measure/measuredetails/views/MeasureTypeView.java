@@ -69,8 +69,8 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 	@Override
 	public void buildDetailView() {		
 		VerticalPanel panel = new VerticalPanel();
-		panel.setStyleName("cellTablePanelMeasureDetails");
-		
+		panel.setStyleName("cellTablePanelMeasureDetails");		
+		panel.setWidth("100%");
 		measureTypeCellTable = new CellTable<MeasureType>();
 		measureTypeCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<MeasureType> sortProvider = new ListDataProvider<MeasureType>();
@@ -82,10 +82,10 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 		addMeasureTypeColumnToTable(MatContext.get().getMeasureLockService().checkForEditPermission());
 		updateMeasureTypeSelectedList(this.measureTypeModel.getMeasureTypeList());
 		sortProvider.addDataDisplay(measureTypeCellTable);
-		measureTypeCellTable.setWidth("100%");
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureTypeListSummary", "In the following Measure Type List table,Select is given in first Column and Measure Type is given in Second column");
 		measureTypeCellTable.getElement().setAttribute("id", "MeasureTypeListCellTable");
 		measureTypeCellTable.getElement().setAttribute("aria-describedby", "measureTypeListSummary");
+		measureTypeCellTable.setWidth("600px");
 		panel.add(measureTypeCellTable);
 		mainPanel.add(panel);
 	}

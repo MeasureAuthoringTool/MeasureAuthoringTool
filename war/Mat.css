@@ -1971,10 +1971,7 @@ padding: 2px;
     border-color: #E8EEF7 #E8EEF7 #E8EFF7;
     border-style: solid;
     border-width: 3px;
-    margin-left: -1px;
-   margin-top: -1px;
-    width: 650px;
-    height:150px;
+    height: 150px;
 }
 
 .cellTablePanel_Report {

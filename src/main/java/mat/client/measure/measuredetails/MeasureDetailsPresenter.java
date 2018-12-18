@@ -381,6 +381,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				return getRichTextEditableTabState(measureDetailsModel.getSupplementalDataElementsModel());
 			case MEASURE_SET:
 				return getRichTextEditableTabState(measureDetailsModel.getMeasureSetModel());
+			case POPULATIONS:
+				return MeasureDetailState.INCOMPLETE;
 			default: 
 				return MeasureDetailState.BLANK;
 			}

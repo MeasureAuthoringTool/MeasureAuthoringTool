@@ -12,6 +12,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -23,6 +24,7 @@ import mat.client.codelist.HasListBox;
 import mat.client.measure.measuredetails.observers.GeneralInformationObserver;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
+import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
@@ -57,6 +59,9 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	private Button generateEMeasureIDButton = new Button("Generate Identifier");
 	private TextBox eMeasureIdentifierInput = new TextBox();
 	private TextBox nQFIDInput = new TextBox();
+	private CheckBox calendarYear = new CheckBox();	
+	protected DateBoxWithCalendar measurePeriodFromInput = new DateBoxWithCalendar();
+	protected DateBoxWithCalendar measurePeriodToInput = new DateBoxWithCalendar();
 
 	public GeneralInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel) {
 		originalModel = originalGeneralInformationModel;
@@ -98,7 +103,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		messageFormGrp.getElement().setAttribute("role", "alert");
 		measureDetailForm.add(messageFormGrp);
 		detailPanel.add(measureDetailForm);
-		Grid panelGrid = new Grid(7, 2);
+		Grid panelGrid = new Grid(8, 2);
 		
 		VerticalPanel measureNamePanel = buildMeasureNamePanel();
 		panelGrid.setWidget(0, 0, measureNamePanel);
@@ -135,10 +140,83 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		VerticalPanel nqfNumberPanel = buildNQFNumberPanel();
 		panelGrid.setWidget(6, 0, nqfNumberPanel);
 		
+		VerticalPanel measurementPeriodPanel = buildMeasurementPeriodPanel();
+		panelGrid.setWidget(7, 0, measurementPeriodPanel);
+		hackTheColspan(panelGrid);
+		
 		detailPanel.add(panelGrid);
 		mainPanel.add(detailPanel);
 		buildDropDowns();
 		addEventHandlers();
+	}
+
+	private void hackTheColspan(Grid panelGrid) {
+		panelGrid.getCellFormatter().getElement(7, 1).removeFromParent();
+		panelGrid.getCellFormatter().getElement(7, 0).setAttribute("colspan", "2");
+	}
+
+	private VerticalPanel buildMeasurementPeriodPanel() {
+		VerticalPanel measurementPeriodPanel = new VerticalPanel();
+		measurementPeriodPanel.getElement().setAttribute("verticalAlign", "middle");
+		measurementPeriodPanel.add(new SpacerWidget());
+		measurementPeriodPanel.getElement().setId("measurementPeriod_VerticalPanel");
+		measurementPeriodPanel.setSize("505px", "100px");
+		FormLabel measurePeriodFromInputLabel = new FormLabel();
+		measurePeriodFromInputLabel.setText("Measurement Period");
+		measurePeriodFromInputLabel.getElement().setId("measurementPeriodHeader_Label");
+		measurePeriodFromInputLabel.getElement().setAttribute("tabIndex", "0");
+		measurementPeriodPanel.add(measurePeriodFromInputLabel);
+
+		HorizontalPanel calendarYearDatePanel = new HorizontalPanel();
+		calendarYearDatePanel.getElement().setId("calendarYear_HorizontalPanel");
+		calendarYearDatePanel.add(calendarYear);
+		FormLabel calendarLabel = new FormLabel();
+		calendarLabel.setText("Calendar Year");
+		calendarLabel.getElement().addClassName("calendarLabel");
+		FormLabel calendarYearLabel = new FormLabel();
+		calendarYearLabel.setText("(January 1,20XX through December 31,20XX)");
+		calendarYearLabel.getElement().addClassName("calendarYearLabel");
+		calendarYearDatePanel.add(calendarLabel);
+		calendarYearDatePanel.getElement().setAttribute("verticalAlign", "middle");
+		
+		calendarYearDatePanel.add(calendarYearLabel);
+		calendarYear.getElement().setId("calendarYear_CustomCheckBox");
+		
+		HorizontalPanel measurePeriodPanel = new HorizontalPanel();
+		measurePeriodPanel.getElement().setId("measurePeriodPanel_HorizontalPanel");
+		FormLabel fromLabel = new FormLabel();
+		fromLabel.setText("From");
+		fromLabel.setTitle("From");
+		fromLabel.setMarginTop(5.00);
+		fromLabel.addStyleName("firstLabel");
+		measurePeriodPanel.add(fromLabel);
+		measurePeriodFromInput.getDateBox().getElement().setAttribute("id", "measurePeriodFromInput");
+		measurePeriodFromInput.getDateBox().setWidth("127px");
+		measurePeriodFromInput.getCalendar().setTitle("Click to select From date.");
+		measurePeriodPanel.add(measurePeriodFromInput);
+		measurePeriodFromInput.getElement().setId("measurePeriodFromInput_DateBoxWithCalendar");
+		FormLabel toLabel = new FormLabel();
+		toLabel.setText("To");
+		toLabel.setTitle("To");
+		toLabel.setMarginTop(5.00);
+		toLabel.addStyleName("secondLabel");
+		measurePeriodPanel.add(toLabel);
+		measurePeriodToInput.getDateBox().setWidth("127px");
+		measurePeriodToInput.getCalendar().setTitle("Click to select To date.");
+		measurePeriodToInput.getDateBox().getElement().setAttribute("id", "measurePeriodToInput");
+		measurePeriodPanel.add(measurePeriodToInput);
+		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
+		
+		Grid queryGrid = new Grid(3, 1);
+		queryGrid.setWidget(0, 0, calendarYearDatePanel);
+		queryGrid.setWidget(1, 0, new SpacerWidget());
+		queryGrid.setWidget(2, 0, measurePeriodPanel);
+		measurementPeriodPanel.add(queryGrid);
+		queryGrid.getElement().setId("queryGrid_Grid");
+		calendarYear.setValue(generalInformationModel.isCalenderYear());
+		measurePeriodFromInput.setValue(generalInformationModel.getMeasureFromPeriod());
+		measurePeriodToInput.setValue(generalInformationModel.getMeasureToPeriod());
+		return measurementPeriodPanel;
 	}
 
 	private VerticalPanel buildNQFNumberPanel() {
@@ -281,6 +359,9 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		getMeasureNameInput().addChangeHandler(event -> observer.handleInputChanged());
 		getEndorsedByListBox().addChangeHandler(event -> observer.handleEndorsedByNQFChanged());
 		getnQFIDInput().addChangeHandler(event -> observer.handleInputChanged());
+		getCalenderYear().addClickHandler(event -> observer.handleCalendarYearChanged());
+		getMeasurePeriodFromInput().addValueChangeHandler(event -> observer.handleInputChanged());
+		getMeasurePeriodToInput().addValueChangeHandler(event -> observer.handleInputChanged());
 	}
 
 	private VerticalPanel buildBlankPanel() {
@@ -482,6 +563,14 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		endorsedByListBox.setEnabled(!readOnly);
 		setNQFIdInputReadOnly(readOnly);
 		setGenerateEMeasureButtonReadOnly(readOnly);
+		setMeasurementPeriodReadOnly(readOnly);
+	}
+
+	private void setMeasurementPeriodReadOnly(boolean readOnly) {
+		calendarYear.setEnabled(!readOnly);
+		boolean isMeasurePeriodEnabled = (!readOnly && !generalInformationModel.isCalenderYear());
+		measurePeriodFromInput.setEnabled(isMeasurePeriodEnabled);
+		measurePeriodToInput.setEnabled(isMeasurePeriodEnabled);
 	}
 
 	private void setNQFIdInputReadOnly(boolean readOnly) {
@@ -687,4 +776,26 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		this.endorsedByListBox = endorsedByListBox;
 	}
 
+	public CheckBox getCalenderYear() {
+		return calendarYear;
+	}
+
+	public void setCalenderYear(CheckBox calenderYear) {
+		this.calendarYear = calenderYear;
+	}
+	public DateBoxWithCalendar getMeasurePeriodFromInput() {
+		return measurePeriodFromInput;
+	}
+
+	public void setMeasurePeriodFromInput(DateBoxWithCalendar measurePeriodFromInput) {
+		this.measurePeriodFromInput = measurePeriodFromInput;
+	}
+
+	public DateBoxWithCalendar getMeasurePeriodToInput() {
+		return measurePeriodToInput;
+	}
+
+	public void setMeasurePeriodToInput(DateBoxWithCalendar measurePeriodToInput) {
+		this.measurePeriodToInput = measurePeriodToInput;
+	}
 }

@@ -277,7 +277,9 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		generalInformationModel.setScoringMethod(manageMeasureDetailModel.getMeasScoring());
 		generalInformationModel.setNqfId(manageMeasureDetailModel.getNqfId());
 		generalInformationModel.setEndorseByNQF(manageMeasureDetailModel.getEndorseByNQF());
-		
+		generalInformationModel.setCalenderYear(manageMeasureDetailModel.isCalenderYear());
+		generalInformationModel.setMeasureFromPeriod(manageMeasureDetailModel.getMeasFromPeriod());
+		generalInformationModel.setMeasureToPeriod(manageMeasureDetailModel.getMeasToPeriod());
 		if(manageMeasureDetailModel instanceof ManageCompositeMeasureDetailModel) {
 			generalInformationModel.setCompositeScoringMethod(((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).getCompositeScoringMethod());
 		}
@@ -331,7 +333,31 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		manageMeasureDetailModel.setTransmissionFormat(getTransmissionFormat());
 		manageMeasureDetailModel.setNqfId(getNqfId());
 		manageMeasureDetailModel.setEndorseByNQF(getEndorsedByNQF());
+		manageMeasureDetailModel.setCalenderYear(isCalendarYear());
+		manageMeasureDetailModel.setMeasFromPeriod(getMeasureFromPeriod());
+		manageMeasureDetailModel.setMeasToPeriod(getMeasureToPeriod());
 		return manageMeasureDetailModel;
+	}
+
+	private String getMeasureToPeriod() {
+		if(measureDetailsModel.getGeneralInformationModel() != null) {
+			return measureDetailsModel.getGeneralInformationModel().getMeasureToPeriod();
+		}
+		return null;
+	}
+
+	private String getMeasureFromPeriod() {
+		if(measureDetailsModel.getGeneralInformationModel() != null) {
+			return measureDetailsModel.getGeneralInformationModel().getMeasureFromPeriod();
+		}
+		return null;
+	}
+
+	private boolean isCalendarYear() {
+		if(measureDetailsModel.getGeneralInformationModel() != null) {
+			return measureDetailsModel.getGeneralInformationModel().isCalenderYear();
+		}
+		return false;
 	}
 
 	private Boolean getEndorsedByNQF() {

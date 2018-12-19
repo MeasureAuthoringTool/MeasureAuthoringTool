@@ -51,6 +51,9 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 		generalInformationModel.setMeasureName(generalMeasureInformationView.getMeasureNameInput().getText());
 		generalInformationModel.setEndorseByNQF(Boolean.parseBoolean(generalMeasureInformationView.getEndorsedByListBox().getValue()));
 		generalInformationModel.setNqfId(generalMeasureInformationView.getnQFIDInput().getText());
+		generalInformationModel.setCalenderYear(generalMeasureInformationView.getCalenderYear().getValue());
+		generalInformationModel.setMeasureFromPeriod(generalMeasureInformationView.getMeasurePeriodFromInput().getValue());
+		generalInformationModel.setMeasureToPeriod(generalMeasureInformationView.getMeasurePeriodToInput().getValue());
 		return generalInformationModel;
 	}
 	
@@ -131,7 +134,6 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					//TODO create error message //MatContext.get().getMessageDelegate().getGenericErrorMessage();
 					MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 				}
 				
@@ -152,19 +154,25 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 	}
 
 	@Override
-	public void handleValueChanged() {
-		// TODO Auto-generated method stub
-	}
+	public void handleValueChanged() {}
 
 	@Override
-	public void setView(MeasureDetailViewInterface view) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setView(MeasureDetailViewInterface view) {}
 
 	public void handleEndorsedByNQFChanged() {
 		boolean endorsedByNQF = generalMeasureInformationView.getEndorsedByListBox().getSelectedIndex() == 1 ? true :  false;
 		generalMeasureInformationView.setNQFTitle(endorsedByNQF);
 		updateGeneralInformationModelFromView();
+	}
+
+	public void handleCalendarYearChanged() {
+		boolean calendarYearSelected = generalMeasureInformationView.getCalenderYear().getValue();
+		generalMeasureInformationView.getMeasurePeriodFromInput().setEnabled(!calendarYearSelected);
+		generalMeasureInformationView.getMeasurePeriodToInput().setEnabled(!calendarYearSelected);
+		if(calendarYearSelected) {
+			generalMeasureInformationView.getMeasurePeriodFromInput().setValue("");
+			generalMeasureInformationView.getMeasurePeriodToInput().setValue("");
+		}
+		handleInputChanged();
 	}
 }

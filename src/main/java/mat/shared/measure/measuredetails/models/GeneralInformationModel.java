@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import mat.shared.StringUtility;
+
 public class GeneralInformationModel implements MeasureDetailsComponentModel, IsSerializable {
 	private String measureName;
 	private String finalizedDate;
@@ -16,6 +18,9 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	private int eMeasureId;
 	private String nqfId;
 	private Boolean endorseByNQF;
+	private boolean isCalenderYear;
+	private String measureFromPeriod;
+	private String measureToPeriod;
 
 	public GeneralInformationModel() {
 	}
@@ -32,6 +37,9 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 		this.eMeasureId = model.geteMeasureId();
 		this.endorseByNQF = model.getEndorseByNQF();
 		this.nqfId = model.nqfId;
+		this.setCalenderYear(model.isCalenderYear());
+		this.setMeasureFromPeriod(model.getMeasureFromPeriod());
+		this.setMeasureToPeriod(model.getMeasureToPeriod());
 	}
 
 	public int geteMeasureId() {
@@ -78,6 +86,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	}
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
+		//TODO check measurement period
 		GeneralInformationModel originalModel = (GeneralInformationModel) model;
 		boolean isEqual = ((originalModel.getMeasureName() == null && getMeasureName() == null) ||
 				(originalModel.getMeasureName() != null && originalModel.getMeasureName().equals(getMeasureName())) &&
@@ -161,5 +170,29 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	@Override
 	public boolean isDirty(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
 		return measureDetailsModelVisitor.isDirty(this);
+	}
+	
+	public boolean isCalenderYear() {
+		return isCalenderYear;
+	}
+	
+	public void setCalenderYear(boolean isCalenderYear) {
+		this.isCalenderYear = isCalenderYear;
+	}
+	
+	public String getMeasureFromPeriod() {
+		return measureFromPeriod;
+	}
+	
+	public void setMeasureFromPeriod(String measFromPeriod) {
+		this.measureFromPeriod = StringUtility.doTrim(measFromPeriod);
+	}
+	
+	public String getMeasureToPeriod() {
+		return measureToPeriod;
+	}
+	
+	public void setMeasureToPeriod(String measToPeriod) {
+		this.measureToPeriod = StringUtility.doTrim(measToPeriod);
 	}
 }

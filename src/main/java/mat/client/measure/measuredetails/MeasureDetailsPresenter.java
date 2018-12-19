@@ -303,7 +303,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		measureDetailsView.getMeasureDetailsComponentModel().update(measureDetailsModel);
 		ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
 		ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
-
 		if(measureDetailsModel.isComposite()) {
 			MatContext.get().getMeasureService().saveCompositeMeasure((ManageCompositeMeasureDetailModel) manageMeasureDetails, getSaveCallback());
 		} else {

@@ -2811,3 +2811,12 @@ padding: 2px;
 	padding-top: 7px;
 	padding-right: 10px;
 }
+
+.calendarLabel {
+	margin-left: 3px;
+	margin-top: 3px;
+}
+
+.calendarYearLabel {
+	margin-top: 3px;
+}

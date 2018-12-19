@@ -129,4 +129,8 @@ public class StringUtility {
 	public static String trimTextToSixtyChars(String textToTrim) {
 		return textToTrim.length()>60 ? textToTrim.substring(0, 59) : textToTrim;
 	}
+
+	public static String doTrim(String str) {
+		return (str != null) && (str.trim().length() > 0) ? str.trim() : null;
+	}
 }

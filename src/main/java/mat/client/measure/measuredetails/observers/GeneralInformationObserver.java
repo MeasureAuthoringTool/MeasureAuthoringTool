@@ -51,7 +51,7 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 		generalInformationModel.setMeasureName(generalMeasureInformationView.getMeasureNameInput().getText());
 		generalInformationModel.setEndorseByNQF(Boolean.parseBoolean(generalMeasureInformationView.getEndorsedByListBox().getValue()));
 		generalInformationModel.setNqfId(generalMeasureInformationView.getnQFIDInput().getText());
-		generalInformationModel.setCalenderYear(generalMeasureInformationView.getCalenderYear().getValue());
+		generalInformationModel.setCalendarYear(generalMeasureInformationView.getCalenderYear().getValue());
 		generalInformationModel.setMeasureFromPeriod(generalMeasureInformationView.getMeasurePeriodFromInput().getValue());
 		generalInformationModel.setMeasureToPeriod(generalMeasureInformationView.getMeasurePeriodToInput().getValue());
 		return generalInformationModel;

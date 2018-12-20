@@ -1,11 +1,14 @@
 package mat.shared.measure.measuredetails.models;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.shared.StringUtility;
+import mat.shared.measure.measuredetails.validate.GeneralInformationValidator;
 
 public class MeasureDetailsModel implements MeasureDetailsComponentModel, MeasureDetailsModelVisitor, IsSerializable  {
 	private String id;
@@ -463,11 +466,8 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public List<String> validateModel(GeneralInformationModel generalInformationModel) {
-		List<String> errorMessages = new ArrayList<>();
-		if(generalInformationModel.getEndorseByNQF() && StringUtility.isEmptyOrNull(generalInformationModel.getNqfId())) {
-			errorMessages.add("NQF Number is required when a measure is endorsed by NQF.");
-		}
-		return errorMessages;
+		GeneralInformationValidator validator = new GeneralInformationValidator();
+		return validator.validateModel(generalInformationModel);
 	}
 
 	@Override

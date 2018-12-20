@@ -213,7 +213,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		queryGrid.setWidget(2, 0, measurePeriodPanel);
 		measurementPeriodPanel.add(queryGrid);
 		queryGrid.getElement().setId("queryGrid_Grid");
-		calendarYear.setValue(generalInformationModel.isCalenderYear());
+		calendarYear.setValue(generalInformationModel.isCalendarYear());
 		measurePeriodFromInput.setValue(generalInformationModel.getMeasureFromPeriod());
 		measurePeriodToInput.setValue(generalInformationModel.getMeasureToPeriod());
 		return measurementPeriodPanel;
@@ -568,7 +568,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
 	private void setMeasurementPeriodReadOnly(boolean readOnly) {
 		calendarYear.setEnabled(!readOnly);
-		boolean isMeasurePeriodEnabled = (!readOnly && !generalInformationModel.isCalenderYear());
+		boolean isMeasurePeriodEnabled = (!readOnly && !generalInformationModel.isCalendarYear());
 		measurePeriodFromInput.setEnabled(isMeasurePeriodEnabled);
 		measurePeriodToInput.setEnabled(isMeasurePeriodEnabled);
 	}

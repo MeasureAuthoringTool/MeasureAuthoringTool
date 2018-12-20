@@ -277,7 +277,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		generalInformationModel.setScoringMethod(manageMeasureDetailModel.getMeasScoring());
 		generalInformationModel.setNqfId(manageMeasureDetailModel.getNqfId());
 		generalInformationModel.setEndorseByNQF(manageMeasureDetailModel.getEndorseByNQF());
-		generalInformationModel.setCalenderYear(manageMeasureDetailModel.isCalenderYear());
+		generalInformationModel.setCalendarYear(manageMeasureDetailModel.isCalenderYear());
 		generalInformationModel.setMeasureFromPeriod(manageMeasureDetailModel.getMeasFromPeriod());
 		generalInformationModel.setMeasureToPeriod(manageMeasureDetailModel.getMeasToPeriod());
 		if(manageMeasureDetailModel instanceof ManageCompositeMeasureDetailModel) {
@@ -355,7 +355,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 
 	private boolean isCalendarYear() {
 		if(measureDetailsModel.getGeneralInformationModel() != null) {
-			return measureDetailsModel.getGeneralInformationModel().isCalenderYear();
+			return measureDetailsModel.getGeneralInformationModel().isCalendarYear();
 		}
 		return false;
 	}

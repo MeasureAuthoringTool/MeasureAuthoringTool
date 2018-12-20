@@ -31,6 +31,7 @@ import mat.shared.error.measure.DeleteMeasureException;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsRichTextAbstractModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
+import mat.shared.measure.measuredetails.validate.GeneralInformationValidator;
 
 public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObserver {
 	private MeasureDetailsView measureDetailsView;
@@ -350,7 +351,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		if(k instanceof MeasureDetailsItems) {
 			switch((MeasureDetailsItems) k) {
 			case GENERAL_MEASURE_INFORMATION:
-				return MeasureDetailState.INCOMPLETE;
+				return getGeneralInformationState(measureDetailsModel);
 			case DESCRIPTION:
 				return getRichTextEditableTabState(measureDetailsModel.getDescriptionModel());
 			case COPYRIGHT:
@@ -415,6 +416,12 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		return MeasureDetailState.BLANK;
 	}
 	
+	private MeasureDetailState getGeneralInformationState(MeasureDetailsModel measureDetailsModel) {
+		GeneralInformationValidator modelValidator = new GeneralInformationValidator();
+		return modelValidator.getModelState(measureDetailsModel.getGeneralInformationModel(), measureDetailsModel.isComposite());
+		
+	}
+
 	private MeasureDetailState getMeasureTypeState(MeasureDetailsModel model) {
 		
 		if(model.getMeasureTypeModeModel().getMeasureTypeList() == null) {

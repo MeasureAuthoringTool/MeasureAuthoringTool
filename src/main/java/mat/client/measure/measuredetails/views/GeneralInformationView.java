@@ -103,46 +103,27 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		messageFormGrp.getElement().setAttribute("role", "alert");
 		measureDetailForm.add(messageFormGrp);
 		detailPanel.add(measureDetailForm);
-		Grid panelGrid = new Grid(8, 2);
+		Grid panelGrid = new Grid(7, 2);
 		
-		VerticalPanel measureNamePanel = buildMeasureNamePanel();
-		panelGrid.setWidget(0, 0, measureNamePanel);
-		
-		VerticalPanel abbreviationPanel = buildAbbreviationPanel();
-		panelGrid.setWidget(0, 1, abbreviationPanel);
-		
-		VerticalPanel measureScoringPanel = buildMeasureScoringPanel();
+		panelGrid.setWidget(0, 0, buildMeasureNamePanel());
+		panelGrid.setWidget(0, 1, buildAbbreviationPanel());
+		panelGrid.setWidget(1, 0, buildMeasureScoringPanel());
+		panelGrid.setWidget(1, 1, buildPatientBasedPanel());
+		panelGrid.setWidget(2, 0, buildFinalizedDate());
+		panelGrid.setWidget(2, 1, buildGUIDPanel());
+		panelGrid.setWidget(3, 0, buildeCQMVersionPanel());
+		panelGrid.setWidget(4, 0, buldeCQMIdentifierPanel());
+		panelGrid.setWidget(5, 0, buildNQFNumberPanel());
+		panelGrid.setWidget(6, 0, buildMeasurementPeriodPanel());
+		hackTheColspan(panelGrid);
 		
 		if(isCompositeMeasure) {
+			panelGrid.insertRow(1);
 			VerticalPanel compositeScoringPanel = buildCompositeScoringPanel();
 			panelGrid.setWidget(1, 0, compositeScoringPanel);
 			VerticalPanel blankPanel = buildBlankPanel();
 			panelGrid.setWidget(1, 1, blankPanel);
 		}
-		
-		panelGrid.setWidget(2, 0, measureScoringPanel);
-		
-		VerticalPanel patientBasedPanel = buildPatientBasedPanel();
-		panelGrid.setWidget(2, 1, patientBasedPanel);
-		
-		VerticalPanel finalizedDatePanel = buildFinalizedDate();
-		panelGrid.setWidget(3, 0, finalizedDatePanel);
-		
-		VerticalPanel guidPanel = buildGUIDPanel();
-		panelGrid.setWidget(3, 1, guidPanel);
-		
-		VerticalPanel eCQMVersionPanel = buildeCQMVersionPanel();
-		panelGrid.setWidget(4, 0, eCQMVersionPanel);
-		
-		VerticalPanel eCQMIdentifierPanel = buldeCQMIdentifierPanel();
-		panelGrid.setWidget(5, 0, eCQMIdentifierPanel);
-		
-		VerticalPanel nqfNumberPanel = buildNQFNumberPanel();
-		panelGrid.setWidget(6, 0, nqfNumberPanel);
-		
-		VerticalPanel measurementPeriodPanel = buildMeasurementPeriodPanel();
-		panelGrid.setWidget(7, 0, measurementPeriodPanel);
-		hackTheColspan(panelGrid);
 		
 		detailPanel.add(panelGrid);
 		mainPanel.add(detailPanel);
@@ -151,8 +132,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	}
 
 	private void hackTheColspan(Grid panelGrid) {
-		panelGrid.getCellFormatter().getElement(7, 1).removeFromParent();
-		panelGrid.getCellFormatter().getElement(7, 0).setAttribute("colspan", "2");
+		panelGrid.getCellFormatter().getElement(6, 1).removeFromParent();
+		panelGrid.getCellFormatter().getElement(6, 0).setAttribute("colspan", "2");
 	}
 
 	private VerticalPanel buildMeasurementPeriodPanel() {

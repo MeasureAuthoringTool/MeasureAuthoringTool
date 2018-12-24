@@ -18,6 +18,15 @@ public class MeasureSteward implements IsSerializable{
 	private String orgOid;
 	
 	
+	public MeasureSteward() {
+	}
+
+	public MeasureSteward(String id, String orgName, String orgOid) {
+		this.id = id;
+		this.orgName = orgName;
+		this.orgOid = orgOid;
+	}
+
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
 	public String getId() {

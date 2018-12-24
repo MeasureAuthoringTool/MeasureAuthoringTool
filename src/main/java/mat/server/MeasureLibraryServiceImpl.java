@@ -4784,12 +4784,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("Loading Measure for MeasueId: " + measureId);
 		MeasureDetailResult usedStewardAndAuthorList = new MeasureDetailResult();
 		MeasureXmlModel xml = getMeasureXmlForMeasure(measureId);
-		usedStewardAndAuthorList.setUsedAuthorList(getAuthorsList(xml));
-		usedStewardAndAuthorList.setUsedSteward(getSteward(xml));
-		usedStewardAndAuthorList.setAllAuthorList(getAllAuthorList());
-		usedStewardAndAuthorList.setAllStewardList(getAllStewardList());
-		return usedStewardAndAuthorList;
+		
+		List<Organization> allOrganization = getAllOrganizations();
+		usedStewardAndAuthorList.setUsedAuthorList(getAuthorsList(xml, allOrganization));
+		usedStewardAndAuthorList.setUsedSteward(getSteward(xml, allOrganization));
+		usedStewardAndAuthorList.setAllAuthorList(getAllAuthorList(allOrganization));
+		usedStewardAndAuthorList.setAllStewardList(getAllStewardList(allOrganization));
 
+		return usedStewardAndAuthorList;
 	}
 
 	/**
@@ -4797,17 +4799,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *
 	 * @return the all steward list
 	 */
-	private List<MeasureSteward> getAllStewardList() {
-		List<MeasureSteward> stewardList = new ArrayList<MeasureSteward>();
-		List<Organization> organizationList = getAllOrganizations();
-		for (Organization org : organizationList) {
-			MeasureSteward steward = new MeasureSteward();
-			steward.setId(Long.toString(org.getId()));
-			steward.setOrgName(org.getOrganizationName());
-			steward.setOrgOid(org.getOrganizationOID());
-			stewardList.add(steward);
-		}
-		return stewardList;
+	private List<MeasureSteward> getAllStewardList(List<Organization> organizationList) {
+		
+		return organizationList.stream().map(
+				org -> new MeasureSteward(String.valueOf(org.getId()), org.getOrganizationName(), org.getOrganizationOID())).collect(Collectors.toList());
 	}
 
 	/**
@@ -4815,18 +4810,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *
 	 * @return the all author list
 	 */
-	private List<Author> getAllAuthorList() {
-		List<Author> authorList = new ArrayList<Author>();
-		List<Organization> organizationList = getAllOrganizations();
-		for (Organization org : organizationList) {
-			Author author = new Author();
-			author.setId(Long.toString(org.getId()));
-			author.setAuthorName(org.getOrganizationName());
-			author.setOrgId(org.getOrganizationOID());
-			authorList.add(author);
-		}
-
-		return authorList;
+	private List<Author> getAllAuthorList(List<Organization> organizationList) {
+		
+		return organizationList.stream().map(
+				org -> new Author(String.valueOf(org.getId()), org.getOrganizationName(), org.getOrganizationOID())).collect(Collectors.toList());
 	}
 
 	/**
@@ -4836,36 +4823,29 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            the xml model
 	 * @return the authors list
 	 */
-	private List<Author> getAuthorsList(MeasureXmlModel xmlModel) {
+	private List<Author> getAuthorsList(MeasureXmlModel xmlModel, List<Organization> allOrganization) {
 		XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 		String XPATH_EXPRESSION_DEVELOPERS = "/measure//measureDetails//developers";
-		List<Author> authorList = new ArrayList<Author>();
-		List<Author> usedAuthorList = new ArrayList<Author>();
-		List<Organization> allOrganization = getAllOrganizations();
-		try {
+		List<Author> usedAuthorList = new ArrayList<>();
 
-			NodeList developerParentNodeList = (NodeList) xPath.evaluate(XPATH_EXPRESSION_DEVELOPERS,
-					processor.getOriginalDoc(), XPathConstants.NODESET);
+		try {
+			NodeList developerParentNodeList = (NodeList) xPath.evaluate(XPATH_EXPRESSION_DEVELOPERS, processor.getOriginalDoc(), XPathConstants.NODESET);
 			Node developerParentNode = developerParentNodeList.item(0);
+
 			if (developerParentNode != null) {
 				NodeList developerNodeList = developerParentNode.getChildNodes();
 
-				for (int i = 0; i < developerNodeList.getLength(); i++) {
-					Author author = new Author();
-					String developerId = developerNodeList.item(i).getAttributes().getNamedItem(ID).getNodeValue();
-					String authorValue = developerNodeList.item(i).getTextContent();
-					author.setId(developerId);
-					author.setAuthorName(authorValue);
-					authorList.add(author);
+				int childNodes =  developerNodeList.getLength();
 
+				Set<Long> authorList = new HashSet<>();
+
+				for (int i = 0; i < childNodes; i++) {
+					authorList.add(Long.parseLong(developerNodeList.item(i).getAttributes().getNamedItem(ID).getNodeValue()));
 				}
-				// if deleted, remove from the list
-				for (Organization org : allOrganization) {
-					for (int i = 0; i < authorList.size(); i++) {
-						if (authorList.get(i).getId().equalsIgnoreCase(Long.toString(org.getId()))) {
-							usedAuthorList.add(authorList.get(i));
-						}
-					}
+
+				if(CollectionUtils.isNotEmpty(authorList)) {
+					usedAuthorList = allOrganization.stream().filter(e -> authorList.contains(e.getId())).map(
+							org -> new Author(String.valueOf(org.getId()), org.getOrganizationName(), org.getOrganizationOID())).collect(Collectors.toList());
 				}
 			}
 
@@ -4883,25 +4863,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            the xml model
 	 * @return the steward id
 	 */
-	private MeasureSteward getSteward(MeasureXmlModel xmlModel) {
+	private MeasureSteward getSteward(MeasureXmlModel xmlModel, List<Organization> allOrganization) {
 		MeasureSteward measureSteward = new MeasureSteward();
 		XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-		List<Organization> allOrganization = getAllOrganizations();
 		String XPATH_EXPRESSION_STEWARD = "/measure//measureDetails//steward";
 
 		try {
-			Node stewardParentNode = (Node) xPath.evaluate(XPATH_EXPRESSION_STEWARD, processor.getOriginalDoc(),
-					XPathConstants.NODE);
+			Node stewardParentNode = (Node) xPath.evaluate(XPATH_EXPRESSION_STEWARD, processor.getOriginalDoc(), XPathConstants.NODE);
+			
 			if (stewardParentNode != null) {
 				String id = stewardParentNode.getAttributes().getNamedItem(ID).getNodeValue();
-				for (Organization org : allOrganization) {
-					if (id.equalsIgnoreCase(Long.toString(org.getId()))) {
-						measureSteward.setId(id);
-						measureSteward.setOrgName(org.getOrganizationName());
-						measureSteward.setOrgOid(org.getOrganizationOID());
-					}
-				}
 
+				Organization organization = allOrganization.stream().filter(org -> id.equalsIgnoreCase(Long.toString(org.getId()))).findAny().orElse(new Organization());
+				measureSteward.setId(id);
+				measureSteward.setOrgName(organization.getOrganizationName());
+				measureSteward.setOrgOid(organization.getOrganizationOID());
 			}
 
 		} catch (XPathExpressionException e) {
@@ -4909,7 +4885,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 		return measureSteward;
-
 	}
 
 	/**

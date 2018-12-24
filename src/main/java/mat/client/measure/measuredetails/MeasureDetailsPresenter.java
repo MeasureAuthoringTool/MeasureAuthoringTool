@@ -30,6 +30,7 @@ import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsRichTextAbstractModel;
+import mat.shared.measure.measuredetails.models.MeasureStewardDeveloperModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.shared.measure.measuredetails.validate.GeneralInformationValidator;
 
@@ -352,6 +353,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			switch((MeasureDetailsItems) k) {
 			case GENERAL_MEASURE_INFORMATION:
 				return getGeneralInformationState(measureDetailsModel);
+			case STEWARD:
+				return getMeasureStewardAndDeveloperState(measureDetailsModel.getMeasureStewardDeveloperModel());
 			case DESCRIPTION:
 				return getRichTextEditableTabState(measureDetailsModel.getDescriptionModel());
 			case COPYRIGHT:
@@ -414,6 +417,15 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		}
 		
 		return MeasureDetailState.BLANK;
+	}
+	
+	private MeasureDetailState getMeasureStewardAndDeveloperState(MeasureStewardDeveloperModel model) {
+		if ((model.getStewardId() == null || model.getStewardId().isEmpty()) 
+			&& (model.getSelectedDeveloperList() == null || model.getSelectedDeveloperList().isEmpty())) {
+			return MeasureDetailState.BLANK;
+		} else {
+			return MeasureDetailState.COMPLETE;
+		}
 	}
 	
 	private MeasureDetailState getGeneralInformationState(MeasureDetailsModel measureDetailsModel) {

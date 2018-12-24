@@ -1,13 +1,9 @@
 package mat.shared.measure.measuredetails.models;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.validate.GeneralInformationValidator;
 
 public class MeasureDetailsModel implements MeasureDetailsComponentModel, MeasureDetailsModelVisitor, IsSerializable  {
@@ -466,7 +462,7 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public List<String> validateModel(GeneralInformationModel generalInformationModel) {
-		GeneralInformationValidator validator = new GeneralInformationValidator();
+		final GeneralInformationValidator validator = new GeneralInformationValidator();
 		return validator.validateModel(generalInformationModel);
 	}
 

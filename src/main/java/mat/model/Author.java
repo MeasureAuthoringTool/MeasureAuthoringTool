@@ -1,5 +1,7 @@
 package mat.model;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -24,6 +26,35 @@ public class Author implements IsSerializable{
 	private String authorName;
 	private String orgId;
 	
+	public Author() {
+	}
+
+	public Author(String id, String authorName, String orgId) {
+		this.id = id;
+		this.authorName = authorName;
+		this.orgId = orgId;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(authorName, id, orgId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Author)) {
+			return false;
+		}
+		Author other = (Author) obj;
+		return Objects.equals(authorName, other.authorName) && Objects.equals(id, other.id) && Objects.equals(orgId, other.orgId);
+	}
+
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
 	public String getId() {

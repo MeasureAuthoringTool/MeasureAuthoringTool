@@ -17,6 +17,7 @@ import mat.client.measure.measuredetails.observers.MeasureObservationsObserver;
 import mat.client.measure.measuredetails.observers.MeasurePopulationExclusionsObserver;
 import mat.client.measure.measuredetails.observers.MeasurePopulationObserver;
 import mat.client.measure.measuredetails.observers.MeasureSetObserver;
+import mat.client.measure.measuredetails.observers.MeasureStewardDeveloperObserver;
 import mat.client.measure.measuredetails.observers.MeasureTypeObserver;
 import mat.client.measure.measuredetails.observers.NumeratorExclusionsObserver;
 import mat.client.measure.measuredetails.observers.NumeratorObserver;
@@ -34,7 +35,7 @@ import mat.client.shared.MeasureDetailsConstants.PopulationItems;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsRichTextAbstractModel;
-import mat.shared.measure.measuredetails.models.MeasureTypeModel;
+import mat.shared.measure.measuredetails.models.MeasureStewardDeveloperModel;
 
 public class MeasureDetailsViewFactory {
 	private static MeasureDetailsViewFactory instance;
@@ -83,7 +84,7 @@ public class MeasureDetailsViewFactory {
 			case MEASURE_SET:
 				return buildRichTextEditorView(measureDetailsModel.getMeasureSetModel(), new MeasureSetView(), new MeasureSetObserver());
 			case STEWARD:
-				return new MeasureStewardView();
+				return buildMeasureStewardView(measureDetailsModel.getMeasureStewardDeveloperModel());
 			case COPYRIGHT:
 				return buildRichTextEditorView(measureDetailsModel.getCopyrightModel(), new CopyrightView(), new CopyrightObserver());
 			case POPULATIONS:
@@ -123,7 +124,15 @@ public class MeasureDetailsViewFactory {
 		generalInformationView.setObserver(observer);
 		return generalInformationView;
 	}
-	
+
+	private MeasureStewardView buildMeasureStewardView(MeasureStewardDeveloperModel measureStewardDeveloperModel) {
+		MeasureStewardView view = new MeasureStewardView(measureStewardDeveloperModel); 
+		MeasureStewardDeveloperObserver observer = new MeasureStewardDeveloperObserver();
+		view.setObserver(observer);
+		observer.setView(view);
+		return view; 
+	}
+
 	private MeasureTypeView buildMeasureTypeView(MeasureTypeView view, MeasureTypeObserver observer) {
 		view.setObserver(observer);
 		observer.setView(view);

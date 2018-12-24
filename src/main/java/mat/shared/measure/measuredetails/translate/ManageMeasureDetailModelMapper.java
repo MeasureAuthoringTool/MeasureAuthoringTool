@@ -1,9 +1,11 @@
 package mat.shared.measure.measuredetails.translate;
 
+import java.util.Collections;
 import java.util.List;
 
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
+import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.shared.measure.measuredetails.models.ClinicalRecommendationModel;
@@ -155,8 +157,16 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 
 	private MeasureStewardDeveloperModel buildMeasureStewardDeveloperModel() {
 		MeasureStewardDeveloperModel measureStewardDeveloperModel = new MeasureStewardDeveloperModel();
-		measureStewardDeveloperModel.setMeasureDeveloperList(manageMeasureDetailModel.getAuthorSelectedList());
-		measureStewardDeveloperModel.setMeasureSteward(manageMeasureDetailModel.getStewardSelectedList());
+		measureStewardDeveloperModel.setMeasureStewardList(manageMeasureDetailModel.getMeasureDetailResult().getAllStewardList());
+		measureStewardDeveloperModel.setMeasureDeveloperList(manageMeasureDetailModel.getMeasureDetailResult().getAllAuthorList());
+		measureStewardDeveloperModel.setSelectedDeveloperList(manageMeasureDetailModel.getMeasureDetailResult().getUsedAuthorList());
+		
+		MeasureSteward usedSteward = manageMeasureDetailModel.getMeasureDetailResult().getUsedSteward();
+		if (usedSteward != null) {
+			measureStewardDeveloperModel.setStewardId(usedSteward.getId());
+			measureStewardDeveloperModel.setStewardValue(usedSteward.getOrgName());
+		}
+
 		return measureStewardDeveloperModel;
 	}
 
@@ -320,7 +330,9 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		manageMeasureDetailModel.setMeasurePopulationExclusions(getMeasurePopulationEclusions());
 		manageMeasureDetailModel.setMeasurePopulation(getMeasurePopulation());
 		manageMeasureDetailModel.setGroupName(getMeasureSetText());
-		manageMeasureDetailModel.setStewardSelectedList(getStewardList());
+		manageMeasureDetailModel.setStewardId(getStewardId());
+		manageMeasureDetailModel.setStewardValue(getStewardValue());
+		manageMeasureDetailModel.setAuthorSelectedList(getDeveloperSelectedList());
 		manageMeasureDetailModel.setMeasureTypeSelectedList(getMeasureTypeSelectedList());
 		manageMeasureDetailModel.setNumeratorExclusions(getNumeratorExclusions());
 		manageMeasureDetailModel.setNumerator(getNumerator());
@@ -500,11 +512,25 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		return null;
 	}
 
-	private List<MeasureSteward> getStewardList() {
+	private String getStewardId() {
 		if(measureDetailsModel.getMeasureStewardDeveloperModel() != null) {
-			return measureDetailsModel.getMeasureStewardDeveloperModel().getMeasureStewardList();
+			return measureDetailsModel.getMeasureStewardDeveloperModel().getStewardId();
 		}
 		return null;
+	}
+
+	private String getStewardValue() {
+		if(measureDetailsModel.getMeasureStewardDeveloperModel() != null) {
+			return measureDetailsModel.getMeasureStewardDeveloperModel().getStewardValue();
+		}
+		return null;
+	}
+
+	private List<Author> getDeveloperSelectedList() {
+		if(measureDetailsModel.getMeasureStewardDeveloperModel() != null) {
+			return measureDetailsModel.getMeasureStewardDeveloperModel().getSelectedDeveloperList();
+		}
+		return Collections.emptyList();
 	}
 
 	private String getMeasureSetText() {

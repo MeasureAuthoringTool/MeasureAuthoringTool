@@ -161,14 +161,12 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 			public Boolean getValue(Author object) {
 				chbxCell.setTitle("Click checkbox to select: " + object.getAuthorName());
 				boolean isSelected = false;
-				if (!authorsSelectedList.isEmpty()) {
-					for (int i = 0; i < authorsSelectedList.size(); i++) {
-						if (authorsSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-							isSelected = true;
-							break;
-						}
+				for (int i = 0; i < authorsSelectedList.size(); i++) {
+					if (authorsSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+						isSelected = true;
+						break;
 					}
-				} 
+				}
 				return isSelected;
 			}
 		};

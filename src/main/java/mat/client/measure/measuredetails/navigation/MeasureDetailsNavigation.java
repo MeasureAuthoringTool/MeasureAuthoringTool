@@ -34,7 +34,7 @@ public class MeasureDetailsNavigation {
 
 	public MeasureDetailsNavigation(String scoringType, boolean isPatientBased, boolean isCompositeMeasure) {
 		buildNavigationMenu(scoringType, isPatientBased, isCompositeMeasure);
-		mainPanel.setWidth("275px");
+		mainPanel.setWidth("250px");
 	}
 
 	public void buildNavigationMenu(String scoringType, boolean isPatientBased, boolean isCompositeMeasure) {
@@ -53,7 +53,7 @@ public class MeasureDetailsNavigation {
 		populationsCollapse.getElement().setId("measureDetailsNavigation_populationsCollapse");
 		VerticalPanel nestedNavPanel = new VerticalPanel(); 
 		nestedNavPanel.getElement().setId("measureDetailsNavigation_populationsPanel");
-		nestedNavPanel.setWidth("275px");
+		nestedNavPanel.setWidth("250px");
 		NavPills nestedNavPills = new NavPills();
 		nestedNavPills.getElement().setId("measureDetailsNavigation_populationsNavigationPills");
 		nestedNavPills.setStacked(true);

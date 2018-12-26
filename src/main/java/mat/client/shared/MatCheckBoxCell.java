@@ -2,6 +2,7 @@ package mat.client.shared;
 
 import com.google.gwt.cell.client.AbstractEditableCell;
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
@@ -128,7 +129,7 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean, Boolean> {
 
 		boolean enterPressed = BrowserEvents.KEYDOWN.equals(type)
 		&& event.getKeyCode() == KeyCodes.KEY_ENTER;
-		if (BrowserEvents.CHANGE.equals(type) || enterPressed) {
+		if ((BrowserEvents.CHANGE.equals(type) || enterPressed) && !isUsed) {
 			InputElement input = parent.getFirstChild().cast();
 			Boolean isChecked = input.isChecked();
 

@@ -780,7 +780,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		this.measurePeriodToInput = measurePeriodToInput;
 	}
 	
-	public void udpateEmeasureId(int eMeasureId) {
+	public void updateEmeasureId(int eMeasureId) {
 		originalModel.seteMeasureId(eMeasureId);
 		generalInformationModel.seteMeasureId(eMeasureId);
 	}

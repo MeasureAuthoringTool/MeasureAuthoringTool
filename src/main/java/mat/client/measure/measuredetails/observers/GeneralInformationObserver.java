@@ -144,7 +144,7 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 						generalMeasureInformationView.getGenerateEMeasureIDButton().setEnabled(false);
 						generalMeasureInformationView.geteMeasureIdentifierInput().setText(String.valueOf(maxEmeasureId));
 						generalMeasureInformationView.geteMeasureIdentifierInput().setValue(String.valueOf(maxEmeasureId));
-						generalMeasureInformationView.udpateEmeasureId(maxEmeasureId);
+						generalMeasureInformationView.updateEmeasureId(maxEmeasureId);
 						generalMeasureInformationView.getGenerateEMeasureIDButton().setEnabled(false);
 						generalMeasureInformationView.geteMeasureIdentifierInput().setFocus(true);
 					}

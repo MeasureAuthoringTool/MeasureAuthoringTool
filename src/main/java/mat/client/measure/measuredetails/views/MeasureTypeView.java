@@ -68,7 +68,7 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 	public void buildDetailView() {		
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("cellTablePanelMeasureDetails");		
-		panel.setWidth("100%");
+		panel.setWidth("600px");
 		measureTypeCellTable = new CellTable<MeasureType>();
 		measureTypeCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<MeasureType> sortProvider = new ListDataProvider<MeasureType>();

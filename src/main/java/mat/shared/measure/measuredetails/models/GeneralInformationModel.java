@@ -95,7 +95,6 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 				modelValuesAreEqual(originalModel.geteCQMVersionNumber(), geteCQMVersionNumber()) && 
 				modelValuesAreEqual(originalModel.getCompositeScoringMethod(), getCompositeScoringMethod()) &&
 				modelValuesAreEqual(originalModel.getScoringMethod(), getScoringMethod()) &&
-				modelValuesAreEqual(originalModel.geteMeasureId(), geteMeasureId()) && 
 				modelValuesAreEqual(originalModel.getNqfId(), getNqfId()) && 
 				modelValuesAreEqual(originalModel.getEndorseByNQF(), getEndorseByNQF()) &&
 				modelValuesAreEqual(originalModel.isCalendarYear(), isCalendarYear) &&
@@ -104,9 +103,6 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 		return isEqual;
 	}
 	
-	private boolean modelValuesAreEqual(int originalModelValue, int newModelValue) {
-		return originalModelValue == newModelValue;
-	}
 
 	public boolean modelValuesAreEqual(String originalModelValue, String newModelValue) {
 		return (StringUtility.isEmptyOrNull(originalModelValue) && StringUtility.isEmptyOrNull(newModelValue) ||

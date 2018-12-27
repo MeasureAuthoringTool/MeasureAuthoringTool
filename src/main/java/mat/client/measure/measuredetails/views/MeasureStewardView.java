@@ -79,7 +79,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		moreMeasureDetailsVP.add(stewardTableLabel);
 		stewardSPanel.add(stewardListBox);
 		moreMeasureDetailsVP.add(stewardSPanel);
-		moreMeasureDetailsVP.setWidth("100%");
+		moreMeasureDetailsVP.setWidth("575px");
 		mainPanel.add(moreMeasureDetailsVP);
 	}
 

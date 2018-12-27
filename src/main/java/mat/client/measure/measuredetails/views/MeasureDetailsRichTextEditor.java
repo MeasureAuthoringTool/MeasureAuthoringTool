@@ -23,7 +23,7 @@ public class MeasureDetailsRichTextEditor {
 		infoPanel.add(infoButtonGroup);
 		HorizontalPanel textAreaPanel = new HorizontalPanel();
 		textAreaPanel.add(richTextEditor);
-        textAreaPanel.setWidth("100%");
+        textAreaPanel.setWidth("625px");
         mainPanel.add(infoPanel);
         mainPanel.add(textAreaPanel);
 	}

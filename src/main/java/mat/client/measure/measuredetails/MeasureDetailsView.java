@@ -72,7 +72,7 @@ public class MeasureDetailsView {
 		headingPanel.getElement().setId("measureDetailsView_HeadingPanel");
 		widgetComponentPanel.add(headingPanel);
 		messagePanel = new MessagePanel();
-		messagePanel.setWidth("100%");
+		messagePanel.setWidth("625px");
 		widgetComponentPanel.add(messagePanel);
 		widgetComponentPanel.add(new SpacerWidget());
 	}
@@ -81,7 +81,7 @@ public class MeasureDetailsView {
 		if(currentMeasureDetail != MeasureDetailsItems.POPULATIONS) {
 			widgetComponentPanel.add(new SpacerWidget());
 			saveButtonPanel.add(saveButton);
-			saveButtonPanel.setWidth("100%");
+			saveButtonPanel.setWidth("625px");
 			saveButton.setPull(Pull.RIGHT);
 			widgetComponentPanel.add(saveButtonPanel);
 		}

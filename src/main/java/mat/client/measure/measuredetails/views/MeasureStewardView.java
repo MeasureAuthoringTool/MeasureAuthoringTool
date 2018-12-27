@@ -77,10 +77,9 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		stewardListBox.setTitle("Measure Steward List");
 
 		moreMeasureDetailsVP.add(stewardTableLabel);
-		stewardListBox.setWidth("600px");
 		stewardSPanel.add(stewardListBox);
 		moreMeasureDetailsVP.add(stewardSPanel);
-
+		moreMeasureDetailsVP.setWidth("100%");
 		mainPanel.add(moreMeasureDetailsVP);
 	}
 
@@ -96,6 +95,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 			}
 			i= i+1;
 		}
+		getStewardListBox().setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 
 	private void buildAuthorTableComponent(VerticalPanel moreMeasureDetailsVP) {
@@ -109,6 +109,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 	public void buildAuthorCellTable(List<Author> currentAuthorsList) {
 		authorSPanel.clear();
 		authorSPanel.setStyleName("cellTablePanelMeasureDetails");
+		authorSPanel.setHeight("400px");
 		authorCellTable = new CellTable<>();
 		authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		final ListDataProvider<Author> sortProvider = new ListDataProvider<>();
@@ -132,7 +133,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		sortProvider.getList().addAll(currentAuthorsList);
 		addAuthorColumnToTable(MatContext.get().getMeasureLockService().checkForEditPermission());
 		sortProvider.addDataDisplay(authorCellTable);
-		authorCellTable.setWidth("100%");
+
 		final Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("authorListSummary",
 				"In the following Measure Type List table,Select is given in first Column for selection and Author is given in Second column.");
 		authorCellTable.getElement().setAttribute("id", "AuthorListCellTable");
@@ -141,7 +142,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		final VerticalPanel vp = new VerticalPanel();
 		vp.add(invisibleLabel);
 		vp.add(authorCellTable);
-		vp.setSize("600px", "150px");
+		vp.setWidth("100%");
 		authorSPanel.setWidget(vp);
 	}
 

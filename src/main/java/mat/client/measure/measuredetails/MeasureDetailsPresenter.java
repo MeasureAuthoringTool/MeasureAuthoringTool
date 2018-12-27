@@ -26,6 +26,7 @@ import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MeasureDetailsConstants.PopulationItems;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.shared.ConstantMessages;
+import mat.shared.StringUtility;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
@@ -39,7 +40,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private MeasureDetailsNavigation navigationPanel;
 	private String scoringType;
 	private boolean isCompositeMeasure;
-	private boolean isMeasureEditable;
+	private boolean isReadOnly;
 	private boolean isPatientBased;
 	private long lastRequestTime;
 	private DeleteConfirmDialogBox dialogBox;
@@ -61,7 +62,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		this.scoringType = null;
 		isPatientBased = false;
 		isCompositeMeasure = false;
-		isMeasureEditable = true;
+		isReadOnly = false;
 	}
 
 	@Override
@@ -115,7 +116,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	public boolean isDirty() {
-		if(measureDetailsView.getMeasureDetailsComponentModel() != null) {
+		if(!isReadOnly && measureDetailsView.getMeasureDetailsComponentModel() != null) {
 			return measureDetailsView.getMeasureDetailsComponentModel().isDirty(measureDetailsModel);
 		}
 		
@@ -184,8 +185,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		this.isPatientBased = measureDetailsModel.getGeneralInformationModel().isPatientBased();
 		navigationPanel.buildNavigationMenu(scoringType, isPatientBased, isCompositeMeasure);
 		measureDetailsView.buildDetailView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
-		isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();
-		measureDetailsView.setReadOnly(isMeasureEditable);
+		isReadOnly = !MatContext.get().getMeasureLockService().checkForEditPermission();
+		measureDetailsView.setReadOnly(isReadOnly);
 		measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 		updateNavPillStates();
@@ -279,7 +280,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	@Override
 	public void handleSaveButtonClick() {
-		if(!isMeasureEditable) {
+		if(!isReadOnly) {
 			List<String> validationErrors = measureDetailsView.getMeasureDetailsComponentModel().validateModel(measureDetailsModel);
 			if(validationErrors == null || validationErrors.isEmpty()) {
 				ConfirmationDialogBox confirmationDialog = measureDetailsView.getSaveConfirmation();
@@ -329,8 +330,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				MatContext.get().setCurrentMeasureScoringType(scoringType);
 				navigationPanel.buildNavigationMenu(scoringType, isPatientBased, isCompositeMeasure);
 				measureDetailsView.buildDetailView(measureDetailsModel, navigationPanel.getActiveMenuItem(), navigationPanel);
-				isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();
-				measureDetailsView.setReadOnly(isMeasureEditable);
+				isReadOnly = !MatContext.get().getMeasureLockService().checkForEditPermission();
+				measureDetailsView.setReadOnly(isReadOnly);
 				measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
 				measureDetailsView.displaySuccessMessage("Changes for the " +  measureDetailsView.getCurrentMeasureDetail().displayName() + " section have been successfully saved.");
 				handleStateChanged();
@@ -422,11 +423,12 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 	
 	private MeasureDetailState getMeasureStewardAndDeveloperState(MeasureStewardDeveloperModel model) {
-		if ((model.getStewardId() == null || model.getStewardId().isEmpty()) 
-			&& (model.getSelectedDeveloperList() == null || model.getSelectedDeveloperList().isEmpty())) {
+		if (StringUtility.isEmptyOrNull(model.getStewardId()) && model.getSelectedDeveloperList().isEmpty()) {
 			return MeasureDetailState.BLANK;
-		} else {
+		} else if (StringUtility.isNotBlank(model.getStewardId()) && !model.getSelectedDeveloperList().isEmpty()){
 			return MeasureDetailState.COMPLETE;
+		} else {
+			return MeasureDetailState.INCOMPLETE;
 		}
 	}
 	

@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -4837,15 +4838,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 				int childNodes =  developerNodeList.getLength();
 
-				Set<Long> authorList = new HashSet<>();
+				LinkedHashSet<Long> authorList = new LinkedHashSet<>();
 
 				for (int i = 0; i < childNodes; i++) {
 					authorList.add(Long.parseLong(developerNodeList.item(i).getAttributes().getNamedItem(ID).getNodeValue()));
 				}
 
 				if(CollectionUtils.isNotEmpty(authorList)) {
-					usedAuthorList = allOrganization.stream().filter(e -> authorList.contains(e.getId())).map(
-							org -> new Author(String.valueOf(org.getId()), org.getOrganizationName(), org.getOrganizationOID())).collect(Collectors.toList());
+					authorList.forEach(id -> usedAuthorList.add(getAuthorFromOrganization(id, allOrganization)));
 				}
 			}
 
@@ -4856,6 +4856,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return usedAuthorList;
 	}
 
+	private Author getAuthorFromOrganization(Long id, List<Organization> allOrganization){
+		Organization org = allOrganization.stream().filter(o -> o.getId().equals(id)).findFirst().get();
+		return new Author(String.valueOf(org.getId()), org.getOrganizationName(), org.getOrganizationOID());
+	}
+	
 	/**
 	 * Gets the steward id.
 	 *

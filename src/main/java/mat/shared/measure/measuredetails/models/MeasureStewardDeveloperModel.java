@@ -42,15 +42,16 @@ public class MeasureStewardDeveloperModel implements MeasureDetailsComponentMode
 			
 		boolean areEqualLists = false;
 
-		final List<Author> originalList = stewardDeveloperModel.getSelectedDeveloperList();
+		final List<Author> originalList = new ArrayList<>(); 
 		final List<Author> modifiedList = this.getSelectedDeveloperList();
-		if(originalList != null && modifiedList != null) {
+		if(stewardDeveloperModel.getSelectedDeveloperList() != null && modifiedList != null) {
+			originalList.addAll(stewardDeveloperModel.getSelectedDeveloperList());
 			originalList.sort(Comparator.comparing(Author::getAuthorName));
 			modifiedList.sort(Comparator.comparing(Author::getAuthorName));
 			areEqualLists = originalList.equals(modifiedList);
 		}
 		
-		return isSameSteward && areEqualLists;
+		return isSameSteward && areEqualLists;	
 	}
 	
 	private boolean equalsIgnoreCase(String originalStr, String modifiedStr) {

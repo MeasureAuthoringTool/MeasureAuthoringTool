@@ -87,7 +87,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
 		GeneralInformationModel originalModel = (GeneralInformationModel) model;
-		boolean isEqual = (modelValuesAreEqual(originalModel.getMeasureName(), getMeasureName()) &&
+		return (modelValuesAreEqual(originalModel.getMeasureName(), getMeasureName()) &&
 				modelValuesAreEqual(originalModel.getFinalizedDate(), getFinalizedDate()) && 
 				modelValuesAreEqual(originalModel.isPatientBased(), isPatientBased()) &&
 				modelValuesAreEqual(originalModel.getGuid(), getGuid()) &&
@@ -100,7 +100,6 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 				modelValuesAreEqual(originalModel.isCalendarYear(), isCalendarYear) &&
 				modelValuesAreEqual(originalModel.getMeasureFromPeriod(), getMeasureFromPeriod()) &&
 				modelValuesAreEqual(originalModel.getMeasureToPeriod(), getMeasureToPeriod()));
-		return isEqual;
 	}
 	
 

@@ -779,4 +779,9 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	public void setMeasurePeriodToInput(DateBoxWithCalendar measurePeriodToInput) {
 		this.measurePeriodToInput = measurePeriodToInput;
 	}
+	
+	public void udpateEmeasureId(int eMeasureId) {
+		originalModel.seteMeasureId(eMeasureId);
+		generalInformationModel.seteMeasureId(eMeasureId);
+	}
 }

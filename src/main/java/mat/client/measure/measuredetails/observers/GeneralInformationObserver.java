@@ -140,11 +140,11 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 				@Override
 				public void onSuccess(Integer result) {
 					if(result > 0){
-						int maxEmeasureId = result.intValue();
+						int eMeasureId = result.intValue();
 						generalMeasureInformationView.getGenerateEMeasureIDButton().setEnabled(false);
-						generalMeasureInformationView.geteMeasureIdentifierInput().setText(String.valueOf(maxEmeasureId));
-						generalMeasureInformationView.geteMeasureIdentifierInput().setValue(String.valueOf(maxEmeasureId));
-						generalMeasureInformationView.updateEmeasureId(maxEmeasureId);
+						generalMeasureInformationView.geteMeasureIdentifierInput().setText(String.valueOf(eMeasureId));
+						generalMeasureInformationView.geteMeasureIdentifierInput().setValue(String.valueOf(eMeasureId));
+						generalMeasureInformationView.updateEmeasureId(eMeasureId);
 						generalMeasureInformationView.getGenerateEMeasureIDButton().setEnabled(false);
 						generalMeasureInformationView.geteMeasureIdentifierInput().setFocus(true);
 					}

@@ -68,7 +68,7 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 	public void buildDetailView() {		
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("cellTablePanelMeasureDetails");		
-		panel.setWidth("625px");
+		panel.setWidth("620px");
 		measureTypeCellTable = new CellTable<MeasureType>();
 		measureTypeCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<MeasureType> sortProvider = new ListDataProvider<MeasureType>();
@@ -84,7 +84,7 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 		panel.add(invisibleLabel);
 		measureTypeCellTable.getElement().setAttribute("id", "MeasureTypeListCellTable");
 		measureTypeCellTable.getElement().setAttribute("aria-describedby", "measureTypeListSummary");
-		measureTypeCellTable.setWidth("600px");
+		measureTypeCellTable.setWidth("620px");
 		panel.add(measureTypeCellTable);
 		mainPanel.add(panel);
 	}

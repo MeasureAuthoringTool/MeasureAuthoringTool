@@ -84,7 +84,7 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 		panel.add(invisibleLabel);
 		measureTypeCellTable.getElement().setAttribute("id", "MeasureTypeListCellTable");
 		measureTypeCellTable.getElement().setAttribute("aria-describedby", "measureTypeListSummary");
-		measureTypeCellTable.setWidth("600px");
+		measureTypeCellTable.setWidth("625px");
 		panel.add(measureTypeCellTable);
 		mainPanel.add(panel);
 	}

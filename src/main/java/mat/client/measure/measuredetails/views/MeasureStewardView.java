@@ -109,6 +109,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 	public void buildAuthorCellTable(List<Author> currentAuthorsList) {
 		authorSPanel.clear();
 		authorSPanel.setStyleName("cellTablePanelMeasureDetails");
+		authorSPanel.setWidth("625px");
 		authorSPanel.setHeight("400px");
 		authorCellTable = new CellTable<>();
 		authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -160,7 +161,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		final Column<Author, Boolean> selectColumn = new Column<Author, Boolean>(chbxCell) {
 			@Override
 			public Boolean getValue(Author object) {
-				chbxCell.setTitle("Click checkbox to select: " + object.getAuthorName());
+				chbxCell.setTitle("Click checkbox to select " + object.getAuthorName());
 				boolean isSelected = false;
 				for (int i = 0; i < authorsSelectedList.size(); i++) {
 					if (authorsSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
@@ -196,7 +197,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		final Column<Author, SafeHtml> measureNameColumn = new Column<Author, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Author object) {
-				return CellTableUtility.getColumnToolTip(object.getAuthorName(), object.getOrgId());
+				return CellTableUtility.getColumnToolTip(object.getAuthorName(), " OID " + object.getOrgId());
 			}
 		};
 

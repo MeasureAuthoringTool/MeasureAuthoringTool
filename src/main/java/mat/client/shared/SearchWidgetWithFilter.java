@@ -2,6 +2,7 @@ package mat.client.shared;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -12,6 +13,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -63,65 +65,27 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	 */
 	public SearchWidgetWithFilter(String cssStyleTopPanel, String cssStyleDisclosurePanel, String forView) {
 		mainFocusPanel = new FocusPanel();
-		searchButton = new Button("Search");
-		searchButton.setType(ButtonType.PRIMARY);
-		searchButton.setTitle("Search");
-		
-		searchButton.setHeight("32px");
-		searchButton.setMarginLeft(5.0);
-		searchButton.setPaddingBottom(5.0);
-		searchInput.setWidth("150px");
-		searchInput.setHeight("32px");
-		searchButton.setId("SearchWidgetButton_" + forView);
 		VerticalPanel topPanel = new VerticalPanel();
-		
 		topPanel.getElement().setId("SearchFilterWidget_verticalPanel_" + forView);
+		
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
-	
+		horizontalPanel.getElement().setAttribute("style","padding-top:8px; padding-left:8px; padding-right:8px");
 		HorizontalPanel searchInputHPanel = new HorizontalPanel();
 		searchInputHPanel.getElement().setId("SearchFilterWidget_SearchInputHPanel_" + forView);
 		searchInputHPanel.add(searchInput);
 		
 		mainFocusPanel.add(searchInputHPanel);
 		horizontalPanel.add(mainFocusPanel);
-		horizontalPanel.add(searchButton);
 		VerticalPanel mainPanel = new VerticalPanel();
+		mainPanel.add(buildSearchHeader());
 		mainPanel.add(horizontalPanel);
-		
-		if(forView.equalsIgnoreCase("forMeasure")) {
+		mainPanel.setStylePrimaryName(cssStyleTopPanel);
 
-			VerticalPanel checkBoxPanel = new VerticalPanel();
-			Label myMeasuresText = (Label) LabelBuilder.buildLabel("Filter by My Measures", "Filter by My Measures");
-			myMeasuresText.setStylePrimaryName("searchWidgetLabel");
-			myMeasuresCheckBox.setStylePrimaryName("searchWidgetCheckBox");
-			HorizontalPanel myMeasurePanel = new HorizontalPanel();
-			myMeasurePanel.getElement().setId("SearchFilterWidget_HorizontalPanel_"+forView);
-			myMeasurePanel.getElement().setAttribute("style","margin-top:10px;");
-			myMeasurePanel.add(myMeasuresCheckBox);
-			myMeasurePanel.add(myMeasuresText);
-			checkBoxPanel.add(myMeasurePanel);
-			myMeasuresCheckBox.setValue(true);
-			mainPanel.setStylePrimaryName(cssStyleTopPanel);
-			
-			mainPanel.add(checkBoxPanel);
-		} else {
-			VerticalPanel checkBoxPanel = new VerticalPanel();
-			Label myLibrariesText = (Label) LabelBuilder.buildLabel("Filter by My Libraries", "Filter by My Libraries");
-			myLibrariesText.setStylePrimaryName("searchWidgetLabel");
-			myLibrariesCheckBox.setStylePrimaryName("searchWidgetCheckBox");
-			HorizontalPanel myLibrariesPanel = new HorizontalPanel();
-			myLibrariesPanel.getElement().setId("SearchFilterWidget_HorizontalPanel_"+forView);
-			myLibrariesPanel.getElement().setAttribute("style","margin-top:10px;");
-			myLibrariesPanel.add(myLibrariesCheckBox);
-			myLibrariesPanel.add(myLibrariesText);
-			checkBoxPanel.add(myLibrariesPanel);
-			myLibrariesCheckBox.setValue(true);
-			mainPanel.setStylePrimaryName(cssStyleTopPanel);
-			mainPanel.add(checkBoxPanel);
-		}
+		horizontalPanel.add(buildFilterByPanel(forView));
 		
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("SearchWidgetDisplayed_" + forView),
-				"SearchWidgetDisplayed_" + forView);
+		mainPanel.add(buildSearchButton(forView));
+
+		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("SearchWidgetDisplayed_" + forView), "SearchWidgetDisplayed_" + forView);
 		topPanel.add(invisibleLabel);
 		topPanel.add(mainPanel);
 		
@@ -134,8 +98,54 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		element.setAttribute("aria-atomic", "true");
 		element.setAttribute("aria-relevant", "all");
 		element.setAttribute("role", "alert");
-		topPanel.setWidth("370px");
+		topPanel.setWidth("100%");
 		initWidget(topPanel);
+	}
+
+	private Panel buildFilterByPanel(String forView) {
+		if(forView.equalsIgnoreCase("forMeasure")) {
+			return buildFilterByPanel(myMeasuresCheckBox, "Filter by My Measures", forView);
+		} else {
+			return buildFilterByPanel(myLibrariesCheckBox, "Filter by My Libraries", forView);
+		}		
+	}
+
+	private Panel buildFilterByPanel(CustomCheckBox checkBox, String labelText, String forView) {
+		VerticalPanel checkBoxPanel = new VerticalPanel();
+		Label label = (Label) LabelBuilder.buildLabel(labelText, labelText);
+		label.setStylePrimaryName("searchWidgetLabel");
+		checkBox.setStylePrimaryName("searchWidgetCheckBox");
+		HorizontalPanel labelPanel = new HorizontalPanel();
+		labelPanel.getElement().setId("SearchFilterWidget_HorizontalPanel_" + forView);
+		labelPanel.getElement().setAttribute("style","margin-top:10px;");
+		labelPanel.add(checkBox);
+		labelPanel.add(label);
+		checkBoxPanel.add(labelPanel);
+		checkBox.setValue(true);
+		return checkBoxPanel;
+	}
+
+	private Label buildSearchHeader() {
+		Label searchHeader = new Label("Search");
+		searchHeader.getElement().setId("searchHeader_Label");
+		searchHeader.setStyleName("recentSearchHeader");
+		searchHeader.getElement().setAttribute("tabIndex", "0");
+		return searchHeader;
+	}
+
+	private Button buildSearchButton(String forView) {
+		searchButton = new Button("Search");
+		searchButton.setType(ButtonType.PRIMARY);
+		searchButton.setMarginRight(8.0);
+		searchButton.setTitle("Search");
+		searchInput.setWidth("750px");
+		searchInput.setHeight("32px");
+		searchInput.getElement().setAttribute("placeholder", "Enter Search Text");
+		searchButton.setMarginTop(2.0);
+		searchButton.setHeight("32px");
+		searchButton.setId("SearchWidgetButton_" + forView);
+		searchButton.setPull(Pull.RIGHT);
+		return searchButton;
 	}
 
 	/**

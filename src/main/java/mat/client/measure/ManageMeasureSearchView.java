@@ -64,8 +64,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 
 	private FlowPanel mainPanel = new FlowPanel();
 	
-	private SearchWidgetWithFilter measureSearchFilterWidget = new SearchWidgetWithFilter("searchFilter",
-			"measureLibraryFilterDisclosurePanel","forMeasure");
+	private SearchWidgetWithFilter measureSearchFilterWidget = new SearchWidgetWithFilter("searchFilter", "measureLibraryFilterDisclosurePanel","forMeasure");
 	
 	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	
@@ -107,27 +106,20 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		mainPanel.add(buildBottomButtonWidget(bulkExportButton,
 				errorMessagesForBulkExport));
 		
-		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
-		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel");
 		bulkExportButton.getElement().setId("bulkExportButton_Button");
 		mainPanel.getElement().setId("measureLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
-		VerticalPanel measureFilterVP = new VerticalPanel();
-		measureFilterVP.setWidth("100px");
-		measureFilterVP.getElement().setId("panel_measureFilterVP");
-		measureFilterVP.add(measureSearchFilterWidget);
 		//TODO in MAT-9216 add this code back in!
 		//measureFilterVP.add(measureLibraryAdvancedSearchBuilder.asWidget());
 		buildMostRecentWidget();
-		mainHorizontalPanel.add(mostRecentVerticalPanel);
-		mainHorizontalPanel.add(measureFilterVP);
-		mainPanel.add(mainHorizontalPanel);
+		mainPanel.add(mostRecentVerticalPanel);
 		mainPanel.add(successMeasureDeletion);
 		mainPanel.add(errorMeasureDeletion);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(successMessages);
 		mainPanel.add(errorMessages);
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(measureSearchFilterWidget);
 		mainPanel.add(measureSearchView.asWidget());
 		mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
 		mainPanel.add(new SpacerWidget());

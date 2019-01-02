@@ -1952,7 +1952,7 @@ padding: 2px;
     border-style: solid;
     border-width: 3px;
     margin-left: 4px;
-   margin-top: 8px;
+  	margin-top: 8px;
     width: 550px;
 }
 
@@ -1980,7 +1980,7 @@ padding: 2px;
     border-style: solid;
     border-width: 3px;
     margin-left: 4px;
-   margin-top: 8px;
+   	margin-top: 8px;
     width: 50%;
 }
 
@@ -2072,20 +2072,19 @@ padding: 2px;
 }
 
 .searchFilter{
-	border:1px solid lightgray;
     -moz-box-sizing: border-box;
-    background-image: url("images/bg_box-blue.png");
-    background-repeat:repeat-x;
     vertical-align: middle;
+    background-color: #FFFFFF;
+    border-color: #E8EEF7 #E8EEF7 #E8EFF7;
+    border-style: solid;
+    border-width: 3px;
     text-align: left;
-    padding-right: 15px;
     padding-bottom: 8px;
-    padding-top: 8px;
-    padding-left:8px;
     font-size:.8em;
-    margin-left:85px; 
-    margin-right:auto;
     margin-top:8px;
+    margin-right: 4px;
+    margin-left: 4px;
+    width: 99%;
 }
 
 

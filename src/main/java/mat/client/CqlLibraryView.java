@@ -30,8 +30,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	
 	private Button createNewLibraryButton = new Button("New Library");
 
-	private SearchWidgetWithFilter searchFilterWidget = new SearchWidgetWithFilter("searchFilter",
-			"measureLibraryFilterDisclosurePanel","forCqlLibrary");
+	private SearchWidgetWithFilter searchFilterWidget = new SearchWidgetWithFilter("searchFilter", "measureLibraryFilterDisclosurePanel", "forCqlLibrary");
 	
 
 	CustomButton addNewFolderButton = (CustomButton) getImage("Create New Item",
@@ -98,6 +97,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		mainPanel.add(successMessageAlert);
 		mainPanel.add(errorMessageAlert);
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(searchFilterWidget);
 		mainPanel.add(cqlLibrarySearchView.buildCQLLibraryCellTable());
 	}
 	
@@ -142,10 +142,8 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	@Override
 	public Widget asWidget() {
 		widgetVP.clear();
-		widgetVP.add(searchFilterWidget);
 		//as a part of MAT-9305 - Commenting out Below as we might need it next release 
 		//widgetVP.add(cqlLibraryAdvancedSearchBuilder.asWidget());
-		
 		return mainPanel;
 	}
 	

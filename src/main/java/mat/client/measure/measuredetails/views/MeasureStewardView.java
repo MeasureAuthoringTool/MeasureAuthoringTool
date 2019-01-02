@@ -231,12 +231,6 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 	}
 
 	@Override
-	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
 	public Widget getWidget() {
 		return mainPanel;
 	}

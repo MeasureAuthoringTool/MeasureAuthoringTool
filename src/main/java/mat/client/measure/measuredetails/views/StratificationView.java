@@ -34,12 +34,6 @@ public class StratificationView implements MeasureDetailViewInterface {
 	}
 
 	@Override
-	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean hasUnsavedChanges() {
 		// TODO Auto-generated method stub
 		return false;

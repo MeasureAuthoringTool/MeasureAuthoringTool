@@ -144,10 +144,6 @@ public class MeasureDetailsView {
 		return this.deleteMeasureButton;
 	}
 	
-	public boolean isValid() {
-		return componentDetailView.isComplete();
-	}
-	
 	public MessageAlert getErrorMessageAlert() {
 		return errorAlert;
 	}

@@ -34,11 +34,6 @@ public class DescriptionView implements MeasureDetailViewInterface {
 	}
 
 	@Override
-	public boolean isComplete() {
-		return !this.descriptionModel.getFormattedText().isEmpty();
-	}
-
-	@Override
 	public boolean hasUnsavedChanges() {
 		// TODO Auto-generated method stub
 		return false;

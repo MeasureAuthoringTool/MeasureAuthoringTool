@@ -74,13 +74,6 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	private void buildGeneralInformationModel(GeneralInformationModel originalGeneralInformationModel) {
 		this.generalInformationModel = new GeneralInformationModel(originalGeneralInformationModel);
 	}
-
-	@Override
-	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		//TODO update state on field edit
-		return true;
-	}
 	
 	public Widget getWidget() {
 		return mainPanel;

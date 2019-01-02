@@ -17,11 +17,6 @@ public class PopulationsView implements MeasureDetailViewInterface {
 		buildDetailView();
 	}
 
-	@Override
-	public boolean isComplete() {
-		return true;
-	}
-
 	public Widget getWidget() {
 		return mainPanel;
 	}

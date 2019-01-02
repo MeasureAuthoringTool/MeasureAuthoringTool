@@ -27,11 +27,6 @@ public class CopyrightView implements MeasureDetailViewInterface {
 		buildDetailView();
 	}
 	
-	@Override
-	public boolean isComplete() {
-		return !this.model.getFormattedText().isEmpty();
-	}
-	
 	public Widget getWidget() {
 		return mainPanel;
 	}

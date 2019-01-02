@@ -33,11 +33,6 @@ public class SupplementalDataElementsView implements MeasureDetailViewInterface 
 	}
 
 	@Override
-	public boolean isComplete() {
-		return false;
-	}
-
-	@Override
 	public boolean hasUnsavedChanges() {
 		return false;
 	}

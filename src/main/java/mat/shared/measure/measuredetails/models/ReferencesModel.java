@@ -1,11 +1,22 @@
 package mat.shared.measure.measuredetails.models;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ReferencesModel implements MeasureDetailsComponentModel, IsSerializable{
 	private List<String> references;
+
+	public ReferencesModel(ReferencesModel originalModel) {
+		references = new LinkedList<String>();
+		for(String reference: originalModel.getReferences()) {
+			references.add(reference);
+		}
+	}
+
+	public ReferencesModel() {
+	}
 
 	public List<String> getReferences() {
 		return references;

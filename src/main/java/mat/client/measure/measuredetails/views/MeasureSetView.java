@@ -31,12 +31,7 @@ public class MeasureSetView implements MeasureDetailViewInterface {
 	public Widget getWidget() {
 		return mainPanel;
 	}
-
-	@Override
-	public boolean isComplete() {
-		return false;
-	}
-
+	
 	@Override
 	public boolean hasUnsavedChanges() {
 		return false;

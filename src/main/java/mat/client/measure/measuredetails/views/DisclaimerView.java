@@ -33,11 +33,6 @@ public class DisclaimerView implements MeasureDetailViewInterface {
 	}
 
 	@Override
-	public boolean isComplete() {
-		return !this.model.getFormattedText().isEmpty();
-	}
-
-	@Override
 	public boolean hasUnsavedChanges() {
 		// TODO Auto-generated method stub
 		return false;

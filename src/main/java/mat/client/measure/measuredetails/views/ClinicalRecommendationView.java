@@ -33,11 +33,6 @@ public class ClinicalRecommendationView implements MeasureDetailViewInterface {
 		return mainPanel;
 	}
 
-	@Override
-	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public boolean hasUnsavedChanges() {

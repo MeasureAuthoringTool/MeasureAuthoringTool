@@ -11,7 +11,6 @@ public interface MeasureDetailViewInterface {
 	public Widget getWidget();
 	public void buildDetailView();
 	public void clear();
-	public boolean isComplete();
 	public boolean hasUnsavedChanges();
 	public void setReadOnly(boolean readOnly);
 	public ConfirmationDialogBox getSaveConfirmation();

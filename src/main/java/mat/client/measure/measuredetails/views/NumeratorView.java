@@ -28,12 +28,6 @@ public class NumeratorView implements MeasureDetailViewInterface {
 		buildDetailView();
 	}
 
-	@Override
-	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
 	public Widget getWidget() {
 		return mainPanel;
 	}

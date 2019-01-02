@@ -32,13 +32,7 @@ public class RationaleView implements MeasureDetailViewInterface {
 	public Widget getWidget() {
 		return mainPanel;
 	}
-
-	@Override
-	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+	
 	@Override
 	public boolean hasUnsavedChanges() {
 		// TODO Auto-generated method stub

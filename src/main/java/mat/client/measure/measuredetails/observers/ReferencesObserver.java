@@ -1,5 +1,7 @@
 package mat.client.measure.measuredetails.observers;
 
+import com.google.gwt.core.shared.GWT;
+
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.measure.measuredetails.views.ReferencesView;
 
@@ -21,13 +23,18 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver{
 		
 	}
 
-	public void onEditClicked(String object) {
+	public void handleEditClicked(String object) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void onDeleteClicked(String object) {
+	public void handleDeleteClicked(String object) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void handleAddReferenceClicked() {
+		// TODO Auto-generated method stub
+		GWT.log("add reference clicked");
 	}
 }

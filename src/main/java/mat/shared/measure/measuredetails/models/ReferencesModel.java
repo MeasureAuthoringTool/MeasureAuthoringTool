@@ -10,8 +10,10 @@ public class ReferencesModel implements MeasureDetailsComponentModel, IsSerializ
 
 	public ReferencesModel(ReferencesModel originalModel) {
 		references = new LinkedList<String>();
-		for(String reference: originalModel.getReferences()) {
-			references.add(reference);
+		if(originalModel != null && originalModel.getReferences() != null) {
+			for(String reference: originalModel.getReferences()) {
+				references.add(reference);
+			}
 		}
 	}
 

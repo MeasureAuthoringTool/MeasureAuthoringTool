@@ -2,11 +2,12 @@ package mat.client.measure.measuredetails;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.constants.Pull;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -14,6 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.DeleteButton;
 import mat.client.buttons.SaveButton;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
+import mat.client.measure.measuredetails.observers.ReferencesObserver;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.measure.measuredetails.views.MeasureDetailsViewFactory;
 import mat.client.shared.ConfirmationDialogBox;
@@ -80,9 +82,19 @@ public class MeasureDetailsView {
 	private void buildSavePanel(MatDetailItem currentMeasureDetail) {
 		if(currentMeasureDetail != MeasureDetailsItems.POPULATIONS) {
 			widgetComponentPanel.add(new SpacerWidget());
-			saveButtonPanel.add(saveButton);
+			saveButtonPanel.clear();
 			saveButtonPanel.setWidth("625px");
-			saveButton.setPull(Pull.RIGHT);
+			saveButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+			ButtonToolBar buttonToolBar = new ButtonToolBar();
+			if(currentMeasureDetail == MeasureDetailsItems.REFERENCES) {
+				Button addReferenceButton = new Button("Add Reference");
+				addReferenceButton.setType(ButtonType.PRIMARY);
+				ReferencesObserver observer = (ReferencesObserver) componentDetailView.getObserver();
+				addReferenceButton.addClickHandler(event -> observer.handleAddReferenceClicked());
+				buttonToolBar.add(addReferenceButton);
+			}
+			buttonToolBar.add(saveButton);
+			saveButtonPanel.add(buttonToolBar);
 			widgetComponentPanel.add(saveButtonPanel);
 		}
 	}

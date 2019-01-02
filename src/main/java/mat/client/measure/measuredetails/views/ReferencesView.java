@@ -108,10 +108,10 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		editColumn.setFieldUpdater(new FieldUpdater<String, SafeHtml>() {
 			@Override
 			public void update(int index, String object, SafeHtml value) {
-				observer.onEditClicked(object);
+				observer.handleEditClicked(object);
 			}
 		});
-		referencesTable.addColumn(editColumn);
+		referencesTable.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Index\">" + "Edit" + "</span>"));
 		
 		Column<String, SafeHtml> deleteColumn = new Column<String, SafeHtml>(new ClickableSafeHtmlCell()) {
 			@Override
@@ -122,10 +122,10 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		deleteColumn.setFieldUpdater(new FieldUpdater<String, SafeHtml>() {
 			@Override
 			public void update(int index, String object, SafeHtml value) {
-				observer.onDeleteClicked(object);
+				observer.handleDeleteClicked(object);
 			}
 		});
-		referencesTable.addColumn(deleteColumn);
+		referencesTable.addColumn(deleteColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Index\">" + "Delete" + "</span>"));
 		
 		return referencesTable;
 	}
@@ -214,7 +214,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	
 	@Override
 	public MeasureDetailsComponentObserver getObserver() {
-		return null;
+		return observer;
 	}
 
 }

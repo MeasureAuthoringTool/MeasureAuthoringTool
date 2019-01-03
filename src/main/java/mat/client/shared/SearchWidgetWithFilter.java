@@ -138,8 +138,9 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		searchButton.setType(ButtonType.PRIMARY);
 		searchButton.setMarginRight(8.0);
 		searchButton.setTitle("Search");
-		searchInput.setWidth("750px");
+		searchInput.setWidth("740px");
 		searchInput.setHeight("32px");
+		searchInput.addStyleName("searchFilterTextBox");
 		searchInput.getElement().setAttribute("placeholder", "Enter Search Text");
 		searchButton.setMarginTop(2.0);
 		searchButton.setHeight("32px");

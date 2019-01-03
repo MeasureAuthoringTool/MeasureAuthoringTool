@@ -69,7 +69,7 @@ public class MeasurePackagerAssociations {
 				denominatorAndNumeratorLabel.setWidth("150px");
 				denominatorAndNumeratorPanel.add(denominatorAndNumeratorLabel);
 				ListBoxMVP denominatorAndNumeratorListBox = new ListBoxMVP();
-				denominatorAndNumeratorListBox.setTitle(detail.getName());
+				denominatorAndNumeratorListBox.setTitle("Select association for " + detail.getName());
 				denominatorAndNumeratorListBox.setWidth("175px");
 				denominatorAndNumeratorListBox.insertItem("--Select--", "0", "Select");
 				Map<String, Integer> denomHashMap = new HashMap<>();
@@ -95,7 +95,7 @@ public class MeasurePackagerAssociations {
 			measureObservationLabel.setWidth("150px");
 			measureObservationPanel.add(measureObservationLabel);
 			ListBoxMVP measureObservationListBox = new ListBoxMVP();
-			measureObservationListBox.setTitle(detail.getName());
+			measureObservationListBox.setTitle("Select association for " + detail.getName());
 			measureObservationListBox.setWidth("175px");
 			measureObservationListBox.insertItem("--Select--", "0", "Select");
 			Map<String, Integer> measureObservationHashMap = new HashMap<>();

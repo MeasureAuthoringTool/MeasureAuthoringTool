@@ -467,6 +467,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		
 		getHomeLink().addClickHandler(event -> MatContext.get().redirectToMatPage(ClientConstants.HTML_MAT));
 		
+		getSignoutLink().setVisible(true);
+		
 		getSignoutLink().addClickHandler(event -> MatContext.get().getEventBus().fireEvent(new LogoffEvent()));
 		
 		setIndicatorsHidden();
@@ -488,8 +490,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		
 		getUMLSButton().addClickHandler(event -> showUMLSModal(userFirstName, isAlreadySignedIn));
 		
-		getBonnieButton().addClickHandler(event -> showBonnieModal()); 
-			
+		getBonnieSignInButton().addClickHandler(event -> showBonnieModal()); 
+		
+		getBonnieDisconnectButton().addClickHandler(event -> revokeBonnieAccessTokenForUser());
 		/*
 		 * This block adds a special generic handler for any mouse clicks in the mainContent for ie browser.
 		 * Need to add this handler in order to keep track of the user activity in IE8 Browser.
@@ -537,6 +540,23 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	private void showBonnieModal() {
 		BonnieModal bonnieModal = new BonnieModal();
 		bonnieModal.show();
+	}
+	
+	private void revokeBonnieAccessTokenForUser() {
+		MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(MatContext.get().getLoggedinUserId(), 
+				new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				hideBonnieActive(false);
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				hideBonnieActive(true);
+			}
+
+		});
 	}
 	
 	private void setUMLSActiveLink() {		

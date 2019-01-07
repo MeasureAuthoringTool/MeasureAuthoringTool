@@ -220,8 +220,8 @@ public abstract class MainLayout {
 	private HorizontalPanel buildLinksPanel() {
 		final HorizontalPanel hp = new HorizontalPanel();
 		
-		showBonnieState = new IndicatorButton("Disconnect From Bonnie", "Sign into Bonnie");
-		showUMLSState = new IndicatorButton("UMLS Active", "Sign into UMLS");
+		showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
+		showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
 		buildSignOutLink();
 		
 		hp.add(showUMLSState.getPanel()); 
@@ -235,6 +235,7 @@ public abstract class MainLayout {
 	private void buildSignOutLink() {
 		setLinkTextAndTitle(ClientConstants.ANCHOR_SIGN_OUT, getSignoutLink());
 		getSignoutLink().setStyleName("logoutPanel", true);
+		getSignoutLink().setVisible(false);
 	}
 	
 	public void setLinkTextAndTitle(String text, NavbarLink link) {
@@ -327,13 +328,17 @@ public abstract class MainLayout {
 	}
 	
 	public HTML getUMLSButton() {
-		return showUMLSState.getLink();
+		return showUMLSState.getHideLink();
 	}
 	
-	public HTML getBonnieButton() {
-		return showBonnieState.getLink();
+	public HTML getBonnieSignInButton() {
+		return showBonnieState.getHideLink();
 	}
-
+	
+	public HTML getBonnieDisconnectButton() {
+		return showBonnieState.getshowLink();
+	}
+	
 	public void setIndicatorsHidden() {
 		showBonnieState.hideActive(true);
 		showUMLSState.hideActive(true);

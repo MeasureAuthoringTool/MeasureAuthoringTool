@@ -53,7 +53,11 @@ public class IndicatorButton{
 		return panel;
 	}
 	
-	public HTML getLink() {
+	public HTML getHideLink() {
 		return hideLink;
+	}
+	
+	public HTML getshowLink() {
+		return showLink;
 	}
 }

@@ -1628,7 +1628,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 
-		searchDisplay.getMeasureSearchFilterWidget().getMainFocusPanel().addKeyUpHandler(new KeyUpHandler() {
+		searchDisplay.getMeasureSearchFilterWidget().getSearchInput().addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
 			public void onKeyUp(KeyUpEvent event) {

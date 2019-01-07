@@ -1068,7 +1068,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 		});
 		
-		cqlLibraryView.getSearchFilterWidget().getMainFocusPanel().addKeyUpHandler(new KeyUpHandler() {
+		cqlLibraryView.getSearchFilterWidget().getSearchInput().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {

@@ -53,7 +53,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	 * Selected filter value - {@link Integer}.
 	 */
 	private int selectedFilter;
-	private FocusPanel mainFocusPanel ;
+	private Panel mainFocusPanel ;
 
 	/**
 	 * Default Constructor.
@@ -64,7 +64,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	 *            the css style disclosure panel
 	 */
 	public SearchWidgetWithFilter(String cssStyleTopPanel, String cssStyleDisclosurePanel, String forView) {
-		mainFocusPanel = new FocusPanel();
+		mainFocusPanel = new HorizontalPanel();
 		VerticalPanel topPanel = new VerticalPanel();
 		topPanel.getElement().setId("SearchFilterWidget_verticalPanel_" + forView);
 		
@@ -272,7 +272,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		this.selectedFilter = selectedFilter;
 	}
 
-	public FocusPanel getMainFocusPanel() {
+	public Panel getMainFocusPanel() {
 		return mainFocusPanel;
 	}
 

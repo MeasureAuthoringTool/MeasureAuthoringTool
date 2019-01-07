@@ -27,8 +27,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.CancelButton;
 import mat.client.buttons.SaveContinueCancelButtonBar;
-import mat.client.cqlworkspace.CQLStandaloneWorkSpacePresenter;
 import mat.client.cqlworkspace.CQLMeasureWorkSpacePresenter;
+import mat.client.cqlworkspace.CQLStandaloneWorkSpacePresenter;
 import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
@@ -96,7 +96,6 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		panel.setFade(true);
 		panel.setDataBackdrop(ModalBackdrop.STATIC);
 		panel.setSize(ModalSize.MEDIUM);
-		panel.getElement().getStyle().setZIndex(1000);
 		panel.setRemoveOnHide(true);
 		panel.getElement().setAttribute("tabindex", "0");
 		

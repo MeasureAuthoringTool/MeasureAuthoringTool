@@ -36,7 +36,6 @@ public class BonnieModal {
 		panel.getElement().setTabIndex(0);
 		panel.setDataBackdrop(ModalBackdrop.STATIC);
 		panel.setSize(ModalSize.MEDIUM);
-		panel.getElement().getStyle().setZIndex(1000);
 		panel.setRemoveOnHide(true);
 		modalBody.getElement().setTabIndex(0);
 		

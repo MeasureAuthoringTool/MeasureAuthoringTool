@@ -7,26 +7,18 @@ import java.util.List;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.admin.ManageAdminPresenter;
@@ -45,7 +37,6 @@ import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.EditCompositeMeasureEvent;
 import mat.client.event.LogoffEvent;
-import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.TimedOutEvent;
 import mat.client.export.ManageExportView;
@@ -393,7 +384,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 		});
 		
-		String title = ClientConstants.TEXT_THE_TITLE;
+		String title;
 		tabIndex = 0;
 		presenterList = new LinkedList<MatPresenter>();
 		currentUserRole = MatContext.get().getLoggedInUserRole();
@@ -427,9 +418,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			mainTabLayout.add(myAccountPresenter.getWidget(), title, true);
 			presenterList.add(myAccountPresenter);
 			
-
-			title = ClientConstants.COMPOSITE_MEASURE_EDIT;
-
 			tabIndex = presenterList.indexOf(myAccountPresenter);
 			createUMLSLinks();
 			createBonnieLinks();
@@ -474,22 +462,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		}
 		
 		mainTabLayout.setHeight("100%");
+
+		setLinkTextAndTitle(MainLayout.HEADING + " v" +resultMatVersion.replaceAll("[a-zA-Z]", ""), getHomeLink());
 		
-		Anchor signout = new Anchor(ClientConstants.ANCHOR_SIGN_OUT);
-		signout.setTitle("Sign Out");
-		signout.getElement().setAttribute("id", "Anchor_signOut");
-		signout.addClickHandler(new MATClickHandler() {
-			
-			@SuppressWarnings("rawtypes")
-			@Override
-			public void onEvent(GwtEvent event) {
-				MatContext.get().getEventBus().fireEvent(new LogoffEvent());
-			}
-		});
+		getSignoutLink().addClickHandler(event -> MatContext.get().getEventBus().fireEvent(new LogoffEvent()));
 		
-		getLogoutPanel().add(signout);
-		getWelcomeUserPanel(userFirstName);
-		getVersionPanel(resultMatVersion);
 		setIndicatorsHidden();
 
 		hideLoadingMessage();
@@ -503,44 +480,20 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		
 		getContentPanel().add(mainTabLayout);
 		
-		getContentPanel().addKeyPressHandler(new KeyPressHandler() {
-			
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				MatContext.get().restartTimeoutWarning();
-			}
-		});
+		getContentPanel().addKeyPressHandler(event -> MatContext.get().restartTimeoutWarning());
 		
-		
-		
-		getContentPanel().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				MatContext.get().restartTimeoutWarning();
-			}
-		});
+		getContentPanel().addClickHandler(event -> MatContext.get().restartTimeoutWarning());
 		
 		getUMLSButton().addClickHandler(event -> showUMLSModal(userFirstName, isAlreadySignedIn));
 		
 		getBonnieButton().addClickHandler(event -> showBonnieModal()); 
 			
-			
-		
-		
-		
 		/*
 		 * This block adds a special generic handler for any mouse clicks in the mainContent for ie browser.
 		 * Need to add this handler in order to keep track of the user activity in IE8 Browser.
 		 */
 		if(getUserAgent().contains(ClientConstants.MSIE)){
-			getContentPanel().addMouseUpHandler(new MouseUpHandler() {
-				
-				@Override
-				public void onMouseUp(MouseUpEvent event) {
-					MatContext.get().restartTimeoutWarning();
-				}
-			});
+			getContentPanel().addMouseUpHandler(event -> MatContext.get().restartTimeoutWarning()); 
 		}
 		
 		MatContext.get().getEventBus().addHandler(BackToLoginPageEvent.TYPE, new BackToLoginPageEvent.Handler() {
@@ -568,8 +521,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				}
 			}
 		});
-		
-		
 		
 		MatContext.get().restartTimeoutWarning();
 	}

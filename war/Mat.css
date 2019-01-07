@@ -533,13 +533,7 @@ left:50px;
 	padding-right:2px;
 }
 .topBanner {
-	/*
-    position: absolute; 
-	: 0pt; 
-	top: 0pt;
-	*/ 
 	overflow: visible; 	 
-	/*border: 1px solid rgb(160, 160, 160);*/ 
 	background-image: url('images/hpgradient_small.jpg');
 	/* background-size: only supported by IE 9 and +*/
 	background-size: 100% 100%;
@@ -548,12 +542,36 @@ left:50px;
     padding-left:25px;
     padding-right:25px;
     -moz-box-sizing: border-box; 
-	text-align: left;
     margin-top: 2px; 
-	/*margin-left: 2px;*/ 
     margin-right: 2px; 
     margin-bottom: 10px; 
     width:100%;   
+}
+
+.versionBanner{
+    margin-top: 10px;
+	margin-bottom: 5px;
+	display: flex;
+	flex-wrap: nowrap;
+  	align-content:center;
+	justify-content: space-between;
+	font-size: x-large;
+	height: 100%;
+	width: 40%;
+	float:left;
+}
+
+.navLinksBanner{
+    margin-top: 5px;
+	margin-bottom: 5px;
+	display: flex;
+	flex-wrap: nowrap;
+  	align-content:center;
+	justify-content: space-between;
+	font-size: small;
+	height: 100%;
+	width: auto;
+	float:right;
 }
 
 .footer {
@@ -1305,10 +1323,9 @@ padding: 2px;
 .logoutPanel{
 	float: right;
 	position: relative;
-	padding-top: 10px;
-	padding-right: 15px;
+	padding-top: 9px;
 	cursor: pointer;
-	font-size:small;
+	font-size: 14px;
 }
 
 .statePanel{

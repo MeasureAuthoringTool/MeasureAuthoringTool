@@ -220,7 +220,7 @@ public abstract class MainLayout {
 	private HorizontalPanel buildLinksPanel() {
 		final HorizontalPanel hp = new HorizontalPanel();
 		
-		showBonnieState = new IndicatorButton("Bonnie Active", "Sign into Bonnie");
+		showBonnieState = new IndicatorButton("Disconnect From Bonnie", "Sign into Bonnie");
 		showUMLSState = new IndicatorButton("UMLS Active", "Sign into UMLS");
 		buildSignOutLink();
 		

@@ -17,6 +17,7 @@ import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsAnchorListItem;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
+import mat.client.measure.measuredetails.views.ReferencesView;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
@@ -32,6 +33,7 @@ import mat.shared.error.measure.DeleteMeasureException;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsRichTextAbstractModel;
 import mat.shared.measure.measuredetails.models.MeasureStewardDeveloperModel;
+import mat.shared.measure.measuredetails.models.ReferencesModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.shared.measure.measuredetails.validate.GeneralInformationValidator;
 
@@ -91,6 +93,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	public void handleMenuItemClick(MatDetailItem menuItem) {
 		clearAlerts();
 		if(isDirty()) {
+			measureDetailsView.clearAlerts();
 			measureDetailsView.displayDirtyCheck();
 			measureDetailsView.getMessagePanel().getWarningConfirmationNoButton().addClickHandler(event -> handleWarningConfirmationNoClick());
 			measureDetailsView.getMessagePanel().getWarningConfirmationYesButton().addClickHandler(event -> handleWarningConfirmationYesClick(menuItem));
@@ -116,11 +119,18 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	public boolean isDirty() {
-		if(!isReadOnly && measureDetailsView.getMeasureDetailsComponentModel() != null) {
-			return measureDetailsView.getMeasureDetailsComponentModel().isDirty(measureDetailsModel);
+		boolean isDirty = false;
+		if(!isReadOnly) {
+			if( measureDetailsView.getMeasureDetailsComponentModel() != null) {
+				isDirty = measureDetailsView.getMeasureDetailsComponentModel().isDirty(measureDetailsModel);
+			}
+			if(!isDirty && measureDetailsView.getCurrentMeasureDetail() == MeasureDetailsItems.REFERENCES) {
+				ReferencesView referencesView = (ReferencesView) measureDetailsView.getComponentDetailView();
+				isDirty = referencesView.isEditorDirty();
+			}
 		}
-		
-		return false; 
+
+		return isDirty; 
 	}
 	
 	@Override
@@ -281,6 +291,11 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	@Override
 	public void handleSaveButtonClick() {
 		if(!isReadOnly) {
+			if(measureDetailsView.getCurrentMeasureDetail() == MeasureDetailsItems.REFERENCES) {
+				ReferencesView referencesView = (ReferencesView) measureDetailsView.getComponentDetailView();
+				referencesView.updateModel();
+			}
+			
 			List<String> validationErrors = measureDetailsView.getMeasureDetailsComponentModel().validateModel(measureDetailsModel);
 			if(validationErrors == null || validationErrors.isEmpty()) {
 				ConfirmationDialogBox confirmationDialog = measureDetailsView.getSaveConfirmation();
@@ -390,6 +405,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				return getRichTextEditableTabState(measureDetailsModel.getMeasureSetModel());
 			case POPULATIONS:
 				return getPopulationsState(measureDetailsModel);
+			case REFERENCES:
+				return getReferencesState(measureDetailsModel.getReferencesModel());
 			default: 
 				return MeasureDetailState.BLANK;
 			}
@@ -422,6 +439,13 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		return MeasureDetailState.BLANK;
 	}
 	
+	private MeasureDetailState getReferencesState(ReferencesModel referencesModel) {
+		if(referencesModel.getReferences() != null && !referencesModel.getReferences().isEmpty()) {
+			return MeasureDetailState.COMPLETE;
+		}
+		return MeasureDetailState.BLANK;
+	}
+
 	private MeasureDetailState getMeasureStewardAndDeveloperState(MeasureStewardDeveloperModel model) {
 		if (StringUtility.isEmptyOrNull(model.getStewardId()) && model.getSelectedDeveloperList().isEmpty()) {
 			return MeasureDetailState.BLANK;

@@ -16,11 +16,13 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
 import mat.client.CustomPager;
+import mat.client.cqlworkspace.DeleteConfirmationDialogBox;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.measure.measuredetails.observers.ReferencesObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.ClickableSafeHtmlCell;
@@ -29,19 +31,130 @@ import mat.shared.measure.measuredetails.models.ReferencesModel;
 
 public class ReferencesView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();
+	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor; 
 	private ReferencesModel originalModel;
 	private ReferencesModel referencesModel;
 	private ReferencesObserver observer;
+	private Column<String, SafeHtml> editColumn;
+	private MessagePanel messagePanel;
+	private Integer editingIndex = null;
+	private boolean isReadOnly = false;
+	//TODO sort out dirty checks/handle dirty check on delete
 	
 	public ReferencesView(ReferencesModel originalModel) {
 		this.originalModel = originalModel;
 		this.referencesModel = new ReferencesModel(originalModel);
-		buildReferencesView();
+		messagePanel = new MessagePanel();
+		buildDetailView();
+	}
+
+	private CellTable<String> addColumnToTable(CellTable<String> referencesTable) {
+		Column<String, SafeHtml> descriptionColumn = new Column<String, SafeHtml>(new ClickableSafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(String object) {
+				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
+				safeHtmlBuilder.appendHtmlConstant(object);
+				return safeHtmlBuilder.toSafeHtml();
+			}
+		};
+		referencesTable.addColumn(descriptionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Description\">" + "Description" + "</span>"));
+		
+		editColumn = new Column<String, SafeHtml>(new ClickableSafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(String object) {
+				return getEditColumnToolTip(object);
+			}
+		};
+		
+		editColumn.setFieldUpdater(new FieldUpdater<String, SafeHtml>() {
+				@Override
+				public void update(int index, String object, SafeHtml value) {
+					if(isEditorDirty(object)) {
+						displayDirtyCheck();
+						messagePanel.getWarningConfirmationYesButton().addClickHandler(event -> handleYesButtonClicked(index, object));
+						messagePanel.getWarningConfirmationNoButton().addClickHandler(event -> hideDirtyCheck());
+						messagePanel.getWarningConfirmationYesButton().setFocus(true);
+					} else {
+						observer.handleEditClicked(index, object);
+					}
+				}
+			});
+
+		String columnText = isReadOnly ? "View" : "Edit";
+		referencesTable.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Index\">" + columnText + "</span>"));
+		
+		Column<String, SafeHtml> deleteColumn = new Column<String, SafeHtml>(new ClickableSafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(String object) {
+				return getDeleteColumnToolTip(object);
+			}
+		};
+		deleteColumn.setFieldUpdater(new FieldUpdater<String, SafeHtml>() {
+			@Override
+			public void update(int index, String object, SafeHtml value) {
+				DeleteConfirmationDialogBox deleteConfirmation = new DeleteConfirmationDialogBox();
+				deleteConfirmation.getMessageAlert().createAlert("You have selected to delete reference: " + (object.length()>60 ? object.substring(0, 59) : object) + ". Please confirm that you want to remove this reference permanently.");
+				deleteConfirmation.getYesButton().addClickHandler(event -> observer.handleDeleteClicked(index, object));
+				deleteConfirmation.show();
+			}
+		});
+		referencesTable.addColumn(deleteColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Index\">" + "Delete" + "</span>"));
+		
+		return referencesTable;
 	}
 	
-	private void buildReferencesView() {
+	public void displayDirtyCheck() {
+		hideDirtyCheck();
+		messagePanel.getWarningConfirmationMessageAlert().createWarningAlert();
+	}
+	
+	public void hideDirtyCheck() {
+		messagePanel.clearAlerts();
+	}
+	
+	private void handleYesButtonClicked(int index, String reference) {
+		observer.handleEditClicked(index, reference);
+		hideDirtyCheck();
+	}
+	
+	private SafeHtml getEditColumnToolTip(String object) {
+		SafeHtmlBuilder sb = new SafeHtmlBuilder();
+		String title = isReadOnly ? "View" : "Edit";
+		String cssClass = "btn btn-link";
+		String iconCss = isReadOnly ? "fa fa-binoculars fa-lg" : "fa fa-pencil fa-lg";
+		sb.appendHtmlConstant("<button type=\"button\" title='"
+				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+		return sb.toSafeHtml();
+	}
+	
+	private SafeHtml getDeleteColumnToolTip(String object){
+		SafeHtmlBuilder sb = new SafeHtmlBuilder();
+		String title = "Delete";
+		String cssClass = "btn btn-link";
+		String iconCss = "fa fa-trash fa-lg";	
+		String disabledMarkup = isReadOnly ? "disabled " : "";
+		sb.appendHtmlConstant("<button type=\"button\" title='"
+				+ title + "' tabindex=\"0\" class=\"" + cssClass + "\" style=\"margin-left: 0px;\""  + disabledMarkup + "\"> <i class=\"" + iconCss + "\"></i><span style=\"font-size:0;\")>Delete</button>");
+		return sb.toSafeHtml();
+	}
+
+
+	@Override
+	public Widget getWidget() {
+		return mainPanel;
+	}
+
+	@Override
+	public boolean hasUnsavedChanges() {
+		return false;
+	}
+
+	@Override
+	public void buildDetailView() {
 		mainPanel.clear();
 		VerticalPanel cellTablePanel = new VerticalPanel();
+		cellTablePanel.setWidth("100%");
+		cellTablePanel.add(messagePanel);
 		CellTable<String> referencesTable = new CellTable<String>();
 		referencesTable.setPageSize(5);
 		referencesTable.redraw();
@@ -73,104 +186,18 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		cellTablePanel.add(new SpacerWidget());
 		cellTablePanel.add(spager);
 		mainPanel.add(cellTablePanel);
-	}
-
-	private CellTable<String> addColumnToTable(CellTable<String> referencesTable) {
-		// TODO Auto-generated method stub
 		
-		Column<String, SafeHtml> indexColumn = new Column<String, SafeHtml>(new ClickableSafeHtmlCell()) {
-			@Override
-			public SafeHtml getValue(String object) {
-				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
-				int indexNumber = referencesModel.getReferences() != null && referencesModel.getReferences().contains(object) ? referencesModel.getReferences().indexOf(object) : 0;
-				safeHtmlBuilder.appendHtmlConstant(String.valueOf(indexNumber));
-				return safeHtmlBuilder.toSafeHtml();
-			}
-		};
-		referencesTable.addColumn(indexColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Index\">" + "#" + "</span>"));
-		
-		Column<String, SafeHtml> descriptionColumn = new Column<String, SafeHtml>(new ClickableSafeHtmlCell()) {
-			@Override
-			public SafeHtml getValue(String object) {
-				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
-				safeHtmlBuilder.appendHtmlConstant(object);
-				return safeHtmlBuilder.toSafeHtml();
-			}
-		};
-		referencesTable.addColumn(descriptionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Description\">" + "Description" + "</span>"));
-		
-		Column<String, SafeHtml> editColumn = new Column<String, SafeHtml>(new ClickableSafeHtmlCell()) {
-			@Override
-			public SafeHtml getValue(String object) {
-				return getEditColumnToolTip(object);
-			}
-		};
-		editColumn.setFieldUpdater(new FieldUpdater<String, SafeHtml>() {
-			@Override
-			public void update(int index, String object, SafeHtml value) {
-				observer.handleEditClicked(object);
-			}
-		});
-		referencesTable.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Index\">" + "Edit" + "</span>"));
-		
-		Column<String, SafeHtml> deleteColumn = new Column<String, SafeHtml>(new ClickableSafeHtmlCell()) {
-			@Override
-			public SafeHtml getValue(String object) {
-				return getDeleteColumnToolTip(object);
-			}
-		};
-		deleteColumn.setFieldUpdater(new FieldUpdater<String, SafeHtml>() {
-			@Override
-			public void update(int index, String object, SafeHtml value) {
-				observer.handleDeleteClicked(object);
-			}
-		});
-		referencesTable.addColumn(deleteColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Index\">" + "Delete" + "</span>"));
-		
-		return referencesTable;
-	}
-	
-	private SafeHtml getEditColumnToolTip(String object) {
-		SafeHtmlBuilder sb = new SafeHtmlBuilder();
-		String title = "Edit";;
-		String cssClass = "btn btn-link";
-		String iconCss = "fa fa-pencil fa-lg";
-		sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
-		return sb.toSafeHtml();
-	}
-	
-	private SafeHtml getDeleteColumnToolTip(String object){
-		SafeHtmlBuilder sb = new SafeHtmlBuilder();
-		String title = "Delete";;
-		String cssClass = "btn btn-link";
-		String iconCss ="fa fa-trash fa-lg";	
-		sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\"" + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\"" + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
-		return sb.toSafeHtml();
-	}
-
-	@Override
-	public Widget getWidget() {
-		return mainPanel;
-	}
-
-	@Override
-	public boolean hasUnsavedChanges() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void buildDetailView() {
-		// TODO Auto-generated method stub
+		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
+		measureDetailsRichTextEditor.getRichTextEditor().setTitle("References");
+		addEventHandlers();
 		
 	}
 
 	@Override
 	public void setReadOnly(boolean readOnly) {
-		// TODO Auto-generated method stub
-		
+		this.isReadOnly = readOnly;
+		buildDetailView();
+		measureDetailsRichTextEditor.setReadOnly(readOnly);	
 	}
 
 	@Override
@@ -180,8 +207,12 @@ public class ReferencesView implements MeasureDetailViewInterface {
 
 	@Override
 	public void resetForm() {
-		// TODO Auto-generated method stub
-		
+		isReadOnly = false;
+		editingIndex = null;
+		hideDirtyCheck();
+		this.referencesModel = new ReferencesModel(originalModel);
+		measureDetailsRichTextEditor.getRichTextEditor().setText("");
+		buildDetailView();
 	}
 
 	@Override
@@ -191,20 +222,18 @@ public class ReferencesView implements MeasureDetailViewInterface {
 
 	@Override
 	public RichTextEditor getRichTextEditor() {
-		// TODO Auto-generated method stub
-		return null;
+		return measureDetailsRichTextEditor.getRichTextEditor();
 	}
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-		
+		hideDirtyCheck();
+		measureDetailsRichTextEditor.getRichTextEditor().setText("");
 	}
 
 	@Override
 	public void setMeasureDetailsComponentModel(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		
+		this.referencesModel = (ReferencesModel) model;
 	}
 
 	@Override
@@ -216,5 +245,34 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	public MeasureDetailsComponentObserver getObserver() {
 		return observer;
 	}
+	
+	private void addEventHandlers() {
+		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());
+	}
 
+	public boolean isEditorDirty(String referenceValue) {
+		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getValue();
+		return (!textValue.isEmpty() && !textValue.equals(referenceValue));
+	}
+	
+	public boolean isEditorDirty() {
+		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getValue();
+		return !textValue.isEmpty();
+	}
+
+	public void updateModel() {
+		if(editingIndex != null) {
+			observer.handleEditReference();
+		} else {
+			observer.handleAddReference();
+		}
+	}
+	
+	public Integer getEditingIndex() {
+		return editingIndex;
+	}
+
+	public void setEditingIndex(Integer editingIndex) {
+		this.editingIndex = editingIndex;
+	}
 }

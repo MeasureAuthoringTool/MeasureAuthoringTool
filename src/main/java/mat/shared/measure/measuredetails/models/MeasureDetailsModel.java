@@ -712,7 +712,6 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 	@Override
 	public boolean isDirty(ReferencesModel referencesModel) {
 		return !referencesModel.equals(this.getReferencesModel());
-
 	}
 
 	@Override

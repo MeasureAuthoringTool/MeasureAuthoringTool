@@ -30,8 +30,12 @@ public class ReferencesModel implements MeasureDetailsComponentModel, IsSerializ
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		return false;
+		ReferencesModel originalModel = (ReferencesModel) model;
+		if(originalModel.getReferences() != null) {
+			return (originalModel.getReferences().size() == getReferences().size()) && originalModel.getReferences().stream().allMatch(str -> getReferences().contains(str));
+		} else {
+			return getReferences().isEmpty();
+		}
 	}
 
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

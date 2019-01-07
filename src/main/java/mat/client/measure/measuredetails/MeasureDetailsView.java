@@ -2,7 +2,6 @@ package mat.client.measure.measuredetails;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.DOM;
@@ -15,9 +14,9 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.DeleteButton;
 import mat.client.buttons.SaveButton;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
-import mat.client.measure.measuredetails.observers.ReferencesObserver;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.measure.measuredetails.views.MeasureDetailsViewFactory;
+import mat.client.measure.measuredetails.views.ReferencesView;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatDetailItem;
@@ -41,13 +40,13 @@ public class MeasureDetailsView {
 	private boolean isMeasureEditable;
 	private SaveButton saveButton = new SaveButton("Measure Details");
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
-	private MeasureDetailsModel measureDetailsComponent;
+	private MeasureDetailsModel measureDetailsModel;
 	private RichTextEditor currentRichTextEditor;
 	private MessagePanel messagePanel;
 	
-	public MeasureDetailsView(MeasureDetailsModel measureDetailsComponent, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
+	public MeasureDetailsView(MeasureDetailsModel measureDetailsModel, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
 		currentMeasureDetail = measureDetail;
-		this.measureDetailsComponent = measureDetailsComponent;
+		this.measureDetailsModel = measureDetailsModel;
 		
 		HorizontalPanel errorPanel = new HorizontalPanel();
 		errorPanel.add(errorAlert);
@@ -86,19 +85,12 @@ public class MeasureDetailsView {
 			saveButtonPanel.setWidth("625px");
 			saveButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			ButtonToolBar buttonToolBar = new ButtonToolBar();
-			if(currentMeasureDetail == MeasureDetailsItems.REFERENCES) {
-				Button addReferenceButton = new Button("Add Reference");
-				addReferenceButton.setType(ButtonType.PRIMARY);
-				ReferencesObserver observer = (ReferencesObserver) componentDetailView.getObserver();
-				addReferenceButton.addClickHandler(event -> observer.handleAddReferenceClicked());
-				buttonToolBar.add(addReferenceButton);
-			}
 			buttonToolBar.add(saveButton);
 			saveButtonPanel.add(buttonToolBar);
 			widgetComponentPanel.add(saveButtonPanel);
 		}
 	}
-	
+
 	private void buildMeasureDetailsButtonPanel() {
 		mainPanel.add(new SpacerWidget());
 		HorizontalPanel panel = new HorizontalPanel();
@@ -113,7 +105,7 @@ public class MeasureDetailsView {
 		this.currentMeasureDetail = currentMeasureDetail;
 		widgetComponentPanel.clear();
 		buildHeading();
-		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsComponent, currentMeasureDetail);
+		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsModel, currentMeasureDetail);
 		currentRichTextEditor = componentDetailView.getRichTextEditor();
 		if(currentRichTextEditor != null) {
 			currentRichTextEditor.addKeyUpHandler(keyUpEvent -> handleRichTextTabOut(keyUpEvent));
@@ -142,9 +134,9 @@ public class MeasureDetailsView {
         }
 	}
 	
-	public VerticalPanel buildDetailView(MeasureDetailsModel measureDetailsComponent, MatDetailItem currentMeasureDetail, MeasureDetailsNavigation navigationPanel) {
+	public VerticalPanel buildDetailView(MeasureDetailsModel measureDetailsModel, MatDetailItem currentMeasureDetail, MeasureDetailsNavigation navigationPanel) {
 		this.currentMeasureDetail = currentMeasureDetail;
-		this.measureDetailsComponent = measureDetailsComponent;
+		this.measureDetailsModel = measureDetailsModel;
 		return buildDetailView(currentMeasureDetail);
 	}
 	
@@ -171,6 +163,14 @@ public class MeasureDetailsView {
 	public void clear() {
 		componentDetailView.clear();
 		messagePanel.clearAlerts();
+	}
+	
+	public void clearAlerts() {
+		messagePanel.clearAlerts();
+		if(currentMeasureDetail == MeasureDetailsItems.REFERENCES) {
+			ReferencesView referencesView = (ReferencesView) getComponentDetailView();
+			referencesView.hideDirtyCheck();
+		}
 	}
 	
 	public ConfirmationDialogBox getSaveConfirmation() {
@@ -209,6 +209,10 @@ public class MeasureDetailsView {
 	}
 	
 	public void displayDirtyCheck() {
+		if(currentMeasureDetail == MeasureDetailsItems.REFERENCES) {
+			ReferencesView referencesView = (ReferencesView) getComponentDetailView();
+			referencesView.hideDirtyCheck();
+		}
 		messagePanel.clearAlerts();
 		messagePanel.getWarningConfirmationMessageAlert().createWarningAlert();
 	}

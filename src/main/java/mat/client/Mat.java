@@ -465,6 +465,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
 		setLinkTextAndTitle(MainLayout.HEADING + " v" +resultMatVersion.replaceAll("[a-zA-Z]", ""), getHomeLink());
 		
+		getHomeLink().addClickHandler(event -> MatContext.get().redirectToMatPage(ClientConstants.HTML_MAT));
+		
 		getSignoutLink().addClickHandler(event -> MatContext.get().getEventBus().fireEvent(new LogoffEvent()));
 		
 		setIndicatorsHidden();

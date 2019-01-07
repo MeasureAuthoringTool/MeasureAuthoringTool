@@ -608,6 +608,15 @@ public class MatContext implements IsSerializable {
 		Window.Location.replace(urlBuilder.buildString());
 	}
 	
+	public void redirectToMatPage(String html) {
+		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
+		urlBuilder.setHash("mainTab0");
+		String path = Window.Location.getPath();
+		path=path.substring(0, path.lastIndexOf('/'));
+		path += html;
+		urlBuilder.setPath(path);
+		Window.Location.replace(urlBuilder.buildString());
+	}
 	
 	public void openURL(String html){
 		Window.open(html, "User_Guide", "");

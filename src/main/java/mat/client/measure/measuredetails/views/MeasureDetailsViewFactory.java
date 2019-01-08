@@ -1,5 +1,6 @@
 package mat.client.measure.measuredetails.views;
 
+import mat.client.measure.measuredetails.MeasureDetailsObserver;
 import mat.client.measure.measuredetails.observers.ClinicalRecommendationObserver;
 import mat.client.measure.measuredetails.observers.CopyrightObserver;
 import mat.client.measure.measuredetails.observers.DefinitionObserver;
@@ -50,7 +51,7 @@ public class MeasureDetailsViewFactory {
 		return instance;
 	}
 
-	public MeasureDetailViewInterface getMeasureDetailComponentView(MeasureDetailsModel measureDetailsModel, MatDetailItem currentMeasureDetail) {
+	public MeasureDetailViewInterface getMeasureDetailComponentView(MeasureDetailsModel measureDetailsModel, MatDetailItem currentMeasureDetail, MeasureDetailsObserver measureDetailObserver) {
 		if(currentMeasureDetail instanceof MeasureDetailsConstants.MeasureDetailsItems) {
 			switch((MeasureDetailsItems) currentMeasureDetail) {
 			case COMPONENT_MEASURES:
@@ -74,7 +75,7 @@ public class MeasureDetailsViewFactory {
 			case IMPROVEMENT_NOTATION:
 				return buildRichTextEditorView(measureDetailsModel.getImprovementNotationModel(), new ImprovementNotationView(), new ImprovementNotationObserver());
 			case REFERENCES:
-				return buildRefererenciesView(measureDetailsModel.getReferencesModel());
+				return buildRefererencesView(measureDetailsModel.getReferencesModel(), measureDetailObserver);
 			case DEFINITION:
 				return buildRichTextEditorView(measureDetailsModel.getDefinitionModel(), new DefinitionView(), new DefinitionObserver());
 			case GUIDANCE:
@@ -120,9 +121,9 @@ public class MeasureDetailsViewFactory {
 		return buildGeneralMeasureInformationView(measureDetailsModel.isComposite(), measureDetailsModel.getGeneralInformationModel());
 	}
 	
-	private MeasureDetailViewInterface buildRefererenciesView(ReferencesModel referencesModel) {
+	private MeasureDetailViewInterface buildRefererencesView(ReferencesModel referencesModel, MeasureDetailsObserver measureDetailObserver) {
 		ReferencesView referencesView = new ReferencesView(referencesModel);
-		referencesView.setObserver(new ReferencesObserver(referencesView));
+		referencesView.setObserver(new ReferencesObserver(referencesView, measureDetailObserver));
 		return referencesView;
 	}
 

@@ -52,7 +52,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		navigationPanel = new MeasureDetailsNavigation(scoringType, isPatientBased, isCompositeMeasure);
 		navigationPanel.setObserver(this);
 		measureDetailsModel = new MeasureDetailsModel();
-		measureDetailsView = new MeasureDetailsView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
+		measureDetailsView = new MeasureDetailsView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel, this);
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 		addEventHandlers();
 	}
@@ -104,7 +104,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	private void navigateTo(MatDetailItem menuItem) {		
-		measureDetailsView.buildDetailView(menuItem);
+		measureDetailsView.buildDetailView(menuItem, this);
 		navigationPanel.setActiveMenuItem(menuItem);
 		measureDetailsView.setFocusOnHeader();
 	}
@@ -194,7 +194,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		this.scoringType = measureDetailsModel.getGeneralInformationModel().getScoringMethod();
 		this.isPatientBased = measureDetailsModel.getGeneralInformationModel().isPatientBased();
 		navigationPanel.buildNavigationMenu(scoringType, isPatientBased, isCompositeMeasure);
-		measureDetailsView.buildDetailView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
+		measureDetailsView.buildDetailView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel, this);
 		isReadOnly = !MatContext.get().getMeasureLockService().checkForEditPermission();
 		measureDetailsView.setReadOnly(isReadOnly);
 		measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
@@ -293,20 +293,20 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		if(!isReadOnly) {
 			if(measureDetailsView.getCurrentMeasureDetail() == MeasureDetailsItems.REFERENCES) {
 				ReferencesView referencesView = (ReferencesView) measureDetailsView.getComponentDetailView();
-				referencesView.updateModel();
-			}
-			
-			List<String> validationErrors = measureDetailsView.getMeasureDetailsComponentModel().validateModel(measureDetailsModel);
-			if(validationErrors == null || validationErrors.isEmpty()) {
-				ConfirmationDialogBox confirmationDialog = measureDetailsView.getSaveConfirmation();
-				if(confirmationDialog != null) {
-					showSaveConfirmationDialog(confirmationDialog);
-				} else {
-					saveMeasureDetails();
-				}
+				referencesView.saveModel();
 			} else {
-				String validationErrorMessage = validationErrors.stream().collect(Collectors.joining("\n"));
-				measureDetailsView.displayErrorMessage(validationErrorMessage);
+				List<String> validationErrors = measureDetailsView.getMeasureDetailsComponentModel().validateModel(measureDetailsModel);
+				if(validationErrors == null || validationErrors.isEmpty()) {
+					ConfirmationDialogBox confirmationDialog = measureDetailsView.getSaveConfirmation();
+					if(confirmationDialog != null) {
+						showSaveConfirmationDialog(confirmationDialog);
+					} else {
+						saveMeasureDetails();
+					}
+				} else {
+					String validationErrorMessage = validationErrors.stream().collect(Collectors.joining("\n"));
+					measureDetailsView.displayErrorMessage(validationErrorMessage);
+				}
 			}
 		}
 	}
@@ -318,7 +318,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		confirmationDialog.getYesButton().setFocus(true);
 	}
 
-	private void saveMeasureDetails() {
+	public void saveMeasureDetails() {
 		measureDetailsView.getComponentDetailView().getObserver().handleValueChanged();
 		measureDetailsView.getMeasureDetailsComponentModel().update(measureDetailsModel);
 		ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
@@ -344,7 +344,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				isPatientBased = measureDetailsModel.getGeneralInformationModel().isPatientBased();
 				MatContext.get().setCurrentMeasureScoringType(scoringType);
 				navigationPanel.buildNavigationMenu(scoringType, isPatientBased, isCompositeMeasure);
-				measureDetailsView.buildDetailView(measureDetailsModel, navigationPanel.getActiveMenuItem(), navigationPanel);
+				measureDetailsView.buildDetailView(measureDetailsModel, navigationPanel.getActiveMenuItem(), navigationPanel, getMeasureDetailsObserver());
 				isReadOnly = !MatContext.get().getMeasureLockService().checkForEditPermission();
 				measureDetailsView.setReadOnly(isReadOnly);
 				measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
@@ -353,6 +353,10 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				navigationPanel.setActiveMenuItem(activeMenuItem);
 			}
 		};
+	}
+	
+	private MeasureDetailsObserver getMeasureDetailsObserver() {
+		return this;
 	}
 	
 	private void updateNavPillStates() {

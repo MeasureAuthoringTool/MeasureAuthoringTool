@@ -39,7 +39,6 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	private MessagePanel messagePanel;
 	private Integer editingIndex = null;
 	private boolean isReadOnly = false;
-	//TODO sort out dirty checks/handle dirty check on delete
 	
 	public ReferencesView(ReferencesModel originalModel) {
 		this.originalModel = originalModel;
@@ -92,15 +91,21 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		deleteColumn.setFieldUpdater(new FieldUpdater<String, SafeHtml>() {
 			@Override
 			public void update(int index, String object, SafeHtml value) {
-				DeleteConfirmationDialogBox deleteConfirmation = new DeleteConfirmationDialogBox();
-				deleteConfirmation.getMessageAlert().createAlert("You have selected to delete reference: " + (object.length()>60 ? object.substring(0, 59) : object) + ". Please confirm that you want to remove this reference permanently.");
-				deleteConfirmation.getYesButton().addClickHandler(event -> observer.handleDeleteClicked(index, object));
-				deleteConfirmation.show();
+				if(!isReadOnly) {
+					displayDeleteConfirmationDialog(index, object);
+				}
 			}
 		});
 		referencesTable.addColumn(deleteColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Index\">" + "Delete" + "</span>"));
 		
 		return referencesTable;
+	}
+	
+	private void displayDeleteConfirmationDialog(int index, String object) {
+		DeleteConfirmationDialogBox deleteConfirmation = new DeleteConfirmationDialogBox();
+		deleteConfirmation.getMessageAlert().createAlert("You have selected to delete reference: " + (object.length()>60 ? object.substring(0, 59) : object) + ". Please confirm that you want to remove this reference permanently.");
+		deleteConfirmation.getYesButton().addClickHandler(event -> observer.handleDeleteReference(index, object));
+		deleteConfirmation.show();
 	}
 	
 	public void displayDirtyCheck() {
@@ -120,10 +125,11 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	private SafeHtml getEditColumnToolTip(String object) {
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String title = isReadOnly ? "View" : "Edit";
+		String cssColor = isReadOnly ? "black" : "darkgoldenrod";
 		String cssClass = "btn btn-link";
 		String iconCss = isReadOnly ? "fa fa-binoculars fa-lg" : "fa fa-pencil fa-lg";
 		sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: " + cssColor + ";\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
 		return sb.toSafeHtml();
 	}
 	
@@ -252,19 +258,26 @@ public class ReferencesView implements MeasureDetailViewInterface {
 
 	public boolean isEditorDirty(String referenceValue) {
 		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getValue();
-		return (!textValue.isEmpty() && !textValue.equals(referenceValue));
+		return (!isReadOnly && (!textValue.isEmpty() && !textValue.equals(referenceValue)));
 	}
 	
 	public boolean isEditorDirty() {
 		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getValue();
-		return !textValue.isEmpty();
+		return !isReadOnly && !textValue.isEmpty();
 	}
 
-	public void updateModel() {
+	public void saveModel() {
 		if(editingIndex != null) {
-			observer.handleEditReference();
+			String textValue = measureDetailsRichTextEditor.getRichTextEditor().getValue();
+			if(textValue.isEmpty()) {
+				displayDeleteConfirmationDialog(editingIndex, textValue);
+			} else {
+				observer.handleEditReference();
+				observer.saveReferences();
+			}
 		} else {
 			observer.handleAddReference();
+			observer.saveReferences();
 		}
 	}
 	

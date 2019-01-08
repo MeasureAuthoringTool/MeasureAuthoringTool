@@ -44,7 +44,7 @@ public class MeasureDetailsView {
 	private RichTextEditor currentRichTextEditor;
 	private MessagePanel messagePanel;
 	
-	public MeasureDetailsView(MeasureDetailsModel measureDetailsModel, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
+	public MeasureDetailsView(MeasureDetailsModel measureDetailsModel, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel, MeasureDetailsObserver measureDetailsObserver) {
 		currentMeasureDetail = measureDetail;
 		this.measureDetailsModel = measureDetailsModel;
 		
@@ -55,7 +55,7 @@ public class MeasureDetailsView {
 
 		mainContentPanel.add(navigationPanel.getWidget());
 		mainContentPanel.setWidth("850px");
-		widgetComponentPanel = buildDetailView(currentMeasureDetail);
+		widgetComponentPanel = buildDetailView(currentMeasureDetail, measureDetailsObserver);
 		mainContentPanel.add(widgetComponentPanel);
 		mainContentPanel.getElement().setId("measureDetailsView_ContentPanel");
 		mainPanel.add(mainContentPanel);
@@ -101,11 +101,11 @@ public class MeasureDetailsView {
 		mainPanel.add(new SpacerWidget());
 	}
 	
-	public VerticalPanel buildDetailView(MatDetailItem currentMeasureDetail) {
+	public VerticalPanel buildDetailView(MatDetailItem currentMeasureDetail, MeasureDetailsObserver measureDetailsObserver) {
 		this.currentMeasureDetail = currentMeasureDetail;
 		widgetComponentPanel.clear();
 		buildHeading();
-		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsModel, currentMeasureDetail);
+		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsModel, currentMeasureDetail, measureDetailsObserver);
 		currentRichTextEditor = componentDetailView.getRichTextEditor();
 		if(currentRichTextEditor != null) {
 			currentRichTextEditor.addKeyUpHandler(keyUpEvent -> handleRichTextTabOut(keyUpEvent));
@@ -134,10 +134,10 @@ public class MeasureDetailsView {
         }
 	}
 	
-	public VerticalPanel buildDetailView(MeasureDetailsModel measureDetailsModel, MatDetailItem currentMeasureDetail, MeasureDetailsNavigation navigationPanel) {
+	public VerticalPanel buildDetailView(MeasureDetailsModel measureDetailsModel, MatDetailItem currentMeasureDetail, MeasureDetailsNavigation navigationPanel, MeasureDetailsObserver measureDetailsObserver) {
 		this.currentMeasureDetail = currentMeasureDetail;
 		this.measureDetailsModel = measureDetailsModel;
-		return buildDetailView(currentMeasureDetail);
+		return buildDetailView(currentMeasureDetail, measureDetailsObserver);
 	}
 	
 	public Widget getWidget() {

@@ -7,4 +7,5 @@ public interface MeasureDetailsObserver {
 	void handleSaveButtonClick();
 	void handleStateChanged();
 	void handleMenuItemClick(MatDetailItem menuItem); 
+	void saveMeasureDetails();
 }

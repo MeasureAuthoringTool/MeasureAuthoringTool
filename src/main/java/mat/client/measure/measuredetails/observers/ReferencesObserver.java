@@ -1,13 +1,18 @@
 package mat.client.measure.measuredetails.observers;
 
+import com.google.gwt.core.client.GWT;
+
+import mat.client.measure.measuredetails.MeasureDetailsObserver;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.measure.measuredetails.views.ReferencesView;
 import mat.shared.measure.measuredetails.models.ReferencesModel;
 
 public class ReferencesObserver implements MeasureDetailsComponentObserver{
-	ReferencesView referencesView;
-	public ReferencesObserver(ReferencesView referencesView) {
+	private ReferencesView referencesView;
+	private MeasureDetailsObserver measureDetailsObserver;
+	public ReferencesObserver(ReferencesView referencesView, MeasureDetailsObserver measureDetailObserver) {
 		this.referencesView = referencesView;
+		this.measureDetailsObserver = measureDetailObserver;
 	}
 
 	@Override
@@ -27,9 +32,10 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver{
 		referencesView.getRichTextEditor().setValue(reference);
 	}
 
-	public void handleDeleteClicked(int index, String object) {
+	public void handleDeleteReference(int index, String object) {
 		((ReferencesModel) referencesView.getMeasureDetailsComponentModel()).getReferences().remove(index);
 		referencesView.buildDetailView();
+		saveReferences();
 	}
 	
 	public void handleEditReference() {
@@ -45,5 +51,9 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver{
 		if(!referenceText.trim().isEmpty()) {
 			((ReferencesModel) referencesView.getMeasureDetailsComponentModel()).getReferences().add(referenceText);
 		}
+	}
+
+	public void saveReferences() {
+		measureDetailsObserver.saveMeasureDetails();
 	}
 }

@@ -40,7 +40,7 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver{
 	
 	public void handleEditReference() {
 		String referenceText = referencesView.getRichTextEditor().getText();
-		if(!referenceText.trim().isEmpty()) {
+		if(!referenceText.isEmpty()) {
 			((ReferencesModel) referencesView.getMeasureDetailsComponentModel()).getReferences().set(referencesView.getEditingIndex(), referenceText);
 			referencesView.setEditingIndex(null);
 		}
@@ -48,7 +48,7 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver{
 
 	public void handleAddReference() {
 		String referenceText = referencesView.getRichTextEditor().getText();
-		if(!referenceText.trim().isEmpty()) {
+		if(!referenceText.isEmpty()) {
 			((ReferencesModel) referencesView.getMeasureDetailsComponentModel()).getReferences().add(referenceText);
 		}
 	}

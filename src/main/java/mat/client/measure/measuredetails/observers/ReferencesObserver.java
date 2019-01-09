@@ -1,7 +1,5 @@
 package mat.client.measure.measuredetails.observers;
 
-import com.google.gwt.core.client.GWT;
-
 import mat.client.measure.measuredetails.MeasureDetailsObserver;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.measure.measuredetails.views.ReferencesView;
@@ -28,8 +26,10 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver{
 	}
 
 	public void handleEditClicked(int index, String reference) {
-		referencesView.setEditingIndex(index);
-		referencesView.getRichTextEditor().setValue(reference);
+		if(referencesView.getReferencesModel().getReferences() != null && referencesView.getReferencesModel().getReferences().get(index) != null) {
+			referencesView.setEditingIndex(index);
+			referencesView.getRichTextEditor().setValue(referencesView.getReferencesModel().getReferences().get(index));
+		}
 	}
 
 	public void handleDeleteReference(int index, String object) {

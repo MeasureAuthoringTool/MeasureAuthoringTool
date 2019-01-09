@@ -52,7 +52,8 @@ public class ReferencesView implements MeasureDetailViewInterface {
 			@Override
 			public SafeHtml getValue(String object) {
 				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
-				safeHtmlBuilder.appendHtmlConstant(object);
+				String reference = object.length()>35 ? object.substring(0, 35) + "..." : object;
+				safeHtmlBuilder.appendHtmlConstant(reference);
 				return safeHtmlBuilder.toSafeHtml();
 			}
 		};
@@ -177,8 +178,8 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		spager.setDisplay(referencesTable);
 		spager.setPageSize(5);
 		referencesTable.setWidth("100%");
-		referencesTable.setColumnWidth(0, 15.0, Unit.PCT);
-		referencesTable.setColumnWidth(1, 55.0, Unit.PCT);
+		referencesTable.setColumnWidth(0, 55.0, Unit.PCT);
+		referencesTable.setColumnWidth(1, 15.0, Unit.PCT);
 		referencesTable.setColumnWidth(2, 15.0, Unit.PCT);
 		referencesTable.setColumnWidth(3, 15.0, Unit.PCT);
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
@@ -287,5 +288,13 @@ public class ReferencesView implements MeasureDetailViewInterface {
 
 	public void setEditingIndex(Integer editingIndex) {
 		this.editingIndex = editingIndex;
+	}
+	
+	public ReferencesModel getReferencesModel() {
+		return referencesModel;
+	}
+
+	public void setReferencesModel(ReferencesModel referencesModel) {
+		this.referencesModel = referencesModel;
 	}
 }

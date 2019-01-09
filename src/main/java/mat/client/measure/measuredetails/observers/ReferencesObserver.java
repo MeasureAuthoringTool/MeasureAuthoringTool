@@ -1,5 +1,7 @@
 package mat.client.measure.measuredetails.observers;
 
+import java.util.List;
+
 import mat.client.measure.measuredetails.MeasureDetailsObserver;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.measure.measuredetails.views.ReferencesView;
@@ -26,9 +28,10 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver{
 	}
 
 	public void handleEditClicked(int index, String reference) {
-		if(referencesView.getReferencesModel().getReferences() != null && referencesView.getReferencesModel().getReferences().get(index) != null) {
+		List<String> referenceList = referencesView.getReferencesModel().getReferences();
+		if(referenceList != null && referenceList.get(index) != null) {
 			referencesView.setEditingIndex(index);
-			referencesView.getRichTextEditor().setValue(referencesView.getReferencesModel().getReferences().get(index));
+			referencesView.getRichTextEditor().setValue(referenceList.get(index));
 		}
 	}
 

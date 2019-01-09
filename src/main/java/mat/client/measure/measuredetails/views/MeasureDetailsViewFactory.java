@@ -51,11 +51,11 @@ public class MeasureDetailsViewFactory {
 		return instance;
 	}
 
-	public MeasureDetailViewInterface getMeasureDetailComponentView(MeasureDetailsModel measureDetailsModel, MatDetailItem currentMeasureDetail, MeasureDetailsObserver measureDetailObserver) {
+	public MeasureDetailViewInterface getMeasureDetailComponentView(MeasureDetailsModel measureDetailsModel, MatDetailItem currentMeasureDetail, MeasureDetailsObserver measureDetailsObserver) {
 		if(currentMeasureDetail instanceof MeasureDetailsConstants.MeasureDetailsItems) {
 			switch((MeasureDetailsItems) currentMeasureDetail) {
 			case COMPONENT_MEASURES:
-				return new ComponentMeasuresView();
+				return new ComponentMeasuresView(measureDetailsObserver, measureDetailsModel.getCompositeMeasureDetailModel());
 			case DESCRIPTION:
 				return buildRichTextEditorView(measureDetailsModel.getDescriptionModel(), new DescriptionView(), new DescriptionObserver());
 			case DISCLAIMER:
@@ -75,7 +75,7 @@ public class MeasureDetailsViewFactory {
 			case IMPROVEMENT_NOTATION:
 				return buildRichTextEditorView(measureDetailsModel.getImprovementNotationModel(), new ImprovementNotationView(), new ImprovementNotationObserver());
 			case REFERENCES:
-				return buildRefererencesView(measureDetailsModel.getReferencesModel(), measureDetailObserver);
+				return buildRefererencesView(measureDetailsModel.getReferencesModel(), measureDetailsObserver);
 			case DEFINITION:
 				return buildRichTextEditorView(measureDetailsModel.getDefinitionModel(), new DefinitionView(), new DefinitionObserver());
 			case GUIDANCE:

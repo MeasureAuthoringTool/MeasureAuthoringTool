@@ -81,6 +81,10 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	private MeasureDetailResult measureDetailResult; 
 	private String qdmVersion;
 	
+	public ManageMeasureDetailModel() {
+		
+	}
+	
 	public boolean isCalenderYear() {
 		return isCalenderYear;
 	}

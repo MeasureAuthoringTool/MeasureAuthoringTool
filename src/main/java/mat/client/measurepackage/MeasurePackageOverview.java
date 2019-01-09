@@ -43,6 +43,10 @@ public class MeasurePackageOverview implements IsSerializable{
 	
 	private boolean isComposite; 
 	
+	public MeasurePackageOverview() {
+		
+	}
+	
 	public String getReleaseVersion() {
 		return releaseVersion;
 	}

@@ -1,17 +1,151 @@
 package mat.client.measure.measuredetails.views;
 
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
+
+import com.google.gwt.dom.client.TableCaptionElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
+
+import mat.client.measure.ManageCompositeMeasureDetailModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.measure.measuredetails.MeasureDetailsObserver;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.editor.RichTextEditor;
+import mat.client.util.CellTableUtility;
+import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
 public class ComponentMeasuresView implements MeasureDetailViewInterface{
+	private VerticalPanel componentsAppliedPanel = new VerticalPanel();
 	private FlowPanel mainPanel = new FlowPanel();
+	private CellTable<Result> cellTable = new CellTable<>();
+	private VerticalPanel searchPanel = new VerticalPanel();
+	private ManageCompositeMeasureDetailModel originalManageCompositeMeasureDetailModel;
+	private ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel;
+	private Map<String, String> aliasMapping = new HashMap<>();
 	
-	public ComponentMeasuresView() {
+	public ComponentMeasuresView(MeasureDetailsObserver measureDetailsObserver, ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		this.originalManageCompositeMeasureDetailModel = new ManageCompositeMeasureDetailModel(manageCompositeMeasureDetailModel);
+		this.manageCompositeMeasureDetailModel = new ManageCompositeMeasureDetailModel(manageCompositeMeasureDetailModel);
+		this.aliasMapping = originalManageCompositeMeasureDetailModel.getAliasMapping();
+		
+		searchPanel.clear();
+		searchPanel.getElement().setId("searchPanel_VerticalPanel");
+		searchPanel.setStyleName("recentSearchPanel");
+		
+		buildCellTable();
+		componentsAppliedPanel.add(searchPanel);
+		componentsAppliedPanel.setWidth("625px");
+		componentsAppliedPanel.getElement().setId("COMPONENTS");
+		mainPanel.add(componentsAppliedPanel);
+		
+		Button editComponentMeasuresButton = new Button("Edit Component Measures");
+		editComponentMeasuresButton.setType(ButtonType.PRIMARY);
+		editComponentMeasuresButton.setPull(Pull.RIGHT);
+		editComponentMeasuresButton.setMarginTop(10);
+		editComponentMeasuresButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				measureDetailsObserver.handleEditCompositeMeasures(manageCompositeMeasureDetailModel);
+			}
+		});
+		mainPanel.add(editComponentMeasuresButton);
+		mainPanel.setWidth("625px");
+	}
+	
+	void buildCellTable() {
+		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		ListDataProvider<Result> sortProvider = new ListDataProvider<>();
+		ArrayList<Result> selectedMeasureList = new ArrayList<>();
+		selectedMeasureList.addAll(originalManageCompositeMeasureDetailModel.getAppliedComponentMeasures());
+		cellTable.redraw();
+		cellTable.setRowCount(selectedMeasureList.size(), true);
+		sortProvider.refresh();
+		sortProvider.getList().addAll(originalManageCompositeMeasureDetailModel.getAppliedComponentMeasures());
+		cellTable = addColumnToTable(cellTable);
+		sortProvider.addDataDisplay(cellTable);
+		Label invisibleLabel = (Label) LabelBuilder
+				.buildInvisibleLabel(
+						"recentActivitySummary",
+						"In the following Component Measures table, Measure Name is given in first column,"
+								+ " Alias in second column and version in third column.");
+		cellTable.getElement().setAttribute("id", "MostRecentActivityCellTable");
+		cellTable.getElement().setAttribute("aria-describedby", "recentActivitySummary");
+		searchPanel.add(invisibleLabel);
+		searchPanel.add(cellTable);
+	}
+	
+	private CellTable<Result> addColumnToTable(final CellTable<Result> table) {
+			Label searchHeader = new Label("Component Measures");
+			searchHeader.getElement().setId("componentMeasures_Label");
+			searchHeader.setStyleName("recentSearchHeader");
+			com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
+			TableCaptionElement caption = elem.createCaption();
+			caption.appendChild(searchHeader.getElement());
+			Column<Result, SafeHtml> measureName =
+					new Column<Result, SafeHtml>(new
+							ClickableSafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(Result object) {
+					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+					sb.appendHtmlConstant("<div tabindex=\"-1\">");
+					sb.appendHtmlConstant("<span title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
+					sb.appendHtmlConstant("</div>");
+					return sb.toSafeHtml();
+				}
+			};
+			table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant(
+					"<span title='Measure Name Column'>" + "Measure Name" + "</span>"));
+			
+			Column<Result, SafeHtml> alias =
+					new Column<Result, SafeHtml>(new
+							ClickableSafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(Result object) { 
+					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				sb.appendHtmlConstant("<div tabindex=\"-1\">");
+				sb.appendHtmlConstant("<span title=\" " + aliasMapping.get(object.getId()) + "\" tabindex=\"0\">" + aliasMapping.get(object.getId()) + "</span>");
+				sb.appendHtmlConstant("</div>");
+				return sb.toSafeHtml();
+				}
+			};
+			table.addColumn(alias, SafeHtmlUtils.fromSafeConstant(
+					"<span title='Measure Name Column'>" + "Alias" + "</span>"));
+			
+			Column<Result, SafeHtml> version =
+					new Column<Result, SafeHtml>(
+							new MatSafeHTMLCell()) {
+				@Override
+				public SafeHtml getValue(Result object) {
+					return CellTableUtility.getColumnToolTip(object.getVersion());
+				}
+			};
+			table.addColumn(version, SafeHtmlUtils.fromSafeConstant(
+					"<span title='Version'>" + "Version" + "</span>"));
+			
+			table.setWidth("615px");
+		return table;
 	}
 	
 	public Widget getWidget() {

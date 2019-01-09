@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.shared.measure.measuredetails.validate.GeneralInformationValidator;
 
 public class MeasureDetailsModel implements MeasureDetailsComponentModel, MeasureDetailsModelVisitor, IsSerializable  {
@@ -39,6 +40,7 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 	private MeasureObservationsModel measureObservationsModel;
 	private SupplementalDataElementsModel supplementalDataElementsModel;
 	private MeasureSetModel measureSetModel;
+	private ManageCompositeMeasureDetailModel compositeMeasureDetailModel;
 	
 	public MeasureDetailsModel() {
 		this.ownerUserId = "";
@@ -277,6 +279,13 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 		this.id = id;
 	}
 
+	public ManageCompositeMeasureDetailModel getCompositeMeasureDetailModel() {
+		return compositeMeasureDetailModel;
+	}
+
+	public void setCompositeMeasureDetailModel(ManageCompositeMeasureDetailModel compositeMeasureDetailModel) {
+		this.compositeMeasureDetailModel = compositeMeasureDetailModel;
+	}
 
 	@Override
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

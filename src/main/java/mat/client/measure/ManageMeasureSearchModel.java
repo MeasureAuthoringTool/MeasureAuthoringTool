@@ -100,7 +100,43 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		private String qdmVersion;
 		
 		private Boolean isComposite;
-
+		
+		
+		public Result() {
+			
+		}
+		
+		public Result(Result result) {
+			this.id = result.getId();
+			this.name = result.getName();
+			this.status = result.getStatus();
+			this.scoringType = result.getScoringType();
+			this.isHistorical = result.isHistorical();
+			this.isSharable = result.isSharable();
+			this.isEditable = result.isEditable();
+			this.isClonable= result.isClonable();
+			this.isExportable = result.isExportable();
+			this.shortName = result.getShortName();
+			this.isMeasureLocked = result.isMeasureLocked();
+			this.lockedUserInfo = result.getLockedUserInfo();
+			this.isTransferable = result.isTransferable();
+			this.version = result.getVersion();
+			this.finalizedDate = result.getFinalizedDate();
+			this.draft = result.isDraft();
+			this.measureSetId = result.getMeasureSetId();
+			this.isDeleted = result.isDeleted();
+			this.ownerfirstName = result.getOwnerFirstName();
+			this.ownerLastName = result.getOwnerLastName();
+			this.ownerEmailAddress = result.getOwnerEmailAddress();
+			this.eMeasureId = result.geteMeasureId();
+			this.isMeasureFamily = result.isMeasureFamily();
+			this.hqmfReleaseVersion = result.getHqmfReleaseVersion();
+			this.isDraftable = result.isDraftable();
+			this.isVersionable = result.isVersionable();
+			this.isPatientBased = result.isPatientBased();
+			this.qdmVersion = result.getQdmVersion();
+			this.isComposite = result.getIsComposite();
+		}
 		/**
 		 * Checks if is measure family.
 		 *

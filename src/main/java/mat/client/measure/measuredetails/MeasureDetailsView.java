@@ -43,6 +43,7 @@ public class MeasureDetailsView {
 	private MeasureDetailsModel measureDetailsModel;
 	private RichTextEditor currentRichTextEditor;
 	private MessagePanel messagePanel;
+	private MeasureDetailsObserver measureDetailsObserver;
 	
 	public MeasureDetailsView(MeasureDetailsModel measureDetailsModel, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel, MeasureDetailsObserver measureDetailsObserver) {
 		currentMeasureDetail = measureDetail;
@@ -79,7 +80,7 @@ public class MeasureDetailsView {
 	}
 	
 	private void buildSavePanel(MatDetailItem currentMeasureDetail) {
-		if(currentMeasureDetail != MeasureDetailsItems.POPULATIONS) {
+		if(currentMeasureDetail != MeasureDetailsItems.POPULATIONS && currentMeasureDetail != MeasureDetailsItems.COMPONENT_MEASURES) {
 			widgetComponentPanel.add(new SpacerWidget());
 			saveButtonPanel.clear();
 			saveButtonPanel.setWidth("625px");
@@ -105,7 +106,9 @@ public class MeasureDetailsView {
 		this.currentMeasureDetail = currentMeasureDetail;
 		widgetComponentPanel.clear();
 		buildHeading();
-		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsModel, currentMeasureDetail, measureDetailsObserver);
+		
+		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsModel, currentMeasureDetail, this.measureDetailsObserver);
+
 		currentRichTextEditor = componentDetailView.getRichTextEditor();
 		if(currentRichTextEditor != null) {
 			currentRichTextEditor.addKeyUpHandler(keyUpEvent -> handleRichTextTabOut(keyUpEvent));
@@ -231,5 +234,13 @@ public class MeasureDetailsView {
 	
 	public MeasureDetailViewInterface getComponentDetailView() {
 		return componentDetailView;
+	}
+
+	public MeasureDetailsObserver getMeasureDetailsObserver() {
+		return measureDetailsObserver;
+	}
+
+	public void setMeasureDetailsObserver(MeasureDetailsObserver measureDetailsObserver) {
+		this.measureDetailsObserver = measureDetailsObserver;
 	}
 }

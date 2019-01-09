@@ -22,6 +22,21 @@ public class ManageCompositeMeasureDetailModel extends ManageMeasureDetailModel 
 	public void scrubForMarkUp() {
 		
 	}
+	
+	public ManageCompositeMeasureDetailModel() {
+		
+	}
+
+	public ManageCompositeMeasureDetailModel(ManageCompositeMeasureDetailModel originalManageCompositeMeasureDetailModel) {
+		this.compositeScoringMethod = originalManageCompositeMeasureDetailModel.getCompositeScoringMethod();
+		this.compositeScoringAbbreviation = originalManageCompositeMeasureDetailModel.getCompositeScoringAbbreviation();
+		this.appliedComponentMeasures = new ArrayList<>();
+		originalManageCompositeMeasureDetailModel.getAppliedComponentMeasures().stream().forEach(measure -> this.appliedComponentMeasures.add(new ManageMeasureSearchModel.Result(measure)));
+		this.aliasMapping = new HashMap<>();
+		originalManageCompositeMeasureDetailModel.getAliasMapping().keySet().stream().forEach(key -> this.aliasMapping.put(key, originalManageCompositeMeasureDetailModel.getAliasMapping().get(key)));
+		this.packageMap = new HashMap<>();
+		this.packageMap.putAll(originalManageCompositeMeasureDetailModel.packageMap);
+	}
 
 	public String getCompositeScoringMethod() {
 		return compositeScoringMethod;

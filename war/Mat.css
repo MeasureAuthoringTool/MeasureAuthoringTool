@@ -2840,3 +2840,7 @@ padding: 2px;
 .calendarYearLabel {
 	margin-top: 3px;
 }
+
+.measureDetailsSwitchPanel {
+	width: 100%;
+}

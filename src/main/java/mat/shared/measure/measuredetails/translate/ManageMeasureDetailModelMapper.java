@@ -52,6 +52,9 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 	@Override
 	public MeasureDetailsModel getMeasureDetailsModel(boolean isCompositeMeasure) {
 		measureDetailsModel = new MeasureDetailsModel();
+		if(isCompositeMeasure) {
+			measureDetailsModel.setCompositeMeasureDetailModel(buildCompositeMeasureDetailModel());
+		}
 		measureDetailsModel.setId(manageMeasureDetailModel.getId());
 		measureDetailsModel.setMeasureId(manageMeasureDetailModel.getMeasureId());
 		measureDetailsModel.setRevisionNumber(manageMeasureDetailModel.getRevisionNumber());
@@ -85,6 +88,10 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		measureDetailsModel.setSupplementalDataElementsModel(buildSupplementalDataModel());
 		measureDetailsModel.setTransmissionFormatModel(buildTransmissionFormatModel());
 		return measureDetailsModel;
+	}
+
+	private ManageCompositeMeasureDetailModel buildCompositeMeasureDetailModel() {
+		return ((ManageCompositeMeasureDetailModel) manageMeasureDetailModel) ;
 	}
 
 	private TransmissionFormatModel buildTransmissionFormatModel() {

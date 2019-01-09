@@ -112,6 +112,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	
 	private List<MatPresenter> presenterList;
 	private	MatPresenter adminPresenter;
+	private MatPresenter myAccountPresenter;
 	private ClosingEvent closingEvent;
 	String currentUserRole = ClientConstants.USER_STATUS_NOT_LOGGEDIN;
 	final private ListBoxCodeProvider listBoxCodeProvider = new ListBoxCodeProvider();
@@ -416,8 +417,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			presenterList.add(cqlComposer);
 			
 			title = ClientConstants.TITLE_MY_ACCOUNT;
-			MatPresenter myAccountPresenter = buildMyAccountWidget();
-			mainTabLayout.add(myAccountPresenter.getWidget(), title, true);
+			myAccountPresenter = buildMyAccountWidget();
+			mainTabLayout.add(myAccountPresenter.getWidget(), title, false);
 			presenterList.add(myAccountPresenter);
 			
 			tabIndex = presenterList.indexOf(myAccountPresenter);
@@ -453,7 +454,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			presenterList.add(reportingPresenter);
 			
 			title = ClientConstants.TITLE_ADMIN_ACCOUNT;
-			MatPresenter myAccountPresenter = buildMyAccountWidget();
+			myAccountPresenter = buildMyAccountWidget();
 			mainTabLayout.add(myAccountPresenter.getWidget(), title, true);
 			presenterList.add(myAccountPresenter);
 			tabIndex = presenterList.indexOf(myAccountPresenter);
@@ -470,6 +471,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		setSignedInName(userFirstName + " " + userLastName);
 		
 		getHomeLink().addClickHandler(event -> MatContext.get().redirectToMatPage(ClientConstants.HTML_MAT));
+		
+		getProfile().addClickHandler(event -> mainTabLayout.selectTab(presenterList.indexOf(myAccountPresenter)));
 		
 		getSignOut().addClickHandler(event -> MatContext.get().getEventBus().fireEvent(new LogoffEvent()));
 		

@@ -2,12 +2,24 @@ package mat.client;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.AnchorButton;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtbootstrap3.client.ui.ListDropDown;
+import org.gwtbootstrap3.client.ui.ListItem;
 import org.gwtbootstrap3.client.ui.Navbar;
+import org.gwtbootstrap3.client.ui.NavbarCollapse;
 import org.gwtbootstrap3.client.ui.NavbarLink;
+import org.gwtbootstrap3.client.ui.NavbarNav;
 import org.gwtbootstrap3.client.ui.Progress;
 import org.gwtbootstrap3.client.ui.ProgressBar;
+import org.gwtbootstrap3.client.ui.constants.IconPosition;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
 import org.gwtbootstrap3.client.ui.constants.ProgressType;
+import org.gwtbootstrap3.client.ui.constants.Styles;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -41,7 +53,7 @@ public abstract class MainLayout {
 
 	private FocusPanel content;
 	
-	private HorizontalFlowPanel logOutPanel;
+	private HorizontalPanel linksPanel = new HorizontalPanel();
 
 	private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
 	
@@ -54,7 +66,10 @@ public abstract class MainLayout {
 	static ProgressBar bar = new ProgressBar();
 	
 	NavbarLink homeLink = new NavbarLink();
-	NavbarLink signoutLink = new NavbarLink();
+	
+	ListItem signedInAsName = new ListItem();
+	AnchorListItem profile = new AnchorListItem("MAT Account");
+	AnchorListItem signOut = new AnchorListItem("Sign Out");
 	
 	public static final String HEADING = "Measure Authoring Tool";
 	
@@ -204,7 +219,7 @@ public abstract class MainLayout {
 	private HorizontalFlowPanel buildHeader() {
 		final HorizontalFlowPanel hfp = new HorizontalFlowPanel();
 		hfp.add(buildNavbar());
-		hfp.add(buildLinksPanel());
+		hfp.add(linksPanel);
 		return hfp;
 	}
 	
@@ -217,35 +232,113 @@ public abstract class MainLayout {
 		return nav;
 	}
 	
-	private HorizontalPanel buildLinksPanel() {
-		final HorizontalPanel hp = new HorizontalPanel();
-		
+	public void buildLinksPanel() {
 		showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
 		showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
-		buildSignOutLink();
-		
-		hp.add(showUMLSState.getPanel()); 
-		hp.add(showBonnieState.getPanel());
-		hp.add(getSignoutLink());
-		hp.addStyleName("navLinksBanner");
 
-		return hp;
+		linksPanel.add(showUMLSState.getPanel()); 
+		linksPanel.add(showBonnieState.getPanel());
+		linksPanel.add(buildProfileMenu());
+		linksPanel.setStyleName("navLinksBanner", true);
 	}
 	
-	private void buildSignOutLink() {
-		setLinkTextAndTitle(ClientConstants.ANCHOR_SIGN_OUT, getSignoutLink());
-		getSignoutLink().setStyleName("logoutPanel", true);
-		getSignoutLink().setVisible(false);
+	private AnchorButton buildProfileIcon() {
+		AnchorButton ab = new AnchorButton();
+
+		ab.setIcon(IconType.USER_CIRCLE_O);
+		ab.setIconSize(IconSize.TIMES2);
+		ab.setIconPosition(IconPosition.RIGHT);
+		ab.setDataToggle(Toggle.DROPDOWN);
+		ab.setToggleCaret(false);
+		ab.setStyleName(Styles.DROPDOWN_TOGGLE);
+		ab.setActive(true);
+		ab.setTitle("Profile");
+		ab.getElement().setTabIndex(0);
+		return ab;
 	}
 	
-	public void setLinkTextAndTitle(String text, NavbarLink link) {
+	private Navbar buildDivider() {
+		Navbar divider = new Navbar();
+		divider.setStyleName(Styles.DIVIDER);
+		divider.setWidth("100%");
+		return divider;
+	}
+	
+	private ListItem buildSignedInAs() {
+		ListItem li = new ListItem();
+		li.setText("Signed in as");
+		li.setTitle("Signed in as");
+		li.getElement().setTabIndex(0);
+		li.setStyleName("profileText", true);
+		return li;
+	}
+
+	public void setSignedInName(String name) {
+		signedInAsName.setText(name);
+		signedInAsName.setTitle(name);
+		signedInAsName.setStyleName("labelStyling", true);
+		signedInAsName.setStyleName("profileText", true);
+		signedInAsName.getElement().setTabIndex(0);
+	}
+	
+	private void setAccessibilityForLinks() {
+		profile.setTitle("MAT Account");
+		profile.setStyleName(Styles.DROPDOWN);
+		profile.getElement().setAttribute("role", "navigation");
+		profile.getElement().setAttribute("aria-label", "Clicking this link will navigate you to MAT Account.");
+
+		signOut.setTitle("Sign Out");
+		signOut.setStyleName(Styles.DROPDOWN);
+		signOut.getElement().setAttribute("role", "navigation");
+		signOut.getElement().setAttribute("aria-label", "Clicking this link will sign you out of MAT.");
+
+	}
+	
+	private DropDownMenu buildDropDownMenu() {
+		DropDownMenu ddm = new DropDownMenu();
+	
+		setAccessibilityForLinks();
+		
+		ddm.add(buildSignedInAs());
+		ddm.add(signedInAsName);
+		ddm.add(buildDivider());
+		ddm.add(profile);
+		ddm.add(signOut);
+		ddm.setStyleName(Styles.DROPDOWN_MENU);
+		
+		return ddm;
+	}
+	
+	private NavbarCollapse buildProfileMenu() {
+		NavbarCollapse collapse = new NavbarCollapse();
+		NavbarNav nav = new NavbarNav();
+		
+		ListDropDown ldd = new ListDropDown();
+		AnchorButton icon = buildProfileIcon();
+		DropDownMenu ddm = buildDropDownMenu();
+		
+		ldd.add(icon);
+		ldd.add(ddm);
+
+		nav.add(ldd);
+
+		collapse.add(nav);
+		return collapse;
+	}
+	
+	public void setHeader(String version, NavbarLink link) {
+		setLinkTextAndTitle(HEADING + " v" + version, link);
+		link.setTitle(HEADING + " version " + version);
+		link.getElement().setAttribute("role", "alert");
+		link.getElement().setAttribute("aria-label", "Clicking this link will navigate you to Measure Library page.");
+	}
+	
+	private void setLinkTextAndTitle(String text, NavbarLink link) {
 		link.setText(text);
 		link.setTitle(text);
 		link.setTabIndex(0);
 		link.setId("Anchor_" + text);
 		link.setColor("#337ab7");
-		link.getElement().setAttribute("role", "alert");
-		link.getElement().setAttribute("aria-labelledby", text);
 	}
 
 	private HTML fetchAndcreateFooterLinks() {
@@ -269,10 +362,6 @@ public abstract class MainLayout {
 
 	protected  FocusPanel getContentPanel() {
 		return content;
-	}
-
-	protected HorizontalFlowPanel getLogoutPanel(){
-		return logOutPanel;
 	}
 
 	protected Widget getNavigationList(){
@@ -307,10 +396,14 @@ public abstract class MainLayout {
 	}
 
 	
-	protected void setLogout(final HorizontalFlowPanel logOutPanel){
-		this.logOutPanel = logOutPanel;
+	public HorizontalPanel getLinksPanel() {
+		return linksPanel;
 	}
-	
+
+	public void setLinksPanel(HorizontalPanel linksPanel) {
+		this.linksPanel = linksPanel;
+	}
+
 	public static void createUMLSLinks() {
 		showUMLSState.createAllLinks();
 	}
@@ -357,12 +450,28 @@ public abstract class MainLayout {
 		this.homeLink = homeLink;
 	}
 
-	public NavbarLink getSignoutLink() {
-		return signoutLink;
+	public ListItem getSignedInAsName() {
+		return signedInAsName;
 	}
 
-	public void setSignoutLink(NavbarLink signoutLink) {
-		this.signoutLink = signoutLink;
+	public void setSignedInAsName(ListItem signedInAsName) {
+		this.signedInAsName = signedInAsName;
+	}
+
+	public AnchorListItem getProfile() {
+		return profile;
+	}
+
+	public void setProfile(AnchorListItem profile) {
+		this.profile = profile;
+	}
+
+	public AnchorListItem getSignOut() {
+		return signOut;
+	}
+
+	public void setSignOut(AnchorListItem signOut) {
+		this.signOut = signOut;
 	}
 
 }

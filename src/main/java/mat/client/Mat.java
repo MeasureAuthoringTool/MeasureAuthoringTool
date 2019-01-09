@@ -153,7 +153,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 						final boolean isAlreadySignedIn = MatContext.get().isAlreadySignedIn(lastSignOut, lastSignIn, current);
 						MatContext.get().setUserSignInDate(result.userId);
 						MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole,result.loginId);
-						loadMatWidgets(result.userFirstName, isAlreadySignedIn, resultMatVersion);
+						loadMatWidgets(result.userFirstName, result.userLastName, isAlreadySignedIn, resultMatVersion);
 					}
 				}
 
@@ -361,7 +361,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	
 
 	@SuppressWarnings("unchecked")
-	private void loadMatWidgets(String userFirstName, boolean isAlreadySignedIn, String resultMatVersion){
+	private void loadMatWidgets(String userFirstName, String userLastName, boolean isAlreadySignedIn, String resultMatVersion){
 		MatContext.get().startUserLockUpdate();
 		MatContext.get().recordTransactionEvent(null, null, "LOGIN_EVENT", null, 1);
 		
@@ -388,6 +388,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		tabIndex = 0;
 		presenterList = new LinkedList<MatPresenter>();
 		currentUserRole = MatContext.get().getLoggedInUserRole();
+		
+		buildLinksPanel();
 		
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			MatContext.get().getCQLConstants();
@@ -463,13 +465,13 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		
 		mainTabLayout.setHeight("100%");
 
-		setLinkTextAndTitle(MainLayout.HEADING + " v" +resultMatVersion.replaceAll("[a-zA-Z]", ""), getHomeLink());
+		setHeader(resultMatVersion.replaceAll("[a-zA-Z]", ""), getHomeLink());
+		
+		setSignedInName(userFirstName + " " + userLastName);
 		
 		getHomeLink().addClickHandler(event -> MatContext.get().redirectToMatPage(ClientConstants.HTML_MAT));
 		
-		getSignoutLink().setVisible(true);
-		
-		getSignoutLink().addClickHandler(event -> MatContext.get().getEventBus().fireEvent(new LogoffEvent()));
+		getSignOut().addClickHandler(event -> MatContext.get().getEventBus().fireEvent(new LogoffEvent()));
 		
 		setIndicatorsHidden();
 
@@ -493,6 +495,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		getBonnieSignInButton().addClickHandler(event -> showBonnieModal()); 
 		
 		getBonnieDisconnectButton().addClickHandler(event -> revokeBonnieAccessTokenForUser());
+		
 		/*
 		 * This block adds a special generic handler for any mouse clicks in the mainContent for ie browser.
 		 * Need to add this handler in order to keep track of the user activity in IE8 Browser.
@@ -554,6 +557,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			@Override
 			public void onSuccess(Void result) {
 				hideBonnieActive(true);
+				getBonnieSignInButton().getElement().focus();
+				getBonnieSignInButton().getElement().setAttribute("role", "alert"); 
+				getBonnieSignInButton().getElement().setAttribute("aria-label", "Click here to sign in to Bonnie.");
 			}
 
 		});

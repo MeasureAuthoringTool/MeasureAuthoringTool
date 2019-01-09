@@ -1,9 +1,10 @@
 package mat.client.buttons;
 
 
-import com.google.gwt.user.client.ui.HTML;
+import org.gwtbootstrap3.client.ui.constants.Styles;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
-import mat.client.shared.HorizontalFlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 
 
 public class IndicatorButton{
@@ -12,7 +13,7 @@ public class IndicatorButton{
 	private String activeText;
 	private HTML hideLink;
 	private HTML showLink;
-	private HorizontalFlowPanel panel = new HorizontalFlowPanel();
+	private FlowPanel panel = new FlowPanel();
 	
 	public IndicatorButton(String activeLabel, String inactiveLabel) {
 		this.inactiveText = inactiveLabel;
@@ -32,16 +33,19 @@ public class IndicatorButton{
 				"  "  + inactiveText + "</span></button>");
 		hideLink.getElement().setTabIndex(0);
 		panel.add(hideLink);
+		panel.getElement().focus();
+		panel.setStyleName(Styles.NAVBAR_BRAND);
 	}
 	
 	private void createShowLink() {
-		showLink = new HTML("<button type=\"button\" title='"
+		showLink = new HTML("<button type=\"button\" id=\"disco\" title='"
 				+ activeText + "' tabindex=\"0\" class=\"btn btn-link\" > "
 				+ "<i class=\"fa fa-circle\" style=\"color: DarkGreen;\"></i><span>"+
 				"  "+ activeText + "</span></button>");
 		showLink.getElement().setTabIndex(0);
 		panel.add(showLink);
 		panel.getElement().focus();
+		panel.setStyleName(Styles.NAVBAR_BRAND);
 	}
 	
 	public void hideActive(boolean hide) {
@@ -49,7 +53,7 @@ public class IndicatorButton{
 		showLink.setVisible(!hide);
 	}
 	
-	public HorizontalFlowPanel getPanel() {
+	public FlowPanel getPanel() {
 		return panel;
 	}
 	

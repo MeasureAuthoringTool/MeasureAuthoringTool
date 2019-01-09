@@ -30,6 +30,7 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet  imple
 		result.signInDate = user.getSignInDate();
 		result.signOutDate = user.getSignOutDate();
 		result.userFirstName = user.getFirstName();
+		result.userLastName = user.getLastName();
 		result.currentSessionId = getThreadLocalRequest().getSession().getId();
 		result.activeSessionId = user.getSessionId();
 		return result;

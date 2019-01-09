@@ -1,6 +1,5 @@
 package mat.client.login.service;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -41,6 +40,8 @@ public interface SessionManagementService extends RemoteService{
 		
 		/** The user first name. */
 		public String userFirstName;
+		
+		public String userLastName;
 		
 		public String currentSessionId;
 		

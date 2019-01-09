@@ -34,6 +34,9 @@ public class Bonnie extends MainLayout implements EntryPoint {
 			@Override
 			public void onSuccess(BonnieOAuthResult result) {
 				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
+				getBonnieDisconnectButton().getElement().focus();
+				getBonnieDisconnectButton().getElement().setAttribute("role", "alert"); 
+				getBonnieDisconnectButton().getElement().setAttribute("aria-label", "Bonnie Active. Click the Disconnect from Bonnie link to sign out of Bonnie.");
 			}
 
 		});

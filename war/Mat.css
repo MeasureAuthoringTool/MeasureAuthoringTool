@@ -549,7 +549,7 @@ left:50px;
 }
 
 .versionBanner{
-    margin-top: 10px;
+    margin-top: 20px;
 	margin-bottom: 5px;
 	display: flex;
 	flex-wrap: nowrap;
@@ -568,10 +568,17 @@ left:50px;
 	flex-wrap: nowrap;
   	align-content:center;
 	justify-content: space-between;
-	font-size: small;
-	height: 100%;
 	width: auto;
 	float:right;
+	height: 50px;
+}
+
+.profileText{
+	display: block;
+	padding: 3px 20px;
+	clear: both;
+	line-height: 1.42857143;
+	white-space: nowrap
 }
 
 .footer {

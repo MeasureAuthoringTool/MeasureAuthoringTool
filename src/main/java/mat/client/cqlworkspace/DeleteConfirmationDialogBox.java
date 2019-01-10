@@ -50,7 +50,7 @@ public class DeleteConfirmationDialogBox {
 		panel.setFade(true);
 		panel.setDataBackdrop(ModalBackdrop.STATIC);
 		panel.setSize(ModalSize.MEDIUM);
-		panel.getElement().getStyle().setZIndex(1000);
+		panel.getElement().getStyle().setZIndex(9999);
 		panel.setRemoveOnHide(true);
 		
 		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
@@ -72,7 +72,6 @@ public class DeleteConfirmationDialogBox {
 		panel.add(modalFooter);
 		panel.getElement().focus();
 		panel.show();
-		
 		panel.addHiddenHandler(event -> onModalHidden());
 	}
 	

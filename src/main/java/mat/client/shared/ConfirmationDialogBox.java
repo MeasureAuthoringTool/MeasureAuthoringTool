@@ -79,7 +79,7 @@ public class ConfirmationDialogBox {
 		panel.setFade(true);
 		panel.setDataBackdrop(ModalBackdrop.STATIC);
 		panel.setSize(ModalSize.MEDIUM);
-		panel.getElement().getStyle().setZIndex(1000);
+		panel.getElement().getStyle().setZIndex(9999);
 		panel.setRemoveOnHide(true);
 		
 		panel.addHideHandler(new ModalHideHandler() {
@@ -127,7 +127,6 @@ public class ConfirmationDialogBox {
 		
 		panel.add(modalFooter);
 		panel.getElement().focus();
-		panel.getElement().getStyle().setProperty("zIndex", "9999");
 		panel.show();
 	}
 	

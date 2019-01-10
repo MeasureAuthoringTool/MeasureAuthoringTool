@@ -69,7 +69,7 @@ public class AdvancedSearchModal {
 		panel.setFade(true);
 		panel.setDataBackdrop(ModalBackdrop.STATIC);
 		panel.setSize(ModalSize.MEDIUM);
-		panel.getElement().getStyle().setZIndex(1000);
+		panel.getElement().getStyle().setZIndex(9999);
 		panel.setRemoveOnHide(true);
 		panel.setTitle("Advanced Search");
 		panel.getElement().setAttribute("tabindex", "0");

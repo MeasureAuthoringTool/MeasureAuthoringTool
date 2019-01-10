@@ -2,6 +2,7 @@ package mat.client.measure.measuredetails;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.DOM;
@@ -86,6 +87,7 @@ public class MeasureDetailsView {
 			saveButtonPanel.setWidth("625px");
 			saveButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			ButtonToolBar buttonToolBar = new ButtonToolBar();
+			saveButton.setPull(Pull.RIGHT);
 			buttonToolBar.add(saveButton);
 			saveButtonPanel.add(buttonToolBar);
 			widgetComponentPanel.add(saveButtonPanel);

@@ -149,6 +149,16 @@ left:50px;
     width: 250px; 
 }
 
+#appliedComponentContainer{
+	width: 100px;
+}
+
+#appliedComponentDiv{
+	float: left;
+	width: 100px;
+	margin-left: 0;
+}
+
 #div1{
     float: left;
     width:30px; 
@@ -2850,4 +2860,15 @@ padding: 2px;
 
 .measureDetailsSwitchPanel {
 	width: 100%;
+}
+
+.breadcrum {
+	background-color: #FFF;
+	color: #000;
+	font-size: 110%;
+	font-weight: bold;
+}
+.breadcrumPaddign{
+	padding-bottom: 10px;
+	padding-top: 2px;
 }

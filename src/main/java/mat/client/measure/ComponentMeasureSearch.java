@@ -301,8 +301,8 @@ public class ComponentMeasureSearch implements BaseDisplay{
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				sb.appendHtmlConstant("<div id='container' tabindex=\"-1\">");
-				sb.appendHtmlConstant("<span id='div2' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
+				sb.appendHtmlConstant("<div id='appliedComponentContainer' tabindex=\"-1\">");
+				sb.appendHtmlConstant("<span id='appliedComponentDiv' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
 				sb.appendHtmlConstant("</div>");
 				return sb.toSafeHtml();
 			}

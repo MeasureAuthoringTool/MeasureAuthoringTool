@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -67,6 +66,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		measureDetailsView.getWidget().addStyleName("measureDetailsSwitchPanel");
 		componentMeasureDisplay = new ComponentMeasureDisplay();
 		componentMeasureDisplay.getBackButton().setVisible(false);
+		componentMeasureDisplay.getBreadCrumbPanel().setVisible(true);
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 		addEventHandlers();
 	}
@@ -85,11 +85,11 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	public void beforeDisplay() {
 		clearAlerts();
 		setIsLoading();
-		getDataBaseInfomation(false);
+		getDataBaseInfomation(false, false);
 	}
 
-	private void getDataBaseInfomation(boolean goToComposite) {
-		MatContext.get().getMeasureService().getMeasureDetailsAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinUserId(),getAsyncCallBackForMeasureAndLogRecentMeasure(goToComposite));
+	private void getDataBaseInfomation(boolean goToComposite, boolean displaySuccessMessage) {
+		MatContext.get().getMeasureService().getMeasureDetailsAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinUserId(),getAsyncCallBackForMeasureAndLogRecentMeasure(goToComposite, displaySuccessMessage));
 	}
 	
 	private void setIsLoading() {
@@ -107,11 +107,14 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		return measureDetailsView;
 	}
 	
-	private void displayDetails(Boolean goToComposite) {
+	private void displayDetails(Boolean goToComposite, Boolean displaySuccessMessage) {
 		panel.clear();
 		panel.add(measureDetailsView.getWidget());
 		if(goToComposite) {
 			handleMenuItemClick(MeasureDetailsItems.COMPONENT_MEASURES);
+		}
+		if(displaySuccessMessage) {
+			measureDetailsView.displaySuccessMessage("Component Measures have been successfully updated");
 		}
 	}
 	
@@ -121,6 +124,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		componentMeasureDisplay.getComponentMeasureSearch().setAliasMapping(manageCompositeMeasureDetailModel.getAliasMapping());
 		componentMeasureDisplay.getComponentMeasureSearch().setAppliedComponentMeasuresList(manageCompositeMeasureDetailModel.getAppliedComponentMeasures());
 		componentMeasureDisplay.getComponentMeasureSearch().buildSearch();
+		
 		panel.add(componentMeasureDisplay.asWidget());
 		componentMeasureDisplay.setComponentBusy(false);
 	}
@@ -231,7 +235,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		MatContext.get().getEventBus().fireEvent(backToMeasureLibraryPage);
 	}
 
-	private void displayMeasureDetailsView(Boolean goToComposite) {
+	private void displayMeasureDetailsView(Boolean goToComposite, Boolean displaySuccessMessage) {
 		this.scoringType = measureDetailsModel.getGeneralInformationModel().getScoringMethod();
 		this.isPatientBased = measureDetailsModel.getGeneralInformationModel().isPatientBased();
 		navigationPanel.buildNavigationMenu(scoringType, isPatientBased, isCompositeMeasure);
@@ -241,7 +245,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 		updateNavPillStates();
-		displayDetails(goToComposite);
+		displayDetails(goToComposite, displaySuccessMessage);
 	}
 
 
@@ -255,8 +259,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		});
 		measureDetailsView.getDeleteMeasureButton().addClickHandler(event -> handleDeleteMeasureButtonClick());
 		measureDetailsView.getSaveButton().addClickHandler(event -> handleSaveButtonClick());
-		componentMeasureDisplay.getBackButton().addClickHandler(event -> displayCompositeMeasuresOnMeasureDetails());
-		componentMeasureDisplay.getCancelButton().addClickHandler(event -> displayCompositeMeasuresOnMeasureDetails());
+		componentMeasureDisplay.getBackButton().addClickHandler(event -> displayCompositeMeasuresOnMeasureDetails(false));
+		componentMeasureDisplay.getCancelButton().addClickHandler(event -> displayCompositeMeasuresOnMeasureDetails(false));
 		componentMeasureDisplay.getSaveButton().addClickHandler(event -> saveCompositeMeasures());
 	}
 
@@ -313,9 +317,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
 				componentMeasureDisplay.setComponentBusy(false);
-				displayCompositeMeasuresOnMeasureDetails();
-				measureDetailsView.displaySuccessMessage("Component Measures have been successfully updated");
-				
+				displayCompositeMeasuresOnMeasureDetails(true);
 			}
 			
 		});
@@ -326,10 +328,10 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		currentCompositeMeasureDetails.setAliasMapping(componentMeasureDisplay.getComponentMeasureSearch().getAliasMapping());
 	}
 
-	private void displayCompositeMeasuresOnMeasureDetails() {
+	private void displayCompositeMeasuresOnMeasureDetails(Boolean displaySuccessMessage) {
 		componentMeasureDisplay.setComponentBusy(true);
 		componentMeasureDisplay.getComponentMeasureSearch().clearFields(false);
-		getDataBaseInfomation(true);
+		getDataBaseInfomation(true, displaySuccessMessage);
 	}
 
 	protected AsyncCallback<ManageCompositeMeasureDetailModel> getAsyncCallBackForCompositeMeasureAndLogRecentMeasure() {
@@ -368,7 +370,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		return measureDetailsModel.getOwnerUserId() == MatContext.get().getLoggedinUserId();
 	}
 	
-	private AsyncCallback<MeasureDetailsModel> getAsyncCallBackForMeasureAndLogRecentMeasure(Boolean goToComposite) {
+	private AsyncCallback<MeasureDetailsModel> getAsyncCallBackForMeasureAndLogRecentMeasure(Boolean goToComposite, Boolean displaySuccessMessage) {
 		return new AsyncCallback<MeasureDetailsModel>() {
 			final long callbackRequestTime = lastRequestTime;
 			@Override
@@ -385,7 +387,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				Mat.hideLoadingMessage();
 				if (callbackRequestTime == lastRequestTime) {
 					measureDetailsModel = result;
-					displayMeasureDetailsView(goToComposite);
+					displayMeasureDetailsView(goToComposite, displaySuccessMessage);
 				}
 			}
 		};

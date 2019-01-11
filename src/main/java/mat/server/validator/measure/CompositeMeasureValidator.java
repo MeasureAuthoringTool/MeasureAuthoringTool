@@ -245,7 +245,7 @@ public class CompositeMeasureValidator {
 	private boolean allComponentMeasuresHaveAnAlias(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
 		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
 			Map<String, String> aliasMapping = manageCompositeMeasureDetailModel.getAliasMapping();
-			if(!aliasMapping.containsKey(appliedComponentMeasure.getId())) {
+			if(!aliasMapping.containsKey(appliedComponentMeasure.getId()) || StringUtils.isEmpty(aliasMapping.get(appliedComponentMeasure.getId()))) {
 				return false;
 			}
 		}

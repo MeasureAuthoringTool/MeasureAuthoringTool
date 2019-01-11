@@ -43,6 +43,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 	private ManageCompositeMeasureDetailModel originalManageCompositeMeasureDetailModel;
 	private ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel;
 	private Map<String, String> aliasMapping = new HashMap<>();
+	Button editComponentMeasuresButton = new Button("Edit Component Measures");
 	
 	public ComponentMeasuresView(MeasureDetailsObserver measureDetailsObserver, ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
 		this.originalManageCompositeMeasureDetailModel = new ManageCompositeMeasureDetailModel(manageCompositeMeasureDetailModel);
@@ -59,7 +60,6 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 		componentsAppliedPanel.getElement().setId("COMPONENTS");
 		mainPanel.add(componentsAppliedPanel);
 		
-		Button editComponentMeasuresButton = new Button("Edit Component Measures");
 		editComponentMeasuresButton.setType(ButtonType.PRIMARY);
 		editComponentMeasuresButton.setPull(Pull.RIGHT);
 		editComponentMeasuresButton.setMarginTop(10);
@@ -87,11 +87,12 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 		sortProvider.addDataDisplay(cellTable);
 		Label invisibleLabel = (Label) LabelBuilder
 				.buildInvisibleLabel(
-						"recentActivitySummary",
+						"componentMeasureSummary",
 						"In the following Component Measures table, Measure Name is given in first column,"
 								+ " Alias in second column and version in third column.");
-		cellTable.getElement().setAttribute("id", "MostRecentActivityCellTable");
-		cellTable.getElement().setAttribute("aria-describedby", "recentActivitySummary");
+		cellTable.getElement().setAttribute("id", "componentMeasureCellTable");
+		cellTable.getElement().setAttribute("aria-describedby", "componentMeasureSummary");
+		cellTable.setVisibleRange(0, selectedMeasureList.size());
 		searchPanel.add(invisibleLabel);
 		searchPanel.add(cellTable);
 	}
@@ -131,7 +132,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 				}
 			};
 			table.addColumn(alias, SafeHtmlUtils.fromSafeConstant(
-					"<span title='Measure Name Column'>" + "Alias" + "</span>"));
+					"<span title='Alias Column'>" + "Alias" + "</span>"));
 			
 			Column<Result, SafeHtml> version =
 					new Column<Result, SafeHtml>(
@@ -142,7 +143,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 				}
 			};
 			table.addColumn(version, SafeHtmlUtils.fromSafeConstant(
-					"<span title='Version'>" + "Version" + "</span>"));
+					"<span title='Version Column'>" + "Version" + "</span>"));
 			
 			table.setWidth("615px");
 		return table;
@@ -166,8 +167,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 
 	@Override
 	public void setReadOnly(boolean readOnly) {
-		// TODO Auto-generated method stub
-		
+		editComponentMeasuresButton.setEnabled(!readOnly);
 	}
 
 	@Override

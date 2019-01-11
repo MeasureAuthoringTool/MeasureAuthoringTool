@@ -1,8 +1,10 @@
 package mat.client.measure;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -22,6 +24,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	private BackSaveCancelButtonBar buttonBar = new BackSaveCancelButtonBar("componentMeasures");
 	
 	private ComponentMeasureSearch componentMeasureSearch = new ComponentMeasureSearch(errorMessages, successMessage, 15);
+	HorizontalPanel breadCrumbPanel = new HorizontalPanel();
+	Label breadcrumb = new Label("Component Measures > Edit Component Measures");
 		
 	public ComponentMeasureDisplay() {
 		buildMainPanel();
@@ -52,12 +56,20 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
 		successMessage.getElement().setId("successMessages_SuccessMessageDisplay");
+		
+		flowPanel.add(breadCrumbPanel);
 		flowPanel.add(errorMessages);
 		flowPanel.add(successMessage);
 		flowPanel.add(componentMeasureSearch.asWidget());
 		flowPanel.add(buttonBar);
-		
+		setUpBreadCrump();
 		mainPanel.add(flowPanel);
+	}
+	
+	private void setUpBreadCrump() {
+		breadcrumb.setStyleName("breadcrum");
+		breadCrumbPanel.add(breadcrumb);
+		breadCrumbPanel.setStyleName("breadcrumPaddign");
 	}
 	
 	public Button getSaveButton() {
@@ -85,5 +97,13 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		buttonBar.getSaveButton().setEnabled(!busy);
 		buttonBar.getBackButton().setEnabled(!busy);
 		buttonBar.getCancelButton().setEnabled(!busy);
+	}
+
+	public HorizontalPanel getBreadCrumbPanel() {
+		return breadCrumbPanel;
+	}
+
+	public void setBreadCrumbPanel(HorizontalPanel breadCrumbPanel) {
+		this.breadCrumbPanel = breadCrumbPanel;
 	}
 }

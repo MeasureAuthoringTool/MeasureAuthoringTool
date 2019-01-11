@@ -2,9 +2,12 @@ package mat.shared.measure.measuredetails.translate;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import mat.client.admin.ManageUsersSearchModel.Result;
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measurepackage.MeasurePackageOverview;
 import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
@@ -309,6 +312,10 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		if(measureDetailsModel.isComposite()) {
 			manageMeasureDetailModel = new ManageCompositeMeasureDetailModel();
 			((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).setCompositeScoringMethod(getCompositeScoringMethod());
+			((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).setCompositeScoringAbbreviation(getCompositeScoringAbbreviation());
+			((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).setAliasMapping(getCompositeAliasMapping());
+			((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).setPackageMap(getCompositePackageMapping());
+			((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).setAppliedComponentMeasures(getCompositeAppliedComponentMeasures());
 		} else {
 			manageMeasureDetailModel = new ManageMeasureDetailModel();	
 		}
@@ -356,6 +363,34 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		manageMeasureDetailModel.setMeasFromPeriod(getMeasureFromPeriod());
 		manageMeasureDetailModel.setMeasToPeriod(getMeasureToPeriod());
 		return manageMeasureDetailModel;
+	}
+	
+	private String getCompositeScoringAbbreviation() {
+		if(measureDetailsModel.getCompositeMeasureDetailModel() != null) {
+			return measureDetailsModel.getCompositeMeasureDetailModel().getCompositeScoringAbbreviation();
+		}
+		return null;
+	}
+	
+	private Map<String, String> getCompositeAliasMapping() {
+		if(measureDetailsModel.getCompositeMeasureDetailModel() != null) {
+			return measureDetailsModel.getCompositeMeasureDetailModel().getAliasMapping();
+		}
+		return null;
+	}
+	
+	private List<mat.client.measure.ManageMeasureSearchModel.Result> getCompositeAppliedComponentMeasures() {
+		if(measureDetailsModel.getCompositeMeasureDetailModel() != null) {
+			return measureDetailsModel.getCompositeMeasureDetailModel().getAppliedComponentMeasures();
+		}
+		return null;
+	}
+	
+	private Map<String, MeasurePackageOverview> getCompositePackageMapping() {
+		if(measureDetailsModel.getCompositeMeasureDetailModel() != null) {
+			return measureDetailsModel.getCompositeMeasureDetailModel().getPackageMap();
+		}
+		return null;
 	}
 
 	private String getMeasureToPeriod() {

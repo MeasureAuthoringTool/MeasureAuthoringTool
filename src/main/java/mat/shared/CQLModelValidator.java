@@ -53,19 +53,19 @@ public class CQLModelValidator {
 	 * @return true, if successful
 	 */
 	public boolean doesAliasNameFollowCQLAliasNamingConvention(String identifierName) {
-		
-		char firstChar = identifierName.charAt(0);
-		if(!Character.isLetter(firstChar) && firstChar != '_') {
-			return false; 
-		}
-		
-		for(int i = 1; i < identifierName.length(); i++) {
-			char ch = identifierName.charAt(i);
-			if(!Character.isDigit(ch) && !Character.isLetter(ch) && ch != '_') {
+		if(identifierName.length() > 0) {
+			char firstChar = identifierName.charAt(0);
+			if(!Character.isLetter(firstChar) && firstChar != '_') {
 				return false; 
 			}
+			
+			for(int i = 1; i < identifierName.length(); i++) {
+				char ch = identifierName.charAt(i);
+				if(!Character.isDigit(ch) && !Character.isLetter(ch) && ch != '_') {
+					return false; 
+				}
+			}
 		}
-		
 
 		return true; 
 	}

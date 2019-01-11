@@ -200,6 +200,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();		
 			ManageExportView exportView = new ManageExportView();		
 			ComponentMeasureDisplay componentMeasureDisplay = new ComponentMeasureDisplay();
+			componentMeasureDisplay.getBreadCrumbPanel().setVisible(false);
 			
 			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView,
 					compositeMeasureDetailView, componentMeasureDisplay, measureShareView, exportView,

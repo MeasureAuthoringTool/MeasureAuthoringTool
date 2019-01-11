@@ -3,6 +3,7 @@ package mat.client.measure;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
@@ -137,6 +138,49 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 			this.qdmVersion = result.getQdmVersion();
 			this.isComposite = result.getIsComposite();
 		}
+		
+
+		
+		@Override
+		public int hashCode() {
+			return Objects.hash(draft, eMeasureId, finalizedDate, hqmfReleaseVersion, id, isClonable, isComposite,
+					isDeleted, isDraftable, isEditable, isExportable, isHistorical, isMeasureFamily, isMeasureLocked,
+					isPatientBased, isSharable, isTransferable, isVersionable, lockedUserInfo, measureSetId, name,
+					ownerEmailAddress, ownerLastName, ownerfirstName, qdmVersion, scoringType, shortName, status,
+					version);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (!(obj instanceof Result)) {
+				return false;
+			}
+			Result other = (Result) obj;
+			return draft == other.draft && eMeasureId == other.eMeasureId
+					&& Objects.equals(finalizedDate, other.finalizedDate)
+					&& Objects.equals(hqmfReleaseVersion, other.hqmfReleaseVersion) && Objects.equals(id, other.id)
+					&& isClonable == other.isClonable && Objects.equals(isComposite, other.isComposite)
+					&& isDeleted == other.isDeleted && isDraftable == other.isDraftable
+					&& isEditable == other.isEditable && isExportable == other.isExportable
+					&& isHistorical == other.isHistorical && isMeasureFamily == other.isMeasureFamily
+					&& isMeasureLocked == other.isMeasureLocked && Objects.equals(isPatientBased, other.isPatientBased)
+					&& isSharable == other.isSharable && isTransferable == other.isTransferable
+					&& isVersionable == other.isVersionable && Objects.equals(lockedUserInfo, other.lockedUserInfo)
+					&& Objects.equals(measureSetId, other.measureSetId) && Objects.equals(name, other.name)
+					&& Objects.equals(ownerEmailAddress, other.ownerEmailAddress)
+					&& Objects.equals(ownerLastName, other.ownerLastName)
+					&& Objects.equals(ownerfirstName, other.ownerfirstName)
+					&& Objects.equals(qdmVersion, other.qdmVersion) && Objects.equals(scoringType, other.scoringType)
+					&& Objects.equals(shortName, other.shortName) && Objects.equals(status, other.status)
+					&& Objects.equals(version, other.version);
+		}
+
 		/**
 		 * Checks if is measure family.
 		 *

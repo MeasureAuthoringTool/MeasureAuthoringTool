@@ -27,6 +27,7 @@ import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MeasureDetailsConstants.PopulationItems;
+import mat.client.shared.MessagePanel;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
@@ -55,6 +56,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private SimplePanel panel;
 	
 	MeasureDetailsModel measureDetailsModel;
+	
+	Boolean showCompositeEdit = false;
 
 	public MeasureDetailsPresenter() {
 		panel = new SimplePanel();
@@ -110,6 +113,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private void displayDetails(Boolean goToComposite, Boolean displaySuccessMessage) {
 		panel.clear();
 		panel.add(measureDetailsView.getWidget());
+		showCompositeEdit = false;
 		if(goToComposite) {
 			handleMenuItemClick(MeasureDetailsItems.COMPONENT_MEASURES);
 		}
@@ -119,8 +123,10 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 	
 	private void displayEditComposite(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		showCompositeEdit = true;
 		this.currentCompositeMeasureDetails = manageCompositeMeasureDetailModel;
 		panel.clear();
+		componentMeasureDisplay.getComponentMeasureSearch().clearFields(false);
 		componentMeasureDisplay.getComponentMeasureSearch().setAliasMapping(manageCompositeMeasureDetailModel.getAliasMapping());
 		componentMeasureDisplay.getComponentMeasureSearch().setAppliedComponentMeasuresList(manageCompositeMeasureDetailModel.getAppliedComponentMeasures());
 		componentMeasureDisplay.getComponentMeasureSearch().buildSearch();
@@ -145,7 +151,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	
 	@Override
 	public void handleEditCompositeMeasures(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
-		displayEditComposite(manageCompositeMeasureDetailModel);
+		if(!isReadOnly) {
+			displayEditComposite(manageCompositeMeasureDetailModel);
+		}
 	}
 	
 	private void navigateTo(MatDetailItem menuItem) {		
@@ -166,7 +174,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	public boolean isDirty() {
 		boolean isDirty = false;
 		if(!isReadOnly) {
-			if( measureDetailsView.getMeasureDetailsComponentModel() != null) {
+			if(showCompositeEdit) {
+				isDirty = componentMeasureDisplay.getComponentMeasureSearch().isDirty();
+			} else if( measureDetailsView.getMeasureDetailsComponentModel() != null) {
 				isDirty = measureDetailsView.getMeasureDetailsComponentModel().isDirty(measureDetailsModel);
 			}
 			if(!isDirty && measureDetailsView.getCurrentMeasureDetail() == MeasureDetailsItems.REFERENCES) {
@@ -668,6 +678,14 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			return MeasureDetailState.COMPLETE;
 		} else {
 			return MeasureDetailState.INCOMPLETE;
+		}
+	}
+
+	public MessagePanel getMessagePanel() {
+		if(showCompositeEdit) {
+			return componentMeasureDisplay.getMessagePanel();
+		} else {
+			return measureDetailsView.getMessagePanel();
 		}
 	}
 }

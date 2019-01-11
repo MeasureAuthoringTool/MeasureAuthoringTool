@@ -3,6 +3,8 @@
  */
 package mat.model;
 
+import java.util.Objects;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -15,6 +17,27 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class LockedUserInfo  implements IsSerializable {
 	
+	@Override
+	public int hashCode() {
+		return Objects.hash(FirstName, LastName, emailAddress, userId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof LockedUserInfo)) {
+			return false;
+		}
+		LockedUserInfo other = (LockedUserInfo) obj;
+		return Objects.equals(FirstName, other.FirstName) && Objects.equals(LastName, other.LastName)
+				&& Objects.equals(emailAddress, other.emailAddress) && Objects.equals(userId, other.userId);
+	}
+
 	/** The user id. */
 	private String userId;
 	

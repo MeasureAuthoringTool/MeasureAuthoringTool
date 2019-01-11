@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -657,5 +658,32 @@ public class ComponentMeasureSearch implements BaseDisplay{
 			Mat.hideLoadingMessage();
 		}
 		getSearchButton().setEnabled(!busy);
+	}
+
+	public Boolean isDirty() {
+		return checkAliasMapEqual() || checkAppliedListEqual();
+		
+	}
+
+	private boolean checkAppliedListEqual() {
+		return !Objects.equals(originalAppliedComponentMeasuresList, appliedComponentMeasuresList); 
+	}
+
+	private Boolean checkAliasMapEqual() {
+		if(originalAliasMapping != null && originalAliasMapping.keySet() != null) {
+			for(String key : originalAliasMapping.keySet()) {
+				String originalValue = originalAliasMapping.get(key);
+				if(aliasMapping.get(key) != null && aliasMapping.get(key).equals(originalValue)) {
+					continue;
+				} else {
+					return true;
+				}
+			}
+		}else {
+			return true;
+		}
+		
+		
+		return false;
 	}
 }

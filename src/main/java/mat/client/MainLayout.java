@@ -253,12 +253,11 @@ public abstract class MainLayout {
 		ab.setStyleName(Styles.DROPDOWN_TOGGLE);
 		ab.setActive(true);
 		ab.setTitle("Profile");
-		ab.getElement().setTabIndex(0);
 		ab.setId("userprofile");
 		ab.setDataTarget(Styles.NAVBAR_COLLAPSE);
 		
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
-		sb.appendHtmlConstant("<span style=\"font-size:0px;\">Profile</span>"); 
+		sb.appendHtmlConstant("<span style=\"font-size:0px;\" tabindex=\"0\">Profile</span>"); 
 		ab.getElement().setInnerSafeHtml(sb.toSafeHtml());
 
  		return ab;

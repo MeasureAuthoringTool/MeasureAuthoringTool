@@ -21,6 +21,7 @@ import org.gwtbootstrap3.client.ui.constants.ProgressType;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -225,7 +226,6 @@ public abstract class MainLayout {
 	
 	private Navbar buildNavbar() {
 		final Navbar nav = new Navbar();
-		nav.removeStyleName("navbar navbar-default");
 		nav.setStyleName("versionBanner");
 		setLinkTextAndTitle(HEADING, getHomeLink());
 		nav.add(getHomeLink());
@@ -254,7 +254,14 @@ public abstract class MainLayout {
 		ab.setActive(true);
 		ab.setTitle("Profile");
 		ab.getElement().setTabIndex(0);
-		return ab;
+		ab.setId("userprofile");
+		ab.setDataTarget(Styles.NAVBAR_COLLAPSE);
+		
+		SafeHtmlBuilder sb = new SafeHtmlBuilder();
+		sb.appendHtmlConstant("<span style=\"font-size:0px;\">Profile</span>"); 
+		ab.getElement().setInnerSafeHtml(sb.toSafeHtml());
+
+ 		return ab;
 	}
 	
 	private Navbar buildDivider() {
@@ -282,16 +289,11 @@ public abstract class MainLayout {
 	}
 	
 	private void setAccessibilityForLinks() {
-		profile.setTitle("MAT Account");
-		profile.setStyleName(Styles.DROPDOWN);
-		profile.getElement().setAttribute("role", "navigation");
-		profile.getElement().setAttribute("aria-label", "Clicking this link will navigate you to MAT Account.");
+		profile.setStyleName(Styles.DROPDOWN );
+		profile.getWidget(0).setTitle("MAT Account");
 
-		signOut.setTitle("Sign Out");
 		signOut.setStyleName(Styles.DROPDOWN);
-		signOut.getElement().setAttribute("role", "navigation");
-		signOut.getElement().setAttribute("aria-label", "Clicking this link will sign you out of MAT.");
-
+		signOut.getWidget(0).setTitle("Sign Out");
 	}
 	
 	private DropDownMenu buildDropDownMenu() {
@@ -305,6 +307,7 @@ public abstract class MainLayout {
 		ddm.add(profile);
 		ddm.add(signOut);
 		ddm.setStyleName(Styles.DROPDOWN_MENU);
+		ddm.addStyleDependentName(Styles.RIGHT);
 		
 		return ddm;
 	}

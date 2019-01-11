@@ -1,7 +1,6 @@
 package mat.client.buttons;
 
 
-import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.HTML;
@@ -34,7 +33,7 @@ public class IndicatorButton{
 		hideLink.getElement().setTabIndex(0);
 		panel.add(hideLink);
 		panel.getElement().focus();
-		panel.setStyleName(Styles.NAVBAR_BRAND);
+		panel.setStyleName("loginSpacer");
 	}
 	
 	private void createShowLink() {
@@ -45,7 +44,7 @@ public class IndicatorButton{
 		showLink.getElement().setTabIndex(0);
 		panel.add(showLink);
 		panel.getElement().focus();
-		panel.setStyleName(Styles.NAVBAR_BRAND);
+		panel.setStyleName("loginSpacer");
 	}
 	
 	public void hideActive(boolean hide) {

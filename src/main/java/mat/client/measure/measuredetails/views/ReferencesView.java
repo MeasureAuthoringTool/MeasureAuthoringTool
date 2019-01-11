@@ -1,7 +1,6 @@
 package mat.client.measure.measuredetails.views;
 
-import org.gwtbootstrap3.client.ui.gwt.CellTable;
-
+import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -25,6 +24,7 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.editor.RichTextEditor;
+import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.ReferencesModel;
@@ -54,7 +54,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
 				String reference = object.length()>35 ? object.substring(0, 35) + "..." : object;
 				safeHtmlBuilder.appendHtmlConstant(reference);
-				return safeHtmlBuilder.toSafeHtml();
+				return CellTableUtility.getColumnToolTip(reference);
 			}
 		};
 		referencesTable.addColumn(descriptionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Description\">" + "Description" + "</span>"));

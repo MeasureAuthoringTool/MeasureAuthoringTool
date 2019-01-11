@@ -3,6 +3,7 @@ package mat.client.measure.measuredetails.views;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -48,6 +49,13 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	}
 
 	private CellTable<String> addColumnToTable(CellTable<String> referencesTable) {
+		Label measureSearchHeader = new Label("References List");
+		measureSearchHeader.getElement().setId("referencesHeader_Label");
+		measureSearchHeader.setStyleName("invisibleTableCaption");
+		com.google.gwt.dom.client.TableElement elem = referencesTable.getElement().cast();
+		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
+		TableCaptionElement caption = elem.createCaption();
+		caption.appendChild(measureSearchHeader.getElement());
 		Column<String, SafeHtml> descriptionColumn = new Column<String, SafeHtml>(new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(String object) {
@@ -160,7 +168,8 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	public void buildDetailView() {
 		mainPanel.clear();
 		VerticalPanel cellTablePanel = new VerticalPanel();
-		cellTablePanel.setWidth("100%");
+		cellTablePanel.setStyleName("cellTablePanelMeasureDetails");
+		cellTablePanel.setWidth("625px");
 		cellTablePanel.add(messagePanel);
 		CellTable<String> referencesTable = new CellTable<String>();
 		referencesTable.setPageSize(5);

@@ -111,7 +111,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 				@Override
 				public SafeHtml getValue(Result object) {
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					sb.appendHtmlConstant("<div id='container' tabindex=\"-1\">");
+					sb.appendHtmlConstant("<div id='#measureNameContainer' tabindex=\"-1\">");
 					sb.appendHtmlConstant("<span title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
 					sb.appendHtmlConstant("</div>");
 					return sb.toSafeHtml();
@@ -126,7 +126,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 				@Override
 				public SafeHtml getValue(Result object) { 
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					sb.appendHtmlConstant("<div id='container' tabindex=\"-1\">");
+					sb.appendHtmlConstant("<div id='#aliasContainer' tabindex=\"-1\">");
 					sb.appendHtmlConstant("<span title=\" " + aliasMapping.get(object.getId()) + "\" tabindex=\"0\">" + aliasMapping.get(object.getId()) + "</span>");
 					sb.appendHtmlConstant("</div>");
 					return sb.toSafeHtml();
@@ -141,7 +141,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 				@Override
 				public SafeHtml getValue(Result object) {
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					sb.appendHtmlConstant("<div id='appliedComponentContainer' tabindex=\"-1\">");
+					sb.appendHtmlConstant("<div id='#appliedComponentContainer' tabindex=\"-1\">");
 					sb.appendHtmlConstant("<span title=\" " + object.getVersion() + "\" tabindex=\"0\">" + object.getVersion() + "</span>");
 					sb.appendHtmlConstant("</div>");
 					return sb.toSafeHtml();
@@ -150,8 +150,8 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 			table.addColumn(version, SafeHtmlUtils.fromSafeConstant(
 					"<span title='Version Column'>" + "Version" + "</span>"));
 			
-			table.setColumnWidth(0, 250.0, Unit.PX);
-			table.setColumnWidth(1, 250.0, Unit.PX);
+			table.setColumnWidth(0, 350.0, Unit.PX);
+			table.setColumnWidth(1, 150.0, Unit.PX);
 			table.setColumnWidth(2, 100, Unit.PX);
 			
 			table.setWidth("615px");

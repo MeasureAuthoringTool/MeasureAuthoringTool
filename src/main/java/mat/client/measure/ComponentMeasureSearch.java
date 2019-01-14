@@ -523,7 +523,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 				if(currentComponentMeasure.getId().equals(measureId)) {
 					appliedComponentMeasuresList.remove(currentComponentMeasure);
 					String aliasName = aliasMapping.containsKey(measureId) ? " " + aliasMapping.get(measureId) : "";
-					replaceMessage += selectedMeasure.getName() + " " + selectedMeasure.getVersion() + " is now connected to the alias" + aliasName  + ". Please click 'Save and Continue' to confirm the change";
+					replaceMessage += selectedMeasure.getName() + " " + selectedMeasure.getVersion() + " is now connected to the alias" + aliasName  + ". Please click 'Save and Continue' to confirm the change.";
 				}
 			}
 			

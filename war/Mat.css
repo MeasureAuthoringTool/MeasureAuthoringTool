@@ -149,6 +149,14 @@ left:50px;
     width: 250px; 
 }
 
+#measureNameContainer{
+	width: 350px;
+}
+
+#aliasContainer{
+	width: 150px;
+}
+
 #appliedComponentContainer{
 	width: 100px;
 }

@@ -4,16 +4,21 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+
+import mat.client.shared.MatContext;
 
 
 /**
  * The Button Tool Bar for the Definition and Function sections
- * Includes 'Insert', 'Save', 'Edit', 'Delete', 'save', 'cancel', 'erase'
+ * Includes 'Insert', 'Save', 'Edit', 'Delete', 'save', 'cancel', 'erase', and Expression Builder
+ * 
  */
 public class DefinitionFunctionButtonToolBar extends Composite {
-	private Button insertButton, editButton, saveButton, deleteButton, eraseButton, cancelButton, infoButton;
+	private Button insertButton, editButton, saveButton, deleteButton, eraseButton, cancelButton, infoButton, expressionBuilderButton;
 	private Button timingExpIcon = new Button();
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
 	private ButtonGroup infoButtonGroup = new ButtonGroup();
@@ -32,10 +37,38 @@ public class DefinitionFunctionButtonToolBar extends Composite {
 		addInsertButton();
 		addDeleteButton();
 		addCancelButton();
-		initWidget(buttonLayout);
+		
+		MatContext.get().getCurrentReleaseVersion(new AsyncCallback<String>() {
 			
+			@Override
+			public void onSuccess(String result) {
+				double version = Double.parseDouble(result.replace("v", ""));
+				if(version >= 5.7) {
+					addExpressionBuilderButton();
+				}
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().GENERIC_ERROR_MESSAGE);
+			}
+		});
+		
+		
+		initWidget(buttonLayout);	
 	}
 	
+	private void addExpressionBuilderButton() {
+		expressionBuilderButton = new ExpressionBuilderButton(sectionName);
+		expressionBuilderButton.getElement().setAttribute("aria-label", "Click the Expression Builder Button to open the expression builder.");
+		infoButtonGroup.add(expressionBuilderButton);
+		
+		if(!sectionName.equalsIgnoreCase("definition")) {
+			expressionBuilderButton.setVisible(false);
+		}
+	}
+
 	private void addCancelButton() {
 		cancelButton = new CancelToolBarButton(sectionName);
 		buttonLayout.add(cancelButton);
@@ -85,6 +118,7 @@ public class DefinitionFunctionButtonToolBar extends Composite {
 		eraseButton.setEnabled(isEnabled);
 		infoButton.setEnabled(isEnabled);
 		cancelButton.setEnabled(isEnabled);
+		expressionBuilderButton.setEnabled(isEnabled);
 	}
 	
 	public Button getInsertButton() {
@@ -105,6 +139,10 @@ public class DefinitionFunctionButtonToolBar extends Composite {
 
 	public Button getInfoButton(){
 		return infoButton;
+	}
+	
+	public Button getExpressionBuilderButton() {
+		return expressionBuilderButton;
 	}
 
 	public Button getTimingExpButton(){

@@ -349,6 +349,7 @@ public class CQLDefinitionsView {
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
 		getDefineButtonBar().getTimingExpButton().setEnabled(isEditable);
 		getDefineButtonBar().getEraseButton().setEnabled(isEditable);
+		getDefineButtonBar().getExpressionBuilderButton().setEnabled(isEditable);
 	}
 
 

@@ -9,6 +9,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.dom.client.TableCaptionElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -110,7 +111,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 				@Override
 				public SafeHtml getValue(Result object) {
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					sb.appendHtmlConstant("<div tabindex=\"-1\">");
+					sb.appendHtmlConstant("<div id='container' tabindex=\"-1\">");
 					sb.appendHtmlConstant("<span title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
 					sb.appendHtmlConstant("</div>");
 					return sb.toSafeHtml();
@@ -125,10 +126,10 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 				@Override
 				public SafeHtml getValue(Result object) { 
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				sb.appendHtmlConstant("<div tabindex=\"-1\">");
-				sb.appendHtmlConstant("<span title=\" " + aliasMapping.get(object.getId()) + "\" tabindex=\"0\">" + aliasMapping.get(object.getId()) + "</span>");
-				sb.appendHtmlConstant("</div>");
-				return sb.toSafeHtml();
+					sb.appendHtmlConstant("<div id='container' tabindex=\"-1\">");
+					sb.appendHtmlConstant("<span title=\" " + aliasMapping.get(object.getId()) + "\" tabindex=\"0\">" + aliasMapping.get(object.getId()) + "</span>");
+					sb.appendHtmlConstant("</div>");
+					return sb.toSafeHtml();
 				}
 			};
 			table.addColumn(alias, SafeHtmlUtils.fromSafeConstant(
@@ -139,11 +140,19 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 							new MatSafeHTMLCell()) {
 				@Override
 				public SafeHtml getValue(Result object) {
-					return CellTableUtility.getColumnToolTip(object.getVersion());
+					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+					sb.appendHtmlConstant("<div id='appliedComponentContainer' tabindex=\"-1\">");
+					sb.appendHtmlConstant("<span title=\" " + object.getVersion() + "\" tabindex=\"0\">" + object.getVersion() + "</span>");
+					sb.appendHtmlConstant("</div>");
+					return sb.toSafeHtml();
 				}
 			};
 			table.addColumn(version, SafeHtmlUtils.fromSafeConstant(
 					"<span title='Version Column'>" + "Version" + "</span>"));
+			
+			table.setColumnWidth(0, 250.0, Unit.PX);
+			table.setColumnWidth(1, 250.0, Unit.PX);
+			table.setColumnWidth(2, 100, Unit.PX);
 			
 			table.setWidth("615px");
 		return table;

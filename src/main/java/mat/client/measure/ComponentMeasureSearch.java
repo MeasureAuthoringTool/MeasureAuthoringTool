@@ -523,7 +523,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 				if(currentComponentMeasure.getId().equals(measureId)) {
 					appliedComponentMeasuresList.remove(currentComponentMeasure);
 					String aliasName = aliasMapping.containsKey(measureId) ? " " + aliasMapping.get(measureId) : "";
-					replaceMessage += selectedMeasure.getName() + " " + selectedMeasure.getVersion() + " has been saved as the alias" + aliasName  + ".";
+					replaceMessage += selectedMeasure.getName() + " " + selectedMeasure.getVersion() + " is now connected to the alias" + aliasName  + ". Please click 'Save and Continue' to confirm the change";
 				}
 			}
 			
@@ -533,7 +533,10 @@ public class ComponentMeasureSearch implements BaseDisplay{
 				aliasMapping.remove(measureId);
 				aliasMapping.put(selectedMeasure.getId(), aliasName);
 			}
-			selectionModel.setSelected(selectedMeasure, true);
+			selectionModel.clear();
+			for(Result result : appliedComponentMeasuresList) {
+				selectionModel.setSelected(result, true);
+			}
 			availableMeasuresTable.setVisibleRangeAndClearData(availableMeasuresTable.getVisibleRange(), true);
 			availableMeasuresTable.redraw();
 			appliedComponentTable.setRowData(appliedComponentMeasuresList);

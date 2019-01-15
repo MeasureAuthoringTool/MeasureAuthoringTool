@@ -2,10 +2,13 @@ package mat.client.measure.measuredetails;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -20,6 +23,7 @@ import mat.client.measure.measuredetails.views.MeasureDetailsViewFactory;
 import mat.client.measure.measuredetails.views.ReferencesView;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MessageAlert;
@@ -41,6 +45,7 @@ public class MeasureDetailsView {
 	private boolean isMeasureEditable;
 	private SaveButton saveButton = new SaveButton("Measure Details");
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
+	private Button viewHumanReadableButton;
 	private MeasureDetailsModel measureDetailsModel;
 	private RichTextEditor currentRichTextEditor;
 	private MessagePanel messagePanel;
@@ -97,13 +102,54 @@ public class MeasureDetailsView {
 	private void buildMeasureDetailsButtonPanel() {
 		mainPanel.add(new SpacerWidget());
 		HorizontalPanel panel = new HorizontalPanel();
-		ButtonToolBar toolbar = new ButtonToolBar();	
+		panel.setWidth("100%");
+		ButtonToolBar toolbar = new ButtonToolBar();
 		toolbar.add(deleteMeasureButton);
+		viewHumanReadableButton = buildHumanReadableButton();
+		toolbar.add(viewHumanReadableButton);
 		panel.add(toolbar);
 		mainPanel.add(panel);
 		mainPanel.add(new SpacerWidget());
 	}
 	
+	private Button buildHumanReadableButton() {
+		viewHumanReadableButton = new Button("View Human Readable");
+		viewHumanReadableButton.setTitle("View Human Readable");
+		viewHumanReadableButton.getElement().setAttribute("id", "view_human_readable_button");
+		viewHumanReadableButton.setType(ButtonType.PRIMARY);
+		viewHumanReadableButton.setPull(Pull.RIGHT);
+		viewHumanReadableButton.addClickHandler(event -> generateHumanReadableForMeasureDetails());
+		return viewHumanReadableButton;
+	}
+
+	private void generateHumanReadableForMeasureDetails() {
+		messagePanel.clearAlerts();
+		MatContext.get().getMeasureService().getHumanReadableForMeasureDetails(MatContext.get().getCurrentMeasureId(), new AsyncCallback<String>() {
+			@Override
+			public void onSuccess(String result) {
+				showHumanReadableDialogBox(result, measureDetailsModel.getGeneralInformationModel().getMeasureName());
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+		});
+	}
+
+	public static native void showHumanReadableDialogBox(String result, String measureName) /*-{
+		var dummyURL = window.location.protocol + "//"
+			+ window.location.hostname + ":" + window.location.port + "/"
+			+ "mat/humanreadable.html";
+		var humanReadableWindow = window.open(dummyURL, "",
+			"width=1200,height=700,scrollbars=yes,resizable=yes");
+
+		if (humanReadableWindow && humanReadableWindow.top) {
+			humanReadableWindow.document.write(result);
+			humanReadableWindow.document.title = measureName;
+		}
+	}-*/;
+
 	public VerticalPanel buildDetailView(MatDetailItem currentMeasureDetail, MeasureDetailsObserver measureDetailsObserver) {
 		this.currentMeasureDetail = currentMeasureDetail;
 		widgetComponentPanel.clear();

@@ -754,4 +754,6 @@ public interface MeasureLibraryService {
 	Boolean isCompositeMeasure(String currentMeasureId);
 
 	int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
+
+	String getHumanReadableForMeasureDetails(String measureId);
 }

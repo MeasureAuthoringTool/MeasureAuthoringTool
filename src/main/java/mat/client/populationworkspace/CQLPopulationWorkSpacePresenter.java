@@ -207,21 +207,19 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				
 				if (population.getCqlExpressionDisplayName().isEmpty()) {
 					showHumanReadableDialogBox("<html></html>", population.getDisplayName());
-				}
-
-				else {
+				} else {
 					MatContext.get().getMeasureService().getHumanReadableForNode(MatContext.get().getCurrentMeasureId(),
 							population.toXML(), new AsyncCallback<String>() {
-								@Override
-								public void onSuccess(String result) {
-									showHumanReadableDialogBox(result, population.getDisplayName());
-								}
+						@Override
+						public void onSuccess(String result) {
+							showHumanReadableDialogBox(result, population.getDisplayName());
+						}
 
-								@Override
-								public void onFailure(Throwable caught) {
-									Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-								}
-							});
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						}
+					});
 				}
 
 			}

@@ -50,7 +50,6 @@ import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMappe
 import mat.shared.measure.measuredetails.translate.MeasureDetailModelMapper;
 
 public class MeasureServiceImpl extends SpringRemoteServiceServlet implements MeasureService {
-	
 	private static final long serialVersionUID = 2280421300224680146L;
 	
 	@Override
@@ -591,5 +590,10 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	@Override
 	public int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId) {
 		return this.getMeasureLibraryService().generateAndSaveMaxEmeasureId(isEditable, measureId);
+	}
+
+	@Override
+	public String getHumanReadableForMeasureDetails(String measureId) {
+		return this.getMeasureLibraryService().getHumanReadableForMeasureDetails(measureId);
 	}
 }

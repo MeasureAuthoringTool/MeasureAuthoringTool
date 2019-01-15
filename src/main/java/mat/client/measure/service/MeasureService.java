@@ -707,4 +707,6 @@ public interface MeasureService extends RemoteService {
 	public ManageMeasureDetailModel getMeasureAndLogRecentMeasure(String currentMeasureId, String loggedinUserId);
 	
 	public int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
+	
+	public String getHumanReadableForMeasureDetails(String measureId);
 }

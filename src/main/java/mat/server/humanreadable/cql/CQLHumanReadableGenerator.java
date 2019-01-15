@@ -23,16 +23,32 @@ public class CQLHumanReadableGenerator {
 		Map<String, HumanReadableModel> paramsMap = new HashMap<>();				
 		paramsMap.put("model", model);
 		
-		boolean isCalendarYear = model.getMeasureInformation().getIsCalendarYear();
-		String measurementPeriodStartDate = model.getMeasureInformation().getMeasurementPeriodStartDate();
-		String measurementPeriodEndDate = model.getMeasureInformation().getMeasurementPeriodEndDate();
-		model.getMeasureInformation().setMeasurementPeriod(HumanReadableDateUtil.getFormattedMeasurementPeriod(isCalendarYear, measurementPeriodStartDate, measurementPeriodEndDate));
+		setMeasurementPeriod(model.getMeasureInformation());
 		return FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("humanreadable/human_readable.ftl"), paramsMap);
 	}
+
 	
 	public String generateSinglePopulation(HumanReadablePopulationModel population) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
 		Map<String, HumanReadablePopulationModel> paramsMap = new HashMap<>(); 
 		paramsMap.put("population", population);
 		return FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("humanreadable/population_human_readable.ftl"), paramsMap);
+	}
+
+
+	public String generate(HumanReadableMeasureInformationModel measureInformationModel) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
+		setMeasurementPeriod(measureInformationModel);
+		HumanReadableModel model = new HumanReadableModel();
+		model.setMeasureInformation(measureInformationModel);
+		Map<String, HumanReadableModel> paramsMap = new HashMap<>();				
+		paramsMap.put("model", model);
+		return FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("humanreadable/human_readable_measuredetails.ftl"), paramsMap);
+	}
+
+
+	private void setMeasurementPeriod(HumanReadableMeasureInformationModel model) {
+		boolean isCalendarYear = model.getIsCalendarYear();
+		String measurementPeriodStartDate = model.getMeasurementPeriodStartDate();
+		String measurementPeriodEndDate = model.getMeasurementPeriodEndDate();
+		model.setMeasurementPeriod(HumanReadableDateUtil.getFormattedMeasurementPeriod(isCalendarYear, measurementPeriodStartDate, measurementPeriodEndDate));
 	}
 }

@@ -25,8 +25,8 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceCommand;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
-import mat.client.shared.CQLAddNewButton;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
+import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
@@ -129,7 +129,8 @@ public class CQLParametersView {
 		body.add(paramAceEditorPanel);
 		aceEditorPanel.add(header);
 		aceEditorPanel.add(body);
-
+		aceEditorPanel.setMarginBottom(-10.00);
+		
 		parameterButtonBar.getInsertButton().setVisible(false);
 		parameterButtonBar.getTimingExpButton().setVisible(false);
 		parameterButtonBar.getCloseButton().setVisible(false);
@@ -166,6 +167,7 @@ public class CQLParametersView {
 		parameterVP.add(buttonPanel);
 		
 		parameterVP.add(aceEditorPanel);
+		parameterVP.add(parameterButtonBar.getSaveButtonGroup());
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
 		parameterVP.add(new SpacerWidget());
@@ -188,8 +190,9 @@ public class CQLParametersView {
 	 * 
 	 */
 	public void setMarginInButtonBar() {
-		parameterButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:350px;");
-		parameterButtonBar.getDeleteButton().setMarginLeft(-5.00);
+		parameterButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:510px;");
+		parameterButtonBar.getEraseButton().setMarginRight(-5.00);
+		parameterButtonBar.getSaveButton().setMarginLeft(555.00);
 	}
 
 

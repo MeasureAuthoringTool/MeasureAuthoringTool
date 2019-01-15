@@ -91,7 +91,7 @@ public class InfoDropDownMenu extends DropDownMenu{
 		itemAnchor10.getElement().setAttribute("aria-label", "Ctrl-Space: all");
 		
 		super.setWidth("50px");
-		super.getElement().setAttribute("style", "font-size:small;");
+		super.getElement().setAttribute("style", "font-size:small;margin-left:13px");
 		super.add(item1);
 		super.add(item2);
 		super.add(item3);

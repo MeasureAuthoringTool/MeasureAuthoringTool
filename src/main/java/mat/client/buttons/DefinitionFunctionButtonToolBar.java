@@ -4,12 +4,8 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-
-import mat.client.shared.MatContext;
 
 
 /**
@@ -18,10 +14,18 @@ import mat.client.shared.MatContext;
  * 
  */
 public class DefinitionFunctionButtonToolBar extends Composite {
-	private Button insertButton, editButton, saveButton, deleteButton, eraseButton, cancelButton, infoButton, expressionBuilderButton;
+	private Button insertButton; 
+	private Button editButton; 
+	private Button saveButton; 
+	private Button deleteButton; 
+	private Button eraseButton; 
+	private Button cancelButton; 
+	private Button infoButton; 
+	private Button expressionBuilderButton;
 	private Button timingExpIcon = new Button();
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
 	private ButtonGroup infoButtonGroup = new ButtonGroup();
+	private ButtonGroup saveButtonGroup = new ButtonGroup();
 	private String sectionName;
 
 	
@@ -44,7 +48,7 @@ public class DefinitionFunctionButtonToolBar extends Composite {
 	private void addExpressionBuilderButton() {
 		expressionBuilderButton = new ExpressionBuilderButton(sectionName);
 		expressionBuilderButton.getElement().setAttribute("aria-label", "Click the Expression Builder Button to open the expression builder.");
-		infoButtonGroup.add(expressionBuilderButton);
+		buttonLayout.add(expressionBuilderButton);
 		
 		if(!sectionName.equalsIgnoreCase("definition")) {
 			expressionBuilderButton.setVisible(false);
@@ -63,7 +67,7 @@ public class DefinitionFunctionButtonToolBar extends Composite {
 	
 	private void addDeleteButton() {
 		deleteButton = new DeleteToolBarButton(sectionName);
-		buttonLayout.add(deleteButton);
+		saveButtonGroup.add(deleteButton);
 	}
 	
 	private void addEditButton() {
@@ -74,7 +78,7 @@ public class DefinitionFunctionButtonToolBar extends Composite {
 	
 	private void addSaveButton() {
 		saveButton = new SaveToolBarButton(sectionName);
-		buttonLayout.add(saveButton);
+		saveButtonGroup.add(saveButton);
 	}
 	
 	private void addInsertButton() {
@@ -90,7 +94,7 @@ public class DefinitionFunctionButtonToolBar extends Composite {
 		infoButtonGroup.getElement().setAttribute("class", "btn-group");
 		infoButtonGroup.add(infoButton);
 		infoButtonGroup.add(dropDownMenu);
-		infoButtonGroup.getElement().setAttribute("style", "margin-top:-10px;");
+		infoButtonGroup.getElement().setAttribute("style", "margin-top:-10px;margin-left:-10px");
 	}
 	
 	public void setEnabled(boolean isEnabled){
@@ -137,6 +141,14 @@ public class DefinitionFunctionButtonToolBar extends Composite {
 
 	public ButtonGroup getInfoButtonGroup() {
 		return infoButtonGroup;
+	}
+
+	public ButtonGroup getSaveButtonGroup() {
+		return saveButtonGroup;
+	}
+
+	public void setSaveButtonGroup(ButtonGroup saveButtonGroup) {
+		this.saveButtonGroup = saveButtonGroup;
 	}
 
 	public Button getEditButton() {

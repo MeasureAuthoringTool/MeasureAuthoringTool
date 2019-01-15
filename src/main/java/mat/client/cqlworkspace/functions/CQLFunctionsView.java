@@ -221,7 +221,8 @@ public class CQLFunctionsView {
 		body.add(funcAceEditorPanel);
 		aceEditorPanel.add(header);
 		aceEditorPanel.add(body);
-
+		aceEditorPanel.setMarginBottom(-10.00);
+		
 		addNewArgument.setType(ButtonType.LINK);
 		addNewArgument.getElement().setId("addArgument_Button");
 
@@ -312,6 +313,7 @@ public class CQLFunctionsView {
 		funcVP.add(buttonPanel);
 		
 		funcVP.add(aceEditorPanel);
+		funcVP.add(functionButtonBar.getSaveButtonGroup());
 		funcVP.add(new SpacerWidget());
 		funcVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
 		funcVP.add(new SpacerWidget());
@@ -332,10 +334,10 @@ public class CQLFunctionsView {
 
 	public void setMarginInButtonBar() {
 		
-		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:280px;");
+		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:440px;");
 		functionButtonBar.getEraseButton().setMarginRight(5.00);
-		functionButtonBar.getInsertButton().setMarginRight(10.00);
-		functionButtonBar.getDeleteButton().setMarginLeft(-10.00);
+		functionButtonBar.getInsertButton().setMarginRight(-5.00);
+		functionButtonBar.getSaveButton().setMarginLeft(555.00);
 	}
 	
 	

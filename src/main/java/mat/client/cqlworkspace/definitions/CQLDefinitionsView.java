@@ -179,6 +179,7 @@ public class CQLDefinitionsView {
 		buttonPanel.add(defineButtonBar);
 		definitionVP.add(buttonPanel);
 		definitionVP.add(aceEditorPanel);
+		definitionVP.add(defineButtonBar.getSaveButtonGroup());
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
 		definitionVP.add(new SpacerWidget());
@@ -197,11 +198,12 @@ public class CQLDefinitionsView {
 	}
 
 	public void setMarginInButtonBar() {
-		defineButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:280px;");
+		defineButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:290px;");
 		defineButtonBar.getEraseButton().setMarginRight(5.00);
-		defineButtonBar.getInsertButton().setMarginRight(10.00);
-		defineButtonBar.getDeleteButton().setMarginLeft(-10.00);
+		defineButtonBar.getInsertButton().setMarginRight(5.00);
+		defineButtonBar.getExpressionBuilderButton().setMarginLeft(-5.00);
 		
+		defineButtonBar.getSaveButton().setMarginLeft(555.00);
 	}
 
 	public Panel editableAceEditorPanel() {
@@ -234,6 +236,7 @@ public class CQLDefinitionsView {
 		body.add(defAceEditorPanel);
 		aceEditorPanel.add(header);
 		aceEditorPanel.add(body);
+		aceEditorPanel.setMarginBottom(-10.00);
 		return aceEditorPanel;
 	}
 

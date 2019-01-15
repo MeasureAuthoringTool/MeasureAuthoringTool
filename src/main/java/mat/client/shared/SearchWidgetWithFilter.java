@@ -10,13 +10,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import mat.client.advancedSearch.AdvancedSearchPanel;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.util.MatTextBox;
 
@@ -44,8 +44,8 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	 * Search button - {@link PrimaryButton}.
 	 */
 	private Button searchButton;
-
 	
+	private AdvancedSearchPanel advancedSearchPanel;
 
 	/** The search input. {@link WatermarkedTextBox}. */
 	private MatTextBox searchInput = new MatTextBox();
@@ -54,6 +54,8 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	 */
 	private int selectedFilter;
 	private Panel mainFocusPanel ;
+	
+
 
 	/**
 	 * Default Constructor.
@@ -82,8 +84,23 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		mainPanel.setStylePrimaryName(cssStyleTopPanel);
 
 		horizontalPanel.add(buildFilterByPanel(forView));
+				
+		HorizontalPanel buttonPanel = new HorizontalPanel();
+		buttonPanel.setWidth("100%");
+		buttonPanel.add(buildSearchButton(forView));
+		buttonPanel.setStyleName("advancedSearchNegativeButtonMargin");
 		
-		mainPanel.add(buildSearchButton(forView));
+		VerticalPanel advancedSearchVerticalPanel = new VerticalPanel();
+		advancedSearchVerticalPanel.setWidth("100%");
+		
+		advancedSearchPanel = new AdvancedSearchPanel(forView);
+		
+		advancedSearchVerticalPanel.add(advancedSearchPanel.getAnchorPanel());
+		advancedSearchVerticalPanel.add(advancedSearchPanel.getCollapsePanel());
+		advancedSearchVerticalPanel.add(buttonPanel);
+		
+		
+		mainPanel.add(advancedSearchVerticalPanel);
 
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("SearchWidgetDisplayed_" + forView), "SearchWidgetDisplayed_" + forView);
 		topPanel.add(invisibleLabel);
@@ -280,5 +297,13 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	public void onClick(ClickEvent event) {
 		// TODO Auto-generated method stub
 		searchButton.addClickHandler(this);
+	}
+
+	public AdvancedSearchPanel getAdvancedSearchPanel() {
+		return advancedSearchPanel;
+	}
+
+	public void setAdvancedSearchPanel(AdvancedSearchPanel advancedSearchPanel) {
+		this.advancedSearchPanel = advancedSearchPanel;
 	}
 }

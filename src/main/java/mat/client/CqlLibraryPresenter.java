@@ -1364,6 +1364,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			waitForUnlock.execute();
 		} else {
 			displaySearch();
+			cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);
 		}
 
 	}	
@@ -1405,6 +1406,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		((TextBox) (cqlLibraryView.getSearchString())).setEnabled(!busy);
 		((Button) cqlLibraryView.getCreateNewLibraryButton()).setEnabled(!busy);
 		((CustomCheckBox) cqlLibraryView.getCustomFilterCheckBox()).setEnabled(!busy);
+		cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getAdvanceSearchAnchor().setEnabled(!busy);
 		if (busy) {
 			Mat.showLoadingMessage();
 		} else {

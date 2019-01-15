@@ -277,6 +277,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			waitForUnlock.execute();
 		} else {
 			displaySearch();
+			searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);
 		}
 
 		Mat.focusSkipLists(MEASURE_LIBRARY);
@@ -1810,6 +1811,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getCreateMeasureButton().setEnabled(!busy);
 		searchDisplay.getCreateCompositeMeasureButton().setEnabled(!busy);
 		searchDisplay.getCustomFilterCheckBox().setEnabled(!busy);
+		searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getAdvanceSearchAnchor().setEnabled(!busy);
 	}
 
 	private void toggleLoadingMessage(boolean busy) {

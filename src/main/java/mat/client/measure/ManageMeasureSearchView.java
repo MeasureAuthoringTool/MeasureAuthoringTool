@@ -80,9 +80,6 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	
 	private Button transferButton = new Button("Transfer");
 	
-	//TODO in MAT-9216 add this code back in!
-	/*private MeasureLibraryAdvancedSearchBuilder measureLibraryAdvancedSearchBuilder = new MeasureLibraryAdvancedSearchBuilder();*/
-	
 	MeasureSearchView searchView;
 	
 	MeasureSearchView measureSearchView = new MeasureSearchView("Measures");
@@ -109,8 +106,6 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		bulkExportButton.getElement().setId("bulkExportButton_Button");
 		mainPanel.getElement().setId("measureLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
-		//TODO in MAT-9216 add this code back in!
-		//measureFilterVP.add(measureLibraryAdvancedSearchBuilder.asWidget());
 		buildMostRecentWidget();
 		mainPanel.add(mostRecentVerticalPanel);
 		mainPanel.add(successMeasureDeletion);

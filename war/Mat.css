@@ -2855,6 +2855,15 @@ padding: 2px;
 	padding-right: 10px;
 }
 
+.advancedSearchAnchor{
+	padding-left: 10px;
+	padding-top: 10px;
+}
+
+.advancedSearchNegativeButtonMargin{
+	margin-top: -25px;
+}
+
 .calendarLabel {
 	margin-left: 3px;
 	margin-top: 3px;

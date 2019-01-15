@@ -20,7 +20,7 @@ public abstract class AdvancedSearchBuilder {
 	}
 	
 	private void initAnchor() {
-		anchor = new Anchor("Advanced Search");
+		
 
 		anchor.addClickHandler(new ClickHandler() {
 			@Override

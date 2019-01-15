@@ -2878,3 +2878,23 @@ padding: 2px;
 	padding-bottom: 10px;
 	padding-top: 2px;
 }
+
+#expressionBuilderModal .modal-dialog {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#expressionBuilderModal .modal-dialog .modal-content {
+  height: auto;
+  border-radius: 0;
+}
+
+.selectorsPanel {
+	width: 100%;
+	margin-bottom: 50px;
+}
+
+.expressionBuilderExpressionPanel {
+	font-size: small;
+}

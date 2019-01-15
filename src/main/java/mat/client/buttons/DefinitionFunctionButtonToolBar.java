@@ -37,25 +37,7 @@ public class DefinitionFunctionButtonToolBar extends Composite {
 		addInsertButton();
 		addDeleteButton();
 		addCancelButton();
-		
-		MatContext.get().getCurrentReleaseVersion(new AsyncCallback<String>() {
-			
-			@Override
-			public void onSuccess(String result) {
-				double version = Double.parseDouble(result.replace("v", ""));
-				if(version >= 5.7) {
-					addExpressionBuilderButton();
-				}
-				
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert(MatContext.get().getMessageDelegate().GENERIC_ERROR_MESSAGE);
-			}
-		});
-		
-		
+		addExpressionBuilderButton();		
 		initWidget(buttonLayout);	
 	}
 	

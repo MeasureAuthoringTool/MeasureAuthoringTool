@@ -15,19 +15,23 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
-import mat.client.shared.MatContext;
+import mat.client.expressionbuilder.observer.BuildButtonObserver;
 
 public class ExpressionTypeSelector extends Composite {
 
+	private static final String SELECT_EXPRESSION_TYPE = "-- Select Expression Type --";
+	
 	private boolean isOperatorVisible;
 	private List<ExpressionType> availableExpressionTypes;
 	private List<OperatorType> availableOperatorTypes;
 	private ListBox expressionTypeSelector;
 	private Button buildButton;
+	private BuildButtonObserver observer;
 	
-	public ExpressionTypeSelector(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes) {
+	public ExpressionTypeSelector(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes, BuildButtonObserver observer) {
 		this.availableExpressionTypes = availableExpressionTypes;
 		this.availableOperatorTypes = availableOperatorTypes;
+		this.observer = observer;
 		
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("50%");
@@ -36,7 +40,6 @@ public class ExpressionTypeSelector extends Composite {
 	}
 	
 	private Panel buildExpressionTypeSelectorBuildPanel() {
-		
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("100%");
 		
@@ -47,7 +50,7 @@ public class ExpressionTypeSelector extends Composite {
 		expressionTypeSelector = new ListBox();
 		expressionTypeSelector.setWidth("100%");
 		
-		expressionTypeSelector.addItem("-- Select Expression Type --", "-- Select Expression Type --");
+		expressionTypeSelector.addItem(SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE);
 		for(ExpressionType type : this.availableExpressionTypes) {
 			expressionTypeSelector.addItem(type.getDisplayName(), type.getValue());
 		}
@@ -58,6 +61,7 @@ public class ExpressionTypeSelector extends Composite {
 		buildButton.setType(ButtonType.PRIMARY);
 		buildButton.setMarginLeft(5.0);
 		buildButton.setIcon(IconType.WRENCH);
+		buildButton.addClickHandler(event -> onBuildButtonClick());
 		
 		hp.add(expressionTypeSelector);
 		hp.add(buildButton);
@@ -68,6 +72,10 @@ public class ExpressionTypeSelector extends Composite {
 		return panel;
 	}
 	
+	private void onBuildButtonClick() {
+		observer.onBuildButtonClick(expressionTypeSelector.getSelectedValue());
+	}
+
 	public void setIsOperatorVisible(boolean isOperatorVisible ) {
 		this.isOperatorVisible = isOperatorVisible;
 	}

@@ -1,9 +1,5 @@
 package mat.client.expressionbuilder.modal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
@@ -11,126 +7,76 @@ import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
-import mat.client.expressionbuilder.component.ExpressionTypeSelector;
-import mat.client.expressionbuilder.constant.ExpressionType;
-import mat.client.expressionbuilder.constant.OperatorType;
-import mat.client.shared.ConfirmationDialogBox;
-import mat.client.shared.ConfirmationObserver;
+import mat.client.expressionbuilder.model.ExpressionBuilderModel;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MessageAlert;
 
 public class ExpressionBuilderModal extends Modal {
-
-	private Button exitBuilderButton;
-	private Button completeBuildButton;
-
-	public ExpressionBuilderModal(AceEditor editorToInserFinalTextInto) {
-		buildModal();
-	}
+	private ModalHeader header;
+	private ModalBody body;
+	private ModalFooter footer;
+	private VerticalPanel contentPanel;
+	private AceEditor editor;
+	private ExpressionBuilderModel model;
+	private ErrorMessageAlert errorAlert;
 	
-	private void buildModal() {			
-		this.setId("expressionBuilderModal");	
-		ModalHeader header = new ModalHeader();
-		header.setTitle("CQL Expression Builder");
-		this.add(header);
-		
-		ModalBody body = new ModalBody();
-		List<ExpressionType> availableExpressionTypes = new ArrayList<>();
-		availableExpressionTypes.add(ExpressionType.RETRIEVE);
-		
-		List<OperatorType> availableOperatorTypes = new ArrayList<>();
-		availableOperatorTypes.add(OperatorType.UNION);
-		availableOperatorTypes.add(OperatorType.EXCEPT);
-		availableOperatorTypes.add(OperatorType.INTERSECT);
+	public ExpressionBuilderModal(String title, ExpressionBuilderModel model) {
+		this.model = model;
 
-		VerticalPanel selectorsPanel = new VerticalPanel();
-		selectorsPanel.setStyleName("selectorsPanel");
+		header = new ModalHeader();
+		body = new ModalBody();
+		footer = new ModalFooter();
+		contentPanel = new VerticalPanel();
 		
-		ExpressionTypeSelector selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes);
-		selectorsPanel.add(selector);
+		this.setId("expressionBuilderModal");
+		contentPanel.setWidth("100%");
 		
+		header.setTitle(title);
 		
-		body.add(selectorsPanel);
+		body.add(buildErrorAlert());
+		body.add(contentPanel);
 		body.add(buildAceEditorPanel());
 		
-		ModalFooter footer = new ModalFooter();
-		footer.add(buildFooter());
-		
-		
+		this.add(header);
 		this.add(body);
 		this.add(footer);
 	}
 	
-	private HorizontalPanel buildFooter() {
-		HorizontalPanel panel = new HorizontalPanel();
-		panel.setWidth("100%");
-		
-		buildExitBuilderButton();
-		buildCompleteBuildButton();
-		
-		panel.add(exitBuilderButton);
-		panel.add(completeBuildButton);
-		
-		return panel;
-	}
-
-	private void buildCompleteBuildButton() {
-		completeBuildButton = new Button();
-		completeBuildButton.setText("Complete Build");
-		completeBuildButton.setTitle("Complete Build");
-		completeBuildButton.setType(ButtonType.SUCCESS);
-		completeBuildButton.getElement().setAttribute("aria-label", "Click this button to complete this build and go back to the CQL Workspace");
-		completeBuildButton.setPull(Pull.RIGHT);
-		completeBuildButton.setIcon(IconType.HOME);
-		completeBuildButton.setSize(ButtonSize.LARGE);
-	}
-
-	private void buildExitBuilderButton() {
-		exitBuilderButton = new Button();
-		exitBuilderButton.setText("Exit Builder");
-		exitBuilderButton.setTitle("Exit Buidler");
-		exitBuilderButton.setType(ButtonType.DANGER);
-		exitBuilderButton.getElement().setAttribute("aria-label", "Click this button to cancel this bulid and exit the expression builder");
-		exitBuilderButton.setSize(ButtonSize.LARGE);
-		exitBuilderButton.addClickHandler(event -> exitBulderButtonClick());
+	public ModalBody getBody() {
+		return body;
 	}
 	
-	private void exitBulderButtonClick() {
-		Modal modal = this;
-		ConfirmationDialogBox confirmExitDialogBox = new ConfirmationDialogBox(
-				"Are you sure you want to exit the Expression Builder? Any entries made to this point will not be saved. "
-				+ "Click Exit to exit the Expression Builder or click Go Back to go back to the Expression Builder and continue building your expression.",
-				"Exit", "Go Back", new ConfirmationObserver() {
-					
-					@Override
-					public void onYesButtonClicked() {
-						modal.hide();
-						
-					}
-					
-					@Override
-					public void onNoButtonClicked() {
-						// just use the default modal data dismiss.					
-					}
-					
-					@Override
-					public void onClose() {
-												
-					}
-				});
-		
-		confirmExitDialogBox.show();
+	public ModalFooter getFooter() {
+		return footer;
+	}
+
+	public ExpressionBuilderModel getModel() {
+		return model;
+	}
+
+	public VerticalPanel getContentPanel() {
+		return contentPanel;
+	}
+	
+	public void updateCQLDisplay() {
+		this.editor.setText(model.getCQL());
+	}
+	
+	public MessageAlert getErrorAlert() {
+		return errorAlert;
+	}
+	
+	private MessageAlert buildErrorAlert() {
+		errorAlert = new ErrorMessageAlert();
+		return errorAlert;
 	}
 
 	private Panel buildAceEditorPanel() {
@@ -152,7 +98,7 @@ public class ExpressionBuilderModal extends Modal {
 	}
 	
 	private AceEditor buildAceEditor() {
-		AceEditor editor = new AceEditor();
+		editor = new AceEditor();
 		editor.startEditor();
 		editor.setText("");
 		editor.setMode(AceEditorMode.CQL);
@@ -168,5 +114,9 @@ public class ExpressionBuilderModal extends Modal {
 		editor.setTitle("CQL Expression");
 		editor.setReadOnly(true);
 		return editor; 
+	}
+	
+	public void display() {
+		
 	}
 }

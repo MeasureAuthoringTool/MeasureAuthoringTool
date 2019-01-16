@@ -80,10 +80,10 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 		dataTypeListBox.addItem(SELECT_DATATYPE, SELECT_DATATYPE);
 		
 		List<String> dataTypes = MatContext.get().getCqlConstantContainer().getQdmDatatypeList();
+		dataTypes.remove("attribute"); // we don't want to show attribute in this list
 		for(String datatype : dataTypes) {
 			dataTypeListBox.addItem(datatype, datatype);
 		}
-		
 		
 		datatypeGroup.add(datatypeListBoxLabel);
 		datatypeGroup.add(dataTypeListBox);

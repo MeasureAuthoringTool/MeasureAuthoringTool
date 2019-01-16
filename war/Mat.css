@@ -2905,3 +2905,8 @@ padding: 2px;
 .expressionBuilderExpressionPanel {
 	font-size: small;
 }
+
+.modal-open {
+  overflow: auto!important;
+  padding-right:0!important
+}

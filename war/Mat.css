@@ -2910,3 +2910,7 @@ padding: 2px;
   overflow: auto!important;
   padding-right:0!important
 }
+
+body {
+    padding-right: 0px !important;
+}

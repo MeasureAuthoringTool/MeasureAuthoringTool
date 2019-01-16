@@ -48,6 +48,7 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
 import mat.shared.MeasureSearchModel;
+import mat.shared.MeasureSearchModel.VersionMeasureType;
 
 @Repository("measureDAO")
 public class MeasureDAOImpl extends GenericDAO<Measure, String> implements MeasureDAO {
@@ -463,17 +464,17 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel, User user) {
-		final List<Measure> measureResultList = fetchMeasureResultListForCritera(measureSearchModel.isMyMeasureSearch(), measureSearchModel.getSearchTerm(), user);
+		final List<Measure> measureResultList = fetchMeasureResultListForCritera(measureSearchModel.isMyMeasureSearch(), measureSearchModel.getSearchTerm(), user, measureSearchModel);
 		return getOrderedDTOListFromMeasureResults(measureSearchModel, user, measureResultList);
 	}
 	
-	private List<Measure> fetchMeasureResultListForCritera(int filter, String searchText, User user) {
+	private List<Measure> fetchMeasureResultListForCritera(int filter, String searchText, User user, MeasureSearchModel measureSearchModel) {
 		final Session session = getSessionFactory().getCurrentSession();
 		final CriteriaBuilder cb = session.getCriteriaBuilder();
 		final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
 		final Root<Measure> root = query.from(Measure.class);
 		
-		final Predicate predicate = buildPredicateForMeasureSearch(filter, searchText, user.getId(), cb, root);
+		final Predicate predicate = buildPredicateForMeasureSearch(filter, searchText, user.getId(), cb, root, measureSearchModel);
 		
 		query.select(root).where(predicate).distinct(true);
 		
@@ -486,7 +487,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		return measureResultList;
 	}
 	
-	private Predicate buildPredicateForMeasureSearch(int filter, String searchText, String userId, CriteriaBuilder cb, Root<Measure> root) {
+	private Predicate buildPredicateForMeasureSearch(int filter, String searchText, String userId, CriteriaBuilder cb, Root<Measure> root, MeasureSearchModel measureSearchModel) {
 		final List<Predicate> predicatesList = new ArrayList<>();
 		
 		if (filter == MeasureSearchFilterPanel.MY_MEASURES) {
@@ -496,6 +497,10 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		
 		if (StringUtils.isNotBlank(searchText)) {
 			predicatesList.add(getSearchByMeasureOrOwnerNamePredicate(searchText, cb, root));
+		}
+		
+		if(measureSearchModel.isDraft() != VersionMeasureType.ALL) {
+			predicatesList.add(cb.equal(root.get(DRAFT), measureSearchModel.isDraft() == VersionMeasureType.DRAFT));
 		}
 		
 		return cb.and(predicatesList.toArray(new Predicate[predicatesList.size()]));

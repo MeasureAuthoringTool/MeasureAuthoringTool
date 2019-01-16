@@ -70,6 +70,7 @@ import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.MeasureSearchModel;
+import mat.shared.MeasureSearchModel.VersionMeasureType;
 import mat.shared.StringUtility;
 
 public class ManageMeasurePresenter implements MatPresenter {
@@ -1142,6 +1143,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			pageSize = 25;
 			setSearchingBusy(true);
 			MeasureSearchModel model = new MeasureSearchModel(filter, startIndex, pageSize, searchText, searchText);
+			
 			if(null != searchDisplay) {
 				searchDisplay.getSuccessMessageDisplay().clearAlert();	
 			}
@@ -1200,7 +1202,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 					});
 		} else {
 			MeasureSearchModel model = new MeasureSearchModel(filter, startIndex, 25, lastSearchText, searchText);
-
+			
+			String userSelectedStateValue = searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getSearchStateValue();
+			VersionMeasureType versionType = userSelectedStateValue.contains("Draft") ? VersionMeasureType.DRAFT :
+												userSelectedStateValue.contains("Versioned") ? VersionMeasureType.VERSION : VersionMeasureType.ALL;
+			
+			model.setIsDraft(versionType);
+			searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);
 			advancedSearch(model);
 		}
 	}

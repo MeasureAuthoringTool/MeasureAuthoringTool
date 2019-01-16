@@ -127,6 +127,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		this.currentCompositeMeasureDetails = manageCompositeMeasureDetailModel;
 		panel.clear();
 		componentMeasureDisplay.getComponentMeasureSearch().clearFields(false);
+		componentMeasureDisplay.getMessagePanel().clearAlerts();
 		componentMeasureDisplay.getComponentMeasureSearch().setAliasMapping(manageCompositeMeasureDetailModel.getAliasMapping());
 		componentMeasureDisplay.getComponentMeasureSearch().setAppliedComponentMeasuresList(manageCompositeMeasureDetailModel.getAppliedComponentMeasures());
 		componentMeasureDisplay.getComponentMeasureSearch().buildSearch();
@@ -340,6 +341,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	private void displayCompositeMeasuresOnMeasureDetails(Boolean displaySuccessMessage) {
 		componentMeasureDisplay.setComponentBusy(true);
+		componentMeasureDisplay.getMessagePanel().clearAlerts();
 		componentMeasureDisplay.getComponentMeasureSearch().clearFields(false);
 		getDataBaseInfomation(true, displaySuccessMessage);
 	}

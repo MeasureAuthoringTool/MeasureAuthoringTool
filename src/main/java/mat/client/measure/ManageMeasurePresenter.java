@@ -96,6 +96,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			if(componentMeasureDisplay != null) {
 				componentMeasureDisplay.getComponentMeasureSearch().clearFields(false);
+				componentMeasureDisplay.getMessagePanel().clearAlerts();
 			}
 			displaySearch();
 		}
@@ -482,6 +483,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				isEdit = true;
 			}
 			componentMeasureDisplay.getComponentMeasureSearch().clearFields(isEdit);
+			componentMeasureDisplay.getMessagePanel().clearAlerts();
 		}
 
 		String panelHeading = "";

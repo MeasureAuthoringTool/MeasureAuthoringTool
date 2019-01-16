@@ -111,7 +111,7 @@
 		
 		<#if model.measureInformation.componentMeasures??>
 			<tr>
-				<td style="background-color:#656565; width:20%"><span class="td_label">Component Measure</span></td>
+				<td style="background-color:#656565; width:20%"><span class="td_label">Component Measures List</span></td>
 				<td style="width:80%" colspan="3">
 					<table class="inner_table">
 						<tBody>

@@ -19,6 +19,10 @@ public class ExpressionBuilderModel {
 		return builder.toString().trim();
 	}
 	
+	public List<ExpressionBuilderModel> getChildModels() {
+		return this.models;
+	}
+	
 	public void appendExpression(ExpressionBuilderModel model) {
 		this.models.add(model);
 	}

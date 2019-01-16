@@ -7,15 +7,12 @@ import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.Pre;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
@@ -26,15 +23,16 @@ public class ExpressionBuilderModal extends Modal {
 	private ModalBody body;
 	private ModalFooter footer;
 	private VerticalPanel contentPanel;
-	private AceEditor editor;
 	private ExpressionBuilderModel model;
 	private ErrorMessageAlert errorAlert;
+	private Pre pre;
 	
 	public ExpressionBuilderModal(String title, ExpressionBuilderModel model) {
 		this.model = model;
 		this.setDataBackdrop(ModalBackdrop.STATIC);
 		this.setDataKeyboard(false);
 		this.setClosable(false);
+		this.setRemoveOnHide(true);
 		
 		header = new ModalHeader();
 		header.setClosable(false);
@@ -73,7 +71,7 @@ public class ExpressionBuilderModal extends Modal {
 	}
 	
 	public void updateCQLDisplay() {
-		this.editor.setText(model.getCQL());
+		this.pre.setText(model.getCQL());
 	}
 	
 	public MessageAlert getErrorAlert() {
@@ -96,30 +94,16 @@ public class ExpressionBuilderModal extends Modal {
 		cqlExpressionPanelHeader.setTitle(CQL_EXPRESSION);
 		cqlExpressionPanelHeader.setStyleName("expressionBuilderExpressionPanel", true);
 		PanelBody cqlExpressionPanelBody = new PanelBody();
-		cqlExpressionPanelBody.add(buildAceEditor());
+		cqlExpressionPanelBody.add(buildEditor());
 		
 		cqlExpressionPanel.add(cqlExpressionPanelHeader);
 		cqlExpressionPanel.add(cqlExpressionPanelBody);
 		return cqlExpressionPanel;
 	}
 	
-	private AceEditor buildAceEditor() {
-		editor = new AceEditor();
-		editor.startEditor();
-		editor.setText("");
-		editor.setMode(AceEditorMode.CQL);
-		editor.setTheme(AceEditorTheme.ECLIPSE);
-		editor.getElement().getStyle().setFontSize(14, Unit.PX);
-		editor.setHeight("150px");
-		editor.setAutocompleteEnabled(true);
-		editor.addAutoCompletions();
-		editor.setUseWrapMode(true);
-		editor.removeAllMarkers();
-		editor.clearAnnotations();
-		editor.getElement().setAttribute("id", "cql_expression_editor");
-		editor.setTitle(CQL_EXPRESSION);
-		editor.setReadOnly(true);
-		return editor; 
+	private Pre buildEditor() {
+		pre = new Pre();
+		return pre;
 	}
 	
 	public void display() {

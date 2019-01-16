@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import mat.client.expressionbuilder.component.ExpressionTypeSelector;
+import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
@@ -50,12 +50,7 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 
 		VerticalPanel selectorsPanel = new VerticalPanel();
 		selectorsPanel.setStyleName("selectorsPanel");
-
-		ExpressionTypeSelector selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes,
-				buildButtonObserver);
-		selectorsPanel.add(selector);
-
-		this.getContentPanel().add(selector);
+		this.getContentPanel().add(new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, this.getModel()));
 		this.getFooter().add(buildFooter());
 		this.updateCQLDisplay();
 	}

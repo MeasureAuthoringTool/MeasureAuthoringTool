@@ -26,7 +26,7 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 	private ListBox dataTypeListBox;
 	
 	public RetrieveBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel model) {
-		super("Data element or retrieve", parent, model);
+		super("Data Element or Retrieve", parent, model);
 		this.getApplyButton().addClickHandler(event -> applyButtonClickHandler());
 		display();
 	}

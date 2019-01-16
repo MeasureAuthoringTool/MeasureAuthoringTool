@@ -1,7 +1,5 @@
 package mat.client.expressionbuilder.observer;
 
-import com.google.gwt.core.shared.GWT;
-
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.modal.ExpressionBuilderModal;
 import mat.client.expressionbuilder.modal.RetrieveBuilderModal;

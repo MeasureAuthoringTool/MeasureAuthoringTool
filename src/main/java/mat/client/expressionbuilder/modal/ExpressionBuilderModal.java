@@ -7,6 +7,7 @@ import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -20,6 +21,7 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 
 public class ExpressionBuilderModal extends Modal {
+	private static final String CQL_EXPRESSION = "CQL Expression";
 	private ModalHeader header;
 	private ModalBody body;
 	private ModalFooter footer;
@@ -30,8 +32,12 @@ public class ExpressionBuilderModal extends Modal {
 	
 	public ExpressionBuilderModal(String title, ExpressionBuilderModel model) {
 		this.model = model;
-
+		this.setDataBackdrop(ModalBackdrop.STATIC);
+		this.setDataKeyboard(false);
+		this.setClosable(false);
+		
 		header = new ModalHeader();
+		header.setClosable(false);
 		body = new ModalBody();
 		footer = new ModalFooter();
 		contentPanel = new VerticalPanel();
@@ -80,21 +86,21 @@ public class ExpressionBuilderModal extends Modal {
 	}
 
 	private Panel buildAceEditorPanel() {
-		Panel panel = new Panel();
-		panel.setMarginLeft(0.0);
-		panel.setMarginRight(0.0);
-		panel.setType(PanelType.PRIMARY);
+		Panel cqlExpressionPanel = new Panel();
+		cqlExpressionPanel.setMarginLeft(0.0);
+		cqlExpressionPanel.setMarginRight(0.0);
+		cqlExpressionPanel.setType(PanelType.PRIMARY);
 		
-		PanelHeader header = new PanelHeader();
-		header.setText("CQL Expression");
-		header.setTitle("CQL Expression");
-		header.setStyleName("expressionBuilderExpressionPanel", true);
-		PanelBody body = new PanelBody();
-		body.add(buildAceEditor());
+		PanelHeader cqlExpressionPanelHeader = new PanelHeader();
+		cqlExpressionPanelHeader.setText(CQL_EXPRESSION);
+		cqlExpressionPanelHeader.setTitle(CQL_EXPRESSION);
+		cqlExpressionPanelHeader.setStyleName("expressionBuilderExpressionPanel", true);
+		PanelBody cqlExpressionPanelBody = new PanelBody();
+		cqlExpressionPanelBody.add(buildAceEditor());
 		
-		panel.add(header);
-		panel.add(body);
-		return panel;
+		cqlExpressionPanel.add(cqlExpressionPanelHeader);
+		cqlExpressionPanel.add(cqlExpressionPanelBody);
+		return cqlExpressionPanel;
 	}
 	
 	private AceEditor buildAceEditor() {
@@ -111,7 +117,7 @@ public class ExpressionBuilderModal extends Modal {
 		editor.removeAllMarkers();
 		editor.clearAnnotations();
 		editor.getElement().setAttribute("id", "cql_expression_editor");
-		editor.setTitle("CQL Expression");
+		editor.setTitle(CQL_EXPRESSION);
 		editor.setReadOnly(true);
 		return editor; 
 	}

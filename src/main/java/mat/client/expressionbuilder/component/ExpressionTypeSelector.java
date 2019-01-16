@@ -24,8 +24,7 @@ public class ExpressionTypeSelector extends Composite {
 	private boolean isOperatorVisible;
 	private List<ExpressionType> availableExpressionTypes;
 	private List<OperatorType> availableOperatorTypes;
-	private ListBox expressionTypeSelector;
-	private Button buildButton;
+	private ListBox expressionTypeSelectorListBox;
 	private BuildButtonObserver observer;
 	
 	public ExpressionTypeSelector(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes, BuildButtonObserver observer) {
@@ -47,15 +46,15 @@ public class ExpressionTypeSelector extends Composite {
 		label.setText("What type of expression would you like to build?");		
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.setWidth("100%");
-		expressionTypeSelector = new ListBox();
-		expressionTypeSelector.setWidth("100%");
+		expressionTypeSelectorListBox = new ListBox();
+		expressionTypeSelectorListBox.setWidth("100%");
 		
-		expressionTypeSelector.addItem(SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE);
+		expressionTypeSelectorListBox.addItem(SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE);
 		for(ExpressionType type : this.availableExpressionTypes) {
-			expressionTypeSelector.addItem(type.getDisplayName(), type.getValue());
+			expressionTypeSelectorListBox.addItem(type.getDisplayName(), type.getValue());
 		}
 		
-		buildButton = new Button();
+		Button buildButton = new Button();
 		buildButton.setText("Build");
 		buildButton.setTitle("Build");
 		buildButton.setType(ButtonType.PRIMARY);
@@ -63,7 +62,7 @@ public class ExpressionTypeSelector extends Composite {
 		buildButton.setIcon(IconType.WRENCH);
 		buildButton.addClickHandler(event -> onBuildButtonClick());
 		
-		hp.add(expressionTypeSelector);
+		hp.add(expressionTypeSelectorListBox);
 		hp.add(buildButton);
 		
 		panel.add(label);
@@ -73,7 +72,7 @@ public class ExpressionTypeSelector extends Composite {
 	}
 	
 	private void onBuildButtonClick() {
-		observer.onBuildButtonClick(expressionTypeSelector.getSelectedValue());
+		observer.onBuildButtonClick(expressionTypeSelectorListBox.getSelectedValue());
 	}
 
 	public void setIsOperatorVisible(boolean isOperatorVisible ) {

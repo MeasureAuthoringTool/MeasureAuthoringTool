@@ -27,10 +27,12 @@ public class ExpressionBuidlerHomeModal extends ExpressionBuilderModal {
 	private Button exitBuilderButton;
 	private Button completeBuildButton;
 	private BuildButtonObserver buildButtonObserver;
+	private AceEditor editorToInsertFinalTextInto;
 
-	public ExpressionBuidlerHomeModal(AceEditor editorToInserFinalTextInto)  {
+	public ExpressionBuidlerHomeModal(AceEditor editorToInsertFinalTextInto)  {
 		super("CQL Expression Builder", new ExpressionBuilderModel());
 		buildButtonObserver = new BuildButtonObserver(this, this.getModel());
+		this.editorToInsertFinalTextInto = editorToInsertFinalTextInto;
 		display();
 	}
 	
@@ -80,6 +82,7 @@ public class ExpressionBuidlerHomeModal extends ExpressionBuilderModal {
 		completeBuildButton.setPull(Pull.RIGHT);
 		completeBuildButton.setIcon(IconType.HOME);
 		completeBuildButton.setSize(ButtonSize.LARGE);
+		completeBuildButton.addClickHandler(event -> onCompleteBuildButtonClick());
 	}
 
 	private void buildExitBuilderButton() {
@@ -92,6 +95,12 @@ public class ExpressionBuidlerHomeModal extends ExpressionBuilderModal {
 		exitBuilderButton.addClickHandler(event -> exitBulderButtonClick());
 	}
 	
+	private void onCompleteBuildButtonClick() {
+		String text = this.editorToInsertFinalTextInto.getText() + "\n" + this.getModel().getCQL();
+		text = text.trim();
+		this.editorToInsertFinalTextInto.setText(text);
+		this.hide();
+	}	
 	private void exitBulderButtonClick() {
 		Modal modal = this;
 		ConfirmationDialogBox confirmExitDialogBox = new ConfirmationDialogBox(

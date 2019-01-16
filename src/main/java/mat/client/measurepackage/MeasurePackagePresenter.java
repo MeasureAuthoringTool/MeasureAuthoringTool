@@ -866,7 +866,6 @@ private void saveMeasureAtPackage(){
 		view.getPackageGroupingWidget().checkAssociations();
 		
 		view.setViewIsEditable(isEditable(), result.getPackages());
-		view.getPackageGroupingWidget().getAssociations().makeAssociationsIsEditable(isEditable());
 		displayUploadToBonnieButton(isEditable());
 	}
 

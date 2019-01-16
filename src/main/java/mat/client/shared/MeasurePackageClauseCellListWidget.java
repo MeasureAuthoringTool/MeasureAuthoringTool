@@ -590,6 +590,7 @@ public class MeasurePackageClauseCellListWidget {
 						(countTypeForAssociation(groupingPopulationList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) >= 1)){
 					buildAddAssociationWidget(groupingPopulationList);
 					addAssocationsWidget.setVisible(true);
+					associations.makeAssociationsIsEditable(MatContext.get().getMeasureLockService().checkForEditPermission());
 				}
 				else  {
 					addAssocationsWidget.setVisible(false);

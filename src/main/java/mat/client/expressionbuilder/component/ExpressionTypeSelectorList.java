@@ -2,6 +2,7 @@ package mat.client.expressionbuilder.component;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
@@ -9,6 +10,7 @@ import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.PanelGroup;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.Pre;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
@@ -69,14 +71,20 @@ public class ExpressionTypeSelectorList extends Composite {
 		expressionPanelGroup.setId("accordion");
 		
 		Panel expressionPanel = new Panel();
-		expressionPanel.setType(PanelType.INFO);
+		expressionPanel.setType(PanelType.SUCCESS);
 		expressionPanel.setWidth("100%");
 		expressionPanel.setMarginLeft(0.0);
 		PanelHeader expressionPanelHeader = new PanelHeader();
-		expressionPanelHeader.setText(panelHeader(model));
-		expressionPanelHeader.setDataToggle(Toggle.COLLAPSE);
-		expressionPanelHeader.setDataParent("#accordion");
-		expressionPanelHeader.setDataTarget("#collapse" + index);
+		Anchor anchor = new Anchor();
+		anchor.setText(panelHeader(model));
+		anchor.setTitle(panelHeader(model));
+		anchor.setIcon(IconType.PLUS);
+		anchor.setColor("black");
+		anchor.setDataParent("#accordion");
+		anchor.setDataToggle(Toggle.COLLAPSE);
+		anchor.setDataTarget("#collapse" + index);
+		anchor.addClickHandler(event -> onAnchorClick(anchor));
+		expressionPanelHeader.add(anchor);
 		
 		PanelCollapse expressionPanelCollapse = new PanelCollapse();
 		expressionPanelCollapse.setId("collapse" + index);
@@ -95,6 +103,14 @@ public class ExpressionTypeSelectorList extends Composite {
 		return expressionPanelGroup;
 	}
 	
+	private void onAnchorClick(Anchor anchor) {
+		if(anchor.getIcon() == IconType.PLUS) {
+			anchor.setIcon(IconType.MINUS);
+		} else {
+			anchor.setIcon(IconType.PLUS);
+		}
+	}
+
 	private String panelHeader(ExpressionBuilderModel model) {
 		if(model instanceof RetrieveModel) {
 			return ExpressionType.RETRIEVE.getDisplayName();

@@ -20,7 +20,7 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 	private static final String CHOOSE_A_VALUE_SET_OR_CODE_TO_GO_WITH_YOUR_DATATYPE_OPTIONAL = "Choose a value set or code to go with your datatype (Optional)";
 	private static final String CHOOSE_A_DATATYPE = "Choose a datatype";
 	private static final String SELECT_DATATYPE = "-- Select datatype --";
-	private static final String SELECT_VALUE_SET_OR_CODE = " -- Select value set or code --";
+	private static final String SELECT_VALUE_SET_OR_CODE = " -- Select value set/code --";
 	
 	private ListBox valuesetCodeListBox;
 	private ListBox dataTypeListBox;

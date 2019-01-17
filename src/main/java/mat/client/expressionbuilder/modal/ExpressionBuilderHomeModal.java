@@ -100,6 +100,7 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 	}
 
 	private void onClose() {
+		exitBuilderButton.setEnabled(false);
 		ConfirmationDialogBox confirmExitDialogBox = new ConfirmationDialogBox(
 				"Are you sure you want to exit the Expression Builder? Any entries made to this point will not be saved. "
 						+ "Click Exit to exit the Expression Builder or click Go Back to go back to the Expression Builder and continue building your expression.",
@@ -112,7 +113,7 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 
 					@Override
 					public void onNoButtonClicked() {
-
+						exitBuilderButton.setEnabled(true);
 					}
 
 					@Override

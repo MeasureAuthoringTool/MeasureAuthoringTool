@@ -2,7 +2,7 @@ package mat.client.expressionbuilder.constant;
 
 public enum ExpressionType implements ExpressionBuilderType {
 
-	RETRIEVE("Data Element (Retrieve)");
+	RETRIEVE("Data element or Retrieve");
 	
 	private String displayName;
 	

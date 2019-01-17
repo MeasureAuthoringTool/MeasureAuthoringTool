@@ -48,6 +48,7 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
 import mat.shared.MeasureSearchModel;
+import mat.shared.MeasureSearchModel.PatientBasedType;
 import mat.shared.MeasureSearchModel.VersionMeasureType;
 
 @Repository("measureDAO")
@@ -63,6 +64,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	private static final String FIRST_NAME = "firstName";
 	private static final String SHARE_USER = "shareUser";
 	private static final String MEASURE_SET = "measureSet";
+	private static final String PATIENT_BASED = "patientBased";
 	private static final String SECURITY_ROLE_USER = "3";
 	
 	@Autowired
@@ -501,6 +503,10 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		
 		if(measureSearchModel.isDraft() != VersionMeasureType.ALL) {
 			predicatesList.add(cb.equal(root.get(DRAFT), measureSearchModel.isDraft() == VersionMeasureType.DRAFT));
+		}
+		
+		if(measureSearchModel.isPatientBased() != PatientBasedType.ALL) {
+			predicatesList.add(cb.equal(root.get(PATIENT_BASED), measureSearchModel.isPatientBased() == PatientBasedType.PATIENT));
 		}
 		
 		return cb.and(predicatesList.toArray(new Predicate[predicatesList.size()]));

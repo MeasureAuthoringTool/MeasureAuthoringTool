@@ -15,6 +15,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class AdvancedSearchPanel {
 
 	
+	private static final String NO_NOT_PATIENT_BASED = "No, Not Patient-based";
+	private static final String YES_PATIENT_BASED = "Yes, Patient-based";
+	private static final String ALL_MEASURES = "All Measures";
 	private final String HEIGHT_OF_BOXES = "30px";
 	private final String WIDTH_OF_BOXES = "200px";
 	
@@ -22,8 +25,10 @@ public class AdvancedSearchPanel {
 	HorizontalPanel anchorPanel;
 	PanelCollapse panelCollapse;
 	
-	private ListBox searchStateList;
+	private ListBox searchStateListBox;
 	private FormGroup searchStateGroup;
+	private FormGroup patientIndicatorGroup;
+	private ListBox patientIndicatorListBox;
 	
 	public AdvancedSearchPanel(String forView) {
 		setUpAnchorElement(forView);
@@ -66,30 +71,53 @@ public class AdvancedSearchPanel {
 	
 	private Widget createAdvancedSearchMeasureContent() {
 		String pluralType = "Measures";
+		HorizontalPanel advancedSearchRow1 = new HorizontalPanel();
 		buildStateSection(pluralType);
-		return searchStateGroup;
+		buildPatientSection();
+		
+		advancedSearchRow1.add(searchStateGroup);
+		advancedSearchRow1.add(patientIndicatorGroup);
+		return advancedSearchRow1;
 	}
 	
 	private void buildStateSection(String pluralType) {
 		FormLabel stateLabel = new FormLabel();
-		VerticalPanel statePanel = new VerticalPanel();
-		stateLabel.setText("Show Only:");
+		stateLabel.setText("Show Only");
 		stateLabel.setTitle("Show Only");
 		stateLabel.setFor("stateId");
 		stateLabel.setFor("stateGroup");
 		stateLabel.setPaddingRight(16);
-		searchStateList = new ListBox();
-		searchStateList.setWidth(WIDTH_OF_BOXES);
-		searchStateList.setHeight(HEIGHT_OF_BOXES);
-		searchStateList.setId("stateGroup");
-		searchStateList.addItem("All " + pluralType, "All " + pluralType);
-		searchStateList.addItem("Draft " + pluralType, "Draft " + pluralType);
-		searchStateList.addItem("Versioned " + pluralType, "Versioned " + pluralType);
-		statePanel.add(stateLabel);
-		statePanel.add(searchStateList);
-		statePanel.setStyleName("advancedSearchLabels");
+		searchStateListBox = new ListBox();
+		searchStateListBox.setWidth(WIDTH_OF_BOXES);
+		searchStateListBox.setHeight(HEIGHT_OF_BOXES);
+		searchStateListBox.setId("stateGroup");
+		searchStateListBox.addItem("All " + pluralType, "All " + pluralType);
+		searchStateListBox.addItem("Draft " + pluralType, "Draft " + pluralType);
+		searchStateListBox.addItem("Versioned " + pluralType, "Versioned " + pluralType);
+
 		searchStateGroup = new FormGroup();
-		searchStateGroup.add(statePanel);
+		searchStateGroup.add(stateLabel);
+		searchStateGroup.add(searchStateListBox);
+		searchStateGroup.setStyleName("advancedSearchLabels");
+	}
+	
+	private void buildPatientSection() {
+		FormLabel patientLabel = new FormLabel();
+		patientLabel.setText("Patient-Based Indicator");
+		patientLabel.setTitle("Patient-Based Indicator");
+		patientLabel.setFor("patientBase");
+		patientIndicatorListBox = new ListBox();
+		patientIndicatorListBox.setHeight(HEIGHT_OF_BOXES);
+		patientIndicatorListBox.setWidth(WIDTH_OF_BOXES);
+		patientIndicatorListBox.setId("patientBase");
+		patientIndicatorListBox.addItem(ALL_MEASURES, ALL_MEASURES);
+		patientIndicatorListBox.addItem(YES_PATIENT_BASED, YES_PATIENT_BASED);
+		patientIndicatorListBox.addItem(NO_NOT_PATIENT_BASED, NO_NOT_PATIENT_BASED);
+
+		patientIndicatorGroup = new FormGroup();
+		patientIndicatorGroup.add(patientLabel);
+		patientIndicatorGroup.add(patientIndicatorListBox);
+		patientIndicatorGroup.setStyleName("advancedSearchLabels");
 	}
 
 
@@ -112,7 +140,11 @@ public class AdvancedSearchPanel {
 	}
 	
 	public String getSearchStateValue() {
-		return searchStateList.getSelectedValue();
+		return searchStateListBox.getSelectedValue();
+	}
+	
+	public String getPatientBasedValue() {
+		return patientIndicatorListBox.getSelectedValue();
 	}
 	
 	

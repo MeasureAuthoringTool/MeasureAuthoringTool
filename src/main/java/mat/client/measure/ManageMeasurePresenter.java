@@ -70,6 +70,7 @@ import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.MeasureSearchModel;
+import mat.shared.MeasureSearchModel.PatientBasedType;
 import mat.shared.MeasureSearchModel.VersionMeasureType;
 import mat.shared.StringUtility;
 
@@ -1206,8 +1207,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 			String userSelectedStateValue = searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getSearchStateValue();
 			VersionMeasureType versionType = userSelectedStateValue.contains("Draft") ? VersionMeasureType.DRAFT :
 												userSelectedStateValue.contains("Versioned") ? VersionMeasureType.VERSION : VersionMeasureType.ALL;
-			
 			model.setIsDraft(versionType);
+			
+			String userSelectedPatientBasedValue =  searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getPatientBasedValue();
+			PatientBasedType patientBasedType = userSelectedPatientBasedValue.contains("Yes") ? PatientBasedType.PATIENT :
+													userSelectedPatientBasedValue.contains("No") ? PatientBasedType.NOT_PATIENT : PatientBasedType.ALL;
+			model.setPatientBased(patientBasedType);
+			
 			searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);
 			advancedSearch(model);
 		}

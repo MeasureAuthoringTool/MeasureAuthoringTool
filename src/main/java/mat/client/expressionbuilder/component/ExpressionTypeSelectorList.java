@@ -3,6 +3,7 @@ package mat.client.expressionbuilder.component;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.Code;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
@@ -20,6 +21,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
+import mat.client.expressionbuilder.model.IExpressionBuilderModel;
+import mat.client.expressionbuilder.model.ModelAndOperatorTypeUtil;
+import mat.client.expressionbuilder.model.OperatorModel;
 import mat.client.expressionbuilder.model.RetrieveModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 
@@ -53,10 +57,30 @@ public class ExpressionTypeSelectorList extends Composite {
 		panel.add(label);
 		
 		for(int i = 0; i < this.model.getChildModels().size(); i++) {
-			ExpressionBuilderModel model = this.model.getChildModels().get(i);
+			IExpressionBuilderModel model = this.model.getChildModels().get(i);
 			
-			PanelGroup expressionPanelGroup = buildExpressionCollapsePanel(i, model);
-			panel.add(expressionPanelGroup);
+			// operators should not display with the collapsable panel, but should be formatted with code.
+			if(model instanceof OperatorModel) {
+				Code code = new Code(); 
+				code.setText(model.getCQL());
+				code.setTitle(model.getCQL());
+				code.setColor("black");
+				code.setStyleName("expressionBuilderCode");
+				panel.add(code);
+				
+				// all subsequent available operators should be equivalent to the previously selected operator
+				availableOperatorTypes.clear();
+				availableOperatorTypes.add(ModelAndOperatorTypeUtil.getOperatorModel(model));
+				
+			} else {
+				PanelGroup expressionPanelGroup = buildExpressionCollapsePanel(i, model);
+				
+				if(i != 0) {
+					expressionPanelGroup.setMarginTop(15.0);
+				}
+				
+				panel.add(expressionPanelGroup);
+			}
 		}
 		
 		ExpressionTypeSelector selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, hasNoSelections);
@@ -65,7 +89,7 @@ public class ExpressionTypeSelectorList extends Composite {
 		return panel;
 	}
 
-	private PanelGroup buildExpressionCollapsePanel(int index, ExpressionBuilderModel model) {
+	private PanelGroup buildExpressionCollapsePanel(int index, IExpressionBuilderModel model) {		
 		PanelGroup expressionPanelGroup = new PanelGroup();
 		expressionPanelGroup.setWidth("100%");
 		expressionPanelGroup.setId("accordion");
@@ -111,7 +135,7 @@ public class ExpressionTypeSelectorList extends Composite {
 		}
 	}
 
-	private String panelHeader(ExpressionBuilderModel model) {
+	private String panelHeader(IExpressionBuilderModel model) {
 		if(model instanceof RetrieveModel) {
 			return ExpressionType.RETRIEVE.getDisplayName();
 		}

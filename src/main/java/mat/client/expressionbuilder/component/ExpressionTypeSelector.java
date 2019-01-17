@@ -164,6 +164,12 @@ public class ExpressionTypeSelector extends Composite {
 	}
 	
 	private void onBuildButtonClick() {
-		observer.onBuildButtonClick(expressionTypeSelectorListBox.getSelectedValue());
+		String expressionType = expressionTypeSelectorListBox.getSelectedValue();
+		String operatorType = "";
+		if(operatorTypeSelectorListBox != null) {
+			operatorType = operatorTypeSelectorListBox.getSelectedValue();
+		}
+		
+		observer.onBuildButtonClick(expressionType, operatorType);
 	}
 }

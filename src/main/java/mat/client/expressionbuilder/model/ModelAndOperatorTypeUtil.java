@@ -3,6 +3,10 @@ package mat.client.expressionbuilder.model;
 import mat.client.expressionbuilder.constant.OperatorType;
 
 public class ModelAndOperatorTypeUtil {
+	
+	private ModelAndOperatorTypeUtil() {
+		throw new IllegalStateException("Modal and Operator Type Util");
+	}
 
 	public static OperatorType getOperatorModel(IExpressionBuilderModel model) {
 		if(model instanceof UnionModel) {

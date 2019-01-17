@@ -8,8 +8,6 @@ import mat.client.expressionbuilder.model.ExceptModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IntersectModel;
-import mat.client.expressionbuilder.model.OperatorModel;
-import mat.client.expressionbuilder.model.RetrieveModel;
 import mat.client.expressionbuilder.model.UnionModel;
 
 public class BuildButtonObserver {

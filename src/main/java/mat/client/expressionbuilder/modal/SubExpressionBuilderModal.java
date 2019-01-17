@@ -65,6 +65,15 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 	}
 	
 	private void onCancelButtonClick() {		
+		if(!this.getModel().getChildModels().isEmpty()) {
+			int size = this.getModel().getChildModels().size() - 1;
+			IExpressionBuilderModel lastModel = this.getModel().getChildModels().get(size);
+			
+			if(lastModel instanceof OperatorModel) {
+				this.getModel().getChildModels().remove(size);
+			}
+		}		
+		
 		this.getExpressionBuilderParent().showAndDisplay();
 	}
 

@@ -57,23 +57,23 @@ public class ExpressionTypeSelectorList extends Composite {
 		panel.add(label);
 		
 		for(int i = 0; i < this.model.getChildModels().size(); i++) {
-			IExpressionBuilderModel model = this.model.getChildModels().get(i);
+			IExpressionBuilderModel currentChildModel = this.model.getChildModels().get(i);
 			
 			// operators should not display with the collapsable panel, but should be formatted with code.
-			if(model instanceof OperatorModel) {
+			if(currentChildModel instanceof OperatorModel) {
 				Code code = new Code(); 
-				code.setText(model.getCQL());
-				code.setTitle(model.getCQL());
+				code.setText(currentChildModel.getCQL());
+				code.setTitle(currentChildModel.getCQL());
 				code.setColor("black");
 				code.setStyleName("expressionBuilderCode");
 				panel.add(code);
 				
 				// all subsequent available operators should be equivalent to the previously selected operator
 				availableOperatorTypes.clear();
-				availableOperatorTypes.add(ModelAndOperatorTypeUtil.getOperatorModel(model));
+				availableOperatorTypes.add(ModelAndOperatorTypeUtil.getOperatorModel(currentChildModel));
 				
 			} else {
-				PanelGroup expressionPanelGroup = buildExpressionCollapsePanel(i, model);
+				PanelGroup expressionPanelGroup = buildExpressionCollapsePanel(i, currentChildModel);
 				
 				if(i != 0) {
 					expressionPanelGroup.setMarginTop(15.0);

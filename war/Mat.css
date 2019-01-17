@@ -2865,6 +2865,10 @@ padding: 2px;
 	margin-top: -25px;
 }
 
+.advancedSearchHelpText{
+	font-size: 10px;
+}
+
 .calendarLabel {
 	margin-left: 3px;
 	margin-top: 3px;

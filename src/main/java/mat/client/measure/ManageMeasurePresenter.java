@@ -1214,6 +1214,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 													userSelectedPatientBasedValue.contains("No") ? PatientBasedType.NOT_PATIENT : PatientBasedType.ALL;
 			model.setPatientBased(patientBasedType);
 			
+			model.setScoringTypes(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getScoringTypeList());
+			
 			searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);
 			advancedSearch(model);
 		}

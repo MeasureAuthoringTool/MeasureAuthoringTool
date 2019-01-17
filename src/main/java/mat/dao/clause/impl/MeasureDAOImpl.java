@@ -65,6 +65,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	private static final String SHARE_USER = "shareUser";
 	private static final String MEASURE_SET = "measureSet";
 	private static final String PATIENT_BASED = "patientBased";
+	private static final String MEASURE_SCORING_TYPE = "measureScoring";
 	private static final String SECURITY_ROLE_USER = "3";
 	
 	@Autowired
@@ -507,6 +508,14 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		
 		if(measureSearchModel.isPatientBased() != PatientBasedType.ALL) {
 			predicatesList.add(cb.equal(root.get(PATIENT_BASED), measureSearchModel.isPatientBased() == PatientBasedType.PATIENT));
+		}
+		if(measureSearchModel.getScoringTypes() != null && measureSearchModel.getScoringTypes().size() > 0) {
+			List<Predicate> scoringPredicates = new ArrayList<>();
+			for(String scoringType : measureSearchModel.getScoringTypes()) {
+				scoringPredicates.add(cb.equal(root.get(MEASURE_SCORING_TYPE), scoringType));
+			}
+			
+			predicatesList.add(cb.or(scoringPredicates.toArray(new Predicate[scoringPredicates.size()])));
 		}
 		
 		return cb.and(predicatesList.toArray(new Predicate[predicatesList.size()]));

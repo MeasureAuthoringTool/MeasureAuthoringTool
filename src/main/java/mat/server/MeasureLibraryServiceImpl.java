@@ -6275,10 +6275,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	private void standardizeStartAndEndDate(HumanReadableMeasureInformationModel measureInformationModel) {
-		if(measureInformationModel.getMeasurementPeriodStartDate() == null && measureInformationModel.getMeasurementPeriodEndDate() == null) {
-			measureInformationModel.setMeasurementPeriodStartDate("00000101");
-			measureInformationModel.setMeasurementPeriodEndDate("00001231");
-		} else if(measureInformationModel.getMeasurementPeriodStartDate().equals("01/01/20XX") && measureInformationModel.getMeasurementPeriodEndDate().equals("12/31/20XX")) {
+		if(measureInformationModel.getMeasurementPeriodStartDate() == null && measureInformationModel.getMeasurementPeriodEndDate() == null ||
+				measureInformationModel.getMeasurementPeriodStartDate().equals("01/01/20XX") && measureInformationModel.getMeasurementPeriodEndDate().equals("12/31/20XX")) {
 			measureInformationModel.setMeasurementPeriodStartDate("00000101");
 			measureInformationModel.setMeasurementPeriodEndDate("00001231");
 		} else {

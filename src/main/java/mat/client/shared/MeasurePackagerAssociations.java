@@ -17,7 +17,7 @@ import mat.shared.MatConstants;
 
 public class MeasurePackagerAssociations {
 	
-	private final String EXCLUSION =  "Exclusion";
+	private static final String EXCLUSION =  "Exclusion";
 	
 	private VerticalPanel addAssocationsWidget = new VerticalPanel();
 	private ListBoxMVP denominatorListBox = new ListBoxMVP();
@@ -174,23 +174,27 @@ public class MeasurePackagerAssociations {
 	private void setDenominatorAndNumeratorAssociations() {
 		if(denominatorDetail != null) {
 			denominatorDetail.setAssociatedPopulation(true);
-			denominatorDetail.setAssociatedPopulationUUID(denominatorListBox.getSelectedValue());
+			denominatorDetail.setAssociatedPopulationUUID(convertZeroValueToNull(denominatorListBox.getSelectedValue()));
 		}
 		if (numeratorDetail != null) {
 			numeratorDetail.setAssociatedPopulation(true);
-			numeratorDetail.setAssociatedPopulationUUID(numeratorListBox.getSelectedValue());
+			numeratorDetail.setAssociatedPopulationUUID(convertZeroValueToNull(numeratorListBox.getSelectedValue()));
 		}
 	}
 	
 	private void setMeasureObservationAssociatations() {
 		if(measureObservation1Detail != null) {
 			measureObservation1Detail.setAssociatedPopulation(true);
-			measureObservation1Detail.setAssociatedPopulationUUID(measureObservation1ListBox.getSelectedValue());
+			measureObservation1Detail.setAssociatedPopulationUUID(convertZeroValueToNull(measureObservation1ListBox.getSelectedValue()));
 		}
 		if(measureObservation2Detail != null) {
 			measureObservation2Detail.setAssociatedPopulation(true);
-			measureObservation2Detail.setAssociatedPopulationUUID(measureObservation2ListBox.getSelectedValue());
+			measureObservation2Detail.setAssociatedPopulationUUID(convertZeroValueToNull(measureObservation2ListBox.getSelectedValue()));
 		}
+	}
+	
+	private String convertZeroValueToNull(String value) {
+		return "0".equalsIgnoreCase(value) ? null : value;
 	}
 	
 	private void createHelpBlock() {

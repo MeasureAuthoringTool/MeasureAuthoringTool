@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -6275,19 +6277,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	private void standardizeStartAndEndDate(HumanReadableMeasureInformationModel measureInformationModel) {
-		if(measureInformationModel.getMeasurementPeriodStartDate() == null && measureInformationModel.getMeasurementPeriodEndDate() == null ||
-				measureInformationModel.getMeasurementPeriodStartDate().equals("01/01/20XX") && measureInformationModel.getMeasurementPeriodEndDate().equals("12/31/20XX")) {
+		if((measureInformationModel.getMeasurementPeriodStartDate() == null && measureInformationModel.getMeasurementPeriodEndDate() == null) ||
+				(measureInformationModel.getMeasurementPeriodStartDate().equals("01/01/20XX") && measureInformationModel.getMeasurementPeriodEndDate().equals("12/31/20XX"))) {
 			measureInformationModel.setMeasurementPeriodStartDate("00000101");
 			measureInformationModel.setMeasurementPeriodEndDate("00001231");
 		} else {
-			try {
-				SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-				SimpleDateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
-				Date startDate = dateFormat.parse(measureInformationModel.getMeasurementPeriodStartDate());
-				Date endDate = dateFormat.parse(measureInformationModel.getMeasurementPeriodEndDate());
-				measureInformationModel.setMeasurementPeriodStartDate(targetFormat.format(startDate));
-				measureInformationModel.setMeasurementPeriodEndDate(targetFormat.format(endDate));
-			} catch (ParseException e) {}
+			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+			DateTimeFormatter targetFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
+			String startDate = LocalDate.parse(measureInformationModel.getMeasurementPeriodStartDate(), dateFormat).format(targetFormat);
+			String endDate = LocalDate.parse(measureInformationModel.getMeasurementPeriodEndDate(), dateFormat).format(targetFormat);
+			measureInformationModel.setMeasurementPeriodStartDate(startDate);
+			measureInformationModel.setMeasurementPeriodEndDate(endDate);
 		}
 	}
 }

@@ -533,10 +533,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 				aliasMapping.remove(measureId);
 				aliasMapping.put(selectedMeasure.getId(), aliasName);
 			}
-			selectionModel.clear();
-			for(Result result : appliedComponentMeasuresList) {
-				selectionModel.setSelected(result, true);
-			}
+			resetSelectionModel();
 			availableMeasuresTable.setVisibleRangeAndClearData(availableMeasuresTable.getVisibleRange(), true);
 			availableMeasuresTable.redraw();
 			appliedComponentTable.setRowData(appliedComponentMeasuresList);
@@ -549,6 +546,13 @@ public class ComponentMeasureSearch implements BaseDisplay{
 			editIncludedComponentMeasureDialogBox.getErrorMessageAlert().createAlert("Please select a Component Measure to replace.");
 		}
 	
+	}
+
+	private void resetSelectionModel() {
+		selectionModel.clear();
+		for(Result result : appliedComponentMeasuresList) {
+			selectionModel.setSelected(result, true);
+		}
 	}
 	
 	private Column<ManageMeasureSearchModel.Result, SafeHtml> buildDeleteColumn() {
@@ -574,7 +578,6 @@ public class ComponentMeasureSearch implements BaseDisplay{
 				errorMessages.clearAlert();
 				List<Result> matchingList = appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList());
 				helpBlock.setText(object.getName() + " has been deselected and removed from the applied component measures list");
-
 				for(Result matchingResult: matchingList) {
 					appliedComponentMeasuresList.remove(matchingResult);
 					availableMeasuresTable.getSelectionModel().setSelected(matchingResult, false);
@@ -582,6 +585,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 				if(aliasMapping.containsKey(object.getId())) {
 					aliasMapping.remove(object.getId());
 				}
+				resetSelectionModel();
 				availableMeasuresTable.setVisibleRangeAndClearData(availableMeasuresTable.getVisibleRange(), true);
 				availableMeasuresTable.redraw();
 				appliedComponentTable.setRowData(appliedComponentMeasuresList);

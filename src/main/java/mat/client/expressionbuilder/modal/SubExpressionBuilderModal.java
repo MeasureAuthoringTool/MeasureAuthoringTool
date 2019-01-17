@@ -8,8 +8,10 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
+import mat.client.expressionbuilder.model.IExpressionBuilderModel;
+import mat.client.expressionbuilder.model.OperatorModel;
 
-public class SubExpressionBuilderModal extends ExpressionBuilderModal {
+public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 	private Button cancelButton;
 	private Button applyButton;
 	private ExpressionBuilderModal parent;
@@ -62,13 +64,10 @@ public class SubExpressionBuilderModal extends ExpressionBuilderModal {
 		return applyButton;
 	}
 	
-	private void onCancelButtonClick() {
-		this.parent.display();
-		this.hide();
+	private void onCancelButtonClick() {		
+		this.getExpressionBuilderParent().showAndDisplay();
 	}
 
 	@Override
-	public void display() {
-		
-	}
+	public abstract void display();
 }

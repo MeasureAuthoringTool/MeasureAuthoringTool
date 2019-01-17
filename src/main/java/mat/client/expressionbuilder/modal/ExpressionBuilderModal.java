@@ -17,7 +17,7 @@ import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 
-public class ExpressionBuilderModal extends Modal {
+public abstract class ExpressionBuilderModal extends Modal {
 	private static final String CQL_EXPRESSION = "CQL Expression";
 	private ModalHeader header;
 	private ModalBody body;
@@ -33,6 +33,7 @@ public class ExpressionBuilderModal extends Modal {
 		this.setDataKeyboard(false);
 		this.setClosable(false);
 		this.setRemoveOnHide(true);
+		this.setHideOtherModals(true);
 		
 		header = new ModalHeader();
 		header.setClosable(false);
@@ -105,8 +106,14 @@ public class ExpressionBuilderModal extends Modal {
 		pre = new Pre();
 		return pre;
 	}
+
+	public abstract void display();
 	
-	public void display() {
-		
+	/**
+	 * This method should be called when returning from a child screen
+	 */
+	public void showAndDisplay() {
+		this.show();
+		display();
 	}
 }

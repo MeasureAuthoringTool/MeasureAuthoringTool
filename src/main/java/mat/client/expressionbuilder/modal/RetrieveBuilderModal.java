@@ -51,8 +51,7 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 		
 		RetrieveModel retrieve = new RetrieveModel(dataTypeValue, terminologyValue);
 		this.getModel().appendExpression(retrieve);
-		this.getExpressionBuilderParent().display();
-		this.hide();
+		this.getExpressionBuilderParent().showAndDisplay();
 	}
 
 	private VerticalPanel buildContentPanel() {

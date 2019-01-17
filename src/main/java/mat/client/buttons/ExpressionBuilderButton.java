@@ -17,6 +17,6 @@ public class ExpressionBuilderButton extends GenericToolbarButton {
 
 	@Override
 	public void setSize() {
-		super.setSize("70px", "30px");
+		super.setSize("150px", "30px");
 	}
 }

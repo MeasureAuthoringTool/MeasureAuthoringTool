@@ -107,7 +107,7 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 		valuesetCodes.addAll(MatContext.get().getIncludedCodeNames());
 		
 		for(CQLIdentifierObject o : valuesetCodes) {
-			valuesetCodeListBox.addItem(o.getDisplay(), o.getDisplay());
+			valuesetCodeListBox.addItem(o.getDisplay(), o.toString());
 		}		
 		
 		valuesetCodeGroup.add(valuesetCodeListBoxLabel);

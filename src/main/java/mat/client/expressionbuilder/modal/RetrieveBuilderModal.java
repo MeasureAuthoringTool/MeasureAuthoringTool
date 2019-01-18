@@ -101,12 +101,21 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 		valuesetCodeListBox = new ListBox();
 		valuesetCodeListBox.setId("chooseValuesetCodeListBox");
 		valuesetCodeListBox.addItem(SELECT_VALUE_SET_OR_CODE, SELECT_VALUE_SET_OR_CODE);
-		List<CQLIdentifierObject> valuesetCodes = new ArrayList<>();
-		valuesetCodes.addAll(MatContext.get().getValuesets());
-		valuesetCodes.addAll(MatContext.get().getIncludedValueSetNames());
-		valuesetCodes.addAll(MatContext.get().getIncludedCodeNames());
 		
-		for(CQLIdentifierObject o : valuesetCodes) {
+		List<CQLIdentifierObject> terminologies = new ArrayList<>();
+		
+		// add valuesets and codes from parent
+		terminologies.addAll(sortIdentifierList(MatContext.get().getValuesets()));
+		
+		// and valuesets and codes from included libraries
+		List<CQLIdentifierObject> includedValueSetAndCodesList = new ArrayList<>();
+		includedValueSetAndCodesList.addAll(MatContext.get().getIncludedValueSetNames());
+		includedValueSetAndCodesList.addAll(MatContext.get().getIncludedCodeNames());
+		
+		terminologies.addAll(sortIdentifierList(includedValueSetAndCodesList));
+		
+		
+		for(CQLIdentifierObject o : terminologies) {
 			valuesetCodeListBox.addItem(o.getDisplay(), o.toString());
 		}		
 		
@@ -114,5 +123,10 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 		valuesetCodeGroup.add(valuesetCodeListBox);
 		
 		return valuesetCodeGroup;
+	}
+	
+	private List<CQLIdentifierObject> sortIdentifierList(List<CQLIdentifierObject> identifierList) {
+		identifierList.sort((CQLIdentifierObject identifier1, CQLIdentifierObject identifier2) -> identifier1.getDisplay().compareToIgnoreCase(identifier2.getDisplay()));
+		return identifierList;
 	}
 }

@@ -140,7 +140,7 @@ public class MeasureDetailsView {
 	public static native void showHumanReadableDialogBox(String result, String measureName) /*-{
 		var dummyURL = window.location.protocol + "//"
 			+ window.location.hostname + ":" + window.location.port + "/"
-			+ "mat/humanreadable.html";
+			+ "Mat.html";
 		var humanReadableWindow = window.open(dummyURL, "",
 			"width=1200,height=700,scrollbars=yes,resizable=yes");
 

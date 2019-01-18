@@ -172,6 +172,9 @@
 	</class>
 	
 	<class name="mat.server.humanreadable.cql.HumanReadableComponentMeasureModel">
+		<field name="id" type="java.lang.String">
+			<bind-xml name="id" node="attribute"/>
+		</field>
 		<field name="name" type="java.lang.String">
 			<bind-xml name="name" node="attribute"/>
 		</field>

@@ -134,6 +134,7 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
+import mat.server.humanreadable.cql.HumanReadableComponentMeasureModel;
 import mat.server.humanreadable.cql.HumanReadableMeasureInformationModel;
 import mat.server.humanreadable.cql.HumanReadableModel;
 import mat.server.model.MatUserDetails;
@@ -6265,6 +6266,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			unmarshaller.setWhitespacePreserve(true);
 			
 			HumanReadableModel model = (HumanReadableModel) unmarshaller.unmarshal(new InputSource(new StringReader(measureXML.getXml())));
+
+			if(model.getMeasureInformation().getComponentMeasures() != null) {
+				for(HumanReadableComponentMeasureModel componentModel: model.getMeasureInformation().getComponentMeasures()) {
+					ManageMeasureDetailModel manageComponentMeasureDetailModel = getMeasure(componentModel.getId());
+					componentModel.setMeasureSetId(manageComponentMeasureDetailModel.getMeasureSetId());
+					componentModel.setName(manageComponentMeasureDetailModel.getName());
+					componentModel.setVersion(manageComponentMeasureDetailModel.getVersionNumber());
+				}
+			}
+
 			HumanReadableMeasureInformationModel measureInformationModel = model.getMeasureInformation();
 
 			standardizeStartAndEndDate(measureInformationModel);

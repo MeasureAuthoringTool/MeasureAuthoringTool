@@ -21,8 +21,8 @@ import mat.client.expressionbuilder.observer.BuildButtonObserver;
 public class ExpressionTypeSelector extends Composite {
 
 	private static final String WHAT_WOULD_YOU_LIKE_TO_ADD = "What would you like to add?";
-	private static final String SELECT_AN_OPERATOR = "Select an Operator";
-	private static final String SELECT_AN_OPERATOR_PLACEHOLDER = "-- Select an Operator --";
+	private static final String SELECT_AN_OPERATOR = "Select an operator";
+	private static final String SELECT_AN_OPERATOR_PLACEHOLDER = "-- Select operator --";
 
 	private static final String DO_YOU_NEED_TO_ADD_ON_TO_THIS_EXPRESSION = "Do you need to add on to this expression?";
 

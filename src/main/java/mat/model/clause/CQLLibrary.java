@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -56,6 +57,10 @@ public class CQLLibrary {
 	private User lockedUserId;
 
 	private Timestamp lockedOutDate;
+	
+	private LocalDateTime lastModifiedOn; 
+	
+	private User lastModifiedBy;
 	
 	private Set<CQLLibraryShare> shares;
 
@@ -282,4 +287,23 @@ public class CQLLibrary {
 		this.set_id = set_id;
 	}
 	
+	@Column(name = "LAST_MODIFIED_ON", length = 19)
+	public LocalDateTime getLastModifiedOn() {
+		return lastModifiedOn;
+	}
+
+	public void setLastModifiedOn(LocalDateTime lastModifiedOn) {
+		this.lastModifiedOn = lastModifiedOn;
+	}
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "LAST_MODIFIED_BY")
+	public User getLastModifiedBy() {
+		return lastModifiedBy;
+	}
+
+	public void setLastModifiedBy(User lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
+	}
+
 }

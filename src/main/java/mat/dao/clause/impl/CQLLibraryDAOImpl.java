@@ -1,6 +1,7 @@
 package mat.dao.clause.impl;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -752,6 +753,13 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		
 		return CollectionUtils.isNotEmpty(resultCqlLibrary) ? resultCqlLibrary.get(0) : null;
 		
+	}
+	
+	@Override
+	public void save(CQLLibrary entity) {
+		entity.setLastModifiedOn(LocalDateTime.now());
+		entity.setLastModifiedBy(userDAO.findByLoginId(LoggedInUserUtil.getLoggedInLoginId()));
+		super.save(entity);
 	}
 
 }

@@ -27,6 +27,14 @@ public class CQLAuditLog {
 	private CQLLibrary cqlLibrary;
 	private String additionalInfo;
 
+	public CQLAuditLog() {
+		
+	}
+
+	public CQLAuditLog(CQLLibrary cqlLibrary, Object time) {
+		this.cqlLibrary = cqlLibrary;
+		this.time = (Timestamp) time;
+	}
 
 	@Id
 	@GeneratedValue(generator="uuid")

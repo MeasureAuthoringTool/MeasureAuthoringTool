@@ -32,13 +32,13 @@ public class Application {
 	
 	@Bean
 	public DataSource dataSource(){
-	  JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
+	  final JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
 	  return dataSourceLookup.getDataSource("java:/comp/env/jdbc/mat_app_tomcat");
 	}
 	
 	@Bean
 	public StandardPBEStringEncryptor getStandardEncryptor() {
-		StandardPBEStringEncryptor standardPBEStringEncryptor = new StandardPBEStringEncryptor();
+		final StandardPBEStringEncryptor standardPBEStringEncryptor = new StandardPBEStringEncryptor();
 		standardPBEStringEncryptor.setAlgorithm(ALGORITHM);
 		standardPBEStringEncryptor.setPassword(PASSWORD_KEY);
 		return standardPBEStringEncryptor;
@@ -46,14 +46,14 @@ public class Application {
 	
 	@Bean
 	public HibernateTransactionManager txManager(@Autowired LocalSessionFactoryBean sessionFactory){
-		HibernateTransactionManager txManager = new HibernateTransactionManager();
+		final HibernateTransactionManager txManager = new HibernateTransactionManager();
 		txManager.setSessionFactory(sessionFactory.getObject());
 		return txManager;
 	}
 	
 	@Bean
     public LocalSessionFactoryBean sessionFactory(@Autowired DataSource dataSource, @Autowired AuditInterceptor auditInterceptor){
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        final LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setPackagesToScan("mat.model", "mat.server.model");
         sessionFactory.setHibernateProperties(hibernateProperties());
@@ -62,12 +62,14 @@ public class Application {
     }
 
 	private final Properties hibernateProperties() {
-	    Properties hibernateProperties = new Properties();
+	    final Properties hibernateProperties = new Properties();
 	    hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
 	    hibernateProperties.setProperty("hibernate.cache.use_query_cache","true");
 	    hibernateProperties.setProperty("hibernate.cache.use_second_level_cache","true");
 	    hibernateProperties.setProperty("hibernate.show_sql","false");
 	    hibernateProperties.setProperty("hibernate.default_batch_fetch_size","20");
+	    hibernateProperties.setProperty("hibernate.jdbc.batch_size", "50");
+	    hibernateProperties.setProperty("hibernate.order_updates", "true");
 	    hibernateProperties.setProperty("hibernate.connection.release_mode","auto");
 	    hibernateProperties.setProperty("hibernate.cache.use_second_level_cache","true");
 	    hibernateProperties.setProperty("hibernate.dialect","org.hibernate.dialect.MySQL5Dialect");	
@@ -87,8 +89,8 @@ public class Application {
 	
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
-		PropertySourcesPlaceholderConfigurer ppc = new PropertySourcesPlaceholderConfigurer();
-		Properties propertiesSource = new Properties();
+		final PropertySourcesPlaceholderConfigurer ppc = new PropertySourcesPlaceholderConfigurer();
+		final Properties propertiesSource = new Properties();
 		propertiesSource.setProperty("systemPropertiesMode", "2");
 		ppc.setProperties(propertiesSource);
 		return ppc;
@@ -96,7 +98,7 @@ public class Application {
 	
 	@Bean
 	public SpringLiquibase liquibase(@Autowired DataSource dataSource) {
-		SpringLiquibase springLiquibase=new SpringLiquibase();
+		final SpringLiquibase springLiquibase=new SpringLiquibase();
 		springLiquibase.setDataSource(dataSource);
 		springLiquibase.setChangeLog("classpath:/liquibase/changelog.xml");
 		springLiquibase.setContexts("prod");

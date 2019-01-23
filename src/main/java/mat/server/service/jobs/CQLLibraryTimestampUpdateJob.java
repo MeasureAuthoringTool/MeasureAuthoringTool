@@ -3,6 +3,7 @@ package mat.server.service.jobs;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -73,7 +74,7 @@ public class CQLLibraryTimestampUpdateJob {
 			query.select(cb.construct(
 					CQLAuditLog.class, 
 					root.get(CQL_LIBRARY),
-					cb.greatest(root.get("time"))));
+					cb.greatest(root.<Date>get("time"))));
 
 			query.where(cb.isNull(join.get("lastModifiedOn")));
 

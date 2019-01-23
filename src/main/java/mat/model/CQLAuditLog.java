@@ -31,9 +31,9 @@ public class CQLAuditLog {
 		
 	}
 
-	public CQLAuditLog(CQLLibrary cqlLibrary, Object time) {
+	public CQLAuditLog(CQLLibrary cqlLibrary, Date time) {
 		this.cqlLibrary = cqlLibrary;
-		this.time = (Timestamp) time;
+		this.time = new Timestamp(time.getTime());
 	}
 
 	@Id
@@ -51,7 +51,7 @@ public class CQLAuditLog {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "TIMESTAMP", nullable = false, length = 19)
 	public Date getTime() {
-		return (Date)time;
+		return time;
 	}
 
 	public void setTime(Date created) {

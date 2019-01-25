@@ -766,7 +766,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 					user = getUserService().getById(userId);
 					cqlLib.setLockedUserId(user);
 					cqlLib.setLockedOutDate(new Timestamp(new Date().getTime()));
-					cqlLibraryDAO.save(cqlLib);
+					cqlLibraryDAO.updateLockedOutDate(cqlLib);
 					result.setSuccess(true);
 				}
 			}

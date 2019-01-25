@@ -371,12 +371,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 
 	@Override
 	public void updateLockedOutDate(CQLLibrary existingLibrary) {
-		final Session session = getSessionFactory().getCurrentSession();
-		final CQLLibrary cqlLibrary = session.load(CQLLibrary.class, existingLibrary.getId());
-		cqlLibrary.setId(existingLibrary.getId());
-		cqlLibrary.setLockedOutDate(null);
-		cqlLibrary.setLockedUserId(null);
-		session.update(cqlLibrary);
+		super.save(existingLibrary);
 	}
 
 	@Override

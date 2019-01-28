@@ -11,6 +11,7 @@ import org.gwtbootstrap3.client.ui.Pre;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
@@ -26,6 +27,7 @@ public abstract class ExpressionBuilderModal extends Modal {
 	private ExpressionBuilderModel model;
 	private ErrorMessageAlert errorAlert;
 	private Pre pre;
+	private FocusPanel logicFocusPanel;
 	
 	public ExpressionBuilderModal(String title, ExpressionBuilderModel model) {
 		this.model = model;
@@ -72,6 +74,7 @@ public abstract class ExpressionBuilderModal extends Modal {
 	}
 	
 	public void updateCQLDisplay() {
+		this.logicFocusPanel.getElement().setAttribute("aria-label", model.getCQL());
 		this.pre.setText(model.getCQL());
 	}
 	
@@ -102,9 +105,11 @@ public abstract class ExpressionBuilderModal extends Modal {
 		return cqlExpressionPanel;
 	}
 	
-	private Pre buildEditor() {
+	private FocusPanel buildEditor() {
+		logicFocusPanel = new FocusPanel();
 		pre = new Pre();
-		return pre;
+		logicFocusPanel.add(pre);
+		return logicFocusPanel;
 	}
 
 	public abstract void display();

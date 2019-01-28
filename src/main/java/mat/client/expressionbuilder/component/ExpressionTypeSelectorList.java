@@ -17,6 +17,7 @@ import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.expressionbuilder.constant.CQLType;
@@ -69,12 +70,17 @@ public class ExpressionTypeSelectorList extends Composite {
 			
 			// operators should not display with the collapsable panel, but should be formatted with code.
 			if(currentChildModel instanceof OperatorModel) {
+				FocusPanel operatorFocusPanel = new FocusPanel();
+				operatorFocusPanel.getElement().setAttribute("aria-label", currentChildModel.getCQL());
+				
 				Code code = new Code(); 
 				code.setText(currentChildModel.getCQL());
 				code.setTitle(currentChildModel.getCQL());
 				code.setColor("black");
 				code.setStyleName("expressionBuilderCode");
-				panel.add(code);
+				
+				operatorFocusPanel.add(code);
+				panel.add(operatorFocusPanel);
 				
 				// all subsequent available operators should be equivalent to the previously selected operator
 				availableOperatorTypes.clear();
@@ -116,23 +122,29 @@ public class ExpressionTypeSelectorList extends Composite {
 		anchor.setDataParent("#accordion");
 		anchor.setDataToggle(Toggle.COLLAPSE);
 		anchor.setDataTarget("#collapse" + index);
-		anchor.addClickHandler(event -> onAnchorClick(anchor));
 		expressionPanelHeader.add(anchor);
 		
 		PanelCollapse expressionPanelCollapse = new PanelCollapse();
 		expressionPanelCollapse.setId("collapse" + index);
-		PanelBody expressionPanelBody = new PanelBody();
+		PanelBody expressionPanelBody = new PanelBody();		
 		
+		FocusPanel cqlLogicFocusPanel = new FocusPanel();
+		cqlLogicFocusPanel.getElement().setAttribute("aria-label", model.getCQL());
 		Pre cqlPre = new Pre();
 		cqlPre.setText(model.getCQL());
-		
-		expressionPanelBody.add(cqlPre);
+		cqlPre.setTitle(model.getCQL());
+		cqlLogicFocusPanel.add(cqlPre);
+
+		expressionPanelBody.add(cqlLogicFocusPanel);
 		expressionPanelCollapse.add(expressionPanelBody);
 
 		expressionPanel.add(expressionPanelHeader);
 		expressionPanel.add(expressionPanelCollapse);
 		
 		expressionPanelGroup.add(expressionPanel);
+		
+		anchor.addClickHandler(event -> onAnchorClick(anchor));
+
 		return expressionPanelGroup;
 	}
 	

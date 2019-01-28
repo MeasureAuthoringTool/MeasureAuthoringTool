@@ -2,6 +2,8 @@ package mat.client.expressionbuilder.constant;
 
 public enum OperatorType implements ExpressionBuilderType {
 		
+	AND("And"),
+	OR("Or"),
 	INTERSECT("Intersect"),
 	UNION("Union"),
 	EXCEPT("Except");

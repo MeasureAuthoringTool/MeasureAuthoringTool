@@ -3,6 +3,8 @@ package mat.client.expressionbuilder.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.client.expressionbuilder.constant.CQLType;
+
 public class ExpressionBuilderModel implements IExpressionBuilderModel {
 	List<IExpressionBuilderModel> models;
 
@@ -18,7 +20,7 @@ public class ExpressionBuilderModel implements IExpressionBuilderModel {
 
 			for (int i = 1; i < models.size(); i += 2) {
 				builder.append("\n");
-				builder.append("\t");
+				builder.append("  ");
 				builder.append(models.get(i).getCQL());
 				
 				if((i + 1) <= models.size() - 1) {
@@ -36,5 +38,10 @@ public class ExpressionBuilderModel implements IExpressionBuilderModel {
 
 	public void appendExpression(IExpressionBuilderModel iExpressionBuilderModel) {
 		this.models.add(iExpressionBuilderModel);
+	}
+
+	@Override
+	public CQLType getType() {
+		return CQLType.ANY;
 	}
 }

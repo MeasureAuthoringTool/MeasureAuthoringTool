@@ -1,5 +1,6 @@
 package mat.client.expressionbuilder.component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Anchor;
@@ -18,29 +19,29 @@ import org.gwtbootstrap3.client.ui.constants.Toggle;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
+import mat.client.expressionbuilder.model.DefinitionModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.ModelAndOperatorTypeUtil;
 import mat.client.expressionbuilder.model.OperatorModel;
 import mat.client.expressionbuilder.model.RetrieveModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
+import mat.client.expressionbuilder.util.OperatorTypeUtil;
 
 public class ExpressionTypeSelectorList extends Composite {
 
 	private ExpressionBuilderModel model;
 	private List<ExpressionType> availableExpressionTypes;
-	private List<OperatorType> availableOperatorTypes;
 	private BuildButtonObserver buildButtonObserver;
 	private boolean hasNoSelections;
 
 	public ExpressionTypeSelectorList(List<ExpressionType> availableExpressionTypes, 
-			List<OperatorType> availableOperatorTypes, 
 			BuildButtonObserver observer, 
 			ExpressionBuilderModel model) {
 		this.availableExpressionTypes = availableExpressionTypes;
-		this.availableOperatorTypes = availableOperatorTypes;
 		this.buildButtonObserver = observer;
 		this.model = model;
 		this.hasNoSelections = this.model.getChildModels().size() == 0;
@@ -49,12 +50,19 @@ public class ExpressionTypeSelectorList extends Composite {
 	}
 	
 	private VerticalPanel buildPanel() {
+		List<OperatorType> availableOperatorTypes = new ArrayList<>();
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("selectorsPanel");
 		panel.setWidth("100%");
 		FormLabel label = new FormLabel();
 		label.setText("What type of expression would you like to build?");		
 		panel.add(label);
+		
+		// set available operators based on the type of the first model
+		if(this.model.getChildModels().size() >= 1) {
+			CQLType firstType = this.model.getChildModels().get(0).getType();
+			availableOperatorTypes.addAll(OperatorTypeUtil.getAvailableOperatorsCQLType(firstType));
+		}
 		
 		for(int i = 0; i < this.model.getChildModels().size(); i++) {
 			IExpressionBuilderModel currentChildModel = this.model.getChildModels().get(i);
@@ -78,6 +86,7 @@ public class ExpressionTypeSelectorList extends Composite {
 				if(i != 0) {
 					expressionPanelGroup.setMarginTop(15.0);
 				}
+				
 				
 				panel.add(expressionPanelGroup);
 			}
@@ -138,6 +147,8 @@ public class ExpressionTypeSelectorList extends Composite {
 	private String panelHeader(IExpressionBuilderModel model) {
 		if(model instanceof RetrieveModel) {
 			return ExpressionType.RETRIEVE.getDisplayName();
+		} else if(model instanceof DefinitionModel) {
+			return ExpressionType.DEFINITION.getDisplayName();
 		}
 		
 		return "";

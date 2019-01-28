@@ -42,15 +42,11 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 
 		List<ExpressionType> availableExpressionTypes = new ArrayList<>();
 		availableExpressionTypes.add(ExpressionType.RETRIEVE);
-
-		List<OperatorType> availableOperatorTypes = new ArrayList<>();
-		availableOperatorTypes.add(OperatorType.UNION);
-		availableOperatorTypes.add(OperatorType.EXCEPT);
-		availableOperatorTypes.add(OperatorType.INTERSECT);
+		availableExpressionTypes.add(ExpressionType.DEFINITION);
 
 		VerticalPanel selectorsPanel = new VerticalPanel();
 		selectorsPanel.setStyleName("selectorsPanel");
-		this.getContentPanel().add(new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, this.getModel()));
+		this.getContentPanel().add(new ExpressionTypeSelectorList(availableExpressionTypes, buildButtonObserver, this.getModel()));
 		this.getFooter().add(buildFooter());
 		this.updateCQLDisplay();
 	}

@@ -15,6 +15,10 @@ public class ModelAndOperatorTypeUtil {
 			return OperatorType.EXCEPT;
 		} else if(model instanceof IntersectModel) {
 			return OperatorType.INTERSECT;
+		} else if(model instanceof AndModel) {
+			return OperatorType.AND;
+		} else if(model instanceof OrModel) {
+			return OperatorType.OR;
 		}
 		
 		return null;

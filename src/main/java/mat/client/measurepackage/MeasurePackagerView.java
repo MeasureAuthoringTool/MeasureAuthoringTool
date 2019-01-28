@@ -728,14 +728,16 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		};
 		
 		table.addColumn(measureGrouping, SafeHtmlUtils.fromSafeConstant("<span title='Grouping'>" + "Grouping" + SPAN_END));
-		table.addColumn(getEditColumn(), SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + SPAN_END));
 		
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+		boolean isEditable = MatContext.get().getMeasureLockService().checkForEditPermission();
+		if (isEditable) {
+			table.addColumn(getEditOrViewColumn(isEditable), SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + SPAN_END));
 			table.addColumn(getDeleteColumn(), SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete" + SPAN_END));
 			table.setColumnWidth(0, 60.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);
 		} else {
+			table.addColumn(getEditOrViewColumn(isEditable), SafeHtmlUtils.fromSafeConstant("<span title='View'>" + "View" + SPAN_END));
 			table.setColumnWidth(0, 80.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 		}
@@ -768,17 +770,20 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		return deleteColumn; 
 	}
 	
-	private Column<MeasurePackageDetail, SafeHtml> getEditColumn() {
+	private Column<MeasurePackageDetail, SafeHtml> getEditOrViewColumn(boolean isEditable) {
 		Cell<SafeHtml> editButtonCell = new ClickableSafeHtmlCell(); 
 		Column<MeasurePackageDetail, SafeHtml> editColumn = new Column<MeasurePackageDetail, SafeHtml>(editButtonCell) {
 			@Override
 			public SafeHtml getValue(MeasurePackageDetail object) {
+				String editOrView = isEditable ? "Edit" : "View";
+				
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				String title = "Click to Edit " + object.getPackageName();
+				String title = "Click to " + editOrView + " " + object.getPackageName();
 				String cssClass = "btn btn-link";
-				String iconCss = "fa fa-pencil fa-lg";
+				String iconCss = isEditable ? "fa fa-pencil fa-lg" : "fa fa-newspaper-o fa-lg";
+				String iconColor = isEditable ? "darkgoldenrod" : "black";
 				sb.appendHtmlConstant("<button type=\"button\" title='"
-						+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+						+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: " + iconColor + ";\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">" + editOrView + "</button>");
 			
 				return sb.toSafeHtml();
 			}

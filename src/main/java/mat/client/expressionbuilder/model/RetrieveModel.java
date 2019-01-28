@@ -51,6 +51,6 @@ public class RetrieveModel extends ExpressionBuilderModel {
 	
 	@Override
 	public CQLType getType() {
-		return CQLType.List;
+		return CQLType.LIST;
 	}
 }

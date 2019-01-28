@@ -5,15 +5,15 @@ import java.util.List;
 
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.OperatorType;
-import mat.client.expressionbuilder.model.DefinitionModel;
-import mat.client.expressionbuilder.model.ExpressionBuilderModel;
-import mat.client.expressionbuilder.model.IExpressionBuilderModel;
-import mat.client.expressionbuilder.model.RetrieveModel;
 
 public class OperatorTypeUtil {	
 	
+	private OperatorTypeUtil() {
+		throw new IllegalStateException("Operator Type Util");
+	}
+	
 	public static List<OperatorType> getAvailableOperatorsCQLType(CQLType type) {
-		if(type.equals(CQLType.List)) {
+		if(type.equals(CQLType.LIST)) {
 			return getSetOperators();
 		}
 		

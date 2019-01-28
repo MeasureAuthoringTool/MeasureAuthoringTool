@@ -15,7 +15,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.constant.ExpressionType;
-import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.shared.ConfirmationDialogBox;
@@ -110,13 +109,17 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 
 					@Override
 					public void onNoButtonClicked() {
-						exitBuilderButton.setEnabled(true);
-						completeBuildButton.setEnabled(true);
+						onCloseOfWarningModal();
 					}
 
 					@Override
 					public void onClose() {
-
+						onCloseOfWarningModal();
+					}
+					
+					private void onCloseOfWarningModal() {
+						exitBuilderButton.setEnabled(true);
+						completeBuildButton.setEnabled(true);
 					}
 				});
 

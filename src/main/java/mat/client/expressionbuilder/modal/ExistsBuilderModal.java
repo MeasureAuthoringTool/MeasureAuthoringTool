@@ -29,12 +29,19 @@ public class ExistsBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private void onApplyButtonClick() {
+		
+		if(existsModel.getChildModels().isEmpty()) {
+			this.getErrorAlert().createAlert("Building an expression is required.");
+			return;
+		}
+		
 		this.getExpressionBuilderParent().showAndDisplay();
 	}
 
 	@Override
 	public void display() {
 		this.getContentPanel().clear();
+		this.getErrorAlert().clearAlert();
 		this.getContentPanel().add(buildContentPanel());
 		this.updateCQLDisplay();
 	}

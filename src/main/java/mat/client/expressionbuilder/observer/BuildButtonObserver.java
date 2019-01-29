@@ -3,6 +3,7 @@ package mat.client.expressionbuilder.observer;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.modal.DefinitionSelectorModal;
+import mat.client.expressionbuilder.modal.ExistsBuilderModal;
 import mat.client.expressionbuilder.modal.ExpressionBuilderModal;
 import mat.client.expressionbuilder.modal.RetrieveBuilderModal;
 import mat.client.expressionbuilder.model.AndModel;
@@ -14,28 +15,35 @@ import mat.client.expressionbuilder.model.OrModel;
 import mat.client.expressionbuilder.model.UnionModel;
 
 public class BuildButtonObserver {
-	private ExpressionBuilderModal parent;
-	private ExpressionBuilderModel model;
+	private ExpressionBuilderModal parentModal;
+	private ExpressionBuilderModel parentModel;
+	private ExpressionBuilderModel mainModel;
 	
-	public BuildButtonObserver(ExpressionBuilderModal parent, ExpressionBuilderModel model) {
-		this.model = model;
-		this.parent = parent;
+	public BuildButtonObserver(ExpressionBuilderModal parentModal, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
+		this.parentModel = parentModel;
+		this.parentModal = parentModal;
+		this.mainModel = mainModel;
 	}
 
 	public void onBuildButtonClick(String expression, String operator) {
 		if(operator != null && !operator.isEmpty()) {
-			this.model.appendExpression(operatorModel(operator));
+			this.parentModel.appendExpression(operatorModel(operator));
 		}
 		
 		if(expression.equals(ExpressionType.RETRIEVE.getValue())) {
-			ExpressionBuilderModal retrieveModal = new RetrieveBuilderModal(this.parent, this.model);
+			ExpressionBuilderModal retrieveModal = new RetrieveBuilderModal(this.parentModal, this.parentModel, this.mainModel);
 			retrieveModal.show();
 		}
 		
 		else if(expression.equals(ExpressionType.DEFINITION.getValue())) {
-			ExpressionBuilderModal definitionModal = new DefinitionSelectorModal(this.parent, this.model);
+			ExpressionBuilderModal definitionModal = new DefinitionSelectorModal(this.parentModal, this.parentModel, this.mainModel);
 			definitionModal.show();
 		}
+		
+		else if(expression.equals(ExpressionType.EXISTS.getValue())) {
+			ExpressionBuilderModal existsModal = new ExistsBuilderModal(this.parentModal, this.parentModel, this.mainModel);
+			existsModal.show();
+		}	
 	}
 	
 	private IExpressionBuilderModel operatorModel(String operator) {

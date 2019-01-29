@@ -41,6 +41,7 @@ import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetView;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.expressionbuilder.modal.ExpressionBuilderHomeModal;
+import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.measure.service.CQLLibraryServiceAsync;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLWorkSpaceConstants;
@@ -335,7 +336,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 	
 	private void expresionBuilderButtonClicked() {
-		ExpressionBuilderHomeModal modal = new ExpressionBuilderHomeModal(cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor());
+		ExpressionBuilderHomeModal modal = new ExpressionBuilderHomeModal(cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor(), new ExpressionBuilderModel());
 		modal.show();
 	}
 

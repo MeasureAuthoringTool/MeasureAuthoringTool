@@ -6,32 +6,34 @@ import java.util.List;
 import mat.client.expressionbuilder.constant.CQLType;
 
 public class ExpressionBuilderModel implements IExpressionBuilderModel {
-	List<IExpressionBuilderModel> models;
+	private IExpressionBuilderModel parentModel;
+	private List<IExpressionBuilderModel> models;
+	
 
 	public ExpressionBuilderModel() {
 		models = new ArrayList<>();
 	}
 
-	public String getCQL() {
+	public String getCQL(String identation) {
 		StringBuilder builder = new StringBuilder();
 
 		if (!models.isEmpty()) {
-			builder.append(models.get(0).getCQL());
+			builder.append(models.get(0).getCQL(identation));
 
+			identation = identation + " ";
 			for (int i = 1; i < models.size(); i += 2) {
 				builder.append("\n");
-				builder.append("  ");
-				builder.append(models.get(i).getCQL());
+				builder.append(models.get(i).getCQL(identation));
 				
 				if((i + 1) <= models.size() - 1) {
-					builder.append(" " + models.get(i + 1).getCQL());
+					builder.append(" " + models.get(i + 1).getCQL(identation));
 				}
 			}
 		}
 
 		return builder.toString().trim();
 	}
-
+	
 	public List<IExpressionBuilderModel> getChildModels() {
 		return this.models;
 	}
@@ -43,5 +45,13 @@ public class ExpressionBuilderModel implements IExpressionBuilderModel {
 	@Override
 	public CQLType getType() {
 		return CQLType.ANY;
+	}
+
+	public IExpressionBuilderModel getParentModel() {
+		return parentModel;
+	}
+
+	public void setParentModel(IExpressionBuilderModel parentModel) {
+		this.parentModel = parentModel;
 	}
 }

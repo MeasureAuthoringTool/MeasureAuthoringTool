@@ -6,7 +6,6 @@ public class DefinitionModel extends ExpressionBuilderModel {
 
 	private String identifier;
 	
-
 	public DefinitionModel(String identifier) {
 		this.identifier = identifier;
 	}
@@ -20,7 +19,7 @@ public class DefinitionModel extends ExpressionBuilderModel {
 	} 
 	
 	@Override
-	public String getCQL() {
+	public String getCQL(String identation) {
 		return this.identifier;
 	}
 	

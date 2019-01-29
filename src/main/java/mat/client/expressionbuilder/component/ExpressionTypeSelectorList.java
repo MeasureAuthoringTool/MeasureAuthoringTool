@@ -24,6 +24,7 @@ import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.model.DefinitionModel;
+import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.ModelAndOperatorTypeUtil;
@@ -71,11 +72,11 @@ public class ExpressionTypeSelectorList extends Composite {
 			// operators should not display with the collapsable panel, but should be formatted with code.
 			if(currentChildModel instanceof OperatorModel) {
 				FocusPanel operatorFocusPanel = new FocusPanel();
-				operatorFocusPanel.getElement().setAttribute("aria-label", currentChildModel.getCQL());
+				operatorFocusPanel.getElement().setAttribute("aria-label", currentChildModel.getCQL(""));
 				
 				Code code = new Code(); 
-				code.setText(currentChildModel.getCQL());
-				code.setTitle(currentChildModel.getCQL());
+				code.setText(currentChildModel.getCQL(""));
+				code.setTitle(currentChildModel.getCQL(""));
 				code.setColor("black");
 				code.setStyleName("expressionBuilderCode");
 				
@@ -129,10 +130,10 @@ public class ExpressionTypeSelectorList extends Composite {
 		PanelBody expressionPanelBody = new PanelBody();		
 		
 		FocusPanel cqlLogicFocusPanel = new FocusPanel();
-		cqlLogicFocusPanel.getElement().setAttribute("aria-label", model.getCQL());
+		cqlLogicFocusPanel.getElement().setAttribute("aria-label", model.getCQL(""));
 		Pre cqlPre = new Pre();
-		cqlPre.setText(model.getCQL());
-		cqlPre.setTitle(model.getCQL());
+		cqlPre.setText(model.getCQL(""));
+		cqlPre.setTitle(model.getCQL(""));
 		cqlLogicFocusPanel.add(cqlPre);
 
 		expressionPanelBody.add(cqlLogicFocusPanel);
@@ -161,6 +162,8 @@ public class ExpressionTypeSelectorList extends Composite {
 			return ExpressionType.RETRIEVE.getDisplayName();
 		} else if(model instanceof DefinitionModel) {
 			return ExpressionType.DEFINITION.getDisplayName();
+		} else if(model instanceof ExistsModel) {
+			return ExpressionType.EXISTS.getDisplayName();
 		}
 		
 		return "";

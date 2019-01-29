@@ -24,13 +24,15 @@ public abstract class ExpressionBuilderModal extends Modal {
 	private ModalBody body;
 	private ModalFooter footer;
 	private VerticalPanel contentPanel;
-	private ExpressionBuilderModel model;
+	private ExpressionBuilderModel parentModel;
 	private ErrorMessageAlert errorAlert;
 	private Pre pre;
 	private FocusPanel logicFocusPanel;
+	private ExpressionBuilderModel mainModel;
 	
-	public ExpressionBuilderModal(String title, ExpressionBuilderModel model) {
-		this.model = model;
+	public ExpressionBuilderModal(String title, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
+		this.parentModel = parentModel;
+		this.mainModel = mainModel;
 		this.setDataBackdrop(ModalBackdrop.STATIC);
 		this.setDataKeyboard(false);
 		this.setClosable(false);
@@ -65,17 +67,21 @@ public abstract class ExpressionBuilderModal extends Modal {
 		return footer;
 	}
 
-	public ExpressionBuilderModel getModel() {
-		return model;
+	public ExpressionBuilderModel getParentModel() {
+		return parentModel;
 	}
 
+	public ExpressionBuilderModel getMainModel() {
+		return mainModel;
+	}
+	
 	public VerticalPanel getContentPanel() {
 		return contentPanel;
 	}
 	
 	public void updateCQLDisplay() {
-		this.logicFocusPanel.getElement().setAttribute("aria-label", model.getCQL());
-		this.pre.setText(model.getCQL());
+		this.logicFocusPanel.getElement().setAttribute("aria-label", mainModel.getCQL(""));
+		this.pre.setText(mainModel.getCQL(""));
 	}
 	
 	public MessageAlert getErrorAlert() {
@@ -121,4 +127,6 @@ public abstract class ExpressionBuilderModal extends Modal {
 		this.show();
 		display();
 	}
+
+
 }

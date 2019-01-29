@@ -16,8 +16,12 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 	private Button applyButton;
 	private ExpressionBuilderModal parent;
 	
-	public SubExpressionBuilderModal(String title, ExpressionBuilderModal parent, ExpressionBuilderModel model) {
-		super(title, model);
+	public SubExpressionBuilderModal(
+			String title, 
+			ExpressionBuilderModal parent, 
+			ExpressionBuilderModel parentModel, 
+			ExpressionBuilderModel mainModel) {
+		super(title, parentModel, mainModel);
 		this.parent = parent;
 		this.getFooter().add(buildFooter());
 	}
@@ -65,12 +69,12 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 	}
 	
 	private void onCancelButtonClick() {		
-		if(!this.getModel().getChildModels().isEmpty()) {
-			int size = this.getModel().getChildModels().size() - 1;
-			IExpressionBuilderModel lastModel = this.getModel().getChildModels().get(size);
+		if(!this.getParentModel().getChildModels().isEmpty()) {
+			int size = this.getParentModel().getChildModels().size() - 1;
+			IExpressionBuilderModel lastModel = this.getParentModel().getChildModels().get(size);
 			
 			if(lastModel instanceof OperatorModel) {
-				this.getModel().getChildModels().remove(size);
+				this.getParentModel().getChildModels().remove(size);
 			}
 		}		
 		

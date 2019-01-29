@@ -27,9 +27,9 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 	private BuildButtonObserver buildButtonObserver;
 	private AceEditor editorToInsertFinalTextInto;
 	
-	public ExpressionBuilderHomeModal(AceEditor editorToInsertFinalTextInto) {
-		super("CQL Expression Builder", new ExpressionBuilderModel());
-		buildButtonObserver = new BuildButtonObserver(this, this.getModel());
+	public ExpressionBuilderHomeModal(AceEditor editorToInsertFinalTextInto, ExpressionBuilderModel model) {
+		super("CQL Expression Builder", model, model);
+		buildButtonObserver = new BuildButtonObserver(this, this.getParentModel(), this.getMainModel());
 		this.editorToInsertFinalTextInto = editorToInsertFinalTextInto;
 		display();
 	}
@@ -40,12 +40,13 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 		this.getFooter().clear();
 
 		List<ExpressionType> availableExpressionTypes = new ArrayList<>();
+		availableExpressionTypes.add(ExpressionType.EXISTS);
 		availableExpressionTypes.add(ExpressionType.RETRIEVE);
 		availableExpressionTypes.add(ExpressionType.DEFINITION);
 
 		VerticalPanel selectorsPanel = new VerticalPanel();
 		selectorsPanel.setStyleName("selectorsPanel");
-		this.getContentPanel().add(new ExpressionTypeSelectorList(availableExpressionTypes, buildButtonObserver, this.getModel()));
+		this.getContentPanel().add(new ExpressionTypeSelectorList(availableExpressionTypes, buildButtonObserver, this.getParentModel()));
 		this.getFooter().add(buildFooter());
 		this.updateCQLDisplay();
 	}
@@ -88,7 +89,7 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 	}
 
 	private void onCompleteBuildButtonClick() {
-		String text = this.editorToInsertFinalTextInto.getText() + "\n" + this.getModel().getCQL();
+		String text = this.editorToInsertFinalTextInto.getText() + "\n" + this.getParentModel().getCQL("");
 		text = text.trim();
 		this.editorToInsertFinalTextInto.setText(text);
 		this.hide();

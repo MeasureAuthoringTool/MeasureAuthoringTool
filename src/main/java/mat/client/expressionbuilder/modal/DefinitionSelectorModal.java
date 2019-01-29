@@ -23,8 +23,8 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 	private static final String SELECT_DEFINITION_PLACEHOLDER = "-- Select definition --";
 	private ListBox definitionListBox;
 
-	public DefinitionSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel model) {
-		super("Definition", parent, model);
+	public DefinitionSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
+		super("Definition", parent, parentModel, mainModel);
 		this.getApplyButton().addClickHandler(event -> applyButtonClickHandler());
 		display();
 	}
@@ -38,7 +38,7 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 		String definitionIdentifier = definitionListBox.getSelectedValue();
 		
 		DefinitionModel model = new DefinitionModel(definitionIdentifier);
-		this.getModel().appendExpression(model);
+		this.getParentModel().appendExpression(model);
 		this.getExpressionBuilderParent().showAndDisplay();
 	}
 

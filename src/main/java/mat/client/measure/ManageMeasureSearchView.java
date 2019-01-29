@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -80,6 +81,10 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	
 	private Button transferButton = new Button("Transfer");
 	
+	private FlowPanel badgePanel = new FlowPanel();
+	
+	private VerticalPanel badgeTable = new VerticalPanel();
+	
 	MeasureSearchView searchView;
 	
 	MeasureSearchView measureSearchView = new MeasureSearchView("Measures");
@@ -115,6 +120,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		mainPanel.add(errorMessages);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(measureSearchFilterWidget);
+		createBadgePanel();
 		mainPanel.add(measureSearchView.asWidget());
 		mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
 		mainPanel.add(new SpacerWidget());
@@ -124,6 +130,27 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		}
 		MatContext.get().setManageMeasureSearchView(this);
 		
+	}
+	
+	private void createBadgePanel() {
+		
+		badgeTable.clear();
+		badgeTable.getElement().setId("badgePanel_horizontalPanel");
+		badgeTable.setStyleName("recentSearchPanel");
+		
+		Label badgeHeader = new Label("Search Criteria");
+		badgeHeader.getElement().setId("searchHeader_Label");
+		badgeHeader.setStyleName("recentSearchHeader");
+		badgeHeader.getElement().setAttribute("tabIndex", "0");
+
+		badgeTable.add(badgeHeader);
+		badgeTable.add(new SpacerWidget());
+		badgeTable.add(badgePanel);
+		badgeTable.setStylePrimaryName("searchFilter");
+		
+		
+		mainPanel.add(badgeTable);
+		badgeTable.setVisible(false);
 	}
 
 	@Override
@@ -445,5 +472,15 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	@Override
 	public CustomCheckBox getCustomFilterCheckBox() {
 		return measureSearchFilterWidget.getMeasureCustomCheckBox();
+	}
+	
+	@Override
+	public FlowPanel getBadgePanel() {
+		return badgePanel;
+	}
+	
+	@Override
+	public VerticalPanel getBadgeTable() {
+		return badgeTable;
 	}
 }

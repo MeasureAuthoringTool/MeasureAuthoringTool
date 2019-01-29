@@ -3,6 +3,8 @@ package mat.client.measure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
@@ -31,6 +33,7 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.CompositeMeasureScoreDTO;
@@ -1144,6 +1147,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(ManageMeasureSearchModel result) {
+						setsearchedByPills(measureSearchModel, searchDisplay);
 						String measureListLabel = (measureSearchModel.isMyMeasureSearch() != 0) ? "All Measures" : "My Measures";
 						searchDisplay.getMeasureSearchView().setMeasureListLabel(measureListLabel);
 						
@@ -1310,6 +1314,95 @@ public class ManageMeasurePresenter implements MatPresenter {
 					}
 
 				});
+	}
+	
+	private void setsearchedByPills(MeasureSearchModel measureSearchModel, SearchDisplay searchDisplay) {
+		FlowPanel badgePanel = (FlowPanel) searchDisplay.getBadgePanel();
+		VerticalPanel badgeTabel = searchDisplay.getBadgeTable();
+		badgePanel.clear();
+		//create pill for search term only if the user entered a search term
+		if(!measureSearchModel.getSearchTerm().isEmpty()) {
+			Badge searchTerm = new Badge("Search Term: " + getSubstringOfText(measureSearchModel.getSearchTerm()));
+			searchTerm.setStyleName("navPill");
+			badgePanel.add(searchTerm);
+			searchTerm.getElement().setTabIndex(0);
+		}
+		//create pill for filter by each time
+		String measureSearchType = measureSearchModel.isMyMeasureSearch() == 0? "My Measures" : "All Measures";
+		Badge searchBy = new Badge("Filter by: " + measureSearchType);
+		searchBy.setStyleName("navPill");
+		searchBy.getElement().setTabIndex(0);
+		badgePanel.add(searchBy);
+		badgeTabel.setVisible(true);
+		//create pill for measure state if the user entered an option other then all measures
+		if(measureSearchModel.isDraft() != null && !measureSearchModel.isDraft().equals(VersionMeasureType.ALL)) {
+			String measureStateText = measureSearchModel.isDraft().equals(VersionMeasureType.DRAFT) ? "Draft" : "Versioned";
+			Badge measureState = new Badge("Measure State: " + measureStateText);
+			measureState.setStyleName("navPill");
+			badgePanel.add(measureState);
+			measureState.getElement().setTabIndex(0);
+		}
+		// create pill for patient based if the user entered an option other then all measures
+		if(measureSearchModel.isPatientBased() != null && !measureSearchModel.isPatientBased().equals(PatientBasedType.ALL)) {
+			String patientBasedString = measureSearchModel.isPatientBased().equals(PatientBasedType.PATIENT) ? "Yes" : "No";
+			Badge patientBased = new Badge("Patient Based: " + patientBasedString);
+			patientBased.setStyleName("navPill");
+			badgePanel.add(patientBased);
+			patientBased.getElement().setTabIndex(0);
+		}
+		//create pill for Measure Scoring if any of them are checked
+		if(measureSearchModel.getScoringTypes() != null && measureSearchModel.getScoringTypes().size() > 0) {
+			String measureScoringTypeString = measureSearchModel.getScoringTypes().size() == 4 ? "All" : 
+				String.join(", ", measureSearchModel.getScoringTypes());
+			Badge measureScoringType = new Badge("Measure Score: " + measureScoringTypeString);
+			measureScoringType.setStyleName("navPill");
+			badgePanel.add(measureScoringType);
+			measureScoringType.getElement().setTabIndex(0);
+		}		
+		// create pill for measure last modified within  if an option other then all measures is checked
+		if(measureSearchModel.getModifiedDate() > 0) {
+			String modifiedOnText = measureSearchModel.getModifiedDate() + " days";
+			Badge modifiedOn = new Badge("Modified Within: " + modifiedOnText);
+			modifiedOn.setStyleName("navPill");
+			badgePanel.add(modifiedOn);
+			modifiedOn.getElement().setTabIndex(0);
+		}
+		// create pill for last modified by only if the user entered a text in the field
+		if(!measureSearchModel.getModifiedOwner().isEmpty()) {
+			Badge modifiedOn = new Badge("Modified On: " + getSubstringOfText(measureSearchModel.getModifiedOwner()));
+			modifiedOn.setStyleName("navPill");
+			badgePanel.add(modifiedOn);
+			modifiedOn.getElement().setTabIndex(0);
+		}
+		// create pill for owned by only if the user entered a text in the field
+		if(!measureSearchModel.getModifiedOwner().isEmpty()) {
+			Badge modifiedBy = new Badge("Owned By: " + getSubstringOfText(measureSearchModel.getOwner()));
+			modifiedBy.setStyleName("navPill");
+			badgePanel.add(modifiedBy);
+			modifiedBy.getElement().setTabIndex(0);
+		}
+		// create reset link
+		Anchor reset = new Anchor();
+		reset.getElement().setId("navPillReset");
+		reset.setText("Reset");
+		reset.setTitle("Reset");
+		reset.setStyleName("navPillRed");
+		reset.addClickHandler(event -> resetSearchFields(measureSearchModel,searchDisplay));
+		badgePanel.add(reset);
+	}
+	
+	private void resetSearchFields(MeasureSearchModel measureSearchModel, SearchDisplay searchDisplay) {
+		// TODO Auto-generated method stub
+		Window.alert("reseting search terms");
+		setsearchedByPills(measureSearchModel, searchDisplay);
+	}
+
+	private String getSubstringOfText(String text) {
+		String substring =  text.substring(0, 20);
+		if(text.length() > 20) {
+			substring += "...";
+		}
+		return substring;
 	}
 
 	public static void setSubSkipEmbeddedLink(String name) {

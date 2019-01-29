@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.RetrieveModel;
+import mat.client.expressionbuilder.util.IdentifierSortUtil;
 import mat.client.shared.MatContext;
 import mat.shared.CQLIdentifierObject;
 
@@ -105,14 +106,14 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 		List<CQLIdentifierObject> terminologies = new ArrayList<>();
 		
 		// add valuesets and codes from parent
-		terminologies.addAll(sortIdentifierList(MatContext.get().getValuesets()));
+		terminologies.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getValuesets()));
 		
 		// and valuesets and codes from included libraries
 		List<CQLIdentifierObject> includedValueSetAndCodesList = new ArrayList<>();
 		includedValueSetAndCodesList.addAll(MatContext.get().getIncludedValueSetNames());
 		includedValueSetAndCodesList.addAll(MatContext.get().getIncludedCodeNames());
 		
-		terminologies.addAll(sortIdentifierList(includedValueSetAndCodesList));
+		terminologies.addAll(IdentifierSortUtil.sortIdentifierList(includedValueSetAndCodesList));
 		
 		
 		for(CQLIdentifierObject o : terminologies) {
@@ -125,8 +126,5 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 		return valuesetCodeGroup;
 	}
 	
-	private List<CQLIdentifierObject> sortIdentifierList(List<CQLIdentifierObject> identifierList) {
-		identifierList.sort((CQLIdentifierObject identifier1, CQLIdentifierObject identifier2) -> identifier1.getDisplay().compareToIgnoreCase(identifier2.getDisplay()));
-		return identifierList;
-	}
+
 }

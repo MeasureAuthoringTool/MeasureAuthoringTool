@@ -1,5 +1,6 @@
 package mat.client.expressionbuilder.modal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Form;
@@ -12,6 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.expressionbuilder.model.DefinitionModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
+import mat.client.expressionbuilder.util.IdentifierSortUtil;
 import mat.client.shared.MatContext;
 import mat.shared.CQLIdentifierObject;
 
@@ -68,8 +70,11 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 		
 		definitionListBox = new ListBox();
 		definitionListBox.addItem(SELECT_DEFINITION_PLACEHOLDER, SELECT_DEFINITION_PLACEHOLDER);
-		List<CQLIdentifierObject> definitions = MatContext.get().getDefinitions();
-		definitions.addAll(MatContext.get().getIncludedDefNames());
+		List<CQLIdentifierObject> definitions = new ArrayList<>();
+		definitions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getDefinitions()));
+		definitions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedDefNames()));
+		
+		
 		for(CQLIdentifierObject definition : definitions) {
 			definitionListBox.addItem(definition.getDisplay(), definition.toString());
 		}

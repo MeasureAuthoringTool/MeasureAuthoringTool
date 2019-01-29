@@ -86,16 +86,6 @@ public interface MeasureServiceAsync {
 			String measureID, String expProfileToAllQDM, AsyncCallback<Void> callback);
 	
 	
-	/**
-	 * Generate and save max emeasure id.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param callback
-	 *            the callback
-	 */
-	void generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId, AsyncCallback<Integer> callback);
-	
 	/** Gets the all recent measure for user.
 	 * 
 	 * @param userId the user id
@@ -222,19 +212,6 @@ public interface MeasureServiceAsync {
 	void save(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
 	
 	void saveCompositeMeasure(ManageCompositeMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
-	
-	/**
-	 * Save and delete measure.
-	 * 
-	 * @param measureID
-	 *            the measure id
-	 * @param callback
-	 *            the callback
-	 * @param loginUserId
-	 *            the login id of user
-	 */
-	@Deprecated
-	void saveAndDeleteMeasure(String measureID, String loginUserId, AsyncCallback<Void> callback);
 	
 	void deleteMeasure(String measureId, String loggedInUserId, String password, AsyncCallback<Void> callback);
 	
@@ -745,10 +722,6 @@ public interface MeasureServiceAsync {
 	void checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId, AsyncCallback<GenericResult> asyncCallback);
 
 	void isCompositeMeasure(String currentMeasureId, AsyncCallback<Boolean> compositeMeasureCallBack);
-
-	@Deprecated
-	void getMeasureAndLogRecentMeasure(String currentMeasureId, String loggedinUserId,
-			AsyncCallback<ManageMeasureDetailModel> asyncCallBackForMeasureAndLogRecentMeasure);
 
 	void generateAndSaveMaxEmeasureId(boolean isEditable, String measureId, AsyncCallback<Integer> asyncCallback);
 

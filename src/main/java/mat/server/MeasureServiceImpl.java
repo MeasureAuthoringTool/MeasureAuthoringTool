@@ -71,12 +71,6 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 		this.getMeasureLibraryService().createAndSaveElementLookUp(list, measureID, expProfileToAllQDM);
 	}
 	
-	@Deprecated
-	@Override
-	public int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId) {
-		return this.getMeasureLibraryService().generateAndSaveMaxEmeasureId(measureId);
-	}
-	
 	/** Gets the all recent measure for user.
 	 * 
 	 * @param userId - String userId.
@@ -155,12 +149,6 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	@Override
 	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) {
 		return this.getMeasureLibraryService().saveCompositeMeasure(model);
-	}
-	
-	@Override
-	@Deprecated
-	public void saveAndDeleteMeasure(String measureID,  String loginUserId) {
-		this.getMeasureLibraryService().saveAndDeleteMeasure(measureID,loginUserId);
 	}
 	
 	@Override
@@ -565,12 +553,6 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 		MeasureDetailModelMapper measureDetailModelMapper = new ManageMeasureDetailModelMapper(manageMeasureDetailModel);
 		measureDetailsModel = measureDetailModelMapper.getMeasureDetailsModel(isCompositeMeasure(measureId));
 		return measureDetailsModel;
-	}
-
-	@Deprecated
-	@Override
-	public ManageMeasureDetailModel getMeasureAndLogRecentMeasure(String currentMeasureId, String loggedinUserId) {
-		return getManageMeasureDetailModel(currentMeasureId, loggedinUserId);
 	}
 
 	private ManageMeasureDetailModel getManageMeasureDetailModel(String currentMeasureId, String loggedinUserId) {

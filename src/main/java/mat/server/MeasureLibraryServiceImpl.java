@@ -1234,39 +1234,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return appliedQDMList;
 	}
 
-	@Deprecated
-	@Override
-	public final int generateAndSaveMaxEmeasureId(final ManageMeasureDetailModel measureModel) {
-		if (measureModel.isEditable() && measureModel.geteMeasureId() == 0) {
-			MeasurePackageService service = measurePackageService;
-			Measure meas = service.getById(measureModel.getId());
-			int eMeasureId = service.saveAndReturnMaxEMeasureId(meas);
-			measureModel.seteMeasureId(eMeasureId);
-			saveMaxEmeasureIdinMeasureXML(measureModel);
-			return eMeasureId;
-		}
-		return -1;
-	}
-
-	@Deprecated
-	public void saveMaxEmeasureIdinMeasureXML(ManageMeasureDetailModel measureModel) {
-
-		MeasureXmlModel model = getMeasureXmlForMeasure(measureModel.getId());
-		XmlProcessor xmlProcessor = new XmlProcessor(model.getXml());
-
-		try {
-
-			xmlProcessor.createEmeasureIdNode(measureModel.geteMeasureId());
-			String newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
-			model.setXml(newXml);
-
-		} catch (XPathExpressionException e) {
-			logger.debug("saveMaxEmeasureIdinMeasureXML:" + e.getMessage());
-		}
-
-		measurePackageService.saveMeasureXml(model);
-	}
-
 	/**
 	 * Gets the all data type attributes.
 	 * 
@@ -2072,30 +2039,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result.setSuccess(false);
 			result.setFailureReason(SaveMeasureResult.INVALID_DATA);
 			return result;
-		}
-	}
-	
-
-	@Override
-	@Deprecated
-	public final void saveAndDeleteMeasure(final String measureID, String loginUserId) {
-		Measure m = measureDAO.find(measureID);
-		SecurityContext sc = SecurityContextHolder.getContext();
-		MatUserDetails details = (MatUserDetails) sc.getAuthentication().getDetails();
-		if (m.getOwner().getId().equalsIgnoreCase(details.getId())) {
-			logger.info("Measure Deletion Started for measure Id :: " + measureID);
-			try {
-				if(m.getIsCompositeMeasure()) {
-					measurePackageService.updateComponentMeasures(m.getId(), new ArrayList<>());
-				}
-				m.setOwner(null);
-				m.setLastModifiedBy(null);
-				m.setLockedUser(null);
-				measureDAO.delete(m);
-				logger.info("Measure Deleted Successfully :: " + measureID);
-			} catch (Exception e) {
-				logger.info("Measure not deleted.Something went wrong for measure Id :: " + measureID);
-			}
 		}
 	}
 	

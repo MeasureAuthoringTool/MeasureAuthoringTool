@@ -88,16 +88,6 @@ public interface MeasureService extends RemoteService {
 	
 	void createAndSaveCQLLookUp(List<QualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
 	
-	/**
-	 * Generate and save max emeasure id.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @return the int
-	 */
-	int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId);
-	
-	
 	/** Gets the all recent measure for user.
 	 * 
 	 * @param userId the user id
@@ -218,9 +208,6 @@ public interface MeasureService extends RemoteService {
 	 * @return - SaveMeasureResult.
 	 */
 	SaveMeasureResult saveMeasureAtPackage(ManageMeasureDetailModel model);
-	
-	@Deprecated
-	void saveAndDeleteMeasure(String measureID, String loginUserId);
 	
 	void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException, AuthenticationException;
 	
@@ -702,9 +689,6 @@ public interface MeasureService extends RemoteService {
 	ValidateMeasureResult validateExports(String measureId) throws Exception;
 	
 	public Boolean isCompositeMeasure(String currentMeasureId);
-	
-	@Deprecated
-	public ManageMeasureDetailModel getMeasureAndLogRecentMeasure(String currentMeasureId, String loggedinUserId);
 	
 	public int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
 	

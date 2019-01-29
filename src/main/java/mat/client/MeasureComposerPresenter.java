@@ -27,8 +27,6 @@ import mat.client.cqlworkspace.CQLMeasureWorkSpaceView;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.measuredetails.MeasureDetailsPresenter;
-import mat.client.measure.metadata.MetaDataPresenter;
-import mat.client.measure.metadata.MetaDataView;
 import mat.client.measure.metadata.events.ContinueToMeasurePackageEvent;
 import mat.client.measurepackage.MeasurePackagePresenter;
 import mat.client.measurepackage.MeasurePackagerView;
@@ -59,7 +57,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 	private MatTabLayoutPanel measureComposerTabLayout;
 	@SuppressWarnings("unused")
 	private MeasurePackagePresenter measurePackagePresenter;
-	private MetaDataPresenter metaDataPresenter;
 	private MeasureDetailsPresenter measureDetailsPresenter;
 	
 	class EnterKeyDownHandler implements KeyDownHandler {
@@ -93,14 +90,11 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		buttonBar.getElement().setId("buttonBar_PreviousContinueButtonBar");
 		emptyWidget.getElement().setId("emptyWidget_SimplePanel");
 		
-		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();
 		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
 		measureDetailsPresenter = (MeasureDetailsPresenter) buildMeasureDetailsPresenter();
 
 		measureComposerTabLayout = new MatTabLayoutPanel(this);
 		measureComposerTabLayout.getElement().setAttribute("id", "measureComposerTabLayout");
-		measureComposerTabLayout.add(metaDataPresenter.getWidget(), "Old Measure Details", true);
-		presenterList.add(metaDataPresenter);
 		presenterList.add(measureDetailsPresenter);
 		measureComposerTabLayout.add(measureDetailsPresenter.getWidget(), "Measure Details", true);
 
@@ -155,7 +149,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 				if (selectedIndex != 0) {
 					measureComposerTabLayout.selectPreviousTab();
 				} else {
-					metaDataPresenter.displayDetail();
 					buttonBar.subState = selectedIndex;
 					beforeDisplay();
 				}
@@ -259,8 +252,8 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 			fp.add(measureComposerTabLayout);
 			measureComposerContent.setContent(fp);
 			MatContext.get().setVisible(buttonBar, true);
-			measureComposerTabLayout.selectTab(presenterList.indexOf(metaDataPresenter));
-			metaDataPresenter.beforeDisplay();
+			measureComposerTabLayout.selectTab(presenterList.indexOf(measureDetailsPresenter));
+			measureDetailsPresenter.beforeDisplay();
 		} else {
 			measureComposerContent.setHeading("No Measure Selected", "MeasureComposer");
 			measureComposerContent.setContent(emptyWidget);
@@ -270,13 +263,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 		buttonBar.setPageNamesOnState();
 	}
-	
-	private MatPresenter buildMeasureMetaDataPresenter() {
-		MetaDataView mdV = new MetaDataView();
-		MetaDataPresenter mdP = new MetaDataPresenter(mdV,buttonBar, MatContext.get().getListBoxCodeProvider());
-		return mdP;
-	}
-	
 	
 	private MatPresenter buildMeasureDetailsPresenter() {
 		MeasureDetailsPresenter measureDetailsPresenter = new MeasureDetailsPresenter();
@@ -314,10 +300,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		return cqlPopulationPresenter;
 	}
 	
-	public MetaDataPresenter getMetaDataPresenter() {
-		return metaDataPresenter;
-	}
-	
 	@Override
 	public Widget getWidget() {
 		return measureComposerContent;
@@ -329,19 +311,12 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		measureComposerTabLayout.setEnabled(enabled);
 	}
 
-	public void setMetaDataPresenter(MetaDataPresenter metaDataPresenter) {
-		this.metaDataPresenter = metaDataPresenter;
-	}
-
 	@Override
 	public boolean isValid() {
 		MatContext.get().setErrorTabIndex(-1);
 		MatContext.get().setErrorTab(false);
 		int selectedIndex = measureComposerTabLayout.getSelectedIndex();
-		if(presenterList.get(selectedIndex) instanceof MetaDataPresenter) {
-			MetaDataPresenter presenter = (MetaDataPresenter) presenterList.get(selectedIndex);
-			return presenter.isMeasureDetailsValid();
-		} else if(presenterList.get(selectedIndex) instanceof MeasureDetailsPresenter) {
+		if(presenterList.get(selectedIndex) instanceof MeasureDetailsPresenter) {
 			MeasureDetailsPresenter measureDetailsPresenter = (MeasureDetailsPresenter) presenterList.get(selectedIndex);
 			return !measureDetailsPresenter.isDirty();
 		} else if(presenterList.get(selectedIndex) instanceof CQLMeasureWorkSpacePresenter){
@@ -373,14 +348,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		WarningConfirmationMessageAlert saveErrorMessageAlert = null;
 		String auditMessage = null;
 		Button saveButton = null;
-		if(presenterList.get(selectedIndex) instanceof MetaDataPresenter) {
-			saveErrorMessageAlert = metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg();
-			metaDataPresenter.getMetaDataDisplay().getBottomErrorMessage().clearAlert();
-			metaDataPresenter.getMetaDataDisplay().getTopErrorMessage().clearAlert();
-			metaDataPresenter.getMetaDataDisplay().getBottomSuccessMessage().clearAlert();
-			metaDataPresenter.getMetaDataDisplay().getTopSuccessMessage().clearAlert();
-			saveButton = metaDataPresenter.getMetaDataDisplay().getBottomSaveButton();
-		} else if(presenterList.get(selectedIndex) instanceof MeasureDetailsPresenter) {
+		if(presenterList.get(selectedIndex) instanceof MeasureDetailsPresenter) {
 			MeasureDetailsPresenter measureDetailsPresenter = (MeasureDetailsPresenter) presenterList.get(selectedIndex);
 			measureDetailsPresenter.getView().clearAlerts();
 			measureDetailsPresenter.getMessagePanel().clearAlerts();

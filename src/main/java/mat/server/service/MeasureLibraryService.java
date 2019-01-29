@@ -101,16 +101,6 @@ public interface MeasureLibraryService {
 	void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
 			String measureID, String expProfileToAllQDM);
 	
-	/**
-	 * Generate and save max emeasure id.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @return the int
-	 */
-	@Deprecated
-	int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId);
-	
 	/** Gets the all recent measure for user.
 	 * 
 	 * @param userId the user id
@@ -218,9 +208,6 @@ public interface MeasureLibraryService {
 	SaveMeasureResult save(ManageMeasureDetailModel model);
 	
 	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model);
-	
-	@Deprecated
-	void saveAndDeleteMeasure(String measureID,  String loginUserId);
 	
 	void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException, AuthenticationException;
 	

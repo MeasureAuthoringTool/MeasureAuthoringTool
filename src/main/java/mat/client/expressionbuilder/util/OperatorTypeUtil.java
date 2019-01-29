@@ -41,8 +41,8 @@ public class OperatorTypeUtil {
 	
 	public static List<OperatorType> getAllOperators() {
 		List<OperatorType> all = new ArrayList<>();
-		all.addAll(getBooleanOperators());
 		all.addAll(getSetOperators());
+		all.addAll(getBooleanOperators());
 		return all;
 	}
 }

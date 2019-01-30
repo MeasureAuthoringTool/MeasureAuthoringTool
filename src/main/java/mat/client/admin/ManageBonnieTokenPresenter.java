@@ -79,7 +79,7 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 			@Override
 			public void onYesButtonClicked() {
 				if(StringUtility.isEmptyOrNull(reasonDialogBox.getReasonText())){
-					reasonDialogBox.getMessageAlert().createAlert("Reason is a requied field");
+					reasonDialogBox.getMessageAlert().getErrorMessageAlert().createAlert("Reason is a requied field");
 				} else {
 					reasonDialogBox.hide();
 					revokeAllBonnieTokens(reasonDialogBox.getReasonText());

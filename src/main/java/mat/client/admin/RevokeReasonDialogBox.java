@@ -25,14 +25,13 @@ public class RevokeReasonDialogBox extends ConfirmationDialogBox {
 	TextArea reasonTextArea = new TextArea();
 	public RevokeReasonDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver confirmationObserver) {
 		super(messageText, yesButtonText, noButtonText, confirmationObserver);
-		messageAlert.clearAlert();
+		getMessageAlert().getErrorMessageAlert().clearAlert();;
 	}
 	
 	public void show() {
 		ModalBody modalBody = new ModalBody(); 
 
 		modalBody.clear();
-		modalBody.remove(messageAlert);
 		panel.remove(modalBody);
 		panel.setTitle("Revoke All");
 		
@@ -67,13 +66,13 @@ public class RevokeReasonDialogBox extends ConfirmationDialogBox {
 			}
 		});
 		
-		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
-		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
-		messageAlert.getElement().setAttribute("role", "alert");
+		getMessageAlert().getErrorMessageAlert().getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
+		getMessageAlert().getErrorMessageAlert().getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
+		getMessageAlert().getErrorMessageAlert().getElement().setAttribute("role", "alert");
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.getElement().getStyle().setProperty("width", "100%");
-		verticalPanel.add(messageAlert);
+		verticalPanel.add(getMessageAlert().getErrorMessageAlert());
 		verticalPanel.add(new SpacerWidget());
 		Label reasonLabel = new Label("Reason");
 		reasonLabel.addStyleName("bold");

@@ -277,7 +277,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 		void setSelectedLibraryObject(CQLLibraryDataSetObject selectedLibraryObject);
 		
-		ConfirmationDialogBox createConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer);
+		ConfirmationDialogBox createConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText,
+				ConfirmationObserver observer, boolean isError);
 	}
 	
 	
@@ -906,7 +907,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 							} else if(result.getFailureReason() == ConstantMessages.INVALID_CQL_LIBRARIES) {
 								String libraryName = versionDisplay.getSelectedLibrary().getCqlName();
 								String errorMessage =  MatContext.get().getMessageDelegate().getUnusedIncludedLibraryWarning(libraryName);
-								ConfirmationDialogBox dialogBox = versionDisplay.createConfirmationDialogBox(errorMessage, "Continue", "Cancel", null);
+								ConfirmationDialogBox dialogBox = versionDisplay.createConfirmationDialogBox(errorMessage, "Continue", "Cancel", null, false);
 								dialogBox.setObserver(new ConfirmationObserver() {
 									
 									@Override

@@ -26,16 +26,18 @@ public class ConfirmationDialogBox {
 	protected  final Button yesButton = new YesButton("ConfirmDialogBox"); 
 	protected final Button noButton = new NoButton("ConfirmDialogBox");
 	protected ConfirmationObserver observer; 
-	protected ErrorMessageAlert messageAlert = new ErrorMessageAlert();
+	private MessagePanel messagePanel = new MessagePanel();
 	protected Modal panel = new Modal();
 	protected boolean isClosingOnContinue = false; 
+	protected boolean isError;
+
 	
-	public ErrorMessageAlert getMessageAlert() {
-		return messageAlert;
+	public MessagePanel getMessageAlert() {
+		return messagePanel;
 	}
 
-	public void setMessageAlert(ErrorMessageAlert messageAlert) {
-		this.messageAlert = messageAlert;
+	public void setMessageAlert(MessagePanel messageAlert) {
+		this.messagePanel = messageAlert;
 	}
 	
 	public ConfirmationDialogBox() {
@@ -43,8 +45,18 @@ public class ConfirmationDialogBox {
 	}
 	
 	public ConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer) {
+		this(messageText, yesButtonText, noButtonText, observer, true);
+	}
+	
+	public ConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer, boolean isError) {
 		this.observer = observer; 
-		getMessageAlert().createAlert(messageText);
+		this.isError = isError;
+		if(isError) {
+			this.messagePanel.getErrorMessageAlert().createAlert(messageText);
+		} else {
+			this.messagePanel.getWarningMessageAlert().createAlert(messageText);
+		}
+		
 		getNoButton().setText(noButtonText);
 		getYesButton().setText(yesButtonText);
 		getYesButton().setFocus(true);
@@ -61,7 +73,8 @@ public class ConfirmationDialogBox {
 			@Override
 			public void onClose() {}
 		};
-		getMessageAlert().createAlert(messageText);
+		getMessageAlert().getErrorMessageAlert().createAlert(messageText);
+		setMargins(getMessageAlert().getErrorMessageAlert());
 		getNoButton().setText(noButtonText);
 		getYesButton().setText(yesButtonText);
 		getYesButton().setFocus(true);
@@ -71,7 +84,6 @@ public class ConfirmationDialogBox {
 		ModalBody modalBody = new ModalBody(); 
 
 		modalBody.clear();
-		modalBody.remove(messageAlert);
 		panel.remove(modalBody);
 		panel.setTitle("Warning");
 		
@@ -105,11 +117,14 @@ public class ConfirmationDialogBox {
 				observer.onNoButtonClicked();
 			}
 		});
-		
-		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
-		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
-		messageAlert.getElement().setAttribute("role", "alert");
-		modalBody.add(messageAlert);
+				
+		if(isError) {
+			setMargins(messagePanel.getErrorMessageAlert());
+		} else {
+			setMargins(messagePanel.getWarningMessageAlert());
+		}
+ 
+		modalBody.add(messagePanel);
 		
 		
 		ModalFooter modalFooter = new ModalFooter(); 
@@ -128,6 +143,12 @@ public class ConfirmationDialogBox {
 		panel.add(modalFooter);
 		panel.getElement().focus();
 		panel.show();
+	}
+
+	private void setMargins(MessageAlert messageAlert) {
+		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
+		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
+		messageAlert.getElement().setAttribute("role", "alert");
 	}
 	
 	

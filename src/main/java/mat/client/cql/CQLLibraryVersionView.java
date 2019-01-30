@@ -264,8 +264,8 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 
 
 	@Override
-	public ConfirmationDialogBox createConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer) {
-		confirmationDialogBox = new ConfirmationDialogBox(messageText, yesButtonText, noButtonText, observer);
+	public ConfirmationDialogBox createConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer, boolean isError) {
+		confirmationDialogBox = new ConfirmationDialogBox(messageText, yesButtonText, noButtonText, observer, isError);
 		return confirmationDialogBox;
 	}
 }

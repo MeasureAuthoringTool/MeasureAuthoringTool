@@ -28,6 +28,7 @@ import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IsNullModel;
+import mat.client.expressionbuilder.model.IsTrueFalseModel;
 import mat.client.expressionbuilder.model.ModelAndOperatorTypeUtil;
 import mat.client.expressionbuilder.model.NotModel;
 import mat.client.expressionbuilder.model.OperatorModel;
@@ -194,6 +195,8 @@ public class ExpressionTypeSelectorList extends Composite {
 			return ExpressionType.NOT.getDisplayName();
 		} else if(model instanceof IsNullModel) {
 			return ExpressionType.IS_NULL_NOT_NULL.getDisplayName();
+		} else if(model instanceof IsTrueFalseModel) {
+			return ExpressionType.IS_TRUE_FALSE.getDisplayName();
 		}
 		
 		return "";

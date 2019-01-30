@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.advancedSearch.AdvancedSearchPillPanel;
 import mat.client.buttons.CustomButton;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
@@ -53,6 +54,8 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	private MessageAlert successMessageAlert = new SuccessMessageAlert();
 	
 	private EditConfirmationDialogBox draftConfirmationDialogBox = new EditConfirmationDialogBox();
+	
+	AdvancedSearchPillPanel pillPanel = new AdvancedSearchPillPanel();
 
 	@Override
 	public VerticalPanel getWidgetVP() {
@@ -98,6 +101,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		mainPanel.add(errorMessageAlert);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(searchFilterWidget);
+		mainPanel.add(pillPanel.getBadgeTable());
 		mainPanel.add(cqlLibrarySearchView.buildCQLLibraryCellTable());
 	}
 	
@@ -223,7 +227,12 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public void resetMessageDisplay() {
 		getSuccessMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
-	}	
+	}
+	
+	@Override
+	public AdvancedSearchPillPanel getSearchPillPanel() {
+		return pillPanel;
+	}
 
 
 }

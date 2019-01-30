@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.NavPills;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
@@ -34,6 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
+import mat.client.advancedSearch.AdvancedSearchPillPanel;
 import mat.client.buttons.CustomButton;
 import mat.client.cql.CQLLibraryDetailView;
 import mat.client.cql.CQLLibraryHistoryView;
@@ -45,6 +47,7 @@ import mat.client.event.CQLLibraryDeleteEvent;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.event.CQLVersionEvent;
+import mat.client.measure.SearchDisplay;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ConfirmationDialogBox;
@@ -66,6 +69,7 @@ import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
+import mat.shared.MeasureSearchModel;
 import mat.shared.error.AuthenticationException;
 
 
@@ -252,6 +256,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 		void resetMessageDisplay();
 
 		CustomCheckBox getCustomFilterCheckBox();
+		
+		AdvancedSearchPillPanel getSearchPillPanel();
 
 	}
 
@@ -1246,6 +1252,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	private void search(final String searchText, final int filter, int startIndex,int pageSize) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
+		MeasureSearchModel model = new MeasureSearchModel(filter, startIndex, 25, lastSearchText, searchText);
 		pageSize = 25;
 		showSearchingBusy(true);
 		cqlLibraryView.resetMessageDisplay();
@@ -1253,6 +1260,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 			
 			@Override
 			public void onSuccess(SaveCQLLibraryResult result) {
+				cqlLibraryView.getSearchPillPanel().setSearchedByPills(model, "Libraries");
+				cqlLibraryView.getSearchPillPanel().getReset().addClickHandler(event -> resetSearchFields(model, cqlLibraryView));
 				if(cqlLibraryView.getSearchFilterWidget().
 						getSelectedFilter()!=0){
 					cqlLibraryView.getCQLLibrarySearchView().setCQLLibraryListLabel("All CQL Libraries");
@@ -1299,6 +1308,12 @@ public class CqlLibraryPresenter implements MatPresenter {
 		});
 	}
 
+	private void resetSearchFields(MeasureSearchModel measureSearchModel, ViewDisplay cqlSearchDisplay) {
+		// TODO Auto-generated method stub
+		Window.alert("reseting search terms for Library");
+		cqlSearchDisplay.getSearchPillPanel().setSearchedByPills(measureSearchModel, "Libraries");
+	}
+	
 	private void searchRecentLibraries() {
 		MatContext.get().getCQLLibraryService().getAllRecentCQLLibrariesForUser(MatContext.get().getLoggedinUserId(),
 				new AsyncCallback<SaveCQLLibraryResult>() {

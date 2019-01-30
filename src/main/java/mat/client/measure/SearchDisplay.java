@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.advancedSearch.AdvancedSearchPillPanel;
 import mat.client.advancedSearch.MeasureLibraryAdvancedSearchBuilder;
 import mat.client.buttons.CustomButton;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
@@ -96,7 +97,5 @@ public interface SearchDisplay extends BaseDisplay {
 	
 	public MeasureLibraryAdvancedSearchBuilder getMeasureLibraryAdvancedSearchBuilder();
 	
-	FlowPanel getBadgePanel();
-
-	VerticalPanel getBadgeTable();
+	AdvancedSearchPillPanel getSearchPillPanel();
 }

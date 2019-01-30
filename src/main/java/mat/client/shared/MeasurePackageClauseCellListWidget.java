@@ -609,7 +609,7 @@ public class MeasurePackageClauseCellListWidget {
 			checkForNumberOfStratification(validatGroupingList, messages);
 		}
 		String scoring = MatContext.get().getCurrentMeasureScoringType();
-		if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(MatConstants.MEASURE_OBSERVATION))
+		if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(MatConstants.MEASURE_OBSERVATION_POPULATION))
 				|| buttonType.equalsIgnoreCase(ADD_ALL_CLAUSE_RIGHT)) {
 			checkForNumberOfMeasureObs(validatGroupingList, messages , scoring);
 		}

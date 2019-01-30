@@ -43,17 +43,20 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 		this.getFooter().clear();
 
 		List<ExpressionType> availableExpressionTypes = new ArrayList<>();
-		availableExpressionTypes.add(ExpressionType.EXISTS);
-		availableExpressionTypes.add(ExpressionType.DEFINITION);
-		availableExpressionTypes.add(ExpressionType.NOT);
 		availableExpressionTypes.add(ExpressionType.RETRIEVE);
+		availableExpressionTypes.add(ExpressionType.DEFINITION);
+		availableExpressionTypes.add(ExpressionType.EXISTS);
+		availableExpressionTypes.add(ExpressionType.IS_NULL_NOT_NULL);
+		availableExpressionTypes.add(ExpressionType.NOT);
 
 		List<OperatorType> availableOperatorTypes = new ArrayList<>();
 		availableOperatorTypes.addAll(OperatorTypeUtil.getAvailableOperatorsCQLType(CQLType.ANY));
 		
 		VerticalPanel selectorsPanel = new VerticalPanel();
 		selectorsPanel.setStyleName("selectorsPanel");
-		this.getContentPanel().add(new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, this.getParentModel()));
+		String label = "What type of expression would you like to build?";
+		this.getContentPanel().add(new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, 
+				buildButtonObserver, this.getParentModel(), label));
 		this.getFooter().add(buildFooter());
 		this.updateCQLDisplay();
 	}

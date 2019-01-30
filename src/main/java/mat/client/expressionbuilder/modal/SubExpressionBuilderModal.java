@@ -7,8 +7,10 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
+import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
+import mat.client.expressionbuilder.model.IsNullModel;
 import mat.client.expressionbuilder.model.OperatorModel;
 
 public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
@@ -68,10 +70,17 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 		return applyButton;
 	}
 	
-	private void onCancelButtonClick() {		
+	protected void onCancelButtonClick() {		
 		if(!this.getParentModel().getChildModels().isEmpty()) {
 			int size = this.getParentModel().getChildModels().size() - 1;
 			IExpressionBuilderModel lastModel = this.getParentModel().getChildModels().get(size);
+			
+			if(lastModel instanceof ExistsModel || lastModel instanceof IsNullModel ) {
+				this.getParentModel().getChildModels().remove(size);
+				int newSize = this.getParentModel().getChildModels().size() - 1;
+				lastModel = this.getParentModel().getChildModels().get(newSize);
+				size = newSize;
+			}
 			
 			if(lastModel instanceof OperatorModel) {
 				this.getParentModel().getChildModels().remove(size);

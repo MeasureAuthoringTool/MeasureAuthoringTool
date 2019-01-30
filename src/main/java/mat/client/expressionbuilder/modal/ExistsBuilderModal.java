@@ -48,8 +48,8 @@ public class ExistsBuilderModal extends SubExpressionBuilderModal {
 	
 	private Widget buildContentPanel() { 
 		List<ExpressionType> availableExpressionTypes = new ArrayList<>();
-		availableExpressionTypes.add(ExpressionType.DEFINITION);
 		availableExpressionTypes.add(ExpressionType.RETRIEVE);
+		availableExpressionTypes.add(ExpressionType.DEFINITION);
 		
 		List<OperatorType> availableOperatorTypes = new ArrayList<>();
 		availableOperatorTypes.addAll(OperatorTypeUtil.getSetOperators());
@@ -57,7 +57,10 @@ public class ExistsBuilderModal extends SubExpressionBuilderModal {
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("selectorsPanel");
 		
-		ExpressionTypeSelectorList selectors = new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, existsModel);
+		String label = "For what type of expression would you like to determine existence?";
+		ExpressionTypeSelectorList selectors = 
+				new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, 
+						buildButtonObserver, existsModel, label);
 		panel.add(selectors);
 		
 		return panel;

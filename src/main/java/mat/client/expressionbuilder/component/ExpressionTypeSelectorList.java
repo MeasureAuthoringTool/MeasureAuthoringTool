@@ -27,6 +27,7 @@ import mat.client.expressionbuilder.model.DefinitionModel;
 import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
+import mat.client.expressionbuilder.model.IsNullModel;
 import mat.client.expressionbuilder.model.ModelAndOperatorTypeUtil;
 import mat.client.expressionbuilder.model.NotModel;
 import mat.client.expressionbuilder.model.OperatorModel;
@@ -41,15 +42,19 @@ public class ExpressionTypeSelectorList extends Composite {
 	private BuildButtonObserver buildButtonObserver;
 	private boolean hasNoSelections;
 	private List<OperatorType> availableOperatorTypes;
+	private boolean canOnlyMakeOneSelection;
+	private String labelText;
 
 	public ExpressionTypeSelectorList(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes,
-			BuildButtonObserver observer, ExpressionBuilderModel model) {
+			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText) {
 		this.availableExpressionTypes = availableExpressionTypes;
 		this.availableOperatorTypes = new ArrayList<>();
 		this.availableOperatorTypes.addAll(availableOperatorTypes);
 		this.buildButtonObserver = observer;
 		this.model = model;
 		this.hasNoSelections = this.model.getChildModels().size() == 0;
+		canOnlyMakeOneSelection = this.availableOperatorTypes.isEmpty();
+		this.labelText = labelText;
 
 		initWidget(buildPanel());
 	}
@@ -59,9 +64,11 @@ public class ExpressionTypeSelectorList extends Composite {
 		panel.setStyleName("selectorsPanel");
 		panel.setWidth("100%");
 		FormLabel label = new FormLabel();
-		label.setText("What type of expression would you like to build?");		
-		panel.add(label);
+		label.setText(this.labelText);
+		label.setTitle(this.labelText);
 		
+		panel.add(label);
+				
 		// filter available operators based on first expression type selected
 		if(this.model.getChildModels().size() >= 1) {
 			CQLType firstType = this.model.getChildModels().get(0).getType();
@@ -107,14 +114,20 @@ public class ExpressionTypeSelectorList extends Composite {
 					expressionPanelGroup.setMarginTop(15.0);
 				}
 				
-				
 				panel.add(expressionPanelGroup);
 			}
 		}
 		
-		ExpressionTypeSelector selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, hasNoSelections);
-		panel.add(selector);
+		boolean canAddAnother = hasNoSelections || canOnlyMakeOneSelection;
 		
+		if(!this.model.getChildModels().isEmpty() && canOnlyMakeOneSelection) {
+			
+		} else {
+			ExpressionTypeSelector selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, canAddAnother);
+			panel.add(selector);
+		}
+		
+	
 		return panel;
 	}
 
@@ -179,6 +192,8 @@ public class ExpressionTypeSelectorList extends Composite {
 			return ExpressionType.EXISTS.getDisplayName();
 		} else if(model instanceof NotModel) {
 			return ExpressionType.NOT.getDisplayName();
+		} else if(model instanceof IsNullModel) {
+			return ExpressionType.IS_NULL_NOT_NULL.getDisplayName();
 		}
 		
 		return "";

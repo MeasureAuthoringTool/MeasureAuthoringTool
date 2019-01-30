@@ -58,7 +58,10 @@ public class NotBuilderModal extends SubExpressionBuilderModal {
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("selectorsPanel");
 		
-		ExpressionTypeSelectorList selectors = new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, notModel);
+		String label = "What type of expression would you like to negate?";
+		ExpressionTypeSelectorList selectors = 
+			new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, 
+					buildButtonObserver, notModel, label);
 		panel.add(selectors);
 		
 		return panel;

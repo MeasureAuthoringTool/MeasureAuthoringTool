@@ -5,6 +5,7 @@ import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.modal.DefinitionSelectorModal;
 import mat.client.expressionbuilder.modal.ExistsBuilderModal;
 import mat.client.expressionbuilder.modal.ExpressionBuilderModal;
+import mat.client.expressionbuilder.modal.IsNullBuilderModal;
 import mat.client.expressionbuilder.modal.NotBuilderModal;
 import mat.client.expressionbuilder.modal.RetrieveBuilderModal;
 import mat.client.expressionbuilder.model.AndModel;
@@ -49,7 +50,12 @@ public class BuildButtonObserver {
 		else if(expression.equals(ExpressionType.NOT.getValue())) {
 			ExpressionBuilderModal notModal = new NotBuilderModal(this.parentModal, this.parentModel, this.mainModel);
 			notModal.show();
-		}		
+		} 
+		
+		else if(expression.equals(ExpressionType.IS_NULL_NOT_NULL.getValue())) {
+			ExpressionBuilderModal isNullModal = new IsNullBuilderModal(this.parentModal, this.parentModel, this.mainModel);
+			isNullModal.show();
+		}
 	}
 	
 	private IExpressionBuilderModel operatorModel(String operator) {

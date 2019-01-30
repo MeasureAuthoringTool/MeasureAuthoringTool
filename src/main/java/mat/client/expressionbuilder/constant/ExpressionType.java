@@ -8,7 +8,8 @@ public enum ExpressionType implements ExpressionBuilderType {
 	RETRIEVE("Data element or Retrieve", OperatorTypeUtil.getSetOperators()),
 	DEFINITION("Definition", OperatorTypeUtil.getAllOperators()), 
 	EXISTS("Exists", OperatorTypeUtil.getBooleanOperators()),
-	NOT("Negation (not)", OperatorTypeUtil.getBooleanOperators());
+	NOT("Negation (not)", OperatorTypeUtil.getBooleanOperators()),
+	IS_NULL_NOT_NULL("Null (is null/not null)", OperatorTypeUtil.getBooleanOperators());
 	
 	private String displayName;
 	private List<OperatorType> availableOperators;

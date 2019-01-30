@@ -31,7 +31,7 @@ public class NotBuilderModal extends SubExpressionBuilderModal {
 
 	private void onApplyButtonClick() {
 		
-		if(notModel.getChildModels().size() < 1) {
+		if(notModel.getChildModels().isEmpty()) {
 			this.getErrorAlert().createAlert("Building an expression is required.");
 			return;
 		}

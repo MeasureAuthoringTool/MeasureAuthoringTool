@@ -41,7 +41,7 @@ public class IsNullBuilderModal extends SubExpressionBuilderModal {
 
 	private void onApplyButtonClick() {
 		if(isNullModel.getChildModels().isEmpty() || isNullNotNullListBox.getSelectedIndex() == 0) {
-			this.getErrorAlert().createAlert("All field are required.");
+			this.getErrorAlert().createAlert("All fields are required.");
 			return;
 		}
 		

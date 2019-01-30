@@ -28,6 +28,7 @@ import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.ModelAndOperatorTypeUtil;
+import mat.client.expressionbuilder.model.NotModel;
 import mat.client.expressionbuilder.model.OperatorModel;
 import mat.client.expressionbuilder.model.RetrieveModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
@@ -39,11 +40,13 @@ public class ExpressionTypeSelectorList extends Composite {
 	private List<ExpressionType> availableExpressionTypes;
 	private BuildButtonObserver buildButtonObserver;
 	private boolean hasNoSelections;
+	private List<OperatorType> availableOperatorTypes;
 
-	public ExpressionTypeSelectorList(List<ExpressionType> availableExpressionTypes, 
-			BuildButtonObserver observer, 
-			ExpressionBuilderModel model) {
+	public ExpressionTypeSelectorList(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes,
+			BuildButtonObserver observer, ExpressionBuilderModel model) {
 		this.availableExpressionTypes = availableExpressionTypes;
+		this.availableOperatorTypes = new ArrayList<>();
+		this.availableOperatorTypes.addAll(availableOperatorTypes);
 		this.buildButtonObserver = observer;
 		this.model = model;
 		this.hasNoSelections = this.model.getChildModels().size() == 0;
@@ -52,7 +55,6 @@ public class ExpressionTypeSelectorList extends Composite {
 	}
 	
 	private VerticalPanel buildPanel() {
-		List<OperatorType> availableOperatorTypes = new ArrayList<>();
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("selectorsPanel");
 		panel.setWidth("100%");
@@ -60,10 +62,21 @@ public class ExpressionTypeSelectorList extends Composite {
 		label.setText("What type of expression would you like to build?");		
 		panel.add(label);
 		
-		// set available operators based on the type of the first model
+		// filter available operators based on first expression type selected
 		if(this.model.getChildModels().size() >= 1) {
 			CQLType firstType = this.model.getChildModels().get(0).getType();
-			availableOperatorTypes.addAll(OperatorTypeUtil.getAvailableOperatorsCQLType(firstType));
+			
+			List<OperatorType> availableOperatorTypesForFirstExpressionType = new ArrayList<>();
+			availableOperatorTypesForFirstExpressionType.addAll(OperatorTypeUtil.getAvailableOperatorsCQLType(firstType));
+			
+			List<OperatorType> newAvailableOperators = new ArrayList<>();
+			for(OperatorType type : this.availableOperatorTypes) {
+				if(availableOperatorTypesForFirstExpressionType.contains(type)) {
+					newAvailableOperators.add(type);
+				}
+			}
+			
+			this.availableOperatorTypes = newAvailableOperators;
 		}
 		
 		for(int i = 0; i < this.model.getChildModels().size(); i++) {
@@ -164,6 +177,8 @@ public class ExpressionTypeSelectorList extends Composite {
 			return ExpressionType.DEFINITION.getDisplayName();
 		} else if(model instanceof ExistsModel) {
 			return ExpressionType.EXISTS.getDisplayName();
+		} else if(model instanceof NotModel) {
+			return ExpressionType.NOT.getDisplayName();
 		}
 		
 		return "";

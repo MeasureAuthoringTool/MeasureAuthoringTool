@@ -17,11 +17,17 @@ public class OperatorTypeUtil {
 			return getSetOperators();
 		}
 		
-		if(type.equals(CQLType.ANY)) {
+		else if(type.equals(CQLType.ANY)) {
 			return getAllOperators();
 		}
 		
-		return getAllOperators();
+		else if(type.equals(CQLType.BOOLEAN)) {
+			return getBooleanOperators();
+		}
+		
+		else {
+			return getAllOperators();
+		}
 	}
 	
 	public static List<OperatorType> getBooleanOperators() {

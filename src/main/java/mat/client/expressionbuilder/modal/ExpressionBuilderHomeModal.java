@@ -14,9 +14,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
+import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
+import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
+import mat.client.expressionbuilder.util.OperatorTypeUtil;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ConfirmationObserver;
 
@@ -41,12 +44,16 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 
 		List<ExpressionType> availableExpressionTypes = new ArrayList<>();
 		availableExpressionTypes.add(ExpressionType.EXISTS);
-		availableExpressionTypes.add(ExpressionType.RETRIEVE);
 		availableExpressionTypes.add(ExpressionType.DEFINITION);
+		availableExpressionTypes.add(ExpressionType.NOT);
+		availableExpressionTypes.add(ExpressionType.RETRIEVE);
 
+		List<OperatorType> availableOperatorTypes = new ArrayList<>();
+		availableOperatorTypes.addAll(OperatorTypeUtil.getAvailableOperatorsCQLType(CQLType.ANY));
+		
 		VerticalPanel selectorsPanel = new VerticalPanel();
 		selectorsPanel.setStyleName("selectorsPanel");
-		this.getContentPanel().add(new ExpressionTypeSelectorList(availableExpressionTypes, buildButtonObserver, this.getParentModel()));
+		this.getContentPanel().add(new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, this.getParentModel()));
 		this.getFooter().add(buildFooter());
 		this.updateCQLDisplay();
 	}

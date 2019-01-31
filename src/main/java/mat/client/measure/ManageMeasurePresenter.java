@@ -70,8 +70,6 @@ import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.MeasureSearchModel;
-import mat.shared.MeasureSearchModel.PatientBasedType;
-import mat.shared.MeasureSearchModel.VersionMeasureType;
 import mat.shared.StringUtility;
 
 public class ManageMeasurePresenter implements MatPresenter {
@@ -1115,23 +1113,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 					});
 		} else {
-			MeasureSearchModel model = new MeasureSearchModel(filter, startIndex, 25, lastSearchText, searchText);
-			
-			String userSelectedStateValue = searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getSearchStateValue();
-			VersionMeasureType versionType = userSelectedStateValue.contains("Draft") ? VersionMeasureType.DRAFT :
-												userSelectedStateValue.contains("Versioned") ? VersionMeasureType.VERSION : VersionMeasureType.ALL;
-			model.setIsDraft(versionType);
-			
-			String userSelectedPatientBasedValue =  searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getPatientBasedValue();
-			PatientBasedType patientBasedType = userSelectedPatientBasedValue.contains("Yes") ? PatientBasedType.PATIENT :
-													userSelectedPatientBasedValue.contains("No") ? PatientBasedType.NOT_PATIENT : PatientBasedType.ALL;
-			model.setPatientBased(patientBasedType);
-			
-			model.setScoringTypes(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getScoringTypeList());
-			
+			MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, 25, lastSearchText, searchText);
+			buildAdvancedSearchModel(searchModel);
 			searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);
-			advancedSearch(model);
+			advancedSearch(searchModel);
 		}
+	}
+
+	private void buildAdvancedSearchModel(MeasureSearchModel searchModel) {
+		searchModel.setIsDraft(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getSearchStateValue());
+		searchModel.setPatientBased(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getPatientBasedValue());
+		searchModel.setScoringTypes(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getScoringTypeList());
+		searchModel.setModifiedDate(Integer.parseInt(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getModifiedWithinValue()));
+		searchModel.setModifiedOwner(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getModifiedByValue());
+		searchModel.setOwner(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getOwnedByValue());
 	}
 	
 	private void advancedSearch(MeasureSearchModel measureSearchModel) {

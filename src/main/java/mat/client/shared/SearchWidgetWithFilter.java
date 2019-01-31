@@ -88,7 +88,6 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.setWidth("100%");
 		buttonPanel.add(buildSearchButton(forView));
-		buttonPanel.setStyleName("advancedSearchNegativeButtonMargin");
 		
 		VerticalPanel advancedSearchVerticalPanel = new VerticalPanel();
 		advancedSearchVerticalPanel.setWidth("100%");
@@ -159,7 +158,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		searchInput.setHeight("32px");
 		searchInput.addStyleName("searchFilterTextBox");
 		searchInput.getElement().setAttribute("placeholder", "Enter Search Text");
-		searchButton.setMarginTop(2.0);
+		searchButton.setMarginTop(-31.0);
 		searchButton.setHeight("32px");
 		searchButton.setId("SearchWidgetButton_" + forView);
 		searchButton.setPull(Pull.RIGHT);

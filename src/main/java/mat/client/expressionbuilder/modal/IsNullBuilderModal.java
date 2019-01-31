@@ -36,7 +36,6 @@ public class IsNullBuilderModal extends SubExpressionBuilderModal {
 		buildButtonObserver = new BuildButtonObserver(this, isNullModel, mainModel);
 		display();
 		this.getApplyButton().addClickHandler(event -> onApplyButtonClick());
-		this.getCancelButton().addClickHandler(event -> onCancelButtonClick());
 	}
 
 	private void onApplyButtonClick() {

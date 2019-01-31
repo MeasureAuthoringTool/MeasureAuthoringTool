@@ -34,31 +34,15 @@ import mat.shared.ClickableSafeHtmlCell;
  * @author jnarang */
 public class MostRecentMeasureWidget extends Composite implements HasSelectionHandlers<ManageMeasureSearchModel.Result> {
 	
-	/** The Interface Observer.
-	 * 
-	 * @author jnarang. */
+
 	public static interface Observer {
-		/** On export clicked.
-		 * @param result the result */
 		void onExportClicked(ManageMeasureSearchModel.Result result);
-		/**
-		 * On edit clicked.
-		 * @param result
-		 *            the result
-		 */
-		void onEditClicked(ManageMeasureSearchModel.Result result);
 	}
-	/** Cell Table Column Count. */
 	private static final int MAX_TABLE_COLUMN_SIZE = 4;
-	/** Cell Table Instance. */
 	private CellTable<ManageMeasureSearchModel.Result> cellTable = new CellTable<ManageMeasureSearchModel.Result>();
-	/** HandlerManager Instance. */
 	private HandlerManager handlerManager = new HandlerManager(this);
-	/** ManageMeasureSearchModel Instance. */
 	private ManageMeasureSearchModel measureSearchModel;
-	/** Observer Instance. */
 	private Observer observer;
-	/** VerticalPanel Instance which hold's View for Most Recent Measure. */
 	private VerticalPanel searchPanel = new VerticalPanel();
 	/** Method to Add Column's in Table.
 	 * @param table the table
@@ -108,26 +92,6 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 							new ClickableSafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(Result object) {
-					/*SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					String title;
-					String cssClass;
-					if (object.isEditable()) {
-						if (object.isMeasureLocked()) {
-							String emailAddress = object.getLockedUserInfo().getEmailAddress();
-							title = "Measure in use by " + emailAddress;
-							cssClass = "customLockedButton";
-						} else {
-							title = "Edit";
-							cssClass = "customEditButton";
-						}
-						sb.appendHtmlConstant("<button type=\"button\" title='"
-								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">Edit</button>");
-					} else {
-						title = "Read-Only";
-						cssClass = "customReadOnlyButton";
-						sb.appendHtmlConstant("<button type=\"button\" title='"
-								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled>Read-Only</button>");
-					}*/
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
 					String title;
 					String cssClass = "btn btn-link";
@@ -136,25 +100,19 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 						if (object.isMeasureLocked()) {
 							String emailAddress = object.getLockedUserInfo().getEmailAddress();
 							title = "Measure in use by " + emailAddress;
-							//cssClass = "customLockedButton";
 							iconCss = "fa fa-lock fa-lg";
 						} else {
 							title = "Edit";
-							//cssClass = "customEditButton";
 							iconCss = "fa fa-pencil fa-lg";
 							
 						}
 						sb.appendHtmlConstant("<button type=\"button\" title='"
 								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
-						//<span class=\"invisibleButtonText\">Edit</span>
 					} else {
 						title = "Read-Only";
-						//cssClass = "customReadOnlyButton";
 						iconCss = "fa fa-newspaper-o fa-lg";
 						sb.appendHtmlConstant("<button type=\"button\" title='"
-								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
-						//<span class=\"invisibleButtonText\">Read-Only</span>
-						//
+								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
 					}
 					
 					return sb.toSafeHtml();
@@ -162,11 +120,8 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 			};
 			editColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 				@Override
-				public void update(int index, Result object,
-						SafeHtml value) {
-					if (object.isEditable() && !object.isMeasureLocked()) {
-						observer.onEditClicked(object);
-					}
+				public void update(int index, Result object, SafeHtml value) {
+						SelectionEvent.fire(MostRecentMeasureWidget.this, object);
 				}
 			});
 			table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));

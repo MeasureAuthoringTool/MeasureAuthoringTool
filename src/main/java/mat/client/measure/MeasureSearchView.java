@@ -63,50 +63,24 @@ import mat.client.util.ClientConstants;
 import mat.shared.MeasureSearchModel;
 import mat.shared.ClickableSafeHtmlCell;
 
-/**
- * The Class MeasureSearchView is used to build view for the Measure Library Ownership table.
- * @author jnarang
- *
- */
-public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSearchModel.Result> {
-	/** The cell table panel. */
+public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSearchModel.Result> {
 	private VerticalPanel cellTablePanel = new VerticalPanel();
-	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
-	/** The Constant PAGE_SIZE. */
 	private static final int PAGE_SIZE = 25;
-	/** The Constant COL_SIZE. */
 	private static final int COL_SIZE = 6;
-	/** The selected measure list. */
 	private List<ManageMeasureSearchModel.Result> selectedMeasureList;
-	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
-	/** The data. */
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
-	/** The observer. */
 	private Observer observer;
-	/** The admin observer. */
 	private AdminObserver adminObserver;
-	/** The table. */
 	private CellTable<ManageMeasureSearchModel.Result> table;
-	/** The even. */
 	private Boolean even;
-	/** The cell table css style. */
 	private List<String> cellTableCssStyle;
-	/** The cell table even row. */
 	private String cellTableEvenRow = "cellTableEvenRow";
-	/** The cell table odd row. */
 	private String cellTableOddRow = "cellTableOddRow";
-	/** The index. */
 	private int index;
-	
-	/** The measure list label. */
 	private String measureListLabel;
-	/**
-	 * MultiSelectionModel on Cell Table.
-	 */
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
-	/** The selected list. */
 	List<ManageMeasureSearchModel.Result> selectedList;
 	/**
 	 * An asynchronous update interface for receiving notifications
@@ -135,7 +109,6 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		 * @param result
 		 *            the result
 		 */
-		void onEditClicked(ManageMeasureSearchModel.Result result);
 		/**
 		 * On clone clicked.
 		 * @param result
@@ -325,9 +298,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		editColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 			@Override
 			public void update(int index, Result object, SafeHtml value) {
-				if (object.isEditable() && !object.isMeasureLocked()) {
-					observer.onEditClicked(object);
-				}
+				SelectionEvent.fire(MeasureSearchView.this, object);
 			}
 		});
 		table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
@@ -431,17 +402,14 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			} else {
 				title = "Edit";
 				iconCss = "fa fa-pencil fa-lg";
-				
 			}
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
-
 		} else {
 			title = "Read-Only";
-
 			iconCss = "fa fa-newspaper-o fa-lg";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
 		}
 		
 		return sb.toSafeHtml();

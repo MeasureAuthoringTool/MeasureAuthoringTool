@@ -200,4 +200,9 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 	private void buildMeasureTypeModel(MeasureTypeModel originalMeasureTypeModel) {
 		this.measureTypeModel = new MeasureTypeModel(originalMeasureTypeModel);
 	}
+
+	@Override
+	public Widget getFirstElement() {
+		return measureTypeCellTable.asWidget();
+	}
 }

@@ -106,4 +106,9 @@ public class InitialPopulationView implements MeasureDetailViewInterface {
 	public MeasureDetailsComponentObserver getObserver() {
 		return observer;
 	}
+
+	@Override
+	public Widget getFirstElement() {
+		return measureDetailsRichTextEditor.getRichTextEditor();
+	}
 }

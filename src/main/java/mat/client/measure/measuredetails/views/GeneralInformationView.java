@@ -62,6 +62,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	private CheckBox calendarYear = new CheckBox();	
 	protected DateBoxWithCalendar measurePeriodFromInput = new DateBoxWithCalendar();
 	protected DateBoxWithCalendar measurePeriodToInput = new DateBoxWithCalendar();
+	private FormLabel measureNameLabel;
 
 	public GeneralInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel) {
 		originalModel = originalGeneralInformationModel;
@@ -409,7 +410,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	private VerticalPanel buildMeasureNamePanel() {
 		VerticalPanel measureNamePanel = new VerticalPanel();
 		measureNamePanel.getElement().addClassName("generalInformationPanel");
-		FormLabel measureNameLabel = buildMeasureNameLabel();
+		measureNameLabel = buildMeasureNameLabel();
 		measureNameInput.setId("measureNameInput");
 		measureNameInput.setText(generalInformationModel.getMeasureName());
 		measureNameInput.setWidth(TEXT_BOX_WIDTH);
@@ -776,5 +777,10 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	public void updateEmeasureId(int eMeasureId) {
 		originalModel.seteMeasureId(eMeasureId);
 		generalInformationModel.seteMeasureId(eMeasureId);
+	}
+
+	@Override
+	public Widget getFirstElement() {
+		return measureNameLabel.asWidget();
 	}
 }

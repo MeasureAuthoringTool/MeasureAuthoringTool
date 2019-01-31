@@ -306,4 +306,9 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	public void setReferencesModel(ReferencesModel referencesModel) {
 		this.referencesModel = referencesModel;
 	}
+
+	@Override
+	public Widget getFirstElement() {
+		return measureDetailsRichTextEditor.getRichTextEditor();
+	}
 }

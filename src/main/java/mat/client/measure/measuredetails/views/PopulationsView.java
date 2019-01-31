@@ -12,7 +12,7 @@ import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
 public class PopulationsView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();
-
+	private Label helpLabel;
 	public PopulationsView() {
 		buildDetailView();
 	}
@@ -28,7 +28,7 @@ public class PopulationsView implements MeasureDetailViewInterface {
 
 	@Override
 	public void buildDetailView() {
-		Label helpLabel = new Label("Click on the + sign on this tab to expand the populations available with the Scoring Type chosen for this "
+		helpLabel = new Label("Click on the + sign on this tab to expand the populations available with the Scoring Type chosen for this "
 				+ "measure. Click on each population sub-tab to enter the descriptions for all of the populations used within your measure.");
 		helpLabel.getElement().setTabIndex(0);
 		helpLabel.setWidth("90%");
@@ -73,5 +73,10 @@ public class PopulationsView implements MeasureDetailViewInterface {
 	@Override
 	public MeasureDetailsComponentObserver getObserver() {
 		return null;
+	}
+
+	@Override
+	public Widget getFirstElement() {
+		return helpLabel.asWidget();
 	}
 }

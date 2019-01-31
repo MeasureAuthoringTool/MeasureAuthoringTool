@@ -53,6 +53,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 	
 	protected ScrollPanel authorSPanel = new ScrollPanel();
 	protected ScrollPanel stewardSPanel = new ScrollPanel();
+	private FormLabel stewardTableLabel;
 
 	public MeasureStewardView(MeasureStewardDeveloperModel measureStewardDeveloperModel) {
 		this.originalModel = measureStewardDeveloperModel; 
@@ -69,7 +70,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 	}
 
 	private void buildStewardListComponent(VerticalPanel moreMeasureDetailsVP) {
-		final FormLabel stewardTableLabel = new FormLabel();
+		stewardTableLabel = new FormLabel();
 		stewardTableLabel.setText("Measure Steward List");
 		stewardTableLabel.setId("stewardTableLabel");
 		stewardTableLabel.setFor("stewardListBox");
@@ -333,6 +334,11 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 
 	public void setAuthorsSelectedList(List<Author> authorsSelectedList) {
 		this.authorsSelectedList = authorsSelectedList;
+	}
+
+	@Override
+	public Widget getFirstElement() {
+		return stewardTableLabel.asWidget();
 	}
 
 }

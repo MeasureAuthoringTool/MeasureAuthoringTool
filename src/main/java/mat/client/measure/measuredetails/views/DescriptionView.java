@@ -103,4 +103,9 @@ public class DescriptionView implements MeasureDetailViewInterface {
 	private void buildGeneralInformationModel(DescriptionModel originalDescriptionModel) {
 		this.descriptionModel = new DescriptionModel(originalDescriptionModel);
 	}
+
+	@Override
+	public Widget getFirstElement() {
+		return measureDetailsRichTextEditor.getRichTextEditor();
+	}
 }

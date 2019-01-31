@@ -8,6 +8,7 @@ import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
 public interface MeasureDetailViewInterface {
+	public Widget getFirstElement();
 	public Widget getWidget();
 	public void buildDetailView();
 	public void clear();

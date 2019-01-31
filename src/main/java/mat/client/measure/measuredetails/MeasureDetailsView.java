@@ -100,6 +100,7 @@ public class MeasureDetailsView {
 	}
 
 	private void buildMeasureDetailsButtonPanel() {
+		deleteMeasureButton.getElement().setId("MeasureDetailsView.deleteMeasureButton");
 		mainPanel.add(new SpacerWidget());
 		HorizontalPanel panel = new HorizontalPanel();
 		panel.setWidth("100%");
@@ -169,9 +170,9 @@ public class MeasureDetailsView {
 		setReadOnly(isMeasureEditable);
 		return widgetComponentPanel;
 	}
-
-	public void setFocusOnHeader() {
-		DOM.getElementById("measureDetailsView_HeadingContent").focus();
+	
+	public void setFocusOnFirstElement() {
+		componentDetailView.getFirstElement().getElement().focus();
 	}
 	
 	private void handleRichTextTabOut(KeyUpEvent keyUpEvent) {

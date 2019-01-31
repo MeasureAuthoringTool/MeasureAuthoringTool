@@ -104,4 +104,9 @@ public class StratificationView implements MeasureDetailViewInterface {
 		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());		
 	}
 
+	@Override
+	public Widget getFirstElement() {
+		return measureDetailsRichTextEditor.getRichTextEditor();
+	}
+
 }

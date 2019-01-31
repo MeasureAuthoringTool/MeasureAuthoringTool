@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -22,12 +23,14 @@ import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.views.ReferencesView;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ConfirmationDialogBox;
+import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MeasureDetailsConstants.PopulationItems;
 import mat.client.shared.MessagePanel;
+import mat.client.shared.SkipListBuilder;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
@@ -52,7 +55,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private long lastRequestTime;
 	private DeleteConfirmDialogBox dialogBox;
 	private ManageCompositeMeasureDetailModel currentCompositeMeasureDetails = new ManageCompositeMeasureDetailModel();
-	
+	private static FocusableWidget subSkipContentHolder;
 	private SimplePanel panel;
 	
 	MeasureDetailsModel measureDetailsModel;
@@ -89,6 +92,17 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		clearAlerts();
 		setIsLoading();
 		getDataBaseInfomation(false, false);
+	}
+	
+	public static void setSubSkipEmbeddedLink(String name) {
+		if(subSkipContentHolder == null) {
+			subSkipContentHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Sub Content"));
+		}
+		Mat.removeInputBoxFromFocusPanel(subSkipContentHolder.getElement());
+		Widget w = SkipListBuilder.buildSubSkipList(name);
+		subSkipContentHolder.clear();
+		subSkipContentHolder.add(w);
+		subSkipContentHolder.setFocus(true);
 	}
 
 	private void getDataBaseInfomation(boolean goToComposite, boolean displaySuccessMessage) {
@@ -160,7 +174,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private void navigateTo(MatDetailItem menuItem) {		
 		measureDetailsView.buildDetailView(menuItem, this);
 		navigationPanel.setActiveMenuItem(menuItem);
-		measureDetailsView.setFocusOnHeader();
+		measureDetailsView.setFocusOnFirstElement();
 	}
 	
 	private void handleWarningConfirmationYesClick(MatDetailItem menuItem) {

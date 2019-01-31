@@ -96,4 +96,9 @@ public class MeasureSetView implements MeasureDetailViewInterface {
 	private void addEventHandlers() {
 		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());		
 	}
+
+	@Override
+	public Widget getFirstElement() {
+		return measureDetailsRichTextEditor.getRichTextEditor();
+	}
 }

@@ -62,7 +62,6 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 
 
 	public void buildView(MessagePanel messagePanel) {
-		GWT.log("calling CQLMeasureWorkspaceView buildView()");
 		this.messagePanel = messagePanel;
 		resetAll();
 		unsetEachSectionSelectedObject();

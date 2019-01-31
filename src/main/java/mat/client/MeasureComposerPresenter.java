@@ -6,6 +6,7 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Button;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -247,7 +248,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 			measureComposerContent.setHeading(heading, "MeasureComposer");
 			FlowPanel fp = new FlowPanel();
 			fp.getElement().setId("fp_FlowPanel");
-			setSubSkipEmbeddedLink("MetaDataView.containerPanel");
+			setSubSkipEmbeddedLink("MeasureDetailsView.deleteMeasureButton");
 			fp.add(subSkipContentHolder);
 			fp.add(measureComposerTabLayout);
 			measureComposerContent.setContent(fp);

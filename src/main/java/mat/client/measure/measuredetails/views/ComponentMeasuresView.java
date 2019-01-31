@@ -8,8 +8,8 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
-import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -32,7 +32,6 @@ import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.editor.RichTextEditor;
-import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
@@ -223,6 +222,11 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 	@Override
 	public MeasureDetailsComponentObserver getObserver() {
 		return null;
+	}
+
+	@Override
+	public Widget getFirstElement() {
+		return cellTable.asWidget();
 	}
 
 }

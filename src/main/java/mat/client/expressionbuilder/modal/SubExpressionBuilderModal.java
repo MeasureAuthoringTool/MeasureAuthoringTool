@@ -11,6 +11,8 @@ import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IsNullModel;
+import mat.client.expressionbuilder.model.IsTrueFalseModel;
+import mat.client.expressionbuilder.model.NotModel;
 import mat.client.expressionbuilder.model.OperatorModel;
 
 public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
@@ -75,11 +77,17 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 			int size = this.getParentModel().getChildModels().size() - 1;
 			IExpressionBuilderModel lastModel = this.getParentModel().getChildModels().get(size);
 			
-			if(lastModel instanceof ExistsModel || lastModel instanceof IsNullModel ) {
+			if(lastModel instanceof ExistsModel || 
+					lastModel instanceof NotModel ||
+					lastModel instanceof IsNullModel ||
+					lastModel instanceof IsTrueFalseModel) {
 				this.getParentModel().getChildModels().remove(size);
 				int newSize = this.getParentModel().getChildModels().size() - 1;
-				lastModel = this.getParentModel().getChildModels().get(newSize);
-				size = newSize;
+				
+				if(newSize > 0) {
+					lastModel = this.getParentModel().getChildModels().get(newSize);
+					size = newSize;
+				}
 			}
 			
 			if(lastModel instanceof OperatorModel) {

@@ -258,6 +258,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 		CustomCheckBox getCustomFilterCheckBox();
 		
 		AdvancedSearchPillPanel getSearchPillPanel();
+		
+		public void resetSearchDisplay();
 
 	}
 
@@ -1260,8 +1262,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			
 			@Override
 			public void onSuccess(SaveCQLLibraryResult result) {
-				cqlLibraryView.getSearchPillPanel().setSearchedByPills(model, "Libraries");
-				cqlLibraryView.getSearchPillPanel().getReset().addClickHandler(event -> resetSearchFields(model, cqlLibraryView));
+				setSearchPills(model);
 				if(cqlLibraryView.getSearchFilterWidget().
 						getSelectedFilter()!=0){
 					cqlLibraryView.getCQLLibrarySearchView().setCQLLibraryListLabel("All CQL Libraries");
@@ -1299,7 +1300,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				cqlLibraryView.buildCellTable(result, lastSearchText,filter);
 				showSearchingBusy(false);
 			}
-			
+
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -1308,10 +1309,15 @@ public class CqlLibraryPresenter implements MatPresenter {
 		});
 	}
 
-	private void resetSearchFields(MeasureSearchModel measureSearchModel, ViewDisplay cqlSearchDisplay) {
-		// TODO Auto-generated method stub
-		Window.alert("reseting search terms for Library");
-		cqlSearchDisplay.getSearchPillPanel().setSearchedByPills(measureSearchModel, "Libraries");
+	private void resetSearchFields(MeasureSearchModel measureSearchModel) {
+		cqlLibraryView.resetSearchDisplay();
+		measureSearchModel.reset();
+		setSearchPills(measureSearchModel);
+	}
+	
+	private void setSearchPills(MeasureSearchModel model) {
+		cqlLibraryView.getSearchPillPanel().setSearchedByPills(model, "Libraries");
+		cqlLibraryView.getSearchPillPanel().getReset().addClickHandler(event -> resetSearchFields(model));
 	}
 	
 	private void searchRecentLibraries() {

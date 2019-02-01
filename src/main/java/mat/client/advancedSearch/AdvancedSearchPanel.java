@@ -314,5 +314,18 @@ public class AdvancedSearchPanel {
 	public String getOwnedByValue() {
 		return ownedBy.getValue();
 	}
+
+
+	public void resetDisplay() {
+		searchStateListBox.setSelectedIndex(0);
+		patientIndicatorListBox.setSelectedIndex(0);
+		modifiedOnList.setSelectedIndex(0);
+		proportionCheckbox.setValue(false);
+		ratioCheckbox.setValue(false);
+		cohortCheckbox.setValue(false);
+		contVariableCheckbox.setValue(false);
+		modifiedBy.setValue("");
+		ownedBy.setValue("");
+	}
 	
 }

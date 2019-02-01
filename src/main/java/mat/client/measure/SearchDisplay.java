@@ -98,4 +98,6 @@ public interface SearchDisplay extends BaseDisplay {
 	public MeasureLibraryAdvancedSearchBuilder getMeasureLibraryAdvancedSearchBuilder();
 	
 	AdvancedSearchPillPanel getSearchPillPanel();
+	
+	public void resetDisplay();
 }

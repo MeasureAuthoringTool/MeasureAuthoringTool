@@ -56,11 +56,12 @@ public class AdvancedSearchPillPanel {
 	}
 
 	public void setSearchedByPills(MeasureSearchModel measureSearchModel, String searchType) {
-		
 		badgePanel.clear();
 		//create pill for search term only if the user entered a search term
-		if(!measureSearchModel.getSearchTerm().isEmpty()) {
-			Badge searchTerm = new Badge("Search Term: " + getSubstringOfText(measureSearchModel.getSearchTerm()));
+		if(measureSearchModel.getSearchTerm() != null && !measureSearchModel.getSearchTerm().isEmpty()) {
+			String searchTermText = getSubstringOfText(measureSearchModel.getSearchTerm());
+			Badge searchTerm = new Badge("Search Term: " + searchTermText);
+			searchTerm.setTitle("Search Term: " + searchTermText);
 			searchTerm.setStyleName("navPill");
 			badgePanel.add(searchTerm);
 			searchTerm.getElement().setTabIndex(0);
@@ -68,6 +69,7 @@ public class AdvancedSearchPillPanel {
 		//create pill for filter by each time
 		String measureSearchType = measureSearchModel.isMyMeasureSearch() == 0? "My " + searchType : "All " + searchType;
 		Badge searchBy = new Badge("Filter by: " + measureSearchType);
+		searchBy.setTitle("Filter by: " + measureSearchType);
 		searchBy.setStyleName("navPill");
 		searchBy.getElement().setTabIndex(0);
 		badgePanel.add(searchBy);
@@ -76,6 +78,7 @@ public class AdvancedSearchPillPanel {
 		if(measureSearchModel.isDraft() != null && !measureSearchModel.isDraft().equals(VersionMeasureType.ALL)) {
 			String measureStateText = measureSearchModel.isDraft().equals(VersionMeasureType.DRAFT) ? "Draft" : "Versioned";
 			Badge measureState = new Badge(searchType + " State: " + measureStateText);
+			measureState.setTitle(searchType + " State: " + measureStateText);
 			measureState.setStyleName("navPill");
 			badgePanel.add(measureState);
 			measureState.getElement().setTabIndex(0);
@@ -84,6 +87,7 @@ public class AdvancedSearchPillPanel {
 		if(measureSearchModel.isPatientBased() != null && !measureSearchModel.isPatientBased().equals(PatientBasedType.ALL)) {
 			String patientBasedString = measureSearchModel.isPatientBased().equals(PatientBasedType.PATIENT) ? "Yes" : "No";
 			Badge patientBased = new Badge("Patient Based: " + patientBasedString);
+			patientBased.setTitle("Patient Based: " + patientBasedString);
 			patientBased.setStyleName("navPill");
 			badgePanel.add(patientBased);
 			patientBased.getElement().setTabIndex(0);
@@ -93,31 +97,37 @@ public class AdvancedSearchPillPanel {
 			String measureScoringTypeString = measureSearchModel.getScoringTypes().size() == 4 ? "All" : 
 				String.join(", ", measureSearchModel.getScoringTypes());
 			Badge measureScoringType = new Badge("Measure Score: " + measureScoringTypeString);
+			measureScoringType.setTitle("Measure Score: " + measureScoringTypeString);
 			measureScoringType.setStyleName("navPill");
 			badgePanel.add(measureScoringType);
 			measureScoringType.getElement().setTabIndex(0);
-		}		
+		}
 		// create pill for measure last modified within  if an option other then all measures is checked
 		if(measureSearchModel.getModifiedDate() > 0) {
 			String modifiedOnText = measureSearchModel.getModifiedDate() + " days";
 			Badge modifiedOn = new Badge("Modified Within: " + modifiedOnText);
+			modifiedOn.setTitle("Modified Within: " + modifiedOnText);
 			modifiedOn.setStyleName("navPill");
 			badgePanel.add(modifiedOn);
 			modifiedOn.getElement().setTabIndex(0);
 		}
 		// create pill for last modified by only if the user entered a text in the field
-		if(!measureSearchModel.getModifiedOwner().isEmpty()) {
-			Badge modifiedOn = new Badge("Modified On: " + getSubstringOfText(measureSearchModel.getModifiedOwner()));
-			modifiedOn.setStyleName("navPill");
-			badgePanel.add(modifiedOn);
-			modifiedOn.getElement().setTabIndex(0);
-		}
-		// create pill for owned by only if the user entered a text in the field
-		if(!measureSearchModel.getModifiedOwner().isEmpty()) {
-			Badge modifiedBy = new Badge("Owned By: " + getSubstringOfText(measureSearchModel.getOwner()));
+		if(measureSearchModel.getModifiedOwner() != null && !measureSearchModel.getModifiedOwner().isEmpty()) {
+			String modifiedByText =  getSubstringOfText(measureSearchModel.getModifiedOwner());
+			Badge modifiedBy = new Badge("Modified By: " + modifiedByText);
+			modifiedBy.setTitle("Modified By: " + modifiedByText);
 			modifiedBy.setStyleName("navPill");
 			badgePanel.add(modifiedBy);
 			modifiedBy.getElement().setTabIndex(0);
+		}
+		// create pill for owned by only if the user entered a text in the field
+		if(measureSearchModel.getModifiedOwner() != null && !measureSearchModel.getModifiedOwner().isEmpty()) {
+			String ownedByText = getSubstringOfText(measureSearchModel.getOwner());
+			Badge ownedBy = new Badge("Owned By: " + ownedByText);
+			ownedBy.setTitle("Owned By: " + ownedByText);
+			ownedBy.setStyleName("navPill");
+			badgePanel.add(ownedBy);
+			ownedBy.getElement().setTabIndex(0);
 		}
 		// create reset link
 		reset = new Anchor();

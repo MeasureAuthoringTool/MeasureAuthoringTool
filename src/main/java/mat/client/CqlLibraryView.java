@@ -233,6 +233,13 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public AdvancedSearchPillPanel getSearchPillPanel() {
 		return pillPanel;
 	}
+	
+	@Override
+	public void resetSearchDisplay() {
+		searchFilterWidget.getLibraryCustomCheckBox().setValue(true);
+		searchFilterWidget.getSearchInput().setValue("");
+		searchFilterWidget.getAdvancedSearchPanel().resetDisplay();
+	}
 
 
 }

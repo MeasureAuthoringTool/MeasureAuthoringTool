@@ -1147,8 +1147,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(ManageMeasureSearchModel result) {
-						searchDisplay.getSearchPillPanel().setSearchedByPills(measureSearchModel, "Measures");
-						searchDisplay.getSearchPillPanel().getReset().addClickHandler(event -> resetSearchFields(measureSearchModel, searchDisplay));
+						addSearchPills(measureSearchModel);
 						String measureListLabel = (measureSearchModel.isMyMeasureSearch() != 0) ? "All Measures" : "My Measures";
 						searchDisplay.getMeasureSearchView().setMeasureListLabel(measureListLabel);
 						
@@ -1313,14 +1312,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 						setSearchingBusy(false);
 
 					}
-
 				});
 	}
 	
-	private void resetSearchFields(MeasureSearchModel measureSearchModel, SearchDisplay searchDisplay) {
-		// TODO Auto-generated method stub
-		Window.alert("reseting search terms for Measure");
+	private void resetSearchFields(MeasureSearchModel measureSearchModel) {
+		searchDisplay.resetDisplay();
+		addSearchPills(measureSearchModel);
+	}
+	
+	private void addSearchPills(MeasureSearchModel measureSearchModel) {
 		searchDisplay.getSearchPillPanel().setSearchedByPills(measureSearchModel, "Measures");
+		measureSearchModel.reset();
+		searchDisplay.getSearchPillPanel().getReset().addClickHandler(event -> resetSearchFields(measureSearchModel));
 	}
 
 	public static void setSubSkipEmbeddedLink(String name) {

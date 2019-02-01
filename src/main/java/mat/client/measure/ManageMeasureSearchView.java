@@ -457,4 +457,11 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	public AdvancedSearchPillPanel getSearchPillPanel() {
 		return pillPanel;
 	}
+	
+	@Override
+	public void resetDisplay() {
+		this.measureSearchFilterWidget.getSearchInput().setValue("");
+		this.measureSearchFilterWidget.getMeasureCustomCheckBox().setValue(true);
+		this.measureSearchFilterWidget.getAdvancedSearchPanel().resetDisplay();
+	}
 }

@@ -165,4 +165,16 @@ public class MeasureSearchModel implements IsSerializable {
 	public void setMeasureSetId(String measureSetId) {
 		this.measureSetId = measureSetId;
 	}
+
+	public void reset() {
+		searchTerm = "";
+		versionMeasureType = VersionMeasureType.ALL;
+		scoringTypes = new ArrayList<>();
+		patientBasedType = PatientBasedType.ALL;
+		modifiedDate = 0;
+		modifiedOwner = "";
+		owner = "";
+		isMyMeasureSearch = MY_MEASURES;
+		lastSearchText = "";
+	}
 }

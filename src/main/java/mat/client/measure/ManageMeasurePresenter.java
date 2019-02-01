@@ -1310,19 +1310,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 						searchDisplay.buildCellTable(manageMeasureSearchModel, measureSearchModel.isMyMeasureSearch(), measureSearchModel);
 
 						setSearchingBusy(false);
-
 					}
 				});
 	}
 	
 	private void resetSearchFields(MeasureSearchModel measureSearchModel) {
 		searchDisplay.resetDisplay();
+		measureSearchModel.reset();
 		addSearchPills(measureSearchModel);
 	}
 	
 	private void addSearchPills(MeasureSearchModel measureSearchModel) {
 		searchDisplay.getSearchPillPanel().setSearchedByPills(measureSearchModel, "Measures");
-		measureSearchModel.reset();
 		searchDisplay.getSearchPillPanel().getReset().addClickHandler(event -> resetSearchFields(measureSearchModel));
 	}
 

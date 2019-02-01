@@ -1,6 +1,8 @@
 package mat.client.shared;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
@@ -54,8 +56,6 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	 */
 	private int selectedFilter;
 	private Panel mainFocusPanel ;
-	
-
 
 	/**
 	 * Default Constructor.
@@ -197,8 +197,6 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		});
 	}
 
-	
-
 	/**
 	 * Gets the search button - {@link PrimaryButton}.
 	 * 
@@ -294,7 +292,6 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 
 	@Override
 	public void onClick(ClickEvent event) {
-		// TODO Auto-generated method stub
 		searchButton.addClickHandler(this);
 	}
 

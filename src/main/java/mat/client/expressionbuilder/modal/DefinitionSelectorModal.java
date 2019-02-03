@@ -52,7 +52,8 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 		this.getContentPanel().clear();
 		
 		VerticalPanel panel = new VerticalPanel();
-		
+		panel.setStyleName("selectorsPanel");
+		panel.setWidth("36%");
 		Form form = new Form();
 		form.add(buildDefinitionFormGroup());
 		
@@ -76,7 +77,7 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 		
 		
 		for(CQLIdentifierObject definition : definitions) {
-			definitionListBox.insertItem(definition.getDisplay(), definition.toString(), definition.getDisplay());
+			definitionListBox.insertItem(definition.getDisplay().substring(0, 90), definition.toString(), definition.getDisplay());
 		}
 		
 		group.add(label);

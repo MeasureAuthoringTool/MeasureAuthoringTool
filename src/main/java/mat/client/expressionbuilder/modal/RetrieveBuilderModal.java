@@ -58,6 +58,7 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 	private VerticalPanel buildContentPanel() {
 		this.getContentPanel().clear();
 		VerticalPanel panel = new VerticalPanel();
+		panel.setWidth("36%");
 		
 		Form form = new Form();
 		form.add(buildDatatypeGroup());
@@ -117,7 +118,7 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 		
 		
 		for(CQLIdentifierObject o : terminologies) {
-			valuesetCodeListBox.insertItem(o.getDisplay(), o.toString(), o.toString());
+			valuesetCodeListBox.insertItem(o.getDisplay().substring(0, 90), o.toString(), o.toString());
 		}		
 		
 		valuesetCodeGroup.add(valuesetCodeListBoxLabel);

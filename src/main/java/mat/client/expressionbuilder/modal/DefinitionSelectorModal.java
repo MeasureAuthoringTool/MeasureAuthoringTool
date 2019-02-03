@@ -6,7 +6,6 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.ListBox;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -14,6 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.expressionbuilder.model.DefinitionModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.util.IdentifierSortUtil;
+import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.shared.CQLIdentifierObject;
 
@@ -21,7 +21,7 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 
 	private static final String SELECT_A_DEFINITION = "Select a definition";
 	private static final String SELECT_DEFINITION_PLACEHOLDER = "-- Select definition --";
-	private ListBox definitionListBox;
+	private ListBoxMVP definitionListBox;
 
 	public DefinitionSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Definition", parent, parentModel, mainModel);
@@ -68,15 +68,15 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 		label.setTitle(SELECT_A_DEFINITION);
 		
 		
-		definitionListBox = new ListBox();
-		definitionListBox.addItem(SELECT_DEFINITION_PLACEHOLDER, SELECT_DEFINITION_PLACEHOLDER);
+		definitionListBox = new ListBoxMVP();
+		definitionListBox.insertItem(SELECT_DEFINITION_PLACEHOLDER, SELECT_DEFINITION_PLACEHOLDER, SELECT_DEFINITION_PLACEHOLDER);
 		List<CQLIdentifierObject> definitions = new ArrayList<>();
 		definitions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getDefinitions()));
 		definitions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedDefNames()));
 		
 		
 		for(CQLIdentifierObject definition : definitions) {
-			definitionListBox.addItem(definition.getDisplay(), definition.toString());
+			definitionListBox.insertItem(definition.getDisplay(), definition.toString(), definition.getDisplay());
 		}
 		
 		group.add(label);

@@ -5,7 +5,6 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
@@ -17,6 +16,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
+import mat.client.shared.ListBoxMVP;
 
 public class ExpressionTypeSelector extends Composite {
 
@@ -31,8 +31,8 @@ public class ExpressionTypeSelector extends Composite {
 	private boolean isFirstSelection = true;
 	private List<ExpressionType> availableExpressionTypes;
 	private List<OperatorType> availableOperatorTypes;
-	private ListBox expressionTypeSelectorListBox;
-	private ListBox operatorTypeSelectorListBox;
+	private ListBoxMVP expressionTypeSelectorListBox;
+	private ListBoxMVP operatorTypeSelectorListBox;
 
 	private BuildButtonObserver observer;
 
@@ -73,10 +73,10 @@ public class ExpressionTypeSelector extends Composite {
 		selectAnOperatorLabel.setTitle(SELECT_AN_OPERATOR);
 		selectAnOperatorLabel.setId("selectAnOperatorLabel");
 		
-		operatorTypeSelectorListBox = new ListBox();
-		operatorTypeSelectorListBox.addItem(SELECT_AN_OPERATOR_PLACEHOLDER, SELECT_AN_OPERATOR_PLACEHOLDER);
+		operatorTypeSelectorListBox = new ListBoxMVP();
+		operatorTypeSelectorListBox.insertItem(SELECT_AN_OPERATOR_PLACEHOLDER, SELECT_AN_OPERATOR_PLACEHOLDER, SELECT_AN_OPERATOR_PLACEHOLDER);
 		for(OperatorType type : this.availableOperatorTypes) {
-			operatorTypeSelectorListBox.addItem(type.getDisplayName(), type.getValue());
+			operatorTypeSelectorListBox.insertItem(type.getDisplayName(), type.getValue(), type.getDisplayName());
 		}
 		
 		group.add(selectAnOperatorLabel);
@@ -100,12 +100,12 @@ public class ExpressionTypeSelector extends Composite {
 		expressionTypeSelectorBuildButtonPanel.setWidth("100%");
 
 		
-		expressionTypeSelectorListBox = new ListBox();
+		expressionTypeSelectorListBox = new ListBoxMVP();
 		expressionTypeSelectorListBox.setWidth("100%");
 		
-		expressionTypeSelectorListBox.addItem(SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE);
+		expressionTypeSelectorListBox.insertItem(SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE);
 		for(ExpressionType type : this.availableExpressionTypes) {
-			expressionTypeSelectorListBox.addItem(type.getDisplayName(), type.getValue());
+			expressionTypeSelectorListBox.insertItem(type.getDisplayName(), type.getValue(), type.getDisplayName());
 		}
 		
 		Button buildButton = new Button();

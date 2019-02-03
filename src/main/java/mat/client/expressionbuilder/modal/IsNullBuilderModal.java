@@ -17,6 +17,7 @@ import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IsNullModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
+import mat.client.shared.ListBoxMVP;
 
 public class IsNullBuilderModal extends SubExpressionBuilderModal {
 
@@ -26,7 +27,7 @@ public class IsNullBuilderModal extends SubExpressionBuilderModal {
 	private static final String CHOOSE_A_NULL_STATEMENT = "Choose a null statement.";
 	private IsNullModel isNullModel;
 	private BuildButtonObserver buildButtonObserver;
-	private ListBox isNullNotNullListBox;
+	private ListBoxMVP isNullNotNullListBox;
 	private int selectedIndex = 0;
 	
 	public IsNullBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
@@ -86,10 +87,10 @@ public class IsNullBuilderModal extends SubExpressionBuilderModal {
 		isNullNotNullLabel.setText(CHOOSE_A_NULL_STATEMENT);
 		isNullNotNullLabel.setTitle(CHOOSE_A_NULL_STATEMENT);
 		
-		isNullNotNullListBox = new ListBox();
-		isNullNotNullListBox.addItem(SELECT_A_NULL_STATEMENT_PLACEHOLDER, SELECT_A_NULL_STATEMENT_PLACEHOLDER);
-		isNullNotNullListBox.addItem(IS_NULL, IS_NULL);
-		isNullNotNullListBox.addItem(IS_NOT_NULL, IS_NOT_NULL);
+		isNullNotNullListBox = new ListBoxMVP();
+		isNullNotNullListBox.insertItem(SELECT_A_NULL_STATEMENT_PLACEHOLDER, SELECT_A_NULL_STATEMENT_PLACEHOLDER, SELECT_A_NULL_STATEMENT_PLACEHOLDER);
+		isNullNotNullListBox.insertItem(IS_NULL, IS_NULL, IS_NULL);
+		isNullNotNullListBox.insertItem(IS_NOT_NULL, IS_NOT_NULL, IS_NOT_NULL);
 		isNullNotNullListBox.setSelectedIndex(selectedIndex);
 		isNullNotNullListBox.addChangeHandler(event -> onIsNullNotNullListBoxChange(isNullNotNullListBox.getSelectedIndex()));
 		

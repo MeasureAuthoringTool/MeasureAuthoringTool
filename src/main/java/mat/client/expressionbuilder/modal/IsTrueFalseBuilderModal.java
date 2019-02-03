@@ -16,6 +16,7 @@ import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IsTrueFalseModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
+import mat.client.shared.ListBoxMVP;
 
 public class IsTrueFalseBuilderModal extends SubExpressionBuilderModal {
 
@@ -27,7 +28,7 @@ public class IsTrueFalseBuilderModal extends SubExpressionBuilderModal {
 	private static final String CHOOSE_A_TRUE_FALSE_STATEMENT = "Choose a true/false statement.";
 	private IsTrueFalseModel isTrueFalseModel;
 	private BuildButtonObserver buildButtonObserver;
-	private ListBox isTrueFalseListBox;
+	private ListBoxMVP isTrueFalseListBox;
 	private int selectedIndex;
 
 	public IsTrueFalseBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
@@ -86,12 +87,12 @@ public class IsTrueFalseBuilderModal extends SubExpressionBuilderModal {
 		isTrueFalseFormLabel.setText(CHOOSE_A_TRUE_FALSE_STATEMENT);
 		isTrueFalseFormLabel.setTitle(CHOOSE_A_TRUE_FALSE_STATEMENT);
 		
-		isTrueFalseListBox = new ListBox();
-		isTrueFalseListBox.addItem(SELECT_A_TRUE_FALSE_STATEMENT_PLACEHOLDER, SELECT_A_TRUE_FALSE_STATEMENT_PLACEHOLDER);
-		isTrueFalseListBox.addItem(IS_TRUE, IS_TRUE);
-		isTrueFalseListBox.addItem(IS_FALSE, IS_FALSE);
-		isTrueFalseListBox.addItem(IS_NOT_TRUE, IS_NOT_TRUE);
-		isTrueFalseListBox.addItem(IS_NOT_FALSE, IS_NOT_FALSE);
+		isTrueFalseListBox = new ListBoxMVP();
+		isTrueFalseListBox.insertItem(SELECT_A_TRUE_FALSE_STATEMENT_PLACEHOLDER, SELECT_A_TRUE_FALSE_STATEMENT_PLACEHOLDER, SELECT_A_TRUE_FALSE_STATEMENT_PLACEHOLDER);
+		isTrueFalseListBox.insertItem(IS_TRUE, IS_TRUE, IS_TRUE);
+		isTrueFalseListBox.insertItem(IS_FALSE, IS_FALSE, IS_FALSE);
+		isTrueFalseListBox.insertItem(IS_NOT_TRUE, IS_NOT_TRUE, IS_NOT_TRUE);
+		isTrueFalseListBox.insertItem(IS_NOT_FALSE, IS_NOT_FALSE, IS_NOT_FALSE);
 
 		isTrueFalseListBox.setSelectedIndex(selectedIndex);
 		isTrueFalseListBox.addChangeHandler(event -> onIsTrueFalseListBoxChange(isTrueFalseListBox.getSelectedIndex()));

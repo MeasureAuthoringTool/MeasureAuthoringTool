@@ -6,13 +6,13 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.ListBox;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.RetrieveModel;
 import mat.client.expressionbuilder.util.IdentifierSortUtil;
+import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.shared.CQLIdentifierObject;
 
@@ -23,8 +23,8 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 	private static final String SELECT_DATATYPE = "-- Select datatype --";
 	private static final String SELECT_VALUE_SET_OR_CODE = " -- Select value set/code --";
 	
-	private ListBox valuesetCodeListBox;
-	private ListBox dataTypeListBox;
+	private ListBoxMVP valuesetCodeListBox;
+	private ListBoxMVP dataTypeListBox;
 	
 	public RetrieveBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Data Element or Retrieve", parent, parentModel, mainModel);
@@ -75,14 +75,14 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 		datatypeListBoxLabel.setId("chooseDataTypeLabel");
 		datatypeListBoxLabel.setFor("chooseDataTypeListBox");
 				
-		dataTypeListBox = new ListBox();
+		dataTypeListBox = new ListBoxMVP();
 		dataTypeListBox.setId("chooseDataTypeListBox");
-		dataTypeListBox.addItem(SELECT_DATATYPE, SELECT_DATATYPE);
+		dataTypeListBox.insertItem(SELECT_DATATYPE, SELECT_DATATYPE, SELECT_DATATYPE);
 		
 		List<String> dataTypes = MatContext.get().getCqlConstantContainer().getQdmDatatypeList();
 		dataTypes.remove("attribute"); // we don't want to show attribute in this list
 		for(String datatype : dataTypes) {
-			dataTypeListBox.addItem(datatype, datatype);
+			dataTypeListBox.insertItem(datatype, datatype, datatype);
 		}
 		
 		datatypeGroup.add(datatypeListBoxLabel);
@@ -99,9 +99,9 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 		valuesetCodeListBoxLabel.setId("valuesetCodeListBoxLabel");
 		valuesetCodeListBoxLabel.setFor("valuesetCodeListBox");
 		
-		valuesetCodeListBox = new ListBox();
+		valuesetCodeListBox = new ListBoxMVP();
 		valuesetCodeListBox.setId("chooseValuesetCodeListBox");
-		valuesetCodeListBox.addItem(SELECT_VALUE_SET_OR_CODE, SELECT_VALUE_SET_OR_CODE);
+		valuesetCodeListBox.insertItem(SELECT_VALUE_SET_OR_CODE, SELECT_VALUE_SET_OR_CODE, SELECT_VALUE_SET_OR_CODE);
 		
 		List<CQLIdentifierObject> terminologies = new ArrayList<>();
 		
@@ -117,7 +117,7 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 		
 		
 		for(CQLIdentifierObject o : terminologies) {
-			valuesetCodeListBox.addItem(o.getDisplay(), o.toString());
+			valuesetCodeListBox.insertItem(o.getDisplay(), o.toString(), o.toString());
 		}		
 		
 		valuesetCodeGroup.add(valuesetCodeListBoxLabel);

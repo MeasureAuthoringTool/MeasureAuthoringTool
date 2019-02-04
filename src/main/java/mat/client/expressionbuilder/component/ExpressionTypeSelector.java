@@ -129,6 +129,8 @@ public class ExpressionTypeSelector extends Composite {
 		
 		expressionAndOperatorSelectorPanel.add(buildOperatorTypeSelectorPanel());
 		expressionAndOperatorSelectorPanel.add(buildExpressionTypeSelectorPanel());
+		
+		
 		return expressionAndOperatorSelectorPanel;
 	}
 
@@ -161,6 +163,7 @@ public class ExpressionTypeSelector extends Composite {
 		addMorePanel.clear();
 		addMorePanel.add(buildExpressionAndOperatorTypeSelector());
 		addMorePanel.setWidth("100%");
+		operatorTypeSelectorListBox.setFocus(true);
 	}
 	
 	private void onBuildButtonClick() {

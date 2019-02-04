@@ -108,8 +108,8 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 		(originalModelValue != null && originalModelValue.equals(newModelValue)));
 	}
 	
-	public boolean modelValuesAreEqual(boolean originalModelValue, boolean newModelValue) {
-		return originalModelValue == newModelValue;
+	public boolean modelValuesAreEqual(Boolean originalModelValue, Boolean newModelValue) {
+		return (originalModelValue == null && newModelValue == null) ||  (originalModelValue == newModelValue);
 	}
 	
 	public String getMeasureName() {

@@ -675,13 +675,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if (ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())) {
 			heading = "";
 			filter = SearchWidgetWithFilter.ALL;
-			search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
+			search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter, false);
 			fp.add(searchDisplay.asWidget());
 		} else {
 			searchDisplay.getMeasureSearchFilterWidget().setVisible(true);
 			isMeasureSearchFilterVisible = true;
 			filter = searchDisplay.getSelectedFilter();
-			search(searchDisplay.getSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
+			search(searchDisplay.getSearchString().getValue(), 1, Integer.MAX_VALUE, filter, false);
 			searchRecentMeasures();
 			buildCreateMeasure(); 
 			buildCreateCompositeMeasure();
@@ -1049,7 +1049,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		fireSuccessfullVersionEvent(isSuccess, name, message);
 	}
 
-	private void search(final String searchText, int startIndex, int pageSize, final int filter) {
+	private void search(final String searchText, int startIndex, int pageSize, final int filter, boolean didUserSelectSearch) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
 
 		// This to fetch all Measures if user role is Admin. This will go away
@@ -1119,7 +1119,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, 25, lastSearchText, searchText);
 			buildAdvancedSearchModel(searchModel);
 			searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);
-			advancedSearch(searchModel);
+			advancedSearch(searchModel, didUserSelectSearch);
 		}
 	}
 
@@ -1132,7 +1132,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchModel.setOwner(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getOwnedByValue());
 	}
 	
-	private void advancedSearch(MeasureSearchModel measureSearchModel) {
+	private void advancedSearch(MeasureSearchModel measureSearchModel, boolean didUserSelectSearch) {
 		setSearchingBusy(true);
 		MatContext.get().getMeasureService().search(measureSearchModel,
 				new AsyncCallback<ManageMeasureSearchModel>() {
@@ -1310,6 +1310,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 						searchDisplay.buildCellTable(manageMeasureSearchModel, measureSearchModel.isMyMeasureSearch(), measureSearchModel);
 
 						setSearchingBusy(false);
+						if(didUserSelectSearch) {
+							searchDisplay.getSearchPillPanel().getBadgeHeader().getElement().focus();
+						}
 					}
 				});
 	}
@@ -1480,7 +1483,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				isMeasureVersioned = false;
 				searchDisplay.resetMessageDisplay();
 				int filter = searchDisplay.getSelectedFilter();
-				search(searchDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE, filter);
+				search(searchDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE, filter, true);
 			}
 		});
 
@@ -1550,7 +1553,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				int startIndex = 1;
 				searchDisplay.getErrorMessageDisplay().clearAlert();
 				int filter = 1;
-				search(searchDisplay.getAdminSearchString().getValue(), startIndex, Integer.MAX_VALUE, filter);
+				search(searchDisplay.getAdminSearchString().getValue(), startIndex, Integer.MAX_VALUE, filter, false);
 			}
 		});
 		
@@ -1569,7 +1572,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void clearAllMeasureOwnershipTransfers() {
 		manageMeasureSearchModel.getSelectedTransferResults().clear();
 		manageMeasureSearchModel.getSelectedTransferIds().clear();
-		search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, 1);
+		search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, 1, false);
 	}
 	
 	private void searchHistory(String measureId, int startIndex, int pageSize) {
@@ -1772,7 +1775,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								transferDisplay.getSuccessMessageDisplay().clearAlert();
 								transferDisplay.getErrorMessageDisplay().clearAlert();
 								int filter = 1;
-								search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
+								search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter, false);
 								searchDisplay.getSuccessMessageDisplay().createAlert(
 										MatContext.get().getMessageDelegate().getTransferOwnershipSuccess() + emailTo);
 							}
@@ -1798,7 +1801,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		transferDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getSuccessMessageDisplay().clearAlert();
 		int filter = 1;
-		search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
+		search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter, false);
 	}
 	
 	private void searchMeasureLibraryOwners() {

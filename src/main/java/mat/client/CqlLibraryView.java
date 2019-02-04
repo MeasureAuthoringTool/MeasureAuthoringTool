@@ -239,6 +239,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		searchFilterWidget.getLibraryCustomCheckBox().setValue(true);
 		searchFilterWidget.getSearchInput().setValue("");
 		searchFilterWidget.getAdvancedSearchPanel().resetDisplay();
+		searchFilterWidget.getSearchInput().getElement().focus();
 	}
 
 

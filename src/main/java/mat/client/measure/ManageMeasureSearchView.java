@@ -463,5 +463,6 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		this.measureSearchFilterWidget.getSearchInput().setValue("");
 		this.measureSearchFilterWidget.getMeasureCustomCheckBox().setValue(true);
 		this.measureSearchFilterWidget.getAdvancedSearchPanel().resetDisplay();
+		this.measureSearchFilterWidget.getSearchInput().getElement().focus();
 	}
 }

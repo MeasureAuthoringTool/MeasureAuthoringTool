@@ -20,13 +20,15 @@ public class AdvancedSearchPillPanel {
 	
 	private Anchor reset;
 	
+	private Label badgeHeader;
+	
 	public AdvancedSearchPillPanel() {
 		
 		badgeTable.clear();
 		badgeTable.getElement().setId("badgePanel_horizontalPanel");
 		badgeTable.setStyleName("recentSearchPanel");
 		
-		Label badgeHeader = new Label("Search Criteria");
+		badgeHeader = new Label("Search Criteria");
 		badgeHeader.getElement().setId("searchHeader_Label");
 		badgeHeader.setStyleName("recentSearchHeader");
 		badgeHeader.getElement().setAttribute("tabIndex", "0");
@@ -101,8 +103,8 @@ public class AdvancedSearchPillPanel {
 		reset = new Anchor();
 		reset.getElement().setId("navPillReset");
 		reset.setText("Reset");
-		reset.setTitle("Reset");
-		reset.setStyleName("navPillRed");
+		reset.setStyleName("navPillReset");
+		reset.getElement().setAttribute("aria-label", "Reset Search Fields. Clicking will reset all your search values to default search");
 		badgePanel.add(reset);
 		badgeTable.setVisible(true);
 	}
@@ -129,5 +131,13 @@ public class AdvancedSearchPillPanel {
 
 	public void setReset(Anchor reset) {
 		this.reset = reset;
+	}
+
+	public Label getBadgeHeader() {
+		return badgeHeader;
+	}
+
+	public void setBadgeHeader(Label badgeHeader) {
+		this.badgeHeader = badgeHeader;
 	}
 }

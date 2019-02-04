@@ -5167,31 +5167,17 @@ a.label:focus,a.label:hover {
 	margin-top: 3px;
 }
 
-.navPillRed {
-	display: inline-block;
-	min-width: 10px;
+.navPillReset {
 	padding: 3px 7px;
 	font-size: 12px;
-	font-weight: 700;
 	line-height: 1;
-	color: #fff;
 	text-align: center;
 	white-space: nowrap;
 	vertical-align: baseline;
-	background-color: #ff0000;
 	border-radius: 10px;
 	margin-left: 10px;
 	margin-bottom: 3px;
 	margin-top: 3px;
-}
-
-#navPillReset a:focus, a:hover {
-	color: #FFF;
-	text-decoration: underline;
-}
-
-#navPillReset a, a:visited, a:hover {
-	color:#FFF;
 }
 
 .measureDetailsBadge {

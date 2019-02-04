@@ -118,7 +118,7 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 		
 		
 		for(CQLIdentifierObject o : terminologies) {
-			valuesetCodeListBox.insertItem(o.getDisplay().substring(0, 90), o.toString(), o.toString());
+			valuesetCodeListBox.insertItem(o.getDisplay().substring(0, 90), o.toString(), o.getDisplay());
 		}		
 		
 		valuesetCodeGroup.add(valuesetCodeListBoxLabel);

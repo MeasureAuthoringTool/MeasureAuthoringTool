@@ -95,7 +95,7 @@ public class AdvancedSearchPillPanel {
 			makeBadge("Modified By: " + modifiedByText);
 		}
 		// create pill for owned by only if the user entered a text in the field
-		if(measureSearchModel.getModifiedOwner() != null && !measureSearchModel.getModifiedOwner().isEmpty()) {
+		if(measureSearchModel.getOwner() != null && !measureSearchModel.getOwner().isEmpty()) {
 			String ownedByText = getSubstringOfText(measureSearchModel.getOwner());
 			makeBadge("Owned By: " + ownedByText);
 		}
@@ -104,7 +104,8 @@ public class AdvancedSearchPillPanel {
 		reset.getElement().setId("navPillReset");
 		reset.setText("Reset");
 		reset.setStyleName("navPillReset");
-		reset.getElement().setAttribute("aria-label", "Reset Search Fields. Clicking will reset all your search values to default search");
+		reset.getElement().setAttribute("aria-label", "Reset Search Fields. Clicking will reset all your search values to default search. "
+				+ "The focus will also be placed on the search text field for you to start another search");
 		badgePanel.add(reset);
 		badgeTable.setVisible(true);
 	}

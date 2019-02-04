@@ -59,6 +59,7 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 		cancelButton.setType(ButtonType.DANGER);
 		cancelButton.setSize(ButtonSize.LARGE);
 		cancelButton.addClickHandler(event -> onCancelButtonClick());
+		cancelButton.getElement().setAttribute("aria-label", "Clicking this button will cancel building the current expression and take you to the previous page");
 		return cancelButton;
 	}
 	

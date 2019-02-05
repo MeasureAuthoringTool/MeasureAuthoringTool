@@ -80,7 +80,7 @@ public abstract class ExpressionBuilderModal extends Modal {
 	}
 	
 	public void updateCQLDisplay() {
-		this.logicFocusPanel.getElement().setAttribute("aria-label", mainModel.getCQL(""));
+		this.logicFocusPanel.getElement().setAttribute("aria-label", "Generated CQL Expression " + mainModel.getCQL(""));
 		this.pre.setText(mainModel.getCQL(""));
 	}
 	

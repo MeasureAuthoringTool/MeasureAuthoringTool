@@ -4,14 +4,12 @@ import org.gwtbootstrap3.client.ui.Button;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.advancedSearch.AdvancedSearchPillPanel;
-import mat.client.advancedSearch.MeasureLibraryAdvancedSearchBuilder;
 import mat.client.buttons.CustomButton;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.MeasureSearchView.AdminObserver;
@@ -94,8 +92,6 @@ public interface SearchDisplay extends BaseDisplay {
 	public void resetMessageDisplay();
 	
 	public CustomCheckBox getCustomFilterCheckBox();
-	
-	public MeasureLibraryAdvancedSearchBuilder getMeasureLibraryAdvancedSearchBuilder();
 	
 	AdvancedSearchPillPanel getSearchPillPanel();
 	

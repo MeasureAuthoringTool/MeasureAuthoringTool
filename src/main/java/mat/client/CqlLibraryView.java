@@ -147,8 +147,6 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	@Override
 	public Widget asWidget() {
 		widgetVP.clear();
-		//as a part of MAT-9305 - Commenting out Below as we might need it next release 
-		//widgetVP.add(cqlLibraryAdvancedSearchBuilder.asWidget());
 		return mainPanel;
 	}
 	

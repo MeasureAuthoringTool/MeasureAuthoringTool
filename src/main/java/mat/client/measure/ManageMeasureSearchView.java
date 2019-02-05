@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.ImageResources;
 import mat.client.advancedSearch.AdvancedSearchPillPanel;
-import mat.client.advancedSearch.MeasureLibraryAdvancedSearchBuilder;
 import mat.client.buttons.CustomButton;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.MeasureSearchView.AdminObserver;
@@ -440,12 +439,6 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		getErrorMeasureDeletion().clearAlert();
 		getSuccessMeasureDeletion().clearAlert();
 		getSuccessMessageDisplay().clearAlert();
-	}
-
-	@Override
-	public MeasureLibraryAdvancedSearchBuilder getMeasureLibraryAdvancedSearchBuilder() {
-		//TODO in MAT-9216 add this code back in!
-		return null;//measureLibraryAdvancedSearchBuilder;
 	}
 
 	@Override

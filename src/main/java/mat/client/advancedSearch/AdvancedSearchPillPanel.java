@@ -1,5 +1,7 @@
 package mat.client.advancedSearch;
 
+import java.util.List;
+
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Badge;
 
@@ -10,7 +12,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.shared.SpacerWidget;
 import mat.shared.MeasureSearchModel;
 import mat.shared.MeasureSearchModel.PatientBasedType;
-import mat.shared.MeasureSearchModel.VersionMeasureType;
+import mat.shared.SearchModel;
+import mat.shared.SearchModel.VersionType;
 
 public class AdvancedSearchPillPanel {
 
@@ -57,46 +60,40 @@ public class AdvancedSearchPillPanel {
 		this.badgeTable = badgeTable;
 	}
 
-	public void setSearchedByPills(MeasureSearchModel measureSearchModel, String searchType) {
+	public void setSearchedByPills(SearchModel searchModel, String searchType) {
 		badgePanel.clear();
+		final boolean isMeasure = (searchModel instanceof MeasureSearchModel);
 		// create pill for search term only if the user entered a search term
-		if(measureSearchModel.getSearchTerm() != null && !measureSearchModel.getSearchTerm().isEmpty()) {
-			String searchTermText = "Search Term: " + getSubstringOfText(measureSearchModel.getSearchTerm());
+		if(searchModel.getSearchTerm() != null && !searchModel.getSearchTerm().isEmpty()) {
+			final String searchTermText = "Search Term: " + getSubstringOfText(searchModel.getSearchTerm());
 			makeBadge(searchTermText);
 		}
 		// create pill for filter by each time
-		String measureSearchType = measureSearchModel.isMyMeasureSearch() == 0? "My " + searchType : "All " + searchType;
+		final String measureSearchType = searchModel.getIsMyMeasureSearch() == 0? "My " + searchType : "All " + searchType;
 		makeBadge("Filter by: " + measureSearchType);
 		
 		// create pill for measure state if the user entered an option other then all measures
-		if(measureSearchModel.isDraft() != null && !measureSearchModel.isDraft().equals(VersionMeasureType.ALL)) {
-			String measureStateText = measureSearchModel.isDraft().equals(VersionMeasureType.DRAFT) ? "Draft" : "Versioned";
+		if(searchModel.isDraft() != null && !searchModel.isDraft().equals(VersionType.ALL)) {
+			final String measureStateText = searchModel.isDraft().equals(VersionType.DRAFT) ? "Draft" : "Versioned";
 			makeBadge(searchType + " State: " + measureStateText);
 		}
-		// create pill for patient based if the user entered an option other then all measures
-		if(measureSearchModel.isPatientBased() != null && !measureSearchModel.isPatientBased().equals(PatientBasedType.ALL)) {
-			String patientBasedString = measureSearchModel.isPatientBased().equals(PatientBasedType.PATIENT) ? "Yes" : "No";
-			makeBadge("Patient Based: " + patientBasedString);
-		}
-		//create pill for Measure Scoring if any of them are checked
-		if(measureSearchModel.getScoringTypes() != null && measureSearchModel.getScoringTypes().size() > 0) {
-			String measureScoringTypeString = measureSearchModel.getScoringTypes().size() == 4 ? "All" : 
-				String.join(", ", measureSearchModel.getScoringTypes());
-			makeBadge("Measure Score: " + measureScoringTypeString);
+		
+		if (isMeasure) {
+			createPatientBasedAndScoringBadge(searchModel);
 		}
 		// create pill for measure last modified within  if an option other then all measures is checked
-		if(measureSearchModel.getModifiedDate() > 0) {
-			String modifiedOnText = measureSearchModel.getModifiedDate() + " days";
+		if(searchModel.getModifiedDate() > 0) {
+			final String modifiedOnText = searchModel.getModifiedDate() + " days";
 			makeBadge("Modified Within: " + modifiedOnText);
 		}
 		// create pill for last modified by only if the user entered a text in the field
-		if(measureSearchModel.getModifiedOwner() != null && !measureSearchModel.getModifiedOwner().isEmpty()) {
-			String modifiedByText =  getSubstringOfText(measureSearchModel.getModifiedOwner());
+		if(searchModel.getModifiedOwner() != null && !searchModel.getModifiedOwner().isEmpty()) {
+			final String modifiedByText =  getSubstringOfText(searchModel.getModifiedOwner());
 			makeBadge("Modified By: " + modifiedByText);
 		}
 		// create pill for owned by only if the user entered a text in the field
-		if(measureSearchModel.getOwner() != null && !measureSearchModel.getOwner().isEmpty()) {
-			String ownedByText = getSubstringOfText(measureSearchModel.getOwner());
+		if(searchModel.getOwner() != null && !searchModel.getOwner().isEmpty()) {
+			final String ownedByText = getSubstringOfText(searchModel.getOwner());
 			makeBadge("Owned By: " + ownedByText);
 		}
 		// create reset link
@@ -110,8 +107,24 @@ public class AdvancedSearchPillPanel {
 		badgeTable.setVisible(true);
 	}
 
+	private void createPatientBasedAndScoringBadge(SearchModel measureSearchModel) {
+		// create pill for patient based if the user entered an option other then all measures
+		final PatientBasedType patientBasedType = ((MeasureSearchModel) measureSearchModel).isPatientBased();
+		if(patientBasedType != null && !patientBasedType.equals(PatientBasedType.ALL)) {
+			final String patientBasedString = patientBasedType.equals(PatientBasedType.PATIENT) ? "Yes" : "No";
+			makeBadge("Patient Based: " + patientBasedString);
+		}
+		
+		//create pill for Measure Scoring if any of them are checked
+		final List<String> scoringTypes = ((MeasureSearchModel) measureSearchModel).getScoringTypes();
+		if(scoringTypes != null && !scoringTypes.isEmpty()) {
+			final String measureScoringTypeString = scoringTypes.size() == 4 ? "All" : String.join(", ", scoringTypes);
+			makeBadge("Measure Score: " + measureScoringTypeString);
+		}
+	}
+
 	private void makeBadge(String badgeText) {
-		Badge badge = new Badge(badgeText);
+		final Badge badge = new Badge(badgeText);
 		badge.setTitle(badgeText);
 		badge.setStyleName("navPill");
 		badgePanel.add(badge);

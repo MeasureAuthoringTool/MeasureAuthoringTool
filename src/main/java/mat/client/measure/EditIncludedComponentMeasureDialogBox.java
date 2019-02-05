@@ -57,7 +57,7 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.util.CellTableUtility;
 import mat.shared.MeasureSearchModel;
-import mat.shared.MeasureSearchModel.VersionMeasureType;
+import mat.shared.SearchModel.VersionType;
 
 public class EditIncludedComponentMeasureDialogBox {
 	
@@ -151,7 +151,7 @@ public class EditIncludedComponentMeasureDialogBox {
 		MeasureSearchModel searchModel = new MeasureSearchModel(SearchWidgetWithFilter.ALL, 1, Integer.MAX_VALUE, null, null);
 		searchModel.setQdmVersion(MatContext.get().getCurrentQDMVersion());
 		searchModel.setOmitCompositeMeasure(true);
-		searchModel.setIsDraft(VersionMeasureType.VERSION);
+		searchModel.setIsDraft(VersionType.VERSION);
 		searchModel.setMeasureSetId(setId);
 		MatContext.get().getMeasureService().searchComponentMeasures(searchModel, new AsyncCallback<ManageMeasureSearchModel>() {
 

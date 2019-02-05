@@ -82,6 +82,7 @@ import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
+import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
@@ -161,21 +162,19 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	}
 	
 	@Override
-	public SaveCQLLibraryResult search(String searchText, int filter, int startIndex,int pageSize) {
+	public SaveCQLLibraryResult search(LibrarySearchModel model) {
 		SaveCQLLibraryResult searchModel = new SaveCQLLibraryResult();
-		List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
+		List<CQLLibraryDataSetObject> allLibraries = new ArrayList<>();
 		
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		List<CQLLibraryShareDTO> list = cqlLibraryDAO.search(searchText,Integer.MAX_VALUE, user,filter);
+		List<CQLLibraryShareDTO> list = cqlLibraryDAO.search(model, Integer.MAX_VALUE, user);
 		
 		searchModel.setResultsTotal(list.size());
 		
-		if (pageSize <= list.size()) {
-			list = list
-					.subList(startIndex - 1, pageSize);
-		} else if (pageSize > list.size()) {
-			list = list.subList(startIndex - 1,
-					list.size());
+		if (model.getPageSize() <= list.size()) {
+			list = list.subList(model.getStartIndex() - 1, model.getPageSize());
+		} else if (model.getPageSize() > list.size()) {
+			list = list.subList(model.getStartIndex() - 1, list.size());
 		}
 		
 		for(CQLLibraryShareDTO dto : list){
@@ -183,7 +182,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			if(LoggedInUserUtil.getLoggedInUserRole().equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 				userForShare = userDAO.find(dto.getOwnerUserId());
 			}
-			CQLLibraryDataSetObject object = extractCQLLibraryDataObjectFromShareDTO(userForShare, dto  );
+			CQLLibraryDataSetObject object = extractCQLLibraryDataObjectFromShareDTO(userForShare, dto);
 			allLibraries.add(object);
 		}
 	

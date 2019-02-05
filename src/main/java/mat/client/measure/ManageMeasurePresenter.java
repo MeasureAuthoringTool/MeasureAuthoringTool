@@ -1054,13 +1054,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if (currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
 			pageSize = 25;
 			setSearchingBusy(true);
-			MeasureSearchModel model = new MeasureSearchModel(filter, startIndex, pageSize, searchText, searchText);
+			MeasureSearchModel searchAdminModel = new MeasureSearchModel(filter, startIndex, pageSize, lastSearchText, searchText);
 			
 			if(null != searchDisplay) {
 				searchDisplay.getSuccessMessageDisplay().clearAlert();	
 			}
 			
-			MatContext.get().getMeasureService().search(model,
+			MatContext.get().getMeasureService().search(searchAdminModel,
 					new AsyncCallback<ManageMeasureSearchModel>() {
 						@Override
 						public void onFailure(Throwable caught) {
@@ -1145,7 +1145,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(ManageMeasureSearchModel result) {
 						addSearchPills(measureSearchModel);
-						String measureListLabel = (measureSearchModel.isMyMeasureSearch() != 0) ? "All Measures" : "My Measures";
+						String measureListLabel = (measureSearchModel.getIsMyMeasureSearch() != 0) ? "All Measures" : "My Measures";
 						searchDisplay.getMeasureSearchView().setMeasureListLabel(measureListLabel);
 						
 						boolean isExportSelectedButtonVisible = (result.getData().size() > 0);
@@ -1304,7 +1304,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						SearchResultUpdate sru = new SearchResultUpdate();
 						sru.update(result, (TextBox) searchDisplay.getSearchString(), measureSearchModel.getLastSearchText());
 
-						searchDisplay.buildCellTable(manageMeasureSearchModel, measureSearchModel.isMyMeasureSearch(), measureSearchModel);
+						searchDisplay.buildCellTable(manageMeasureSearchModel, measureSearchModel.getIsMyMeasureSearch(), measureSearchModel);
 
 						setSearchingBusy(false);
 						if(didUserSelectSearch) {

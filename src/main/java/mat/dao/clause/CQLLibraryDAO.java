@@ -8,11 +8,12 @@ import mat.model.clause.CQLLibrary;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLLibraryShareDTO;
+import mat.shared.LibrarySearchModel;
 
 public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 
-	List<CQLLibraryShareDTO> search(String searchText, int pageSize, User user, int filter);
-
+	List<CQLLibraryShareDTO> search(LibrarySearchModel librarySearchModel, int pageSize, User user);
+	
 	boolean isLibraryLocked(String id);
 
 	void updateLockedOutDate(CQLLibrary existingLibrary);

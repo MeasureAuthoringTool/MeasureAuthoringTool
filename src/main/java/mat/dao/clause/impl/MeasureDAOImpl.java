@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import mat.client.measure.MeasureSearchFilterPanel;
+import mat.client.shared.SearchWidgetWithFilter;
 import mat.dao.UserDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.search.GenericDAO;
@@ -50,7 +51,7 @@ import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
 import mat.shared.MeasureSearchModel;
 import mat.shared.MeasureSearchModel.PatientBasedType;
-import mat.shared.MeasureSearchModel.VersionMeasureType;
+import mat.shared.SearchModel.VersionType;
 
 @Repository("measureDAO")
 public class MeasureDAOImpl extends GenericDAO<Measure, String> implements MeasureDAO {
@@ -495,17 +496,17 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 			MeasureSearchModel measureSearchModel) {
 		final List<Predicate> predicatesList = new ArrayList<>();
 		
-		if (measureSearchModel.isMyMeasureSearch() == MeasureSearchFilterPanel.MY_MEASURES) {
+		if (measureSearchModel.getIsMyMeasureSearch() == MeasureSearchFilterPanel.MY_MEASURES) {
 			final Join<Measure, MeasureShare> childJoin = root.join("shares", JoinType.LEFT);
 			predicatesList.add(cb.or(cb.equal(root.get(OWNER).get("id"), userId), cb.equal(childJoin.get(SHARE_USER).get("id"), userId)));
 		}
 		
-		if (StringUtils.isNotBlank(measureSearchModel.getSearchTerm())) {
-			predicatesList.add(getSearchByMeasureOrOwnerNamePredicate(measureSearchModel.getSearchTerm(), cb, root));
+		if (StringUtils.isNotBlank(measureSearchModel.getLastSearchText())) {
+			predicatesList.add(getSearchByMeasureOrOwnerNamePredicate(measureSearchModel.getLastSearchText(), cb, root));
 		}
 		
-		if(measureSearchModel.isDraft() != VersionMeasureType.ALL) {
-			predicatesList.add(cb.equal(root.get(DRAFT), measureSearchModel.isDraft() == VersionMeasureType.DRAFT));
+		if(measureSearchModel.isDraft() != VersionType.ALL) {
+			predicatesList.add(cb.equal(root.get(DRAFT), measureSearchModel.isDraft() == VersionType.DRAFT));
 		}
 		
 		if(measureSearchModel.isPatientBased() != PatientBasedType.ALL) {
@@ -560,7 +561,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 				orderedDTOList.add(dto);
 		}
 		
-		final boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId().equals("3") && (measureSearchModel.isMyMeasureSearch() == MeasureSearchModel.ALL_MEASURES);
+		final boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId().equals("3") && (measureSearchModel.getIsMyMeasureSearch() == SearchWidgetWithFilter.ALL);
 		
 		if (CollectionUtils.isNotEmpty(orderedDTOList)) {
 			final List<MeasureShare> shareList = getShareList(user.getId(), null, null);

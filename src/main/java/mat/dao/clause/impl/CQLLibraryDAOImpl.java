@@ -1,6 +1,7 @@
 package mat.dao.clause.impl;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +44,8 @@ import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
 import mat.server.util.MATPropertiesService;
+import mat.shared.LibrarySearchModel;
+import mat.shared.SearchModel.VersionType;
 
 @Repository("cqlLibraryDAO")
 public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements mat.dao.clause.CQLLibraryDAO {
@@ -146,13 +149,13 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 	}
 
 	@Override
-	public List<CQLLibraryShareDTO> search(String searchText, int pageSize, User user, int filter) {
+	public List<CQLLibraryShareDTO> search(LibrarySearchModel model, int pageSize, User user) {
 		final String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		List<CQLLibraryShareDTO> orderedList;
 		if (SecurityRole.ADMIN_ROLE.equals(userRole)) {
-			orderedList = searchLibrariesForAdmin(searchText);
+			orderedList = searchLibrariesForAdmin(model.getLastSearchText());
 		} else {
-			orderedList = searchForNonAdmin(searchText, user, filter);
+			orderedList = searchForNonAdmin(model, user);
 		}
 
 		if (pageSize < orderedList.size()) {
@@ -169,7 +172,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 	 * @param filter
 	 * @param orderedList
 	 */
-	public List<CQLLibraryShareDTO> searchForNonAdmin(String searchText, User user, int filter) {
+	public List<CQLLibraryShareDTO> searchForNonAdmin(LibrarySearchModel librarySearchModel, User user) {
 
 		final List<CQLLibraryShareDTO> orderedList = new ArrayList<>();
 
@@ -178,7 +181,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		final CriteriaQuery<CQLLibrary> query = cb.createQuery(CQLLibrary.class);
 		final Root<CQLLibrary> root = query.from(CQLLibrary.class);
 
-		final Predicate predicate = buildPredicateForSearchingLibrariesForNonAdmin(searchText, cb, root, user.getId(), filter);
+		final Predicate predicate = buildPredicateForSearchingLibrariesForNonAdmin(librarySearchModel, cb, root, query, user.getId());
 
 		query.select(root).where(predicate).distinct(true);
 
@@ -268,18 +271,48 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		return session.createQuery(query).getResultList();
 	}
 	
-	private Predicate buildPredicateForSearchingLibrariesForNonAdmin(String searchText, CriteriaBuilder cb, Root<CQLLibrary> root, String userId, int filter) {
-
-		final Predicate p1 = buildPredicateForSearchingLibrariesForAdmin(searchText, cb, root);
-
-		Predicate p2 = null;
+	private Predicate buildPredicateForSearchingLibrariesForNonAdmin(LibrarySearchModel librarySearchModel, CriteriaBuilder cb, 
+			Root<CQLLibrary> root, CriteriaQuery<CQLLibrary> query, String userId) {
+		final List<Predicate> predicatesList = new ArrayList<>();
 		
-		if (filter == MeasureSearchFilterPanel.MY_MEASURES) {
+		predicatesList.add(buildPredicateForSearchingLibrariesForAdmin(librarySearchModel.getLastSearchText(), cb, root));
+		
+		if (librarySearchModel.getIsMyMeasureSearch() == MeasureSearchFilterPanel.MY_MEASURES) {
 			final Join<CQLLibrary, CQLLibraryShare> childJoin = root.join("shares", JoinType.LEFT);
-			p2 = cb.or(cb.equal(root.get(OWNER_ID).get("id"), userId), cb.equal(childJoin.get(SHARE_USER).get("id"), userId));
+			predicatesList.add(cb.or(cb.equal(root.get(OWNER_ID).get("id"), userId), cb.equal(childJoin.get(SHARE_USER).get("id"), userId)));
 		}
 		
-		return (p2 != null) ? cb.and(p1, p2) : p1;
+		if(librarySearchModel.isDraft() != VersionType.ALL) {
+			predicatesList.add(cb.equal(root.get(DRAFT), librarySearchModel.isDraft() == VersionType.DRAFT));
+		}
+		
+		if(librarySearchModel.getModifiedDate() > 0) {
+			predicatesList.add(cb.greaterThan(root.get("lastModifiedOn"),
+					LocalDate.now().minusDays(librarySearchModel.getModifiedDate()).atStartOfDay()));
+		}
+		
+		if (StringUtils.isNotBlank(librarySearchModel.getModifiedOwner())) {
+			final Subquery<String> subQuery = buildUserSubQuery(cb, query, librarySearchModel.getModifiedOwner().toLowerCase());
+			predicatesList.add(cb.in(root.get("lastModifiedBy").get("id")).value(subQuery));
+		}
+
+		if (StringUtils.isNotBlank(librarySearchModel.getOwner())) {
+			final Subquery<String> subQuery = buildUserSubQuery(cb, query, librarySearchModel.getOwner().toLowerCase());
+			predicatesList.add(cb.in(root.get(OWNER_ID).get("id")).value(subQuery));
+		}
+		
+		return cb.and(predicatesList.toArray(new Predicate[predicatesList.size()]));
+	}
+	
+	private Subquery<String> buildUserSubQuery(CriteriaBuilder cb, CriteriaQuery<CQLLibrary> query, String userName) {
+		final Subquery<String> subQuery = query.subquery(String.class);
+		final Root<User> subRoot = subQuery.from(User.class);
+		
+		subQuery.select(subRoot.get("id")).where(cb.or(
+				cb.like(cb.lower(subRoot.get(FIRST_NAME)), "%" + userName + "%"),
+				cb.like(cb.lower(subRoot.get(LAST_NAME)), "%" + userName + "%")));
+		
+		return subQuery;
 	}
 	
 	@Override

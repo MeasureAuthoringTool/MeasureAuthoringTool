@@ -17,12 +17,13 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 
 public interface CQLLibraryServiceAsync {
 
-	void search(String searchText, int filter, int startIndex,int pageSize, AsyncCallback<SaveCQLLibraryResult> callback);
-
+	void search(LibrarySearchModel librarySearchModel, AsyncCallback<SaveCQLLibraryResult> callback);
+	
 	void findCQLLibraryByID(String cqlLibraryID, AsyncCallback<CQLLibraryDataSetObject> callback);
 
 	void save(CQLLibraryDataSetObject cqlModel, AsyncCallback<SaveCQLLibraryResult> callback);

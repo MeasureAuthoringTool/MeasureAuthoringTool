@@ -50,11 +50,11 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.client.util.CellTableUtility;
 import mat.client.util.ClientConstants;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.LibrarySearchModel;
 
 /**
  * The Class CQLLibrarySearchView is used to build the CQL Library Ownership table.
@@ -185,7 +185,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	 * @param searchText            the search text
 	 * @param filter the filter
 	 */
-	public void buildCellTable(SaveCQLLibraryResult result, final String searchText, final int filter) {
+	public void buildCellTable(SaveCQLLibraryResult result, LibrarySearchModel model, final int filter) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		if ((result != null) && (result.getCqlLibraryDataSetObjects().size() > 0)) {
@@ -219,9 +219,10 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 							updateRowData(start, manageCQLLibrarySearchList);
 						}
 					};
-
-					MatContext.get().getCQLLibraryService().search(searchText, filter, index + 1, index + PAGE_SIZE,
-							callback);
+					
+					model.setStartIndex(index + 1);
+					model.setPageSize(index + PAGE_SIZE);
+					MatContext.get().getCQLLibraryService().search(model, callback);
 				}
 			};
 

@@ -19,6 +19,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
@@ -27,8 +28,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	private static final long serialVersionUID = -2412573290030426288L;
 
 	@Override
-	public SaveCQLLibraryResult search(String searchText,int filter, int startIndex, int pageSize) {
-		return this.getCQLLibraryService().search(searchText,filter, startIndex,pageSize);
+	public SaveCQLLibraryResult search(LibrarySearchModel librarySearchModel) {
+		return this.getCQLLibraryService().search(librarySearchModel);
 	}
 	@Override
 	public SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText){

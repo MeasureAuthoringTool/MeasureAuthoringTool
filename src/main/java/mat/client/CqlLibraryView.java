@@ -24,6 +24,7 @@ import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.model.cql.CQLLibraryDataSetObject;
+import mat.shared.LibrarySearchModel;
 
 public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
@@ -111,8 +112,8 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	}
 	
 	@Override
-	public void buildCellTable(SaveCQLLibraryResult result, String searchText,int filter) {
-		cqlLibrarySearchView.buildCellTable(result, searchText,filter);
+	public void buildCellTable(SaveCQLLibraryResult result, LibrarySearchModel librarySearchModel,int filter) {
+		cqlLibrarySearchView.buildCellTable(result, librarySearchModel, filter);
 	}
 	@Override
 	public VerticalPanel getCellTablePanel() {
@@ -238,7 +239,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public void resetSearchDisplay() {
 		searchFilterWidget.getLibraryCustomCheckBox().setValue(true);
 		searchFilterWidget.getSearchInput().setValue("");
-		searchFilterWidget.getAdvancedSearchPanel().resetDisplay();
+		searchFilterWidget.getAdvancedSearchPanel().resetDisplay(false);
 		searchFilterWidget.getSearchInput().getElement().focus();
 		searchFilterWidget.setSelectedFilter(SearchWidgetWithFilter.MY);
 	}

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.NavPills;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
@@ -47,7 +46,6 @@ import mat.client.event.CQLLibraryDeleteEvent;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.event.CQLVersionEvent;
-import mat.client.measure.SearchDisplay;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ConfirmationDialogBox;
@@ -65,11 +63,12 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
+import mat.client.util.ClientConstants;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
-import mat.shared.MeasureSearchModel;
+import mat.shared.LibrarySearchModel;
 import mat.shared.error.AuthenticationException;
 
 
@@ -170,7 +169,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		 * @param searchText the search text
 		 * @param filter the filter
 		 */
-		void buildCellTable(SaveCQLLibraryResult searchModel, String searchText,int filter);
+		void buildCellTable(SaveCQLLibraryResult searchModel, LibrarySearchModel model, int filter);
 
 		/**
 		 * Gets the CQL library search view.
@@ -1254,15 +1253,19 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	private void search(final String searchText, final int filter, int startIndex,int pageSize) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
-		MeasureSearchModel model = new MeasureSearchModel(filter, startIndex, 25, lastSearchText, searchText);
 		pageSize = 25;
 		showSearchingBusy(true);
 		cqlLibraryView.resetMessageDisplay();
-		MatContext.get().getCQLLibraryService().search(lastSearchText, filter, startIndex,pageSize, new AsyncCallback<SaveCQLLibraryResult>() {
+
+		LibrarySearchModel searchModel = new LibrarySearchModel(filter, startIndex, pageSize, lastSearchText, searchText);
+		if (!MatContext.get().getLoggedInUserRole().equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
+			buildAdvancedSearchModel(searchModel);
+		}
+		MatContext.get().getCQLLibraryService().search(searchModel, new AsyncCallback<SaveCQLLibraryResult>() {
 			
 			@Override
 			public void onSuccess(SaveCQLLibraryResult result) {
-				setSearchPills(model);
+				setSearchPills(searchModel);
 				if(cqlLibraryView.getSearchFilterWidget().
 						getSelectedFilter()!=0){
 					cqlLibraryView.getCQLLibrarySearchView().setCQLLibraryListLabel("All CQL Libraries");
@@ -1297,7 +1300,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 				SearchResultUpdate sru = new SearchResultUpdate();
 				sru.update(result, (TextBox) cqlLibraryView.getSearchString(), lastSearchText);
-				cqlLibraryView.buildCellTable(result, lastSearchText,filter);
+				cqlLibraryView.buildCellTable(result, searchModel, filter);
 				showSearchingBusy(false);
 			}
 
@@ -1309,13 +1312,20 @@ public class CqlLibraryPresenter implements MatPresenter {
 		});
 	}
 
-	private void resetSearchFields(MeasureSearchModel measureSearchModel) {
-		cqlLibraryView.resetSearchDisplay();
-		measureSearchModel.reset();
-		setSearchPills(measureSearchModel);
+	private void buildAdvancedSearchModel(LibrarySearchModel searchModel) {
+		searchModel.setIsDraft(cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getSearchStateValue());
+		searchModel.setModifiedDate(Integer.parseInt(cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getModifiedWithinValue()));
+		searchModel.setModifiedOwner(cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getModifiedByValue());
+		searchModel.setOwner(cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getOwnedByValue());
 	}
 	
-	private void setSearchPills(MeasureSearchModel model) {
+	private void resetSearchFields(LibrarySearchModel librarySearchModel) {
+		cqlLibraryView.resetSearchDisplay();
+		librarySearchModel.reset();
+		setSearchPills(librarySearchModel);
+	}
+	
+	private void setSearchPills(LibrarySearchModel model) {
 		cqlLibraryView.getSearchPillPanel().setSearchedByPills(model, "Libraries");
 		cqlLibraryView.getSearchPillPanel().getReset().addClickHandler(event -> resetSearchFields(model));
 	}

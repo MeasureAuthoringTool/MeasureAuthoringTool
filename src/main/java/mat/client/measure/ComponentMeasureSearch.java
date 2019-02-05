@@ -56,7 +56,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.MeasureSearchModel;
-import mat.shared.MeasureSearchModel.VersionMeasureType;
+import mat.shared.SearchModel.VersionType;
 import mat.shared.StringUtility;
 
 public class ComponentMeasureSearch implements BaseDisplay{
@@ -126,7 +126,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 		MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, pageSize, lastSearchText, searchText);
 		searchModel.setQdmVersion(MatContext.get().getCurrentQDMVersion());
 		searchModel.setOmitCompositeMeasure(true);
-		searchModel.setIsDraft(VersionMeasureType.VERSION);
+		searchModel.setIsDraft(VersionType.VERSION);
 		
 		MatContext.get().getMeasureService().searchComponentMeasures(searchModel, new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override

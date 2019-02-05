@@ -33,6 +33,7 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLLibraryDataSetObject;
+import mat.shared.LibrarySearchModel;
 
 public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
@@ -68,7 +69,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
 		HasClickHandlers getSearchButton();
 
-		void buildCellTable(SaveCQLLibraryResult result, String searchText, int filter);
+		void buildCellTable(SaveCQLLibraryResult result, LibrarySearchModel model, int filter);
 
 		void buildDefaultView();
 
@@ -408,8 +409,8 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		cqlLibraryAdminView.getSelectedId().clear();
 		cqlLibraryAdminView.getSelectedLibraries().clear();
 		cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
-		MatContext.get().getCQLLibraryService().search(lastSearchText, filter, startIndex, pageSize,
-				new AsyncCallback<SaveCQLLibraryResult>() {
+		LibrarySearchModel librarySearchModel = new LibrarySearchModel(filter, startIndex, pageSize, lastSearchText, searchText);
+		MatContext.get().getCQLLibraryService().search(librarySearchModel, new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override
 					public void onSuccess(SaveCQLLibraryResult result) {
@@ -421,7 +422,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 						}
 						SearchResultUpdate sru = new SearchResultUpdate();
 						sru.update(result, (TextBox) cqlLibraryAdminView.getSearchString(), lastSearchText);
-						cqlLibraryAdminView.buildCellTable(result, lastSearchText, filter);
+						cqlLibraryAdminView.buildCellTable(result, librarySearchModel, filter);
 						showSearchingBusy(false);
 					}
 

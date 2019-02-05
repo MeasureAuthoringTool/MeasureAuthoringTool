@@ -20,13 +20,14 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 
 public interface CQLLibraryServiceInterface {
 	
-	SaveCQLLibraryResult search(String searchText, int filter, int startIndex,int pageSize);
+	SaveCQLLibraryResult search(LibrarySearchModel librarySearchModel);
 	
 	void save(CQLLibrary cqlLibrary);
 

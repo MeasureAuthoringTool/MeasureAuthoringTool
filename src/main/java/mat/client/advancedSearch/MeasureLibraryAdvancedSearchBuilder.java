@@ -3,10 +3,11 @@ package mat.client.advancedSearch;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.client.shared.SearchWidgetWithFilter;
+import mat.shared.MatConstants;
 import mat.shared.MeasureSearchModel;
 import mat.shared.MeasureSearchModel.PatientBasedType;
-import mat.shared.MeasureSearchModel.VersionMeasureType;
-import mat.shared.MatConstants;
+import mat.shared.SearchModel.VersionType;
 
 public class MeasureLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 	
@@ -35,18 +36,18 @@ public class MeasureLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 		String searchTerm = getModal().getSearchText().getValue();
 		int isMyMeasureIndicator = 0;
 		if(getModal().getSearchBoxList().getSelectedValue().equals(MeasureSearchModel.ONLY_MY_MEASURE)) {
-			isMyMeasureIndicator = MeasureSearchModel.MY_MEASURES;
+			isMyMeasureIndicator = SearchWidgetWithFilter.MY;
 		} else {
-			isMyMeasureIndicator = MeasureSearchModel.ALL_MEASURES;
+			isMyMeasureIndicator = SearchWidgetWithFilter.ALL;
 		}
-		VersionMeasureType versionMeasureType;
+		VersionType versionMeasureType;
 		if(getModal().getSearchStateList().getSelectedValue().equals(MeasureSearchModel.VERSION_MEASURE)) {
-			versionMeasureType = MeasureSearchModel.VersionMeasureType.VERSION;
+			versionMeasureType = MeasureSearchModel.VersionType.VERSION;
 		}
 		else if(getModal().getSearchStateList().getSelectedValue().equals(MeasureSearchModel.DRAFT_MEASURE)) {
-			versionMeasureType = MeasureSearchModel.VersionMeasureType.DRAFT;
+			versionMeasureType = MeasureSearchModel.VersionType.DRAFT;
 		} else {
-			versionMeasureType = MeasureSearchModel.VersionMeasureType.ALL;
+			versionMeasureType = MeasureSearchModel.VersionType.ALL;
 		}
 		List<String> scoring = new ArrayList<String>();
 		if(getModal().getCohortCheckbox().getValue()) {

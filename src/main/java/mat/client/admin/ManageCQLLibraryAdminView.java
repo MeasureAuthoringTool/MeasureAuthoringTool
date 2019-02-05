@@ -22,6 +22,7 @@ import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.model.cql.CQLLibraryDataSetObject;
+import mat.shared.LibrarySearchModel;
 
 public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter.ViewDisplay {
 	
@@ -147,8 +148,8 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	}
 
 	@Override
-	public void buildCellTable(SaveCQLLibraryResult result, String searchText, int filter) {
-		cqlLibrarySearchView.buildCellTable(result, searchText, filter);
+	public void buildCellTable(SaveCQLLibraryResult result, LibrarySearchModel model, int filter) {
+		cqlLibrarySearchView.buildCellTable(result, model, filter);
 	}
 	
 	@Override

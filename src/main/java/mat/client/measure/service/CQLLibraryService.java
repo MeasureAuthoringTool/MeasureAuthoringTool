@@ -2,7 +2,6 @@ package mat.client.measure.service;
 
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -19,13 +18,14 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 
 @RemoteServiceRelativePath("cqlLibrary")
 public interface CQLLibraryService extends RemoteService {
-	SaveCQLLibraryResult search(String searchText, int filter, int startIndex, int pageSize);
+	SaveCQLLibraryResult search(LibrarySearchModel librarySearchModel);
 
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryID);
 

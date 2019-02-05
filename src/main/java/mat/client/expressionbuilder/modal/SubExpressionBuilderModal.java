@@ -70,6 +70,7 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 		applyButton.setType(ButtonType.PRIMARY);
 		applyButton.setPull(Pull.RIGHT);
 		applyButton.setSize(ButtonSize.LARGE);
+		applyButton.getElement().setAttribute("aria-label", "Clicking this button will save your changes, apply the CQL to your expression, and take you to the previous page.");
 		return applyButton;
 	}
 	

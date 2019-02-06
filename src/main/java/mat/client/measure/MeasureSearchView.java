@@ -60,8 +60,8 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.ClientConstants;
-import mat.shared.MeasureSearchModel;
 import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.MeasureSearchModel;
 
 public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSearchModel.Result> {
 	private VerticalPanel cellTablePanel = new VerticalPanel();
@@ -763,7 +763,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 			measureSearchHeader.getElement().setId("measureSearchHeader_Label");
 			measureSearchHeader.setStyleName("recentSearchHeader");
 			measureSearchHeader.getElement().setAttribute("tabIndex", "0");
-			HTML desc = new HTML("<p> No measures returned. Please search again.</p>");
+			HTML desc = new HTML(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
 			cellTablePanel.add(measureSearchHeader);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);

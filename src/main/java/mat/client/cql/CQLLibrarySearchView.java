@@ -284,7 +284,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 			cqlLibrarySearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
 			cqlLibrarySearchHeader.setStyleName("recentSearchHeader");
 			cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "0");
-			HTML desc = new HTML("<p> No " + getCQLlibraryListLabel() + ".</p>");
+			HTML desc = new HTML(MatContext.get().getMessageDelegate().getNoLibrarues());
 			cellTablePanel.add(cqlLibrarySearchHeader);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);

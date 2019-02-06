@@ -112,7 +112,7 @@ public class AdvancedSearchPanel {
 			pluralType = "Libraries";
 		}
 		
-		buildStateSection(pluralType);
+		buildStateSection(type, pluralType);
 		buildDaysSection(type, pluralType);
 		buildModifiedBySection(type);
 		buildOwnedBySection(type);
@@ -153,10 +153,10 @@ public class AdvancedSearchPanel {
 		advancedSearchRow.add(ownedByGroup);
 	}
 	
-	private void buildStateSection(String pluralType) {
+	private void buildStateSection(String type, String pluralType) {
 		final FormLabel stateLabel = new FormLabel();
-		stateLabel.setText(" Show Only");
-		stateLabel.setTitle("Show Only");
+		stateLabel.setText(type + " State");
+		stateLabel.setTitle(type + " State");
 		stateLabel.setFor("stateId");
 		stateLabel.setFor("stateGroup");
 		stateLabel.setPaddingRight(16);

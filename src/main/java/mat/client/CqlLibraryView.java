@@ -240,6 +240,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		searchFilterWidget.getAdvancedSearchPanel().resetDisplay(false);
 		searchFilterWidget.getSearchInput().getElement().focus();
 		searchFilterWidget.setSelectedFilter(SearchWidgetWithFilter.MY);
+		errorMessageAlert.clearAlert();
 	}
 
 

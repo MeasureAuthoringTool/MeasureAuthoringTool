@@ -453,6 +453,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	
 	@Override
 	public void resetDisplay() {
+		this.getErrorMessageDisplay().clearAlert();
 		this.measureSearchFilterWidget.getSearchInput().setValue("");
 		this.measureSearchFilterWidget.getMeasureCustomCheckBox().setValue(true);
 		this.measureSearchFilterWidget.getAdvancedSearchPanel().resetDisplay(true);

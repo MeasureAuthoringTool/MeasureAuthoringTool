@@ -28,8 +28,8 @@ public class MessageDelegate {
 	private static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has an incorrect format.";
 	private static final String EMAIL_ID_REQUIRED = "Email Address is required.";
 	private static final String LOGIN_USER_REQUIRED = "User Name is required.";
-	private static final String NO_MEASURES = "No measures returned. Please search again.";
-	private static final String NO_LIBRARIES_RETURNED = "No libraries returned. Please search again.";
+	private static final String NO_MEASURES = "No measures returned. Please change your search criteria and search again.";
+	private static final String NO_LIBRARIES_RETURNED = "No libraries returned. Please change your search criteria and search again.";
 	private static final String WARNING_BAD_DATA_TYPE_COMBINATION ="Successfully saved with errors. You have an incorrect value set/code datatype combination.";
 	private static final String OID_REQUIRED = "OID is required.";
 	private static final String OID_TOO_LONG = "OID cannot exceed 50 characters.";

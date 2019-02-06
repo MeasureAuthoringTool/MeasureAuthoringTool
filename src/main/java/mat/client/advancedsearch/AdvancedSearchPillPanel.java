@@ -1,4 +1,4 @@
-package mat.client.advancedSearch;
+package mat.client.advancedsearch;
 
 import java.util.List;
 

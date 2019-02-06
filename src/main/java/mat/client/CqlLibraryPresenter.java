@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
-import mat.client.advancedSearch.AdvancedSearchPillPanel;
+import mat.client.advancedsearch.AdvancedSearchPillPanel;
 import mat.client.buttons.CustomButton;
 import mat.client.cql.CQLLibraryDetailView;
 import mat.client.cql.CQLLibraryHistoryView;
@@ -1267,15 +1267,13 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onSuccess(SaveCQLLibraryResult result) {
 				setSearchPills(searchModel);
-				if(cqlLibraryView.getSearchFilterWidget().
-						getSelectedFilter()!=0){
+				if(cqlLibraryView.getSearchFilterWidget().getSelectedFilter()!=0){
 					cqlLibraryView.getCQLLibrarySearchView().setCQLLibraryListLabel("All CQL Libraries");
 				}else{
 					cqlLibraryView.getCQLLibrarySearchView().setCQLLibraryListLabel("My CQL Libraries");
 				}
 				
-				if ((result.getResultsTotal() == 0)
-						&& !lastSearchText.isEmpty()) {
+				if (result.getResultsTotal() == 0) {
 					cqlLibraryView.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoLibrarues());
 				} else {
 					cqlLibraryView.resetMessageDisplay();

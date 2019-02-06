@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import mat.client.advancedSearch.AdvancedSearchPanel;
+import mat.client.advancedsearch.AdvancedSearchPanel;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.util.MatTextBox;
 

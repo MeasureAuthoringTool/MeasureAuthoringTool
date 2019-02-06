@@ -1278,7 +1278,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						manageMeasureSearchModel = result;
 						MatContext.get().setManageMeasureSearchModel(manageMeasureSearchModel);
 
-						if ((result.getResultsTotal() == 0) && !measureSearchModel.getLastSearchText().isEmpty()) {
+						if (result.getResultsTotal() == 0) {
 							searchDisplay.getErrorMessageDisplay()
 									.createAlert(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
 						} else {

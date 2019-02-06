@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.advancedSearch.AdvancedSearchPillPanel;
+import mat.client.advancedsearch.AdvancedSearchPillPanel;
 import mat.client.buttons.CustomButton;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.MeasureSearchView.AdminObserver;

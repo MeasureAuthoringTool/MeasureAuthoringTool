@@ -1257,7 +1257,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		showSearchingBusy(true);
 		cqlLibraryView.resetMessageDisplay();
 
-		LibrarySearchModel searchModel = new LibrarySearchModel(filter, startIndex, pageSize, lastSearchText, searchText);
+		LibrarySearchModel searchModel = new LibrarySearchModel(filter, startIndex, pageSize, lastSearchText);
 		if (!MatContext.get().getLoggedInUserRole().equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
 			buildAdvancedSearchModel(searchModel);
 			cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);

@@ -1054,7 +1054,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if (currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
 			pageSize = 25;
 			setSearchingBusy(true);
-			MeasureSearchModel searchAdminModel = new MeasureSearchModel(filter, startIndex, pageSize, lastSearchText, searchText);
+			MeasureSearchModel searchAdminModel = new MeasureSearchModel(filter, startIndex, pageSize, lastSearchText);
 			
 			if(null != searchDisplay) {
 				searchDisplay.getSuccessMessageDisplay().clearAlert();	
@@ -1113,7 +1113,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 					});
 		} else {
-			MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, 25, lastSearchText, searchText);
+			MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, 25, lastSearchText);
 			buildAdvancedSearchModel(searchModel);
 			searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);
 			advancedSearch(searchModel, didUserSelectSearch);
@@ -1302,7 +1302,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							} 
 						}
 						SearchResultUpdate sru = new SearchResultUpdate();
-						sru.update(result, (TextBox) searchDisplay.getSearchString(), measureSearchModel.getLastSearchText());
+						sru.update(result, (TextBox) searchDisplay.getSearchString(), measureSearchModel.getSearchTerm());
 
 						searchDisplay.buildCellTable(manageMeasureSearchModel, measureSearchModel.getIsMyMeasureSearch(), measureSearchModel);
 

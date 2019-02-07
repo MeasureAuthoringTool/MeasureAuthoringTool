@@ -409,7 +409,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		cqlLibraryAdminView.getSelectedId().clear();
 		cqlLibraryAdminView.getSelectedLibraries().clear();
 		cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
-		LibrarySearchModel librarySearchModel = new LibrarySearchModel(filter, startIndex, pageSize, lastSearchText, searchText);
+		LibrarySearchModel librarySearchModel = new LibrarySearchModel(filter, startIndex, pageSize, lastSearchText);
 		MatContext.get().getCQLLibraryService().search(librarySearchModel, new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override

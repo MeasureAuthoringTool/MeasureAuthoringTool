@@ -501,8 +501,8 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 			predicatesList.add(cb.or(cb.equal(root.get(OWNER).get("id"), userId), cb.equal(childJoin.get(SHARE_USER).get("id"), userId)));
 		}
 		
-		if (StringUtils.isNotBlank(measureSearchModel.getLastSearchText())) {
-			predicatesList.add(getSearchByMeasureOrOwnerNamePredicate(measureSearchModel.getLastSearchText(), cb, root));
+		if (StringUtils.isNotBlank(measureSearchModel.getSearchTerm())) {
+			predicatesList.add(getSearchByMeasureOrOwnerNamePredicate(measureSearchModel.getSearchTerm(), cb, root));
 		}
 		
 		if(measureSearchModel.isDraft() != VersionType.ALL) {

@@ -14,7 +14,6 @@ public abstract class SearchModel implements IsSerializable {
 	protected String searchTerm;
 	protected String modifiedOwner;
 	protected String owner;
-	protected String lastSearchText;
 
 	protected VersionType versionType;
 	
@@ -76,14 +75,6 @@ public abstract class SearchModel implements IsSerializable {
 		this.owner = trimWhiteSpaces(owner);
 	}
 
-	public String getLastSearchText() {
-		return lastSearchText;
-	}
-
-	public void setLastSearchText(String lastSearchText) {
-		this.lastSearchText = lastSearchText;
-	}
-
 	public VersionType isDraft() {
 		return versionType;
 	}
@@ -99,7 +90,6 @@ public abstract class SearchModel implements IsSerializable {
 		modifiedOwner = "";
 		owner = "";
 		isMyMeasureSearch = SearchWidgetWithFilter.MY;
-		lastSearchText = "";
 	}
 	
 	private String trimWhiteSpaces(String str) {

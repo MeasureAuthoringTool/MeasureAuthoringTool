@@ -148,7 +148,7 @@ public class EditIncludedComponentMeasureDialogBox {
 		cellTablePanel.removeStyleName("cellTablePanel");
 		cellTablePanel.add(progress);
 
-		MeasureSearchModel searchModel = new MeasureSearchModel(SearchWidgetWithFilter.ALL, 1, Integer.MAX_VALUE, null, null);
+		MeasureSearchModel searchModel = new MeasureSearchModel(SearchWidgetWithFilter.ALL, 1, Integer.MAX_VALUE, null);
 		searchModel.setQdmVersion(MatContext.get().getCurrentQDMVersion());
 		searchModel.setOmitCompositeMeasure(true);
 		searchModel.setIsDraft(VersionType.VERSION);

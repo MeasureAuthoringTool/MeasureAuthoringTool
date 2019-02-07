@@ -123,7 +123,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 	protected void searchComponentMeasures(String searchText, int startIndex, int pageSize, int filter) {
 		setBusy(true);
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
-		MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, pageSize, lastSearchText, searchText);
+		MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, pageSize, lastSearchText);
 		searchModel.setQdmVersion(MatContext.get().getCurrentQDMVersion());
 		searchModel.setOmitCompositeMeasure(true);
 		searchModel.setIsDraft(VersionType.VERSION);

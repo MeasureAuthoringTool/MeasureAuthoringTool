@@ -153,7 +153,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		final String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		List<CQLLibraryShareDTO> orderedList;
 		if (SecurityRole.ADMIN_ROLE.equals(userRole)) {
-			orderedList = searchLibrariesForAdmin(model.getLastSearchText());
+			orderedList = searchLibrariesForAdmin(model.getSearchTerm());
 		} else {
 			orderedList = searchForNonAdmin(model, user);
 		}
@@ -275,7 +275,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 			Root<CQLLibrary> root, CriteriaQuery<CQLLibrary> query, String userId) {
 		final List<Predicate> predicatesList = new ArrayList<>();
 		
-		predicatesList.add(buildPredicateForSearchingLibrariesForAdmin(librarySearchModel.getLastSearchText(), cb, root));
+		predicatesList.add(buildPredicateForSearchingLibrariesForAdmin(librarySearchModel.getSearchTerm(), cb, root));
 		
 		if (librarySearchModel.getIsMyMeasureSearch() == MeasureSearchFilterPanel.MY_MEASURES) {
 			final Join<CQLLibrary, CQLLibraryShare> childJoin = root.join("shares", JoinType.LEFT);

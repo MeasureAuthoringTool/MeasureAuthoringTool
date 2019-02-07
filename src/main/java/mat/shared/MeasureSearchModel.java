@@ -38,32 +38,14 @@ public class MeasureSearchModel extends SearchModel implements IsSerializable {
 		this.pageSize = Integer.MAX_VALUE;
 		this.isMyMeasureSearch = SearchWidgetWithFilter.MY;
 	}
-	
-	public MeasureSearchModel(String searchterm, VersionType versionMeasureType, List<String> scoringTypes, PatientBasedType patientBasedType,
-			int modifiedDate, String modifiedOwner, String owner, int startIndex, int pageSize, int isMyMeasureSearch, String lastSearchText) {
-		
-		this.searchTerm = searchterm;
-		this.versionType = versionMeasureType;
-		this.scoringTypes = scoringTypes;
-		this.patientBasedType = patientBasedType;
-		this.modifiedDate = modifiedDate;
-		this.modifiedOwner = modifiedOwner;
-		this.owner = owner;
-		this.startIndex = startIndex;
-		this.pageSize = pageSize;
-		this.isMyMeasureSearch = isMyMeasureSearch;
-		this.lastSearchText = lastSearchText;
-	}
 
-	public MeasureSearchModel(int myMeasureSearch, int startIndex, int pageSize, String lastSearchText, String searchTerm) {
+	public MeasureSearchModel(int myMeasureSearch, int startIndex, int pageSize, String searchTerm) {
 		this();
 		
 		this.isMyMeasureSearch = myMeasureSearch;
 		this.startIndex = startIndex;
 		this.pageSize = pageSize;
-		this.lastSearchText = lastSearchText;
 		this.searchTerm = searchTerm;
-
 	}
 
 	public PatientBasedType isPatientBased() {

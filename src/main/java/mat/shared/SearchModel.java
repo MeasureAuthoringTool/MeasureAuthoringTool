@@ -57,7 +57,7 @@ public abstract class SearchModel implements IsSerializable {
 	}
 
 	public void setSearchTerm(String searchTerm) {
-		this.searchTerm = searchTerm;
+		this.searchTerm = trimWhiteSpaces(searchTerm);
 	}
 
 	public String getModifiedOwner() {

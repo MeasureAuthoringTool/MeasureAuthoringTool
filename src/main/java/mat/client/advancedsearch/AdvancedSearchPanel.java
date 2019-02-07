@@ -35,6 +35,7 @@ public class AdvancedSearchPanel {
 	private static final String PADDING_LEFT_TWENTY_PIXEL = "padding-left: 20px;";
 	private static final String STYLE = "style";
 	private static final String OWNED_BY = " Owned By";
+	private static final String OWNER_PLACEHOLDER = "Enter user first or last name";
 	
 	private boolean isMeasure = false; 
 	
@@ -268,8 +269,8 @@ public class AdvancedSearchPanel {
 		modifiedBy.setWidth(WIDTH_OF_BOXES);
 		modifiedBy.setHeight(HEIGHT_OF_BOXES);
 		modifiedBy.setId("modifiedById");
-		modifiedBy.setPlaceholder(" Modified By");
-		modifiedBy.setTitle(" Modified By");
+		modifiedBy.setPlaceholder(OWNER_PLACEHOLDER);
+		modifiedBy.setTitle(OWNER_PLACEHOLDER);
 		
 		modifiedByGroup = new FormGroup();
 		modifiedByGroup.add(modifiedByLabel);
@@ -287,8 +288,8 @@ public class AdvancedSearchPanel {
 		ownedBy.setWidth(WIDTH_OF_BOXES);
 		ownedBy.setHeight(HEIGHT_OF_BOXES);
 		ownedBy.setId("ownedById");
-		ownedBy.setPlaceholder(OWNED_BY);
-		ownedBy.setTitle(OWNED_BY);
+		ownedBy.setPlaceholder(OWNER_PLACEHOLDER);
+		ownedBy.setTitle(OWNER_PLACEHOLDER);
 		
 		ownedByGroup = new FormGroup();
 		ownedByGroup.add(ownedByLabel);

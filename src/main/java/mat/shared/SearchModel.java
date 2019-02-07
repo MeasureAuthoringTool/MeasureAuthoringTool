@@ -65,7 +65,7 @@ public abstract class SearchModel implements IsSerializable {
 	}
 
 	public void setModifiedOwner(String modifiedOwner) {
-		this.modifiedOwner = modifiedOwner;
+		this.modifiedOwner = trimWhiteSpaces(modifiedOwner);
 	}
 
 	public String getOwner() {
@@ -73,7 +73,7 @@ public abstract class SearchModel implements IsSerializable {
 	}
 
 	public void setOwner(String owner) {
-		this.owner = owner;
+		this.owner = trimWhiteSpaces(owner);
 	}
 
 	public String getLastSearchText() {
@@ -100,5 +100,9 @@ public abstract class SearchModel implements IsSerializable {
 		owner = "";
 		isMyMeasureSearch = SearchWidgetWithFilter.MY;
 		lastSearchText = "";
+	}
+	
+	private String trimWhiteSpaces(String str) {
+		return str != null ? str.trim() : null;
 	}
 }

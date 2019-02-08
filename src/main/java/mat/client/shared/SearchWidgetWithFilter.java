@@ -77,7 +77,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		mainFocusPanel.add(searchInputHPanel);
 		horizontalPanel.add(mainFocusPanel);
 		VerticalPanel mainPanel = new VerticalPanel();
-		mainPanel.add(buildSearchHeader());
+		mainPanel.add(buildSearchHeader(forView));
 		mainPanel.add(horizontalPanel);
 		mainPanel.setStylePrimaryName(cssStyleTopPanel);
 
@@ -139,8 +139,11 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		return checkBoxPanel;
 	}
 
-	private Label buildSearchHeader() {
+	private Label buildSearchHeader(String forView) {
+		String viewPluralString = forView.equalsIgnoreCase("forMeasure") ? "measures" : "libraries";
+		String viewString = forView.equalsIgnoreCase("forMeasure") ? "measure" : "library";
 		Label searchHeader = new Label("Search");
+		searchHeader.getElement().setAttribute("aria-label", "Search This panel allows you to filter your " + viewPluralString + " via search so you can find the exact " + viewString + " you want");
 		searchHeader.getElement().setId("searchHeader_Label");
 		searchHeader.setStyleName("recentSearchHeader");
 		searchHeader.getElement().setAttribute("tabIndex", "0");

@@ -25,7 +25,7 @@ public class AdvancedSearchPillPanel {
 	
 	private Label badgeHeader;
 	
-	public AdvancedSearchPillPanel() {
+	public AdvancedSearchPillPanel(String forView) {
 		
 		badgeTable.clear();
 		badgeTable.getElement().setId("badgePanel_horizontalPanel");
@@ -35,6 +35,7 @@ public class AdvancedSearchPillPanel {
 		badgeHeader.getElement().setId("searchHeader_Label");
 		badgeHeader.setStyleName("recentSearchHeader");
 		badgeHeader.getElement().setAttribute("tabIndex", "0");
+		badgeHeader.getElement().setAttribute("aria-label", "Search Criteria This panel displays the search criteria you selected for your " + forView + " search");
 
 		badgeTable.add(badgeHeader);
 		badgeTable.add(new SpacerWidget());

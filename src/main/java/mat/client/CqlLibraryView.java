@@ -56,7 +56,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	
 	private EditConfirmationDialogBox draftConfirmationDialogBox = new EditConfirmationDialogBox();
 	
-	AdvancedSearchPillPanel pillPanel = new AdvancedSearchPillPanel();
+	AdvancedSearchPillPanel pillPanel = new AdvancedSearchPillPanel("CQL Library");
 
 	@Override
 	public VerticalPanel getWidgetVP() {

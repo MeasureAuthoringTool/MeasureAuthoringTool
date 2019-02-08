@@ -82,7 +82,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	
 	MeasureSearchView searchView;
 	
-	AdvancedSearchPillPanel pillPanel = new AdvancedSearchPillPanel();
+	AdvancedSearchPillPanel pillPanel = new AdvancedSearchPillPanel("Measure");
 	
 	MeasureSearchView measureSearchView = new MeasureSearchView("Measures");
 	

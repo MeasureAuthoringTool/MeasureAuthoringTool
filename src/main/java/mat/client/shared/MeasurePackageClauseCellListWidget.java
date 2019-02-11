@@ -292,33 +292,36 @@ public class MeasurePackageClauseCellListWidget {
 	}
 
 	private void addClauseRight() {
-		clearAlerts();
-		if (!clausesPopulationList.isEmpty() && leftCellListSelectionModel.getSelectedObject() != null) {
-			ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<>();
-			validateGroupingList.addAll(groupingPopulationList);
-			validateGroupingList.add(leftCellListSelectionModel.getSelectedObject());
-			if (isValid(validateGroupingList, ADD_CLAUSE_RIGHT)) {
-				groupingPopulationList.add(leftCellListSelectionModel.getSelectedObject());
-				groupingClausesMap.put(leftCellListSelectionModel.getSelectedObject().getName(), leftCellListSelectionModel.getSelectedObject());
-				clausesPopulationList.remove(leftCellListSelectionModel.getSelectedObject());
-				sortListAndSetPanelOnAddClick();
-				leftCellListSelectionModel.clear();
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			clearAlerts();
+			if (!clausesPopulationList.isEmpty() && leftCellListSelectionModel.getSelectedObject() != null) {
+				ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<>();
+				validateGroupingList.addAll(groupingPopulationList);
+				validateGroupingList.add(leftCellListSelectionModel.getSelectedObject());
+				if (isValid(validateGroupingList, ADD_CLAUSE_RIGHT)) {
+					groupingPopulationList.add(leftCellListSelectionModel.getSelectedObject());
+					groupingClausesMap.put(leftCellListSelectionModel.getSelectedObject().getName(), leftCellListSelectionModel.getSelectedObject());
+					clausesPopulationList.remove(leftCellListSelectionModel.getSelectedObject());
+					sortListAndSetPanelOnAddClick();
+					leftCellListSelectionModel.clear();
+				}
+				checkAssociations();
 			}
-			checkAssociations();
 		}
-
 	}
 
 	private void addClauseLeft() {
-		clearAlerts();
-		if (!groupingPopulationList.isEmpty() && rightCellListSelectionModel.getSelectedObject() != null) {
-			boolean isPopulationMoveAffectingAssociation = isPopulationAffectingAssociation(rightCellListSelectionModel.getSelectedObject());
-			if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(MatContext.get().getCurrentMeasureScoringType()) 
-					&& isPopulationMoveAffectingAssociation && shouldRequireAssociations(groupingPopulationList)) {
-				displayWarningMessage(false, isPopulationMoveAffectingAssociation);
-			} else {
-				moveSelectedPopulationFromRightToLeft(isPopulationMoveAffectingAssociation);
-				checkAssociations();
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			clearAlerts();
+			if (!groupingPopulationList.isEmpty() && rightCellListSelectionModel.getSelectedObject() != null) {
+				boolean isPopulationMoveAffectingAssociation = isPopulationAffectingAssociation(rightCellListSelectionModel.getSelectedObject());
+				if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(MatContext.get().getCurrentMeasureScoringType()) 
+						&& isPopulationMoveAffectingAssociation && shouldRequireAssociations(groupingPopulationList)) {
+					displayWarningMessage(false, isPopulationMoveAffectingAssociation);
+				} else {
+					moveSelectedPopulationFromRightToLeft(isPopulationMoveAffectingAssociation);
+					checkAssociations();
+				}
 			}
 		}
 	}
@@ -345,29 +348,33 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	private void addAllClauseRight() {
-		clearAlerts();
-		if (!clausesPopulationList.isEmpty()) {
-			ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<>();
-			validateGroupingList.addAll(groupingPopulationList);
-			validateGroupingList.addAll(clausesPopulationList);
-			if (isValid(validateGroupingList, ADD_ALL_CLAUSE_RIGHT)) {
-				groupingPopulationList.addAll(clausesPopulationList);
-				groupingPopulationList.forEach(detail -> groupingClausesMap.put(detail.getName(), detail));
-				clausesPopulationList.clear();
-				Collections.sort(groupingPopulationList);
-				setPanelOnAddAllClick();
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			clearAlerts();
+			if (!clausesPopulationList.isEmpty()) {
+				ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<>();
+				validateGroupingList.addAll(groupingPopulationList);
+				validateGroupingList.addAll(clausesPopulationList);
+				if (isValid(validateGroupingList, ADD_ALL_CLAUSE_RIGHT)) {
+					groupingPopulationList.addAll(clausesPopulationList);
+					groupingPopulationList.forEach(detail -> groupingClausesMap.put(detail.getName(), detail));
+					clausesPopulationList.clear();
+					Collections.sort(groupingPopulationList);
+					setPanelOnAddAllClick();
+				}
+				checkAssociations();
 			}
-			checkAssociations();
 		}
 	}
 
 	private void addAllClauseLeft() {
-		clearAlerts();
-		if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(MatContext.get().getCurrentMeasureScoringType()) && shouldRequireAssociations(groupingPopulationList)) {
-			displayWarningMessage(true, true);			
-		} else {
-			moveAllPopulationsFromRightToLeft();
-			checkAssociations();
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			clearAlerts();
+			if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(MatContext.get().getCurrentMeasureScoringType()) && shouldRequireAssociations(groupingPopulationList)) {
+				displayWarningMessage(true, true);			
+			} else {
+				moveAllPopulationsFromRightToLeft();
+				checkAssociations();
+			}
 		}
 	}
 

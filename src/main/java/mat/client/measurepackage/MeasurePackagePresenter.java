@@ -231,13 +231,15 @@ public class MeasurePackagePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				clearMessages();
-				enablePackageButtons(false);
-				isMeasurePackageAndExport = true;
-				isExportToBonnie = false;
-				view.getInProgressMessageDisplay().createAlert(LOADING_WAIT_MESSAGE);
-				validateGroup();
-				clearMessages(); 
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					clearMessages();
+					enablePackageButtons(false);
+					isMeasurePackageAndExport = true;
+					isExportToBonnie = false;
+					view.getInProgressMessageDisplay().createAlert(LOADING_WAIT_MESSAGE);
+					validateGroup();
+					clearMessages();
+				}
 			}
 		});
 		
@@ -245,13 +247,15 @@ public class MeasurePackagePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				clearMessages();
-				enablePackageButtons(false);
-				isMeasurePackageAndExport = false;
-				isExportToBonnie = true;
-				view.getInProgressMessageDisplay().createAlert(LOADING_WAIT_MESSAGE);
-				validateUMLSLogIn();
-				clearMessages(); 
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					clearMessages();
+					enablePackageButtons(false);
+					isMeasurePackageAndExport = false;
+					isExportToBonnie = true;
+					view.getInProgressMessageDisplay().createAlert(LOADING_WAIT_MESSAGE);
+					validateUMLSLogIn();
+					clearMessages();
+				}
 			}
 		});
 		
@@ -260,113 +264,118 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				showMeasurePackagerBusy(true);
-				clearMessages();
-				updateRiskAdjFromView(currentDetail);
-				((Button) view.getPackageMeasureButton()).setEnabled(true);
-				MatContext.get().getPackageService().saveRiskVariables(currentDetail, new AsyncCallback<Void>() {
-					@Override
-					public void onFailure(final Throwable caught) {
-						if(caught instanceof SaveRiskAdjustmentVariableException) {
-							getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
-							view.getRiskAdjustmentVariableErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
-						} else {
-							view.getRiskAdjustmentVariableErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					showMeasurePackagerBusy(true);
+					clearMessages();
+					updateRiskAdjFromView(currentDetail);
+					((Button) view.getPackageMeasureButton()).setEnabled(true);
+					MatContext.get().getPackageService().saveRiskVariables(currentDetail, new AsyncCallback<Void>() {
+						@Override
+						public void onFailure(final Throwable caught) {
+							if(caught instanceof SaveRiskAdjustmentVariableException) {
+								getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
+								view.getRiskAdjustmentVariableErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
+							} else {
+								view.getRiskAdjustmentVariableErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
+							}
+							
+							Mat.hideLoadingMessage();
+							showMeasurePackagerBusy(false);
 						}
-						
-						Mat.hideLoadingMessage();
-						showMeasurePackagerBusy(false);
-					}
-
-					@Override
-					public void onSuccess(final Void result) {
-						getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
-						view.getRiskAdjustmentVariableSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getRiskAdjSavedMessage());
-						showMeasurePackagerBusy(false);
-					}
-				});
-
+	
+						@Override
+						public void onSuccess(final Void result) {
+							getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
+							view.getRiskAdjustmentVariableSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getRiskAdjSavedMessage());
+							showMeasurePackagerBusy(false);
+						}
+					});
+				}
 			}
 		});
 
 		view.getAddQDMElementsToMeasureButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				showMeasurePackagerBusy(true);
-				clearMessages();
-				((Button) view.getPackageMeasureButton()).setEnabled(true);
-				updateSuppDataDetailsFromView(currentDetail);
-				MatContext.get().getPackageService().saveQDMData(currentDetail, new AsyncCallback<Void>() {
-					@Override
-					public void onFailure(final Throwable caught) {
-						view.getSupplementalDataElementSuccessMessageDisplay().setType(AlertType.DANGER);
-						if(caught instanceof SaveSupplementalDataElementException) {
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					showMeasurePackagerBusy(true);
+					clearMessages();
+					((Button) view.getPackageMeasureButton()).setEnabled(true);
+					updateSuppDataDetailsFromView(currentDetail);
+					MatContext.get().getPackageService().saveQDMData(currentDetail, new AsyncCallback<Void>() {
+						@Override
+						public void onFailure(final Throwable caught) {
+							view.getSupplementalDataElementSuccessMessageDisplay().setType(AlertType.DANGER);
+							if(caught instanceof SaveSupplementalDataElementException) {
+								getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
+								view.getSupplementalDataElementErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
+							}
+							
+							else {
+								view.getSupplementalDataElementErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
+							}
+							
+	
+							showMeasurePackagerBusy(false);
+						}
+	
+						@Override
+						public void onSuccess(final Void result) {
 							getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
-							view.getSupplementalDataElementErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
+							view.getSupplementalDataElementSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getSuppDataSavedMessage());
+							showMeasurePackagerBusy(false);
 						}
-						
-						else {
-							view.getSupplementalDataElementErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
-						}
-						
-
-						showMeasurePackagerBusy(false);
-					}
-
-					@Override
-					public void onSuccess(final Void result) {
-						getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
-						view.getSupplementalDataElementSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getSuppDataSavedMessage());
-						showMeasurePackagerBusy(false);
-					}
-				});
+					});
+				}
 			}
 		});
 		
 		view.getPackageGroupingWidget().getSaveGrouping().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				clearMessages();
-				((Button) view.getPackageMeasureButton()).setEnabled(true);
-				final MeasurePackageDetail tempMeasurePackageDetails = new MeasurePackageDetail(currentDetail);
-				updateDetailsFromView(tempMeasurePackageDetails);
-			
-				if (isValid()) {
-					showMeasurePackagerBusy(true);
-					MatContext.get().getPackageService()
-					.save(tempMeasurePackageDetails, new AsyncCallback<MeasurePackageSaveResult>() {
-						@Override
-						public void onFailure(final Throwable caught) {
-							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							showMeasurePackagerBusy(false);
-						}
-						
-						@Override
-						public void onSuccess(final MeasurePackageSaveResult result) {
-							if (result.isSuccess()) {
-								updateDetailsFromView(currentDetail);
-								getMeasurePackageOverview(MatContext.get()
-										.getCurrentMeasureId());
-								view.getPackageSuccessMessageDisplay().createAlert(
-										MatContext.get().getMessageDelegate().
-										getGroupingSavedMessage());
-								
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					clearMessages();
+					((Button) view.getPackageMeasureButton()).setEnabled(true);
+					final MeasurePackageDetail tempMeasurePackageDetails = new MeasurePackageDetail(currentDetail);
+					updateDetailsFromView(tempMeasurePackageDetails);
+				
+					if (isValid()) {
+						showMeasurePackagerBusy(true);
+						MatContext.get().getPackageService()
+						.save(tempMeasurePackageDetails, new AsyncCallback<MeasurePackageSaveResult>() {
+							@Override
+							public void onFailure(final Throwable caught) {
+								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 								showMeasurePackagerBusy(false);
-
-								
-							} else {
-								if (result.getMessages().size() > 0) {
-									view.getPackageErrorMessageDisplay().
-									createAlert(result.getMessages());
-								} else {
-									view.getPackageErrorMessageDisplay().clearAlert();
-								}
 							}
 							
-						}
-					});
-					
-					showMeasurePackagerBusy(false);
+							@Override
+							public void onSuccess(final MeasurePackageSaveResult result) {
+								if (result.isSuccess()) {
+									updateDetailsFromView(currentDetail);
+									getMeasurePackageOverview(MatContext.get()
+											.getCurrentMeasureId());
+									view.getPackageSuccessMessageDisplay().createAlert(
+											MatContext.get().getMessageDelegate().
+											getGroupingSavedMessage());
+									
+									showMeasurePackagerBusy(false);
+	
+									
+								} else {
+									if (result.getMessages().size() > 0) {
+										view.getPackageErrorMessageDisplay().
+										createAlert(result.getMessages());
+									} else {
+										view.getPackageErrorMessageDisplay().clearAlert();
+									}
+								}
+								
+							}
+						});
+						
+						showMeasurePackagerBusy(false);
+					}
 				}
 			}
 		});

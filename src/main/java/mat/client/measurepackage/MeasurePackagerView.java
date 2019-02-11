@@ -204,52 +204,60 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 
 	private void addRiskAdjustmentRight() {
-		if (!subTreePopulationList.isEmpty() && riskAdjustmentClauseSelModel.getSelectedObject() != null) {
-			riskAdjustmentVariablePopulationList.add(riskAdjustmentClauseSelModel.getSelectedObject());
-			subTreePopulationList.remove(riskAdjustmentClauseSelModel.getSelectedObject());
-			subTreePopulationList.sort(new RiskAdjustmentDTO.Comparator());
-			riskAdjustmentVariablePopulationList.sort(new RiskAdjustmentDTO.Comparator());
-			riskAdjustmentClauseSelModel.clear();
-			rightRiskAdjustmentPanel.setDisplay(getRiskAdjVarCellList());
-			leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			if (!subTreePopulationList.isEmpty() && riskAdjustmentClauseSelModel.getSelectedObject() != null) {
+				riskAdjustmentVariablePopulationList.add(riskAdjustmentClauseSelModel.getSelectedObject());
+				subTreePopulationList.remove(riskAdjustmentClauseSelModel.getSelectedObject());
+				subTreePopulationList.sort(new RiskAdjustmentDTO.Comparator());
+				riskAdjustmentVariablePopulationList.sort(new RiskAdjustmentDTO.Comparator());
+				riskAdjustmentClauseSelModel.clear();
+				rightRiskAdjustmentPanel.setDisplay(getRiskAdjVarCellList());
+				leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
+			}
 		}
 	}
 
 	private void addRiskAdjustmentLeft() {
-		if (!riskAdjustmentVariablePopulationList.isEmpty() && riskAdjustmentVariableSelectionModel.getSelectedObject() != null) {
-			subTreePopulationList.add(riskAdjustmentVariableSelectionModel.getSelectedObject());
-			riskAdjustmentVariablePopulationList.remove(riskAdjustmentVariableSelectionModel.getSelectedObject());
-			subTreePopulationList.sort(new RiskAdjustmentDTO.Comparator());
-			riskAdjustmentVariablePopulationList.sort(new RiskAdjustmentDTO.Comparator());
-			rightRiskAdjustmentPanel.setDisplay(getRiskAdjVarCellList());
-			leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
-			riskAdjustmentClauseSelModel.clear();
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			if (!riskAdjustmentVariablePopulationList.isEmpty() && riskAdjustmentVariableSelectionModel.getSelectedObject() != null) {
+				subTreePopulationList.add(riskAdjustmentVariableSelectionModel.getSelectedObject());
+				riskAdjustmentVariablePopulationList.remove(riskAdjustmentVariableSelectionModel.getSelectedObject());
+				subTreePopulationList.sort(new RiskAdjustmentDTO.Comparator());
+				riskAdjustmentVariablePopulationList.sort(new RiskAdjustmentDTO.Comparator());
+				rightRiskAdjustmentPanel.setDisplay(getRiskAdjVarCellList());
+				leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
+				riskAdjustmentClauseSelModel.clear();
+			}
 		}
 	}
 
 	private void addAllRiskAdjustmentRight() {
-		if (!subTreePopulationList.isEmpty()) {
-			riskAdjustmentVariablePopulationList.addAll(subTreePopulationList);
-			subTreePopulationList.clear();
-			riskAdjustmentVariablePopulationList.sort(new RiskAdjustmentDTO.Comparator());
-			riskAdjustmentVariableSelectionModel.clear();
-			riskAdjustmentClauseSelModel.clear();
-			rightRiskAdjustmentPanel.setDisplay(getRiskAdjVarCellList());
-			leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
-			riskAdjustmentClauseSelModel.clear();
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			if (!subTreePopulationList.isEmpty()) {
+				riskAdjustmentVariablePopulationList.addAll(subTreePopulationList);
+				subTreePopulationList.clear();
+				riskAdjustmentVariablePopulationList.sort(new RiskAdjustmentDTO.Comparator());
+				riskAdjustmentVariableSelectionModel.clear();
+				riskAdjustmentClauseSelModel.clear();
+				rightRiskAdjustmentPanel.setDisplay(getRiskAdjVarCellList());
+				leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
+				riskAdjustmentClauseSelModel.clear();
+			}
 		}
 	}
 
 	private void addAllRiskAdjustmentLeft() {
-		if (!riskAdjustmentVariablePopulationList.isEmpty()) {
-			subTreePopulationList.addAll(riskAdjustmentVariablePopulationList);
-			riskAdjustmentVariablePopulationList.clear();
-			subTreePopulationList.sort(new RiskAdjustmentDTO.Comparator());
-			riskAdjustmentVariableSelectionModel.clear();
-			riskAdjustmentClauseSelModel.clear();
-			rightRiskAdjustmentPanel.setDisplay(getRiskAdjVarCellList());
-			leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
-			riskAdjustmentClauseSelModel.clear();
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			if (!riskAdjustmentVariablePopulationList.isEmpty()) {
+				subTreePopulationList.addAll(riskAdjustmentVariablePopulationList);
+				riskAdjustmentVariablePopulationList.clear();
+				subTreePopulationList.sort(new RiskAdjustmentDTO.Comparator());
+				riskAdjustmentVariableSelectionModel.clear();
+				riskAdjustmentClauseSelModel.clear();
+				rightRiskAdjustmentPanel.setDisplay(getRiskAdjVarCellList());
+				leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
+				riskAdjustmentClauseSelModel.clear();
+			}
 		}
 	}
 	
@@ -263,32 +271,34 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 
 
 	private void addQDMRight() {
-		if (!qdmPopulationList.isEmpty() && qdmSelectionModel.getSelectedObject() != null) {
-			supplementalElementList.add(qdmSelectionModel.getSelectedObject());
-			qdmPopulationList.remove(qdmSelectionModel.getSelectedObject());
-			supplementalElementList.sort(new QualityDataSetDTO.Comparator());
-			qdmPopulationList.sort(new QualityDataSetDTO.Comparator());
-			if(isCQLMeasure()){
-				setDisplayForQDMCQL();
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			if (!qdmPopulationList.isEmpty() && qdmSelectionModel.getSelectedObject() != null) {
+				supplementalElementList.add(qdmSelectionModel.getSelectedObject());
+				qdmPopulationList.remove(qdmSelectionModel.getSelectedObject());
+				supplementalElementList.sort(new QualityDataSetDTO.Comparator());
+				qdmPopulationList.sort(new QualityDataSetDTO.Comparator());
+				if(isCQLMeasure()){
+					setDisplayForQDMCQL();
+				}
+				else{
+					setDisplayForCQL();
+				}
+				qdmSelectionModel.clear();
 			}
-			else{
-				setDisplayForCQL();
+			
+			if (!cqlQdmPopulationList.isEmpty() && cqlQDMSelectionModel.getSelectedObject() != null) {
+				cqlSupplementalPopulationList.add(cqlQDMSelectionModel.getSelectedObject());
+				cqlQdmPopulationList.remove(cqlQDMSelectionModel.getSelectedObject());
+				cqlSupplementalPopulationList.sort(new CQLDefinition.Comparator());
+				cqlQdmPopulationList.sort(new CQLDefinition.Comparator());
+				if(isCQLMeasure()){
+					setDisplayForQDMCQL();
+				}
+				else{
+					setDisplayForCQL();
+				}
+				cqlQDMSelectionModel.clear();
 			}
-			qdmSelectionModel.clear();
-		}
-		
-		if (!cqlQdmPopulationList.isEmpty() && cqlQDMSelectionModel.getSelectedObject() != null) {
-			cqlSupplementalPopulationList.add(cqlQDMSelectionModel.getSelectedObject());
-			cqlQdmPopulationList.remove(cqlQDMSelectionModel.getSelectedObject());
-			cqlSupplementalPopulationList.sort(new CQLDefinition.Comparator());
-			cqlQdmPopulationList.sort(new CQLDefinition.Comparator());
-			if(isCQLMeasure()){
-				setDisplayForQDMCQL();
-			}
-			else{
-				setDisplayForCQL();
-			}
-			cqlQDMSelectionModel.clear();
 		}
 	}
 
@@ -303,88 +313,94 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 
 	private void addQDMLeft() {
-		if (!supplementalElementList.isEmpty() && supplementalDataSelectionModel.getSelectedObject() != null) {
-			qdmPopulationList.add(supplementalDataSelectionModel.getSelectedObject());
-			supplementalElementList.remove(supplementalDataSelectionModel.getSelectedObject());
-			supplementalElementList.sort(new QualityDataSetDTO.Comparator());
-			qdmPopulationList.sort(new QualityDataSetDTO.Comparator());
-			if(isCQLMeasure()){
-				setDisplayForQDMCQL();
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			if (!supplementalElementList.isEmpty() && supplementalDataSelectionModel.getSelectedObject() != null) {
+				qdmPopulationList.add(supplementalDataSelectionModel.getSelectedObject());
+				supplementalElementList.remove(supplementalDataSelectionModel.getSelectedObject());
+				supplementalElementList.sort(new QualityDataSetDTO.Comparator());
+				qdmPopulationList.sort(new QualityDataSetDTO.Comparator());
+				if(isCQLMeasure()){
+					setDisplayForQDMCQL();
+				}
+				else{
+					setDisplayForCQL();
+				}
+				supplementalDataSelectionModel.clear();
 			}
-			else{
-				setDisplayForCQL();
+			if (!cqlSupplementalPopulationList.isEmpty() && cqlSuppelementalDataSelectionModel.getSelectedObject() != null) {
+				cqlQdmPopulationList.add(cqlSuppelementalDataSelectionModel.getSelectedObject());
+				cqlSupplementalPopulationList.remove(cqlSuppelementalDataSelectionModel.getSelectedObject());
+				cqlSupplementalPopulationList.sort(new CQLDefinition.Comparator());
+				cqlQdmPopulationList.sort(new CQLDefinition.Comparator());
+				if(isCQLMeasure()){
+					setDisplayForQDMCQL();
+				}
+				else{
+					setDisplayForCQL();
+				}
+				cqlSuppelementalDataSelectionModel.clear();
 			}
-			supplementalDataSelectionModel.clear();
-		}
-		if (!cqlSupplementalPopulationList.isEmpty() && cqlSuppelementalDataSelectionModel.getSelectedObject() != null) {
-			cqlQdmPopulationList.add(cqlSuppelementalDataSelectionModel.getSelectedObject());
-			cqlSupplementalPopulationList.remove(cqlSuppelementalDataSelectionModel.getSelectedObject());
-			cqlSupplementalPopulationList.sort(new CQLDefinition.Comparator());
-			cqlQdmPopulationList.sort(new CQLDefinition.Comparator());
-			if(isCQLMeasure()){
-				setDisplayForQDMCQL();
-			}
-			else{
-				setDisplayForCQL();
-			}
-			cqlSuppelementalDataSelectionModel.clear();
 		}
 	}
 
 	private void addAllQDMRight() {
-		if (!qdmPopulationList.isEmpty()) {
-			supplementalElementList.addAll(qdmPopulationList);
-			qdmPopulationList.clear();
-			supplementalElementList.sort(new QualityDataSetDTO.Comparator());
-			supplementalDataSelectionModel.clear();
-			qdmSelectionModel.clear();
-			if(isCQLMeasure()){
-				setDisplayForQDMCQL();
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			if (!qdmPopulationList.isEmpty()) {
+				supplementalElementList.addAll(qdmPopulationList);
+				qdmPopulationList.clear();
+				supplementalElementList.sort(new QualityDataSetDTO.Comparator());
+				supplementalDataSelectionModel.clear();
+				qdmSelectionModel.clear();
+				if(isCQLMeasure()){
+					setDisplayForQDMCQL();
+				}
+				else{
+					setDisplayForCQL();
+				}
 			}
-			else{
-				setDisplayForCQL();
-			}
-		}
-		if (!cqlQdmPopulationList.isEmpty()) {
-			cqlSupplementalPopulationList.addAll(cqlQdmPopulationList);
-			cqlQdmPopulationList.clear();
-			cqlSupplementalPopulationList.sort(new CQLDefinition.Comparator());
-			cqlSuppelementalDataSelectionModel.clear();
-			cqlQDMSelectionModel.clear();
-			if(isCQLMeasure()){
-				setDisplayForQDMCQL();
-			}
-			else{
-				setDisplayForCQL();
+			if (!cqlQdmPopulationList.isEmpty()) {
+				cqlSupplementalPopulationList.addAll(cqlQdmPopulationList);
+				cqlQdmPopulationList.clear();
+				cqlSupplementalPopulationList.sort(new CQLDefinition.Comparator());
+				cqlSuppelementalDataSelectionModel.clear();
+				cqlQDMSelectionModel.clear();
+				if(isCQLMeasure()){
+					setDisplayForQDMCQL();
+				}
+				else{
+					setDisplayForCQL();
+				}
 			}
 		}
 	}
 
 	private void addAllQDMLeft() {
-		if (!supplementalElementList.isEmpty()) {
-			qdmPopulationList.addAll(supplementalElementList);
-			supplementalElementList.clear();
-			qdmPopulationList.sort(new QualityDataSetDTO.Comparator());
-			supplementalDataSelectionModel.clear();
-			qdmSelectionModel.clear();
-			if(isCQLMeasure()){
-				setDisplayForQDMCQL();
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			if (!supplementalElementList.isEmpty()) {
+				qdmPopulationList.addAll(supplementalElementList);
+				supplementalElementList.clear();
+				qdmPopulationList.sort(new QualityDataSetDTO.Comparator());
+				supplementalDataSelectionModel.clear();
+				qdmSelectionModel.clear();
+				if(isCQLMeasure()){
+					setDisplayForQDMCQL();
+				}
+				else{
+					setDisplayForCQL();
+				}
 			}
-			else{
-				setDisplayForCQL();
-			}
-		}
-		if (!cqlSupplementalPopulationList.isEmpty()) {
-			cqlQdmPopulationList.addAll(cqlSupplementalPopulationList);
-			cqlSupplementalPopulationList.clear();
-			cqlQdmPopulationList.sort(new CQLDefinition.Comparator());
-			cqlSuppelementalDataSelectionModel.clear();
-			cqlQDMSelectionModel.clear();
-			if(isCQLMeasure()){
-				setDisplayForQDMCQL();
-			}
-			else{
-				setDisplayForCQL();
+			if (!cqlSupplementalPopulationList.isEmpty()) {
+				cqlQdmPopulationList.addAll(cqlSupplementalPopulationList);
+				cqlSupplementalPopulationList.clear();
+				cqlQdmPopulationList.sort(new CQLDefinition.Comparator());
+				cqlSuppelementalDataSelectionModel.clear();
+				cqlQDMSelectionModel.clear();
+				if(isCQLMeasure()){
+					setDisplayForQDMCQL();
+				}
+				else{
+					setDisplayForCQL();
+				}
 			}
 		}
 	}

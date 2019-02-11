@@ -138,7 +138,7 @@ public class MessageDelegate {
 	private static final String INVALIDLOGIC_CLAUSE_WORK_SPACE = "Clause logic is incomplete.Please validate your clause logic.";
 	private static final String COHORT_WRONG_NUM = "For a Cohort measure, a grouping must contain exactly one Initial Population.";
 	private static final String STRATIFICATION_VALIDATION_FOR_GROUPING = " Measure Grouping cannot contain more than one Stratification.";
-	private static final String MEASURE_OBS_VALIDATION_FOR_GROUPING = " A Ratio Measure may not contain more than 2 Measure Observations in a Measure grouping.";
+	private static final String MEASURE_OBS_VALIDATION_FOR_GROUPING = " A Ratio Measure may not contain more than two Measure Observations in a Measure grouping.";
 	private static final String SAVE_ERROR_MSG = "You have unsaved changes that will be discarded if you continue. Do you want to continue without saving?";
 	private static final String SECURITY_NOT_ANSWERED = "Your security questions have not been answered.  You cannot continue. Please contact the Helpdesk";
 	private static final String SECURITY_Q_MISMATCH = "The answer for the security question did not match.";

@@ -25,13 +25,16 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import mat.client.shared.MatException;
 import mat.dao.OrganizationDAO;
+import mat.dao.clause.MeasureDAO;
 import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.Organization;
+import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
+import mat.model.clause.MeasureShare;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.export.ExportResult;
 import mat.server.service.MeasureLibraryService;
@@ -207,18 +210,45 @@ public class ExportServlet extends HttpServlet {
 				resp.getOutputStream().close();
 		}
 	}
+	
+	private boolean canViewExports(Measure measure) {
+		String currentUserId = LoggedInUserUtil.getLoggedInUser();
+		
+		return !measure.getIsPrivate() || LoggedInUserUtil.getLoggedInUserRole().equals(SecurityRole.SUPER_USER_ROLE) 
+				|| measure.getOwner().getId().equals(currentUserId) || isSharedWith(measure);
+	}
+	
+	private boolean isSharedWith(Measure measure) {
+		String currentUserId = LoggedInUserUtil.getLoggedInUser();
+		boolean isSharedWith = false;
+		for(MeasureShare share : measure.getShares()) {
+			if(share.getShareUser().getId().equals(currentUserId)) {
+				isSharedWith = true;
+			}
+		}
+		
+		return isSharedWith;
+	}
+	
 
 	private void zipMeasure(HttpServletResponse resp, String id, Measure measure, Date exportDate) throws Exception {
+		if(!canViewExports(measure)) {
+			return;
+		}
+		
 		if(measure.getIsCompositeMeasure()) {
 			exportCompositeMeasureZip(resp, id, measure);
 		}
 		else {
 			exportEmeasureZip(resp, id, measure, exportDate);
 		}
-		
 	}
 
 	private void exportBonnieMeasureCalculateion(HttpServletResponse resp, Measure measure, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, BonnieBadParameterException, BonnieDoesNotExistException {
+		if(!canViewExports(measure)) {
+			return;
+		}
+		
 		BonnieCalculatedResult export = getService().getBonnieExportCalculation(measure.getMeasureSet().getId(), userId);		
 		resp.setHeader(CONTENT_DISPOSITION,
 				ATTACHMENT_FILENAME + export.getName());
@@ -228,6 +258,10 @@ public class ExportServlet extends HttpServlet {
 
 	private void exportErrorFileForMeasure(HttpServletResponse resp, MeasureLibraryService measureLibraryService,
 			String id) throws IOException {
+		if(!canViewExports(getMeasureDAO().find(id))) {
+			return;
+		}
+		
 		SaveUpdateCQLResult result = measureLibraryService.getMeasureCQLLibraryData(id);
 		addLineNumberAndErrorMessageToCQLErrorExport(resp, result);
 	}
@@ -292,6 +326,11 @@ public class ExportServlet extends HttpServlet {
 	
 	private void exportELMFile(HttpServletResponse resp, String id, String type) throws Exception {
 		MeasureExport measureExport = getService().getMeasureExport(id);
+		if(!canViewExports(measureExport.getMeasure())) {
+			return;
+		}
+		
+		
 		ExportResult export = getService().createOrGetELMLibraryFile(id, measureExport);
 
 		if (!export.getIncludedCQLExports().isEmpty()) {
@@ -315,6 +354,10 @@ public class ExportServlet extends HttpServlet {
 
 	private void exportJSONFile(HttpServletResponse resp, String id, String type) throws Exception {
 		MeasureExport measureExport = getService().getMeasureExport(id);
+		if(!canViewExports(measureExport.getMeasure())) {
+			return;
+		}
+		
 		ExportResult export = getService().createOrGetJSONLibraryFile(id, measureExport);
 
 		if (!export.getIncludedCQLExports().isEmpty()) {
@@ -338,6 +381,11 @@ public class ExportServlet extends HttpServlet {
 
 	private void exportCQLLibraryFile(HttpServletResponse resp, String id, String type) throws Exception {
 		MeasureExport measureExport = getService().getMeasureExport(id);
+		if(!canViewExports(measureExport.getMeasure())) {
+			return;
+		}
+		
+		
 		ExportResult export = getService().createOrGetCQLLibraryFile(id, measureExport);
 
 		if (!export.getIncludedCQLExports().isEmpty()) {
@@ -455,6 +503,10 @@ public class ExportServlet extends HttpServlet {
 	}
 
 	private void exportCodeListXLS(HttpServletResponse resp, String id, Measure measure) throws Exception {
+		if(!canViewExports(measure)) {
+			return;
+		}
+		
 		ExportResult export = getService().getEMeasureXLS(id);
 
 		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
@@ -477,6 +529,10 @@ public class ExportServlet extends HttpServlet {
 	}
 	
 	private void exportHQMF(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
+		if(!canViewExports(measure)) {
+			return;
+		}
+		
 		String currentReleaseVersion = measure.getReleaseVersion();		
 		
 		ExportResult export = getHQMFExportForMeasure(id, currentReleaseVersion);
@@ -495,6 +551,11 @@ public class ExportServlet extends HttpServlet {
 
 	private void exportHumanReadableForNewMeasures(HttpServletResponse resp, String id, String type, Measure measure)
 			throws Exception {
+		if(!canViewExports(measure)) {
+			return;
+		}
+		
+		
 		String currentReleaseVersion = measure.getReleaseVersion();
 		ExportResult export = currentReleaseVersion.equals("v3") ? getService().createOrGetEMeasureHTML(id)
 				: getService().createOrGetHumanReadable(id, currentReleaseVersion);
@@ -509,15 +570,17 @@ public class ExportServlet extends HttpServlet {
 	}
 
 	private void exportSimpleXML(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
-		ExportResult export = getService().getSimpleXML(id);
-		if (SAVE.equals(type)) {
-			String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-					+ FileNameUtility.getSimpleXMLName(export.measureName + "_" + currentReleaseVersion));
-		}
-		resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
+		if(LoggedInUserUtil.getLoggedInUserRole().equals(SecurityRole.SUPER_USER_ROLE)) {
+			ExportResult export = getService().getSimpleXML(id);
+			if (SAVE.equals(type)) {
+				String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+						+ FileNameUtility.getSimpleXMLName(export.measureName + "_" + currentReleaseVersion));
+			}
+			resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
 
-		resp.getOutputStream().write(export.export.getBytes());
+			resp.getOutputStream().write(export.export.getBytes());
+		}
 	}
 
 	/**
@@ -769,5 +832,9 @@ public class ExportServlet extends HttpServlet {
 	
 	private OrganizationDAO getOrganizationDAO() {
 		return ((OrganizationDAO) context.getBean("organizationDAO"));
+	}
+	
+	private MeasureDAO getMeasureDAO() {
+		return ((MeasureDAO) context.getBean("measureDAO"));
 	}
 }

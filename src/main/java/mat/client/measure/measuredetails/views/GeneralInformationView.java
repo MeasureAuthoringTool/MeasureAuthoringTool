@@ -781,6 +781,6 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
 	@Override
 	public Widget getFirstElement() {
-		return measureNameLabel.asWidget();
+		return measureNameInput.asWidget();
 	}
 }

@@ -338,7 +338,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 
 	@Override
 	public Widget getFirstElement() {
-		return stewardTableLabel.asWidget();
+		return stewardListBox.asWidget();
 	}
 
 }

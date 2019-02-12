@@ -44,7 +44,7 @@ public class QueryModel extends ExpressionBuilderModel {
 		
 		identation = identation + " ";
 		builder.append("\n" + identation + "  ");
-		builder.append("where");
+		builder.append("where ");
 		
 		builder.append(filter.getCQL(identation));
 		

@@ -13,7 +13,6 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -31,6 +30,10 @@ import mat.shared.CQLModelValidator;
 
 public class QueryBuilderModal extends SubExpressionBuilderModal {
 
+	private static final String REVIEW_QUERY = "Review Query";
+	private static final String SORT = "Sort";
+	private static final String FILTER = "Filter";
+	private static final String SOURCE = "Source";
 	private static final String ALIAS_TEXT_BOX_LABEL = "What would you like to name (alias) your source?";
 	private AnchorListItem reviewQueryListItem;
 	private AnchorListItem filterListItem;
@@ -42,8 +45,10 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private VerticalPanel queryBuilderContentPanel;
 	private BuildButtonObserver sourceBuildButtonObserver;
 	private TextBox aliasTextBox;
+	private String currentScreen = SOURCE;
 	
 	private String alias = "";
+	private BuildButtonObserver filterBuildButtonObserver;
 
 	public QueryBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
 			ExpressionBuilderModel mainModel) {
@@ -51,6 +56,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		queryModel = new QueryModel();
 		
 		sourceBuildButtonObserver = new BuildButtonObserver(this, queryModel.getSource(), mainModel);
+		filterBuildButtonObserver = new BuildButtonObserver(this, queryModel.getFilter(), mainModel);
 		
 		this.setCQLPanelVisible(false);
 		this.getApplyButton().setVisible(false);
@@ -67,6 +73,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 			this.getErrorAlert().createAlert("The name of your source must start with an alpha character and can not contain spaces or special characters other than an underscore.");
 		} else {
 			this.getParentModel().appendExpression(queryModel);
+			this.getExpressionBuilderParent().showAndDisplay();
 		}
 	}
 
@@ -75,7 +82,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		this.getErrorAlert().clearAlert();	
 		this.getContentPanel().add(buildContentPanel());
 		this.updateCQLDisplay();
-		navigateToSource();
+		navigate(currentScreen);
 	}
 
 	private Widget buildContentPanel() {
@@ -113,18 +120,18 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		NavPills pills = new NavPills();
 		pills.setMarginRight(16.0);
 		
-		sourceListItem = new AnchorListItem("Source");
-		sourceListItem.addClickHandler(event -> navigateToSource());
+		sourceListItem = new AnchorListItem(SOURCE);
+		sourceListItem.addClickHandler(event -> navigate(SOURCE));
 		sourceListItem.setActive(true);
 		
-		filterListItem = new AnchorListItem("Filter");
-		filterListItem.addClickHandler(event -> navigateToFilter());
+		filterListItem = new AnchorListItem(FILTER);
+		filterListItem.addClickHandler(event -> navigate(FILTER));
 		
-		sortListItem = new AnchorListItem("Sort");
-		sortListItem.addClickHandler(event -> navigateToSort());
+		sortListItem = new AnchorListItem(SORT);
+		sortListItem.addClickHandler(event -> navigate(SORT));
 		
-		reviewQueryListItem = new AnchorListItem("Review Query");
-		reviewQueryListItem.addClickHandler(event -> navigateToReview());
+		reviewQueryListItem = new AnchorListItem(REVIEW_QUERY);
+		reviewQueryListItem.addClickHandler(event -> navigate(REVIEW_QUERY));
 
 		pills.add(sourceListItem);
 		pills.add(filterListItem);
@@ -143,9 +150,9 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		List<ExpressionType> availableExpressionsForSouce = new ArrayList<>();
 		availableExpressionsForSouce.add(ExpressionType.RETRIEVE);
 		availableExpressionsForSouce.add(ExpressionType.DEFINITION);
-		List<OperatorType> availableOperatorsForSouce = new ArrayList<>(OperatorTypeUtil.getSetOperators());
+		List<OperatorType> availableOperatorsForSource = new ArrayList<>(OperatorTypeUtil.getSetOperators());
 		
-		ExpressionTypeSelectorList sourceSelector = new ExpressionTypeSelectorList(availableExpressionsForSouce, availableOperatorsForSouce, 
+		ExpressionTypeSelectorList sourceSelector = new ExpressionTypeSelectorList(availableExpressionsForSouce, availableOperatorsForSource, 
 				sourceBuildButtonObserver, queryModel.getSource(), 
 				"What type of expression would you like to use as your data source?");
 		
@@ -157,6 +164,27 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		sourcePanel.add(buildAliasNameGroup());
 		
 		return sourcePanel;
+	}
+	
+	private Widget buildFilterWidget() {
+		VerticalPanel filterPanel = new VerticalPanel();
+		filterPanel.setStylePrimaryName("selectorsPanel");
+		
+		List<ExpressionType> availableExpressionsForFilter = new ArrayList<>();
+		availableExpressionsForFilter.add(ExpressionType.COMPARISON);
+		availableExpressionsForFilter.add(ExpressionType.DEFINITION);
+		availableExpressionsForFilter.add(ExpressionType.EXISTS);
+		availableExpressionsForFilter.add(ExpressionType.IS_NULL_NOT_NULL);
+		availableExpressionsForFilter.add(ExpressionType.IS_TRUE_FALSE);
+		
+		List<OperatorType> availableOperatorsForFilter = new ArrayList<>(OperatorTypeUtil.getBooleanOperators());
+		
+		ExpressionTypeSelectorList sourceSelector = new ExpressionTypeSelectorList(availableExpressionsForFilter, availableOperatorsForFilter, 
+				filterBuildButtonObserver, queryModel.getFilter(), 
+				 "What would you like to use to filter your source?");
+		
+		filterPanel.add(sourceSelector);		
+		return filterPanel;
 	}
 	
 	private FormGroup buildAliasNameGroup() {
@@ -195,56 +223,60 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		nextButton.addClickHandler(clickHandler);
 	}
 
-	private void navigateToSource() {
-		navigate("Source");
-		sourceListItem.setActive(true);
-		
+	private void displaySource() {
 		previousButton.setVisible(false);
-		updateNextButton("Filter", event -> navigateToFilter());
-		
+		updateNextButton(FILTER, event -> navigate(FILTER));
 		queryBuilderContentPanel.clear();
 		queryBuilderContentPanel.add(buildSourceWidget());
 	}
 
-	private void navigateToFilter() {
-		navigate("Filter");
-		filterListItem.setActive(true);
-		
-		updatePreviousButton("Source", event -> navigateToSource());
-		updateNextButton("Sort", event -> navigateToSort());
-		
+	private void displayFilter() {
+		updatePreviousButton(SOURCE, event -> navigate(SOURCE));
+		updateNextButton(SORT, event -> navigate(SORT));
 		queryBuilderContentPanel.clear();
-
+		queryBuilderContentPanel.add(buildFilterWidget());
 	}
 
-	private void navigateToSort() {
-		navigate("Sort");
-		sortListItem.setActive(true);
-		
-		updatePreviousButton("Filter", event -> navigateToFilter());
-		updateNextButton("Review Query", event -> navigateToReview());
-		
+	private void displaySort() {
+		updatePreviousButton(FILTER, event -> navigate(FILTER));
+		updateNextButton(REVIEW_QUERY, event -> navigate(REVIEW_QUERY));
 		queryBuilderContentPanel.clear();
 	}
 
-	private void navigateToReview() {
-		navigate("Review Query");
+	private void displayReviewQuery() {
 		reviewQueryListItem.setActive(true);
 		this.getApplyButton().setVisible(true);
 
 		nextButton.setVisible(false);
-		updatePreviousButton("Sort", event -> navigateToSort());
+		updatePreviousButton(SORT, event -> navigate(SORT));
 		
 		queryBuilderContentPanel.clear();
 	}
 	
 	private void navigate(String text) {
-		this.setTitle("Query > " + text);
 		unActivateTabs();
-		this.getErrorAlert().clearAlert();
 		this.getApplyButton().setVisible(false);
+		displayCurrentTab(text);
+		this.getErrorAlert().clearAlert();
 		this.setCQLPanelVisible(false);
 		this.updateCQLDisplay();
+	}
+	
+	private void displayCurrentTab(String tab) {
+		this.currentScreen = tab;
+		if(tab.equals(SOURCE)) {
+			sourceListItem.setActive(true);
+			displaySource();
+		} else if(tab.equals(FILTER)) {
+			filterListItem.setActive(true);
+			displayFilter();
+		} else if(tab.equals(SORT)) {
+			sortListItem.setActive(true);
+			displaySort();
+ 		} else if(tab.equals(REVIEW_QUERY)) {
+ 			reviewQueryListItem.setActive(true);
+ 			displayReviewQuery();
+ 		}
 	}
 
 	private void unActivateTabs() {

@@ -32,6 +32,7 @@ public abstract class ExpressionBuilderModal extends Modal {
 	private FocusPanel logicFocusPanel;
 	private ExpressionBuilderModel mainModel;
 	private HelpBlock helpBlock;
+	private Panel cqlExpressionPanel;
 	
 	public ExpressionBuilderModal(String title, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		this.parentModel = parentModel;
@@ -103,13 +104,21 @@ public abstract class ExpressionBuilderModal extends Modal {
 		return errorAlert;
 	}
 	
+	public void setCQLPanelVisible(boolean isVisible) {
+		cqlExpressionPanel.setVisible(isVisible);
+	}
+	
+	public void setFooterVisible(boolean isVisible) {
+		this.footer.setVisible(isVisible);
+	}
+	
 	private MessageAlert buildErrorAlert() {
 		errorAlert = new ErrorMessageAlert();
 		return errorAlert;
 	}
 
 	private Panel buildAceEditorPanel() {
-		Panel cqlExpressionPanel = new Panel();
+		cqlExpressionPanel = new Panel();
 		cqlExpressionPanel.setMarginLeft(0.0);
 		cqlExpressionPanel.setMarginRight(0.0);
 		cqlExpressionPanel.setType(PanelType.PRIMARY);

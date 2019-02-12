@@ -34,6 +34,7 @@ import mat.client.expressionbuilder.model.IsTrueFalseModel;
 import mat.client.expressionbuilder.model.ModelAndOperatorTypeUtil;
 import mat.client.expressionbuilder.model.NotModel;
 import mat.client.expressionbuilder.model.OperatorModel;
+import mat.client.expressionbuilder.model.QueryModel;
 import mat.client.expressionbuilder.model.RetrieveModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.OperatorTypeUtil;
@@ -203,6 +204,8 @@ public class ExpressionTypeSelectorList extends Composite {
 			return ExpressionType.COMPARISON.getDisplayName();
 		} else if(model instanceof IntervalModel) {
 			return ExpressionType.INTERVAL.getDisplayName();
+		} else if(model instanceof QueryModel) {
+			return ExpressionType.QUERY.getDisplayName();
 		}
 		
 		return "";

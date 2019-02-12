@@ -10,6 +10,7 @@ import mat.client.expressionbuilder.modal.IntervalBuilderModal;
 import mat.client.expressionbuilder.modal.IsNullBuilderModal;
 import mat.client.expressionbuilder.modal.IsTrueFalseBuilderModal;
 import mat.client.expressionbuilder.modal.NotBuilderModal;
+import mat.client.expressionbuilder.modal.QueryBuilderModal;
 import mat.client.expressionbuilder.modal.RetrieveBuilderModal;
 import mat.client.expressionbuilder.model.AndModel;
 import mat.client.expressionbuilder.model.ExceptModel;
@@ -73,6 +74,11 @@ public class BuildButtonObserver {
 		else if(expression.equals(ExpressionType.INTERVAL.getValue())) {
 			ExpressionBuilderModal intervalModal = new IntervalBuilderModal(this.parentModal, this.parentModel, this.mainModel);
 			intervalModal.show();
+		}
+		
+		else if(expression.equals(ExpressionType.QUERY.getValue())) {
+			QueryBuilderModal queryModal = new QueryBuilderModal(this.parentModal, this.parentModel, this.mainModel);
+			queryModal.show();
 		}
 	}
 	

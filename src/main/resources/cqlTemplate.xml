@@ -146,6 +146,7 @@
 		<function>Sum()</function>
 		<function>Time()</function>
 		<function>TimeOfDay()</function>
+		<function>ToDate()</function>
 		<function>Today()</function>
 		<function>Truncate()</function>
 		<function>Variance()</function>

@@ -44,7 +44,6 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private QueryModel queryModel;
 	private VerticalPanel queryBuilderContentPanel;
 	private BuildButtonObserver sourceBuildButtonObserver;
-	private TextBox aliasTextBox;
 	private String currentScreen = SOURCE;
 	
 	private String alias = "";
@@ -195,7 +194,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		label.setTitle(ALIAS_TEXT_BOX_LABEL);
 		group.add(label);
 		
-		aliasTextBox = new TextBox();
+		TextBox aliasTextBox = new TextBox();
 		aliasTextBox.addChangeHandler(event -> {
 			alias = aliasTextBox.getValue();
 			queryModel.setAlias(alias);

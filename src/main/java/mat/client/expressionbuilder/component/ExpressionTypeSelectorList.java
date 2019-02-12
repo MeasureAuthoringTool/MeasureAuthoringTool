@@ -2,6 +2,7 @@ package mat.client.expressionbuilder.component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Code;
@@ -112,7 +113,7 @@ public class ExpressionTypeSelectorList extends Composite {
 				availableOperatorTypes.add(ModelAndOperatorTypeUtil.getOperatorModel(currentChildModel));
 				
 			} else {
-				PanelGroup expressionPanelGroup = buildExpressionCollapsePanel(i, currentChildModel);
+				PanelGroup expressionPanelGroup = buildExpressionCollapsePanel(currentChildModel);
 				
 				if(i != 0) {
 					expressionPanelGroup.setMarginTop(15.0);
@@ -135,7 +136,10 @@ public class ExpressionTypeSelectorList extends Composite {
 		return panel;
 	}
 
-	private PanelGroup buildExpressionCollapsePanel(int index, IExpressionBuilderModel model) {		
+	private PanelGroup buildExpressionCollapsePanel(IExpressionBuilderModel model) {	
+		Random rand = new Random();
+		int index = rand.nextInt(Integer.MAX_VALUE);
+		
 		PanelGroup expressionPanelGroup = new PanelGroup();
 		expressionPanelGroup.setWidth("100%");
 		expressionPanelGroup.setId("accordion");

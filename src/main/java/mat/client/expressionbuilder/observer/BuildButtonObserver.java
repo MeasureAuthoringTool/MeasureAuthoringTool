@@ -6,6 +6,7 @@ import mat.client.expressionbuilder.modal.ComparisonBuilderModal;
 import mat.client.expressionbuilder.modal.DefinitionSelectorModal;
 import mat.client.expressionbuilder.modal.ExistsBuilderModal;
 import mat.client.expressionbuilder.modal.ExpressionBuilderModal;
+import mat.client.expressionbuilder.modal.IntervalBuilderModal;
 import mat.client.expressionbuilder.modal.IsNullBuilderModal;
 import mat.client.expressionbuilder.modal.IsTrueFalseBuilderModal;
 import mat.client.expressionbuilder.modal.NotBuilderModal;
@@ -67,6 +68,11 @@ public class BuildButtonObserver {
 		else if(expression.equals(ExpressionType.COMPARISON.getValue())) {
 			ExpressionBuilderModal comparisonModal = new ComparisonBuilderModal(this.parentModal, this.parentModel, this.mainModel);
 			comparisonModal.show();
+		}
+		
+		else if(expression.equals(ExpressionType.INTERVAL.getValue())) {
+			ExpressionBuilderModal intervalModal = new IntervalBuilderModal(this.parentModal, this.parentModel, this.mainModel);
+			intervalModal.show();
 		}
 	}
 	

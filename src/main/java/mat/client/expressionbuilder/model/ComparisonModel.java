@@ -7,13 +7,7 @@ public class ComparisonModel extends ExpressionBuilderModel {
 	private ExpressionBuilderModel rightHandSide;
 	private ExpressionBuilderModel leftHandSide;
 	private ComparisonOperatorModel comparisonOperator;
-	
-	public ComparisonModel(ExpressionBuilderModel rightHandSide, ExpressionBuilderModel leftHandSide, String comparisonOperator) {
-		rightHandSide = this.rightHandSide;
-		leftHandSide = this.leftHandSide;
-		this.comparisonOperator = new ComparisonOperatorModel(comparisonOperator);
-	}
-	
+		
 	public ComparisonModel() {
 		this.rightHandSide = new ExpressionBuilderModel();
 		this.leftHandSide = new ExpressionBuilderModel();

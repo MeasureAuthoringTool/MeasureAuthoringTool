@@ -99,7 +99,7 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 		operatorListBox.insertItem(ComparisonOperatorType.EQUALS.getDisplay(), ComparisonOperatorType.EQUALS.getValue(), ComparisonOperatorType.EQUALS.getDisplay());
 		operatorListBox.insertItem(ComparisonOperatorType.NOT_EQUALS.getDisplay(), ComparisonOperatorType.NOT_EQUALS.getValue(), ComparisonOperatorType.NOT_EQUALS.getDisplay());
 		operatorListBox.insertItem(ComparisonOperatorType.EQUIVALENT.getDisplay(), ComparisonOperatorType.EQUIVALENT.getValue(), ComparisonOperatorType.EQUIVALENT.getDisplay());
-		operatorListBox.insertItem(ComparisonOperatorType.NOT_EQUIVALENT.getDisplay(), ComparisonOperatorType.NOT_EQUIVALENT.getValue(), ComparisonOperatorType.EQUALS.getDisplay());
+		operatorListBox.insertItem(ComparisonOperatorType.NOT_EQUIVALENT.getDisplay(), ComparisonOperatorType.NOT_EQUIVALENT.getValue(), ComparisonOperatorType.NOT_EQUIVALENT.getDisplay());
 		operatorListBox.insertItem(ComparisonOperatorType.GREATER_THAN.getDisplay(), ComparisonOperatorType.GREATER_THAN.getValue(), ComparisonOperatorType.GREATER_THAN.getDisplay());
 		operatorListBox.insertItem(ComparisonOperatorType.LESS_THAN.getDisplay(), ComparisonOperatorType.LESS_THAN.getValue(), ComparisonOperatorType.LESS_THAN.getDisplay());
 		operatorListBox.insertItem(ComparisonOperatorType.GREATER_THAN_OR_EQUAL_TO.getDisplay(), ComparisonOperatorType.GREATER_THAN_OR_EQUAL_TO.getValue(), ComparisonOperatorType.GREATER_THAN_OR_EQUAL_TO.getDisplay());		

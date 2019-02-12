@@ -127,7 +127,7 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 		
 		HorizontalPanel upperBoundInclusiveRadioButtonPanel = new HorizontalPanel();
 		upperBoundInclusiveRadioButtonPanel.setStyleName("selectorsPanel");
-		upperBoundInclusiveRadioButtonPanel.setWidth("36%");
+		upperBoundInclusiveRadioButtonPanel.setWidth("20%");
 		
 		RadioButton includedRadioButtonUpperBound = new RadioButton("uperrBoundInclusiveRadioButton", "Included");
 		RadioButton excludedRadioButtonUpperBound = new RadioButton("uperrBoundInclusiveRadioButton", "Excluded");		

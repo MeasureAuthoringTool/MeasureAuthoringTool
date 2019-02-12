@@ -1,35 +1,36 @@
 package mat.client.expressionbuilder.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class QueryModel extends ExpressionBuilderModel {
 
-	private List<IExpressionBuilderModel> source;
+	private ExpressionBuilderModel source;
 	private String alias;
-	private List<IExpressionBuilderModel> filter;
+	private ExpressionBuilderModel filter;
 
-	public QueryModel(List<IExpressionBuilderModel> source, String alias, List<IExpressionBuilderModel> filter) {
+	public QueryModel(ExpressionBuilderModel source, String alias, ExpressionBuilderModel filter) {
 		this.source = source;
 		this.alias = alias;
 		this.filter = filter;
 	}
 
 	public QueryModel() {
-		this.source = new ArrayList<>();
-		this.filter = new ArrayList<>();
+		this.source = new ExpressionBuilderModel();
+		this.filter = new ExpressionBuilderModel(); 
 		this.alias = "";
 	}
 	
-	public List<IExpressionBuilderModel> getSource() {
+	public ExpressionBuilderModel getSource() {
 		return source;
 	}
 
 	public String getAlias() {
 		return alias;
 	}
+	
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
 
-	public List<IExpressionBuilderModel> getFilter() {
+	public ExpressionBuilderModel getFilter() {
 		return filter;
 	}
 	
@@ -37,16 +38,15 @@ public class QueryModel extends ExpressionBuilderModel {
 	public String getCQL(String identation) {
 		StringBuilder builder = new StringBuilder();
 		
-		for(IExpressionBuilderModel model : source) {
-			builder.append(model.getCQL(identation));
-		}
+		builder.append(source.getCQL(""));
+		builder.append(" ");
+		builder.append(alias);
 		
+		identation = identation + " ";
 		builder.append("\n" + identation + "  ");
 		builder.append("where");
 		
-		for(IExpressionBuilderModel model : filter) {
-			builder.append(model.getCQL(identation));
-		}
+		builder.append(filter.getCQL(identation));
 		
 		return builder.toString();
 	}

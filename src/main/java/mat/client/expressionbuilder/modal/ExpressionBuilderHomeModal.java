@@ -46,6 +46,7 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 		this.getFooter().clear();
 
 		List<ExpressionType> availableExpressionTypes = new ArrayList<>();
+		availableExpressionTypes.add(ExpressionType.COMPARISON);
 		availableExpressionTypes.add(ExpressionType.RETRIEVE);
 		availableExpressionTypes.add(ExpressionType.DEFINITION);
 		availableExpressionTypes.add(ExpressionType.EXISTS);

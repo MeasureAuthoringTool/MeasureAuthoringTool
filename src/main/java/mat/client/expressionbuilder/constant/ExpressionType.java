@@ -10,7 +10,8 @@ public enum ExpressionType implements ExpressionBuilderType {
 	EXISTS("Exists", OperatorTypeUtil.getBooleanOperators()),
 	NOT("Negation (not)", OperatorTypeUtil.getBooleanOperators()),
 	IS_NULL_NOT_NULL("Null (is null/not null)", OperatorTypeUtil.getBooleanOperators()),
-	IS_TRUE_FALSE("True/False (is true/false)", OperatorTypeUtil.getBooleanOperators());
+	IS_TRUE_FALSE("True/False (is true/false)", OperatorTypeUtil.getBooleanOperators()),
+	COMPARISON("Comparison", OperatorTypeUtil.getBooleanOperators());
 	
 	private String displayName;
 	private List<OperatorType> availableOperators;

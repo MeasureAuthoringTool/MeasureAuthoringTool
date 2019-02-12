@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
+import mat.client.expressionbuilder.model.ComparisonModel;
 import mat.client.expressionbuilder.model.DefinitionModel;
 import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
@@ -197,6 +198,8 @@ public class ExpressionTypeSelectorList extends Composite {
 			return ExpressionType.IS_NULL_NOT_NULL.getDisplayName();
 		} else if(model instanceof IsTrueFalseModel) {
 			return ExpressionType.IS_TRUE_FALSE.getDisplayName();
+		} else if(model instanceof ComparisonModel) {
+			return ExpressionType.COMPARISON.getDisplayName();
 		}
 		
 		return "";

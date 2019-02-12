@@ -224,6 +224,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 
 	private void displaySource() {
+		updateTitle(SOURCE);
 		previousButton.setVisible(false);
 		updateNextButton(FILTER, event -> navigate(FILTER));
 		queryBuilderContentPanel.clear();
@@ -231,6 +232,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 
 	private void displayFilter() {
+		updateTitle(FILTER);
 		updatePreviousButton(SOURCE, event -> navigate(SOURCE));
 		updateNextButton(SORT, event -> navigate(SORT));
 		queryBuilderContentPanel.clear();
@@ -238,12 +240,14 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 
 	private void displaySort() {
+		updateTitle(SORT);
 		updatePreviousButton(FILTER, event -> navigate(FILTER));
 		updateNextButton(REVIEW_QUERY, event -> navigate(REVIEW_QUERY));
 		queryBuilderContentPanel.clear();
 	}
 
 	private void displayReviewQuery() {
+		updateTitle(REVIEW_QUERY);
 		reviewQueryListItem.setActive(true);
 		this.getApplyButton().setVisible(true);
 
@@ -284,5 +288,9 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		filterListItem.setActive(false);
 		sortListItem.setActive(false);
 		reviewQueryListItem.setActive(false);
+	}
+	
+	private void updateTitle(String text) {
+		this.setTitle("Query > " + text);
 	}
 }

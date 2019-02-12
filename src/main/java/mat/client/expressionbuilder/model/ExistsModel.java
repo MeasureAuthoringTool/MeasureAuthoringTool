@@ -27,7 +27,7 @@ public class ExistsModel extends ExpressionBuilderModel {
 					}
 				}
 				
-				builder.append("\n)");
+				builder.append("\n" + identation + ")");
 			}
 		}
 		

@@ -37,17 +37,37 @@ public class QueryModel extends ExpressionBuilderModel {
 	@Override
 	public String getCQL(String identation) {
 		StringBuilder builder = new StringBuilder();
+		builder.append(identation + "( ");
 		
 		builder.append(source.getCQL(""));
 		builder.append(" ");
 		builder.append(alias);
 		
-		identation = identation + " ";
-		builder.append("\n" + identation + "  ");
+		String filterIdentationIdentation = identation + "  ";
+		builder.append("\n" + filterIdentationIdentation);
 		builder.append("where ");
 		
-		builder.append(filter.getCQL(identation));
 		
+		if(this.getChildModels().size() == 1) {
+			builder.append(this.getChildModels().get(0).getCQL(identation));
+		} else {
+			if (!filter.getChildModels().isEmpty()) {
+				builder.append(filter.getChildModels().get(0).getCQL(identation));
+
+				String innerIdentation = identation + "  ";
+				for (int i = 1; i < filter.getChildModels().size(); i += 2) {
+					builder.append("\n");
+					builder.append(innerIdentation);
+					builder.append(filter.getChildModels().get(i).getCQL(innerIdentation));
+					
+					if((i + 1) <= filter.getChildModels().size() - 1) {
+						builder.append(" " + filter.getChildModels().get(i + 1).getCQL(innerIdentation));
+					}
+				}
+			}
+		}
+				
+		builder.append("\n" + identation + ")");
 		return builder.toString();
 	}
 }

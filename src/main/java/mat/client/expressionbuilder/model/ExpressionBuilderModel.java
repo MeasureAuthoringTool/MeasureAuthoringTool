@@ -20,7 +20,7 @@ public class ExpressionBuilderModel implements IExpressionBuilderModel {
 		if (!models.isEmpty()) {
 			builder.append(models.get(0).getCQL(identation));
 
-			identation = identation + " ";
+			identation = identation + "  ";
 			for (int i = 1; i < models.size(); i += 2) {
 				builder.append("\n");
 				builder.append(models.get(i).getCQL(identation));

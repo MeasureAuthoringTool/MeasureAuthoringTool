@@ -71,6 +71,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	private boolean isExportToBonnie = false;
 	
+	private boolean loggedIntoBonnie = false;
+	
 	private static final String SIGN_INTO_UMLS = "Please sign into UMLS";
 	
 	private static final String SIGN_INTO_BONNIE_MESSAGE = "Please sign into Bonnie.";
@@ -416,11 +418,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		if(isEditable()) {
 			((Button) view.getPackageMeasureButton()).setEnabled(enable);
 			((Button) view.getPackageMeasureAndExportButton()).setEnabled(enable);
-			if(!enable) {
-				((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(enable);
-			} else {
-				displayUploadToBonnieButton(isEditable());
-			}
+			((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(enable && loggedIntoBonnie);
+			
 		} else {
 			((Button) view.getPackageMeasureButton()).setEnabled(false);
 			((Button) view.getPackageMeasureAndExportButton()).setEnabled(false);
@@ -723,12 +722,14 @@ private void saveMeasureAtPackage(){
 				@Override
 				public void onSuccess(BonnieUserInformationResult result) {
 					showMeasurePackagerBusy(false);
+					loggedIntoBonnie = true;
 					((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(true);
 				}
 				
 				@Override
 				public void onFailure(Throwable caught) {
 					showMeasurePackagerBusy(false);
+					loggedIntoBonnie = false;
 					((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(false);
 					Mat.hideBonnieActive(true);
 				}
@@ -1076,6 +1077,7 @@ private void saveMeasureAtPackage(){
 				}
 				if(caught instanceof BonnieUnauthorizedException) {
 					view.getMeasureErrorMessageDisplay().createAlert(SIGN_INTO_BONNIE_MESSAGE);
+					loggedIntoBonnie = false;
 					Mat.hideBonnieActive(true);
 				} else {
 					view.getMeasureErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());

@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.cqlworkspace.definitions.CQLDefinitionsView;
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
@@ -29,11 +30,13 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 	private Button completeBuildButton;
 	private BuildButtonObserver buildButtonObserver;
 	private AceEditor editorToInsertFinalTextInto;
+	private CQLDefinitionsView view;
 	
-	public ExpressionBuilderHomeModal(AceEditor editorToInsertFinalTextInto, ExpressionBuilderModel model) {
+	public ExpressionBuilderHomeModal(CQLDefinitionsView cqlDefinitionsView, ExpressionBuilderModel model) {
 		super("CQL Expression Builder", model, model);
 		buildButtonObserver = new BuildButtonObserver(this, this.getParentModel(), this.getMainModel());
-		this.editorToInsertFinalTextInto = editorToInsertFinalTextInto;
+		this.editorToInsertFinalTextInto = cqlDefinitionsView.getDefineAceEditor();
+		this.view = cqlDefinitionsView;
 		display();
 	}
 
@@ -104,6 +107,7 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 		text = text.trim();
 		this.editorToInsertFinalTextInto.setText(text);
 		this.hide();
+		this.view.setHelpBlockText("The Expression has been successfully added to the CQL Editor. Click the save icon to save the Definition.");
 	}
 
 	private void onClose() {

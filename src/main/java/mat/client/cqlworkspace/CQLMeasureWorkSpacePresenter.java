@@ -263,7 +263,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	}
 	
 	private void expressionBuilderButtonClicked() {
-		ExpressionBuilderHomeModal modal = new ExpressionBuilderHomeModal(cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor(), new ExpressionBuilderModel());
+		ExpressionBuilderHomeModal modal = new ExpressionBuilderHomeModal(cqlWorkspaceView.getCQLDefinitionsView(), new ExpressionBuilderModel());
 		modal.show();
 	}
 

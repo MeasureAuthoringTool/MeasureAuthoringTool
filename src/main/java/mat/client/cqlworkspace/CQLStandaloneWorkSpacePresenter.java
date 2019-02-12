@@ -336,7 +336,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 	
 	private void expresionBuilderButtonClicked() {
-		ExpressionBuilderHomeModal modal = new ExpressionBuilderHomeModal(cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor(), new ExpressionBuilderModel());
+		ExpressionBuilderHomeModal modal = new ExpressionBuilderHomeModal(cqlWorkspaceView.getCQLDefinitionsView(), new ExpressionBuilderModel());
 		modal.show();
 	}
 

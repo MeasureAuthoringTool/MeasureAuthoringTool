@@ -3,6 +3,7 @@ package mat.client.cqlworkspace.definitions;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
@@ -21,6 +22,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceCommand;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
@@ -34,6 +36,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
 public class CQLDefinitionsView {
+	private HelpBlock helpBlock = new HelpBlock();
 	private MatTextBox defineNameTxtArea = new MatTextBox();
 	private AceEditor defineAceEditor = new AceEditor();
 	private ButtonGroup contextGroup = new ButtonGroup();
@@ -63,6 +66,24 @@ public class CQLDefinitionsView {
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setColor("White");
 		heading.addStyleName("leftAligned");
 	}
+	
+	private Widget buildHelpBlock() {
+		helpBlock = new HelpBlock();
+		helpBlock.setText("");
+		helpBlock.setColor("transparent");
+		helpBlock.setHeight("0px");
+		helpBlock.setPaddingTop(0.0);
+		helpBlock.setPaddingBottom(0.0);
+		helpBlock.setMarginBottom(0.0);
+		helpBlock.setMarginTop(0.0);
+		return helpBlock;
+	}
+	
+	public void setHelpBlockText(String message) {
+		helpBlock.setText(message);
+		helpBlock.getElement().setAttribute("role", "alert");
+		helpBlock.getElement().focus();
+	}
 
 	private void buildView() {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
@@ -77,6 +98,7 @@ public class CQLDefinitionsView {
 		definitionVP.add(heading);
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(new SpacerWidget());
+		definitionVP.add(buildHelpBlock());
 		
 		FormLabel defineNameLabel = new FormLabel();
 		defineNameLabel.setText("Definition Name");

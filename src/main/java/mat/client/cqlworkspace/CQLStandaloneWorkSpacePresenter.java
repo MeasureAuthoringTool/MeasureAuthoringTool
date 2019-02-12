@@ -332,10 +332,10 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().addKeyUpHandler(event -> keyUpEvent());
 		cqlWorkspaceView.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().addClickHandler(event -> definitionsAddNewClicked());
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().addBlurHandler(event -> definitionCommentBlurEvent());
-		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getExpressionBuilderButton().addClickHandler(event -> expresionBuilderButtonClicked());
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getExpressionBuilderButton().addClickHandler(event -> expressionBuilderButtonClicked());
 	}
 	
-	private void expresionBuilderButtonClicked() {
+	private void expressionBuilderButtonClicked() {
 		ExpressionBuilderHomeModal modal = new ExpressionBuilderHomeModal(cqlWorkspaceView.getCQLDefinitionsView(), new ExpressionBuilderModel());
 		modal.show();
 	}

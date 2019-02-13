@@ -51,6 +51,7 @@ import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
 import mat.shared.MeasureSearchModel;
 import mat.shared.MeasureSearchModel.PatientBasedType;
+import mat.shared.SearchModel;
 import mat.shared.SearchModel.VersionType;
 
 @Repository("measureDAO")
@@ -484,14 +485,25 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		query.select(root).where(predicate).distinct(true);
 		
 		List<Measure> measureResultList = session.createQuery(query).getResultList();
+		
+		boolean isAdvancedSearch = checkIfAdvancedSearchWasUsed(measureSearchModel);
 				
-		if (!user.getSecurityRole().getId().equals("2")) {
+		if (!user.getSecurityRole().getId().equals("2") && !isAdvancedSearch) {
 			measureResultList = getAllMeasuresInSet(measureResultList);
 		}
 		measureResultList = sortMeasureList(measureResultList);
 		return measureResultList;
 	}
 	
+	private boolean checkIfAdvancedSearchWasUsed(MeasureSearchModel measureSearchModel) {
+		return !measureSearchModel.isDraft().equals(SearchModel.VersionType.ALL) ||
+				!measureSearchModel.isPatientBased().equals(MeasureSearchModel.PatientBasedType.ALL) ||
+				(CollectionUtils.isNotEmpty(measureSearchModel.getScoringTypes()) && measureSearchModel.getScoringTypes().size() < 4) ||
+				measureSearchModel.getModifiedDate() > 0 ||
+				StringUtils.isNotBlank(measureSearchModel.getModifiedOwner()) ||
+				StringUtils.isNotBlank(measureSearchModel.getOwner());
+	}
+
 	private Predicate buildPredicateForMeasureSearch(String userId, CriteriaBuilder cb, Root<Measure> root, CriteriaQuery<Measure> query, 
 			MeasureSearchModel measureSearchModel) {
 		final List<Predicate> predicatesList = new ArrayList<>();
@@ -513,7 +525,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 			predicatesList.add(cb.equal(root.get(PATIENT_BASED), measureSearchModel.isPatientBased() == PatientBasedType.PATIENT));
 		}
 
-		if(CollectionUtils.isNotEmpty(measureSearchModel.getScoringTypes())) {
+		if(CollectionUtils.isNotEmpty(measureSearchModel.getScoringTypes()) && measureSearchModel.getScoringTypes().size() < 4) {
 			predicatesList.add(root.get(MEASURE_SCORING_TYPE).in(measureSearchModel.getScoringTypes()));
 		}
 
@@ -553,12 +565,16 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		
 		final Map<String, MeasureShareDTO> measureSetIdDraftableMap = new HashMap<>();
 		
-		for (final Measure measure : measureResultList) {
-				final MeasureShareDTO dto = extractDTOFromMeasure(measure);
-				if (dto.isDraft()) {
-					measureSetIdDraftableMap.put(dto.getMeasureSetId(), dto);
-				}
+		final List<Measure> measureSets = getAllMeasuresInSet(measureResultList);
+		
+		for (final Measure measure : measureSets) {
+			final MeasureShareDTO dto = extractDTOFromMeasure(measure);
+			if (dto.isDraft()) {
+				measureSetIdDraftableMap.put(dto.getMeasureSetId(), dto);
+			}
+			if(measureResultList.contains(measure)) {
 				orderedDTOList.add(dto);
+			}
 		}
 		
 		final boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId().equals("3") && (measureSearchModel.getIsMyMeasureSearch() == SearchWidgetWithFilter.ALL);

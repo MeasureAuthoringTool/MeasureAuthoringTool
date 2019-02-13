@@ -37,10 +37,19 @@ import mat.shared.ConstantMessages;
 import mat.shared.StringUtility;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
+import mat.shared.measure.measuredetails.models.DenominatorExceptionsModel;
+import mat.shared.measure.measuredetails.models.DenominatorExclusionsModel;
+import mat.shared.measure.measuredetails.models.DenominatorModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsRichTextAbstractModel;
+import mat.shared.measure.measuredetails.models.MeasureObservationsModel;
+import mat.shared.measure.measuredetails.models.MeasurePopulationExclusionsModel;
+import mat.shared.measure.measuredetails.models.MeasurePopulationModel;
 import mat.shared.measure.measuredetails.models.MeasureStewardDeveloperModel;
+import mat.shared.measure.measuredetails.models.NumeratorExclusionsModel;
+import mat.shared.measure.measuredetails.models.NumeratorModel;
 import mat.shared.measure.measuredetails.models.ReferencesModel;
+import mat.shared.measure.measuredetails.models.StratificationModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.shared.measure.measuredetails.validate.GeneralInformationValidator;
 
@@ -466,12 +475,52 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	public void saveMeasureDetails() {
 		measureDetailsView.getComponentDetailView().getObserver().handleValueChanged();
 		measureDetailsView.getMeasureDetailsComponentModel().update(measureDetailsModel);
+		removeInvalidPopulationSelections(measureDetailsModel);
+
 		ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
 		ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
 		if(measureDetailsModel.isComposite()) {
 			MatContext.get().getMeasureService().saveCompositeMeasure((ManageCompositeMeasureDetailModel) manageMeasureDetails, getSaveCallback());
 		} else {
 			MatContext.get().getMeasureService().saveMeasureDetails(manageMeasureDetails, getSaveCallback());
+		}
+	}
+
+	private void removeInvalidPopulationSelections(MeasureDetailsModel measureDetailsModel) {
+		if(measureDetailsModel.getGeneralInformationModel() != null && measureDetailsModel.getGeneralInformationModel().getScoringMethod() != null) {
+			String scoringMethod = measureDetailsModel.getGeneralInformationModel().getScoringMethod();
+			switch (scoringMethod) {
+			case MeasureDetailsConstants.COHORT:
+				measureDetailsModel.setNumeratorModel(new NumeratorModel());
+				measureDetailsModel.setNumeratorExclusionsModel(new NumeratorExclusionsModel());
+				measureDetailsModel.setDenominatorModel(new DenominatorModel());
+				measureDetailsModel.setDenominatorExclusionsModel(new DenominatorExclusionsModel());
+				measureDetailsModel.setDenominatorExceptionsModel(new DenominatorExceptionsModel());
+				measureDetailsModel.setStratificationModel(new StratificationModel());
+				measureDetailsModel.setMeasureObservationsModel(new MeasureObservationsModel());
+				measureDetailsModel.setMeasurePopulationModel(new MeasurePopulationModel());
+				measureDetailsModel.setMeasurePopulationExclusionsModel(new MeasurePopulationExclusionsModel());
+				break;
+			case MeasureDetailsConstants.CONTINUOUS_VARIABLE:
+				measureDetailsModel.setNumeratorModel(new NumeratorModel());
+				measureDetailsModel.setNumeratorExclusionsModel(new NumeratorExclusionsModel());
+				measureDetailsModel.setDenominatorModel(new DenominatorModel());
+				measureDetailsModel.setDenominatorExclusionsModel(new DenominatorExclusionsModel());
+				measureDetailsModel.setDenominatorExceptionsModel(new DenominatorExceptionsModel());
+				break;
+			case MeasureDetailsConstants.PROPORTION:
+				measureDetailsModel.setMeasureObservationsModel(new MeasureObservationsModel());
+				measureDetailsModel.setMeasurePopulationModel(new MeasurePopulationModel());
+				measureDetailsModel.setMeasurePopulationExclusionsModel(new MeasurePopulationExclusionsModel());
+				break;
+			case MeasureDetailsConstants.RATIO:
+				measureDetailsModel.setMeasureObservationsModel(new MeasureObservationsModel());
+				measureDetailsModel.setMeasurePopulationModel(new MeasurePopulationModel());
+				measureDetailsModel.setMeasurePopulationExclusionsModel(new MeasurePopulationExclusionsModel());
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
@@ -655,21 +704,21 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	
 	private MeasureDetailState getPopulationsState(MeasureDetailsModel measureDetailsModel) {
 		List<MeasureDetailsRichTextAbstractModel> applicableModels = new ArrayList<>();
-		if(scoringType.equals(MeasureDetailsConstants.getCohort())) {
+		if(scoringType.equals(MeasureDetailsConstants.COHORT)) {
 			applicableModels.add(measureDetailsModel.getInitialPopulationModel());
-		} else if (scoringType.equals(MeasureDetailsConstants.getContinuousVariable())) {
+		} else if (scoringType.equals(MeasureDetailsConstants.CONTINUOUS_VARIABLE)) {
 			applicableModels.add(measureDetailsModel.getInitialPopulationModel());
 			applicableModels.add(measureDetailsModel.getMeasurePopulationModel());
 			applicableModels.add(measureDetailsModel.getMeasurePopulationExclusionsModel());
 			applicableModels.add(measureDetailsModel.getMeasureObservationsModel());
-		} else if(scoringType.equals(MeasureDetailsConstants.getProportion())) {
+		} else if(scoringType.equals(MeasureDetailsConstants.PROPORTION)) {
 			applicableModels.add(measureDetailsModel.getInitialPopulationModel());
 			applicableModels.add(measureDetailsModel.getDenominatorModel());
 			applicableModels.add(measureDetailsModel.getDenominatorExclusionsModel());
 			applicableModels.add(measureDetailsModel.getNumeratorModel());
 			applicableModels.add(measureDetailsModel.getNumeratorExclusionsModel());
 			applicableModels.add(measureDetailsModel.getDenominatorExceptionsModel());
-		} else if (scoringType.equals(MeasureDetailsConstants.getRatio())) {
+		} else if (scoringType.equals(MeasureDetailsConstants.RATIO)) {
 			applicableModels.add(measureDetailsModel.getInitialPopulationModel());
 			applicableModels.add(measureDetailsModel.getDenominatorModel());
 			applicableModels.add(measureDetailsModel.getDenominatorExclusionsModel());

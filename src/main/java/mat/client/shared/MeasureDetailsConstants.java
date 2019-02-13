@@ -5,10 +5,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MeasureDetailsConstants {
-	private static final String PROPORTION = "Proportion";
-	private static final String RATIO = "Ratio";
-	private static final String CONTINUOUS_VARIABLE = "Continuous Variable";
-	private static final String COHORT = "Cohort";
+	public static final String PROPORTION = "Proportion";
+	public static final String RATIO = "Ratio";
+	public static final String CONTINUOUS_VARIABLE = "Continuous Variable";
+	public static final String COHORT = "Cohort";
 	
 	public enum MeasureDetailsItems implements MatDetailItem{
 		GENERAL_MEASURE_INFORMATION("General Measure Information", "General Measure Information"),
@@ -82,21 +82,4 @@ public class MeasureDetailsConstants {
 			return measureTypes;
 		}
 	}
-
-	public static String getProportion() {
-		return PROPORTION;
-	}
-
-	public static String getRatio() {
-		return RATIO;
-	}
-
-	public static String getContinuousVariable() {
-		return CONTINUOUS_VARIABLE;
-	}
-
-	public static String getCohort() {
-		return COHORT;
-	}
-
 }

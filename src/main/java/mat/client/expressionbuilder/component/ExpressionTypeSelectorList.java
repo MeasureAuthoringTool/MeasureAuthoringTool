@@ -147,7 +147,7 @@ public class ExpressionTypeSelectorList extends Composite {
 		
 		PanelGroup expressionPanelGroup = new PanelGroup();
 		expressionPanelGroup.setWidth("100%");
-		expressionPanelGroup.setId("accordion");
+		expressionPanelGroup.setId("accordion" + index);
 		
 		Panel expressionPanel = new Panel();
 		expressionPanel.setType(PanelType.SUCCESS);
@@ -159,7 +159,7 @@ public class ExpressionTypeSelectorList extends Composite {
 		anchor.setTitle(panelHeader(model));
 		anchor.setIcon(IconType.PLUS);
 		anchor.setColor("black");
-		anchor.setDataParent("#accordion");
+		anchor.setDataParent("#accordion" + index);
 		anchor.setDataToggle(Toggle.COLLAPSE);
 		anchor.setDataTarget("#collapse" + index);
 		expressionPanelHeader.add(anchor);

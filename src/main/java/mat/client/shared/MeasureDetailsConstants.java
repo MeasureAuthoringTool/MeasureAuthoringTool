@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import mat.shared.ConstantMessages;
+
 public class MeasureDetailsConstants {
-	public static final String PROPORTION = "Proportion";
-	public static final String RATIO = "Ratio";
-	public static final String CONTINUOUS_VARIABLE = "Continuous Variable";
-	public static final String COHORT = "Cohort";
+	public static final String PROPORTION = ConstantMessages.PROPORTION_SCORING;
+	public static final String RATIO = ConstantMessages.RATIO_SCORING;
+	public static final String CONTINUOUS_VARIABLE = ConstantMessages.CONTINUOUS_VARIABLE_SCORING;
+	public static final String COHORT = ConstantMessages.COHORT_SCORING;
 	
 	public enum MeasureDetailsItems implements MatDetailItem{
 		GENERAL_MEASURE_INFORMATION("General Measure Information", "General Measure Information"),

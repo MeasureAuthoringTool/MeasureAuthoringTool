@@ -43,9 +43,7 @@ public class QueryModel extends ExpressionBuilderModel {
 		
 		
 		StringBuilder builder = new StringBuilder();
-		
-//		builder.append(identation + "( ");
-		
+				
 		if(shouldAddParentheses) {
 			builder.append("( ");
 		}
@@ -83,7 +81,6 @@ public class QueryModel extends ExpressionBuilderModel {
 			}
 		}
 				
-//		builder.append("\n" + identation + ")");
 		return builder.toString();
 	}
 

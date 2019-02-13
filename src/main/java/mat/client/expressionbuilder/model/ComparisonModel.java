@@ -33,6 +33,7 @@ public class ComparisonModel extends ExpressionBuilderModel {
 			builder.append(model.getCQL(identation));
 		}
 		
+		builder.append(" ");
 		builder.append(this.comparisonOperator.getCQL(""));
 		
 		for(IExpressionBuilderModel model : rightHandSide.getChildModels()) {

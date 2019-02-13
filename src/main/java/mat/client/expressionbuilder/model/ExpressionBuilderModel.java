@@ -17,16 +17,43 @@ public class ExpressionBuilderModel implements IExpressionBuilderModel {
 	public String getCQL(String identation) {
 		StringBuilder builder = new StringBuilder();
 
+		
+		
 		if (!models.isEmpty()) {
+			
+			boolean shouldAddParentheses = models.size() > 1 ;
+
+			if(shouldAddParentheses) {
+				builder.append("( ");
+			}
+			
+			
 			builder.append(models.get(0).getCQL(identation));
 
+			if(shouldAddParentheses) {
+				builder.append("\n");
+				builder.append(identation + ")");
+			}
+			
+			
 			identation = identation + "  ";
 			for (int i = 1; i < models.size(); i += 2) {
 				builder.append("\n");
+				
 				builder.append(models.get(i).getCQL(identation));
+				
+				if(shouldAddParentheses) {
+					builder.append(" ( ");
+				}
+				
 				
 				if((i + 1) <= models.size() - 1) {
 					builder.append(" " + models.get(i + 1).getCQL(identation));
+				}
+				
+				if(shouldAddParentheses) {
+					builder.append("\n");
+					builder.append(identation + ")");
 				}
 			}
 		}

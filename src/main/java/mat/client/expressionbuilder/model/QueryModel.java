@@ -38,10 +38,24 @@ public class QueryModel extends ExpressionBuilderModel {
 	
 	@Override
 	public String getCQL(String identation) {
+		
+		boolean shouldAddParentheses = source.getChildModels().size() > 1; 
+		
+		
 		StringBuilder builder = new StringBuilder();
-		builder.append(identation + "( ");
+		
+//		builder.append(identation + "( ");
+		
+		if(shouldAddParentheses) {
+			builder.append("( ");
+		}
 		
 		builder.append(source.getCQL(""));
+		
+		if(shouldAddParentheses) {
+			builder.append(" )");
+		}
+		
 		builder.append(" ");
 		builder.append(alias);
 		
@@ -69,7 +83,7 @@ public class QueryModel extends ExpressionBuilderModel {
 			}
 		}
 				
-		builder.append("\n" + identation + ")");
+//		builder.append("\n" + identation + ")");
 		return builder.toString();
 	}
 

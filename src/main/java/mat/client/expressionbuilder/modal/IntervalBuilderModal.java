@@ -26,6 +26,10 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 	private IntervalModel intervalModel;
 	private boolean isLowerBoundInclusive = true;
 	private boolean isUpperBoundInclusive = true;
+	private ExpressionTypeSelectorList upperBoundExpressionTypeSelector;
+	private ExpressionTypeSelectorList lowerBoundExpressionTypeSelector;
+	private int lowerBoundIndex;
+	private int upperBoundIndex;
 
 	public IntervalBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
 			ExpressionBuilderModel mainModel) {
@@ -58,6 +62,20 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 		this.getContentPanel().add(buildContentPanel());
 		this.updateCQLDisplay();
 		
+		if(this.lowerBoundExpressionTypeSelector.getSelector() != null) {
+			this.lowerBoundExpressionTypeSelector.getSelector().getExpressionTypeSelectorListBox().setSelectedIndex(this.lowerBoundIndex);
+			this.lowerBoundExpressionTypeSelector.getSelector().getExpressionTypeSelectorListBox().addChangeHandler(event -> {
+				this.lowerBoundIndex = this.lowerBoundExpressionTypeSelector.getSelector().getExpressionTypeSelectorListBox().getSelectedIndex();
+			});
+		}
+		
+		if(this.upperBoundExpressionTypeSelector.getSelector() != null) {
+			this.upperBoundExpressionTypeSelector.getSelector().getExpressionTypeSelectorListBox().setSelectedIndex(this.upperBoundIndex);
+			this.upperBoundExpressionTypeSelector.getSelector().getExpressionTypeSelectorListBox().addChangeHandler(event -> {
+				this.upperBoundIndex = this.upperBoundExpressionTypeSelector.getSelector().getExpressionTypeSelectorListBox().getSelectedIndex();
+			});
+		}
+		
 	}
 
 	private Widget buildContentPanel() {
@@ -67,7 +85,7 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 		
 		List<ExpressionType> availableExpressions = new ArrayList<>();
 		availableExpressions.add(ExpressionType.DEFINITION);
-		ExpressionTypeSelectorList lowerBoundExpressionTypeSelector = new ExpressionTypeSelectorList(
+		lowerBoundExpressionTypeSelector = new ExpressionTypeSelectorList(
 				availableExpressions, new ArrayList<>(), lowerBoundBuildButtonObserver, intervalModel.getLowerBound(), 
 				"What would you like to use for the lower boundary of your interval?"
 		);
@@ -77,7 +95,7 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 		panel.add(new SpacerWidget());
 		panel.add(new SpacerWidget());
 
-		ExpressionTypeSelectorList upperBoundExpressionTypeSelector = new ExpressionTypeSelectorList(
+		upperBoundExpressionTypeSelector = new ExpressionTypeSelectorList(
 				availableExpressions, new ArrayList<>(), upperBoundBuildButtonObserver, intervalModel.getUpperBound(), 
 				"What would you like to use for the upper boundary of your interval?"
 		);

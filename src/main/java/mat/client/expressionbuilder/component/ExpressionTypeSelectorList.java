@@ -49,6 +49,7 @@ public class ExpressionTypeSelectorList extends Composite {
 	private List<OperatorType> availableOperatorTypes;
 	private boolean canOnlyMakeOneSelection;
 	private String labelText;
+	private ExpressionTypeSelector selector;
 
 	public ExpressionTypeSelectorList(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes,
 			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText) {
@@ -62,6 +63,10 @@ public class ExpressionTypeSelectorList extends Composite {
 		this.labelText = labelText;
 
 		initWidget(buildPanel());
+	}
+		
+	public ExpressionTypeSelector getSelector() {
+		return this.selector;
 	}
 	
 	private VerticalPanel buildPanel() {
@@ -128,7 +133,7 @@ public class ExpressionTypeSelectorList extends Composite {
 		if(!this.model.getChildModels().isEmpty() && canOnlyMakeOneSelection) {
 			
 		} else {
-			ExpressionTypeSelector selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, canAddAnother);
+			selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, canAddAnother);		
 			panel.add(selector);
 		}
 		

@@ -27,6 +27,10 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 	private ComparisonModel comparisonModel;
 	private ListBoxMVP operatorListBox;
 	private int selectedOperatorIndex = 0;
+	private int leftHandSideIndex = 0;
+	private int rightHandSideIndex = 0;
+	private ExpressionTypeSelectorList leftHandSideOfComparisonSelectorList;
+	private ExpressionTypeSelectorList rightHandSideOfComparisonSelectorList;
 
 	public ComparisonBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Comparison", parent, parentModel, mainModel);
@@ -49,6 +53,21 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 		this.getErrorAlert().clearAlert();
 		this.getContentPanel().add(buildContentPanel());
 		this.operatorListBox.setSelectedIndex(selectedOperatorIndex);
+		
+		if(this.leftHandSideOfComparisonSelectorList.getSelector() != null) {
+			this.leftHandSideOfComparisonSelectorList.getSelector().getExpressionTypeSelectorListBox().setSelectedIndex(this.leftHandSideIndex);
+			this.leftHandSideOfComparisonSelectorList.getSelector().getExpressionTypeSelectorListBox().addChangeHandler(event -> {
+				this.leftHandSideIndex = this.leftHandSideOfComparisonSelectorList.getSelector().getExpressionTypeSelectorListBox().getSelectedIndex();
+			});
+		}
+		
+		if(this.rightHandSideOfComparisonSelectorList.getSelector() != null) {
+			this.rightHandSideOfComparisonSelectorList.getSelector().getExpressionTypeSelectorListBox().setSelectedIndex(this.rightHandSideIndex);
+			this.rightHandSideOfComparisonSelectorList.getSelector().getExpressionTypeSelectorListBox().addChangeHandler(event -> {
+				this.rightHandSideIndex = this.rightHandSideOfComparisonSelectorList.getSelector().getExpressionTypeSelectorListBox().getSelectedIndex();
+			});
+		}
+		
 		this.updateCQLDisplay();
 	}
 	
@@ -62,7 +81,7 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 		availableExpressionForRightSideOfComparison.add(ExpressionType.DEFINITION);
 		
 		
-		ExpressionTypeSelectorList leftHandSideOfComparisonSelectorList = new ExpressionTypeSelectorList(
+		leftHandSideOfComparisonSelectorList = new ExpressionTypeSelectorList(
 				availableExpressionForRightSideOfComparison, new ArrayList<>(), leftHandSideBuildButtonObserver, comparisonModel.getLeftHandSide(), 
 				"What is the first type of expression you would like to compare?"
 		);
@@ -71,7 +90,7 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 
 		panel.add(buildComparisonOperatorListBox());
 		
-		ExpressionTypeSelectorList rightHandSideOfComparisonSelectorList = new ExpressionTypeSelectorList(
+		rightHandSideOfComparisonSelectorList = new ExpressionTypeSelectorList(
 				availableExpressionForRightSideOfComparison, new ArrayList<>(), rightHandSideBuildButtonObserver, comparisonModel.getRightHandSide(), 
 				"What is the second type of expression you would like to compare?"
 		);

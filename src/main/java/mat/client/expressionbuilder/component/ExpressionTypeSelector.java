@@ -49,7 +49,11 @@ public class ExpressionTypeSelector extends Composite {
 		contentPanel.add(buildContent());
 		initWidget(contentPanel);
 	}
-		
+				
+	public ListBoxMVP getExpressionTypeSelectorListBox() {
+		return expressionTypeSelectorListBox;
+	}
+
 	private Panel buildContent() {
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("100%");

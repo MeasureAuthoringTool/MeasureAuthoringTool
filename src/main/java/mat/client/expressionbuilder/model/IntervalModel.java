@@ -49,7 +49,7 @@ public class IntervalModel extends ExpressionBuilderModel {
 		
 		
 		builder.append(lowerBound.getCQL(""));
-		builder.append(",");
+		builder.append(", ");
 		builder.append(upperBound.getCQL(""));
 		
 		if(isUpperBoundInclusive) {

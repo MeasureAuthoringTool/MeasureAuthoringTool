@@ -90,11 +90,11 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		mainPanel.setWidth("100%");
 		
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		horizontalPanel.setWidth("100%");
 		horizontalPanel.add(buildNavPanel());		
 		
 		queryBuilderContentPanel = new VerticalPanel();
 		queryBuilderContentPanel.setStyleName("selectorsPanel");
+		queryBuilderContentPanel.setWidth("1000px");
 		horizontalPanel.add(queryBuilderContentPanel);
 		
 		ButtonToolBar buttonPanel = new ButtonToolBar();
@@ -118,6 +118,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private Widget buildNavPanel() {
 		NavPills pills = new NavPills();
 		pills.setMarginRight(16.0);
+		pills.setWidth("200px");
 		
 		sourceListItem = new AnchorListItem(SOURCE);
 		sourceListItem.addClickHandler(event -> navigate(SOURCE));

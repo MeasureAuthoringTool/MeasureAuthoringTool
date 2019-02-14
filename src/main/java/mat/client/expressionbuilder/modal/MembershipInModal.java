@@ -27,8 +27,8 @@ public class MembershipInModal extends SubExpressionBuilderModal {
 	private final BuildButtonObserver leftHandSideBuildButtonObserver;
 	private final BuildButtonObserver rightHandSideBuildButtonObserver;
 	
-	private ExpressionTypeSelectorList leftHandSideOfComparisonSelectorList;
-	private ExpressionTypeSelectorList rightHandSideOfComparisonSelectorList;
+	private ExpressionTypeSelectorList leftHandSideOfExpressionSelectorList;
+	private ExpressionTypeSelectorList rightHandSideOfExpressionSelectorList;
 
 	public MembershipInModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Membership (In)", parent, parentModel, mainModel);
@@ -46,16 +46,16 @@ public class MembershipInModal extends SubExpressionBuilderModal {
 		this.getErrorAlert().clearAlert();
 		this.getContentPanel().add(buildContentPanel());
 		
-		if(this.leftHandSideOfComparisonSelectorList.getSelector() != null) {
-			this.leftHandSideOfComparisonSelectorList.getSelector().getExpressionTypeSelectorListBox().setSelectedIndex(this.leftHandSideIndex);
-			this.leftHandSideOfComparisonSelectorList.getSelector().getExpressionTypeSelectorListBox().addChangeHandler(event ->
-				this.leftHandSideIndex = this.leftHandSideOfComparisonSelectorList.getSelector().getExpressionTypeSelectorListBox().getSelectedIndex());
+		if(this.leftHandSideOfExpressionSelectorList.getSelector() != null) {
+			this.leftHandSideOfExpressionSelectorList.getSelector().getExpressionTypeSelectorListBox().setSelectedIndex(this.leftHandSideIndex);
+			this.leftHandSideOfExpressionSelectorList.getSelector().getExpressionTypeSelectorListBox().addChangeHandler(event ->
+				this.leftHandSideIndex = this.leftHandSideOfExpressionSelectorList.getSelector().getExpressionTypeSelectorListBox().getSelectedIndex());
 		}
 		
-		if(this.rightHandSideOfComparisonSelectorList.getSelector() != null) {
-			this.rightHandSideOfComparisonSelectorList.getSelector().getExpressionTypeSelectorListBox().setSelectedIndex(this.rightHandSideIndex);
-			this.rightHandSideOfComparisonSelectorList.getSelector().getExpressionTypeSelectorListBox().addChangeHandler(event ->
-				this.rightHandSideIndex = this.rightHandSideOfComparisonSelectorList.getSelector().getExpressionTypeSelectorListBox().getSelectedIndex());
+		if(this.rightHandSideOfExpressionSelectorList.getSelector() != null) {
+			this.rightHandSideOfExpressionSelectorList.getSelector().getExpressionTypeSelectorListBox().setSelectedIndex(this.rightHandSideIndex);
+			this.rightHandSideOfExpressionSelectorList.getSelector().getExpressionTypeSelectorListBox().addChangeHandler(event ->
+				this.rightHandSideIndex = this.rightHandSideOfExpressionSelectorList.getSelector().getExpressionTypeSelectorListBox().getSelectedIndex());
 		}
 		
 		this.updateCQLDisplay();
@@ -70,30 +70,30 @@ public class MembershipInModal extends SubExpressionBuilderModal {
 		buildFirstExpressionList();
 		buildSecondExpressionList();
 		
-		panel.add(leftHandSideOfComparisonSelectorList);
+		panel.add(leftHandSideOfExpressionSelectorList);
 		panel.add(buildInLabel());
-		panel.add(rightHandSideOfComparisonSelectorList);
+		panel.add(rightHandSideOfExpressionSelectorList);
 		
 		return panel;
 	}
 
 	private void buildFirstExpressionList() {
-		final List<ExpressionType> availableExpressionForLeftSideOfComparison = new ArrayList<>();
-		availableExpressionForLeftSideOfComparison.add(ExpressionType.DEFINITION);
+		final List<ExpressionType> availableExpressionForLeftSideOfIn = new ArrayList<>();
+		availableExpressionForLeftSideOfIn.add(ExpressionType.DEFINITION);
 		
-		leftHandSideOfComparisonSelectorList = new ExpressionTypeSelectorList(
-				availableExpressionForLeftSideOfComparison, new ArrayList<>(), leftHandSideBuildButtonObserver, inModel.getLeftHandSide(), 
+		leftHandSideOfExpressionSelectorList = new ExpressionTypeSelectorList(
+				availableExpressionForLeftSideOfIn, new ArrayList<>(), leftHandSideBuildButtonObserver, inModel.getLeftHandSide(), 
 				"What type of expression are you looking for?");
 	}
 	
 	private void buildSecondExpressionList() {
-		final List<ExpressionType> availableExpressionForRightSideOfComparison = new ArrayList<>();
-		availableExpressionForRightSideOfComparison.add(ExpressionType.DEFINITION);
-		availableExpressionForRightSideOfComparison.add(ExpressionType.PARAMETER);
-		availableExpressionForRightSideOfComparison.add(ExpressionType.VALUESET);
+		final List<ExpressionType> availableExpressionForRightSideOfIn = new ArrayList<>();
+		availableExpressionForRightSideOfIn.add(ExpressionType.DEFINITION);
+		availableExpressionForRightSideOfIn.add(ExpressionType.PARAMETER);
+		availableExpressionForRightSideOfIn.add(ExpressionType.VALUESET);
 
-		rightHandSideOfComparisonSelectorList = new ExpressionTypeSelectorList(
-				availableExpressionForRightSideOfComparison, new ArrayList<>(), rightHandSideBuildButtonObserver, inModel.getRightHandSide(), 
+		rightHandSideOfExpressionSelectorList = new ExpressionTypeSelectorList(
+				availableExpressionForRightSideOfIn, new ArrayList<>(), rightHandSideBuildButtonObserver, inModel.getRightHandSide(), 
 				"In which expression would you like to find that data?"
 		);
 	}

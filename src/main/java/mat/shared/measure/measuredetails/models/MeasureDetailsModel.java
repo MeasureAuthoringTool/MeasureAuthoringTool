@@ -297,57 +297,41 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 	
 	@Override
 	public void updateModel(ClinicalRecommendationModel clinicalRecommendationModel) {
-		clinicalRecommendationModel.setFormattedText(clinicalRecommendationModel.getFormattedText().trim());
-		clinicalRecommendationModel.setPlainText(clinicalRecommendationModel.getPlainText().trim());
 		setClinicalRecommendationModel(clinicalRecommendationModel);
 	}
 
 	@Override
 	public void updateModel(CopyrightModel copyrightModel) {
-		copyrightModel.setPlainText(copyrightModel.getPlainText().trim());
-		copyrightModel.setFormattedText(copyrightModel.getFormattedText().trim());
 		setCopyrightModel(copyrightModel);
 	}
 
 	@Override
 	public void updateModel(DefinitionModel definitionModel) {
-		definitionModel.setFormattedText(definitionModel.getFormattedText().trim());
-		definitionModel.setPlainText(definitionModel.getPlainText().trim());
 		setDefinitionModel(definitionModel);
 	}
 
 	@Override
 	public void updateModel(DenominatorExceptionsModel denominatorExceptionsModel) {
-		denominatorExceptionsModel.setFormattedText(denominatorExceptionsModel.getFormattedText().trim());
-		denominatorExceptionsModel.setPlainText(denominatorExceptionsModel.getPlainText().trim());
 		setDenominatorExceptionsModel(denominatorExceptionsModel);
 	}
 
 	@Override
 	public void updateModel(DenominatorExclusionsModel denominatorExclusionsModel) {
-		denominatorExclusionsModel.setFormattedText(denominatorExclusionsModel.getFormattedText().trim());
-		denominatorExclusionsModel.setPlainText(denominatorExclusionsModel.getPlainText().trim());
 		setDenominatorExclusionsModel(denominatorExclusionsModel);
 	}
 
 	@Override
 	public void updateModel(DenominatorModel denominatorModel) {
-		denominatorModel.setFormattedText(denominatorModel.getFormattedText().trim());
-		denominatorModel.setPlainText(denominatorModel.getPlainText().trim());
 		setDenominatorModel(denominatorModel);
 	}
 	
 	@Override
 	public void updateModel(DescriptionModel descriptionModel) {
-		descriptionModel.setPlainText(descriptionModel.getPlainText().trim());
-		descriptionModel.setFormattedText(descriptionModel.getFormattedText().trim());
 		setDescriptionModel(descriptionModel);
 	}
 
 	@Override
 	public void updateModel(DisclaimerModel disclaimerModel) {
-		disclaimerModel.setPlainText(disclaimerModel.getPlainText().trim());
-		disclaimerModel.setFormattedText(disclaimerModel.getFormattedText().trim());
 		setDisclaimerModel(disclaimerModel);
 	}
 	
@@ -358,36 +342,26 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public void updateModel(GuidanceModel guidanceModel) {
-		guidanceModel.setFormattedText(guidanceModel.getFormattedText().trim());
-		guidanceModel.setPlainText(guidanceModel.getPlainText().trim());
 		setGuidanceModel(guidanceModel);
 	}
 
 	@Override
 	public void updateModel(ImprovementNotationModel improvementNotationModel) {
-		improvementNotationModel.setFormattedText(improvementNotationModel.getFormattedText().trim());
-		improvementNotationModel.setPlainText(improvementNotationModel.getPlainText().trim());
 		setImprovementNotationModel(improvementNotationModel);
 	}
 
 	@Override
 	public void updateModel(InitialPopulationModel initialPopulationModel) {
-		initialPopulationModel.setPlainText(initialPopulationModel.getPlainText().trim());
-		initialPopulationModel.setFormattedText(initialPopulationModel.getFormattedText().trim());
 		setInitialPopulationModel(initialPopulationModel);
 	}
 
 	@Override
 	public void updateModel(MeasureObservationsModel measureObservationsModel) {
-		measureObservationsModel.setFormattedText(measureObservationsModel.getFormattedText().trim());
-		measureObservationsModel.setPlainText(measureObservationsModel.getPlainText().trim());
 		setMeasureObservationsModel(measureObservationsModel);
 	}
 
 	@Override
 	public void updateModel(MeasurePopulationExclusionsModel measurePopulationExclusionsModel) {
-		measurePopulationExclusionsModel.setFormattedText(measurePopulationExclusionsModel.getFormattedText().trim());
-		measurePopulationExclusionsModel.setPlainText(measurePopulationExclusionsModel.getPlainText().trim());
 		setMeasurePopulationExclusionsModel(measurePopulationExclusionsModel);
 	}
 
@@ -398,8 +372,6 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public void updateModel(MeasureSetModel measureSetModel) {
-		measureSetModel.setFormattedText(measureSetModel.getFormattedText().trim());
-		measureSetModel.setPlainText(measureSetModel.getPlainText().trim());
 		setMeasureSetModel(measureSetModel);
 	}
 
@@ -415,29 +387,21 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public void updateModel(NumeratorExclusionsModel numeratorExclusionsModel) {
-		numeratorExclusionsModel.setFormattedText(numeratorExclusionsModel.getFormattedText().trim());
-		numeratorExclusionsModel.setPlainText(numeratorExclusionsModel.getPlainText().trim());
 		setNumeratorExclusionsModel(numeratorExclusionsModel);
 	}
 
 	@Override
 	public void updateModel(NumeratorModel numeratorModel) {
-		numeratorModel.setFormattedText(numeratorModel.getFormattedText().trim());
-		numeratorModel.setPlainText(numeratorModel.getPlainText().trim());
 		setNumeratorModel(numeratorModel);
 	}
 
 	@Override
 	public void updateModel(RateAggregationModel rateAggregationModel) {
-		rateAggregationModel.setFormattedText(rateAggregationModel.getFormattedText().trim());
-		rateAggregationModel.setPlainText(rateAggregationModel.getPlainText().trim());
 		setRateAggregationModel(rateAggregationModel);
 	}
 
 	@Override
 	public void updateModel(RationaleModel rationaleModel) {
-		rationaleModel.setFormattedText(rationaleModel.getFormattedText().trim());
-		rationaleModel.setPlainText(rationaleModel.getPlainText().trim());
 		setRationaleModel(rationaleModel);
 	}
 
@@ -448,29 +412,21 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public void updateModel(RiskAdjustmentModel riskAdjustmentModel) {
-		riskAdjustmentModel.setFormattedText(riskAdjustmentModel.getFormattedText().trim());
-		riskAdjustmentModel.setPlainText(riskAdjustmentModel.getPlainText().trim());
 		setRiskAdjustmentModel(riskAdjustmentModel);
 	}
 
 	@Override
 	public void updateModel(StratificationModel stratificationModel) {
-		stratificationModel.setFormattedText(stratificationModel.getFormattedText().trim());
-		stratificationModel.setPlainText(stratificationModel.getPlainText().trim());
 		setStratificationModel(stratificationModel);
 	}
 
 	@Override
 	public void updateModel(SupplementalDataElementsModel supplementalDataElementsModel) {
-		supplementalDataElementsModel.setFormattedText(supplementalDataElementsModel.getFormattedText().trim());
-		supplementalDataElementsModel.setPlainText(supplementalDataElementsModel.getPlainText().trim());
 		setSupplementalDataElementsModel(supplementalDataElementsModel);
 	}
 
 	@Override
 	public void updateModel(TransmissionFormatModel transmissionFormatModel) {
-		transmissionFormatModel.setFormattedText(transmissionFormatModel.getFormattedText().trim());
-		transmissionFormatModel.setPlainText(transmissionFormatModel.getPlainText().trim());
 		setTransmissionFormatModel(transmissionFormatModel);
 	}
 
@@ -495,13 +451,10 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 	}
 
 	private List<String> validateRichTextEditorValue(String textValue) {
-		if(textValue != null && textValue.length() > 0) {
-			String trimmedValue = textValue.trim();
-			if(StringUtility.isEmptyOrNull(trimmedValue)) {
-				List<String> errorList = new ArrayList<>();
-				errorList.add(INVALID_TEXT);
-				return errorList;
-			}
+		if(StringUtility.isEmptyOrNull(textValue)) {
+			List<String> errorList = new ArrayList<>();
+			errorList.add(INVALID_TEXT);
+			return errorList;
 		}
 		return null;
 	}

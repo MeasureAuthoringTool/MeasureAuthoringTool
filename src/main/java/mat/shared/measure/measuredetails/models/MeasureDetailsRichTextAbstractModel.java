@@ -17,13 +17,13 @@ public abstract class MeasureDetailsRichTextAbstractModel implements MeasureDeta
 	}
 	
 	public String getPlainText() {
-		return plainText;
+		return plainText == null ? null : plainText.trim();
 	}
 	public void setPlainText(String plainText) {
 		this.plainText = plainText;
 	}
 	public String getFormattedText() {
-		return formattedText;
+		return formattedText == null ? null : formattedText.trim();
 	}
 	public void setFormattedText(String formattedText) {
 		this.formattedText = formattedText;

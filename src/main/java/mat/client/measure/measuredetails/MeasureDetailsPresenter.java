@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -514,7 +513,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				measureDetailsModel.setMeasurePopulationExclusionsModel(new MeasurePopulationExclusionsModel());
 				break;
 			case MeasureDetailsConstants.RATIO:
-				measureDetailsModel.setMeasureObservationsModel(new MeasureObservationsModel());
+				if(measureDetailsModel.getGeneralInformationModel() != null && measureDetailsModel.getGeneralInformationModel().isPatientBased()) {
+					measureDetailsModel.setMeasureObservationsModel(new MeasureObservationsModel());
+				}
 				measureDetailsModel.setMeasurePopulationModel(new MeasurePopulationModel());
 				measureDetailsModel.setMeasurePopulationExclusionsModel(new MeasurePopulationExclusionsModel());
 				break;
@@ -630,7 +631,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				return getRichTextEditableTabState(measureDetailsModel.getDenominatorExceptionsModel());
 			case MEASURE_OBSERVATIONS:
 				return getRichTextEditableTabState(measureDetailsModel.getMeasureObservationsModel());
-			
 			default: 
 				return MeasureDetailState.BLANK;
 			}		
@@ -724,6 +724,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			applicableModels.add(measureDetailsModel.getDenominatorExclusionsModel());
 			applicableModels.add(measureDetailsModel.getNumeratorModel());
 			applicableModels.add(measureDetailsModel.getNumeratorExclusionsModel());
+			if(measureDetailsModel.getGeneralInformationModel() != null && !measureDetailsModel.getGeneralInformationModel().isPatientBased()) {
+				applicableModels.add(measureDetailsModel.getMeasureObservationsModel());
+			}
 		}
 		
 		return calculateStateOffOfList(applicableModels);

@@ -1,10 +1,12 @@
 package mat.shared.measure.measuredetails.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.client.measure.ManageCompositeMeasureDetailModel;
+import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.validate.GeneralInformationValidator;
 
 public class MeasureDetailsModel implements MeasureDetailsComponentModel, MeasureDetailsModelVisitor, IsSerializable  {
@@ -41,6 +43,7 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 	private SupplementalDataElementsModel supplementalDataElementsModel;
 	private MeasureSetModel measureSetModel;
 	private ManageCompositeMeasureDetailModel compositeMeasureDetailModel;
+	private static String INVALID_TEXT = "Please enter valid text.";
 	
 	public MeasureDetailsModel() {
 		this.ownerUserId = "";
@@ -294,41 +297,57 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 	
 	@Override
 	public void updateModel(ClinicalRecommendationModel clinicalRecommendationModel) {
+		clinicalRecommendationModel.setFormattedText(clinicalRecommendationModel.getFormattedText().trim());
+		clinicalRecommendationModel.setPlainText(clinicalRecommendationModel.getPlainText().trim());
 		setClinicalRecommendationModel(clinicalRecommendationModel);
 	}
 
 	@Override
 	public void updateModel(CopyrightModel copyrightModel) {
+		copyrightModel.setPlainText(copyrightModel.getPlainText().trim());
+		copyrightModel.setFormattedText(copyrightModel.getFormattedText().trim());
 		setCopyrightModel(copyrightModel);
 	}
 
 	@Override
 	public void updateModel(DefinitionModel definitionModel) {
+		definitionModel.setFormattedText(definitionModel.getFormattedText().trim());
+		definitionModel.setPlainText(definitionModel.getPlainText().trim());
 		setDefinitionModel(definitionModel);
 	}
 
 	@Override
 	public void updateModel(DenominatorExceptionsModel denominatorExceptionsModel) {
+		denominatorExceptionsModel.setFormattedText(denominatorExceptionsModel.getFormattedText().trim());
+		denominatorExceptionsModel.setPlainText(denominatorExceptionsModel.getPlainText().trim());
 		setDenominatorExceptionsModel(denominatorExceptionsModel);
 	}
 
 	@Override
 	public void updateModel(DenominatorExclusionsModel denominatorExclusionsModel) {
+		denominatorExclusionsModel.setFormattedText(denominatorExclusionsModel.getFormattedText().trim());
+		denominatorExclusionsModel.setPlainText(denominatorExclusionsModel.getPlainText().trim());
 		setDenominatorExclusionsModel(denominatorExclusionsModel);
 	}
 
 	@Override
 	public void updateModel(DenominatorModel denominatorModel) {
+		denominatorModel.setFormattedText(denominatorModel.getFormattedText().trim());
+		denominatorModel.setPlainText(denominatorModel.getPlainText().trim());
 		setDenominatorModel(denominatorModel);
 	}
 	
 	@Override
 	public void updateModel(DescriptionModel descriptionModel) {
+		descriptionModel.setPlainText(descriptionModel.getPlainText().trim());
+		descriptionModel.setFormattedText(descriptionModel.getFormattedText().trim());
 		setDescriptionModel(descriptionModel);
 	}
 
 	@Override
 	public void updateModel(DisclaimerModel disclaimerModel) {
+		disclaimerModel.setPlainText(disclaimerModel.getPlainText().trim());
+		disclaimerModel.setFormattedText(disclaimerModel.getFormattedText().trim());
 		setDisclaimerModel(disclaimerModel);
 	}
 	
@@ -339,26 +358,36 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public void updateModel(GuidanceModel guidanceModel) {
+		guidanceModel.setFormattedText(guidanceModel.getFormattedText().trim());
+		guidanceModel.setPlainText(guidanceModel.getPlainText().trim());
 		setGuidanceModel(guidanceModel);
 	}
 
 	@Override
 	public void updateModel(ImprovementNotationModel improvementNotationModel) {
+		improvementNotationModel.setFormattedText(improvementNotationModel.getFormattedText().trim());
+		improvementNotationModel.setPlainText(improvementNotationModel.getPlainText().trim());
 		setImprovementNotationModel(improvementNotationModel);
 	}
 
 	@Override
 	public void updateModel(InitialPopulationModel initialPopulationModel) {
+		initialPopulationModel.setPlainText(initialPopulationModel.getPlainText().trim());
+		initialPopulationModel.setFormattedText(initialPopulationModel.getFormattedText().trim());
 		setInitialPopulationModel(initialPopulationModel);
 	}
 
 	@Override
 	public void updateModel(MeasureObservationsModel measureObservationsModel) {
+		measureObservationsModel.setFormattedText(measureObservationsModel.getFormattedText().trim());
+		measureObservationsModel.setPlainText(measureObservationsModel.getPlainText().trim());
 		setMeasureObservationsModel(measureObservationsModel);
 	}
 
 	@Override
 	public void updateModel(MeasurePopulationExclusionsModel measurePopulationExclusionsModel) {
+		measurePopulationExclusionsModel.setFormattedText(measurePopulationExclusionsModel.getFormattedText().trim());
+		measurePopulationExclusionsModel.setPlainText(measurePopulationExclusionsModel.getPlainText().trim());
 		setMeasurePopulationExclusionsModel(measurePopulationExclusionsModel);
 	}
 
@@ -369,6 +398,8 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public void updateModel(MeasureSetModel measureSetModel) {
+		measureSetModel.setFormattedText(measureSetModel.getFormattedText().trim());
+		measureSetModel.setPlainText(measureSetModel.getPlainText().trim());
 		setMeasureSetModel(measureSetModel);
 	}
 
@@ -384,21 +415,29 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public void updateModel(NumeratorExclusionsModel numeratorExclusionsModel) {
+		numeratorExclusionsModel.setFormattedText(numeratorExclusionsModel.getFormattedText().trim());
+		numeratorExclusionsModel.setPlainText(numeratorExclusionsModel.getPlainText().trim());
 		setNumeratorExclusionsModel(numeratorExclusionsModel);
 	}
 
 	@Override
 	public void updateModel(NumeratorModel numeratorModel) {
+		numeratorModel.setFormattedText(numeratorModel.getFormattedText().trim());
+		numeratorModel.setPlainText(numeratorModel.getPlainText().trim());
 		setNumeratorModel(numeratorModel);
 	}
 
 	@Override
 	public void updateModel(RateAggregationModel rateAggregationModel) {
+		rateAggregationModel.setFormattedText(rateAggregationModel.getFormattedText().trim());
+		rateAggregationModel.setPlainText(rateAggregationModel.getPlainText().trim());
 		setRateAggregationModel(rateAggregationModel);
 	}
 
 	@Override
 	public void updateModel(RationaleModel rationaleModel) {
+		rationaleModel.setFormattedText(rationaleModel.getFormattedText().trim());
+		rationaleModel.setPlainText(rationaleModel.getPlainText().trim());
 		setRationaleModel(rationaleModel);
 	}
 
@@ -409,64 +448,77 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public void updateModel(RiskAdjustmentModel riskAdjustmentModel) {
+		riskAdjustmentModel.setFormattedText(riskAdjustmentModel.getFormattedText().trim());
+		riskAdjustmentModel.setPlainText(riskAdjustmentModel.getPlainText().trim());
 		setRiskAdjustmentModel(riskAdjustmentModel);
 	}
 
 	@Override
 	public void updateModel(StratificationModel stratificationModel) {
+		stratificationModel.setFormattedText(stratificationModel.getFormattedText().trim());
+		stratificationModel.setPlainText(stratificationModel.getPlainText().trim());
 		setStratificationModel(stratificationModel);
 	}
 
 	@Override
 	public void updateModel(SupplementalDataElementsModel supplementalDataElementsModel) {
+		supplementalDataElementsModel.setFormattedText(supplementalDataElementsModel.getFormattedText().trim());
+		supplementalDataElementsModel.setPlainText(supplementalDataElementsModel.getPlainText().trim());
 		setSupplementalDataElementsModel(supplementalDataElementsModel);
 	}
 
 	@Override
 	public void updateModel(TransmissionFormatModel transmissionFormatModel) {
+		transmissionFormatModel.setFormattedText(transmissionFormatModel.getFormattedText().trim());
+		transmissionFormatModel.setPlainText(transmissionFormatModel.getPlainText().trim());
 		setTransmissionFormatModel(transmissionFormatModel);
 	}
 
 	@Override
 	public List<String> validateModel(ClinicalRecommendationModel clinicalRecommendationModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(clinicalRecommendationModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(CopyrightModel copyrightModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(copyrightModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(DefinitionModel definitionModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(definitionModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(DescriptionModel descriptionModel) {
-		// TODO Auto-generated method stub
+		return validateRichTextEditorValue(descriptionModel.getPlainText());
+	}
+
+	private List<String> validateRichTextEditorValue(String textValue) {
+		if(textValue != null && textValue.length() > 0) {
+			String trimmedValue = textValue.trim();
+			if(StringUtility.isEmptyOrNull(trimmedValue)) {
+				List<String> errorList = new ArrayList<>();
+				errorList.add(INVALID_TEXT);
+				return errorList;
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public List<String> validateModel(DenominatorExceptionsModel denominatorExceptionsModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(denominatorExceptionsModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(DenominatorExclusionsModel denominatorExclusionsModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(denominatorExclusionsModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(DenominatorModel denominatorModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(denominatorModel.getPlainText());
 	}
 
 	@Override
@@ -477,44 +529,37 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public List<String> validateModel(GuidanceModel guidanceModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(guidanceModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(ImprovementNotationModel improvementNotationModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(improvementNotationModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(InitialPopulationModel initialPopulationModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(initialPopulationModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(MeasureObservationsModel measureObservationsModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(measureObservationsModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(MeasurePopulationExclusionsModel measurePopulationExclusionsModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(measurePopulationExclusionsModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(MeasurePopulationModel measurePopulationModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(measurePopulationModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(MeasureSetModel measureSetModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(measureSetModel.getPlainText());
 	}
 
 	@Override
@@ -531,26 +576,22 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public List<String> validateModel(NumeratorExclusionsModel numeratorExclusionsModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(numeratorExclusionsModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(NumeratorModel numeratorModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(numeratorModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(RateAggregationModel rateAggregationModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(rateAggregationModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(RationaleModel rationaleModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(rationaleModel.getPlainText());
 	}
 
 	@Override
@@ -561,32 +602,27 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public List<String> validateModel(RiskAdjustmentModel riskAdjustmentModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(riskAdjustmentModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(StratificationModel stratificationModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(stratificationModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(SupplementalDataElementsModel supplementalDataElementsModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(supplementalDataElementsModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(TransmissionFormatModel transmissionFormatModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(transmissionFormatModel.getPlainText());
 	}
 
 	@Override
 	public List<String> validateModel(DisclaimerModel disclaimerModel) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateRichTextEditorValue(disclaimerModel.getPlainText());
 	}
 
 	@Override

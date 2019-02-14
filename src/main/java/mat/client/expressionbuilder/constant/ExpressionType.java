@@ -14,7 +14,8 @@ public enum ExpressionType implements ExpressionBuilderType {
 	COMPARISON("Comparison", OperatorTypeUtil.getBooleanOperators()),
 	INTERVAL("Interval", OperatorTypeUtil.getSetOperators()), 
 	QUERY("Query", OperatorTypeUtil.getSetOperators()),
-	PARAMETER("Parameter", OperatorTypeUtil.getAllOperators());
+	PARAMETER("Parameter", OperatorTypeUtil.getAllOperators()),
+	VALUESET("Valueset", OperatorTypeUtil.getSetOperators());
 	
 	private String displayName;
 	private List<OperatorType> availableOperators;

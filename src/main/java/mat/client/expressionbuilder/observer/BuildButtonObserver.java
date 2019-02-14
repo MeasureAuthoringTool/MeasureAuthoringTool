@@ -13,6 +13,7 @@ import mat.client.expressionbuilder.modal.NotBuilderModal;
 import mat.client.expressionbuilder.modal.ParameterSelectorModal;
 import mat.client.expressionbuilder.modal.QueryBuilderModal;
 import mat.client.expressionbuilder.modal.RetrieveBuilderModal;
+import mat.client.expressionbuilder.modal.ValuesetSelectorModal;
 import mat.client.expressionbuilder.model.AndModel;
 import mat.client.expressionbuilder.model.ExceptModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
@@ -85,6 +86,11 @@ public class BuildButtonObserver {
 		else if(expression.equals(ExpressionType.PARAMETER.getValue())) {
 			ParameterSelectorModal parameterModal = new ParameterSelectorModal(this.parentModal, this.parentModel, this.mainModel);
 			parameterModal.show();
+		}
+		
+		else if(expression.equals(ExpressionType.VALUESET.getValue())) {
+			ValuesetSelectorModal valuesetModal = new ValuesetSelectorModal(this.parentModal, this.parentModel, this.mainModel);
+			valuesetModal.show();
 		}
 	}
 	

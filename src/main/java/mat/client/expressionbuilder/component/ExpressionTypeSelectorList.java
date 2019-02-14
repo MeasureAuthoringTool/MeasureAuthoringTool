@@ -38,6 +38,7 @@ import mat.client.expressionbuilder.model.OperatorModel;
 import mat.client.expressionbuilder.model.ParameterModel;
 import mat.client.expressionbuilder.model.QueryModel;
 import mat.client.expressionbuilder.model.RetrieveModel;
+import mat.client.expressionbuilder.model.ValuesetModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.OperatorTypeUtil;
 
@@ -218,6 +219,8 @@ public class ExpressionTypeSelectorList extends Composite {
 			return ExpressionType.QUERY.getDisplayName();
 		} else if(model instanceof ParameterModel) {
 			return ExpressionType.PARAMETER.getDisplayName();
+		} else if(model instanceof ValuesetModel) {
+			return ExpressionType.VALUESET.getDisplayName();
 		}
 		
 		return "";

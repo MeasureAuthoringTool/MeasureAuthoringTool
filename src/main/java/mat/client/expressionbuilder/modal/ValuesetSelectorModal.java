@@ -2,6 +2,7 @@ package mat.client.expressionbuilder.modal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -15,6 +16,7 @@ import mat.client.expressionbuilder.model.ValuesetModel;
 import mat.client.expressionbuilder.util.IdentifierSortUtil;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLIdentifierObject;
 
 public class ValuesetSelectorModal extends SubExpressionBuilderModal {
@@ -77,7 +79,17 @@ public class ValuesetSelectorModal extends SubExpressionBuilderModal {
 		valuesetListBox = new ListBoxMVP();
 		valuesetListBox.insertItem(SELECT_VALUESET_PLACEHOLDER, SELECT_VALUESET_PLACEHOLDER, SELECT_VALUESET_PLACEHOLDER);
 		List<CQLIdentifierObject> valuesets = new ArrayList<>();
-		valuesets.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getValuesets()));
+		
+		List<CQLQualityDataSetDTO> valuesetsAndCodes = MatContext.get().getValueSetCodeQualityDataSetList();
+		List<CQLQualityDataSetDTO> valuesetDataSetDTO = valuesetsAndCodes.stream().filter(v -> v.getCodeIdentifier() == null).collect(Collectors.toList());
+		
+		List<CQLIdentifierObject> filteredValuesets = new ArrayList<>();
+		for(int i = 0; i < valuesetDataSetDTO.size(); i++) {
+			CQLIdentifierObject o = new CQLIdentifierObject(null, valuesetDataSetDTO.get(i).getName());
+			filteredValuesets.add(o);
+		}
+		
+		valuesets.addAll(IdentifierSortUtil.sortIdentifierList(filteredValuesets));
 		valuesets.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedValueSetNames()));
 		
 		

@@ -2,6 +2,7 @@ package mat.client.expressionbuilder.observer;
 
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
+import mat.client.expressionbuilder.modal.CodeSelectorModal;
 import mat.client.expressionbuilder.modal.ComparisonBuilderModal;
 import mat.client.expressionbuilder.modal.DefinitionSelectorModal;
 import mat.client.expressionbuilder.modal.ExistsBuilderModal;
@@ -15,6 +16,7 @@ import mat.client.expressionbuilder.modal.QueryBuilderModal;
 import mat.client.expressionbuilder.modal.RetrieveBuilderModal;
 import mat.client.expressionbuilder.modal.ValuesetSelectorModal;
 import mat.client.expressionbuilder.model.AndModel;
+import mat.client.expressionbuilder.model.CodeModel;
 import mat.client.expressionbuilder.model.ExceptModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
@@ -91,6 +93,11 @@ public class BuildButtonObserver {
 		else if(expression.equals(ExpressionType.VALUESET.getValue())) {
 			ValuesetSelectorModal valuesetModal = new ValuesetSelectorModal(this.parentModal, this.parentModel, this.mainModel);
 			valuesetModal.show();
+		}
+		
+		else if(expression.equals(ExpressionType.CODE.getValue())) {
+			CodeSelectorModal codeModal = new CodeSelectorModal(this.parentModal, this.parentModel, this.mainModel);
+			codeModal.show();
 		}
 	}
 	

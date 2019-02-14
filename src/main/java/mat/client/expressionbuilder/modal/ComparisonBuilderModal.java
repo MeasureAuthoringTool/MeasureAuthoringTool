@@ -77,12 +77,12 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("selectorsPanel");
 		
-		List<ExpressionType> availableExpressionForRightSideOfComparison = new ArrayList<>();
-		availableExpressionForRightSideOfComparison.add(ExpressionType.DEFINITION);
+		List<ExpressionType> availableExpressionForLeftSideOfComparison = new ArrayList<>();
+		availableExpressionForLeftSideOfComparison.add(ExpressionType.DEFINITION);
 		
 		
 		leftHandSideOfComparisonSelectorList = new ExpressionTypeSelectorList(
-				availableExpressionForRightSideOfComparison, new ArrayList<>(), leftHandSideBuildButtonObserver, comparisonModel.getLeftHandSide(), 
+				availableExpressionForLeftSideOfComparison, new ArrayList<>(), leftHandSideBuildButtonObserver, comparisonModel.getLeftHandSide(), 
 				"What is the first type of expression you would like to compare?"
 		);
 		
@@ -90,6 +90,9 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 
 		panel.add(buildComparisonOperatorListBox());
 		
+		List<ExpressionType> availableExpressionForRightSideOfComparison = new ArrayList<>();
+		availableExpressionForRightSideOfComparison.add(ExpressionType.CODE);
+		availableExpressionForRightSideOfComparison.add(ExpressionType.DEFINITION);
 		rightHandSideOfComparisonSelectorList = new ExpressionTypeSelectorList(
 				availableExpressionForRightSideOfComparison, new ArrayList<>(), rightHandSideBuildButtonObserver, comparisonModel.getRightHandSide(), 
 				"What is the second type of expression you would like to compare?"

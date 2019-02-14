@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
+import mat.client.expressionbuilder.model.CodeModel;
 import mat.client.expressionbuilder.model.ComparisonModel;
 import mat.client.expressionbuilder.model.DefinitionModel;
 import mat.client.expressionbuilder.model.ExistsModel;
@@ -221,6 +222,8 @@ public class ExpressionTypeSelectorList extends Composite {
 			return ExpressionType.PARAMETER.getDisplayName();
 		} else if(model instanceof ValuesetModel) {
 			return ExpressionType.VALUESET.getDisplayName();
+		} else if(model instanceof CodeModel) {
+			return ExpressionType.CODE.getDisplayName();
 		}
 		
 		return "";

@@ -33,6 +33,7 @@ import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IntervalModel;
 import mat.client.expressionbuilder.model.IsNullModel;
 import mat.client.expressionbuilder.model.IsTrueFalseModel;
+import mat.client.expressionbuilder.model.MembershipInModel;
 import mat.client.expressionbuilder.model.ModelAndOperatorTypeUtil;
 import mat.client.expressionbuilder.model.NotModel;
 import mat.client.expressionbuilder.model.OperatorModel;
@@ -224,6 +225,8 @@ public class ExpressionTypeSelectorList extends Composite {
 			return ExpressionType.VALUESET.getDisplayName();
 		} else if(model instanceof CodeModel) {
 			return ExpressionType.CODE.getDisplayName();
+		} else if(model instanceof MembershipInModel) {
+			return ExpressionType.IN.getDisplayName();
 		}
 		
 		return "";

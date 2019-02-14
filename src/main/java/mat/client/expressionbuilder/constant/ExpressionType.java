@@ -1,7 +1,8 @@
 package mat.client.expressionbuilder.constant;
 
 import java.util.List;
-import mat.client.expressionbuilder.util.*;
+
+import mat.client.expressionbuilder.util.OperatorTypeUtil;
 
 public enum ExpressionType implements ExpressionBuilderType {
 
@@ -16,7 +17,8 @@ public enum ExpressionType implements ExpressionBuilderType {
 	QUERY("Query", OperatorTypeUtil.getSetOperators()),
 	PARAMETER("Parameter", OperatorTypeUtil.getAllOperators()),
 	VALUESET("Valueset", OperatorTypeUtil.getSetOperators()),
-	CODE("Code", OperatorTypeUtil.getAllOperators());
+	CODE("Code", OperatorTypeUtil.getAllOperators()),
+	IN("Membership (In)", OperatorTypeUtil.getBooleanOperators());
 	
 	private String displayName;
 	private List<OperatorType> availableOperators;

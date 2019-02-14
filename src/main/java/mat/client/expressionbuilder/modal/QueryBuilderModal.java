@@ -174,6 +174,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		availableExpressionsForFilter.add(ExpressionType.COMPARISON);
 		availableExpressionsForFilter.add(ExpressionType.DEFINITION);
 		availableExpressionsForFilter.add(ExpressionType.EXISTS);
+		availableExpressionsForFilter.add(ExpressionType.IN);
 		availableExpressionsForFilter.add(ExpressionType.IS_NULL_NOT_NULL);
 		availableExpressionsForFilter.add(ExpressionType.IS_TRUE_FALSE);
 		

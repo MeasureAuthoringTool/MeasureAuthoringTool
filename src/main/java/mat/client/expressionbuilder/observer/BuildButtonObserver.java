@@ -10,13 +10,13 @@ import mat.client.expressionbuilder.modal.ExpressionBuilderModal;
 import mat.client.expressionbuilder.modal.IntervalBuilderModal;
 import mat.client.expressionbuilder.modal.IsNullBuilderModal;
 import mat.client.expressionbuilder.modal.IsTrueFalseBuilderModal;
+import mat.client.expressionbuilder.modal.MembershipInModal;
 import mat.client.expressionbuilder.modal.NotBuilderModal;
 import mat.client.expressionbuilder.modal.ParameterSelectorModal;
 import mat.client.expressionbuilder.modal.QueryBuilderModal;
 import mat.client.expressionbuilder.modal.RetrieveBuilderModal;
 import mat.client.expressionbuilder.modal.ValuesetSelectorModal;
 import mat.client.expressionbuilder.model.AndModel;
-import mat.client.expressionbuilder.model.CodeModel;
 import mat.client.expressionbuilder.model.ExceptModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
@@ -98,6 +98,11 @@ public class BuildButtonObserver {
 		else if(expression.equals(ExpressionType.CODE.getValue())) {
 			CodeSelectorModal codeModal = new CodeSelectorModal(this.parentModal, this.parentModel, this.mainModel);
 			codeModal.show();
+		}
+	
+		else if(expression.equals(ExpressionType.IN.getValue())) {
+			ExpressionBuilderModal inModal = new MembershipInModal(this.parentModal, this.parentModel, this.mainModel);
+			inModal.show();
 		}
 	}
 	

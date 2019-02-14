@@ -152,6 +152,7 @@ public abstract class ExpressionBuilderModal extends Modal {
 	 * This method should be called when returning from a child screen
 	 */
 	public void showAndDisplay() {
+		this.hide();
 		this.show();
 		helpBlock.setText("Successfully applied expression.");
 		helpBlock.getElement().setAttribute("role", "alert");

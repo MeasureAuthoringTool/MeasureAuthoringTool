@@ -13,7 +13,8 @@ public enum ExpressionType implements ExpressionBuilderType {
 	IS_TRUE_FALSE("True/False (is true/false)", OperatorTypeUtil.getBooleanOperators()),
 	COMPARISON("Comparison", OperatorTypeUtil.getBooleanOperators()),
 	INTERVAL("Interval", OperatorTypeUtil.getSetOperators()), 
-	QUERY("Query", OperatorTypeUtil.getSetOperators());
+	QUERY("Query", OperatorTypeUtil.getSetOperators()),
+	PARAMETER("Parameter", OperatorTypeUtil.getAllOperators());
 	
 	private String displayName;
 	private List<OperatorType> availableOperators;

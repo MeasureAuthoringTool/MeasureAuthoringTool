@@ -24,6 +24,13 @@ import mat.client.util.MatTextBox;
  * SearchWidgetWithFilter.java.
  */
 public class SearchWidgetWithFilter extends Composite implements ClickHandler{
+	
+	private boolean isMeasure = false;
+	
+	private static final String LIBRARY_SEARCH_TITLE = "Search by Library Name or Owner";
+
+	private static final String MEASURE_SEARCH_TITLE = "Search by Measure Name, Owner, Abbreviated title, or eCQM Identifier";
+	
 	/**
 	 * ALL measure filter value.
 	 */
@@ -64,6 +71,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	 *            the css style disclosure panel
 	 */
 	public SearchWidgetWithFilter(String cssStyleTopPanel, String cssStyleDisclosurePanel, String forView) {
+		isMeasure = "forMeasure".equals(forView);
 		mainFocusPanel = new HorizontalPanel();
 		VerticalPanel topPanel = new VerticalPanel();
 		topPanel.getElement().setId("SearchFilterWidget_verticalPanel_" + forView);
@@ -77,7 +85,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		mainFocusPanel.add(searchInputHPanel);
 		horizontalPanel.add(mainFocusPanel);
 		VerticalPanel mainPanel = new VerticalPanel();
-		mainPanel.add(buildSearchHeader(forView));
+		mainPanel.add(buildSearchHeader());
 		mainPanel.add(horizontalPanel);
 		mainPanel.setStylePrimaryName(cssStyleTopPanel);
 
@@ -103,7 +111,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		topPanel.add(invisibleLabel);
 		topPanel.add(mainPanel);
 		
-		resetFilter(forView);
+		resetFilter();
 		addHandlersToCheckBox();
 		Element element = topPanel.getElement();
 		element.setAttribute("aria-role", "panel");
@@ -117,7 +125,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	}
 
 	private Panel buildFilterByPanel(String forView) {
-		if(forView.equalsIgnoreCase("forMeasure")) {
+		if(isMeasure) {
 			return buildFilterByPanel(myMeasuresCheckBox, "Filter by My Measures", forView);
 		} else {
 			return buildFilterByPanel(myLibrariesCheckBox, "Filter by My Libraries", forView);
@@ -139,9 +147,9 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		return checkBoxPanel;
 	}
 
-	private Label buildSearchHeader(String forView) {
-		String viewPluralString = forView.equalsIgnoreCase("forMeasure") ? "measures" : "libraries";
-		String viewString = forView.equalsIgnoreCase("forMeasure") ? "measure" : "library";
+	private Label buildSearchHeader() {
+		String viewPluralString = isMeasure ? "measures" : "libraries";
+		String viewString = isMeasure ? "measure" : "library";
 		Label searchHeader = new Label("Search");
 		searchHeader.getElement().setAttribute("aria-label", "Search This panel allows you to filter your " + viewPluralString + " via search so you can find the exact " + viewString + " you want");
 		searchHeader.getElement().setId("searchHeader_Label");
@@ -155,15 +163,22 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		searchButton.setType(ButtonType.PRIMARY);
 		searchButton.setMarginRight(8.0);
 		searchButton.setTitle("Search");
+		
 		searchInput.setWidth("740px");
 		searchInput.setHeight("32px");
 		searchInput.addStyleName("searchFilterTextBox");
-		searchInput.getElement().setAttribute("placeholder", "Enter Search Text");
+		searchInput.getElement().setAttribute("placeholder", buildTitle());
+		searchInput.setTitle(buildTitle());
+
 		searchButton.setMarginTop(-31.0);
 		searchButton.setHeight("32px");
 		searchButton.setId("SearchWidgetButton_" + forView);
 		searchButton.setPull(Pull.RIGHT);
 		return searchButton;
+	}
+	
+	private String buildTitle() {
+		return (isMeasure ? MEASURE_SEARCH_TITLE : LIBRARY_SEARCH_TITLE) ;
 	}
 
 	/**
@@ -247,8 +262,8 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	/**
 	 * Method to Reset check box to default state.
 	 */
-	public final void resetFilter(String forView) {
-		if(forView.equalsIgnoreCase("forMeasure")) {
+	public final void resetFilter() {
+		if(isMeasure) {
 			myMeasuresCheckBox.setValue(true);
 			setSelectedFilter(MY);
 		} else {

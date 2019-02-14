@@ -25,6 +25,12 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 
 	public DefinitionSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Definition", parent, parentModel, mainModel);
+		this.setHideOtherModals(false);
+		this.setClosable(true);
+		this.setRemoveOnHide(true);
+		this.setWidth("35%");
+		this.setCQLPanelVisible(false);
+		this.getElement().getStyle().setZIndex(9999);
 		this.getApplyButton().addClickHandler(event -> applyButtonClickHandler());
 		display();
 	}
@@ -53,7 +59,6 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 		
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("selectorsPanel");
-		panel.setWidth("36%");
 		Form form = new Form();
 		form.add(buildDefinitionFormGroup());
 		

@@ -48,6 +48,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	
 	private String alias = "";
 	private BuildButtonObserver filterBuildButtonObserver;
+	private NavPills pills;
 
 	public QueryBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
 			ExpressionBuilderModel mainModel) {
@@ -86,16 +87,19 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 
 	private Widget buildContentPanel() {
 		this.getContentPanel().clear();
+		
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.setWidth("100%");
 		
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		horizontalPanel.add(buildNavPanel());		
+		HorizontalPanel navPillsAndContentPanel = new HorizontalPanel();
+		navPillsAndContentPanel.setWidth("100%");		
 		
 		queryBuilderContentPanel = new VerticalPanel();
 		queryBuilderContentPanel.setStyleName("selectorsPanel");
-		queryBuilderContentPanel.setWidth("1000px");
-		horizontalPanel.add(queryBuilderContentPanel);
+		
+		navPillsAndContentPanel.add(buildNavPanel());
+		pills.getElement().getParentElement().setAttribute("style", "width: 20%");
+		navPillsAndContentPanel.add(queryBuilderContentPanel);
 		
 		ButtonToolBar buttonPanel = new ButtonToolBar();
 		previousButton = new Button("Previous");
@@ -107,7 +111,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		buttonPanel.add(previousButton);
 		buttonPanel.add(nextButton);
 		
-		mainPanel.add(horizontalPanel);	
+		mainPanel.add(navPillsAndContentPanel);	
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
@@ -116,10 +120,9 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private Widget buildNavPanel() {
-		NavPills pills = new NavPills();
-		pills.setMarginRight(16.0);
-		pills.setWidth("200px");
-		
+		pills = new NavPills();
+		pills.setWidth("150px");
+		pills.setMarginRight(15.0);
 		sourceListItem = new AnchorListItem(SOURCE);
 		sourceListItem.addClickHandler(event -> navigate(SOURCE));
 		sourceListItem.setActive(true);
@@ -139,14 +142,12 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		pills.add(reviewQueryListItem);
 		
 		pills.setStacked(true);
-		
 		return pills;
 	}
 	
 	private Widget buildSourceWidget() {
 		VerticalPanel sourcePanel = new VerticalPanel();
-		sourcePanel.setStylePrimaryName("selectorsPanel");
-		
+		sourcePanel.setStyleName("selectorsPanel");
 		List<ExpressionType> availableExpressionsForSouce = new ArrayList<>();
 		availableExpressionsForSouce.add(ExpressionType.RETRIEVE);
 		availableExpressionsForSouce.add(ExpressionType.DEFINITION);
@@ -155,6 +156,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		ExpressionTypeSelectorList sourceSelector = new ExpressionTypeSelectorList(availableExpressionsForSouce, availableOperatorsForSource, 
 				sourceBuildButtonObserver, queryModel.getSource(), 
 				"What type of expression would you like to use as your data source?");
+		
 		
 		sourcePanel.add(sourceSelector);
 		
@@ -168,8 +170,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	
 	private Widget buildFilterWidget() {
 		VerticalPanel filterPanel = new VerticalPanel();
-		filterPanel.setStylePrimaryName("selectorsPanel");
-		
+		filterPanel.setStyleName("selectorsPanel");
 		List<ExpressionType> availableExpressionsForFilter = new ArrayList<>();
 		availableExpressionsForFilter.add(ExpressionType.COMPARISON);
 		availableExpressionsForFilter.add(ExpressionType.DEFINITION);

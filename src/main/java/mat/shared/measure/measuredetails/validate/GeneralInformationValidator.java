@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.shared.DateTimeFormat;
 
 import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 
 public class GeneralInformationValidator {
-	private static final String MEASURE_PERIOD_DATES_ERROR = "Please enter valid Measurement Period dates.";
+	private static final String MEASURE_PERIOD_DATES_ERROR = "The dates for Measurement Period are invalid. Please enter valid dates.";
 
 	public List<String> validateModel(GeneralInformationModel generalInformationModel) {
 		List<String> errorMessages = new ArrayList<>();
@@ -22,8 +22,8 @@ public class GeneralInformationValidator {
 		if(!generalInformationModel.isCalendarYear()) {
 			try {
 				DateTimeFormat dateFormat = DateTimeFormat.getFormat("MM/dd/yyyy");
-				Date fromDate = dateFormat.parse(generalInformationModel.getMeasureFromPeriod());
-				Date toDate = dateFormat.parse(generalInformationModel.getMeasureToPeriod());
+				Date fromDate = dateFormat.parseStrict(generalInformationModel.getMeasureFromPeriod());
+				Date toDate = dateFormat.parseStrict(generalInformationModel.getMeasureToPeriod());
 				 if(fromDate.after(toDate)) {
 					errorMessages.add(MEASURE_PERIOD_DATES_ERROR);
 				}
@@ -36,10 +36,7 @@ public class GeneralInformationValidator {
 	}
 	
 	public boolean isValueComplete(String value) {
-		if(StringUtility.isEmptyOrNull(value)) {
-			return false;
-		}
-		return true;
+		return StringUtility.isNotBlank(value);
 	}
 
 	public MeasureDetailState getModelState(GeneralInformationModel model, boolean isComposite) {

@@ -98,7 +98,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		queryBuilderContentPanel.setStyleName("selectorsPanel");
 		
 		navPillsAndContentPanel.add(buildNavPanel());
-		pills.getElement().getParentElement().setAttribute("style", "width: 20%");
+		pills.getElement().getParentElement().setAttribute("style", "vertical-align: top; width: 20%");
 		navPillsAndContentPanel.add(queryBuilderContentPanel);
 		
 		ButtonToolBar buttonPanel = new ButtonToolBar();

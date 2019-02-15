@@ -61,7 +61,6 @@ import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SynchronizationDelegate;
-import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.client.util.ClientConstants;
 import mat.model.cql.CQLLibraryDataSetObject;
@@ -1266,6 +1265,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			
 			@Override
 			public void onSuccess(SaveCQLLibraryResult result) {
+				searchModel.setTotalResults(result.getResultsTotal());
 				setSearchPills(searchModel);
 				if(cqlLibraryView.getSearchFilterWidget().getSelectedFilter()!=0){
 					cqlLibraryView.getCQLLibrarySearchView().setCQLLibraryListLabel("All CQL Libraries");
@@ -1297,8 +1297,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 				}
 
-				SearchResultUpdate sru = new SearchResultUpdate();
-				sru.update(result, (TextBox) cqlLibraryView.getSearchString(), lastSearchText);
 				cqlLibraryView.buildCellTable(result, searchModel, filter);
 				showSearchingBusy(false);
 			}

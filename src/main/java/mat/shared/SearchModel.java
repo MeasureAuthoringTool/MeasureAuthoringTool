@@ -10,6 +10,7 @@ public abstract class SearchModel implements IsSerializable {
 	protected int pageSize;
 	protected int modifiedDate;
 	protected int isMyMeasureSearch;
+	protected Integer totalResults;
 	
 	protected String searchTerm;
 	protected String modifiedOwner;
@@ -51,6 +52,14 @@ public abstract class SearchModel implements IsSerializable {
 		this.isMyMeasureSearch = isMyMeasureSearch;
 	}
 
+	public Integer getTotalResults() {
+		return totalResults;
+	}
+
+	public void setTotalResults(Integer totalResults) {
+		this.totalResults = totalResults;
+	}
+
 	public String getSearchTerm() {
 		return searchTerm;
 	}
@@ -90,6 +99,7 @@ public abstract class SearchModel implements IsSerializable {
 		modifiedOwner = "";
 		owner = "";
 		isMyMeasureSearch = SearchWidgetWithFilter.MY;
+		totalResults = null;
 	}
 	
 	private String trimWhiteSpaces(String str) {

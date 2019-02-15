@@ -1144,6 +1144,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(ManageMeasureSearchModel result) {
+						measureSearchModel.setTotalResults(result.getResultsTotal());
 						addSearchPills(measureSearchModel);
 						String measureListLabel = (measureSearchModel.getIsMyMeasureSearch() != 0) ? "All Measures" : "My Measures";
 						searchDisplay.getMeasureSearchView().setMeasureListLabel(measureListLabel);
@@ -1301,8 +1302,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 								searchDisplay.getSuccessMeasureDeletion().createAlert(measureVerMessage);
 							} 
 						}
-						SearchResultUpdate sru = new SearchResultUpdate();
-						sru.update(result, (TextBox) searchDisplay.getSearchString(), measureSearchModel.getSearchTerm());
 
 						searchDisplay.buildCellTable(manageMeasureSearchModel, measureSearchModel.getIsMyMeasureSearch(), measureSearchModel);
 

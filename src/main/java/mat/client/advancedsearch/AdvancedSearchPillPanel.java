@@ -105,6 +105,12 @@ public class AdvancedSearchPillPanel {
 		reset.getElement().setAttribute("aria-label", "Reset Search Fields. Clicking will reset all your search values to default search. "
 				+ "The focus will also be placed on the search text field for you to start another search");
 		badgePanel.add(reset);
+
+		if (searchModel.getTotalResults() != null) {
+			String resultsText = "(Search returned " + searchModel.getTotalResults() + " result(s))";
+			String resultsTextWithStyle = "Search Criteria&nbsp;&nbsp;<span style=\"font-size:12px;font-style: italic;\" tabindex=\"0\">" + resultsText + "</span>";
+			badgeHeader.getElement().setInnerHTML(resultsTextWithStyle);
+		}
 		badgeTable.setVisible(true);
 	}
 

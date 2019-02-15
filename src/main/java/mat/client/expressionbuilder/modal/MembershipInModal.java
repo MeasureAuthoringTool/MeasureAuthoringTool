@@ -34,6 +34,7 @@ public class MembershipInModal extends SubExpressionBuilderModal {
 		super("Membership (In)", parent, parentModel, mainModel);
 		
 		inModel = new MembershipInModel();
+		this.getParentModel().appendExpression(inModel);
 		leftHandSideBuildButtonObserver = new BuildButtonObserver(this, inModel.getLeftHandSide(), mainModel);
 		rightHandSideBuildButtonObserver = new BuildButtonObserver(this, inModel.getRightHandSide(), mainModel);
 		
@@ -117,7 +118,6 @@ public class MembershipInModal extends SubExpressionBuilderModal {
 		if(inModel.getRightHandSide().getChildModels().isEmpty() || inModel.getLeftHandSide().getChildModels().isEmpty()) {
 			this.getErrorAlert().createAlert("All fields required.");
 		} else {
-			this.getParentModel().appendExpression(inModel);
 			this.getExpressionBuilderParent().showAndDisplay();
 		}
 	}

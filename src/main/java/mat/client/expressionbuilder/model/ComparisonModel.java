@@ -11,6 +11,7 @@ public class ComparisonModel extends ExpressionBuilderModel {
 	public ComparisonModel() {
 		this.rightHandSide = new ExpressionBuilderModel();
 		this.leftHandSide = new ExpressionBuilderModel();
+		comparisonOperator = new ComparisonOperatorModel("");
 	}
 		
 	public ExpressionBuilderModel getRightHandSide() {

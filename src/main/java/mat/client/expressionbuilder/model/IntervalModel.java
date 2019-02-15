@@ -6,8 +6,8 @@ public class IntervalModel extends ExpressionBuilderModel {
 
 	private ExpressionBuilderModel lowerBound;
 	private ExpressionBuilderModel upperBound;
-	private boolean isLowerBoundInclusive;
-	private boolean isUpperBoundInclusive;
+	private boolean isLowerBoundInclusive = true;
+	private boolean isUpperBoundInclusive = true;
 	
 	public IntervalModel() {
 		lowerBound = new ExpressionBuilderModel();

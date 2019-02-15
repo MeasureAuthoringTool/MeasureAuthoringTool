@@ -36,7 +36,7 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 		super("Interval", parent, parentModel, mainModel);
 		
 		intervalModel = new IntervalModel();
-		
+		this.getParentModel().appendExpression(intervalModel);		
 		lowerBoundBuildButtonObserver = new BuildButtonObserver(this, intervalModel.getLowerBound(), mainModel);
 		upperBoundBuildButtonObserver = new BuildButtonObserver(this, intervalModel.getUpperBound(), mainModel);
 		
@@ -51,7 +51,6 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 		} else {
 			intervalModel.setLowerBoundInclusive(isLowerBoundInclusive);
 			intervalModel.setUpperBoundInclusive(isUpperBoundInclusive);
-			this.getParentModel().appendExpression(intervalModel);
 			this.getExpressionBuilderParent().showAndDisplay();
 		}
 	}
@@ -124,10 +123,14 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 		
 		includedRadioButtonLowerBound.addValueChangeHandler(event -> {
 			isLowerBoundInclusive = event.getValue();
+			intervalModel.setLowerBoundInclusive(isLowerBoundInclusive);
+			this.updateCQLDisplay();
 		});
 		
 		excludedRadioButtonLowerBound.addValueChangeHandler(event -> {
 			isLowerBoundInclusive = !event.getValue();
+			intervalModel.setLowerBoundInclusive(isLowerBoundInclusive);
+			this.updateCQLDisplay();
 		});
 		
 		lowerBoundInclusiveRadioButtonPanel.add(includedRadioButtonLowerBound);
@@ -154,10 +157,14 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 		
 		includedRadioButtonUpperBound.addValueChangeHandler(event -> {
 			isUpperBoundInclusive = event.getValue();
+			intervalModel.setUpperBoundInclusive(isUpperBoundInclusive);
+			this.updateCQLDisplay();
 		});
 		
 		excludedRadioButtonUpperBound.addValueChangeHandler(event -> {
 			isUpperBoundInclusive = !event.getValue();
+			intervalModel.setUpperBoundInclusive(isUpperBoundInclusive);
+			this.updateCQLDisplay();
 		});
 		
 		upperBoundInclusiveRadioButtonPanel.add(includedRadioButtonUpperBound);

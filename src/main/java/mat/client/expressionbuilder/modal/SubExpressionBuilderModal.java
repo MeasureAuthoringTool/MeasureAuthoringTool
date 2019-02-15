@@ -7,13 +7,17 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
+import mat.client.expressionbuilder.model.ComparisonModel;
 import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
+import mat.client.expressionbuilder.model.IntervalModel;
 import mat.client.expressionbuilder.model.IsNullModel;
 import mat.client.expressionbuilder.model.IsTrueFalseModel;
+import mat.client.expressionbuilder.model.MembershipInModel;
 import mat.client.expressionbuilder.model.NotModel;
 import mat.client.expressionbuilder.model.OperatorModel;
+import mat.client.expressionbuilder.model.QueryModel;
 
 public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 	private Button cancelButton;
@@ -82,7 +86,11 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 			if(lastModel instanceof ExistsModel || 
 					lastModel instanceof NotModel ||
 					lastModel instanceof IsNullModel ||
-					lastModel instanceof IsTrueFalseModel) {
+					lastModel instanceof IsTrueFalseModel ||
+					lastModel instanceof ComparisonModel ||
+					lastModel instanceof IntervalModel ||
+					lastModel instanceof QueryModel ||
+					lastModel instanceof MembershipInModel) {
 				this.getParentModel().getChildModels().remove(size);
 				int newSize = this.getParentModel().getChildModels().size() - 1;
 				

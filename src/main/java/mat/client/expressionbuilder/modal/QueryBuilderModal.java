@@ -56,11 +56,11 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 			ExpressionBuilderModel mainModel) {
 		super("Query", parent, parentModel, mainModel);
 		queryModel = new QueryModel();
+		this.getParentModel().appendExpression(queryModel);
 		
 		sourceBuildButtonObserver = new BuildButtonObserver(this, queryModel.getSource(), mainModel);
 		filterBuildButtonObserver = new BuildButtonObserver(this, queryModel.getFilter(), mainModel);
 		
-		this.setCQLPanelVisible(false);
 		this.getApplyButton().setVisible(false);
 		this.getApplyButton().addClickHandler(event -> onApplyButtonClick());
 		display();
@@ -74,7 +74,6 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		} else if(queryModel.getAlias().isEmpty() || !validator.doesAliasNameFollowCQLAliasNamingConvention(queryModel.getAlias())) {
 			this.getErrorAlert().createAlert("The name of your source must start with an alpha character and can not contain spaces or special characters other than an underscore.");
 		} else {
-			this.getParentModel().appendExpression(queryModel);
 			this.getExpressionBuilderParent().showAndDisplay();
 		}
 	}
@@ -203,6 +202,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		aliasTextBox.addChangeHandler(event -> {
 			alias = aliasTextBox.getValue();
 			queryModel.setAlias(alias);
+			this.updateCQLDisplay();
 		});
 		
 		aliasTextBox.setTitle("Enter an Alias");
@@ -266,7 +266,6 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		this.getApplyButton().setVisible(false);
 		displayCurrentTab(text);
 		this.getErrorAlert().clearAlert();
-		this.setCQLPanelVisible(false);
 		this.updateCQLDisplay();
 	}
 	

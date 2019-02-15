@@ -36,6 +36,7 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 		super("Comparison", parent, parentModel, mainModel);
 		
 		comparisonModel = new ComparisonModel();
+		this.getParentModel().appendExpression(comparisonModel);
 		leftHandSideBuildButtonObserver = new BuildButtonObserver(this, comparisonModel.getLeftHandSide(), mainModel);
 		rightHandSideBuildButtonObserver = new BuildButtonObserver(this, comparisonModel.getRightHandSide(), mainModel);
 
@@ -46,6 +47,13 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 	
 	private void onComparisonOperatorListBoxChange() {
 		this.selectedOperatorIndex = operatorListBox.getSelectedIndex();
+		if(this.selectedOperatorIndex == 0) {
+			comparisonModel.setComparisonOperator("");
+		} else {
+			comparisonModel.setComparisonOperator(operatorListBox.getSelectedValue());
+		}
+		
+		this.updateCQLDisplay();
 	}
 
 	@Override
@@ -140,8 +148,6 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 				operatorListBox.getSelectedIndex() == 0) {
 			this.getErrorAlert().createAlert("All fields required.");
 		} else {
-			this.getParentModel().appendExpression(comparisonModel);
-			comparisonModel.setComparisonOperator(operatorListBox.getSelectedValue());
 			this.getExpressionBuilderParent().showAndDisplay();
 		}
 	}

@@ -34,6 +34,7 @@ public class IsNullBuilderModal extends SubExpressionBuilderModal {
 			ExpressionBuilderModel mainModel) {
 		super("Null (is null/not null)", parent, parentModel, mainModel);
 		isNullModel = new IsNullModel();
+		this.getParentModel().appendExpression(isNullModel);
 		buildButtonObserver = new BuildButtonObserver(this, isNullModel, mainModel);
 		display();
 		this.getApplyButton().addClickHandler(event -> onApplyButtonClick());
@@ -45,8 +46,6 @@ public class IsNullBuilderModal extends SubExpressionBuilderModal {
 			return;
 		}
 		
-		isNullModel.setOperatorText(this.isNullNotNullListBox.getSelectedValue());
-		this.getParentModel().appendExpression(isNullModel);
 		this.getExpressionBuilderParent().showAndDisplay();
 	}
 
@@ -102,5 +101,14 @@ public class IsNullBuilderModal extends SubExpressionBuilderModal {
 
 	private void onIsNullNotNullListBoxChange(int selectedIndex) {
 		this.selectedIndex = selectedIndex;
+		if(selectedIndex == 0) {
+			isNullModel.setOperatorText("");
+		} else  {
+			isNullModel.setOperatorText(this.isNullNotNullListBox.getSelectedValue());
+		}
+		
+		
+		this.updateCQLDisplay();
+
 	}
 }

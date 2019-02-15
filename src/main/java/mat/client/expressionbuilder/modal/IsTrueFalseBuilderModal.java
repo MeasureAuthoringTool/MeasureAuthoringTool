@@ -35,6 +35,7 @@ public class IsTrueFalseBuilderModal extends SubExpressionBuilderModal {
 			ExpressionBuilderModel mainModel) {
 		super("True/False (is true/false)", parent, parentModel, mainModel);
 		isTrueFalseModel = new IsTrueFalseModel();
+		this.getParentModel().appendExpression(isTrueFalseModel);
 		buildButtonObserver = new BuildButtonObserver(this, isTrueFalseModel, mainModel);
 		display();
 		this.getApplyButton().addClickHandler(event -> onApplyButtonClick());
@@ -46,8 +47,6 @@ public class IsTrueFalseBuilderModal extends SubExpressionBuilderModal {
 			return;
 		}
 		
-		isTrueFalseModel.setOperatorText(this.isTrueFalseListBox.getSelectedValue());
-		this.getParentModel().appendExpression(isTrueFalseModel);
 		this.getExpressionBuilderParent().showAndDisplay();
 	}
 
@@ -105,6 +104,15 @@ public class IsTrueFalseBuilderModal extends SubExpressionBuilderModal {
 
 	private void onIsTrueFalseListBoxChange(int selectedIndex) {
 		this.selectedIndex = selectedIndex;
+		
+		if(selectedIndex == 0) {
+			isTrueFalseModel.setOperatorText("");
+		} else  {
+			isTrueFalseModel.setOperatorText(this.isTrueFalseListBox.getSelectedValue());
+		}
+		
+		
+		this.updateCQLDisplay();
 	}
 
 }

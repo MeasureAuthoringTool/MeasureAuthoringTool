@@ -4,7 +4,7 @@ import mat.client.expressionbuilder.constant.CQLType;
 
 public class IsNullModel extends ExpressionBuilderModel {
 	
-	private String operatorText;
+	private String operatorText = "";
 	
 	public void setOperatorText(String operatorText) {
 		this.operatorText = operatorText;

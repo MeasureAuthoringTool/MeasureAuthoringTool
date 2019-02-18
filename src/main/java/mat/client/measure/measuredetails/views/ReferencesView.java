@@ -38,7 +38,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	private ReferencesObserver observer;
 	private Column<String, SafeHtml> editColumn;
 	private MessagePanel messagePanel;
-	private int editingIndex = 0; //TODO always have an editing index
+	private int editingIndex = 0;
 	private boolean isReadOnly = false;
 	
 	public ReferencesView(ReferencesModel originalModel) {
@@ -101,7 +101,6 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		deleteColumn.setFieldUpdater(new FieldUpdater<String, SafeHtml>() {
 			@Override
 			public void update(int index, String object, SafeHtml value) {
-				//TODO display dirty check here?
 				if(!isReadOnly) {
 					displayDeleteConfirmationDialog(index, object);
 				}

@@ -6,7 +6,6 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
@@ -50,7 +49,7 @@ public class DeleteConfirmDialogBox {
 		modalBody.remove(messageAlert);
 		panel.remove(modalBody);
 		panel.setTitle("Warning");
-
+		panel.setDataKeyboard(true);
 		panel.setClosable(true);
 		panel.setFade(true);
 		panel.setDataBackdrop(ModalBackdrop.STATIC);
@@ -61,7 +60,6 @@ public class DeleteConfirmDialogBox {
 		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
 		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
 		messageAlert.createAlert(message);
-		//modalBody.add(messageAlert);
 		
 		VerticalPanel passwordPanel = new VerticalPanel();
 		passwordPanel.getElement().setId("passwordPanel_VerticalPanel");

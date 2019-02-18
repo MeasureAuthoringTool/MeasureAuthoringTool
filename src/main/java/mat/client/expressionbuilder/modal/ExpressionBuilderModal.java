@@ -39,6 +39,7 @@ public abstract class ExpressionBuilderModal extends Modal {
 		this.mainModel = mainModel;
 		this.setDataBackdrop(ModalBackdrop.STATIC);
 		this.setDataKeyboard(false);
+		this.getElement().setTabIndex(-1);
 		this.setClosable(false);
 		this.setRemoveOnHide(true);
 		this.setHideOtherModals(true);

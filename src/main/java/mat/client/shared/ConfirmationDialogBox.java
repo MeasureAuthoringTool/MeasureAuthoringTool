@@ -86,7 +86,7 @@ public class ConfirmationDialogBox {
 		modalBody.clear();
 		panel.remove(modalBody);
 		panel.setTitle("Warning");
-		
+		panel.setDataKeyboard(true);
 		panel.setClosable(true);
 		panel.setFade(true);
 		panel.setDataBackdrop(ModalBackdrop.STATIC);

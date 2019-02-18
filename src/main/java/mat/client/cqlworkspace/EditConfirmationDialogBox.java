@@ -38,7 +38,7 @@ public class EditConfirmationDialogBox {
 		modalBody.remove(messageAlert);
 		panel.remove(modalBody);
 		panel.setTitle("Confirmation");
-		
+		panel.setDataKeyboard(true);
 		panel.setClosable(false);
 		panel.setFade(true);
 		panel.setDataBackdrop(ModalBackdrop.STATIC);

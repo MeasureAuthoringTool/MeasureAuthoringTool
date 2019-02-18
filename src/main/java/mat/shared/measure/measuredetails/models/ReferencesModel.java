@@ -6,10 +6,10 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ReferencesModel implements MeasureDetailsComponentModel, IsSerializable{
-	private List<String> references;
+	private List<String> references = new LinkedList<>();
 
 	public ReferencesModel(ReferencesModel originalModel) {
-		references = new LinkedList<String>();
+		references = new LinkedList<>();
 		if(originalModel != null && originalModel.getReferences() != null) {
 			for(String reference: originalModel.getReferences()) {
 				references.add(reference);

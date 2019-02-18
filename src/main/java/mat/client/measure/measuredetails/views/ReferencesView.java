@@ -38,12 +38,13 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	private ReferencesObserver observer;
 	private Column<String, SafeHtml> editColumn;
 	private MessagePanel messagePanel;
-	private Integer editingIndex = null;
+	private int editingIndex = 0; //TODO always have an editing index
 	private boolean isReadOnly = false;
 	
 	public ReferencesView(ReferencesModel originalModel) {
 		this.originalModel = originalModel;
 		this.referencesModel = new ReferencesModel(originalModel);
+		editingIndex = referencesModel.getReferences().size();
 		messagePanel = new MessagePanel();
 		buildDetailView();
 	}
@@ -75,18 +76,18 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		};
 		
 		editColumn.setFieldUpdater(new FieldUpdater<String, SafeHtml>() {
-				@Override
-				public void update(int index, String object, SafeHtml value) {
-					if(isEditorDirty(object)) {
-						displayDirtyCheck();
-						messagePanel.getWarningConfirmationYesButton().addClickHandler(event -> handleYesButtonClicked(index, object));
-						messagePanel.getWarningConfirmationNoButton().addClickHandler(event -> hideDirtyCheck());
-						messagePanel.getWarningConfirmationYesButton().setFocus(true);
-					} else {
-						observer.handleEditClicked(index, object);
-					}
+			@Override
+			public void update(int index, String object, SafeHtml value) {
+				if(isEditorDirty(object)) {
+					displayDirtyCheck();
+					messagePanel.getWarningConfirmationYesButton().addClickHandler(event -> handleYesButtonClicked(index, object));
+					messagePanel.getWarningConfirmationNoButton().addClickHandler(event -> hideDirtyCheck());
+					messagePanel.getWarningConfirmationYesButton().setFocus(true);
+				} else {
+					observer.handleEditClicked(index, object);
 				}
-			});
+			}
+		});
 
 		String columnText = isReadOnly ? "View" : "Edit";
 		referencesTable.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Index\">" + columnText + "</span>"));
@@ -100,6 +101,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		deleteColumn.setFieldUpdater(new FieldUpdater<String, SafeHtml>() {
 			@Override
 			public void update(int index, String object, SafeHtml value) {
+				//TODO display dirty check here?
 				if(!isReadOnly) {
 					displayDeleteConfirmationDialog(index, object);
 				}
@@ -179,29 +181,31 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		listDataProvider.refresh();
 		listDataProvider.getList().addAll(referencesModel.getReferences());
 		
-		referencesTable = addColumnToTable(referencesTable);
-		listDataProvider.addDataDisplay(referencesTable);
-		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"manageReferences");
-		spager.setPageStart(0);
-		spager.setDisplay(referencesTable);
-		spager.setPageSize(5);
-		referencesTable.setWidth("100%");
-		referencesTable.setColumnWidth(0, 55.0, Unit.PCT);
-		referencesTable.setColumnWidth(1, 15.0, Unit.PCT);
-		referencesTable.setColumnWidth(2, 15.0, Unit.PCT);
-		referencesTable.setColumnWidth(3, 15.0, Unit.PCT);
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
-				"manageReferencesSummary",
-				"In the Following Manage references table, Index Number is given in the first column, Description in the "
-						+ "second column, Edit Reference in the third column, and DeleteReference in the fourth column.");
-		referencesTable.getElement().setAttribute("id", "manageReferencesCellTable");
-		referencesTable.getElement().setAttribute("aria-describedby", "manageReferencesSummary");
-		cellTablePanel.add(invisibleLabel);
-		cellTablePanel.add(referencesTable);
-		cellTablePanel.add(new SpacerWidget());
-		cellTablePanel.add(spager);
-		mainPanel.add(cellTablePanel);
+		if(referencesModel.getReferences() != null && referencesModel.getReferences().size() > 0) {
+			referencesTable = addColumnToTable(referencesTable);
+			listDataProvider.addDataDisplay(referencesTable);
+			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"manageReferences");
+			spager.setPageStart(0);
+			spager.setDisplay(referencesTable);
+			spager.setPageSize(5);
+			referencesTable.setWidth("100%");
+			referencesTable.setColumnWidth(0, 55.0, Unit.PCT);
+			referencesTable.setColumnWidth(1, 15.0, Unit.PCT);
+			referencesTable.setColumnWidth(2, 15.0, Unit.PCT);
+			referencesTable.setColumnWidth(3, 15.0, Unit.PCT);
+			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
+					"manageReferencesSummary",
+					"In the Following Manage references table, Index Number is given in the first column, Description in the "
+							+ "second column, Edit Reference in the third column, and DeleteReference in the fourth column.");
+			referencesTable.getElement().setAttribute("id", "manageReferencesCellTable");
+			referencesTable.getElement().setAttribute("aria-describedby", "manageReferencesSummary");
+			cellTablePanel.add(invisibleLabel);
+			cellTablePanel.add(referencesTable);
+			cellTablePanel.add(new SpacerWidget());
+			cellTablePanel.add(spager);
+			mainPanel.add(cellTablePanel);
+		}
 		
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
 		measureDetailsRichTextEditor.getRichTextEditor().setTitle("References");
@@ -224,7 +228,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	@Override
 	public void resetForm() {
 		isReadOnly = false;
-		editingIndex = null;
+		editingIndex = referencesModel.getReferences().size();
 		hideDirtyCheck();
 		this.referencesModel = new ReferencesModel(originalModel);
 		measureDetailsRichTextEditor.getRichTextEditor().setText("");
@@ -263,7 +267,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	}
 	
 	private void addEventHandlers() {
-		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());
+		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleTextValueChanged());
 	}
 
 	public boolean isEditorDirty(String referenceValue) {
@@ -274,21 +278,6 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	public boolean isEditorDirty() {
 		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getValue();
 		return !isReadOnly && !textValue.isEmpty();
-	}
-
-	public void saveModel() {
-		if(editingIndex != null) {
-			String textValue = measureDetailsRichTextEditor.getRichTextEditor().getValue();
-			if(textValue.isEmpty()) {
-				displayDeleteConfirmationDialog(editingIndex, textValue);
-			} else {
-				observer.handleEditReference();
-				observer.saveReferences();
-			}
-		} else {
-			observer.handleAddReference();
-			observer.saveReferences();
-		}
 	}
 	
 	public Integer getEditingIndex() {

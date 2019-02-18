@@ -549,8 +549,15 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public List<String> validateModel(ReferencesModel referencesModel) {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> errorList = null;
+		for(String textValue: referencesModel.getReferences()) {
+			if(StringUtility.isEmptyOrNull(textValue)) {
+				errorList = new ArrayList<>();
+				errorList.add(INVALID_TEXT);
+				break;
+			}
+		}
+		return errorList;
 	}
 
 	@Override

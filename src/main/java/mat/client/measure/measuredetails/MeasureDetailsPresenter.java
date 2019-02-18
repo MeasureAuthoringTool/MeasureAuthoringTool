@@ -444,22 +444,17 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	@Override
 	public void handleSaveButtonClick() {
 		if(!isReadOnly) {
-			if(measureDetailsView.getCurrentMeasureDetail() == MeasureDetailsItems.REFERENCES) {
-				ReferencesView referencesView = (ReferencesView) measureDetailsView.getComponentDetailView();
-				referencesView.saveModel();
-			} else {
-				List<String> validationErrors = measureDetailsView.getMeasureDetailsComponentModel().validateModel(measureDetailsModel);
-				if(validationErrors == null || validationErrors.isEmpty()) {
-					ConfirmationDialogBox confirmationDialog = measureDetailsView.getSaveConfirmation();
-					if(confirmationDialog != null) {
-						showSaveConfirmationDialog(confirmationDialog);
-					} else {
-						saveMeasureDetails();
-					}
+			List<String> validationErrors = measureDetailsView.getMeasureDetailsComponentModel().validateModel(measureDetailsModel);
+			if(validationErrors == null || validationErrors.isEmpty()) {
+				ConfirmationDialogBox confirmationDialog = measureDetailsView.getSaveConfirmation();
+				if(confirmationDialog != null) {
+					showSaveConfirmationDialog(confirmationDialog);
 				} else {
-					String validationErrorMessage = validationErrors.stream().collect(Collectors.joining("\n"));
-					measureDetailsView.displayErrorMessage(validationErrorMessage);
+					saveMeasureDetails();
 				}
+			} else {
+				String validationErrorMessage = validationErrors.stream().collect(Collectors.joining("\n"));
+				measureDetailsView.displayErrorMessage(validationErrorMessage);
 			}
 		}
 	}

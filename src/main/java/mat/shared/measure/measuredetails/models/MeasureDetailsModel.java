@@ -432,46 +432,37 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public List<String> validateModel(ClinicalRecommendationModel clinicalRecommendationModel) {
-		return validateRichTextEditorValue(clinicalRecommendationModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(CopyrightModel copyrightModel) {
-		return validateRichTextEditorValue(copyrightModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(DefinitionModel definitionModel) {
-		return validateRichTextEditorValue(definitionModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(DescriptionModel descriptionModel) {
-		return validateRichTextEditorValue(descriptionModel.getPlainText());
-	}
-
-	private List<String> validateRichTextEditorValue(String textValue) {
-		if(StringUtility.isEmptyOrNull(textValue)) {
-			List<String> errorList = new ArrayList<>();
-			errorList.add(INVALID_TEXT);
-			return errorList;
-		}
 		return null;
 	}
 
 	@Override
 	public List<String> validateModel(DenominatorExceptionsModel denominatorExceptionsModel) {
-		return validateRichTextEditorValue(denominatorExceptionsModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(DenominatorExclusionsModel denominatorExclusionsModel) {
-		return validateRichTextEditorValue(denominatorExclusionsModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(DenominatorModel denominatorModel) {
-		return validateRichTextEditorValue(denominatorModel.getPlainText());
+		return null;
 	}
 
 	@Override
@@ -482,37 +473,37 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public List<String> validateModel(GuidanceModel guidanceModel) {
-		return validateRichTextEditorValue(guidanceModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(ImprovementNotationModel improvementNotationModel) {
-		return validateRichTextEditorValue(improvementNotationModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(InitialPopulationModel initialPopulationModel) {
-		return validateRichTextEditorValue(initialPopulationModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(MeasureObservationsModel measureObservationsModel) {
-		return validateRichTextEditorValue(measureObservationsModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(MeasurePopulationExclusionsModel measurePopulationExclusionsModel) {
-		return validateRichTextEditorValue(measurePopulationExclusionsModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(MeasurePopulationModel measurePopulationModel) {
-		return validateRichTextEditorValue(measurePopulationModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(MeasureSetModel measureSetModel) {
-		return validateRichTextEditorValue(measureSetModel.getPlainText());
+		return null;
 	}
 
 	@Override
@@ -529,22 +520,22 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public List<String> validateModel(NumeratorExclusionsModel numeratorExclusionsModel) {
-		return validateRichTextEditorValue(numeratorExclusionsModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(NumeratorModel numeratorModel) {
-		return validateRichTextEditorValue(numeratorModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(RateAggregationModel rateAggregationModel) {
-		return validateRichTextEditorValue(rateAggregationModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(RationaleModel rationaleModel) {
-		return validateRichTextEditorValue(rationaleModel.getPlainText());
+		return null;
 	}
 
 	@Override
@@ -562,27 +553,27 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 
 	@Override
 	public List<String> validateModel(RiskAdjustmentModel riskAdjustmentModel) {
-		return validateRichTextEditorValue(riskAdjustmentModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(StratificationModel stratificationModel) {
-		return validateRichTextEditorValue(stratificationModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(SupplementalDataElementsModel supplementalDataElementsModel) {
-		return validateRichTextEditorValue(supplementalDataElementsModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(TransmissionFormatModel transmissionFormatModel) {
-		return validateRichTextEditorValue(transmissionFormatModel.getPlainText());
+		return null;
 	}
 
 	@Override
 	public List<String> validateModel(DisclaimerModel disclaimerModel) {
-		return validateRichTextEditorValue(disclaimerModel.getPlainText());
+		return null;
 	}
 
 	@Override

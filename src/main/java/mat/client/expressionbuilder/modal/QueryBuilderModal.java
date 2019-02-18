@@ -85,7 +85,6 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		this.getContentPanel().add(buildContentPanel());
 		this.updateCQLDisplay();
 		navigate(currentScreen);
-		sourceSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
 	}
 
 	private Widget buildContentPanel() {
@@ -276,11 +275,19 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		if(tab.equals(SOURCE)) {
 			sourceListItem.setActive(true);
 			displaySource();
-			sourceSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
+			
+			if(sourceSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
+				sourceSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
+			}
+			
 		} else if(tab.equals(FILTER)) {
 			filterListItem.setActive(true);
 			displayFilter();
-			filterSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
+			
+			if(filterSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
+				filterSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
+			}
+			
 		} else if(tab.equals(SORT)) {
 			sortListItem.setActive(true);
 			displaySort();

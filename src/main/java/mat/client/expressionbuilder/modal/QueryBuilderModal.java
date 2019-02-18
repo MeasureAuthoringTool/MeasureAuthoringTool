@@ -49,6 +49,8 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private String alias = "";
 	private BuildButtonObserver filterBuildButtonObserver;
 	private NavPills pills;
+	private ExpressionTypeSelectorList sourceSelector;
+	private ExpressionTypeSelectorList filterSelector;
 
 	public QueryBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
 			ExpressionBuilderModel mainModel) {
@@ -83,6 +85,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		this.getContentPanel().add(buildContentPanel());
 		this.updateCQLDisplay();
 		navigate(currentScreen);
+		sourceSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
 	}
 
 	private Widget buildContentPanel() {
@@ -153,7 +156,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		availableExpressionsForSouce.add(ExpressionType.DEFINITION);
 		List<OperatorType> availableOperatorsForSource = new ArrayList<>(OperatorTypeUtil.getSetOperators());
 		
-		ExpressionTypeSelectorList sourceSelector = new ExpressionTypeSelectorList(availableExpressionsForSouce, availableOperatorsForSource, 
+		sourceSelector = new ExpressionTypeSelectorList(availableExpressionsForSouce, availableOperatorsForSource, 
 				sourceBuildButtonObserver, queryModel.getSource(), 
 				"What type of expression would you like to use as your data source?");
 		
@@ -181,11 +184,11 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		List<OperatorType> availableOperatorsForFilter = new ArrayList<>(OperatorTypeUtil.getBooleanOperators());
 		
-		ExpressionTypeSelectorList sourceSelector = new ExpressionTypeSelectorList(availableExpressionsForFilter, availableOperatorsForFilter, 
+		filterSelector = new ExpressionTypeSelectorList(availableExpressionsForFilter, availableOperatorsForFilter, 
 				filterBuildButtonObserver, queryModel.getFilter(), 
 				 "What would you like to use to filter your source?");
 		
-		filterPanel.add(sourceSelector);		
+		filterPanel.add(filterSelector);		
 		return filterPanel;
 	}
 	
@@ -224,7 +227,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		nextButton.setTitle(text);
 		nextButton.addClickHandler(clickHandler);
 	}
-
+	
 	private void displaySource() {
 		updateTitle(SOURCE);
 		previousButton.setVisible(false);
@@ -273,9 +276,11 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		if(tab.equals(SOURCE)) {
 			sourceListItem.setActive(true);
 			displaySource();
+			sourceSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
 		} else if(tab.equals(FILTER)) {
 			filterListItem.setActive(true);
 			displayFilter();
+			filterSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
 		} else if(tab.equals(SORT)) {
 			sortListItem.setActive(true);
 			displaySort();

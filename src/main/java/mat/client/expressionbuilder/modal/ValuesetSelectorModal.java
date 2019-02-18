@@ -21,12 +21,12 @@ import mat.shared.CQLIdentifierObject;
 
 public class ValuesetSelectorModal extends SubExpressionBuilderModal {
 
-	private static final String SELECT_A_VALUESET = "Select a valueset";
-	private static final String SELECT_VALUESET_PLACEHOLDER = "-- Select valueset --";
+	private static final String SELECT_A_VALUESET = "Select a value set";
+	private static final String SELECT_VALUESET_PLACEHOLDER = "-- Select value set --";
 	private ListBoxMVP valuesetListBox;
 
 	public ValuesetSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
-		super("Valueset", parent, parentModel, mainModel);
+		super("Value Set", parent, parentModel, mainModel);
 		this.setHideOtherModals(false);
 		this.setClosable(false);
 		this.setRemoveOnHide(true);

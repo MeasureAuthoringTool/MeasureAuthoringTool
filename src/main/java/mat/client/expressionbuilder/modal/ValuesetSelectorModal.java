@@ -28,7 +28,7 @@ public class ValuesetSelectorModal extends SubExpressionBuilderModal {
 	public ValuesetSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Valueset", parent, parentModel, mainModel);
 		this.setHideOtherModals(false);
-		this.setClosable(true);
+		this.setClosable(false);
 		this.setRemoveOnHide(true);
 		this.setWidth("35%");
 		this.setCQLPanelVisible(false);

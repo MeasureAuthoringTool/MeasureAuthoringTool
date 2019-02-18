@@ -26,7 +26,7 @@ public class ParameterSelectorModal extends SubExpressionBuilderModal {
 	public ParameterSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Parameter", parent, parentModel, mainModel);
 		this.setHideOtherModals(false);
-		this.setClosable(true);
+		this.setClosable(false);
 		this.setRemoveOnHide(true);
 		this.setWidth("35%");
 		this.setCQLPanelVisible(false);

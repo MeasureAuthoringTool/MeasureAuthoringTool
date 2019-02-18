@@ -28,7 +28,7 @@ public class CodeSelectorModal extends SubExpressionBuilderModal {
 	public CodeSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Code", parent, parentModel, mainModel);
 		this.setHideOtherModals(false);
-		this.setClosable(true);
+		this.setClosable(false);
 		this.setRemoveOnHide(true);
 		this.setWidth("35%");
 		this.setCQLPanelVisible(false);

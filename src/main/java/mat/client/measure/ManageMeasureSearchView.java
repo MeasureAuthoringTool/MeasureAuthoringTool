@@ -68,7 +68,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	
 	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	
-	private final MostRecentMeasureWidget mostRecentMeasureWidget = new MostRecentMeasureWidget();
+	private MostRecentMeasureWidget mostRecentMeasureWidget = new MostRecentMeasureWidget();
 	
 	VerticalPanel mostRecentVerticalPanel = new VerticalPanel();
 	
@@ -108,6 +108,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		bulkExportButton.getElement().setId("bulkExportButton_Button");
 		mainPanel.getElement().setId("measureLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
+		mostRecentMeasureWidget = new MostRecentMeasureWidget();
 		buildMostRecentWidget();
 		mainPanel.add(mostRecentVerticalPanel);
 		mainPanel.add(successMeasureDeletion);
@@ -194,6 +195,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	public void buildMostRecentWidget() {
 		mostRecentVerticalPanel.clear();
 		mostRecentVerticalPanel.add(mostRecentMeasureWidget.buildMostRecentWidget());
+		
 	}
 	@Override
 	public VerticalPanel getCellTablePanel(){
@@ -300,6 +302,11 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	@Override
 	public MostRecentMeasureWidget getMostRecentMeasureWidget() {
 		return mostRecentMeasureWidget;
+	}
+	
+	@Override
+	public VerticalPanel getMostRecentMeasureVerticalPanel() {
+		return mostRecentVerticalPanel;
 	}
 
 	@Override

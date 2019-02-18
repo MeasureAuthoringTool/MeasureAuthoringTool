@@ -70,6 +70,7 @@ import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
@@ -805,9 +806,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		model.setQdmVersion(measure.getQdmVersion());
 		List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList = new ArrayList<>();
 		Map<String, String> aliasMapping = new HashMap<>();
-		
+		boolean isSuperUser = LoggedInUserUtil.getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE);
 		for(ComponentMeasure component : measure.getComponentMeasures()) {
-			componentMeasuresSelectedList.add(buildSearchModelResultObjectFromMeasureId(component.getComponentMeasure().getId()));			
+			componentMeasuresSelectedList.add(buildSearchModelResultObjectFromMeasureId(component.getComponentMeasure().getId(), isSuperUser));			
 		}
 		model.setAppliedComponentMeasures(componentMeasuresSelectedList);
 		model.setComponentMeasuresSelectedList(componentMeasuresSelectedList);
@@ -1283,16 +1284,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		ManageMeasureSearchModel manageMeasureSearchModel = new ManageMeasureSearchModel();
 		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<>();
 		manageMeasureSearchModel.setData(detailModelList);
-		
+
+		boolean isSuperUser = LoggedInUserUtil.getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE);
 		for (RecentMSRActivityLog activityLog : recentMeasureActivityList) {
-			ManageMeasureSearchModel.Result detail = buildSearchModelResultObjectFromMeasureId(activityLog.getMeasureId());			
+			ManageMeasureSearchModel.Result detail = buildSearchModelResultObjectFromMeasureId(activityLog.getMeasureId(), isSuperUser);			
 			detailModelList.add(detail);
 		}
 		return manageMeasureSearchModel;
 	}
 	
-	private ManageMeasureSearchModel.Result buildSearchModelResultObjectFromMeasureId(String measureId){
+	private ManageMeasureSearchModel.Result buildSearchModelResultObjectFromMeasureId(String measureId, boolean isSuperUser){
 		Measure measure = measureDAO.find(measureId);
+		List<Measure> measureList = new ArrayList<>();
+		measureList.add(measure);
+		List<Measure> measuresInSet = measureDAO.getAllMeasuresInSet(measureList);
 		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
 		detail.setName(measure.getDescription());
 		detail.setShortName(measure.getaBBRName());
@@ -1313,9 +1318,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setScoringType(measure.getMeasureScoring());
 		boolean isLocked = measureDAO.isMeasureLocked(measure.getId());
 		detail.setMeasureLocked(isLocked);
-		detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId()));
+		boolean isEditable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId());
+		detail.setEditable(isEditable);
 		detail.setPatientBased(measure.getPatientBased());
-
+		boolean isCLonable = MatContextServiceUtil.get().isCurrentMeasureClonable(measureDAO, measure.getId());
+		boolean isOwner = measure.getOwner().getId().equals(LoggedInUserUtil.getLoggedInUser());
+		detail.setClonable(isCLonable);
+		detail.setSharable(isOwner || isSuperUser);
+		boolean isEditableForVersion = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId(), false);
+		if(isEditableForVersion && !isLocked) {
+			caclulateVersionAndDraft(detail, measuresInSet);
+		}
 		if (isLocked && (measure.getLockedUser() != null)) {
 			LockedUserInfo lockedUserInfo = new LockedUserInfo();
 			lockedUserInfo.setUserId(measure.getLockedUser().getId());
@@ -1327,6 +1340,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		return detail;
 
+	}
+	
+	private void caclulateVersionAndDraft(Result detail, List<Measure> measuresInSet) {
+		if(detail.isDraft()) {
+			detail.setVersionable(detail.isDraft());
+			detail.setDraftable(!detail.isDraft());
+			return;
+		}
+		detail.setVersionable(false);
+		boolean isDraftable = measuresInSet.stream().filter(measure -> measure.isDraft()).count() == 0;
+		detail.setDraftable(isDraftable);
 	}
 
 	/**

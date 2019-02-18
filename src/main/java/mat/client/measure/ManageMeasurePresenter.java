@@ -46,6 +46,7 @@ import mat.client.event.MeasureVersionEvent;
 import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureCloningService;
 import mat.client.measure.service.MeasureCloningServiceAsync;
@@ -260,6 +261,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getAdminSearchString().setValue("");
 		if (transferDisplay != null)
 			transferDisplay.getSearchString().setValue("");
+		searchDisplay.getMeasureSearchFilterWidget().setVisible(false);
+		searchDisplay.getMostRecentMeasureVerticalPanel().setVisible(false);
 	}
 
 	@Override
@@ -1151,129 +1154,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						
 						boolean isExportSelectedButtonVisible = (result.getData().size() > 0);
 						searchDisplay.getExportSelectedButton().setVisible(isExportSelectedButtonVisible);
-
-						searchDisplay.getMeasureSearchView().setObserver(new MeasureSearchView.Observer() {
-							@Override
-							public void onCloneClicked(ManageMeasureSearchModel.Result result) {
-								if(result.isClonable()) {
-									resetMeasureFlags();
-									isClone = true;
-									editClone(result.getId());
-								}
-							}
-
-
-							@Override
-							public void onExportClicked(ManageMeasureSearchModel.Result result) {
-								resetMeasureFlags();
-								export(result);
-							}
-
-							@Override
-							public void onExportSelectedClicked(Result result, boolean isCBChecked) {
-								resetMeasureFlags();
-								searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-								updateExportedIDs(result, manageMeasureSearchModel, isCBChecked);
-
-							}
-
-							@Override
-							public void onExportSelectedClicked(CustomCheckBox checkBox) {
-								resetMeasureFlags();
-								searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-								if (checkBox.getValue()) {
-									if (manageMeasureSearchModel.getSelectedExportIds().size() > 89) {
-										searchDisplay.getErrorMessageDisplayForBulkExport()
-												.createAlert("Export file has a limit of 90 measures");
-										searchDisplay.getExportSelectedButton().setFocus(true);
-										checkBox.setValue(false);
-									} else {
-										manageMeasureSearchModel.getSelectedExportIds()
-												.add(checkBox.getFormValue());
-									}
-								} else {
-									manageMeasureSearchModel.getSelectedExportIds().remove(checkBox.getFormValue());
-								}
-							}
-
-							@Override
-							public void onHistoryClicked(ManageMeasureSearchModel.Result result) {
-								resetMeasureFlags();
-								historyDisplay.setReturnToLinkText("<< Return to Measure Library");
-								displayHistory(result.getId(), result.getName());
-							}
-
-							@Override
-							public void onShareClicked(ManageMeasureSearchModel.Result result) {
-								resetMeasureFlags();
-								displayShare(null, result.getId(), result.getName());
-							}
-
-							@Override
-							public void onClearAllBulkExportClicked() {
-								manageMeasureSearchModel.getSelectedExportResults().clear();
-								manageMeasureSearchModel.getSelectedExportIds().clear();
-							}
-
-							@Override
-							public void onCreateClicked(Result object) {
-								ManageMeasureSearchModel.Result selectedMeasure = object;
-								if (!isLoading && selectedMeasure.isDraftable()) {
-									if (selectedMeasure.getId() != null) {
-										setSearchingBusy(true);
-										if(selectedMeasure.getIsComposite()){
-											draftCompositeMeasure(selectedMeasure);
-										}else {
-											draftMeasure(selectedMeasure);
-										}
-									}
-								} else if (!isLoading && selectedMeasure.isVersionable()) {
-									versionDisplay.setSelectedMeasure(selectedMeasure);
-									createVersion();
-								}
-
-							}
-
-							private void draftCompositeMeasure(Result selectedMeasure) {
-								MatContext.get().getMeasureService().getCompositeMeasure(selectedMeasure.getId(),
-										new AsyncCallback<ManageCompositeMeasureDetailModel>() {
-											@Override
-											public void onFailure(Throwable caught) {
-												setSearchingBusy(false);
-												searchDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-												MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-											}
-
-											@Override
-											public void onSuccess(ManageCompositeMeasureDetailModel result) {
-												searchDisplay.getErrorMessageDisplay().clearAlert();
-												currentDetails = result;
-												createDraftOfSelectedVersion(currentDetails);
-											}
-										});
-								
-							}
-
-							private void draftMeasure(ManageMeasureSearchModel.Result selectedMeasure) {
-								MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(),
-										new AsyncCallback<ManageMeasureDetailModel>() {
-											@Override
-											public void onFailure(Throwable caught) {
-												setSearchingBusy(false);
-												searchDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-												MatContext.get().recordTransactionEvent(null, null, null,"Unhandled Exception: "+ caught.getLocalizedMessage(),0);
-											}
-
-											@Override
-											public void onSuccess(ManageMeasureDetailModel result) {
-												searchDisplay.getErrorMessageDisplay().clearAlert();
-												currentDetails = result;
-												createDraftOfSelectedVersion(currentDetails);
-											}
-										});
-							}
-
-						});
+						searchDisplay.getMeasureSearchView().setObserver(createMeasureTableObserver());
 						result.setSelectedExportIds(new ArrayList<String>());
 						result.setSelectedExportResults(new ArrayList<Result>());
 						manageMeasureSearchModel = result;
@@ -1311,6 +1192,130 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 					}
 				});
+	}
+	private Observer createMeasureTableObserver() {
+		return new MeasureSearchView.Observer() {
+			@Override
+			public void onCloneClicked(ManageMeasureSearchModel.Result result) {
+				if(result.isClonable()) {
+					resetMeasureFlags();
+					isClone = true;
+					editClone(result.getId());
+				}
+			}
+
+
+			@Override
+			public void onExportClicked(ManageMeasureSearchModel.Result result) {
+				resetMeasureFlags();
+				export(result);
+			}
+
+			@Override
+			public void onExportSelectedClicked(Result result, boolean isCBChecked) {
+				resetMeasureFlags();
+				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+				updateExportedIDs(result, manageMeasureSearchModel, isCBChecked);
+
+			}
+
+			@Override
+			public void onExportSelectedClicked(CustomCheckBox checkBox) {
+				resetMeasureFlags();
+				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+				if (checkBox.getValue()) {
+					if (manageMeasureSearchModel.getSelectedExportIds().size() > 89) {
+						searchDisplay.getErrorMessageDisplayForBulkExport()
+								.createAlert("Export file has a limit of 90 measures");
+						searchDisplay.getExportSelectedButton().setFocus(true);
+						checkBox.setValue(false);
+					} else {
+						manageMeasureSearchModel.getSelectedExportIds()
+								.add(checkBox.getFormValue());
+					}
+				} else {
+					manageMeasureSearchModel.getSelectedExportIds().remove(checkBox.getFormValue());
+				}
+			}
+
+			@Override
+			public void onHistoryClicked(ManageMeasureSearchModel.Result result) {
+				resetMeasureFlags();
+				historyDisplay.setReturnToLinkText("<< Return to Measure Library");
+				displayHistory(result.getId(), result.getName());
+			}
+
+			@Override
+			public void onShareClicked(ManageMeasureSearchModel.Result result) {
+				resetMeasureFlags();
+				displayShare(null, result.getId(), result.getName());
+			}
+
+			@Override
+			public void onClearAllBulkExportClicked() {
+				manageMeasureSearchModel.getSelectedExportResults().clear();
+				manageMeasureSearchModel.getSelectedExportIds().clear();
+			}
+
+			@Override
+			public void onCreateClicked(Result object) {
+				ManageMeasureSearchModel.Result selectedMeasure = object;
+				if (!isLoading && selectedMeasure.isDraftable()) {
+					if (selectedMeasure.getId() != null) {
+						setSearchingBusy(true);
+						if(selectedMeasure.getIsComposite()){
+							draftCompositeMeasure(selectedMeasure);
+						}else {
+							draftMeasure(selectedMeasure);
+						}
+					}
+				} else if (!isLoading && selectedMeasure.isVersionable()) {
+					versionDisplay.setSelectedMeasure(selectedMeasure);
+					createVersion();
+				}
+
+			}
+
+			private void draftCompositeMeasure(Result selectedMeasure) {
+				MatContext.get().getMeasureService().getCompositeMeasure(selectedMeasure.getId(),
+						new AsyncCallback<ManageCompositeMeasureDetailModel>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								setSearchingBusy(false);
+								searchDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+								MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+							}
+
+							@Override
+							public void onSuccess(ManageCompositeMeasureDetailModel result) {
+								searchDisplay.getErrorMessageDisplay().clearAlert();
+								currentDetails = result;
+								createDraftOfSelectedVersion(currentDetails);
+							}
+						});
+				
+			}
+
+			private void draftMeasure(ManageMeasureSearchModel.Result selectedMeasure) {
+				MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(),
+						new AsyncCallback<ManageMeasureDetailModel>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								setSearchingBusy(false);
+								searchDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+								MatContext.get().recordTransactionEvent(null, null, null,"Unhandled Exception: "+ caught.getLocalizedMessage(),0);
+							}
+
+							@Override
+							public void onSuccess(ManageMeasureDetailModel result) {
+								searchDisplay.getErrorMessageDisplay().clearAlert();
+								currentDetails = result;
+								createDraftOfSelectedVersion(currentDetails);
+							}
+						});
+			}
+
+		};
 	}
 	
 	private void resetSearchFields(MeasureSearchModel measureSearchModel) {
@@ -1592,6 +1597,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	/** Method to Load most recent Used Measures for Logged In User. */
 	private void searchRecentMeasures() {
+		searchDisplay.getMostRecentMeasureVerticalPanel().setVisible(false);
 		MatContext.get().getMeasureService().getAllRecentMeasureForUser(MatContext.get().getLoggedinUserId(),
 				new AsyncCallback<ManageMeasureSearchModel>() {
 					@Override
@@ -1613,6 +1619,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 						});
 						searchDisplay.buildMostRecentWidget();
+						searchDisplay.getMostRecentMeasureWidget().setTableObserver(createMeasureTableObserver());
+						searchDisplay.getMostRecentMeasureVerticalPanel().setVisible(true);
 					}
 				});
 	}

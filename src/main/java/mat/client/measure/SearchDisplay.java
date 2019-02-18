@@ -62,6 +62,8 @@ public interface SearchDisplay extends BaseDisplay {
 	SearchWidgetWithFilter getMeasureSearchFilterWidget();
 
 	MostRecentMeasureWidget getMostRecentMeasureWidget();
+	
+	public VerticalPanel getMostRecentMeasureVerticalPanel();
 
 	MeasureSearchView getMeasureSearchView();
 

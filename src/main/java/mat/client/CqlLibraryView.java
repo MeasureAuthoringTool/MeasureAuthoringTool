@@ -85,8 +85,6 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		widgetVP.clear();
 		errorMessageAlert.clearAlert();
 		successMessageAlert.clearAlert();
-		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
-		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel_CQL");
 		mainPanel.getElement().setId("CQLLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
 		
@@ -94,9 +92,8 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		widgetVP.getElement().setId("panel_VP_CQL");
 		mostRecentVerticalPanel.clear();
 		buildMostRecentWidget();
-		mainHorizontalPanel.add(mostRecentVerticalPanel);
-		mainHorizontalPanel.add(widgetVP);
-		mainPanel.add(mainHorizontalPanel);
+		mainPanel.add(mostRecentVerticalPanel);
+		mainPanel.add(widgetVP);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(successMessageAlert);
 		mainPanel.add(errorMessageAlert);
@@ -241,6 +238,11 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		searchFilterWidget.getSearchInput().getElement().focus();
 		searchFilterWidget.setSelectedFilter(SearchWidgetWithFilter.MY);
 		errorMessageAlert.clearAlert();
+	}
+	
+	@Override
+	public VerticalPanel getMostRecentLibraryVerticalPanel() {
+		return this.mostRecentVerticalPanel;
 	}
 
 

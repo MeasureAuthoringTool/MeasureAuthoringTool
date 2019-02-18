@@ -199,7 +199,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	}
 	
 	private CQLLibraryDataSetObject extractCQLLibraryDataObject(CQLLibrary cqlLibrary){
-		
 		CQLLibraryDataSetObject dataSetObject = new CQLLibraryDataSetObject();
 		dataSetObject.setId(cqlLibrary.getId());
 		dataSetObject.setCqlName(cqlLibrary.getName());
@@ -241,6 +240,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		boolean isOwner = currentUserId.equals(user.getId());
 		dataSetObject.setSharable(isOwner || isSuperUser);
+		dataSetObject.setDeletable(isOwner && cqlLibrary.isDraft());
 		
 		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(cqlLibrary.getVersion(), 
 				cqlLibrary.getRevisionNumber(), cqlLibrary.isDraft());
@@ -249,8 +249,25 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		dataSetObject.setEditable(MatContextServiceUtil.get()
 				.isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibrary.getId()));
 		
+		
+		List<CQLLibrary> libraryList = new ArrayList<>();
+		libraryList.add(cqlLibrary);
+		List<CQLLibrary> cqlLibraryFamily = cqlLibraryDAO.getAllLibrariesInSet(libraryList);
+		caclulateVersionAndDraft(dataSetObject, cqlLibraryFamily);
+		
 		return dataSetObject;
 		
+	}
+	
+	private void caclulateVersionAndDraft(CQLLibraryDataSetObject dataSetObject, List<CQLLibrary> cqlLibraryFamily) {
+		if(dataSetObject.isDraft()) {
+			dataSetObject.setVersionable(dataSetObject.isDraft());
+			dataSetObject.setDraftable(!dataSetObject.isDraft());
+			return;
+		}
+		dataSetObject.setVersionable(false);
+		boolean isDraftable = cqlLibraryFamily.stream().filter(measure -> measure.isDraft()).count() == 0;
+		dataSetObject.setDraftable(isDraftable);
 	}
 
 	private boolean isLocked(Date lockedOutDate) {

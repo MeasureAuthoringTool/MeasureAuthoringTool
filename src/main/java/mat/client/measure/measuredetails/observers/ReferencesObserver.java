@@ -5,7 +5,6 @@ import java.util.List;
 import mat.client.measure.measuredetails.MeasureDetailsObserver;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.measure.measuredetails.views.ReferencesView;
-import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.models.ReferencesModel;
 
 public class ReferencesObserver implements MeasureDetailsComponentObserver {
@@ -21,9 +20,9 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 	
 	public void handleTextValueChanged() {
 		try {
-			referencesView.getReferencesModel().getReferences().set(referencesView.getEditingIndex(), referencesView.getRichTextEditor().getValue());
+			referencesView.getReferencesModel().getReferences().set(referencesView.getEditingIndex(), referencesView.getRichTextEditor().getPlainText().trim());
 		} catch(IndexOutOfBoundsException iobe) {
-			referencesView.getReferencesModel().getReferences().add(referencesView.getRichTextEditor().getValue());
+			referencesView.getReferencesModel().getReferences().add(referencesView.getRichTextEditor().getPlainText().trim());
 		}
 	}
 
@@ -33,13 +32,9 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 	}
 
 	public void handleEditClicked(int index, String reference) {
-		List<String> referenceList = referencesView.getReferencesModel().getReferences();
+		List<String> referenceList = referencesView.getOriginalModel().getReferences();
+		referencesView.getReferencesModel().setReferences(referenceList);
 		if(referenceList != null && referenceList.get(index) != null) {
-			try {
-				if(StringUtility.isEmptyOrNull(referenceList.get(referencesView.getEditingIndex()))) {
-					referenceList.remove(referenceList.get(referencesView.getEditingIndex()));
-				}
-			} catch(IndexOutOfBoundsException iobe) {}
 			referencesView.setEditingIndex(index);
 			referencesView.getRichTextEditor().setValue(referenceList.get(index));
 		}
@@ -52,7 +47,7 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 		saveReferences();
 	}
 
-	public void saveReferences() {
+	private void saveReferences() {
 		measureDetailsObserver.saveMeasureDetails();
 	}
 }

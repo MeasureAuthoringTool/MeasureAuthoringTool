@@ -270,12 +270,12 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	}
 
 	public boolean isEditorDirty(String referenceValue) {
-		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getValue();
+		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getPlainText().trim();
 		return (!isReadOnly && (!textValue.isEmpty() && !textValue.equals(referenceValue)));
 	}
 	
 	public boolean isEditorDirty() {
-		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getValue();
+		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getPlainText().trim();
 		return !isReadOnly && !textValue.isEmpty();
 	}
 	
@@ -299,4 +299,13 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	public Widget getFirstElement() {
 		return measureDetailsRichTextEditor.getRichTextEditor();
 	}
+	
+	public ReferencesModel getOriginalModel() {
+		return originalModel;
+	}
+
+	public void setOriginalModel(ReferencesModel originalModel) {
+		this.originalModel = originalModel;
+	}
+
 }

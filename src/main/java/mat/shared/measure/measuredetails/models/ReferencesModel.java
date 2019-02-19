@@ -25,7 +25,11 @@ public class ReferencesModel implements MeasureDetailsComponentModel, IsSerializ
 	}
 
 	public void setReferences(List<String> references) {
-		this.references = references;
+		List<String> referenceList = new LinkedList<>();
+		for(String reference: references) {
+			referenceList.add(reference);
+		}
+		this.references = referenceList;
 	}
 
 	@Override

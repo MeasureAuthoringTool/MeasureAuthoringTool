@@ -42,16 +42,14 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
+import mat.client.buttons.CQLIncludesButtonToolBar;
 import mat.client.measure.service.SaveCQLLibraryResult;
-import mat.client.buttons.DefinitionFunctionButtonToolBar;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
@@ -64,94 +62,128 @@ import mat.client.util.MatTextBox;
 import mat.model.cql.CQLLibraryDataSetObject;
 
 public class CQLIncludeLibraryView {
-	private SimplePanel containerPanel = new SimplePanel();
-	private FocusPanel searchWidgetFocusPanel = new FocusPanel();
-	private Panel cellTablePanel = new Panel();
-	private PanelBody cellTablePanelBody = new PanelBody();
-	private AceEditor cqlAceEditor = new AceEditor();
-	private CellTable<CQLLibraryDataSetObject> table;
-	private ListDataProvider<CQLLibraryDataSetObject> listDataProvider;
+
 	private static final int TABLE_ROW_COUNT = 5;
-	private MatSimplePager spager;
-	private SingleSelectionModel<CQLLibraryDataSetObject> selectionModel;
-	private DefinitionFunctionButtonToolBar includesButtonBar = new DefinitionFunctionButtonToolBar("includes");
-	private DefinitionFunctionButtonToolBar includesModifyButtonBar = new DefinitionFunctionButtonToolBar("includesAliasModify");
-	private VerticalPanel buttonPanel = new VerticalPanel();
-	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Search", "Enter Search Text here");
+	
+	private static final String STYLE = "style";
+	private static final String REPLACE = "Replace";
+	private static final String ALIAS_NAME = "aliasName";
+	private static final String VIEW_CQL_FILE = "View CQL file here";
+	private static final String TWO_HUNDRED_AND_SIXTY_PIXELS = "260px";
+	private static final String INCLUDE_LIBRARY_SUMMARY = "includeLibrarySummary";
+
+	private String selectedObject;
+
+	private List<String> includedList;
+	private List<CQLLibraryDataSetObject> selectedList;
+
 	private MatTextBox aliasNameTxtBox = new MatTextBox();
 	private MatTextBox ownerNameTextBox = new MatTextBox();
 	private MatTextBox cqlLibraryNameTextBox = new MatTextBox();
-	private List<CQLLibraryDataSetObject> selectedList;
+	
 	private Map<String, CQLLibraryDataSetObject> replaceLibraries; 
-	private Map<String,CQLLibraryDataSetObject> availableLibraries = new HashMap<String,CQLLibraryDataSetObject>();
-	private String selectedObject;
-	private List<String> includedList;
+	private Map<String, CQLLibraryDataSetObject> availableLibraries = new HashMap<>();
+	
+	private Panel cellTablePanel = new Panel();
+	private PanelBody cellTablePanelBody = new PanelBody();
+	private SimplePanel containerPanel = new SimplePanel();
+	private FocusPanel searchWidgetFocusPanel = new FocusPanel();
 	private VerticalPanel searchCellTablePanel = new VerticalPanel();
 	private VerticalPanel ownerTextboxPanel = new VerticalPanel();
-	private Observer observer;
-	private FormGroup aliasNameGroup = new FormGroup();	
-	HTML heading = new HTML();
 	
+	private FormGroup aliasNameGroup = new FormGroup();	
+	private CellTable<CQLLibraryDataSetObject> table;
+	private ListDataProvider<CQLLibraryDataSetObject> listDataProvider;
+	private SingleSelectionModel<CQLLibraryDataSetObject> selectionModel;
+	
+	private CQLIncludesButtonToolBar includesButtonBar = new CQLIncludesButtonToolBar("includes", true);
+	private CQLIncludesButtonToolBar includesModifyButtonBar = new CQLIncludesButtonToolBar("includesAliasModify", false);
+	
+	private VerticalPanel buttonPanel = new VerticalPanel();
+	
+	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Search", "Enter Search Text here");
+	
+	private Observer observer;
+	private AceEditor cqlAceEditor = new AceEditor();
+	
+	HTML heading = new HTML();
 
 	public static interface Observer {
-		/**
-		 * On edit clicked.
-		 * @param result
-		 *            the result
-		 */
 		void onCheckBoxClicked(CQLLibraryDataSetObject result);
-		
 	}
-	
 	
 	public CQLIncludeLibraryView(){
 		buttonPanel.clear();
 		aliasNameGroup.clear();
+		
 		buttonPanel.getElement().setId("buttonPanel");
 		getIncludesButtonBar().setStylePrimaryName("floatRightButtonPanel");
+		
 		heading.addStyleName("leftAligned");
-		VerticalPanel verticalPanel = new VerticalPanel();
-		verticalPanel.getElement().setId("vPanel_VerticalPanelIncludeSection");
-		verticalPanel.add(heading);
-		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(new SpacerWidget());
-		VerticalPanel aliasNameVP = new VerticalPanel();
-		HorizontalPanel aliasLabelHP = new HorizontalPanel();
 		
-		FormLabel aliasLabel = new FormLabel();
-		aliasLabel.setMarginTop(5);
-		aliasLabel.setId("Alias_Label");
-		aliasLabel.setTitle("Alias Name");
-		aliasLabel.setText("Library Alias");
-		aliasLabel.setFor("aliasNameField_IncludeSection");
-		
-		aliasNameTxtBox.setText("");
-		aliasNameTxtBox.setSize("260px", "25px");
-		aliasNameTxtBox.getElement().setId("aliasNameField_IncludeSection");
-		aliasNameTxtBox.setName("aliasName");
-		aliasNameTxtBox.setTitle("Enter Library Alias Required");
-		
-		aliasNameGroup.add(aliasLabel);
+		aliasNameGroup.add(buildAliasName());
 		aliasNameGroup.add(new SpacerWidget());
 		aliasNameGroup.add(aliasNameTxtBox);
 		
 		setMarginInButtonBar();
-		
-		VerticalPanel aliasLabelVP = new VerticalPanel();
-		
-		aliasLabelVP.add(aliasNameGroup);
-		
-		aliasLabelVP.setStylePrimaryName("margintop20px");
+
 		buttonPanel.clear();
 		buttonPanel.add(includesButtonBar);
-		buttonPanel.getElement().setAttribute("style", "margin-left:300px;");
+		buttonPanel.getElement().setAttribute(STYLE, "margin-left:300px;");
+		
+		initCQLEditor();
+
+		containerPanel.getElement().setAttribute("id", "IncludeSectionContainerPanel");
+		containerPanel.add(buildCQLVP());
+		containerPanel.setStyleName("cqlqdsContentPanel");
+	}
+
+	private Panel buildViewCQLPanel() {
+		Panel viewCQLPanel = new Panel(PanelType.PRIMARY);	
+		viewCQLPanel.setMarginTop(20);
+		viewCQLPanel.setId("IncludeCQLViewPanel_Id");
+		viewCQLPanel.add(buildVIewCQLHeader());
+		viewCQLPanel.add(buildViewCQLBody());
+		return viewCQLPanel;
+	}
+
+	private VerticalPanel buildCQLVP() {
+		VerticalPanel verticalPanel = new VerticalPanel();
+
+		verticalPanel.getElement().setId("vPanel_VerticalPanelIncludeSection");
+		verticalPanel.add(heading);
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(buildAliasLabelVP());
+		verticalPanel.add(ownerTextboxPanel);
+		verticalPanel.add(searchCellTablePanel);
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(buildViewCQLPanel());
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.setWidth("700px");
+		
+		return verticalPanel;
+	}
+
+	private VerticalPanel buildAliasLabelVP() {
+		VerticalPanel aliasNameVP = new VerticalPanel();
+		
+		VerticalPanel aliasLabelVP = new VerticalPanel();
+		aliasLabelVP.add(aliasNameGroup);
+		aliasLabelVP.setStylePrimaryName("margintop20px");
+
+		HorizontalPanel aliasLabelHP = new HorizontalPanel();
 		aliasLabelHP.add(aliasLabelVP);
 		aliasLabelHP.add(new SpacerWidget());
 		aliasLabelHP.add(new SpacerWidget());
 		aliasLabelHP.add(buttonPanel);
+		
 		aliasNameVP.add(aliasLabelHP);
 		
-		
+		return aliasNameVP;
+	}
+
+	private void initCQLEditor() {
 		cqlAceEditor.startEditor();
 		cqlAceEditor.setMode(AceEditorMode.CQL);
 		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
@@ -162,97 +194,95 @@ public class CQLIncludeLibraryView {
 		cqlAceEditor.setReadOnly(true);
 		cqlAceEditor.setUseWrapMode(true);
 		cqlAceEditor.clearAnnotations();
+	}
+
+	private FormLabel buildAliasName() {
+		FormLabel aliasLabel = new FormLabel();
+		aliasLabel.setMarginTop(5);
+		aliasLabel.setId("Alias_Label");
+		aliasLabel.setTitle("Alias Name");
+		aliasLabel.setText("Library Alias");
+		aliasLabel.setFor("aliasNameField_IncludeSection");
 		
-		Label viewCQlFileLabel = new Label(LabelType.INFO);
-		viewCQlFileLabel.setText("View CQL file here");
-		viewCQlFileLabel.setTitle("View CQL file here");
-		
-		Panel viewCQLPanel = new Panel(PanelType.PRIMARY);	
-		viewCQLPanel.setMarginTop(20);
-		viewCQLPanel.setId("IncludeCQLViewPanel_Id");
-		
-		PanelHeader viewCQLHeader = new PanelHeader();
-		viewCQLHeader.setText("View CQL file here");
-		viewCQLHeader.setTitle("View CQL file here");
-		viewCQLHeader.setId("IncludeCQLViewPanelHeader_id");
-		
+		aliasNameTxtBox.setText("");
+		aliasNameTxtBox.setSize(TWO_HUNDRED_AND_SIXTY_PIXELS, "25px");
+		aliasNameTxtBox.getElement().setId("aliasNameField_IncludeSection");
+		aliasNameTxtBox.setName(ALIAS_NAME);
+		aliasNameTxtBox.setTitle("Enter Library Alias Required");
+		return aliasLabel;
+	}
+
+	private PanelBody buildViewCQLBody() {
 		PanelBody viewCQLBody = new PanelBody();
 		viewCQLBody.setId("IncludeCQLViewBody_Id");
 		viewCQLBody.add(cqlAceEditor);
-		
-		viewCQLPanel.add(viewCQLHeader);
-		viewCQLPanel.add(viewCQLBody);
-		
-		verticalPanel.add(aliasNameVP);
-		verticalPanel.add(ownerTextboxPanel);
-		verticalPanel.add(searchCellTablePanel);
-		
-		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(viewCQLPanel);
-		verticalPanel.add(new SpacerWidget());
-		verticalPanel.setWidth("700px");
-		containerPanel.getElement().setAttribute("id",
-				"IncludeSectionContainerPanel");
-		containerPanel.add(verticalPanel);
-		containerPanel.setStyleName("cqlqdsContentPanel");
+		return viewCQLBody;
+	}
+
+	private PanelHeader buildVIewCQLHeader() {
+		PanelHeader viewCQLHeader = new PanelHeader();
+		viewCQLHeader.setText(VIEW_CQL_FILE);
+		viewCQLHeader.setTitle(VIEW_CQL_FILE);
+		viewCQLHeader.setId("IncludeCQLViewPanelHeader_id");
+		return viewCQLHeader;
 	}
 	
-	
-
 	private void setMarginInButtonBar() {
 		includesButtonBar.getSaveButton().setMarginLeft(-30.00);
 		includesButtonBar.getEraseButton().setMarginLeft(-10.00);
 	}
 
-	/**
-	 * Builds the owner text box widget.
-	 */
 	public void buildIncludesReadOnlyView(){
 		ownerTextboxPanel.clear();
 		searchCellTablePanel.clear();
-		aliasNameTxtBox.setEnabled(false);
+
 		buttonPanel.clear();
-		buttonPanel.getElement().setAttribute("style", "margin-left:250px;");
+		buttonPanel.getElement().setAttribute(STYLE, "margin-left:250px;");
 		buttonPanel.add(includesModifyButtonBar);
 
-		FormLabel ownerLabel = new FormLabel();
-		ownerLabel.setMarginTop(5);
-		ownerLabel.setId("ownerName_Label");
-		ownerLabel.setText("Owner Name");
-		ownerLabel.setTitle("Owner Name");
-		ownerNameTextBox.setText("");
-		ownerNameTextBox.setSize("260px", "25px");
-		ownerNameTextBox.getElement().setId("ownerNameField_IncludeSection");
-		ownerNameTextBox.setName("aliasName");
-		ownerNameTextBox.setEnabled(false);
+		aliasNameTxtBox.setEnabled(false);
 
+		ownerTextboxPanel.add(buildOwnerName());
+		ownerTextboxPanel.add(new SpacerWidget());
+		ownerTextboxPanel.add(ownerNameTextBox);
+		ownerTextboxPanel.add(new SpacerWidget());
+		ownerTextboxPanel.add(new SpacerWidget());
+		ownerTextboxPanel.add(buildCQLLibraryName());
+		ownerTextboxPanel.add(new SpacerWidget());
+		ownerTextboxPanel.add(cqlLibraryNameTextBox);
+		ownerTextboxPanel.add(new SpacerWidget());
+		
+		createReadOnlyViewIncludesButtonBar();
+	}
+
+	private FormLabel buildCQLLibraryName() {
 		FormLabel cqlLibNameLabel = new FormLabel();
 		cqlLibNameLabel.setMarginTop(5);
 		cqlLibNameLabel.setId("cqlLibraryName_Label");
 		cqlLibNameLabel.setText("CQL Library Name");
 		cqlLibNameLabel.setTitle("CQL Library Name");
 		cqlLibraryNameTextBox.setText("");
-		cqlLibraryNameTextBox.setSize("260px", "25px");
+		cqlLibraryNameTextBox.setSize(TWO_HUNDRED_AND_SIXTY_PIXELS, "25px");
 		cqlLibraryNameTextBox.getElement().setId("cqlLibraryNameField_IncludeSection");
-		cqlLibraryNameTextBox.setName("aliasName");
+		cqlLibraryNameTextBox.setName(ALIAS_NAME);
 		cqlLibraryNameTextBox.setEnabled(false);
-		
-		ownerTextboxPanel.add(ownerLabel);
-		ownerTextboxPanel.add(new SpacerWidget());
-		ownerTextboxPanel.add(ownerNameTextBox);
-		ownerTextboxPanel.add(new SpacerWidget());
-		ownerTextboxPanel.add(new SpacerWidget());
-		ownerTextboxPanel.add(cqlLibNameLabel);
-		ownerTextboxPanel.add(new SpacerWidget());
-		ownerTextboxPanel.add(cqlLibraryNameTextBox);
-		ownerTextboxPanel.add(new SpacerWidget());
-		createReadOnlyViewIncludesButtonBar();
+		return cqlLibNameLabel;
+	}
+
+	private FormLabel buildOwnerName() {
+		FormLabel ownerLabel = new FormLabel();
+		ownerLabel.setMarginTop(5);
+		ownerLabel.setId("ownerName_Label");
+		ownerLabel.setText("Owner Name");
+		ownerLabel.setTitle("Owner Name");
+		ownerNameTextBox.setText("");
+		ownerNameTextBox.setSize(TWO_HUNDRED_AND_SIXTY_PIXELS, "25px");
+		ownerNameTextBox.getElement().setId("ownerNameField_IncludeSection");
+		ownerNameTextBox.setName(ALIAS_NAME);
+		ownerNameTextBox.setEnabled(false);
+		return ownerLabel;
 	}
 	
-	
-	/**
-	 * Buildsearch cell table widget.
-	 */
 	public void buildAddNewAliasView() {
 		
 		searchCellTablePanel.clear();
@@ -279,24 +309,15 @@ public class CQLIncludeLibraryView {
 		searchCellTablePanel.add(cellTablePanel);
 		buttonPanel.clear();
 		buttonPanel.add(includesButtonBar);
-		buttonPanel.getElement().setAttribute("style", "margin-left:300px;");
+		buttonPanel.getElement().setAttribute(STYLE, "margin-left:300px;");
+		
 		createIncludesButtonBar();
 	}
 
-	/**
-	 * As widget.
-	 *
-	 * @return the widget
-	 */
 	public Widget asWidget() {
 		return containerPanel;
 	}
 
-	/**
-	 * Gets the focus panel.
-	 *
-	 * @return the focus panel
-	 */
 	public HasKeyDownHandlers getFocusPanel(){
 		return searchWidgetFocusPanel;
 	}
@@ -305,65 +326,40 @@ public class CQLIncludeLibraryView {
 		return aliasNameTxtBox;
 	}
 
-	/**
-	 * Sets the alias name txt area.
-	 *
-	 * @param string the new alias name txt area
-	 */
 	public void setAliasNameTxtArea(String string) {
-		this.aliasNameTxtBox.setText("");
-		
+		this.aliasNameTxtBox.setText(string);
 	}
 	
-	private DefinitionFunctionButtonToolBar createIncludesButtonBar() {
+	private CQLIncludesButtonToolBar createIncludesButtonBar() {
 		includesButtonBar.getSaveButton().setVisible(true);
 		includesButtonBar.getEraseButton().setVisible(true);
-		includesButtonBar.getCloseButton().setVisible(false);
-		includesButtonBar.getDeleteButton().setVisible(false);
-		includesButtonBar.getInfoButton().removeFromParent();
-		includesButtonBar.getInsertButton().removeFromParent();
-		includesButtonBar.getTimingExpButton().removeFromParent();
 		return includesButtonBar;
 	}
 
-	private DefinitionFunctionButtonToolBar createReadOnlyViewIncludesButtonBar() {
+	private CQLIncludesButtonToolBar createReadOnlyViewIncludesButtonBar() {
+		includesModifyButtonBar.getReplaceButton().setVisible(true);
+		includesModifyButtonBar.getReplaceButton().setIcon(IconType.RETWEET);
+		includesModifyButtonBar.getReplaceButton().setText(REPLACE);
+		includesModifyButtonBar.getReplaceButton().setTitle(REPLACE);
+		includesModifyButtonBar.getReplaceButton().setWidth("90px");
+		includesModifyButtonBar.getReplaceButton().getElement().setAttribute("aria-label", REPLACE);
+		includesModifyButtonBar.getReplaceButton().setMarginLeft(-70.00);
+
 		includesModifyButtonBar.getDeleteButton().setVisible(true);
-		includesModifyButtonBar.getEditButton().setVisible(true);
-		includesModifyButtonBar.getEditButton().setIcon(IconType.RETWEET);
-		includesModifyButtonBar.getEditButton().setText("Replace");
-		includesModifyButtonBar.getEditButton().setTitle("Replace");
-		includesModifyButtonBar.getEditButton().setWidth("90px");
-		includesModifyButtonBar.getEditButton().getElement().setAttribute("aria-label", "Replace");
-		includesModifyButtonBar.getEditButton().setMarginLeft(-70.00);
-		
-		includesModifyButtonBar.getCloseButton().setMarginLeft(10.00);
 		includesModifyButtonBar.getDeleteButton().setEnabled(false);
-		includesModifyButtonBar.getCloseButton().setVisible(true);
-		includesModifyButtonBar.getSaveButton().setVisible(true);
-		includesModifyButtonBar.getSaveButton().setEnabled(false);
-		includesModifyButtonBar.getInfoButton().removeFromParent();
-		includesModifyButtonBar.getInsertButton().removeFromParent();
-		includesModifyButtonBar.getTimingExpButton().removeFromParent();
-		includesModifyButtonBar.getSaveButton().removeFromParent();
-		includesModifyButtonBar.getEraseButton().removeFromParent();
+		
+		includesModifyButtonBar.getCancelButton().setMarginLeft(10.00);
+		includesModifyButtonBar.getCancelButton().setVisible(true);
+		
 		return includesModifyButtonBar;
 	}
 
-	
-	
-	/**
-	 * Builds the include library cell table.
-	 *
-	 * @param result the cql library list
-	 * @param isEditable the is editable
-	 * @param isIncludesTab
-	 */
 	public void buildIncludeLibraryCellTable(SaveCQLLibraryResult result, boolean isEditable, boolean isIncludesTab) {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		cellTablePanel.setWidth("95%");
-		PanelHeader searchHeader = new PanelHeader();//new Label("QDM Elements");
+		PanelHeader searchHeader = new PanelHeader();
 		searchHeader.getElement().setId("searchHeader_Label_IncludeSection");
 		searchHeader.setStyleName("measureGroupingTableHeader");
 		searchHeader.getElement().setAttribute("tabIndex", "0");
@@ -372,56 +368,36 @@ public class CQLIncludeLibraryView {
 		searchHeader.add(searchHeaderText);
 		cellTablePanel.add(searchHeader);
 		
-		selectedList = new ArrayList<CQLLibraryDataSetObject>();
+		selectedList = new ArrayList<>();
 		selectedObject = null;
 		
-		if ((result != null)
-				&& (result.getCqlLibraryDataSetObjects().size() > 0)) {
-			table = new CellTable<CQLLibraryDataSetObject>();
+		if (result != null && !result.getCqlLibraryDataSetObjects().isEmpty()) {
+			table = new CellTable<>();
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-			listDataProvider = new ListDataProvider<CQLLibraryDataSetObject>();
+			listDataProvider = new ListDataProvider<>();
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
 			listDataProvider.refresh();
 			listDataProvider.getList().addAll(result.getCqlLibraryDataSetObjects());
-			ListHandler<CQLLibraryDataSetObject> sortHandler = new ListHandler<CQLLibraryDataSetObject>(
-					listDataProvider.getList());
+			ListHandler<CQLLibraryDataSetObject> sortHandler = new ListHandler<>(listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
-			selectionModel = new SingleSelectionModel<CQLLibraryDataSetObject>();
+			selectionModel = new SingleSelectionModel<>();
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			table.setSelectionModel(selectionModel);
-			table = addColumnToTable(table, sortHandler, isEditable);
+			table = addColumnToTable(table, isEditable);
 			listDataProvider.addDataDisplay(table);
-			addSelectionHandler();
-			CustomPager.Resources pagerResources = GWT
-					.create(CustomPager.Resources.class);
-			spager = new MatSimplePager(CustomPager.TextLocation.CENTER,
-					pagerResources, false, 0, true,"cqlIncludes");
+			
+			selectionModel.addSelectionChangeHandler(event -> updateSelectionChange());
+			
+			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"cqlIncludes");
 			spager.setDisplay(table);
 			spager.setPageStart(0);
-			com.google.gwt.user.client.ui.Label invisibleLabel;
-			if(isEditable){
-				invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
-						.buildInvisibleLabel(
-								"includeLibrarySummary",
-								"In the Following Include Library table Name in First Column"
-										+ "Version in Second Column, Owner in Third Column and Select in Fourth Column."
-										+" The Library  are listed alphabetically in a table.");
 				
-				
-			} else {
-				invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
-						.buildInvisibleLabel(
-								"includeLibrarySummary",
-								"In the Following Include Library table Name in First Column"
-										+ "Version in Second Column, Owner in Third Column and Select in Fourth Column."
-										+" The Library  are listed alphabetically in a table.");
-			}
 			table.getElement().setAttribute("id", "IncludeLibraryTable");
-			table.getElement().setAttribute("aria-describedby",
-					"includeLibrarySummary");
-			
-			cellTablePanelBody.add(invisibleLabel);
+			table.getElement().setAttribute("aria-describedby", INCLUDE_LIBRARY_SUMMARY);
+
+			cellTablePanelBody.add(buildIncludeLibrarySummaryInvisibleLabel());
 			cellTablePanelBody.add(table);
 			cellTablePanelBody.add(spager);
 			cellTablePanel.add(cellTablePanelBody);
@@ -439,71 +415,58 @@ public class CQLIncludeLibraryView {
 			cellTablePanel.add(cellTablePanelBody);
 		}
 	}
-	
-	private void addSelectionHandler() {
-		selectionModel.addSelectionChangeHandler(new Handler() {
-			
-			@Override
-			public void onSelectionChange(SelectionChangeEvent event) {
-				CQLLibraryDataSetObject selectedObject  = selectionModel.getSelectedObject();
-				if(selectedObject !=null) {
-					for(CQLLibraryDataSetObject obj : listDataProvider.getList()){
-						if(!obj.getId().equals(selectedObject.getId())){
-							obj.setSelected(false);
-							selectionModel.setSelected(obj, false);
-						}
-					}
-					
-					listDataProvider.refresh();
-				}
-				
-			}
-		});
-		
-	}
 
-	private CellTable<CQLLibraryDataSetObject> addColumnToTable(
-			final CellTable<CQLLibraryDataSetObject> table,
-			ListHandler<CQLLibraryDataSetObject> sortHandler, boolean isEditable) {
+	private com.google.gwt.user.client.ui.Label buildIncludeLibrarySummaryInvisibleLabel() {
+		return (com.google.gwt.user.client.ui.Label) LabelBuilder
+				.buildInvisibleLabel(INCLUDE_LIBRARY_SUMMARY, "In the Following Include Library table Name in First Column"
+								+ "Version in Second Column, Owner in Third Column and Select in Fourth Column."
+								+" The Library  are listed alphabetically in a table.");
+	}
+	
+	private void updateSelectionChange() {
+		CQLLibraryDataSetObject cqlLibraryDataSetObject  = selectionModel.getSelectedObject();
+		if(cqlLibraryDataSetObject !=null) {
+			for(CQLLibraryDataSetObject obj : listDataProvider.getList()){
+				if(!obj.getId().equals(cqlLibraryDataSetObject.getId())){
+					obj.setSelected(false);
+					selectionModel.setSelected(obj, false);
+				}
+			}
+
+			listDataProvider.refresh();
+		}
+	}
+	
+	private CellTable<CQLLibraryDataSetObject> addColumnToTable(final CellTable<CQLLibraryDataSetObject> table, boolean isEditable) {
 		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
 			
-			Column<CQLLibraryDataSetObject, SafeHtml> nameColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(
-					new SafeHtmlCell()) {
+			Column<CQLLibraryDataSetObject, SafeHtml> nameColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(CQLLibraryDataSetObject object) {
 					return CellTableUtility.getNameColumnToolTip(object.getCqlName(), object.getCqlName());
 				}
 			};
-			table.addColumn(nameColumn, SafeHtmlUtils
-					.fromSafeConstant("<span title=\"Name\">" + "Name"
-							+ "</span>"));
+			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));
 			
 			
-			Column<CQLLibraryDataSetObject, SafeHtml> versionColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(
-					new SafeHtmlCell()) {
+			Column<CQLLibraryDataSetObject, SafeHtml> versionColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(CQLLibraryDataSetObject object) {
 					
 					return CellTableUtility.getColumnToolTip(object.getVersion());
 				}
 			};
-			table.addColumn(versionColumn, SafeHtmlUtils
-					.fromSafeConstant("<span title=\"Version\">"
-							+ "Version" + "</span>"));
+			table.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + "</span>"));
 			
-			Column<CQLLibraryDataSetObject, SafeHtml> ownerColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(
-					new SafeHtmlCell()) {
+			Column<CQLLibraryDataSetObject, SafeHtml> ownerColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(CQLLibraryDataSetObject object) {
 					StringBuilder owner = new StringBuilder();
 					owner = owner.append(object.getOwnerFirstName()).append(" ").append(object.getOwnerLastName());
-					return CellTableUtility.getColumnToolTip(owner.toString(),
-							owner.toString());
+					return CellTableUtility.getColumnToolTip(owner.toString(), owner.toString());
 				}
 			};
-			table.addColumn(ownerColumn, SafeHtmlUtils
-					.fromSafeConstant("<span title=\"Owner\">" + "Owner"
-							+ "</span>"));
+			table.addColumn(ownerColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Owner\">" + "Owner" + "</span>"));
 			
 			table.addColumn(new Column<CQLLibraryDataSetObject, CQLLibraryDataSetObject>(getCheckBoxCellForTable(isEditable)) {
 				@Override
@@ -533,9 +496,9 @@ public class CQLIncludeLibraryView {
 			isUsed = true;
 		}
 		
-		final List<HasCell<CQLLibraryDataSetObject, ?>> cells = new LinkedList<HasCell<CQLLibraryDataSetObject, ?>>();
+		final List<HasCell<CQLLibraryDataSetObject, ?>> cells = new LinkedList<>();
 		cells.add(getCheckBoxCell(isUsed));
-		CompositeCell<CQLLibraryDataSetObject> cell = new CompositeCell<CQLLibraryDataSetObject>(cells) {
+		return new CompositeCell<CQLLibraryDataSetObject>(cells) {
 			@Override
 			public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
 				sb.appendHtmlConstant("<table><tbody><tr>");
@@ -570,12 +533,10 @@ public class CQLIncludeLibraryView {
 			}
 		};
 		
-		return cell;
-		
 	}
 	
 	private HasCell<CQLLibraryDataSetObject, Boolean> getCheckBoxCell(final boolean isUsed){
-		HasCell<CQLLibraryDataSetObject, Boolean> hasCell = new HasCell<CQLLibraryDataSetObject, Boolean>() {
+		return new HasCell<CQLLibraryDataSetObject, Boolean>() {
 			
 			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true, isUsed);
 			
@@ -586,7 +547,7 @@ public class CQLIncludeLibraryView {
 			@Override
 			public Boolean getValue(CQLLibraryDataSetObject object) {
 				boolean isSelected = false;
-				if (selectedList.size() > 0) {
+				if (!selectedList.isEmpty()) {
 					for (int i = 0; i < selectedList.size(); i++) {
 						if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
 							isSelected = true;
@@ -639,31 +600,20 @@ public class CQLIncludeLibraryView {
 				};
 			}
 		};
-		return hasCell;
 	}
 	
-	/**
-	 * Gets the includes button bar.
-	 *
-	 * @return the includes button bar
-	 */
-	public DefinitionFunctionButtonToolBar getIncludesButtonBar() {
+	public CQLIncludesButtonToolBar getIncludesButtonBar() {
 		return this.includesButtonBar;
 	}
 	
-	public DefinitionFunctionButtonToolBar getIncludesModifyButtonBar() {
+	public CQLIncludesButtonToolBar getIncludesModifyButtonBar() {
 		return includesModifyButtonBar;
 	}
 
-
-	/**
-	 * Reset to default.
-	 */
 	public void resetToDefault(){
 		cellTablePanel.clear();
 		resetAceEditor();
 	}
-
 
 	private void resetAceEditor() {
 		cqlAceEditor.clearAnnotations();
@@ -671,210 +621,98 @@ public class CQLIncludeLibraryView {
 		cqlAceEditor.setText("");
 	}
 
-	/**
-	 * Reset from group.
-	 */
 	public void resetFromGroup(){
 		getAliasNameGroup().setValidationState(ValidationState.NONE);
 	}
 	
-
-	/**
-	 * Sets the includes button bar.
-	 *
-	 * @param includesButtonBar the new includes button bar
-	 */
-	public void setIncludesButtonBar(DefinitionFunctionButtonToolBar includesButtonBar) {
+	public void setIncludesButtonBar(CQLIncludesButtonToolBar includesButtonBar) {
 		this.includesButtonBar = includesButtonBar;
 	}
 	
-	/**
-	 * Gets the save button.
-	 *
-	 * @return the save button
-	 */
 	public Button getSaveButton(){
 		return getIncludesButtonBar().getSaveButton();
 	}
 	
 	public Button getSaveModifyButton(){
-		return getIncludesModifyButtonBar().getEditButton();
+		return getIncludesModifyButtonBar().getReplaceButton();
 	}
-	/**
-	 * Gets the erase button.
-	 *
-	 * @return the erase button
-	 */
+
 	public Button getEraseButton(){
 		return getIncludesButtonBar().getEraseButton();
 	}
 	
-	/**
-	 * Gets the delete button.
-	 *
-	 * @return the delete button
-	 */
 	public Button getDeleteButton(){
 		return getIncludesModifyButtonBar().getDeleteButton();
 	}
 	
-	
-	/**
-	 * Gets the close button.
-	 *
-	 * @return the close button
-	 */
 	public Button getCloseButton(){
-		return getIncludesModifyButtonBar().getCloseButton();
+		return getIncludesModifyButtonBar().getCancelButton();
 	}
 	
-	/**
-	 * Gets the search button.
-	 *
-	 * @return the search button
-	 */
 	public Button getSearchButton(){
 		return sWidget.getGo();
 	}
 	
-	/**
-	 * Gets the search text box.
-	 *
-	 * @return the search text box
-	 */
 	public TextBox getSearchTextBox(){
 		return sWidget.getSearchBox();
 	}
 	
-	/**
-	 * Gets the view CQL editor.
-	 *
-	 * @return the view CQL editor
-	 */
 	public AceEditor getViewCQLEditor(){
 		return cqlAceEditor;
 	}
 	
-	/**
-	 * Gets the selected object list.
-	 *
-	 * @return the selected object list
-	 */
 	public List<CQLLibraryDataSetObject> getSelectedObjectList(){
 		return selectedList;
 	}
 	
-	/**
-	 * Sets the selected object list.
-	 *
-	 * @param selectedObjectList the new selected object list
-	 */
 	public void setSelectedObjectList(List<CQLLibraryDataSetObject> selectedObjectList){
 		selectedList = selectedObjectList;
 	}
 
-	/**
-	 * Gets the selected object.
-	 *
-	 * @return the selected object
-	 */
 	public String getSelectedObject() {
 		return selectedObject;
 	}
 
-	/**
-	 * Sets the selected object.
-	 *
-	 * @param selectedObject the new selected object
-	 */
 	public void setSelectedObject(String selectedObject) {
 		this.selectedObject = selectedObject;
 	}
 	
-	/**
-	 * Redraw cell table.
-	 */
 	public void redrawCellTable(){
 		table.redraw();
 	}
 
-	/**
-	 * Gets the included list.
-	 *
-	 * @return the included list
-	 */
 	public List<String> getIncludedList() {
 		return includedList;
 	}
 
-	/**
-	 * Sets the included list.
-	 *
-	 * @param includedList the new included list
-	 */
 	public void setIncludedList(List<String> includedList) {
 		this.includedList = includedList;
 	}
 
-	/**
-	 * Gets the search cell table panel.
-	 *
-	 * @return the search cell table panel
-	 */
 	public VerticalPanel getSearchCellTablePanel() {
 		return searchCellTablePanel;
 	}
 
-	/**
-	 * Gets the owner text box panel.
-	 *
-	 * @return the owner text box panel
-	 */
 	public VerticalPanel getOwnerTextboxPanel() {
 		return ownerTextboxPanel;
 	}
 
-	/**
-	 * Gets the owner name text box.
-	 *
-	 * @return the owner name text box
-	 */
 	public MatTextBox getOwnerNameTextBox() {
 		return ownerNameTextBox;
 	}
 
-	/**
-	 * Gets the cql library name text box.
-	 *
-	 * @return the cql library name text box
-	 */
 	public MatTextBox getCqlLibraryNameTextBox() {
 		return cqlLibraryNameTextBox;
 	}
 
-	/**
-	 * Gets the observer.
-	 *
-	 * @return the observer
-	 */
 	public Observer getObserver() {
 		return observer;
 	}
 
-	/**
-	 * Sets the observer.
-	 *
-	 * @param observer the new observer
-	 */
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
 	
-	/**
-	 * Sets the widget read only.
-	 *
-	 * @param isEditable the new widget read only
-	 */
 	public void setWidgetReadOnly(boolean isEditable) {
 
 		getAliasNameTxtArea().setEnabled(isEditable);
@@ -882,41 +720,25 @@ public class CQLIncludeLibraryView {
 		getIncludesButtonBar().getEraseButton().setEnabled(isEditable);
 	}
 
-
-	/**
-	 * Gets the alias name group.
-	 *
-	 * @return the alias name group
-	 */
 	public FormGroup getAliasNameGroup() {
 		return aliasNameGroup;
 	}
 
-
-	/**
-	 * Sets the alias name group.
-	 *
-	 * @param aliasNameGroup the new alias name group
-	 */
 	public void setAliasNameGroup(FormGroup aliasNameGroup) {
 		this.aliasNameGroup = aliasNameGroup;
 	}
-
 	
 	public Map<String, CQLLibraryDataSetObject> getReplaceLibraries() {
 		return replaceLibraries;
 	}
 
-
 	public void setReplaceLibraries(Map<String, CQLLibraryDataSetObject> replaceLibraries) {
 		this.replaceLibraries = replaceLibraries;
 	}
 
-
 	public Map<String, CQLLibraryDataSetObject> getAvailableLibraries() {
 		return availableLibraries;
 	}
-
 
 	public void setAvailableLibraries(Map<String, CQLLibraryDataSetObject> availableLibraries) {
 		this.availableLibraries = availableLibraries;

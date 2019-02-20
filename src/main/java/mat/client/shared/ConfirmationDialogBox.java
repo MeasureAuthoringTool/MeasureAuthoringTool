@@ -58,6 +58,8 @@ public class ConfirmationDialogBox {
 		}
 		
 		getNoButton().setText(noButtonText);
+		getNoButton().setTitle(noButtonText);
+		getYesButton().setTitle(yesButtonText);
 		getYesButton().setText(yesButtonText);
 		getYesButton().setFocus(true);
 	}
@@ -76,7 +78,9 @@ public class ConfirmationDialogBox {
 		getMessageAlert().getErrorMessageAlert().createAlert(messageText);
 		setMargins(getMessageAlert().getErrorMessageAlert());
 		getNoButton().setText(noButtonText);
+		getNoButton().setTitle(noButtonText);
 		getYesButton().setText(yesButtonText);
+		getYesButton().setTitle(yesButtonText);
 		getYesButton().setFocus(true);
 	}
 

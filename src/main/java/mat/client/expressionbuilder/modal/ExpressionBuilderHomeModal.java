@@ -98,7 +98,7 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 	private void buildExitBuilderButton() {
 		exitBuilderButton = new Button();
 		exitBuilderButton.setText("Exit Builder");
-		exitBuilderButton.setTitle("Exit Buidler");
+		exitBuilderButton.setTitle("Exit Builder");
 		exitBuilderButton.setType(ButtonType.DANGER);
 		exitBuilderButton.getElement().setAttribute("aria-label",
 				"Click this button to cancel this bulid and exit the expression builder");

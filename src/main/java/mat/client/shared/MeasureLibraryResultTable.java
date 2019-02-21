@@ -52,10 +52,10 @@ public class MeasureLibraryResultTable {
 		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(measureSearchHeader.getElement());
-
-		selectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
-		table.setSelectionModel(selectionModel);
-
+		if(displayBulkExport) {
+			selectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
+			table.setSelectionModel(selectionModel);
+		}
 		// Measure Name Column
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new ClickableSafeHtmlCell()) {

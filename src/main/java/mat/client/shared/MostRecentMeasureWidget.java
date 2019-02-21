@@ -39,13 +39,14 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 	}
 	
 	void buildCellTable() {
+		searchPanel.setStyleName("cellTablePanel");
 		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
 		ArrayList<ManageMeasureSearchModel.Result> selectedMeasureList = new ArrayList<Result>();
 		selectedMeasureList.addAll(measureSearchModel.getData());
 		cellTable.setPageSize(2);
-		cellTable.redraw();
 		cellTable.setRowCount(selectedMeasureList.size(), true);
+		cellTable.redraw();
 		sortProvider.refresh();
 		sortProvider.getList().addAll(measureSearchModel.getData());
 		cellTable = measureLibraryResultTable.addColumnToTable("Recent Activity", cellTable, selectedMeasureList, false, MostRecentMeasureWidget.this);
@@ -58,14 +59,13 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 								+ "Clone in seventh column and Export in eight column.");
 		cellTable.getElement().setAttribute("id", "MostRecentActivityCellTable");
 		cellTable.getElement().setAttribute("aria-describedby", "recentActivitySummary");
+		
 		searchPanel.add(invisibleLabel);
 		searchPanel.add(cellTable);
 	}
-
 	public VerticalPanel buildMostRecentWidget() {
 		searchPanel.clear();
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
-		searchPanel.setStyleName("recentSearchPanel");
 
 		if ((measureSearchModel != null) && (measureSearchModel.getData().size() > 0)) {
 			cellTable = new CellTable<ManageMeasureSearchModel.Result>();

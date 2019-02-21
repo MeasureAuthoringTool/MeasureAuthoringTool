@@ -1321,8 +1321,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		boolean isEditable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId());
 		detail.setEditable(isEditable);
 		detail.setPatientBased(measure.getPatientBased());
-		boolean isCLonable = MatContextServiceUtil.get().isCurrentMeasureClonable(measureDAO, measure.getId());
 		boolean isOwner = measure.getOwner().getId().equals(LoggedInUserUtil.getLoggedInUser());
+		String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
+		boolean isCLonable = (isOwner || isSuperUser) && !measure.getIsCompositeMeasure() && !(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
+				|| measureReleaseVersion.startsWith("v3"));
 		detail.setClonable(isCLonable);
 		detail.setSharable(isOwner || isSuperUser);
 		boolean isEditableForVersion = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId(), false);

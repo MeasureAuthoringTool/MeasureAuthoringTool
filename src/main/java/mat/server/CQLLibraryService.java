@@ -253,8 +253,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		List<CQLLibrary> libraryList = new ArrayList<>();
 		libraryList.add(cqlLibrary);
 		List<CQLLibrary> cqlLibraryFamily = cqlLibraryDAO.getAllLibrariesInSet(libraryList);
-		caclulateVersionAndDraft(dataSetObject, cqlLibraryFamily);
+		Boolean isEditableForVersion = MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibrary.getId(), false);
 		
+		if (!dataSetObject.isLocked() && isEditableForVersion) {
+			caclulateVersionAndDraft(dataSetObject, cqlLibraryFamily);
+		}
 		return dataSetObject;
 		
 	}

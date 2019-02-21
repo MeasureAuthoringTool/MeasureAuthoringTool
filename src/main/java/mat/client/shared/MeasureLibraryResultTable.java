@@ -205,7 +205,7 @@ public class MeasureLibraryResultTable {
 
 		// Export Column header
 
-		Header<SafeHtml> bulkExportColumnHeader = getBulkExportColumnHeader();
+		Header<SafeHtml> bulkExportColumnHeader = getBulkExportColumnHeader(displayBulkExport);
 		bulkExportColumnHeader.setUpdater(new ValueUpdater<SafeHtml>() {
 			@Override
 			public void update(SafeHtml value) {
@@ -326,16 +326,19 @@ public class MeasureLibraryResultTable {
 	 *
 	 * @return the bulk export column header
 	 */
-	private Header<SafeHtml> getBulkExportColumnHeader(){
+	private Header<SafeHtml> getBulkExportColumnHeader(Boolean bulkExport){
 		Header<SafeHtml> bulkExportColumnHeader = new Header<SafeHtml>(new ClickableSafeHtmlCell()) {
 			private String cssClass = "transButtonWidth";
 			private String title = "Click to Clear All";
 			@Override
 			public SafeHtml getValue() {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				sb.appendHtmlConstant("<span>Export</span><button type=\"button\" title='"
-						+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">"
-						+ "<span class='textCssStyle'>(Clear)</span></button>");
+				sb.appendHtmlConstant("<span>Export</span>");
+				if(bulkExport) {
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">");
+					sb.appendHtmlConstant("<span class='textCssStyle'>(Clear)</span></button>");
+				}
 				return sb.toSafeHtml();
 			}
 		};

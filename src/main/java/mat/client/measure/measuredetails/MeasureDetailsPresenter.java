@@ -513,6 +513,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				}
 				measureDetailsModel.setMeasurePopulationModel(new MeasurePopulationModel());
 				measureDetailsModel.setMeasurePopulationExclusionsModel(new MeasurePopulationExclusionsModel());
+				measureDetailsModel.setDenominatorExceptionsModel(new DenominatorExceptionsModel());
 				break;
 			default:
 				break;

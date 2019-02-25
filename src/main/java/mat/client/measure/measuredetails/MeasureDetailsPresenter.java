@@ -87,7 +87,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	
 	@Override
 	public void beforeClosingDisplay() {
-		Mat.hideLoadingMessage();
 		navigationPanel.updateState(MeasureDetailState.BLANK);
 		this.scoringType = null;
 		isPatientBased = false;

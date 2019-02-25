@@ -191,8 +191,8 @@ public class CQLParametersView {
 	 */
 	public void setMarginInButtonBar() {
 		parameterButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:510px;");
-		parameterButtonBar.getEraseButton().setMarginRight(-5.00);
-		parameterButtonBar.getSaveButton().setMarginLeft(555.00);
+		parameterButtonBar.getEraseButton().setMarginRight(5.00);
+		parameterButtonBar.getSaveButton().setMarginLeft(480.00);
 	}
 
 

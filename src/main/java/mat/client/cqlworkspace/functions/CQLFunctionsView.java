@@ -110,7 +110,7 @@ public class CQLFunctionsView {
 	
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("function");
 	
-	private List<CQLFunctionArgument> functionArgumentList = new ArrayList<CQLFunctionArgument>();
+	private List<CQLFunctionArgument> functionArgumentList = new ArrayList<>();
 	
 	
 	private VerticalPanel cellTablePanel = new VerticalPanel();
@@ -123,7 +123,7 @@ public class CQLFunctionsView {
 	
 	private MatSimplePager spager;
 	
-	private Map<String, CQLFunctionArgument> functionArgNameMap = new  HashMap<String, CQLFunctionArgument>();
+	private Map<String, CQLFunctionArgument> functionArgNameMap = new HashMap<>();
 	
 	boolean isEditable = false;
 	
@@ -334,10 +334,10 @@ public class CQLFunctionsView {
 
 	public void setMarginInButtonBar() {
 		
-		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:440px;");
+		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:518px;");
 		functionButtonBar.getEraseButton().setMarginRight(5.00);
 		functionButtonBar.getInsertButton().setMarginRight(-5.00);
-		functionButtonBar.getSaveButton().setMarginLeft(555.00);
+		functionButtonBar.getSaveButton().setMarginLeft(480.00);
 	}
 	
 	
@@ -397,7 +397,7 @@ public class CQLFunctionsView {
 		
 		if ((argumentList != null) && (argumentList.size() > 0)) {
 			updateFunctionArgumentNameMap(argumentList);
-			argumentListTable = new CellTable<CQLFunctionArgument>();
+			argumentListTable = new CellTable<>();
 			argumentListTable.setStriped(true);
 			argumentListTable.setCondensed(true);
 			argumentListTable.setBordered(true);
@@ -405,10 +405,10 @@ public class CQLFunctionsView {
 			
 			argumentListTable.setPageSize(TABLE_ROW_COUNT);
 			argumentListTable.redraw();
-			listDataProvider = new ListDataProvider<CQLFunctionArgument>();
+			listDataProvider = new ListDataProvider<>();
 			listDataProvider.refresh();
 			listDataProvider.getList().addAll(argumentList);
-			ListHandler<CQLFunctionArgument> sortHandler = new ListHandler<CQLFunctionArgument>(
+			ListHandler<CQLFunctionArgument> sortHandler = new ListHandler<>(
 					listDataProvider.getList());
 			argumentListTable.addColumnSortHandler(sortHandler);
 			argumentListTable = addColumnToTable(argumentListTable, sortHandler);
@@ -457,7 +457,7 @@ public class CQLFunctionsView {
 			TableCaptionElement caption = elem.createCaption();
 			caption.appendChild(searchHeader.getElement());
 			
-			MultiSelectionModel<CQLFunctionArgument> selectionModel = new MultiSelectionModel<CQLFunctionArgument>();
+			MultiSelectionModel<CQLFunctionArgument> selectionModel = new MultiSelectionModel<>();
 			table.setSelectionModel(selectionModel);
 			Column<CQLFunctionArgument, SafeHtml> nameColumn = new Column<CQLFunctionArgument, SafeHtml>(
 					new SafeHtmlCell()) {
@@ -516,7 +516,7 @@ public class CQLFunctionsView {
 	
 
 	private CompositeCell<CQLFunctionArgument> getCompositeCellForFuncArguModifyAndDelete() {
-		final List<HasCell<CQLFunctionArgument, ?>> cells = new LinkedList<HasCell<CQLFunctionArgument, ?>>();
+		final List<HasCell<CQLFunctionArgument, ?>> cells = new LinkedList<>();
 		if (isEditable) {
 			cells.add(getModifyQDMButtonCell());
 			cells.add(getDeleteQDMButtonCell());

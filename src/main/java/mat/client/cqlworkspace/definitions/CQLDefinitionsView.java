@@ -220,12 +220,12 @@ public class CQLDefinitionsView {
 	}
 
 	public void setMarginInButtonBar() {
-		defineButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:290px;");
+		defineButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:365px;");
 		defineButtonBar.getEraseButton().setMarginRight(5.00);
 		defineButtonBar.getInsertButton().setMarginRight(5.00);
 		defineButtonBar.getExpressionBuilderButton().setMarginLeft(-5.00);
 		
-		defineButtonBar.getSaveButton().setMarginLeft(555.00);
+		defineButtonBar.getSaveButton().setMarginLeft(480.00);
 	}
 
 	public Panel editableAceEditorPanel() {

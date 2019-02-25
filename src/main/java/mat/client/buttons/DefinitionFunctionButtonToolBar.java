@@ -38,8 +38,8 @@ public class DefinitionFunctionButtonToolBar extends Composite {
 		addEditButton();
 		addSaveButton();
 		addEraseButton();
-		addInsertButton();
 		addDeleteButton();
+		addInsertButton();
 		addCancelButton();
 		addExpressionBuilderButton();		
 		initWidget(buttonLayout);	
@@ -62,7 +62,7 @@ public class DefinitionFunctionButtonToolBar extends Composite {
 	
 	private void addEraseButton() {
 		eraseButton = new EraseToolBarButton(sectionName);
-		buttonLayout.add(eraseButton);
+		saveButtonGroup.add(eraseButton);
 	}
 	
 	private void addDeleteButton() {

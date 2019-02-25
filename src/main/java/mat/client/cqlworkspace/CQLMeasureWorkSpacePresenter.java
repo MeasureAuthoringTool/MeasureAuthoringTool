@@ -91,8 +91,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	
 	private void buildInsertPopUp() {
 		cqlWorkspaceView.resetMessageDisplay();
-		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(curAceEditor);
-		setIsPageDirty(true);
+		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(curAceEditor, this);
 	}
 
 	private void addEventHandlers() {
@@ -263,7 +262,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	}
 	
 	private void expressionBuilderButtonClicked() {
-		ExpressionBuilderHomeModal modal = new ExpressionBuilderHomeModal(cqlWorkspaceView.getCQLDefinitionsView(), new ExpressionBuilderModel());
+		ExpressionBuilderHomeModal modal = new ExpressionBuilderHomeModal(this, new ExpressionBuilderModel());
 		modal.show();
 	}
 
@@ -1147,7 +1146,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		}
 
 	}
-
+	
 	@Override
 	public void beforeClosingDisplay() {
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().clearShotcutKeyList();
@@ -1184,6 +1183,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		curAceEditor = null;
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		messagePanel.clearAlerts();
+		helpBlock.clearError();
 		cqlWorkspaceView.resetAll();
 		setIsPageDirty(false);
 		panel.clear();
@@ -1194,7 +1194,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	@Override
 	public void beforeDisplay() {
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
-		cqlWorkspaceView.buildView(messagePanel);
+		cqlWorkspaceView.buildView(messagePanel, buildHelpBlock());
 		addLeftNavEventHandler();
 		cqlWorkspaceView.resetMessageDisplay();
 		panel.add(cqlWorkspaceView.asWidget());
@@ -4435,5 +4435,10 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		list.add("Note: Removing an expression that is currently connected to a population will cause that expression to be removed from the Population Workspace and may reset your measure grouping. Please confirm that you want to remove this definition.");
 		
 		return list;
+	}
+
+	@Override
+	public CQLWorkspaceView getCQLWorkspaceView() {
+		return CQLMeasureWorkSpacePresenter.cqlWorkspaceView;
 	}
 }

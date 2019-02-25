@@ -58,8 +58,9 @@ public class InsertIntoAceEditorDialogBox {
 	private static ArrayList<CQLCode> cqlCodesList;
 	private static List<String> cqlFunctionsList = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlFunctionsList();
 	private static AceEditor curEditor; 
+	private static AbstractCQLWorkspacePresenter workspacePresenter;
 
-	public static void showListOfItemAvailableForInsertDialogBox(final AceEditor editor) {
+	public static void showListOfItemAvailableForInsertDialogBox(final AceEditor editor, AbstractCQLWorkspacePresenter cqlWorkspacePresenter) {
 		final Modal dialogModal = new Modal();
 		dialogModal.getElement().setAttribute("role", "dialog");
 		dialogModal.setTitle("Insert Item into CQL Editor");
@@ -73,6 +74,7 @@ public class InsertIntoAceEditorDialogBox {
 
 		ModalBody modalBody = new ModalBody();
 		curEditor = editor;
+		workspacePresenter = cqlWorkspacePresenter;
 		final ListBoxMVP availableItemToInsert = new ListBoxMVP();
 		availableItemToInsert.clear();
 		availableItemToInsert.setWidth("350px");
@@ -311,6 +313,7 @@ public class InsertIntoAceEditorDialogBox {
 					helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_SELECT_ITEM_TYPE());
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 				}
+				workspacePresenter.setIsPageDirty(messageFormgroup.getValidationState() != ValidationState.ERROR);
 			}
 
 		});

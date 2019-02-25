@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.cqlworkspace.AbstractCQLWorkspacePresenter;
 import mat.client.cqlworkspace.definitions.CQLDefinitionsView;
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.constant.CQLType;
@@ -30,13 +31,13 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 	private Button completeBuildButton;
 	private BuildButtonObserver buildButtonObserver;
 	private AceEditor editorToInsertFinalTextInto;
-	private CQLDefinitionsView view;
+	private AbstractCQLWorkspacePresenter workspacePresenter;
 	
-	public ExpressionBuilderHomeModal(CQLDefinitionsView cqlDefinitionsView, ExpressionBuilderModel model) {
+	public ExpressionBuilderHomeModal(AbstractCQLWorkspacePresenter workspacePresenter, ExpressionBuilderModel model) {
 		super("CQL Expression Builder", model, model);
 		buildButtonObserver = new BuildButtonObserver(this, this.getParentModel(), this.getMainModel());
-		this.editorToInsertFinalTextInto = cqlDefinitionsView.getDefineAceEditor();
-		this.view = cqlDefinitionsView;
+		this.editorToInsertFinalTextInto = workspacePresenter.getCQLWorkspaceView().getCQLDefinitionsView().getDefineAceEditor();
+		this.workspacePresenter = workspacePresenter;
 		display();
 	}
 
@@ -111,7 +112,8 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 		text = text.trim();
 		this.editorToInsertFinalTextInto.setText(text);
 		this.hide();
-		this.view.setHelpBlockText("The Expression has been successfully added to the CQL Editor. Click the save icon to save the Definition.");
+		this.workspacePresenter.setHelpBlockText("The Expression has been successfully added to the CQL Editor. Click the save icon to save the Definition.");
+		this.workspacePresenter.setIsPageDirty(true);
 	}
 
 	private void onClose() {

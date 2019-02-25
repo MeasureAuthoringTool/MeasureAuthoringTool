@@ -336,7 +336,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 	
 	private void expressionBuilderButtonClicked() {
-		ExpressionBuilderHomeModal modal = new ExpressionBuilderHomeModal(cqlWorkspaceView.getCQLDefinitionsView(), new ExpressionBuilderModel());
+		ExpressionBuilderHomeModal modal = new ExpressionBuilderHomeModal(this, new ExpressionBuilderModel());
 		modal.show();
 	}
 
@@ -980,8 +980,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
 	private void buildInsertPopUp() {
 		cqlWorkspaceView.resetMessageDisplay();
-		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(curAceEditor);
-		setIsPageDirty(true);
+		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(curAceEditor, this);
 	}
 
 	protected void deleteDefinition() {
@@ -1390,7 +1389,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	private void displayCQLView() {
 		panel.clear();
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
-		cqlWorkspaceView.buildView(messagePanel);
+		cqlWorkspaceView.buildView(messagePanel, buildHelpBlock());
 		addLeftNavEventHandler();
 		getCQLDataForLoad(); 
 		cqlWorkspaceView.resetMessageDisplay();
@@ -1432,6 +1431,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		curAceEditor = null;
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		messagePanel.clearAlerts();
+		helpBlock.clearError();
 		cqlWorkspaceView.resetAll();
 		setIsPageDirty(false);
 		panel.clear();
@@ -4313,5 +4313,10 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		} else if (currentSection.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().setSelectedIndex(-1);
 		}
+	}
+
+	@Override
+	public CQLWorkspaceView getCQLWorkspaceView() {
+		return CQLStandaloneWorkSpacePresenter.cqlWorkspaceView;
 	}
 }

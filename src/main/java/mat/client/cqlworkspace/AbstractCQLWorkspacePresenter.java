@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -69,6 +70,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected static final String VALUESET = "Value set";
 	
 	protected static final String EMPTY_STRING = "";
+	protected HelpBlock helpBlock = new HelpBlock();
 	protected MessagePanel messagePanel = new MessagePanel();
 	protected SimplePanel panel = new SimplePanel();
 	protected String setId = null;
@@ -102,10 +104,28 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT.create(QDSAttributesService.class);
 	protected DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox();
 	
+	protected HelpBlock buildHelpBlock() {
+		helpBlock = new HelpBlock();
+		helpBlock.setText("");
+		helpBlock.setColor("transparent");
+		helpBlock.setHeight("0px");
+		helpBlock.setPaddingTop(0.0);
+		helpBlock.setPaddingBottom(0.0);
+		helpBlock.setMarginBottom(0.0);
+		helpBlock.setMarginTop(0.0);
+		return helpBlock;
+	}
+	
 	protected void showUnsavedChangesWarning() {
 		messagePanel.clearAlerts();
 		messagePanel.getWarningConfirmationMessageAlert().createAlert();
 		messagePanel.getWarningConfirmationYesButton().setFocus(true);
+	}
+	
+	public void setHelpBlockText(String message) {
+		helpBlock.setText(message);
+		helpBlock.getElement().setAttribute("role", "alert");
+		helpBlock.getElement().focus();
 	}
 	
 	public void setIsPageDirty(Boolean isPageDirty) {
@@ -127,6 +147,10 @@ public abstract class AbstractCQLWorkspacePresenter {
 	
 	public MessagePanel getMessagePanel() {
 		return messagePanel;
+	}
+	
+	public HelpBlock getHelpBlock () {
+		return helpBlock;
 	}
 
 	public DeleteConfirmationDialogBox getDeleteConfirmationDialogBox() {
@@ -213,4 +237,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 		}
 		return "You have selected to delete " + type.toLowerCase() + " " + StringUtility.trimTextToSixtyChars(name) + ". Please confirm that you want to remove this " + confirmationType + ".";
 	}
+	
+	public abstract CQLWorkspaceView getCQLWorkspaceView();
 }

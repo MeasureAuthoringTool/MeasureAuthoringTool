@@ -1,5 +1,6 @@
 package mat.client.cqlworkspace;
 
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -32,7 +33,7 @@ public interface CQLWorkspaceView {
 	public CQLGeneralInformationView getCqlGeneralInformationView();
 	public void buildIncludesView();
 	public Widget asWidget();
-	public void buildView(MessagePanel messagePanel);
+	public void buildView(MessagePanel messagePanel, HelpBlock helpBlock);
 	public void setGeneralInfoHeading();
 	public void buildCodes();
 	public void resetAll();

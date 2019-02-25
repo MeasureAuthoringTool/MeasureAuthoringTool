@@ -65,11 +65,12 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 		resetAll();
 	}
 	
-	public void buildView(MessagePanel messagePanel) {
+	public void buildView(MessagePanel messagePanel, HelpBlock helpBlock) {
 		GWT.log("calling CQLStandaloneWorkspaceView buildView()");
 		resetAll();
 		unsetEachSectionSelectedObject();
 		this.messagePanel = messagePanel;
+		this.helpBlock = helpBlock;
 		buildGeneralInformation();
 		mainFlowPanel.setWidth("700px");
 		mainPanel.getElement().setId("CQLStandaloneWorkSpaceView.containerPanel");
@@ -77,6 +78,7 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 		mainPanel.add(new SpacerWidget());
 		
 		mainPanel.add(messagePanel);
+		mainPanel.add(helpBlock);
 		mainPanel.add(mainFlowPanel);
 
 		resetMessageDisplay();

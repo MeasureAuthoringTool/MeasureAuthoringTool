@@ -82,24 +82,26 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private ClickHandler cancelClickHandler = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent event) {
-			isClone = false;
-
-			if(detailDisplay != null) {
-				detailDisplay.getName().setValue("");
-				detailDisplay.getShortName().setValue("");
+			if(!isLoading) {
+				isClone = false;
+	
+				if(detailDisplay != null) {
+					detailDisplay.getName().setValue("");
+					detailDisplay.getShortName().setValue("");
+				}
+	
+				if(compositeDetailDisplay != null) {
+					compositeDetailDisplay.getName().setValue("");
+					compositeDetailDisplay.getShortName().setValue("");
+					compositeDetailDisplay.clearFields();
+				}
+				
+				if(componentMeasureDisplay != null) {
+					componentMeasureDisplay.getComponentMeasureSearch().clearFields(false);
+					componentMeasureDisplay.getMessagePanel().clearAlerts();
+				}
+				displaySearch();
 			}
-
-			if(compositeDetailDisplay != null) {
-				compositeDetailDisplay.getName().setValue("");
-				compositeDetailDisplay.getShortName().setValue("");
-				compositeDetailDisplay.clearFields();
-			}
-			
-			if(componentMeasureDisplay != null) {
-				componentMeasureDisplay.getComponentMeasureSearch().clearFields(false);
-				componentMeasureDisplay.getMessagePanel().clearAlerts();
-			}
-			displaySearch();
 		}
 	};
 
@@ -1726,6 +1728,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
 		((Button) searchDisplay.getBulkExportButton()).setEnabled(!busy);
 		((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
+		((Button) versionDisplay.getSaveButton()).setEnabled(!busy);
+		((Button) versionDisplay.getCancelButton()).setEnabled(!busy);
 		searchDisplay.getCreateMeasureButton().setEnabled(!busy);
 		searchDisplay.getCreateCompositeMeasureButton().setEnabled(!busy);
 		searchDisplay.getCustomFilterCheckBox().setEnabled(!busy);
@@ -2006,19 +2010,21 @@ public class ManageMeasurePresenter implements MatPresenter {
 		versionDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				isMeasureDeleted = false;
-				measureDeletion = false;
-				ManageMeasureSearchModel.Result selectedMeasure = versionDisplay.getSelectedMeasure();
-				versionDisplay.getErrorMessageDisplay().clearAlert();
-				if (((selectedMeasure != null) && (selectedMeasure.getId() != null))
-						&& (versionDisplay.getMajorRadioButton().getValue()
-								|| versionDisplay.getMinorRadioButton().getValue())) {
-					
-					boolean shouldPackage = true; 
-					boolean ignoreUnusedIncludedLibraries = false; 
-					saveFinalizedVersion(selectedMeasure.getId(), selectedMeasure.getName(),versionDisplay.getMajorRadioButton().getValue(), selectedMeasure.getVersion(), shouldPackage, ignoreUnusedIncludedLibraries);		
-				} else {
-					versionDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getERROR_LIBRARY_VERSION());
+				if(!isLoading) {
+					isMeasureDeleted = false;
+					measureDeletion = false;
+					ManageMeasureSearchModel.Result selectedMeasure = versionDisplay.getSelectedMeasure();
+					versionDisplay.getErrorMessageDisplay().clearAlert();
+					if (((selectedMeasure != null) && (selectedMeasure.getId() != null))
+							&& (versionDisplay.getMajorRadioButton().getValue()
+									|| versionDisplay.getMinorRadioButton().getValue())) {
+						
+						boolean shouldPackage = true; 
+						boolean ignoreUnusedIncludedLibraries = false; 
+						saveFinalizedVersion(selectedMeasure.getId(), selectedMeasure.getName(),versionDisplay.getMajorRadioButton().getValue(), selectedMeasure.getVersion(), shouldPackage, ignoreUnusedIncludedLibraries);		
+					} else {
+						versionDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getERROR_LIBRARY_VERSION());
+					}
 				}
 			}
 		});

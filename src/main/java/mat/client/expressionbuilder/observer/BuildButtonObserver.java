@@ -16,6 +16,7 @@ import mat.client.expressionbuilder.modal.NotBuilderModal;
 import mat.client.expressionbuilder.modal.ParameterSelectorModal;
 import mat.client.expressionbuilder.modal.QueryBuilderModal;
 import mat.client.expressionbuilder.modal.RetrieveBuilderModal;
+import mat.client.expressionbuilder.modal.TimeBoundaryBuilderModal;
 import mat.client.expressionbuilder.modal.ValuesetSelectorModal;
 import mat.client.expressionbuilder.model.AndModel;
 import mat.client.expressionbuilder.model.ExceptModel;
@@ -109,6 +110,11 @@ public class BuildButtonObserver {
 		else if(expression.equals(ExpressionType.COMPUTATION.getValue())) {
 			ComputationBuilderModal computationModal = new ComputationBuilderModal(this.parentModal, this.parentModel, this.mainModel);
 			computationModal.show();
+		}
+
+		else if(expression.equals(ExpressionType.TIME_BOUNDARY.getValue())) {
+			TimeBoundaryBuilderModal timeBoundaryModal = new TimeBoundaryBuilderModal(this.parentModal, this.parentModel, this.mainModel);
+			timeBoundaryModal.show();
 		}
 
 	}

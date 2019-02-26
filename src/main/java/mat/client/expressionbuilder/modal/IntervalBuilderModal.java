@@ -84,6 +84,8 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 		
 		List<ExpressionType> availableExpressions = new ArrayList<>();
 		availableExpressions.add(ExpressionType.DEFINITION);
+		availableExpressions.add(ExpressionType.TIME_BOUNDARY);
+		
 		lowerBoundExpressionTypeSelector = new ExpressionTypeSelectorList(
 				availableExpressions, new ArrayList<>(), lowerBoundBuildButtonObserver, intervalModel.getLowerBound(), 
 				"What would you like to use for the lower boundary of your interval?"

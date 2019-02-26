@@ -24,23 +24,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
-import mat.client.expressionbuilder.model.CodeModel;
-import mat.client.expressionbuilder.model.ComparisonModel;
-import mat.client.expressionbuilder.model.DefinitionModel;
-import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
-import mat.client.expressionbuilder.model.IntervalModel;
-import mat.client.expressionbuilder.model.IsNullModel;
-import mat.client.expressionbuilder.model.IsTrueFalseModel;
-import mat.client.expressionbuilder.model.MembershipInModel;
 import mat.client.expressionbuilder.model.ModelAndOperatorTypeUtil;
-import mat.client.expressionbuilder.model.NotModel;
 import mat.client.expressionbuilder.model.OperatorModel;
-import mat.client.expressionbuilder.model.ParameterModel;
-import mat.client.expressionbuilder.model.QueryModel;
-import mat.client.expressionbuilder.model.RetrieveModel;
-import mat.client.expressionbuilder.model.ValuesetModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.OperatorTypeUtil;
 
@@ -159,8 +146,8 @@ public class ExpressionTypeSelectorList extends Composite {
 		expressionPanel.setMarginLeft(0.0);
 		PanelHeader expressionPanelHeader = new PanelHeader();
 		Anchor anchor = new Anchor();
-		anchor.setText(panelHeader(model));
-		anchor.setTitle(panelHeader(model));
+		anchor.setText(model.getDisplayName());
+		anchor.setTitle(model.getDisplayName());
 		anchor.setIcon(IconType.PLUS);
 		anchor.setColor("black");
 		anchor.setDataParent("#accordion" + index);
@@ -198,38 +185,6 @@ public class ExpressionTypeSelectorList extends Composite {
 		} else {
 			anchor.setIcon(IconType.PLUS);
 		}
-	}
-
-	private String panelHeader(IExpressionBuilderModel model) {
-		if(model instanceof RetrieveModel) {
-			return ExpressionType.RETRIEVE.getDisplayName();
-		} else if(model instanceof DefinitionModel) {
-			return ExpressionType.DEFINITION.getDisplayName();
-		} else if(model instanceof ExistsModel) {
-			return ExpressionType.EXISTS.getDisplayName();
-		} else if(model instanceof NotModel) {
-			return ExpressionType.NOT.getDisplayName();
-		} else if(model instanceof IsNullModel) {
-			return ExpressionType.IS_NULL_NOT_NULL.getDisplayName();
-		} else if(model instanceof IsTrueFalseModel) {
-			return ExpressionType.IS_TRUE_FALSE.getDisplayName();
-		} else if(model instanceof ComparisonModel) {
-			return ExpressionType.COMPARISON.getDisplayName();
-		} else if(model instanceof IntervalModel) {
-			return ExpressionType.INTERVAL.getDisplayName();
-		} else if(model instanceof QueryModel) {
-			return ExpressionType.QUERY.getDisplayName();
-		} else if(model instanceof ParameterModel) {
-			return ExpressionType.PARAMETER.getDisplayName();
-		} else if(model instanceof ValuesetModel) {
-			return ExpressionType.VALUESET.getDisplayName();
-		} else if(model instanceof CodeModel) {
-			return ExpressionType.CODE.getDisplayName();
-		} else if(model instanceof MembershipInModel) {
-			return ExpressionType.IN.getDisplayName();
-		}
-		
-		return "";
 	}
 	
 }

@@ -1,6 +1,7 @@
 package mat.client.expressionbuilder.model;
 
 import mat.client.expressionbuilder.constant.CQLType;
+import mat.client.expressionbuilder.constant.ExpressionType;
 
 public class MembershipInModel extends ExpressionBuilderModel {
 
@@ -42,5 +43,10 @@ public class MembershipInModel extends ExpressionBuilderModel {
 	@Override
 	public CQLType getType() {
 		return CQLType.BOOLEAN;
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return ExpressionType.IN.getDisplayName();
 	}
 }

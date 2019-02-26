@@ -1,6 +1,7 @@
 package mat.client.expressionbuilder.model;
 
 import mat.client.expressionbuilder.constant.CQLType;
+import mat.client.expressionbuilder.constant.ExpressionType;
 
 public class RetrieveModel extends ExpressionBuilderModel {
 
@@ -54,4 +55,10 @@ public class RetrieveModel extends ExpressionBuilderModel {
 	public CQLType getType() {
 		return CQLType.LIST;
 	}
+
+	@Override
+	public String getDisplayName() {
+		return ExpressionType.RETRIEVE.getDisplayName();
+	}
+
 }

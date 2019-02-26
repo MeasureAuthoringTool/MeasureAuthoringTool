@@ -1,6 +1,7 @@
 package mat.client.expressionbuilder.model;
 
 import mat.client.expressionbuilder.constant.CQLType;
+import mat.client.expressionbuilder.constant.ExpressionType;
 
 public class IsTrueFalseModel extends ExpressionBuilderModel {
 	
@@ -26,5 +27,10 @@ public class IsTrueFalseModel extends ExpressionBuilderModel {
 	@Override
 	public CQLType getType() {
 		return CQLType.BOOLEAN;
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return ExpressionType.IS_TRUE_FALSE.getDisplayName();
 	}
 }

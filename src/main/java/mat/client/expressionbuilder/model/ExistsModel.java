@@ -1,6 +1,7 @@
 package mat.client.expressionbuilder.model;
 
 import mat.client.expressionbuilder.constant.CQLType;
+import mat.client.expressionbuilder.constant.ExpressionType;
 
 public class ExistsModel extends ExpressionBuilderModel {
 	
@@ -38,5 +39,10 @@ public class ExistsModel extends ExpressionBuilderModel {
 	@Override
 	public CQLType getType() {
 		return CQLType.BOOLEAN;
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return ExpressionType.EXISTS.getDisplayName();
 	}
 }

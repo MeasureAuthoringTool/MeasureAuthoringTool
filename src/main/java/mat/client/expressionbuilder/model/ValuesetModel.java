@@ -1,6 +1,7 @@
 package mat.client.expressionbuilder.model;
 
 import mat.client.expressionbuilder.constant.CQLType;
+import mat.client.expressionbuilder.constant.ExpressionType;
 
 public class ValuesetModel extends ExpressionBuilderModel {
 
@@ -27,5 +28,10 @@ public class ValuesetModel extends ExpressionBuilderModel {
 	@Override
 	public CQLType getType() {
 		return CQLType.LIST;
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return ExpressionType.VALUESET.getDisplayName();
 	}
 }

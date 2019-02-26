@@ -14,6 +14,7 @@ public class ExpressionBuilderModel implements IExpressionBuilderModel {
 		models = new ArrayList<>();
 	}
 
+	@Override
 	public String getCQL(String identation) {
 		StringBuilder builder = new StringBuilder();
 
@@ -80,5 +81,10 @@ public class ExpressionBuilderModel implements IExpressionBuilderModel {
 
 	public void setParentModel(IExpressionBuilderModel parentModel) {
 		this.parentModel = parentModel;
+	}
+
+	@Override
+	public String getDisplayName() {
+		return "";
 	}
 }

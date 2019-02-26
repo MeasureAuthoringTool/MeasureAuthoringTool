@@ -1,6 +1,7 @@
 package mat.client.expressionbuilder.model;
 
 import mat.client.expressionbuilder.constant.CQLType;
+import mat.client.expressionbuilder.constant.ExpressionType;
 
 public class QueryModel extends ExpressionBuilderModel {
 
@@ -87,5 +88,10 @@ public class QueryModel extends ExpressionBuilderModel {
 	@Override
 	public CQLType getType() {
 		return CQLType.LIST;
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return ExpressionType.QUERY.getDisplayName();
 	}
 }

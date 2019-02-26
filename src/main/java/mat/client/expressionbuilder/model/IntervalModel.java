@@ -1,6 +1,7 @@
 package mat.client.expressionbuilder.model;
 
 import mat.client.expressionbuilder.constant.CQLType;
+import mat.client.expressionbuilder.constant.ExpressionType;
 
 public class IntervalModel extends ExpressionBuilderModel {
 
@@ -64,5 +65,10 @@ public class IntervalModel extends ExpressionBuilderModel {
 	@Override
 	public CQLType getType() {
 		return CQLType.LIST;
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return ExpressionType.INTERVAL.getDisplayName();
 	}
 }

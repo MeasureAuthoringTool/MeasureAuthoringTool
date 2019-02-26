@@ -12,11 +12,35 @@ import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 
 public class GeneralInformationValidator {
 	private static final String MEASURE_PERIOD_DATES_ERROR = "The dates for Measurement Period are invalid. Please enter valid dates.";
-
-	public List<String> validateModel(GeneralInformationModel generalInformationModel) {
+	public static final String COMPOSITE_MEASURE_SCORE_REQUIRED_ERROR = "Composite Scoring Method is required. ";
+	public static final String MEASURE_SCORE_REQUIRED_ERROR = "A Measure Scoring is required.";
+	public static final String NQF_REQUIRED_ERROR = "NQF Number is required when a measure is endorsed by NQF.";
+	public static final String ECQM_ABBR_TITLE_REQUIRED_ERROR = "An eCQM Abbreviated Title is required.";
+	public static final String MEASURE_NAME_REQUIRED_ERROR = "A Measure Name is required.";
+	
+	public List<String> validateModel(GeneralInformationModel generalInformationModel, boolean isComposite) {
 		List<String> errorMessages = new ArrayList<>();
+		
+		if(isComposite) {
+			if(StringUtility.isEmptyOrNull(generalInformationModel.getCompositeScoringMethod())) {
+				errorMessages.add(COMPOSITE_MEASURE_SCORE_REQUIRED_ERROR);
+			}
+		}
+
+		if(StringUtility.isEmptyOrNull(generalInformationModel.getMeasureName())) {
+			errorMessages.add(MEASURE_NAME_REQUIRED_ERROR);
+		}
+		
+		if(StringUtility.isEmptyOrNull(generalInformationModel.getScoringMethod())) {
+			errorMessages.add(MEASURE_SCORE_REQUIRED_ERROR);
+		}
+		
+		if(StringUtility.isEmptyOrNull(generalInformationModel.geteCQMAbbreviatedTitle())) {
+			errorMessages.add(ECQM_ABBR_TITLE_REQUIRED_ERROR);
+		}
+		
 		if(generalInformationModel.getEndorseByNQF() && StringUtility.isEmptyOrNull(generalInformationModel.getNqfId())) {
-			errorMessages.add("NQF Number is required when a measure is endorsed by NQF.");
+			errorMessages.add(NQF_REQUIRED_ERROR);
 		}
 		
 		if(!generalInformationModel.isCalendarYear()) {

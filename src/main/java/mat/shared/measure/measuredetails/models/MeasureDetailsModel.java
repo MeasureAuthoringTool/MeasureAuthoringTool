@@ -468,7 +468,7 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel, Measur
 	@Override
 	public List<String> validateModel(GeneralInformationModel generalInformationModel) {
 		final GeneralInformationValidator validator = new GeneralInformationValidator();
-		return validator.validateModel(generalInformationModel);
+		return validator.validateModel(generalInformationModel, isComposite);
 	}
 
 	@Override

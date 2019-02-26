@@ -14,7 +14,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.cqlworkspace.AbstractCQLWorkspacePresenter;
-import mat.client.cqlworkspace.definitions.CQLDefinitionsView;
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
@@ -48,6 +47,7 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 
 		List<ExpressionType> availableExpressionTypes = new ArrayList<>();
 		availableExpressionTypes.add(ExpressionType.COMPARISON);
+		availableExpressionTypes.add(ExpressionType.COMPUTATION);
 		availableExpressionTypes.add(ExpressionType.RETRIEVE);
 		availableExpressionTypes.add(ExpressionType.DEFINITION);
 		availableExpressionTypes.add(ExpressionType.EXISTS);

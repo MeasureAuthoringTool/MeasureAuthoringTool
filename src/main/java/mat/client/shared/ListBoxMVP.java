@@ -276,7 +276,7 @@ public class ListBoxMVP extends ListBox implements HasValue<String> {
 	 *            the title
 	 */
 	public void insertItem(String value, String title) {
-	    insertItem(value, value, title);
+	    insertItem(title, value, title);
 	}
 	
 	/**

@@ -41,7 +41,8 @@ public class ExpressionTypeSelectorList extends Composite {
 	private boolean canOnlyMakeOneSelection;
 	private String labelText;
 	private ExpressionTypeSelector selector;
-
+	private boolean shouldHaveComputationOption = true;
+	
 	public ExpressionTypeSelectorList(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes,
 			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText) {
 		this.availableExpressionTypes = availableExpressionTypes;
@@ -89,6 +90,7 @@ public class ExpressionTypeSelectorList extends Composite {
 		
 		for(int i = 0; i < this.model.getChildModels().size(); i++) {
 			IExpressionBuilderModel currentChildModel = this.model.getChildModels().get(i);
+			shouldHaveComputationOption = false;
 			
 			// operators should not display with the collapsable panel, but should be formatted with code.
 			if(currentChildModel instanceof OperatorModel) {
@@ -119,11 +121,14 @@ public class ExpressionTypeSelectorList extends Composite {
 			}
 		}
 		
-		boolean canAddAnother = hasNoSelections || canOnlyMakeOneSelection;
+		boolean canAddAnother = hasNoSelections || canOnlyMakeOneSelection || shouldHaveComputationOption;
 		
 		if(!this.model.getChildModels().isEmpty() && canOnlyMakeOneSelection) {
 			
 		} else {
+			if(!shouldHaveComputationOption) {
+				availableExpressionTypes.removeIf(expression -> ExpressionType.COMPUTATION.equals(expression));
+			}
 			selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, canAddAnother);		
 			panel.add(selector);
 		}

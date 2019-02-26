@@ -8,6 +8,7 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 import mat.client.expressionbuilder.model.ComparisonModel;
+import mat.client.expressionbuilder.model.ComputationModel;
 import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
@@ -90,7 +91,8 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 					lastModel instanceof ComparisonModel ||
 					lastModel instanceof IntervalModel ||
 					lastModel instanceof QueryModel ||
-					lastModel instanceof MembershipInModel) {
+					lastModel instanceof MembershipInModel ||
+					lastModel instanceof ComputationModel ) {
 				this.getParentModel().getChildModels().remove(size);
 				int newSize = this.getParentModel().getChildModels().size() - 1;
 				

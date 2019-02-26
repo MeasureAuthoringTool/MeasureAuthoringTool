@@ -18,7 +18,8 @@ public enum ExpressionType implements ExpressionBuilderType {
 	PARAMETER("Parameter", OperatorTypeUtil.getAllOperators()),
 	VALUESET("Value Set", OperatorTypeUtil.getSetOperators()),
 	CODE("Code", OperatorTypeUtil.getAllOperators()),
-	IN("Membership (In)", OperatorTypeUtil.getBooleanOperators());
+	IN("Membership (In)", OperatorTypeUtil.getBooleanOperators()),
+	COMPUTATION("Computation", OperatorTypeUtil.getBooleanOperators());
 	
 	private String displayName;
 	private List<OperatorType> availableOperators;

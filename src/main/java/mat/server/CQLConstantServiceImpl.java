@@ -127,15 +127,17 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 			}
 		}
 		
-		// TODO: Find a better way to do this instead of hardcoding.
+		// TODO: Find a better way to do this instead of hardcoding.		
+		typeToTypeAttributeMap.remove("System.Code");
+		typeToTypeAttributeMap.remove("list<System.Code");
 		typeToTypeAttributeMap.put("QDM.Id", Arrays.asList(new String[]{"namingSystem", "value"}));
 		typeToTypeAttributeMap.put("list<QDM.Id>", Arrays.asList(new String[]{"namingSystem", "value"}));
 		typeToTypeAttributeMap.put("QDM.FacilityLocation", Arrays.asList(new String[]{"code", "locationPeriod"}));
 		typeToTypeAttributeMap.put("list<QDM.FacilityLocation>", Arrays.asList(new String[]{"code", "locationPeriod"}));
 		typeToTypeAttributeMap.put("interval<System.DateTime>", Arrays.asList(new String[]{"low", "high"}));
 		typeToTypeAttributeMap.put("interval<System.Quantity>", Arrays.asList(new String[]{"low", "high"}));
-		typeToTypeAttributeMap.put("list<QDM.Component>", Arrays.asList(new String[]{"code", "result"}));
-		typeToTypeAttributeMap.put("list<QDM.ResultComponent>", Arrays.asList(new String[]{"referenceRange"}));
+		typeToTypeAttributeMap.put("list<QDM.Component>", Arrays.asList(new String[]{"code", "referenceRange", "result"}));
+		typeToTypeAttributeMap.put("list<QDM.ResultComponent>", Arrays.asList(new String[]{"code", "referenceRange", "result"}));
 
 		container.setTypeToTypeAttributeMap(typeToTypeAttributeMap);
 		return container;
@@ -156,7 +158,6 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 				ProfileInfo currentProfileInfo = (ProfileInfo) typeInfo;
 				nameToProfileInfoMap.put(currentProfileInfo.getName(), currentProfileInfo);
 			}
-		
 		}
 		
 		for(TypeInfo typeInfo : typeInfos) {
@@ -226,7 +227,10 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		
 		// handle the case where it is a normal attribute
 		else {
+			
+			// we shouldn't put clarifying attributes for System.Code
 			attributeToCQLTypeMap.get(attribute.getName()).add(attribute.getType());
+			
 		}
 	}
 
@@ -236,7 +240,9 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		for(TypeSpecifier choice: specifier.getChoice()) {
 			NamedTypeSpecifier type = (NamedTypeSpecifier) choice;
 			String formattedType = type.getModelName()+ "." + type.getName();
+			
+			// we shouldn't put clarifying attributes for System.Code
 			attributeToCQLTypeMap.get(attribute.getName()).add(formattedType);
-		}
+		}	
 	}
 }

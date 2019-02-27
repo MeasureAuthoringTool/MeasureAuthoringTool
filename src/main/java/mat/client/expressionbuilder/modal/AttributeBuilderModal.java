@@ -113,8 +113,9 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		attributeListBox.setId("attributeListBox");
 		attributeListBox.insertItem(SELECT_AN_ATTRIBUTE, SELECT_AN_ATTRIBUTE, SELECT_AN_ATTRIBUTE);
 		
-		qdmContainer.getAttributes().remove("patientId");
-		for(String attribute : qdmContainer.getAttributes()) {
+		List<String> attributes = qdmContainer.getAttributes();
+		attributes.remove("patientId");
+		for(String attribute : attributes) {
 			attributeListBox.insertItem(attribute, attribute, attribute);
 		}
 		

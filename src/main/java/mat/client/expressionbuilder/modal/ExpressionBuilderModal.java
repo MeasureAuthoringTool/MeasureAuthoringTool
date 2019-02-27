@@ -5,14 +5,8 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalHeader;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.Pre;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
-import org.gwtbootstrap3.client.ui.constants.PanelType;
 
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -22,6 +16,8 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 
 public abstract class ExpressionBuilderModal extends Modal {
+	private static final String CQL_EXPRESSION = "CQL Expression";
+	private String modalTitle;
 	private ModalHeader header;
 	private ModalBody body;
 	private ModalFooter footer;
@@ -52,6 +48,7 @@ public abstract class ExpressionBuilderModal extends Modal {
 		this.setId("expressionBuilderModal");
 		contentPanel.setWidth("100%");
 		
+		this.modalTitle = title;
 		header.setTitle(title);
 		
 		
@@ -73,6 +70,18 @@ public abstract class ExpressionBuilderModal extends Modal {
 		helpBlock.setPaddingBottom(0.0);
 		helpBlock.setPaddingBottom(0.0);
 		return helpBlock;
+	}
+	
+	public String getModalTitle() {
+		return this.modalTitle;
+	}
+	
+	public void setModalTitle(String title) {
+		this.modalTitle = title;
+	}
+	
+	public ModalHeader getHeader() {
+		return header;
 	}
 
 	public ModalBody getBody() {

@@ -32,7 +32,7 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 			ExpressionBuilderModal parent, 
 			ExpressionBuilderModel parentModel, 
 			ExpressionBuilderModel mainModel) {
-		super(title, parentModel, mainModel);
+		super(parent.getModalTitle() + " > " + title, parentModel, mainModel);
 		this.parent = parent;
 		this.getFooter().add(buildFooter());
 	}

@@ -317,6 +317,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private void updateTitle(String text) {
-		this.setTitle("Query > " + text);
+		this.setTitle(this.getExpressionBuilderParent().getModalTitle() + " > " +  "Query > " + text);
+		this.setModalTitle(this.getExpressionBuilderParent().getModalTitle() + " > " +  "Query > " + text);
 	}
 }

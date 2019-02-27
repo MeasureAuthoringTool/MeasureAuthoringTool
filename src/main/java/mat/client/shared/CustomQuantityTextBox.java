@@ -13,25 +13,11 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Event;
 
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CustomDateTextBox.
- */
 public class CustomQuantityTextBox extends TextBox {
-
-	/** The max length. */
 	private int maxLength;
-
-	
-	/**
-	 * Instantiates a new custom date text box.
-	 *
-	 * @param maxLen the max len
-	 */
 	public CustomQuantityTextBox(int maxLen) {
 		
 		super(Document.get().createTextInputElement());
-		//setStyleName("gwt-TextArea");
 		maxLength = maxLen;	
 		sinkEvents(Event.ONPASTE | Event.ONKEYDOWN | Event.ONKEYPRESS);
 		
@@ -57,14 +43,6 @@ public class CustomQuantityTextBox extends TextBox {
 		});
 	}
 	
-	
-	
-	/**
-	 * Gets the numerics.
-	 *
-	 * @param s the s
-	 * @return the numerics
-	 */
 	private String getNumerics(String s){
 		
 		StringBuilder sb = new StringBuilder();
@@ -162,20 +140,10 @@ public class CustomQuantityTextBox extends TextBox {
 		}
 	}
 	
-	
-	/**
-	 * Gets the max length.
-	 *
-	 * @return the max length
-	 */
 	public int getMaxLength() {
 		return maxLength;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see org.gwtbootstrap3.client.ui.base.ValueBoxBase#setMaxLength(int)
-	 */
 	@Override
 	public void setMaxLength(int maxLength) {
 		this.maxLength = maxLength;

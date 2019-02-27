@@ -447,17 +447,15 @@ public class InsertAttributeBuilderDialogBox {
 		unitPanel.getElement().setId("HorizontalPanel_UnitsPanel");
 		unitslistBox.clear();
 		unitslistBox.setWidth("18em");
-		unitslistBox.setVisibleItemCount(10);
+		//setting itemcount value to 1 turns listbox into a drop-down list.
+		unitslistBox.setVisibleItemCount(1);
+		unitslistBox.setStyleName("form-control");
 		unitslistBox.getElement().setId("Units_listBox");
 
 		Set<String> allUnits = allCqlUnits.keySet();
 		for(String unit : allUnits) {
 			unitslistBox.addItem(unit, unit);
 		}
-
-		//setting itemcount value to 1 turns listbox into a drop-down list.
-		unitslistBox.setVisibleItemCount(1);
-		unitslistBox.setStyleName("form-control");
 
 		FormLabel unitsLabel = new FormLabel();
 		unitsLabel.setText("Units");

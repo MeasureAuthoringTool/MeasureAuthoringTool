@@ -20,7 +20,8 @@ public enum ExpressionType implements ExpressionBuilderType {
 	CODE("Code", OperatorTypeUtil.getAllOperators()),
 	IN("Membership (In)", OperatorTypeUtil.getBooleanOperators()),
 	COMPUTATION("Computation", OperatorTypeUtil.getBooleanOperators()),
-	TIME_BOUNDARY("Start of / End of", OperatorTypeUtil.getBooleanOperators());
+	TIME_BOUNDARY("Start of / End of", OperatorTypeUtil.getBooleanOperators()),
+	QUANTITY("Quantity", OperatorTypeUtil.getSetOperators());
 	
 	private String displayName;
 	private List<OperatorType> availableOperators;

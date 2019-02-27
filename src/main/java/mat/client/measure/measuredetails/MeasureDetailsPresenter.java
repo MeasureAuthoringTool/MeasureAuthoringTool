@@ -452,8 +452,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 					saveMeasureDetails();
 				}
 			} else {
-				String validationErrorMessage = validationErrors.stream().collect(Collectors.joining("\n"));
-				measureDetailsView.displayErrorMessage(validationErrorMessage);
+				measureDetailsView.displayErrorMessage(validationErrors);
 			}
 		}
 	}

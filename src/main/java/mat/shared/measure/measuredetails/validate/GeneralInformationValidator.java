@@ -12,7 +12,7 @@ import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 
 public class GeneralInformationValidator {
 	private static final String MEASURE_PERIOD_DATES_ERROR = "The dates for Measurement Period are invalid. Please enter valid dates.";
-	public static final String COMPOSITE_MEASURE_SCORE_REQUIRED_ERROR = "Composite Scoring Method is required. ";
+	public static final String COMPOSITE_MEASURE_SCORE_REQUIRED_ERROR = "A Composite Scoring Method is required. ";
 	public static final String MEASURE_SCORE_REQUIRED_ERROR = "A Measure Scoring is required.";
 	public static final String NQF_REQUIRED_ERROR = "NQF Number is required when a measure is endorsed by NQF.";
 	public static final String ECQM_ABBR_TITLE_REQUIRED_ERROR = "An eCQM Abbreviated Title is required.";

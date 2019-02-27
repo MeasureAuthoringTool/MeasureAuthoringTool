@@ -1,5 +1,7 @@
 package mat.client.measure.measuredetails;
 
+import java.util.List;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -243,6 +245,11 @@ public class MeasureDetailsView {
 
 	public void setSaveButton(SaveButton saveButton) {
 		this.saveButton = saveButton;
+	}
+	
+	public void displayErrorMessage(List<String> messages) {
+		messagePanel.clearAlerts();
+		messagePanel.getErrorMessageAlert().createAlert(messages);
 	}
 	
 	public void displayErrorMessage(String message) {

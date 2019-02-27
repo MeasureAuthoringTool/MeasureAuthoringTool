@@ -5,15 +5,15 @@ import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.shared.StringUtility;
 
 public class QuantityModel extends ExpressionBuilderModel {
-	private String quantity;
+	private String value;
 	private String units;
 	
 	public String getQuantity() {
-		return quantity;
+		return value;
 	}
 
-	public void setQuantity(String quantity) {
-		this.quantity = quantity;
+	public void setQuantity(String value) {
+		this.value = value;
 	}
 	
 	public String getUnits() {
@@ -26,12 +26,12 @@ public class QuantityModel extends ExpressionBuilderModel {
 	
 	@Override
 	public String getCQL(String identation) {
-		return this.quantity + (StringUtility.isEmptyOrNull(this.units) ? "" : " '" + this.units + "'");
+		return this.value + (StringUtility.isEmptyOrNull(this.units) ? "" : " '" + this.units + "'");
 	}
 	
 	@Override
 	public CQLType getType() {
-		return CQLType.ANY;
+		return CQLType.QUANTITY;
 	}
 	
 	@Override

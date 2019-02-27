@@ -190,6 +190,5 @@ public class ExpressionTypeSelectorList extends Composite {
 		} else {
 			anchor.setIcon(IconType.PLUS);
 		}
-	}
-	
+	}	
 }

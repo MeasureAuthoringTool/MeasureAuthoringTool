@@ -86,6 +86,7 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 		panel.setStyleName("selectorsPanel");
 		
 		List<ExpressionType> availableExpressionForLeftSideOfComparison = new ArrayList<>();
+		availableExpressionForLeftSideOfComparison.add(ExpressionType.ATTRIBUTE);
 		availableExpressionForLeftSideOfComparison.add(ExpressionType.DEFINITION);
 		availableExpressionForLeftSideOfComparison.add(ExpressionType.QUANTITY);
 		
@@ -100,6 +101,7 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 		panel.add(buildComparisonOperatorListBox());
 		
 		List<ExpressionType> availableExpressionForRightSideOfComparison = new ArrayList<>();
+		availableExpressionForLeftSideOfComparison.add(ExpressionType.ATTRIBUTE);
 		availableExpressionForRightSideOfComparison.add(ExpressionType.CODE);
 		availableExpressionForRightSideOfComparison.add(ExpressionType.DEFINITION);
 		availableExpressionForRightSideOfComparison.add(ExpressionType.QUANTITY);

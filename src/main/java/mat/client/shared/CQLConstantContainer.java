@@ -18,6 +18,8 @@ public class CQLConstantContainer implements IsSerializable {
 	private List<String> cqlTimingList; 
 	private Map<String, String> cqlUnitMap;
 	private CQLKeywords cqlKeywordList; 
+	private QDMContainer qdmContainer = new QDMContainer();
+	private CQLTypeContainer cqlTypeContainer = new CQLTypeContainer();
 
 	public List<String> getCqlAttributeList() {
 		return cqlAttributeList;
@@ -89,5 +91,21 @@ public class CQLConstantContainer implements IsSerializable {
 
 	public void setCurrentReleaseVersion(String currentReleaseVersion) {
 		this.currentReleaseVersion = currentReleaseVersion;
+	}
+
+	public QDMContainer getQdmContainer() {
+		return qdmContainer;
+	}
+
+	public void setQdmContainer(QDMContainer qdmContainer) {
+		this.qdmContainer = qdmContainer;
+	}
+
+	public CQLTypeContainer getCqlTypeContainer() {
+		return cqlTypeContainer;
+	}
+
+	public void setCqlTypeContainer(CQLTypeContainer cqlTypeContainer) {
+		this.cqlTypeContainer = cqlTypeContainer;
 	} 
 }

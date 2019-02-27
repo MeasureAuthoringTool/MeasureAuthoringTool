@@ -2,6 +2,7 @@ package mat.client.expressionbuilder.observer;
 
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
+import mat.client.expressionbuilder.modal.AttributeBuilderModal;
 import mat.client.expressionbuilder.modal.CodeSelectorModal;
 import mat.client.expressionbuilder.modal.ComparisonBuilderModal;
 import mat.client.expressionbuilder.modal.ComputationBuilderModal;
@@ -106,6 +107,11 @@ public class BuildButtonObserver {
 		else if(expression.equals(ExpressionType.IN.getValue())) {
 			ExpressionBuilderModal inModal = new MembershipInModal(this.parentModal, this.parentModel, this.mainModel);
 			inModal.show();
+		} 
+		
+		else if(expression.equals(ExpressionType.ATTRIBUTE.getValue())) {
+			ExpressionBuilderModal attributeModal = new AttributeBuilderModal(this.parentModal, this.parentModel, this.mainModel, true, true);
+			attributeModal.show();
 		}
 		
 		else if(expression.equals(ExpressionType.COMPUTATION.getValue())) {

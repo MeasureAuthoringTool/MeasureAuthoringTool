@@ -6,6 +6,7 @@ import mat.client.expressionbuilder.util.OperatorTypeUtil;
 
 public enum ExpressionType implements ExpressionBuilderType {
 
+	ATTRIBUTE("Attribute", OperatorTypeUtil.getSetOperators()),
 	RETRIEVE("Data element or Retrieve", OperatorTypeUtil.getSetOperators()),
 	DEFINITION("Definition", OperatorTypeUtil.getAllOperators()), 
 	EXISTS("Exists", OperatorTypeUtil.getBooleanOperators()),

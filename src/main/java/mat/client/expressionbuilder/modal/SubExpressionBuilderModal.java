@@ -13,6 +13,7 @@ import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IntervalModel;
+import mat.client.expressionbuilder.model.AttributeModel;
 import mat.client.expressionbuilder.model.IsNullModel;
 import mat.client.expressionbuilder.model.IsTrueFalseModel;
 import mat.client.expressionbuilder.model.MembershipInModel;
@@ -95,6 +96,7 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 					lastModel instanceof MembershipInModel ||
 					lastModel instanceof ComputationModel ||
 					lastModel instanceof TimeBoundaryModel ) {
+					lastModel instanceof AttributeModel) {
 				this.getParentModel().getChildModels().remove(size);
 				int newSize = this.getParentModel().getChildModels().size() - 1;
 				

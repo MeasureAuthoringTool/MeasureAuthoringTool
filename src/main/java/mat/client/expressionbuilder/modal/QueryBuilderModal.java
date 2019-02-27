@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
+import mat.client.expressionbuilder.component.ViewCQLExpressionWidget;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
@@ -190,6 +191,15 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		return filterPanel;
 	}
 	
+	private Widget buildReviewQueryWidget() {
+		VerticalPanel filterPanel = new VerticalPanel();
+		filterPanel.setStyleName("selectorsPanel");
+		ViewCQLExpressionWidget cqlExpressionModal = new ViewCQLExpressionWidget();
+		cqlExpressionModal.setCQLDisplay(this.getMainModel().getCQL(""));
+		filterPanel.add(cqlExpressionModal);		
+		return filterPanel;
+	}
+	
 	private FormGroup buildAliasNameGroup() {
 		FormGroup group = new FormGroup();
 		
@@ -259,6 +269,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		updatePreviousButton(SORT, event -> navigate(SORT));
 		
 		queryBuilderContentPanel.clear();
+		queryBuilderContentPanel.add(buildReviewQueryWidget());
 	}
 	
 	private void navigate(String text) {
@@ -271,6 +282,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	
 	private void displayCurrentTab(String tab) {
 		this.currentScreen = tab;
+		this.setCQLPanelVisible(true);
 		if(tab.equals(SOURCE)) {
 			sourceListItem.setActive(true);
 			displaySource();
@@ -292,6 +304,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 			displaySort();
  		} else if(tab.equals(REVIEW_QUERY)) {
  			reviewQueryListItem.setActive(true);
+ 			this.setCQLPanelVisible(false);
  			displayReviewQuery();
  		}
 	}

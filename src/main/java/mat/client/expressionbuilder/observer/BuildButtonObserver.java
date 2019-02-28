@@ -1,7 +1,5 @@
 package mat.client.expressionbuilder.observer;
 
-import com.google.gwt.core.client.GWT;
-
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.modal.AttributeBuilderModal;
@@ -30,13 +28,13 @@ import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IntersectModel;
 import mat.client.expressionbuilder.model.OrModel;
 import mat.client.expressionbuilder.model.UnionModel;
-import mat.client.expressionbuilder.util.QueryAliasFinder;
+import mat.client.expressionbuilder.util.QueryFinderHelper;
 
 public class BuildButtonObserver {
 	private ExpressionBuilderModal parentModal;
 	private ExpressionBuilderModel parentModel;
 	private ExpressionBuilderModel mainModel;
-	
+		
 	public BuildButtonObserver(ExpressionBuilderModal parentModal, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		this.parentModel = parentModel;
 		this.parentModal = parentModal;
@@ -114,7 +112,7 @@ public class BuildButtonObserver {
 		} 
 		
 		else if(expression.equals(ExpressionType.ATTRIBUTE.getValue())) {
-			ExpressionBuilderModal attributeModal = new AttributeBuilderModal(this.parentModal, this.parentModel, this.mainModel, true, true);
+			ExpressionBuilderModal attributeModal = new AttributeBuilderModal(this.parentModal, this.parentModel, this.mainModel);
 			attributeModal.show();
 		}
 		
@@ -133,8 +131,7 @@ public class BuildButtonObserver {
 			quantityModal.show();
 		}
 
-		else if(QueryAliasFinder.findAliasNames(this.parentModel).contains(expression)) {
-			GWT.log(this.parentModel.getDisplayName());
+		else if(QueryFinderHelper.findAliasNames(this.parentModel).contains(expression)) {
 			AliasModel model = new AliasModel(this.parentModel);
 			model.setAlias(expression);
 			this.parentModel.appendExpression(model);

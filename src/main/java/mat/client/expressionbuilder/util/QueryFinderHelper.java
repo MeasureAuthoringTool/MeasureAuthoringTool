@@ -5,11 +5,26 @@ import java.util.List;
 
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.QueryModel;
+import mat.client.expressionbuilder.model.QuerySortModel;
 
-public class QueryAliasFinder {
+public class QueryFinderHelper {
 
-	private QueryAliasFinder() {
+	private QueryFinderHelper() {
 		throw new IllegalStateException();
+	}
+	
+	public static boolean isPartOfSort(IExpressionBuilderModel currentModel) {
+		if(currentModel == null) {
+			return false;
+		}
+		
+		else if(currentModel instanceof QuerySortModel) {
+			return true;
+		}
+		
+		else {
+			return isPartOfSort(currentModel.getParentModel());
+		}
 	}
 	
 	public static List<String> findAliasNames(IExpressionBuilderModel currentModel) {
@@ -23,7 +38,6 @@ public class QueryAliasFinder {
 			return;
 		}
 		
-		System.out.println("LOOKING AT A : " + currentModel.getDisplayName());
 		if(currentModel instanceof QueryModel) {
 			QueryModel queryModel = (QueryModel) currentModel;
 			aliasNames.add(queryModel.getAlias());

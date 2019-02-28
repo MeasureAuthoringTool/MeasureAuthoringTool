@@ -15,6 +15,7 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,6 +32,7 @@ import mat.shared.CQLModelValidator;
 
 public class QueryBuilderModal extends SubExpressionBuilderModal {
 
+	private static final String HOW_WOULD_YOU_LIKE_TO_SORT_THE_DATA = "How would you like to sort the data?";
 	private static final String REVIEW_QUERY = "Review Query";
 	private static final String SORT = "Sort";
 	private static final String FILTER = "Filter";
@@ -52,6 +54,10 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private NavPills pills;
 	private ExpressionTypeSelectorList sourceSelector;
 	private ExpressionTypeSelectorList filterSelector;
+	private ExpressionTypeSelectorList sortSelector;
+	private BuildButtonObserver sortBuildButtonObserver;
+	
+	private boolean isAscendingSort = true;
 
 	public QueryBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
 			ExpressionBuilderModel mainModel) {
@@ -61,6 +67,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		sourceBuildButtonObserver = new BuildButtonObserver(this, queryModel.getSource(), mainModel);
 		filterBuildButtonObserver = new BuildButtonObserver(this, queryModel.getFilter(), mainModel);
+		sortBuildButtonObserver = new BuildButtonObserver(this, queryModel.getSort().getSortExpression(), mainModel);
 		
 		this.getApplyButton().setVisible(false);
 		this.getApplyButton().addClickHandler(event -> onApplyButtonClick());
@@ -191,6 +198,65 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		return filterPanel;
 	}
 	
+	private Widget buildSortByWidget() {
+		VerticalPanel sortByPanel = new VerticalPanel();
+		sortByPanel.setStyleName("selectorsPanel");
+		
+		List<ExpressionType> availableExpressionsForSort = new ArrayList<>();
+		availableExpressionsForSort.add(ExpressionType.ATTRIBUTE);
+		availableExpressionsForSort.add(ExpressionType.TIME_BOUNDARY);
+		
+		sortSelector = new ExpressionTypeSelectorList(availableExpressionsForSort, new ArrayList<>(), 
+				sortBuildButtonObserver, queryModel.getSort().getSortExpression(), 
+				"What would you like to sort?");
+		
+		sortByPanel.add(sortSelector);
+		sortByPanel.add(new SpacerWidget());
+		sortByPanel.add(new SpacerWidget());
+		sortByPanel.add(buildSortDirectionFormGroup());
+		
+		return sortByPanel;
+	}
+
+	private Widget buildSortDirectionFormGroup() {
+		
+		FormGroup sortDirectionFormGroup = new FormGroup();
+		FormLabel sortDirectionFormLabel = new FormLabel();
+		sortDirectionFormLabel.setText(HOW_WOULD_YOU_LIKE_TO_SORT_THE_DATA);
+		sortDirectionFormLabel.setTitle(HOW_WOULD_YOU_LIKE_TO_SORT_THE_DATA);
+
+		
+		
+		RadioButton ascendingSortRadioButton = new RadioButton("sortDirectionRadioButton", "Ascending");
+		RadioButton descendingSortRadioButton = new RadioButton("sortDirectionRadioButton", "Descending");
+		ascendingSortRadioButton.setValue(isAscendingSort);
+		descendingSortRadioButton.setValue(!isAscendingSort);
+		
+		ascendingSortRadioButton.addValueChangeHandler(event -> {
+			isAscendingSort = event.getValue();
+			queryModel.getSort().setAscendingSort(isAscendingSort);
+			this.updateCQLDisplay();
+		});
+		
+		descendingSortRadioButton.addValueChangeHandler(event -> {
+			isAscendingSort = !event.getValue();
+			queryModel.getSort().setAscendingSort(isAscendingSort);
+			this.updateCQLDisplay();
+		});
+		
+		
+		HorizontalPanel sortDirectionHorizontalPanel = new HorizontalPanel();
+		sortDirectionHorizontalPanel.setStyleName("selectorsPanel");
+		sortDirectionHorizontalPanel.setWidth("20%");
+		sortDirectionHorizontalPanel.add(ascendingSortRadioButton);
+		sortDirectionHorizontalPanel.add(descendingSortRadioButton);
+		
+		sortDirectionFormGroup.add(sortDirectionFormLabel);
+		sortDirectionFormGroup.add(sortDirectionHorizontalPanel);
+
+		return sortDirectionFormGroup;
+	}
+	
 	private Widget buildReviewQueryWidget() {
 		VerticalPanel filterPanel = new VerticalPanel();
 		filterPanel.setStyleName("selectorsPanel");
@@ -258,6 +324,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		updatePreviousButton(FILTER, event -> navigate(FILTER));
 		updateNextButton(REVIEW_QUERY, event -> navigate(REVIEW_QUERY));
 		queryBuilderContentPanel.clear();
+		queryBuilderContentPanel.add(buildSortByWidget());
 	}
 
 	private void displayReviewQuery() {

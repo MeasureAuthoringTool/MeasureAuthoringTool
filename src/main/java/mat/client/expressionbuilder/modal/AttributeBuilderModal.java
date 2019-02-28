@@ -16,7 +16,7 @@ import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.AttributeModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
-import mat.client.expressionbuilder.util.QueryAliasFinder;
+import mat.client.expressionbuilder.util.QueryFinderHelper;
 import mat.client.shared.CQLTypeContainer;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -24,6 +24,7 @@ import mat.client.shared.QDMContainer;
 
 public class AttributeBuilderModal extends SubExpressionBuilderModal {
 
+	private static final String AN_ELEMENT_AND_AN_ATTRIBUTE_ARE_REQUIRED = "An Element and an Attribute are required.";
 	private static final String HOW_WOULD_YOU_LIKE_TO_CLARIFY_YOUR_ATTRIBUTE = "How would you like to clarify your attribute? (Optional)";
 	private static final String WHAT_ATTRIBUTE_WOULD_YOU_LIKE_TO_FIND = "What attribute would you like to find?";
 	private static final String SELECT_AN_ATTRIBUTE = "-- Select an Attribute --";
@@ -39,15 +40,20 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 	private int attributeSelectedIndex = 0;
 	private int clarifyingAttributeSelectedIndex = 0;
 
-	public AttributeBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel,
-			boolean isSubAttributeRequired, boolean isSourceRequired) {
+	public AttributeBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Attribute", parent, parentModel, mainModel);
 		qdmContainer = MatContext.get().getCqlConstantContainer().getQdmContainer();
 		cqlTypeContainer = MatContext.get().getCqlConstantContainer().getCqlTypeContainer();
-		this.isSourceRequired = isSourceRequired;
-		this.isClarifyingAttributeRequired = isSubAttributeRequired;
+		
+		
+
 		attributeModel = new AttributeModel(parentModel); 
 		this.getParentModel().appendExpression(attributeModel);
+		
+		boolean isPartOfQuerySort = QueryFinderHelper.isPartOfSort(attributeModel);
+		this.isSourceRequired = !isPartOfQuerySort;
+		this.isClarifyingAttributeRequired = isPartOfQuerySort;
+		
 		buildButtonObserver = new BuildButtonObserver(this, attributeModel.getSource(), mainModel);
 		display();
 		this.getApplyButton().addClickHandler(event -> onApplyButtonClickHandler());
@@ -55,20 +61,26 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 
 	private void onApplyButtonClickHandler() {
 
-		boolean isValid = true;
 		if(isSourceRequired && attributeModel.getSource().getChildModels().isEmpty()) {
-			isValid = false;
-		}
-		
-		if(attributeModel.getAttributes().isEmpty()) {
-			isValid = false;
-		}
-		
-		if(!isValid) {
-			this.getErrorAlert().createAlert("An Element and an Attribute are required.");			
+			this.getErrorAlert().createAlert(AN_ELEMENT_AND_AN_ATTRIBUTE_ARE_REQUIRED);			
 			return;
 		}
 		
+		if(attributeModel.getAttributes().isEmpty()) {
+			if(isSourceRequired) {
+				this.getErrorAlert().createAlert(AN_ELEMENT_AND_AN_ATTRIBUTE_ARE_REQUIRED);			
+				return;
+			} else {
+				this.getErrorAlert().createAlert("An Attribute is required.");			
+			}
+		}
+		
+		if(isClarifyingAttributeRequired 
+				&& !getClarifyingAttributesForAttribute(attributeModel.getAttributes().get(0)).isEmpty() 
+				&& attributeModel.getAttributes().size() < 2) {
+			this.getErrorAlert().createAlert("A clarifying attribute is required.");			
+			return;
+		}	
 		
 		this.getExpressionBuilderParent().showAndDisplay();
 	}
@@ -91,7 +103,7 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 			availableExpressionTypes.add(ExpressionType.DEFINITION);
 			String label = "What element are you wanting to use the attribute for?";
 			ExpressionTypeSelectorList selectors = new ExpressionTypeSelectorList(
-					availableExpressionTypes, new ArrayList<>(), QueryAliasFinder.findAliasNames(attributeModel), 
+					availableExpressionTypes, new ArrayList<>(), QueryFinderHelper.findAliasNames(attributeModel), 
 					buildButtonObserver, this.attributeModel.getSource(), label);
 			panel.add(selectors);
 		}
@@ -124,22 +136,7 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		attributeListBox.setSelectedIndex(attributeSelectedIndex);
 		attributeListBox.addChangeHandler(event -> {
 			String selectedAttribute = attributeListBox.getSelectedValue();			
-			List<String> types = qdmContainer.getCQLTypeByAttribute(selectedAttribute);
-			Set<String> clarifyingAttributes = new HashSet<>();
-			if(types != null) {
-				for(String type : types) {
-					List<String> typeAttributes = cqlTypeContainer.getCQLTypeAttributesByType(type);
-					clarifyingAttributeFormGroup.setVisible(typeAttributes != null);
-					if(typeAttributes !=  null) {
-						clarifyingAttributes.addAll(cqlTypeContainer.getCQLTypeAttributesByType(type));
-						List<String> clarifyingAttributeList = new ArrayList<>(clarifyingAttributes);
-						clarifyingAttributeList.sort((a1, a2) -> a1.compareTo(a2));
-						addContentToClarifyingAttributeListBox(clarifyingAttributeList);
-					}
-				}
-			}
-		
-		
+			addContentToClarifyingAttributeListBox(getClarifyingAttributesForAttribute(selectedAttribute));
 			addAttributesToModel();
 			attributeSelectedIndex = attributeListBox.getSelectedIndex();
 			this.updateCQLDisplay();
@@ -191,6 +188,25 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 			});
 		}
 
+	}
+	
+	private List<String> getClarifyingAttributesForAttribute(String attribute) {
+		List<String> types = qdmContainer.getCQLTypeByAttribute(attribute);
+		Set<String> clarifyingAttributes = new HashSet<>();
+		if(types != null) {
+			for(String type : types) {
+				List<String> typeAttributes = cqlTypeContainer.getCQLTypeAttributesByType(type);
+				clarifyingAttributeFormGroup.setVisible(typeAttributes != null);
+				if(typeAttributes !=  null) {
+					clarifyingAttributes.addAll(cqlTypeContainer.getCQLTypeAttributesByType(type));
+
+				}
+			}
+		}
+		
+		List<String> clarifyingAttributeList = new ArrayList<>(clarifyingAttributes);
+		clarifyingAttributeList.sort((a1, a2) -> a1.compareTo(a2));
+		return clarifyingAttributeList;
 	}
 	
 	private void addAttributesToModel() {

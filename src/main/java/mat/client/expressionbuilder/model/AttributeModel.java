@@ -28,7 +28,7 @@ public class AttributeModel extends ExpressionBuilderModel {
 	public String getCQL(String identation) {
 		StringBuilder builder = new StringBuilder();
 		
-		if(this.source != null) {
+		if(!this.source.getChildModels().isEmpty()) {
 			builder.append(this.source.getCQL(""));
 		}
 		
@@ -39,6 +39,9 @@ public class AttributeModel extends ExpressionBuilderModel {
 			}
 		}
 
+		if(this.source.getChildModels().isEmpty()) {
+			return builder.toString().replaceFirst("\\.", "");
+		}
 		
 		return builder.toString();
 	}

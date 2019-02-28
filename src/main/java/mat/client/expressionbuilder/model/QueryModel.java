@@ -8,6 +8,7 @@ public class QueryModel extends ExpressionBuilderModel {
 	private ExpressionBuilderModel source;
 	private String alias;
 	private ExpressionBuilderModel filter;
+	private QuerySortModel sort;
 
 	public QueryModel(ExpressionBuilderModel source, String alias, ExpressionBuilderModel filter, ExpressionBuilderModel parent) {
 		super(parent);
@@ -22,6 +23,7 @@ public class QueryModel extends ExpressionBuilderModel {
 		super(parent);
 		this.source = new ExpressionBuilderModel(this);
 		this.filter = new ExpressionBuilderModel(this); 
+		this.sort = new QuerySortModel(this);
 		this.alias = "";
 	}
 	
@@ -40,7 +42,11 @@ public class QueryModel extends ExpressionBuilderModel {
 	public ExpressionBuilderModel getFilter() {
 		return filter;
 	}
-		
+	
+	public QuerySortModel getSort() {
+		return sort;
+	}	
+
 	@Override
 	public String getCQL(String identation) {
 		
@@ -84,6 +90,11 @@ public class QueryModel extends ExpressionBuilderModel {
 					}
 				}
 			}
+		}
+				
+		if(!sort.getSortExpression().getChildModels().isEmpty()) {
+			builder.append("\n" + filterIdentationIdentation);
+			builder.append(sort.getCQL(""));
 		}
 				
 		return builder.toString();

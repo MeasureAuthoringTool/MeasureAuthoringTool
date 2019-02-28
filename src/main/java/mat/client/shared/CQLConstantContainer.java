@@ -1,12 +1,16 @@
 package mat.client.shared;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.DTO.UnitDTO;
 import mat.model.cql.CQLKeywords;
+import mat.shared.cql.model.FunctionSignature;
 
 public class CQLConstantContainer implements IsSerializable {
 	private String currentQDMVersion;
@@ -20,6 +24,7 @@ public class CQLConstantContainer implements IsSerializable {
 	private CQLKeywords cqlKeywordList; 
 	private QDMContainer qdmContainer = new QDMContainer();
 	private CQLTypeContainer cqlTypeContainer = new CQLTypeContainer();
+	private List<FunctionSignature> functionSignatures = new ArrayList<>();
 
 	public List<String> getCqlAttributeList() {
 		return cqlAttributeList;
@@ -107,5 +112,27 @@ public class CQLConstantContainer implements IsSerializable {
 
 	public void setCqlTypeContainer(CQLTypeContainer cqlTypeContainer) {
 		this.cqlTypeContainer = cqlTypeContainer;
+	}
+
+	public List<FunctionSignature> getFunctionSignatures() {
+		return functionSignatures;
+	}
+	
+	public List<String> getFunctionNames() {
+		Set<String> nameSet = new HashSet<>();
+		
+		this.functionSignatures.forEach(f -> {
+			nameSet.add(f.getName());
+		});
+		
+		List<String> names = new ArrayList<>(nameSet);
+		names.sort((f1, f2) -> f1.compareTo(f2));
+		return names;
+	}
+
+	public void setFunctionSignatures(List<FunctionSignature> functionSignatures) {
+		this.functionSignatures = functionSignatures;
 	} 
+	
+
 }

@@ -1,5 +1,7 @@
 package mat.server;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,6 +22,8 @@ import org.hl7.elm_modelinfo.r1.TypeSpecifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
+
 import edu.emory.mathcs.backport.java.util.Arrays;
 import mat.DTO.DataTypeDTO;
 import mat.DTO.UnitDTO;
@@ -33,13 +37,10 @@ import mat.model.cql.CQLKeywords;
 import mat.server.service.CodeListService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.util.MATPropertiesService;
+import mat.shared.cql.model.FunctionSignature;
 
 @Service
 public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implements CQLConstantService {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Autowired
@@ -102,7 +103,27 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		cqlConstantContainer.setQdmContainer(getQDMInformation());
 		cqlConstantContainer.setCqlTypeContainer(getCQLTypeInformation());
 		
+		cqlConstantContainer.setFunctionSignatures(getFunctionSignatures());
+			
 		return cqlConstantContainer;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<FunctionSignature> getFunctionSignatures() {		
+		ClassLoader classLoader = getClass().getClassLoader();
+		FunctionSignature[] signatureArray = {};
+		try {
+			Gson gson = new Gson();
+			signatureArray = gson.fromJson(
+					new FileReader(classLoader.getResource("functions/signatures.json").getFile()),
+					FunctionSignature[].class
+			);
+		
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return (List<FunctionSignature>) Arrays.asList(signatureArray);
 	}
 	
 	@SuppressWarnings("unchecked")

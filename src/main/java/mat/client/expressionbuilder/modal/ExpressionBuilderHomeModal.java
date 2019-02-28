@@ -51,6 +51,7 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 		availableExpressionTypes.add(ExpressionType.RETRIEVE);
 		availableExpressionTypes.add(ExpressionType.DEFINITION);
 		availableExpressionTypes.add(ExpressionType.EXISTS);
+		availableExpressionTypes.add(ExpressionType.FUNCTION);
 		availableExpressionTypes.add(ExpressionType.INTERVAL);
 		availableExpressionTypes.add(ExpressionType.IN);
 		availableExpressionTypes.add(ExpressionType.NOT);

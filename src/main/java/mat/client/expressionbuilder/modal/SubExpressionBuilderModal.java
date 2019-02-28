@@ -11,6 +11,7 @@ import mat.client.expressionbuilder.model.ComparisonModel;
 import mat.client.expressionbuilder.model.ComputationModel;
 import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
+import mat.client.expressionbuilder.model.FunctionModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IntervalModel;
 import mat.client.expressionbuilder.model.AttributeModel;
@@ -96,7 +97,8 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 					lastModel instanceof MembershipInModel ||
 					lastModel instanceof ComputationModel ||
 					lastModel instanceof TimeBoundaryModel ||
-					lastModel instanceof AttributeModel) {
+					lastModel instanceof AttributeModel ||
+					lastModel instanceof FunctionModel) {
 				this.getParentModel().getChildModels().remove(size);
 				int newSize = this.getParentModel().getChildModels().size() - 1;
 				

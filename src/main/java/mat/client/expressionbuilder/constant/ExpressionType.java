@@ -23,7 +23,8 @@ public enum ExpressionType implements ExpressionBuilderType {
 	COMPUTATION("Computation", OperatorTypeUtil.getBooleanOperators()),
 	TIME_BOUNDARY("Start of / End of", OperatorTypeUtil.getBooleanOperators()),
 	QUANTITY("Quantity", OperatorTypeUtil.getSetOperators()),
-	ALIAS("Alias", OperatorTypeUtil.getAllOperators());
+	ALIAS("Alias", OperatorTypeUtil.getAllOperators()),
+	FUNCTION("Function", OperatorTypeUtil.getAllOperators());
 	
 	private String displayName;
 	private String value;

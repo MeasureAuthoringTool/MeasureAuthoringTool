@@ -9,6 +9,7 @@ import mat.client.expressionbuilder.modal.ComputationBuilderModal;
 import mat.client.expressionbuilder.modal.DefinitionSelectorModal;
 import mat.client.expressionbuilder.modal.ExistsBuilderModal;
 import mat.client.expressionbuilder.modal.ExpressionBuilderModal;
+import mat.client.expressionbuilder.modal.FunctionBuilderModal;
 import mat.client.expressionbuilder.modal.IntervalBuilderModal;
 import mat.client.expressionbuilder.modal.IsNullBuilderModal;
 import mat.client.expressionbuilder.modal.IsTrueFalseBuilderModal;
@@ -129,6 +130,11 @@ public class BuildButtonObserver {
 		else if(expression.equals(ExpressionType.QUANTITY.getValue())) {
 			ExpressionBuilderModal quantityModal = new QuantityBuilderModal(this.parentModal, this.parentModel, this.mainModel);
 			quantityModal.show();
+		}
+		
+		else if(expression.equals(ExpressionType.FUNCTION.getValue())) {
+			ExpressionBuilderModal functionModal = new FunctionBuilderModal(this.parentModal, this.parentModel, this.mainModel);
+			functionModal.show();
 		}
 
 		else if(QueryFinderHelper.findAliasNames(this.parentModel).contains(expression)) {

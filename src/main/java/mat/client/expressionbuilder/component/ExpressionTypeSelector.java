@@ -115,7 +115,7 @@ public class ExpressionTypeSelector extends Composite {
 		}
 		
 		for(String alias : this.availableAliases) {
-			expressionTypeSelectorListBox.insertItem(alias, alias, alias);
+			expressionTypeSelectorListBox.insertItem(alias + " (Query Source)", alias, alias + " (Query Source)");
 		}
 		
 		Button buildButton = new Button();

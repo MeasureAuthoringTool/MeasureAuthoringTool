@@ -5,8 +5,10 @@ import mat.client.expressionbuilder.constant.ExpressionType;
 
 public class NotModel extends ExpressionBuilderModel {
 
-	
-	
+	public NotModel(ExpressionBuilderModel parent) {
+		super(parent);
+	}
+
 	@Override
 	public String getCQL(String identation) {
 

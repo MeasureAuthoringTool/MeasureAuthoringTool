@@ -35,17 +35,27 @@ public class ExpressionTypeSelectorList extends Composite {
 
 	private ExpressionBuilderModel model;
 	private List<ExpressionType> availableExpressionTypes;
+	private List<OperatorType> availableOperatorTypes;
+	private List<String> availableAliases;
+
 	private BuildButtonObserver buildButtonObserver;
 	private boolean hasNoSelections;
-	private List<OperatorType> availableOperatorTypes;
 	private boolean canOnlyMakeOneSelection;
 	private String labelText;
 	private ExpressionTypeSelector selector;
 	private boolean shouldHaveComputationOption = true;
-	
+
 	public ExpressionTypeSelectorList(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes,
 			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText) {
+		this(availableExpressionTypes, availableOperatorTypes, new ArrayList<>(), observer, model, labelText);
+	}
+	
+	public ExpressionTypeSelectorList(
+			List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes,
+			List<String> availableAliases, 
+			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText) {
 		this.availableExpressionTypes = availableExpressionTypes;
+		this.availableAliases = availableAliases;
 		this.availableOperatorTypes = new ArrayList<>();
 		this.availableOperatorTypes.addAll(availableOperatorTypes);
 		this.buildButtonObserver = observer;
@@ -53,7 +63,6 @@ public class ExpressionTypeSelectorList extends Composite {
 		this.hasNoSelections = this.model.getChildModels().size() == 0;
 		canOnlyMakeOneSelection = this.availableOperatorTypes.isEmpty();
 		this.labelText = labelText;
-
 		initWidget(buildPanel());
 	}
 		
@@ -70,6 +79,7 @@ public class ExpressionTypeSelectorList extends Composite {
 		label.setTitle(this.labelText);
 		
 		panel.add(label);
+		
 				
 		// filter available operators based on first expression type selected
 		if(this.model.getChildModels().size() >= 1) {
@@ -129,7 +139,8 @@ public class ExpressionTypeSelectorList extends Composite {
 			if(!shouldHaveComputationOption) {
 				availableExpressionTypes.removeIf(expression -> ExpressionType.COMPUTATION.equals(expression));
 			}
-			selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, buildButtonObserver, canAddAnother);		
+			
+			selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, availableAliases, buildButtonObserver, canAddAnother);		
 			panel.add(selector);
 		}
 		

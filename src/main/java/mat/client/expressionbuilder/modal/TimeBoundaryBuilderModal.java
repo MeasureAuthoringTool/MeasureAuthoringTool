@@ -36,7 +36,7 @@ public class TimeBoundaryBuilderModal extends SubExpressionBuilderModal {
 	public TimeBoundaryBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super(TITLE, parent, parentModel, mainModel);
 		
-		timeBoundaryModel = new TimeBoundaryModel();
+		timeBoundaryModel = new TimeBoundaryModel(parentModel);
 		getParentModel().appendExpression(timeBoundaryModel);
 		buildButtonObserver = new BuildButtonObserver(this, timeBoundaryModel, mainModel);
 		

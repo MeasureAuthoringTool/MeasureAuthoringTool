@@ -35,7 +35,7 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 			ExpressionBuilderModel mainModel) {
 		super("Interval", parent, parentModel, mainModel);
 		
-		intervalModel = new IntervalModel();
+		intervalModel = new IntervalModel(parentModel);
 		this.getParentModel().appendExpression(intervalModel);		
 		lowerBoundBuildButtonObserver = new BuildButtonObserver(this, intervalModel.getLowerBound(), mainModel);
 		upperBoundBuildButtonObserver = new BuildButtonObserver(this, intervalModel.getUpperBound(), mainModel);

@@ -43,7 +43,7 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 		
 		String definitionIdentifier = definitionListBox.getSelectedValue();
 		
-		DefinitionModel model = new DefinitionModel(definitionIdentifier);
+		DefinitionModel model = new DefinitionModel(definitionIdentifier, this.getParentModel());
 		this.getParentModel().appendExpression(model);
 		this.getExpressionBuilderParent().showAndDisplay();
 	}

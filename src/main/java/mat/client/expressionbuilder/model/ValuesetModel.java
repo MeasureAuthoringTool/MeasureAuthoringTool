@@ -7,7 +7,8 @@ public class ValuesetModel extends ExpressionBuilderModel {
 
 	private String identifier;
 
-	public ValuesetModel(String identifier) {
+	public ValuesetModel(String identifier, ExpressionBuilderModel parent) {
+		super(parent);
 		this.identifier = identifier;
 	}
 

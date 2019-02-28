@@ -56,7 +56,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	public QueryBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
 			ExpressionBuilderModel mainModel) {
 		super("Query", parent, parentModel, mainModel);
-		queryModel = new QueryModel();
+		queryModel = new QueryModel(parentModel);
 		this.getParentModel().appendExpression(queryModel);
 		
 		sourceBuildButtonObserver = new BuildButtonObserver(this, queryModel.getSource(), mainModel);

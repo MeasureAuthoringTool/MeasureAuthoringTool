@@ -22,7 +22,7 @@ public class NotBuilderModal extends SubExpressionBuilderModal {
 	public NotBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Negation (not)", parent, parentModel, mainModel);
 		
-		notModel = new NotModel();
+		notModel = new NotModel(parentModel);
 		this.getParentModel().appendExpression(notModel);
 		buildButtonObserver = new BuildButtonObserver(this, notModel, mainModel);
 		display();

@@ -9,10 +9,11 @@ public class ComparisonModel extends ExpressionBuilderModel {
 	private ExpressionBuilderModel leftHandSide;
 	private ComparisonOperatorModel comparisonOperator;
 		
-	public ComparisonModel() {
-		this.rightHandSide = new ExpressionBuilderModel();
-		this.leftHandSide = new ExpressionBuilderModel();
-		comparisonOperator = new ComparisonOperatorModel("");
+	public ComparisonModel(ExpressionBuilderModel parent) {
+		super(parent);
+		this.rightHandSide = new ExpressionBuilderModel(this);
+		this.leftHandSide = new ExpressionBuilderModel(this);
+		comparisonOperator = new ComparisonOperatorModel("", parent);
 	}
 		
 	public ExpressionBuilderModel getRightHandSide() {
@@ -24,7 +25,7 @@ public class ComparisonModel extends ExpressionBuilderModel {
 	}
 
 	public void setComparisonOperator(String comparisonOperator) {
-		this.comparisonOperator = new ComparisonOperatorModel(comparisonOperator);
+		this.comparisonOperator = new ComparisonOperatorModel(comparisonOperator, (ExpressionBuilderModel) this.getParentModel());
 	}
 	
 	@Override

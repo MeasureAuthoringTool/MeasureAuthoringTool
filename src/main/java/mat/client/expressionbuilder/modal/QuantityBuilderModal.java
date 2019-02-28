@@ -13,7 +13,7 @@ public class QuantityBuilderModal extends SubExpressionBuilderModal {
 	
 	public QuantityBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Quantity", parent, parentModel, mainModel);
-		quantityModel = new QuantityModel();
+		quantityModel = new QuantityModel(parentModel);
 		this.setClosable(false);
 		this.setRemoveOnHide(true);
 		this.setCQLPanelVisible(false);

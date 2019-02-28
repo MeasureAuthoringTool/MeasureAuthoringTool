@@ -5,6 +5,10 @@ import mat.client.expressionbuilder.constant.ExpressionType;
 
 public class IsNullModel extends ExpressionBuilderModel {
 	
+	public IsNullModel(ExpressionBuilderModel parent) {
+		super(parent);
+	}
+
 	private String operatorText = "";
 	
 	public void setOperatorText(String operatorText) {

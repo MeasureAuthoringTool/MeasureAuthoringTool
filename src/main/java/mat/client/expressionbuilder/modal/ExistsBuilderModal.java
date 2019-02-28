@@ -21,7 +21,7 @@ public class ExistsBuilderModal extends SubExpressionBuilderModal {
 
 	public ExistsBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Exists", parent, parentModel, mainModel);
-		existsModel = new ExistsModel();
+		existsModel = new ExistsModel(this.getParentModel());
 		this.getParentModel().appendExpression(existsModel);
 		buildButtonObserver = new BuildButtonObserver(this, existsModel, mainModel);
 		display();

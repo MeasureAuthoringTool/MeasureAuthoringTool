@@ -7,14 +7,17 @@ import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
 
 public class AttributeModel extends ExpressionBuilderModel {
+	private ExpressionBuilderModel source;
 	private List<String> attributes;
 	
-	public AttributeModel() {
+	public AttributeModel(ExpressionBuilderModel parent) {
+		super(parent);
+		this.source = new ExpressionBuilderModel(this);
 		this.attributes = new ArrayList<>();
 	}
 
-	public List<IExpressionBuilderModel> getSource() {
-		return this.getChildModels();
+	public ExpressionBuilderModel getSource() {
+		return source;
 	}
 
 	public List<String> getAttributes() {
@@ -25,8 +28,8 @@ public class AttributeModel extends ExpressionBuilderModel {
 	public String getCQL(String identation) {
 		StringBuilder builder = new StringBuilder();
 		
-		if(!this.getChildModels().isEmpty()) {
-			builder.append(this.getChildModels().get(0).getCQL(""));
+		if(this.source != null) {
+			builder.append(this.source.getCQL(""));
 		}
 		
 		if(!this.attributes.isEmpty()) {

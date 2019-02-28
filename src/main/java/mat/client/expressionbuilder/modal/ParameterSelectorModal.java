@@ -41,9 +41,9 @@ public class ParameterSelectorModal extends SubExpressionBuilderModal {
 			return;
 		}
 		
-		String definitionIdentifier = parameterListBox.getSelectedValue();
+		String parameterIdentifier = parameterListBox.getSelectedValue();
 		
-		ParameterModel model = new ParameterModel(definitionIdentifier);
+		ParameterModel model = new ParameterModel(parameterIdentifier, this.getParentModel());
 		this.getParentModel().appendExpression(model);
 		this.getExpressionBuilderParent().showAndDisplay();
 	}

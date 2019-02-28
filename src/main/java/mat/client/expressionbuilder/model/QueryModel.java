@@ -9,22 +9,26 @@ public class QueryModel extends ExpressionBuilderModel {
 	private String alias;
 	private ExpressionBuilderModel filter;
 
-	public QueryModel(ExpressionBuilderModel source, String alias, ExpressionBuilderModel filter) {
+	public QueryModel(ExpressionBuilderModel source, String alias, ExpressionBuilderModel filter, ExpressionBuilderModel parent) {
+		super(parent);
 		this.source = source;
+		this.source.setParentModel(this);
 		this.alias = alias;
 		this.filter = filter;
+		this.filter.setParentModel(this);
 	}
 
-	public QueryModel() {
-		this.source = new ExpressionBuilderModel();
-		this.filter = new ExpressionBuilderModel(); 
+	public QueryModel(ExpressionBuilderModel parent) {
+		super(parent);
+		this.source = new ExpressionBuilderModel(this);
+		this.filter = new ExpressionBuilderModel(this); 
 		this.alias = "";
 	}
 	
 	public ExpressionBuilderModel getSource() {
 		return source;
 	}
-
+	
 	public String getAlias() {
 		return alias;
 	}
@@ -36,7 +40,7 @@ public class QueryModel extends ExpressionBuilderModel {
 	public ExpressionBuilderModel getFilter() {
 		return filter;
 	}
-	
+		
 	@Override
 	public String getCQL(String identation) {
 		

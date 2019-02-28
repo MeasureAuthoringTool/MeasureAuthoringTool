@@ -6,7 +6,8 @@ public class ComparisonOperatorModel extends ExpressionBuilderModel {
 
 	private String operator;
 
-	public ComparisonOperatorModel(String operator) {
+	public ComparisonOperatorModel(String operator, ExpressionBuilderModel parent) {
+		super(parent);
 		this.operator = operator;
 	}
 	

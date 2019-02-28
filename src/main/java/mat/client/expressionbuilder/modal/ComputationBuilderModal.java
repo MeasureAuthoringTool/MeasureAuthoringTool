@@ -42,7 +42,7 @@ public class ComputationBuilderModal extends SubExpressionBuilderModal {
 	public ComputationBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super(ExpressionType.COMPUTATION.getDisplayName(), parent, parentModel, mainModel);
 		
-		computationModel = new ComputationModel();
+		computationModel = new ComputationModel(parentModel);
 		getParentModel().appendExpression(computationModel);
 		leftHandSideBuildButtonObserver = new BuildButtonObserver(this, computationModel.getLeftHandSide(), mainModel);
 		rightHandSideBuildButtonObserver = new BuildButtonObserver(this, computationModel.getRightHandSide(), mainModel);

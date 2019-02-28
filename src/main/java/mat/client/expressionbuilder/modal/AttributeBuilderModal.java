@@ -16,6 +16,7 @@ import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.AttributeModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
+import mat.client.expressionbuilder.util.QueryAliasFinder;
 import mat.client.shared.CQLTypeContainer;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -45,9 +46,9 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		cqlTypeContainer = MatContext.get().getCqlConstantContainer().getCqlTypeContainer();
 		this.isSourceRequired = isSourceRequired;
 		this.isClarifyingAttributeRequired = isSubAttributeRequired;
-		attributeModel = new AttributeModel(); 
+		attributeModel = new AttributeModel(parentModel); 
 		this.getParentModel().appendExpression(attributeModel);
-		buildButtonObserver = new BuildButtonObserver(this, attributeModel, mainModel);
+		buildButtonObserver = new BuildButtonObserver(this, attributeModel.getSource(), mainModel);
 		display();
 		this.getApplyButton().addClickHandler(event -> onApplyButtonClickHandler());
 	}
@@ -55,7 +56,7 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 	private void onApplyButtonClickHandler() {
 
 		boolean isValid = true;
-		if(isSourceRequired && attributeModel.getSource().isEmpty()) {
+		if(isSourceRequired && attributeModel.getSource().getChildModels().isEmpty()) {
 			isValid = false;
 		}
 		
@@ -90,7 +91,8 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 			availableExpressionTypes.add(ExpressionType.DEFINITION);
 			String label = "What element are you wanting to use the attribute for?";
 			ExpressionTypeSelectorList selectors = new ExpressionTypeSelectorList(
-					availableExpressionTypes, new ArrayList<>(), buildButtonObserver, this.attributeModel, label);
+					availableExpressionTypes, new ArrayList<>(), QueryAliasFinder.findAliasNames(attributeModel), 
+					buildButtonObserver, this.attributeModel.getSource(), label);
 			panel.add(selectors);
 		}
 
@@ -112,7 +114,7 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		attributeListBox = new ListBoxMVP();
 		attributeListBox.setId("attributeListBox");
 		attributeListBox.insertItem(SELECT_AN_ATTRIBUTE, SELECT_AN_ATTRIBUTE, SELECT_AN_ATTRIBUTE);
-		
+				
 		List<String> attributes = qdmContainer.getAttributes();
 		attributes.remove("patientId");
 		for(String attribute : attributes) {

@@ -35,7 +35,7 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 	public ComparisonBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Comparison", parent, parentModel, mainModel);
 		
-		comparisonModel = new ComparisonModel();
+		comparisonModel = new ComparisonModel(this.getParentModel());
 		this.getParentModel().appendExpression(comparisonModel);
 		leftHandSideBuildButtonObserver = new BuildButtonObserver(this, comparisonModel.getLeftHandSide(), mainModel);
 		rightHandSideBuildButtonObserver = new BuildButtonObserver(this, comparisonModel.getRightHandSide(), mainModel);

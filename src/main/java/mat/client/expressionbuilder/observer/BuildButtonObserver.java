@@ -1,5 +1,7 @@
 package mat.client.expressionbuilder.observer;
 
+import com.google.gwt.core.client.GWT;
+
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.modal.AttributeBuilderModal;
@@ -20,6 +22,7 @@ import mat.client.expressionbuilder.modal.QueryBuilderModal;
 import mat.client.expressionbuilder.modal.RetrieveBuilderModal;
 import mat.client.expressionbuilder.modal.TimeBoundaryBuilderModal;
 import mat.client.expressionbuilder.modal.ValuesetSelectorModal;
+import mat.client.expressionbuilder.model.AliasModel;
 import mat.client.expressionbuilder.model.AndModel;
 import mat.client.expressionbuilder.model.ExceptModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
@@ -27,6 +30,7 @@ import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IntersectModel;
 import mat.client.expressionbuilder.model.OrModel;
 import mat.client.expressionbuilder.model.UnionModel;
+import mat.client.expressionbuilder.util.QueryAliasFinder;
 
 public class BuildButtonObserver {
 	private ExpressionBuilderModal parentModal;
@@ -129,19 +133,26 @@ public class BuildButtonObserver {
 			quantityModal.show();
 		}
 
+		else if(QueryAliasFinder.findAliasNames(this.parentModel).contains(expression)) {
+			GWT.log(this.parentModel.getDisplayName());
+			AliasModel model = new AliasModel(this.parentModel);
+			model.setAlias(expression);
+			this.parentModel.appendExpression(model);
+			this.parentModal.showAndDisplay();
+		}
 	}
 	
 	private IExpressionBuilderModel operatorModel(String operator) {
 		if(operator.equals(OperatorType.UNION.getValue())) {
-			return new UnionModel();
+			return new UnionModel(this.parentModel);
 		} else if(operator.equals(OperatorType.EXCEPT.getValue())) {
-			return new ExceptModel();
+			return new ExceptModel(this.parentModel);
 		} else if(operator.equals(OperatorType.INTERSECT.getValue())) {
-			return new IntersectModel();
+			return new IntersectModel(this.parentModel);
 		} else if(operator.equals(OperatorType.AND.getValue())) {
-			return new AndModel();
+			return new AndModel(this.parentModel);
 		} else if(operator.equals(OperatorType.OR.getValue())) {
-			return new OrModel();
+			return new OrModel(this.parentModel);
 		}
 		
 		return null;

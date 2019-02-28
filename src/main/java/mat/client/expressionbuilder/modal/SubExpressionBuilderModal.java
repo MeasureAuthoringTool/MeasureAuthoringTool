@@ -95,7 +95,7 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 					lastModel instanceof QueryModel ||
 					lastModel instanceof MembershipInModel ||
 					lastModel instanceof ComputationModel ||
-					lastModel instanceof TimeBoundaryModel ) {
+					lastModel instanceof TimeBoundaryModel ||
 					lastModel instanceof AttributeModel) {
 				this.getParentModel().getChildModels().remove(size);
 				int newSize = this.getParentModel().getChildModels().size() - 1;

@@ -50,7 +50,7 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 			terminologyValue = "";
 		}
 		
-		RetrieveModel retrieve = new RetrieveModel(dataTypeValue, terminologyValue);
+		RetrieveModel retrieve = new RetrieveModel(dataTypeValue, terminologyValue, this.getParentModel());
 		this.getParentModel().appendExpression(retrieve);
 		this.getExpressionBuilderParent().showAndDisplay();
 	}

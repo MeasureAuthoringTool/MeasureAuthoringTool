@@ -9,10 +9,11 @@ public class ComputationModel extends ExpressionBuilderModel {
 	private final ExpressionBuilderModel rightHandSide;
 	private ComparisonOperatorModel computationOperator;
 		
-	public ComputationModel() {
-		leftHandSide = new ExpressionBuilderModel();
-		rightHandSide = new ExpressionBuilderModel();
-		computationOperator = new ComparisonOperatorModel("");
+	public ComputationModel(ExpressionBuilderModel parent) {
+		super(parent);
+		leftHandSide = new ExpressionBuilderModel(this);
+		rightHandSide = new ExpressionBuilderModel(this);
+		computationOperator = new ComparisonOperatorModel("", this);
 	}
 
 	public ExpressionBuilderModel getLeftHandSide() {
@@ -24,7 +25,7 @@ public class ComputationModel extends ExpressionBuilderModel {
 	}
 
 	public void setComputationOperator(String computationOperator) {
-		this.computationOperator = new ComparisonOperatorModel(computationOperator);
+		this.computationOperator = new ComparisonOperatorModel(computationOperator, (ExpressionBuilderModel) this.getParentModel());
 	}
 	
 	@Override

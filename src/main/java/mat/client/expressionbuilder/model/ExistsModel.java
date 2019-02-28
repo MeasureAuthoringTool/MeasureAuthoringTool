@@ -5,6 +5,10 @@ import mat.client.expressionbuilder.constant.ExpressionType;
 
 public class ExistsModel extends ExpressionBuilderModel {
 	
+	public ExistsModel(ExpressionBuilderModel parent) {
+		super(parent);
+	}
+
 	@Override
 	public String getCQL(String identation) {
 		StringBuilder builder = new StringBuilder();

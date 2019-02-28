@@ -6,4 +6,5 @@ public interface IExpressionBuilderModel {
 	public String getDisplayName();
 	public String getCQL(String identation);
 	public CQLType getType();
+	public IExpressionBuilderModel getParentModel();
 }

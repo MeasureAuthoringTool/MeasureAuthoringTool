@@ -7,7 +7,8 @@ public class DefinitionModel extends ExpressionBuilderModel {
 
 	private String identifier;
 	
-	public DefinitionModel(String identifier) {
+	public DefinitionModel(String identifier, ExpressionBuilderModel parent) {
+		super(parent);
 		this.identifier = identifier;
 	}
 	

@@ -22,12 +22,20 @@ public enum ExpressionType implements ExpressionBuilderType {
 	IN("Membership (In)", OperatorTypeUtil.getBooleanOperators()),
 	COMPUTATION("Computation", OperatorTypeUtil.getBooleanOperators()),
 	TIME_BOUNDARY("Start of / End of", OperatorTypeUtil.getBooleanOperators()),
-	QUANTITY("Quantity", OperatorTypeUtil.getSetOperators());
+	QUANTITY("Quantity", OperatorTypeUtil.getSetOperators()),
+	ALIAS("Alias", OperatorTypeUtil.getAllOperators());
 	
 	private String displayName;
+	private String value;
 	private List<OperatorType> availableOperators;
 	
 	ExpressionType(String displayName, List<OperatorType> availableOperators) {
+		this(displayName, displayName, availableOperators);
+
+	}
+	
+	ExpressionType(String displayName, String value, List<OperatorType> availableOperators) {
+		this.value = value;
 		this.setAvailableOperators(availableOperators);
 		this.displayName = displayName;
 	}
@@ -37,9 +45,17 @@ public enum ExpressionType implements ExpressionBuilderType {
 		return this.displayName;
 	}
 	
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+	
 	@Override
 	public String getValue() {
-		return this.toString();
+		return value;
+	}
+	
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public List<OperatorType> getAvailableOperators() {

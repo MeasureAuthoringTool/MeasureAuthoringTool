@@ -37,10 +37,12 @@ public class ExpressionTypeSelector extends Composite {
 	private BuildButtonObserver observer;
 
 	private VerticalPanel contentPanel;
+	private List<String> availableAliases;
 	
-	public ExpressionTypeSelector(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes, BuildButtonObserver observer, boolean isFirstSelection) {
+	public ExpressionTypeSelector(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes, List<String> availableAliases, BuildButtonObserver observer, boolean isFirstSelection) {
 		this.availableExpressionTypes = availableExpressionTypes;
 		this.availableOperatorTypes = availableOperatorTypes;
+		this.availableAliases = availableAliases;
 		this.observer = observer;
 		this.isFirstSelection = isFirstSelection;
 		
@@ -110,6 +112,10 @@ public class ExpressionTypeSelector extends Composite {
 		expressionTypeSelectorListBox.insertItem(SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE);
 		for(ExpressionType type : this.availableExpressionTypes) {
 			expressionTypeSelectorListBox.insertItem(type.getDisplayName(), type.getValue(), type.getDisplayName());
+		}
+		
+		for(String alias : this.availableAliases) {
+			expressionTypeSelectorListBox.insertItem(alias, alias, alias);
 		}
 		
 		Button buildButton = new Button();

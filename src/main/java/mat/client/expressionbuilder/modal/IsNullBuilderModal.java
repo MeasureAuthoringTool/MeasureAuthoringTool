@@ -5,9 +5,7 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.ListBox;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -33,7 +31,7 @@ public class IsNullBuilderModal extends SubExpressionBuilderModal {
 	public IsNullBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
 			ExpressionBuilderModel mainModel) {
 		super("Null (is null/not null)", parent, parentModel, mainModel);
-		isNullModel = new IsNullModel();
+		isNullModel = new IsNullModel(parentModel);
 		this.getParentModel().appendExpression(isNullModel);
 		buildButtonObserver = new BuildButtonObserver(this, isNullModel, mainModel);
 		display();

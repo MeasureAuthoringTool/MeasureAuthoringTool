@@ -45,7 +45,7 @@ public class CodeSelectorModal extends SubExpressionBuilderModal {
 		
 		String codeIdentifier = codeListBox.getSelectedValue();
 		
-		CodeModel model = new CodeModel(codeIdentifier);
+		CodeModel model = new CodeModel(codeIdentifier, this.getParentModel());
 		this.getParentModel().appendExpression(model);
 		this.getExpressionBuilderParent().showAndDisplay();
 	}

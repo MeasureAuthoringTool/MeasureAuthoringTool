@@ -9,7 +9,8 @@ public class RetrieveModel extends ExpressionBuilderModel {
 	private String datatype;
 	private String terminology;
 	
-	public RetrieveModel() {
+	public RetrieveModel(ExpressionBuilderModel parent) {
+		super(parent);
 		this.datatype = "";
 		this.terminology = "";
 	}
@@ -19,8 +20,8 @@ public class RetrieveModel extends ExpressionBuilderModel {
 	 * @param datatype the datatype for the left hand side of the retrieve
 	 * @param terminology the right hand side of the retrieve. This value should be properly quoted when passed in. 
 	 */
-	public RetrieveModel(String datatype, String terminology) {
-		this();
+	public RetrieveModel(String datatype, String terminology, ExpressionBuilderModel parent) {
+		this(parent);
 		this.datatype = datatype;
 		this.terminology = terminology;
 	}

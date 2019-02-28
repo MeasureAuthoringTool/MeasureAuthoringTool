@@ -7,7 +7,8 @@ public class ParameterModel extends ExpressionBuilderModel {
 
 	private String identifier;
 
-	public ParameterModel(String identifier) {
+	public ParameterModel(String identifier, ExpressionBuilderModel parent) {
+		super(parent);
 		this.identifier = identifier;
 	}
 

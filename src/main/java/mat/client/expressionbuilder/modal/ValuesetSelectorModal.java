@@ -45,7 +45,7 @@ public class ValuesetSelectorModal extends SubExpressionBuilderModal {
 		
 		String valuesetIdentifier = valuesetListBox.getSelectedValue();
 		
-		ValuesetModel model = new ValuesetModel(valuesetIdentifier);
+		ValuesetModel model = new ValuesetModel(valuesetIdentifier, this.getParentModel());
 		this.getParentModel().appendExpression(model);
 		this.getExpressionBuilderParent().showAndDisplay();
 	}

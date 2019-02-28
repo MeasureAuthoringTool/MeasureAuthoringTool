@@ -7,7 +7,8 @@ public class CodeModel extends ExpressionBuilderModel {
 
 	private String identifier;
 
-	public CodeModel(String identifier) {
+	public CodeModel(String identifier, ExpressionBuilderModel parent) {
+		super(parent);
 		this.identifier = identifier;
 	}
 

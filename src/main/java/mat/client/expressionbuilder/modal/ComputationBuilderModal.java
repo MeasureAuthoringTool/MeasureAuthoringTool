@@ -117,9 +117,11 @@ public class ComputationBuilderModal extends SubExpressionBuilderModal {
 
 	private List<ExpressionType> buildDropDownOptions(){
 		final List<ExpressionType> availableExpressions = new ArrayList<>();
+		availableExpressions.add(ExpressionType.ATTRIBUTE);
 		availableExpressions.add(ExpressionType.DEFINITION);
+		availableExpressions.add(ExpressionType.QUANTITY);
 		availableExpressions.add(ExpressionType.TIME_BOUNDARY);
-		//TODO: Add Attribute (MAT-9736), Date/Time(MAT-9733), Function (MAT-9725),	Quantity (MAT-9688) here
+		//TODO: Add Date/Time(MAT-9733), Function (MAT-9725) here
 		
 		return availableExpressions;
 	}

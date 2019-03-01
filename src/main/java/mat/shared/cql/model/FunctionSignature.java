@@ -10,20 +10,20 @@ public class FunctionSignature implements IsSerializable {
 	private String name;
 	private String returnType;
 	private List<FunctionArgument> arguments;
-	private String documentaion;
+	private String documentation;
 	
 	public FunctionSignature() {
 		this.setName("");
 		this.setReturnType("");
 		this.setArguments(new ArrayList<>());
-		this.documentaion = "";
+		this.documentation = "";
 	}
 	
 	public FunctionSignature(String name, String returnType, List<FunctionArgument> arguments, String documentation) {
 		this.setName(name);
 		this.setReturnType(returnType);
 		this.setArguments(arguments);
-		this.setDocumentaion(documentation);
+		this.setDocumentation(documentation);
 	}
 	
 	public String getSignature() {
@@ -64,11 +64,11 @@ public class FunctionSignature implements IsSerializable {
 		this.arguments = arguments;
 	}
 
-	public String getDocumentaion() {
-		return documentaion;
+	public String getDocumentation() {
+		return documentation;
 	}
 
-	public void setDocumentaion(String documentaion) {
-		this.documentaion = documentaion;
+	public void setDocumentation(String documentaion) {
+		this.documentation = documentaion;
 	}
 }

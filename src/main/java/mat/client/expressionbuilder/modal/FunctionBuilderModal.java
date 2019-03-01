@@ -32,9 +32,7 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 	private FunctionModel functionModel;
 	private ListBoxMVP functionSignatureListBox;
 	private VerticalPanel functionSignaturePanel;
-	private VerticalPanel functionNamePanel;
 	private Button functionNameBuildButton;
-	private Button functionSignatureBuildButton;
 
 	public FunctionBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
 			ExpressionBuilderModel mainModel) {
@@ -56,7 +54,7 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 		VerticalPanel functionPanel = new VerticalPanel();
 		functionPanel.setStyleName("selectorsPanel");
 		
-		functionNamePanel = new VerticalPanel();
+		VerticalPanel functionNamePanel = new VerticalPanel();
 		functionNamePanel.setWidth("50%");
 		functionNamePanel.add(buildFunctionNameFormLabel());
 		functionNamePanel.add(buildFunctionNameSelectionPanel());
@@ -87,7 +85,7 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 		HorizontalPanel functionSignatureListBoxPanel = new HorizontalPanel();
 		functionSignatureListBoxPanel.add(buildFunctionSignatureListBox());
 		
-		functionSignatureBuildButton = buildBuildButton();
+		Button functionSignatureBuildButton = buildBuildButton();
 		functionSignatureListBoxPanel.add(functionSignatureBuildButton);
 		return functionSignatureListBoxPanel;
 	}

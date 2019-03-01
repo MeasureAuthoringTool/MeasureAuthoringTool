@@ -2,9 +2,9 @@ package mat.client.expressionbuilder.modal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -17,21 +17,28 @@ import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.FunctionModel;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.SpacerWidget;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.cql.model.FunctionSignature;
 
 public class FunctionBuilderModal extends SubExpressionBuilderModal {
 
+	private static final String CHOOSE_SIGNATURE_LABEL = "This function has multiple signatures available. Please choose a signature.";
 	private static final String WHAT_FUNCTION_WOULD_YOU_LIKE_TO_USE = "What function would you like to use?";
-	private static final String SELECT_FUNCTION = "-- Select function --";
-	private ListBoxMVP functionListBox;
+	private static final String SELECT_FUNCTION = "-- Select a Function --";
+	private static final String SELECT_FUNCTION_SIGNATURE = "-- Select Function Signature --";
+	private ListBoxMVP functionNameListBox;
 	private int selectedFunctionIndex = 0;
 	private FunctionModel functionModel;
+	private ListBoxMVP functionSignatureListBox;
+	private VerticalPanel functionSignaturePanel;
+	private VerticalPanel functionNamePanel;
+	private Button functionNameBuildButton;
+	private Button functionSignatureBuildButton;
 
 	public FunctionBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
 			ExpressionBuilderModel mainModel) {
 		super("Function", parent, parentModel, mainModel);
-		
 		functionModel = new FunctionModel(parentModel);
 		this.getParentModel().appendExpression(functionModel);
 		display();
@@ -49,22 +56,75 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 		VerticalPanel functionPanel = new VerticalPanel();
 		functionPanel.setStyleName("selectorsPanel");
 		
+		functionNamePanel = new VerticalPanel();
+		functionNamePanel.setWidth("50%");
+		functionNamePanel.add(buildFunctionNameFormLabel());
+		functionNamePanel.add(buildFunctionNameSelectionPanel());
 
-		HorizontalPanel functionSelectorPanel = new HorizontalPanel();
-		functionSelectorPanel.setWidth("50%");
-		functionSelectorPanel.add(buildFunctionListBox());
-		functionSelectorPanel.add(buildBuildButton());
-		
-		functionPanel.add(buildFormLabel());
-		functionPanel.add(functionSelectorPanel);
+		functionSignaturePanel = new VerticalPanel();
+		functionSignaturePanel.setWidth("50%");
+		functionSignaturePanel.add(buildFunctionSignatureFormLabel());
+		functionSignaturePanel.add(buildFunctionSignatureSelectionPanel());
+
+		functionPanel.add(functionNamePanel);
+		functionPanel.add(new SpacerWidget());
+		functionPanel.add(new SpacerWidget());
+		functionPanel.add(functionSignaturePanel);		
+		functionSignaturePanel.setVisible(false);
 		return functionPanel;
 	}
+	
+	private HorizontalPanel buildFunctionNameSelectionPanel() {
+		HorizontalPanel functionNamePanel = new HorizontalPanel();
+		functionNamePanel.add(buildFunctionNameListBox());
+		
+		functionNameBuildButton = buildBuildButton();
+		functionNamePanel.add(functionNameBuildButton);
+		return functionNamePanel;
+	}
 
-	private FormLabel buildFormLabel() {
+	private Widget buildFunctionSignatureSelectionPanel() {
+		HorizontalPanel functionSignatureListBoxPanel = new HorizontalPanel();
+		functionSignatureListBoxPanel.add(buildFunctionSignatureListBox());
+		
+		functionSignatureBuildButton = buildBuildButton();
+		functionSignatureListBoxPanel.add(functionSignatureBuildButton);
+		return functionSignatureListBoxPanel;
+	}
+	
+	private ListBoxMVP buildFunctionNameListBox() {		
+		functionNameListBox = new ListBoxMVP();
+		functionNameListBox.setWidth("500px");
+		addFunctionNamesToListBox();
+		functionNameListBox.setId("functionNameListBox");
+		functionNameListBox.setTitle("Select a function");
+		functionNameListBox.addChangeHandler(event -> onFunctionNameListBoxChange());
+		functionNameListBox.setSelectedIndex(selectedFunctionIndex);
+		
+		return functionNameListBox;
+	}
+	
+	private Widget buildFunctionSignatureListBox() {
+		functionSignatureListBox = new ListBoxMVP();
+		functionSignatureListBox.setWidth("500px");
+		functionSignatureListBox.setId("functionSignatureListBox");
+		functionSignatureListBox.setTitle("Select a function signature");		
+		return functionSignatureListBox;
+	}
+
+	private FormLabel buildFunctionNameFormLabel() {
+		return buildFormLabel("functionNameListBox", WHAT_FUNCTION_WOULD_YOU_LIKE_TO_USE);
+	}
+	
+	private FormLabel buildFunctionSignatureFormLabel() {
+		return buildFormLabel("functionSignatureListBox", CHOOSE_SIGNATURE_LABEL);
+	}
+
+	private FormLabel buildFormLabel(String forField, String label) {
 		FormLabel functionLabel = new FormLabel();
-		functionLabel.setFor("functionListBox");
-		functionLabel.setText(WHAT_FUNCTION_WOULD_YOU_LIKE_TO_USE);
-		functionLabel.setTitle(WHAT_FUNCTION_WOULD_YOU_LIKE_TO_USE);
+		functionLabel.setFor(forField);
+		functionLabel.setText(label);
+		functionLabel.setTitle(label);
 		return functionLabel;
 	}
 
@@ -78,43 +138,55 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 		return buildButton;
 	}
 
-	private ListBoxMVP buildFunctionListBox() {		
-		functionListBox = new ListBoxMVP();
-		functionListBox.addItem(SELECT_FUNCTION, SELECT_FUNCTION);	
-		addFunctionNamesToListBox();
+	private void onFunctionNameListBoxChange() {
+		selectedFunctionIndex  = functionNameListBox.getSelectedIndex();
+		functionSignatureListBox.clear();
 		
-		functionListBox.setId("functionListBox");
-		functionListBox.setTitle("Select a function");
+		String name = functionNameListBox.getSelectedValue();
+		if(selectedFunctionIndex == 0) {
+			name = "";
+		}
 		
-		functionListBox.addChangeHandler(event -> {
-			selectedFunctionIndex  = functionListBox.getSelectedIndex();
-			
-			String name = functionListBox.getSelectedValue();
-			if(selectedFunctionIndex == 0) {
-				name = "";
-			}
-			
-			functionModel.setName(name);
-			this.updateCQLDisplay();
-		});
+		final String finalName = name;
+		List<FunctionSignature> signatures = new ArrayList<>(MatContext.get().getCqlConstantContainer().getFunctionSignatures());
+		signatures = signatures.stream().filter(f -> f.getName().equals(finalName)).collect(Collectors.toList());
 		
-		functionListBox.setSelectedIndex(selectedFunctionIndex);
+		if(signatures.size() > 1) {
+			functionNameBuildButton.setVisible(false);
+			functionSignaturePanel.setVisible(true);
+			addFunctionSignaturesToListBox(signatures);
+		} else {
+			functionNameBuildButton.setVisible(true);
+			functionSignaturePanel.setVisible(false);
+		}
 		
-		return functionListBox;
+		functionModel.setName(name);
+		this.updateCQLDisplay();
 	}
 
 	private void addFunctionNamesToListBox() {
+		functionNameListBox.clear();
+		functionNameListBox.addItem(SELECT_FUNCTION, SELECT_FUNCTION);			
 		List<CQLIdentifierObject> userDefinedFunctions = new ArrayList<>();
 		userDefinedFunctions.addAll(MatContext.get().getFuncs());
 		userDefinedFunctions.addAll(MatContext.get().getIncludedFuncNames());
 		userDefinedFunctions.forEach(f -> {
-			functionListBox.insertItem(f.getDisplay(), f.toString(), f.getDisplay());
+			functionNameListBox.insertItem(f.getDisplay(), f.toString(), f.getDisplay());
 		});
 		
 		List<String> predefinedNames = new ArrayList<>(MatContext.get().getCqlConstantContainer().getFunctionNames());
 		predefinedNames.remove("Coalesce");
 		predefinedNames.forEach(f -> {
-			functionListBox.insertItem(f, f);
+			functionNameListBox.insertItem(f, f);
 		});
 	}
+	
+	private void addFunctionSignaturesToListBox(List<FunctionSignature> signatures) {
+		functionSignatureListBox.clear();
+		functionSignatureListBox.addItem(SELECT_FUNCTION_SIGNATURE, SELECT_FUNCTION_SIGNATURE);			
+		signatures.forEach(s -> {
+			functionSignatureListBox.insertItem(s.getSignature(), s.getSignature());
+		});
+	}
+	
 }

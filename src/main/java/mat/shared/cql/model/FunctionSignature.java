@@ -25,6 +25,20 @@ public class FunctionSignature implements IsSerializable {
 		this.setArguments(arguments);
 		this.setDocumentaion(documentation);
 	}
+	
+	public String getSignature() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.name);
+		builder.append("(");
+		
+		for(FunctionArgument argument : this.arguments) {
+			builder.append(", ");
+			builder.append(argument.getReturnType());
+		}
+		
+		builder.append(")");
+		return builder.toString().replaceFirst(", ", "");
+	}
 
 	public String getName() {
 		return name;

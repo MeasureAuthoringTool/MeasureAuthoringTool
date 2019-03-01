@@ -25,7 +25,7 @@ import mat.client.shared.QDMContainer;
 public class AttributeBuilderModal extends SubExpressionBuilderModal {
 
 	private static final String AN_ELEMENT_AND_AN_ATTRIBUTE_ARE_REQUIRED = "An Element and an Attribute are required.";
-	private static final String HOW_WOULD_YOU_LIKE_TO_CLARIFY_YOUR_ATTRIBUTE = "How would you like to clarify your attribute? (Optional)";
+	private static final String HOW_WOULD_YOU_LIKE_TO_CLARIFY_YOUR_ATTRIBUTE = "How would you like to clarify your attribute?";
 	private static final String WHAT_ATTRIBUTE_WOULD_YOU_LIKE_TO_FIND = "What attribute would you like to find?";
 	private static final String SELECT_AN_ATTRIBUTE = "-- Select an Attribute --";
 	private AttributeModel attributeModel;
@@ -155,8 +155,15 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		
 		FormLabel clarifyingAttributeLabel = new FormLabel();
 		clarifyingAttributeLabel.setFor("clarifyingAttributeListBox");
-		clarifyingAttributeLabel.setText(HOW_WOULD_YOU_LIKE_TO_CLARIFY_YOUR_ATTRIBUTE);
-		clarifyingAttributeLabel.setTitle(HOW_WOULD_YOU_LIKE_TO_CLARIFY_YOUR_ATTRIBUTE);
+		
+		String label = HOW_WOULD_YOU_LIKE_TO_CLARIFY_YOUR_ATTRIBUTE;
+		
+		if(!isClarifyingAttributeRequired) {
+			label = label + " (Optional)";
+		}
+		
+		clarifyingAttributeLabel.setText(label);
+		clarifyingAttributeLabel.setTitle(label);
 		
 		clarifyingAttributeListBox = new ListBoxMVP();
 		clarifyingAttributeListBox.setId("clarifyingAttributeListBox");

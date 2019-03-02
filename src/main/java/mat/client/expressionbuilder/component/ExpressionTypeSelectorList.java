@@ -2,20 +2,11 @@ package mat.client.expressionbuilder.component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Code;
 import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.PanelGroup;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.Pre;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.PanelType;
-import org.gwtbootstrap3.client.ui.constants.Toggle;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -121,10 +112,10 @@ public class ExpressionTypeSelectorList extends Composite {
 				availableOperatorTypes.add(ModelAndOperatorTypeUtil.getOperatorModel(currentChildModel));
 				
 			} else {
-				PanelGroup expressionPanelGroup = buildExpressionCollapsePanel(currentChildModel);
+				ExpandCollapseCQLExpressionPanel expressionPanelGroup = buildExpressionCollapsePanel(currentChildModel);
 				
 				if(i != 0) {
-					expressionPanelGroup.setMarginTop(15.0);
+					expressionPanelGroup.getElement().setAttribute("style", "margin-top: 15px");
 				}
 				
 				panel.add(expressionPanelGroup);
@@ -148,58 +139,7 @@ public class ExpressionTypeSelectorList extends Composite {
 		return panel;
 	}
 
-	private PanelGroup buildExpressionCollapsePanel(IExpressionBuilderModel model) {	
-		Random rand = new Random();
-		int index = rand.nextInt(Integer.MAX_VALUE);
-		
-		PanelGroup expressionPanelGroup = new PanelGroup();
-		expressionPanelGroup.setWidth("100%");
-		expressionPanelGroup.setId("accordion" + index);
-		
-		Panel expressionPanel = new Panel();
-		expressionPanel.setType(PanelType.SUCCESS);
-		expressionPanel.setWidth("100%");
-		expressionPanel.setMarginLeft(0.0);
-		PanelHeader expressionPanelHeader = new PanelHeader();
-		Anchor anchor = new Anchor();
-		anchor.setText(model.getDisplayName());
-		anchor.setTitle(model.getDisplayName());
-		anchor.setIcon(IconType.PLUS);
-		anchor.setColor("black");
-		anchor.setDataParent("#accordion" + index);
-		anchor.setDataToggle(Toggle.COLLAPSE);
-		anchor.setDataTarget("#collapse" + index);
-		expressionPanelHeader.add(anchor);
-		
-		PanelCollapse expressionPanelCollapse = new PanelCollapse();
-		expressionPanelCollapse.setId("collapse" + index);
-		PanelBody expressionPanelBody = new PanelBody();		
-		
-		FocusPanel cqlLogicFocusPanel = new FocusPanel();
-		cqlLogicFocusPanel.getElement().setAttribute("aria-label", model.getCQL(""));
-		Pre cqlPre = new Pre();
-		cqlPre.setText(model.getCQL(""));
-		cqlPre.setTitle(model.getCQL(""));
-		cqlLogicFocusPanel.add(cqlPre);
-
-		expressionPanelBody.add(cqlLogicFocusPanel);
-		expressionPanelCollapse.add(expressionPanelBody);
-
-		expressionPanel.add(expressionPanelHeader);
-		expressionPanel.add(expressionPanelCollapse);
-		
-		expressionPanelGroup.add(expressionPanel);
-		
-		anchor.addClickHandler(event -> onAnchorClick(anchor));
-
-		return expressionPanelGroup;
+	private ExpandCollapseCQLExpressionPanel buildExpressionCollapsePanel(IExpressionBuilderModel model) {	
+		return new ExpandCollapseCQLExpressionPanel(model.getDisplayName(), model.getCQL(""));
 	}
-	
-	private void onAnchorClick(Anchor anchor) {
-		if(anchor.getIcon() == IconType.PLUS) {
-			anchor.setIcon(IconType.MINUS);
-		} else {
-			anchor.setIcon(IconType.PLUS);
-		}
-	}	
 }

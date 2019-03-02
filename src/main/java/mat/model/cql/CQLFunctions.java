@@ -4,11 +4,9 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CQLFunctions.
- */
 public class CQLFunctions implements CQLExpression, IsSerializable {
+	
+	private String aliasName;
 	
 	/** The id. */
 	private String id;
@@ -135,5 +133,13 @@ public class CQLFunctions implements CQLExpression, IsSerializable {
 
 	public void setReturnType(String returnType) {
 		this.returnType = returnType;
+	}
+
+	public String getAliasName() {
+		return aliasName;
+	}
+
+	public void setAliasName(String aliasName) {
+		this.aliasName = aliasName;
 	}
 }

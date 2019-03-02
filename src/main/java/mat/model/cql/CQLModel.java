@@ -158,11 +158,14 @@ public class CQLModel implements IsSerializable{
 	}
 	
 	public List<CQLFunctions> getIncludedFunc() {
-		List<CQLFunctions> includedFuncNames = new ArrayList<CQLFunctions>();
-		for(CQLModel value : includedLibrarys.values()) {
-			includedFuncNames.addAll(value.getCqlFunctions());
-		}
-		return includedFuncNames;
+		List<CQLFunctions> includedFunctions = new ArrayList<CQLFunctions>();
+		
+		includedLibrarys.forEach((k, v) -> {
+			v.getCqlFunctions().forEach(f -> f.setAliasName(k.getAliasName()));
+			includedFunctions.addAll(v.getCqlFunctions());
+		});
+				
+		return includedFunctions;
 	}
 	
 	public List<CQLIdentifierObject> getCQLIdentifierFunctions(){

@@ -54,6 +54,16 @@ public class CQLFunctionArgument implements IsSerializable, Cloneable {
 		this.qdmDataType = qdmDataType;
 	}
 	
+	public String getReturnType() {
+		if(this.qdmDataType != null) {
+			return this.qdmDataType;
+		} else if(this.otherType != null) {
+			return this.otherType;
+		} else {
+			return this.argumentType;
+		}
+	}
+	
 	public CQLFunctionArgument clone() {
 		CQLFunctionArgument argumentClone = new CQLFunctionArgument();
 		argumentClone.setArgumentName(this.getArgumentName());

@@ -42,7 +42,7 @@ public class BuildButtonObserver {
 		this.mainModel = mainModel;
 	}
 
-	public void onBuildButtonClick(String expression, String operator) {
+	public void onBuildButtonClick(String expression, String operator) {		
 		if(operator != null && !operator.isEmpty()) {
 			this.parentModel.appendExpression(operatorModel(operator));
 		}

@@ -20,6 +20,7 @@ import mat.client.expressionbuilder.modal.QuantityBuilderModal;
 import mat.client.expressionbuilder.modal.QueryBuilderModal;
 import mat.client.expressionbuilder.modal.RetrieveBuilderModal;
 import mat.client.expressionbuilder.modal.TimeBoundaryBuilderModal;
+import mat.client.expressionbuilder.modal.TimingBuilderModal;
 import mat.client.expressionbuilder.modal.ValuesetSelectorModal;
 import mat.client.expressionbuilder.model.AliasModel;
 import mat.client.expressionbuilder.model.AndModel;
@@ -135,6 +136,11 @@ public class BuildButtonObserver {
 		else if(expression.equals(ExpressionType.FUNCTION.getValue())) {
 			ExpressionBuilderModal functionModal = new FunctionBuilderModal(this.parentModal, this.parentModel, this.mainModel);
 			functionModal.show();
+		}
+		
+		else if(expression.equals(ExpressionType.TIMING.getValue())) {
+			ExpressionBuilderModal timingModal = new TimingBuilderModal(this.parentModal, this.parentModel, this.mainModel);
+			timingModal.show();
 		}
 
 		else if(QueryFinderHelper.findAliasNames(this.parentModel).contains(expression)) {

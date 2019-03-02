@@ -186,6 +186,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		availableExpressionsForFilter.add(ExpressionType.EXISTS);
 		availableExpressionsForFilter.add(ExpressionType.IN);
 		availableExpressionsForFilter.add(ExpressionType.IS_NULL_NOT_NULL);
+		availableExpressionsForFilter.add(ExpressionType.TIMING);
 		availableExpressionsForFilter.add(ExpressionType.IS_TRUE_FALSE);
 		
 		List<OperatorType> availableOperatorsForFilter = new ArrayList<>(OperatorTypeUtil.getBooleanOperators());

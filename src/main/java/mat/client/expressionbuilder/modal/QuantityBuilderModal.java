@@ -10,13 +10,14 @@ import mat.shared.StringUtility;
 
 public class QuantityBuilderModal extends SubExpressionBuilderModal {
 	private QuantityModel quantityModel;
+	private QuantityWidget quantityWidget;
 	
 	public QuantityBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Quantity", parent, parentModel, mainModel);
 		quantityModel = new QuantityModel(parentModel);
+		parentModel.appendExpression(quantityModel);
 		this.setClosable(false);
 		this.setRemoveOnHide(true);
-		this.setCQLPanelVisible(false);
 		this.getElement().getStyle().setZIndex(9999);
 		display();
 		this.getApplyButton().addClickHandler(event -> onApplyButtonClick());
@@ -28,7 +29,6 @@ public class QuantityBuilderModal extends SubExpressionBuilderModal {
 			return;
 		}
 		
-		this.getParentModel().appendExpression(quantityModel);
 		this.getExpressionBuilderParent().showAndDisplay();
 	}
 
@@ -43,8 +43,8 @@ public class QuantityBuilderModal extends SubExpressionBuilderModal {
 	private Widget buildContentPanel() {
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("quantityPanel");
-		
-		QuantityWidget quantityWidget = new QuantityWidget();
+		panel.setWidth("100%");
+		quantityWidget = new QuantityWidget();
 		quantityWidget.getQuantityTextBox().addValueChangeHandler(event -> textChanged(quantityWidget.getQuantityTextBox().getValue()));
 		quantityWidget.getUnitsListBox().addChangeHandler(event -> listBoxChanged(quantityWidget.getUnitsListBox().getSelectedValue()));
 		panel.add(quantityWidget);
@@ -53,10 +53,16 @@ public class QuantityBuilderModal extends SubExpressionBuilderModal {
 	}
 
 	private void listBoxChanged(String units) {
-		quantityModel.setUnits(units);
+		if(quantityWidget.getUnitsListBox().getSelectedIndex() == 0) {
+			quantityModel.setUnit("");
+		} else {
+			quantityModel.setUnit(units);
+		}
+		this.updateCQLDisplay();
 	}
 
 	private void textChanged(String quantity) {
 		quantityModel.setQuantity(quantity);
+		this.updateCQLDisplay();
 	}
 }

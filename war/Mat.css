@@ -2928,3 +2928,13 @@ padding: 2px;
 body {
     padding-right: 0px !important;
 }
+
+.quantityWidgetCellLeft{
+	width: 50%;
+	padding-right: 5px;
+}
+
+.quantityWidgetCellRight{
+	width: 50%;
+	padding-left: 5px;
+}

@@ -10,7 +10,8 @@ public class QuantityModel extends ExpressionBuilderModel {
 	}
 
 	private String value;
-	private String units;
+	private String unit;
+	private String cqlString;
 	
 	public String getQuantity() {
 		return value;
@@ -18,19 +19,25 @@ public class QuantityModel extends ExpressionBuilderModel {
 
 	public void setQuantity(String value) {
 		this.value = value;
+		updateCQLString();
 	}
 	
-	public String getUnits() {
-		return units;
+	public String getUnit() {
+		return unit;
 	}
 
-	public void setUnits(String units) {
-		this.units = units;
+	public void setUnit(String unit) {
+		this.unit = unit;
+		updateCQLString();
 	}
 	
 	@Override
 	public String getCQL(String identation) {
-		return this.value + (StringUtility.isEmptyOrNull(this.units) ? "" : " '" + this.units + "'");
+		return this.cqlString;
+	}
+	
+	private void updateCQLString() {
+		this.cqlString = value + (StringUtility.isEmptyOrNull(this.unit) ? "" : " '" + this.unit + "'");
 	}
 	
 	@Override

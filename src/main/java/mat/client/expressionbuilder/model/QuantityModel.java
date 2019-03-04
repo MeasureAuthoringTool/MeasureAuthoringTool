@@ -9,9 +9,8 @@ public class QuantityModel extends ExpressionBuilderModel {
 		super(parent);
 	}
 
-	private String value;
+	private String value = "";
 	private String unit;
-	private String cqlString;
 	
 	public String getQuantity() {
 		return value;
@@ -19,7 +18,6 @@ public class QuantityModel extends ExpressionBuilderModel {
 
 	public void setQuantity(String value) {
 		this.value = value;
-		updateCQLString();
 	}
 	
 	public String getUnit() {
@@ -28,16 +26,11 @@ public class QuantityModel extends ExpressionBuilderModel {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
-		updateCQLString();
 	}
 	
 	@Override
 	public String getCQL(String identation) {
-		return this.cqlString;
-	}
-	
-	private void updateCQLString() {
-		this.cqlString = value + (StringUtility.isEmptyOrNull(this.unit) ? "" : " '" + this.unit + "'");
+		return this.value + (StringUtility.isEmptyOrNull(this.unit) ? "" : " '" + this.unit + "'");
 	}
 	
 	@Override

@@ -14,7 +14,6 @@ public class QuantityBuilderModal extends SubExpressionBuilderModal {
 	public QuantityBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Quantity", parent, parentModel, mainModel);
 		quantityModel = new QuantityModel(parentModel);
-		quantityModel.setQuantity("");
 		parentModel.appendExpression(quantityModel);
 		this.setClosable(false);
 		this.setRemoveOnHide(true);

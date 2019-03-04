@@ -18,6 +18,8 @@ public class QuantityWidget extends Composite {
 	private static Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();
 	private ListBoxMVP unitsListBox;
 	private CustomQuantityTextBox quantityTextBox;
+	private static String WHAT_IS_YOUR_VALUE = "What is your value?";
+	private static String SELECT_UNIT = "--Select unit--";
 	
 	public QuantityWidget() {
 		initWidget(buildQuantityWidget());
@@ -29,9 +31,9 @@ public class QuantityWidget extends Composite {
 		quantityTextBox.getElement().setId("Quantity_TextBox");
 		
 		FormLabel quantityLabel = new FormLabel();
-		quantityLabel.setText("What is your value?");
-		quantityLabel.setTitle("What is your value?");
-		quantityLabel.setFor("Qauntity_TextBox");
+		quantityLabel.setText(WHAT_IS_YOUR_VALUE);
+		quantityLabel.setTitle(WHAT_IS_YOUR_VALUE);
+		quantityLabel.setFor("Quantity_TextBox");
 		
 		FormGroup quantityFormGroup = new FormGroup();
 		quantityFormGroup.add(quantityLabel);
@@ -39,7 +41,7 @@ public class QuantityWidget extends Composite {
 		grid.setWidget(0, 0, quantityFormGroup);
 		
 		unitsListBox = new ListBoxMVP();
-		unitsListBox.addItem("--Select unit--");
+		unitsListBox.addItem(SELECT_UNIT, "");
 		Set<String> allUnits = allCqlUnits.keySet();
 		for(String unit : allUnits) {
 			if(unit.equals(MatContext.PLEASE_SELECT)) {

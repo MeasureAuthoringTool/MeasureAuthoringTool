@@ -41,13 +41,13 @@ public class QuantityWidget extends Composite {
 		grid.setWidget(0, 0, quantityFormGroup);
 		
 		unitsListBox = new ListBoxMVP();
-		unitsListBox.addItem(SELECT_UNIT, "");
+		unitsListBox.insertItem(SELECT_UNIT, SELECT_UNIT);
 		Set<String> allUnits = allCqlUnits.keySet();
 		for(String unit : allUnits) {
 			if(unit.equals(MatContext.PLEASE_SELECT)) {
 				continue;
 			}
-			unitsListBox.addItem(unit, unit);
+			unitsListBox.insertItem(unit, unit);
 		}
 		
 		unitsListBox.setStyleName("form-control");

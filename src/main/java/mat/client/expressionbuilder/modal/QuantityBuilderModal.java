@@ -10,6 +10,7 @@ import mat.shared.StringUtility;
 
 public class QuantityBuilderModal extends SubExpressionBuilderModal {
 	private QuantityModel quantityModel;
+	private QuantityWidget quantityWidget;
 	
 	public QuantityBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Quantity", parent, parentModel, mainModel);
@@ -43,7 +44,7 @@ public class QuantityBuilderModal extends SubExpressionBuilderModal {
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("quantityPanel");
 		panel.setWidth("100%");
-		QuantityWidget quantityWidget = new QuantityWidget();
+		quantityWidget = new QuantityWidget();
 		quantityWidget.getQuantityTextBox().addValueChangeHandler(event -> textChanged(quantityWidget.getQuantityTextBox().getValue()));
 		quantityWidget.getUnitsListBox().addChangeHandler(event -> listBoxChanged(quantityWidget.getUnitsListBox().getSelectedValue()));
 		panel.add(quantityWidget);
@@ -52,7 +53,11 @@ public class QuantityBuilderModal extends SubExpressionBuilderModal {
 	}
 
 	private void listBoxChanged(String units) {
-		quantityModel.setUnit(units);
+		if(quantityWidget.getUnitsListBox().getSelectedIndex() == 0) {
+			quantityModel.setUnit("");
+		} else {
+			quantityModel.setUnit(units);
+		}
 		this.updateCQLDisplay();
 	}
 

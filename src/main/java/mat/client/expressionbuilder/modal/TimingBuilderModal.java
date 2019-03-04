@@ -11,6 +11,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.expressionbuilder.component.ExpandCollapseCQLExpressionPanel;
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
@@ -45,7 +46,8 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 
 	private void applyButtonClickHandler() {
 		if(timingModel.getRightHandSide().getChildModels().size() == 0 ||
-				timingModel.getLeftHandSide().getChildModels().size() == 0) {
+				timingModel.getLeftHandSide().getChildModels().size() == 0 ||
+				timingModel.getIntervalOperatorPhrase().getChildModels().size() == 0) {
 			
 			this.getErrorAlert().createAlert("All sections of this page must be completed.");
 			return;
@@ -82,7 +84,10 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 		
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("selectorsPanel");
-		
+		panel.add(buildLabel());
+		panel.add(new SpacerWidget());
+		panel.add(new SpacerWidget());
+
 		List<ExpressionType> availableExpressionForLeftSideOfTiming = new ArrayList<>();
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.ATTRIBUTE);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.COMPUTATION);
@@ -120,20 +125,42 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 		
 		return panel;
 	}
+	
+	private Widget buildLabel() {
+		String label =  "A timing is built with two expressions and a timing phrase between them. Example: [first expression] starts before start of [second expression].";
+		FormLabel formLabel = new FormLabel();
+		formLabel.setText(label);
+		formLabel.setTitle(label);
+		formLabel.setStyleName("attr-Label");
+		return formLabel;
+	}
 
 	private Widget buildTimingButtonPanel() {
 		VerticalPanel timingButtonPanel = new VerticalPanel();
+		timingButtonPanel.setWidth("100%");
 		
 		FormLabel label = new FormLabel();
 		label.setText(BUILD_YOUR_TIMING_PHRASE);
 		label.setTitle(BUILD_YOUR_TIMING_PHRASE);
-		
 		timingButtonPanel.add(label);
-		timingButtonPanel.add(buildTimingBuildButton());
+
+		if(this.timingModel.getIntervalOperatorPhrase().getChildModels().isEmpty()) {
+			Button timingBuildButton = buildTimingBuildButton();
+			timingBuildButton.addClickHandler(event -> onTimingBuildButtonClick());
+			timingButtonPanel.add(timingBuildButton);
+		} else {
+			ExpandCollapseCQLExpressionPanel expandCollapsePanel = new ExpandCollapseCQLExpressionPanel("Timing Phrase", this.timingModel.getIntervalOperatorPhrase().getCQL(""));
+			timingButtonPanel.add(expandCollapsePanel);
+		}
 		
 		return timingButtonPanel;
 	}
 	
+	private void onTimingBuildButtonClick() {
+		TimingPhraseBuilderModal modal = new TimingPhraseBuilderModal(this, timingModel.getIntervalOperatorPhrase(), this.getMainModel());
+		modal.show();
+	}
+
 	private Button buildTimingBuildButton() {
 		Button buildButton = new Button();
 		buildButton.setText("Build");

@@ -25,7 +25,8 @@ public enum ExpressionType implements ExpressionBuilderType {
 	TIME_BOUNDARY("Start of / End of", OperatorTypeUtil.getBooleanOperators(), getRelevantTypesForStartOfEndOf()),
 	QUANTITY("Quantity", OperatorTypeUtil.getSetOperators(), getRelevantQuantityExpression()),
 	ALIAS("Alias", OperatorTypeUtil.getAllOperators(), new ArrayList<>()),
-	FUNCTION("Function", OperatorTypeUtil.getAllOperators(), getRelevantTypesForFunctions());
+	FUNCTION("Function", OperatorTypeUtil.getAllOperators(), getRelevantTypesForFunctions()),
+	TIMING("Timing", OperatorTypeUtil.getBooleanOperators(), getRelevantTypesForBooleanExpressions());
 	
 	private String displayName;
 	private String value;
@@ -179,6 +180,9 @@ public enum ExpressionType implements ExpressionBuilderType {
 		types.add(CQLType.ANY);
 		types.addAll(getRelevantTypesForTimeBasedIntervals());
 		types.add(CQLType.INTERVAL_QUANTITY);
+		types.add(CQLType.INTERVAL_DECIMAL);
+		types.add(CQLType.INTERVAL_NUMBER);
+
 		return types;
 	}
 	

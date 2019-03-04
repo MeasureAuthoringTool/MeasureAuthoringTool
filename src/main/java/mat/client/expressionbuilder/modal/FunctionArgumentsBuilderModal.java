@@ -133,11 +133,11 @@ public class FunctionArgumentsBuilderModal extends SubExpressionBuilderModal {
 	private boolean isUnkownType(String type) {
 		for(CQLType cqlType : CQLType.values()) {
 			if(cqlType.getName().equals(type)) {
-				return true;
+				return false;
 			}
 		}
 		
-		return false;
+		return true;
 		
 	}
 	

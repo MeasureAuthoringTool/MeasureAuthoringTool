@@ -23,6 +23,7 @@ import mat.client.expressionbuilder.model.OperatorModel;
 import mat.client.expressionbuilder.model.QueryModel;
 import mat.client.expressionbuilder.model.TimeBoundaryModel;
 import mat.client.expressionbuilder.model.TimingModel;
+import mat.client.expressionbuilder.model.TimingPhraseModel;
 
 public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 	private Button cancelButton;
@@ -100,7 +101,9 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 					lastModel instanceof TimeBoundaryModel ||
 					lastModel instanceof AttributeModel ||
 					lastModel instanceof FunctionModel ||
-					lastModel instanceof TimingModel) {
+					lastModel instanceof TimingModel ||
+					lastModel instanceof TimingPhraseModel) {
+					
 				this.getParentModel().getChildModels().remove(size);
 				int newSize = this.getParentModel().getChildModels().size() - 1;
 				

@@ -58,6 +58,7 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 		availableExpressionTypes.add(ExpressionType.IS_NULL_NOT_NULL);
 		availableExpressionTypes.add(ExpressionType.QUERY);
 		availableExpressionTypes.add(ExpressionType.IS_TRUE_FALSE);
+		availableExpressionTypes.add(ExpressionType.TIMING);
 				
 		List<OperatorType> availableOperatorTypes = new ArrayList<>();
 		availableOperatorTypes.addAll(OperatorTypeUtil.getAvailableOperatorsCQLType(CQLType.ANY));

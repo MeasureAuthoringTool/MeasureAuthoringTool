@@ -9,6 +9,8 @@ public enum CQLType {
 	DECIMAL("Decimal"),
 	INTEGER("Integer"),
 	STRING("String"),
+	INTERVAL_NUMBER("Interval<Integer>"),
+	INTERVAL_DECIMAL("Interval<Decimal>"),
 	INTERVAL_DATETIME("Interval<DateTime>"),
 	INTERVAL_DATE("Interval<Date>"),
 	INTERVAL_TIME("Interval<Time>"),

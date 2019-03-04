@@ -7,12 +7,13 @@ public class TimingModel extends ExpressionBuilderModel {
 
 	private ExpressionBuilderModel leftHandSide;
 	private ExpressionBuilderModel rightHandSide;
-	private String timingPhrase = "starts before start of"; // TODO: This will change as part of MAT-9751, placeholder for now
+	private TimingPhraseModel intervalOperatorPhrase;
 	
 	public TimingModel(ExpressionBuilderModel parent) {
 		super(parent);
 		leftHandSide = new ExpressionBuilderModel(this);
 		rightHandSide = new ExpressionBuilderModel(this);
+		this.intervalOperatorPhrase = new TimingPhraseModel(this);
 	}
 	
 	public ExpressionBuilderModel getLeftHandSide() {
@@ -31,12 +32,16 @@ public class TimingModel extends ExpressionBuilderModel {
 		this.rightHandSide = rightHandSideExpression;
 	}
 	
+	public TimingPhraseModel getIntervalOperatorPhrase() {
+		return this.intervalOperatorPhrase;
+	}
+	
 	@Override
 	public String getCQL(String identation) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(leftHandSide.getCQL(""));
 		builder.append(" ");
-		builder.append(timingPhrase);
+		builder.append(intervalOperatorPhrase.getCQL(""));
 		builder.append(" ");
 		builder.append(rightHandSide.getCQL(""));
 		return builder.toString();

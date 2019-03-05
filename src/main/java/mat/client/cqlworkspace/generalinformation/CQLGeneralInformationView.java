@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.buttons.SaveToolBarButton;
+import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
@@ -39,6 +40,7 @@ public class CQLGeneralInformationView {
 	
 	private static final int COMMENTS_MAX_LENGTH = 2500;
 	private CustomTextAreaWithMaxLength comments = new CustomTextAreaWithMaxLength(COMMENTS_MAX_LENGTH);
+	private InAppHelp inAppHelp = new InAppHelp("");
 	
 
 	public CQLGeneralInformationView(){
@@ -115,7 +117,13 @@ public class CQLGeneralInformationView {
 		modelVersionGroup.add(modelVersionLabel);
 		modelVersionGroup.add(modelVersionValue);
 		
-		generalInfoTopPanel.add(heading);
+		HorizontalPanel headingPanel = new HorizontalPanel();
+		heading.getElement().setTabIndex(0);
+		headingPanel.add(heading);
+		
+		headingPanel.add(inAppHelp);
+		
+		generalInfoTopPanel.add(headingPanel);
 		
 		generalInfoTopPanel.add(new SpacerWidget());
 		generalInfoTopPanel.add(new SpacerWidget());
@@ -330,5 +338,13 @@ public class CQLGeneralInformationView {
 
 	public FormGroup getCommentsGroup() {
 		return this.commentsGroup;
+	}
+
+	public InAppHelp getInAppHelp() {
+		return inAppHelp;
+	}
+
+	public void setInAppHelp(InAppHelp inAppHelp) {
+		this.inAppHelp = inAppHelp;
 	}
 }

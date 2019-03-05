@@ -42,6 +42,7 @@ import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetView;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.expressionbuilder.modal.ExpressionBuilderHomeModal;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
+import mat.client.inapphelp.message.InAppHelpMessages;
 import mat.client.measure.service.CQLLibraryServiceAsync;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLWorkSpaceConstants;
@@ -83,6 +84,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	
 	public CQLStandaloneWorkSpacePresenter(final CQLWorkspaceView srchDisplay) {
 		cqlWorkspaceView = srchDisplay;
+		cqlWorkspaceView.getCqlGeneralInformationView().getInAppHelp().setMessage(InAppHelpMessages.STANDALONE_CQL_LIBRARY_GENERAL_INFORMATION);
+		cqlWorkspaceView.getCqlGeneralInformationView().getInAppHelp().show(false);
 		emptyWidget.add(new Label("No CQL Library Selected"));
 		addEventHandlers();
 	}

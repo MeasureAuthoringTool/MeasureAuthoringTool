@@ -43,6 +43,7 @@ import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetView;
 import mat.client.expressionbuilder.modal.ExpressionBuilderHomeModal;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
+import mat.client.inapphelp.message.InAppHelpMessages;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLWorkSpaceConstants;
@@ -83,6 +84,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	
 	public CQLMeasureWorkSpacePresenter(final CQLWorkspaceView workspaceView) {
 		cqlWorkspaceView = workspaceView;
+		cqlWorkspaceView.getCqlGeneralInformationView().getInAppHelp().setMessage(InAppHelpMessages.MEASURE_CQL_LIBRARY_GENERAL_INFORMATION);
+		cqlWorkspaceView.getCqlGeneralInformationView().getInAppHelp().show(true);
 		addEventHandlers();
 		JSONCQLTimingExpressionUtility.getAllCQLTimingExpressionsList();
 		JSONAttributeModeUtility.getAllAttrModeList();

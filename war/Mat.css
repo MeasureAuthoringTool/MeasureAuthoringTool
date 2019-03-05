@@ -2929,6 +2929,15 @@ body {
     padding-right: 0px !important;
 }
 
+.inAppHelp {
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 15px;
+}
+
+.inAppHelpHeader {
+	border-color: transparent;
+}
 .quantityWidgetCellLeft{
 	width: 50%;
 	padding-right: 5px;

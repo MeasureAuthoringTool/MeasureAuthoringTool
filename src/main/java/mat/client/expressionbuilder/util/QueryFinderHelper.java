@@ -40,7 +40,10 @@ public class QueryFinderHelper {
 		
 		if(currentModel instanceof QueryModel) {
 			QueryModel queryModel = (QueryModel) currentModel;
-			aliasNames.add(queryModel.getAlias());
+			if(!queryModel.getAlias().isEmpty()) {
+				aliasNames.add(queryModel.getAlias());
+			}
+			
 			return;
 		}
 						

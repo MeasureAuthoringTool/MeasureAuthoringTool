@@ -53,7 +53,9 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 	}
 
 	private void onApplyButtonClick() {
-		if(getSignaturesForForFunctionName(functionModel.getName()).size() != functionModel.getArguments().size() ||
+		// the apply button on this screen will always have only one argument, so we will check the arguments built vs. the number of
+		// arguments there should be
+		if(functionNameListBox.getSelectedIndex() == 0 || getSignaturesForForFunctionName(functionModel.getName()).get(0).getArguments().size() != functionModel.getArguments().size() ||
 				!areAllArgumentsFilledOut()) {
 			this.getErrorAlert().createAlert("All field are required.");
 			return;

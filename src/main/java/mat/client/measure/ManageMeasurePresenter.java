@@ -922,7 +922,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private boolean isValidCompositeMeasureForSave(List<String> message) {
-		GWT.log("message size: " + message.size());
 		boolean valid = message.size() == 0;
 		componentMeasureDisplay.getSuccessMessage().clearAlert();
 		if(!valid) {

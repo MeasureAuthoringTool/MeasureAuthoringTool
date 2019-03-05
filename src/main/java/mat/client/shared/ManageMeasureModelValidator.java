@@ -42,8 +42,11 @@ public class ManageMeasureModelValidator {
 		List<String> message = new ArrayList<String>();
 
 		if ((model.getName() == null) || "".equals(model.getName().trim())) {
-			message.add(MatContext.get().getMessageDelegate()
-					.getMeasureNameRequiredMessage());
+			message.add(MatContext.get().getMessageDelegate().getMeasureNameRequiredMessage());
+		} else {
+			if(!hasAtleastOneLetter(model.getName())){
+				message.add(MessageDelegate.MEASURE_NAME_LETTER_REQUIRED);
+			}
 		}
 		if ((model.getShortName() == null)
 				|| "".equals(model.getShortName().trim())) {
@@ -64,4 +67,13 @@ public class ManageMeasureModelValidator {
 		}
 		return message;
 	}
+	
+    protected boolean hasAtleastOneLetter(String s) {
+        for(int i = 0; i < s.length(); i++) {
+        	if(s.matches("[a-zA-Z].+")) {
+                return true;
+        	}
+        }
+        return false;
+    }
 }

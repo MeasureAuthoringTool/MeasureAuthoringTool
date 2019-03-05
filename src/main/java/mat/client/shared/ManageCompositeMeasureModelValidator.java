@@ -25,7 +25,12 @@ public class ManageCompositeMeasureModelValidator extends ManageMeasureModelVali
 		if ((model.getName() == null) || "".equals(model.getName().trim())) {
 			message.add(MatContext.get().getMessageDelegate()
 					.getMeasureNameRequiredMessage());
+		} else {
+			if(!hasAtleastOneLetter(model.getName())){
+				message.add(MessageDelegate.MEASURE_NAME_LETTER_REQUIRED);
+			}
 		}
+		
 		if ((model.getShortName() == null)
 				|| "".equals(model.getShortName().trim())) {
 			message.add(MatContext.get().getMessageDelegate()

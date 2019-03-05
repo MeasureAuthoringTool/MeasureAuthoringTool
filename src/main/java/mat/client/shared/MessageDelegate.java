@@ -10,6 +10,7 @@ public class MessageDelegate {
 	public static final String CONTINOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR = "Continous Variable measures must not be patient based.";
 	public static final String s_ERR_RETRIEVE_SCORING_CHOICES = "Problem while retrieving measure scoring choices.";
 	public static final String NQF_NUMBER_REQUIRED_ERROR = "NQF Number is required when a measure is Endorsed by NQF.";
+	public static final String MEASURE_NAME_LETTER_REQUIRED = "A measure name must contain at least one letter.";
 	public static final String SECURITY_QUESTION_ANSWERS_MUST_CONTAIN_AT_LEAST_THREE_CHARACTERS = "Security question answers must contain at least three characters.";
 	public static final String ALL_SECURITY_QUESTIONS_MUST_CONTAIN_A_VALID_SECURITY_ANSWER = "All security questions must contain a valid security answer";
 	public static final String GENERIC_ERROR_MESSAGE = "The Measure Authoring Tool was unable to process the request. Please try again. If the problem persists please contact the Help Desk.";

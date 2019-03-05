@@ -172,8 +172,10 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		if(selectedAttribute == null) {
 			addContentToClarifyingAttributeListBox(new ArrayList<>());
 		} else {
-			addContentToClarifyingAttributeListBox(getClarifyingAttributesForAttribute(selectedAttribute));
-			clarifyingAttributeFormGroup.setVisible(true);
+			if(!getClarifyingAttributesForAttribute(selectedAttribute).isEmpty()) {
+				addContentToClarifyingAttributeListBox(getClarifyingAttributesForAttribute(selectedAttribute));
+				clarifyingAttributeFormGroup.setVisible(true);
+			}
 		}
 		
 		
@@ -234,7 +236,6 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		if(clarifyingAttributeListBox.getSelectedIndex() != 0) {
 			attributeModel.getAttributes().add(clarifyingAttributeListBox.getSelectedValue());
 		}
-		
 	}
 
 }

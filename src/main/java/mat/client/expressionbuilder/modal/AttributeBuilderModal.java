@@ -39,6 +39,7 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 	private FormGroup clarifyingAttributeFormGroup;
 	private int attributeSelectedIndex = 0;
 	private int clarifyingAttributeSelectedIndex = 0;
+	private String selectedAttribute;
 
 	public AttributeBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		super("Attribute", parent, parentModel, mainModel);
@@ -135,7 +136,7 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		
 		attributeListBox.setSelectedIndex(attributeSelectedIndex);
 		attributeListBox.addChangeHandler(event -> {
-			String selectedAttribute = attributeListBox.getSelectedValue();			
+			selectedAttribute = attributeListBox.getSelectedValue();			
 			addContentToClarifyingAttributeListBox(getClarifyingAttributesForAttribute(selectedAttribute));
 			addAttributesToModel();
 			attributeSelectedIndex = attributeListBox.getSelectedIndex();
@@ -167,7 +168,14 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		
 		clarifyingAttributeListBox = new ListBoxMVP();
 		clarifyingAttributeListBox.setId("clarifyingAttributeListBox");
-		addContentToClarifyingAttributeListBox(new ArrayList<>());
+		
+		if(selectedAttribute == null) {
+			addContentToClarifyingAttributeListBox(new ArrayList<>());
+		} else {
+			addContentToClarifyingAttributeListBox(getClarifyingAttributesForAttribute(selectedAttribute));
+			clarifyingAttributeFormGroup.setVisible(true);
+		}
+		
 		
 		clarifyingAttributeFormGroup.add(clarifyingAttributeLabel);
 		clarifyingAttributeFormGroup.add(clarifyingAttributeListBox);

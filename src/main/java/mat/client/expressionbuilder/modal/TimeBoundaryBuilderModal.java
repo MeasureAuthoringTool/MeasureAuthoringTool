@@ -103,7 +103,7 @@ public class TimeBoundaryBuilderModal extends SubExpressionBuilderModal {
 	private ExpressionTypeSelectorList buildSecondExpressionList() {
 		final List<ExpressionType> availableExpressionTypes = new ArrayList<>();
 		availableExpressionTypes.add(ExpressionType.DEFINITION);
-		//TODO: Add function here once it is built in MAT-9725
+		availableExpressionTypes.add(ExpressionType.FUNCTION);
 		availableExpressionTypes.add(ExpressionType.INTERVAL);
 		availableExpressionTypes.add(ExpressionType.PARAMETER);
 		

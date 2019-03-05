@@ -6,6 +6,7 @@ public class TimingPhraseModel extends ExpressionBuilderModel {
 		super(parent);
 	}
 	
+	@Override
 	public String getCQL(String identation) {
 		StringBuilder builder = new StringBuilder();
 		

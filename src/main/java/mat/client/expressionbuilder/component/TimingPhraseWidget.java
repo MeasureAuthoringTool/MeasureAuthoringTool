@@ -80,14 +80,14 @@ public class TimingPhraseWidget extends Composite {
 		group.setWidth("50");
 		
 		FormLabel formLabel = new FormLabel();
-		String label = this.label;
+		String labelText = this.label;
 		
 		if(this.isOptional) {
-			label = label + " (Optional)";
+			labelText = labelText + " (Optional)";
 		}
 		
-		formLabel.setText(label);
-		formLabel.setTitle(label);
+		formLabel.setText(labelText);
+		formLabel.setTitle(labelText);
 		
 		timingListBox = new ListBoxMVP();
 		timingListBox.insertItem(placeholder, placeholder);		
@@ -95,11 +95,7 @@ public class TimingPhraseWidget extends Composite {
 		
 		timingListBox.addChangeHandler(event -> {
 			String selectedValue = timingListBox.getSelectedValue();
-			if(isQuantity(selectedValue)) {
-				quantityWidget.setVisible(true);
-			} else {
-				quantityWidget.setVisible(false);
-			}
+			quantityWidget.setVisible(isQuantity(selectedValue));
 		});
 		
 		group.add(formLabel);

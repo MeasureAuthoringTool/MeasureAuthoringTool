@@ -68,8 +68,8 @@ public class TimingPhraseBuilderModal extends SubExpressionBuilderModal {
 		timingWidgets.add(timingWidget);
 		
 		timingWidget.addChangeHandler(event -> onTimingWidgetChange(timingWidget));
-		timingWidget.addQuantityUnitChangeHandler(event -> onQuantityWidgetChange(timingWidget));
-		timingWidget.addQuantityValueChangeHandler(event -> onQuantityWidgetChange(timingWidget));
+		timingWidget.addQuantityUnitChangeHandler(event -> onQuantityWidgetChange());
+		timingWidget.addQuantityValueChangeHandler(event -> onQuantityWidgetChange());
 
 		timingPhrasePanel.add(timingWidget);
 		return timingPhrasePanel;
@@ -115,13 +115,13 @@ public class TimingPhraseBuilderModal extends SubExpressionBuilderModal {
 				timingWidgets.add(newElement);
 				timingPhrasePanel.add(newElement);
 				newElement.addChangeHandler(event -> onTimingWidgetChange(newElement));
-				newElement.addQuantityUnitChangeHandler(event -> onQuantityWidgetChange(newElement));
-				newElement.addQuantityValueChangeHandler(event -> onQuantityWidgetChange(newElement));
+				newElement.addQuantityUnitChangeHandler(event -> onQuantityWidgetChange());
+				newElement.addQuantityValueChangeHandler(event -> onQuantityWidgetChange());
 			}
 		}
 	}
 	
-	private void onQuantityWidgetChange(TimingPhraseWidget timingWidget) {
+	private void onQuantityWidgetChange() {
 		this.getParentModel().getChildModels().clear();
 		for(TimingPhraseWidget widget : timingWidgets) {
 			if(widget.getValue() != null) {
@@ -152,7 +152,6 @@ public class TimingPhraseBuilderModal extends SubExpressionBuilderModal {
 			operators.forEach(o -> timings.add(o));
 		}
 		
-		List<TimingOperator> timingList = new ArrayList<>(timings);
-		return timingList;
+		return new ArrayList<>(timings);
 	}
 }

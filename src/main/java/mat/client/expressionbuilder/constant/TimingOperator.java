@@ -20,7 +20,7 @@ public enum TimingOperator implements ExpressionBuilderType {
 	BEFORE("before"),
 	AFTER("after"),
 	
-	// DATE TIME PRECISISION
+	// DATE TIME PRECISION
 	YEAR("year"),
 	MONTH("month"),
 	WEEK("week"),

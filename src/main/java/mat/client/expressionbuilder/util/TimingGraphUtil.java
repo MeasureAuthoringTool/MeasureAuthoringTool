@@ -3,11 +3,13 @@ package mat.client.expressionbuilder.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-
 import mat.client.expressionbuilder.constant.TimingOperator;
 
 public class TimingGraphUtil {
+	
+	private TimingGraphUtil() {
+		throw new IllegalStateException("Timing Graph Util");
+	}
 
     // ('starts' | 'ends' | 'occurs')? 'same' dateTimePrecision? (relativeQualifier | 'as') ('start' | 'end')? #concurrentWithIntervalOperatorPhrase
 	public static TimingGraph getConcurrentWithIntervalOperatorPhraseGraph() {
@@ -387,7 +389,6 @@ public class TimingGraphUtil {
 	}
 	
 	public static boolean hasPath(TimingGraph graph, List<TimingOperator> path) {
-		GWT.log("PATH : " + getPath(path));
 		for(int i = 0; i < path.size() - 1; i++) {		
 			TimingOperator currentOperator = path.get(i);
 			TimingOperator nextOperator = path.get(i + 1);
@@ -399,15 +400,5 @@ public class TimingGraphUtil {
 		}
 		 
 		return true;
-	}
-	
-	public static String getPath(List<TimingOperator> path) {
-		String pathString = "";
-		
-		for(TimingOperator s : path) {
-			pathString = pathString +  "---> " + s.getDisplayName();
-		}
-		
-		return pathString;
 	}
 }

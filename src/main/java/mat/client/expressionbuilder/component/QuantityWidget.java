@@ -19,7 +19,7 @@ public class QuantityWidget extends Composite {
 	private ListBoxMVP unitsListBox;
 	private CustomQuantityTextBox valueTextBox;
 	private static final String WHAT_IS_YOUR_VALUE = "What is your value?";
-	private static final String SELECT_UNIT = "--Select unit--";
+	private static final String SELECT_UNIT = "-- Select unit --";
 	
 	public QuantityWidget() {
 		initWidget(buildQuantityWidget());
@@ -55,7 +55,7 @@ public class QuantityWidget extends Composite {
 		
 		FormGroup unitFormGroup = new FormGroup();
 		FormLabel unitsLabel = new FormLabel();
-		unitsLabel.setText("Choose a unit to go with your quantity. (optional)");
+		unitsLabel.setText("Choose a unit to go with your quantity. (Optional)");
 		unitsLabel.setTitle("Select Unit");
 		unitsLabel.setFor("Units_listBox");
 

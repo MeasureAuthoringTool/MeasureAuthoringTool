@@ -17,9 +17,9 @@ import mat.client.shared.MatContext;
 public class QuantityWidget extends Composite {
 	private static Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();
 	private ListBoxMVP unitsListBox;
-	private CustomQuantityTextBox quantityTextBox;
-	private static String WHAT_IS_YOUR_VALUE = "What is your value?";
-	private static String SELECT_UNIT = "--Select unit--";
+	private CustomQuantityTextBox valueTextBox;
+	private static final String WHAT_IS_YOUR_VALUE = "What is your value?";
+	private static final String SELECT_UNIT = "--Select unit--";
 	
 	public QuantityWidget() {
 		initWidget(buildQuantityWidget());
@@ -27,8 +27,8 @@ public class QuantityWidget extends Composite {
 
 	private Panel buildQuantityWidget() {
 		Grid grid = new Grid(1, 2);
-		quantityTextBox = new CustomQuantityTextBox(30);
-		quantityTextBox.getElement().setId("Quantity_TextBox");
+		valueTextBox = new CustomQuantityTextBox(30);
+		valueTextBox.getElement().setId("Quantity_TextBox");
 		
 		FormLabel quantityLabel = new FormLabel();
 		quantityLabel.setText(WHAT_IS_YOUR_VALUE);
@@ -37,7 +37,7 @@ public class QuantityWidget extends Composite {
 		
 		FormGroup quantityFormGroup = new FormGroup();
 		quantityFormGroup.add(quantityLabel);
-		quantityFormGroup.add(quantityTextBox);
+		quantityFormGroup.add(valueTextBox);
 		grid.setWidget(0, 0, quantityFormGroup);
 		
 		unitsListBox = new ListBoxMVP();
@@ -71,16 +71,8 @@ public class QuantityWidget extends Composite {
 	public ListBoxMVP getUnitsListBox() {
 		return unitsListBox;
 	}
-
-	public void setUnitsListBox(ListBoxMVP unitsListBox) {
-		this.unitsListBox = unitsListBox;
-	}
 	
-	public CustomQuantityTextBox getQuantityTextBox() {
-		return quantityTextBox;
-	}
-
-	public void setQuantityTextBox(CustomQuantityTextBox quantityTextBox) {
-		this.quantityTextBox = quantityTextBox;
+	public CustomQuantityTextBox getValueTextBox() {
+		return valueTextBox;
 	}
 }

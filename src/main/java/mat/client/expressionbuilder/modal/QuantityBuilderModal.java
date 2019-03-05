@@ -45,7 +45,7 @@ public class QuantityBuilderModal extends SubExpressionBuilderModal {
 		panel.setStyleName("quantityPanel");
 		panel.setWidth("100%");
 		quantityWidget = new QuantityWidget();
-		quantityWidget.getQuantityTextBox().addValueChangeHandler(event -> textChanged(quantityWidget.getQuantityTextBox().getValue()));
+		quantityWidget.getValueTextBox().addValueChangeHandler(event -> textChanged(quantityWidget.getValueTextBox().getValue()));
 		quantityWidget.getUnitsListBox().addChangeHandler(event -> listBoxChanged(quantityWidget.getUnitsListBox().getSelectedValue()));
 		panel.add(quantityWidget);
 		

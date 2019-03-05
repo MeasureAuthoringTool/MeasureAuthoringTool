@@ -45,7 +45,7 @@ public class TimingPhraseWidget extends Composite {
 			String timing = timingListBox.getSelectedValue();
 			
 			if(isQuantity(timingListBox.getSelectedValue())) {
-				String value = quantityWidget.getQuantityTextBox().getText();				
+				String value = quantityWidget.getValueTextBox().getText();				
 				String unit = "";
 				if(quantityWidget.getUnitsListBox().getSelectedIndex() != 0) {
 					unit = quantityWidget.getUnitsListBox().getSelectedValue();
@@ -66,7 +66,7 @@ public class TimingPhraseWidget extends Composite {
 	
 	public boolean isComplete() {
 		if(isQuantity(timingListBox.getSelectedValue())) {
-			String value = quantityWidget.getQuantityTextBox().getText();
+			String value = quantityWidget.getValueTextBox().getText();
 			return !value.isEmpty();
 		} else {
 			return timingListBox.getSelectedIndex() != 0;
@@ -134,6 +134,6 @@ public class TimingPhraseWidget extends Composite {
 	}
 	
 	public void addQuantityValueChangeHandler(ValueChangeHandler handler) {
-		this.quantityWidget.getQuantityTextBox().addValueChangeHandler(handler);
+		this.quantityWidget.getValueTextBox().addValueChangeHandler(handler);
 	}
 }

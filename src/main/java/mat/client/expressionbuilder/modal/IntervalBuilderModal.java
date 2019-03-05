@@ -83,6 +83,7 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 		panel.setStyleName("selectorsPanel");
 		
 		List<ExpressionType> availableExpressions = new ArrayList<>();
+		availableExpressions.add(ExpressionType.DATE_TIME);
 		availableExpressions.add(ExpressionType.DEFINITION);
 		availableExpressions.add(ExpressionType.TIME_BOUNDARY);
 		

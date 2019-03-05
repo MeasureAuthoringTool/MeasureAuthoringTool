@@ -24,33 +24,33 @@ public class ComputationBuilderModal extends SubExpressionBuilderModal {
 	private static final String MATHEMATICAL_OPERATION_LABEL = "What type of mathematical operation would you like to do?";
 	private static final String FIRST_HEADING = "What is the expression you would like to use as the first part of your computation?";
 	private static final String SECOND_HEADING = "What is the expression you would like to use as the second part of your computation?";
-	
+
 	private int leftHandSideIndex = 0;
 	private int rightHandSideIndex = 0;
 	private int selectedOperatorIndex = 0;
 
 	private ListBoxMVP operatorListBox;
-	
+
 	private final ComputationModel computationModel;
-	
+
 	private final BuildButtonObserver leftHandSideBuildButtonObserver;
 	private final BuildButtonObserver rightHandSideBuildButtonObserver;
-	
+
 	private ExpressionTypeSelectorList leftHandSideOfComputationSelectorList;
 	private ExpressionTypeSelectorList rightHandSideOfComputationSelectorList;
 
-	public ComputationBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
+	public ComputationBuilderModal(final ExpressionBuilderModal parent, final ExpressionBuilderModel parentModel, final ExpressionBuilderModel mainModel) {
 		super(ExpressionType.COMPUTATION.getDisplayName(), parent, parentModel, mainModel);
-		
+
 		computationModel = new ComputationModel(parentModel);
 		getParentModel().appendExpression(computationModel);
 		leftHandSideBuildButtonObserver = new BuildButtonObserver(this, computationModel.getLeftHandSide(), mainModel);
 		rightHandSideBuildButtonObserver = new BuildButtonObserver(this, computationModel.getRightHandSide(), mainModel);
-		
+
 		getApplyButton().addClickHandler(event -> onApplyButtonClick());
 		display();
 	}
-	
+
 	private void onComputationOperatorListBoxChange() {
 		selectedOperatorIndex = operatorListBox.getSelectedIndex();
 		if(selectedOperatorIndex == 0) {
@@ -58,7 +58,7 @@ public class ComputationBuilderModal extends SubExpressionBuilderModal {
 		} else {
 			computationModel.setComputationOperator(operatorListBox.getSelectedValue());
 		}
-		
+
 		updateCQLDisplay();
 	}
 
@@ -67,35 +67,35 @@ public class ComputationBuilderModal extends SubExpressionBuilderModal {
 		getErrorAlert().clearAlert();
 		getContentPanel().add(buildContentPanel());
 		operatorListBox.setSelectedIndex(selectedOperatorIndex);
-		
+
 		if(leftHandSideOfComputationSelectorList.getSelector() != null) {
 			leftHandSideOfComputationSelectorList.getSelector().getExpressionTypeSelectorListBox().setSelectedIndex(leftHandSideIndex);
-			leftHandSideOfComputationSelectorList.getSelector().getExpressionTypeSelectorListBox().addChangeHandler(event -> 
+			leftHandSideOfComputationSelectorList.getSelector().getExpressionTypeSelectorListBox().addChangeHandler(event ->
 			leftHandSideIndex = leftHandSideOfComputationSelectorList.getSelector().getExpressionTypeSelectorListBox().getSelectedIndex());
 		}
-		
+
 		if(rightHandSideOfComputationSelectorList.getSelector() != null) {
 			rightHandSideOfComputationSelectorList.getSelector().getExpressionTypeSelectorListBox().setSelectedIndex(rightHandSideIndex);
 			rightHandSideOfComputationSelectorList.getSelector().getExpressionTypeSelectorListBox().addChangeHandler(event ->
 			rightHandSideIndex = rightHandSideOfComputationSelectorList.getSelector().getExpressionTypeSelectorListBox().getSelectedIndex());
 		}
-		
+
 		updateCQLDisplay();
 	}
-	
+
 	private Widget buildContentPanel() {
 		getContentPanel().clear();
-		
+
 		final VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("selectorsPanel");
-		
+
 		buildFirstExpressionList();
 		buildSecondExpressionList();
-		
+
 		panel.add(leftHandSideOfComputationSelectorList);
 		panel.add(buildComputationOperatorListBox());
 		panel.add(rightHandSideOfComputationSelectorList);
-		
+
 		return panel;
 	}
 
@@ -112,20 +112,20 @@ public class ComputationBuilderModal extends SubExpressionBuilderModal {
 		rightSideOfComputationOptions.addAll(buildDropDownOptions());
 
 		rightHandSideOfComputationSelectorList = new ExpressionTypeSelectorList(
-				rightSideOfComputationOptions, new ArrayList<>(), rightHandSideBuildButtonObserver, computationModel.getRightHandSide(),SECOND_HEADING);
+				rightSideOfComputationOptions, new ArrayList<>(), rightHandSideBuildButtonObserver, computationModel.getRightHandSide(), SECOND_HEADING);
 	}
 
 	private List<ExpressionType> buildDropDownOptions(){
 		final List<ExpressionType> availableExpressions = new ArrayList<>();
 		availableExpressions.add(ExpressionType.ATTRIBUTE);
+		availableExpressions.add(ExpressionType.DATE_TIME);
 		availableExpressions.add(ExpressionType.DEFINITION);
+		availableExpressions.add(ExpressionType.FUNCTION);
 		availableExpressions.add(ExpressionType.QUANTITY);
 		availableExpressions.add(ExpressionType.TIME_BOUNDARY);
-		//TODO: Add Date/Time(MAT-9733), Function (MAT-9725) here
-		
 		return availableExpressions;
 	}
-	
+
 	private Widget buildComputationOperatorListBox() {
 		final FormGroup group = new FormGroup();
 
@@ -147,9 +147,9 @@ public class ComputationBuilderModal extends SubExpressionBuilderModal {
 	private void buildOperatorListBox() {
 		operatorListBox = new ListBoxMVP();
 		operatorListBox.setWidth("36%");
-		
-		buildComputationDropDown();		
-		
+
+		buildComputationDropDown();
+
 		operatorListBox.addChangeHandler(event -> onComputationOperatorListBoxChange());
 	}
 

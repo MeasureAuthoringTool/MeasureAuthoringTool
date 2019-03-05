@@ -26,7 +26,8 @@ public enum ExpressionType implements ExpressionBuilderType {
 	QUANTITY("Quantity", OperatorTypeUtil.getSetOperators(), getRelevantQuantityExpression()),
 	ALIAS("Alias", OperatorTypeUtil.getAllOperators(), new ArrayList<>()),
 	FUNCTION("Function", OperatorTypeUtil.getAllOperators(), getRelevantTypesForFunctions()),
-	TIMING("Timing", OperatorTypeUtil.getBooleanOperators(), getRelevantTypesForBooleanExpressions());
+	TIMING("Timing", OperatorTypeUtil.getBooleanOperators(), getRelevantTypesForBooleanExpressions()),
+	DATE_TIME("Date/Time", new ArrayList<>(), getRelevantTypesForTimeBasedExpressions());
 	
 	private String displayName;
 	private String value;
@@ -39,7 +40,7 @@ public enum ExpressionType implements ExpressionBuilderType {
 	
 	ExpressionType(String displayName, String value, List<OperatorType> availableOperator, List<CQLType> relevantCQLTypes) {
 		this.value = value;
-		this.setAvailableOperators(availableOperators);
+		this.setAvailableOperators(availableOperator);
 		this.displayName = displayName;
 		this.relevantCQLTypes = relevantCQLTypes;
 	}

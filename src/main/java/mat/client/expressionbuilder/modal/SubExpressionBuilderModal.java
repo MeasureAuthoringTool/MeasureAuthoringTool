@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 
 import mat.client.expressionbuilder.model.ComparisonModel;
 import mat.client.expressionbuilder.model.ComputationModel;
+import mat.client.expressionbuilder.model.DateTimeModel;
 import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.FunctionModel;
@@ -102,7 +103,8 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 					lastModel instanceof AttributeModel ||
 					lastModel instanceof FunctionModel ||
 					lastModel instanceof TimingModel ||
-					lastModel instanceof TimingPhraseModel) {
+					lastModel instanceof TimingPhraseModel ||
+					lastModel instanceof DateTimeModel) {
 					
 				this.getParentModel().getChildModels().remove(size);
 				int newSize = this.getParentModel().getChildModels().size() - 1;

@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
+import mat.client.expressionbuilder.modal.ExpressionBuilderModal;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.shared.ListBoxMVP;
 
@@ -38,8 +39,10 @@ public class ExpressionTypeSelector extends Composite {
 
 	private VerticalPanel contentPanel;
 	private List<String> availableAliases;
+	private ExpressionBuilderModal parentModal;
 	
-	public ExpressionTypeSelector(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes, List<String> availableAliases, BuildButtonObserver observer, boolean isFirstSelection) {
+	public ExpressionTypeSelector(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes, List<String> availableAliases, 
+			BuildButtonObserver observer, boolean isFirstSelection, ExpressionBuilderModal parentModal) {
 		this.availableExpressionTypes = availableExpressionTypes;
 		this.availableOperatorTypes = availableOperatorTypes;
 		this.availableAliases = availableAliases;
@@ -49,6 +52,7 @@ public class ExpressionTypeSelector extends Composite {
 		contentPanel = new VerticalPanel();
 		contentPanel.setWidth("50%");
 		contentPanel.add(buildContent());
+		this.parentModal = parentModal;
 		initWidget(contentPanel);
 	}
 				
@@ -80,6 +84,11 @@ public class ExpressionTypeSelector extends Composite {
 		selectAnOperatorLabel.setId("selectAnOperatorLabel");
 		
 		operatorTypeSelectorListBox = new ListBoxMVP();
+		
+		operatorTypeSelectorListBox.addChangeHandler(event -> {
+			this.parentModal.getErrorAlert().clearAlert();
+		});
+		
 		operatorTypeSelectorListBox.insertItem(SELECT_AN_OPERATOR_PLACEHOLDER, SELECT_AN_OPERATOR_PLACEHOLDER, SELECT_AN_OPERATOR_PLACEHOLDER);
 		for(OperatorType type : this.availableOperatorTypes) {
 			operatorTypeSelectorListBox.insertItem(type.getDisplayName(), type.getValue(), type.getDisplayName());
@@ -107,6 +116,10 @@ public class ExpressionTypeSelector extends Composite {
 
 		
 		expressionTypeSelectorListBox = new ListBoxMVP();
+		expressionTypeSelectorListBox.addChangeHandler(event -> {
+			this.parentModal.getErrorAlert().clearAlert();
+		});
+		
 		expressionTypeSelectorListBox.setWidth("100%");
 		
 		expressionTypeSelectorListBox.insertItem(SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE);
@@ -181,12 +194,16 @@ public class ExpressionTypeSelector extends Composite {
 			if(expressionTypeSelectorListBox.getSelectedIndex() > 0) {
 				String expressionType = expressionTypeSelectorListBox.getSelectedValue();
 				observer.onBuildButtonClick(expressionType, null);
+			} else {
+				this.parentModal.getErrorAlert().createAlert("An expression type is required.");
 			}
 		} else {
 			if(expressionTypeSelectorListBox.getSelectedIndex() > 0 && operatorTypeSelectorListBox.getSelectedIndex() > 0) {
 				String expressionType = expressionTypeSelectorListBox.getSelectedValue();
 				String operatorType = operatorTypeSelectorListBox.getSelectedValue();
 				observer.onBuildButtonClick(expressionType, operatorType);
+			} else {
+				this.parentModal.getErrorAlert().createAlert("An expression type and an operator are required.");
 			}
 		}
 	}

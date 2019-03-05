@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
+import mat.client.expressionbuilder.modal.ExpressionBuilderModal;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.ModelAndOperatorTypeUtil;
@@ -35,16 +36,17 @@ public class ExpressionTypeSelectorList extends Composite {
 	private String labelText;
 	private ExpressionTypeSelector selector;
 	private boolean shouldHaveComputationOption = true;
+	private ExpressionBuilderModal parentModal;
 
 	public ExpressionTypeSelectorList(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes,
-			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText) {
-		this(availableExpressionTypes, availableOperatorTypes, new ArrayList<>(), observer, model, labelText);
+			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText, ExpressionBuilderModal parentModal) {
+		this(availableExpressionTypes, availableOperatorTypes, new ArrayList<>(), observer, model, labelText, parentModal);
 	}
 	
 	public ExpressionTypeSelectorList(
 			List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes,
 			List<String> availableAliases, 
-			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText) {
+			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText, ExpressionBuilderModal parentModal) {
 		this.availableExpressionTypes = availableExpressionTypes;
 		this.availableAliases = availableAliases;
 		this.availableOperatorTypes = new ArrayList<>();
@@ -54,6 +56,7 @@ public class ExpressionTypeSelectorList extends Composite {
 		this.hasNoSelections = this.model.getChildModels().size() == 0;
 		canOnlyMakeOneSelection = this.availableOperatorTypes.isEmpty();
 		this.labelText = labelText;
+		this.parentModal = parentModal;
 		initWidget(buildPanel());
 	}
 		
@@ -131,7 +134,7 @@ public class ExpressionTypeSelectorList extends Composite {
 				availableExpressionTypes.removeIf(expression -> ExpressionType.COMPUTATION.equals(expression));
 			}
 			
-			selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, availableAliases, buildButtonObserver, canAddAnother);		
+			selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, availableAliases, buildButtonObserver, canAddAnother, this.parentModal);		
 			panel.add(selector);
 		}
 		

@@ -1,3 +1,4 @@
+
 package mat.client.expressionbuilder.modal;
 
 import java.util.ArrayList;
@@ -104,7 +105,7 @@ public class ComputationBuilderModal extends SubExpressionBuilderModal {
 		leftSideOfComputationOptions.addAll(buildDropDownOptions());
 
 		leftHandSideOfComputationSelectorList = new ExpressionTypeSelectorList(
-				leftSideOfComputationOptions, new ArrayList<>(), leftHandSideBuildButtonObserver, computationModel.getLeftHandSide(), FIRST_HEADING);
+				leftSideOfComputationOptions, new ArrayList<>(), leftHandSideBuildButtonObserver, computationModel.getLeftHandSide(), FIRST_HEADING, this);
 	}
 
 	private void buildSecondExpressionList() {
@@ -112,7 +113,8 @@ public class ComputationBuilderModal extends SubExpressionBuilderModal {
 		rightSideOfComputationOptions.addAll(buildDropDownOptions());
 
 		rightHandSideOfComputationSelectorList = new ExpressionTypeSelectorList(
-				rightSideOfComputationOptions, new ArrayList<>(), rightHandSideBuildButtonObserver, computationModel.getRightHandSide(), SECOND_HEADING);
+				rightSideOfComputationOptions, new ArrayList<>(), rightHandSideBuildButtonObserver, 
+				computationModel.getRightHandSide(), SECOND_HEADING, this);
 	}
 
 	private List<ExpressionType> buildDropDownOptions(){

@@ -69,7 +69,7 @@ public class IsTrueFalseBuilderModal extends SubExpressionBuilderModal {
 		String label = "What type of expression would you like to use for your true or false statement?";
 		ExpressionTypeSelectorList selectors = 
 				new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, 
-						buildButtonObserver, isTrueFalseModel, label);
+						buildButtonObserver, isTrueFalseModel, label, this);
 		
 		panel.add(buildIsTrueFalseFormGroup());		
 		panel.add(selectors);	

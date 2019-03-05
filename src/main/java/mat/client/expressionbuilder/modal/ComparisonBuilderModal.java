@@ -93,8 +93,7 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 		
 		leftHandSideOfComparisonSelectorList = new ExpressionTypeSelectorList(
 				availableExpressionForLeftSideOfComparison, new ArrayList<>(), leftHandSideBuildButtonObserver, comparisonModel.getLeftHandSide(), 
-				"What is the first type of expression you would like to compare?"
-		);
+				"What is the first type of expression you would like to compare?", this);
 		
 		panel.add(leftHandSideOfComparisonSelectorList);
 
@@ -107,8 +106,7 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 		availableExpressionForRightSideOfComparison.add(ExpressionType.QUANTITY);
 		rightHandSideOfComparisonSelectorList = new ExpressionTypeSelectorList(
 				availableExpressionForRightSideOfComparison, new ArrayList<>(), rightHandSideBuildButtonObserver, comparisonModel.getRightHandSide(), 
-				"What is the second type of expression you would like to compare?"
-		);
+				"What is the second type of expression you would like to compare?", this);
 		
 		panel.add(rightHandSideOfComparisonSelectorList);
 		

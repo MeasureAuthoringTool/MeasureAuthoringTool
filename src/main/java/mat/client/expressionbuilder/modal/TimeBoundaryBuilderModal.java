@@ -109,7 +109,7 @@ public class TimeBoundaryBuilderModal extends SubExpressionBuilderModal {
 		availableExpressionTypes.add(ExpressionType.INTERVAL);
 		availableExpressionTypes.add(ExpressionType.PARAMETER);
 		
-		return new ExpressionTypeSelectorList(availableExpressionTypes, new ArrayList<>(), buildButtonObserver, timeBoundaryModel, LABEL);
+		return new ExpressionTypeSelectorList(availableExpressionTypes, new ArrayList<>(), buildButtonObserver, timeBoundaryModel, LABEL, this);
 	}
 
 	private void onApplyButtonClick() {

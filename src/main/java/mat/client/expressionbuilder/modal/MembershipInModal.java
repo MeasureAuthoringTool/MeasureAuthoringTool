@@ -84,7 +84,7 @@ public class MembershipInModal extends SubExpressionBuilderModal {
 		
 		leftHandSideOfExpressionSelectorList = new ExpressionTypeSelectorList(
 				availableExpressionForLeftSideOfIn, new ArrayList<>(), leftHandSideBuildButtonObserver, inModel.getLeftHandSide(), 
-				"What type of expression are you looking for?");
+				"What type of expression are you looking for?", this);
 	}
 	
 	private void buildSecondExpressionList() {
@@ -95,7 +95,7 @@ public class MembershipInModal extends SubExpressionBuilderModal {
 
 		rightHandSideOfExpressionSelectorList = new ExpressionTypeSelectorList(
 				availableExpressionForRightSideOfIn, new ArrayList<>(), rightHandSideBuildButtonObserver, inModel.getRightHandSide(), 
-				"In which expression would you like to find that data?"
+				"In which expression would you like to find that data?", this
 		);
 	}
 	

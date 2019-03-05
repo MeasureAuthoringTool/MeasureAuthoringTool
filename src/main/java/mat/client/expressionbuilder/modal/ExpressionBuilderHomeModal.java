@@ -67,7 +67,7 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 		selectorsPanel.setStyleName("selectorsPanel");
 		String label = "What type of expression would you like to build?";
 		this.getContentPanel().add(new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, 
-				buildButtonObserver, this.getParentModel(), label));
+				buildButtonObserver, this.getParentModel(), label, this));
 		this.getFooter().add(buildFooter());
 		this.updateCQLDisplay();
 	}

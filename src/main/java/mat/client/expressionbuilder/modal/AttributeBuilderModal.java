@@ -46,8 +46,6 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		qdmContainer = MatContext.get().getCqlConstantContainer().getQdmContainer();
 		cqlTypeContainer = MatContext.get().getCqlConstantContainer().getCqlTypeContainer();
 		
-		
-
 		attributeModel = new AttributeModel(parentModel); 
 		this.getParentModel().appendExpression(attributeModel);
 		
@@ -105,7 +103,7 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 			String label = "What element are you wanting to use the attribute for?";
 			ExpressionTypeSelectorList selectors = new ExpressionTypeSelectorList(
 					availableExpressionTypes, new ArrayList<>(), QueryFinderHelper.findAliasNames(attributeModel), 
-					buildButtonObserver, this.attributeModel.getSource(), label);
+					buildButtonObserver, this.attributeModel.getSource(), label, this);
 			panel.add(selectors);
 		}
 

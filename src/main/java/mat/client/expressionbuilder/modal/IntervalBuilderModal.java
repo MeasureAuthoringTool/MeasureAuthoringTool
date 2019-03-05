@@ -89,7 +89,7 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 		
 		lowerBoundExpressionTypeSelector = new ExpressionTypeSelectorList(
 				availableExpressions, new ArrayList<>(), lowerBoundBuildButtonObserver, intervalModel.getLowerBound(), 
-				"What would you like to use for the lower boundary of your interval?"
+				"What would you like to use for the lower boundary of your interval?", this
 		);
 		
 		panel.add(lowerBoundExpressionTypeSelector);
@@ -99,7 +99,7 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 
 		upperBoundExpressionTypeSelector = new ExpressionTypeSelectorList(
 				availableExpressions, new ArrayList<>(), upperBoundBuildButtonObserver, intervalModel.getUpperBound(), 
-				"What would you like to use for the upper boundary of your interval?"
+				"What would you like to use for the upper boundary of your interval?", this
 		);
 		
 		panel.add(upperBoundExpressionTypeSelector);

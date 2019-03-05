@@ -148,6 +148,8 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 				functionPanel.add(buildFunctionNameFormLabel());
 				functionPanel.add(new ExpandCollapseCQLExpressionPanel(signatureToUse.getName(), this.functionModel.getCQL("")));
 			}
+		} else {
+			this.getErrorAlert().createAlert("A function is required.");
 		}
 	}
 	
@@ -156,6 +158,8 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 			FunctionSignature signatureToUse = getFunctionSignatureBySignatureString(functionSignatureListBox.getSelectedValue());
 			FunctionBuildButtonObserver observer = new FunctionBuildButtonObserver(this, this.functionModel, this.getMainModel(), signatureToUse);
 			observer.onBuildButtonClick();
+		} else {
+			this.getErrorAlert().createAlert("A function and signature are required.");
 		}
 	}
 
@@ -220,6 +224,7 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 	}
 
 	private void onFunctionNameListBoxChange() {
+		this.getErrorAlert().clearAlert();
 		selectedFunctionIndex  = functionNameListBox.getSelectedIndex();
 		functionSignatureListBox.clear();
 		
@@ -245,6 +250,7 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private void onFunctionSignatureListBoxChange() {
+		this.getErrorAlert().clearAlert();
 		selectedFunctionSignatureIndex = functionSignatureListBox.getSelectedIndex();
 	}
 

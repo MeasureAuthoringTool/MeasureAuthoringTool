@@ -68,7 +68,7 @@ public class IsNullBuilderModal extends SubExpressionBuilderModal {
 		String label =  "What type of expression would you like to use for your Null statement?";
 		ExpressionTypeSelectorList selectors = 
 				new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, 
-						buildButtonObserver, isNullModel, label);
+						buildButtonObserver, isNullModel, label, this);
 		
 		panel.add(buildIsNullNotNullFormGroup());		
 		panel.add(selectors);	

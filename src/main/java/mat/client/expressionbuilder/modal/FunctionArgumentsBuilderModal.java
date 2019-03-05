@@ -100,7 +100,7 @@ public class FunctionArgumentsBuilderModal extends SubExpressionBuilderModal {
 					this.getMainModel());
 			ExpressionTypeSelectorList selector = new ExpressionTypeSelectorList(availableExpressionsForArgument,
 					new ArrayList<>(), new ArrayList<>(), observer, this.functionModel.getArguments().get(i),
-					argumentLabel);
+					argumentLabel, this);
 
 			panel.add(selector);
 		}

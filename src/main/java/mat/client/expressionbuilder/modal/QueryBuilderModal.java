@@ -164,7 +164,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		sourceSelector = new ExpressionTypeSelectorList(availableExpressionsForSouce, availableOperatorsForSource, 
 				sourceBuildButtonObserver, queryModel.getSource(), 
-				"What type of expression would you like to use as your data source?");
+				"What type of expression would you like to use as your data source?", this);
 		
 		
 		sourcePanel.add(sourceSelector);
@@ -193,7 +193,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		filterSelector = new ExpressionTypeSelectorList(availableExpressionsForFilter, availableOperatorsForFilter, 
 				filterBuildButtonObserver, queryModel.getFilter(), 
-				 "What would you like to use to filter your source?");
+				 "What would you like to use to filter your source?", this);
 		
 		filterPanel.add(filterSelector);		
 		return filterPanel;
@@ -209,7 +209,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		sortSelector = new ExpressionTypeSelectorList(availableExpressionsForSort, new ArrayList<>(), 
 				sortBuildButtonObserver, queryModel.getSort().getSortExpression(), 
-				"What would you like to sort?");
+				"What would you like to sort?", this);
 		
 		sortByPanel.add(sortSelector);
 		sortByPanel.add(new SpacerWidget());

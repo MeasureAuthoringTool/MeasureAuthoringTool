@@ -303,7 +303,7 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 				for(CQLFunctionArgument argument : function.getArgumentList()) {
 					FunctionArgument functionArgument = new FunctionArgument();
 					functionArgument.setName(argument.getArgumentName());
-					functionArgument.setReturnType(argument.getReturnType());
+					functionArgument.setReturnType(argument.getReturnType().trim());
 					arguments.add(functionArgument);
 				}
 			}

@@ -1,4 +1,4 @@
-package mat.client.shared;
+package mat.shared.validator.measure;
 
 import java.util.ArrayList;
 import java.util.List;

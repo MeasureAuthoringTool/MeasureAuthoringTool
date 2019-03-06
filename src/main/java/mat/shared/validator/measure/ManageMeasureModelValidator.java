@@ -1,12 +1,13 @@
-package mat.client.shared;
+package mat.shared.validator.measure;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import mat.client.measure.ManageMeasureDetailModel;
-import mat.shared.MatConstants;
+import mat.client.shared.MessageDelegate;
 import mat.shared.StringUtility;
+import mat.shared.validator.measure.CommonMeasureValidator;
 
 public class ManageMeasureModelValidator {
 	

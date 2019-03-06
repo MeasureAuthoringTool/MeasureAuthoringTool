@@ -7,9 +7,9 @@ import java.util.List;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 
 import mat.client.measure.measuredetails.MeasureDetailState;
-import mat.client.shared.CommonMeasureValidator;
 import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
+import mat.shared.validator.measure.CommonMeasureValidator;
 
 public class GeneralInformationValidator {
 	private static final String MEASURE_PERIOD_DATES_ERROR = "The dates for Measurement Period are invalid. Please enter valid dates.";

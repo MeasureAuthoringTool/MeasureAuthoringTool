@@ -1,8 +1,10 @@
-package mat.client.shared;
+package mat.shared.validator.measure;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageDelegate;
 import mat.shared.MatConstants;
 import mat.shared.StringUtility;
 

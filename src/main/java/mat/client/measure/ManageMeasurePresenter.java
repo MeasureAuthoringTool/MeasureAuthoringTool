@@ -55,8 +55,6 @@ import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ConfirmationObserver;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;
-import mat.client.shared.ManageCompositeMeasureModelValidator;
-import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.MostRecentMeasureWidget;
@@ -72,6 +70,8 @@ import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.MeasureSearchModel;
 import mat.shared.StringUtility;
+import mat.shared.validator.measure.ManageCompositeMeasureModelValidator;
+import mat.shared.validator.measure.ManageMeasureModelValidator;
 
 public class ManageMeasurePresenter implements MatPresenter {
 

@@ -7,16 +7,14 @@ import java.util.List;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 
 import mat.client.measure.measuredetails.MeasureDetailState;
+import mat.client.shared.CommonMeasureValidator;
 import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 
 public class GeneralInformationValidator {
 	private static final String MEASURE_PERIOD_DATES_ERROR = "The dates for Measurement Period are invalid. Please enter valid dates.";
 	public static final String COMPOSITE_MEASURE_SCORE_REQUIRED_ERROR = "A Composite Scoring Method is required. ";
-	public static final String MEASURE_SCORE_REQUIRED_ERROR = "A Measure Scoring is required.";
 	public static final String NQF_REQUIRED_ERROR = "NQF Number is required when a measure is endorsed by NQF.";
-	public static final String ECQM_ABBR_TITLE_REQUIRED_ERROR = "An eCQM Abbreviated Title is required.";
-	public static final String MEASURE_NAME_REQUIRED_ERROR = "A Measure Name is required.";
 	
 	public List<String> validateModel(GeneralInformationModel generalInformationModel, boolean isComposite) {
 		List<String> errorMessages = new ArrayList<>();
@@ -27,18 +25,11 @@ public class GeneralInformationValidator {
 			}
 		}
 
-		if(StringUtility.isEmptyOrNull(generalInformationModel.getMeasureName())) {
-			errorMessages.add(MEASURE_NAME_REQUIRED_ERROR);
-		}
-		
-		if(StringUtility.isEmptyOrNull(generalInformationModel.getScoringMethod())) {
-			errorMessages.add(MEASURE_SCORE_REQUIRED_ERROR);
-		}
-		
-		if(StringUtility.isEmptyOrNull(generalInformationModel.geteCQMAbbreviatedTitle())) {
-			errorMessages.add(ECQM_ABBR_TITLE_REQUIRED_ERROR);
-		}
-		
+		CommonMeasureValidator commonMeasureValidator = new CommonMeasureValidator();
+		errorMessages.addAll(commonMeasureValidator.validateMeasureName(generalInformationModel.getMeasureName()));
+		errorMessages.addAll(commonMeasureValidator.validateMeasureScore(generalInformationModel.getScoringMethod()));
+		errorMessages.addAll(commonMeasureValidator.validateECQMAbbreviation(generalInformationModel.geteCQMAbbreviatedTitle()));
+		errorMessages.addAll(commonMeasureValidator.validatePatientBased(generalInformationModel.getScoringMethod(), generalInformationModel.isPatientBased()));
 		if(generalInformationModel.getEndorseByNQF() && StringUtility.isEmptyOrNull(generalInformationModel.getNqfId())) {
 			errorMessages.add(NQF_REQUIRED_ERROR);
 		}

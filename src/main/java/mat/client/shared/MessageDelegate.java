@@ -6,11 +6,9 @@ public class MessageDelegate {
 	public static final String DEFAULT_SECURITY_QUESTION_VALUE = "********";
 	public static final String EMPTY_VALUE = "";
 	public static final String CQL_FUNCTION_ARGUMENT_NAME_ERROR = "Invalid argument name. Must start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
-	public static final String s_ERR_MEASURE_SCORE_REQUIRED = "Measure Scoring is required.";
 	public static final String CONTINOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR = "Continous Variable measures must not be patient based.";
 	public static final String s_ERR_RETRIEVE_SCORING_CHOICES = "Problem while retrieving measure scoring choices.";
 	public static final String NQF_NUMBER_REQUIRED_ERROR = "NQF Number is required when a measure is Endorsed by NQF.";
-	public static final String MEASURE_NAME_LETTER_REQUIRED = "A measure name must contain at least one letter.";
 	public static final String SECURITY_QUESTION_ANSWERS_MUST_CONTAIN_AT_LEAST_THREE_CHARACTERS = "Security question answers must contain at least three characters.";
 	public static final String ALL_SECURITY_QUESTIONS_MUST_CONTAIN_A_VALID_SECURITY_ANSWER = "All security questions must contain a valid security answer";
 	public static final String GENERIC_ERROR_MESSAGE = "The Measure Authoring Tool was unable to process the request. Please try again. If the problem persists please contact the Help Desk.";
@@ -62,7 +60,6 @@ public class MessageDelegate {
 	private static final String PACKAGER_CQL_ERROR = "Your CQL file contains validation errors. Errors must be corrected before proceeding to measure packaging. Please return to the CQL Workspace to make corrections.";
 	private static final String SUCCESSFULLY_SHARED = " sharing status has been successfully updated.";
 	private static final String UMLS_CODE_IDENTIFIER_REQUIRED = "Please enter a code identifier.";	
-	private static final String ABV_NAME_REQUIRED = "eCQM Abbreviated Title is required.";
 	private static final String ACCOUNT_REVOKED = "Your account has been revoked. Please contact Support.";
 	private static final String CLAUSE_WORK_SPACE_VALIDATION_SUCCESS = "Measure logic validation successful.";
 	private static final String ALL_PASSWORD_FIELDS_REQUIRED = "All password fields are required.";
@@ -194,10 +191,6 @@ public class MessageDelegate {
 	public String getRATIO_TOO_FEW_POPULATIONS() {
 		return RATIO_TOO_FEW_POPULATIONS;
 	}	
-	
-	public String getAbvNameRequiredMessage() {
-		return ABV_NAME_REQUIRED;
-	}
 	
 	public String getAccountRevokedMessage() {
 		return ACCOUNT_REVOKED;

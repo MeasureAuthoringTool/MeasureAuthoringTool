@@ -91,6 +91,7 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 		List<ExpressionType> availableExpressionForLeftSideOfTiming = new ArrayList<>();
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.ATTRIBUTE);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.COMPUTATION);
+		availableExpressionForLeftSideOfTiming.add(ExpressionType.DATE_TIME);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.DEFINITION);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.FUNCTION);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.INTERVAL);
@@ -112,6 +113,7 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 		List<ExpressionType> availableExpressionForRightSideOfTiming = new ArrayList<>();
 		availableExpressionForRightSideOfTiming.add(ExpressionType.ATTRIBUTE);
 		availableExpressionForRightSideOfTiming.add(ExpressionType.COMPUTATION);
+		availableExpressionForRightSideOfTiming.add(ExpressionType.DATE_TIME);
 		availableExpressionForRightSideOfTiming.add(ExpressionType.DEFINITION);
 		availableExpressionForRightSideOfTiming.add(ExpressionType.FUNCTION);
 		availableExpressionForRightSideOfTiming.add(ExpressionType.INTERVAL);

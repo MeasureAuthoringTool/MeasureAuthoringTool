@@ -55,8 +55,8 @@ public class QuantityWidget extends Composite {
 		
 		FormGroup unitFormGroup = new FormGroup();
 		FormLabel unitsLabel = new FormLabel();
-		unitsLabel.setText("Choose a unit to go with your quantity. (Optional)");
-		unitsLabel.setTitle("Select Unit");
+		unitsLabel.setText("Choose a unit. (Optional)");
+		unitsLabel.setTitle("Choose a unit. (Optional)");
 		unitsLabel.setFor("Units_listBox");
 
 		unitFormGroup.add(unitsLabel);

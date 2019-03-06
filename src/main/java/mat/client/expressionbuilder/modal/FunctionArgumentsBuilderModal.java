@@ -27,7 +27,7 @@ public class FunctionArgumentsBuilderModal extends SubExpressionBuilderModal {
 
 	public FunctionArgumentsBuilderModal(FunctionSignature functionSignature, ExpressionBuilderModal parent,
 			FunctionModel parentModel, ExpressionBuilderModel mainModel) {
-		super(functionSignature.getName() + " Arguments", parent, parentModel, mainModel);
+		super(functionSignature.getName() + " Argument(s)", parent, parentModel, mainModel);
 		this.functionModel = parentModel;
 		this.functionSignature = functionSignature;
 
@@ -53,7 +53,8 @@ public class FunctionArgumentsBuilderModal extends SubExpressionBuilderModal {
 	private void onApplyButtonClick() {
 		for (int i = 0; i < functionModel.getArguments().size(); i++) {
 			if (functionModel.getArguments().get(i).getChildModels().isEmpty()) {
-				this.getErrorAlert().createAlert("All fields are required.");
+				this.getErrorAlert().createAlert("This function requires arguments. Please make your selections on this screen and then "
+						+ "click the Build button to build the arguments.");
 				return;
 			}
 		}

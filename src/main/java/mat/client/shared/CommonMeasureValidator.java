@@ -9,7 +9,7 @@ import mat.shared.StringUtility;
 public class CommonMeasureValidator {
 	private static final String MEASURE_NAME_REQUIRED = "A measure name is required.";
 	private static final String MEASURE_NAME_LETTER_REQUIRED = "A measure name must contain at least one letter.";
-	private static final String ECQM_ABBR_TITLE_REQUIRED_ERROR = "An eCQM Abbreviated Title is required.";
+	private static final String ECQM_ABBR_TITLE_REQUIRED_ERROR = "An eCQM abbreviated title is required.";
 	private static final String MEASURE_SCORE_REQUIRED = "Measure Scoring is required.";
 	
 	public static boolean isValidValue(String value) {

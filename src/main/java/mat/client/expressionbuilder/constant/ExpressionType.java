@@ -90,6 +90,8 @@ public enum ExpressionType implements ExpressionBuilderType {
 		types.add(CQLType.RATIO);
 		types.add(CQLType.LIST_CODE);
 		types.add(CQLType.STRING);
+		types.add(CQLType.INTERVAL_DATETIME);
+		
 		return types;
 	}
 	
@@ -103,6 +105,10 @@ public enum ExpressionType implements ExpressionBuilderType {
 	private static List<CQLType> getRelevantTypesForDefinitions() {
 		List<CQLType> types = new ArrayList<>();
 		types.addAll(getRelevantTypesForTimeBasedExpressions());
+		types.addAll(getRelevantTypesForTimeBasedIntervals());
+		types.add(CQLType.INTERVAL_DECIMAL);
+		types.add(CQLType.INTERVAL_NUMBER);
+		types.add(CQLType.INTERVAL_QUANTITY);
 		types.add(CQLType.ANY);
 		types.add(CQLType.BOOLEAN);
 		types.add(CQLType.CODE);
@@ -122,12 +128,14 @@ public enum ExpressionType implements ExpressionBuilderType {
 		types.add(CQLType.LIST_QUANTITY);
 		types.add(CQLType.LIST_STRING);
 		types.add(CQLType.LIST_TIME);
+
 		return types;
 	}
 	
 	private static List<CQLType> getRelevantTypesForFunctions() {
 		List<CQLType> types = new ArrayList<>();
 		types.addAll(getRelevantTypesForTimeBasedExpressions());
+		types.addAll(getRelevantTypesForTimeBasedIntervals());
 		types.add(CQLType.ANY);
 		types.add(CQLType.BOOLEAN);
 		types.add(CQLType.CODE);
@@ -147,6 +155,9 @@ public enum ExpressionType implements ExpressionBuilderType {
 		types.add(CQLType.LIST_QUANTITY);
 		types.add(CQLType.LIST_STRING);
 		types.add(CQLType.LIST_TIME);
+		types.add(CQLType.INTERVAL_DECIMAL);
+		types.add(CQLType.INTERVAL_NUMBER);
+		types.add(CQLType.INTERVAL_QUANTITY);
 		return types;
 	}
 	

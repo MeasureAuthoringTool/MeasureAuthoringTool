@@ -591,6 +591,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 										.clearAnnotations();
 										cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor()
 										.removeAllMarkers();
+										MatContext.get().setCQLModel(result.getCqlModel());
 										if (SharedCQLWorkspaceUtility.validateCQLArtifact(result, cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor(), messagePanel, FUNCTION, functionName.trim())) {
 											cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
 											cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");

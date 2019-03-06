@@ -1,9 +1,13 @@
 package mat.client.inapphelp.component;
 
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalHeader;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -54,8 +58,8 @@ public class InAppHelp extends Composite {
 		messageHTML.setStyleName("inAppHelp");
 		
 		ModalHeader header = new ModalHeader();
-		header.setHeight("0px");
-		header.setStyleName("inAppHelpHeader");
+		header.setHeight("16px");
+		header.getElement().setAttribute("style", "border-color: transparent");
 		helpModal.add(header);
 		
 		ModalBody body = new ModalBody();
@@ -63,6 +67,19 @@ public class InAppHelp extends Composite {
 		messageFocusPanel.add(messageHTML);
 		body.add(messageFocusPanel);
 		helpModal.add(body);
+		
+		ModalFooter footer = new ModalFooter();
+		Button closeButton = new Button("Close");
+		closeButton.setTitle("Close");
+		closeButton.setType(ButtonType.PRIMARY);
+		closeButton.addClickHandler(event -> helpModal.hide());
+		closeButton.setPull(Pull.RIGHT);
+		footer.add(closeButton);
+		footer.getElement().setAttribute("style", "border-color: transparent");
+		helpModal.add(footer);
+		
+		
+		helpModal.setDataKeyboard(true);
 		
 		helpModal.setWidth("550px");
 	}

@@ -197,7 +197,12 @@ public enum ExpressionType implements ExpressionBuilderType {
 	private static List<CQLType> getRelevantTypesForStartOfEndOf() {
 		List<CQLType> types = new ArrayList<>();
 		types.add(CQLType.ANY);
-		types.addAll(getRelevantTypesForIntervalExpression());
+		types.add(CQLType.DATE);
+		types.add(CQLType.TIME);
+		types.add(CQLType.DATETIME);
+		types.add(CQLType.INTEGER);
+		types.add(CQLType.DECIMAL);
+		types.add(CQLType.QUANTITY);
 		return types;
 	}
 	

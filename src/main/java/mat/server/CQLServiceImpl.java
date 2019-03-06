@@ -291,6 +291,7 @@ public class CQLServiceImpl implements CQLService {
 								processor.removeFromParent(nodeFunction);
 								String cqlString = createFunctionsXML(currentObj);
 								processor.appendNode(cqlString, "function", XPATH_EXPRESSION_FUNCTIONS);
+								updateFunctionDisplayName(processor, toBeModifiedObj, currentObj);
 
 								String finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
 								result.setXml(finalUpdatedXmlString);
@@ -1592,6 +1593,27 @@ public class CQLServiceImpl implements CQLService {
 			e.printStackTrace();
 		}
 		logger.debug(" CQLServiceImpl: updateRiskAdjustmentVariables End :  ");
+
+	}
+	
+	private void updateFunctionDisplayName(XmlProcessor processor, CQLFunctions toBeModifiedObj,
+			CQLFunctions currentObj) {
+
+		logger.debug(" CQLServiceImpl: updateFunctionDisplayName Start :  ");
+		// XPath to find All cqlfunction in populations to be
+		// modified functions.
+		String XPATH_EXPRESSION_FUNCTION = "/measure//cqlfunction[@uuid='" + toBeModifiedObj.getId() + "']";
+		try {
+			NodeList nodesSDE = processor.findNodeList(processor.getOriginalDoc(), XPATH_EXPRESSION_FUNCTION);
+			for (int i = 0; i < nodesSDE.getLength(); i++) {
+				Node newNode = nodesSDE.item(i);
+				newNode.getAttributes().getNamedItem("displayName").setNodeValue(currentObj.getName());
+			}
+
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		logger.debug(" CQLServiceImpl: updateFunctionDisplayName End :  ");
 
 	}
 	

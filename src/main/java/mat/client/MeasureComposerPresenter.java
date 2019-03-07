@@ -6,7 +6,6 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Button;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -42,7 +41,7 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.shared.ConstantMessages;
 
-public class MeasureComposerPresenter implements MatPresenter, Enableable, TabObserver {	
+public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, Enableable, TabObserver {	
 	MatTabLayoutPanel targetTabLayout;
 	MatPresenter targetPresenter;
 	MatPresenter sourcePresenter;
@@ -59,6 +58,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 	@SuppressWarnings("unused")
 	private MeasurePackagePresenter measurePackagePresenter;
 	private MeasureDetailsPresenter measureDetailsPresenter;
+	private static String MEASURE_COMPOSER = "MeasureComposer";
 	
 	class EnterKeyDownHandler implements KeyDownHandler {
 		private int i = 0;
@@ -92,7 +92,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		emptyWidget.getElement().setId("emptyWidget_SimplePanel");
 		
 		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
-		measureDetailsPresenter = (MeasureDetailsPresenter) buildMeasureDetailsPresenter();
+		measureDetailsPresenter = (MeasureDetailsPresenter) buildMeasureDetailsPresenter(this);
 
 		measureComposerTabLayout = new MatTabLayoutPanel(this);
 		measureComposerTabLayout.getElement().setAttribute("id", "measureComposerTabLayout");
@@ -233,19 +233,13 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 	@Override
 	public void beforeDisplay() {
 		String currentMeasureId = MatContext.get().getCurrentMeasureId();
+		String heading = buildMeasureHeading(currentMeasureId);
 		if ((currentMeasureId != null) && !"".equals(currentMeasureId)) {
 			if (MatContext.get().isCurrentMeasureEditable()) {
 				MatContext.get().getMeasureLockService().setMeasureLock();
 			}
-			String heading = MatContext.get().getCurrentMeasureName() + " ";
-			String version = MatContext.get().getCurrentMeasureVersion();
-			//when a measure is initially created we need to explicitly create the heading
-			if (!version.startsWith("Draft") && !version.startsWith("v")) {
-				version = "Draft based on v" + version;
-			}
-			
-			heading = heading + version;
-			measureComposerContent.setHeading(heading, "MeasureComposer");
+
+			measureComposerContent.setHeading(heading, MEASURE_COMPOSER);
 			FlowPanel fp = new FlowPanel();
 			fp.getElement().setId("fp_FlowPanel");
 			setSubSkipEmbeddedLink("MeasureDetailsView.deleteMeasureButton");
@@ -256,7 +250,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 			measureComposerTabLayout.selectTab(presenterList.indexOf(measureDetailsPresenter));
 			measureDetailsPresenter.beforeDisplay();
 		} else {
-			measureComposerContent.setHeading("No Measure Selected", "MeasureComposer");
+			measureComposerContent.setHeading(heading, MEASURE_COMPOSER);
 			measureComposerContent.setContent(emptyWidget);
 			MatContext.get().setVisible(buttonBar, false);
 		}
@@ -264,9 +258,27 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 		buttonBar.setPageNamesOnState();
 	}
+
+	private String buildMeasureHeading(String currentMeasureId) {
+		String heading = "";
+		if ((currentMeasureId != null) && !"".equals(currentMeasureId)) {
+			heading = MatContext.get().getCurrentMeasureName() + " ";
+			String version = MatContext.get().getCurrentMeasureVersion();
+			//when a measure is initially created we need to explicitly create the heading
+			if (!version.startsWith("Draft") && !version.startsWith("v")) {
+				version = "Draft based on v" + version;
+			}
+			
+			heading = heading + version;
+		} else {
+			heading ="No Measure Selected";
+		}
+
+		return heading;
+	}
 	
-	private MatPresenter buildMeasureDetailsPresenter() {
-		MeasureDetailsPresenter measureDetailsPresenter = new MeasureDetailsPresenter();
+	private MatPresenter buildMeasureDetailsPresenter(MeasureHeading measureHeading) {
+		MeasureDetailsPresenter measureDetailsPresenter = new MeasureDetailsPresenter(measureHeading);
 		return measureDetailsPresenter;
 	}
 	
@@ -447,5 +459,11 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		targetPresenter = null;
 		targetTabLayout = null;
 		sourcePresenter = null;
+	}
+
+	@Override
+	public void updateMeasureHeading() {
+		String heading = buildMeasureHeading(MatContext.get().getCurrentMeasureId());
+		measureComposerContent.setHeading(heading, MEASURE_COMPOSER);
 	}
 }

@@ -17,6 +17,7 @@ import mat.client.expressionbuilder.component.ExpandCollapseCQLExpressionPanel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.FunctionModel;
 import mat.client.expressionbuilder.observer.FunctionBuildButtonObserver;
+import mat.client.expressionbuilder.util.IdentifierSortUtil;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
@@ -259,8 +260,8 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 		functionNameListBox.clear();
 		functionNameListBox.addItem(SELECT_FUNCTION, SELECT_FUNCTION);			
 		List<CQLIdentifierObject> userDefinedFunctions = new ArrayList<>();
-		userDefinedFunctions.addAll(MatContext.get().getFuncs());
-		userDefinedFunctions.addAll(MatContext.get().getIncludedFuncNames());
+		userDefinedFunctions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getFuncs()));
+		userDefinedFunctions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedFuncNames()));
 		userDefinedFunctions.forEach(f -> {
 			functionNameListBox.insertItem(f.getDisplay(), f.toString(), f.getDisplay());
 		});

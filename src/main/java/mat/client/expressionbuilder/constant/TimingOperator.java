@@ -50,14 +50,14 @@ public enum TimingOperator implements ExpressionBuilderType {
 	BEFORE_OR_ON("before or on"),
 	AFTER_OR_ON("after or on"),
 	
-	QUANTITY_OF("quantity of"),
+	QUANTITY_OF("(quantity) of"),
 	OVERLAPS("overlaps"),
 	
 	// quantity offset
-	QUANTITY_OR_MORE("quantity or more"),
-	QUANTITY_OR_LESS("quantity or less"),
-	MORE_THAN_QUANTITY("more than quantity"),
-	LESS_THAN_QUANTITY("less than quantity");
+	QUANTITY_OR_MORE("(quantity) or more"),
+	QUANTITY_OR_LESS("(quantity) or less"),
+	MORE_THAN_QUANTITY("more than (quantity)"),
+	LESS_THAN_QUANTITY("less than (quantity)");
 
 
 	private String displayName;

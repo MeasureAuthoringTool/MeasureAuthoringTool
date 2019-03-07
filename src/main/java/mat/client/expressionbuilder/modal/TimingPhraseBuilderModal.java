@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -105,7 +104,6 @@ public class TimingPhraseBuilderModal extends SubExpressionBuilderModal {
 		if(timingWidget.getValue() != null) {
 			// append a new timing widget
 			List<TimingOperator> nextOperators = getNextTimings(((TimingOperatorModel) timingWidget.getValue()).getTimingOperator());
-			nextOperators.forEach(f -> GWT.log("\t" + f.getDisplayName()));
 			boolean isOptional = nextOperators.contains(TimingOperator.DONE_NODE);
 			nextOperators.remove(TimingOperator.DONE_NODE); // we don't want done to show up in the list
 			if(!nextOperators.isEmpty()) {

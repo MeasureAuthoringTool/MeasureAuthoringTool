@@ -55,7 +55,7 @@ public class TimingPhraseWidget extends Composite {
 				quantity.setQuantity(value);
 				quantity.setUnit(unit);
 				
-				timing = timing.replace("quantity", quantity.getCQL(""));
+				timing = timing.replace("(quantity)", quantity.getCQL(""));
 			} 
 			
 			return new TimingOperatorModel(parent, timing, timings.get(timingListBox.getSelectedIndex() - 1));
@@ -77,7 +77,7 @@ public class TimingPhraseWidget extends Composite {
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("50%");
 		FormGroup group = new FormGroup();
-		group.setWidth("50");
+		group.setWidth("64%");
 		
 		FormLabel formLabel = new FormLabel();
 		String labelText = this.label;
@@ -116,7 +116,7 @@ public class TimingPhraseWidget extends Composite {
 	
 	private Widget buildQuantityPanel() {
 		quantityWidget = new QuantityWidget();
-		quantityWidget.getElement().setAttribute("style", "margin-left: 20px;");
+		quantityWidget.getElement().setAttribute("style", "margin-left: 40px;");
 		quantityWidget.setVisible(false);
 		return quantityWidget;
 	}

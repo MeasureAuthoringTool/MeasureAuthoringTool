@@ -740,14 +740,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getErrorMessagesForTransferOS().clearAlert();
 		transferDisplay.getErrorMessageDisplay().clearAlert();
 		if (!transferMeasureResults.isEmpty()) {
-			setSearchingBusy(true);
+			showAdminSearchingBusy(true);
 			MatContext.get().getMeasureService().searchUsers(searchString, startIndex, pageSize,
 					new AsyncCallback<TransferOwnerShipModel>() {
 
 						@Override
 						public void onFailure(Throwable caught) {
 							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							setSearchingBusy(false);
+							showAdminSearchingBusy(false);
 						}
 
 						@Override
@@ -759,7 +759,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							transferDisplay.buildCellTable(result);
 							panel.setHeading("Measure Library Ownership >  Measure Ownership Transfer", MEASURE_LIBRARY);
 							panel.setContent(transferDisplay.asWidget());
-							setSearchingBusy(false);
+							showAdminSearchingBusy(false);
 							model = result;
 						}
 					});

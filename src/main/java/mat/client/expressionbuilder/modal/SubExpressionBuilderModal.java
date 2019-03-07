@@ -123,7 +123,7 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 			}
 		}		
 		
-		this.getExpressionBuilderParent().showAndDisplay();
+		this.getExpressionBuilderParent().showAndDisplayWithoutSuccess();
 	}
 
 	@Override

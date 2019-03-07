@@ -47,7 +47,7 @@ public class QuantityWidget extends Composite {
 			if(unit.equals(MatContext.PLEASE_SELECT)) {
 				continue;
 			}
-			unitsListBox.insertItem(allCqlUnits.get(unit), allCqlUnits.get(unit));
+			unitsListBox.insertItem(unit, allCqlUnits.get(unit));
 		}
 		
 		unitsListBox.setStyleName("form-control");

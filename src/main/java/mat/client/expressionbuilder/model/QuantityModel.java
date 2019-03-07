@@ -1,14 +1,10 @@
 package mat.client.expressionbuilder.model;
 
-import java.util.Map;
-
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
-import mat.client.shared.MatContext;
 import mat.shared.StringUtility;
 
 public class QuantityModel extends ExpressionBuilderModel {
-	private static Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();
 	public QuantityModel(ExpressionBuilderModel parent) {
 		super(parent);
 	}
@@ -34,7 +30,7 @@ public class QuantityModel extends ExpressionBuilderModel {
 	
 	@Override
 	public String getCQL(String identation) {
-		return this.value + (StringUtility.isEmptyOrNull(this.unit) ? "" : " '" + allCqlUnits.get(this.unit) + "'");
+		return this.value + (StringUtility.isEmptyOrNull(this.unit) ? "" : " '" + this.unit + "'");
 	}
 	
 	@Override

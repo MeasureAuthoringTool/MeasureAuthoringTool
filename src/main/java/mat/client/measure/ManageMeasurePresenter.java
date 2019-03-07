@@ -209,7 +209,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if(componentMeasureDisplay != null) {
 			componentMeasureDisplayHandlers();
 		}
-
+		
 		// This event will be called when measure is successfully deleted and
 		// then MeasureLibrary is reloaded.
 		MatContext.get().getEventBus().addHandler(MeasureDeleteEvent.TYPE, new MeasureDeleteEvent.Handler() {
@@ -1057,7 +1057,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		// when Pagination will be implemented in Measure Library.
 		if (currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
 			pageSize = 25;
-			setSearchingBusy(true);
+			showAdminSearchingBusy(true);
 			MeasureSearchModel searchAdminModel = new MeasureSearchModel(filter, startIndex, pageSize, lastSearchText);
 			
 			if(null != searchDisplay) {

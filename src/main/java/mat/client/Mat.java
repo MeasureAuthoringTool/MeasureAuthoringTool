@@ -188,7 +188,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
 			TransferOwnershipView transferOS = new TransferOwnershipView();
 			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
-
+			
 			measurePresenter = new ManageMeasurePresenter(measureSearchView, null, null, null, null, null, historyView,
 					null, transferOS);
 		} else {

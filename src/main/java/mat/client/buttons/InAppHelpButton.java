@@ -9,7 +9,7 @@ public class InAppHelpButton extends GenericToolbarButton{
 		setIcon();
 		setSize();
 		super.setTitle("Need Help?");
-		super.getElement().setAttribute("aria-label", "Need Help");
+		super.getElement().setAttribute("aria-label", "Click to get help for this page");
 		super.setToggleCaret(false);
 	}
 

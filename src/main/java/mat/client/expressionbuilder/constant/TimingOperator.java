@@ -41,6 +41,10 @@ public enum TimingOperator implements ExpressionBuilderType {
 	MILISECOND_OF("milisecond of"),
 	
 	// relative qualifier
+	OR_BEFORE("or before"),
+	OR_AFTER("or after"),
+	
+	// offset relative qualifier
 	OR_MORE("or more"),
 	OR_LESS("or less"),
 	

@@ -29,8 +29,8 @@ public class TimingGraphUtil {
 		addRelativeQualifierToParent(graph, TimingOperator.SAME);
 		graph.addEdge(TimingOperator.SAME, TimingOperator.AS);
 
-		addChildToDateTimePrecision(graph, TimingOperator.OR_MORE);
-		addChildToDateTimePrecision(graph, TimingOperator.OR_LESS);
+		addChildToDateTimePrecision(graph, TimingOperator.OR_AFTER);
+		addChildToDateTimePrecision(graph, TimingOperator.OR_BEFORE);
 		
 		addChildToDateTimePrecision(graph, TimingOperator.AS);
 				
@@ -270,15 +270,14 @@ public class TimingGraphUtil {
 	}
 	
 	private static void addRelativeQualifierToParent(TimingGraph graph, TimingOperator parent) {
-		graph.addEdge(parent, TimingOperator.QUANTITY_OR_MORE);
-		graph.addEdge(parent, TimingOperator.QUANTITY_OR_LESS);
+		graph.addEdge(parent, TimingOperator.OR_BEFORE);
+		graph.addEdge(parent, TimingOperator.OR_AFTER);
 	}
 	
 	private static void addChildToRelativeQualifier(TimingGraph graph, TimingOperator child) {
-		graph.addEdge(TimingOperator.OR_MORE, child);
-		graph.addEdge(TimingOperator.OR_LESS, child);
+		graph.addEdge(TimingOperator.OR_BEFORE, child);
+		graph.addEdge(TimingOperator.OR_AFTER, child);
 	}
-	
 	
 	private static void addQuantityOffsetToParent(TimingGraph graph, TimingOperator parent) {
 		graph.addEdge(parent, TimingOperator.QUANTITY_OR_MORE);

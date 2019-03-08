@@ -177,10 +177,6 @@
 		"name": "AgeInMonths",
 		"returnType": "Integer",
 		"arguments": [
-			{
-				"name": "",
-				"returnType": ""
-			}
 		],
 		"documentation": "The Age operators calculate the age of the patient as of now in the precision named in the operator."
 	},

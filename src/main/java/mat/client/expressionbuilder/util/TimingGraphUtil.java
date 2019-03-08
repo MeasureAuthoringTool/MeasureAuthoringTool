@@ -66,7 +66,6 @@ public class TimingGraphUtil {
 		
 		addChildToDateTimePrecisionSpecifier(graph, TimingOperator.START);
 		addChildToDateTimePrecisionSpecifier(graph, TimingOperator.END);
-		addChildToDateTimePrecisionSpecifier(graph, TimingOperator.OCCURS);
 
 		graph.addEdge(TimingOperator.START, TimingOperator.DONE_NODE);
 		graph.addEdge(TimingOperator.END, TimingOperator.DONE_NODE);

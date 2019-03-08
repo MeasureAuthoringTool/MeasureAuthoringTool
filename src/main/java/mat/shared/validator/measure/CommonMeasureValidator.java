@@ -52,7 +52,6 @@ public class CommonMeasureValidator {
 	public List<String> validateMeasureScore(String measureScore){
 		List<String> errorMessages = new ArrayList<>();
 		if ((measureScore == null) || !isValidValue(measureScore)) {
-			MatContext.get().getMessageDelegate();
 			errorMessages.add(MEASURE_SCORE_REQUIRED);
 		}
 		return errorMessages;
@@ -61,7 +60,7 @@ public class CommonMeasureValidator {
 	public List<String> validatePatientBased(String scoring, boolean patientBased) {
 		List<String> errorMessages = new ArrayList<>();
 		// MAT-8602 Continous Variable measures must be patient based.
-		if((scoring.equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE) && patientBased)) {
+		if((MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(scoring) && patientBased)) {
 			MatContext.get().getMessageDelegate();
 			errorMessages.add(MessageDelegate.CONTINOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR);
 		}

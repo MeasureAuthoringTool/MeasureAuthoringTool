@@ -248,7 +248,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		HorizontalPanel sortDirectionHorizontalPanel = new HorizontalPanel();
 		sortDirectionHorizontalPanel.setStyleName("selectorsPanel");
-		sortDirectionHorizontalPanel.setWidth("20%");
+		sortDirectionHorizontalPanel.setWidth("250px");
 		sortDirectionHorizontalPanel.add(ascendingSortRadioButton);
 		sortDirectionHorizontalPanel.add(descendingSortRadioButton);
 		

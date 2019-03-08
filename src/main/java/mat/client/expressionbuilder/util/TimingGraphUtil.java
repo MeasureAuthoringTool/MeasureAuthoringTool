@@ -127,7 +127,7 @@ public class TimingGraphUtil {
 		addTemporalRelationshipToParent(graph, TimingOperator.BEGINNING_NODE);
 		
 		addQuantityOffsetToParent(graph, TimingOperator.STARTS);
-		addQuantityOffsetToParent(graph, TimingOperator.STARTS);
+		addQuantityOffsetToParent(graph, TimingOperator.ENDS);
 		addQuantityOffsetToParent(graph, TimingOperator.OCCURS);
 
 		addTemporalRelationshipToParent(graph, TimingOperator.STARTS);

@@ -135,13 +135,14 @@ public class TimingGraphUtil {
 		addTemporalRelationshipToParent(graph, TimingOperator.OCCURS);
 
 		addChildToQuantityOffset(graph, TimingOperator.BEFORE);
+		addChildToQuantityOffset(graph, TimingOperator.AFTER);
 		addChildToQuantityOffset(graph, TimingOperator.BEFORE_OR_ON);
 		addChildToQuantityOffset(graph, TimingOperator.AFTER_OR_ON);
 		addChildToQuantityOffset(graph, TimingOperator.ON_OR_BEFORE);
 		addChildToQuantityOffset(graph, TimingOperator.ON_OR_AFTER);
 
 		addDateTimePrecisionSpecifierToParent(graph, TimingOperator.BEFORE);
-		addDateTimePrecisionSpecifierToParent(graph, TimingOperator.BEFORE);
+		addDateTimePrecisionSpecifierToParent(graph, TimingOperator.AFTER);
 		addDateTimePrecisionSpecifierToParent(graph, TimingOperator.BEFORE_OR_ON);
 		addDateTimePrecisionSpecifierToParent(graph, TimingOperator.AFTER_OR_ON);
 		addDateTimePrecisionSpecifierToParent(graph, TimingOperator.ON_OR_BEFORE);

@@ -1,10 +1,32 @@
 package mat.client.expressionbuilder.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.shared.StringUtility;
 
 public class QuantityModel extends ExpressionBuilderModel {
+	Set<String> timingUnits = new HashSet<String>() {
+		private static final long serialVersionUID = -217586643431369976L;
+		{
+			add("millisecond");
+			add("milliseconds");
+			add("second");
+			add("seconds");
+			add("hour");
+			add("hours");
+			add("day");
+			add("days");
+			add("week");
+			add("weeks");
+			add("month");
+			add("months");
+			add("year");
+			add("years");
+		}
+	};
 	public QuantityModel(ExpressionBuilderModel parent) {
 		super(parent);
 	}
@@ -30,7 +52,13 @@ public class QuantityModel extends ExpressionBuilderModel {
 	
 	@Override
 	public String getCQL(String identation) {
-		return this.value + (StringUtility.isEmptyOrNull(this.unit) ? "" : " '" + this.unit + "'");
+		String timingValue = "";
+		if(!StringUtility.isEmptyOrNull(this.unit) && !timingUnits.contains(this.unit)) {
+			timingValue = " '" + this.unit + "'";
+		} else if(!StringUtility.isEmptyOrNull(this.unit)) {
+			timingValue = " " + this.unit;
+		}
+		return this.value + timingValue;
 	}
 	
 	@Override

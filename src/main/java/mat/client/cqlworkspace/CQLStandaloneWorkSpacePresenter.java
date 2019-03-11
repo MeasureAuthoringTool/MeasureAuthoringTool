@@ -85,7 +85,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	public CQLStandaloneWorkSpacePresenter(final CQLWorkspaceView srchDisplay) {
 		cqlWorkspaceView = srchDisplay;
 		cqlWorkspaceView.getCqlGeneralInformationView().getInAppHelp().setMessage(InAppHelpMessages.STANDALONE_CQL_LIBRARY_GENERAL_INFORMATION);
-		cqlWorkspaceView.getCqlGeneralInformationView().getInAppHelp().show(false);
 		emptyWidget.add(new Label("No CQL Library Selected"));
 		addEventHandlers();
 	}

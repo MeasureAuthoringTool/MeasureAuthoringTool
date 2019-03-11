@@ -85,7 +85,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	public CQLMeasureWorkSpacePresenter(final CQLWorkspaceView workspaceView) {
 		cqlWorkspaceView = workspaceView;
 		cqlWorkspaceView.getCqlGeneralInformationView().getInAppHelp().setMessage(InAppHelpMessages.MEASURE_CQL_LIBRARY_GENERAL_INFORMATION);
-		cqlWorkspaceView.getCqlGeneralInformationView().getInAppHelp().show(true);
 		addEventHandlers();
 		JSONCQLTimingExpressionUtility.getAllCQLTimingExpressionsList();
 		JSONAttributeModeUtility.getAllAttrModeList();

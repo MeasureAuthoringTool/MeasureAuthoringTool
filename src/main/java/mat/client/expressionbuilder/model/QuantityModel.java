@@ -15,6 +15,8 @@ public class QuantityModel extends ExpressionBuilderModel {
 			add("milliseconds");
 			add("second");
 			add("seconds");
+			add("minute");
+			add("minutes");
 			add("hour");
 			add("hours");
 			add("day");

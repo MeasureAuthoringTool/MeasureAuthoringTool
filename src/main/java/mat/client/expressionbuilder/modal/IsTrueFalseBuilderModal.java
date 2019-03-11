@@ -62,7 +62,14 @@ public class IsTrueFalseBuilderModal extends SubExpressionBuilderModal {
 		panel.setStyleName("selectorsPanel");
 		
 		List<ExpressionType> availableExpressionTypes = new ArrayList<>();
+		availableExpressionTypes.add(ExpressionType.COMPARISON);
 		availableExpressionTypes.add(ExpressionType.DEFINITION);
+		availableExpressionTypes.add(ExpressionType.EXISTS);
+		availableExpressionTypes.add(ExpressionType.FUNCTION);
+		availableExpressionTypes.add(ExpressionType.IN);
+		availableExpressionTypes.add(ExpressionType.NOT);
+		availableExpressionTypes.add(ExpressionType.IS_NULL_NOT_NULL);
+		availableExpressionTypes.add(ExpressionType.TIMING);
 		
 		List<OperatorType> availableOperatorTypes = new ArrayList<>();
 		

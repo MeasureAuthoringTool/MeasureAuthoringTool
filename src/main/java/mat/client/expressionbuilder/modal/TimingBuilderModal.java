@@ -17,6 +17,7 @@ import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.TimingModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
+import mat.client.expressionbuilder.util.QueryFinderHelper;
 import mat.client.shared.SpacerWidget;
 
 public class TimingBuilderModal extends SubExpressionBuilderModal {
@@ -89,13 +90,17 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 		panel.add(new SpacerWidget());
 
 		List<ExpressionType> availableExpressionForLeftSideOfTiming = new ArrayList<>();
-		availableExpressionForLeftSideOfTiming.add(ExpressionType.ATTRIBUTE);
+		if(QueryFinderHelper.isPartOfQuery(this.timingModel)) {
+			availableExpressionForLeftSideOfTiming.add(ExpressionType.ATTRIBUTE);
+		}		
+		
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.COMPUTATION);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.DATE_TIME);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.DEFINITION);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.FUNCTION);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.INTERVAL);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.PARAMETER);
+		availableExpressionForLeftSideOfTiming.add(ExpressionType.TIME_BOUNDARY);
 
 		
 		leftHandSideOfTimingSelectorList = new ExpressionTypeSelectorList(
@@ -111,7 +116,10 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 
 		
 		List<ExpressionType> availableExpressionForRightSideOfTiming = new ArrayList<>();
-		availableExpressionForRightSideOfTiming.add(ExpressionType.ATTRIBUTE);
+		if(QueryFinderHelper.isPartOfQuery(this.timingModel)) {
+			availableExpressionForRightSideOfTiming.add(ExpressionType.ATTRIBUTE);
+		}
+		
 		availableExpressionForRightSideOfTiming.add(ExpressionType.COMPUTATION);
 		availableExpressionForRightSideOfTiming.add(ExpressionType.DATE_TIME);
 		availableExpressionForRightSideOfTiming.add(ExpressionType.DEFINITION);

@@ -27,6 +27,7 @@ import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.QueryModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.OperatorTypeUtil;
+import mat.client.expressionbuilder.util.QueryFinderHelper;
 import mat.client.shared.SpacerWidget;
 import mat.shared.CQLModelValidator;
 
@@ -158,8 +159,20 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		VerticalPanel sourcePanel = new VerticalPanel();
 		sourcePanel.setStyleName("selectorsPanel");
 		List<ExpressionType> availableExpressionsForSouce = new ArrayList<>();
+		
+		// in other screens we pass the current model to this function
+		// however, if we do that for this screen, this function will always return true
+		// since we would be passing it a query model. 
+		// we will pass it the parent so that it doesn't accidently mistake 
+		// the current context of this query for an query.
+		if(QueryFinderHelper.isPartOfQuery(this.getParentModel())) {
+			availableExpressionsForSouce.add(ExpressionType.ATTRIBUTE);
+		}
+		
 		availableExpressionsForSouce.add(ExpressionType.RETRIEVE);
 		availableExpressionsForSouce.add(ExpressionType.DEFINITION);
+		availableExpressionsForSouce.add(ExpressionType.FUNCTION);
+		availableExpressionsForSouce.add(ExpressionType.QUERY);
 		List<OperatorType> availableOperatorsForSource = new ArrayList<>(OperatorTypeUtil.getSetOperators());
 		
 		sourceSelector = new ExpressionTypeSelectorList(availableExpressionsForSouce, availableOperatorsForSource, 
@@ -184,7 +197,9 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		availableExpressionsForFilter.add(ExpressionType.COMPARISON);
 		availableExpressionsForFilter.add(ExpressionType.DEFINITION);
 		availableExpressionsForFilter.add(ExpressionType.EXISTS);
+		availableExpressionsForFilter.add(ExpressionType.FUNCTION);
 		availableExpressionsForFilter.add(ExpressionType.IN);
+		availableExpressionsForFilter.add(ExpressionType.NOT);
 		availableExpressionsForFilter.add(ExpressionType.IS_NULL_NOT_NULL);
 		availableExpressionsForFilter.add(ExpressionType.TIMING);
 		availableExpressionsForFilter.add(ExpressionType.IS_TRUE_FALSE);

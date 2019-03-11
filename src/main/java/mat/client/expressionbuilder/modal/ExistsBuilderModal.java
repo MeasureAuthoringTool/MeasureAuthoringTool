@@ -13,6 +13,7 @@ import mat.client.expressionbuilder.model.ExistsModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.OperatorTypeUtil;
+import mat.client.expressionbuilder.util.QueryFinderHelper;
 
 public class ExistsBuilderModal extends SubExpressionBuilderModal {
 
@@ -48,8 +49,15 @@ public class ExistsBuilderModal extends SubExpressionBuilderModal {
 	
 	private Widget buildContentPanel() { 
 		List<ExpressionType> availableExpressionTypes = new ArrayList<>();
+		
+		if(QueryFinderHelper.isPartOfQuery(this.existsModel)) {
+			availableExpressionTypes.add(ExpressionType.ATTRIBUTE);
+		}
+		
 		availableExpressionTypes.add(ExpressionType.RETRIEVE);
 		availableExpressionTypes.add(ExpressionType.DEFINITION);
+		availableExpressionTypes.add(ExpressionType.FUNCTION);
+		availableExpressionTypes.add(ExpressionType.QUERY);
 		
 		List<OperatorType> availableOperatorTypes = new ArrayList<>();
 		availableOperatorTypes.addAll(OperatorTypeUtil.getSetOperators());

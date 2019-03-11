@@ -87,8 +87,15 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 		
 		List<ExpressionType> availableExpressionForLeftSideOfComparison = new ArrayList<>();
 		availableExpressionForLeftSideOfComparison.add(ExpressionType.ATTRIBUTE);
+		availableExpressionForLeftSideOfComparison.add(ExpressionType.CODE);
+		availableExpressionForLeftSideOfComparison.add(ExpressionType.COMPUTATION);
+		availableExpressionForLeftSideOfComparison.add(ExpressionType.DATE_TIME);
 		availableExpressionForLeftSideOfComparison.add(ExpressionType.DEFINITION);
+		availableExpressionForLeftSideOfComparison.add(ExpressionType.FUNCTION);
+		availableExpressionForLeftSideOfComparison.add(ExpressionType.INTERVAL);
+		availableExpressionForLeftSideOfComparison.add(ExpressionType.PARAMETER);
 		availableExpressionForLeftSideOfComparison.add(ExpressionType.QUANTITY);
+		availableExpressionForLeftSideOfComparison.add(ExpressionType.TIME_BOUNDARY);
 		
 		
 		leftHandSideOfComparisonSelectorList = new ExpressionTypeSelectorList(

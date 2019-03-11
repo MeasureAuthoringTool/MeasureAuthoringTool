@@ -33,6 +33,18 @@ public class QueryFinderHelper {
 		return aliasNames;
 	}
 	
+	public static boolean isPartOfQuery(IExpressionBuilderModel currentModel) {
+		if(currentModel == null) {
+			return false;
+		}
+		
+		if(currentModel instanceof QueryModel) {
+			return true;
+		}
+						
+		return isPartOfQuery(currentModel.getParentModel());
+	}	
+	
 	private static void findAliasNames(IExpressionBuilderModel currentModel, List<String> aliasNames) {
 		if(currentModel == null) {
 			return;

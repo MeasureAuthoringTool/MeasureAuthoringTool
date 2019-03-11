@@ -14,6 +14,7 @@ import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.MembershipInModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
+import mat.client.expressionbuilder.util.QueryFinderHelper;
 
 public class MembershipInModal extends SubExpressionBuilderModal {
 
@@ -80,7 +81,20 @@ public class MembershipInModal extends SubExpressionBuilderModal {
 
 	private void buildFirstExpressionList() {
 		final List<ExpressionType> availableExpressionForLeftSideOfIn = new ArrayList<>();
+		if(QueryFinderHelper.isPartOfQuery(this.inModel)) {
+			availableExpressionForLeftSideOfIn.add(ExpressionType.ATTRIBUTE);
+		}
+		
+		availableExpressionForLeftSideOfIn.add(ExpressionType.COMPUTATION);
+		availableExpressionForLeftSideOfIn.add(ExpressionType.RETRIEVE);
+		availableExpressionForLeftSideOfIn.add(ExpressionType.DATE_TIME);
 		availableExpressionForLeftSideOfIn.add(ExpressionType.DEFINITION);
+		availableExpressionForLeftSideOfIn.add(ExpressionType.FUNCTION);
+		availableExpressionForLeftSideOfIn.add(ExpressionType.INTERVAL);
+		availableExpressionForLeftSideOfIn.add(ExpressionType.PARAMETER);
+		availableExpressionForLeftSideOfIn.add(ExpressionType.QUANTITY);
+		availableExpressionForLeftSideOfIn.add(ExpressionType.QUERY);
+		availableExpressionForLeftSideOfIn.add(ExpressionType.TIME_BOUNDARY);
 		
 		leftHandSideOfExpressionSelectorList = new ExpressionTypeSelectorList(
 				availableExpressionForLeftSideOfIn, new ArrayList<>(), leftHandSideBuildButtonObserver, inModel.getLeftHandSide(), 
@@ -89,8 +103,16 @@ public class MembershipInModal extends SubExpressionBuilderModal {
 	
 	private void buildSecondExpressionList() {
 		final List<ExpressionType> availableExpressionForRightSideOfIn = new ArrayList<>();
+		if(QueryFinderHelper.isPartOfQuery(this.inModel)) {
+			availableExpressionForRightSideOfIn.add(ExpressionType.ATTRIBUTE);
+		}
+		
+		availableExpressionForRightSideOfIn.add(ExpressionType.RETRIEVE);
 		availableExpressionForRightSideOfIn.add(ExpressionType.DEFINITION);
+		availableExpressionForRightSideOfIn.add(ExpressionType.FUNCTION);
+		availableExpressionForRightSideOfIn.add(ExpressionType.INTERVAL);
 		availableExpressionForRightSideOfIn.add(ExpressionType.PARAMETER);
+		availableExpressionForRightSideOfIn.add(ExpressionType.QUERY);
 		availableExpressionForRightSideOfIn.add(ExpressionType.VALUESET);
 
 		rightHandSideOfExpressionSelectorList = new ExpressionTypeSelectorList(

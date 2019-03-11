@@ -60,8 +60,11 @@ public class IsNullBuilderModal extends SubExpressionBuilderModal {
 		panel.setStyleName("selectorsPanel");
 		
 		List<ExpressionType> availableExpressionTypes = new ArrayList<>();
-		availableExpressionTypes.add(ExpressionType.DEFINITION);
+		availableExpressionTypes.add(ExpressionType.ATTRIBUTE);
 		availableExpressionTypes.add(ExpressionType.RETRIEVE);
+		availableExpressionTypes.add(ExpressionType.DEFINITION);
+		availableExpressionTypes.add(ExpressionType.FUNCTION);
+		availableExpressionTypes.add(ExpressionType.QUERY);
 		
 		List<OperatorType> availableOperatorTypes = new ArrayList<>();
 		

@@ -18,8 +18,8 @@ import mat.client.shared.ListBoxMVP;
 
 public class TimeBoundaryBuilderModal extends SubExpressionBuilderModal {
 
-	private static final String END_OF = "End of";
-	private static final String START_OF = "Start of";
+	private static final String END_OF = "end of";
+	private static final String START_OF = "start of";
 	private static final String TITLE = "Start of / End of";
 	private static final String SELECT_PLACEHOLDER = "-- Select a Boundary --";
 	private static final String BOUNDARY_LABEL = "Which boundary would you like to use?";
@@ -87,10 +87,10 @@ public class TimeBoundaryBuilderModal extends SubExpressionBuilderModal {
 		timeBoundaryListBox.insertItem(START_OF, START_OF);
 
 		timeBoundaryListBox.setSelectedIndex(selectedIndex);
-		timeBoundaryListBox.addChangeHandler(event -> onIsTrueFalseListBoxChange(timeBoundaryListBox.getSelectedIndex()));
+		timeBoundaryListBox.addChangeHandler(event -> onStartOfEndOfListBoxChange(timeBoundaryListBox.getSelectedIndex()));
 	}
 	
-	private void onIsTrueFalseListBoxChange(int selectedIndex) {
+	private void onStartOfEndOfListBoxChange(int selectedIndex) {
 		this.selectedIndex = selectedIndex;
 
 		if(selectedIndex == 0) {
@@ -98,6 +98,8 @@ public class TimeBoundaryBuilderModal extends SubExpressionBuilderModal {
 		} else  {
 			timeBoundaryModel.setOperatorText(timeBoundaryListBox.getSelectedValue());
 		}
+		
+		this.updateCQLDisplay();
 	}
 
 	private ExpressionTypeSelectorList buildSecondExpressionList() {

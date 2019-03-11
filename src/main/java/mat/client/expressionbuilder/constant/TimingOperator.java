@@ -28,7 +28,7 @@ public enum TimingOperator implements ExpressionBuilderType {
 	HOUR("hour"),
 	MINUTE("minute"),
 	SECOND("second"),
-	MILISECOND("milisecond"),
+	MILISECOND("millisecond"),
 	
 	// DATE TIME PRECISION SPECIFIER
 	YEAR_OF("year of"),
@@ -38,7 +38,7 @@ public enum TimingOperator implements ExpressionBuilderType {
 	HOUR_OF("hour of"),
 	MINUTE_OF("minute of"),
 	SECOND_OF("second of"),
-	MILISECOND_OF("milisecond of"),
+	MILISECOND_OF("millisecond of"),
 	
 	// relative qualifier
 	OR_BEFORE("or before"),

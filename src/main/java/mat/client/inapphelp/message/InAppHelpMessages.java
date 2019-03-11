@@ -52,4 +52,44 @@ public class InAppHelpMessages {
 			"<b>Applied Value Sets table:</b> This table shows all value sets currently applied to this library. This table contains an edit icon, a delete icon, and a checkbox which can be used in the process to copy the value set.<br />" + 
 			"<br />" + 
 			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of value sets from one library to another library or measure. To copy a value set, select the checkboxes next to the value set(s) you wish to copy, click the copy icon, navigate to another library or measure and click on the paste icon above the Applied Value Sets table. To select all value sets at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
+
+	public static final String MEASURE_CQL_LIBRARY_PARAMETER = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any parameters already included in the measure. Each measure already contains the Measurement Period parameter as a default. To open a parameter already added to the measure, double-click on the name. There is a search box just above this list which can be used to find a specific parameter name within the list.<br />" + 
+			"<br />" + 
+			"<b>+Add New:</b> Click this link when you are ready to add a new parameter. This will clear all the fields in preparation for the new entries.<br />" + 
+			"<br />" + 
+			"<b>Parameter Name:</b> This field is to give your parameter a name. This name will be used to reference the parameter within the CQL logic and therefore, must be unique to any other identifier within the measure.<br />" + 
+			"<br />" + 
+			"<b>Comment:</b> This comment box is to add a comment specific to the particular parameter being worked on. This comment will show in the View CQL section of the CQL Workspace just above the parameter and in the CQL file export.<br />" + 
+			"<br />" + 
+			"<b>Information:</b> Clicking the information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br />" + 
+			"<br />" + 
+			"<b>Save:</b> The save icon is to save your current work.<br />" + 
+			"<br />" + 
+			"<b>Erase:</b> The erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br />" + 
+			"<br />" + 
+			"<b>Delete:</b> The delete icon is to delete the currently selected parameter. Note: you will not be able to delete any default parameter or any parameter that has been used elsewhere within your CQL logic.<br />" + 
+			"<br />" + 
+			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br />" + 
+			"<br />" + 
+			"<b>Click to View CQL:</b> Clicking on this link will display the current CQL library for the measure being worked on. This is available to allow you to review other items you have already added to the measure while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+
+	public static final String STANDALONE_CQL_LIBRARY_PARAMETER = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any parameters already included in the library. Each library already contains the Measurement Period parameter as a default. To open a parameter already added to the library, double-click on the name. There is a search box just above this list which can be used to find a specific parameter name within the list.<br />" + 
+			"<br />" + 
+			"<b>+Add New:</b> Click this link when you are ready to add a new parameter. This will clear all the fields in preparation for the new entries.<br />" + 
+			"<br />" + 
+			"<b>Parameter Name:</b> This field is to give your parameter a name. This name will be used to reference the parameter within the CQL logic and therefore, must be unique to any other identifier within the library.<br />" + 
+			"<br />" + 
+			"<b>Comment:</b> This comment box is to add a comment specific to the particular parameter being worked on. This comment will show in the View CQL section of the CQL Workspace just above the parameter and in the CQL file export.<br />" + 
+			"<br />" + 
+			"<b>Information:</b> Clicking the information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br />" + 
+			"<br />" + 
+			"<b>Save:</b> The save icon is to save your current work.<br />" + 
+			"<br />" + 
+			"<b>Erase:</b> The erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br />" + 
+			"<br />" + 
+			"<b>Delete:</b> The delete icon is to delete the currently selected parameter. Note: you will not be able to delete any default parameter or any parameter that has been used elsewhere within your CQL logic.<br />" + 
+			"<br />" + 
+			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br />" + 
+			"<br />" + 
+			"<b>Click to View CQL:</b> Clicking on this link will display the current CQL file for the library being worked on. This is available to allow you to review other items you have already added to the library while you are working on your current expression. Clicking the link again will collapse the area to save space.";
 }

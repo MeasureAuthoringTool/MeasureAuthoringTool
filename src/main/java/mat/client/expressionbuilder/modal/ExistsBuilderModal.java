@@ -67,7 +67,7 @@ public class ExistsBuilderModal extends SubExpressionBuilderModal {
 		
 		String label = "For what type of expression would you like to determine existence?";
 		ExpressionTypeSelectorList selectors = 
-				new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, 
+				new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, QueryFinderHelper.findAliasNames(this.existsModel),
 						buildButtonObserver, existsModel, label, this);
 		panel.add(selectors);
 		

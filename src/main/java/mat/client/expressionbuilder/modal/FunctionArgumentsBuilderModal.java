@@ -16,6 +16,7 @@ import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.FunctionModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
+import mat.client.expressionbuilder.util.QueryFinderHelper;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.shared.cql.model.FunctionSignature;
@@ -99,9 +100,8 @@ public class FunctionArgumentsBuilderModal extends SubExpressionBuilderModal {
 			BuildButtonObserver observer = new BuildButtonObserver(this, this.functionModel.getArguments().get(i),
 					this.getMainModel());
 			ExpressionTypeSelectorList selector = new ExpressionTypeSelectorList(availableExpressionsForArgument,
-					new ArrayList<>(), new ArrayList<>(), observer, this.functionModel.getArguments().get(i),
+					new ArrayList<>(), QueryFinderHelper.findAliasNames(this.functionModel), observer, this.functionModel.getArguments().get(i),
 					argumentLabel, this);
-
 			panel.add(selector);
 		}
 

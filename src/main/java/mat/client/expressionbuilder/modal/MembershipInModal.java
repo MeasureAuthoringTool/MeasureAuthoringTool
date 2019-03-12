@@ -97,7 +97,8 @@ public class MembershipInModal extends SubExpressionBuilderModal {
 		availableExpressionForLeftSideOfIn.add(ExpressionType.TIME_BOUNDARY);
 		
 		leftHandSideOfExpressionSelectorList = new ExpressionTypeSelectorList(
-				availableExpressionForLeftSideOfIn, new ArrayList<>(), leftHandSideBuildButtonObserver, inModel.getLeftHandSide(), 
+				availableExpressionForLeftSideOfIn, new ArrayList<>(), QueryFinderHelper.findAliasNames(this.inModel),
+				leftHandSideBuildButtonObserver, inModel.getLeftHandSide(), 
 				"What type of expression are you looking for?", this);
 	}
 	

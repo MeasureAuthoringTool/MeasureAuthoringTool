@@ -16,6 +16,7 @@ import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IntervalModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
+import mat.client.expressionbuilder.util.QueryFinderHelper;
 import mat.client.shared.SpacerWidget;
 
 public class IntervalBuilderModal extends SubExpressionBuilderModal {	
@@ -93,7 +94,8 @@ public class IntervalBuilderModal extends SubExpressionBuilderModal {
 		availableExpressions.add(ExpressionType.TIME_BOUNDARY);
 		
 		lowerBoundExpressionTypeSelector = new ExpressionTypeSelectorList(
-				availableExpressions, new ArrayList<>(), lowerBoundBuildButtonObserver, intervalModel.getLowerBound(), 
+				availableExpressions, new ArrayList<>(), QueryFinderHelper.findAliasNames(this.intervalModel),
+				lowerBoundBuildButtonObserver, intervalModel.getLowerBound(), 
 				"What would you like to use for the lower boundary of your interval?", this
 		);
 		

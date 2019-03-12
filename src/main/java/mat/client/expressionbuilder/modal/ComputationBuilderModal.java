@@ -16,6 +16,7 @@ import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.ComputationModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
+import mat.client.expressionbuilder.util.QueryFinderHelper;
 import mat.client.shared.ListBoxMVP;
 
 public class ComputationBuilderModal extends SubExpressionBuilderModal {
@@ -105,7 +106,8 @@ public class ComputationBuilderModal extends SubExpressionBuilderModal {
 		leftSideOfComputationOptions.addAll(buildDropDownOptions());
 
 		leftHandSideOfComputationSelectorList = new ExpressionTypeSelectorList(
-				leftSideOfComputationOptions, new ArrayList<>(), leftHandSideBuildButtonObserver, computationModel.getLeftHandSide(), FIRST_HEADING, this);
+				leftSideOfComputationOptions, new ArrayList<>(), QueryFinderHelper.findAliasNames(this.computationModel),
+				leftHandSideBuildButtonObserver, computationModel.getLeftHandSide(), FIRST_HEADING, this);
 	}
 
 	private void buildSecondExpressionList() {
@@ -113,8 +115,8 @@ public class ComputationBuilderModal extends SubExpressionBuilderModal {
 		rightSideOfComputationOptions.addAll(buildDropDownOptions());
 
 		rightHandSideOfComputationSelectorList = new ExpressionTypeSelectorList(
-				rightSideOfComputationOptions, new ArrayList<>(), rightHandSideBuildButtonObserver, 
-				computationModel.getRightHandSide(), SECOND_HEADING, this);
+				rightSideOfComputationOptions, new ArrayList<>(), QueryFinderHelper.findAliasNames(this.computationModel),
+				rightHandSideBuildButtonObserver, computationModel.getRightHandSide(), SECOND_HEADING, this);
 	}
 
 	private List<ExpressionType> buildDropDownOptions(){

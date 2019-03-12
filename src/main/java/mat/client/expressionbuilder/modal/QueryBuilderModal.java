@@ -175,7 +175,8 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		availableExpressionsForSouce.add(ExpressionType.QUERY);
 		List<OperatorType> availableOperatorsForSource = new ArrayList<>(OperatorTypeUtil.getSetOperators());
 		
-		sourceSelector = new ExpressionTypeSelectorList(availableExpressionsForSouce, availableOperatorsForSource, 
+		sourceSelector = new ExpressionTypeSelectorList(
+				availableExpressionsForSouce, availableOperatorsForSource, QueryFinderHelper.findAliasNames(this.getParentModel()),
 				sourceBuildButtonObserver, queryModel.getSource(), 
 				"What type of expression would you like to use as your data source?", this);
 		
@@ -206,7 +207,8 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		List<OperatorType> availableOperatorsForFilter = new ArrayList<>(OperatorTypeUtil.getBooleanOperators());
 		
-		filterSelector = new ExpressionTypeSelectorList(availableExpressionsForFilter, availableOperatorsForFilter, 
+		filterSelector = new ExpressionTypeSelectorList(
+				availableExpressionsForFilter, availableOperatorsForFilter, QueryFinderHelper.findAliasNames(this.queryModel),
 				filterBuildButtonObserver, queryModel.getFilter(), 
 				 "What would you like to use to filter your source?", this);
 		

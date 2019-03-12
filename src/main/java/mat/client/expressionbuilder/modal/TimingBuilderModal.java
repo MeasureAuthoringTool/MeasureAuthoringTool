@@ -104,9 +104,11 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 
 		
 		leftHandSideOfTimingSelectorList = new ExpressionTypeSelectorList(
-				availableExpressionForLeftSideOfTiming, new ArrayList<>(), leftHandSideBuildButtonObserver, timingModel.getLeftHandSide(), 
+				availableExpressionForLeftSideOfTiming, new ArrayList<>(), QueryFinderHelper.findAliasNames(this.timingModel),
+				leftHandSideBuildButtonObserver, timingModel.getLeftHandSide(), 
 				"What expression would you like to use on the left-hand side of your timing?", this
 		);
+		
 		panel.add(leftHandSideOfTimingSelectorList);
 		
 		
@@ -128,9 +130,9 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 		availableExpressionForRightSideOfTiming.add(ExpressionType.PARAMETER);
 		
 		rightHandSideOfTimingSelectorList = new ExpressionTypeSelectorList(
-				availableExpressionForRightSideOfTiming, new ArrayList<>(), rightHandSideBuildButtonObserver, timingModel.getRightHandSide(), 
-				"What expression would you like to use on the right-hand side of your timing?", this
-		);
+				availableExpressionForRightSideOfTiming, new ArrayList<>(), QueryFinderHelper.findAliasNames(this.timingModel),
+				rightHandSideBuildButtonObserver, timingModel.getRightHandSide(), 
+				"What expression would you like to use on the right-hand side of your timing?", this);
 		panel.add(rightHandSideOfTimingSelectorList);
 		
 		return panel;

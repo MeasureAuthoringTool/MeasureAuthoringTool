@@ -13,6 +13,7 @@ import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.NotModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.OperatorTypeUtil;
+import mat.client.expressionbuilder.util.QueryFinderHelper;
 
 public class NotBuilderModal extends SubExpressionBuilderModal {
 
@@ -66,7 +67,8 @@ public class NotBuilderModal extends SubExpressionBuilderModal {
 		
 		String label = "What type of expression would you like to negate?";
 		ExpressionTypeSelectorList selectors = 
-			new ExpressionTypeSelectorList(availableExpressionTypes, availableOperatorTypes, 
+			new ExpressionTypeSelectorList(
+					availableExpressionTypes, availableOperatorTypes, QueryFinderHelper.findAliasNames(this.notModel),
 					buildButtonObserver, notModel, label, this);
 		panel.add(selectors);
 		

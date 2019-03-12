@@ -60,7 +60,6 @@ public class GeneralInformationValidator {
 		   isValueComplete(model.geteCQMAbbreviatedTitle()) &&
 		   isValueComplete(model.geteCQMVersionNumber()) &&
 		   isValueComplete(model.getScoringMethod()) &&
-		   (model.geteMeasureId() > 0) &&
 		   isCalendarYearComplete(model) && 
 		   isCompositeScoringMethodComplete(model, isComposite) &&
 		   isNQFComplete(model)

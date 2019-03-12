@@ -105,10 +105,7 @@ public class TimeBoundaryBuilderModal extends SubExpressionBuilderModal {
 
 	private ExpressionTypeSelectorList buildSecondExpressionList() {
 		final List<ExpressionType> availableExpressionTypes = new ArrayList<>();
-		if(QueryFinderHelper.isPartOfQuery(this.timeBoundaryModel)) {
-			availableExpressionTypes.add(ExpressionType.ATTRIBUTE);
-		}
-		
+		availableExpressionTypes.add(ExpressionType.ATTRIBUTE);		
 		availableExpressionTypes.add(ExpressionType.DEFINITION);
 		availableExpressionTypes.add(ExpressionType.FUNCTION);
 		availableExpressionTypes.add(ExpressionType.INTERVAL);

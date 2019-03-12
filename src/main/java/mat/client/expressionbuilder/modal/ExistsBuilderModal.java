@@ -50,10 +50,7 @@ public class ExistsBuilderModal extends SubExpressionBuilderModal {
 	private Widget buildContentPanel() { 
 		List<ExpressionType> availableExpressionTypes = new ArrayList<>();
 		
-		if(QueryFinderHelper.isPartOfQuery(this.existsModel)) {
-			availableExpressionTypes.add(ExpressionType.ATTRIBUTE);
-		}
-		
+		availableExpressionTypes.add(ExpressionType.ATTRIBUTE);		
 		availableExpressionTypes.add(ExpressionType.RETRIEVE);
 		availableExpressionTypes.add(ExpressionType.DEFINITION);
 		availableExpressionTypes.add(ExpressionType.FUNCTION);

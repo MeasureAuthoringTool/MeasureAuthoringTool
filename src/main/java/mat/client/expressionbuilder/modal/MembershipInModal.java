@@ -81,10 +81,7 @@ public class MembershipInModal extends SubExpressionBuilderModal {
 
 	private void buildFirstExpressionList() {
 		final List<ExpressionType> availableExpressionForLeftSideOfIn = new ArrayList<>();
-		if(QueryFinderHelper.isPartOfQuery(this.inModel)) {
-			availableExpressionForLeftSideOfIn.add(ExpressionType.ATTRIBUTE);
-		}
-		
+		availableExpressionForLeftSideOfIn.add(ExpressionType.ATTRIBUTE);
 		availableExpressionForLeftSideOfIn.add(ExpressionType.COMPUTATION);
 		availableExpressionForLeftSideOfIn.add(ExpressionType.RETRIEVE);
 		availableExpressionForLeftSideOfIn.add(ExpressionType.DATE_TIME);
@@ -104,10 +101,7 @@ public class MembershipInModal extends SubExpressionBuilderModal {
 	
 	private void buildSecondExpressionList() {
 		final List<ExpressionType> availableExpressionForRightSideOfIn = new ArrayList<>();
-		if(QueryFinderHelper.isPartOfQuery(this.inModel)) {
-			availableExpressionForRightSideOfIn.add(ExpressionType.ATTRIBUTE);
-		}
-		
+		availableExpressionForRightSideOfIn.add(ExpressionType.ATTRIBUTE);		
 		availableExpressionForRightSideOfIn.add(ExpressionType.RETRIEVE);
 		availableExpressionForRightSideOfIn.add(ExpressionType.DEFINITION);
 		availableExpressionForRightSideOfIn.add(ExpressionType.FUNCTION);

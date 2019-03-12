@@ -159,16 +159,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		VerticalPanel sourcePanel = new VerticalPanel();
 		sourcePanel.setStyleName("selectorsPanel");
 		List<ExpressionType> availableExpressionsForSouce = new ArrayList<>();
-		
-		// in other screens we pass the current model to this function
-		// however, if we do that for this screen, this function will always return true
-		// since we would be passing it a query model. 
-		// we will pass it the parent so that it doesn't accidently mistake 
-		// the current context of this query for an query.
-		if(QueryFinderHelper.isPartOfQuery(this.getParentModel())) {
-			availableExpressionsForSouce.add(ExpressionType.ATTRIBUTE);
-		}
-		
+		availableExpressionsForSouce.add(ExpressionType.ATTRIBUTE);	
 		availableExpressionsForSouce.add(ExpressionType.RETRIEVE);
 		availableExpressionsForSouce.add(ExpressionType.DEFINITION);
 		availableExpressionsForSouce.add(ExpressionType.FUNCTION);

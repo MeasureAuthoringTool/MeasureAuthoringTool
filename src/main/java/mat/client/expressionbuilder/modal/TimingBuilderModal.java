@@ -90,10 +90,7 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 		panel.add(new SpacerWidget());
 
 		List<ExpressionType> availableExpressionForLeftSideOfTiming = new ArrayList<>();
-		if(QueryFinderHelper.isPartOfQuery(this.timingModel)) {
-			availableExpressionForLeftSideOfTiming.add(ExpressionType.ATTRIBUTE);
-		}		
-		
+		availableExpressionForLeftSideOfTiming.add(ExpressionType.ATTRIBUTE);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.COMPUTATION);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.DATE_TIME);
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.DEFINITION);
@@ -118,10 +115,7 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 
 		
 		List<ExpressionType> availableExpressionForRightSideOfTiming = new ArrayList<>();
-		if(QueryFinderHelper.isPartOfQuery(this.timingModel)) {
-			availableExpressionForRightSideOfTiming.add(ExpressionType.ATTRIBUTE);
-		}
-		
+		availableExpressionForRightSideOfTiming.add(ExpressionType.ATTRIBUTE);		
 		availableExpressionForRightSideOfTiming.add(ExpressionType.COMPUTATION);
 		availableExpressionForRightSideOfTiming.add(ExpressionType.DATE_TIME);
 		availableExpressionForRightSideOfTiming.add(ExpressionType.DEFINITION);

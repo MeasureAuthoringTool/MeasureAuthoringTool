@@ -34,17 +34,17 @@ public class TimingGraphUtil {
 		
 		addChildToDateTimePrecision(graph, TimingOperator.AS);
 				
-		addChildToRelativeQualifier(graph,  TimingOperator.START);
-		addChildToRelativeQualifier(graph,  TimingOperator.END);
+		addChildToRelativeQualifier(graph,  TimingOperator.START_OF);
+		addChildToRelativeQualifier(graph,  TimingOperator.END_OF);
 		addChildToRelativeQualifier(graph,  TimingOperator.DONE_NODE);
 
 
-		graph.addEdge(TimingOperator.AS, TimingOperator.START);
-		graph.addEdge(TimingOperator.AS, TimingOperator.END);
+		graph.addEdge(TimingOperator.AS, TimingOperator.START_OF);
+		graph.addEdge(TimingOperator.AS, TimingOperator.END_OF);
 		graph.addEdge(TimingOperator.AS, TimingOperator.DONE_NODE);
 		
-		graph.addEdge(TimingOperator.START, TimingOperator.DONE_NODE);
-		graph.addEdge(TimingOperator.END, TimingOperator.DONE_NODE);
+		graph.addEdge(TimingOperator.START_OF, TimingOperator.DONE_NODE);
+		graph.addEdge(TimingOperator.END_OF, TimingOperator.DONE_NODE);
 		
 		return graph;
 	}
@@ -60,15 +60,15 @@ public class TimingGraphUtil {
 		graph.addEdge(TimingOperator.PROPERLY, TimingOperator.INCLUDES);
 
 		addDateTimePrecisionSpecifierToParent(graph, TimingOperator.INCLUDES);
-		graph.addEdge(TimingOperator.INCLUDES, TimingOperator.START);
-		graph.addEdge(TimingOperator.INCLUDES, TimingOperator.END);
+		graph.addEdge(TimingOperator.INCLUDES, TimingOperator.START_OF);
+		graph.addEdge(TimingOperator.INCLUDES, TimingOperator.END_OF);
 		graph.addEdge(TimingOperator.INCLUDES, TimingOperator.DONE_NODE);
 		
-		addChildToDateTimePrecisionSpecifier(graph, TimingOperator.START);
-		addChildToDateTimePrecisionSpecifier(graph, TimingOperator.END);
+		addChildToDateTimePrecisionSpecifier(graph, TimingOperator.START_OF);
+		addChildToDateTimePrecisionSpecifier(graph, TimingOperator.END_OF);
 
-		graph.addEdge(TimingOperator.START, TimingOperator.DONE_NODE);
-		graph.addEdge(TimingOperator.END, TimingOperator.DONE_NODE);
+		graph.addEdge(TimingOperator.START_OF, TimingOperator.DONE_NODE);
+		graph.addEdge(TimingOperator.END_OF, TimingOperator.DONE_NODE);
 		
 		return graph;
 	}
@@ -147,17 +147,17 @@ public class TimingGraphUtil {
 		addDateTimePrecisionSpecifierToParent(graph, TimingOperator.ON_OR_BEFORE);
 		addDateTimePrecisionSpecifierToParent(graph, TimingOperator.ON_OR_AFTER);
 
-		addChildToTemporalRelationship(graph,  TimingOperator.START);
-		addChildToTemporalRelationship(graph,  TimingOperator.END);
+		addChildToTemporalRelationship(graph,  TimingOperator.START_OF);
+		addChildToTemporalRelationship(graph,  TimingOperator.END_OF);
 		addChildToTemporalRelationship(graph,  TimingOperator.DONE_NODE);
 
-		addChildToDateTimePrecisionSpecifier(graph, TimingOperator.START);
-		addChildToDateTimePrecisionSpecifier(graph, TimingOperator.END);
+		addChildToDateTimePrecisionSpecifier(graph, TimingOperator.START_OF);
+		addChildToDateTimePrecisionSpecifier(graph, TimingOperator.END_OF);
 		addChildToDateTimePrecisionSpecifier(graph, TimingOperator.DONE_NODE);
 
 
-		graph.addEdge(TimingOperator.START, TimingOperator.DONE_NODE);
-		graph.addEdge(TimingOperator.END, TimingOperator.DONE_NODE);
+		graph.addEdge(TimingOperator.START_OF, TimingOperator.DONE_NODE);
+		graph.addEdge(TimingOperator.END_OF, TimingOperator.DONE_NODE);
 
 		return graph;
 	}
@@ -183,12 +183,12 @@ public class TimingGraphUtil {
 		
 		graph.addEdge(TimingOperator.WITHIN, TimingOperator.QUANTITY_OF);
 		
-		graph.addEdge(TimingOperator.QUANTITY_OF, TimingOperator.START);
-		graph.addEdge(TimingOperator.QUANTITY_OF, TimingOperator.END);
+		graph.addEdge(TimingOperator.QUANTITY_OF, TimingOperator.START_OF);
+		graph.addEdge(TimingOperator.QUANTITY_OF, TimingOperator.END_OF);
 		graph.addEdge(TimingOperator.QUANTITY_OF, TimingOperator.DONE_NODE);
 
-		graph.addEdge(TimingOperator.START, TimingOperator.DONE_NODE);
-		graph.addEdge(TimingOperator.END, TimingOperator.DONE_NODE);
+		graph.addEdge(TimingOperator.START_OF, TimingOperator.DONE_NODE);
+		graph.addEdge(TimingOperator.END_OF, TimingOperator.DONE_NODE);
 		
 		
 		return graph;

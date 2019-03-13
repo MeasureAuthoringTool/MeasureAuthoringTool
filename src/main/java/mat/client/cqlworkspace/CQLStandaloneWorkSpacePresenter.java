@@ -94,6 +94,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		cqlWorkspaceView.getValueSetView().getInAppHelp().setMessage(InAppHelpMessages.STANDALONE_CQL_LIBRARY_VALUE_SET);
 		cqlWorkspaceView.getCQLParametersView().getInAppHelp().setMessage(InAppHelpMessages.STANDALONE_CQL_LIBRARY_PARAMETER);
 		cqlWorkspaceView.getCQLFunctionsView().getInAppHelp().setMessage(InAppHelpMessages.STANDALONE_CQL_LIBRARY_FUNCTION);
+		cqlWorkspaceView.getIncludeView().getInAppHelp().setMessage(InAppHelpMessages.STANDALONE_CQL_LIBRARY_INCLUDES);
 	}
 
 	private void addViewCQLEventHandlers() {

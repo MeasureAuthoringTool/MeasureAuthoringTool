@@ -152,4 +152,25 @@ public class InAppHelpMessages {
 			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br />" + 
 			"<br />" + 
 			"<b>Click to View CQL:</b> Clicking on this link will display the current CQL file for the library being worked on. This is available to allow you to review other items you have already added to the library while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+	
+	public static final String MEASURE_CQL_LIBRARY_INCLUDES = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the assigned aliases of any included libraries. To open a library already included within the measure, double-click on the alias. There is a search box just above this list which can be used to find a specific library alias within the list.<br>" + 
+			"<br>" + 
+			"<b>Library Alias:</b> Each included library must have an alias which will be used as an identifier to reference expressions from the included library within the CQL logic. Each alias must be unique to any other identifier within the measure. The alias must start with an alpha-character or underscore followed by alpha-numeric characters or underscores and must not contain spaces.<br>" + 
+			"<br>" + 
+			"<b>Search:</b> The search box provided is to enable you to search for available libraries within the MAT that meet the criteria for inclusion into a measure. In order to be included a library must be in a versioned state, must use the same version of QDM as the measure, can not have the same name as the measure, and can not be in the same measure family as the measure. Enter text into the field and then click the Search button.<br>" + 
+			"<br>" + 
+			"<b>Available Libraries:</b> This box will list the libraries that were returned from the search. To select a library to include in your measure click the checkbox next to the library you wish to include and then click the save icon in the top-right of the screen.<br>" + 
+			"<br>" + 
+			"<b>View CQL file here:</b> When a library in the list of available libraries is selected, the CQL file for that library will display here. This gives you a way to ensure this is the one you want before you click the save button.";
+	
+	public static final String STANDALONE_CQL_LIBRARY_INCLUDES = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the assigned aliases of any included libraries. To open a library already included within the library, double-click on the alias. There is a search box just above this list which can be used to find a specific library alias within the list.<br>" + 
+			"<br>" + 
+			"<b>Library Alias:</b> Each included library must have an alias which will be used as an identifier to reference expressions from the included library within the CQL logic. Each alias must be unique to any other identifier within the library. The alias must start with an alpha-character or underscore followed by alpha-numeric characters or underscores and must not contain spaces.<br>" + 
+			"<br>" + 
+			"<b>Search:</b> The search box provided is to enable you to search for available libraries within the MAT that meet the criteria for inclusion into the CQL library. In order to be included a library must be in a versioned state, must use the same version of QDM as the library it is being included in, can not have the same name as the library it is being included in, and can not be in the same library family as the library it is being included in. Enter text into the field and then click the Search button.<br>" + 
+			"<br>" + 
+			"<b>Available Libraries:</b> This box will list the libraries that were returned from the search. To select a library to include in your library click the checkbox next to the library you wish to include and then click the save icon in the top-right of the screen.<br>" + 
+			"<br>" + 
+			"<b>View CQL file here:</b> When a library in the list of available libraries is selected, the CQL file for that library will display here. This gives you a way to ensure this is the one you want before you click the save button.";
+	
 }

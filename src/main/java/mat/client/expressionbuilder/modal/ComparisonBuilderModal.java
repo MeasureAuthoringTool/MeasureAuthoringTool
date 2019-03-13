@@ -109,10 +109,18 @@ public class ComparisonBuilderModal extends SubExpressionBuilderModal {
 		panel.add(buildComparisonOperatorListBox());
 		
 		List<ExpressionType> availableExpressionForRightSideOfComparison = new ArrayList<>();
-		availableExpressionForLeftSideOfComparison.add(ExpressionType.ATTRIBUTE);
+		availableExpressionForRightSideOfComparison.add(ExpressionType.ATTRIBUTE);
 		availableExpressionForRightSideOfComparison.add(ExpressionType.CODE);
+		availableExpressionForRightSideOfComparison.add(ExpressionType.COMPUTATION);
+		availableExpressionForRightSideOfComparison.add(ExpressionType.DATE_TIME);
 		availableExpressionForRightSideOfComparison.add(ExpressionType.DEFINITION);
+		availableExpressionForRightSideOfComparison.add(ExpressionType.FUNCTION);
+		availableExpressionForRightSideOfComparison.add(ExpressionType.INTERVAL);
+		availableExpressionForRightSideOfComparison.add(ExpressionType.PARAMETER);
 		availableExpressionForRightSideOfComparison.add(ExpressionType.QUANTITY);
+		availableExpressionForRightSideOfComparison.add(ExpressionType.TIME_BOUNDARY);
+
+
 		rightHandSideOfComparisonSelectorList = new ExpressionTypeSelectorList(
 				availableExpressionForRightSideOfComparison, new ArrayList<>(), QueryFinderHelper.findAliasNames(this.comparisonModel),
 				rightHandSideBuildButtonObserver, comparisonModel.getRightHandSide(), 

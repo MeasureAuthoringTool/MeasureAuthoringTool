@@ -18,8 +18,6 @@ public class IsNullModel extends ExpressionBuilderModel {
 	@Override
 	public String getCQL(String identation) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(" ");
-
 		for(int i = 0; i < this.getChildModels().size(); i++) {
 			builder.append(this.getChildModels().get(i).getCQL(identation));
 		}

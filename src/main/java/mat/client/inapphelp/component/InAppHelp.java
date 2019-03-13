@@ -72,7 +72,7 @@ public class InAppHelp extends Composite {
 		Button closeButton = new Button("Close");
 		closeButton.setTitle("Close");
 		closeButton.setType(ButtonType.PRIMARY);
-		closeButton.addClickHandler(event -> helpModal.hide());
+		closeButton.addClickHandler(event -> hideHelpModal());
 		closeButton.setPull(Pull.RIGHT);
 		footer.add(closeButton);
 		footer.getElement().setAttribute("style", "border-color: transparent");
@@ -84,11 +84,23 @@ public class InAppHelp extends Composite {
 		helpModal.setWidth("750px");
 	}
 	
+	private void hideHelpModal() {
+		 helpModal.hide();
+	}
+
 	public void setMessage(String message) {
 		this.messageHTML.setHTML(message);
 	}
 
 	public void show(Boolean visible) {
 		inAppHelpButton.setVisible(visible);
+	}
+
+	public Modal getHelpModal() {
+		return helpModal;
+	}
+
+	public void setHelpModal(Modal helpModal) {
+		this.helpModal = helpModal;
 	}
 }

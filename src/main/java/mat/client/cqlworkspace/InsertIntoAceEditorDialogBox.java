@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FieldSet;
@@ -15,6 +16,7 @@ import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
+import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.ModalSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
@@ -29,11 +31,15 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.buttons.NoButton;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.inapphelp.component.InAppHelp;
+import mat.client.inapphelp.message.InAppHelpMessages;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -59,11 +65,27 @@ public class InsertIntoAceEditorDialogBox {
 	private static List<String> cqlFunctionsList = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlFunctionsList();
 	private static AceEditor curEditor; 
 	private static AbstractCQLWorkspacePresenter workspacePresenter;
+	
+	private static HTML heading = new HTML();
+	
+	private static InAppHelp inAppHelp;
+	private static Modal dialogModal;
 
 	public static void showListOfItemAvailableForInsertDialogBox(final AceEditor editor, AbstractCQLWorkspacePresenter cqlWorkspacePresenter) {
-		final Modal dialogModal = new Modal();
+		dialogModal = new Modal();
+		inAppHelp = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_INSERT_MODAL);
 		dialogModal.getElement().setAttribute("role", "dialog");
-		dialogModal.setTitle("Insert Item into CQL Editor");
+		
+		ModalHeader dialogHeader = new ModalHeader();
+		HorizontalPanel headerPanel = new HorizontalPanel();
+		heading.setHTML("<h4><b>Insert Item into CQL Editor</b></h4>");
+		heading.addStyleName("leftAligned");
+		headerPanel.add(heading);
+		headerPanel.add(inAppHelp);
+		dialogHeader.add(headerPanel);
+		
+		inAppHelp.getHelpModal().addHideHandler(event -> handleClose(event));
+		dialogModal.add(dialogHeader);
 		dialogModal.setClosable(true);
 		dialogModal.setFade(true);
 		dialogModal.setDataBackdrop(ModalBackdrop.STATIC);
@@ -318,6 +340,13 @@ public class InsertIntoAceEditorDialogBox {
 
 		});
 		dialogModal.show();
+	}
+
+
+	private static void handleClose(ModalHideEvent event) {
+		dialogModal.removeFromParent();
+		dialogModal.hide();
+		showListOfItemAvailableForInsertDialogBox(curEditor, workspacePresenter);
 	}
 
 

@@ -55,8 +55,6 @@ public class QueryFinderHelper {
 			if(!queryModel.getAlias().isEmpty()) {
 				aliasNames.add(queryModel.getAlias());
 			}
-			
-			return;
 		}
 						
 		findAliasNames(currentModel.getParentModel(), aliasNames);

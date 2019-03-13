@@ -15,6 +15,7 @@ import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.AttributeModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
+import mat.client.expressionbuilder.model.QuerySortModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.QueryFinderHelper;
 import mat.client.shared.CQLTypeContainer;
@@ -49,9 +50,8 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		attributeModel = new AttributeModel(parentModel); 
 		this.getParentModel().appendExpression(attributeModel);
 		
-		boolean isPartOfQuerySort = QueryFinderHelper.isPartOfSort(attributeModel);
-		this.isSourceRequired = !isPartOfQuerySort;
-		this.isClarifyingAttributeRequired = isPartOfQuerySort;
+		this.isSourceRequired = !QueryFinderHelper.isPartOfSort(attributeModel);
+		this.isClarifyingAttributeRequired = parentModel.getParentModel() instanceof QuerySortModel;;
 		
 		buildButtonObserver = new BuildButtonObserver(this, attributeModel.getSource(), mainModel);
 		display();

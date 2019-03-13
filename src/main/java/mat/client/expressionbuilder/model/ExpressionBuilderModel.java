@@ -18,41 +18,47 @@ public class ExpressionBuilderModel implements IExpressionBuilderModel {
 	@Override
 	public String getCQL(String identation) {
 		StringBuilder builder = new StringBuilder();
-		if (!models.isEmpty()) {
+		if (!models.isEmpty()) {			
 			
-			boolean shouldAddParentheses = models.size() > 1 ;
-
-			if(shouldAddParentheses) {
-				builder.append("( ");
+			// this the first element
+			boolean firstElementHasMoreThanOneChild = models.get(0).getChildModels().size() > 1;
+			boolean firstElementIsQuery = models.get(0) instanceof QueryModel;
+			boolean modelHasMoreThanOneChild = models.size() > 1;
+			
+			boolean shouldAddParenthesesForFirstElement = firstElementHasMoreThanOneChild || (firstElementIsQuery && modelHasMoreThanOneChild);
+			
+			if(shouldAddParenthesesForFirstElement) {
+				builder.append(" (");
 			}
-			
 			
 			builder.append(models.get(0).getCQL(identation));
-
-			if(shouldAddParentheses) {
-				builder.append("\n");
-				builder.append(identation + ")");
+			
+			if(shouldAddParenthesesForFirstElement) {
+				builder.append(") ");
 			}
-			
-			
+
 			identation = identation + "  ";
 			for (int i = 1; i < models.size(); i += 2) {
 				builder.append("\n");
 				
+				// this appends the operator
 				builder.append(models.get(i).getCQL(identation));
-				
-				if(shouldAddParentheses) {
-					builder.append(" ( ");
-				}
-				
-				
+								
+				// this appends the subsequent elements
 				if((i + 1) <= models.size() - 1) {
+					boolean secondElementHasMoreThanOneChild =  models.get(i + 1).getChildModels().size() > 1;
+					boolean secondElementElementIsQuery = models.get(0) instanceof QueryModel;
+					boolean shouldAddParenthesesForSecondElement = secondElementHasMoreThanOneChild || secondElementElementIsQuery;
+					
+					if(shouldAddParenthesesForSecondElement) {
+						builder.append(" (");
+					}
+					 
 					builder.append(" " + models.get(i + 1).getCQL(identation));
-				}
-				
-				if(shouldAddParentheses) {
-					builder.append("\n");
-					builder.append(identation + ")");
+					
+					if(shouldAddParenthesesForSecondElement) {
+						builder.append(" )");
+					}
 				}
 			}
 		}

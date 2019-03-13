@@ -59,7 +59,7 @@ public class QueryModel extends ExpressionBuilderModel {
 			builder.append("( ");
 		}
 		
-		builder.append(source.getCQL(""));
+		builder.append(source.getCQL(identation + "  "));
 		
 		if(shouldAddParentheses) {
 			builder.append(" )");
@@ -68,21 +68,20 @@ public class QueryModel extends ExpressionBuilderModel {
 		builder.append(" ");
 		builder.append(alias);
 		
-		String filterIdentationIdentation = identation + "  ";
-		builder.append("\n" + filterIdentationIdentation);
+		String filterIdentation = identation + "  ";
+		builder.append("\n" + filterIdentation);
 		builder.append("where ");
 		
 		
 		if(this.getChildModels().size() == 1) {
-			builder.append(this.getChildModels().get(0).getCQL(identation));
+			builder.append(this.getChildModels().get(0).getCQL(filterIdentation));
 		} else {
 			if (!filter.getChildModels().isEmpty()) {
-				builder.append(filter.getChildModels().get(0).getCQL(identation));
+				builder.append(filter.getChildModels().get(0).getCQL(filterIdentation));
 
-				String innerIdentation = identation + "  ";
+				String innerIdentation = filterIdentation + "  ";
 				for (int i = 1; i < filter.getChildModels().size(); i += 2) {
 					builder.append("\n");
-					builder.append(innerIdentation);
 					builder.append(filter.getChildModels().get(i).getCQL(innerIdentation));
 					
 					if((i + 1) <= filter.getChildModels().size() - 1) {
@@ -93,7 +92,7 @@ public class QueryModel extends ExpressionBuilderModel {
 		}
 				
 		if(!sort.getSortExpression().getChildModels().isEmpty()) {
-			builder.append("\n" + filterIdentationIdentation);
+			builder.append("\n" + filterIdentation);
 			builder.append(sort.getCQL(""));
 		}
 				

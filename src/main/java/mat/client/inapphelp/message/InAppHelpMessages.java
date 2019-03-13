@@ -298,6 +298,14 @@ public class InAppHelpMessages {
 			"<br>" + 
 			"<b>Click to View CQL:</b> Clicking on this link will display the current CQL file for the library being worked on. This is available to allow you to review other items you have already added to the library while you are working on your current expression. Clicking the link again will collapse the area to save space.";
 	
+	public static final String MEASURE_CQL_LIBRARY_VIEW_CQL = "<b>Export Error File:</b> If your CQL file has errors or warnings, you can export a report that will show your entire CQL file with line numbers and list which line numbers are showing the errors and/or warnings. This file will open as a .txt file.<br>" + 
+			"<br>" + 
+			"<b>View CQL file here:</b> This section displays the entire CQL file for the measure as it currently stands. If there are any errors they will be indicated on the line number with a red square. If there are any warnings they will be shown on the line number with a yellow triangle. Hover over the error or warning icons to see the messages. This area is not editable. You will need to go back to the individual expression to fix any errors or warnings.";
+	
+	public static final String STANDALONE_CQL_LIBRARY_VIEW_CQL = "<b>Export Error File:</b> If your CQL file has errors or warnings, you can export a report that will show your entire CQL file with line numbers and list which line numbers are showing the errors and/or warnings. This file will open as a .txt file.<br>" + 
+			"<br>" + 
+			"<b>View CQL file here:</b> This section displays the entire CQL file for the library as it currently stands. If there are any errors they will be indicated on the line number with a red square. If there are any warnings they will be shown on the line number with a yellow triangle. Hover over the error or warning icons to see the messages. This area is not editable. You will need to go back to the individual expression to fix any errors or warnings.";
+	
 	private InAppHelpMessages() {
 		throw new IllegalStateException("InAppHelpMessages class");
 	}

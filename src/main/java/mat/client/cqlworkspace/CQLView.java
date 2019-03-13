@@ -18,6 +18,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.shared.CQLError;
@@ -32,6 +33,8 @@ public class CQLView {
 	private Button exportErrorFile = new Button();
 	
 	HTML heading = new HTML();
+	
+	private InAppHelp inAppHelp = new InAppHelp("");
 	
 	public CQLView(){
 		cqlViewVP.clear();
@@ -74,7 +77,7 @@ public class CQLView {
 		viewCQLPanel.add(viewCQLHeader);
 		
 		viewCQLPanel.add(viewCQLBody);
-		cqlViewVP.add(heading);
+		cqlViewVP.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		cqlViewVP.add(new SpacerWidget());
 		if(showExportButton) {
 			cqlViewVP.add(exportErrorFile);
@@ -120,5 +123,13 @@ public class CQLView {
 			int column = error.getErrorAtOffeset();
 			this.getCqlAceEditor().addAnnotation(line - 1, column, prefix + error.getErrorMessage(), aceAnnotationType);
 		}
+	}
+
+	public InAppHelp getInAppHelp() {
+		return inAppHelp;
+	}
+
+	public void setInAppHelp(InAppHelp inAppHelp) {
+		this.inAppHelp = inAppHelp;
 	}
 }

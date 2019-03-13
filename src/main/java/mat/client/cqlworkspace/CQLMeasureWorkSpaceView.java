@@ -62,7 +62,7 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 
 	public void buildView(MessagePanel messagePanel, HelpBlock helpBlock) {
 		this.messagePanel = messagePanel;
-		this.messagePanel.getElement().getStyle().setProperty("marginLeft", "20px");
+		this.messagePanel.getElement().getStyle().setProperty("marginLeft", "5px");
 		this.helpBlock = helpBlock;
 		resetAll();
 		unsetEachSectionSelectedObject();

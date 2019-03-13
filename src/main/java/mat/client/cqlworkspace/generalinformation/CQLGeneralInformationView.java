@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.buttons.SaveToolBarButton;
+import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.MatContext;
@@ -117,13 +118,9 @@ public class CQLGeneralInformationView {
 		modelVersionGroup.add(modelVersionLabel);
 		modelVersionGroup.add(modelVersionValue);
 		
-		HorizontalPanel headingPanel = new HorizontalPanel();
 		heading.getElement().setTabIndex(0);
-		headingPanel.add(heading);
 		
-		headingPanel.add(inAppHelp);
-		
-		generalInfoTopPanel.add(headingPanel);
+		generalInfoTopPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		
 		generalInfoTopPanel.add(new SpacerWidget());
 		generalInfoTopPanel.add(new SpacerWidget());

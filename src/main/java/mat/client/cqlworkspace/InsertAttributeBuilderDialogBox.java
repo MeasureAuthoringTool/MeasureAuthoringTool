@@ -113,12 +113,10 @@ public class InsertAttributeBuilderDialogBox {
 		dialogModal.getElement().setAttribute("role", "dialog");
 		
 		ModalHeader dialogHeader = new ModalHeader();
-		HorizontalPanel headerPanel = new HorizontalPanel();
 		heading.setHTML("<h4><b>Insert Options for Attributes</b></h4>");
 		heading.addStyleName("leftAligned");
-		headerPanel.add(heading);
-		headerPanel.add(inAppHelp);
-		dialogHeader.add(headerPanel);
+
+		dialogHeader.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		
 		inAppHelp.getHelpModal().addHideHandler(event -> handleClose(event));
 		dialogModal.add(dialogHeader);

@@ -56,6 +56,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
+import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
@@ -171,10 +172,7 @@ public class CQLFunctionsView {
 		VerticalPanel funcVP = new VerticalPanel();
 		HorizontalPanel funcFP = new HorizontalPanel();
 		
-		HorizontalPanel headingPanel = new HorizontalPanel();
-		headingPanel.add(heading);
-		headingPanel.add(inAppHelp);
-		funcVP.add(headingPanel);
+		funcVP.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		funcVP.add(new SpacerWidget());
 		funcVP.add(new SpacerWidget());
 		

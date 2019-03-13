@@ -32,7 +32,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.buttons.NoButton;
@@ -77,12 +76,10 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.getElement().setAttribute("role", "dialog");
 		
 		ModalHeader dialogHeader = new ModalHeader();
-		HorizontalPanel headerPanel = new HorizontalPanel();
 		heading.setHTML("<h4><b>Insert Item into CQL Editor</b></h4>");
 		heading.addStyleName("leftAligned");
-		headerPanel.add(heading);
-		headerPanel.add(inAppHelp);
-		dialogHeader.add(headerPanel);
+
+		dialogHeader.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		
 		inAppHelp.getHelpModal().addHideHandler(event -> handleClose(event));
 		dialogModal.add(dialogHeader);

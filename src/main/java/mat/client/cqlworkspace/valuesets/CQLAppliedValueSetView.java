@@ -60,6 +60,7 @@ import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
 import mat.client.buttons.CodesValuesetsButtonToolBar;
+import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
@@ -157,14 +158,10 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		verticalPanel.getElement().setId("vPanel_VerticalPanel");
 		
-		HorizontalPanel headerPanel = new HorizontalPanel();
 		heading.addStyleName("leftAligned");
 		heading.getElement().setTabIndex(0);
-		headerPanel.add(heading);
 		
-		headerPanel.add(inAppHelp);
-		
-		verticalPanel.add(headerPanel);
+		verticalPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		verticalPanel.add(new SpacerWidget());
 		
 		verticalPanel.add(new SpacerWidget());

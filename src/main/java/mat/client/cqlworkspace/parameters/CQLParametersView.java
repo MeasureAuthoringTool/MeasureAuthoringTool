@@ -26,6 +26,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
+import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
@@ -81,11 +82,7 @@ public class CQLParametersView {
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
 		
-		HorizontalPanel headerPanel = new HorizontalPanel();
-		headerPanel.add(heading);
-		headerPanel.add(inAppHelp);
-		
-		parameterVP.add(headerPanel);
+		parameterVP.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(new SpacerWidget());
 		

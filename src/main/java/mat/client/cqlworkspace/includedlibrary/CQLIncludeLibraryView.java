@@ -49,6 +49,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
 import mat.client.buttons.CQLIncludesButtonToolBar;
+import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLWorkSpaceConstants;
@@ -155,11 +156,7 @@ public class CQLIncludeLibraryView {
 
 		verticalPanel.getElement().setId("vPanel_VerticalPanelIncludeSection");
 		
-		HorizontalPanel headerPanel = new HorizontalPanel();
-		headerPanel.add(heading);
-		headerPanel.add(inAppHelp);
-
-		verticalPanel.add(headerPanel);
+		verticalPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(buildAliasLabelVP());

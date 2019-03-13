@@ -6,10 +6,13 @@ import java.util.Optional;
 
 import org.gwtbootstrap3.client.ui.ListBox;
 
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility;
-import mat.client.shared.MatContext;
+import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.MessagePanel;
 import mat.shared.CQLError;
 import mat.shared.SaveUpdateCQLResult;
@@ -102,4 +105,12 @@ public class SharedCQLWorkspaceUtility {
 		aceEditor.addAnnotation(startLine, startColumn, prefix + error.getErrorMessage(), aceAnnotationType);
 		return aceEditor;
 	}
+	
+	public static HorizontalPanel buildHeaderPanel(HTML heading, InAppHelp inAppHelp) {
+		HorizontalPanel headerPanel = new HorizontalPanel();
+		headerPanel.add(heading);
+		headerPanel.add(inAppHelp);
+		return headerPanel;
+	}
+	
 }

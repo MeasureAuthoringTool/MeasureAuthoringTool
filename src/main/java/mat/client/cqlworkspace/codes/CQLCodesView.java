@@ -50,6 +50,8 @@ import mat.client.CustomPager;
 import mat.client.Mat;
 import mat.client.buttons.CancelButton;
 import mat.client.buttons.CodesValuesetsButtonToolBar;
+import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
+import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
@@ -144,7 +146,9 @@ public class CQLCodesView {
 	private List<CQLCode> codesSelectedList;
 	
 	private List<CQLCode> allCodes;
-	
+
+	private InAppHelp inAppHelp = new InAppHelp("");
+
 	public CQLCodesView() {
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
@@ -160,7 +164,8 @@ public class CQLCodesView {
 		hp.add(simplePanel);
 		
 		heading.addStyleName("leftAligned");
-		verticalPanel.add(heading);
+		
+		verticalPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		
 		verticalPanel.getElement().setId("vPanel_VerticalPanel");
 		verticalPanel.add(new SpacerWidget());
@@ -1049,6 +1054,16 @@ public class CQLCodesView {
 	
 	public List<CQLCode> getAllCodes(){
 		return allCodes;
+	}
+
+
+	public InAppHelp getInAppHelp() {
+		return inAppHelp;
+	}
+
+
+	public void setInAppHelp(InAppHelp inAppHelp) {
+		this.inAppHelp = inAppHelp;
 	}
 	
 }

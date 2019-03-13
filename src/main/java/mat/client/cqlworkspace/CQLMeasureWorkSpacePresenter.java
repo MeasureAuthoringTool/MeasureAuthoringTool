@@ -97,6 +97,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.getCQLParametersView().getInAppHelp().setMessage(InAppHelpMessages.MEASURE_CQL_LIBRARY_PARAMETER);
 		cqlWorkspaceView.getCQLFunctionsView().getInAppHelp().setMessage(InAppHelpMessages.MEASURE_CQL_LIBRARY_FUNCTION);
 		cqlWorkspaceView.getIncludeView().getInAppHelp().setMessage(InAppHelpMessages.MEASURE_CQL_LIBRARY_INCLUDES);
+		cqlWorkspaceView.getCodesView().getInAppHelp().setMessage(InAppHelpMessages.MEASURE_CQL_LIBRARY_CODES);
 	}
 	
 	private void buildInsertPopUp() {

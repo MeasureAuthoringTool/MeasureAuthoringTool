@@ -29,6 +29,8 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
+import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
+import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.SkipListBuilder;
@@ -53,6 +55,8 @@ public class CQLDefinitionsView {
 	private FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
 	private FocusPanel mainDefineViewVerticalPanel = new FocusPanel();
 	HTML heading = new HTML();
+	
+	private InAppHelp inAppHelp = new InAppHelp("");
 	
 	public CQLDefinitionsView() {
 		defineAceEditor.startEditor();
@@ -95,7 +99,7 @@ public class CQLDefinitionsView {
 		VerticalPanel definitionVP = new VerticalPanel();
 		HorizontalPanel definitionFP = new HorizontalPanel();
 		
-		definitionVP.add(heading);
+		definitionVP.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(buildHelpBlock());
@@ -446,5 +450,13 @@ public class CQLDefinitionsView {
 		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
 		getDefineButtonBar().getInfoButton().setEnabled(isEditable);
+	}
+
+	public InAppHelp getInAppHelp() {
+		return inAppHelp;
+	}
+
+	public void setInAppHelp(InAppHelp inAppHelp) {
+		this.inAppHelp = inAppHelp;
 	}	
 }

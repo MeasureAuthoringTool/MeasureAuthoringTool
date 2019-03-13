@@ -242,6 +242,62 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of codes from one library to another library or measure. To copy a code, click the checkboxes next to the code(s) you wish to copy, click the copy icon, navigate to another library or measure and click on the paste icon above the Applied Codes table. To select all codes at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
 
+	public static final String MEASURE_CQL_LIBRARY_DEFINITION = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any definitions already included in the measure. Each measure already contains the four supplemental data element definitions as defaults. To open a definition already added to the measure, double-click on the name.  There is a search box just above this list which can be used to find a specific definition name within the list.<br>" + 
+			"<br>" + 
+			"<b>+Add New:</b> Select this link when you are ready to add a new definition. This will clear all the fields in preparation for the new entries.<br>" + 
+			"<br>" + 
+			"<b>Definition Name:</b> This field is to give your definition a name. This name will be used to reference the definition within the CQL logic and/or populations and therefore, must be unique to any other identifier within the measure.<br>" + 
+			"<br>" + 
+			"<b>Context:</b> Select whether your definition is Patient or Population based.<br>" + 
+			"<br>" + 
+			"<b>Comment:</b> This comment box is to add a comment specific to the particular definition being worked on. This comment will show in the View CQL section of the CQL Workspace just above the definition and in the CQL file export.<br>" + 
+			"<br>" + 
+			"<b>Return Type:</b> This field will populate once the definition is saved and will tell you what type of data this definition is returning. Note: If there are errors in your CQL file, the Return Type will not populate. Fix any errors in your measure and then the field will show the information.<br>" + 
+			"<br>" + 
+			"<b>Information:</b> Selecting the information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>" + 
+			"<br>" + 
+			"<b>Expression Builder:</b> Selecting this icon will open the Expression Builder which will walk users through creating a CQL expression by selecting options from dropdown menus.<br>" + 
+			"<br>" + 
+			"<b>Insert:</b> Clicking this icon will open a dialog box that will allow you to choose items that will then be inserted into the CQL Workspace in the correct CQL format. Items include Parameters, Definitions, Functions, Timings, Pre-defined Functions, Applied Value Sets / Codes, and Attributes.<br>" + 
+			"<br>" + 
+			"<b>Save:</b> The save icon is to save your current work.<br>" + 
+			"<br>" + 
+			"<b>Erase:</b> The erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>" + 
+			"<br>" + 
+			"<b>Delete:</b> The delete icon is to delete the currently selected definition. Note: you will not be able to delete any default definitions or any definition that has been used elsewhere within your CQL logic.<br>" + 
+			"<br>" + 
+			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>" + 
+			"<br>" + 
+			"<b>Click to View CQL:</b> Clicking on this link will display the current CQL library for the measure being worked on. This is available to allow you to review other items you have already added to the measure while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+
+	public static final String STANDALONE_CQL_LIBRARY_DEFINITION = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any definitions already included in the library. To open a definition already added to the library, double-click on the name.  There is a search box just above this list which can be used to find a specific definition name within the list.<br>" + 
+			"<br>" + 
+			"<b>+Add New:</b> Select this link when you are ready to add a new definition. This will clear all the fields in preparation for the new entries.<br>" + 
+			"<br>" + 
+			"<b>Definition Name:</b> This field is to give your definition a name. This name will be used to reference the definition within the CQL logic and therefore, must be unique to any other identifier within the library.<br>" + 
+			"<br>" + 
+			"<b>Context:</b> Select whether your definition is Patient or Population based.<br>" + 
+			"<br>" + 
+			"<b>Comment:</b> This comment box is to add a comment specific to the particular definition being worked on. This comment will show in the View CQL section of the CQL Composer just above the definition.<br>" + 
+			"<br>" + 
+			"<b>Return Type:</b> This field will populate once the definition is saved and will tell you what type of data this definition is returning. Note: If there are errors in your CQL file, the Return Type will not populate. Fix any errors in your library and then the field will show the information.<br>" + 
+			"<br>" + 
+			"<b>Information:</b> Selecting the information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>" + 
+			"<br>" + 
+			"<b>Expression Builder:</b> Selecting this icon will open the Expression Builder which will walk users through creating a CQL expression by selecting options from dropdown menus.<br>" + 
+			"<br>" + 
+			"<b>Insert:</b> Clicking this icon will open a dialog box that will allow you to choose items that will then be inserted into the CQL Editor in the correct CQL format. Items include Parameters, Definitions, Functions, Timings, Pre-defined Functions, Applied Value Sets / Codes, and Attributes.<br>" + 
+			"<br>" + 
+			"<b>Save:</b> The save icon is to save your current work.<br>" + 
+			"<br>" + 
+			"<b>Erase:</b> The erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>" + 
+			"<br>" + 
+			"<b>Delete:</b> The delete icon is to delete the currently selected definition. Note: you will not be able to delete any definition that has been used elsewhere within your CQL logic.<br>" + 
+			"<br>" + 
+			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>" + 
+			"<br>" + 
+			"<b>Click to View CQL:</b> Clicking on this link will display the current CQL file for the library being worked on. This is available to allow you to review other items you have already added to the library while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+	
 	private InAppHelpMessages() {
 		throw new IllegalStateException("InAppHelpMessages class");
 	}

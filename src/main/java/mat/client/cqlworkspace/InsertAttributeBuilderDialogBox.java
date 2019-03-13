@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -15,6 +16,7 @@ import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
+import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -25,6 +27,7 @@ import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 
@@ -32,6 +35,8 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.buttons.CancelButton;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.inapphelp.component.InAppHelp;
+import mat.client.inapphelp.message.InAppHelpMessages;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.JSONAttributeModeUtility;
@@ -95,11 +100,29 @@ public class InsertAttributeBuilderDialogBox {
 	private static HelpBlock messageHelpBlock = new HelpBlock();
 
 	private static DateTimeWidget dtw = new DateTimeWidget(false);
+	
+	private static HTML heading = new HTML();
+	
+	private static InAppHelp inAppHelp;
+	private static Modal dialogModal;
+	private static AceEditor curEditor;
 
 	public static void showAttributesDialogBox(final AceEditor editor) {
-		final Modal dialogModal = new Modal();
+		dialogModal = new Modal();
+		inAppHelp = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_ATTRIBUTE_MODAL);
 		dialogModal.getElement().setAttribute("role", "dialog");
-		dialogModal.setTitle("Insert Options for Attributes");
+		
+		ModalHeader dialogHeader = new ModalHeader();
+		HorizontalPanel headerPanel = new HorizontalPanel();
+		heading.setHTML("<h4><b>Insert Options for Attributes</b></h4>");
+		heading.addStyleName("leftAligned");
+		headerPanel.add(heading);
+		headerPanel.add(inAppHelp);
+		dialogHeader.add(headerPanel);
+		
+		inAppHelp.getHelpModal().addHideHandler(event -> handleClose(event));
+		dialogModal.add(dialogHeader);
+		
 		dialogModal.setClosable(true);
 		dialogModal.setFade(true);
 		dialogModal.setDataBackdrop(ModalBackdrop.STATIC);
@@ -121,7 +144,7 @@ public class InsertAttributeBuilderDialogBox {
 		messageHelpBlock.setHeight("0px");
 		helpMessageFormGroup.setHeight("0px");
 
-		final AceEditor curEditor = editor;
+		curEditor = editor;
 
 		clearAllFormGroups();
 		defaultFrmGrpValidations();
@@ -202,6 +225,12 @@ public class InsertAttributeBuilderDialogBox {
 		addButton.addClickHandler(event -> clickInsertButton(dialogModal, messageFormgroup, helpBlock, curEditor));
 
 		dialogModal.show();
+	}
+
+	private static void handleClose(ModalHideEvent event) {
+		dialogModal.removeFromParent();
+		dialogModal.hide();
+		showAttributesDialogBox(curEditor);
 	}
 
 	private static void clickInsertButton(final Modal dialogModal, final FormGroup messageFormgroup,

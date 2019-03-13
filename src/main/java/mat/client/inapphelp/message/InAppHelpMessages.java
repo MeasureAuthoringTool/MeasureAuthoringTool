@@ -188,4 +188,20 @@ public class InAppHelpMessages {
 			"<b>Applied Value Sets/Codes:</b> Selecting Applied Value Sets/Codes in the Item Type field will populate the Item Name dropdown with a list of all value sets and directly-referenced codes available within this measure/library. Additionally, a <b>Datatype</b> dropdown field will appear which allows you to select a QDM datatype to pair with the chosen value set or code.<br>" + 
 			"<br>" + 
 			"<b>Attributes:</b> Selecting Attributes in the Item Type field will take you to the Attribute Builder within the MAT.";
+	
+	public static final String CQL_LIBRARY_ATTRIBUTE_MODAL = "<b>Attributes By Data Type:</b> This field is optional and provides a list of the QDM data types available. Making a choice in this field will not affect how the attribute looks once it is inserted into the CQL Editor; however, it will narrow down the list of attributes in the next field to only those attributes that are applicable to the data type chosen.<br>" + 
+			"<br>" + 
+			"<b>Attributes:</b> This field is a list of the attributes available. Attributes chosen must be compatible with the type of data in your expression. If a choice was made in the Attributes By Data Type field, this list will only show the attributes that are compatible with that data type.<br>" + 
+			"<br>" + 
+			"<b>Mode:</b> the Mode field has four possible selections; Comparison, Computative, Nullable, and Value Sets. What will be displayed in this field is dependent on the choice made in the Attributes field. Select Comparison when you want to compare one item to another such as greater than or less than. Select Computative when you want to perform a mathematical computation such as plus five days. Select Nullable when you want to determine if something is or is not null. Select Value Sets when you want to determine if something is contained in a value set you have previously entered.<br>" + 
+			"<br>" + 
+			"<b>Mode Details:</b> The Mode Details field is filtered based on what was chosen in the Mode field. For example, if the mode chosen was Nullable, the options in the Mode field would be Is Null or Is Not Null. If the mode chosen was Computative, the Mode Details field would contain the mathematical actions such as +, -, /, etc.<br>" + 
+			"<br>" + 
+			"<b>Date/Time:</b> The Date/Time field is only enabled when an attribute and/or mode is chosen for which entering a date or a time makes sense. For example, if the attribute 'refills' is chosen with a mode of Comparison and <= in the Mode Details field, then adding a date or time would not make sense and therefore, the field is disabled. When entering a date, the user must state the items in this order: Year, Month, Day. For example, only a year could be entered but if a month was needed a year would need to be entered as well. If a specific day was needed, a year and a month would need to be added, and so forth. The time fields function the same way. To use minutes, the hour must be added, etc.<br>" + 
+			"<br>" + 
+			"<b>Quantity and Units:</b> The Quantity and Units fields operate together. These fields will be enabled or disabled based on the choices made for the Attribute and Mode fields. For example, if the Attribute is authorDatetime and the Mode is Comparison with the Mode Details as <=, then entering a quantity and a unit does not make sense and the fields will be disabled. However, if Mode was Computative and the Mode Details was +, then a quantity and unit entry would be valid such as 2 months.<br>" + 
+			"<br>" + 
+			"<b>Insert Button:</b> The Insert button will insert the attribute built into the CQL editor of the expression being edited at the point in which the cursor was residing prior to the Insert Icon being selected.<br>" + 
+			"<br>" + 
+			"<b>Cancel Button:</b> the Cancel button will close the attribute builder and not save any changes or selections that were made inside of it.";
 }

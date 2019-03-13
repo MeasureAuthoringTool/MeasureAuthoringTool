@@ -160,6 +160,7 @@ import mat.shared.DateUtility;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.StringUtility;
 import mat.shared.UUIDUtilClient;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
@@ -2369,7 +2370,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				setMeasureCreated(true);
 				measure = measurePackageService.getById(model.getId());
 				measure.setDescription(model.getName());
-				measure.setaBBRName(model.getShortName());
+				String shortName = !StringUtility.isEmptyOrNull(model.getShortName()) ? model.getShortName().substring(0,  20) : "";
+				model.setShortName(shortName);
+				measure.setaBBRName(shortName);
 				measure.setMeasureScoring(model.getMeasScoring());
 				measure.setPatientBased(model.isPatientBased());
 				measurePackageService.save(measure);

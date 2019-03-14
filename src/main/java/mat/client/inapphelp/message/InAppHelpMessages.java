@@ -160,9 +160,9 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Search:</b> The search box provided is to enable you to search for available libraries within the MAT that meet the criteria for inclusion into a measure. In order to be included a library must be in a versioned state, must use the same version of QDM as the measure, can not have the same name as the measure, and can not be in the same measure family as the measure. Enter text into the field and then click the Search button.<br>" +
 			"<br>" +
-			"<b>Available Libraries:</b> This box will list the libraries that were returned from the search. To select a library to include in your measure click the checkbox next to the library you wish to include and then click the save icon in the top-right of the screen.<br>" +
+			"<b>Available Libraries:</b> This box will list the libraries that were returned from the search. To select a library to include in your measure click the checkbox next to the library you wish to include and then click the Save icon in the top-right of the screen.<br>" +
 			"<br>" +
-			"<b>View CQL file here:</b> When a library in the list of available libraries is selected, the CQL file for that library will display here. This gives you a way to ensure this is the one you want before you click the save button.";
+			"<b>View CQL file here:</b> When a library in the list of available libraries is selected, the CQL file for that library will display here. This gives you a way to ensure this is the one you want before you click the Save button.";
 
 	public static final String STANDALONE_CQL_LIBRARY_INCLUDES = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the assigned aliases of any included libraries. To open a library already included within the library, double-click on the alias. There is a search box just above this list which can be used to find a specific library alias within the list.<br>" +
 			"<br>" +
@@ -170,9 +170,9 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Search:</b> The search box provided is to enable you to search for available libraries within the MAT that meet the criteria for inclusion into the CQL library. In order to be included a library must be in a versioned state, must use the same version of QDM as the library it is being included in, can not have the same name as the library it is being included in, and can not be in the same library family as the library it is being included in. Enter text into the field and then click the Search button.<br>" +
 			"<br>" +
-			"<b>Available Libraries:</b> This box will list the libraries that were returned from the search. To select a library to include in your library click the checkbox next to the library you wish to include and then click the save icon in the top-right of the screen.<br>" +
+			"<b>Available Libraries:</b> This box will list the libraries that were returned from the search. To select a library to include in your library click the checkbox next to the library you wish to include and then click the Save icon in the top-right of the screen.<br>" +
 			"<br>" +
-			"<b>View CQL file here:</b> When a library in the list of available libraries is selected, the CQL file for that library will display here. This gives you a way to ensure this is the one you want before you click the save button.";
+			"<b>View CQL file here:</b> When a library in the list of available libraries is selected, the CQL file for that library will display here. This gives you a way to ensure this is the one you want before you click the Save button.";
 
 	public static final String CQL_LIBRARY_INSERT_MODAL ="<b>Item Type:</b> The item type field contains a list of items that can be inserted into the CQL editor. Options under Item Type include:<br>" +
 			"<br>" +
@@ -220,9 +220,9 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Include Code System Version:</b> This checkbox allows you to choose whether or not you want the code system version declared within the export files produced from the MAT. For example, if you are using a code that is no longer available in the most current code system version.<br>" +
 			"<br>" +
-			"<b>Applied Codes table:</b> This table shows all directly-referenced codes currently applied to this measure. This table contains an edit icon, a delete icon, and a checkbox which can be used in the process to copy the code.<br>" +
+			"<b>Applied Codes table:</b> This table shows all directly-referenced codes currently applied to this measure. This table contains an Edit icon, a Delete icon, and a checkbox which can be used in the process to copy the code.<br>" +
 			"<br>" +
-			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of codes from one measure to another measure or library. To copy a code, click the checkboxes next to the code(s) you wish to copy, click the copy icon, navigate to another measure or library and click on the paste icon above the Applied Codes table. To select all codes at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
+			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of codes from one measure to another measure or library. To copy a code, click the checkboxes next to the code(s) you wish to copy, click the Copy icon, navigate to another measure or library and click on the Paste icon above the Applied Codes table. To select all codes at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
 
 	public static final String STANDALONE_CQL_LIBRARY_CODES = "<b>Retrieve:</b> Codes are retrieved from VSAC by use of a REST API URL found on the VSAC website. To retrieve a code, copy that REST API URL from VSAC, paste it into this field, and then click the Retrieve button. Note: you must be logged in to UMLS to successfully retrieve a code from VSAC.<br>" +
 			"<br>" +
@@ -238,9 +238,9 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Include Code System Version:</b> This checkbox allows you to choose whether or not you want the code system version declared within the export files produced from the MAT. For example, if you are using a code that is no longer available in the most current code system version.<br>" +
 			"<br>" +
-			"<b>Applied Codes table:</b> This table shows all directly-referenced codes currently applied to this library. This table contains an edit icon, a delete icon, and a checkbox which can be used in the process to copy the code.<br>" +
+			"<b>Applied Codes table:</b> This table shows all directly-referenced codes currently applied to this library. This table contains an Edit icon, a Delete icon, and a checkbox which can be used in the process to copy the code.<br>" +
 			"<br>" +
-			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of codes from one library to another library or measure. To copy a code, click the checkboxes next to the code(s) you wish to copy, click the copy icon, navigate to another library or measure and click on the paste icon above the Applied Codes table. To select all codes at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
+			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of codes from one library to another library or measure. To copy a code, click the checkboxes next to the code(s) you wish to copy, click the Copy icon, navigate to another library or measure and click on the Paste icon above the Applied Codes table. To select all codes at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
 
 	public static final String MEASURE_CQL_LIBRARY_DEFINITION = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any definitions already included in the measure. Each measure already contains the four supplemental data element definitions as defaults. To open a definition already added to the measure, double-click on the name.  There is a search box just above this list which can be used to find a specific definition name within the list.<br>" + 
 			"<br>" + 
@@ -254,17 +254,17 @@ public class InAppHelpMessages {
 			"<br>" + 
 			"<b>Return Type:</b> This field will populate once the definition is saved and will tell you what type of data this definition is returning. Note: If there are errors in your CQL file, the Return Type will not populate. Fix any errors in your measure and then the field will show the information.<br>" + 
 			"<br>" + 
-			"<b>Information:</b> Selecting the information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>" + 
+			"<b>Information:</b> Selecting the Information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>" + 
 			"<br>" + 
 			"<b>Expression Builder:</b> Selecting this icon will open the Expression Builder which will walk users through creating a CQL expression by selecting options from dropdown menus.<br>" + 
 			"<br>" + 
 			"<b>Insert:</b> Clicking this icon will open a dialog box that will allow you to choose items that will then be inserted into the CQL Workspace in the correct CQL format. Items include Parameters, Definitions, Functions, Timings, Pre-defined Functions, Applied Value Sets / Codes, and Attributes.<br>" + 
 			"<br>" + 
-			"<b>Save:</b> The save icon is to save your current work.<br>" + 
+			"<b>Save:</b> The Save icon is to save your current work.<br>" + 
 			"<br>" + 
-			"<b>Erase:</b> The erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>" + 
+			"<b>Erase:</b> The Erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>" + 
 			"<br>" + 
-			"<b>Delete:</b> The delete icon is to delete the currently selected definition. Note: you will not be able to delete any default definitions or any definition that has been used elsewhere within your CQL logic.<br>" + 
+			"<b>Delete:</b> The Delete icon is to delete the currently selected definition. Note: you will not be able to delete any default definitions or any definition that has been used elsewhere within your CQL logic.<br>" + 
 			"<br>" + 
 			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>" + 
 			"<br>" + 
@@ -282,17 +282,17 @@ public class InAppHelpMessages {
 			"<br>" + 
 			"<b>Return Type:</b> This field will populate once the definition is saved and will tell you what type of data this definition is returning. Note: If there are errors in your CQL file, the Return Type will not populate. Fix any errors in your library and then the field will show the information.<br>" + 
 			"<br>" + 
-			"<b>Information:</b> Selecting the information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>" + 
+			"<b>Information:</b> Selecting the Information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>" + 
 			"<br>" + 
 			"<b>Expression Builder:</b> Selecting this icon will open the Expression Builder which will walk users through creating a CQL expression by selecting options from dropdown menus.<br>" + 
 			"<br>" + 
 			"<b>Insert:</b> Clicking this icon will open a dialog box that will allow you to choose items that will then be inserted into the CQL Editor in the correct CQL format. Items include Parameters, Definitions, Functions, Timings, Pre-defined Functions, Applied Value Sets / Codes, and Attributes.<br>" + 
 			"<br>" + 
-			"<b>Save:</b> The save icon is to save your current work.<br>" + 
+			"<b>Save:</b> The Save icon is to save your current work.<br>" + 
 			"<br>" + 
-			"<b>Erase:</b> The erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>" + 
+			"<b>Erase:</b> The Erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>" + 
 			"<br>" + 
-			"<b>Delete:</b> The delete icon is to delete the currently selected definition. Note: you will not be able to delete any definition that has been used elsewhere within your CQL logic.<br>" + 
+			"<b>Delete:</b> The Delete icon is to delete the currently selected definition. Note: you will not be able to delete any definition that has been used elsewhere within your CQL logic.<br>" + 
 			"<br>" + 
 			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>" + 
 			"<br>" + 

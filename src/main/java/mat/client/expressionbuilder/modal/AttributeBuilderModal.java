@@ -51,7 +51,7 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		this.getParentModel().appendExpression(attributeModel);
 		
 		this.isSourceRequired = !QueryFinderHelper.isPartOfSort(attributeModel);
-		this.isClarifyingAttributeRequired = parentModel.getParentModel() instanceof QuerySortModel;;
+		this.isClarifyingAttributeRequired = parentModel.getParentModel() instanceof QuerySortModel;
 		
 		buildButtonObserver = new BuildButtonObserver(this, attributeModel.getSource(), mainModel);
 		display();

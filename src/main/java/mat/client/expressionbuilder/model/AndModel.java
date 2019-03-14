@@ -7,8 +7,8 @@ public class AndModel extends ExpressionBuilderModel implements OperatorModel {
 	}
 
 	@Override
-	public String getCQL(String identation) {
-		return identation  + "and";
+	public String getCQL(String indentation) {
+		return indentation  + "and";
 	}
 }
 

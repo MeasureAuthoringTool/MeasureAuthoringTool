@@ -7,7 +7,7 @@ public class OrModel extends ExpressionBuilderModel implements OperatorModel {
 	}
 
 	@Override
-	public String getCQL(String identation) {
-		return identation  + "or";
+	public String getCQL(String indentation) {
+		return indentation  + "or";
 	}
 }

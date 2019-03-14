@@ -7,7 +7,7 @@ public class UnionModel extends ExpressionBuilderModel implements OperatorModel 
 	}
 
 	@Override
-	public String getCQL(String identation) {
-		return identation  + "union";
+	public String getCQL(String indentation) {
+		return indentation  + "union";
 	}
 }

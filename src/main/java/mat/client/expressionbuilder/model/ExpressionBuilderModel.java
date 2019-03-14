@@ -3,8 +3,6 @@ package mat.client.expressionbuilder.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-
 import mat.client.expressionbuilder.constant.CQLType;
 
 public class ExpressionBuilderModel implements IExpressionBuilderModel {
@@ -18,11 +16,11 @@ public class ExpressionBuilderModel implements IExpressionBuilderModel {
 	}
 
 	@Override
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		StringBuilder builder = new StringBuilder();
 		if (!models.isEmpty()) {			
 			
-			// if the current model has more than one child element and it's parent is not the main model, put parenentheses around the whole
+			// if the current model has more than one child element and it's parent is not the main model, put parentheses around the whole
 			// expression
 			if(this.getChildModels().size() > 1 && (this.getParentModel() != null)) {
 				builder.append("(");
@@ -33,18 +31,18 @@ public class ExpressionBuilderModel implements IExpressionBuilderModel {
 			}
 			
 			// this the first element
-			builder.append(models.get(0).getCQL(identation));
+			builder.append(models.get(0).getCQL(indentation));
 			
 			if(this.getChildModels().size() > 1) {
 				builder.append(")");
 			}
 			
 
-			identation = identation + "  ";
+			indentation = indentation + "  ";
 			for (int i = 1; i < models.size(); i += 2) {
 				builder.append("\n");
 				// this appends the operator
-				builder.append(models.get(i).getCQL(identation));
+				builder.append(models.get(i).getCQL(indentation));
 					
 				if(this.getChildModels().size() > 1) {
 					builder.append(" (");
@@ -52,7 +50,7 @@ public class ExpressionBuilderModel implements IExpressionBuilderModel {
 				
 				// this appends the subsequent elements
 				if((i + 1) <= models.size() - 1) {		
-					builder.append(" " + models.get(i + 1).getCQL(identation));
+					builder.append(" " + models.get(i + 1).getCQL(indentation));
 					
 					if(this.getChildModels().size() > 1) {
 						builder.append(")");
@@ -60,7 +58,7 @@ public class ExpressionBuilderModel implements IExpressionBuilderModel {
 				}
 			}
 			
-			// if the current model has more than one child element and it's parent is not the main model, put parenentheses around the whole
+			// if the current model has more than one child element and it's parent is not the main model, put parentheses around the whole
 			// expression
 			if(this.getChildModels().size() > 1 && (this.getParentModel() != null)) {
 				builder.append(")");

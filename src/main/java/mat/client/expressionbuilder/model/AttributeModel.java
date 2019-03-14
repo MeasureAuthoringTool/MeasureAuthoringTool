@@ -25,7 +25,7 @@ public class AttributeModel extends ExpressionBuilderModel {
 	}
 	
 	@Override
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		StringBuilder builder = new StringBuilder();
 		
 		if(!this.source.getChildModels().isEmpty()) {

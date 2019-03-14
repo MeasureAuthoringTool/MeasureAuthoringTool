@@ -7,8 +7,8 @@ public class IntersectModel extends ExpressionBuilderModel implements OperatorMo
 	}
 
 	@Override
-	public String getCQL(String identation) {
-		return identation  + "intersect";
+	public String getCQL(String indentation) {
+		return indentation  + "intersect";
 	}
 }
 

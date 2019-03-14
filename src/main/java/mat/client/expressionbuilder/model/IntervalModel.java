@@ -40,7 +40,7 @@ public class IntervalModel extends ExpressionBuilderModel {
 	}
 	
 	@Override
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Interval");
 		if(isLowerBoundInclusive) {

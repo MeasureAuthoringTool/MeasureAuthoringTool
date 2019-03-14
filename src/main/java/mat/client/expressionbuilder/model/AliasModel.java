@@ -19,7 +19,7 @@ public class AliasModel extends ExpressionBuilderModel {
 	}
 	
 	@Override
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		return alias;
 	}
 	

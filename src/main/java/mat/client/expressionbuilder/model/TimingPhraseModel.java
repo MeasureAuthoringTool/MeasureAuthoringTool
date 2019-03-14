@@ -7,7 +7,7 @@ public class TimingPhraseModel extends ExpressionBuilderModel {
 	}
 	
 	@Override
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		StringBuilder builder = new StringBuilder();
 		
 		for(IExpressionBuilderModel model : this.getChildModels()) {

@@ -23,7 +23,7 @@ public class QuerySortModel extends ExpressionBuilderModel {
 	}
 
 	@Override
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("sort by ");
 		builder.append(sortExpression.getCQL(""));

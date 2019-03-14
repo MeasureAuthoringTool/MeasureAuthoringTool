@@ -39,7 +39,7 @@ public class RetrieveModel extends ExpressionBuilderModel {
 	}
 	
 	@Override
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		String cql = "";
 		cql = cql + "[\"" + datatype + "\""; 
 		

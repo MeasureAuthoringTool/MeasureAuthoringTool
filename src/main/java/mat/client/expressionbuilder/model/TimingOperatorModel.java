@@ -13,7 +13,7 @@ public class TimingOperatorModel extends ExpressionBuilderModel implements Opera
 		this.timingOperator = timingOperator;
 	}
 	
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		return value;
 	}
 	

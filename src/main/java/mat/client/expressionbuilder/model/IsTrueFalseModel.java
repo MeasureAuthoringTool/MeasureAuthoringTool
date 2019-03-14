@@ -16,11 +16,11 @@ public class IsTrueFalseModel extends ExpressionBuilderModel {
 	}
 
 	@Override
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		StringBuilder builder = new StringBuilder();
 		
 		for(int i = 0; i < this.getChildModels().size(); i++) {
-			builder.append(this.getChildModels().get(i).getCQL(identation));
+			builder.append(this.getChildModels().get(i).getCQL(indentation));
 		}
 		
 		builder.append(" " + operatorText);

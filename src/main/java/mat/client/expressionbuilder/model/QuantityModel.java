@@ -53,7 +53,7 @@ public class QuantityModel extends ExpressionBuilderModel {
 	}
 	
 	@Override
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		String timingValue = "";
 		if(!StringUtility.isEmptyOrNull(this.unit) && !timingUnits.contains(this.unit)) {
 			timingValue = " '" + this.unit + "'";

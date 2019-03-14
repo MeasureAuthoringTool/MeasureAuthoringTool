@@ -29,11 +29,11 @@ public class ComparisonModel extends ExpressionBuilderModel {
 	}
 	
 	@Override
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		StringBuilder builder = new StringBuilder();
 		for(IExpressionBuilderModel model : leftHandSide.getChildModels()) {
 			builder.append(" ");
-			builder.append(model.getCQL(identation));
+			builder.append(model.getCQL(indentation));
 		}
 		
 		builder.append(" ");
@@ -41,7 +41,7 @@ public class ComparisonModel extends ExpressionBuilderModel {
 		
 		for(IExpressionBuilderModel model : rightHandSide.getChildModels()) {
 			builder.append(" ");
-			builder.append(model.getCQL(identation));
+			builder.append(model.getCQL(indentation));
 		}
 		
 		return builder.toString().trim();

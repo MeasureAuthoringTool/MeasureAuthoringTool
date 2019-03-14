@@ -21,7 +21,7 @@ public class ParameterModel extends ExpressionBuilderModel {
 	}
 	
 	@Override
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		return this.identifier;
 		
 	}

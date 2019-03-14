@@ -29,11 +29,11 @@ public class ComputationModel extends ExpressionBuilderModel {
 	}
 	
 	@Override
-	public String getCQL(String identation) {
+	public String getCQL(String indentation) {
 		final StringBuilder builder = new StringBuilder();
 		for(final IExpressionBuilderModel model : leftHandSide.getChildModels()) {
 			builder.append(" ");
-			builder.append(model.getCQL(identation));
+			builder.append(model.getCQL(indentation));
 		}
 		
 		builder.append(" ");
@@ -41,7 +41,7 @@ public class ComputationModel extends ExpressionBuilderModel {
 		
 		for(final IExpressionBuilderModel model : rightHandSide.getChildModels()) {
 			builder.append(" ");
-			builder.append(model.getCQL(identation));
+			builder.append(model.getCQL(indentation));
 		}
 		
 		return builder.toString().trim();

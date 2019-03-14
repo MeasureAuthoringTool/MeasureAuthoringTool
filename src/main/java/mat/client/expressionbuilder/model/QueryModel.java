@@ -48,19 +48,19 @@ public class QueryModel extends ExpressionBuilderModel {
 	}	
 
 	@Override
-	public String getCQL(String identation) {		
+	public String getCQL(String indentation) {		
 		StringBuilder builder = new StringBuilder();
 		
 		if(this.getParentModel().getParentModel() != null) {
 			builder.append("(");
 		}
 						
-		builder.append(source.getCQL(identation + "  "));
+		builder.append(source.getCQL(indentation + "  "));
 				
 		builder.append(" ");
 		builder.append(alias);
 		
-		String filterIdentation = identation + "  ";
+		String filterIdentation = indentation + "  ";
 		builder.append("\n" + filterIdentation);
 		builder.append("where ");
 		

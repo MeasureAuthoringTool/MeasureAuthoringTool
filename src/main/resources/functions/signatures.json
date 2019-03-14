@@ -556,7 +556,7 @@
 	},
 	{
 		"name": "Count",
-		"returnType": "Decimal",
+		"returnType": "Integer",
 		"arguments": [
 			{
 				"name": "argument",
@@ -567,7 +567,7 @@
 	},
 	{
 		"name": "Count",
-		"returnType": "Quantity",
+		"returnType": "Integer",
 		"arguments": [
 			{
 				"name": "argument",
@@ -578,7 +578,7 @@
 	},
 	{
 		"name": "Count",
-		"returnType": "Date",
+		"returnType": "Integer",
 		"arguments": [
 			{
 				"name": "argument",
@@ -589,7 +589,7 @@
 	},
 	{
 		"name": "Count",
-		"returnType": "DateTime",
+		"returnType": "Integer",
 		"arguments": [
 			{
 				"name": "argument",
@@ -600,7 +600,7 @@
 	},
 	{
 		"name": "Count",
-		"returnType": "Time",
+		"returnType": "Integer",
 		"arguments": [
 			{
 				"name": "argument",
@@ -611,7 +611,7 @@
 	},
 	{
 		"name": "Count",
-		"returnType": "String",
+		"returnType": "Integer",
 		"arguments": [
 			{
 				"name": "argument",
@@ -622,18 +622,7 @@
 	},
 	{
 		"name": "Count",
-		"returnType": "String",
-		"arguments": [
-			{
-				"name": "argument",
-				"returnType": "List<QDM>"
-			}
-		],
-		"documentation": "The Count operator returns the number of non-null elements in the source."
-	},
-	{
-		"name": "Count",
-		"returnType": "String",
+		"returnType": "Integer",
 		"arguments": [
 			{
 				"name": "argument",
@@ -942,17 +931,6 @@
 		"documentation": "The First operator returns the first element in a list."
 	},
 	{
-		"name": "First",
-		"returnType": "Integer",
-		"arguments": [
-			{
-				"name": "argument",
-				"returnType": "List<QDM>"
-			}
-		],
-		"documentation": "The First operator returns the first element in a list."
-	},
-	{
 		"name": "GeometricMean",
 		"returnType": "Decimal",
 		"arguments": [
@@ -1156,17 +1134,6 @@
 			{
 				"name": "argument",
 				"returnType": "List<String>"
-			}
-		],
-		"documentation": "The Last operator returns the last element in a list."
-	},
-	{
-		"name": "Last",
-		"returnType": "String",
-		"arguments": [
-			{
-				"name": "argument",
-				"returnType": "List<QDM>"
 			}
 		],
 		"documentation": "The Last operator returns the last element in a list."

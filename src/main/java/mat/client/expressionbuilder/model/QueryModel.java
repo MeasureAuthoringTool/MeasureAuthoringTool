@@ -50,6 +50,10 @@ public class QueryModel extends ExpressionBuilderModel {
 	@Override
 	public String getCQL(String identation) {		
 		StringBuilder builder = new StringBuilder();
+		
+		if(this.getParentModel().getParentModel() != null) {
+			builder.append("(");
+		}
 						
 		builder.append(source.getCQL(identation + "  "));
 				
@@ -72,6 +76,10 @@ public class QueryModel extends ExpressionBuilderModel {
 		if(!sort.getSortExpression().getChildModels().isEmpty()) {
 			builder.append("\n" + filterIdentation);
 			builder.append(sort.getCQL(""));
+		}
+		
+		if(this.getParentModel().getParentModel() != null) {
+			builder.append(")");
 		}
 				
 		return builder.toString();

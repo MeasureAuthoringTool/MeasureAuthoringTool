@@ -2,6 +2,18 @@ package mat.client.inapphelp.message;
 
 public class InAppHelpMessages {
 	
+	private static final String INFORMATION_HELP = "<b>Information:</b> Clicking the Information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>";
+	
+	private static final String SAVE_HELP = "<b>Save:</b> The Save icon is to save your current work.<br>";
+	
+	private static final String ERASE_HELP = "<b>Erase:</b> The Erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>";
+	
+	private static final String VIEW_CQL_LIBRARY_HELP =  "<b>Click to View CQL:</b> Clicking on this link will display the current CQL file for the library being worked on. This is available to allow you to review other items you have already added to the library while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+	
+	private static final String BUILD_CQL_EXPRESSION_HELP =  "<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>";
+	
+	private static final String VIEW_CQL_MEASURE_HELP =  "<b>Click to View CQL:</b> Clicking on this link will display the current CQL library for the measure being worked on. This is available to allow you to review other items you have already added to the measure while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+	
 	public static final String MEASURE_CQL_LIBRARY_GENERAL_INFORMATION = "<b>CQL Library Name:</b> This is a name that is constructed from the measure name but has been adjusted so that it starts with an alpha-character or underscore followed by alpha-numeric character(s) or underscore(s) and does not contain spaces. This name identifies the library of CQL expressions being created with this measure. This field is not editable.<br>" +
 			"<br>" +
 			"                  <b>CQL Library Version:</b> This is the current version of the CQL library that is being created with this measure. This field is not editable.<br>" +
@@ -10,7 +22,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"                  <b>Model Version:</b> Describes the version of the data model this measure is using. This field is not editable.<br>" +
 			"<br>" +
-			"<b>Comments:</b> This comment box is available to enter information that applies to the CQL library as a whole. Information entered here will show before the model declaration on both the 'View CQL' section of the CQL Workspace and in the CQL file export. Click the save icon to save comments entered. To remove a comment, remove the text from the comments field and click the save icon again.";
+			"<b>Comments:</b> This comment box is available to enter information that applies to the CQL library as a whole. Information entered here will show before the model declaration on both the 'View CQL' section of the CQL Workspace and in the CQL file export. Click the Save icon to save comments entered. To remove a comment, remove the text from the comments field and click the Save icon again.";
 
 	public static final String STANDALONE_CQL_LIBRARY_GENERAL_INFORMATION = "<b>CQL Library Name:</b> This is a name that was given when the Library was created. CQL library names must start with an alpha-character or underscore followed by alpha-numeric character(s) or underscore(s) and can not contain spaces.<br>" +
 			"<br>" +
@@ -20,7 +32,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Model Version:</b> Describes the version of the data model this library is using. This field is not editable.<br>" +
 			"<br>" +
-			"<b>Comments:</b> This comment box is available to enter information that applies to the CQL library as a whole. Information entered here will show before the model declaration in the 'View CQL' section of the CQL Composer. Click the save icon to save comments entered. To remove a comment, remove the text from the comments field and click the save icon again.";
+			"<b>Comments:</b> This comment box is available to enter information that applies to the CQL library as a whole. Information entered here will show before the model declaration in the 'View CQL' section of the CQL Composer. Click the Save icon to save comments entered. To remove a comment, remove the text from the comments field and click the Save icon again.";
 
 	public static final String MEASURE_CQL_LIBRARY_VALUE_SET = "<b>OID:</b> Each value set is identified with a unique Object Identifier (OID). Enter the OID for the desired value set to include in the measure and then click the Retrieve OID button. Note: You must be signed in to UMLS to retrieve a Value Set from the Value Set Authority Center (VSAC) through the MAT.<br>" +
 			"<br>" +
@@ -34,9 +46,9 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Update From VSAC:</b> The Update From VSAC button will check the status of all value sets currently in the Applied Value Sets table. Any value sets that are no longer valid will show a caution triangle which means that the value set could not be found in the Value Set Authority Center. A green check mark indicates the value set is still valid. Updating the value sets is recommended if the measure has not been used recently. Note: User-defined value sets will always return a caution icon as they are not connected to any value set in VSAC.<br>" +
 			"<br>" +
-			"<b>Applied Value Sets table:</b> This table shows all value sets currently applied to this measure. This table contains an edit icon, a delete icon, and a checkbox which can be used in the process to copy the value set.<br>" +
+			"<b>Applied Value Sets table:</b> This table shows all value sets currently applied to this measure. This table contains an Edit icon, a Delete icon, and a checkbox which can be used in the process to copy the value set.<br>" +
 			"<br>" +
-			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of value sets from one measure to another measure or library. To copy a value set, select the checkboxes next to the value set(s) you wish to copy, click the copy icon, navigate to another measure or library and click on the paste icon above the Applied Value Sets table. To select all value sets at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
+			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of value sets from one measure to another measure or library. To copy a value set, select the checkboxes next to the value set(s) you wish to copy, click the Copy icon, navigate to another measure or library and click on the Paste icon above the Applied Value Sets table. To select all value sets at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
 
 	public static final String STANDALONE_CQL_LIBRARY_VALUE_SET = "<b>OID:</b> Each value set is identified with a unique Object Identifier (OID). Enter the OID for the desired value set to include in the library and then click the Retrieve OID button. Note: You must be signed in to UMLS to retrieve a Value Set from the Value Set Authority Center (VSAC) through the MAT.<br>" +
 			"<br>" +
@@ -50,9 +62,9 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Update From VSAC:</b> The Update From VSAC button will check the status of all value sets currently in the Applied Value Sets table. Any value sets that are no longer valid will show a caution triangle which means that the value set could not be found in the Value Set Authority Center. A green check mark indicates the value set is still valid. Updating the value sets is recommended if the library has not been used recently. Note: User-defined value sets will always return a caution icon as they are not connected to any value set in VSAC.<br>" +
 			"<br>" +
-			"<b>Applied Value Sets table:</b> This table shows all value sets currently applied to this library. This table contains an edit icon, a delete icon, and a checkbox which can be used in the process to copy the value set.<br>" +
+			"<b>Applied Value Sets table:</b> This table shows all value sets currently applied to this library. This table contains an Edit icon, a Delete icon, and a checkbox which can be used in the process to copy the value set.<br>" +
 			"<br>" +
-			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of value sets from one library to another library or measure. To copy a value set, select the checkboxes next to the value set(s) you wish to copy, click the copy icon, navigate to another library or measure and click on the paste icon above the Applied Value Sets table. To select all value sets at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
+			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of value sets from one library to another library or measure. To copy a value set, select the checkboxes next to the value set(s) you wish to copy, click the Copy icon, navigate to another library or measure and click on the Paste icon above the Applied Value Sets table. To select all value sets at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
 
 	public static final String MEASURE_CQL_LIBRARY_PARAMETER = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any parameters already included in the measure. Each measure already contains the Measurement Period parameter as a default. To open a parameter already added to the measure, double-click on the name. There is a search box just above this list which can be used to find a specific parameter name within the list.<br>" +
 			"<br>" +
@@ -62,17 +74,17 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Comment:</b> This comment box is to add a comment specific to the particular parameter being worked on. This comment will show in the View CQL section of the CQL Workspace just above the parameter and in the CQL file export.<br>" +
 			"<br>" +
-			"<b>Information:</b> Clicking the information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>" +
+			INFORMATION_HELP +
 			"<br>" +
-			"<b>Save:</b> The save icon is to save your current work.<br>" +
+			SAVE_HELP +
 			"<br>" +
-			"<b>Erase:</b> The erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>" +
+			ERASE_HELP +
 			"<br>" +
-			"<b>Delete:</b> The delete icon is to delete the currently selected parameter. Note: you will not be able to delete any default parameter or any parameter that has been used elsewhere within your CQL logic.<br>" +
+			"<b>Delete:</b> The Delete icon is to delete the currently selected parameter. Note: you will not be able to delete any default parameter or any parameter that has been used elsewhere within your CQL logic.<br>" +
 			"<br>" +
-			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>" +
+			BUILD_CQL_EXPRESSION_HELP +
 			"<br>" +
-			"<b>Click to View CQL:</b> Clicking on this link will display the current CQL library for the measure being worked on. This is available to allow you to review other items you have already added to the measure while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+			VIEW_CQL_MEASURE_HELP;
 
 	public static final String STANDALONE_CQL_LIBRARY_PARAMETER = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any parameters already included in the library. Each library already contains the Measurement Period parameter as a default. To open a parameter already added to the library, double-click on the name. There is a search box just above this list which can be used to find a specific parameter name within the list.<br>" +
 			"<br>" +
@@ -82,17 +94,17 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Comment:</b> This comment box is to add a comment specific to the particular parameter being worked on. This comment will show in the View CQL section of the CQL Workspace just above the parameter and in the CQL file export.<br>" +
 			"<br>" +
-			"<b>Information:</b> Clicking the information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>" +
+			INFORMATION_HELP +
 			"<br>" +
-			"<b>Save:</b> The save icon is to save your current work.<br>" +
+			SAVE_HELP +
 			"<br>" +
-			"<b>Erase:</b> The erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>" +
+			ERASE_HELP +
 			"<br>" +
-			"<b>Delete:</b> The delete icon is to delete the currently selected parameter. Note: you will not be able to delete any default parameter or any parameter that has been used elsewhere within your CQL logic.<br>" +
+			"<b>Delete:</b> The Delete icon is to delete the currently selected parameter. Note: you will not be able to delete any default parameter or any parameter that has been used elsewhere within your CQL logic.<br>" +
 			"<br>" +
-			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>" +
+			BUILD_CQL_EXPRESSION_HELP +
 			"<br>" +
-			"<b>Click to View CQL:</b> Clicking on this link will display the current CQL file for the library being worked on. This is available to allow you to review other items you have already added to the library while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+			VIEW_CQL_LIBRARY_HELP;
 
 	public static final String MEASURE_CQL_LIBRARY_FUNCTION = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any functions already included in the measure. To open a function already added to the measure, double-click on the name.  There is a search box just above this list which can be used to find a specific function name within the list.<br>" +
 			"<br>" +
@@ -110,19 +122,19 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Added Arguments List:</b> This list will populate with any arguments added into the function. This list contains an edit (pencil) and a delete (trashcan) icon for each argument added.<br>" +
 			"<br>" +
-			"<b>Information:</b> Clicking the information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>" +
+			INFORMATION_HELP +
 			"<br>" +
 			"<b>Insert:</b> Clicking this icon will open a dialog box that will allow you to choose items that will then be inserted into the CQL Workspace in the correct CQL format. Items include Parameters, Definitions, Functions, Timings, Pre-defined Functions, Applied Value Sets / Codes, and Attributes.<br>" +
 			"<br>" +
-			"<b>Save:</b> The save icon is to save your current work.<br>" +
+			SAVE_HELP +
 			"<br>" +
-			"<b>Erase:</b> The erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>" +
+			ERASE_HELP +
 			"<br>" +
-			"<b>Delete:</b> The delete icon is to delete the currently selected function. Note: you will not be able to delete any function that has been used elsewhere within your CQL logic.<br>" +
+			"<b>Delete:</b> The Delete icon is to delete the currently selected function. Note: you will not be able to delete any function that has been used elsewhere within your CQL logic.<br>" +
 			"<br>" +
-			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>" +
+			BUILD_CQL_EXPRESSION_HELP +
 			"<br>" +
-			"<b>Click to View CQL:</b> Clicking on this link will display the current CQL library for the measure being worked on. This is available to allow you to review other items you have already added to the measure while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+			VIEW_CQL_MEASURE_HELP;
 
 	public static final String STANDALONE_CQL_LIBRARY_FUNCTION = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any functions already included in the library. To open a function already added to the library, double-click on the name.  There is a search box just above this list which can be used to find a specific function name within the list.<br>" +
 			"<br>" +
@@ -140,19 +152,19 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Added Arguments List:</b> This list will populate with any arguments added into the function. This list contains an edit (pencil) and a delete (trashcan) icon for each argument added.<br>" +
 			"<br>" +
-			"<b>Information:</b> Clicking the information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>" +
+			INFORMATION_HELP +
 			"<br>" +
 			"<b>Insert:</b> Clicking this icon will open a dialog box that will allow you to choose items that will then be inserted into the CQL Editor in the correct CQL format. Items include Parameters, Definitions, Functions, Timings, Pre-defined Functions, Applied Value Sets / Codes, and Attributes.<br>" +
 			"<br>" +
-			"<b>Save:</b> The save icon is to save your current work.<br>" +
+			SAVE_HELP +
 			"<br>" +
-			"<b>Erase:</b> The erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>" +
+			ERASE_HELP +
 			"<br>" +
-			"<b>Delete:</b> The delete icon is to delete the currently selected function. Note: you will not be able to delete any function that has been used elsewhere within your CQL logic.<br>" +
+			"<b>Delete:</b> The Delete icon is to delete the currently selected function. Note: you will not be able to delete any function that has been used elsewhere within your CQL logic.<br>" +
 			"<br>" +
-			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>" +
+			BUILD_CQL_EXPRESSION_HELP +
 			"<br>" +
-			"<b>Click to View CQL:</b> Clicking on this link will display the current CQL file for the library being worked on. This is available to allow you to review other items you have already added to the library while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+			VIEW_CQL_LIBRARY_HELP;
 
 	public static final String MEASURE_CQL_LIBRARY_INCLUDES = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the assigned aliases of any included libraries. To open a library already included within the measure, double-click on the alias. There is a search box just above this list which can be used to find a specific library alias within the list.<br>" +
 			"<br>" +
@@ -202,7 +214,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Quantity and Units:</b> The Quantity and Units fields operate together. These fields will be enabled or disabled based on the choices made for the Attribute and Mode fields. For example, if the Attribute is authorDatetime and the Mode is Comparison with the Mode Details as <=, then entering a quantity and a unit does not make sense and the fields will be disabled. However, if Mode was Computative and the Mode Details was +, then a quantity and unit entry would be valid such as 2 months.<br>" +
 			"<br>" +
-			"<b>Insert Button:</b> The Insert button will insert the attribute built into the CQL editor of the expression being edited at the point in which the cursor was residing prior to the Insert Icon being selected.<br>" +
+			"<b>Insert Button:</b> The Insert button will insert the attribute built into the CQL editor of the expression being edited at the point in which the cursor was residing prior to the Insert icon being selected.<br>" +
 			"<br>" +
 			"<b>Cancel Button:</b> the Cancel button will close the attribute builder and not save any changes or selections that were made inside of it.";
 
@@ -260,15 +272,15 @@ public class InAppHelpMessages {
 			"<br>" + 
 			"<b>Insert:</b> Clicking this icon will open a dialog box that will allow you to choose items that will then be inserted into the CQL Workspace in the correct CQL format. Items include Parameters, Definitions, Functions, Timings, Pre-defined Functions, Applied Value Sets / Codes, and Attributes.<br>" + 
 			"<br>" + 
-			"<b>Save:</b> The Save icon is to save your current work.<br>" + 
+			SAVE_HELP + 
 			"<br>" + 
-			"<b>Erase:</b> The Erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>" + 
+			ERASE_HELP + 
 			"<br>" + 
 			"<b>Delete:</b> The Delete icon is to delete the currently selected definition. Note: you will not be able to delete any default definitions or any definition that has been used elsewhere within your CQL logic.<br>" + 
 			"<br>" + 
-			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>" + 
+			BUILD_CQL_EXPRESSION_HELP + 
 			"<br>" + 
-			"<b>Click to View CQL:</b> Clicking on this link will display the current CQL library for the measure being worked on. This is available to allow you to review other items you have already added to the measure while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+			VIEW_CQL_MEASURE_HELP;
 
 	public static final String STANDALONE_CQL_LIBRARY_DEFINITION = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any definitions already included in the library. To open a definition already added to the library, double-click on the name.  There is a search box just above this list which can be used to find a specific definition name within the list.<br>" + 
 			"<br>" + 
@@ -288,15 +300,15 @@ public class InAppHelpMessages {
 			"<br>" + 
 			"<b>Insert:</b> Clicking this icon will open a dialog box that will allow you to choose items that will then be inserted into the CQL Editor in the correct CQL format. Items include Parameters, Definitions, Functions, Timings, Pre-defined Functions, Applied Value Sets / Codes, and Attributes.<br>" + 
 			"<br>" + 
-			"<b>Save:</b> The Save icon is to save your current work.<br>" + 
+			SAVE_HELP + 
 			"<br>" + 
-			"<b>Erase:</b> The Erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>" + 
+			ERASE_HELP + 
 			"<br>" + 
 			"<b>Delete:</b> The Delete icon is to delete the currently selected definition. Note: you will not be able to delete any definition that has been used elsewhere within your CQL logic.<br>" + 
 			"<br>" + 
-			"<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>" + 
+			BUILD_CQL_EXPRESSION_HELP + 
 			"<br>" + 
-			"<b>Click to View CQL:</b> Clicking on this link will display the current CQL file for the library being worked on. This is available to allow you to review other items you have already added to the library while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+			VIEW_CQL_LIBRARY_HELP;
 	
 	public static final String MEASURE_CQL_LIBRARY_VIEW_CQL = "<b>Export Error File:</b> If your CQL file has errors or warnings, you can export a report that will show your entire CQL file with line numbers and list which line numbers are showing the errors and/or warnings. This file will open as a .txt file.<br>" + 
 			"<br>" + 

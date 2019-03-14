@@ -96,11 +96,19 @@ public class FunctionArgumentsBuilderModal extends SubExpressionBuilderModal {
 			availableExpressionsForArgument.addAll(getExpressionTypesForType(returnType));
 
 			String argumentLabel = "Argument " + argumentNumber + " (" + returnType + ")";
+			
+			
+			// Aliases should not appear for List<QDM> elements
+			List<String> availableAliasNames = new ArrayList<>();
+			if(!isListQDMType(returnType)) {
+				availableAliasNames.addAll(QueryFinderHelper.findAliasNames(this.functionModel));
+			}
 
 			BuildButtonObserver observer = new BuildButtonObserver(this, this.functionModel.getArguments().get(i),
 					this.getMainModel());
+			
 			ExpressionTypeSelectorList selector = new ExpressionTypeSelectorList(availableExpressionsForArgument,
-					new ArrayList<>(), QueryFinderHelper.findAliasNames(this.functionModel), observer, this.functionModel.getArguments().get(i),
+					new ArrayList<>(), availableAliasNames, observer, this.functionModel.getArguments().get(i),
 					argumentLabel, this);
 			panel.add(selector);
 		}
@@ -157,6 +165,10 @@ public class FunctionArgumentsBuilderModal extends SubExpressionBuilderModal {
 	}
 
 	private boolean isListQDMType(String type) {
+		if(type.equals("List<QDM>")) {
+			return true;
+		}
+		
 		boolean isQDMType = false;
 		List<String> datatypes = MatContext.get().getCqlConstantContainer().getQdmDatatypeList();
 		for (String d : datatypes) {

@@ -1,12 +1,11 @@
 package mat.client.expressionbuilder.component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Code;
 import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.constants.IconType;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -35,7 +34,6 @@ public class ExpressionTypeSelectorList extends Composite {
 	private boolean canOnlyMakeOneSelection;
 	private String labelText;
 	private ExpressionTypeSelector selector;
-	private boolean shouldHaveComputationOption = true;
 	private ExpressionBuilderModal parentModal;
 
 	public ExpressionTypeSelectorList(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes,
@@ -53,7 +51,7 @@ public class ExpressionTypeSelectorList extends Composite {
 		this.availableOperatorTypes.addAll(availableOperatorTypes);
 		this.buildButtonObserver = observer;
 		this.model = model;
-		this.hasNoSelections = this.model.getChildModels().size() == 0;
+		this.hasNoSelections = this.model.getChildModels().isEmpty();
 		canOnlyMakeOneSelection = this.availableOperatorTypes.isEmpty();
 		this.labelText = labelText;
 		this.parentModal = parentModal;
@@ -76,7 +74,7 @@ public class ExpressionTypeSelectorList extends Composite {
 		
 				
 		// filter available operators based on first expression type selected
-		if(this.model.getChildModels().size() >= 1) {
+		if(!this.model.getChildModels().isEmpty()) {
 			CQLType firstType = this.model.getChildModels().get(0).getType();
 			
 			List<OperatorType> availableOperatorTypesForFirstExpressionType = new ArrayList<>();
@@ -94,7 +92,6 @@ public class ExpressionTypeSelectorList extends Composite {
 		
 		for(int i = 0; i < this.model.getChildModels().size(); i++) {
 			IExpressionBuilderModel currentChildModel = this.model.getChildModels().get(i);
-			shouldHaveComputationOption = false;
 			
 			// operators should not display with the collapsable panel, but should be formatted with code.
 			if(currentChildModel instanceof OperatorModel) {
@@ -125,15 +122,11 @@ public class ExpressionTypeSelectorList extends Composite {
 			}
 		}
 		
-		boolean canAddAnother = hasNoSelections || canOnlyMakeOneSelection || shouldHaveComputationOption;
+		boolean cannotAddMoreFunctionality = areSingleSelectScreensOnly(this.model.getChildModels());
 		
-		if(!this.model.getChildModels().isEmpty() && canOnlyMakeOneSelection) {
-			
-		} else {
-			if(!shouldHaveComputationOption) {
-				availableExpressionTypes.removeIf(expression -> ExpressionType.COMPUTATION.equals(expression));
-			}
-			
+		boolean canAddAnother = hasNoSelections || canOnlyMakeOneSelection || cannotAddMoreFunctionality;
+		
+		if (!(!this.model.getChildModels().isEmpty() && (canOnlyMakeOneSelection || cannotAddMoreFunctionality))) {
 			selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, availableAliases, buildButtonObserver, canAddAnother, this.parentModal);		
 			panel.add(selector);
 		}
@@ -144,5 +137,14 @@ public class ExpressionTypeSelectorList extends Composite {
 
 	private ExpandCollapseCQLExpressionPanel buildExpressionCollapsePanel(IExpressionBuilderModel model) {	
 		return new ExpandCollapseCQLExpressionPanel(model.getDisplayName(), model.getCQL(""));
+	}
+	
+	private boolean areSingleSelectScreensOnly(List<IExpressionBuilderModel> childModels) {
+		//Screens to hide Add more functionality
+		List<String> singleModels = Arrays.asList(ExpressionType.COMPUTATION.getDisplayName(), ExpressionType.DATE_TIME.getDisplayName(),
+				ExpressionType.QUANTITY.getDisplayName(), ExpressionType.TIME_BOUNDARY.getDisplayName());
+		
+		return childModels.stream().anyMatch(e -> singleModels.stream().anyMatch(e.getDisplayName()::contains));
+		
 	}
 }

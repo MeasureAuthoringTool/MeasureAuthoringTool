@@ -33,6 +33,9 @@ import mat.shared.CQLModelValidator;
 
 public class QueryBuilderModal extends SubExpressionBuilderModal {
 
+	private static final String EXIT_QUERY = "Exit Query";
+	private static final String STYLE = "style";
+	private static final String NAV_PILL_BACKGROUND_COLOR = "background-color: #F1F1F1";
 	private static final String HOW_WOULD_YOU_LIKE_TO_SORT_THE_DATA = "How would you like to sort the data?";
 	private static final String REVIEW_QUERY = "Review Query";
 	private static final String SORT = "Sort";
@@ -96,6 +99,8 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 
 	private Widget buildContentPanel() {
+		this.getCancelButton().setTitle(EXIT_QUERY);
+		this.getCancelButton().setText(EXIT_QUERY);
 		this.getContentPanel().clear();
 		
 		VerticalPanel mainPanel = new VerticalPanel();
@@ -108,15 +113,15 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		queryBuilderContentPanel.setStyleName("selectorsPanel");
 		
 		navPillsAndContentPanel.add(buildNavPanel());
-		pills.getElement().getParentElement().setAttribute("style", "vertical-align: top; width: 20%");
+		pills.getElement().getParentElement().setAttribute(STYLE, "vertical-align: top; width: 20%");
 		navPillsAndContentPanel.add(queryBuilderContentPanel);
 		
 		ButtonToolBar buttonPanel = new ButtonToolBar();
 		previousButton = new Button("Previous");
-		previousButton.setType(ButtonType.LINK);
+		previousButton.setType(ButtonType.PRIMARY);
 		nextButton = new Button("Next");
 		nextButton.setPull(Pull.RIGHT);
-		nextButton.setType(ButtonType.LINK);
+		nextButton.setType(ButtonType.PRIMARY);
 		
 		buttonPanel.add(previousButton);
 		buttonPanel.add(nextButton);
@@ -135,16 +140,20 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		pills.setMarginRight(15.0);
 		sourceListItem = new AnchorListItem(SOURCE);
 		sourceListItem.addClickHandler(event -> navigate(SOURCE));
+		sourceListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
 		sourceListItem.setActive(true);
 		
 		filterListItem = new AnchorListItem(FILTER);
 		filterListItem.addClickHandler(event -> navigate(FILTER));
+		filterListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
 		
 		sortListItem = new AnchorListItem(SORT);
 		sortListItem.addClickHandler(event -> navigate(SORT));
+		sortListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
 		
 		reviewQueryListItem = new AnchorListItem(REVIEW_QUERY);
 		reviewQueryListItem.addClickHandler(event -> navigate(REVIEW_QUERY));
+		reviewQueryListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
 
 		pills.add(sourceListItem);
 		pills.add(filterListItem);

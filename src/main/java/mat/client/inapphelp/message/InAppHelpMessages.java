@@ -40,7 +40,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Release:</b> In addition to a program, value sets contained in the Value Set Authority Center (VSAC) can be assigned to a specific release. Use this field to indicate from which release you would like to retrieve the value set. This field is optional and may be left blank if the release is unknown. A release can only be chosen if a program is selected. If the release chosen does not contain the value set, an error message will be received.<br>" +
 			"<br>" +
-			"<b>Name:</b> This field will show the name of any value set retrieved from VSAC using an OID. The other option for this field is to not retrieve a value set from VSAC and instead just enter a name into this field and click Apply. This creates a <b>user-defined value set</b> which can be used as a placeholder in measure logic until it can be replaced later with an actual value set.<br>" +
+			"<b>Name:</b> This field will show the name of any value set retrieved from VSAC using an OID. The other option for this field is to not retrieve a value set from VSAC and instead just enter a name into this field and click Apply. This creates a <b>User-defined value set</b> which can be used as a placeholder in measure logic until it can be replaced later with an actual value set.<br>" +
 			"<br>" +
 			"<b>Suffix:</b> The suffix field is available to add a numerical addition to the end of a value set name. This addition to the identifier is necessary if the user attempts to add two value sets with different OIDs but the same name. If none of the value sets in the measure have the same name, the suffix field is not needed.<br>" +
 			"<br>" +
@@ -56,7 +56,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Release:</b> In addition to a program, value sets contained in the Value Set Authority Center (VSAC) can be assigned to a specific release. Use this field to indicate from which release you would like to retrieve the value set. This field is optional and may be left blank if the release is unknown. A release can only be chosen if a program is selected. If the release chosen does not contain the value set, an error message will be received.<br>" +
 			"<br>" +
-			"<b>Name:</b> This field will show the name of any value set retrieved from VSAC using an OID. The other option for this field is to not retrieve a value set from VSAC and instead just enter a name into this field and click Apply. This creates a <b>user-defined value set</b> which can be used as a placeholder in CQL logic until it can be replaced later with an actual value set.<br>" +
+			"<b>Name:</b> This field will show the name of any value set retrieved from VSAC using an OID. The other option for this field is to not retrieve a value set from VSAC and instead just enter a name into this field and click Apply. This creates a <b>User-defined value set</b> which can be used as a placeholder in CQL logic until it can be replaced later with an actual value set.<br>" +
 			"<br>" +
 			"<b>Suffix:</b> The suffix field is available to add a numerical addition to the end of a value set name. This addition to the identifier is necessary if the user attempts to add two value sets with different OIDs but the same name. If none of the value sets in the library have the same name, the suffix field is not needed.<br>" +
 			"<br>" +
@@ -192,7 +192,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Definitions:</b> Selecting Definitions in the Item Type field will populate the Item Name dropdown with a list of the definitions that are available.<br>" +
 			"<br>" +
-			"<b>Functions:</b> Selecting Functions in the Item Type field will populate the Item Name dropdown with a list of the user-defined functions available.<br>" +
+			"<b>Functions:</b> Selecting Functions in the Item Type field will populate the Item Name dropdown with a list of the User-defined functions available.<br>" +
 			"<br>" +
 			"<b>Timing:</b> Selecting Timing in the Item Type field will populate the Item Name dropdown with a list of common timings.<br>" +
 			"<br>" +

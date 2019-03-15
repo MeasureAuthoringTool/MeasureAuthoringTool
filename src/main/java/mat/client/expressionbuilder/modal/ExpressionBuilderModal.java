@@ -7,12 +7,14 @@ import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.expressionbuilder.component.ViewCQLExpressionWidget;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 
 public abstract class ExpressionBuilderModal extends Modal {
@@ -45,6 +47,10 @@ public abstract class ExpressionBuilderModal extends Modal {
 		contentPanel = new VerticalPanel();
 		viewCQLExpressionModal = new ViewCQLExpressionWidget();
 		
+		FocusPanel contentWrapper = new FocusPanel();
+		contentWrapper.add(contentPanel);
+		contentWrapper.addClickHandler(event -> resetTimer());
+		
 		this.setId("expressionBuilderModal");
 		contentPanel.setWidth("100%");
 		
@@ -54,12 +60,16 @@ public abstract class ExpressionBuilderModal extends Modal {
 		
 		body.add(buildHelpBlock(""));
 		body.add(buildErrorAlert());
-		body.add(contentPanel);
+		body.add(contentWrapper);
 		body.add(this.viewCQLExpressionModal);
 		
 		this.add(header);
 		this.add(body);
 		this.add(footer);
+	}
+	
+	protected void resetTimer() {
+		MatContext.get().restartTimeoutWarning();
 	}
 	
 	private Widget buildHelpBlock(String message) {

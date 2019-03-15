@@ -100,7 +100,7 @@ public class FunctionArgumentsBuilderModal extends SubExpressionBuilderModal {
 			
 			// Aliases should not appear for List<QDM> elements
 			List<String> availableAliasNames = new ArrayList<>();
-			if(!isListQDMType(returnType)) {
+			if(!returnType.startsWith("List") && !returnType.startsWith("list")) {
 				availableAliasNames.addAll(QueryFinderHelper.findAliasNames(this.functionModel));
 			}
 

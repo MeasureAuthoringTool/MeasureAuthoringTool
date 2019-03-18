@@ -1,5 +1,6 @@
 package mat.client.cqlworkspace;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,11 +46,20 @@ public class SharedCQLWorkspaceUtility {
 
 	private static void displayMessageBannerForViewCQL(SaveUpdateCQLResult result, MessagePanel messagePanel) {
 		messagePanel.clearAlerts();
+		List<String> errorMessages = new ArrayList<String>();
+		if(!result.isQDMVersionMatching()) {
+			errorMessages.add(AbstractCQLWorkspacePresenter.INVALID_QDM_VERSION_IN_INCLUDES);
+		}
 		if(!result.getCqlErrors().isEmpty()) {
-			messagePanel.getErrorMessageAlert().createAlert(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE);
-		} else if(!result.isDatatypeUsedCorrectly()) {
-			messagePanel.getErrorMessageAlert().createAlert(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE);
-		} else if(!result.getCqlWarnings().isEmpty()) {
+			errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE);
+		}
+		if(!result.isDatatypeUsedCorrectly()) {
+			errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE);
+		}
+
+		if(!errorMessages.isEmpty()) {
+			messagePanel.getErrorMessageAlert().createAlert(errorMessages);
+		}  else if(!result.getCqlWarnings().isEmpty()) {
 			messagePanel.getWarningMessageAlert().createAlert(AbstractCQLWorkspacePresenter.VIEW_CQL_WARNING_MESSAGE);
 		}   else {
 			messagePanel.getSuccessMessageAlert().createAlert(AbstractCQLWorkspacePresenter.VIEW_CQL_NO_ERRORS_MESSAGE);

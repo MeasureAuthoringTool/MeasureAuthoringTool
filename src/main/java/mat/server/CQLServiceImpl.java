@@ -1675,11 +1675,19 @@ public class CQLServiceImpl implements CQLService {
 		CQLUtil.getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, getCqlLibraryDAO());
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
 		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
-
+		
 		// get the strings for parsing
 		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
 		List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
 		SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
+		
+		Iterator<CQLIncludeLibrary> libraryIter = cqlModel.getIncludedLibrarys().keySet().iterator();
+		while(libraryIter.hasNext()) {
+			CQLIncludeLibrary curLibrary = libraryIter.next();
+			if(!cqlModel.getQdmVersion().equals(curLibrary.getQdmVersion())) {
+				result.setQDMVersionMatching(false);
+			}
+		}
 
 		setUsedValuesets(result, cqlModel);
 		setUsedCodes(result, cqlModel);

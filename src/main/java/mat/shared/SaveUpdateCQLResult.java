@@ -101,7 +101,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	private boolean isValidCQLWhileSavingExpression = true;
 	
-	
+	private boolean isQDMVersionMatching = true;
+
 	private Map<String, List<CQLError>> libraryNameErrorsMap = new HashMap<>(); 
 	private Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>(); 
 	
@@ -367,6 +368,14 @@ public class SaveUpdateCQLResult extends GenericResult{
 		this.setId = setId;
 	}
 
+	public boolean isQDMVersionMatching() {
+		return isQDMVersionMatching;
+	}
+
+	public void setQDMVersionMatching(boolean isQDMVersionMatching) {
+		this.isQDMVersionMatching = isQDMVersionMatching;
+	}
+	
 	public boolean isDatatypeUsedCorrectly() {
 		return isDatatypeUsedCorrectly;
 	}

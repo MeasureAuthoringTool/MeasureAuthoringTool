@@ -387,6 +387,10 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		} else if(tab.equals(SORT)) {
 			sortListItem.setActive(true);
 			displaySort();
+			
+			if(sortSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
+				sortSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
+			}
  		} else if(tab.equals(REVIEW_QUERY)) {
  			reviewQueryListItem.setActive(true);
  			this.setCQLPanelVisible(false);

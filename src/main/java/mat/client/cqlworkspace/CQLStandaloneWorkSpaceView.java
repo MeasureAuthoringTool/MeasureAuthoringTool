@@ -10,7 +10,6 @@ import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -66,10 +65,10 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 	}
 	
 	public void buildView(MessagePanel messagePanel, HelpBlock helpBlock) {
-		GWT.log("calling CQLStandaloneWorkspaceView buildView()");
 		resetAll();
 		unsetEachSectionSelectedObject();
 		this.messagePanel = messagePanel;
+		this.messagePanel.getElement().getStyle().setProperty("marginLeft", "5px");
 		this.helpBlock = helpBlock;
 		buildGeneralInformation();
 		mainFlowPanel.setWidth("700px");

@@ -2370,7 +2370,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				setMeasureCreated(true);
 				measure = measurePackageService.getById(model.getId());
 				measure.setDescription(model.getName());
-				String shortName = !StringUtility.isEmptyOrNull(model.getShortName()) ? model.getShortName().substring(0,  20) : "";
+				String shortName = "";
+				if(!StringUtility.isEmptyOrNull(model.getShortName())) {
+					shortName = model.getShortName();
+					if(shortName.length() > 20) {
+						shortName = shortName.substring(0,  20);
+					}
+				}
+
 				model.setShortName(shortName);
 				measure.setaBBRName(shortName);
 				measure.setMeasureScoring(model.getMeasScoring());

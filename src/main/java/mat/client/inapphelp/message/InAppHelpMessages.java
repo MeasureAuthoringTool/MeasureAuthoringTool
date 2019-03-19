@@ -318,6 +318,72 @@ public class InAppHelpMessages {
 			"<br>" + 
 			"<b>View CQL file here:</b> This section displays the entire CQL file for the library as it currently stands. If there are any errors they will be indicated on the line number with a red square. If there are any warnings they will be shown on the line number with a yellow triangle. Hover over the error or warning icons to see the messages. This area is not editable. You will need to go back to the individual expression to fix any errors or warnings.";
 	
+	public static final String EXPRESSION_BUILDER = "<b>Comparison:</b> Choose this type of expression if you want to compare one thing to another.<br></span>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> AgeInYearsAt (start of “Measurement Period”) > 18<br></span>" + 
+			"<br>" + 
+			"<b>Computation:</b> Choose this type of expression if you want to perform a mathematical calculation.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> “Measurement Period” – 5 years<br></span>" + 
+			"<br>" + 
+			"<b>Data Element or Retrieve</b>: Choose this type of expression if you want to refer to a QDM Datatype or a QDM Datatype / Value Set or Code combination.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> [Encounter, Performed : “Office visit”]<br></span>" + 
+			"<br>" + 
+			"<b>Date/Time</b>: Choose this type of expression if you want to use a date, a time, or a date/time combination.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example – Date:</b> @2019-02-28<br></span>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example – Time:</b> @T13:35:00.000<br></span>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example – DateTime:</b> @2019-02-28T13:35:00.000<br></span>" + 
+			"<br>" + 
+			"<b>Definition</b>: Choose this type of expression when you want to choose a definition you have already written.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> “Qualifying Encounters”<br></span>" + 
+			"<br>" + 
+			"<b>Exists</b>: Choose this type of expression when you want to express that something is present.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> exists [Diagnosis : “Diabetes”]<br></span>" + 
+			"<br>" + 
+			"<b>Function</b>: Choose this type of expression when you want to use either a pre-defined CQL function or a function you are previously written.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> First (“Hospital Observation Encounter”)<br></span>" + 
+			"<br>" + 
+			"<b>Interval</b>: Choose this type of expression when you want to build an interval of values.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> Interval[@2019-02, @2020-02]<br></span>" + 
+			"<br>" + 
+			"<b>Negation (not)</b>: Choose this expression type when you want to say something is negative.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> not exists [Encounter, Performed : “Emergency Room Visit”]<br></span>" + 
+			"<br>" + 
+			"<b>Null (is null/not null)</b>: Choose this expression type when you want to say something is null or not null.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> [Diagnosis : “Diabetes] is not null<br></span>" + 
+			"<br>" + 
+			"<b>Quantity</b>: Choose this expression type when you want to state a particular number or number and unit combination.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> 5 ‘mg/dL’<br></span>" + 
+			"<br>" + 
+			"<b>Query</b>: Choose this expression type when you want to write a query that starts with a source and then filters that source data by other options.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> [Encounter, Performed : Office Visit] visit<br></span>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'>where visit.relevantperiod during “Measurement Period”<br></span>" + 
+			"<br>" + 
+			"<b>Start of/End of</b>: Choose this expression type when you want to find the start or end of something.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> start of “Measurement Period”<br></span>" + 
+			"<br>" + 
+			"<b>True/False (is true/false)</b>: Choose this expression type when you want to show that something is true or false.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> “In Hospice” is true<br></span>" + 
+			"<br>" + 
+			"<b>Timing</b>: Choose this expression type when you want to state that something has a relationship in time to something else.<br>" + 
+			"<br>" + 
+			"<span style='margin-left:2em'><b>Example:</b> “Diabetes Diagnosis”.authorDatetime starts on or before @2019-02-28</span>";
+	
 	private InAppHelpMessages() {
 		throw new IllegalStateException("InAppHelpMessages class");
 	}

@@ -31,6 +31,7 @@ public class InAppHelp extends Composite {
 	
 	public InAppHelp(String message) {
 		this.message = message;
+		
 		initWidget(createInAppHelp());
 		
 	}
@@ -102,5 +103,13 @@ public class InAppHelp extends Composite {
 
 	public void setHelpModal(Modal helpModal) {
 		this.helpModal = helpModal;
+	}
+
+	public InAppHelpButton getInAppHelpButton() {
+		return inAppHelpButton;
+	}
+
+	public void setInAppHelpButton(InAppHelpButton inAppHelpButton) {
+		this.inAppHelpButton = inAppHelpButton;
 	}
 }

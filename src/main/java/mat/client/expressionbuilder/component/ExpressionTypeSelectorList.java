@@ -9,12 +9,15 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import mat.client.buttons.InAppHelpButton;
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.modal.ExpressionBuilderModal;
+import mat.client.expressionbuilder.modal.InAppHelpModal;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.ModelAndOperatorTypeUtil;
@@ -35,7 +38,7 @@ public class ExpressionTypeSelectorList extends Composite {
 	private String labelText;
 	private ExpressionTypeSelector selector;
 	private ExpressionBuilderModal parentModal;
-
+	
 	public ExpressionTypeSelectorList(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes,
 			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText, ExpressionBuilderModal parentModal) {
 		this(availableExpressionTypes, availableOperatorTypes, new ArrayList<>(), observer, model, labelText, parentModal);
@@ -66,12 +69,19 @@ public class ExpressionTypeSelectorList extends Composite {
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("selectorsPanel");
 		panel.setWidth("100%");
+		HorizontalPanel labelPanel = new HorizontalPanel();
 		FormLabel label = new FormLabel();
 		label.setText(this.labelText);
 		label.setTitle(this.labelText);
+		labelPanel.add(label);
+		if(isInitialModalScreen()) {
+			InAppHelpButton inAppHelpButton = new InAppHelpButton();
+			labelPanel.add(inAppHelpButton);
+			inAppHelpButton.setMarginTop(-9);
+			inAppHelpButton.addClickHandler(event -> handleOpen());
+		}
 		
-		panel.add(label);
-		
+		panel.add(labelPanel);
 				
 		// filter available operators based on first expression type selected
 		if(!this.model.getChildModels().isEmpty()) {
@@ -133,6 +143,15 @@ public class ExpressionTypeSelectorList extends Composite {
 		
 	
 		return panel;
+	}
+	
+	private void handleOpen() {
+		ExpressionBuilderModal inAppHelpModal = new InAppHelpModal(parentModal, null, null);
+		((InAppHelpModal) inAppHelpModal).showModal();
+	}
+
+	private boolean isInitialModalScreen() {
+		return "CQL Expression Builder".equals(this.parentModal.getModalTitle());
 	}
 
 	private ExpandCollapseCQLExpressionPanel buildExpressionCollapsePanel(IExpressionBuilderModel model) {	

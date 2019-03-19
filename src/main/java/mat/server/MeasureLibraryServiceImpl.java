@@ -2373,8 +2373,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				String shortName = "";
 				if(!StringUtility.isEmptyOrNull(model.getShortName())) {
 					shortName = model.getShortName();
-					if(shortName.length() > 20) {
-						shortName = shortName.substring(0,  20);
+					if(shortName.length() > 32) {
+						shortName = shortName.substring(0,  32);
 					}
 				}
 

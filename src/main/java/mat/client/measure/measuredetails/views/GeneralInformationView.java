@@ -39,7 +39,7 @@ import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 public class GeneralInformationView implements MeasureDetailViewInterface {
 	private static final String EMPTY_STRING = "";
 	private static final String TEXT_BOX_WIDTH = "300px";
-	private static final int ECQM_ABBR_MAX_LENGTH = 20;
+	private static final int ECQM_ABBR_MAX_LENGTH = 32;
 	private FlowPanel mainPanel = new FlowPanel();
 	private GeneralInformationModel generalInformationModel;
 	private GeneralInformationModel originalModel;

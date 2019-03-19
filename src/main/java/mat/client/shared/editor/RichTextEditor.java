@@ -11,15 +11,11 @@ public class RichTextEditor extends TextArea {
 	}
 	
 	public String getPlainText() {
-		return stripFormatting(this.getText());
+		return this.getText();
 	}
 
 	public String getFormattedText() {
 		return this.getText();
-	}
-
-	public String stripFormatting(String formatedText) {
-		return formatedText.replaceAll("<[^>]*>", "").replaceAll("&nbsp;", " ");
 	}
 	
 	public void setEditorText(String text) {

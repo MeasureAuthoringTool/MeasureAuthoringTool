@@ -1,6 +1,7 @@
 package mat.client.expressionbuilder.modal;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -100,6 +101,7 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		if(isSourceRequired) {
 			List<ExpressionType> availableExpressionTypes = new ArrayList<>();
 			availableExpressionTypes.add(ExpressionType.DEFINITION);
+			availableExpressionTypes.add(ExpressionType.FUNCTION);
 			String label = "What element are you wanting to use the attribute for?";
 			ExpressionTypeSelectorList selectors = new ExpressionTypeSelectorList(
 					availableExpressionTypes, new ArrayList<>(), QueryFinderHelper.findAliasNames(attributeModel), 
@@ -124,12 +126,11 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		
 		attributeListBox = new ListBoxMVP();
 		attributeListBox.setId("attributeListBox");
-		attributeListBox.insertItem(SELECT_AN_ATTRIBUTE, SELECT_AN_ATTRIBUTE, SELECT_AN_ATTRIBUTE);
+		attributeListBox.insertItem(SELECT_AN_ATTRIBUTE, SELECT_AN_ATTRIBUTE);
 				
 		List<String> attributes = qdmContainer.getAttributes();
-		attributes.remove("patientId");
 		for(String attribute : attributes) {
-			attributeListBox.insertItem(attribute, attribute, attribute);
+			attributeListBox.insertItem(attribute, attribute);
 		}
 		
 		attributeListBox.setSelectedIndex(attributeSelectedIndex);
@@ -195,12 +196,10 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 	
 	private void addContentToClarifyingAttributeListBox(List<String> contentList) {
 		clarifyingAttributeListBox.clear();
-		clarifyingAttributeListBox.insertItem(SELECT_AN_ATTRIBUTE, SELECT_AN_ATTRIBUTE, SELECT_AN_ATTRIBUTE);
+		clarifyingAttributeListBox.insertItem(SELECT_AN_ATTRIBUTE, SELECT_AN_ATTRIBUTE);
 
 		if(contentList != null && !contentList.isEmpty()) {
-			contentList.forEach(attribute -> {
-				clarifyingAttributeListBox.insertItem(attribute, attribute, attribute);
-			});
+			contentList.forEach(attribute -> clarifyingAttributeListBox.insertItem(attribute, attribute));
 		}
 
 	}
@@ -220,7 +219,7 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		}
 		
 		List<String> clarifyingAttributeList = new ArrayList<>(clarifyingAttributes);
-		clarifyingAttributeList.sort((a1, a2) -> a1.compareTo(a2));
+		clarifyingAttributeList.sort(Comparator.naturalOrder());
 		return clarifyingAttributeList;
 	}
 	

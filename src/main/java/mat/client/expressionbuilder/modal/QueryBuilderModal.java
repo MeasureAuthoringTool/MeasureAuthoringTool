@@ -388,7 +388,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 			sortListItem.setActive(true);
 			displaySort();
 			
-			if(sortSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
+			if(sortSelector.getSelector()!= null && sortSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
 				sortSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
 			}
  		} else if(tab.equals(REVIEW_QUERY)) {

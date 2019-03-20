@@ -118,7 +118,8 @@ public class InsertAttributeBuilderDialogBox {
 
 		dialogHeader.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		
-		inAppHelp.getHelpModal().addHideHandler(event -> handleClose(event));
+		inAppHelp.getHelpModal().addHideHandler(event -> handleClose());
+		inAppHelp.getInAppHelpButton().addClickHandler(event -> showModal());
 		dialogModal.add(dialogHeader);
 		
 		dialogModal.setClosable(true);
@@ -224,11 +225,20 @@ public class InsertAttributeBuilderDialogBox {
 
 		dialogModal.show();
 	}
+	
+	private static void showModal() {
+		removeAndHideModal();
+		inAppHelp.getHelpModal().show();
+	}
 
-	private static void handleClose(ModalHideEvent event) {
+	private static void handleClose() {
+		removeAndHideModal();
+		showAttributesDialogBox(curEditor);
+	}
+	
+	private static void removeAndHideModal() {
 		dialogModal.removeFromParent();
 		dialogModal.hide();
-		showAttributesDialogBox(curEditor);
 	}
 
 	private static void clickInsertButton(final Modal dialogModal, final FormGroup messageFormgroup,

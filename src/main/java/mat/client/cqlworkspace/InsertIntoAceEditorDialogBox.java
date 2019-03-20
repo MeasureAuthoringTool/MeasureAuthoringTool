@@ -72,6 +72,7 @@ public class InsertIntoAceEditorDialogBox {
 
 	public static void showListOfItemAvailableForInsertDialogBox(final AceEditor editor, AbstractCQLWorkspacePresenter cqlWorkspacePresenter) {
 		dialogModal = new Modal();
+		
 		inAppHelp = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_INSERT_MODAL);
 		dialogModal.getElement().setAttribute("role", "dialog");
 		
@@ -81,6 +82,7 @@ public class InsertIntoAceEditorDialogBox {
 
 		dialogHeader.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		
+		inAppHelp.getInAppHelpButton().addClickHandler(event -> showModal());
 		inAppHelp.getHelpModal().addHideHandler(event -> handleClose(event));
 		dialogModal.add(dialogHeader);
 		dialogModal.setClosable(true);
@@ -340,9 +342,20 @@ public class InsertIntoAceEditorDialogBox {
 	}
 
 
-	private static void handleClose(ModalHideEvent event) {
+	private static void showModal() {
+		removeAndHideModal();
+		inAppHelp.getHelpModal().show();
+	}
+
+
+	private static void removeAndHideModal() {
 		dialogModal.removeFromParent();
 		dialogModal.hide();
+	}
+
+
+	private static void handleClose(ModalHideEvent event) {
+		removeAndHideModal();
 		showListOfItemAvailableForInsertDialogBox(curEditor, workspacePresenter);
 	}
 

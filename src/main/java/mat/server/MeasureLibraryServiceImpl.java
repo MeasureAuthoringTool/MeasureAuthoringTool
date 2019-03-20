@@ -2370,13 +2370,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				setMeasureCreated(true);
 				measure = measurePackageService.getById(model.getId());
 				measure.setDescription(model.getName());
-				String shortName = "";
-				if(!StringUtility.isEmptyOrNull(model.getShortName())) {
-					shortName = model.getShortName();
-					if(shortName.length() > 32) {
-						shortName = shortName.substring(0,  32);
-					}
-				}
+				String shortName = buildMeasureShortName(model);
 
 				model.setShortName(shortName);
 				measure.setaBBRName(shortName);
@@ -2398,6 +2392,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			logger.info("Saving of Measure Details Failed. Invalid Data issue.");
 			return result;
 		}
+	}
+
+	private String buildMeasureShortName(final ManageMeasureDetailModel model) {
+		String shortName = "";
+		if(!StringUtility.isEmptyOrNull(model.getShortName())) {
+			shortName = model.getShortName();
+			if(shortName.length() > 32) {
+				shortName = shortName.substring(0,  32);
+			}
+		}
+		return shortName;
 	}
 
 	@Override
@@ -6024,6 +6029,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
 		List<String> message = manageCompositeMeasureModelValidator.validateMeasure(model);
 		if (message.isEmpty()) {
+			String shortName = buildMeasureShortName(model);
+			model.setShortName(shortName);
 			Measure pkg = null;
 			MeasureSet measureSet = null;
 			if (model.getId() != null) {

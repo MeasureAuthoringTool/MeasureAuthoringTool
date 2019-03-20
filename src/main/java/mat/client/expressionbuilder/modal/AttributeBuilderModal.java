@@ -16,7 +16,6 @@ import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.AttributeModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
-import mat.client.expressionbuilder.model.QuerySortModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.QueryFinderHelper;
 import mat.client.shared.CQLTypeContainer;
@@ -27,13 +26,12 @@ import mat.client.shared.QDMContainer;
 public class AttributeBuilderModal extends SubExpressionBuilderModal {
 
 	private static final String AN_ELEMENT_AND_AN_ATTRIBUTE_ARE_REQUIRED = "An Element and an Attribute are required.";
-	private static final String HOW_WOULD_YOU_LIKE_TO_CLARIFY_YOUR_ATTRIBUTE = "How would you like to clarify your attribute?";
+	private static final String HOW_WOULD_YOU_LIKE_TO_CLARIFY_YOUR_ATTRIBUTE = "How would you like to clarify your attribute? (Optional)";
 	private static final String WHAT_ATTRIBUTE_WOULD_YOU_LIKE_TO_FIND = "What attribute would you like to find?";
 	private static final String SELECT_AN_ATTRIBUTE = "-- Select an Attribute --";
 	private AttributeModel attributeModel;
 	private BuildButtonObserver buildButtonObserver;
 	private boolean isSourceRequired;
-	private boolean isClarifyingAttributeRequired;
 	private ListBoxMVP clarifyingAttributeListBox;
 	private ListBoxMVP attributeListBox;
 	private QDMContainer qdmContainer;
@@ -52,7 +50,6 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		this.getParentModel().appendExpression(attributeModel);
 		
 		this.isSourceRequired = !QueryFinderHelper.isPartOfSort(attributeModel);
-		this.isClarifyingAttributeRequired = parentModel.getParentModel() instanceof QuerySortModel;
 		
 		buildButtonObserver = new BuildButtonObserver(this, attributeModel.getSource(), mainModel);
 		display();
@@ -74,13 +71,6 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 				this.getErrorAlert().createAlert("An Attribute is required.");			
 			}
 		}
-		
-		if(isClarifyingAttributeRequired 
-				&& !getClarifyingAttributesForAttribute(attributeModel.getAttributes().get(0)).isEmpty() 
-				&& attributeModel.getAttributes().size() < 2) {
-			this.getErrorAlert().createAlert("A clarifying attribute is required.");			
-			return;
-		}	
 		
 		this.getExpressionBuilderParent().showAndDisplay();
 	}
@@ -155,15 +145,8 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 		
 		FormLabel clarifyingAttributeLabel = new FormLabel();
 		clarifyingAttributeLabel.setFor("clarifyingAttributeListBox");
-		
-		String label = HOW_WOULD_YOU_LIKE_TO_CLARIFY_YOUR_ATTRIBUTE;
-		
-		if(!isClarifyingAttributeRequired) {
-			label = label + " (Optional)";
-		}
-		
-		clarifyingAttributeLabel.setText(label);
-		clarifyingAttributeLabel.setTitle(label);
+		clarifyingAttributeLabel.setText(HOW_WOULD_YOU_LIKE_TO_CLARIFY_YOUR_ATTRIBUTE);
+		clarifyingAttributeLabel.setTitle(HOW_WOULD_YOU_LIKE_TO_CLARIFY_YOUR_ATTRIBUTE);
 		
 		clarifyingAttributeListBox = new ListBoxMVP();
 		clarifyingAttributeListBox.setId("clarifyingAttributeListBox");

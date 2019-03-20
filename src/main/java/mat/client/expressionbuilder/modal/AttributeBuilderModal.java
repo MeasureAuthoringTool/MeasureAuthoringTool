@@ -205,19 +205,20 @@ public class AttributeBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private List<String> getClarifyingAttributesForAttribute(String attribute) {
+		boolean visibility = false;
 		List<String> types = qdmContainer.getCQLTypeByAttribute(attribute);
 		Set<String> clarifyingAttributes = new HashSet<>();
 		if(types != null) {
 			for(String type : types) {
 				List<String> typeAttributes = cqlTypeContainer.getCQLTypeAttributesByType(type);
-				clarifyingAttributeFormGroup.setVisible(typeAttributes != null);
-				if(typeAttributes !=  null) {
+				if(typeAttributes != null) {
+					visibility = true;
 					clarifyingAttributes.addAll(cqlTypeContainer.getCQLTypeAttributesByType(type));
-
 				}
 			}
 		}
 		
+		clarifyingAttributeFormGroup.setVisible(visibility);
 		List<String> clarifyingAttributeList = new ArrayList<>(clarifyingAttributes);
 		clarifyingAttributeList.sort(Comparator.naturalOrder());
 		return clarifyingAttributeList;

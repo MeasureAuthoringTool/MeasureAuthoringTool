@@ -55,7 +55,7 @@ public class InAppHelp extends Composite {
 	private void createPopUpElement() {
 		messageHTML = new HTML();
 		messageHTML.setHTML(this.message);
-		messageHTML.setWidth("700px");
+		messageHTML.setWidth("760px");
 		messageHTML.setStyleName("inAppHelp");
 		
 		ModalHeader header = new ModalHeader();
@@ -82,7 +82,7 @@ public class InAppHelp extends Composite {
 		
 		helpModal.setDataKeyboard(true);
 		
-		helpModal.setWidth("750px");
+		helpModal.setWidth("800px");
 	}
 	
 	private void hideHelpModal() {

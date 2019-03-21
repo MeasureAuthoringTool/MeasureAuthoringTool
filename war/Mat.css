@@ -2937,7 +2937,8 @@ body {
 .inAppHelp {
 	margin-left: auto;
 	margin-right: auto;
-	margin-bottom: 15px;
+	margin-bottom: 5px;
+	font-size: small;
 }
 
 .quantityWidgetCellLeft{

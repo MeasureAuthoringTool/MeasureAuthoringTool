@@ -133,4 +133,19 @@ public class StringUtility {
 	public static String doTrim(String str) {
 		return (str != null) && (str.trim().length() > 0) ? str.trim() : null;
 	}
+	
+	/**
+	 * Escape html  method to escape special characters like 
+	 * "&", "<", ">", "/", "\", "'" inside Html tag.
+	 *
+	 * @param html the html
+	 * @return the string
+	 */
+	public static String escapeHtml(String html) {
+		if (html == null) {
+			return null;
+		}
+		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+				.replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll("'", "&#39;");
+	}
 }

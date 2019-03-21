@@ -3,12 +3,9 @@ package mat.client.util;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CellTableUtility.
- */
+import mat.shared.StringUtility;
+
 public class CellTableUtility {
-	
 
 	/** Gets the column tool tip.
 	 * @param title the title
@@ -22,7 +19,7 @@ public class CellTableUtility {
 	 * @param title the title
 	 * @return the column tool tip */
 	public static SafeHtml getColumnToolTip(String columnText, String title) {
-		String htmlConstant = "<html>" + "<head> </head> <body><span tabIndex = \"0\" title=\" " + escapeHtml(title) + "\">" + escapeHtml(columnText)
+		String htmlConstant = "<html>" + "<head> </head> <body><span tabIndex = \"0\" title=\" " + StringUtility.escapeHtml(title) + "\">" + StringUtility.escapeHtml(columnText)
 				+ "</span></body>"
 				+ "</html>";
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
@@ -38,8 +35,8 @@ public class CellTableUtility {
 	 */
 	public static SafeHtml getNameColumnToolTip(String columnText, String title) {
 		String htmlConstant = "<div id='container' tabindex=\"-1\">" +
-	                           "<span id='div2' title=\" " + escapeHtml(title) + "\" tabindex=\"0\">" + 
-	                           escapeHtml(columnText) + "</span>" + "</div>";
+	                           "<span id='div2' title=\" " + StringUtility.escapeHtml(title) + "\" tabindex=\"0\">" + 
+	                           StringUtility.escapeHtml(columnText) + "</span>" + "</div>";
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
 	
@@ -71,27 +68,11 @@ public class CellTableUtility {
 			} 
 		}
 		String htmlConstant = "<div id='container' tabindex=\"-1\"> "+
-	                           "<span id='div3' title=\" " + escapeHtml(title) + "\" tabindex=\"0\">" + 
-	                           escapeHtml(columnText) + "</span>" + "</div>";
+	                           "<span id='div3' title=\" " + StringUtility.escapeHtml(title) + "\" tabindex=\"0\">" + 
+	                           StringUtility.escapeHtml(columnText) + "</span>" + "</div>";
 		
 		
 	
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
-	}
-	
-	
-	/**
-	 * Escape html  method to escape special characters like 
-	 * "&", "<", ">", "/", "\", "'" inside Html tag.
-	 *
-	 * @param html the html
-	 * @return the string
-	 */
-	private static String escapeHtml(String html) {
-		if (html == null) {
-			return null;
-		}
-		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-				.replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll("'", "&#39;");
 	}
 }

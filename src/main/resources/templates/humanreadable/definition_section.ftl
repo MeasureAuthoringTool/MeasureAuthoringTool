@@ -1,3 +1,4 @@
+<#ftl output_format="HTML" strip_whitespace=true>
 <h3><a name="d1e649" href="#toc">Definitions</a></h3>
 <div>
   <ul style="list-style:none;padding-left: 10px;">

@@ -1,3 +1,4 @@
+<#ftl output_format="HTML" strip_whitespace=true>
  <#include "divider.ftl">
  <table class="header_table">
   <tbody>

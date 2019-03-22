@@ -1,3 +1,4 @@
+ <#ftl output_format="HTML" strip_whitespace=true>
  <table class="header_table">
 	<tbody>
 		<tr>

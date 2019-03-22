@@ -49,8 +49,7 @@ public class SharedCQLWorkspaceUtility {
 		List<String> errorMessages = new ArrayList<String>();
 		if(!result.isQDMVersionMatching()) {
 			errorMessages.add(AbstractCQLWorkspacePresenter.INVALID_QDM_VERSION_IN_INCLUDES);
-		}
-		if(!result.getCqlErrors().isEmpty()) {
+		} else if(!result.getCqlErrors().isEmpty()) {
 			errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE);
 		}
 		if(!result.isDatatypeUsedCorrectly()) {

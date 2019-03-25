@@ -67,13 +67,11 @@ public class InsertIntoAceEditorDialogBox {
 	
 	private static HTML heading = new HTML();
 	
-	private static InAppHelp inAppHelp;
+	private static InAppHelp inAppHelp  = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_INSERT_MODAL);
 	private static Modal dialogModal;
 
 	public static void showListOfItemAvailableForInsertDialogBox(final AceEditor editor, AbstractCQLWorkspacePresenter cqlWorkspacePresenter) {
 		dialogModal = new Modal();
-		
-		inAppHelp = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_INSERT_MODAL);
 		dialogModal.getElement().setAttribute("role", "dialog");
 		
 		ModalHeader dialogHeader = new ModalHeader();
@@ -355,8 +353,9 @@ public class InsertIntoAceEditorDialogBox {
 
 
 	private static void handleClose(ModalHideEvent event) {
+		inAppHelp.getHelpModal().removeFromParent();
 		removeAndHideModal();
-		showListOfItemAvailableForInsertDialogBox(curEditor, workspacePresenter);
+		dialogModal.show();
 	}
 
 

@@ -103,13 +103,12 @@ public class InsertAttributeBuilderDialogBox {
 	
 	private static HTML heading = new HTML();
 	
-	private static InAppHelp inAppHelp;
+	private static InAppHelp inAppHelp = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_ATTRIBUTE_MODAL);
 	private static Modal dialogModal;
 	private static AceEditor curEditor;
 
 	public static void showAttributesDialogBox(final AceEditor editor) {
 		dialogModal = new Modal();
-		inAppHelp = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_ATTRIBUTE_MODAL);
 		dialogModal.getElement().setAttribute("role", "dialog");
 		
 		ModalHeader dialogHeader = new ModalHeader();
@@ -232,8 +231,9 @@ public class InsertAttributeBuilderDialogBox {
 	}
 
 	private static void handleClose() {
+		inAppHelp.getHelpModal().removeFromParent();
 		removeAndHideModal();
-		showAttributesDialogBox(curEditor);
+		dialogModal.show();
 	}
 	
 	private static void removeAndHideModal() {

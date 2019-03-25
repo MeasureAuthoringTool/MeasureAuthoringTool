@@ -1,13 +1,13 @@
 package mat.client.measure.measuredetails.views;
 
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -60,10 +60,8 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		Column<String, SafeHtml> descriptionColumn = new Column<String, SafeHtml>(new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(String object) {
-				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
 				String reference = object.length()>35 ? object.substring(0, 35) + "..." : object;
-				safeHtmlBuilder.appendHtmlConstant(reference);
-				return CellTableUtility.getColumnToolTip(reference);
+				return CellTableUtility.getColumnToolTip(SafeHtmlUtils.htmlEscape(reference));
 			}
 		};
 		referencesTable.addColumn(descriptionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Description\">" + "Description" + "</span>"));
@@ -113,7 +111,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	
 	private void displayDeleteConfirmationDialog(int index, String object) {
 		DeleteConfirmationDialogBox deleteConfirmation = new DeleteConfirmationDialogBox();
-		deleteConfirmation.getMessageAlert().createAlert("You have selected to delete reference: " + (object.length()>60 ? object.substring(0, 59) : object) + ". Please confirm that you want to remove this reference permanently.");
+		deleteConfirmation.getMessageAlert().createAlert("You have selected to delete reference: " + SafeHtmlUtils.htmlEscape((object.length()>60 ? object.substring(0, 59) : object)) + ". Please confirm that you want to remove this reference permanently.");
 		deleteConfirmation.getYesButton().addClickHandler(event -> observer.handleDeleteReference(index, object));
 		deleteConfirmation.show();
 	}

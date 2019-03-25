@@ -68,7 +68,7 @@ public class UserAuditLogDAOImpl extends GenericDAO<UserAuditLog, String> implem
 						 root.get("id"),
 						 root.get("actionType"),
 						 root.get("activityType"),
-						 root.get("time"),
+						 root.get("time").as(Date.class),
 						 root.get("userEmail"),
 						 root.get("user").get("id"),
 						 root.get("additionalInfo")));

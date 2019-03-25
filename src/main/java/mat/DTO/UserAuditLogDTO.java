@@ -141,13 +141,13 @@ public class UserAuditLogDTO implements IsSerializable{
 
 	}
 
-	public UserAuditLogDTO(String id, String actionType, String activityType, Timestamp time, String userEmail,
+	public UserAuditLogDTO(String id, String actionType, String activityType, Date time, String userEmail,
 			String userId, String additionalInfo) {
 		super();
 		this.id = id;
 		this.actionType = actionType;
 		this.activityType = activityType;
-		this.time = time;
+		this.time = new Timestamp(time.getTime());
 		this.userEmail = userEmail;
 		this.userId = userId;
 		this.additionalInfo = additionalInfo;

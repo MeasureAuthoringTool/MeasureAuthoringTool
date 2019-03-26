@@ -506,6 +506,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		compositeScoringLabel.setFor("compositeScoringMethodInput");
 		compositeScoringPanel.add(compositeScoringLabel);
 		compositeScoringPanel.add(compositeScoringMethodInput);
+		compositeScoringMethodInput.setWidth("18em");
 		return compositeScoringPanel;
 	}
 

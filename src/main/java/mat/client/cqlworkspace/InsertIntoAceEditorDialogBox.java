@@ -67,7 +67,7 @@ public class InsertIntoAceEditorDialogBox {
 	
 	private static HTML heading = new HTML();
 	
-	private static InAppHelp inAppHelp  = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_INSERT_MODAL);
+	private static InAppHelp inAppHelp;
 	private static Modal dialogModal;
 
 	public static void showListOfItemAvailableForInsertDialogBox(final AceEditor editor, AbstractCQLWorkspacePresenter cqlWorkspacePresenter) {
@@ -77,7 +77,8 @@ public class InsertIntoAceEditorDialogBox {
 		ModalHeader dialogHeader = new ModalHeader();
 		heading.setHTML("<h4><b>Insert Item into CQL Editor</b></h4>");
 		heading.addStyleName("leftAligned");
-
+		
+		inAppHelp = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_INSERT_MODAL);
 		dialogHeader.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		
 		inAppHelp.getInAppHelpButton().addClickHandler(event -> showModal());

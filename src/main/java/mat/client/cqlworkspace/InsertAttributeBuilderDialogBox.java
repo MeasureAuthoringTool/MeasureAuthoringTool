@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -103,7 +102,7 @@ public class InsertAttributeBuilderDialogBox {
 	
 	private static HTML heading = new HTML();
 	
-	private static InAppHelp inAppHelp = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_ATTRIBUTE_MODAL);
+	private static InAppHelp inAppHelp;
 	private static Modal dialogModal;
 	private static AceEditor curEditor;
 
@@ -114,7 +113,8 @@ public class InsertAttributeBuilderDialogBox {
 		ModalHeader dialogHeader = new ModalHeader();
 		heading.setHTML("<h4><b>Insert Options for Attributes</b></h4>");
 		heading.addStyleName("leftAligned");
-
+		
+		inAppHelp  = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_ATTRIBUTE_MODAL);
 		dialogHeader.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		
 		inAppHelp.getHelpModal().addHideHandler(event -> handleClose());

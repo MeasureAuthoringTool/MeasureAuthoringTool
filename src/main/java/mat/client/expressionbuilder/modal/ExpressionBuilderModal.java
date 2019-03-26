@@ -151,10 +151,9 @@ public abstract class ExpressionBuilderModal extends Modal {
 		display();
 	}
 	
-	public void showAndDisplayWithoutSuccess() {
+	public void showWithoutSuccess() {
 		helpBlock.clearError();
 		this.hide();
 		this.show();
-		display();
 	}
 }

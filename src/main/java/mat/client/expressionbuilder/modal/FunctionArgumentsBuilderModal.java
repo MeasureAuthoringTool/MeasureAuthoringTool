@@ -48,7 +48,7 @@ public class FunctionArgumentsBuilderModal extends SubExpressionBuilderModal {
 	@Override
 	public void onCancelButtonClick() {
 		functionModel.setArguments(new ArrayList<>());
-		this.getExpressionBuilderParent().showAndDisplayWithoutSuccess();
+		this.getExpressionBuilderParent().showWithoutSuccess();
 	}
 
 	private void onApplyButtonClick() {

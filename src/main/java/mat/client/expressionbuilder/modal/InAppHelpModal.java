@@ -49,7 +49,7 @@ public class InAppHelpModal extends SubExpressionBuilderModal {
 	
 	private void hideModal() {
 		this.hide();
-		this.getExpressionBuilderParent().showAndDisplay();
+		this.getExpressionBuilderParent().showWithoutSuccess();
 	}
 
 	public void showModal() {

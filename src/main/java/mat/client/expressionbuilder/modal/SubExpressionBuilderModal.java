@@ -124,7 +124,7 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 			}
 		}		
 		
-		this.getExpressionBuilderParent().showWithoutSuccess();
+		this.getExpressionBuilderParent().showAndDisplayWithoutSuccess();
 	}
 
 	@Override

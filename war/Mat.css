@@ -810,9 +810,8 @@ left:50px;
 	
 }
 .alertMessage {
-	/*color: red;*/
-	
-	 background: /*url('images/error.png')*/ no-repeat scroll 6px 50% #FFDDDD;
+	position:relative;
+	background: no-repeat scroll 6px 50% #FFDDDD;
     border: 1px solid #FF0000;
     color: #000000;
     display: block;
@@ -820,8 +819,7 @@ left:50px;
     margin: 2px auto 14px;
     padding: 6px 6px 6px 30px;
     text-align: left;
-	
-	
+    z-index:10000;
 }
 
 .alertMessageDialogBox {

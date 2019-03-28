@@ -12,6 +12,8 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.DOM;
@@ -1513,5 +1515,14 @@ public class MatContext implements IsSerializable {
 
 	public void setMeasureTypeList(List<MeasureType> measureTypeList) {
 		this.measureTypeList = measureTypeList;
+	}
+	
+	public ClickHandler addClickHandlerToResetTimeoutWarning() {
+		return new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				MatContext.get().restartTimeoutWarning();
+			}
+		};
 	}
 }

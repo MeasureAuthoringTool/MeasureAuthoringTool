@@ -7,7 +7,8 @@ import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
-import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -29,6 +30,7 @@ public abstract class ExpressionBuilderModal extends Modal {
 	private ExpressionBuilderModel mainModel;
 	private HelpBlock helpBlock;
 	private ViewCQLExpressionWidget viewCQLExpressionModal;
+	private ClickHandler handler;
 	
 	public ExpressionBuilderModal(String title, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		this.parentModel = parentModel;
@@ -47,29 +49,26 @@ public abstract class ExpressionBuilderModal extends Modal {
 		contentPanel = new VerticalPanel();
 		viewCQLExpressionModal = new ViewCQLExpressionWidget();
 		
-		FocusPanel contentWrapper = new FocusPanel();
-		contentWrapper.add(contentPanel);
-		contentWrapper.addClickHandler(event -> resetTimer());
-		
 		this.setId("expressionBuilderModal");
 		contentPanel.setWidth("100%");
 		
 		this.modalTitle = title;
 		header.setTitle(title);
 		
-		
 		body.add(buildHelpBlock(""));
 		body.add(buildErrorAlert());
-		body.add(contentWrapper);
+		body.add(contentPanel);
 		body.add(this.viewCQLExpressionModal);
 		
 		this.add(header);
 		this.add(body);
 		this.add(footer);
-	}
-	
-	protected void resetTimer() {
-		MatContext.get().restartTimeoutWarning();
+		
+		if(handler == null) {
+			handler = MatContext.get().addClickHandlerToResetTimeoutWarning();
+		}
+		
+		this.addDomHandler(handler, ClickEvent.getType());
 	}
 	
 	private Widget buildHelpBlock(String message) {

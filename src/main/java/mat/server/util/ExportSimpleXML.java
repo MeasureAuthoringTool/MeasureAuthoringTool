@@ -51,15 +51,12 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
+import mat.server.service.impl.XMLUtility;
 import mat.server.util.CQLUtil.CQLArtifactHolder;
 import mat.shared.CQLExpressionObject;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
-import net.sf.saxon.TransformerFactoryImpl;
 
-/**
- * The Class ExportSimpleXML.
- */
 public class ExportSimpleXML {
 	private static final String STRATIFICATION = "stratification";
 	private static final Log logger = LogFactory.getLog(ExportSimpleXML.class);
@@ -139,7 +136,8 @@ public class ExportSimpleXML {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	private static String setQDMIdAsUUID(String xmlString) throws Exception {
-		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		DocumentBuilderFactory documentBuilderFactory = XMLUtility.getInstance().buildDocumentBuilderFactory();
+		DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
 		InputSource oldXmlstream = new InputSource(new StringReader(xmlString));
 		Document originalDoc = docBuilder.parse(oldXmlstream);
 
@@ -1201,7 +1199,7 @@ public class ExportSimpleXML {
 	private static String transform(Node node) {
 		logger.info("In transform() method");
 		ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-		TransformerFactory transformerFactory = TransformerFactoryImpl.newInstance();
+		TransformerFactory transformerFactory = XMLUtility.getInstance().buildTransformerFactory();
 		DOMSource source = new DOMSource(node);
 		StreamResult result = new StreamResult(arrayOutputStream);
 
@@ -1842,7 +1840,8 @@ public class ExportSimpleXML {
 	private static Document getXMLDocument(MeasureXML measureXMLObject)
 			throws ParserConfigurationException, SAXException, IOException {
 		// Create Document object
-		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		DocumentBuilderFactory documentBuilderFactory = XMLUtility.getInstance().buildDocumentBuilderFactory();
+		DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
 		InputSource oldXmlstream = new InputSource(new StringReader(measureXMLObject.getMeasureXMLAsString()));
 		Document originalDoc = docBuilder.parse(oldXmlstream);
 		return originalDoc;

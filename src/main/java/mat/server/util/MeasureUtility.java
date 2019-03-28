@@ -9,14 +9,7 @@ import org.w3c.dom.Node;
 
 import mat.shared.StringUtility;
 
-/**
- * The Class MeasureUtility.
- * 
- * @author vandavar
- */
 public class MeasureUtility {
-	/** The Constant logger. */
-	//private static final Log LOG = LogFactory.getLog(MeasureUtility.class);
 	/**
 	 * Gets the version text.
 	 * 

@@ -149,16 +149,10 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		calendarYearDatePanel.getElement().setId("calendarYear_HorizontalPanel");
 		calendarYearDatePanel.add(calendarYear);
 		FormLabel calendarLabel = new FormLabel();
-		calendarLabel.setText("Calendar Year");
-		calendarLabel.getElement().getStyle().setPaddingTop(10.0, Unit.PX);
-		calendarLabel.getElement().addClassName("calendarLabel");
-		FormLabel calendarYearLabel = new FormLabel();
-		calendarYearLabel.setText("(January 1,20XX through December 31,20XX)");
-		calendarYearLabel.getElement().addClassName("calendarYearLabel");
-		calendarYearDatePanel.add(calendarLabel);
+		calendarLabel.setText("Calendar Year (January 1,20XX through December 31,20XX)");
+		calendarLabel.getElement().getStyle().setPaddingTop(5.0, Unit.PX);
 		calendarYearDatePanel.getElement().setAttribute("verticalAlign", "middle");
-		
-		calendarYearDatePanel.add(calendarYearLabel);
+		calendarYearDatePanel.add(calendarLabel);
 		calendarYear.getElement().setId("calendarYear_CustomCheckBox");
 		
 		HorizontalPanel measurePeriodPanel = new HorizontalPanel();

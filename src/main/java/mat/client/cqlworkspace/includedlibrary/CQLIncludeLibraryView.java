@@ -568,12 +568,19 @@ public class CQLIncludeLibraryView {
 					isSelected = true;
 				} else {
 					isSelected = false;
-				}
+				}				
 				
 				selectionModel.setSelected(object, isSelected);
 			}
-				return isSelected;		
 				
+				if(isSelected) {
+					cell.setTitle("Click to remove " + object.getCqlName() + " as an included library");
+				} else {
+					cell.setTitle("Click to include " + object.getCqlName());
+				}
+				
+				return isSelected;		
+
 			}
 			@Override
 			public FieldUpdater<CQLLibraryDataSetObject, Boolean> getFieldUpdater() {
@@ -600,6 +607,13 @@ public class CQLIncludeLibraryView {
 
 							cqlAceEditor.setText("");
 						}
+						
+						if(isCBChecked) {
+							cell.setTitle("Click to remove " + object.getCqlName() + " as an included library");
+						} else {
+							cell.setTitle("Click to include " + object.getCqlName());
+						}	
+						
 						selectionModel.setSelected(object, isCBChecked);
 					}
 				};

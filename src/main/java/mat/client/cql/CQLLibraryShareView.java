@@ -134,7 +134,7 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 		};
 		cellTable.addColumn(organizationColumn, SafeHtmlUtils.fromSafeConstant("<span title='Organization'>"
 				+ "Organization" + "</span>"));
-		Cell<Boolean> shareTransferCB = new MatCheckBoxCell();
+		MatCheckBoxCell shareTransferCB = new MatCheckBoxCell();
 		Column<CQLLibraryShareDTO, Boolean> shareColumn = new Column<CQLLibraryShareDTO, Boolean>(shareTransferCB) {
 			@Override
 			public Boolean getValue(CQLLibraryShareDTO object) {
@@ -145,21 +145,25 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 				} else if (ShareLevel.MODIFY_ID.equals(currentShare)) {
 					shareValue = true;
 				}
+				
+				if(shareValue) {
+					shareTransferCB.setTitle("Click to unshare CQL Library with " + object.getFirstName() + " " + object.getLastName());
+				} else {
+					shareTransferCB.setTitle("Click to share CQL Library with " + object.getFirstName() + " " + object.getLastName());
+				}
+				
 				return shareValue;
 			}
-			/*
-			 * @Override public void render(com.google.gwt.cell.client.Cell.Context context, CQLLibraryShareDTO data, SafeHtmlBuilder sb) {
-			 * String title = "<div title=\"Select User " + data.getFirstName() + " " + data.getLastName() + " to Share Measure." +
-			 * "\"></div>"; sb.appendHtmlConstant(title).toSafeHtml(); super.render(context, data, sb); }
-			 */
 		};
 		shareColumn.setFieldUpdater(new FieldUpdater<CQLLibraryShareDTO, Boolean>() {
 			@Override
 			public void update(int index, CQLLibraryShareDTO object, Boolean value) {
 				if (value) {
 					object.setShareLevel(ShareLevel.MODIFY_ID);
+					shareTransferCB.setTitle("Click to unshare CQL Library with " + object.getFirstName() + " " + object.getLastName());
 				} else {
 					object.setShareLevel(ShareLevel.VIEW_ONLY_ID);
+					shareTransferCB.setTitle("Click to share CQL Library with " + object.getFirstName() + " " + object.getLastName());
 				}
 			}
 		});

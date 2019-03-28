@@ -442,9 +442,12 @@ public class ComponentMeasureSearch implements BaseDisplay{
 			@Override
 			public Boolean getValue(Result object) {
 				if(appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList()).size() > 0) {
+					chbxCell.setTitle("Click to remove " + object.getName() + " as a component measure");
 					selectionModel.setSelected(object, true);
 					return true;
 				}
+				
+				chbxCell.setTitle("Click to add " + object.getName() + " as a component measure");
 				return false;
 			}
 		};

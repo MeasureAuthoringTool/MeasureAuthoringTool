@@ -400,6 +400,13 @@ public class EditIncludedLibraryDialogBox {
 
 					selectionModel.setSelected(object, isSelected);
 				}
+				
+				if(isSelected) {
+					cell.setTitle("Click to unselect " + object.getCqlName());
+				} else {
+					cell.setTitle("Click to select " + object.getCqlName());
+				}
+				
 				return isSelected;
 
 			}
@@ -423,6 +430,13 @@ public class EditIncludedLibraryDialogBox {
 								}
 							}
 						}
+						
+						if(isCBChecked) {
+							cell.setTitle("Click to unselect " + object.getCqlName());
+						} else {
+							cell.setTitle("Click to select " + object.getCqlName());
+						}
+						
 						selectionModel.setSelected(object, isCBChecked);
 					}
 				};

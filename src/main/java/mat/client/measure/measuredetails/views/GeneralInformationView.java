@@ -189,6 +189,13 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		queryGrid.setWidget(2, 0, measurePeriodPanel);
 		measurementPeriodPanel.add(queryGrid);
 		queryGrid.getElement().setId("queryGrid_Grid");
+		
+		if(generalInformationModel.isCalendarYear()) {
+			calendarYear.setTitle("Click to select custom measurement period");
+		} else {
+			calendarYear.setTitle("Click to select calendar year measurement period");
+		}
+		
 		calendarYear.setValue(generalInformationModel.isCalendarYear());
 		measurePeriodFromInput.setValue(generalInformationModel.getMeasureFromPeriod());
 		measurePeriodToInput.setValue(generalInformationModel.getMeasureToPeriod());

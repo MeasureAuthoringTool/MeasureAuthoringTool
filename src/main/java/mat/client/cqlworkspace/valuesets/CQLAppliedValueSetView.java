@@ -738,6 +738,12 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					isSelected = false;
 					selectionModel.setSelected(object, isSelected);
 				}
+				
+				if(isSelected) {
+					cell.setTitle("Click to remove " + object.getName() + " from clipboard");
+				} else {
+					cell.setTitle("Click to add " + object.getName() + " to clipboard");
+				}
 
 				return isSelected;
 			}
@@ -759,6 +765,13 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 								}
 							}
 						}
+						
+						if(isCBChecked) {
+							cell.setTitle("Click to remove " + object.getName() + " from clipboard");
+						} else {
+							cell.setTitle("Click to add " + object.getName() + " to clipboard");
+						}
+						
 						selectionModel.setSelected(object, isCBChecked);
 					}
 

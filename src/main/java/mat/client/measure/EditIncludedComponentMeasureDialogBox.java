@@ -373,6 +373,7 @@ public class EditIncludedComponentMeasureDialogBox {
 
 			@Override
 			public Boolean getValue(ManageMeasureSearchModel.Result object) {
+				cell.setTitle("Click to select " + object.getName());
 				boolean isSelected = false;
 				if (selectedList.size() > 0) {
 					for (int i = 0; i < selectedList.size(); i++) {

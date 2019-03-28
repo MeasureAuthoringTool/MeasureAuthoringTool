@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.CheckBox;
 
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -96,7 +95,6 @@ public class ManageMeasureShareView implements ShareDisplay {
 		content.add(errorMessages);
 		content.add(warningMessages);
 		content.add(buttonBar);
-		
 	}
 
 	private CellTable<MeasureShareDTO> addColumnToTable(final CellTable<MeasureShareDTO> cellTable) {
@@ -127,7 +125,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 		};
 		cellTable.addColumn(organizationColumn, SafeHtmlUtils.fromSafeConstant("<span title='Organization'>"
 				+ "Organization" + "</span>"));
-		Cell<Boolean> shareTransferCB = new MatCheckBoxCell();
+		MatCheckBoxCell shareTransferCB = new MatCheckBoxCell();
 		Column<MeasureShareDTO, Boolean> shareColumn = new Column<MeasureShareDTO, Boolean>(shareTransferCB) {
 			@Override
 			public Boolean getValue(MeasureShareDTO object) {
@@ -138,6 +136,13 @@ public class ManageMeasureShareView implements ShareDisplay {
 				} else if (ShareLevel.MODIFY_ID.equals(currentShare)) {
 					shareValue = true;
 				}
+				
+				if(shareValue) {
+					shareTransferCB.setTitle("Click to unshare measure with " + object.getFirstName() + " " + object.getLastName());
+				} else {
+					shareTransferCB.setTitle("Click to share measure with " + object.getFirstName() + " " + object.getLastName());
+				}
+				
 				return shareValue;
 			}
 		};
@@ -241,6 +246,12 @@ public class ManageMeasureShareView implements ShareDisplay {
 	@Override
 	public void setPrivate(boolean isPrivate) {
 		privateCheck.setValue(isPrivate);
+		
+		if(!isPrivate) {
+			privateCheck.setTitle("Click to mark measure as private");
+		} else {
+			privateCheck.setTitle("Click to mark measure as public");
+		}
 	}
 
 	public SearchWidgetBootStrap getSearchWidgetBootStrap() {

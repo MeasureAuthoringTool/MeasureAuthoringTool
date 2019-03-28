@@ -170,9 +170,13 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 		generalMeasureInformationView.getMeasurePeriodFromInput().setEnabled(!calendarYearSelected);
 		generalMeasureInformationView.getMeasurePeriodToInput().setEnabled(!calendarYearSelected);
 		if(calendarYearSelected) {
+			generalMeasureInformationView.getCalenderYear().setTitle("Click to select custom measurement period");
 			generalMeasureInformationView.getMeasurePeriodFromInput().setValue("");
 			generalMeasureInformationView.getMeasurePeriodToInput().setValue("");
+		} else {
+			generalMeasureInformationView.getCalenderYear().setTitle("Click to select calendar year measurement period");
 		}
+		
 		handleInputChanged();
 	}
 }

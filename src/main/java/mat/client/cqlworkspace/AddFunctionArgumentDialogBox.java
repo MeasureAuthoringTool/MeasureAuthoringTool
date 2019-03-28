@@ -43,6 +43,8 @@ public class AddFunctionArgumentDialogBox {
 	private static final String MESSAGE_CQL_DATATYPE_IS_REQUIRED = "CQL datatype is required.";
 	private static final String MESSAGE_ARGUMENT_NAME_IS_REQUIRED = "Argument name is required.";
 	private static final String MESSAGE_SELECT_QDM_DATATYPE = "Select QDM datatype.";
+	private static ClickHandler handler;
+	
 	public static  void showArgumentDialogBox(final CQLFunctionArgument functionArg,
 			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final MessagePanel messagePanel, final boolean isEditable) {
 		List<String> allCqlDataType = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlDataTypeList();
@@ -71,6 +73,13 @@ public class AddFunctionArgumentDialogBox {
 		dialogModal.setId("AddEditArgument_Modal");
 		dialogModal.setSize(ModalSize.SMALL);
 		dialogModal.setRemoveOnHide(true);
+		
+		if(handler == null) {
+			handler = MatContext.get().addClickHandlerToResetTimeoutWarning();
+		}
+		
+		dialogModal.addDomHandler(handler, ClickEvent.getType());
+		
 		ModalBody modalBody = new ModalBody();
 		final ListBoxMVP listAllDataTypes = new ListBoxMVP();
 		listAllDataTypes.setWidth("290px");

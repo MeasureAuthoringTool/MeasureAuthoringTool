@@ -70,6 +70,8 @@ public class InsertTimingExpressionIntoAceEditor {
 	
 	private static String quantityOffsetExp;
 	
+	private static ClickHandler handler;
+	
 	/**
 	 * Show timing expression dialog box.
 	 *
@@ -103,15 +105,19 @@ public class InsertTimingExpressionIntoAceEditor {
 		dialogModal.setClosable(true);
 		dialogModal.setFade(true);
 		dialogModal.setDataBackdrop(ModalBackdrop.STATIC);
-		//dialogModal.setSize("375px","350px");
 		dialogModal.setId("InsertItemToAceEditor_Modal");
-		//dialogModal.setSize(ModalSize.MEDIUM);
 		dialogModal.setWidth("400px");
 		dialogModal.setRemoveOnHide(true);
+		
+		if(handler == null) {
+			handler = MatContext.get().addClickHandlerToResetTimeoutWarning();
+		}
+		
+		dialogModal.addDomHandler(handler, ClickEvent.getType());
+		
 		ModalBody modalBody = new ModalBody();
 		modalBody.clear();
 		
-        //modalBody.setSize("375px","350px");
 		final Button mainButton = new Button();
 		final Button anchorButton = new Button();
 		
@@ -123,7 +129,6 @@ public class InsertTimingExpressionIntoAceEditor {
 		mainButton.setType(ButtonType.DEFAULT);
 		mainButton.setId("mainButton_id");
 		
-		//final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
 		Label cqlTimingExpressionLabel = new Label(LabelType.INFO, "Cql Timing Expression");
 		cqlTimingExpressionLabel.setMarginTop(5);
 		cqlTimingExpressionLabel.setId("cqlTimingExpresionLabel");

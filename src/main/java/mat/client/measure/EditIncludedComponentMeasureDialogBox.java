@@ -30,6 +30,8 @@ import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -71,23 +73,18 @@ public class EditIncludedComponentMeasureDialogBox {
 	private List<String> includedList;
 
 	private Panel cellTablePanel = new Panel();
-	/** The cell table panel body. */
 	private PanelBody cellTablePanelBody = new PanelBody();
 
-	//** The selected list. *//*
 	private List<ManageMeasureSearchModel.Result> selectedList;
 
 	private CellTable<ManageMeasureSearchModel.Result> table;
 
-	//** The sort provider. *//*
 	private ListDataProvider<ManageMeasureSearchModel.Result> listDataProvider;
-	/** Cell Table Row Count. */
+
 	private static final int TABLE_ROW_COUNT = 5;
 
-	/** The spager. */
 	private MatSimplePager spager;
 
-	/** The selection model. */
 	private SingleSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
 
 	private String selectedObject;
@@ -97,6 +94,7 @@ public class EditIncludedComponentMeasureDialogBox {
 	private Button applyButton = new Button();
 	private Button closeButton = new CancelButton("EditInclude");
 	private Modal dialogModal = new Modal();
+	private ClickHandler handler;
 	
 	HorizontalPanel progressBarPanel = new HorizontalPanel();
 	
@@ -122,6 +120,13 @@ public class EditIncludedComponentMeasureDialogBox {
 		dialogModal.setId("EditIncludedComponentMeasureDialogBox");
 		dialogModal.setSize(ModalSize.LARGE);
 		dialogModal.setRemoveOnHide(true);
+		
+		if(handler == null) {
+			handler = MatContext.get().addClickHandlerToResetTimeoutWarning();
+		}
+		
+		dialogModal.addDomHandler(handler, ClickEvent.getType());
+		
 		ModalBody modalBody = new ModalBody();
 		modalBody.add(errorMessageAlert);
 		modalBody.add(progressBarPanel);

@@ -11,6 +11,8 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -21,6 +23,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
 import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SpacerWidget;
 import mat.shared.StringUtility;
@@ -35,6 +38,7 @@ public class DeleteConfirmDialogBox {
 	private FocusPanel focusPanel = new FocusPanel();
 	private ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
 	private ErrorMessageAlert messageAlert;
+	private ClickHandler handler;
 	
 	public void showDeletionConfimationDialog(String message) {
 		focusPanel.clear();
@@ -56,7 +60,13 @@ public class DeleteConfirmDialogBox {
 		panel.setSize(ModalSize.MEDIUM);
 		panel.getElement().getStyle().setZIndex(9999);
 		panel.setRemoveOnHide(true);
-
+		
+		if(handler == null) {
+			handler = MatContext.get().addClickHandlerToResetTimeoutWarning();
+		}
+		
+		panel.addDomHandler(handler, ClickEvent.getType());
+		
 		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
 		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
 		messageAlert.createAlert(message);

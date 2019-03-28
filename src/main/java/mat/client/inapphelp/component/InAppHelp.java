@@ -9,11 +9,14 @@ import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 
 import mat.client.buttons.InAppHelpButton;
+import mat.client.shared.MatContext;
 
 public class InAppHelp extends Composite {
 	
@@ -28,6 +31,8 @@ public class InAppHelp extends Composite {
 	private HTML messageHTML;
 	
 	private FocusPanel messageFocusPanel = new FocusPanel();
+	
+	private ClickHandler handler;
 	
 	public InAppHelp(String message) {
 		this.message = message;
@@ -48,6 +53,12 @@ public class InAppHelp extends Composite {
 	}
 	
 	private void showHelpModal() {
+		if(handler == null) {
+			handler = MatContext.get().addClickHandlerToResetTimeoutWarning();
+		}
+		
+		helpModal.addDomHandler(handler, ClickEvent.getType());
+
 		helpModal.show();
 		messageFocusPanel.getElement().focus();
 	}

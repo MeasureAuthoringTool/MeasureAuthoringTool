@@ -30,7 +30,7 @@ public class ConfirmationDialogBox {
 	protected Modal panel = new Modal();
 	protected boolean isClosingOnContinue = false; 
 	protected boolean isError;
-
+	private ClickHandler handler;
 	
 	public MessagePanel getMessageAlert() {
 		return messagePanel;
@@ -97,6 +97,12 @@ public class ConfirmationDialogBox {
 		panel.setSize(ModalSize.MEDIUM);
 		panel.getElement().getStyle().setZIndex(9999);
 		panel.setRemoveOnHide(true);
+		
+		if(handler == null) {
+			handler = MatContext.get().addClickHandlerToResetTimeoutWarning();
+		}
+		
+		panel.addDomHandler(handler, ClickEvent.getType());
 		
 		panel.addHideHandler(new ModalHideHandler() {
 			@Override

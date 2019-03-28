@@ -24,6 +24,8 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -104,6 +106,7 @@ public class InsertAttributeBuilderDialogBox {
 	
 	private static InAppHelp inAppHelp;
 	private static Modal dialogModal;
+	private static ClickHandler handler;
 	private static AceEditor curEditor;
 
 	public static void showAttributesDialogBox(final AceEditor editor) {
@@ -128,6 +131,13 @@ public class InsertAttributeBuilderDialogBox {
 		dialogModal.setId("InsertAttrToAceEditor_Modal");
 		dialogModal.setWidth("50%");
 		dialogModal.setRemoveOnHide(true);
+		
+		if(handler == null) {
+			handler = MatContext.get().addClickHandlerToResetTimeoutWarning();
+		}
+		
+		dialogModal.addDomHandler(handler, ClickEvent.getType());
+		
 		final ModalBody modalBody = new ModalBody();
 		final FormGroup messageFormgroup = new FormGroup();
 		final HelpBlock helpBlock = new HelpBlock();

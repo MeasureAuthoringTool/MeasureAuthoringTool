@@ -13,7 +13,10 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 
+import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageAlert;
 
 
@@ -21,7 +24,7 @@ import mat.client.shared.SuccessMessageAlert;
 public class EditConfirmationDialogBox {
 
 	private  final Button yesButton = new Button("Yes"); 
-
+	private ClickHandler handler;
 	
 	public EditConfirmationDialogBox() {
 		yesButton.getElement().setId("yes_Button");
@@ -45,6 +48,12 @@ public class EditConfirmationDialogBox {
 		panel.setSize(ModalSize.MEDIUM);
 		panel.getElement().getStyle().setZIndex(9999);
 		panel.setRemoveOnHide(true);
+		
+		if(handler == null) {
+			handler = MatContext.get().addClickHandlerToResetTimeoutWarning();
+		}
+		
+		panel.addDomHandler(handler, ClickEvent.getType());
 		
 		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
 		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);

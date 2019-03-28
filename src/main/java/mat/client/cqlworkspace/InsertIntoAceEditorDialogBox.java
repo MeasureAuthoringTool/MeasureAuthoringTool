@@ -69,7 +69,8 @@ public class InsertIntoAceEditorDialogBox {
 	
 	private static InAppHelp inAppHelp;
 	private static Modal dialogModal;
-
+	private static ClickHandler handler;
+	
 	public static void showListOfItemAvailableForInsertDialogBox(final AceEditor editor, AbstractCQLWorkspacePresenter cqlWorkspacePresenter) {
 		dialogModal = new Modal();
 		dialogModal.getElement().setAttribute("role", "dialog");
@@ -91,6 +92,12 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.setId("InsertItemToAceEditor_Modal");
 		dialogModal.setSize(ModalSize.MEDIUM);
 		dialogModal.setRemoveOnHide(true);
+		
+		if(handler == null) {
+			handler = MatContext.get().addClickHandlerToResetTimeoutWarning();
+		}
+		
+		dialogModal.addDomHandler(handler, ClickEvent.getType());
 
 		ModalBody modalBody = new ModalBody();
 		curEditor = editor;

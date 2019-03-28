@@ -30,6 +30,8 @@ import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -98,6 +100,7 @@ public class EditIncludedLibraryDialogBox {
 	private Button applyButton = new Button();
 	private Button closeButton = new CancelButton("EditInclude");
 	private Modal dialogModal = new Modal();
+	private ClickHandler handler;
 	
 	HorizontalPanel progressBarPanel = new HorizontalPanel();
 	
@@ -123,6 +126,13 @@ public class EditIncludedLibraryDialogBox {
 		dialogModal.setId("EditIncludedLibraryDialogBox");
 		dialogModal.setSize(ModalSize.LARGE);
 		dialogModal.setRemoveOnHide(true);
+		
+		if(handler == null) {
+			handler = MatContext.get().addClickHandlerToResetTimeoutWarning();
+		}
+		
+		dialogModal.addDomHandler(handler, ClickEvent.getType());
+		
 		ModalBody modalBody = new ModalBody();
 		modalBody.add(errorMessageAlert);
 		modalBody.add(progressBarPanel);

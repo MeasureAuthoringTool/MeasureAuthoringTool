@@ -1,5 +1,6 @@
 <html>
 <head>
+	<meta charset="UTF-8">
 	<title>${model.measureInformation.ecqmTitle}</title>
 	<#include "human_readable_css.ftl" />
 </head>

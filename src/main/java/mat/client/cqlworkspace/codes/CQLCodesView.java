@@ -328,7 +328,17 @@ public class CQLCodesView {
 		includeCodeSystemVersionLabel.setFor("includeCodeSystemversion_CheckBox");
 		includeCodeSystemVersionCheckBox = new CheckBox();
 		includeCodeSystemVersionCheckBox.getElement().setId("includeCodeSystemversion_CheckBox");
-		includeCodeSystemVersionCheckBox.setTitle("Click checkbox to select");
+		
+		includeCodeSystemVersionCheckBox.addValueChangeHandler(event -> onIncludeCodeSystemVersionChange());
+		
+		if(includeCodeSystemVersionCheckBox.isChecked()) {
+			includeCodeSystemVersionCheckBox.setTitle("Click to not include code system version");
+		} else {
+			includeCodeSystemVersionCheckBox.setTitle("Click to include code system version");
+		}
+		
+		
+		
 		includeCodeSystemPanel.add(includeCodeSystemVersionCheckBox);
 		includeCodeSystemPanel.add(includeCodeSystemVersionLabel);
 		
@@ -358,6 +368,15 @@ public class CQLCodesView {
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
 	}
+
+	private void onIncludeCodeSystemVersionChange() {
+		if(includeCodeSystemVersionCheckBox.isChecked()) {
+			includeCodeSystemVersionCheckBox.setTitle("Click to not include code system version");
+		} else {
+			includeCodeSystemVersionCheckBox.setTitle("Click to include code system version");
+		}
+	}
+
 
 	public Widget asWidget() {
 		return containerPanel;

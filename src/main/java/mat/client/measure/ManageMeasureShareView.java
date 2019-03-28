@@ -20,15 +20,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.user.client.ui.CheckBox;
 
 import mat.client.CustomPager;
 import mat.client.buttons.SaveContinueCancelButtonBar;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
@@ -57,7 +56,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
 
-	private CheckBox privateCheck = new CheckBox();
+	private CustomCheckBox privateCheck = new CustomCheckBox("Click to mark measure private", "Click to mark measure private", false);
 
 	private SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search User Name");
 
@@ -72,6 +71,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 		horizontalPanel.getElement().setId("horizontalPanel_HorizontalPanel");
 		horizontalPanel.add(measureNameLabel);
 		FormLabel privateCheckLabel = new FormLabel();
+		privateCheckLabel.getElement().setAttribute("style","margin-top:10px;");
 		privateCheckLabel.setText("Private Measure");
 		privateCheckLabel.setTitle("Private Measure");
 		privateCheckLabel.setFor("privateMeasure_CheckBox");

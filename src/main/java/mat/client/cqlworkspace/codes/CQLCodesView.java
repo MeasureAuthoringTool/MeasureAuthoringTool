@@ -52,6 +52,7 @@ import mat.client.buttons.CancelButton;
 import mat.client.buttons.CodesValuesetsButtonToolBar;
 import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.inapphelp.component.InAppHelp;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
@@ -130,7 +131,7 @@ public class CQLCodesView {
 	
 	private static final int TABLE_ROW_COUNT = 10;
 	
-	private CheckBox includeCodeSystemVersionCheckBox;
+	private CustomCheckBox includeCodeSystemVersionCheckBox;
 
 	HTML heading = new HTML();
 	
@@ -315,7 +316,7 @@ public class CQLCodesView {
 		buttonFormGroup.add(buttonToolBar);
 		buttonFormGroup.add(new SpacerWidget());
 		
-		FlowPanel includeCodeSystemPanel = new FlowPanel();
+		HorizontalPanel includeCodeSystemPanel = new HorizontalPanel();
 		includeCodeSystemPanel.setHeight("30px");
 		includeCodeSystemPanel.getElement().getStyle().setProperty("width", "100%");
 		includeCodeSystemPanel.getElement().getStyle().setProperty("textAlign", "right");
@@ -323,10 +324,11 @@ public class CQLCodesView {
 		FormLabel includeCodeSystemVersionLabel = new FormLabel();
 		includeCodeSystemVersionLabel.setText("Include Code System Version");
 		includeCodeSystemVersionLabel.setTitle("Include Code System Version");
+		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("marginTop", "5px");
 		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("fontWeight", "700");
-		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("marginLeft", "3px");
+		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("marginLeft", "-20px");
 		includeCodeSystemVersionLabel.setFor("includeCodeSystemversion_CheckBox");
-		includeCodeSystemVersionCheckBox = new CheckBox();
+		includeCodeSystemVersionCheckBox = new CustomCheckBox("Click to not include code system version", "Click to not include code system version", false);
 		includeCodeSystemVersionCheckBox.getElement().setId("includeCodeSystemversion_CheckBox");
 		
 		includeCodeSystemVersionCheckBox.addValueChangeHandler(event -> onIncludeCodeSystemVersionChange());
@@ -1049,16 +1051,15 @@ public class CQLCodesView {
 		return codesToPaste;
 	}	
 	
-	public CheckBox getIncludeCodeSystemVersionCheckBox() {
+	public CustomCheckBox getIncludeCodeSystemVersionCheckBox() {
 		return includeCodeSystemVersionCheckBox;
 	}
 
-	public void setIncludeCodeSystemVersionCheckBox(CheckBox includeCodeSystemVersionCheckBox) {
+	public void setIncludeCodeSystemVersionCheckBox(CustomCheckBox includeCodeSystemVersionCheckBox) {
 		this.includeCodeSystemVersionCheckBox = includeCodeSystemVersionCheckBox;
 	}
 
 	public boolean checkCodeInAppliedCodeTableList(String displayName, List<CQLCode> appliedCodeTableList) {
-		
 		return appliedCodeTableList.stream().anyMatch(code -> code.getDisplayName().equalsIgnoreCase(displayName));		
 	}
 

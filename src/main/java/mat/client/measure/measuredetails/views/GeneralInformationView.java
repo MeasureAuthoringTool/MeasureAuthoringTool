@@ -10,6 +10,7 @@ import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -23,6 +24,7 @@ import mat.DTO.CompositeMeasureScoreDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.measuredetails.observers.GeneralInformationObserver;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ListBoxMVP;
@@ -60,7 +62,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	private Button generateEMeasureIDButton = new Button("Generate Identifier");
 	private TextBox eMeasureIdentifierInput = new TextBox();
 	private TextBox nQFIDInput = new TextBox();
-	private CheckBox calendarYear = new CheckBox();	
+	private CustomCheckBox calendarYear = new CustomCheckBox("Click to select custom measurement period", "Click to select custom measurement period", false);	
 	protected DateBoxWithCalendar measurePeriodFromInput = new DateBoxWithCalendar();
 	protected DateBoxWithCalendar measurePeriodToInput = new DateBoxWithCalendar();
 	private FormLabel measureNameLabel;
@@ -148,6 +150,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		calendarYearDatePanel.add(calendarYear);
 		FormLabel calendarLabel = new FormLabel();
 		calendarLabel.setText("Calendar Year");
+		calendarLabel.getElement().getStyle().setPaddingTop(10.0, Unit.PX);
 		calendarLabel.getElement().addClassName("calendarLabel");
 		FormLabel calendarYearLabel = new FormLabel();
 		calendarYearLabel.setText("(January 1,20XX through December 31,20XX)");
@@ -761,11 +764,11 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		this.endorsedByListBox = endorsedByListBox;
 	}
 
-	public CheckBox getCalenderYear() {
+	public CustomCheckBox getCalenderYear() {
 		return calendarYear;
 	}
 
-	public void setCalenderYear(CheckBox calenderYear) {
+	public void setCalenderYear(CustomCheckBox calenderYear) {
 		this.calendarYear = calenderYear;
 	}
 	public DateBoxWithCalendar getMeasurePeriodFromInput() {

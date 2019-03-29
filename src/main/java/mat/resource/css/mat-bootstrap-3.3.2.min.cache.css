@@ -3384,30 +3384,36 @@ select[multiple].form-group-lg .form-control,textarea.form-group-lg .form-contro
 
 .btn-success {
 	color: #fff;
-	background-color: #5cb85c;
-	border-color: #4cae4c
+	background-color: #2E8540;
+	border-color: #2E8540;
 }
 
-.btn-success.active,.btn-success.focus,.btn-success:active,.btn-success:focus,.btn-success:hover,.open>.dropdown-toggle.btn-success
-	{
+.btn-success:hover {
 	color: #fff;
-	background-color: #449d44;
-	border-color: #398439
+	background-color: #267D38;
+	border-color: #267D38;
+}
+
+.btn-success.active,.btn-success.focus,.btn-success:active,.btn-success:focus,.open>.dropdown-toggle.btn-success
+{
+	color: #fff;
+	background-color: #1F7631;
+	border-color: #1F7631;
 }
 
 .btn-success.active,.btn-success:active,.open>.dropdown-toggle.btn-success
-	{
+{
 	background-image: none
 }
 
 .btn-success.disabled,.btn-success.disabled.active,.btn-success.disabled.focus,.btn-success.disabled:active,.btn-success.disabled:focus,.btn-success.disabled:hover,.btn-success[disabled],.btn-success[disabled].active,.btn-success[disabled].focus,.btn-success[disabled]:active,.btn-success[disabled]:focus,.btn-success[disabled]:hover,fieldset[disabled] .btn-success,fieldset[disabled] .btn-success.active,fieldset[disabled] .btn-success.focus,fieldset[disabled] .btn-success:active,fieldset[disabled] .btn-success:focus,fieldset[disabled] .btn-success:hover
 	{
-	background-color: #5cb85c;
-	border-color: #4cae4c
+	background-color: #2E8540;
+	border-color: #2E8540;
 }
 
 .btn-success .badge {
-	color: #5cb85c;
+	color: #2E8540;
 	background-color: #fff
 }
 

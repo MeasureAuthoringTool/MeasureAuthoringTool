@@ -55,7 +55,7 @@ public class LoginView implements LoginPresenter.LoginViewDisplay  {
 	private ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
 	
 	public LoginView() {
-		Container loginFormContianer = new Container();
+		Container loginFormContainer = new Container();
 		
 		successMessagePanel.setType(PanelType.SUCCESS);
 		PanelHeader successPanelHeader = new PanelHeader();
@@ -78,8 +78,8 @@ public class LoginView implements LoginPresenter.LoginViewDisplay  {
 		successMessageCol.add(successMessagePanel);
 		successMessagePanelRow.add(successMessageCol);
 		
-		loginFormContianer.add(headingRow);
-		loginFormContianer.add(successMessagePanelRow);
+		loginFormContainer.add(headingRow);
+		loginFormContainer.add(successMessagePanelRow);
 		
 		Row mainRow = new Row();
 		Column mainCol = new Column(ColumnSize.SM_10);
@@ -179,8 +179,8 @@ public class LoginView implements LoginPresenter.LoginViewDisplay  {
 		
 		mainCol.add(loginPanel);
 		mainRow.add(mainCol);
-		loginFormContianer.add(mainRow);
-		mainPanel.add(loginFormContianer);
+		loginFormContainer.add(mainRow);
+		mainPanel.add(loginFormContainer);
 		
 	}
 	

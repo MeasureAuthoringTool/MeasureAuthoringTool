@@ -235,14 +235,14 @@ public class MeasureLibraryResultTable {
 			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
 					+ "style=\"text-decoration:none\" tabindex=\"-1\">"
 					+ "<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
-			sb.appendHtmlConstant("<span id='div2' title=\" Click to enter " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
+			sb.appendHtmlConstant("<span id='div2' title=\" Click to open " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
 			sb.appendHtmlConstant("</a></div>");
 		} else {
 			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
 					+ "style=\"text-decoration:none\" tabindex=\"-1\" >");
 			sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\""
 					+ object.getName() + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
-			sb.appendHtmlConstant("<span id='div2' title=\" Click to enter " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
+			sb.appendHtmlConstant("<span id='div2' title=\" Click to open " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
 			sb.appendHtmlConstant("</a></div>");
 		}
 		return sb.toSafeHtml();		

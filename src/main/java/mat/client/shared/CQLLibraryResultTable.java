@@ -261,7 +261,7 @@ public class CQLLibraryResultTable {
 			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
 					+ "style=\"text-decoration:none\" tabindex=\"-1\">"
 					+ "<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
-			sb.appendHtmlConstant("<span id='div2' title=\" " + object.getCqlName() + "\" tabindex=\"0\">"
+			sb.appendHtmlConstant("<span id='div2' title=\" Click to open " + object.getCqlName() + "\" tabindex=\"0\">"
 					+ object.getCqlName() + "</span>");
 			sb.appendHtmlConstant("</a></div>");
 		} else {
@@ -269,7 +269,7 @@ public class CQLLibraryResultTable {
 					+ "style=\"text-decoration:none\" tabindex=\"-1\" >");
 			sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\"" + object.getCqlName()
 					+ "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
-			sb.appendHtmlConstant("<span id='div2' title=\" " + object.getCqlName() + "\" tabindex=\"0\">"
+			sb.appendHtmlConstant("<span id='div2' title=\" Click to open " + object.getCqlName() + "\" tabindex=\"0\">"
 					+ object.getCqlName() + "</span>");
 			sb.appendHtmlConstant("</a></div>");
 		}

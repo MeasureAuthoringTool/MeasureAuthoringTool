@@ -5332,9 +5332,9 @@ a.thumbnail.active,a.thumbnail:focus,a.thumbnail:hover {
 }
 
 .alert-success {
-	color: #3c763d;
-	background-color: #dff0d8;
-	border-color: #d6e9c6
+	color: #212121;
+	background-color: #e7f4e4;
+	border-color: #2e8540;
 }
 
 .alert-success hr {
@@ -5342,7 +5342,7 @@ a.thumbnail.active,a.thumbnail:focus,a.thumbnail:hover {
 }
 
 .alert-success .alert-link {
-	color: #2b542c
+	color: #205491
 }
 
 .alert-info {
@@ -5366,9 +5366,9 @@ a.thumbnail.active,a.thumbnail:focus,a.thumbnail:hover {
 }
 
 .warning-alert{
-	color: #b06500;
-	background-color: #ffd699;
-	border-color: #ffb575
+	color: #212121;
+	background-color: #fff1d2;
+	border-color: #fdb81e
 }
 
 .alert-warning hr {
@@ -5380,9 +5380,9 @@ a.thumbnail.active,a.thumbnail:focus,a.thumbnail:hover {
 }
 
 .alert-danger {
-	color: #a94442;
-	background-color: #f2dede;
-	border-color: #ebccd1
+	color: #212121;
+	background-color: #f9dede;
+	border-color: #e31c3d
 }
 
 .alert-danger hr {

@@ -444,6 +444,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	@Override
 	public void handleSaveButtonClick() {
 		if(!isReadOnly) {
+			measureDetailsView.getComponentDetailView().getObserver().handleValueChanged();
 			List<String> validationErrors = measureDetailsView.getMeasureDetailsComponentModel().validateModel(measureDetailsModel);
 			if(validationErrors == null || validationErrors.isEmpty()) {
 				ConfirmationDialogBox confirmationDialog = measureDetailsView.getSaveConfirmation();
@@ -466,7 +467,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	public void saveMeasureDetails() {
-		measureDetailsView.getComponentDetailView().getObserver().handleValueChanged();
 		measureDetailsView.getMeasureDetailsComponentModel().update(measureDetailsModel);
 		removeInvalidPopulationSelections(measureDetailsModel);
 

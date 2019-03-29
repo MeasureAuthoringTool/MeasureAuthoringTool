@@ -16,7 +16,11 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 	}
 
 	@Override
-	public void handleValueChanged() {}
+	public void handleValueChanged() {
+		if(referencesView.getRichTextEditor().getPlainText().trim().length() !=0) {
+			handleTextValueChanged();
+		}
+	}
 	
 	public void handleTextValueChanged() {
 		try {

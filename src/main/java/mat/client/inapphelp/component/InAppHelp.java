@@ -123,4 +123,12 @@ public class InAppHelp extends Composite {
 	public void setInAppHelpButton(InAppHelpButton inAppHelpButton) {
 		this.inAppHelpButton = inAppHelpButton;
 	}
+
+	public FocusPanel getMessageFocusPanel() {
+		return messageFocusPanel;
+	}
+
+	public void setMessageFocusPanel(FocusPanel messageFocusPanel) {
+		this.messageFocusPanel = messageFocusPanel;
+	}
 }

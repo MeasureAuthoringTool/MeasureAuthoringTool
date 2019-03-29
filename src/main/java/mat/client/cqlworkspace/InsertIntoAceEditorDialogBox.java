@@ -349,20 +349,21 @@ public class InsertIntoAceEditorDialogBox {
 
 
 	private static void showModal() {
-		removeAndHideModal();
+		removeModalFromParent();
 		inAppHelp.getHelpModal().show();
+		inAppHelp.getHelpModal().getElement().setTabIndex(-1);
+		inAppHelp.getMessageFocusPanel().getElement().focus();
 	}
 
 
-	private static void removeAndHideModal() {
+	private static void removeModalFromParent() {
 		dialogModal.removeFromParent();
-		dialogModal.hide();
 	}
 
 
 	private static void handleClose(ModalHideEvent event) {
 		inAppHelp.getHelpModal().removeFromParent();
-		removeAndHideModal();
+		removeModalFromParent();
 		dialogModal.show();
 	}
 

@@ -3,11 +3,6 @@ package mat.client.shared;
 
 import java.util.Date;
 
-import mat.client.ImageResources;
-import mat.client.Mat;
-import mat.client.event.TimedOutEvent;
-import mat.shared.ConstantMessages;
-
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
@@ -19,6 +14,10 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.ImageResources;
+import mat.client.Mat;
+import mat.client.event.TimedOutEvent;
+import mat.shared.ConstantMessages;
 
 /**
  * The Class TimeoutManager.
@@ -200,6 +199,7 @@ class TimeoutManager {
 		timeOutPanel.setStylePrimaryName("mainContentPanel");
 		setId(timeOutPanel, "timeOutContainer");
 		warningBannerWidget.setStyleName("padLeft5px");
+		alertIcon.setTitle("Information");
 		timeOutPanel.add(alertIcon);
 		timeOutPanel.add(warningBannerWidget);
 		timeOutPanel.setStyleName("alertMessage");
@@ -214,7 +214,9 @@ class TimeoutManager {
 		   warningBannerWidget = new HTML("Warning! Your session is about to expire at " + formattedTime +
 				   ". Please click on the screen or press any key to continue. Unsaved changes will not be retained if the session is allowed to time out.");
 		   RootPanel.get("timeOutWarning").add(buildTimeOutWarningPanel());
-		   RootPanel.get("timeOutWarning").getElement().setAttribute("role", "alert");
+		   RootPanel.get("timeOutWarning").getElement().setAttribute("role", "alertdialog");
+		   RootPanel.get("timeOutWarning").getElement().focus();
+		   RootPanel.get("timeOutWarning").getElement().setTabIndex(0);
 	}
 	
 	/**
@@ -222,7 +224,7 @@ class TimeoutManager {
 	 */
 	private void clearTimeOutWarning(){
 		if(RootPanel.get("timeOutWarning") != null){
-			RootPanel.get("timeOutWarning").getElement().setAttribute("role", "alert");
+			RootPanel.get("timeOutWarning").getElement().removeAttribute("role");
 			RootPanel.get("timeOutWarning").clear();
 		}
 	}

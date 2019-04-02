@@ -23,6 +23,7 @@ import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.OperatorTypeUtil;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ConfirmationObserver;
+import mat.client.shared.MatContext;
 
 public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 
@@ -113,6 +114,7 @@ public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 	}
 
 	private void onCompleteBuildButtonClick() {
+		MatContext.get().restartTimeoutWarning();
 		String text = this.editorToInsertFinalTextInto.getText() + "\n" + this.getParentModel().getCQL("");
 		text = text.trim();
 		this.editorToInsertFinalTextInto.setText(text);

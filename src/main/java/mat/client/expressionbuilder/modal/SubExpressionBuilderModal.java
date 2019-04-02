@@ -26,6 +26,7 @@ import mat.client.expressionbuilder.model.QueryModel;
 import mat.client.expressionbuilder.model.TimeBoundaryModel;
 import mat.client.expressionbuilder.model.TimingModel;
 import mat.client.expressionbuilder.model.TimingPhraseModel;
+import mat.client.shared.MatContext;
 
 public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 	private Button cancelButton;
@@ -82,11 +83,13 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 		applyButton.setType(ButtonType.PRIMARY);
 		applyButton.setPull(Pull.RIGHT);
 		applyButton.setSize(ButtonSize.LARGE);
+		applyButton.addClickHandler(event -> MatContext.get().restartTimeoutWarning());
 		applyButton.getElement().setAttribute("aria-label", "Clicking this button will save your changes, apply the CQL to your expression, and take you to the previous page.");
 		return applyButton;
 	}
 	
-	protected void onCancelButtonClick() {		
+	protected void onCancelButtonClick() {
+		MatContext.get().restartTimeoutWarning();
 		if(!this.getParentModel().getChildModels().isEmpty()) {
 			int size = this.getParentModel().getChildModels().size() - 1;
 			IExpressionBuilderModel lastModel = this.getParentModel().getChildModels().get(size);

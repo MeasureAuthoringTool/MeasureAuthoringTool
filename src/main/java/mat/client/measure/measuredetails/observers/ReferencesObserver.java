@@ -35,12 +35,12 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 		// TODO Auto-generated method stub
 	}
 
-	public void handleEditClicked(int index, String reference) {
+	public void handleEditClicked(int index) {
 		List<String> referenceList = referencesView.getOriginalModel().getReferences();
 		referencesView.getReferencesModel().setReferences(referenceList);
 		if(referenceList != null && referenceList.get(index) != null) {
 			referencesView.setEditingIndex(index);
-			referencesView.getRichTextEditor().setValue(referenceList.get(index));
+			referencesView.getRichTextEditor().setHTML(referenceList.get(index));
 		}
 	}
 

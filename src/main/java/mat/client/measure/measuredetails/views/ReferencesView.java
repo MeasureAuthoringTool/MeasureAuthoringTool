@@ -78,11 +78,11 @@ public class ReferencesView implements MeasureDetailViewInterface {
 			public void update(int index, String object, SafeHtml value) {
 				if(isEditorDirty(object)) {
 					displayDirtyCheck();
-					messagePanel.getWarningConfirmationYesButton().addClickHandler(event -> handleYesButtonClicked(index, object));
+					messagePanel.getWarningConfirmationYesButton().addClickHandler(event -> handleYesButtonClicked(index));
 					messagePanel.getWarningConfirmationNoButton().addClickHandler(event -> hideDirtyCheck());
 					messagePanel.getWarningConfirmationYesButton().setFocus(true);
 				} else {
-					observer.handleEditClicked(index, object);
+					observer.handleEditClicked(index);
 				}
 			}
 		});
@@ -125,8 +125,8 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		messagePanel.clearAlerts();
 	}
 	
-	private void handleYesButtonClicked(int index, String reference) {
-		observer.handleEditClicked(index, reference);
+	private void handleYesButtonClicked(int index) {
+		observer.handleEditClicked(index);
 		hideDirtyCheck();
 	}
 	

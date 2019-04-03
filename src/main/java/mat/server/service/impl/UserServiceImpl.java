@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -25,6 +26,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.ObjectNotFoundException;
@@ -355,13 +357,14 @@ public class UserServiceImpl implements UserService {
 	 *            the security answer
 	 * @return true, if successful
 	 */
-	private boolean securityQuestionMatch(User user,
-			String securityQuestion, String securityAnswer) {
-		for(UserSecurityQuestion userSecurityQuestion : user.getUserSecurityQuestions()) {
-			String hashedSecurityAnswer = HashUtility.getSecurityQuestionHash(userSecurityQuestion.getSalt(), securityAnswer);
-			if(securityQuestion.equalsIgnoreCase(userSecurityQuestion.getSecurityQuestions().getQuestion()) &&
-					hashedSecurityAnswer.equalsIgnoreCase(userSecurityQuestion.getSecurityAnswer())) {
-				return true;
+	private boolean securityQuestionMatch(User user, String securityQuestion, String securityAnswer) {
+
+		if (StringUtils.isNotBlank(securityAnswer)) {
+			Optional<UserSecurityQuestion> secQuestion = user.getUserSecurityQuestions().stream().filter(q -> securityQuestion.equalsIgnoreCase(q.getSecurityQuestions().getQuestion())).findFirst();
+			if (secQuestion.isPresent()) {
+				UserSecurityQuestion usq = secQuestion.get();
+				String hashedSecurityAnswer = HashUtility.getSecurityQuestionHash(usq.getSalt(), securityAnswer);
+				return hashedSecurityAnswer.equalsIgnoreCase(usq.getSecurityAnswer());
 			}
 		}
 		return false;

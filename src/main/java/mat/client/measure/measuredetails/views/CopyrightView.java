@@ -41,7 +41,7 @@ public class CopyrightView implements MeasureDetailViewInterface {
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
 		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Copyright Editor");
-		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());	
+		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());
 		addEventHandlers();
 	}
 
@@ -104,6 +104,6 @@ public class CopyrightView implements MeasureDetailViewInterface {
 
 	@Override
 	public Widget getFirstElement() {
-		return measureDetailsRichTextEditor.getRichTextEditor();
+		return null;
 	}
 }

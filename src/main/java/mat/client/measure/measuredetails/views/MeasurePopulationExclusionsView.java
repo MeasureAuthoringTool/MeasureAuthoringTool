@@ -105,6 +105,6 @@ public class MeasurePopulationExclusionsView implements MeasureDetailViewInterfa
 
 	@Override
 	public Widget getFirstElement() {
-		return measureDetailsRichTextEditor.getRichTextEditor();
+		return null;
 	}
 }

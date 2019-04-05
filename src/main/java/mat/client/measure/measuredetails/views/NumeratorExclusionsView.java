@@ -103,6 +103,6 @@ public class NumeratorExclusionsView implements MeasureDetailViewInterface {
 
 	@Override
 	public Widget getFirstElement() {
-		return measureDetailsRichTextEditor.getRichTextEditor();
+		return null;
 	}
 }

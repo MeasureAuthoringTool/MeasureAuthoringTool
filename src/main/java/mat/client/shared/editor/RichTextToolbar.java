@@ -307,6 +307,10 @@ public class RichTextToolbar extends Composite {
       topPanel.add(justifyCenter);
       justifyRight = createPushButton(images.justifyRight(), strings.justifyRight());
       topPanel.add(justifyRight);
+      // We only use these handlers for updating status, so don't hook them up
+      // unless at least basic editing is supported.
+      richText.addKeyUpHandler(handler);
+      richText.addClickHandler(handler);
     }
 
     if (extended != null) {
@@ -329,50 +333,26 @@ public class RichTextToolbar extends Composite {
       removeFormat = createPushButton(images.removeFormat(), strings.removeFormat());
       topPanel.add(removeFormat);
     }
-
-    if (basic != null) {
-      fonts = createFontList();
-      bottomPanel.add(fonts);
-      fontSizes = createFontSizes();
-      bottomPanel.add(fontSizes);
-
-      // We only use these handlers for updating status, so don't hook them up
-      // unless at least basic editing is supported.
-      richText.addKeyUpHandler(handler);
-      richText.addClickHandler(handler);
-    }
   }
-
-  private ListBox createFontList() {
-    ListBox lb = new ListBox();
-    lb.addChangeHandler(handler);
-    lb.setVisibleItemCount(1);
-
-    lb.addItem(strings.font(), "");
-    lb.addItem(strings.normal(), "");
-    lb.addItem("Times New Roman", "Times New Roman");
-    lb.addItem("Arial", "Arial");
-    lb.addItem("Courier New", "Courier New");
-    lb.addItem("Georgia", "Georgia");
-    lb.addItem("Trebuchet", "Trebuchet");
-    lb.addItem("Verdana", "Verdana");
-    return lb;
-  }
-
-  private ListBox createFontSizes() {
-    ListBox lb = new ListBox();
-    lb.addChangeHandler(handler);
-    lb.setVisibleItemCount(1);
-
-    lb.addItem(strings.size());
-    lb.addItem(strings.xxsmall());
-    lb.addItem(strings.xsmall());
-    lb.addItem(strings.small());
-    lb.addItem(strings.medium());
-    lb.addItem(strings.large());
-    lb.addItem(strings.xlarge());
-    lb.addItem(strings.xxlarge());
-    return lb;
+  
+  public void setReadOnly(boolean readOnly) {
+	  bold.setEnabled(readOnly);
+	  italic.setEnabled(readOnly);
+	  underline.setEnabled(readOnly);
+	  subscript.setEnabled(readOnly);
+	  superscript.setEnabled(readOnly);
+	  strikethrough.setEnabled(readOnly);
+	  indent.setEnabled(readOnly);
+	  outdent.setEnabled(readOnly);
+	  justifyLeft.setEnabled(readOnly);
+	  justifyCenter.setEnabled(readOnly);
+	  justifyRight.setEnabled(readOnly);
+	  hr.setEnabled(readOnly);
+	  ol.setEnabled(readOnly);
+	  ul.setEnabled(readOnly);
+	  createLink.setEnabled(readOnly);
+	  removeLink.setEnabled(readOnly);
+	  removeFormat.setEnabled(readOnly);
   }
 
   private PushButton createPushButton(ImageResource img, String tip) {
@@ -405,4 +385,12 @@ public class RichTextToolbar extends Composite {
       strikethrough.setDown(extended.isStrikethrough());
     }
   }
+
+public RichTextArea.Formatter getBasic() {
+	return basic;
+}
+
+public void setBasic(RichTextArea.Formatter basic) {
+	this.basic = basic;
+}
 }

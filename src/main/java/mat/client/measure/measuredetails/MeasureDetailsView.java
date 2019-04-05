@@ -52,6 +52,7 @@ public class MeasureDetailsView {
 	private RichTextEditor currentRichTextEditor;
 	private MessagePanel messagePanel;
 	private MeasureDetailsObserver measureDetailsObserver;
+	private HTML headingHTML;
 	
 	public MeasureDetailsView(MeasureDetailsModel measureDetailsModel, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel, MeasureDetailsObserver measureDetailsObserver) {
 		currentMeasureDetail = measureDetail;
@@ -73,7 +74,7 @@ public class MeasureDetailsView {
 
 	private void buildHeading() {
 		headingPanel.clear();
-		HTML headingHTML = new HTML();
+		headingHTML = new HTML();
 		headingHTML.setHTML("<h4><b>" + currentMeasureDetail.displayName() + "</b></h4>");
 		headingHTML.getElement().setId("measureDetailsView_HeadingContent");
 		headingHTML.setTitle(currentMeasureDetail.displayName());
@@ -174,7 +175,11 @@ public class MeasureDetailsView {
 	}
 	
 	public void setFocusOnFirstElement() {
-		componentDetailView.getFirstElement().getElement().focus();
+		if(componentDetailView.getFirstElement() != null) {
+			componentDetailView.getFirstElement().getElement().focus();
+		} else {
+			headingHTML.getElement().focus();
+		}
 	}
 	
 	private void handleRichTextTabOut(KeyUpEvent keyUpEvent) {

@@ -105,6 +105,6 @@ public class MeasurePopulationView implements MeasureDetailViewInterface {
 
 	@Override
 	public Widget getFirstElement() {
-		return measureDetailsRichTextEditor.getRichTextEditor();
+		return null;
 	}
 }

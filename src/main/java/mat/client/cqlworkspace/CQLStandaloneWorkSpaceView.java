@@ -98,7 +98,6 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 		mainFlowPanel.clear();
 		setGeneralInfoHeading();
 		mainFlowPanel.add(generalInformationView.getCQLView());
-
 	}
 	
 	public void buildIncludesView() {

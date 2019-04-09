@@ -28,13 +28,15 @@ import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
 public class CQLDefinitionsView {
+	private static final String DEFINITION = "definition";
+	
 	private HelpBlock helpBlock = new HelpBlock();
 	private MatTextBox defineNameTxtArea = new MatTextBox();
 	private ButtonGroup contextGroup = new ButtonGroup();
 	private InlineRadio contextDefinePATRadioBtn = new InlineRadio("Patient");
 	private InlineRadio contextDefinePOPRadioBtn = new InlineRadio("Population");
-	private DefinitionFunctionButtonToolBar defineButtonBar = new DefinitionFunctionButtonToolBar("definition");
-	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("definition");
+	private DefinitionFunctionButtonToolBar defineButtonBar = new DefinitionFunctionButtonToolBar(DEFINITION);
+	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton(DEFINITION);
 	private TextArea defineCommentTextArea = new TextArea();
 	private TextBox returnTypeTextBox = new TextBox();
 	private FormGroup definitionNameGroup = new FormGroup();
@@ -44,8 +46,8 @@ public class CQLDefinitionsView {
 	private FocusPanel mainDefineViewVerticalPanel = new FocusPanel();
 	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
-	private CQLEditorPanel editorPanel= new CQLEditorPanel("definition", "Build CQL Expression", false);
-	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("definitionViewCQL", "Click to View CQL", false);
+	private CQLEditorPanel editorPanel= new CQLEditorPanel(DEFINITION, "Build CQL Expression", false);
+	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("definitionViewCQL", "Click to View CQL", true);
 
 	
 	public CQLDefinitionsView() {
@@ -132,7 +134,7 @@ public class CQLDefinitionsView {
 	}
 
 	private FormGroup buildReturnTypeAndButtonPanelGroup() {
-		FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
+		FormGroup formGroup = new FormGroup();
 		FormLabel returnTypeLabel = new FormLabel();
 		returnTypeLabel.setText("Return Type");
 		returnTypeLabel.setTitle("Return Type");
@@ -150,12 +152,12 @@ public class CQLDefinitionsView {
 		returnTypeHP.add(returnTypeLabel);
 		returnTypeHP.add(returnTypeTextBox);
 		
-		returnTypeAndButtonPanelGroup.add(returnTypeHP);
-		return returnTypeAndButtonPanelGroup;
+		formGroup.add(returnTypeHP);
+		return formGroup;
 	}
 
 	private FormGroup buildDefinitionCommentGroup() {
-		FormGroup defineCommentGroup = new FormGroup();
+		FormGroup commentGroup = new FormGroup();
 
 		FormLabel defineCommentLabel = new FormLabel();
 		defineCommentLabel.setText("Comment");
@@ -175,12 +177,12 @@ public class CQLDefinitionsView {
 		defineCommenttHPanel.add(defineCommentTextArea);
 		defineCommenttHPanel.setWidth("700px");
 		
-		defineCommentGroup.add(defineCommenttHPanel);
-		return defineCommentGroup;
+		commentGroup.add(defineCommenttHPanel);
+		return commentGroup;
 	}
 
 	private FormGroup buildDefinitionContextGroup() {
-		FormGroup defineContextGroup = new FormGroup();
+		FormGroup contextGrouop = new FormGroup();
 		FormLabel defineContextLabel = new FormLabel();
 		defineContextLabel.setText("Context");
 		defineContextLabel.setTitle("Context");
@@ -204,13 +206,12 @@ public class CQLDefinitionsView {
 		defineContextHPanel.add(defineContextLabel);
 		defineContextHPanel.add(defineContextPanel);
 		defineContextHPanel.setWidth("500px");
-		
-		defineContextGroup.add(defineContextHPanel);
-		return defineContextGroup;
+		contextGrouop.add(defineContextHPanel);
+		return contextGrouop;
 	}
 
 	private FormGroup buildDefinitionNameFormGroup() {
-		FormGroup defineNameGroup = new FormGroup();
+		FormGroup nameGroup = new FormGroup();
 		FormLabel defineNameLabel = new FormLabel();
 		defineNameLabel.setText("Definition Name");
 		defineNameLabel.setTitle("Definition Name");
@@ -228,8 +229,8 @@ public class CQLDefinitionsView {
 		defineNameHPanel.add(defineNameLabel);
 		defineNameHPanel.add(defineNameTxtArea);
 		defineNameHPanel.setWidth("700px");
-		defineNameGroup.add(defineNameHPanel);
-		return defineNameGroup;
+		nameGroup.add(defineNameHPanel);
+		return nameGroup;
 	}
 
 	public void setMarginInButtonBar() {

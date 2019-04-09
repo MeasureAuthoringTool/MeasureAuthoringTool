@@ -27,21 +27,23 @@ import mat.client.util.MatTextBox;
 public class CQLParametersView {
 
 	
+	private static final String PARAMETER = "parameter";
+	
 	private MatTextBox parameterNameTxtArea = new MatTextBox();
-	private DefinitionFunctionButtonToolBar parameterButtonBar = new DefinitionFunctionButtonToolBar("parameter");
-	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("parameter");
+	private DefinitionFunctionButtonToolBar parameterButtonBar = new DefinitionFunctionButtonToolBar(PARAMETER);
+	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton(PARAMETER);
 	private FocusPanel mainParamViewVerticalPanel = new FocusPanel();
 	private TextArea parameterCommentTextArea = new TextArea();
 	private FormGroup parameterNameGroup = new FormGroup();
 	private FormGroup parameterCommentGroup = new FormGroup();
 	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
-	private CQLEditorPanel editorPanel = new CQLEditorPanel("parameter", "Build CQL Expression", true);
-	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("parameterViewCQL", "Click to View CQL", false);
+	private CQLEditorPanel editorPanel = new CQLEditorPanel(PARAMETER, "Build CQL Expression", true);
+	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("parameterViewCQL", "Click to View CQL", true);
 
 	
 	public CQLParametersView() {
-		editorPanel = new CQLEditorPanel("parameter", "Build CQL Expression", true);
+		editorPanel = new CQLEditorPanel(PARAMETER, "Build CQL Expression", true);
 		mainParamViewVerticalPanel.getElement().setId("mainParamViewVerticalPanel");
 		heading.addStyleName("leftAligned");
 	}
@@ -100,7 +102,7 @@ public class CQLParametersView {
 	}
 
 	private FormGroup buildParameterCommentGroup() {
-		FormGroup paramCommentGroup = new FormGroup();
+		FormGroup commentGroup = new FormGroup();
 		FormLabel parameterCommentLabel = new FormLabel();
 		parameterCommentLabel.setText("Comment");
 		parameterCommentLabel.setTitle("Comment");
@@ -118,12 +120,12 @@ public class CQLParametersView {
 		paramCommentHPanel.add(parameterCommentLabel);
 		paramCommentHPanel.add(parameterCommentTextArea);
 		paramCommentHPanel.setWidth("700px");
-		paramCommentGroup.add(paramCommentHPanel);
-		return paramCommentGroup;
+		commentGroup.add(paramCommentHPanel);
+		return commentGroup;
 	}
 
 	private FormGroup buildParameterNameGroup() {
-		FormGroup paramNameGroup = new FormGroup();
+		FormGroup nameGroup = new FormGroup();
 		HorizontalPanel paramNameHPanel = new HorizontalPanel();
 		FormLabel parameterLabel = new FormLabel();
 		parameterLabel.setText("Parameter Name");
@@ -141,8 +143,8 @@ public class CQLParametersView {
 		paramNameHPanel.add(parameterLabel);
 		paramNameHPanel.add(parameterNameTxtArea);
 		paramNameHPanel.setWidth("700px");
-		paramNameGroup.add(paramNameHPanel);
-		return paramNameGroup;
+		nameGroup.add(paramNameHPanel);
+		return nameGroup;
 	}
 
 	public void setMarginInButtonBar() {

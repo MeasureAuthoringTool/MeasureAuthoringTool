@@ -9,6 +9,7 @@ public class QueryModel extends ExpressionBuilderModel {
 	private String alias;
 	private ExpressionBuilderModel filter;
 	private QuerySortModel sort;
+	private ExpressionBuilderModel relationship;
 
 	public QueryModel(ExpressionBuilderModel source, String alias, ExpressionBuilderModel filter, ExpressionBuilderModel parent) {
 		super(parent);
@@ -24,6 +25,7 @@ public class QueryModel extends ExpressionBuilderModel {
 		this.source = new ExpressionBuilderModel(this);
 		this.filter = new ExpressionBuilderModel(this); 
 		this.sort = new QuerySortModel(this);
+		this.relationship = new ExpressionBuilderModel(this);
 		this.alias = "";
 	}
 	
@@ -46,6 +48,10 @@ public class QueryModel extends ExpressionBuilderModel {
 	public QuerySortModel getSort() {
 		return sort;
 	}	
+	
+	public ExpressionBuilderModel getRelationship() {
+		return relationship;
+	}
 
 	@Override
 	public String getCQL(String indentation) {		
@@ -59,8 +65,13 @@ public class QueryModel extends ExpressionBuilderModel {
 				
 		builder.append(" ");
 		builder.append(alias);
-		
+
 		String filterIdentation = indentation + "  ";
+
+		if (!relationship.getChildModels().isEmpty()) {
+			builder.append(relationship.getCQL(filterIdentation));
+		}
+		
 		builder.append("\n" + filterIdentation);
 		builder.append("where ");
 		

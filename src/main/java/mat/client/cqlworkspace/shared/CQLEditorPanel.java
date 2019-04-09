@@ -4,7 +4,6 @@ import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
-import org.gwtbootstrap3.client.ui.gwt.Widget;
 
 import com.google.gwt.user.client.ui.Composite;
 
@@ -14,11 +13,12 @@ public class CQLEditorPanel extends Composite {
 	private PanelHeader header;
 	private PanelBody body;
 	private String text;
-	private MATAceEditor editor;
+	private CQLEditor editor;
 
 	public CQLEditorPanel(String text, boolean isReadOnly) {
 		this.text = text;
-		this.editor = new MATAceEditor(isReadOnly);
+		this.editor = new CQLEditor(isReadOnly);
+		this.editor.getElement().getElementsByTagName("textarea").getItem(0).setTitle(text);
 		initWidget(buildWidget());
 	}
 	
@@ -33,10 +33,16 @@ public class CQLEditorPanel extends Composite {
 		panel.add(header);
 		panel.add(body);
 		
+		panel.setMarginBottom(-10.00);
 		return panel;
 	}
 	
-	public MATAceEditor getEditor() {
+	@Override
+	public void setSize(String width, String height) {
+		setEditorSize(width, height);
+	}
+	
+	public CQLEditor getEditor() {
 		return editor;
 	}
 	
@@ -47,5 +53,14 @@ public class CQLEditorPanel extends Composite {
 	
 	public void setEditorSize(String width, String height) {
 		this.editor.setSize(width, height);
+	}
+	
+	/**
+	 * Set's id for all of the different elements
+	 * @param name the name of the editor
+	 */
+	public void setId(String name) {
+		this.editor.getElement().setAttribute("id", name + "_CQLEditor");
+		this.panel.setId(name + "_panel");
 	}
 }

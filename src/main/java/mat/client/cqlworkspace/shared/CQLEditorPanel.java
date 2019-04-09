@@ -13,9 +13,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 public class CQLEditorPanel extends Composite {
 
-	private Panel panel;
 	private PanelHeader header;
-	private PanelBody body;
 	private String text;
 	private CQLEditor editor;
 	private PanelCollapse panelCollapse;
@@ -34,7 +32,7 @@ public class CQLEditorPanel extends Composite {
 		panelGroup = new PanelGroup();
 		panelGroup.setId(name + "_panelGroup");
 		
-		panel = new Panel(PanelType.PRIMARY);
+		Panel panel = new Panel(PanelType.PRIMARY);
 		panel.setId(name + "_panel");
 		header = new PanelHeader();
 		setHeaderText(this.text);
@@ -42,7 +40,7 @@ public class CQLEditorPanel extends Composite {
 		panelCollapse = new PanelCollapse();
 		panelCollapse.setId(name + "_panelCollapse");
 		
-		body = new PanelBody();
+		PanelBody body = new PanelBody();
 		body.add(this.editor);
 		
 		panelCollapse.add(body);
@@ -52,7 +50,7 @@ public class CQLEditorPanel extends Composite {
 		panelCollapse.setIn(true);
 		
 		this.editor.getElement().setAttribute("id", name + "_CQLEditor");
-		this.panel.setId(name + "_panel");	
+		panel.setId(name + "_panel");	
 		panelGroup.add(panel);
 		
 		return panelGroup;

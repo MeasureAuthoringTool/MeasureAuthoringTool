@@ -17,7 +17,6 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 
@@ -49,7 +48,6 @@ import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.cqlworkspace.shared.CQLEditorPanel;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CQLAddNewButton;
-import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SkipListBuilder;
@@ -62,6 +60,8 @@ import mat.shared.ClickableSafeHtmlCell;
 
 public class CQLFunctionsView {
 	
+	private static final String FUNCTION = "function";
+
 	public static interface Observer {
 		void onModifyClicked(CQLFunctionArgument result);
 		void onDeleteClicked(CQLFunctionArgument result, int index);
@@ -71,11 +71,11 @@ public class CQLFunctionsView {
 	private FocusPanel mainFunctionVerticalPanel = new FocusPanel();
 	private MatTextBox funcNameTxtArea = new MatTextBox();
 	private Button addNewArgumentButton = new Button();
-	private DefinitionFunctionButtonToolBar functionButtonBar = new DefinitionFunctionButtonToolBar("function");
+	private DefinitionFunctionButtonToolBar functionButtonBar = new DefinitionFunctionButtonToolBar(FUNCTION);
 	private ButtonGroup contextGroup = new ButtonGroup();
 	private InlineRadio contextFuncPATRadioBtn = new InlineRadio("Patient");
 	private InlineRadio contextFuncPOPRadioBtn = new InlineRadio("Population");
-	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("function");
+	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton(FUNCTION);
 	private List<CQLFunctionArgument> functionArgumentList = new ArrayList<>();
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	private static final int TABLE_ROW_COUNT = 2;
@@ -92,8 +92,8 @@ public class CQLFunctionsView {
 	private FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
 	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
-	private CQLEditorPanel editorPanel = new CQLEditorPanel("function", "Build CQL Expression", false);
-	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("functionViewCQL", "Click to View CQL", false);
+	private CQLEditorPanel editorPanel = new CQLEditorPanel(FUNCTION, "Build CQL Expression", false);
+	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("functionViewCQL", "Click to View CQL", true);
 
 	
 	public CQLFunctionsView() {
@@ -177,7 +177,7 @@ public class CQLFunctionsView {
 	}
 
 	private FormGroup buildReturnTypeAndButtonPanelGroup() {
-		FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
+		FormGroup formGroup = new FormGroup();
 		FormLabel returnTypeLabel = new FormLabel();
 		returnTypeLabel.setText("Return Type");
 		returnTypeLabel.setTitle("Return Type");
@@ -194,12 +194,12 @@ public class CQLFunctionsView {
 		returnTypeHP.add(returnTypeLabel);
 		returnTypeHP.add(returnTypeTextBox);
 
-		returnTypeAndButtonPanelGroup.add(returnTypeHP);
-		return returnTypeAndButtonPanelGroup;
+		formGroup.add(returnTypeHP);
+		return formGroup;
 	}
 
 	private FormGroup buildFunctionCommentGroup() {
-		FormGroup funcCommentGroup = new FormGroup();
+		FormGroup commentGroup = new FormGroup();
 		FormLabel funcCommentLabel = new FormLabel();
 		funcCommentLabel.setText("Comment");
 		funcCommentLabel.setTitle("Comment");
@@ -218,12 +218,12 @@ public class CQLFunctionsView {
 		funcCommentHPanel.add(funcCommentTextArea);
 		funcCommentHPanel.setWidth("700px");
 		
-		funcCommentGroup.add(funcCommentHPanel);
-		return funcCommentGroup;
+		commentGroup.add(funcCommentHPanel);
+		return commentGroup;
 	}
 
 	private FormGroup buildFunctionContextFormGroup() {
-		FormGroup funcContextGroup = new FormGroup();
+		FormGroup contextGroup = new FormGroup();
 		FormLabel funcContextLabel = new FormLabel();
 		funcContextLabel.setText("Context");
 		funcContextLabel.setTitle("Context");
@@ -251,7 +251,7 @@ public class CQLFunctionsView {
 	}
 
 	private FormGroup buildFunctionNameFormGroup() {
-		FormGroup funcNameGroup = new FormGroup();
+		FormGroup nameGroup = new FormGroup();
 		FormLabel functionNameLabel = new FormLabel();
 		functionNameLabel.setText("Function Name");
 		functionNameLabel.setTitle("Function Name");
@@ -270,8 +270,8 @@ public class CQLFunctionsView {
 		funcNameHPanel.add(funcNameTxtArea);
 		funcNameHPanel.setWidth("700px");
 		
-		funcNameGroup.add(funcNameHPanel);
-		return funcNameGroup;
+		nameGroup.add(funcNameHPanel);
+		return nameGroup;
 	}
 
 

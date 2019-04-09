@@ -39,7 +39,7 @@ public class CQLEditor extends AceEditor {
 		for (CQLError error : cqlErrors) {
 			int line = error.getErrorInLine();
 			int column = error.getErrorAtOffeset();
-			this.addAnnotation(line - 1, column, prefix + ": " + error.getErrorMessage(), AceAnnotationType.WARNING);
+			this.addAnnotation(line - 1, column, prefix + ": " + error.getErrorMessage(), annotationType);
 		}
 	}
 	

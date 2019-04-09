@@ -7,7 +7,6 @@ import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
-import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -21,7 +20,6 @@ import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.cqlworkspace.shared.CQLEditorPanel;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CQLAddNewButton;
-import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
@@ -33,28 +31,22 @@ public class CQLParametersView {
 	private DefinitionFunctionButtonToolBar parameterButtonBar = new DefinitionFunctionButtonToolBar("parameter");
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("parameter");
 	private FocusPanel mainParamViewVerticalPanel = new FocusPanel();
-	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
 	private TextArea parameterCommentTextArea = new TextArea();
 	private FormGroup parameterNameGroup = new FormGroup();
 	private FormGroup parameterCommentGroup = new FormGroup();
 	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
-	private CQLEditorPanel editorPanel;
+	private CQLEditorPanel editorPanel = new CQLEditorPanel("parameter", "Build CQL Expression", true);
+	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("parameterViewCQL", "Click to View CQL", false);
+
 	
 	public CQLParametersView() {
-		editorPanel = new CQLEditorPanel("Build CQL Expression", true);
+		editorPanel = new CQLEditorPanel("parameter", "Build CQL Expression", true);
 		mainParamViewVerticalPanel.getElement().setId("mainParamViewVerticalPanel");
 		heading.addStyleName("leftAligned");
-		collapsibleCQLPanelWidget.getViewCQLAceEditor().startEditor();
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataToggle(Toggle.COLLAPSE);
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataParent("#panelGroup");
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setHref("#panelCollapse");
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setText("Click to View CQL");
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setColor("White");
 	}
 
 	private void buildView() {
-		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		parameterCommentGroup.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
@@ -63,9 +55,13 @@ public class CQLParametersView {
 		
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(new SpacerWidget());
-		editorPanel = new CQLEditorPanel("Build CQL Expression", true);
-		editorPanel.setId("parameter");
-		editorPanel.setEditorSize("650px", "200px");
+		
+		editorPanel = new CQLEditorPanel("parameter", "Build CQL Expression", true);
+		editorPanel.setSize("650px", "200px");
+		editorPanel.getPanelGroup().setMarginBottom(-10.0);
+		
+		viewCQLEditorPanel.setSize("655px", "200px");
+		viewCQLEditorPanel.setCollabsable();
 		
 		parameterButtonBar.getInsertButton().setVisible(false);
 		parameterButtonBar.getTimingExpButton().setVisible(false);
@@ -88,7 +84,7 @@ public class CQLParametersView {
 		parameterVP.add(editorPanel);
 		parameterVP.add(parameterButtonBar.getSaveButtonGroup());
 		parameterVP.add(new SpacerWidget());
-		parameterVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
+		parameterVP.add(viewCQLEditorPanel);
 		parameterVP.add(new SpacerWidget());
 		
 		
@@ -181,15 +177,15 @@ public class CQLParametersView {
 		getParameterAceEditor().getElement().blur();
 		
 		getViewCQLAceEditor().setText("");
-		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().getElement().setClassName("panel-collapse collapse");
+		viewCQLEditorPanel.setPanelCollapsed(true);
 	}
 
 	public PanelCollapse getPanelViewCQLCollapse() {
-		return collapsibleCQLPanelWidget.getPanelViewCQLCollapse();
+		return viewCQLEditorPanel.getPanelCollapse();
 	}
 
 	public AceEditor getViewCQLAceEditor() {
-		return collapsibleCQLPanelWidget.getViewCQLAceEditor();
+		return viewCQLEditorPanel.getEditor();
 	}
 
 	public CQLAddNewButton getAddNewButtonBar() {

@@ -37,7 +37,6 @@ public class CQLDefinitionsView {
 	private InlineRadio contextDefinePOPRadioBtn = new InlineRadio("Population");
 	private DefinitionFunctionButtonToolBar defineButtonBar = new DefinitionFunctionButtonToolBar("definition");
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("definition");
-	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
 	private TextArea defineCommentTextArea = new TextArea();
 	private TextBox returnTypeTextBox = new TextBox();
 	private FormGroup definitionNameGroup = new FormGroup();
@@ -45,20 +44,14 @@ public class CQLDefinitionsView {
 	private FormGroup definitionContextGroup = new FormGroup();
 	private FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
 	private FocusPanel mainDefineViewVerticalPanel = new FocusPanel();
-	HTML heading = new HTML();
-	
+	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
-	private CQLEditorPanel editorPanel= new CQLEditorPanel("Build CQL Expression", false);
+	private CQLEditorPanel editorPanel= new CQLEditorPanel("definition", "Build CQL Expression", false);
+	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("definitionViewCQL", "Click to View CQL", false);
+
 	
 	public CQLDefinitionsView() {
 		mainDefineViewVerticalPanel.getElement().setId("mainDefViewVerticalPanel");
-		
-		collapsibleCQLPanelWidget.getViewCQLAceEditor().startEditor();
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataToggle(Toggle.COLLAPSE);
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataParent("#panelGroup");
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setHref("#panelCollapse");
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setText("Click to View CQL");
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setColor("White");
 		heading.addStyleName("leftAligned");
 	}
 	
@@ -81,7 +74,6 @@ public class CQLDefinitionsView {
 	}
 
 	private void buildView() {
-		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		definitionNameGroup.clear();
 		defineCommentGroup.clear();
 		definitionContextGroup.clear();
@@ -103,9 +95,13 @@ public class CQLDefinitionsView {
 		defineButtonBar.getTimingExpButton().setVisible(false);
 		defineButtonBar.getCloseButton().setVisible(false);
 
-		editorPanel = new CQLEditorPanel("Build CQL Expression", false);
-		editorPanel.setId("definition");
+		editorPanel = new CQLEditorPanel("definition", "Build CQL Expression", false);
 		editorPanel.setSize("650px", "200px");
+		
+		viewCQLEditorPanel.setSize("655px", "200px");
+		viewCQLEditorPanel.setCollabsable();
+		editorPanel.getPanelGroup().setMarginBottom(-10.0);
+
 
 		definitionVP.add(addNewButtonBar);
 		definitionVP.add(definitionNameGroup);
@@ -122,7 +118,7 @@ public class CQLDefinitionsView {
 		definitionVP.add(editorPanel);
 		definitionVP.add(defineButtonBar.getSaveButtonGroup());
 		definitionVP.add(new SpacerWidget());
-		definitionVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
+		definitionVP.add(viewCQLEditorPanel);
 		definitionVP.add(new SpacerWidget());
 		definitionVP.setStyleName("topping");
 		
@@ -293,7 +289,7 @@ public class CQLDefinitionsView {
 		getDefineAceEditor().setText("");
 		getViewCQLAceEditor().setText("");
 		getReturnTypeTextBox().setText("");
-		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().getElement().setClassName("panel-collapse collapse");
+		viewCQLEditorPanel.setPanelCollapsed(true);
 	}
 	
 	public void setWidgetReadOnly(boolean isEditable) {
@@ -320,14 +316,12 @@ public class CQLDefinitionsView {
 	}
 
 	public PanelCollapse getPanelViewCQLCollapse() {
-		return collapsibleCQLPanelWidget.getPanelViewCQLCollapse();
+		return viewCQLEditorPanel.getPanelCollapse();
 	}
-
 
 	public AceEditor getViewCQLAceEditor() {
-		return collapsibleCQLPanelWidget.getViewCQLAceEditor();
+		return viewCQLEditorPanel.getEditor();
 	}
-
 
 	public void hideAceEditorAutoCompletePopUp() {
 		getDefineAceEditor().detach();

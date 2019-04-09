@@ -84,7 +84,6 @@ public class CQLFunctionsView {
 	private MatSimplePager spager;
 	private Map<String, CQLFunctionArgument> functionArgNameMap = new HashMap<>();
 	private boolean isEditable = false;
-	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
 	private TextArea funcCommentTextArea = new TextArea();
 	private FormGroup funcNameGroup = new FormGroup();
 	private FormGroup funcCommentGroup = new FormGroup();
@@ -93,23 +92,17 @@ public class CQLFunctionsView {
 	private FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
 	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
-	private CQLEditorPanel editorPanel = new CQLEditorPanel("Build CQL Expression", false);
+	private CQLEditorPanel editorPanel = new CQLEditorPanel("function", "Build CQL Expression", false);
+	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("functionViewCQL", "Click to View CQL", false);
 
 	
 	public CQLFunctionsView() {
 		mainFunctionVerticalPanel.clear();
 		heading.addStyleName("leftAligned");
-		collapsibleCQLPanelWidget.getViewCQLAceEditor().startEditor();
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataToggle(Toggle.COLLAPSE);
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataParent("#panelGroup");
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setHref("#panelCollapse");
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setText("Click to View CQL");
-		collapsibleCQLPanelWidget.getViewCQLAnchor().setColor("White");
 	}
 
 	private void buildView(boolean isEditable) {
 		mainFunctionVerticalPanel.getElement().setId("mainFuncViewVerticalPanel");
-		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		funcNameGroup.clear();
 		funcCommentGroup.clear();
 		funcContextGroup.clear();
@@ -123,9 +116,12 @@ public class CQLFunctionsView {
 		funcVP.add(new SpacerWidget());
 		
 		
-		editorPanel = new CQLEditorPanel("Build CQL Expression", false);
+		editorPanel = new CQLEditorPanel("function", "Build CQL Expression", false);
 		editorPanel.setSize("650px", "200px");
-		editorPanel.setId("function");
+		editorPanel.getPanelGroup().setMarginBottom(-10.0);
+		
+		viewCQLEditorPanel.setSize("655px", "200px");
+		viewCQLEditorPanel.setCollabsable();
 		
 		funcNameGroup = buildFunctionNameFormGroup();
 		buildAddNewArgumentButton();
@@ -152,8 +148,8 @@ public class CQLFunctionsView {
 		funcVP.add(editorPanel);
 		funcVP.add(functionButtonBar.getSaveButtonGroup());
 		funcVP.add(new SpacerWidget());
-		funcVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
 		funcVP.add(new SpacerWidget());
+		funcVP.add(viewCQLEditorPanel);
 		funcVP.setStyleName("topping");
 		funcFP.add(funcVP);
 		funcFP.setStyleName("cqlRightContainer");
@@ -288,15 +284,7 @@ public class CQLFunctionsView {
 		functionButtonBar.getInsertButton().setMarginRight(-5.00);
 		functionButtonBar.getSaveButton().setMarginLeft(480.00);
 	}
-	
-	
-	
-	/**
-	 * Gets the view.
-	 *
-	 * @param isEditable the is editable
-	 * @return the view
-	 */
+
 	public FocusPanel getView(boolean isEditable) {
 		mainFunctionVerticalPanel.clear();
 		resetAll();
@@ -304,41 +292,22 @@ public class CQLFunctionsView {
 		return mainFunctionVerticalPanel;
 	}
 	
-	/**
-	 * Reset all.
-	 */
 	public void resetAll() {
 		getFuncNameTxtArea().setText("");
 		getFunctionBodyAceEditor().setText("");
 		getReturnTypeTextBox().setText("");
 		getViewCQLAceEditor().setText("");
-		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().getElement().setClassName("panel-collapse collapse");
-	}
+		viewCQLEditorPanel.setPanelCollapsed(true);
+	} 
 	
-	/**
-	 * Gets the panel view CQL collapse.
-	 *
-	 * @return the panel view CQL collapse
-	 */
 	public PanelCollapse getPanelViewCQLCollapse() {
-		return collapsibleCQLPanelWidget.getPanelViewCQLCollapse();
+		return viewCQLEditorPanel.getPanelCollapse();
 	}
 
-	/**
-	 * Gets the view CQL ace editor.
-	 *
-	 * @return the view CQL ace editor
-	 */
 	public AceEditor getViewCQLAceEditor() {
-		return collapsibleCQLPanelWidget.getViewCQLAceEditor();
+		return viewCQLEditorPanel.getEditor();
 	}
 	
-	/**
-	 * Creates the add argument view for functions.
-	 *
-	 * @param argumentList the argument list
-	 * @param isEditable the is editable
-	 */
 	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList, boolean isEditable) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
@@ -390,9 +359,7 @@ public class CQLFunctionsView {
 				functionArgNameMap.put(argument.getArgumentName().toLowerCase(), argument);
 			}
 		}
-		
 	}
-	
 
 	private CellTable<CQLFunctionArgument> addColumnToTable(CellTable<CQLFunctionArgument> table,
 			ListHandler<CQLFunctionArgument> sortHandler) {

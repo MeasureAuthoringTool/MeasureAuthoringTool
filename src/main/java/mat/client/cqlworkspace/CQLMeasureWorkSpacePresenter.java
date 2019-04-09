@@ -487,6 +487,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().addKeyDownHandler(event -> defineAceEditorKeyDownEvent());
 		cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().addKeyDownHandler(event -> parameterAceEditorKeyDownEvent());
 		cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().addKeyDownHandler(event -> functionAceEditorKeyDownEvent());
+		cqlWorkspaceView.getViewCQLView().getCqlAceEditor().addKeyDownHandler(event -> viewCQLAceEditorKeyDownEvent());
 	}
 
 	private void clickEventOnListboxes() {
@@ -4167,6 +4168,13 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(false);
 		} else {
 			cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(true);
+		}
+	}
+	
+	private void viewCQLAceEditorKeyDownEvent() {
+		if (!cqlWorkspaceView.getViewCQLView().getCqlAceEditor().isReadOnly()) {
+			cqlWorkspaceView.resetMessageDisplay();
+			setIsPageDirty(true);
 		}
 	}
 

@@ -8,7 +8,6 @@ import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
@@ -24,7 +23,6 @@ import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.cqlworkspace.shared.CQLEditorPanel;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CQLAddNewButton;
-import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
@@ -95,7 +93,6 @@ public class CQLDefinitionsView {
 		defineButtonBar.getTimingExpButton().setVisible(false);
 		defineButtonBar.getCloseButton().setVisible(false);
 
-		editorPanel = new CQLEditorPanel("definition", "Build CQL Expression", false);
 		editorPanel.setSize("650px", "200px");
 		
 		viewCQLEditorPanel.setSize("655px", "200px");

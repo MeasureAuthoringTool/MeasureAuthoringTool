@@ -115,8 +115,6 @@ public class CQLFunctionsView {
 		funcVP.add(new SpacerWidget());
 		funcVP.add(new SpacerWidget());
 		
-		
-		editorPanel = new CQLEditorPanel("function", "Build CQL Expression", false);
 		editorPanel.setSize("650px", "200px");
 		editorPanel.getPanelGroup().setMarginBottom(-10.0);
 		

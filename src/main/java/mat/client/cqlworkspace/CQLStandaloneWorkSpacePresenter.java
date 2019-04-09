@@ -486,6 +486,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().addKeyDownHandler(event -> definitionsAceEditorKeyDownEvent());
 		cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().addKeyDownHandler(event -> parameterAceEditorKeyDownEvent());
 		cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().addKeyDownHandler(event -> functionAceEditorKeyDownEvent());
+		cqlWorkspaceView.getViewCQLView().getCqlAceEditor().addKeyDownHandler(event -> viewCQLAceEditorKeyDownEvent());
 	}
 	
 	private void addEventHandlersOnContextRadioButtons() {
@@ -3905,6 +3906,13 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 			messagePanel.getWarningMessageAlert().clearAlert();
 		}
 		cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
+	}
+	
+	private void viewCQLAceEditorKeyDownEvent() {
+		if (!cqlWorkspaceView.getViewCQLView().getCqlAceEditor().isReadOnly()) {
+			cqlWorkspaceView.resetMessageDisplay();
+			setIsPageDirty(true);
+		}
 	}
 
 	private void definitionsAceEditorKeyDownEvent() {

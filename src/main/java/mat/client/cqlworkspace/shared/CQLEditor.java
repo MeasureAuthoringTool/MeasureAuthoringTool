@@ -5,26 +5,32 @@ import java.util.List;
 import com.google.gwt.dom.client.Style.Unit;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
+import edu.ycp.cs.dh.acegwt.client.ace.AceCommand;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.shared.CQLError;
 
-public class MATAceEditor extends AceEditor {
+public class CQLEditor extends AceEditor {
 
-	public MATAceEditor() {
+	public CQLEditor() {
 		super();
 		this.startEditor();
 		this.setMode(AceEditorMode.CQL);
 		this.setTheme(AceEditorTheme.ECLIPSE);
 		this.setAutocompleteEnabled(true);
+		this.addAutoCompletions();
 		this.setUseWrapMode(true);
 		this.setReadOnly(true);
 		this.clearAnnotations();
 		this.getElement().getStyle().setFontSize(14, Unit.PX);
+		this.setText("");
+		
+		this.removeCommand(AceCommand.INDENT);
+		this.removeCommand(AceCommand.OUTDENT);
 	}
 	
-	public MATAceEditor(boolean isReadOnly) {
+	public CQLEditor(boolean isReadOnly) {
 		this();
 		this.setReadOnly(isReadOnly);
 	}

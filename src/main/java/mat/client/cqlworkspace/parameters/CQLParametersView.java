@@ -5,28 +5,20 @@ package mat.client.cqlworkspace.parameters;
 
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextArea;
-import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import edu.ycp.cs.dh.acegwt.client.ace.AceCommand;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
 import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
+import mat.client.cqlworkspace.shared.CQLEditorPanel;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
@@ -38,30 +30,20 @@ public class CQLParametersView {
 
 	
 	private MatTextBox parameterNameTxtArea = new MatTextBox();
-
-	private AceEditor parameterAceEditor = new AceEditor();
-
 	private DefinitionFunctionButtonToolBar parameterButtonBar = new DefinitionFunctionButtonToolBar("parameter");
-
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("parameter");
-
-	FocusPanel mainParamViewVerticalPanel = new FocusPanel();
-
+	private FocusPanel mainParamViewVerticalPanel = new FocusPanel();
 	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
-	
 	private TextArea parameterCommentTextArea = new TextArea();
-	
-	private FormGroup paramNameGroup = new FormGroup();
-	
-	private FormGroup paramCommentGroup = new FormGroup();
-	
-	HTML heading = new HTML();
-	
+	private FormGroup parameterNameGroup = new FormGroup();
+	private FormGroup parameterCommentGroup = new FormGroup();
+	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
+	private CQLEditorPanel editorPanel;
 	
 	public CQLParametersView() {
+		editorPanel = new CQLEditorPanel("Build CQL Expression", true);
 		mainParamViewVerticalPanel.getElement().setId("mainParamViewVerticalPanel");
-		parameterAceEditor.startEditor();
 		heading.addStyleName("leftAligned");
 		collapsibleCQLPanelWidget.getViewCQLAceEditor().startEditor();
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataToggle(Toggle.COLLAPSE);
@@ -71,108 +53,39 @@ public class CQLParametersView {
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setColor("White");
 	}
 
-	@SuppressWarnings("static-access")
 	private void buildView() {
-		
-		
-		
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
-		paramNameGroup.clear();
-		paramCommentGroup.clear();
+		parameterCommentGroup.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
 		
 		parameterVP.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
+		
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(new SpacerWidget());
-		
-		FormLabel parameterLabel = new FormLabel();
-		parameterLabel.setText("Parameter Name");
-		parameterLabel.setTitle("Parameter Name");
-		parameterLabel.setMarginRight(15);
-		parameterLabel.setId("ParameterName_Label");
-		parameterLabel.setFor("parameterNameField");
-		
-		parameterNameTxtArea.setText("");
-		parameterNameTxtArea.setSize("550px", "32px");
-		parameterNameTxtArea.getElement().setId("parameterNameField");
-		parameterNameTxtArea.setName("parameterName");
-		parameterNameTxtArea.setTitle("Enter Parameter Name Required");
-		
-		HorizontalPanel paramNameHPanel = new HorizontalPanel();
-		paramNameHPanel.add(parameterLabel);
-		paramNameHPanel.add(parameterNameTxtArea);
-		paramNameHPanel.setWidth("700px");
-		paramNameGroup.add(paramNameHPanel);
-		
-		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
-		PanelHeader header = new PanelHeader();
-		header.setText("Build CQL Expression");
-		PanelBody body = new PanelBody();
-
-		SimplePanel paramAceEditorPanel = new SimplePanel();
-		paramAceEditorPanel.setSize("650px", "200px");
-		parameterAceEditor.setText("");
-		
-		parameterAceEditor.setMode(AceEditorMode.CQL);
-		parameterAceEditor.setTheme(AceEditorTheme.ECLIPSE);
-		parameterAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
-		parameterAceEditor.setSize("650px", "200px");
-		parameterAceEditor.setAutocompleteEnabled(true);
-		parameterAceEditor.addAutoCompletions();
-		parameterAceEditor.setUseWrapMode(true);
-		parameterAceEditor.clearAnnotations();
-		parameterAceEditor.removeAllMarkers();
-		parameterAceEditor.getElement().setAttribute("id", "Parameter_AceEditorID");
-		parameterAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");
-		
-		parameterAceEditor.removeCommand(AceCommand.INDENT);
-		parameterAceEditor.removeCommand(AceCommand.OUTDENT);
-
-		paramAceEditorPanel.add(parameterAceEditor);
-		paramAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Parameter_AceEditor");
-		
-		body.add(paramAceEditorPanel);
-		aceEditorPanel.add(header);
-		aceEditorPanel.add(body);
-		aceEditorPanel.setMarginBottom(-10.00);
+		editorPanel = new CQLEditorPanel("Build CQL Expression", true);
+		editorPanel.setId("parameter");
+		editorPanel.setEditorSize("650px", "200px");
 		
 		parameterButtonBar.getInsertButton().setVisible(false);
 		parameterButtonBar.getTimingExpButton().setVisible(false);
 		parameterButtonBar.getCloseButton().setVisible(false);
 		
-		
-		FormLabel parameterCommentLabel = new FormLabel();
-		parameterCommentLabel.setText("Comment");
-		parameterCommentLabel.setTitle("Comment");
-		parameterCommentLabel.setMarginRight(60);
-		parameterCommentLabel.setId("ParameterComment_Label");
-		parameterCommentLabel.setFor("ParameterCommentTextArea_Id");
-		
-		parameterCommentTextArea.setId("ParameterCommentTextArea_Id");
-		parameterCommentTextArea.setSize("550px", "40px");
-		parameterCommentTextArea.setText("");
-		parameterCommentTextArea.setName("Parameter Comment");
-		parameterCommentTextArea.setTitle("Enter Comment");
-
-		HorizontalPanel paramCommentHPanel = new HorizontalPanel();
-		paramCommentHPanel.add(parameterCommentLabel);
-		paramCommentHPanel.add(parameterCommentTextArea);
-		paramCommentHPanel.setWidth("700px");
-		paramCommentGroup.add(paramCommentHPanel);
+		parameterNameGroup = buildParameterNameGroup();
+		parameterCommentGroup = buildParameterCommentGroup();
 		
 		setMarginInButtonBar();
 			
 		parameterVP.add(addNewButtonBar);
-		parameterVP.add(paramNameGroup);
-		parameterVP.add(paramCommentGroup);
+		parameterVP.add(parameterNameGroup);
+		parameterVP.add(parameterCommentGroup);
 		
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.add(parameterButtonBar.getInfoButtonGroup());
 		buttonPanel.add(parameterButtonBar);
 		parameterVP.add(buttonPanel);
 		
-		parameterVP.add(aceEditorPanel);
+		parameterVP.add(editorPanel);
 		parameterVP.add(parameterButtonBar.getSaveButtonGroup());
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
@@ -191,58 +104,70 @@ public class CQLParametersView {
 		mainParamViewVerticalPanel.add(parameterFP);
 	}
 
-	
-	/**
-	 * 
-	 */
+	private FormGroup buildParameterCommentGroup() {
+		FormGroup paramCommentGroup = new FormGroup();
+		FormLabel parameterCommentLabel = new FormLabel();
+		parameterCommentLabel.setText("Comment");
+		parameterCommentLabel.setTitle("Comment");
+		parameterCommentLabel.setMarginRight(60);
+		parameterCommentLabel.setId("ParameterComment_Label");
+		parameterCommentLabel.setFor("ParameterCommentTextArea_Id");
+		
+		parameterCommentTextArea.setId("ParameterCommentTextArea_Id");
+		parameterCommentTextArea.setSize("550px", "40px");
+		parameterCommentTextArea.setText("");
+		parameterCommentTextArea.setName("Parameter Comment");
+		parameterCommentTextArea.setTitle("Enter Comment");
+
+		HorizontalPanel paramCommentHPanel = new HorizontalPanel();
+		paramCommentHPanel.add(parameterCommentLabel);
+		paramCommentHPanel.add(parameterCommentTextArea);
+		paramCommentHPanel.setWidth("700px");
+		paramCommentGroup.add(paramCommentHPanel);
+		return paramCommentGroup;
+	}
+
+	private FormGroup buildParameterNameGroup() {
+		FormGroup paramNameGroup = new FormGroup();
+		HorizontalPanel paramNameHPanel = new HorizontalPanel();
+		FormLabel parameterLabel = new FormLabel();
+		parameterLabel.setText("Parameter Name");
+		parameterLabel.setTitle("Parameter Name");
+		parameterLabel.setMarginRight(15);
+		parameterLabel.setId("ParameterName_Label");
+		parameterLabel.setFor("parameterNameField");
+		
+		parameterNameTxtArea.setText("");
+		parameterNameTxtArea.setSize("550px", "32px");
+		parameterNameTxtArea.getElement().setId("parameterNameField");
+		parameterNameTxtArea.setName("parameterName");
+		parameterNameTxtArea.setTitle("Enter Parameter Name Required");
+		
+		paramNameHPanel.add(parameterLabel);
+		paramNameHPanel.add(parameterNameTxtArea);
+		paramNameHPanel.setWidth("700px");
+		paramNameGroup.add(paramNameHPanel);
+		return paramNameGroup;
+	}
+
 	public void setMarginInButtonBar() {
 		parameterButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:510px;");
 		parameterButtonBar.getEraseButton().setMarginRight(5.00);
 		parameterButtonBar.getSaveButton().setMarginLeft(480.00);
 	}
 
-
-	/**
-	 * Gets the parameter name txt area.
-	 *
-	 * @return the parameter name txt area
-	 */
 	public MatTextBox getParameterNameTxtArea() {
 		return parameterNameTxtArea;
 	}
 
-	/**
-	 * Gets the parameter ace editor.
-	 *
-	 * @return the parameter ace editor
-	 */
 	public AceEditor getParameterAceEditor() {
-		return parameterAceEditor;
+		return this.editorPanel.getEditor();
 	}
 
-	/**
-	 * Sets the parameter ace editor.
-	 *
-	 * @param parameterAceEditor the new parameter ace editor
-	 */
-	public void setParameterAceEditor(AceEditor parameterAceEditor) {
-		this.parameterAceEditor = parameterAceEditor;
-	}
-
-	/**
-	 * Gets the parameter button bar.
-	 *
-	 * @return the parameter button bar
-	 */
 	public DefinitionFunctionButtonToolBar getParameterButtonBar() {
 		return parameterButtonBar;
 	}
 
-	/**
-	 * Gets the view.
-	 *
-	 * @return the view
-	 */
 	public FocusPanel getView() {
 		mainParamViewVerticalPanel.clear();
 		resetAll();
@@ -250,9 +175,6 @@ public class CQLParametersView {
 		return mainParamViewVerticalPanel;
 	}
 
-	/**
-	 * Reset all.
-	 */
 	public void resetAll() {
 		getParameterAceEditor().setText("");
 		getParameterNameTxtArea().setText("");
@@ -261,48 +183,23 @@ public class CQLParametersView {
 		getViewCQLAceEditor().setText("");
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().getElement().setClassName("panel-collapse collapse");
 	}
-	
-	/**
-	 * Gets the panel view CQL collapse.
-	 *
-	 * @return the panel view CQL collapse
-	 */
+
 	public PanelCollapse getPanelViewCQLCollapse() {
 		return collapsibleCQLPanelWidget.getPanelViewCQLCollapse();
 	}
 
-	/**
-	 * Gets the view CQL ace editor.
-	 *
-	 * @return the view CQL ace editor
-	 */
 	public AceEditor getViewCQLAceEditor() {
 		return collapsibleCQLPanelWidget.getViewCQLAceEditor();
 	}
 
-	/**
-	 * Gets the adds the new button bar.
-	 *
-	 * @return the adds the new button bar
-	 */
 	public CQLAddNewButton getAddNewButtonBar() {
 		return addNewButtonBar;
 	}
 
-	/**
-	 * Sets the adds the new button bar.
-	 *
-	 * @param addNewButtonBar the new adds the new button bar
-	 */
 	public void setAddNewButtonBar(CQLAddNewButton addNewButtonBar) {
 		this.addNewButtonBar = addNewButtonBar;
 	}
 
-	/**
-	 * Sets the widget read only.
-	 *
-	 * @param isEditable the new widget read only
-	 */
 	public void setWidgetReadOnly(boolean isEditable) {
 		getParameterNameTxtArea().setEnabled(isEditable);
 		getParameterCommentTextArea().setEnabled(isEditable);
@@ -313,93 +210,44 @@ public class CQLParametersView {
 		getParameterButtonBar().getInsertButton().setEnabled(isEditable);
 		getParameterButtonBar().getEraseButton().setEnabled(isEditable);
 	}
-	
-	/**
-	 * Reseet form group.
-	 */
+
 	public void reseetFormGroup(){
 		getParamCommentGroup().setValidationState(ValidationState.NONE);
 	}
 
-	/**
-	 * Hide ace editor auto complete pop up.
-	 */
 	public void hideAceEditorAutoCompletePopUp() {
 		getParameterAceEditor().detach();
 	}
 
-	/**
-	 * Gets the parameter comment text area.
-	 *
-	 * @return the parameter comment text area
-	 */
 	public TextArea getParameterCommentTextArea() {
 		return parameterCommentTextArea;
 	}
 
-	/**
-	 * Sets the parameter comment text area.
-	 *
-	 * @param parameterCommentTextArea the new parameter comment text area
-	 */
 	public void setParameterCommentTextArea(TextArea parameterCommentTextArea) {
 		this.parameterCommentTextArea = parameterCommentTextArea;
 	}
 
-	/**
-	 * Gets the param name group.
-	 *
-	 * @return the param name group
-	 */
 	public FormGroup getParamNameGroup() {
-		return paramNameGroup;
+		return parameterNameGroup;
 	}
 
-	/**
-	 * Sets the param name group.
-	 *
-	 * @param paramNameGroup the new param name group
-	 */
-	public void setParamNameGroup(FormGroup paramNameGroup) {
-		this.paramNameGroup = paramNameGroup;
-	}
-
-	/**
-	 * Gets the param comment group.
-	 *
-	 * @return the param comment group
-	 */
 	public FormGroup getParamCommentGroup() {
-		return paramCommentGroup;
+		return parameterCommentGroup;
 	}
 
-	/**
-	 * Sets the param comment group.
-	 *
-	 * @param paramCommentGroup the new param comment group
-	 */
 	public void setParamCommentGroup(FormGroup paramCommentGroup) {
-		this.paramCommentGroup = paramCommentGroup;
+		this.parameterCommentGroup = paramCommentGroup;
 	}
-	
-	/**
-	 * Reset param form group.
-	 */
+
 	public void resetParamFormGroup(){
 		getParamCommentGroup().setValidationState(ValidationState.NONE);
 		getParamNameGroup().setValidationState(ValidationState.NONE);
 	}
 
-	/**
-	 * @return the mainParamViewVerticalPanel
-	 */
 	public FocusPanel getMainParamViewVerticalPanel() {
 		return mainParamViewVerticalPanel;
 	}
 
-	/**
-	 * @param mainParamViewVerticalPanel the mainParamViewVerticalPanel to set
-	 */
 	public void setMainParamViewVerticalPanel(FocusPanel mainParamViewVerticalPanel) {
 		this.mainParamViewVerticalPanel = mainParamViewVerticalPanel;
 	}
@@ -408,12 +256,8 @@ public class CQLParametersView {
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
-	
-	/**
-	 * Added this method as part of MAT-8882.
-	 * @param isEditable
-	 */
-	public void setReadOnly(boolean isEditable) {		
+
+	public void setReadOnly(boolean isEditable) {	
 		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
 		getParameterButtonBar().getSaveButton().setEnabled(isEditable);
 		getParameterButtonBar().getEraseButton().setEnabled(isEditable);
@@ -428,5 +272,4 @@ public class CQLParametersView {
 	public void setInAppHelp(InAppHelp inAppHelp) {
 		this.inAppHelp = inAppHelp;
 	}	
-	
 }

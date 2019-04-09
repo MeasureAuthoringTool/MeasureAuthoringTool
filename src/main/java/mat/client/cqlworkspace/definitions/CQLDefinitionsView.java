@@ -5,31 +5,23 @@ import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.InlineRadio;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.ycp.cs.dh.acegwt.client.ace.AceCommand;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
 import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
+import mat.client.cqlworkspace.shared.CQLEditorPanel;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
@@ -40,7 +32,6 @@ import mat.client.util.MatTextBox;
 public class CQLDefinitionsView {
 	private HelpBlock helpBlock = new HelpBlock();
 	private MatTextBox defineNameTxtArea = new MatTextBox();
-	private AceEditor defineAceEditor = new AceEditor();
 	private ButtonGroup contextGroup = new ButtonGroup();
 	private InlineRadio contextDefinePATRadioBtn = new InlineRadio("Patient");
 	private InlineRadio contextDefinePOPRadioBtn = new InlineRadio("Population");
@@ -49,17 +40,17 @@ public class CQLDefinitionsView {
 	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
 	private TextArea defineCommentTextArea = new TextArea();
 	private TextBox returnTypeTextBox = new TextBox();
-	private FormGroup defineNameGroup = new FormGroup();
+	private FormGroup definitionNameGroup = new FormGroup();
 	private FormGroup defineCommentGroup = new FormGroup();
-	private FormGroup defineContextGroup = new FormGroup();
+	private FormGroup definitionContextGroup = new FormGroup();
 	private FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
 	private FocusPanel mainDefineViewVerticalPanel = new FocusPanel();
 	HTML heading = new HTML();
 	
 	private InAppHelp inAppHelp = new InAppHelp("");
+	private CQLEditorPanel editorPanel= new CQLEditorPanel("Build CQL Expression", false);
 	
 	public CQLDefinitionsView() {
-		defineAceEditor.startEditor();
 		mainDefineViewVerticalPanel.getElement().setId("mainDefViewVerticalPanel");
 		
 		collapsibleCQLPanelWidget.getViewCQLAceEditor().startEditor();
@@ -91,9 +82,9 @@ public class CQLDefinitionsView {
 
 	private void buildView() {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
-		defineNameGroup.clear();
+		definitionNameGroup.clear();
 		defineCommentGroup.clear();
-		defineContextGroup.clear();
+		definitionContextGroup.clear();
 		returnTypeAndButtonPanelGroup.clear();
 		
 		VerticalPanel definitionVP = new VerticalPanel();
@@ -104,25 +95,99 @@ public class CQLDefinitionsView {
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(buildHelpBlock());
 		
-		FormLabel defineNameLabel = new FormLabel();
-		defineNameLabel.setText("Definition Name");
-		defineNameLabel.setTitle("Definition Name");
-		defineNameLabel.setMarginRight(15);
-		defineNameLabel.setId("DefinitionName_Label");
-		defineNameLabel.setFor("defineNameField");
+		definitionNameGroup = buildDefinitionNameFormGroup();
+		definitionContextGroup = buildDefinitionContextGroup();
+		defineCommentGroup = buildDefinitionCommentGroup();
+		returnTypeAndButtonPanelGroup = buildReturnTypeAndButtonPanelGroup();
 		
-		defineNameTxtArea.setText("");
-		defineNameTxtArea.setSize("550px", "32px");
-		defineNameTxtArea.getElement().setId("defineNameField");
-		defineNameTxtArea.setName("defineName");
-		defineNameTxtArea.setTitle("Enter Definition Name Required");
+		defineButtonBar.getTimingExpButton().setVisible(false);
+		defineButtonBar.getCloseButton().setVisible(false);
+
+		editorPanel = new CQLEditorPanel("Build CQL Expression", false);
+		editorPanel.setId("definition");
+		editorPanel.setSize("650px", "200px");
+
+		definitionVP.add(addNewButtonBar);
+		definitionVP.add(definitionNameGroup);
+		definitionVP.add(new SpacerWidget());
+		definitionVP.add(definitionContextGroup);
+		definitionVP.add(defineCommentGroup);
 		
-		HorizontalPanel defineNameHPanel = new HorizontalPanel();
-		defineNameHPanel.add(defineNameLabel);
-		defineNameHPanel.add(defineNameTxtArea);
-		defineNameHPanel.setWidth("700px");
-			
-		defineNameGroup.add(defineNameHPanel);
+		definitionVP.add(new SpacerWidget());
+		definitionVP.add(returnTypeAndButtonPanelGroup);
+		HorizontalPanel buttonPanel = new HorizontalPanel();
+		buttonPanel.add(defineButtonBar.getInfoButtonGroup());
+		buttonPanel.add(defineButtonBar);
+		definitionVP.add(buttonPanel);
+		definitionVP.add(editorPanel);
+		definitionVP.add(defineButtonBar.getSaveButtonGroup());
+		definitionVP.add(new SpacerWidget());
+		definitionVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
+		definitionVP.add(new SpacerWidget());
+		definitionVP.setStyleName("topping");
+		
+		definitionFP.add(definitionVP);
+		definitionFP.setStyleName("cqlRightContainer");
+
+		definitionFP.setWidth("700px");
+		definitionFP.setStyleName("marginLeft15px");
+		
+		mainDefineViewVerticalPanel.setTitle("Definition Section");
+		mainDefineViewVerticalPanel.setStyleName("cqlRightContainer");
+		mainDefineViewVerticalPanel.setWidth("725px");
+		mainDefineViewVerticalPanel.add(definitionFP);
+	}
+
+	private FormGroup buildReturnTypeAndButtonPanelGroup() {
+		FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
+		FormLabel returnTypeLabel = new FormLabel();
+		returnTypeLabel.setText("Return Type");
+		returnTypeLabel.setTitle("Return Type");
+		returnTypeLabel.setMarginRight(42);
+		returnTypeLabel.setId("returnType_Label");
+		returnTypeLabel.setFor("returnTypeTextArea_Id");
+		
+		returnTypeTextBox.setId("returnTypeTextArea_Id");
+		returnTypeTextBox.setTitle("Return Type of CQL Expression");
+		returnTypeTextBox.setReadOnly(true);
+		returnTypeTextBox.setWidth("550px");
+		setMarginInButtonBar();
+		
+		HorizontalPanel returnTypeHP = new HorizontalPanel();
+		returnTypeHP.add(returnTypeLabel);
+		returnTypeHP.add(returnTypeTextBox);
+		
+		returnTypeAndButtonPanelGroup.add(returnTypeHP);
+		return returnTypeAndButtonPanelGroup;
+	}
+
+	private FormGroup buildDefinitionCommentGroup() {
+		FormGroup defineCommentGroup = new FormGroup();
+
+		FormLabel defineCommentLabel = new FormLabel();
+		defineCommentLabel.setText("Comment");
+		defineCommentLabel.setTitle("Comment");
+		defineCommentLabel.setMarginRight(53);
+		defineCommentLabel.setId("DefinitionComment_Label");
+		defineCommentLabel.setFor("DefineCommentTextArea_Id");
+		
+		defineCommentTextArea.setId("DefineCommentTextArea_Id");
+		defineCommentTextArea.setSize("550px", "40px");
+		defineCommentTextArea.setText("");
+		defineCommentTextArea.setName("Definition Comment");
+		defineCommentTextArea.setTitle("Enter Comment");
+		
+		HorizontalPanel defineCommenttHPanel = new HorizontalPanel();
+		defineCommenttHPanel.add(defineCommentLabel);
+		defineCommenttHPanel.add(defineCommentTextArea);
+		defineCommenttHPanel.setWidth("700px");
+		
+		defineCommentGroup.add(defineCommenttHPanel);
+		return defineCommentGroup;
+	}
+
+	private FormGroup buildDefinitionContextGroup() {
+		FormGroup defineContextGroup = new FormGroup();
 		FormLabel defineContextLabel = new FormLabel();
 		defineContextLabel.setText("Context");
 		defineContextLabel.setTitle("Context");
@@ -148,79 +213,30 @@ public class CQLDefinitionsView {
 		defineContextHPanel.setWidth("500px");
 		
 		defineContextGroup.add(defineContextHPanel);
+		return defineContextGroup;
+	}
 
-		FormLabel defineCommentLabel = new FormLabel();
-		defineCommentLabel.setText("Comment");
-		defineCommentLabel.setTitle("Comment");
-		defineCommentLabel.setMarginRight(53);
-		defineCommentLabel.setId("DefinitionComment_Label");
-		defineCommentLabel.setFor("DefineCommentTextArea_Id");
+	private FormGroup buildDefinitionNameFormGroup() {
+		FormGroup defineNameGroup = new FormGroup();
+		FormLabel defineNameLabel = new FormLabel();
+		defineNameLabel.setText("Definition Name");
+		defineNameLabel.setTitle("Definition Name");
+		defineNameLabel.setMarginRight(15);
+		defineNameLabel.setId("DefinitionName_Label");
+		defineNameLabel.setFor("defineNameField");
 		
-		defineCommentTextArea.setId("DefineCommentTextArea_Id");
-		defineCommentTextArea.setSize("550px", "40px");
-		defineCommentTextArea.setText("");
-		defineCommentTextArea.setName("Definition Comment");
-		defineCommentTextArea.setTitle("Enter Comment");
+		defineNameTxtArea.setText("");
+		defineNameTxtArea.setSize("550px", "32px");
+		defineNameTxtArea.getElement().setId("defineNameField");
+		defineNameTxtArea.setName("defineName");
+		defineNameTxtArea.setTitle("Enter Definition Name Required");
 		
-		HorizontalPanel defineCommenttHPanel = new HorizontalPanel();
-		defineCommenttHPanel.add(defineCommentLabel);
-		defineCommenttHPanel.add(defineCommentTextArea);
-		defineCommenttHPanel.setWidth("700px");
-		
-		defineCommentGroup.add(defineCommenttHPanel);
-		FormLabel returnTypeLabel = new FormLabel();
-		returnTypeLabel.setText("Return Type");
-		returnTypeLabel.setTitle("Return Type");
-		returnTypeLabel.setMarginRight(42);
-		returnTypeLabel.setId("returnType_Label");
-		returnTypeLabel.setFor("returnTypeTextArea_Id");
-		
-		returnTypeTextBox.setId("returnTypeTextArea_Id");
-		returnTypeTextBox.setTitle("Return Type of CQL Expression");
-		returnTypeTextBox.setReadOnly(true);
-		returnTypeTextBox.setWidth("550px");
-		setMarginInButtonBar();
-		
-		HorizontalPanel returnTypeHP = new HorizontalPanel();
-		returnTypeHP.add(returnTypeLabel);
-		returnTypeHP.add(returnTypeTextBox);
-		
-		returnTypeAndButtonPanelGroup.add(returnTypeHP);
-		
-		
-		defineButtonBar.getTimingExpButton().setVisible(false);
-		defineButtonBar.getCloseButton().setVisible(false);
-
-		Panel aceEditorPanel = editableAceEditorPanel();
-		definitionVP.add(addNewButtonBar);
-		definitionVP.add(defineNameGroup);
-		definitionVP.add(new SpacerWidget());
-		definitionVP.add(defineContextGroup);
-		definitionVP.add(defineCommentGroup);
-		
-		definitionVP.add(new SpacerWidget());
-		definitionVP.add(returnTypeAndButtonPanelGroup);
-		HorizontalPanel buttonPanel = new HorizontalPanel();
-		buttonPanel.add(defineButtonBar.getInfoButtonGroup());
-		buttonPanel.add(defineButtonBar);
-		definitionVP.add(buttonPanel);
-		definitionVP.add(aceEditorPanel);
-		definitionVP.add(defineButtonBar.getSaveButtonGroup());
-		definitionVP.add(new SpacerWidget());
-		definitionVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
-		definitionVP.add(new SpacerWidget());
-		definitionVP.setStyleName("topping");
-		
-		definitionFP.add(definitionVP);
-		definitionFP.setStyleName("cqlRightContainer");
-
-		definitionFP.setWidth("700px");
-		definitionFP.setStyleName("marginLeft15px");
-		
-		mainDefineViewVerticalPanel.setTitle("Definition Section");
-		mainDefineViewVerticalPanel.setStyleName("cqlRightContainer");
-		mainDefineViewVerticalPanel.setWidth("725px");
-		mainDefineViewVerticalPanel.add(definitionFP);
+		HorizontalPanel defineNameHPanel = new HorizontalPanel();
+		defineNameHPanel.add(defineNameLabel);
+		defineNameHPanel.add(defineNameTxtArea);
+		defineNameHPanel.setWidth("700px");
+		defineNameGroup.add(defineNameHPanel);
+		return defineNameGroup;
 	}
 
 	public void setMarginInButtonBar() {
@@ -231,41 +247,6 @@ public class CQLDefinitionsView {
 		
 		defineButtonBar.getSaveButton().setMarginLeft(480.00);
 	}
-
-	public Panel editableAceEditorPanel() {
-		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
-		PanelHeader header = new PanelHeader();
-		header.setText("Build CQL Expression");
-		PanelBody body = new PanelBody();
-		
-		SimplePanel defAceEditorPanel = new SimplePanel();
-		defAceEditorPanel.setSize("650px", "200px");
-		defineAceEditor.setText("");
-		defineAceEditor.setMode(AceEditorMode.CQL);
-		defineAceEditor.setTheme(AceEditorTheme.ECLIPSE);
-		defineAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
-		defineAceEditor.setSize("650px", "200px");
-		defineAceEditor.setAutocompleteEnabled(true);
-		defineAceEditor.addAutoCompletions();
-		defineAceEditor.setUseWrapMode(true);
-		defineAceEditor.removeAllMarkers();
-		defineAceEditor.clearAnnotations();
-		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
-		defineAceEditor.setTitle("Build CQL Expression");
-		defineAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");
-		
-		defineAceEditor.removeCommand(AceCommand.INDENT);
-		defineAceEditor.removeCommand(AceCommand.OUTDENT);
-		
-		defAceEditorPanel.add(defineAceEditor);
-		defAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Define_AceEditor");
-		body.add(defAceEditorPanel);
-		aceEditorPanel.add(header);
-		aceEditorPanel.add(body);
-		aceEditorPanel.setMarginBottom(-10.00);
-		return aceEditorPanel;
-	}
-
 
 	public FocusPanel getView() {
 		mainDefineViewVerticalPanel.clear();
@@ -278,70 +259,35 @@ public class CQLDefinitionsView {
 		return defineNameTxtArea;
 	}
 
-
-	public void setDefineNameTxtArea(MatTextBox defineNameTxtArea) {
-		this.defineNameTxtArea = defineNameTxtArea;
-	}
-
-
 	public AceEditor getDefineAceEditor() {
-		return defineAceEditor;
+		return this.editorPanel.getEditor();
 	}
-
-	public void setDefineAceEditor(AceEditor defineAceEditor) {
-		this.defineAceEditor = defineAceEditor;
-	}
-
 
 	public ButtonGroup getContextGroup() {
 		return contextGroup;
 	}
 
-	public void setContextGroup(ButtonGroup contextGroup) {
-		this.contextGroup = contextGroup;
-	}
-
-
 	public InlineRadio getContextDefinePATRadioBtn() {
 		return contextDefinePATRadioBtn;
 	}
-
-
-	public void setContextDefinePATRadioBtn(InlineRadio contextDefinePATRadioBtn) {
-		this.contextDefinePATRadioBtn = contextDefinePATRadioBtn;
-	}
-
 
 	public InlineRadio getContextDefinePOPRadioBtn() {
 		return contextDefinePOPRadioBtn;
 	}
 
-
-	public void setContextDefinePOPRadioBtn(InlineRadio contextDefinePOPRadioBtn) {
-		this.contextDefinePOPRadioBtn = contextDefinePOPRadioBtn;
-	}
-
-
 	public DefinitionFunctionButtonToolBar getDefineButtonBar() {
 		return defineButtonBar;
 	}
-
-
-	public void setDefineButtonBar(DefinitionFunctionButtonToolBar defineButtonBar) {
-		this.defineButtonBar = defineButtonBar;
-	}
-
 
 	public CQLAddNewButton getAddNewButtonBar() {
 		return addNewButtonBar;
 	}
 
-
-	public void setAddNewButtonBar(CQLAddNewButton addNewButtonBar) {
-		this.addNewButtonBar = addNewButtonBar;
+	public void resetDefineFormGroup(){
+		getDefineCommentGroup().setValidationState(ValidationState.NONE);
+		getDefineNameGroup().setValidationState(ValidationState.NONE);
 	}
-
-
+	
 	public void resetAll() {
 		getDefineNameTxtArea().setText("");
 		getDefineAceEditor().setText("");
@@ -349,7 +295,29 @@ public class CQLDefinitionsView {
 		getReturnTypeTextBox().setText("");
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().getElement().setClassName("panel-collapse collapse");
 	}
-
+	
+	public void setWidgetReadOnly(boolean isEditable) {
+		getDefineNameTxtArea().setEnabled(isEditable);
+		getDefineCommentTextArea().setEnabled(isEditable);
+		getDefineAceEditor().setReadOnly(!isEditable);
+		getContextDefinePATRadioBtn().setEnabled(isEditable);
+		getContextDefinePOPRadioBtn().setEnabled(isEditable);
+		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
+		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
+		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
+		getDefineButtonBar().getTimingExpButton().setEnabled(isEditable);
+		getDefineButtonBar().getEraseButton().setEnabled(isEditable);
+		getDefineButtonBar().getExpressionBuilderButton().setEnabled(isEditable);
+	}
+	
+	public void setReadOnly(boolean isEditable) {		
+		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
+		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
+		getDefineButtonBar().getEraseButton().setEnabled(isEditable);
+		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
+		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
+		getDefineButtonBar().getInfoButton().setEnabled(isEditable);
+	}
 
 	public PanelCollapse getPanelViewCQLCollapse() {
 		return collapsibleCQLPanelWidget.getPanelViewCQLCollapse();
@@ -364,99 +332,37 @@ public class CQLDefinitionsView {
 	public void hideAceEditorAutoCompletePopUp() {
 		getDefineAceEditor().detach();
 	}
-
-
-	public void setWidgetReadOnly(boolean isEditable) {
-
-		getDefineNameTxtArea().setEnabled(isEditable);
-		getDefineCommentTextArea().setEnabled(isEditable);
-		getDefineAceEditor().setReadOnly(!isEditable);
-		getContextDefinePATRadioBtn().setEnabled(isEditable);
-		getContextDefinePOPRadioBtn().setEnabled(isEditable);
-		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
-		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
-		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
-		getDefineButtonBar().getTimingExpButton().setEnabled(isEditable);
-		getDefineButtonBar().getEraseButton().setEnabled(isEditable);
-		getDefineButtonBar().getExpressionBuilderButton().setEnabled(isEditable);
-	}
-
-
-	public void resetDefineFormGroup(){
-		getDefineCommentGroup().setValidationState(ValidationState.NONE);
-		getDefineNameGroup().setValidationState(ValidationState.NONE);
-	}
 	
 	public TextArea getDefineCommentTextArea() {
 		return defineCommentTextArea;
 	}
 
-
-	public void setDefineCommentTextArea(TextArea commentTextArea) {
-		this.defineCommentTextArea = commentTextArea;
-	}
-
 	public FormGroup getDefineNameGroup() {
-		return defineNameGroup;
+		return definitionNameGroup;
 	}
-
-
-	public void setDefineNameGroup(FormGroup defineNameGroup) {
-		this.defineNameGroup = defineNameGroup;
-	}
-
 
 	public FormGroup getDefineCommentGroup() {
 		return defineCommentGroup;
 	}
 
-	public void setDefineCommentGroup(FormGroup defineCommentGroup) {
-		this.defineCommentGroup = defineCommentGroup;
-	}
-
-
 	public FormGroup getDefineContextGroup() {
-		return defineContextGroup;
-	}
-
-
-	public void setDefineContextGroup(FormGroup defineContextGroup) {
-		this.defineContextGroup = defineContextGroup;
+		return definitionContextGroup;
 	}
 
 	public TextBox getReturnTypeTextBox() {
 		return returnTypeTextBox;
 	}
 
-
 	public FocusPanel getMainDefineViewVerticalPanel() {
 		return mainDefineViewVerticalPanel;
 	}
-
 	
-	public void setMainDefineViewVerticalPanel(FocusPanel mainDefineViewVerticalPanel) {
-		this.mainDefineViewVerticalPanel = mainDefineViewVerticalPanel;
-	}
-
 	public void setHeading(String text,String linkName) {
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
 
-	public void setReadOnly(boolean isEditable) {		
-		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
-		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
-		getDefineButtonBar().getEraseButton().setEnabled(isEditable);
-		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
-		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
-		getDefineButtonBar().getInfoButton().setEnabled(isEditable);
-	}
-
 	public InAppHelp getInAppHelp() {
 		return inAppHelp;
 	}
-
-	public void setInAppHelp(InAppHelp inAppHelp) {
-		this.inAppHelp = inAppHelp;
-	}	
 }

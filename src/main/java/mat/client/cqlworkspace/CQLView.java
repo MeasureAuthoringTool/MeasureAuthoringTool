@@ -3,19 +3,15 @@ package mat.client.cqlworkspace;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.PanelType;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import mat.client.cqlworkspace.shared.CQLEditorPanel;
-import mat.client.cqlworkspace.shared.MATAceEditor;
+import mat.client.cqlworkspace.shared.CQLEditor;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
@@ -28,7 +24,7 @@ public class CQLView {
 	private Button exportErrorFile = new Button();
 	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
-	private CQLEditorPanel editorPanel = new CQLEditorPanel("View CQL file here", false);
+	private CQLEditorPanel editorPanel = new CQLEditorPanel("viewCQL", "View CQL file here", false);
 	
 	public CQLView(){	
 		cqlViewVP.clear();
@@ -51,8 +47,7 @@ public class CQLView {
 			cqlViewVP.add(exportErrorFile);
 		}
 		
-		editorPanel = new CQLEditorPanel("View CQL file here", false);
-		editorPanel.setEditorSize("650px", "500px");
+		editorPanel.setSize("650px", "500px");
 		cqlViewVP.add(editorPanel);
 
 		cqlViewVP.setStyleName("cqlRightContainer");
@@ -62,7 +57,7 @@ public class CQLView {
 	}
 
 	
-	public MATAceEditor getCqlAceEditor() {
+	public CQLEditor getCqlAceEditor() {
 		return editorPanel.getEditor();
 	}
 

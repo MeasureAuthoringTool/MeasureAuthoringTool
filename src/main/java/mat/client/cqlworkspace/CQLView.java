@@ -35,7 +35,7 @@ public class CQLView {
 		exportErrorFile.setId("Button_exportErrorFile");
 	}
 	
-	public VerticalPanel buildView(boolean showExportButton){
+	public VerticalPanel buildView(boolean isEditable){
 		cqlViewVP.clear();
 		cqlViewVP.getElement().setId("cqlViewCQL_Id");
 		heading.addStyleName("leftAligned");
@@ -43,7 +43,8 @@ public class CQLView {
 		cqlViewVP.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		cqlViewVP.add(new SpacerWidget());
 		
-		if(showExportButton) {
+		getCqlAceEditor().setReadOnly(!isEditable);
+		if(isEditable) {
 			cqlViewVP.add(exportErrorFile);
 		}
 		
@@ -56,12 +57,10 @@ public class CQLView {
 		return cqlViewVP;
 	}
 
-	
 	public CQLEditor getCqlAceEditor() {
 		return editorPanel.getEditor();
 	}
 
-	
 	public void resetAll() {
 		getCqlAceEditor().setText("");
 	}

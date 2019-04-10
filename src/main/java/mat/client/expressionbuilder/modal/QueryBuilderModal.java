@@ -77,6 +77,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 
 	private VerticalPanel queryBuilderContentPanel;
 
+	private ListBoxMVP availableExpressionsForRelationship;
 	
 	public QueryBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
 			ExpressionBuilderModel mainModel) {
@@ -274,7 +275,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		HorizontalPanel labelPanel = new HorizontalPanel();
 		labelPanel.add(label);
 		
-		ListBoxMVP availableExpressionsForRelationship = new ListBoxMVP();
+		availableExpressionsForRelationship = new ListBoxMVP();
 		availableExpressionsForRelationship.insertItem(SELECT_RELATIONSHIP, SELECT_RELATIONSHIP);
 		availableExpressionsForRelationship.insertItem("with", "with");
 		availableExpressionsForRelationship.insertItem("without", "without");
@@ -422,7 +423,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		updateNextButton(FILTER, event -> navigate(FILTER));
 		queryBuilderContentPanel.clear();
 		queryBuilderContentPanel.add(buildRelationshipWidget());
-		
+		availableExpressionsForRelationship.setFocus(true);
 		relationshipListItem.setActive(true);
 	}
 	

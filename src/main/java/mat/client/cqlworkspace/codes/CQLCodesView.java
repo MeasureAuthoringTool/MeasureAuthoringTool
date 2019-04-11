@@ -878,8 +878,7 @@ public class CQLCodesView {
 
 				return new FieldUpdater<CQLCode, SafeHtml>() {
 					@Override
-					public void update(int index, CQLCode object,
-							SafeHtml value) {
+					public void update(int index, CQLCode object, SafeHtml value) {
 						if ((object != null)) {
 							int indexOfSuffix = object.getCodeName().lastIndexOf(" ("+object.getSuffix()+")");
 							if(indexOfSuffix >0) {

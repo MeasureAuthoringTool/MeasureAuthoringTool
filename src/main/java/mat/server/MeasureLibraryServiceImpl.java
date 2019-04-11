@@ -5136,6 +5136,30 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public CQLValidationResult validateCQL(CQLModel cqlModel) {
 		return null;
 	}
+	
+	@Override
+	public SaveUpdateCQLResult saveCQLFile(String measureId, String cql) {
+		SaveUpdateCQLResult result = null;
+		
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+			MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+			MatContextServiceUtil.get().setMeasure(true);
+			result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql);
+		
+			System.out.println("MEASURE XML BEFORE: " + measureXMLModel.getXml());
+			System.out.println("NEW CQL LOOKUP: " + result.getXml());
+			
+			XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
+			processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+			measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
+			
+			System.out.println("MEASUER XML AFTER: " + measureXMLModel.getXml());
+			
+			measurePackageService.saveMeasureXml(measureXMLModel);			
+		}
+		
+		return result;
+	}
 
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBeModifiedObj,

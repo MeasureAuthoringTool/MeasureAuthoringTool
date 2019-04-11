@@ -564,6 +564,8 @@ public interface MeasureServiceAsync {
 	 */
 	void parseCQL(String cqlBuilder , AsyncCallback<CQLModel> asyncCallback);
 	
+	void saveCQLFile(String measureId, String cql, AsyncCallback<SaveUpdateCQLResult> asyncCallback);
+	
 	/**
 	 * Save and modify definitions.
 	 *

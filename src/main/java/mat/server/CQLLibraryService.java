@@ -841,6 +841,23 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	}
 	
 	@Override
+	public SaveUpdateCQLResult saveCQLFile(String libraryId, String cql) {
+		SaveUpdateCQLResult result = null;
+		
+		if(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
+			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+			String cqlXml = getCQLLibraryXml(cqlLibrary);
+			result = cqlService.saveCQLFile(cqlXml, cql);
+			XmlProcessor processor = new XmlProcessor(cqlXml);		
+			processor.replaceNode(result.getXml(), "cqlLookUp", null);
+			cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+			cqlLibraryDAO.save(cqlLibrary);			
+		}
+		
+		return result;
+	}
+	
+	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable) {
 

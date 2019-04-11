@@ -204,4 +204,6 @@ public interface CQLService {
 	SaveUpdateCQLResult getCQLDataForLoad(String xmlString);
 	
 	String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) throws MarshalException, ValidationException, IOException, MappingException;
+
+	SaveUpdateCQLResult saveCQLFile(String xml, String cql);
 }

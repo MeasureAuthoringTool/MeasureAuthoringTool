@@ -320,6 +320,7 @@ public class InAppHelpMessages {
 	
 	public static final String EXPRESSION_BUILDER = "<b>Comparison:</b> Choose this type of expression if you want to compare one thing to another.</span><br>" + 
 			"<span style='margin-left:2em'>Example: AgeInYearsAt (start of “Measurement Period”) > 18</span><br>" + 
+
 			"<br>" + 
 			"<b>Computation:</b> Choose this type of expression if you want to perform a mathematical calculation.<br>" + 
 			"<span style='margin-left:2em'>Example: “Measurement Period” – 5 years</span><br>" + 

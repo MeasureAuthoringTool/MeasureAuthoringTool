@@ -680,7 +680,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	}
 	
 	protected void pasteCodesClicked(ClickEvent event) {
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+		if (checkForEditPermission()) {
 			pasteCodes();
 		} else {
 			event.preventDefault();
@@ -723,7 +723,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 	}
 	
-	protected void showSearchBusyOnDoubleClick(boolean busy) {
+	protected void showSearchBusyOnDoubleClick(boolean busy) {		
 		if (busy) {
 			Mat.showLoadingMessage();
 		} else {
@@ -1199,8 +1199,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		result.setCqlLibraryDataSetObjects(cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryList());
-		cqlWorkspaceView.getIncludeView().buildIncludeLibraryCellTable(result,
-				MatContext.get().getMeasureLockService().checkForEditPermission(), false);
+		cqlWorkspaceView.getIncludeView().buildIncludeLibraryCellTable(result, checkForEditPermission(), false);
 	}
 	
 	protected void deleteConfirmationYesClicked() {
@@ -1516,7 +1515,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
 		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
 		CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
-		AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false,cqlWorkspaceView.getCQLFunctionsView(), messagePanel,MatContext.get().getMeasureLockService().checkForEditPermission());
+		AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false,cqlWorkspaceView.getCQLFunctionsView(), messagePanel, checkForEditPermission());
 		setIsPageDirty(true);
 		cqlWorkspaceView.getCQLFunctionsView().getAddNewArgument().setFocus(true);
 	}

@@ -70,7 +70,6 @@ import mat.shared.cql.error.InvalidLibraryException;
 public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresenter implements MatPresenter {
 	private SimplePanel emptyWidget = new SimplePanel();
 	private boolean isCQLWorkSpaceLoaded = false;
-	private static CQLWorkspaceView cqlWorkspaceView;
 	private final CQLLibraryServiceAsync cqlService = MatContext.get().getCQLLibraryService();
 	private static final String ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR  = "Invalid Library Alias. Must be unique, start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
 

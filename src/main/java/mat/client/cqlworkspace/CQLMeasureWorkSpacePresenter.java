@@ -1629,7 +1629,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		CQLCode refCode = buildCQLCodeFromCodesView(codeName);
 		MatCodeTransferObject transferObject = cqlWorkspaceView.getCodesView().getCodeTransferObject(measureId, refCode);
 		if (null != transferObject) {
-			appliedCodeTableList.removeIf(code -> code.getDisplayName().equals(modifyCQLCode.getDisplayName()));
+			appliedCodeTableList.removeIf(code -> code.getId().equals(modifyCQLCode.getId()));
 			if(!cqlWorkspaceView.getCodesView().checkCodeInAppliedCodeTableList(refCode.getDisplayName(), appliedCodeTableList)) {
 				showSearchingBusy(true);
 				service.modifyCQLCodeInMeasure(modifyCQLCode, refCode, measureId, new AsyncCallback<SaveUpdateCQLResult>() {

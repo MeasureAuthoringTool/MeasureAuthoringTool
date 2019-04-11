@@ -563,9 +563,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 	
 	protected void onModifyCode(CQLCode cqlCode) {
 		CQLCodesView codesView = cqlWorkspaceView.getCodesView();
-		//TODO MAT-9762
-		codesView.getCodeSearchInput().setEnabled(false);
-		codesView.getRetrieveFromVSACButton().setEnabled(false);
 		codesView.getCodeSearchInput().setValue(cqlCode.getCodeIdentifier());
 		codesView.getSuffixTextBox().setValue(cqlCode.getSuffix());
 		codesView.getCodeDescriptorInput().setValue(cqlCode.getName());
@@ -667,11 +664,10 @@ public abstract class AbstractCQLWorkspacePresenter {
 		}
 	}
 	
-	protected void codesViewRetrieveFromVSACButtonClicked() {
+	protected void codesViewRetrieveFromVSACButtonClicked() {	
 		if (checkForEditPermission()) {
 			cqlWorkspaceView.resetMessageDisplay();
-			if (!isCodeModified)
-				searchCQLCodesInVsac();
+			searchCQLCodesInVsac();
 			cqlWorkspaceView.getCodesView().getCodeInput().setFocus(true);
 		}
 	}

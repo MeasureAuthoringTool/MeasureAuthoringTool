@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -533,14 +534,8 @@ public interface MeasureService extends RemoteService {
 //	SaveUpdateCQLResult getCQLData(String measureId, String fromTable);
 	
 	SaveUpdateCQLResult getMeasureCQLData(String measureId);
-	
-	/**
-	 * Gets the CQL file data.
-	 *
-	 * @param measureId the measure id
-	 * @return the CQL file data
-	 */
-//	SaveUpdateCQLResult getCQLFileData(String measureId);
+		
+	SaveUpdateCQLResult saveCQLFile(String measureId, String cql);	
 	
 	/**
 	 * Save and modify definitions.

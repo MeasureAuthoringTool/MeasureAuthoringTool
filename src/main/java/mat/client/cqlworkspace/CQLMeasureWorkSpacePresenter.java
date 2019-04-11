@@ -58,7 +58,7 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
-import mat.model.cql.CQLQualityDataSetDTO;
+import mat.model.cql.CQLQualityDataSetDTO;import mat.server.CQLUtilityClass;
 import mat.shared.CQLError;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.ConstantMessages;
@@ -638,6 +638,30 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setText(parameterName.trim());
 		}
 	}
+	
+	@Override
+	protected void saveCQLFile() {
+		setIsPageDirty(false);
+		String currentCQL = cqlWorkspaceView.getViewCQLView().getCqlAceEditor().getText();		
+		
+		MatContext.get().getMeasureService().saveCQLFile(MatContext.get().getCurrentMeasureId(), currentCQL, new AsyncCallback<SaveUpdateCQLResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(SaveUpdateCQLResult result) {
+				onSaveCQLFileSuccess();
+				handleCQLData(result);
+				SharedCQLWorkspaceUtility.displayMessagesForViewCQL(result, cqlWorkspaceView.getViewCQLView().getCqlAceEditor(), messagePanel);
+				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().setText(result.getCqlString());
+			
+			}
+		});
+	}
 
 	@Override
 	protected void addAndModifyDefintions() {
@@ -866,7 +890,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			public void onFailure(Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				showSearchingBusy(false);
-
 			}
 
 			@Override

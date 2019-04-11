@@ -76,6 +76,8 @@ public interface CQLLibraryServiceInterface {
 
 	int countNumberOfAssociation(String id);
 	
+	SaveUpdateCQLResult saveCQLFile(String libraryId, String cql);
+	
 	SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable);
 

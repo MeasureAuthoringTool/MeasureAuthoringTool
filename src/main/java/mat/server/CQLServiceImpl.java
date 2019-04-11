@@ -73,6 +73,7 @@ import mat.model.cql.CQLParametersWrapper;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.model.cql.validator.CQLIncludeLibraryValidator;
+import mat.server.cqlparser.ReverseEngineerListener;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.CQLLibraryWrapperMappingUtil;
@@ -166,6 +167,54 @@ public class CQLServiceImpl implements CQLService {
 			result.setSuccess(false);
 		}
 		return result;
+	}
+	
+	public SaveUpdateCQLResult saveCQLFile(String xml, String cql) {
+		XmlProcessor processor = new XmlProcessor(xml);		
+		try {
+			CQLModel reversedEngineeredCQLModel = reverseEngineerCQLModel(cql);			
+			String reverseEngineeredCQLLookup = marshallCQLModel(reversedEngineeredCQLModel);
+			processor.replaceNode(reverseEngineeredCQLLookup, "cqlLookUp", "measure");
+			SaveUpdateCQLResult parsedResult = parseCQLLibraryForErrors(reversedEngineeredCQLModel);
+			
+			if(parsedResult.getCqlErrors().isEmpty()) {
+				CQLFormatter formatter = new CQLFormatter();
+				String formattedCQL = formatter.format(CQLUtilityClass.getCqlString(reversedEngineeredCQLModel, ""));
+				CQLModel formattedReversedEngineeredCQLModel = reverseEngineerCQLModel(formattedCQL);
+				String formattedCQLLookup = marshallCQLModel(formattedReversedEngineeredCQLModel);
+				parsedResult.setXml(formattedCQLLookup);
+				parsedResult.setCqlString(formattedCQL);
+			} else {
+				parsedResult.setXml(reverseEngineeredCQLLookup);
+				parsedResult.setCqlString(cql);
+			}
+			
+			return parsedResult;
+			
+		} catch (IOException | MappingException | MarshalException | ValidationException e) {
+			e.printStackTrace();
+			return null;
+		}
+	
+		
+	}
+
+	private String marshallCQLModel(CQLModel reversedEngineeredCQLModel)
+			throws IOException, MappingException, MarshalException, ValidationException {
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLModelMapping.xml"));
+		Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+		marshaller.setMapping(mapping);
+		marshaller.marshal(reversedEngineeredCQLModel);
+		String reverseEngineeredCQLLookup = stream.toString();
+		return reverseEngineeredCQLLookup;
+	}
+
+	private CQLModel reverseEngineerCQLModel(String cql) throws IOException {
+		ReverseEngineerListener listener = new ReverseEngineerListener(cql);
+		CQLModel reversedEngineeredCQLModel = listener.getCQLModel();
+		return reversedEngineeredCQLModel;
 	}
 
 	private void updateLibraryName(XmlProcessor processor, String libraryName) {

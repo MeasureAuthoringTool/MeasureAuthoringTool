@@ -352,6 +352,11 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 	
 	@Override
+	public SaveUpdateCQLResult saveCQLFile(String measureId, String cql) {
+		return this.getMeasureLibraryService().saveCQLFile(measureId, cql);
+	}
+	
+	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBemodifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable){
 		return this.getMeasureLibraryService().saveAndModifyDefinitions(measureId, toBemodifiedObj, currentObj, definitionList, isFormatable);

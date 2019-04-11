@@ -481,6 +481,13 @@ public abstract class AbstractCQLWorkspacePresenter {
 	
 	protected void addViewCQLEventHandlers() {
 		cqlWorkspaceView.getViewCQLView().getExportErrorFile().addClickHandler(event -> exportErrorFile());
+		cqlWorkspaceView.getViewCQLView().getSaveButton().addClickHandler(event -> saveCQLFile());
+	}
+	
+	protected abstract void saveCQLFile();
+	
+	protected void onSaveCQLFileSuccess() {
+		messagePanel.getSuccessMessageAlert().createAlert("Changes to the CQL File have been successfully saved.");
 	}
 	
 	protected void onModifyValueSet(CQLQualityDataSetDTO result, boolean isUserDefined) {

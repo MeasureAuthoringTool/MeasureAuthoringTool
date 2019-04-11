@@ -554,6 +554,28 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 			cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setText(parameterName.trim());
 		}
 	}
+	
+	@Override
+	protected void saveCQLFile() {
+		setIsPageDirty(false);
+		String currentCQL = cqlWorkspaceView.getViewCQLView().getCqlAceEditor().getText();		
+		MatContext.get().getLibraryService().saveCQLFile(MatContext.get().getCurrentCQLLibraryId(), currentCQL, new AsyncCallback<SaveUpdateCQLResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(SaveUpdateCQLResult result) {
+				onSaveCQLFileSuccess();
+				handleCQLData(result);
+				SharedCQLWorkspaceUtility.displayMessagesForViewCQL(result, cqlWorkspaceView.getViewCQLView().getCqlAceEditor(), messagePanel);
+				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().setText(result.getCqlString());
+			}
+		});
+	}
 
 	@Override
 	protected void addAndModifyDefintions() {

@@ -38,10 +38,12 @@ public class SharedCQLWorkspaceUtility {
 	}
 	
 	public static void displayMessagesForViewCQL(SaveUpdateCQLResult result, AceEditor aceEditor, MessagePanel messagePanel) {
+		aceEditor.clearAnnotations();
 		String formattedName = result.getCqlModel().getFormattedName();
 		SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameErrorsMap().get(formattedName), ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor);
 		SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameWarningsMap().get(formattedName), WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor);
 		SharedCQLWorkspaceUtility.displayMessageBannerForViewCQL(result, messagePanel);
+		aceEditor.setAnnotations();
 	}
 
 	private static void displayMessageBannerForViewCQL(SaveUpdateCQLResult result, MessagePanel messagePanel) {

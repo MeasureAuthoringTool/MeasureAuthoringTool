@@ -57,6 +57,8 @@ public interface CQLLibraryServiceAsync {
 
 	void saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment,
 			AsyncCallback<SaveUpdateCQLResult> callback);
+	
+	void saveCQLFile(String libraryId, String cql, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getUserShareInfo(String cqlId, String searchText,
 			AsyncCallback<SaveCQLLibraryResult> callback);

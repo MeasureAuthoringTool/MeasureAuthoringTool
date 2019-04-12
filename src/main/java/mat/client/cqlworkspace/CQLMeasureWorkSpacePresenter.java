@@ -58,7 +58,7 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
-import mat.model.cql.CQLQualityDataSetDTO;import mat.server.CQLUtilityClass;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLError;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.ConstantMessages;

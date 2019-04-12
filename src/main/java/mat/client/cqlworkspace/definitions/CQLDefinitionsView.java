@@ -96,6 +96,8 @@ public class CQLDefinitionsView {
 		defineButtonBar.getCloseButton().setVisible(false);
 
 		editorPanel.setSize("650px", "200px");
+		editorPanel.getEditor().setText("");
+		editorPanel.getEditor().redisplay();
 		
 		viewCQLEditorPanel.setSize("655px", "200px");
 		viewCQLEditorPanel.setCollabsable();

@@ -97,6 +97,7 @@ public class CQLDefinitionsView {
 
 		editorPanel.setSize("650px", "200px");
 		editorPanel.getEditor().setText("");
+		editorPanel.getEditor().clearAnnotations();
 		editorPanel.getEditor().redisplay();
 		
 		viewCQLEditorPanel.setSize("655px", "200px");

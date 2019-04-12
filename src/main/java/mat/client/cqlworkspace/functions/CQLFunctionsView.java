@@ -118,6 +118,7 @@ public class CQLFunctionsView {
 		editorPanel.setSize("650px", "200px");
 		editorPanel.getPanelGroup().setMarginBottom(-10.0);
 		editorPanel.getEditor().setText("");
+		editorPanel.getEditor().clearAnnotations();
 		editorPanel.getEditor().redisplay();
 
 		viewCQLEditorPanel.setSize("655px", "200px");

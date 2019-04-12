@@ -60,6 +60,7 @@ public class CQLParametersView {
 		
 		editorPanel.setSize("650px", "200px");
 		editorPanel.getEditor().setText("");
+		editorPanel.getEditor().clearAnnotations();
 		editorPanel.getEditor().redisplay();
 		editorPanel.getPanelGroup().setMarginBottom(-10.0);
 		

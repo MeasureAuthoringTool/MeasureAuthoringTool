@@ -1149,7 +1149,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		return panel;
 	}
 
-	public static CQLWorkspaceView getSearchDisplay() {
+	public CQLWorkspaceView getSearchDisplay() {
 		return cqlWorkspaceView;
 	}
 
@@ -2649,7 +2649,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 	@Override
 	public CQLWorkspaceView getCQLWorkspaceView() {
-		return CQLMeasureWorkSpacePresenter.cqlWorkspaceView;
+		return cqlWorkspaceView;
 	}
 
 	@Override

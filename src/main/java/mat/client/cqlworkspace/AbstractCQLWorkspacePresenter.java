@@ -110,7 +110,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected static final String EMPTY_STRING = "";
 	protected HelpBlock helpBlock = new HelpBlock();
 	protected MessagePanel messagePanel = new MessagePanel();
-	protected static CQLWorkspaceView cqlWorkspaceView;
+	protected CQLWorkspaceView cqlWorkspaceView;
 	protected SimplePanel panel = new SimplePanel();
 	protected String setId = null;
 	protected String currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;

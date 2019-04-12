@@ -75,10 +75,10 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	VerticalPanel externalLinkDisclaimer = new VerticalPanel();
 
-	public void showUMLSLogInDialog() {
+	public void showUMLSLogInDialog(CQLMeasureWorkSpacePresenter cqlMeausreWorkspaePresenter, CQLStandaloneWorkSpacePresenter cqlStandaloneWorkspacePresenter) {
 		
-		CQLMeasureWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();//removes error "not signed in" message above search box
-		CQLStandaloneWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
+		cqlMeausreWorkspaePresenter.getSearchDisplay().resetMessageDisplay();//removes error "not signed in" message above search box
+		cqlStandaloneWorkspacePresenter.getSearchDisplay().resetMessageDisplay();
 		
 		focusPanel.clear();
 	    panel = new Modal();

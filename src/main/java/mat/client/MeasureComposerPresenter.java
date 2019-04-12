@@ -58,6 +58,8 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
 	@SuppressWarnings("unused")
 	private MeasurePackagePresenter measurePackagePresenter;
 	private MeasureDetailsPresenter measureDetailsPresenter;
+	private CQLMeasureWorkSpaceView cqlWorkspaceView;
+	private CQLMeasureWorkSpacePresenter cqlWorkspacePresenter;
 	private static String MEASURE_COMPOSER = "MeasureComposer";
 	
 	class EnterKeyDownHandler implements KeyDownHandler {
@@ -298,11 +300,10 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
 	}
 	
 	private MatPresenter buildCQLWorkSpaceTab(){
-		CQLMeasureWorkSpaceView cqlView = new CQLMeasureWorkSpaceView();
-		CQLMeasureWorkSpacePresenter cqlPresenter =
-				new CQLMeasureWorkSpacePresenter(cqlView);
-		cqlPresenter.getWidget();
-		return cqlPresenter;
+		cqlWorkspaceView = new CQLMeasureWorkSpaceView();
+		cqlWorkspacePresenter = new CQLMeasureWorkSpacePresenter(cqlWorkspaceView);
+		cqlWorkspacePresenter.getWidget();
+		return cqlWorkspacePresenter;
 	}
 	
 	private MatPresenter buildCQLPopulationWorkspaceTab() {		
@@ -368,9 +369,9 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
 			saveErrorMessageAlert = measureDetailsPresenter.getMessagePanel().getGlobalWarningConfirmationMessageAlert();
 		} else if(presenterList.get(selectedIndex) instanceof CQLMeasureWorkSpacePresenter){
 			CQLMeasureWorkSpacePresenter cqlWorkSpacePresenter = (CQLMeasureWorkSpacePresenter) presenterList.get(selectedIndex);
-			CQLMeasureWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
+			cqlWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
 			saveErrorMessageAlert = cqlWorkSpacePresenter.getMessagePanel().getGlobalWarningConfirmationMessageAlert();
-			auditMessage = CQLMeasureWorkSpacePresenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
+			auditMessage = cqlWorkSpacePresenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
 		} else if(presenterList.get(selectedIndex) instanceof CQLPopulationWorkSpacePresenter) {
 			CQLPopulationWorkSpacePresenter presenter = (CQLPopulationWorkSpacePresenter) presenterList.get(selectedIndex);
 			saveErrorMessageAlert = presenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
@@ -465,5 +466,9 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
 	public void updateMeasureHeading() {
 		String heading = buildMeasureHeading(MatContext.get().getCurrentMeasureId());
 		measureComposerContent.setHeading(heading, MEASURE_COMPOSER);
+	}
+	
+	public CQLMeasureWorkSpacePresenter getCQLWorkspacePresenter() {
+		return this.cqlWorkspacePresenter;
 	}
 }

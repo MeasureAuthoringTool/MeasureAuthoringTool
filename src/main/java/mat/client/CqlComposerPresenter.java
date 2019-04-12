@@ -96,6 +96,8 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	
 	/** The meta data presenter. */
 	private CQLStandaloneWorkSpacePresenter cqlStandaloneWorkSpacePresenter;
+	private CQLStandaloneWorkSpaceView cqlStandaloneWorkspaceView;
+	private CQLStandaloneWorkSpacePresenter cqlStandaloneWorkspacePresenter;
 	
 	/**
 	 * Instantiates a new measure composer presenter.
@@ -219,17 +221,11 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 		cqlComposerContent.setHeading(heading, "CqlComposer");
 	}
 	
-	/**
-	 * Builds the cql work space tab.
-	 *
-	 * @return the mat presenter
-	 */
 	private MatPresenter buildCQLWorkSpaceTab(){
-		CQLStandaloneWorkSpaceView cqlView = new CQLStandaloneWorkSpaceView();
-		CQLStandaloneWorkSpacePresenter cqlPresenter =
-				new CQLStandaloneWorkSpacePresenter(cqlView);
-		cqlPresenter.getWidget();
-		return cqlPresenter;
+		cqlStandaloneWorkspaceView = new CQLStandaloneWorkSpaceView();
+		cqlStandaloneWorkspacePresenter = new CQLStandaloneWorkSpacePresenter(cqlStandaloneWorkspaceView);
+		cqlStandaloneWorkspacePresenter.getWidget();
+		return cqlStandaloneWorkspacePresenter;
 	}
 	
 	/* (non-Javadoc)
@@ -295,7 +291,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	@Override
 	public boolean isValid() {
 		boolean isValid = true;
-		CQLStandaloneWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
+		this.cqlStandaloneWorkspaceView.resetMessageDisplay();
 		if (cqlStandaloneWorkSpacePresenter.getIsPageDirty()) {
 			isValid = false;
 		}
@@ -344,5 +340,9 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 		this.targetTabLayout = targetTabLayout;
 		this.targetPresenter = targetPresenter;
 		this.sourcePresenter = sourcePresenter;
+	}
+	
+	public CQLStandaloneWorkSpacePresenter getCQLStandaloneWorkspacePresenter() {
+		return this.cqlStandaloneWorkspacePresenter;
 	}
 }

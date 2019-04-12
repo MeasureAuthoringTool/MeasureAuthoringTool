@@ -2100,7 +2100,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		return panel;
 	}
 
-	public static CQLWorkspaceView getSearchDisplay() {
+	public CQLWorkspaceView getSearchDisplay() {
 		return cqlWorkspaceView;
 	}
 
@@ -2603,7 +2603,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
 	@Override
 	public CQLWorkspaceView getCQLWorkspaceView() {
-		return CQLStandaloneWorkSpacePresenter.cqlWorkspaceView;
+		return cqlWorkspaceView;
 	}
 
 	@Override

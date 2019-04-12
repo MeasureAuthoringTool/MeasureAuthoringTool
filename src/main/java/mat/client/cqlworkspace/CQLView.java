@@ -48,6 +48,9 @@ public class CQLView {
 		cqlViewVP.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		cqlViewVP.add(new SpacerWidget());
 		
+		getCqlAceEditor().setText("");
+		getCqlAceEditor().clearAnnotations();
+		getCqlAceEditor().redisplay();
 		getCqlAceEditor().setReadOnly(!isEditable);
 		if(isEditable) {
 			cqlViewVP.add(exportErrorFile);

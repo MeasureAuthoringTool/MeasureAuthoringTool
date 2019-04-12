@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -40,6 +41,9 @@ import mat.model.cql.CQLQualityDataSetDTO;
 
 public class ReverseEngineerListener extends cqlBaseListener {
 	
+	private static final String VALUESET_OID_PREFIX = "urn:oid:";
+	private static final String CONTEXT = "context";
+	private static final String PARAMETER = "parameter";
 	private cqlParser parser;
 	private CommonTokenStream tokens;
 	private CQLModel cqlModel;
@@ -58,7 +62,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	}
 
 	@Override
-	public void enterLibraryDefinition(LibraryDefinitionContext ctx) {
+	public void enterLibraryDefinition(LibraryDefinitionContext ctx) {		
 		String identifier = parseString(ctx.identifier().getText());
 		String version = parseString(ctx.versionSpecifier().getText());
 		String comment = getLibraryComment(ctx);
@@ -79,13 +83,12 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		}
 		
 		ts = tokens.getTokens(ctx.stop.getTokenIndex() + 1, index - 1);
-		String comment = "";
+		StringBuilder builder = new StringBuilder();
 		for(Token t : ts) {
-			System.out.println(t.getText());
-			comment += t.getText();
+			builder.append(t.getText());
 		}
 		
-		return trimComment(comment);
+		return trimComment(builder.toString());
 	}
 	
 	@Override
@@ -97,6 +100,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		cqlModel.setQdmVersion(version);
 	}
 	
+	@Override
 	public void enterIncludeDefinition(IncludeDefinitionContext ctx) {
 		String identifier = parseString(ctx.identifier().getText());
 		String version = parseString(ctx.versionSpecifier().getText());
@@ -110,6 +114,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		cqlModel.getCqlIncludeLibrarys().add(includedLibrary);
 	}
 	
+	@Override
 	public void enterCodesystemDefinition(CodesystemDefinitionContext ctx) {
 		String identifier = parseString(ctx.identifier().getText());
 		String codesystemId = parseString(ctx.codesystemId().getText());
@@ -122,11 +127,12 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		CQLCodeSystem codeSystem = new CQLCodeSystem();
 		codeSystem.setCodeSystemName(identifier);
 		codeSystem.setCodeSystemVersion(version);
-		codeSystem.setCodeSystem(codesystemId.replace("urn:oid:", ""));
+		codeSystem.setCodeSystem(codesystemId.replace(VALUESET_OID_PREFIX, ""));
 		codeSystem.setId(UUID.randomUUID().toString());
 		cqlModel.getCodeSystemList().add(codeSystem);
 	}
 	
+	@Override
 	public void enterCodeDefinition(CodeDefinitionContext ctx) {
 		CQLCode code = new CQLCode();
 		
@@ -134,15 +140,20 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		String codeId = parseString(ctx.codeId().getText());
 		String codeSystemName = parseString(ctx.codesystemIdentifier().getText());
 		String displayClause = parseString(ctx.displayClause().getText());
-		CQLCodeSystem codeSystem = cqlModel.getCodeSystemList().stream().filter(cs -> cs.getCodeSystemName().equals(codeSystemName)).findFirst().get();
+		Optional<CQLCodeSystem> codeSystem = cqlModel.getCodeSystemList().stream().filter(cs -> cs.getCodeSystemName().equals(codeSystemName)).findFirst();
 	
 		code.setId(UUID.randomUUID().toString());
 		code.setDisplayName(identifier);
 		code.setCodeName(displayClause);
 		code.setCodeOID(codeId);
-		code.setCodeSystemName(codeSystemName);
-		code.setCodeSystemOID(codeSystem.getCodeSystem());
-		code.setCodeSystemVersion(codeSystem.getCodeSystemVersion());
+		
+		if(codeSystem.isPresent()) {
+			code.setCodeSystemName(codeSystemName);
+			code.setCodeSystemOID(codeSystem.get().getCodeSystem());
+			code.setCodeSystemVersion(codeSystem.get().getCodeSystemVersion());
+		}
+		
+
 	}
 	
 	@Override
@@ -160,7 +171,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		valueset.setName(identifier);
 		valueset.setSuffix(identifier);
 		valueset.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
-		valueset.setOid(valuesetId.replace("urn:oid:", ""));
+		valueset.setOid(valuesetId.replace(VALUESET_OID_PREFIX, ""));
 		valueset.setVersion(version);
 		valueset.setUuid(UUID.randomUUID().toString());
 		
@@ -172,6 +183,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		currentContext = ctx.identifier().getText();
 	}
 	
+	@Override
 	public void enterParameterDefinition(ParameterDefinitionContext ctx) {
 		String identifier = parseString(ctx.identifier().getText());
 		String comment = getExpressionComment(ctx);		
@@ -193,13 +205,13 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		// find the next parameter or context statement
 		boolean startAdding = false;
 		for(Token t : ts) {
-			if((t.getText().equals("context") || t.getText().equals("parameter")) && startAdding) {
+			if((t.getText().equals(CONTEXT) || t.getText().equals(PARAMETER)) && startAdding) {
 				index = t.getTokenIndex();
 				break;
 			}
 			
 			// wait until the first parameter 
-			if(t.getText().equals("parameter")) {
+			if(t.getText().equals(PARAMETER)) {
 				startAdding = true;
 			}
 		}
@@ -207,6 +219,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		return getLogicForParameter(ctx.start.getTokenIndex(), index - 1, identifier);
 	}
 	
+	@Override
 	public void enterExpressionDefinition(ExpressionDefinitionContext ctx) {		
 		String identifier = parseString(ctx.identifier().getText());
 		String logic = getDefinitionAndFunctionLogic(ctx);
@@ -223,6 +236,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		cqlModel.getDefinitionList().add(definition);
 	}
 	
+	@Override
 	public void enterFunctionDefinition(FunctionDefinitionContext ctx) {
 		String identifier = parseString(ctx.identifier().getText());	
 		String logic = getDefinitionAndFunctionLogic(ctx);
@@ -266,12 +280,12 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	private String getLogicForParameter(int startTokenIndex, int stopTokenIndex, String identifier) {
 		List<Token> ts = tokens.getTokens(startTokenIndex, stopTokenIndex);
 		
-		String logic = "";
+		StringBuilder builder = new StringBuilder();
 		for(Token t : ts) {
-			logic += t.getText();
+			builder.append(t.getText());
 		}
 		
-		return logic.replace("parameter", "").replace(identifier, "").trim();
+		return builder.toString().replace(PARAMETER, "").replace(identifier, "").trim();
 	}
 	
 	private String getTextBetweenTokenIndexes(int startTokenIndex, int stopTokenIndex) {
@@ -315,7 +329,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	/**
 	 * A definition or function body should be considered done when it reaches the next define statement
 	 * or it reaches a comment for the next expression. 
-	 * @param ctx the conext to find the end of the body of
+	 * @param ctx the context to find the end of the body of
 	 * @return the index of the last token in the body
 	 */
 	private int findDefinitionAndFunctionBodyStop(ParserRuleContext ctx) {
@@ -345,5 +359,4 @@ public class ReverseEngineerListener extends cqlBaseListener {
         	return index - 1;
     	}		
 	}
-	
 }

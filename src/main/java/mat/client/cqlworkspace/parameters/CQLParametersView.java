@@ -59,6 +59,8 @@ public class CQLParametersView {
 		parameterVP.add(new SpacerWidget());
 		
 		editorPanel.setSize("650px", "200px");
+		editorPanel.getEditor().setText("");
+		editorPanel.getEditor().redisplay();
 		editorPanel.getPanelGroup().setMarginBottom(-10.0);
 		
 		viewCQLEditorPanel.setSize("655px", "200px");

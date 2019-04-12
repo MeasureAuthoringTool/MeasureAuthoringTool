@@ -27,7 +27,7 @@
 
 		<field name="codeSystemList" type="mat.model.cql.CQLCodeSystem"
 			get-method="getCodeSystemList" set-method="setCodeSystemList"
-			collection="arraylist" required="false">
+			collection="arraylist">
 			<bind-xml name="codeSystem" location="codeSystems">
 				<class name="mat.model.cql.CQLCodeSystem">
 					<field name="id" type="java.lang.String">

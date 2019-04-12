@@ -1450,6 +1450,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
 		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor();
+		curAceEditor.setText("");
 		cqlWorkspaceView.getCQLFunctionsView().setHeading(getWorkspaceTitle() + " > Function", "mainFuncViewVerticalPanel");
 		focusSkipLists();
 	}
@@ -1467,6 +1468,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = cqlWorkspaceView.getCQLParametersView().getParameterAceEditor();
+		curAceEditor.setText("");
 		cqlWorkspaceView.getCQLParametersView().setHeading(getWorkspaceTitle() + " > Parameter", "mainParamViewVerticalPanel");
 		focusSkipLists();
 	}
@@ -1486,6 +1488,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor();
+		curAceEditor.setText("");
 		cqlWorkspaceView.getCQLDefinitionsView().setHeading(getWorkspaceTitle() + " > Definition", "mainDefViewVerticalPanel");
 		focusSkipLists();
 	}

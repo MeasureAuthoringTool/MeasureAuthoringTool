@@ -5144,17 +5144,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 			MatContextServiceUtil.get().setMeasure(true);
-			result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql);
-		
-			System.out.println("MEASURE XML BEFORE: " + measureXMLModel.getXml());
-			System.out.println("NEW CQL LOOKUP: " + result.getXml());
-			
+			result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql);			
 			XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
 			processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
-			measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
-			
-			System.out.println("MEASUER XML AFTER: " + measureXMLModel.getXml());
-			
+			measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));			
 			measurePackageService.saveMeasureXml(measureXMLModel);			
 		}
 		

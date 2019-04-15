@@ -10,7 +10,8 @@ public class QueryModel extends ExpressionBuilderModel {
 	private ExpressionBuilderModel filter;
 	private QuerySortModel sort;
 	private ExpressionBuilderModel relationship;
-
+	private String relationshipType;	
+	
 	public QueryModel(ExpressionBuilderModel source, String alias, ExpressionBuilderModel filter, ExpressionBuilderModel parent) {
 		super(parent);
 		this.source = source;
@@ -66,26 +67,30 @@ public class QueryModel extends ExpressionBuilderModel {
 		builder.append(" ");
 		builder.append(alias);
 
-		String filterIdentation = indentation + "  ";
-
+		String queryContentIndentation = indentation + "  ";
+		
+		
 		if (!relationship.getChildModels().isEmpty()) {
-			builder.append(relationship.getCQL(filterIdentation));
+			 builder.append("\n").append(queryContentIndentation);
+			 builder.append(relationshipType).append(" ");
+			 builder.append(relationship.getCQL(indentation + "  "));
+		 }
+				
+		if (!filter.getChildModels().isEmpty()) {
+			builder.append("\n").append(queryContentIndentation);
+			builder.append("where ");
 		}
 		
-		builder.append("\n" + filterIdentation);
-		builder.append("where ");
-		
-		
 		if(this.getChildModels().size() == 1) {
-			builder.append(this.getChildModels().get(0).getCQL(filterIdentation));
+			builder.append(this.getChildModels().get(0).getCQL(queryContentIndentation));
 		} else {
 			if (!filter.getChildModels().isEmpty()) {
-				builder.append(filter.getCQL(filterIdentation));
+				builder.append(filter.getCQL(queryContentIndentation));
 			}
 		}
 
 		if(!sort.getSortExpression().getChildModels().isEmpty()) {
-			builder.append("\n" + filterIdentation);
+			builder.append("\n").append(queryContentIndentation);
 			builder.append(sort.getCQL(""));
 		}
 		
@@ -105,4 +110,13 @@ public class QueryModel extends ExpressionBuilderModel {
 	public String getDisplayName() {
 		return ExpressionType.QUERY.getDisplayName();
 	}
+
+	public String getRelationshipType() {
+		return relationshipType;
+	}
+
+	public void setRelationshipType(String relationshipType) {
+		this.relationshipType = relationshipType;
+	}
+
 }

@@ -129,6 +129,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		codeSystem.setCodeSystemVersion(version);
 		codeSystem.setCodeSystem(codesystemId.replace(VALUESET_OID_PREFIX, ""));
 		codeSystem.setId(UUID.randomUUID().toString());
+		
 		cqlModel.getCodeSystemList().add(codeSystem);
 	}
 	
@@ -139,7 +140,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		String identifier = parseString(ctx.identifier().getText());
 		String codeId = parseString(ctx.codeId().getText());
 		String codeSystemName = parseString(ctx.codesystemIdentifier().getText());
-		String displayClause = parseString(ctx.displayClause().getText());
+		String displayClause = parseString(ctx.displayClause().STRING().getText());
 		Optional<CQLCodeSystem> codeSystem = cqlModel.getCodeSystemList().stream().filter(cs -> cs.getCodeSystemName().equals(codeSystemName)).findFirst();
 	
 		code.setId(UUID.randomUUID().toString());
@@ -153,7 +154,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 			code.setCodeSystemVersion(codeSystem.get().getCodeSystemVersion());
 		}
 		
-
+		cqlModel.getCodeList().add(code);
 	}
 	
 	@Override

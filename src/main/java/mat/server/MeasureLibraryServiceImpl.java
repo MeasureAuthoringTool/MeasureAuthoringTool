@@ -5244,19 +5244,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private void updateFunctionDisplayName(XmlProcessor processor, CQLFunctions toBeModifiedObj, CQLFunctions currentObj) {
 		// XPath to find All cqlfunction in populations to be
 		// modified functions.
-		String XPATH_EXPRESSION_FUNCTION = "/measure//cqlfunction[@uuid='" + toBeModifiedObj.getId() + "']";
-		try {
-			NodeList nodesSDE = processor.findNodeList(processor.getOriginalDoc(), XPATH_EXPRESSION_FUNCTION);
-			for (int i = 0; i < nodesSDE.getLength(); i++) {
-				Node newNode = nodesSDE.item(i);
-				newNode.getAttributes().getNamedItem("displayName").setNodeValue(currentObj.getName());
+		if(toBeModifiedObj != null) {
+			String XPATH_EXPRESSION_FUNCTION = "/measure//cqlfunction[@uuid='" + toBeModifiedObj.getId() + "']";
+			try {
+				NodeList nodesSDE = processor.findNodeList(processor.getOriginalDoc(), XPATH_EXPRESSION_FUNCTION);
+				for (int i = 0; i < nodesSDE.getLength(); i++) {
+					Node newNode = nodesSDE.item(i);
+					newNode.getAttributes().getNamedItem("displayName").setNodeValue(currentObj.getName());
+				}
+
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
 			}
-
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
 		}
+		
 		logger.debug(" CQLServiceImpl: updateFunctionDisplayName End :  ");
-
 	}
 
 	@Override

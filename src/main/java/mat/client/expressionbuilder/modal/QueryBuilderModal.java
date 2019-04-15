@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.expressionbuilder.component.ExpandCollapseCQLExpressionPanel;
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.component.ViewCQLExpressionWidget;
 import mat.client.expressionbuilder.constant.ExpressionType;
@@ -70,6 +71,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private BuildButtonObserver sourceBuildButtonObserver;
 	private BuildButtonObserver filterBuildButtonObserver;
 	private BuildButtonObserver sortBuildButtonObserver;
+	private BuildButtonObserver relationshipBuildButtonObserver;
 
 	private NavPills pills;
 	
@@ -88,6 +90,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		sourceBuildButtonObserver = new BuildButtonObserver(this, queryModel.getSource(), mainModel);
 		filterBuildButtonObserver = new BuildButtonObserver(this, queryModel.getFilter(), mainModel);
 		sortBuildButtonObserver = new BuildButtonObserver(this, queryModel.getSort().getSortExpression(), mainModel);
+		relationshipBuildButtonObserver  = new BuildButtonObserver(this, queryModel.getRelationship(), mainModel);
 		
 		this.getApplyButton().setVisible(false);
 		this.getApplyButton().addClickHandler(event -> onApplyButtonClick());
@@ -265,28 +268,39 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	
 	private Widget buildRelationshipWidget() {
 		VerticalPanel filterPanel = new VerticalPanel();
-		filterPanel.setStyleName(SELECTORS_PANEL);
-		filterPanel.setWidth("50%");
 		
-		FormLabel label = new FormLabel();
-		label.setText(RELATIONSHIP_TEXT_LABEL);
-		label.setTitle(RELATIONSHIP_TEXT_LABEL);
+		if (queryModel.getRelationship() != null && !queryModel.getRelationship().getChildModels().isEmpty()) {
+			ExpandCollapseCQLExpressionPanel expressionPanelGroup = new ExpandCollapseCQLExpressionPanel("Relationship", 
+					queryModel.getRelationship().getChildModels().get(0).getCQL(""));
+			filterPanel.add(expressionPanelGroup);
+			filterPanel.setWidth("100%");
+			
+		} else {
+			
+			filterPanel.setStyleName(SELECTORS_PANEL);
+			filterPanel.setWidth("50%");
+			
+			FormLabel label = new FormLabel();
+			label.setText(RELATIONSHIP_TEXT_LABEL);
+			label.setTitle(RELATIONSHIP_TEXT_LABEL);
 
-		HorizontalPanel labelPanel = new HorizontalPanel();
-		labelPanel.add(label);
-		
-		availableExpressionsForRelationship = new ListBoxMVP();
-		availableExpressionsForRelationship.insertItem(SELECT_RELATIONSHIP, SELECT_RELATIONSHIP);
-		availableExpressionsForRelationship.insertItem("with", "with");
-		availableExpressionsForRelationship.insertItem("without", "without");
+			HorizontalPanel labelPanel = new HorizontalPanel();
+			labelPanel.add(label);
+			
+			availableExpressionsForRelationship = new ListBoxMVP();
+			availableExpressionsForRelationship.insertItem(SELECT_RELATIONSHIP, SELECT_RELATIONSHIP);
+			availableExpressionsForRelationship.insertItem("with", "with");
+			availableExpressionsForRelationship.insertItem("without", "without");
+			availableExpressionsForRelationship.addChangeHandler(event -> this.getErrorAlert().clearAlert());
+			
+			HorizontalPanel dropdownPanel = new HorizontalPanel();
+			dropdownPanel.add(availableExpressionsForRelationship);
+			dropdownPanel.setWidth("100%");
+			dropdownPanel.add(buildBuildButton());
 
-		HorizontalPanel dropdownPanel = new HorizontalPanel();
-		dropdownPanel.add(availableExpressionsForRelationship);
-		dropdownPanel.setWidth("100%");
-		dropdownPanel.add(buildBuildButton());
-
-		filterPanel.add(labelPanel);
-		filterPanel.add(dropdownPanel);
+			filterPanel.add(labelPanel);
+			filterPanel.add(dropdownPanel);
+		}
 
 		return filterPanel;
 	}
@@ -298,7 +312,17 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		buildButton.setType(ButtonType.PRIMARY);
 		buildButton.setMarginLeft(5.0);
 		buildButton.setIcon(IconType.WRENCH);
+		buildButton.addClickHandler(event -> displayRelationshipModalScreen());
 		return buildButton;
+	}
+	
+	private void displayRelationshipModalScreen() {
+		if (availableExpressionsForRelationship.getSelectedIndex() > 0) {
+			queryModel.setRelationshipType(availableExpressionsForRelationship.getSelectedValue());
+			relationshipBuildButtonObserver.onBuildButtonClick(RelationshipBuilderModal.SOURCE, null);
+		} else {
+			this.getErrorAlert().createAlert("An expression type is required.");
+		}
 	}
 	
 	private Widget buildSortByWidget() {

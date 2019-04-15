@@ -302,8 +302,7 @@ public class XmlProcessor {
 		try {
 			docBuilder = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder();
-			InputSource oldXmlstream = new InputSource(new StringReader(
-					originalXml));
+			InputSource oldXmlstream = new InputSource(new StringReader(originalXml));
 			originalDoc = docBuilder.parse(oldXmlstream);
 			LOG.info("Document Object created successfully for the XML String");
 		} catch (Exception e) {

@@ -5163,16 +5163,34 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 			if (measureXMLModel != null) {
 				MatContextServiceUtil.get().setMeasure(true);
-				result = getCqlService().saveAndModifyDefinitions(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
-						definitionList, isFormatable);
+				result = getCqlService().saveAndModifyDefinitions(measureXMLModel.getXml(), toBeModifiedObj, currentObj, definitionList, isFormatable);
+				XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
 				if (result.isSuccess()) {
-					measureXMLModel.setXml(result.getXml());
+					updateRiskAdjustmentVariables(processor, toBeModifiedObj, currentObj);
+					processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+					measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
 					measurePackageService.saveMeasureXml(measureXMLModel);
 				}
 			}
 		}
 		MatContextServiceUtil.get().setMeasure(false);
 		return result;
+	}
+	
+	private void updateRiskAdjustmentVariables(XmlProcessor processor, CQLDefinition toBeModifiedObj, CQLDefinition currentObj) {
+		if(toBeModifiedObj != null) {
+			String XPATH_EXPRESSION_SDE_ELEMENTREF = "/measure//cqldefinition[@uuid='" + toBeModifiedObj.getId() + "']";
+			try {
+				NodeList nodesSDE = processor.findNodeList(processor.getOriginalDoc(), XPATH_EXPRESSION_SDE_ELEMENTREF);
+				for (int i = 0; i < nodesSDE.getLength(); i++) {
+					Node newNode = nodesSDE.item(i);
+					newNode.getAttributes().getNamedItem("displayName").setNodeValue(currentObj.getName());
+				}
+
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -5186,7 +5204,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				result = getCqlService().saveAndModifyParameters(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
 						parameterList, isFormatable);
 				if (result.isSuccess()) {
-					measureXMLModel.setXml(result.getXml());
+					XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
+					processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+					measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
 					measurePackageService.saveMeasureXml(measureXMLModel);
 				}
 			}
@@ -5206,8 +5226,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				MatContextServiceUtil.get().setMeasure(true);
 				result = getCqlService().saveAndModifyFunctions(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
 						functionsList, isFormatable);
+
+				XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
 				if (result.isSuccess()) {
-					measureXMLModel.setXml(result.getXml());
+					updateFunctionDisplayName(processor, toBeModifiedObj, currentObj);
+					processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+					measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
 					measurePackageService.saveMeasureXml(measureXMLModel);
 				}
 			}
@@ -5216,10 +5240,27 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 
 	}
+	
+	private void updateFunctionDisplayName(XmlProcessor processor, CQLFunctions toBeModifiedObj, CQLFunctions currentObj) {
+		// XPath to find All cqlfunction in populations to be
+		// modified functions.
+		String XPATH_EXPRESSION_FUNCTION = "/measure//cqlfunction[@uuid='" + toBeModifiedObj.getId() + "']";
+		try {
+			NodeList nodesSDE = processor.findNodeList(processor.getOriginalDoc(), XPATH_EXPRESSION_FUNCTION);
+			for (int i = 0; i < nodesSDE.getLength(); i++) {
+				Node newNode = nodesSDE.item(i);
+				newNode.getAttributes().getNamedItem("displayName").setNodeValue(currentObj.getName());
+			}
+
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		logger.debug(" CQLServiceImpl: updateFunctionDisplayName End :  ");
+
+	}
 
 	@Override
-	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId, String libraryName,
-			String comments) {
+	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId, String libraryName, String comments) {
 
 		MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(currentMeasureId);
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();

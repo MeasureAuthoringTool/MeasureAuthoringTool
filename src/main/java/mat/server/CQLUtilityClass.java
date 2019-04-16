@@ -310,14 +310,23 @@ public final class CQLUtilityClass {
 	}
 	
 	public static String getXMLFromCQLModel(CQLModel cqlModel) throws IOException, MappingException, MarshalException, ValidationException {
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLModelMapping.xml"));
-		Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-		marshaller.setMapping(mapping);
-		marshaller.marshal(cqlModel);
-		String reverseEngineeredCQLLookup = stream.toString();
-		return reverseEngineeredCQLLookup;
+		String xml = "";
+		ByteArrayOutputStream stream = null;
+		try {
+			Mapping mapping = new Mapping();
+			stream = new ByteArrayOutputStream();
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLModelMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+			marshaller.marshal(cqlModel);
+			xml = stream.toString();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			stream.close();
+		}
+		
+		return xml;
 	}
 	
 	public static void getValueSet(CQLModel cqlModel, String cqlLookUpXMLString){

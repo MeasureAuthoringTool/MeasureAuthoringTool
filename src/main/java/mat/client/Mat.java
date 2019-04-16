@@ -401,12 +401,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			title = ClientConstants.TITLE_MEASURE_LIB;
 			mainTabLayout.add(measureLibrary.getWidget(), title, true);
 			presenterList.add(measureLibrary);
-			
-			cqlComposer= buildCqlComposer();
-			title = ClientConstants.TITLE_CQL_COMPOSER;
-			mainTabLayout.add(cqlComposer.getWidget(), title, true);
-			presenterList.add(cqlComposer);
-			
+					
 			measureComposer= buildMeasureComposer();
 			title = ClientConstants.TITLE_MEASURE_COMPOSER;
 			mainTabLayout.add(measureComposer.getWidget(), title, true);
@@ -417,7 +412,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			mainTabLayout.add(cqlLibrary.getWidget(), title, true);
 			presenterList.add(cqlLibrary);
 			
-
+			cqlComposer= buildCqlComposer();
+			title = ClientConstants.TITLE_CQL_COMPOSER;
+			mainTabLayout.add(cqlComposer.getWidget(), title, true);
+			presenterList.add(cqlComposer);
 			
 			title = ClientConstants.TITLE_MY_ACCOUNT;
 			myAccountPresenter = buildMyAccountWidget();

@@ -1414,7 +1414,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 
 		cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setText(EMPTY_STRING);
 		cqlWorkspaceView.getIncludeView().getSearchTextBox().setText(EMPTY_STRING);
-		((CQLStandaloneWorkSpaceView)cqlWorkspaceView).getCqlIncludeLibraryView().setWidgetReadOnly(checkForEditPermission());
+		cqlWorkspaceView.getIncludeView().setWidgetReadOnly(checkForEditPermission());
 		cqlWorkspaceView.getIncludeView().setHeading(getWorkspaceTitle() + " > Includes", "IncludeSectionContainerPanel");
 		focusSkipLists();
 	}

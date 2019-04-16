@@ -43,7 +43,7 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 	private static final String SELECTORS_PANEL = "selectorsPanel";
 	private static final String NAV_PILL_BACKGROUND_COLOR = "background-color: #F1F1F1";
 	
-	private static final String ALIAS_TEXT_BOX_LABEL = "What would you like to name (alias) your source?";
+	private static final String ALIAS_TEXT_BOX_LABEL = "What would you like to name (alias) your related source?";
 	private static final String RELATED_SOURCE_TEXT_LABEL = "What expression type would you like to use as your related source?";
 	private static final String RELATED_CRITERIA_TEXT_LABEL = "What would you like to use to show relationship between the sources?";
 	private static final String ERROR_MESSAGE = "A Related Source, a Related Source Alias, and Relationship Criteria are required.";

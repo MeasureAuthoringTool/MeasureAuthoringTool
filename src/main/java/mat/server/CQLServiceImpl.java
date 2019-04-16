@@ -45,7 +45,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import mat.CQLFormatter;
-import mat.CQLtoELM;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;

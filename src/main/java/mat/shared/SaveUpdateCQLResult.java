@@ -83,6 +83,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	public static final int DUPLICATE_CQL_KEYWORD = 10;
 	
+	public static final int SYNTAX_ERRORS = 11;
+	
 	/** The cql applied QDM list. */
 	List<CQLQualityDataSetDTO> cqlAppliedQDMList ;
 	

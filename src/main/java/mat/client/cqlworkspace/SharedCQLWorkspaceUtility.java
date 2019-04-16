@@ -31,10 +31,16 @@ public class SharedCQLWorkspaceUtility {
 	}
 
 	public static boolean validateCQLArtifact(SaveUpdateCQLResult result, AceEditor aceEditor, MessagePanel messagePanel, String expressionType, String expressionName) {
-		result.getCqlErrors().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor));
-		result.getCqlWarnings().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor));		
+		displayAnnotations(result, aceEditor);		
 		SharedCQLWorkspaceUtility.displayMessageBanner(result, messagePanel, expressionType, expressionName); 
 		return !result.getCqlErrors().isEmpty();
+	}
+
+	public static void displayAnnotations(SaveUpdateCQLResult result, AceEditor aceEditor) {
+		aceEditor.clearAnnotations();
+		result.getCqlErrors().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor));
+		result.getCqlWarnings().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor));
+		aceEditor.setAnnotations();
 	}
 	
 	public static void displayMessagesForViewCQL(SaveUpdateCQLResult result, AceEditor aceEditor, MessagePanel messagePanel) {

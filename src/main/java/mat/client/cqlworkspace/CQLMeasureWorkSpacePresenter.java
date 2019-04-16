@@ -647,18 +647,20 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		MatContext.get().getMeasureService().saveCQLFile(MatContext.get().getCurrentMeasureId(), currentCQL, new AsyncCallback<SaveUpdateCQLResult>() {
 
 			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
+			public void onFailure(Throwable caught) {				
 			}
 
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
-				onSaveCQLFileSuccess();
-				handleCQLData(result);
-				SharedCQLWorkspaceUtility.displayMessagesForViewCQL(result, cqlWorkspaceView.getViewCQLView().getCqlAceEditor(), messagePanel);
-				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().setText(result.getCqlString());
-			
+				messagePanel.clearAlerts();
+				if(!result.isSuccess()) {
+					onSaveCQLFileFailure(result);
+				} else {
+					onSaveCQLFileSuccess();
+					handleCQLData(result);
+					SharedCQLWorkspaceUtility.displayMessagesForViewCQL(result, cqlWorkspaceView.getViewCQLView().getCqlAceEditor(), messagePanel);
+					cqlWorkspaceView.getViewCQLView().getCqlAceEditor().setText(result.getCqlString());
+				}
 			}
 		});
 	}

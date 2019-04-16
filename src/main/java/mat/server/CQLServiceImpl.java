@@ -45,6 +45,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import mat.CQLFormatter;
+import mat.CQLtoELM;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
@@ -173,10 +174,20 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult saveCQLFile(String xml, String cql) {
 		XmlProcessor processor = new XmlProcessor(xml);
 		try {
-			CQLModel reversedEngineeredCQLModel = reverseEngineerCQLModel(cql);
+			ReverseEngineerListener listener = new ReverseEngineerListener(cql);
+			CQLModel reversedEngineeredCQLModel = listener.getCQLModel();			
 			String reverseEngineeredCQLLookup = marshallCQLModel(reversedEngineeredCQLModel);
 			processor.replaceNode(reverseEngineeredCQLLookup, "cqlLookUp", "measure");
 			SaveUpdateCQLResult parsedResult = parseCQLLibraryForErrors(reversedEngineeredCQLModel);
+						
+			if(listener.hasSyntaxErrors()) {
+				parsedResult.setXml(xml); // retain the old xml if there are syntax errors (essentially not saving)
+				parsedResult.setCqlString(cql);
+				parsedResult.setSuccess(false);
+				parsedResult.setCqlErrors(listener.getSyntaxErrors());
+				parsedResult.setFailureReason(SaveUpdateCQLResult.SYNTAX_ERRORS);				
+				return parsedResult;
+			}
 
 			if (parsedResult.getCqlErrors().isEmpty()) {
 				CQLFormatter formatter = new CQLFormatter();
@@ -189,7 +200,7 @@ public class CQLServiceImpl implements CQLService {
 				parsedResult.setXml(reverseEngineeredCQLLookup);
 				parsedResult.setCqlString(cql);
 			}
-
+			parsedResult.setSuccess(true);				
 			return parsedResult;
 
 		} catch (IOException | MappingException | MarshalException | ValidationException e) {
@@ -206,7 +217,7 @@ public class CQLServiceImpl implements CQLService {
 
 	private CQLModel reverseEngineerCQLModel(String cql) throws IOException {
 		ReverseEngineerListener listener = new ReverseEngineerListener(cql);
-		CQLModel reversedEngineeredCQLModel = listener.getCQLModel();
+		CQLModel reversedEngineeredCQLModel = listener.getCQLModel();	
 		return reversedEngineeredCQLModel;
 	}
 
@@ -1284,7 +1295,6 @@ public class CQLServiceImpl implements CQLService {
 	private void setUsedCodes(SaveUpdateCQLResult parsedCQL, CQLModel cqlModel) {
 
 		List<String> usedCodes = parsedCQL.getUsedCQLArtifacts().getUsedCQLcodes();
-		System.out.println("used codes:" + usedCodes);
 		for (CQLCode cqlCode : cqlModel.getCodeList()) {
 			boolean isUsed = usedCodes.contains(cqlCode.getDisplayName());
 			cqlCode.setUsed(isUsed);

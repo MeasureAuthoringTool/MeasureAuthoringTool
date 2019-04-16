@@ -490,6 +490,11 @@ public abstract class AbstractCQLWorkspacePresenter {
 		messagePanel.getSuccessMessageAlert().createAlert("Changes to the CQL File have been successfully saved.");
 	}
 	
+	protected void onSaveCQLFileFailure(SaveUpdateCQLResult result) {
+		SharedCQLWorkspaceUtility.displayAnnotations(result, cqlWorkspaceView.getViewCQLView().getCqlAceEditor());
+		messagePanel.getErrorMessageAlert().createAlert("The MAT was unable to save the changes. All items entered must be written in the correct CQL syntax. The line where MAT is no longer able to read the file is marked with a red square.");
+	}
+	
 	protected void onModifyValueSet(CQLQualityDataSetDTO result, boolean isUserDefined) {
 		String oid = isUserDefined ? EMPTY_STRING : result.getOid();
 		cqlWorkspaceView.getValueSetView().getOIDInput().setEnabled(true);

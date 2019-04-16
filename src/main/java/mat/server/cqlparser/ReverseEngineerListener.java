@@ -9,8 +9,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -38,6 +41,7 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.CQLError;
 
 public class ReverseEngineerListener extends cqlBaseListener {
 	
@@ -48,17 +52,42 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	private CommonTokenStream tokens;
 	private CQLModel cqlModel;
 	private String currentContext = "Patient";
+	private boolean hasSyntaxErrors;
+	private List<CQLError> syntaxErrors;
+	
+	private static class SyntaxErrorListener extends BaseErrorListener {
+		private List<CQLError> errors = new ArrayList<>();
+
+		@Override
+		public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
+				String msg, RecognitionException e) {
+			CQLError error = new CQLError();
+			error.setErrorMessage(msg);
+			error.setErrorInLine(line);
+			error.setErrorAtOffeset(charPositionInLine);
+			error.setStartErrorInLine(line);
+			error.setEndErrorInLine(line);			
+			errors.add(error);
+		}
+	}
 	
 	public ReverseEngineerListener(String cql) throws IOException {
+		syntaxErrors = new ArrayList<>();
 		cqlModel = new CQLModel();
 		InputStream stream = new ByteArrayInputStream(cql.getBytes());
 		cqlLexer lexer = new cqlLexer(new ANTLRInputStream(stream));
 		tokens = new CommonTokenStream(lexer);
 		tokens.fill();
         parser = new cqlParser(tokens);
-		ParseTree tree = parser.library();
+        parser.addErrorListener(new SyntaxErrorListener());        
+        parser.setBuildParseTree(true);      
+        
+    	ParseTree tree = parser.library();
 		ParseTreeWalker walker = new ParseTreeWalker();
 		walker.walk(this, tree);
+	
+        syntaxErrors.addAll(((SyntaxErrorListener) parser.getErrorListeners().get(1)).errors);
+		hasSyntaxErrors = syntaxErrors.size() > 0;	
 	}
 
 	@Override
@@ -359,5 +388,17 @@ public class ReverseEngineerListener extends cqlBaseListener {
     	} else {
         	return index - 1;
     	}		
+	}
+
+	public boolean hasSyntaxErrors() {
+		return hasSyntaxErrors;
+	}
+
+	public List<CQLError> getSyntaxErrors() {
+		return syntaxErrors;
+	}
+
+	public void setSyntaxErrors(List<CQLError> syntaxErrors) {
+		this.syntaxErrors = syntaxErrors;
 	}
 }

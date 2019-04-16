@@ -52,6 +52,7 @@ public class CQLView {
 		getCqlAceEditor().clearAnnotations();
 		getCqlAceEditor().redisplay();
 		getCqlAceEditor().setReadOnly(!isEditable);
+		getSaveButton().setEnabled(isEditable);
 		if(isEditable) {
 			cqlViewVP.add(exportErrorFile);
 		}

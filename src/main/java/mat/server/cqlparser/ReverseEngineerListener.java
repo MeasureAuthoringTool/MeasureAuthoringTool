@@ -87,7 +87,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		walker.walk(this, tree);
 	
         syntaxErrors.addAll(((SyntaxErrorListener) parser.getErrorListeners().get(1)).errors);
-		hasSyntaxErrors = syntaxErrors.size() > 0;	
+		hasSyntaxErrors = !syntaxErrors.isEmpty();	
 	}
 
 	@Override

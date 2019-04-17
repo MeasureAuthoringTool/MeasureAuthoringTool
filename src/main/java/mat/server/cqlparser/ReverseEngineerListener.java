@@ -33,7 +33,6 @@ import org.cqframework.cql.gen.cqlParser.UsingDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ValuesetDefinitionContext;
 
 import mat.client.shared.CQLWorkSpaceConstants;
-import mat.client.shared.QDMContainer;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLDefinition;
@@ -250,7 +249,16 @@ public class ReverseEngineerListener extends cqlBaseListener {
 			}
 		}
 		
-		return getLogicForParameter(ctx.start.getTokenIndex(), index - 1, identifier);
+		 Token twoTokensBeforeToken = tokens.get(index - 2);
+		    // check if the expression has a comment associated to it
+		    // if it does, return the token before it
+	    	if(twoTokensBeforeToken.getType() == cqlLexer.COMMENT) {
+	    		index = twoTokensBeforeToken.getTokenIndex() -1 ;
+	    	} else {
+	        	index = index - 1;
+	    	}	
+		
+		return getLogicForParameter(ctx.start.getTokenIndex(), index, identifier);
 	}
 	
 	@Override

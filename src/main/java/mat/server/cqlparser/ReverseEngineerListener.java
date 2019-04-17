@@ -32,6 +32,8 @@ import org.cqframework.cql.gen.cqlParser.ParameterDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.UsingDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ValuesetDefinitionContext;
 
+import mat.client.shared.CQLWorkSpaceConstants;
+import mat.client.shared.QDMContainer;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLDefinition;
@@ -41,6 +43,8 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.CQLKeywordsUtil;
+import mat.server.util.QDMUtil;
 import mat.shared.CQLError;
 
 public class ReverseEngineerListener extends cqlBaseListener {
@@ -275,9 +279,23 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		List<CQLFunctionArgument> functionArguments = new ArrayList<>();
 		if(ctx.operandDefinition() != null) {
 			for(OperandDefinitionContext operand : ctx.operandDefinition()) {
+				String name = operand.identifier().getText();
+				String type = operand.typeSpecifier().getText();
 				CQLFunctionArgument functionArgument = new CQLFunctionArgument();
-				functionArgument.setArgumentName(operand.identifier().getText());
-				functionArgument.setArgumentType(operand.typeSpecifier().getText());
+				functionArgument.setId(UUID.nameUUIDFromBytes(name.getBytes()).toString());
+				functionArgument.setArgumentName(name);
+				
+				if(QDMUtil.getQDMContainer().getDatatypes().contains(type)) {
+					functionArgument.setArgumentType("QDM Datatype");
+					functionArgument.setQdmDataType(type);
+				} else if (CQLKeywordsUtil.getCQLKeywords().getCqlDataTypeList().contains(type)) {
+					functionArgument.setArgumentType(type);
+				} else {
+					functionArgument.setArgumentType(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE);
+					functionArgument.setOtherType(type);
+				}
+				
+				
 				functionArguments.add(functionArgument);
 			}
 		}

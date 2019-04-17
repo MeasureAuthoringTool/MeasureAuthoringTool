@@ -4,11 +4,11 @@ import java.util.List;
 
 public class GuidanceModel extends MeasureDetailsRichTextAbstractModel{
 	public GuidanceModel() {
-		super("", "");
+		super("");
 	}
 	
 	public GuidanceModel(GuidanceModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getFormattedText());
 	}
 
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

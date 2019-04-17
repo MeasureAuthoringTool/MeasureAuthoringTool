@@ -116,6 +116,7 @@ import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
+import mat.model.clause.MeasureDetails;
 import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
@@ -138,6 +139,7 @@ import mat.server.humanreadable.cql.HumanReadableMeasureInformationModel;
 import mat.server.humanreadable.cql.HumanReadableModel;
 import mat.server.model.MatUserDetails;
 import mat.server.service.InvalidValueSetDateException;
+import mat.server.service.MeasureDetailsService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
@@ -274,6 +276,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	@Autowired
 	private MeasurePackageService measurePackageService;
+	
+	@Autowired
+	private MeasureDetailsService measureDetailsService;
 	
 	@Autowired
 	UserService userService;
@@ -1516,13 +1521,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("Loading Measure for MeasueId: " + key);
 		Measure measure = measurePackageService.getById(key);
 		if(!measure.getIsCompositeMeasure()) {
+			
 			MeasureXmlModel xmlModel = getMeasureXmlForMeasure(key);
 			MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
 			String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 			ManageMeasureDetailModel manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
 			manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 			manageMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
-		
+			measureDetailsService.getManageMeasureDetailModelFromMeasureDetails(manageMeasureDetailModel, measure.getMeasureDetails());
 			return manageMeasureDetailModel;
 		}
 		else {
@@ -1541,6 +1547,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXMLToModel(xmlString, measure);
 		manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 		manageCompositeMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
+		measureDetailsService.getManageMeasureDetailModelFromMeasureDetails(manageCompositeMeasureDetailModel, measure.getMeasureDetails());
 		
 		return manageCompositeMeasureDetailModel;
 	}
@@ -2376,11 +2383,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				measure.setaBBRName(shortName);
 				measure.setMeasureScoring(model.getMeasScoring());
 				measure.setPatientBased(model.isPatientBased());
+				
+				MeasureDetails measureDetails = measureDetailsService.getMeasureDetailFromManageMeasureDetailsModel(measure.getMeasureDetails(), model);
+				measure.setMeasureDetails(measureDetails);
+				
 				measurePackageService.save(measure);
 			}
 			model.setRevisionNumber(measure.getRevisionNumber());
-			logger.info("Saving Measure_Xml");
-			saveMeasureXml(createMeasureXmlModel(model, measure, MEASURE_DETAILS, MEASURE));
+			
 			SaveMeasureResult result = new SaveMeasureResult();
 			result.setSuccess(true);
 			logger.info("Saving of Measure Details Success");
@@ -6126,6 +6136,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			pkg.setCompositeScoring(model.getCompositeScoringMethod());
 			pkg.setMeasureSet(measureSet);
+			
+			MeasureDetails measureDetails = measureDetailsService.getMeasureDetailFromManageMeasureDetailsModel(pkg.getMeasureDetails(), model);
+			pkg.setMeasureDetails(measureDetails);
+			
 			setValueFromModel(model, pkg);
 			SaveMeasureResult result = new SaveMeasureResult();
 			try {
@@ -6149,7 +6163,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result.setSuccess(true);
 			result.setId(pkg.getId());
 			model.setMeasureTypeSelectedList(getMeasureTypeForComposite(model.getMeasureTypeSelectedList()));
-			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
 			createComponentMeasureAsLibraryInMeasureXML(pkg.getId(), model);
 			return result;
 		} else {

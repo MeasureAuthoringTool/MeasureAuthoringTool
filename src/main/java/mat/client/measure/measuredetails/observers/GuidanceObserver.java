@@ -28,7 +28,6 @@ public class GuidanceObserver implements MeasureDetailsComponentObserver {
 	private GuidanceModel updateFromView() {
 		final GuidanceModel model = (GuidanceModel) view.getMeasureDetailsComponentModel();
 		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
 		return model;
 	}
 }

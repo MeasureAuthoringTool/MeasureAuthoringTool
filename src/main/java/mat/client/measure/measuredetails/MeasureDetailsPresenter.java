@@ -689,7 +689,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	private MeasureDetailState getRichTextEditableTabState(MeasureDetailsRichTextAbstractModel model) {
 		if(model != null) {
-			if(model.getPlainText() == null || model.getPlainText().isEmpty()) {
+			if(model.getFormattedText() == null || model.getFormattedText().isEmpty()) {
 				return MeasureDetailState.BLANK;
 			} else {
 				return MeasureDetailState.COMPLETE;

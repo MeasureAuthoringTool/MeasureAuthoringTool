@@ -6,11 +6,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ImprovementNotationModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
 	public ImprovementNotationModel() {
-		super("", "");
+		super("");
 	}
 	
 	public ImprovementNotationModel(ImprovementNotationModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getFormattedText());
 	}
 	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

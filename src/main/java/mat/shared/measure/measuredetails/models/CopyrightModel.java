@@ -7,11 +7,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class CopyrightModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable {
 
 	public CopyrightModel() {
-		super("", "");
+		super("");
 	}
 	
 	public CopyrightModel(CopyrightModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getFormattedText());
 	}
 	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

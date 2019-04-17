@@ -20,7 +20,6 @@ public class MeasurePopulationExclusionsObserver implements MeasureDetailsCompon
 	private MeasurePopulationExclusionsModel updateFromView() {
 		MeasurePopulationExclusionsModel model = (MeasurePopulationExclusionsModel) view.getMeasureDetailsComponentModel();
 		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
 		return model;
 	}
 }

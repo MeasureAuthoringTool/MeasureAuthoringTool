@@ -23,7 +23,6 @@ public class ImprovementNotationObserver implements MeasureDetailsComponentObser
 	private ImprovementNotationModel updateFromView() {
 		final ImprovementNotationModel improvementNotationModel = (ImprovementNotationModel) view.getMeasureDetailsComponentModel();
 		improvementNotationModel.setFormattedText(view.getRichTextEditor().getFormattedText());
-		improvementNotationModel.setPlainText(view.getRichTextEditor().getPlainText());
 		return improvementNotationModel;
 	}
 

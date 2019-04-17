@@ -6,11 +6,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class RateAggregationModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
 	public RateAggregationModel() {
-		super("", "");
+		super("");
 	}
 	
 	public RateAggregationModel(RateAggregationModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getFormattedText());
 	}
 	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

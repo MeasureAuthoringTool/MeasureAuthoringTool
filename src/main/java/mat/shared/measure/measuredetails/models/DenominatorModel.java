@@ -6,11 +6,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class DenominatorModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
 	public DenominatorModel() {
-		super("", "");
+		super("");
 	}
 	
 	public DenominatorModel(DenominatorModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getFormattedText());
 	}
 	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

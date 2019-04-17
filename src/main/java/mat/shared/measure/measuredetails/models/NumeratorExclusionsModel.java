@@ -6,11 +6,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class NumeratorExclusionsModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
 	public NumeratorExclusionsModel() {
-		super("", "");
+		super("");
 	}
 	
 	public NumeratorExclusionsModel(NumeratorExclusionsModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getFormattedText());
 	}
 	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

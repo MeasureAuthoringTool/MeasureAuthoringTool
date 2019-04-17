@@ -6,11 +6,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class RiskAdjustmentModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable {
 	public RiskAdjustmentModel() {
-		super("", "");
+		super("");
 	}
 	
 	public RiskAdjustmentModel(RiskAdjustmentModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getFormattedText());
 	}
 	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

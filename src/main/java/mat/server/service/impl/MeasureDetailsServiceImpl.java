@@ -32,7 +32,7 @@ public class MeasureDetailsServiceImpl implements MeasureDetailsService {
 		measureDetails.setMeasurePopulation(model.getMeasurePopulation());
 		measureDetails.setDenominatorExceptions(model.getDenominatorExceptions());
 		measureDetails.setSupplementalDataElements(model.getSupplementalData());
-		measureDetails.setMeasureSet(model.getMeasScoring());
+		measureDetails.setMeasureSet(model.getGroupName());
 		
 		return measureDetails;
 	}
@@ -61,7 +61,7 @@ public class MeasureDetailsServiceImpl implements MeasureDetailsService {
 			model.setMeasurePopulation(measureDetails.getMeasurePopulation());
 			model.setDenominatorExceptions(measureDetails.getDenominatorExceptions());
 			model.setSupplementalData(measureDetails.getSupplementalDataElements());
-			model.setMeasScoring(measureDetails.getMeasureSet());
+			model.setGroupName(measureDetails.getMeasureSet());
 		}
 		return model;
 	}

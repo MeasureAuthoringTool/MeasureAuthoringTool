@@ -577,6 +577,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					handleCQLData(result);
 					SharedCQLWorkspaceUtility.displayMessagesForViewCQL(result, cqlWorkspaceView.getViewCQLView().getCqlAceEditor(), messagePanel);
 				}
+				
+				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().focus();
 			}
 		});
 	}

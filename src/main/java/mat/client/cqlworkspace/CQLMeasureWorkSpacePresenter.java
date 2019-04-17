@@ -660,6 +660,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 					onSaveCQLFileSuccess(result);
 					handleCQLData(result);
 				}
+				
+				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().focus();
 			}
 		});
 	}

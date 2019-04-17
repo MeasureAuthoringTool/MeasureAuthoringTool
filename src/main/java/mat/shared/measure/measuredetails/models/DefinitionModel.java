@@ -7,11 +7,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class DefinitionModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable {
 	
 	public DefinitionModel() {
-		super("", "");
+		super("");
 	}
 	
 	public DefinitionModel(DefinitionModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getFormattedText());
 	}
 	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

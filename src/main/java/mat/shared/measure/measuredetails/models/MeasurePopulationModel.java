@@ -6,11 +6,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class MeasurePopulationModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
 	public MeasurePopulationModel() {
-		super("", "");
+		super("");
 	}
 	
 	public MeasurePopulationModel(MeasurePopulationModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getFormattedText());
 	}
 	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

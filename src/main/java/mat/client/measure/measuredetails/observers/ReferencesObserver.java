@@ -17,16 +17,17 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 
 	@Override
 	public void handleValueChanged() {
-		if(referencesView.getRichTextEditor().getPlainText().trim().length() !=0) {
+		//checks if the plain text length is greater than zero
+		if(referencesView.getRichTextEditor().getText() != null && referencesView.getRichTextEditor().getText().trim().length() !=0) {
 			handleTextValueChanged();
 		}
 	}
 	
 	public void handleTextValueChanged() {
 		try {
-			referencesView.getReferencesModel().getReferences().set(referencesView.getEditingIndex(), referencesView.getRichTextEditor().getPlainText().trim());
+			referencesView.getReferencesModel().getReferences().set(referencesView.getEditingIndex(), referencesView.getRichTextEditor().getFormattedText().trim());
 		} catch(IndexOutOfBoundsException iobe) {
-			referencesView.getReferencesModel().getReferences().add(referencesView.getRichTextEditor().getPlainText().trim());
+			referencesView.getReferencesModel().getReferences().add(referencesView.getRichTextEditor().getFormattedText().trim());
 		}
 	}
 

@@ -23,7 +23,6 @@ public class DescriptionObserver implements MeasureDetailsComponentObserver {
 	private DescriptionModel updateDescriptionModelFromView() {
 		DescriptionModel descriptionModel = (DescriptionModel) view.getMeasureDetailsComponentModel();
 		descriptionModel.setFormattedText(view.getRichTextEditor().getFormattedText());
-		descriptionModel.setPlainText(view.getRichTextEditor().getPlainText());
 		return descriptionModel;
 	}
 

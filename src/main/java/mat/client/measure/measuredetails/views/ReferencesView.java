@@ -268,12 +268,12 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	}
 
 	public boolean isEditorDirty(String referenceValue) {
-		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getPlainText().trim();
+		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getText().trim();
 		return (!isReadOnly && (!textValue.isEmpty() && !textValue.equals(referenceValue)));
 	}
 	
 	public boolean isEditorDirty() {
-		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getPlainText().trim();
+		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getText().trim();
 		return !isReadOnly && !textValue.isEmpty();
 	}
 	

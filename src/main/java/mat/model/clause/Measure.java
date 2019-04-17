@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -76,6 +77,8 @@ public class Measure {
 	private Boolean isCompositeMeasure = false;
 	
 	private List<ComponentMeasure> componentMeasures;
+	
+	private MeasureDetails measureDetails;
 
 	@Column(name = "VALUE_SET_DATE", length = 19)
 	public Timestamp getValueSetDate() {
@@ -358,5 +361,18 @@ public class Measure {
 
 	public void setComponentMeasures(List<ComponentMeasure> componentMeasures) {
 		this.componentMeasures = componentMeasures;
+	}
+
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "measure", cascade=CascadeType.ALL)
+	public MeasureDetails getMeasureDetails() {
+		return measureDetails;
+	}
+
+	public void setMeasureDetails(MeasureDetails measureDetails) {
+		if(measureDetails != null && measureDetails.getMeasure() == null) {
+			measureDetails.setMeasure(this);
+		}
+		
+		this.measureDetails = measureDetails;
 	}
 }

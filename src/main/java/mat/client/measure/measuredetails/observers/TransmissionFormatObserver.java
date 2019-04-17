@@ -28,7 +28,6 @@ public class TransmissionFormatObserver implements MeasureDetailsComponentObserv
 	private TransmissionFormatModel updateFromView() {
 		final TransmissionFormatModel model = (TransmissionFormatModel) view.getMeasureDetailsComponentModel();
 		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
 		return model;
 	}
 }

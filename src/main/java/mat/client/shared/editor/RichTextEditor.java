@@ -9,17 +9,18 @@ public class RichTextEditor extends RichTextArea {
 		this.setWidth("625px");
 		this.setHeight("350px");
 	}
-	
-	public String getPlainText() {
-		return this.getText();
-	}
 
 	public String getFormattedText() {
-		return this.getText();
+		// if the trimmed plain text of the formatter is empty 
+		// we want the formatted text to be empty
+		if(this.getText() == null || this.getText().trim().isEmpty()) {
+			return null;
+		}
+		return this.getHTML();
 	}
 	
 	public void setEditorText(String text) {
-		this.setText(text);
+		this.setHTML(text);
 	}
 	
 	public void setReadOnly(Boolean readOnly) {

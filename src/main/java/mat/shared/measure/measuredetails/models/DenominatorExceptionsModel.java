@@ -7,11 +7,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class DenominatorExceptionsModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable {
 	
 	public DenominatorExceptionsModel() {
-		super("", "");
+		super("");
 	}
 	
 	public DenominatorExceptionsModel(DenominatorExceptionsModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getFormattedText());
 	}
 	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

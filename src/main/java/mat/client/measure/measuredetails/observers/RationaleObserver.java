@@ -29,7 +29,6 @@ public class RationaleObserver implements MeasureDetailsComponentObserver{
 	private RationaleModel updateFromView() {
 		RationaleModel model = (RationaleModel) view.getMeasureDetailsComponentModel();
 		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
 		return model;
 	}
 }

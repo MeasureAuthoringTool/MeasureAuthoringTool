@@ -29,7 +29,6 @@ public class CopyrightObserver implements MeasureDetailsComponentObserver {
 	private CopyrightModel updateFromView() {
 		CopyrightModel model = (CopyrightModel) view.getMeasureDetailsComponentModel();
 		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
 		return model;
 	}
 }

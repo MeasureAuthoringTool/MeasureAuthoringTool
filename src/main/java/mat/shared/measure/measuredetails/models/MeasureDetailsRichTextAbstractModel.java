@@ -3,24 +3,14 @@ package mat.shared.measure.measuredetails.models;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public abstract class MeasureDetailsRichTextAbstractModel implements MeasureDetailsComponentModel, IsSerializable {
-	private String plainText;
 	private String formattedText;
 	
 	public MeasureDetailsRichTextAbstractModel() {
-		this.plainText = "";
 		this.formattedText = "";
 	}
 	
-	public MeasureDetailsRichTextAbstractModel(String plainText, String formattedText) {
-		this.plainText = plainText; 
+	public MeasureDetailsRichTextAbstractModel(String formattedText) {
 		this.formattedText = formattedText;
-	}
-	
-	public String getPlainText() {
-		return plainText == null ? null : plainText.trim();
-	}
-	public void setPlainText(String plainText) {
-		this.plainText = plainText;
 	}
 	public String getFormattedText() {
 		return formattedText == null ? null : formattedText.trim();
@@ -35,8 +25,7 @@ public abstract class MeasureDetailsRichTextAbstractModel implements MeasureDeta
 		if(richTextEditorModel == null) {
 			return false;
 		} else if(richTextEditorModel.getFormattedText() != null && getFormattedText() != null) {
-			return this.getFormattedText().equals(richTextEditorModel.getFormattedText()) && 
-					this.getPlainText().equals(richTextEditorModel.getPlainText());
+			return this.getFormattedText().equals(richTextEditorModel.getFormattedText());
 		} else {
 			return richTextEditorModel.getFormattedText() == null && getFormattedText() == null;
 		}

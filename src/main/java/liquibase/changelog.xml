@@ -239,5 +239,6 @@
 		<include file="classpath:/liquibase/deploy_Sprint-151_MAT-9323.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-161_MAT-9640_CQL_LIBRARY_MODIFIED_INFO.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-167_MAT-9769_CM_Alias_Length.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-166_MAT-9621_New_Tables_For_Measure_Details.xml"/>
 		
 </databaseChangeLog>

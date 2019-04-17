@@ -28,7 +28,6 @@ public class DefinitionObserver implements MeasureDetailsComponentObserver {
 	private DefinitionModel updateFromView() {
 		final DefinitionModel model = (DefinitionModel) view.getMeasureDetailsComponentModel();
 		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
 		return model;
 	}
 }

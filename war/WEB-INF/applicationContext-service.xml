@@ -42,6 +42,9 @@
     <bean id="measurePackageService" class="mat.server.service.impl.MeasurePackageServiceImpl">
     	<property name="currentReleaseVersion" value="${mat.measure.current.release.version}"/>
     </bean>
+    
+    <bean id="MeasureDetailsService" class="mat.server.service.impl.MeasureDetailsServiceImpl">
+    </bean>
          
     <bean id="packagerService" class="mat.server.service.impl.PackagerServiceImpl">
     </bean>

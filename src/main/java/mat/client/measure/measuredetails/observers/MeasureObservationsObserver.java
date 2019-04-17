@@ -15,7 +15,6 @@ public class MeasureObservationsObserver implements MeasureDetailsComponentObser
 	private MeasureObservationsModel updateFromView() {
 		MeasureObservationsModel model = (MeasureObservationsModel) view.getMeasureDetailsComponentModel();
 		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
 		return model;
 	}
 

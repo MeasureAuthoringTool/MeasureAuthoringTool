@@ -20,7 +20,6 @@ public class DenominatorExceptionsObserver implements MeasureDetailsComponentObs
 	private DenominatorExceptionsModel updateFromView() {
 		DenominatorExceptionsModel model = (DenominatorExceptionsModel) view.getMeasureDetailsComponentModel();
 		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
 		return model;
 	}
 }

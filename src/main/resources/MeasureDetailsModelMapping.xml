@@ -315,6 +315,7 @@
       <bind-xml name="supplementalData" node="element"/>
     </field>
     
+    <!-- The is Measure set  -->
     <field name="groupName"
            type="java.lang.String">
       <bind-xml name="qualityMeasureSet" node="element"/>

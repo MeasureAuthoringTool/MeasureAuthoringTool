@@ -37,6 +37,7 @@ import org.exolab.castor.xml.ValidationException;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -95,6 +96,7 @@ import mat.shared.cql.error.InvalidLibraryException;
 /**
  * The Class CQLServiceImpl.
  */
+@Service
 public class CQLServiceImpl implements CQLService {
 
 	private static final Log logger = LogFactory.getLog(CQLServiceImpl.class);

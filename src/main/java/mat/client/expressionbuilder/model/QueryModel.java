@@ -72,7 +72,6 @@ public class QueryModel extends ExpressionBuilderModel {
 		
 		if (!relationship.getChildModels().isEmpty()) {
 			 builder.append("\n").append(queryContentIndentation);
-			 builder.append(relationshipType).append(" ");
 			 builder.append(relationship.getCQL(indentation + "  "));
 		 }
 				

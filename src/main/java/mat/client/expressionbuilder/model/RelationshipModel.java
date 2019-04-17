@@ -38,7 +38,8 @@ public class RelationshipModel extends ExpressionBuilderModel {
 		final StringBuilder builder = new StringBuilder();
 		
 		if(getParentModel().getParentModel() != null) {
-			builder.append("(");
+			QueryModel queryModel = (QueryModel) getParentModel().getParentModel();
+			builder.append(queryModel.getRelationshipType()).append(" ").append("(");
 		}
 						
 		builder.append(source.getCQL(indentation + "  "));

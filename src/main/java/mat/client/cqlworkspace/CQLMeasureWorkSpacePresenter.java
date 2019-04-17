@@ -652,14 +652,13 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
+				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().setText(result.getCqlString());
 				messagePanel.clearAlerts();
 				if(!result.isSuccess()) {
 					onSaveCQLFileFailure(result);
 				} else {
-					onSaveCQLFileSuccess();
+					onSaveCQLFileSuccess(result);
 					handleCQLData(result);
-					SharedCQLWorkspaceUtility.displayMessagesForViewCQL(result, cqlWorkspaceView.getViewCQLView().getCqlAceEditor(), messagePanel);
-					cqlWorkspaceView.getViewCQLView().getCqlAceEditor().setText(result.getCqlString());
 				}
 			}
 		});

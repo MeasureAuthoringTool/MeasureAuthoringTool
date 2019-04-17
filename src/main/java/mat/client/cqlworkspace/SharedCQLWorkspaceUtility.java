@@ -45,10 +45,16 @@ public class SharedCQLWorkspaceUtility {
 	
 	public static void displayMessagesForViewCQL(SaveUpdateCQLResult result, AceEditor aceEditor, MessagePanel messagePanel) {
 		aceEditor.clearAnnotations();
+		displayAnnotationForViewCQL(result, aceEditor);
+		SharedCQLWorkspaceUtility.displayMessageBannerForViewCQL(result, messagePanel);
+		aceEditor.setAnnotations();
+	}
+
+	public static void displayAnnotationForViewCQL(SaveUpdateCQLResult result, AceEditor aceEditor) {
+		aceEditor.clearAnnotations();
 		String formattedName = result.getCqlModel().getFormattedName();
 		SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameErrorsMap().get(formattedName), ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor);
 		SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameWarningsMap().get(formattedName), WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor);
-		SharedCQLWorkspaceUtility.displayMessageBannerForViewCQL(result, messagePanel);
 		aceEditor.setAnnotations();
 	}
 

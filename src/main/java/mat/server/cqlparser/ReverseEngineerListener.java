@@ -395,7 +395,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		// find the next define statement
 		boolean startAdding = false;
 		for(Token t : ts) {
-			if(t.getText().equals("define") && startAdding) {
+			if((t.getText().equals("define") || t.getText().equals("context")) && startAdding) {
 				index = t.getTokenIndex();
 				break;
 			}

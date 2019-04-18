@@ -237,7 +237,7 @@ public final class CQLUtilityClass {
 
 
 			cqlStr = cqlStr.append(func + "(");
-			if(function.getArgumentList()!=null) {
+			if(function.getArgumentList() != null && !function.getArgumentList().isEmpty()) {
 				for (CQLFunctionArgument argument : function.getArgumentList()) {
 					StringBuilder argumentType = new StringBuilder();
 					if (argument.getArgumentType().equalsIgnoreCase("QDM Datatype")) {

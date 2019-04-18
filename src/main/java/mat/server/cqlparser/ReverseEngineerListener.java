@@ -293,9 +293,9 @@ public class ReverseEngineerListener extends cqlBaseListener {
 				functionArgument.setId(UUID.nameUUIDFromBytes(name.getBytes()).toString());
 				functionArgument.setArgumentName(name);
 				
-				if(QDMUtil.getQDMContainer().getDatatypes().contains(type)) {
+				if(QDMUtil.getQDMContainer().getDatatypes().contains(parseString(type))) {
 					functionArgument.setArgumentType("QDM Datatype");
-					functionArgument.setQdmDataType(type);
+					functionArgument.setQdmDataType(parseString(type));
 				} else if (CQLKeywordsUtil.getCQLKeywords().getCqlDataTypeList().contains(type)) {
 					functionArgument.setArgumentType(type);
 				} else {
@@ -372,11 +372,11 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	
 	private String parseString(String identifier) {
 		if(Character.toString(identifier.charAt(0)).equals("\"") || Character.toString(identifier.charAt(0)).equals("'")) {
-			identifier = identifier.substring(1, identifier.length() - 1);
+			return identifier.substring(1, identifier.length() - 1);
 		}
 		
 		if(Character.toString(identifier.charAt(identifier.length() - 1)).equals("\"") || Character.toString(identifier.charAt(0)).equals("'")) {
-			identifier = identifier.substring(0, identifier.length() - 2);
+			return identifier.substring(0, identifier.length() - 2);
 		}
 		
 		return identifier;

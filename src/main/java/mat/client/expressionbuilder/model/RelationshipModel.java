@@ -50,7 +50,7 @@ public class RelationshipModel extends ExpressionBuilderModel {
 		
 		if (!criteria.getChildModels().isEmpty()) {
 			builder.append("\n" + filterIdentation);
-			builder.append("where ");
+			builder.append("such that ");
 		}
 		
 		if(getChildModels().size() == 1) {

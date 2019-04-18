@@ -46,8 +46,10 @@ public class MeasureDetailsServiceImpl implements MeasureDetailsService {
 	
 	private List<MeasureDetailsReference> createReferenceConversion(List<String> newReferencesList, MeasureDetails measureDetails) {
 		List<MeasureDetailsReference> references = new ArrayList<>();
-		for(int i = 0; i< newReferencesList.size(); i++) {
-			references.add(new MeasureDetailsReference(measureDetails, newReferencesList.get(i), i));
+		if(newReferencesList != null) {
+			for(int i = 0; i< newReferencesList.size(); i++) {
+				references.add(new MeasureDetailsReference(measureDetails, newReferencesList.get(i), i));
+			}
 		}
 		return references;
 	}

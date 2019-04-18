@@ -20,6 +20,13 @@ public class RichTextEditor extends RichTextArea {
 	}
 	
 	public void setEditorText(String text) {
+		if(text != null) {
+			text = text.replaceAll("\r\n", "<p>");
+			text = text.replaceAll("\n", "<p>");
+			if(!text.contains("<font face=\"Arial\">")) {
+				text = "<font face=\"Arial\">" + text + "</font>";
+			}
+		}
 		this.setHTML(text);
 	}
 	

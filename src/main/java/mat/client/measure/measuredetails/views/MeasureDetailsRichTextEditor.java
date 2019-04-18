@@ -3,7 +3,6 @@ package mat.client.measure.measuredetails.views;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.RichTextArea.FontSize;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.shared.editor.RichTextEditor;
@@ -17,8 +16,10 @@ public class MeasureDetailsRichTextEditor {
 	public MeasureDetailsRichTextEditor(FlowPanel mainPanel) {
 		richTextEditor = new RichTextEditor();
 		richTextEditor.addKeyDownHandler(event -> checkForDisableEditor(event));
+		
 		toolBar = new RichTextToolbar(richTextEditor);
 		toolBar.setWidth("100%");
+		richTextEditor.addClickHandler(event -> richTextEditor.getFormatter().setFontName("Arial"));
 		HorizontalPanel infoPanel = new HorizontalPanel();
 		VerticalPanel textAreaPanel = new VerticalPanel();
 		textAreaPanel.add(toolBar);

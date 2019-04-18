@@ -46,7 +46,7 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 		referencesView.getReferencesModel().setReferences(referenceList);
 		if(referenceList != null && referenceList.get(index) != null) {
 			referencesView.setEditingIndex(index);
-			referencesView.getRichTextEditor().setHTML(referenceList.get(index));
+			referencesView.getRichTextEditor().setEditorText(referenceList.get(index));
 		}
 	}
 

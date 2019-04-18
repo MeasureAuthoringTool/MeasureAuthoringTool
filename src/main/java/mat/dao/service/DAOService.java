@@ -40,6 +40,7 @@ import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.CQLLibraryShareDAO;
 import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.clause.MeasureDAO;
+import mat.dao.clause.MeasureDetailsReferenceDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureSetDAO;
 import mat.dao.clause.MeasureXMLDAO;
@@ -132,6 +133,8 @@ public class DAOService {
 	private EmailAuditLogDAO emailAuditLogDAO; 
 	@Autowired
 	private ComponentMeasuresDAO componentMeasureDAO;
+	@Autowired
+	private MeasureDetailsReferenceDAO measureDetailsReferenceDAO;
 
 	public AuditLogDAO getAuditLogDAO() {
 		return auditLogDAO;
@@ -175,6 +178,10 @@ public class DAOService {
 	
 	public MeasureDAO getMeasureDAO() {
 		return measureDAO;
+	}
+	
+	public MeasureDetailsReferenceDAO getMeasureDetailsReferenceDAO() {
+		return measureDetailsReferenceDAO;
 	}
 	
 	public MeasureExportDAO getMeasureExportDAO() {
@@ -299,6 +306,10 @@ public class DAOService {
 	
 	public void setMeasureDAO(MeasureDAO measureDAO) {
 		this.measureDAO = measureDAO;
+	}
+	
+	public void setMeasureDetailsReferenceDAO(MeasureDetailsReferenceDAO measureDetailsReferenceDAO) {
+		this.measureDetailsReferenceDAO = measureDetailsReferenceDAO;
 	}
 	
 	public void setMeasureExportDAO(MeasureExportDAO measureExportDAO) {

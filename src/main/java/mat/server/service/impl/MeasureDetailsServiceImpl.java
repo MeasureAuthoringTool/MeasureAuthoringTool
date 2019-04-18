@@ -1,7 +1,12 @@
 package mat.server.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.model.clause.MeasureDetails;
+import mat.model.clause.MeasureDetailsReference;
 import mat.server.service.MeasureDetailsService;
 
 public class MeasureDetailsServiceImpl implements MeasureDetailsService {
@@ -34,9 +39,19 @@ public class MeasureDetailsServiceImpl implements MeasureDetailsService {
 		measureDetails.setSupplementalDataElements(model.getSupplementalData());
 		measureDetails.setMeasureSet(model.getGroupName());
 		
+		measureDetails.setMeasureDetailsReference(createReferenceConversion(model.getReferencesList(), measureDetails));
+		
 		return measureDetails;
 	}
 	
+	private List<MeasureDetailsReference> createReferenceConversion(List<String> newReferencesList, MeasureDetails measureDetails) {
+		List<MeasureDetailsReference> references = new ArrayList<>();
+		for(int i = 0; i< newReferencesList.size(); i++) {
+			references.add(new MeasureDetailsReference(measureDetails, newReferencesList.get(i), i));
+		}
+		return references;
+	}
+
 	@Override
 	public ManageMeasureDetailModel getManageMeasureDetailModelFromMeasureDetails(ManageMeasureDetailModel model, MeasureDetails measureDetails) {
 		if(measureDetails != null) {
@@ -62,6 +77,8 @@ public class MeasureDetailsServiceImpl implements MeasureDetailsService {
 			model.setDenominatorExceptions(measureDetails.getDenominatorExceptions());
 			model.setSupplementalData(measureDetails.getSupplementalDataElements());
 			model.setGroupName(measureDetails.getMeasureSet());
+
+			model.setReferencesList(measureDetails.getMeasureDetailsReference().stream().map(reference -> reference.getReference()).collect(Collectors.toList()));
 		}
 		return model;
 	}

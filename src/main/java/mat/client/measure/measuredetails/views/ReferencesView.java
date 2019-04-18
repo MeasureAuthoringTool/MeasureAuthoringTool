@@ -61,7 +61,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 			@Override
 			public SafeHtml getValue(String object) {
 				String reference = object.length()>35 ? object.substring(0, 35) + "..." : object;
-				return CellTableUtility.getColumnToolTip(SafeHtmlUtils.htmlEscape(reference));
+				return CellTableUtility.getColumnToolTip(reference);
 			}
 		};
 		referencesTable.addColumn(descriptionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Description\">" + "Description" + "</span>"));
@@ -111,7 +111,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	
 	private void displayDeleteConfirmationDialog(int index, String object) {
 		DeleteConfirmationDialogBox deleteConfirmation = new DeleteConfirmationDialogBox();
-		deleteConfirmation.getMessageAlert().createAlert("You have selected to delete reference: " + SafeHtmlUtils.htmlEscape((object.length()>60 ? object.substring(0, 59) : object)) + ". Please confirm that you want to remove this reference permanently.");
+		deleteConfirmation.getMessageAlert().createAlert("You have selected to delete reference: " + (object.length()>60 ? object.substring(0, 59) : object) + ". Please confirm that you want to remove this reference permanently.");
 		deleteConfirmation.getYesButton().addClickHandler(event -> observer.handleDeleteReference(index, object));
 		deleteConfirmation.show();
 	}
@@ -268,12 +268,12 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	}
 
 	public boolean isEditorDirty(String referenceValue) {
-		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getText().trim();
+		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getFormattedText() == null ? "": measureDetailsRichTextEditor.getRichTextEditor().getFormattedText().trim();
 		return (!isReadOnly && (!textValue.isEmpty() && !textValue.equals(referenceValue)));
 	}
 	
 	public boolean isEditorDirty() {
-		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getText().trim();
+		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getText() == null ? "" : measureDetailsRichTextEditor.getRichTextEditor().getText().trim();
 		return !isReadOnly && !textValue.isEmpty();
 	}
 	

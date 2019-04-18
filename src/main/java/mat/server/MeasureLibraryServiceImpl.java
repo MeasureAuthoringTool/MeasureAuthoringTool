@@ -93,6 +93,7 @@ import mat.dao.RecentMSRActivityLogDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.clause.MeasureDAO;
+import mat.dao.clause.MeasureDetailsReferenceDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.OperatorDAO;
@@ -238,6 +239,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	@Autowired
 	private MeasureDAO measureDAO;
+	
+	@Autowired
+	private MeasureDetailsReferenceDAO measureDetailsReferenceDAO;
 
 	@Autowired
 	private RecentMSRActivityLogDAO recentMSRActivityLogDAO;
@@ -2384,6 +2388,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				measure.setMeasureScoring(model.getMeasScoring());
 				measure.setPatientBased(model.isPatientBased());
 				
+				//delete existing references
+				if(measure.getMeasureDetails() != null) {
+					measureDetailsReferenceDAO.deleteAllByMeasureDetailsId(measure.getMeasureDetails().getId());
+				}
 				MeasureDetails measureDetails = measureDetailsService.getMeasureDetailFromManageMeasureDetailsModel(measure.getMeasureDetails(), model);
 				measure.setMeasureDetails(measureDetails);
 				
@@ -6136,6 +6144,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			pkg.setCompositeScoring(model.getCompositeScoringMethod());
 			pkg.setMeasureSet(measureSet);
+			
+			//delete existing references
+			if(pkg.getMeasureDetails() != null) {
+				measureDetailsReferenceDAO.deleteAllByMeasureDetailsId(pkg.getMeasureDetails().getId());
+			}
 			
 			MeasureDetails measureDetails = measureDetailsService.getMeasureDetailFromManageMeasureDetailsModel(pkg.getMeasureDetails(), model);
 			pkg.setMeasureDetails(measureDetails);

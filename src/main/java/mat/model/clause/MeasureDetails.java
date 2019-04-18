@@ -2,12 +2,16 @@ package mat.model.clause;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -41,6 +45,7 @@ public class MeasureDetails {
 	private String supplementalDataElements;
 	private String measureSet;
 	private Measure measure;
+	private List<MeasureDetailsReference> measureDetailsReference;
 	
 	public MeasureDetails() {
 		
@@ -248,5 +253,14 @@ public class MeasureDetails {
 
 	public void setMeasure(Measure measure) {
 		this.measure = measure;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "measureDetails",cascade=CascadeType.ALL)
+	public List<MeasureDetailsReference> getMeasureDetailsReference() {
+		return measureDetailsReference;
+	}
+
+	public void setMeasureDetailsReference(List<MeasureDetailsReference> measureDetailsReferences) {
+		this.measureDetailsReference = measureDetailsReferences;
 	}
 }

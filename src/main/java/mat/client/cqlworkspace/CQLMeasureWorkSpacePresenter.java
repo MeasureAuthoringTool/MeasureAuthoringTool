@@ -960,7 +960,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().setAppliedCodeTableList(appliedCodeTableList);
-			if ((result.getCqlModel().getDefinitionList() != null) && (result.getCqlModel().getDefinitionList().size() > 0)) {
+			if (result.getCqlModel().getDefinitionList() != null) {
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().updateDefineMap();
@@ -968,30 +968,25 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			} else {
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineBadge().setText("00");
 			}
-			if ((result.getCqlModel().getCqlParameters() != null) && (result.getCqlModel().getCqlParameters().size() > 0)) {
+			if (result.getCqlModel().getCqlParameters() != null) {
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewParameterList(result.getCqlModel().getCqlParameters());
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().updateParamMap();
 				MatContext.get().setParameters(getParameterList(result.getCqlModel().getCqlParameters()));
-			} else {
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().getParamBadge().setText("00");
 			}
-			if ((result.getCqlModel().getCqlFunctions() != null) && (result.getCqlModel().getCqlFunctions().size() > 0)) {
+			
+			if (result.getCqlModel().getCqlFunctions() != null) {
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewFunctions(result.getCqlModel().getCqlFunctions());
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().updateFunctionMap();
 				MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
-			} else {
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionBadge().setText("00");
-			}
+			} 
+			
 			if ((result.getCqlModel().getCqlIncludeLibrarys() != null) && (result.getCqlModel().getCqlIncludeLibrarys().size() > 0)) {
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewIncludeLibrarys(filterComponentMeasuresFromIncludedLibraries(result.getCqlModel().getCqlIncludeLibrarys()));
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().udpateIncludeLibraryMap();
 				MatContext.get().setIncludedValues(result);
-			} else {
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesBadge().setText("00");
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryMap().clear();
 			}
 
 			boolean isValidQDMVersion = cqlWorkspaceView.getCQLLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion(false); //false because it is a measures cql view

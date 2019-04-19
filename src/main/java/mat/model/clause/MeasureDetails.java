@@ -16,9 +16,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 @Entity
 @Table(name = "MEASURE_DETAILS", uniqueConstraints = @UniqueConstraint(columnNames = "MEASURE_ID"))
-public class MeasureDetails {
+public class MeasureDetails implements IsSerializable{
 	
 	private int id;
 	private String description;

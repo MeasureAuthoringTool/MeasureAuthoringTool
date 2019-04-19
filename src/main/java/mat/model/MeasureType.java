@@ -13,14 +13,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 @Table(name="MEASURE_TYPES")
 public class MeasureType implements IsSerializable{
 	
-	/**
-	 * The Class Comparator.
-	 */
-	public static class MeasureTypeComparator implements Comparator<MeasureType>, IsSerializable {
+	public static class Comparator implements java.util.Comparator<MeasureType>, IsSerializable {
 
-		/* (non-Javadoc)
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
 		@Override
 		public int compare(MeasureType o1, MeasureType o2) {
 			return o1.getDescription().compareTo(o2.getDescription());
@@ -33,6 +27,16 @@ public class MeasureType implements IsSerializable{
 	private String description;
 	
 	private String abbrName;//Added for XML conversion.
+	
+	public MeasureType(){
+		
+	}
+	
+	public MeasureType(String id, String description, String abbrName) {
+		this.id = id;
+		this.description = description;
+		this.abbrName = abbrName;
+	}
 	
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)

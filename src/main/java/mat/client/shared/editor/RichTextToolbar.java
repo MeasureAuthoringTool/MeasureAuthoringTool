@@ -393,4 +393,12 @@ public RichTextArea.Formatter getBasic() {
 public void setBasic(RichTextArea.Formatter basic) {
 	this.basic = basic;
 }
+
+public PushButton getRemoveFormat() {
+	return removeFormat;
+}
+
+public void setRemoveFormat(PushButton removeFormat) {
+	this.removeFormat = removeFormat;
+}
 }

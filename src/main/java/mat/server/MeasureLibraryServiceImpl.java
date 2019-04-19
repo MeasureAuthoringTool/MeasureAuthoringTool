@@ -121,6 +121,7 @@ import mat.model.clause.MeasureDetails;
 import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
+import mat.model.clause.MeasureTypeAssociation;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
@@ -2394,6 +2395,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 				MeasureDetails measureDetails = measureDetailsService.getMeasureDetailFromManageMeasureDetailsModel(measure.getMeasureDetails(), model);
 				measure.setMeasureDetails(measureDetails);
+				measure.setMeasureTypes(getSelectedMeasureTypes(measure, model));
 				
 				measurePackageService.save(measure);
 			}
@@ -2412,6 +2414,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 
+	private List<MeasureTypeAssociation> getSelectedMeasureTypes(Measure measure, ManageMeasureDetailModel model){
+		List<MeasureTypeAssociation> mtaList = new ArrayList<>();
+		List<MeasureType> mtList = model.getMeasureTypeSelectedList();
+		mtList.forEach(typ -> mtaList.add(new MeasureTypeAssociation(measure, typ)));
+		return mtaList;
+	}
+	
 	private String buildMeasureShortName(final ManageMeasureDetailModel model) {
 		String shortName = "";
 		if(!StringUtility.isEmptyOrNull(model.getShortName())) {
@@ -4767,6 +4776,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MeasureType measureType = new MeasureType();
 			measureType.setDescription(measureTypeDTO.getName());
 			measureType.setAbbrName(measureTypeDTO.getAbbrName());
+			measureType.setId(measureTypeDTO.getId());
 			measureTypeList.add(measureType);
 		}
 		return measureTypeList;

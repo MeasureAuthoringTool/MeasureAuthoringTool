@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import java.util.Comparator;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 @Entity

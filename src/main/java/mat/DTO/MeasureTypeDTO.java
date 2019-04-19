@@ -14,7 +14,7 @@ public class MeasureTypeDTO implements IsSerializable, HasListBox {
 	private String id;
 	
 	/** The Name. */
-	private String Name;
+	private String name;
 	
 	private String abbrName;
 	
@@ -23,6 +23,12 @@ public class MeasureTypeDTO implements IsSerializable, HasListBox {
 	 */
 	public MeasureTypeDTO(){
 		
+	}
+	
+	public  MeasureTypeDTO(String id, String name, String abbrName) {
+		this.id = id;
+		this.name = name;
+		this.abbrName = abbrName;
 	}
 	
 	/**
@@ -57,7 +63,7 @@ public class MeasureTypeDTO implements IsSerializable, HasListBox {
 	 */
 	public String getItem() {
 		// TODO Auto-generated method stub
-		return Name;
+		return this.name;
 	}
 	
 	/**
@@ -66,7 +72,7 @@ public class MeasureTypeDTO implements IsSerializable, HasListBox {
 	 * @return the name
 	 */
 	public String getName() {
-		return Name;
+		return this.name;
 	}
 	
 	/**
@@ -76,7 +82,7 @@ public class MeasureTypeDTO implements IsSerializable, HasListBox {
 	 *            the new name
 	 */
 	public void setName(String name) {
-		Name = name;
+		this.name = name;
 	}
 	
 	/**

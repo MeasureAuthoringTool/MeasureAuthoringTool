@@ -1,6 +1,5 @@
 package mat.client.shared.editor;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RichTextArea;
 
 public class RichTextEditor extends RichTextArea {

@@ -77,7 +77,9 @@ public class Measure {
 	private Boolean isCompositeMeasure = false;
 	
 	private List<ComponentMeasure> componentMeasures;
-	
+
+	private List<MeasureTypeAssociation> measureTypes;
+
 	private MeasureDetails measureDetails;
 
 	@Column(name = "VALUE_SET_DATE", length = 19)
@@ -374,5 +376,14 @@ public class Measure {
 		}
 		
 		this.measureDetails = measureDetails;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "measure", cascade=CascadeType.ALL)
+	public List<MeasureTypeAssociation> getMeasureTypes() {
+		return measureTypes;
+	}
+
+	public void setMeasureTypes(List<MeasureTypeAssociation> measureTypes) {
+		this.measureTypes = measureTypes;
 	}
 }

@@ -118,6 +118,7 @@ import mat.model.clause.CQLLibrary;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureDetails;
+import mat.model.clause.MeasureDeveloperAssociation;
 import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
@@ -1531,9 +1532,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
 			String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 			ManageMeasureDetailModel manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
-			manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
+			
 			manageMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
 			measureDetailsService.getManageMeasureDetailModelFromMeasureDetails(manageMeasureDetailModel, measure.getMeasureDetails());
+			generateMeasureStewardFromDatabaseData(measure, measureDetailResult, manageMeasureDetailModel);
+			generateMeasureDevelopersFromDatabaseData(measure, measureDetailResult, manageMeasureDetailModel);
+			generateMeasureTypeFromDatabaseData(measure, measureDetailResult, manageMeasureDetailModel);
+			
+			manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 			return manageMeasureDetailModel;
 		}
 		else {
@@ -1541,6 +1547,49 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		
 
+	}
+
+	private void generateMeasureTypeFromDatabaseData(Measure measure, MeasureDetailResult measureDetailResult,
+			ManageMeasureDetailModel manageMeasureDetailModel) {
+		List<MeasureTypeAssociation> measureTypesAssociation = measure.getMeasureTypes();
+		List<MeasureType> measureTypes = new ArrayList<>();
+		if(measureTypes != null) {
+			measureTypesAssociation.forEach(association -> measureTypes.add(association.getMeasureTypes()));
+			manageMeasureDetailModel.setMeasureTypeSelectedList(measureTypes);
+		}
+		
+		
+	}
+
+	private void generateMeasureDevelopersFromDatabaseData(Measure measure, MeasureDetailResult measureDetailResult,
+			ManageMeasureDetailModel manageMeasureDetailModel) {
+		List<Author> authors = getAuthorListFromOrganizations(measure.getMeasureDevelopers());
+		if(!authors.isEmpty()) {
+			manageMeasureDetailModel.setAuthorSelectedList(authors);
+			measureDetailResult.setUsedAuthorList(manageMeasureDetailModel.getAuthorSelectedList());
+		}
+	}
+
+	private void generateMeasureStewardFromDatabaseData(Measure measure, MeasureDetailResult measureDetailResult,
+			ManageMeasureDetailModel manageMeasureDetailModel) {
+		Organization measureSteward = getOrganizationFromOrgId(measure.getMeasureStewardId());
+		if(measureSteward != null) {
+			manageMeasureDetailModel.setStewardId(measureSteward == null ? "" : String.valueOf(measureSteward.getId()));
+			manageMeasureDetailModel.setStewardValue(measureSteward == null ? "" : measureSteward.getOrganizationName());
+			measureDetailResult.setUsedSteward(new MeasureSteward(String.valueOf(measureSteward.getId()), measureSteward.getOrganizationName(), measureSteward.getOrganizationOID()));
+		}
+	}
+
+	private Organization getOrganizationFromOrgId(String measureStewardId) {
+		return organizationDAO.findById(measureStewardId);
+	}
+
+	private List<Author> getAuthorListFromOrganizations(List<MeasureDeveloperAssociation> list) {
+		List<Author> authors = new ArrayList<>();
+		if(list != null) {
+			list.forEach(association -> authors.add(new Author(String.valueOf(association.getOrganization().getId()), association.getOrganization().getOrganizationName(), association.getOrganization().getOrganizationOID())));
+		}
+		return authors;
 	}
 
 	@Override
@@ -2396,6 +2445,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				MeasureDetails measureDetails = measureDetailsService.getMeasureDetailFromManageMeasureDetailsModel(measure.getMeasureDetails(), model);
 				measure.setMeasureDetails(measureDetails);
 				measure.setMeasureTypes(getSelectedMeasureTypes(measure, model));
+				measure.setMeasureDevelopers(getSelectedDeveloperList(measure, model));
+				measure.setMeasureStewardId(model.getStewardId());
 				
 				measurePackageService.save(measure);
 			}
@@ -2414,10 +2465,26 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 
+	private List<MeasureDeveloperAssociation> getSelectedDeveloperList(Measure measure,
+			ManageMeasureDetailModel model) {
+		List<MeasureDeveloperAssociation> mdaList = new ArrayList<>();
+		List<Author> mdList = model.getAuthorSelectedList();
+		if(mdList != null) {
+			mdList.forEach(typ -> mdaList.add(new MeasureDeveloperAssociation(measure, getOrganizationFromOrgOID(typ.getOrgId()))));
+		}
+		return mdaList;
+	}
+
+	private Organization getOrganizationFromOrgOID(String orgOID) {
+		return organizationDAO.findByOid(orgOID);
+	}
+
 	private List<MeasureTypeAssociation> getSelectedMeasureTypes(Measure measure, ManageMeasureDetailModel model){
 		List<MeasureTypeAssociation> mtaList = new ArrayList<>();
 		List<MeasureType> mtList = model.getMeasureTypeSelectedList();
-		mtList.forEach(typ -> mtaList.add(new MeasureTypeAssociation(measure, typ)));
+		if(mtList != null) {
+			mtList.forEach(typ -> mtaList.add(new MeasureTypeAssociation(measure, typ)));
+		}
 		return mtaList;
 	}
 	

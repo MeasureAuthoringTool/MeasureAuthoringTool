@@ -20,6 +20,7 @@ public class MeasureDetailsRichTextEditor {
 		toolBar = new RichTextToolbar(richTextEditor);
 		toolBar.setWidth("100%");
 		richTextEditor.addClickHandler(event -> richTextEditor.getFormatter().setFontName("Arial"));
+		toolBar.getRemoveFormat().addClickHandler(event -> richTextEditor.setEditorText(richTextEditor.getText()));
 		HorizontalPanel infoPanel = new HorizontalPanel();
 		VerticalPanel textAreaPanel = new VerticalPanel();
 		textAreaPanel.add(toolBar);

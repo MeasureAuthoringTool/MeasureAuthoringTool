@@ -11,9 +11,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 @Entity
 @Table(name = "MEASURE_DETAILS_REFERENCE")
-public class MeasureDetailsReference {
+public class MeasureDetailsReference implements IsSerializable{
 	
 	private int id;
 	private MeasureDetails measureDetails;

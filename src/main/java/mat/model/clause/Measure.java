@@ -79,8 +79,12 @@ public class Measure {
 	private List<ComponentMeasure> componentMeasures;
 
 	private List<MeasureTypeAssociation> measureTypes;
+	
+	private List<MeasureDeveloperAssociation> measureDevelopers;
 
 	private MeasureDetails measureDetails;
+	
+	private String measureStewardId;
 
 	@Column(name = "VALUE_SET_DATE", length = 19)
 	public Timestamp getValueSetDate() {
@@ -385,5 +389,23 @@ public class Measure {
 
 	public void setMeasureTypes(List<MeasureTypeAssociation> measureTypes) {
 		this.measureTypes = measureTypes;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "measure", cascade=CascadeType.ALL)
+	public List<MeasureDeveloperAssociation> getMeasureDevelopers() {
+		return measureDevelopers;
+	}
+
+	public void setMeasureDevelopers(List<MeasureDeveloperAssociation> measureDevelopers) {
+		this.measureDevelopers = measureDevelopers;
+	}
+
+	@Column(name = "MEASURE_STEWARD_ID")
+	public String getMeasureStewardId() {
+		return measureStewardId;
+	}
+
+	public void setMeasureStewardId(String measureStewardId) {
+		this.measureStewardId = measureStewardId;
 	}
 }

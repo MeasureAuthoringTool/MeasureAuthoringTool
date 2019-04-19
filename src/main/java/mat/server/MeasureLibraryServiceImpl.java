@@ -94,6 +94,7 @@ import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureDetailsReferenceDAO;
+import mat.dao.clause.MeasureDeveloperDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.OperatorDAO;
@@ -244,6 +245,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	@Autowired
 	private MeasureDetailsReferenceDAO measureDetailsReferenceDAO;
+	
+	@Autowired
+	private MeasureDeveloperDAO measureDeveloperDAO;
 
 	@Autowired
 	private RecentMSRActivityLogDAO recentMSRActivityLogDAO;
@@ -1534,10 +1538,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			ManageMeasureDetailModel manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
 			
 			manageMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
-			measureDetailsService.getManageMeasureDetailModelFromMeasureDetails(manageMeasureDetailModel, measure.getMeasureDetails());
-			generateMeasureStewardFromDatabaseData(measure, measureDetailResult, manageMeasureDetailModel);
-			generateMeasureDevelopersFromDatabaseData(measure, measureDetailResult, manageMeasureDetailModel);
-			generateMeasureTypeFromDatabaseData(measure, measureDetailResult, manageMeasureDetailModel);
+			setManageMeasureDetailModelFromDatabaseData(measure, measureDetailResult, manageMeasureDetailModel);
 			
 			manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 			return manageMeasureDetailModel;
@@ -1549,12 +1550,26 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	}
 
+	private void setManageMeasureDetailModelFromDatabaseData(Measure measure, MeasureDetailResult measureDetailResult,
+			ManageMeasureDetailModel manageMeasureDetailModel) {
+		measureDetailsService.getManageMeasureDetailModelFromMeasureDetails(manageMeasureDetailModel, measure.getMeasureDetails());
+		generateMeasureStewardFromDatabaseData(measure, measureDetailResult, manageMeasureDetailModel);
+		generateMeasureDevelopersFromDatabaseData(measure, measureDetailResult, manageMeasureDetailModel);
+		generateMeasureTypeFromDatabaseData(measure, measureDetailResult, manageMeasureDetailModel);
+		manageMeasureDetailModel.setName(measure.getDescription());
+		manageMeasureDetailModel.setShortName(measure.getaBBRName());
+		manageMeasureDetailModel.setMeasScoring(measure.getMeasureScoring());
+		manageMeasureDetailModel.setIsPatientBased(measure.getPatientBased());
+		manageMeasureDetailModel.setFinalizedDate(String.valueOf(measure.getFinalizedDate()));
+
+	}
+
 	private void generateMeasureTypeFromDatabaseData(Measure measure, MeasureDetailResult measureDetailResult,
 			ManageMeasureDetailModel manageMeasureDetailModel) {
 		List<MeasureTypeAssociation> measureTypesAssociation = measure.getMeasureTypes();
 		List<MeasureType> measureTypes = new ArrayList<>();
 		if(measureTypes != null) {
-			measureTypesAssociation.forEach(association -> measureTypes.add(association.getMeasureTypes()));
+			measureTypesAssociation.forEach(association -> measureTypes.add(new MeasureType(association.getMeasureTypes().getId(), association.getMeasureTypes().getDescription(), association.getMeasureTypes().getAbbrName())));
 			manageMeasureDetailModel.setMeasureTypeSelectedList(measureTypes);
 		}
 		
@@ -1601,7 +1616,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXMLToModel(xmlString, measure);
 		manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 		manageCompositeMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
-		measureDetailsService.getManageMeasureDetailModelFromMeasureDetails(manageCompositeMeasureDetailModel, measure.getMeasureDetails());
+		
+		setManageMeasureDetailModelFromDatabaseData(measure, measureDetailResult, manageCompositeMeasureDetailModel);
 		
 		return manageCompositeMeasureDetailModel;
 	}
@@ -2438,13 +2454,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				measure.setMeasureScoring(model.getMeasScoring());
 				measure.setPatientBased(model.isPatientBased());
 				
-				//delete existing references
-				if(measure.getMeasureDetails() != null) {
-					measureDetailsReferenceDAO.deleteAllByMeasureDetailsId(measure.getMeasureDetails().getId());
-				}
-				MeasureDetails measureDetails = measureDetailsService.getMeasureDetailFromManageMeasureDetailsModel(measure.getMeasureDetails(), model);
+				MeasureDetails measureDetails = generateMeasureDetailsFromDatabaseData(model, measure);
 				measure.setMeasureDetails(measureDetails);
-				measure.setMeasureTypes(getSelectedMeasureTypes(measure, model));
+				//This is for load of measure types. it is not working and we will fix with a later story
+				//measure.setMeasureTypes(getSelectedMeasureTypes(measure, model));
 				measure.setMeasureDevelopers(getSelectedDeveloperList(measure, model));
 				measure.setMeasureStewardId(model.getStewardId());
 				
@@ -2465,6 +2478,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 
+	private MeasureDetails generateMeasureDetailsFromDatabaseData(final ManageMeasureDetailModel model,
+			Measure measure) {
+		//delete existing references
+		if(measure.getMeasureDetails() != null) {
+			measureDetailsReferenceDAO.deleteAllByMeasureDetailsId(measure.getMeasureDetails().getId());
+		}
+		//delete existing developer associations
+		measureDeveloperDAO.deleteAllDeveloperAssociationsByMeasureId(measure.getId());
+		//delete existing measure type associations
+		measureTypeDAO.deleteAllMeasureTypeAssociationsByMeasureId(measure.getId());
+		MeasureDetails measureDetails = measureDetailsService.getMeasureDetailFromManageMeasureDetailsModel(measure.getMeasureDetails(), model);
+		return measureDetails;
+	}
+
 	private List<MeasureDeveloperAssociation> getSelectedDeveloperList(Measure measure,
 			ManageMeasureDetailModel model) {
 		List<MeasureDeveloperAssociation> mdaList = new ArrayList<>();
@@ -2483,9 +2510,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		List<MeasureTypeAssociation> mtaList = new ArrayList<>();
 		List<MeasureType> mtList = model.getMeasureTypeSelectedList();
 		if(mtList != null) {
-			mtList.forEach(typ -> mtaList.add(new MeasureTypeAssociation(measure, typ)));
+			mtList.forEach(typ -> mtaList.add(new MeasureTypeAssociation(measure, findMeasureTypeById(typ.getId()))));
 		}
 		return mtaList;
+	}
+	
+	private MeasureType findMeasureTypeById(String measureTypeId) {
+		return measureTypeDAO.find(measureTypeId);
 	}
 	
 	private String buildMeasureShortName(final ManageMeasureDetailModel model) {
@@ -4843,7 +4874,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MeasureType measureType = new MeasureType();
 			measureType.setDescription(measureTypeDTO.getName());
 			measureType.setAbbrName(measureTypeDTO.getAbbrName());
-			measureType.setId(measureTypeDTO.getId());
 			measureTypeList.add(measureType);
 		}
 		return measureTypeList;
@@ -6222,12 +6252,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			pkg.setCompositeScoring(model.getCompositeScoringMethod());
 			pkg.setMeasureSet(measureSet);
 			
-			//delete existing references
-			if(pkg.getMeasureDetails() != null) {
-				measureDetailsReferenceDAO.deleteAllByMeasureDetailsId(pkg.getMeasureDetails().getId());
-			}
-			
-			MeasureDetails measureDetails = measureDetailsService.getMeasureDetailFromManageMeasureDetailsModel(pkg.getMeasureDetails(), model);
+			MeasureDetails measureDetails = generateMeasureDetailsFromDatabaseData(model, pkg);
 			pkg.setMeasureDetails(measureDetails);
 			
 			setValueFromModel(model, pkg);

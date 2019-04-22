@@ -272,6 +272,9 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		if (queryModel.getRelationship() != null && !queryModel.getRelationship().getChildModels().isEmpty()) {
 			ExpandCollapseCQLExpressionPanel expressionPanelGroup = new ExpandCollapseCQLExpressionPanel("Relationship", 
 					queryModel.getRelationship().getChildModels().get(0).getCQL(""));
+			
+			expressionPanelGroup.getDeleteButton().addClickHandler(event -> onDeleteRelationshipClick());
+			
 			filterPanel.add(expressionPanelGroup);
 			filterPanel.setWidth("100%");
 			
@@ -303,6 +306,14 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		}
 
 		return filterPanel;
+	}
+
+	private void onDeleteRelationshipClick() {
+		queryBuilderContentPanel.clear();
+		this.queryModel.setRelationshipType(null);
+		this.queryModel.getRelationship().getChildModels().clear();
+		queryBuilderContentPanel.add(buildRelationshipWidget());
+		this.updateCQLDisplay();
 	}
 
 	private Button buildBuildButton() {

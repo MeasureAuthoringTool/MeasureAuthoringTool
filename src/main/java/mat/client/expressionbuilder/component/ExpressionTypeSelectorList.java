@@ -38,6 +38,7 @@ public class ExpressionTypeSelectorList extends Composite {
 	private String labelText;
 	private ExpressionTypeSelector selector;
 	private ExpressionBuilderModal parentModal;
+	private VerticalPanel mainPanel;
 	
 	public ExpressionTypeSelectorList(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes,
 			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText, ExpressionBuilderModal parentModal) {
@@ -54,11 +55,18 @@ public class ExpressionTypeSelectorList extends Composite {
 		this.availableOperatorTypes.addAll(availableOperatorTypes);
 		this.buildButtonObserver = observer;
 		this.model = model;
-		this.hasNoSelections = this.model.getChildModels().isEmpty();
-		canOnlyMakeOneSelection = this.availableOperatorTypes.isEmpty();
+		updateAddMoreFunctionality();
 		this.labelText = labelText;
 		this.parentModal = parentModal;
-		initWidget(buildPanel());
+		this.mainPanel = new VerticalPanel();
+		this.mainPanel.setWidth("100%");
+		this.mainPanel.add(buildPanel());
+		initWidget(mainPanel);
+	}
+
+	private void updateAddMoreFunctionality() {
+		this.hasNoSelections = this.model.getChildModels().isEmpty();
+		this.canOnlyMakeOneSelection = this.availableOperatorTypes.isEmpty();
 	}
 		
 	public ExpressionTypeSelector getSelector() {
@@ -155,15 +163,41 @@ public class ExpressionTypeSelectorList extends Composite {
 	}
 
 	private ExpandCollapseCQLExpressionPanel buildExpressionCollapsePanel(IExpressionBuilderModel model) {	
-		return new ExpandCollapseCQLExpressionPanel(model.getDisplayName(), model.getCQL(""));
+		ExpandCollapseCQLExpressionPanel panel = new ExpandCollapseCQLExpressionPanel(model.getDisplayName(), model.getCQL("")) ;
+		panel.getDeleteButton().addClickHandler(event -> onDeleteButtonClick(model));
+		return panel;
 	}
 	
+	private void onDeleteButtonClick(IExpressionBuilderModel modelToDelete) {
+		int size = this.model.getChildModels().size();
+		for(int i = 0; i < size; i++) {
+			if(modelToDelete.equals(this.model.getChildModels().get(i))) {
+				int operatorIndex = i + 1;
+				
+				// if it's not the last element in the list, 
+				// we will also need to remove the operator that comes next
+				if(operatorIndex < size) {
+					this.model.getChildModels().remove(operatorIndex);
+				}
+				
+				this.model.getChildModels().remove(i);
+				break;
+			}
+		}
+		
+		
+		this.model.getChildModels().remove(modelToDelete);
+		updateAddMoreFunctionality();
+		this.mainPanel.clear();
+		this.mainPanel.add(buildPanel());
+		this.parentModal.updateCQLDisplay();
+	}
+
 	private boolean areSingleSelectScreensOnly(List<IExpressionBuilderModel> childModels) {
 		//Screens to hide Add more functionality
 		List<String> singleModels = Arrays.asList(ExpressionType.COMPUTATION.getDisplayName(), ExpressionType.DATE_TIME.getDisplayName(),
 				ExpressionType.QUANTITY.getDisplayName(), ExpressionType.TIME_BOUNDARY.getDisplayName());
 		
 		return childModels.stream().anyMatch(e -> singleModels.stream().anyMatch(e.getDisplayName()::contains));
-		
 	}
 }

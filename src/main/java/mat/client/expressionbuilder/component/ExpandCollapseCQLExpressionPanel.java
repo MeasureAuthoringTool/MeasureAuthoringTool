@@ -3,14 +3,17 @@ package mat.client.expressionbuilder.component;
 import java.util.Random;
 
 import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.PanelGroup;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.Pre;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -21,6 +24,7 @@ public class ExpandCollapseCQLExpressionPanel extends Composite {
 	private String header;
 	private String cql;
 	private PanelGroup expressionPanelGroup;
+	private Button deleteButton;
 
 	public ExpandCollapseCQLExpressionPanel(String header, String cql) {
 		this.header = header;
@@ -63,16 +67,34 @@ public class ExpandCollapseCQLExpressionPanel extends Composite {
 		cqlLogicFocusPanel.add(cqlPre);
 
 		expressionPanelBody.add(cqlLogicFocusPanel);
+		
+		deleteButton = new Button();
+		deleteButton.setTitle("Delete");
+		deleteButton.setText("Delete");
+		deleteButton.setPull(Pull.RIGHT);
+		deleteButton.setIcon(IconType.TRASH);
+		deleteButton.setType(ButtonType.DANGER);
+		expressionPanelBody.add(deleteButton);
+		
 		expressionPanelCollapse.add(expressionPanelBody);
 
 		expressionPanel.add(expressionPanelHeader);
 		expressionPanel.add(expressionPanelCollapse);
 		
+		
+		
 		expressionPanelGroup.add(expressionPanel);
 		
+		
+		
 		anchor.addClickHandler(event -> onAnchorClick(anchor));
+		
 
 		return expressionPanelGroup;
+	}
+	
+	public Button getDeleteButton() {
+		return this.deleteButton;
 	}
 		
 	private void onAnchorClick(Anchor anchor) {

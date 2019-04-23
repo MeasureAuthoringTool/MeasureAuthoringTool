@@ -97,6 +97,7 @@ public class ExpressionTypeSelectorList extends Composite {
 			
 			List<OperatorType> availableOperatorTypesForFirstExpressionType = new ArrayList<>();
 			availableOperatorTypesForFirstExpressionType.addAll(OperatorTypeUtil.getAvailableOperatorsCQLType(firstType));
+			this.availableOperatorTypes = availableOperatorTypesForFirstExpressionType;
 			
 			List<OperatorType> newAvailableOperators = new ArrayList<>();
 			for(OperatorType type : this.availableOperatorTypes) {
@@ -176,11 +177,14 @@ public class ExpressionTypeSelectorList extends Composite {
 				
 				// if it's not the last element in the list, 
 				// we will also need to remove the operator that comes next
+				
+				// otherwise, the operator is the element before the model, so we will remove it.
 				if(operatorIndex < size) {
 					this.model.getChildModels().remove(operatorIndex);
-				}
+				} else {
+					this.model.getChildModels().remove(i - 1);
+				}				
 				
-				this.model.getChildModels().remove(i);
 				break;
 			}
 		}

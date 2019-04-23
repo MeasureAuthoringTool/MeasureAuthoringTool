@@ -31,7 +31,6 @@ import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 
@@ -49,7 +48,6 @@ public class MeasureDetailsView {
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
 	private Button viewHumanReadableButton;
 	private MeasureDetailsModel measureDetailsModel;
-	private RichTextEditor currentRichTextEditor;
 	private MessagePanel messagePanel;
 	private MeasureDetailsObserver measureDetailsObserver;
 	private HTML headingHTML;
@@ -161,10 +159,6 @@ public class MeasureDetailsView {
 		
 		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsModel, currentMeasureDetail, this.measureDetailsObserver);
 
-		currentRichTextEditor = componentDetailView.getRichTextEditor();
-		if(currentRichTextEditor != null) {
-			currentRichTextEditor.addKeyUpHandler(keyUpEvent -> handleRichTextTabOut(keyUpEvent));
-		}
 		widgetComponentPanel.add(componentDetailView.getWidget());
 		widgetComponentPanel.setWidth("100%");
 		widgetComponentPanel.setStyleName("marginLeft15px");

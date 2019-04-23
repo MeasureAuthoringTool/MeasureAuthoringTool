@@ -27,7 +27,7 @@ public class SupplementalDataElementsObserver implements MeasureDetailsComponent
 	
 	private SupplementalDataElementsModel updateFromView() {
 		final SupplementalDataElementsModel model = (SupplementalDataElementsModel) view.getMeasureDetailsComponentModel();
-		model.setFormattedText(view.getRichTextEditor().getFormattedText());
+		model.setEditorText(view.getTextEditor().getText());
 		return model;
 	}
 }

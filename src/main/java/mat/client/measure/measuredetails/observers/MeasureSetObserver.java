@@ -27,7 +27,7 @@ public class MeasureSetObserver implements MeasureDetailsComponentObserver {
 	
 	private MeasureSetModel updateFromView() {
 		final MeasureSetModel model = (MeasureSetModel) view.getMeasureDetailsComponentModel();
-		model.setFormattedText(view.getRichTextEditor().getFormattedText());
+		model.setEditorText(view.getTextEditor().getText());
 		return model;
 	}
 }

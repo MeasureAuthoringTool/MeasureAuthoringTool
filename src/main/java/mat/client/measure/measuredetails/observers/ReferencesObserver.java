@@ -18,7 +18,7 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 	@Override
 	public void handleValueChanged() {
 		//checks if the plain text length is greater than zero
-		if(referencesView.getRichTextEditor().getFormattedText() != null && referencesView.getRichTextEditor().getFormattedText().trim().length() !=0) {
+		if(referencesView.getTextEditor().getText() != null && referencesView.getTextEditor().getText().trim().length() !=0) {
 			handleTextValueChanged();
 		}
 	}
@@ -28,12 +28,12 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 			String reference = nullCheckRichTextEditor();
 			referencesView.getReferencesModel().getReferences().set(referencesView.getEditingIndex(), reference);
 		} catch(IndexOutOfBoundsException iobe) {
-			referencesView.getReferencesModel().getReferences().add(referencesView.getRichTextEditor().getFormattedText().trim());
+			referencesView.getReferencesModel().getReferences().add(referencesView.getTextEditor().getText().trim());
 		}
 	}
 
 	private String nullCheckRichTextEditor() {
-		return referencesView.getRichTextEditor().getFormattedText() == null ? "" : referencesView.getRichTextEditor().getFormattedText();
+		return referencesView.getTextEditor().getText() == null ? "" : referencesView.getTextEditor().getText();
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 		referencesView.getReferencesModel().setReferences(referenceList);
 		if(referenceList != null && referenceList.get(index) != null) {
 			referencesView.setEditingIndex(index);
-			referencesView.getRichTextEditor().setEditorText(referenceList.get(index));
+			referencesView.getTextEditor().setText(referenceList.get(index));
 		}
 	}
 

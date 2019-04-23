@@ -28,7 +28,7 @@ public class StratificationObserver implements MeasureDetailsComponentObserver{
 	
 	private StratificationModel updateFromView() {
 		StratificationModel model = (StratificationModel) view.getMeasureDetailsComponentModel();
-		model.setFormattedText(view.getRichTextEditor().getFormattedText());
+		model.setEditorText(view.getTextEditor().getText());
 		return model;
 	}
 

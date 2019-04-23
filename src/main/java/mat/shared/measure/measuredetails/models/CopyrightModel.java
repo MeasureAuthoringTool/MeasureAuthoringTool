@@ -4,14 +4,14 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class CopyrightModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable {
+public class CopyrightModel extends MeasureDetailsTextAbstractModel implements IsSerializable {
 
 	public CopyrightModel() {
 		super("");
 	}
 	
 	public CopyrightModel(CopyrightModel model) {
-		super(model.getFormattedText());
+		super(model.getEditorText());
 	}
 	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

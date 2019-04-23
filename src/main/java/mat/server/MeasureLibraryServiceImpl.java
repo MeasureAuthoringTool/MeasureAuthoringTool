@@ -1560,7 +1560,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		manageMeasureDetailModel.setShortName(measure.getaBBRName());
 		manageMeasureDetailModel.setMeasScoring(measure.getMeasureScoring());
 		manageMeasureDetailModel.setIsPatientBased(measure.getPatientBased());
-		manageMeasureDetailModel.setFinalizedDate(String.valueOf(measure.getFinalizedDate()));
+		manageMeasureDetailModel.setFinalizedDate(measure.getFinalizedDate() == null ? "" : String.valueOf(measure.getFinalizedDate()));
 
 	}
 
@@ -2456,8 +2456,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				
 				MeasureDetails measureDetails = generateMeasureDetailsFromDatabaseData(model, measure);
 				measure.setMeasureDetails(measureDetails);
-				//This is for load of measure types. it is not working and we will fix with a later story
-				//measure.setMeasureTypes(getSelectedMeasureTypes(measure, model));
+				measure.setMeasureTypes(getSelectedMeasureTypes(measure, model));
 				measure.setMeasureDevelopers(getSelectedDeveloperList(measure, model));
 				measure.setMeasureStewardId(model.getStewardId());
 				
@@ -4872,6 +4871,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		List<MeasureType> measureTypeList = new ArrayList<MeasureType>();
 		for (MeasureTypeDTO measureTypeDTO : measureTypeDTOList) {
 			MeasureType measureType = new MeasureType();
+			measureType.setId(measureTypeDTO.getId());
 			measureType.setDescription(measureTypeDTO.getName());
 			measureType.setAbbrName(measureTypeDTO.getAbbrName());
 			measureTypeList.add(measureType);
@@ -6254,6 +6254,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			MeasureDetails measureDetails = generateMeasureDetailsFromDatabaseData(model, pkg);
 			pkg.setMeasureDetails(measureDetails);
+			pkg.setMeasureTypes(getSelectedMeasureTypes(pkg, model));
+			pkg.setMeasureDevelopers(getSelectedDeveloperList(pkg, model));
+			pkg.setMeasureStewardId(model.getStewardId());
 			
 			setValueFromModel(model, pkg);
 			SaveMeasureResult result = new SaveMeasureResult();

@@ -20,6 +20,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -31,7 +32,6 @@ import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserv
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSafeHTMLCell;
-import mat.client.shared.editor.RichTextEditor;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
@@ -196,7 +196,7 @@ public class ComponentMeasuresView implements MeasureDetailViewInterface{
 	}
 
 	@Override
-	public RichTextEditor getRichTextEditor() {
+	public TextArea getTextEditor() {
 		// TODO Auto-generated method stub
 		return null;
 	}

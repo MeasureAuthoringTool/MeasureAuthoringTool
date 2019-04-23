@@ -11,6 +11,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -24,7 +25,6 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.editor.RichTextEditor;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
@@ -32,7 +32,7 @@ import mat.shared.measure.measuredetails.models.ReferencesModel;
 
 public class ReferencesView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();
-	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor; 
+	private MeasureDetailsTextEditor measureDetailsTextEditor; 
 	private ReferencesModel originalModel;
 	private ReferencesModel referencesModel;
 	private ReferencesObserver observer;
@@ -204,8 +204,9 @@ public class ReferencesView implements MeasureDetailViewInterface {
 			mainPanel.add(cellTablePanel);
 		}
 		
-		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
-		measureDetailsRichTextEditor.getRichTextEditor().setTitle("References");
+		measureDetailsTextEditor = new MeasureDetailsTextEditor();
+		mainPanel.add(measureDetailsTextEditor);
+		measureDetailsTextEditor.setTitle("References");
 		addEventHandlers();
 		
 	}
@@ -214,7 +215,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	public void setReadOnly(boolean readOnly) {
 		this.isReadOnly = readOnly;
 		buildDetailView();
-		measureDetailsRichTextEditor.setReadOnly(readOnly);	
+		measureDetailsTextEditor.setReadOnly(readOnly);	
 	}
 
 	@Override
@@ -228,7 +229,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 		editingIndex = referencesModel.getReferences().size();
 		hideDirtyCheck();
 		this.referencesModel = new ReferencesModel(originalModel);
-		measureDetailsRichTextEditor.getRichTextEditor().setText("");
+		measureDetailsTextEditor.setText("");
 		buildDetailView();
 	}
 
@@ -238,14 +239,14 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	}
 
 	@Override
-	public RichTextEditor getRichTextEditor() {
-		return measureDetailsRichTextEditor.getRichTextEditor();
+	public TextArea getTextEditor() {
+		return measureDetailsTextEditor.getTextEditor();
 	}
 
 	@Override
 	public void clear() {
 		hideDirtyCheck();
-		measureDetailsRichTextEditor.getRichTextEditor().setText("");
+		measureDetailsTextEditor.setText("");
 	}
 
 	@Override
@@ -264,16 +265,16 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	}
 	
 	private void addEventHandlers() {
-		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleTextValueChanged());
+		measureDetailsTextEditor.getTextEditor().addKeyUpHandler(event -> observer.handleTextValueChanged());
 	}
 
 	public boolean isEditorDirty(String referenceValue) {
-		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getFormattedText() == null ? "": measureDetailsRichTextEditor.getRichTextEditor().getFormattedText().trim();
+		String textValue = measureDetailsTextEditor.getText() == null ? "": measureDetailsTextEditor.getText().trim();
 		return (!isReadOnly && (!textValue.isEmpty() && !textValue.equals(referenceValue)));
 	}
 	
 	public boolean isEditorDirty() {
-		String textValue = measureDetailsRichTextEditor.getRichTextEditor().getText() == null ? "" : measureDetailsRichTextEditor.getRichTextEditor().getText().trim();
+		String textValue = measureDetailsTextEditor.getText() == null ? "" : measureDetailsTextEditor.getText().trim();
 		return !isReadOnly && !textValue.isEmpty();
 	}
 	

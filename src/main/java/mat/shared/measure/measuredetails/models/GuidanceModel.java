@@ -2,13 +2,13 @@ package mat.shared.measure.measuredetails.models;
 
 import java.util.List;
 
-public class GuidanceModel extends MeasureDetailsRichTextAbstractModel{
+public class GuidanceModel extends MeasureDetailsTextAbstractModel{
 	public GuidanceModel() {
 		super("");
 	}
 	
 	public GuidanceModel(GuidanceModel model) {
-		super(model.getFormattedText());
+		super(model.getEditorText());
 	}
 
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

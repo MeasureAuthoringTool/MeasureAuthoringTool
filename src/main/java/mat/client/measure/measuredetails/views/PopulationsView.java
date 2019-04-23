@@ -3,11 +3,11 @@ package mat.client.measure.measuredetails.views;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
-import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
 public class PopulationsView implements MeasureDetailViewInterface {
@@ -54,7 +54,7 @@ public class PopulationsView implements MeasureDetailViewInterface {
 	}
 
 	@Override
-	public RichTextEditor getRichTextEditor() {
+	public TextArea getTextEditor() {
 		return null;
 	}
 

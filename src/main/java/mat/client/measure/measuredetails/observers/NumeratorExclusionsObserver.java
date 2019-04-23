@@ -20,7 +20,7 @@ public class NumeratorExclusionsObserver implements MeasureDetailsComponentObser
 	
 	private NumeratorExclusionsModel updateFromView() {
 		NumeratorExclusionsModel model = (NumeratorExclusionsModel) view.getMeasureDetailsComponentModel();
-		model.setFormattedText(view.getRichTextEditor().getFormattedText());
+		model.setEditorText(view.getTextEditor().getText());
 		return model;
 	}
 }

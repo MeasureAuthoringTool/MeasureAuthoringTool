@@ -28,7 +28,7 @@ public class RateAggregationObserver implements MeasureDetailsComponentObserver{
 	
 	private RateAggregationModel updateFromView() {
 		RateAggregationModel model = (RateAggregationModel) view.getMeasureDetailsComponentModel();
-		model.setFormattedText(view.getRichTextEditor().getFormattedText());
+		model.setEditorText(view.getTextEditor().getText());
 		return model;
 	}
 }

@@ -1,19 +1,19 @@
 package mat.client.measure.measuredetails.views;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.measure.measuredetails.observers.RationaleObserver;
 import mat.client.shared.ConfirmationDialogBox;
-import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.RationaleModel;
 
 public class RationaleView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();
 	
-	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor;
+	private MeasureDetailsTextEditor measureDetailsTextEditor;
 	private RationaleModel model;
 	private RationaleModel originalModel;
 	private RationaleObserver observer;
@@ -41,15 +41,16 @@ public class RationaleView implements MeasureDetailViewInterface {
 
 	@Override
 	public void buildDetailView() {
-		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
-		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Rationale Editor");
-		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());	
+		measureDetailsTextEditor = new MeasureDetailsTextEditor();
+		mainPanel.add(measureDetailsTextEditor);
+		measureDetailsTextEditor.setTitle("Rationale Editor");
+		measureDetailsTextEditor.setText(this.model.getEditorText());	
 		addEventHandlers();
 	}
 
 	@Override
 	public void setReadOnly(boolean readOnly) {
-		this.measureDetailsRichTextEditor.setReadOnly(readOnly);
+		this.measureDetailsTextEditor.setReadOnly(readOnly);
 	}
 
 	@Override
@@ -69,8 +70,8 @@ public class RationaleView implements MeasureDetailViewInterface {
 	}
 
 	@Override
-	public RichTextEditor getRichTextEditor() {
-		return this.measureDetailsRichTextEditor.getRichTextEditor();
+	public TextArea getTextEditor() {
+		return this.measureDetailsTextEditor.getTextEditor();
 	}
 
 	@Override
@@ -101,7 +102,7 @@ public class RationaleView implements MeasureDetailViewInterface {
 	}
 	
 	private void addEventHandlers() {
-		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());		
+		measureDetailsTextEditor.getTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());		
 	}
 
 	@Override

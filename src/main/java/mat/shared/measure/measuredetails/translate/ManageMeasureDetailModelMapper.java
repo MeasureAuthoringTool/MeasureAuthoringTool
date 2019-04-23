@@ -98,25 +98,25 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 
 	private TransmissionFormatModel buildTransmissionFormatModel() {
 		TransmissionFormatModel transmissionFormatModel = new TransmissionFormatModel();
-		transmissionFormatModel.setFormattedText(manageMeasureDetailModel.getTransmissionFormat());
+		transmissionFormatModel.setEditorText(manageMeasureDetailModel.getTransmissionFormat());
 		return transmissionFormatModel;
 	}
 
 	private SupplementalDataElementsModel buildSupplementalDataModel() {
 		SupplementalDataElementsModel supplementalDataModel = new SupplementalDataElementsModel();
-		supplementalDataModel.setFormattedText(manageMeasureDetailModel.getSupplementalData());
+		supplementalDataModel.setEditorText(manageMeasureDetailModel.getSupplementalData());
 		return supplementalDataModel;
 	}
 
 	private StratificationModel buildStratificationModel() {
 		StratificationModel stratificationModel = new StratificationModel();
-		stratificationModel.setFormattedText(manageMeasureDetailModel.getStratification());
+		stratificationModel.setEditorText(manageMeasureDetailModel.getStratification());
 		return stratificationModel;
 	}
 
 	private RiskAdjustmentModel buildRiskAdjustmentModel() {
 		RiskAdjustmentModel riskAdjustmentModel = new RiskAdjustmentModel();
-		riskAdjustmentModel.setFormattedText(manageMeasureDetailModel.getRiskAdjustment());
+		riskAdjustmentModel.setEditorText(manageMeasureDetailModel.getRiskAdjustment());
 		return riskAdjustmentModel;
 	}
 
@@ -128,25 +128,25 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 
 	private RationaleModel buldRationaleModel() {
 		RationaleModel rationaleModel = new RationaleModel();
-		rationaleModel.setFormattedText(manageMeasureDetailModel.getRationale());
+		rationaleModel.setEditorText(manageMeasureDetailModel.getRationale());
 		return rationaleModel;
 	}
 
 	private RateAggregationModel buildRateAggregationModel() {
 		RateAggregationModel rateAggregationModel = new RateAggregationModel();
-		rateAggregationModel.setFormattedText(manageMeasureDetailModel.getRateAggregation());
+		rateAggregationModel.setEditorText(manageMeasureDetailModel.getRateAggregation());
 		return rateAggregationModel;
 	}
 
 	private NumeratorModel buldNumeratorModel() {
 		NumeratorModel numeratorModel = new NumeratorModel();
-		numeratorModel.setFormattedText(manageMeasureDetailModel.getNumerator());
+		numeratorModel.setEditorText(manageMeasureDetailModel.getNumerator());
 		return numeratorModel;
 	}
 
 	private NumeratorExclusionsModel buildNumeratorExclusionsModel() {
 		NumeratorExclusionsModel numeratorExclusionsModel = new NumeratorExclusionsModel();
-		numeratorExclusionsModel.setFormattedText(manageMeasureDetailModel.getNumeratorExclusions());
+		numeratorExclusionsModel.setEditorText(manageMeasureDetailModel.getNumeratorExclusions());
 		return numeratorExclusionsModel;
 	}
 
@@ -173,91 +173,91 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 
 	private MeasureSetModel buildMeasureSetModel() {
 		MeasureSetModel measureSetModel = new MeasureSetModel();
-		measureSetModel.setFormattedText(manageMeasureDetailModel.getGroupName());
+		measureSetModel.setEditorText(manageMeasureDetailModel.getGroupName());
 		return measureSetModel;
 	}
 
 	private MeasurePopulationModel buildMeasurePopulationModel() {
 		MeasurePopulationModel measurePopulationModel = new MeasurePopulationModel();
-		measurePopulationModel.setFormattedText(manageMeasureDetailModel.getMeasurePopulation());
+		measurePopulationModel.setEditorText(manageMeasureDetailModel.getMeasurePopulation());
 		return measurePopulationModel;
 	}
 
 	private MeasurePopulationExclusionsModel buildMeasurePopulationEclusionsModel() {
 		MeasurePopulationExclusionsModel measurePopulationExclusionsModel = new MeasurePopulationExclusionsModel();
-		measurePopulationExclusionsModel.setFormattedText(manageMeasureDetailModel.getMeasurePopulationExclusions());
+		measurePopulationExclusionsModel.setEditorText(manageMeasureDetailModel.getMeasurePopulationExclusions());
 		return measurePopulationExclusionsModel;
 	}
 
 	private MeasureObservationsModel buildMeasureObservationsModel() {
 		MeasureObservationsModel measureObservationsModel = new MeasureObservationsModel();
-		measureObservationsModel.setFormattedText(manageMeasureDetailModel.getMeasureObservations());
+		measureObservationsModel.setEditorText(manageMeasureDetailModel.getMeasureObservations());
 		return measureObservationsModel;
 	}
 
 	private InitialPopulationModel buildInitialPopulationModel() {
 		InitialPopulationModel initialPopulationModel = new InitialPopulationModel();
-		initialPopulationModel.setFormattedText(manageMeasureDetailModel.getInitialPop());
+		initialPopulationModel.setEditorText(manageMeasureDetailModel.getInitialPop());
 		return initialPopulationModel;
 	}
 
 	private ImprovementNotationModel buildImprovementNotationModel() {
 		ImprovementNotationModel improvementNotationModel = new ImprovementNotationModel();
-		improvementNotationModel.setFormattedText(manageMeasureDetailModel.getImprovNotations());
+		improvementNotationModel.setEditorText(manageMeasureDetailModel.getImprovNotations());
 		return improvementNotationModel;
 	}
 
 	private GuidanceModel buildGuidanceModel() {
 		GuidanceModel guidanceModel = new GuidanceModel();
-		guidanceModel.setFormattedText(manageMeasureDetailModel.getGuidance());
+		guidanceModel.setEditorText(manageMeasureDetailModel.getGuidance());
 		return guidanceModel;
 	}
 
 	private DisclaimerModel buildDisclaimerModel() {
 		DisclaimerModel disclaimerModel = new DisclaimerModel();
-		disclaimerModel.setFormattedText(manageMeasureDetailModel.getDisclaimer());
+		disclaimerModel.setEditorText(manageMeasureDetailModel.getDisclaimer());
 		return disclaimerModel;
 	}
 
 	private DenominatorModel buildDenominatorModel() {
 		DenominatorModel denominatorModel = new DenominatorModel();
-		denominatorModel.setFormattedText(manageMeasureDetailModel.getDenominator());
+		denominatorModel.setEditorText(manageMeasureDetailModel.getDenominator());
 		return denominatorModel;
 	}
 
 	private DenominatorExclusionsModel buildDenominatorExclusionsModel() {
 		DenominatorExclusionsModel denominatorExclusionsModel = new DenominatorExclusionsModel();
-		denominatorExclusionsModel.setFormattedText(manageMeasureDetailModel.getDenominatorExclusions());
+		denominatorExclusionsModel.setEditorText(manageMeasureDetailModel.getDenominatorExclusions());
 		return denominatorExclusionsModel;
 	}
 
 	private DenominatorExceptionsModel buildDenominatorExceptionsModel() {
 		DenominatorExceptionsModel denominationsExceptionsModel = new DenominatorExceptionsModel();
-		denominationsExceptionsModel.setFormattedText(manageMeasureDetailModel.getDenominatorExceptions());
+		denominationsExceptionsModel.setEditorText(manageMeasureDetailModel.getDenominatorExceptions());
 		return denominationsExceptionsModel;
 	}
 
 	private DefinitionModel buildDefinitionModel() {
 		DefinitionModel definitionModel = new DefinitionModel();
-		definitionModel.setFormattedText(manageMeasureDetailModel.getDefinitions());
+		definitionModel.setEditorText(manageMeasureDetailModel.getDefinitions());
 		return definitionModel;
 	}
 	
 	private DescriptionModel buildDescriptionModel() {
 		DescriptionModel descriptionModel = new DescriptionModel();
-		descriptionModel.setFormattedText(manageMeasureDetailModel.getDescription());
+		descriptionModel.setEditorText(manageMeasureDetailModel.getDescription());
 		return descriptionModel;
 	}
 
 	private CopyrightModel buildCopyrightModel() {
 		CopyrightModel copyrightModel = new CopyrightModel();
-		copyrightModel.setFormattedText(manageMeasureDetailModel.getCopyright());
+		copyrightModel.setEditorText(manageMeasureDetailModel.getCopyright());
 		return copyrightModel;
 	}
 
 	private ClinicalRecommendationModel buildClinicalRecommendationModel() {
 		ClinicalRecommendationModel clinicalRecommendationModel = new ClinicalRecommendationModel();
-		clinicalRecommendationModel.setFormattedText(manageMeasureDetailModel.getClinicalRecomms());
+		clinicalRecommendationModel.setEditorText(manageMeasureDetailModel.getClinicalRecomms());
 		return clinicalRecommendationModel;
 	}
 
@@ -462,28 +462,28 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 
 	private String getTransmissionFormat() {
 		if(measureDetailsModel.getTransmissionFormatModel() != null) {
-			return measureDetailsModel.getTransmissionFormatModel().getFormattedText();
+			return measureDetailsModel.getTransmissionFormatModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getSupplementalData() {
 		if(measureDetailsModel.getSupplementalDataElementsModel() != null) {
-			return measureDetailsModel.getSupplementalDataElementsModel().getFormattedText();
+			return measureDetailsModel.getSupplementalDataElementsModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getStratification() {
 		if(measureDetailsModel.getStratificationModel() != null) {
-			return measureDetailsModel.getStratificationModel().getFormattedText();
+			return measureDetailsModel.getStratificationModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getRiskAdjustment() {
 		if(measureDetailsModel.getRiskAdjustmentModel() != null) {
-			return measureDetailsModel.getRiskAdjustmentModel().getFormattedText();
+			return measureDetailsModel.getRiskAdjustmentModel().getEditorText();
 		}
 		return null;
 	}
@@ -497,28 +497,28 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 
 	private String getRationale() {
 		if(measureDetailsModel.getRationaleModel() != null) {
-			return measureDetailsModel.getRationaleModel().getFormattedText();
+			return measureDetailsModel.getRationaleModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getRateAggregation() {
 		if(measureDetailsModel.getRateAggregationModel() != null) {
-			return measureDetailsModel.getRateAggregationModel().getFormattedText();
+			return measureDetailsModel.getRateAggregationModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getNumerator() {
 		if(measureDetailsModel.getNumeratorModel() != null) {
-			return measureDetailsModel.getNumeratorModel().getFormattedText();
+			return measureDetailsModel.getNumeratorModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getNumeratorExclusions() {
 		if(measureDetailsModel.getNumeratorExclusionsModel() != null) {
-			return measureDetailsModel.getNumeratorExclusionsModel().getFormattedText();
+			return measureDetailsModel.getNumeratorExclusionsModel().getEditorText();
 		}
 		return null;
 	}
@@ -553,105 +553,105 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 
 	private String getMeasureSetText() {
 		if(measureDetailsModel.getMeasureSetModel() != null) {
-			return measureDetailsModel.getMeasureSetModel().getFormattedText();
+			return measureDetailsModel.getMeasureSetModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getMeasurePopulation() {
 		if(measureDetailsModel.getMeasurePopulationModel() != null)  {
-			return measureDetailsModel.getMeasurePopulationModel().getFormattedText();
+			return measureDetailsModel.getMeasurePopulationModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getMeasurePopulationEclusions() {
 		if(measureDetailsModel.getMeasurePopulationExclusionsModel() != null) {
-			return measureDetailsModel.getMeasurePopulationExclusionsModel().getFormattedText();
+			return measureDetailsModel.getMeasurePopulationExclusionsModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getMeasureObservations() {
 		if(measureDetailsModel.getMeasureObservationsModel() != null) {
-			return measureDetailsModel.getMeasureObservationsModel().getFormattedText();
+			return measureDetailsModel.getMeasureObservationsModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getInitialPopulations() {
 		if(measureDetailsModel.getInitialPopulationModel() != null) {
-			return measureDetailsModel.getInitialPopulationModel().getFormattedText();
+			return measureDetailsModel.getInitialPopulationModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getImprovementNotation() {
 		if(measureDetailsModel.getImprovementNotationModel() != null) {
-			return measureDetailsModel.getImprovementNotationModel().getFormattedText();
+			return measureDetailsModel.getImprovementNotationModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getGuidance() {
 		if(measureDetailsModel.getDisclaimerModel() != null) {
-			return measureDetailsModel.getGuidanceModel().getFormattedText();
+			return measureDetailsModel.getGuidanceModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getDisclaimer() {
 		if(measureDetailsModel.getDisclaimerModel() != null) {
-			return measureDetailsModel.getDisclaimerModel().getFormattedText();
+			return measureDetailsModel.getDisclaimerModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getDescription() {
 		if(measureDetailsModel.getDescriptionModel() != null) {
-			return measureDetailsModel.getDescriptionModel().getFormattedText();
+			return measureDetailsModel.getDescriptionModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getDenominator() {
 		if(measureDetailsModel.getDenominatorModel() != null) {
-			return measureDetailsModel.getDenominatorModel().getFormattedText();
+			return measureDetailsModel.getDenominatorModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getDenominatorExclusions() {
 		if(measureDetailsModel.getDenominatorExclusionsModel() != null) {
-			return measureDetailsModel.getDenominatorExclusionsModel().getFormattedText();
+			return measureDetailsModel.getDenominatorExclusionsModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getDenominatorExceptions() {
 		if(measureDetailsModel.getDenominatorExceptionsModel() != null) {
-			return measureDetailsModel.getDenominatorExceptionsModel().getFormattedText();
+			return measureDetailsModel.getDenominatorExceptionsModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getDefinitions() {
 		if(measureDetailsModel.getDefinitionModel() != null) {
-			return measureDetailsModel.getDefinitionModel().getFormattedText();
+			return measureDetailsModel.getDefinitionModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getCopyright() {
 		if(measureDetailsModel.getCopyrightModel() != null) {
-			return measureDetailsModel.getCopyrightModel().getFormattedText();
+			return measureDetailsModel.getCopyrightModel().getEditorText();
 		}
 		return null;
 	}
 
 	private String getClinicalRecommendation() {
 		if(measureDetailsModel.getClinicalRecommendationModel() != null) {
-			return measureDetailsModel.getClinicalRecommendationModel().getFormattedText();
+			return measureDetailsModel.getClinicalRecommendationModel().getEditorText();
 		}
 		return null;
 	}

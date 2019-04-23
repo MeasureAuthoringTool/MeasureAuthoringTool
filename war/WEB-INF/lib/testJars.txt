@@ -1,5 +1,0 @@
-The following jars are added for testing only (and should not be deployed):
-easymock-3.0.jar
-cglib-2.2.jar
-objenesis-1.2.jar
-asm-3.3.jar

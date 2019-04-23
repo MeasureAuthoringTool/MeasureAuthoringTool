@@ -149,6 +149,24 @@ left:50px;
     width: 250px; 
 }
 
+#measureNameContainer{
+	width: 350px;
+}
+
+#aliasContainer{
+	width: 150px;
+}
+
+#appliedComponentContainer{
+	width: 100px;
+}
+
+#appliedComponentDiv{
+	float: left;
+	width: 100px;
+	margin-left: 0;
+}
+
 #div1{
     float: left;
     width:30px; 
@@ -533,27 +551,50 @@ left:50px;
 	padding-right:2px;
 }
 .topBanner {
-	/*
-    position: absolute; 
-	: 0pt; 
-	top: 0pt;
-	*/ 
 	overflow: visible; 	 
-	/*border: 1px solid rgb(160, 160, 160);*/ 
 	background-image: url('images/hpgradient_small.jpg');
 	/* background-size: only supported by IE 9 and +*/
 	background-size: 100% 100%;
 	background-repeat: repeat-x;		
 	background-position: left top;	
     padding-left:25px;
-    padding-right:25px;
+    padding-right:5px;
     -moz-box-sizing: border-box; 
-	text-align: left;
     margin-top: 2px; 
-	/*margin-left: 2px;*/ 
     margin-right: 2px; 
     margin-bottom: 10px; 
     width:100%;   
+}
+
+.versionBanner{
+    margin-top: 20px;
+	display: flex;
+	flex-wrap: nowrap;
+  	align-content:center;
+	justify-content: space-between;
+	font-size: x-large;
+	height: 100%;
+	width: 40%;
+	float:left;
+}
+
+.navLinksBanner{
+    margin-top: 5px;
+	display: flex;
+	flex-wrap: nowrap;
+  	align-content:center;
+	justify-content: space-between;
+	width: auto;
+	float:right;
+	height: 50px;
+}
+
+.profileText{
+	display: block;
+	padding: 3px 20px;
+	clear: both;
+	line-height: 1.42857143;
+	white-space: nowrap
 }
 
 .footer {
@@ -769,9 +810,8 @@ left:50px;
 	
 }
 .alertMessage {
-	/*color: red;*/
-	
-	 background: /*url('images/error.png')*/ no-repeat scroll 6px 50% #FFDDDD;
+	position:relative;
+	background: no-repeat scroll 6px 50% #FFDDDD;
     border: 1px solid #FF0000;
     color: #000000;
     display: block;
@@ -779,8 +819,7 @@ left:50px;
     margin: 2px auto 14px;
     padding: 6px 6px 6px 30px;
     text-align: left;
-	
-	
+    z-index:10000;
 }
 
 .alertMessageDialogBox {
@@ -1305,10 +1344,9 @@ padding: 2px;
 .logoutPanel{
 	float: right;
 	position: relative;
-	padding-top: 10px;
-	padding-right: 15px;
+	padding-top: 9px;
 	cursor: pointer;
-	font-size:small;
+	font-size: 14px;
 }
 
 .statePanel{
@@ -1952,8 +1990,8 @@ padding: 2px;
     border-style: solid;
     border-width: 3px;
     margin-left: 4px;
-   margin-top: 8px;
-    width: 550px;
+  	margin-top: 8px;
+    width: 99%;
 }
 
 .cellTablePanel {
@@ -1971,10 +2009,7 @@ padding: 2px;
     border-color: #E8EEF7 #E8EEF7 #E8EFF7;
     border-style: solid;
     border-width: 3px;
-    margin-left: -1px;
-   margin-top: -1px;
-    width: 750px;
-    height:150px;
+    height: 150px;
 }
 
 .cellTablePanel_Report {
@@ -1983,7 +2018,7 @@ padding: 2px;
     border-style: solid;
     border-width: 3px;
     margin-left: 4px;
-   margin-top: 8px;
+   	margin-top: 8px;
     width: 50%;
 }
 
@@ -2075,22 +2110,25 @@ padding: 2px;
 }
 
 .searchFilter{
-	border:1px solid lightgray;
     -moz-box-sizing: border-box;
-    background-image: url("images/bg_box-blue.png");
-    background-repeat:repeat-x;
     vertical-align: middle;
+    background-color: #FFFFFF;
+    border-color: #E8EEF7 #E8EEF7 #E8EFF7;
+    border-style: solid;
+    border-width: 3px;
     text-align: left;
-    padding-right: 15px;
     padding-bottom: 8px;
-    padding-top: 8px;
-    padding-left:8px;
     font-size:.8em;
-    margin-left:85px; 
-    margin-right:auto;
     margin-top:8px;
+    margin-right: 4px;
+    margin-left: 4px;
+    width: 99%;
 }
 
+
+.searchFilterTextBox {
+	margin-right: 10px;
+}
 
 .margin-left{
 	margin-left:85px;
@@ -2458,7 +2496,7 @@ padding: 2px;
     background-color: #DCE9F5; 
     font-weight: bold;
     padding: 5px;
-    width: 750px;
+    width: 650px;
     text-align:left;
     margin-bottom: 2px;
 }
@@ -2811,6 +2849,102 @@ padding: 2px;
 }
 
 .advancedSearchLabels{
-	padding-top: 7px;
+	padding-top: 20px;
+	padding-left: 10px;
 	padding-right: 10px;
+}
+
+.advancedSearchAnchor{
+	padding-left: 10px;
+	padding-top: 10px;
+}
+
+.advancedSearchHelpText{
+	font-size: 10px;
+}
+
+.calendarLabel {
+	margin-left: 3px;
+	margin-top: 3px;
+}
+
+.calendarYearLabel {
+	margin-top: 3px;
+}
+
+.measureDetailsSwitchPanel {
+	width: 100%;
+}
+
+.breadcrum {
+	background-color: #FFF;
+	color: #000;
+	font-size: 110%;
+	font-weight: bold;
+}
+.breadcrumPaddign{
+	padding-bottom: 10px;
+	padding-top: 2px;
+}
+
+#expressionBuilderModal .modal-dialog {
+  width: 80%;
+}
+
+#expressionBuilderModal .modal-dialog .modal-content {
+  height: auto;
+  border-radius: 0;
+}
+
+#expressionBuilderModal .modal-body {
+	max-height: 600px;
+	overflow-y: auto;
+}
+
+#inAppHelp .modal-body {
+	max-height: 500px;
+	overflow-y: auto;
+}
+
+.selectorsPanel {
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+.expressionBuilderExpressionPanel {
+	font-size: small;
+}
+
+.expressionBuilderCode {
+	color: #333;
+	background-color: #f5f5f5;
+	padding: 2px 4px;
+	font-size: 90%;
+	border-radius: 4px;
+}
+
+.modal-open {
+  overflow: auto!important;
+  padding-right:0!important
+}
+
+body {
+    padding-right: 0px !important;
+}
+
+.inAppHelp {
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 5px;
+	font-size: small;
+}
+
+.quantityWidgetCellLeft{
+	width: 50%;
+	padding-right: 5px;
+}
+
+.quantityWidgetCellRight{
+	width: 50%;
+	padding-left: 5px;
 }

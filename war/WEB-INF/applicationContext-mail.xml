@@ -10,7 +10,7 @@
 >
 	
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="dmcorpmail01.telligen.us"/>
+        <property name="host" value="localhost"/>
     </bean>
     
     <!-- this is a template message that we can pre-load with default state -->
@@ -19,6 +19,6 @@
     </bean>
     
     <bean id="freemarkerConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
-	    <property name="templateLoaderPath" value="classpath:/"/>
+	    <property name="templateLoaderPath" value="classpath:/templates"/>
 	</bean>
 </beans>

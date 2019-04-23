@@ -1,2 +1,0 @@
-UPDATE CODE SET DESCRIPTION='Research Clinical Trial' WHERE CODE = '823' and DESCRIPTION = 'Hispanic or Latino';
-commit;

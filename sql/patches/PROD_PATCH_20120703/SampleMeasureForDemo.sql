@@ -1,1 +1,0 @@
- delete from `MAT_APP`.`DECISION` where id in ('b59be681-9830-47fd-8f2d-f4d57e5ff67d')

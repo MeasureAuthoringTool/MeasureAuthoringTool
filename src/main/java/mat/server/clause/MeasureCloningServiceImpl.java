@@ -54,6 +54,7 @@ import mat.server.CQLLibraryService;
 import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.service.impl.MatContextServiceUtil;
+import mat.server.service.impl.XMLUtility;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
@@ -215,7 +216,8 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			String originalXml = xml.getMeasureXMLAsString();
 			
 			InputSource oldXmlstream = new InputSource(new StringReader(originalXml));
-			DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			DocumentBuilderFactory documentBuilderFactory = XMLUtility.getInstance().buildDocumentBuilderFactory();
+			DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
 			Document originalDoc = docBuilder.parse(oldXmlstream);
 			clonedDoc = originalDoc;
 			clonedMeasure.setaBBRName(currentDetails.getShortName());
@@ -261,8 +263,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
 			xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
 			
-			if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) 
-					|| currentDetails.isPatientBased()) {
+			if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) || currentDetails.isPatientBased()) {
 
 				String scoringTypeId = MeasureDetailsUtil.getScoringAbbr(clonedMeasure.getMeasureScoring());
 				xmlProcessor.removeNodesBasedOnScoring(scoringTypeId);
@@ -830,7 +831,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			DOMSource domSource = new DOMSource(doc);
 			StringWriter writer = new StringWriter();
 			StreamResult result = new StreamResult(writer);
-			TransformerFactory tf = TransformerFactory.newInstance();
+			TransformerFactory tf = XMLUtility.getInstance().buildTransformerFactory();
 			Transformer transformer = tf.newTransformer();
 			transformer.transform(domSource, result);
 			return writer.toString();

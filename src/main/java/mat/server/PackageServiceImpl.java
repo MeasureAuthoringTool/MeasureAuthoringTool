@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +16,6 @@ import mat.server.service.PackagerService;
 import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
 import mat.shared.packager.error.SaveSupplementalDataElementException;
 
-/**
- * The Class PackageServiceImpl.
- */
 @Service
 public class PackageServiceImpl extends SpringRemoteServiceServlet implements PackageService{
 	@Autowired

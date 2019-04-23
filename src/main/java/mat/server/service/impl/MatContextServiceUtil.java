@@ -11,10 +11,6 @@ import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class MatContextServiceUtil.
- */
 public class MatContextServiceUtil {
 	private boolean isMeasure ;
 

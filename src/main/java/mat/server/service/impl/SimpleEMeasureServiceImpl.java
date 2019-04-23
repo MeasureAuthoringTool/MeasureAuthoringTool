@@ -31,7 +31,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.tools.zip.ZipOutputStream;
-import mat.CQLFormatter;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -43,6 +42,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import mat.CQLFormatter;
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.dao.ListObjectDAO;
@@ -67,9 +67,9 @@ import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.export.ExportResult;
 import mat.server.hqmf.Generator;
 import mat.server.hqmf.HQMFGeneratorFactory;
+import mat.server.humanreadable.HumanReadableGenerator;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
-import mat.server.humanreadable.HumanReadableGenerator;
 import mat.server.util.CQLUtil;
 import mat.server.util.CompositeMeasureDetailUtil;
 import mat.server.util.XmlProcessor;
@@ -83,7 +83,6 @@ import mat.shared.bonnie.error.BonnieDoesNotExistException;
 import mat.shared.bonnie.error.BonnieNotFoundException;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
-import net.sf.saxon.TransformerFactoryImpl;
 
 @Service
 public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
@@ -152,8 +151,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	@Override
 	public final ExportResult exportMeasureIntoSimpleXML(final String measureId, final String xmlString, final List<MatValueSet> matValueSets) throws Exception {
 		ExportResult result = new ExportResult();
-
-		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		DocumentBuilderFactory documentBuilderFactory = XMLUtility.getInstance().buildDocumentBuilderFactory();
+		DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
 		InputSource oldXmlstream = new InputSource(new StringReader(xmlString));
 		Document originalDoc = docBuilder.parse(oldXmlstream);
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -202,7 +201,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 	private static String transform(Node node) {
 		ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-		TransformerFactory transformerFactory = TransformerFactoryImpl.newInstance();
+		TransformerFactory transformerFactory = XMLUtility.getInstance().buildTransformerFactory();
 		DOMSource source = new DOMSource(node);
 		StreamResult result = new StreamResult(arrayOutputStream);
 
@@ -524,9 +523,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 	
 	private String getHQMFForv3MeasureString(final String measureId, final MeasureExport measureExport) {
-		XMLUtility xmlUtility = new XMLUtility();
-		String tempXML = xmlUtility.applyXSL(measureExport.getSimpleXML(), xmlUtility.getXMLResource(conversionFile1));
-		String eMeasureXML = xmlUtility.applyXSL(tempXML, xmlUtility.getXMLResource(conversionFile2));
+		String tempXML = XMLUtility.getInstance().applyXSL(measureExport.getSimpleXML(), XMLUtility.getInstance().getXMLResource(conversionFile1));
+		String eMeasureXML = XMLUtility.getInstance().applyXSL(tempXML, XMLUtility.getInstance().getXMLResource(conversionFile2));
 		
 		return eMeasureXML;
 	}
@@ -592,8 +590,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 */
 	private String createOrGetEmeasureXMLToEmeasureHTML(final String emeasureXMLStr, final MeasureExport measureExport) {
 		if(measureExport.getHumanReadable() == null) {
-			XMLUtility xmlUtility = new XMLUtility();
-			String html = xmlUtility.applyXSL(emeasureXMLStr, xmlUtility.getXMLResource(conversionFileHtml));
+			String html = XMLUtility.getInstance().applyXSL(emeasureXMLStr, XMLUtility.getInstance().getXMLResource(conversionFileHtml));
 			measureExport.setHumanReadable(html);
 			measureExportDAO.save(measureExport);
 		}
@@ -602,8 +599,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 	
 	private String emeasureXMLToEmeasureHTML(final String emeasureXMLStr, final MeasureExport measureExport) {
-		XMLUtility xmlUtility = new XMLUtility();
-		return xmlUtility.applyXSL(emeasureXMLStr, xmlUtility.getXMLResource(conversionFileHtml));
+		return XMLUtility.getInstance().applyXSL(emeasureXMLStr, XMLUtility.getInstance().getXMLResource(conversionFileHtml));
 	}
 
 	/*
@@ -922,8 +918,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		}
 		String emeasureHTMLStr = me.getHumanReadable();
 		String simpleXmlStr = me.getSimpleXML();
-		XMLUtility xmlUtility = new XMLUtility();
-		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
+		String emeasureXSLUrl = XMLUtility.getInstance().getXMLResource(conversionFileHtml);
 
 		ZipPackager zp = new ZipPackager();
 		return zp.getZipBarr(emeasureName, exportDate, releaseVersion, wkbkbarr, emeasureXMLStr, emeasureHTMLStr,
@@ -1143,8 +1138,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		emeasureXMLStr = repor + emeasureXMLStr.substring(repee.length());
 		String emeasureHTMLStr = createOrGetEmeasureXMLToEmeasureHTML(emeasureXMLStr, me);
 		String simpleXmlStr = me.getSimpleXML();
-		XMLUtility xmlUtility = new XMLUtility();
-		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
+		String emeasureXSLUrl = XMLUtility.getInstance().getXMLResource(conversionFileHtml);
 		MeasureExport measureExport = getMeasureExport(measureId);
 		
 		ExportResult cqlExportResult= createOrGetCQLLibraryFile(measureId, measureExport);

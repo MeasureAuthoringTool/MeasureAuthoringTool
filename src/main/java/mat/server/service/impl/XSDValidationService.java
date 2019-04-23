@@ -19,36 +19,15 @@ import org.xml.sax.XMLReader;
 
 /**
  * perform an xsd validation logging any failed validations.
- * 
- * @author aschmidt
  */
 public class XSDValidationService {
-
-	/** The Constant HTTP_WWW_W3_ORG_2001_XML_SCHEMA. */
-	private static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
-	
-	/** The Constant VALIDATION_FILE. */
 	private static final String VALIDATION_FILE="xsd/schemas/EMeasure.xsd";
-	
-	/** The Constant EVENT_TYPE. */
 	private static final String EVENT_TYPE = "MeasureValidationEvent";
-	
-	/** The emeasure xml. */
 	private String emeasureXML = null;
-	
-	/** The interim xml. */
 	private String interimXML = null;
-	
-	/** The measure. */
 	private Measure measure = null;
-	
-	/** The measure validation log dao. */
 	private MeasureValidationLogDAO measureValidationLogDAO = null;
-	
-	/** The xml error handler. */
 	private XMLErrorHandler xmlErrorHandler = null;
-	
-	/** The bais. */
 	private ByteArrayInputStream bais = null;
 	
 	
@@ -111,21 +90,19 @@ public class XSDValidationService {
 	      return saxParserFactory;
 	    }
 	
-	    saxParserFactory = SAXParserFactory.newInstance();
-	    saxParserFactory.setValidating(false);
-	    saxParserFactory.setNamespaceAware(true);
-	    SchemaFactory schemaFactory = SchemaFactory.newInstance(HTTP_WWW_W3_ORG_2001_XML_SCHEMA);
-	
-	    XMLUtility xutil = new XMLUtility();
-	    String xsd = xutil.getXMLResource(VALIDATION_FILE);
+	    String xsd = XMLUtility.getInstance().getXMLResource(VALIDATION_FILE);
 	    StreamSource source = new StreamSource(xsd);
 	
 	    try {
-	      saxParserFactory.setSchema(schemaFactory.newSchema(source));
-	    } catch (SAXException e) {
+		    SchemaFactory schemaFactory = XMLUtility.getInstance().buildSchemaFactory();
+		    saxParserFactory = XMLUtility.getInstance().buildSaxParserFactory();
+		    saxParserFactory.setValidating(false);
+		    saxParserFactory.setNamespaceAware(true);
+		    saxParserFactory.setSchema(schemaFactory.newSchema(source));
+	    } catch (SAXException | ParserConfigurationException e) {
 	      System.out.println("Could not get the SAXParserFactory...");
 	      System.out.println(e.getMessage());
-	    }
+	    } 
 	    return saxParserFactory;
 	}
 	
@@ -146,7 +123,7 @@ public class XSDValidationService {
 
 	    xmlErrorHandler = new XMLErrorHandler();
 	    SAXParser parser = getSaxParserFactory().newSAXParser();
-	    XMLReader reader = parser.getXMLReader();
+	    XMLReader reader = XMLUtility.getInstance().getXMLReader(parser);
 	    reader.setErrorHandler(xmlErrorHandler);
 	    reader.parse(new InputSource(inXMLStream));
 	}

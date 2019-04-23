@@ -38,222 +38,83 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import mat.server.service.impl.XMLUtility;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 
-/**
- * The Class XmlProcessor.
- */
 public class XmlProcessor {
-	
-	/**
-	 * The Constant COHORT.
-	 */
 	private static final String COHORT = "COHORT";
-	
-	/** The Constant XPATH_POPULATIONS. */
 	private static final String XPATH_POPULATIONS = "/measure/populations";
-	
-	/** The Constant XPATH_NUMERATORS. */
 	private static final String XPATH_NUMERATORS = "/measure/populations/numerators";
-	
-	/** The Constant XPATH_DENOMINATOR. */
 	private static final String XPATH_DENOMINATOR = "/measure/populations/denominators";
-	
-	/** The Constant XPATH_NUMERATOR_EXCLUSIONS. */
 	private static final String XPATH_NUMERATOR_EXCLUSIONS = "/measure/populations/numeratorExclusions";
-	
-	/** The Constant XPATH_MEASURE_OBSERVATIONS. */
 	private static final String XPATH_MEASURE_OBSERVATIONS = "/measure/measureObservations";
-	
-	/** The Constant XPATH_MEASURE_STRATIFICATIONS. */
 	private static final String XPATH_MEASURE_STRATIFICATIONS = "/measure/strata";
-	
-	/** The Constant XPATH_MEASURE_SD_ELEMENTS. */
 	private static final String XPATH_MEASURE_SD_ELEMENTS = "/measure/supplementalDataElements";
-	
-	/** The Constant XPATH_MEASURE_RAV_ELEMENTS. */
 	private static final String XPATH_MEASURE_RAV_ELEMENTS = "/measure/riskAdjustmentVariables";
-	
-	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP = "/measure/elementLookUp";
-	
-	/** The Constant XPATH_MEASURE_SUBTREE_LOOKUP. */
 	private static final String XPATH_MEASURE_SUBTREE_LOOKUP = "/measure/subTreeLookUp";
-	
-	/** The Constant XPATH_CQL_LOOKUP. */
 	private static final String XPATH_CQL_LOOKUP = "/measure/cqlLookUp";
-	
-	/** The Constant XPATH_DTLS_COMPONENT_MEASURE. */
 	private static final String XPATH_DTLS_COMPONENT_MEASURE = "/measure/measureDetails/componentMeasures";
-	
-	/** The Constant XPATH_DETAILS_EMEASUREID. */
 	private static final String XPATH_DETAILS_EMEASUREID = "/measure/measureDetails/emeasureid";
-	
-	/** The Constant XPATH_DETAILS_FINALIZEDDATE. */
 	private static final String XPATH_DETAILS_FINALIZEDDATE = "/measure/measureDetails/finalizedDate";
-	
-	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_GUID. */
 	private static final String XPATH_MEASURE_MEASURE_DETAILS_GUID = "/measure/measureDetails/guid";
-	
-	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE. */
-	
 	private static final String XPATH_DETAILS_MEASURETYPE = "/measure/measureDetails/types";
-	
-	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_SCORING. */
 	private static final String XPATH_DETAILS_SCORING = "/measure/measureDetails/scoring";
-	
-	/** The Constant XPATH_MEASURE_POPULATIONS. */
 	private static final String XPATH_MEASURE_POPULATIONS = "/measure/populations/measurePopulations";
-	
-	/** The Constant XPATH_MEASURE_POPULATION_EXCLUSIONS. */
 	private static final String XPATH_MEASURE_POPULATION_EXCLUSIONS = "/measure/populations/measurePopulationExclusions";
-	
-	/** The Constant XPATH_DENOMINATOR_EXCEPTIONS. */
 	private static final String XPATH_DENOMINATOR_EXCEPTIONS = "/measure/populations/denominatorExceptions";
-	
-	/** The Constant XPATH_MEASURE_DETAILS_DENOMINATOR. */
 	private static final String XPATH_MEASURE_DETAILS_DENOMINATOR = "/measure/measureDetails/denominatorDescription";
-	
-	/** The Constant XPATH_MEASURE_DETAILS_DENOMINATOR_EXCEPTIONS. */
 	private static final String XPATH_MEASURE_DETAILS_DENOMINATOR_EXCEPTIONS = "/measure/measureDetails/denominatorExceptionsDescription";
-	
-	/** The Constant XPATH_MEASURE_DETAILS_DENOMINATOR_EXCLUSIONS. */
 	private static final String XPATH_MEASURE_DETAILS_DENOMINATOR_EXCLUSIONS = "/measure/measureDetails/denominatorExclusionsDescription";
-	
-	/** The Constant XPATH_MEASURE_DETAILS_MEASURE_POPULATION_EXCLUSIONS. */
 	private static final String XPATH_MEASURE_DETAILS_MEASURE_POPULATION_EXCLUSIONS = "/measure/measureDetails/measurePopulationExclusionsDescription";
-	
-	/** The Constant XPATH_MEASURE_DETAILS_MEASURE_POPULATIONS. */
 	private static final String XPATH_MEASURE_DETAILS_MEASURE_POPULATIONS = "/measure/measureDetails/measurePopulationDescription";
-	
-	/** The Constant XPATH_MEASURE_DETAILS_MEASURE_OBSERVATIONS. */
 	private static final String XPATH_MEASURE_DETAILS_MEASURE_OBSERVATIONS = "/measure/measureDetails/measureObservationsDescription";
-	
-	/** The Constant XPATH_MEASURE_DETAILS_NUMERATOR. */
 	private static final String XPATH_MEASURE_DETAILS_NUMERATOR = "/measure/measureDetails/numeratorDescription";
-	
-	/** The Constant XPATH_MEASURE_DETAILS_NUM_EXCLUSIONS. */
 	private static final String XPATH_MEASURE_DETAILS_NUM_EXCLUSIONS = "/measure/measureDetails/numeratorExclusionsDescription";
-	
-	/** The Constant XPATH_DENOMINATOR_EXCLUSIONS. */
 	private static final String XPATH_DENOMINATOR_EXCLUSIONS = "/measure/populations/denominatorExclusions";
-	
-	/** The Constant RATIO. */
 	private static final String RATIO = "RATIO";
-	
-	/** The Constant PROPOR. */
 	private static final String PROPOR = "PROPOR";
-	
-	/** The Constant SCORING_TYPE_CONTVAR. */
 	private static final String SCORING_TYPE_CONTVAR = "CONTVAR";
-	
-	/** The Constant NUMERATOR_EXCLUSIONS. */
 	private static final String NUMERATOR_EXCLUSIONS = "numeratorExclusions";
-	
-	/** The Constant DENOMINATOR_EXCEPTIONS. */
 	private static final String DENOMINATOR_EXCEPTIONS = "denominatorExceptions";
-	
-	/** The Constant DENOMINATOR_EXCLUSIONS. */
 	private static final String DENOMINATOR_EXCLUSIONS = "denominatorExclusions";
-	
-	/** The Constant DENOMINATORS. */
 	private static final String DENOMINATORS = "denominators";
-	
-	/** The Constant NUMERATORS. */
 	private static final String NUMERATORS = "numerators";
-	
-	/** The Constant MEASURE_POPULATIONS. */
 	private static final String MEASURE_POPULATIONS = "measurePopulations";
-	
-	/** The Constant MEASURE_POPULATION_EXCLUSIONS. */
 	private static final String MEASURE_POPULATION_EXCLUSIONS = "measurePopulationExclusions";
-	
-	/** The Constant INITIAL_PATIENT_POPULATIONS. */
 	private static final String INITIAL_POPULATIONS = "initialPopulations";
-	
-	/** The Constant XPATH_MEASURE_CLAUSE. */
 	public static final String XPATH_MEASURE_CLAUSE = "/measure/populations/*/clause | /measure/*/clause | /measure/strata/stratification | /measure/strata/Stratification";
-	
-	/** The Constant XPATH_MEASURE_GROUPING. */
 	public static final String XPATH_MEASURE_GROUPING = "/measure/measureGrouping";
-	
-	/** The Constant XPATH_MEASURE_GROUPING_GROUP. */
 	public static final String XPATH_MEASURE_GROUPING_GROUP = "/measure/measureGrouping/group";
-	
-	/** The Constant XPATH_GROUP_SEQ_START. */
 	public static final String XPATH_GROUP_SEQ_START = "/measure/measureGrouping/group[@sequence = '";
-	
-	/** The Constant XPATH_GROUP_SEQ_END. */
 	public static final String XPATH_GROUP_SEQ_END = "' ] ";
-	
-	/** The Constant XPATH_FIND_GROUP_CLAUSE. */
 	public static final String XPATH_FIND_GROUP_CLAUSE = "/measure/measureGrouping/group[packageClause[";
-	
-	/** The Constant XPATH_OLD_ALL_RELATIONALOP_SBOD. */
 	public static final String XPATH_OLD_ALL_RELATIONALOP_SBOD = "/measure//*/relationalOp[@type='SBOD']";
-	
-	/** The Constant XPATH_OLD_ALL_RELATIONALOP_EBOD. */
 	public static final String XPATH_OLD_ALL_RELATIONALOP_EBOD = "/measure//*/relationalOp[@type='EBOD']";
-	
-	/** The Constant STRATIFICATION. */
 	public static final String  STRATIFICATION = "stratification";
-	
-	/** The Constant STRATIFICATION_DISPLAYNAME. */
 	private static final String  STRATIFICATION_DISPLAYNAME = "Stratification 1";
-	
-	/** The Constant MEASURE_OBSERVATION. */
 	private static final String MEASURE_OBSERVATION = "measureObservations";
-	
-	/** The Constant AND. */
 	private static final String AND = "and";
-	
-	/** The Constant OR. */
 	private static final String OR_STRING = "or";
-	
-	/** The Constant UUID. */
 	private static final String UUID_STRING = "uuid";
-	
-	/** The Constant DISPLAY_NAME. */
 	private static final String DISPLAY_NAME = "displayName";
-	
-	/** The Constant TYPE. */
 	private static final String TYPE = "type";
-	
-	/** The Constant PATIENT. */
 	private static final String PATIENT = " Patient ";
-	
-	/** The constants map. */
 	private static Map<String, String> constantsMap = new HashMap<String, String>();
-	/** The constants map. */
 	private static Map<String, String> topNodeOperatorMap = new HashMap<String, String>();
-	
-	/** The Constant logger. */
 	private static final Log LOG = LogFactory.getLog(XmlProcessor.class);
-	
-	/** The original xml. */
 	private String originalXml;
-	
-	/** The doc builder. */
 	private DocumentBuilder docBuilder;
-	
-	/** The original doc. */
 	private Document originalDoc;
-	
-	/** The Constant PARAMETER_MEASUREMENT_PERIOD. */
 	private static final String PARAMETER_MEASUREMENT_PERIOD = "Measurement Period";
-	
 	private static final String XPATH_FOR_PATIENT_BASED_INDICATOR = "/measure/measureDetails/patientBasedIndicator";
-	
 	private static final String XPATH_FOR_CODES = "//cqlLookUp/codes/code";
-	
 	private static final String XPATH_FOR_VALUESETS = "//cqlLookUp/valuesets/valueset";
-	
 	private static final String ATTRIBUTE_CODE_OID = "codeOID";
 	private static final String ATTRIBUTE_CODE_NAME = "codeName";
 	private static final String ATTRIBUTE_READ_ONLY = "readOnly";
 	private static final String ATTRIBUTE_CODE_SYSTEM_OID = "codeSystemOID";
-	/** The Constant POPULATIONS. */
 	private static final String[] POPULATIONS = {
 		INITIAL_POPULATIONS, NUMERATORS, NUMERATOR_EXCLUSIONS, DENOMINATORS,
 		DENOMINATOR_EXCLUSIONS, DENOMINATOR_EXCEPTIONS, MEASURE_POPULATIONS,
@@ -280,7 +141,6 @@ public class XmlProcessor {
 		constantsMap.put("Measure Populations", "Measure Population");
 		constantsMap.put("Measure Population Exclusions", "Measure Population Exclusions");
 		constantsMap.put("Numerator Exclusions", "Numerator Exclusions");
-		//commented for MAT-4426 in sprint 44
 		topNodeOperatorMap.put("initialPopulations", AND);
 		topNodeOperatorMap.put("numerators", AND);
 		topNodeOperatorMap.put("denominators", AND);
@@ -300,8 +160,8 @@ public class XmlProcessor {
 		LOG.info("In XmlProcessor() constructor");
 		this.originalXml = originalXml;
 		try {
-			docBuilder = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder();
+			DocumentBuilderFactory documentBuilderFactory = XMLUtility.getInstance().buildDocumentBuilderFactory();
+			docBuilder = documentBuilderFactory.newDocumentBuilder();
 			InputSource oldXmlstream = new InputSource(new StringReader(originalXml));
 			originalDoc = docBuilder.parse(oldXmlstream);
 			LOG.info("Document Object created successfully for the XML String");
@@ -320,8 +180,8 @@ public class XmlProcessor {
 	 */
 	public XmlProcessor(File file) {
 		try {
-			docBuilder = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder();
+			DocumentBuilderFactory documentBuilderFactory = XMLUtility.getInstance().buildDocumentBuilderFactory();
+			docBuilder = documentBuilderFactory.newDocumentBuilder();
 			originalDoc = docBuilder.parse(file);
 			LOG.info("Document Object created successfully for the XML String");
 		} catch (ParserConfigurationException e) {
@@ -492,8 +352,7 @@ public class XmlProcessor {
 			InputSource xmlStream = new InputSource(new StringReader(
 					originalXml));
 			Document doc = docBuilder.parse(xmlStream);
-			doc.getElementsByTagName(nodeName).item(0)
-			.setTextContent(nodeValue);
+			doc.getElementsByTagName(nodeName).item(0).setTextContent(nodeValue);
 			LOG.info("update NoedText");
 			return transform(doc);
 		} catch (Exception e) {
@@ -1274,7 +1133,8 @@ public class XmlProcessor {
 		Transformer tf;
 		Writer out = null;
 		try {
-			tf = TransformerFactory.newInstance().newTransformer();
+			TransformerFactory transformerFactory = XMLUtility.getInstance().buildTransformerFactory();
+			tf = transformerFactory.newTransformer();
 			tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			
 			if(isFormatted){

@@ -28,9 +28,8 @@ public class HQMFMeasureDetailsGenerator implements Generator {
 
 		simpleXML = addReleaseVersionToSimpleXML(simpleXML, releaseVersion);
 
-		XMLUtility xmlUtility = new XMLUtility();
-		String measureDetailsHQMF_XML = xmlUtility.applyXSL(simpleXML,
-				xmlUtility.getXMLResource(conversionFileForHQMF_Header));
+		String measureDetailsHQMF_XML = XMLUtility.getInstance().applyXSL(simpleXML,
+		XMLUtility.getInstance().getXMLResource(conversionFileForHQMF_Header));
 		measureDetailsHQMF_XML = incrementEndDatebyOne(measureDetailsHQMF_XML);
 		return measureDetailsHQMF_XML.replaceAll("xmlns=\"\"", "");
 	}

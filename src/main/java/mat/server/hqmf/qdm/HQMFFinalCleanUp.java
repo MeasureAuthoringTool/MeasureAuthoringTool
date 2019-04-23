@@ -140,8 +140,7 @@ public class HQMFFinalCleanUp {
 	 * @param me the me
 	 */
 	private static void reverseEntryCheck(String hqmfXML) {
-		XMLUtility xmlUtility = new XMLUtility();
-		String reverseEntryCheckResults = xmlUtility.applyXSL(hqmfXML,	xmlUtility.getXMLResource(reverseEntryCheckFile));
+		String reverseEntryCheckResults = XMLUtility.getInstance().applyXSL(hqmfXML, XMLUtility.getInstance().getXMLResource(reverseEntryCheckFile));
 		logger.info("Reverse Entry Check results: " + reverseEntryCheckResults);
 	}
 	
@@ -187,9 +186,8 @@ public class HQMFFinalCleanUp {
 	 * @param me the me
 	 */
 	private static void deleteUnusedEntry(MeasureExport me) {
-		XMLUtility xmlUtility = new XMLUtility();
-		String delDupEntryResults = xmlUtility.applyXSL(me.getHQMFXmlProcessor().transform(me.getHQMFXmlProcessor().getOriginalDoc()),
-				xmlUtility.getXMLResource(deleteUnUsedEntryFile));
+		String delDupEntryResults = XMLUtility.getInstance().applyXSL(me.getHQMFXmlProcessor().transform(me.getHQMFXmlProcessor().getOriginalDoc()),
+				XMLUtility.getInstance().getXMLResource(deleteUnUsedEntryFile));
 		
 		me.setHQMFXmlProcessor(new XmlProcessor(delDupEntryResults));
 		

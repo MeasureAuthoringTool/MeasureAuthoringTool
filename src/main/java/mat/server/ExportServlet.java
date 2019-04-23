@@ -52,79 +52,42 @@ import mat.shared.bonnie.error.BonnieNotFoundException;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
 
-/**
- * The Class ExportServlet.
- */
 public class ExportServlet extends HttpServlet {
-
 	private static final String LIBRARY_ID = "libraryid";
-	
 	private static final String USER_ID = "userId";
-
 	private static final String EXPORT_MEASURE_OWNER = "exportMeasureOwner";
-
 	private static final String EXPORT_CQL_ERROR_FILE_FOR_STAND_ALONE = "errorFileStandAlone";
-
 	private static final String EXPORT_CQL_ERROR_FILE_FOR_MEASURE = "errorFileMeasure";
-
 	private static final String EXPORT_ACTIVE_NON_ADMIN_USERS_CSV = "exportActiveNonAdminUsersCSV";
-
 	private static final String EXPORT_ALL_USERS_CSV = "exportAllUsersCSV";
-
 	private static final String EXPORT_ACTIVE_OID_CSV = "exportActiveOIDCSV";
-
 	private static final String EXPORT_ACTIVE_USER_CQL_LIBRARY_OWNERSHIP = "exportCQLLibraryOwner";
-
 	private static final String ZIP = "zip";
-
 	private static final String SUBTREE_HTML = "subtreeHTML";
-
 	private static final String CODELIST = "codelist";
-
 	private static final String SAVE = "save";
-
 	private static final String ATTACHMENT_FILENAME = "attachment; filename=";
-
 	private static final String CONTENT_DISPOSITION = "Content-Disposition";
-
 	private static final String TEXT_CSV = "text/csv";
-
 	private static final String APPLICATION_ZIP = "application/zip";
-	
 	private static final String APPLICATION_XSL = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
 	private static final String CONTENT_TYPE = "Content-Type";
-
 	private static final String HQMF = "hqmf";
-
 	private static final String HUMAN_READABLE = "humanreadable";
-
 	private static final String SIMPLEXML = "simplexml";
-	
 	private static final String CALCULATE_BONNIE_MEASURE_RESULT = "calculateBonnieMeasureResult";
-
 	private static final String TYPE_PARAM = "type";
-
 	private static final String XML_PARAM = "xml";
-
 	private static final String FORMAT_PARAM = "format";
-
 	private static final String ID_PARAM = "id";
-
 	private static final Log logger = LogFactory.getLog(ExportServlet.class);
-
 	private static final long serialVersionUID = 4539514145289378238L;
-
 	protected ApplicationContext context;
-
 	private static final String CQL_LIBRARY = "cqlLibrary";
 	private static final String ELM = "elm";
 	private static final String JSON = "json";
-
 	private static final String ADMINISTRATOR = "Administrator";
-
 	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-	
 	private static final String CQL_NO_ERRORS_WARNINGS_MESSAGE = "You are viewing CQL with no errors or warnings.";
 	
 	@Override

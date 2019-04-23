@@ -8,10 +8,6 @@ import mat.client.measurepackage.service.MeasurePackageSaveResult;
 import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
 import mat.shared.packager.error.SaveSupplementalDataElementException;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Interface PackagerService.
- */
 public interface PackagerService {
 	
 	/**

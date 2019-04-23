@@ -3,7 +3,6 @@ package mat.client.measurepackage.service;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.xpath.XPathExpressionException;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -65,7 +64,6 @@ public interface PackageService extends RemoteService {
 	 * @throws MatException
 	 *             the mat exception
 	 * @throws SaveSupplementalDataElementException 
-	 * @throws XPathExpressionException 
 	 */
 	public void saveQDMData(MeasurePackageDetail detail) throws MatException, SaveSupplementalDataElementException;
 

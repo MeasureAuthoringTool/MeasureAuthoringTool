@@ -27,8 +27,7 @@ public class SimpleXMLWriter {
 	 * @return the string
 	 */
 	private String filterXSL(String xmlStr) {
-		XMLUtility xmlUtility = new XMLUtility();
-		String tempXML = xmlUtility.applyXSL(xmlStr, xmlUtility.getXMLResource(CONVERSION_FILE_FILTER));
+		String tempXML = XMLUtility.getInstance().applyXSL(xmlStr, XMLUtility.getInstance().getXMLResource(CONVERSION_FILE_FILTER));
 		return tempXML;
 	}
 	

@@ -1,7 +1,6 @@
 package mat.server.humanreadable;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,17 +14,16 @@ import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.exolab.castor.mapping.Mapping;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 import freemarker.template.TemplateException;
 import mat.client.shared.MatContext;
@@ -43,9 +41,9 @@ import mat.server.humanreadable.cql.HumanReadablePopulationModel;
 import mat.server.humanreadable.cql.HumanReadableTerminologyModel;
 import mat.server.humanreadable.cql.HumanReadableValuesetModel;
 import mat.server.humanreadable.qdm.HQMFHumanReadableGenerator;
+import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.CQLUtil;
 import mat.server.util.CQLUtil.CQLArtifactHolder;
-import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.LibHolderObject;
 import mat.shared.MatConstants;
@@ -58,6 +56,8 @@ public class HumanReadableGenerator {
 
 	private final String CQLDEFINITION = "cqldefinition";
 	
+	private static final Log logger = LogFactory.getLog(HumanReadableGenerator.class);
+
 	private static final String[] POPULATION_NAME_ARRAY = {MatConstants.INITIAL_POPULATION,
 			MatConstants.DENOMINATOR, MatConstants.DENOMINATOR_EXCLUSIONS, MatConstants.NUMERATOR,
 			MatConstants.NUMERATOR_EXCLUSIONS, MatConstants.DENOMINATOR_EXCEPTIONS,
@@ -73,7 +73,7 @@ public class HumanReadableGenerator {
 
 		if (subXMLProcessor.getOriginalDoc().getDocumentElement().hasChildNodes()) {
 			String firstNodeName = subXMLProcessor.getOriginalDoc().getDocumentElement().getFirstChild().getNodeName();
-			System.out.println("firstNodeName:" + firstNodeName);
+			logger.info("firstNodeName:" + firstNodeName);
 
 			if ("cqldefinition".equals(firstNodeName) || "cqlfunction".equals(firstNodeName)
 					|| "cqlaggfunction".equals(firstNodeName)) {
@@ -98,24 +98,20 @@ public class HumanReadableGenerator {
 	public String generateHTMLForMeasure(String measureId, String simpleXml, String measureReleaseVersion, CQLLibraryDAO cqlLibraryDAO){
 		
 		String html = "";
-		System.out.println("Generating human readable for ver:"+measureReleaseVersion);
+		logger.info("Generating human readable for ver:"+measureReleaseVersion);
 		if(MatContext.get().isCQLMeasure(measureReleaseVersion)){
 			try {
 				XmlProcessor processor = new XmlProcessor(simpleXml);
-				Mapping mapping = new Mapping(); 
-				mapping.loadMapping(new ResourceLoader().getResourceAsURL("SimpleXMLHumanReadableModelMapping.xml"));
-				Unmarshaller unmarshaller = new Unmarshaller(mapping);
-				unmarshaller.setClass(HumanReadableModel.class);
-				unmarshaller.setWhitespacePreserve(true);
-							
+				
 				CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXml);
 		
-
 				CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(processor.getOriginalDoc());
 				SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
 				Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModel);
 				
-				HumanReadableModel model = (HumanReadableModel) unmarshaller.unmarshal(new InputSource(new StringReader(simpleXml)));
+				XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+				
+				HumanReadableModel model = (HumanReadableModel) xmlMarshalUtil.convertXMLToObject("SimpleXMLHumanReadableModelMapping.xml", simpleXml, HumanReadableModel.class);
 				model.setPopulationCriterias(getPopulationCriteriaModels(processor));
 				model.setSupplementalDataElements(getSupplementalDataElements(processor));
 				model.setRiskAdjustmentVariables(getRiskAdjustmentVariables(processor));

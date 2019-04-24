@@ -1,7 +1,6 @@
 package mat.server.service.impl;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,28 +9,23 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.UUID;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import mat.DTO.CodeSystemDTO;
 import mat.DTO.DataTypeDTO;
-import mat.DTO.HasListBoxDTO;
 import mat.DTO.OperatorDTO;
 import mat.DTO.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.dao.AuthorDAO;
 import mat.dao.CategoryDAO;
-import mat.dao.CodeDAO;
 import mat.dao.CodeSystemDAO;
 import mat.dao.DataTypeDAO;
 import mat.dao.MeasureScoreDAO;
@@ -43,7 +37,6 @@ import mat.dao.UnitTypeDAO;
 import mat.dao.UnitTypeMatrixDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.model.Category;
-import mat.model.Code;
 import mat.model.CodeListSearchDTO;
 import mat.model.CodeSystem;
 import mat.model.DataType;
@@ -55,11 +48,16 @@ import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.server.service.CodeListService;
 import mat.server.service.MeasureLibraryService;
-import mat.server.util.ResourceLoader;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 
 public class ManageCodeListServiceImpl implements CodeListService {
+	
+	private static final String QDM_TAG = "<qdm";
+	private static final String VALUESET_TAG = "<valueset ";
+	private static final String QUALITY_DATA_MODEL_MAPPING = "QualityDataModelMapping.xml";
+	private static final String VALUESET_MAPPING = "ValueSetsMapping.xml"; 
+	
 	@Autowired
 	private ApplicationContext context;
 	private static final int ASCII_START = 65;
@@ -69,8 +67,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	private AuthorDAO authorDAO;
 	@Autowired
 	private CategoryDAO categoryDAO;
-	@Autowired
-	private CodeDAO codeDAO;
 	@Autowired
 	private CodeSystemDAO codeSystemDAO;
 	@Autowired
@@ -92,40 +88,34 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	@Autowired
 	private UnitTypeMatrixDAO unitTypeMatrixDAO;
 
-	/**
-	 * Method to extract qdm element node created after marshalling of
-	 * QualityDataModelWrapper object.
-	 * 
-	 * @param qualityDataSetDTOWrapper
-	 *            - {@link QualityDataModelWrapper}.
-	 * @return String - {@link String}.
-	 * */
-	private String addAppliedQDMInMeasureXML(
-			final QualityDataModelWrapper qualityDataSetDTOWrapper) {
+	private String addAppliedQDMInMeasureXML(String mapping, String startTag, QualityDataModelWrapper qualityDataSetDTOWrapper) {
 		logger.info("addAppliedQDMInMeasureXML Method Call Start.");
-		ByteArrayOutputStream stream = createXML(qualityDataSetDTOWrapper);
-		int startIndex = stream.toString().indexOf("<qdm", 0);
-		int lastIndex = stream.toString().indexOf("/>", startIndex);
-		String xmlString = stream.toString().substring(startIndex,
-				lastIndex + 2);
-		logger.debug("addAppliedQDMInMeasureXML Method Call xmlString :: "
-				+ xmlString);
-		return xmlString;
-	}
-	
-	private String addNewAppliedQDMInMeasureXML(
-			final QualityDataModelWrapper qualityDataSetDTOWrapper) {
-		logger.info("addNewAppliedQDMInMeasureXML Method Call Start.");
-		ByteArrayOutputStream stream = createNewXML(qualityDataSetDTOWrapper);
-		int startIndex = stream.toString().indexOf("<valueset ", 0);
-		int lastIndex = stream.toString().indexOf("/>", startIndex);
-		String xmlString = stream.toString().substring(startIndex,
-				lastIndex + 2);
-		logger.debug("addNewAppliedQDMInMeasureXML Method Call xmlString :: "
-				+ xmlString);
+		String xmlString = null;
+		String stream = createNewXML(mapping, qualityDataSetDTOWrapper);
+		if (StringUtils.isNotBlank(stream)) {
+			int startIndex = stream.indexOf(startTag, 0);
+			int lastIndex = stream.indexOf("/>", startIndex);
+			xmlString = stream.substring(startIndex, lastIndex + 2);
+			logger.debug("addAppliedQDMInMeasureXML Method Call xmlString :: " + xmlString);
+		}
 		return xmlString;
 	}
 
+	private String createNewXML(String mapping, QualityDataModelWrapper qualityDataSetDTOWrapper) {
+		String stream = null;
+		try {
+			final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+			stream = xmlMarshalUtil.convertObjectToXML(mapping, qualityDataSetDTOWrapper);
+			
+		} catch (MarshalException | ValidationException | IOException | MappingException e) {
+			logger.info("Exception in converting XML to object: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		logger.info("Exiting ManageCodeListServiceImpl.createXml()");
+		return stream;
+	}
+	
 	/**
 	 * Check for duplicates.
 	 *
@@ -332,81 +322,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return isQDSExist;
 	}
 
-	/**
-	 * Method to create XML from QualityDataModelWrapper object.
-	 * 
-	 * @param qualityDataSetDTO
-	 *            - {@link QualityDataModelWrapper}.
-	 * @return {@link ByteArrayOutputStream}.
-	 * */
-	private ByteArrayOutputStream createXML(
-			final QualityDataModelWrapper qualityDataSetDTO) {
-		logger.info("In ManageCodeLiseServiceImpl.createXml()");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader()
-					.getResourceAsURL("QualityDataModelMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(
-					stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(qualityDataSetDTO);
-			logger.debug("Marshalling of QualityDataSetDTO is successful.."
-					+ stream.toString());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load QualityDataModelMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				logger.info("Other Exception" + e);
-			}
-		}
-		logger.info("Exiting ManageCodeLiseServiceImpl.createXml()");
-		return stream;
-	}
-	
-	/**
-	 * Method to create XML from QualityDataModelWrapper object.
-	 * 
-	 * @param qualityDataSetDTO
-	 *            - {@link QualityDataModelWrapper}.
-	 * @return {@link ByteArrayOutputStream}.
-	 * */
-	private ByteArrayOutputStream createNewXML(
-			final QualityDataModelWrapper qualityDataSetDTO) {
-		logger.info("In ManageCodeLiseServiceImpl.createXml()");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader()
-					.getResourceAsURL("ValueSetsMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(
-					stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(qualityDataSetDTO);
-			logger.debug("Marshalling of QualityDataSetDTO is successful.."
-					+ stream.toString());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load ValueSetsMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				logger.info("Other Exception" + e);
-			}
-		}
-		logger.info("Exiting ManageCodeLiseServiceImpl.createXml()");
-		return stream;
-	}
 
 	/**
 	 * Filter code lists for current category.
@@ -595,8 +510,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				wrapper.getQualityDataDTO().add(qds);
 				result.setOccurrenceMessage(qds.getOccurrenceText());
 				qualityDataSetDTOs.add(qds);
-				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
-				String newqdmXMLString = addNewAppliedQDMInMeasureXML(wrapper);
+				String qdmXMLString = addAppliedQDMInMeasureXML(QUALITY_DATA_MODEL_MAPPING, QDM_TAG, wrapper);
+				String newqdmXMLString = addAppliedQDMInMeasureXML(VALUESET_MAPPING, VALUESET_TAG, wrapper);
 				result.setSuccess(true);
 				result.setAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
 				result.setXmlString(qdmXMLString);
@@ -606,8 +521,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			if (!isDuplicate(valueSetTransferObject, true, false)) {
 				wrapper.getQualityDataDTO().add(qds);
 				result.setOccurrenceMessage(qds.getOccurrenceText());
-				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
-				String newqdmXMLString = addNewAppliedQDMInMeasureXML(wrapper);
+				String qdmXMLString = addAppliedQDMInMeasureXML(QUALITY_DATA_MODEL_MAPPING, QDM_TAG, wrapper);
+				String newqdmXMLString = addAppliedQDMInMeasureXML(VALUESET_MAPPING, VALUESET_TAG, wrapper);
 				result.setSuccess(true);
 				qualityDataSetDTOs.add(qds);
 				result.setAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
@@ -666,8 +581,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				qds.setUuid(UUID.randomUUID().toString());
 				qds.setVersion("1.0");
 				wrapper.getQualityDataDTO().add(qds);
-				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
-				String newqdmXMLString = addNewAppliedQDMInMeasureXML(wrapper);
+				String qdmXMLString = addAppliedQDMInMeasureXML(QUALITY_DATA_MODEL_MAPPING, QDM_TAG, wrapper);
+				String newqdmXMLString = addAppliedQDMInMeasureXML(VALUESET_MAPPING, VALUESET_TAG, wrapper);
 				result.setSuccess(true);
 				result.setAppliedQDMList(sortQualityDataSetList(wrapper
 						.getQualityDataDTO()));
@@ -779,8 +694,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 						qds,
 						(ArrayList<QualityDataSetDTO>) matValueSetTransferObject
 								.getAppliedQDMList());
-				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
-				String newqdmXMLString = addNewAppliedQDMInMeasureXML(wrapper);
+				String qdmXMLString = addAppliedQDMInMeasureXML(QUALITY_DATA_MODEL_MAPPING, QDM_TAG, wrapper);
+				String newqdmXMLString = addAppliedQDMInMeasureXML(VALUESET_MAPPING, VALUESET_TAG, wrapper);
 				result.setSuccess(true);
 				result.setAppliedQDMList(sortQualityDataSetList(wrapper
 						.getQualityDataDTO()));

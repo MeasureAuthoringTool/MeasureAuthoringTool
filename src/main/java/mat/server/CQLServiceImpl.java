@@ -6,13 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,16 +21,11 @@ import java.util.UUID;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import mat.CQLFormatter;
-import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.json.JSONObject;
 import org.json.XML;
@@ -41,9 +34,9 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import mat.CQLFormatter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
@@ -75,6 +68,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.model.cql.validator.CQLIncludeLibraryValidator;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.impl.MatContextServiceUtil;
+import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.CQLLibraryWrapperMappingUtil;
 import mat.server.util.CQLUtil;
 import mat.server.util.CQLUtil.CQLArtifactHolder;
@@ -101,6 +95,13 @@ public class CQLServiceImpl implements CQLService {
 	
 	private static final int COMMENTS_MAX_LENGTH = 2500;
 	
+	private static final String CODE_TAG = "<code ";
+	private static final String CODE_SYSTEM_TAG = "<codeSystem ";
+	private static final String VALUESET_TAG = "<valueset ";
+	private static final String CODE_MAPPING = "CodeMapping.xml";
+	private static final String CODE_SYSTEMS_MAPPING = "CodeSystemsMapping.xml";
+	private static final String VALUESET_MAPPING = "ValueSetsMapping.xml"; 
+
 	@Autowired private CQLLibraryDAO cqlLibraryDAO;
 	@Autowired private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
 	@Autowired private MeasurePackageService measurePackageService;
@@ -525,9 +526,6 @@ public class CQLServiceImpl implements CQLService {
 
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String xml, CQLParameter toBeModifiedObj,
 			CQLParameter currentObj, List<CQLParameter> parameterList, boolean isFormatable) {
@@ -786,9 +784,6 @@ public class CQLServiceImpl implements CQLService {
 
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String xml, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable) {
@@ -1797,179 +1792,76 @@ public class CQLServiceImpl implements CQLService {
 		logger.info("In CQLServiceImpl.convertXmltoCQLDefinitionModel()");
 		CQLDefinitionsWrapper details = null;
 		String xml = null;
-		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
+		if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
 			xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName("cqlLookUp");
 		}
+
 		try {
-			if (xml == null) {// TODO: This Check should be replaced when the
-				// DataConversion is complete.
-				logger.info("xml is null or xml doesn't contain cqlLookUp tag");
-
-			} else {
-				Mapping mapping = new Mapping();
-				mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLDefinitionModelMapping.xml"));
-				Unmarshaller unmar = new Unmarshaller(mapping);
-				unmar.setClass(CQLDefinitionsWrapper.class);
-				unmar.setWhitespacePreserve(true);
-				details = (CQLDefinitionsWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
-
+			if (xml != null) {
+				XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+				details = (CQLDefinitionsWrapper) xmlMarshalUtil.convertXMLToObject("CQLDefinitionModelMapping.xml", xml, CQLDefinitionsWrapper.class);
 			}
 
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load CQLDefinitionModelMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else {
-				logger.info("Other Exception" + e);
-			}
+		} catch (MarshalException | ValidationException | MappingException | IOException e) {
+			logger.error("Failed to load MeasureDetailsModelMapping.xml" + e.getMessage());
+			e.printStackTrace();
 		}
 		return details;
 	}
 
-	/**
-	 * Creates the Parameters xml.
-	 *
-	 * @param parameter
-	 *            the CQLParameter
-	 * @return the string
-	 */
 	@Override
 	public String createParametersXML(CQLParameter parameter) {
-
 		logger.info("In CQLServiceImpl.createParametersXML");
-		Mapping mapping = new Mapping();
 		CQLParametersWrapper wrapper = new CQLParametersWrapper();
 		List<CQLParameter> paramList = new ArrayList<>();
-
 		paramList.add(parameter);
 		wrapper.setCqlParameterList(paramList);
 
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLParameterModelMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(wrapper);
-			logger.info("Marshalling of CQLParameter is successful..");
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load CQLParameterModelMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				logger.info("Other Exception" + e.getMessage());
-				e.printStackTrace();
-			}
-		}
-		logger.info("Exiting CQLServiceImpl.createParametersXML()");
-		return stream.toString();
-
+		return createNewXML("CQLParameterModelMapping.xml", wrapper);
 	}
-
-	/**
-	 * Creates the Function xml.
-	 *
-	 * @param function
-	 *            the CQLFunctions
-	 * @return the string
-	 */
+	
 	private String createFunctionsXML(CQLFunctions function) {
-
 		logger.info("In CQLServiceImpl.createFunctionsXML");
-		Mapping mapping = new Mapping();
 		CQLFunctionsWrapper wrapper = new CQLFunctionsWrapper();
 		List<CQLFunctions> funcList = new ArrayList<>();
-
 		funcList.add(function);
 		wrapper.setCqlFunctionsList(funcList);
-
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLFunctionModelMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(wrapper);
-			logger.info("Marshalling of CQLFunctions is successful..");
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load CQLFunctionModelMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				logger.info("Other Exception" + e.getMessage());
-				e.printStackTrace();
-			}
-		}
-		logger.info("Exiting CQLServiceImpl.createFunctionsXML()");
-		return stream.toString();
+		
+		return createNewXML("CQLFunctionModelMapping.xml", wrapper);
 	}
 
-	/**
-	 * Creates the definitions xml.
-	 *
-	 * @param definition
-	 *            the definition
-	 * @return the string
-	 */
 	@Override
 	public String createDefinitionsXML(CQLDefinition definition) {
-
 		logger.info("In CQLServiceImpl.createDefinitionsXML");
-		Mapping mapping = new Mapping();
 		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
 		List<CQLDefinition> definitionList = new ArrayList<>();
 		definitionList.add(definition);
 		wrapper.setCqlDefinitions(definitionList);
 
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLDefinitionModelMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(wrapper);
-			logger.info("Marshalling of CQLDefinition is successful..");
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load CQLDefinitionModelMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				e.printStackTrace();
-			}
-		}
-		logger.info("Exiting CQLServiceImpl.createDefinitionsXML()");
-		return stream.toString();
+		return createNewXML("CQLDefinitionModelMapping.xml", wrapper);
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
+	private String createNewXML(String mapping, Object object) {
+		String stream = null;
+		try {
+			final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+			stream = xmlMarshalUtil.convertObjectToXML(mapping, object);
+			
+		} catch (MarshalException | ValidationException | IOException | MappingException e) {
+			logger.info("Exception in createExpressionXML: " + e);
+			e.printStackTrace();
+		}
+
+		logger.info("Exiting ManageCodeListServiceImpl.createXml()");
+		return stream;
+	}
+
 	@Override
 	public SaveUpdateCQLResult getCQLFileData(String xmlString) {
 
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		result = getCQLData(xmlString);
+		SaveUpdateCQLResult result = getCQLData(xmlString);
 		String cqlString = getCqlString(result.getCqlModel());
-		if (cqlString != null) {
-			result.setSuccess(true);
-		} else {
-			result.setSuccess(false);
-		}
+		result.setSuccess(cqlString != null);
 		result.setCqlString(cqlString);
 		return result;
 	}
@@ -1987,9 +1879,6 @@ public class CQLServiceImpl implements CQLService {
 		return CQLUtilityClass.getCqlString(cqlModel, "");
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
 	public CQLKeywords getCQLKeyWords() {
 		return CQLKeywordsUtil.getCQLKeywords();
@@ -2102,12 +1991,7 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private List<CQLDefinition> sortDefinitionsList(List<CQLDefinition> defineList) {
 
-		Collections.sort(defineList, new Comparator<CQLDefinition>() {
-			@Override
-			public int compare(final CQLDefinition o1, final CQLDefinition o2) {
-				return o1.getName().compareToIgnoreCase(o2.getName());
-			}
-		});
+		Collections.sort(defineList, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
 
 		return defineList;
 	}
@@ -2121,12 +2005,7 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private List<CQLParameter> sortParametersList(List<CQLParameter> paramList) {
 
-		Collections.sort(paramList, new Comparator<CQLParameter>() {
-			@Override
-			public int compare(final CQLParameter o1, final CQLParameter o2) {
-				return o1.getName().compareToIgnoreCase(o2.getName());
-			}
-		});
+		Collections.sort(paramList, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
 
 		return paramList;
 	}
@@ -2140,12 +2019,7 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private List<CQLFunctions> sortFunctionssList(List<CQLFunctions> funcList) {
 
-		Collections.sort(funcList, new Comparator<CQLFunctions>() {
-			@Override
-			public int compare(final CQLFunctions o1, final CQLFunctions o2) {
-				return o1.getName().compareToIgnoreCase(o2.getName());
-			}
-		});
+		Collections.sort(funcList, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
 
 		return funcList;
 	}
@@ -2159,12 +2033,7 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private List<CQLIncludeLibrary> sortIncludeLibList(List<CQLIncludeLibrary> IncLibList) {
 
-		Collections.sort(IncLibList, new Comparator<CQLIncludeLibrary>() {
-			@Override
-			public int compare(final CQLIncludeLibrary o1, final CQLIncludeLibrary o2) {
-				return o1.getAliasName().compareToIgnoreCase(o2.getAliasName());
-			}
-		});
+		Collections.sort(IncLibList, (o1, o2) -> o1.getAliasName().compareToIgnoreCase(o2.getAliasName()));
 
 		return IncLibList;
 	}
@@ -2492,7 +2361,7 @@ public class CQLServiceImpl implements CQLService {
 		// Treat as regular QDM
 		if (!isDuplicate(valueSetTransferObject, true)) {
 			wrapper.getQualityDataDTO().add(qds);
-			String xmlString = generateXmlForAppliedValueset(wrapper);
+			String xmlString = generateXmlForAppliedValuesetAndCodes(VALUESET_MAPPING, VALUESET_TAG, wrapper);
 			result.setSuccess(true);
 			qualityDataSetDTOs.add(qds);
 			result.setCqlAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
@@ -2514,20 +2383,12 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private List<CQLQualityDataSetDTO> sortQualityDataSetList(final List<CQLQualityDataSetDTO> finalList) {
 
-		Collections.sort(finalList, new Comparator<CQLQualityDataSetDTO>() {
-			@Override
-			public int compare(final CQLQualityDataSetDTO o1, final CQLQualityDataSetDTO o2) {
-				return o1.getName().compareToIgnoreCase(o2.getName());
-			}
-		});
+		Collections.sort(finalList, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
 
 		return finalList;
 
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
 	public SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -2560,7 +2421,7 @@ public class CQLServiceImpl implements CQLService {
 			qds.setProgram("");
 			wrapper.getQualityDataDTO().add(qds);
 			
-			String qdmXMLString = generateXmlForAppliedValueset(wrapper);
+			String qdmXMLString = generateXmlForAppliedValuesetAndCodes(VALUESET_MAPPING, VALUESET_TAG, wrapper);
 			result.setSuccess(true);
 			result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
 			result.setXml(qdmXMLString);
@@ -2596,7 +2457,7 @@ public class CQLServiceImpl implements CQLService {
 					ArrayList<CQLCode> codeList = new ArrayList<>();
 					wrapper.setCqlCodeList(codeList);
 					wrapper.getCqlCodeList().add(codeTransferObject.getCqlCode());
-					String codeXMLString = generateXmlForAppliedCode(wrapper);
+					String codeXMLString = generateXmlForAppliedValuesetAndCodes(CODE_MAPPING, CODE_TAG, wrapper);
 					result.setSuccess(true);
 					result.setXml(codeXMLString);
 				}
@@ -2628,7 +2489,7 @@ public class CQLServiceImpl implements CQLService {
 				ArrayList<CQLCodeSystem> codeSystemList = new ArrayList<>();
 				wrapper.setCqlCodeSystemList(codeSystemList);
 				wrapper.getCqlCodeSystemList().add(codeSystem);
-				String codeSystemXMLString = generateXmlForAppliedCodeSystem(wrapper);
+				String codeSystemXMLString = generateXmlForAppliedValuesetAndCodes(CODE_SYSTEMS_MAPPING, CODE_SYSTEM_TAG, wrapper); 
 				result.setSuccess(true);
 				result.setXml(codeSystemXMLString);
 			}
@@ -2850,7 +2711,7 @@ public class CQLServiceImpl implements CQLService {
 				qds.setVersion("1.0");
 				wrapper = modifyAppliedElementList(qds,
 						(ArrayList<CQLQualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());
-				String qdmXMLString = generateXmlForAppliedValueset(wrapper);
+				String qdmXMLString = generateXmlForAppliedValuesetAndCodes(VALUESET_MAPPING, VALUESET_TAG, wrapper);
 				result.setSuccess(true);
 				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
 				result.setXml(qdmXMLString);
@@ -2866,129 +2727,17 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 
-	/**
-	 * Adds the new applied QDM in measure XML.
-	 *
-	 * @param qualityDataSetDTOWrapper
-	 *            the quality data set DTO wrapper
-	 * @return the string
-	 */
-	private String generateXmlForAppliedValueset(final CQLQualityDataModelWrapper qualityDataSetDTOWrapper) {
-		logger.info("addNewAppliedQDMInMeasureXML Method Call Start.");
-		ByteArrayOutputStream stream = createNewXML(qualityDataSetDTOWrapper);
-		int startIndex = stream.toString().indexOf("<valueset ", 0);
-		int lastIndex = stream.toString().indexOf("/>", startIndex);
-		String xmlString = stream.toString().substring(startIndex, lastIndex + 2);
-		logger.debug("addNewAppliedQDMInMeasureXML Method Call xmlString :: " + xmlString);
-		return xmlString;
-	}
-
-	private String generateXmlForAppliedCode(CQLCodeWrapper wrapper) {
-		logger.info("generateXmlForAppliedCode Method Call Start.");
-		ByteArrayOutputStream stream = createNewCodeXML(wrapper);
-		int startIndex = stream.toString().indexOf("<code ", 0);
-		int lastIndex = stream.toString().indexOf("/>", startIndex);
-		String xmlString = stream.toString().substring(startIndex, lastIndex + 2);
-		logger.debug("generateXmlForAppliedCode Method Call xmlString :: " + xmlString);
-		return xmlString;
-	}
-
-	private String generateXmlForAppliedCodeSystem(CQLCodeSystemWrapper wrapper) {
-		logger.info("generateXmlForAppliedCodeSystem Method Call Start.");
-		ByteArrayOutputStream stream = createNewCodeSystemXML(wrapper);
-		int startIndex = stream.toString().indexOf("<codeSystem ", 0);
-		int lastIndex = stream.toString().indexOf("/>", startIndex);
-		String xmlString = stream.toString().substring(startIndex, lastIndex + 2);
-		logger.debug("generateXmlForAppliedCodeSystem Method Call xmlString :: " + xmlString);
-		return xmlString;
-	}
-
-	/**
-	 * Creates the new XML.
-	 *
-	 * @param qualityDataSetDTO
-	 *            the quality data set DTO
-	 * @return the byte array output stream
-	 */
-	private ByteArrayOutputStream createNewXML(final CQLQualityDataModelWrapper qualityDataSetDTO) {
-		logger.info("In CQLServiceImpl.createXml()");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("ValueSetsMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(qualityDataSetDTO);
-			logger.debug("Marshalling of QualityDataSetDTO is successful.." + stream.toString());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load ValueSetsMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				logger.info("Other Exception" + e);
-			}
+	private String generateXmlForAppliedValuesetAndCodes(String mapping, String startTag, Object object) {
+		logger.info("addAppliedQDMInMeasureXML Method Call Start.");
+		String xmlString = null;
+		String stream = createNewXML(mapping, object);
+		if (StringUtils.isNotBlank(stream)) {
+			int startIndex = stream.indexOf(startTag, 0);
+			int lastIndex = stream.indexOf("/>", startIndex);
+			xmlString = stream.substring(startIndex, lastIndex + 2);
+			logger.debug("addAppliedQDMInMeasureXML Method Call xmlString :: " + xmlString);
 		}
-		logger.info("Exiting CQLServiceImpl.createXml()");
-		return stream;
-	}
-
-	private ByteArrayOutputStream createNewCodeXML(final CQLCodeWrapper wrapper) {
-		logger.info("In CQLServiceImpl.createXml()");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CodeMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(wrapper);
-			logger.debug("Marshalling of CQLCode is successful.." + stream.toString());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load CQLMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				logger.info("Other Exception" + e);
-			}
-		}
-		logger.info("Exiting CQLServiceImpl.createNewCodeXml()");
-		return stream;
-	}
-
-	private ByteArrayOutputStream createNewCodeSystemXML(final CQLCodeSystemWrapper wrapper) {
-		logger.info("In CQLServiceImpl.createNewCodeSystemXML()");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CodeSystemsMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(wrapper);
-			logger.debug("Marshalling of CQLCode is successful.." + stream.toString());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load CQLMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				logger.info("Other Exception" + e);
-			}
-		}
-		logger.info("Exiting CQLServiceImpl.createNewCodeSystemXML()");
-		return stream;
+		return xmlString;
 	}
 
 	/**
@@ -3033,9 +2782,6 @@ public class CQLServiceImpl implements CQLService {
 		oldQdm.setVersion(qualityDataSetDTO.getVersion());
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
 	public CQLQualityDataModelWrapper getCQLValusets(String measureId, CQLQualityDataModelWrapper cqlQualityDataModelWrapper) {
 		MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
@@ -3280,7 +3026,6 @@ public class CQLServiceImpl implements CQLService {
 
 	@Override
 	public CQLModel parseCQL(String cqlBuilder) {
-		CQLModel cqlModel = new CQLModel();
-		return cqlModel;
+		return new CQLModel();
 	}
 }

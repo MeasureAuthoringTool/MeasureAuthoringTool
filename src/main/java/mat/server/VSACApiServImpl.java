@@ -1,7 +1,6 @@
 package mat.server;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,14 +16,12 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vsac.VSACGroovyClient;
 import org.vsac.VSACResponseResult;
-import org.xml.sax.InputSource;
 
 import mat.client.umls.service.VsacApiResult;
 import mat.client.umls.service.VsacTicketInformation;
@@ -37,7 +34,7 @@ import mat.model.VSACValueSetWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.VSACApiService;
-import mat.server.util.ResourceLoader;
+import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.UMLSSessionTicket;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
@@ -94,27 +91,16 @@ public class VSACApiServImpl implements VSACApiService{
 		LOGGER.info("Start VSACAPIServiceImpl convertXmltoValueSet");
 		VSACValueSetWrapper details = null;
 		String xml = xmlPayLoad;
-		if ((xml != null) && StringUtils.isNotBlank(xml)) {
+		if (StringUtils.isNotBlank(xml)) {
 			LOGGER.info("xml To reterive RetrieveMultipleValueSetsResponse tag is not null ");
 		}
 		try {
-			Mapping mapping = new Mapping();
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MultiValueSetMapping.xml"));
-			Unmarshaller unmar = new Unmarshaller(mapping);
-			unmar.setClass(VSACValueSetWrapper.class);
-			unmar.setWhitespacePreserve(true);
-			details = (VSACValueSetWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
+			XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+			details = (VSACValueSetWrapper) xmlMarshalUtil.convertXMLToObject("MultiValueSetMapping.xml", xml, VSACValueSetWrapper.class);
 			LOGGER.info("unmarshalling complete..RetrieveMultipleValueSetsResponse" + details.getValueSetList().get(0).getDefinition());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				LOGGER.info("Failed to load MultiValueSetMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				LOGGER.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				LOGGER.info("Unmarshalling Failed" + e);
-			} else {
-				LOGGER.info("Other Exception" + e);
-			}
+		} catch (MarshalException | ValidationException | MappingException | IOException e) {
+			LOGGER.debug("Exception in convertXmltoValueSet:" + e);
+			e.printStackTrace();
 		}
 		LOGGER.info("End VSACAPIServiceImpl convertXmltoValueSet");
 		return details;
@@ -130,27 +116,17 @@ public class VSACApiServImpl implements VSACApiService{
 		LOGGER.info("Start VSACAPIServiceImpl convertXmlToProfileList");
 		VSACExpansionProfileWrapper profileDetails = null;
 		String xml = xmlPayLoad;
-		if ((xml != null) && StringUtils.isNotBlank(xml)) {
+		if (StringUtils.isNotBlank(xml)) {
 			LOGGER.info("xml To reterive RetrieveVSACProfileListResponse tag is not null ");
 		}
+		
 		try {
-			Mapping mapping = new Mapping();
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("VSACExpIdentifierMapping.xml"));
-			Unmarshaller unmar = new Unmarshaller(mapping);
-			unmar.setClass(VSACExpansionProfileWrapper.class);
-			unmar.setWhitespacePreserve(true);
-			profileDetails = (VSACExpansionProfileWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
+			XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+			profileDetails = (VSACExpansionProfileWrapper) xmlMarshalUtil.convertXMLToObject("VSACExpIdentifierMapping.xml", xml, VSACExpansionProfileWrapper.class);
 			LOGGER.info("unmarshalling complete..RetrieveVSACProfileListResponse" + profileDetails.getExpProfileList().get(0).getName());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				LOGGER.info("Failed to load VSACExpIdentifierMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				LOGGER.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				LOGGER.info("Unmarshalling Failed" + e);
-			} else {
-				LOGGER.info("Other Exception" + e);
-			}
+		} catch (MarshalException | ValidationException | MappingException | IOException e) {
+			LOGGER.debug("Exception in convertXmlToProfileList:" + e);
+			e.printStackTrace();
 		}
 		LOGGER.info("End VSACAPIServiceImpl convertXmltoValueSet");
 		return profileDetails;
@@ -163,27 +139,17 @@ public class VSACApiServImpl implements VSACApiService{
 		int lastIndex = xmlPayLoad.lastIndexOf("</csCode>");
 		
 		String xml = xmlPayLoad.substring(firstIndex, lastIndex).concat("</csCode>");
-		if ((xml != null) && StringUtils.isNotBlank(xml)) {
+		if (StringUtils.isNotBlank(xml)) {
 			LOGGER.info("xml To reterive csCode tag is not null ");
 		}
+		
 		try {
-			Mapping mapping = new Mapping();
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("DirectCodeReferenceMapping.xml"));
-			Unmarshaller unmar = new Unmarshaller(mapping);
-			unmar.setClass(DirectReferenceCode.class);
-			unmar.setWhitespacePreserve(true);
-			details = (DirectReferenceCode) unmar.unmarshal(new InputSource(new StringReader(xml)));
+			XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+			details = (DirectReferenceCode) xmlMarshalUtil.convertXMLToObject("DirectCodeReferenceMapping.xml", xml, DirectReferenceCode.class);
 			LOGGER.info("unmarshalling complete..csCode" + details.getCodeDescriptor());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				LOGGER.info("Failed to load DirectCodeReferenceMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				LOGGER.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				LOGGER.info("Unmarshalling Failed" + e);
-			} else {
-				LOGGER.info("Other Exception" + e);
-			}
+		} catch (MarshalException | ValidationException | MappingException | IOException e) {
+			LOGGER.debug("Exception in convertXmltoDirectCodeRef:" + e);
+			e.printStackTrace();
 		}
 		LOGGER.info("End VSACAPIServiceImpl convertXmltoDirectCodeRef");
 		return details;

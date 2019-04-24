@@ -1,7 +1,6 @@
 package mat.server.service.impl;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,15 +12,12 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +43,6 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.PackagerService;
-import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.server.validator.measure.CompositeMeasurePackageValidator;
 import mat.shared.ConstantMessages;
@@ -336,143 +331,17 @@ public class PackagerServiceImpl implements PackagerService {
 		return hasAllStratusHasChild;
 	}
 
-	
-	private ByteArrayOutputStream convertQDMOToSuppleDataXML(QualityDataModelWrapper qualityDataSetDTO) {
-		logger.info("In PackagerServiceImpl.convertQDMOToSuppleDataXML()");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+	private String convertQDMTOSupplementXML(String mapping, Object object) {
+		String stream = null;
 		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("QDMToSupplementDataMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(qualityDataSetDTO);
-			logger.info("Marshalling of QualityDataSetDTO is successful in convertQDMOToSuppleDataXML()"
-					+ stream.toString());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load QualityDataModelMapping.xml in convertQDMOToSuppleDataXML()" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed in convertQDMOToSuppleDataXML()" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed in convertQDMOToSuppleDataXML()" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception in convertQDMOToSuppleDataXML()" + e);
-			} else {
-				logger.info("Other Exception in convertQDMOToSuppleDataXML()" + e);
-			}
+			final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+			stream = xmlMarshalUtil.convertObjectToXML(mapping, object);
+
+		} catch (MarshalException | ValidationException | IOException | MappingException e) {
+			logger.debug("Exception in convertQDMTOSupplementXML: " + e);
+			e.printStackTrace();
 		}
-		logger.info("Exiting PackagerServiceImpl.convertQDMOToSuppleDataXML");
 		return stream;
-	}
-
-	/**
-	 * Convert definitions to supple data XML.
-	 *
-	 * @param cqlDefineWrapper the cql define wrapper
-	 * @return the byte array output stream
-	 */
-	private ByteArrayOutputStream convertDefinitionsToSuppleDataXML(CQLDefinitionsWrapper cqlDefineWrapper) {
-		logger.info("In PackagerServiceImpl.convertQDMOToSuppleDataXML()");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("DefinitionToSupplementalDataElements.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(cqlDefineWrapper);
-			logger.info("Marshalling of QualityDataSetDTO is successful in convertDefinitionsToSuppleDataXML()"
-					+ stream.toString());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info(
-						"Failed to load DefinitionToSupplementalDataElements.xml in convertDefinitionsToSuppleDataXML()"
-								+ e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed in convertDefinitionsToSuppleDataXML()" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed in convertDefinitionsToSuppleDataXML()" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception in convertDefinitionsToSuppleDataXML()" + e);
-			} else {
-				logger.info("Other Exception in convertDefinitionsToSuppleDataXML()" + e);
-			}
-		}
-		logger.info("Exiting PackagerServiceImpl.convertDefinitionsToSuppleDataXML");
-		return stream;
-	}
-
-	/**
-	 * Convertclause to risk adj var xml.
-	 *
-	 * @param riskAdjVarDTO
-	 *            the risk adj var dto
-	 * @return the byte array output stream
-	 */
-	private ByteArrayOutputStream convertclauseToRiskAdjVarXML(QualityDataModelWrapper riskAdjVarDTO) {
-
-		logger.info("In PackagerServiceImpl.convertclauseToRiskAdjVarXML()");
-		Mapping mapping = new Mapping();
-		org.apache.commons.io.output.ByteArrayOutputStream stream = new org.apache.commons.io.output.ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("SubTreeToRiskAdjustmentVarMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(riskAdjVarDTO);
-			logger.debug(
-					"Marshalling of SubTreeToRiskAdjustmentVarMapping is successful in convertclauseToRiskAdjVarXML()"
-							+ stream.toString());
-		} catch (IOException e) {
-			logger.info("Failed to load SubTreeToRiskAdjustmentVarMapping.xml in convertclauseToRiskAdjVarXML()" + e,
-					e);
-		} catch (MappingException e) {
-			logger.info("Mapping Failed in convertclauseToRiskAdjVarXML()" + e, e);
-		} catch (MarshalException e) {
-			logger.info("Unmarshalling Failed in convertclauseToRiskAdjVarXML()" + e, e);
-		} catch (ValidationException e) {
-			logger.info("Validation Exception in convertclauseToRiskAdjVarXML()" + e, e);
-		} catch (Exception e) {
-			logger.info("Other Exception in convertclauseToRiskAdjVarXML()" + e, e);
-		}
-		logger.info("Exiting PackagerServiceImpl.convertclauseToRiskAdjVarXML()");
-		return stream;
-
-	}
-
-	/**
-	 * Convertdefinitions to risk adj var XML.
-	 *
-	 * @param riskAdjVarDTO the risk adj var DTO
-	 * @return the byte array output stream
-	 */
-	private ByteArrayOutputStream convertdefinitionsToRiskAdjVarXML(CQLDefinitionsWrapper riskAdjVarDTO) {
-
-		logger.info("In PackagerServiceImpl.convertdefinitionsToRiskAdjVarXML()");
-		Mapping mapping = new Mapping();
-		org.apache.commons.io.output.ByteArrayOutputStream stream = new org.apache.commons.io.output.ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLDefinitionsToRiskAdjusVariables.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(riskAdjVarDTO);
-			logger.debug(
-					"Marshalling of CQLDefinitionsToRiskAdjusVariables is successful in convertdefinitionsToRiskAdjVarXML()"
-							+ stream.toString());
-		} catch (IOException e) {
-			logger.info(
-					"Failed to load CQLDefinitionsToRiskAdjusVariables.xml in convertdefinitionsToRiskAdjVarXML()" + e,
-					e);
-		} catch (MappingException e) {
-			logger.info("Mapping Failed in convertdefinitionsToRiskAdjVarXML()" + e, e);
-		} catch (MarshalException e) {
-			logger.info("Unmarshalling Failed in convertdefinitionsToRiskAdjVarXML()" + e, e);
-		} catch (ValidationException e) {
-			logger.info("Validation Exception in convertdefinitionsToRiskAdjVarXML()" + e, e);
-		} catch (Exception e) {
-			logger.info("Other Exception in convertdefinitionsToRiskAdjVarXML()" + e, e);
-		}
-		logger.info("Exiting PackagerServiceImpl.convertdefinitionsToRiskAdjVarXML()");
-		return stream;
-
 	}
 
 	/**
@@ -484,28 +353,7 @@ public class PackagerServiceImpl implements PackagerService {
 	 */
 	private String createGroupingXml(MeasurePackageDetail detail) {
 		Collections.sort(detail.getPackageClauses());
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasurePackageClauseDetail.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(detail);
-			logger.info("Marshalling of MeasurePackageDetail is successful.." + stream.toString());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load MeasurePackageClauseDetail.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				logger.info("Other Exception" + e);
-			}
-		}
-		return stream.toString();
+		return convertQDMTOSupplementXML("MeasurePackageClauseDetail.xml", detail);
 	}
 
 	/**
@@ -1073,10 +921,10 @@ public class PackagerServiceImpl implements PackagerService {
 		ArrayList<QualityDataSetDTO> supplementDataElementsAll = (ArrayList<QualityDataSetDTO>) supplQDMList;
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		wrapper.setQualityDataDTO(supplementDataElementsAll);
-		ByteArrayOutputStream stream = convertQDMOToSuppleDataXML(wrapper);
 		XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
-		if (supplementDataElementsAll.size() > 0) {
-			processor.replaceNode(stream.toString(), SUPPLEMENT_DATA_ELEMENTS, MEASURE);
+		if (!supplementDataElementsAll.isEmpty()) {
+			String stream = convertQDMTOSupplementXML("QDMToSupplementDataMapping.xml", wrapper);
+			processor.replaceNode(stream, SUPPLEMENT_DATA_ELEMENTS, MEASURE);
 		} else {
 
 			try {
@@ -1088,7 +936,7 @@ public class PackagerServiceImpl implements PackagerService {
 						processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
 				for (int i = 0; i < nodesSupplementalData.getLength(); i++) {
 					String xPathString = XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION.concat("='")
-							.concat(nodesSupplementalData.item(i).getNodeValue().toString()).concat("']");
+							.concat(nodesSupplementalData.item(i).getNodeValue()).concat("']");
 					Node newNode = processor.findNode(processor.getOriginalDoc(), xPathString);
 					Node parentNode = newNode.getParentNode();
 					parentNode.removeChild(newNode);
@@ -1114,11 +962,12 @@ public class PackagerServiceImpl implements PackagerService {
 		ArrayList<CQLDefinition> supplementDataElementsAll = (ArrayList<CQLDefinition>) supplDefinitionList;
 		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
 		wrapper.setCqlDefinitions(supplementDataElementsAll);
-		ByteArrayOutputStream stream = convertDefinitionsToSuppleDataXML(wrapper);
 
 		XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
-		if (supplementDataElementsAll.size() > 0) {
-			processor.replaceNode(stream.toString(), SUPPLEMENT_DATA_ELEMENTS, MEASURE);
+		
+		if (!supplementDataElementsAll.isEmpty()) {
+			String stream = convertQDMTOSupplementXML("DefinitionToSupplementalDataElements.xml", wrapper);
+			processor.replaceNode(stream, SUPPLEMENT_DATA_ELEMENTS, MEASURE);
 		} else {
 
 			try {
@@ -1130,7 +979,7 @@ public class PackagerServiceImpl implements PackagerService {
 						processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
 				for (int i = 0; i < nodesSupplementalData.getLength(); i++) {
 					String xPathString = XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_CQLDEF_EXPRESSION.concat("='")
-							.concat(nodesSupplementalData.item(i).getNodeValue().toString()).concat("']");
+							.concat(nodesSupplementalData.item(i).getNodeValue()).concat("']");
 					Node newNode = processor.findNode(processor.getOriginalDoc(), xPathString);
 					Node parentNode = newNode.getParentNode();
 					parentNode.removeChild(newNode);
@@ -1198,10 +1047,10 @@ public class PackagerServiceImpl implements PackagerService {
 
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		wrapper.setRiskAdjVarDTO(allRiskAdjVars);
-		ByteArrayOutputStream stream = convertclauseToRiskAdjVarXML(wrapper);
 
-		if (allRiskAdjVars.size() > 0) {
-			processor.replaceNode(stream.toString(), RISK_ADJUSTMENT_VARIABLES, MEASURE);
+		if (!allRiskAdjVars.isEmpty()) {
+			String stream = convertQDMTOSupplementXML("SubTreeToRiskAdjustmentVarMapping.xml", wrapper);
+			processor.replaceNode(stream, RISK_ADJUSTMENT_VARIABLES, MEASURE);
 		} else {
 
 			try {
@@ -1233,10 +1082,10 @@ public class PackagerServiceImpl implements PackagerService {
 
 		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
 		wrapper.setRiskAdjVarDTOList(allRiskAdjVars);
-		ByteArrayOutputStream stream = convertdefinitionsToRiskAdjVarXML(wrapper);
 
-		if (allRiskAdjVars.size() > 0) {
-			processor.replaceNode(stream.toString(), RISK_ADJUSTMENT_VARIABLES, MEASURE);
+		if (!allRiskAdjVars.isEmpty()) {
+			String stream = convertQDMTOSupplementXML("CQLDefinitionsToRiskAdjusVariables.xml", wrapper);
+			processor.replaceNode(stream, RISK_ADJUSTMENT_VARIABLES, MEASURE);
 		} else {
 
 			try {

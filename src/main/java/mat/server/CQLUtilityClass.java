@@ -2,7 +2,6 @@ package mat.server;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,10 +14,8 @@ import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.util.CollectionUtils;
-import org.xml.sax.InputSource;
 
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.model.cql.CQLCode;
@@ -30,6 +27,7 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 
@@ -279,13 +277,8 @@ public final class CQLUtilityClass {
 
 		if (StringUtils.isNotBlank(cqlLookUpXMLString)) {
 			try {
-				Mapping mapping = new Mapping();
-				mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLModelMapping.xml"));
-				Unmarshaller unmarshaller = new Unmarshaller(mapping);
-				unmarshaller.setClass(CQLModel.class);
-				unmarshaller.setWhitespacePreserve(true);
-				unmarshaller.setValidation(false);
-				cqlModel = (CQLModel) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
+				XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+				cqlModel = (CQLModel) xmlMarshalUtil.convertXMLToObject("CQLModelMapping.xml", cqlLookUpXMLString, CQLModel.class);
 			} catch (Exception e) {
 				logger.info("Error while getting codesystems :" + e.getMessage());
 			}
@@ -328,14 +321,8 @@ public final class CQLUtilityClass {
 	public static void getValueSet(CQLModel cqlModel, String cqlLookUpXMLString){
 		CQLQualityDataModelWrapper valuesetWrapper;
 		try {
-
-			Mapping mapping = new Mapping();
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("ValueSetsMapping.xml"));
-			Unmarshaller unmarshaller = new Unmarshaller(mapping);
-			unmarshaller.setClass(CQLQualityDataModelWrapper.class);
-			unmarshaller.setWhitespacePreserve(true);
-			unmarshaller.setValidation(false);
-			valuesetWrapper = (CQLQualityDataModelWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
+			XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+			valuesetWrapper = (CQLQualityDataModelWrapper) xmlMarshalUtil.convertXMLToObject("ValueSetsMapping.xml", cqlLookUpXMLString, CQLQualityDataModelWrapper.class);
 			if(!valuesetWrapper.getQualityDataDTO().isEmpty()){
 				cqlModel.setValueSetList(filterValuesets(valuesetWrapper.getQualityDataDTO()));
 			}

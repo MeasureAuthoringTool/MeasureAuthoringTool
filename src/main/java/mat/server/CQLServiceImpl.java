@@ -68,6 +68,8 @@ import mat.model.cql.CQLParametersWrapper;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.model.cql.validator.CQLIncludeLibraryValidator;
+import mat.server.cqlparser.CQLLinter;
+import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.cqlparser.ReverseEngineerListener;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.impl.XMLMarshalUtil;
@@ -170,7 +172,7 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 
-	public SaveUpdateCQLResult saveCQLFile(String xml, String cql) {
+	public SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config) {
 		XmlProcessor processor = new XmlProcessor(xml);
 		try {
 			ReverseEngineerListener listener = new ReverseEngineerListener(cql);
@@ -199,6 +201,9 @@ public class CQLServiceImpl implements CQLService {
 				parsedResult.setXml(reverseEngineeredCQLLookup);
 				parsedResult.setCqlString(cql);
 			}
+			
+			parsedResult.setLinterErrors(CQLUtil.lint(parsedResult.getCqlString(), config));
+			
 			parsedResult.setSuccess(true);				
 			return parsedResult;
 
@@ -1179,6 +1184,7 @@ public class CQLServiceImpl implements CQLService {
 		}
 
 		parsedCQL.setCqlModel(cqlModel);
+		parsedCQL.setCqlString(CQLUtilityClass.getCqlString(cqlModel, ""));
 
 		return parsedCQL;
 	}

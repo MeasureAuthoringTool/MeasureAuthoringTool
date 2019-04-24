@@ -69,6 +69,7 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.model.MatUserDetails;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.service.UserService;
@@ -361,8 +362,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			return result;
 		}
 		
-		SaveUpdateCQLResult cqlResult  = getCQLData(libraryId);
-		if(cqlResult.getCqlErrors().size() >0 || !cqlResult.isDatatypeUsedCorrectly()){
+		SaveUpdateCQLResult cqlResult = getCQLData(libraryId);
+		if(!cqlResult.getCqlErrors().isEmpty() || !cqlResult.getLinterErrors().isEmpty() || !cqlResult.isDatatypeUsedCorrectly()){
 			result.setSuccess(false);
 			result.setFailureReason(ConstantMessages.INVALID_CQL_DATA);
 			return result;
@@ -707,6 +708,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 		if(cqlLibraryXml != null) {
 			cqlResult = cqlService.getCQLData(cqlLibraryXml);
+			lintAndAddToResult(cqlResult, cqlLibrary);
 			cqlResult.setSetId(cqlLibrary.getSet_id());
 			cqlResult.setSuccess(true);
 		}
@@ -847,7 +849,12 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		if(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
 			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 			String cqlXml = getCQLLibraryXml(cqlLibrary);
-			result = cqlService.saveCQLFile(cqlXml, cql);
+			
+			
+			CQLLinterConfig config = new CQLLinterConfig();
+			config.setLibraryName(cqlLibrary.getName());
+			config.setLibraryVersion(MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()));			
+			result = cqlService.saveCQLFile(cqlXml, cql, config);
 			XmlProcessor processor = new XmlProcessor(cqlXml);		
 			processor.replaceNode(result.getXml(), "cqlLookUp", null);
 			cqlLibrary.setCQLByteArray(result.getXml().getBytes());
@@ -1057,6 +1064,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 		if (cqlXml != null && !StringUtils.isEmpty(cqlXml)) {
 			result = cqlService.getCQLFileData(cqlXml);
+			
+			lintAndAddToResult(result, cqlLibrary);
 			result.setSuccess(true);
 		} else {
 			result.setSuccess(false);
@@ -1073,12 +1082,20 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 		if (cqlXml != null && !StringUtils.isEmpty(cqlXml)) {
 			result = cqlService.getCQLLibraryData(cqlXml);
+			lintAndAddToResult(result, cqlLibrary);
 			result.setSuccess(true);
 		} else {
 			result.setSuccess(false);
 		}
 		
 		return result;		
+	}
+
+	private void lintAndAddToResult(SaveUpdateCQLResult result, CQLLibrary cqlLibrary) {
+		CQLLinterConfig config = new CQLLinterConfig();
+		config.setLibraryName(cqlLibrary.getName());
+		config.setLibraryVersion(MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()));			
+		result.getLinterErrors().addAll(CQLUtil.lint(result.getCqlString(), config));
 	}
 
 	public void updateCQLLibraryFamily(List<CQLLibraryDataSetObject> detailModelList) {

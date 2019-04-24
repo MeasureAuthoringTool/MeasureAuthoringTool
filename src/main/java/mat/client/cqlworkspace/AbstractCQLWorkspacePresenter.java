@@ -487,10 +487,14 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected abstract void saveCQLFile();
 	
 	protected void onSaveCQLFileSuccess(SaveUpdateCQLResult result) {
-		if(!result.getCqlErrors().isEmpty()) {
+		if(!result.getLinterErrors().isEmpty()) {
+			List<String> errors = new ArrayList<>();
+			errors.add("CQL File saved with errors.");
+			result.getLinterErrors().forEach(e -> errors.add(e.getErrorMessage()));	
+			messagePanel.getErrorMessageAlert().createAlert(errors);
+		} else if(!result.getCqlErrors().isEmpty()) {
 			SharedCQLWorkspaceUtility.displayAnnotationForViewCQL(result, cqlWorkspaceView.getViewCQLView().getCqlAceEditor());
-			messagePanel.getErrorMessageAlert().createAlert("CQL File " + result.getCqlModel().getLibraryName() + " saved with errors.");
-
+			messagePanel.getErrorMessageAlert().createAlert("CQL File saved with errors.");
 		} else {
 			messagePanel.getSuccessMessageAlert().createAlert("Changes to the CQL File have been successfully saved.");
 		}

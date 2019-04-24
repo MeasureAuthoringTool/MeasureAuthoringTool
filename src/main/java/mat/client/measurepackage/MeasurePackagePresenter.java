@@ -678,9 +678,9 @@ private void saveMeasureAtPackage(){
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
 														
-							if(result.getCqlErrors().size() == 0){
+							if(result.getCqlErrors().isEmpty() && result.getLinterErrors().isEmpty()) {
 								getMeasure(MatContext.get().getCurrentMeasureId());
-							}else{
+							} else{
 								panel.clear();
 								panel.getElement().setId("MeasurePackagerContentFlowPanel");
 								ErrorMessageAlert errorMessageAlert = new ErrorMessageAlert();

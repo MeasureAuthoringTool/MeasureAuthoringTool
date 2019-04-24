@@ -37,6 +37,8 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.server.CQLUtilityClass;
+import mat.server.cqlparser.CQLLinter;
+import mat.server.cqlparser.CQLLinterConfig;
 import mat.shared.CQLError;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
@@ -469,6 +471,16 @@ public class CQLUtil {
 			List<String> exprList) {
 		return parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList, false);
 	}
+	
+	public static List<CQLError> lint(String cql, CQLLinterConfig config) {
+		try {
+			CQLLinter linter = new CQLLinter(cql, config);
+			return linter.getErrors();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
 
 	/**
 	 * Parses the CQL library for errors.
@@ -611,7 +623,7 @@ public class CQLUtil {
 		for (CqlTranslatorException cte : cqlToELM.getWarnings()) {
 			setCQLErrors(warnings, libraryNameWarningsMap, cte);
 		}
-		
+				
 		parsedCQL.setCqlModel(cqlModel);
 		parsedCQL.setCqlErrors(errors);
 		parsedCQL.setCqlWarnings(warnings);

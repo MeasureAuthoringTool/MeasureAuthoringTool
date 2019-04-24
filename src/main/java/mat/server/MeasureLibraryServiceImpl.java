@@ -127,6 +127,7 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
 import mat.server.humanreadable.cql.HumanReadableComponentMeasureModel;
 import mat.server.humanreadable.cql.HumanReadableMeasureInformationModel;
@@ -2142,7 +2143,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 		SaveUpdateCQLResult cqlResult = getMeasureCQLFileData(measureId);
-		if(cqlResult.getCqlErrors().size() > 0 || !cqlResult.isDatatypeUsedCorrectly()){
+		if(!cqlResult.getCqlErrors().isEmpty() || !cqlResult.getLinterErrors().isEmpty() || !cqlResult.isDatatypeUsedCorrectly()){
 			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_CQL_DATA);
 		}
@@ -5126,10 +5127,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult getMeasureCQLFileData(String measureId) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
-
 		if (model != null && StringUtils.isNotBlank(model.getXml())) {
 			String xmlString = model.getXml();
 			result = cqlService.getCQLFileData(xmlString);
+			lintAndAddToResult(measureId, result);
 			result.setSuccess(true);
 		} else {
 			result.setSuccess(false);
@@ -5146,12 +5147,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (model != null && StringUtils.isNotBlank(model.getXml())) {
 			String xmlString = model.getXml();
 			result = cqlService.getCQLLibraryData(xmlString);
+			lintAndAddToResult(measureId, result);
+
 			result.setSuccess(true);
 		} else {
 			result.setSuccess(false);
 		}
 
 		return result;
+	}
+
+	private void lintAndAddToResult(String measureId, SaveUpdateCQLResult result) {
+		Measure measure = measureDAO.find(measureId);
+		CQLLinterConfig config = new CQLLinterConfig();
+		config.setLibraryName(MeasureUtility.cleanString(measure.getDescription()));
+		config.setLibraryVersion(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
+		result.getLinterErrors().addAll(CQLUtil.lint(result.getCqlString(), config));
 	}
 
 	@Override
@@ -5166,7 +5177,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 			MatContextServiceUtil.get().setMeasure(true);
-			result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql);			
+			Measure measure = measureDAO.find(measureId);
+			CQLLinterConfig config = new CQLLinterConfig();
+			config.setLibraryName(MeasureUtility.cleanString(measure.getDescription()));
+			config.setLibraryVersion(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
+			
+			result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config);			
 			XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
 			processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
 			measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));			

@@ -992,9 +992,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			boolean isValidQDMVersion = cqlWorkspaceView.getCQLLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion(false); //false because it is a measures cql view
 			if (!isValidQDMVersion) {
 				messagePanel.getErrorMessageAlert().createAlert(INVALID_QDM_VERSION_IN_INCLUDES);
-			} else {
-				messagePanel.getErrorMessageAlert().clearAlert();
-			}
+			} 
 		} else {
 			Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 		}

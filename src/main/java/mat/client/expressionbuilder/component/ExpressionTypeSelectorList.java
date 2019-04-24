@@ -170,6 +170,7 @@ public class ExpressionTypeSelectorList extends Composite {
 	}
 	
 	private void onDeleteButtonClick(IExpressionBuilderModel modelToDelete) {
+		this.parentModal.getErrorAlert().clearAlert();
 		int size = this.model.getChildModels().size();
 		for(int i = 0; i < size; i++) {
 			if(modelToDelete.equals(this.model.getChildModels().get(i))) {

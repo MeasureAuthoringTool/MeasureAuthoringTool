@@ -181,7 +181,7 @@ public class ExpressionTypeSelectorList extends Composite {
 				// otherwise, the operator is the element before the model, so we will remove it.
 				if(operatorIndex < size) {
 					this.model.getChildModels().remove(operatorIndex);
-				} else {
+				} else if((i - 1) >= 0) {
 					this.model.getChildModels().remove(i - 1);
 				}				
 				

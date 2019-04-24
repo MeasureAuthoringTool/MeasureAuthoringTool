@@ -66,10 +66,10 @@ public class ReverseEngineerListener extends cqlBaseListener {
 				String msg, RecognitionException e) {
 			CQLError error = new CQLError();
 			error.setErrorMessage(msg);
-			error.setErrorInLine(line);
+			error.setErrorInLine(line - 1);
 			error.setErrorAtOffeset(charPositionInLine);
-			error.setStartErrorInLine(line);
-			error.setEndErrorInLine(line);			
+			error.setStartErrorInLine(line - 1);
+			error.setEndErrorInLine(line - 1);			
 			errors.add(error);
 		}
 	}

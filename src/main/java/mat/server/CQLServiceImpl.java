@@ -68,7 +68,6 @@ import mat.model.cql.CQLParametersWrapper;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.model.cql.validator.CQLIncludeLibraryValidator;
-import mat.server.cqlparser.CQLLinter;
 import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.cqlparser.ReverseEngineerListener;
 import mat.server.service.MeasurePackageService;

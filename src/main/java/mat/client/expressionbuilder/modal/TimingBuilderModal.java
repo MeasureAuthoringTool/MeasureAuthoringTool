@@ -156,12 +156,19 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 			timingButtonPanel.add(timingBuildButton);
 		} else {
 			ExpandCollapseCQLExpressionPanel expandCollapsePanel = new ExpandCollapseCQLExpressionPanel("Timing Phrase", this.timingModel.getIntervalOperatorPhrase().getCQL(""));
+			expandCollapsePanel.getDeleteButton().addClickHandler(event -> onTimingDeleteButtonClick());
 			timingButtonPanel.add(expandCollapsePanel);
 		}
 		
 		return timingButtonPanel;
 	}
 	
+	private void onTimingDeleteButtonClick() {
+		this.timingModel.getIntervalOperatorPhrase().getChildModels().clear();
+		this.getContentPanel().add(buildContentPanel());
+		this.updateCQLDisplay();
+	}
+
 	private void onTimingBuildButtonClick() {
 		TimingPhraseBuilderModal modal = new TimingPhraseBuilderModal(this, timingModel.getIntervalOperatorPhrase(), this.getMainModel());
 		modal.show();

@@ -474,8 +474,7 @@ public class CQLUtil {
 	
 	public static CQLLinter lint(String cql, CQLLinterConfig config) {
 		try {
-			CQLLinter linter = new CQLLinter(cql, config);
-			return linter;
+			return new CQLLinter(cql, config);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;

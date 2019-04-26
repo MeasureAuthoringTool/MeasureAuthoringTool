@@ -870,12 +870,8 @@ public class CQLLeftNavBarPanelView {
 		} else {
 			includesBadge.setText("" + viewIncludeLibrarys.size());
 		}
-		GWT.log("before suggest update");
 		updateSuggestIncludeOracle();
-		GWT.log("after suggest update");
 	}
-	
-	
 	
 	public void updateSuggestParamOracle() {
 		if (searchSuggestParamTextBox != null) {

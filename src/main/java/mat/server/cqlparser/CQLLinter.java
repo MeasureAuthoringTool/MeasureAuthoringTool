@@ -54,7 +54,7 @@ public class CQLLinter extends cqlBaseListener {
 		if(!name.equals(config.getLibraryName()) || !version.equals(config.getLibraryVersion())) {
 			
 			String message = String.format(
-					"The library name and version must match what is one file for this CQL file: %s version ' %s'", 
+					"The library name and version must match what is on file for this CQL file: %s version ' %s'", 
 					config.getLibraryName(), config.getLibraryVersion());
 			
 			errorMessages.add(message);
@@ -68,7 +68,7 @@ public class CQLLinter extends cqlBaseListener {
 		String alias = CQLParserUtil.parseString(ctx.localIdentifier().getText());
 		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
 
-		// find all libraries that have a matching identifer, alias, and version
+		// find all libraries that have a matching identifier, alias, and version
 		if(config.getPreviousCQLModel().getCqlIncludeLibrarys() != null) {
 			List<CQLIncludeLibrary> potentialMatches = config.getPreviousCQLModel().getCqlIncludeLibrarys().stream().filter(l -> (
 					identifier.equals(l.getCqlLibraryName())

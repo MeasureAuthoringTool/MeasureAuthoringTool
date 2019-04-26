@@ -489,7 +489,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected void onSaveCQLFileSuccess(SaveUpdateCQLResult result) {
 		List<String> errors = new ArrayList<>();
 		if(!result.getLinterErrorMessages().isEmpty() || !result.getCqlErrors().isEmpty()) {
-			errors.add("CQL File saved with errors.");
+			errors.add("CQL File was saved with errors.");
 			
 			if(!result.getLinterErrorMessages().isEmpty()) {
 				result.getLinterErrorMessages().forEach(e -> errors.add(e));	

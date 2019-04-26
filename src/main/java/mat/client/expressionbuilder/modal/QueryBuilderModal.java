@@ -14,6 +14,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -60,6 +61,9 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private ExpressionTypeSelectorList filterSelector;
 	private ExpressionTypeSelectorList sortSelector;
 	private BuildButtonObserver sortBuildButtonObserver;
+	
+	private HandlerRegistration previousHandler;
+	private HandlerRegistration nextHandler;
 	
 	private boolean isAscendingSort = true;
 
@@ -308,17 +312,23 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private void updatePreviousButton(String text, ClickHandler clickHandler) {
+		if (previousHandler != null) {
+			previousHandler.removeHandler();
+		}
+		previousHandler = previousButton.addClickHandler(clickHandler);
 		previousButton.setVisible(true);
 		previousButton.setText("<<< Go back to " + text);
 		previousButton.setTitle(text);
-		previousButton.addClickHandler(clickHandler);
 	}
 	
 	private void updateNextButton(String text, ClickHandler clickHandler) {
+		if (nextHandler != null) {
+			nextHandler.removeHandler();
+		}
+		nextHandler = nextButton.addClickHandler(clickHandler);
 		nextButton.setVisible(true);
 		nextButton.setText("Continue to " + text + " >>>");
 		nextButton.setTitle(text);
-		nextButton.addClickHandler(clickHandler);
 	}
 	
 	private void displaySource() {

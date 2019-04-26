@@ -1,9 +1,12 @@
 package mat.server.cqlparser;
 
+import mat.model.cql.CQLModel;
+
 public class CQLLinterConfig {
 
 	private String libraryName;
 	private String libraryVersion;
+	private CQLModel previousCQLModel;
 	
 	public CQLLinterConfig() {
 		
@@ -23,5 +26,13 @@ public class CQLLinterConfig {
 
 	public void setLibraryVersion(String version) {
 		this.libraryVersion = version;
+	}
+
+	public CQLModel getPreviousCQLModel() {
+		return previousCQLModel;
+	}
+
+	public void setPreviousCQLModel(CQLModel previousCQLModel) {
+		this.previousCQLModel = previousCQLModel;
 	}
 }

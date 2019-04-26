@@ -127,6 +127,7 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.cqlparser.CQLLinter;
 import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
 import mat.server.humanreadable.cql.HumanReadableComponentMeasureModel;
@@ -5162,7 +5163,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		CQLLinterConfig config = new CQLLinterConfig();
 		config.setLibraryName(MeasureUtility.cleanString(measure.getDescription()));
 		config.setLibraryVersion(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
-		result.getLinterErrors().addAll(CQLUtil.lint(result.getCqlString(), config));
+		config.setPreviousCQLModel(result.getCqlModel());
+		CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
+		result.getLinterErrors().addAll(linter.getErrors());
+		result.getLinterErrorMessages().addAll(linter.getErrorMessages());
 	}
 
 	@Override
@@ -5181,8 +5185,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			CQLLinterConfig config = new CQLLinterConfig();
 			config.setLibraryName(MeasureUtility.cleanString(measure.getDescription()));
 			config.setLibraryVersion(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
+			result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config);
 			
-			result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config);			
+
+			
 			XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
 			processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
 			measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));			
@@ -5897,8 +5903,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					result = getCqlService().saveAndModifyIncludeLibrayInCQLLookUp(xmlModel.getXml(), toBeModifiedObj, currentObj, incLibraryList);
 
 					if (result.isSuccess()) {
-						xmlModel.setXml(result.getXml());
-						measurePackageService.saveMeasureXml(xmlModel);
+						XmlProcessor processor = new XmlProcessor(xmlModel.getXml());		
+						if (result.isSuccess()) {
+							processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+							measurePackageService.saveMeasureXml(xmlModel);
+						}
+						
 						getCqlService().saveCQLAssociation(currentObj, measureId);
 						if (toBeModifiedObj != null) {
 							getCqlService().deleteCQLAssociation(toBeModifiedObj, measureId);

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -57,6 +58,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	private String currentContext = "Patient";
 	private boolean hasSyntaxErrors;
 	private List<CQLError> syntaxErrors;
+	private CQLModel previousModel;
 	
 	private static class SyntaxErrorListener extends BaseErrorListener {
 		private List<CQLError> errors = new ArrayList<>();
@@ -74,9 +76,11 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		}
 	}
 	
-	public ReverseEngineerListener(String cql) throws IOException {
+	public ReverseEngineerListener(String cql, CQLModel previousModel) throws IOException {
+		this.previousModel = previousModel;
 		syntaxErrors = new ArrayList<>();
 		cqlModel = new CQLModel();
+		cqlModel.setContext(currentContext);
 		InputStream stream = new ByteArrayInputStream(cql.getBytes());
 		cqlLexer lexer = new cqlLexer(new ANTLRInputStream(stream));
 		tokens = new CommonTokenStream(lexer);
@@ -128,6 +132,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		String identifier = parseString(ctx.modelIdentifier().identifier().getText());
 		String version = parseString(ctx.versionSpecifier().getText());
 		
+		
 		cqlModel.setUsingName(identifier);
 		cqlModel.setQdmVersion(version);
 	}
@@ -138,12 +143,25 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		String version = parseString(ctx.versionSpecifier().getText());
 		String alias = parseString(ctx.localIdentifier().getText());
 		
-		CQLIncludeLibrary includedLibrary = new CQLIncludeLibrary();
-		includedLibrary.setCqlLibraryName(identifier);
-		includedLibrary.setAliasName(alias);
-		includedLibrary.setVersion(version);
 		
-		cqlModel.getCqlIncludeLibrarys().add(includedLibrary);
+		// check and see if there was a model the name, version, and alias as before
+		List<CQLIncludeLibrary> previousLibraries = previousModel.getCqlIncludeLibrarys().stream().filter(l -> (
+				identifier.equals(l.getCqlLibraryName())
+				&& alias.equals(l.getAliasName())
+				&& version.equals(l.getVersion())
+			
+		)).collect(Collectors.toList());
+		
+		if(!previousLibraries.isEmpty()) {
+			cqlModel.getCqlIncludeLibrarys().addAll(previousLibraries);
+		} else {
+			CQLIncludeLibrary includedLibrary = new CQLIncludeLibrary();
+			includedLibrary.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
+			includedLibrary.setCqlLibraryName(identifier);
+			includedLibrary.setAliasName(alias);
+			includedLibrary.setVersion(version);
+			cqlModel.getCqlIncludeLibrarys().add(includedLibrary);
+		}
 	}
 	
 	@Override
@@ -201,12 +219,20 @@ public class ReverseEngineerListener extends cqlBaseListener {
 			version = parseString(ctx.versionSpecifier().getText());
 		}
 
-		valueset.setName(identifier);
-		valueset.setSuffix(identifier);
 		valueset.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
-		valueset.setOid(valuesetId.replace(VALUESET_OID_PREFIX, ""));
-		valueset.setVersion(version);
 		valueset.setUuid(UUID.randomUUID().toString());
+		valueset.setName(identifier);
+		valueset.setVersion(version);
+		valueset.setSuffix(identifier);
+		
+		valueset.setOriginalCodeListName("");
+		valueset.setProgram("");
+		valueset.setRelease("");
+		valueset.setDataType("");
+		valueset.setTaxonomy("");
+		valueset.setSuppDataElement(false);
+		valueset.setType("");
+		valueset.setOid(valuesetId.replace(VALUESET_OID_PREFIX, ""));
 		
 		cqlModel.getValueSetList().add(valueset);
 	}

@@ -21,6 +21,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -636,7 +637,9 @@ public class CQLLeftNavBarPanelView {
 			includesNameListbox.clear();
 			viewIncludeLibrarys = sortAliasList(viewIncludeLibrarys);
 			for (CQLIncludeLibrary incl : viewIncludeLibrarys) {
-				includesNameListbox.addItem(incl.getAliasName(), incl.getId());
+				if(incl.getId() != null) {
+					includesNameListbox.addItem(incl.getAliasName(), incl.getId());
+				}
 			}
 
 			SelectElement selectElement = SelectElement.as(includesNameListbox.getElement());
@@ -867,7 +870,9 @@ public class CQLLeftNavBarPanelView {
 		} else {
 			includesBadge.setText("" + viewIncludeLibrarys.size());
 		}
+		GWT.log("before suggest update");
 		updateSuggestIncludeOracle();
+		GWT.log("after suggest update");
 	}
 	
 	

@@ -575,7 +575,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				} else {
 					onSaveCQLFileSuccess(result);
 					handleCQLData(result);
-					SharedCQLWorkspaceUtility.displayMessagesForViewCQL(result, cqlWorkspaceView.getViewCQLView().getCqlAceEditor(), messagePanel);
 				}
 				
 				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().focus();
@@ -1323,7 +1322,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
 				}
 				
-				if ((result.getCqlModel().getCqlIncludeLibrarys() != null) && (result.getCqlModel().getCqlIncludeLibrarys().size() > 0)) {
+				List<CQLIncludeLibrary> includedLibrariesForViewing = result.getCqlModel().getCqlIncludeLibrarys();
+				if (includedLibrariesForViewing != null) {
+					includedLibrariesForViewing.removeIf(l -> l.getCqlLibraryId() == null || l.getCqlLibraryId().isEmpty());
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().udpateIncludeLibraryMap();
@@ -1334,8 +1335,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				boolean isValidQDMVersion = cqlWorkspaceView.getCQLLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion(true);
 				if (!isValidQDMVersion) {
 					messagePanel.getErrorMessageAlert().createAlert(INVALID_QDM_VERSION_IN_INCLUDES);
-				} else {
-					messagePanel.getErrorMessageAlert().clearAlert();
 				}
 			}
 		}

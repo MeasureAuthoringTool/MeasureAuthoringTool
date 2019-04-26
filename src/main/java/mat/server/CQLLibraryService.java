@@ -69,6 +69,7 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.cqlparser.CQLLinter;
 import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.model.MatUserDetails;
 import mat.server.service.CQLLibraryServiceInterface;
@@ -1095,7 +1096,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		CQLLinterConfig config = new CQLLinterConfig();
 		config.setLibraryName(cqlLibrary.getName());
 		config.setLibraryVersion(MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()));			
-		result.getLinterErrors().addAll(CQLUtil.lint(result.getCqlString(), config));
+		config.setPreviousCQLModel(result.getCqlModel());
+		CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
+		result.getLinterErrors().addAll(linter.getErrors());
+		result.getLinterErrorMessages().addAll(linter.getErrorMessages());
 	}
 
 	public void updateCQLLibraryFamily(List<CQLLibraryDataSetObject> detailModelList) {

@@ -472,13 +472,13 @@ public class CQLUtil {
 		return parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList, false);
 	}
 	
-	public static List<CQLError> lint(String cql, CQLLinterConfig config) {
+	public static CQLLinter lint(String cql, CQLLinterConfig config) {
 		try {
 			CQLLinter linter = new CQLLinter(cql, config);
-			return linter.getErrors();
+			return linter;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new ArrayList<>();
+			return null;
 		}
 	}
 
@@ -770,9 +770,10 @@ public class CQLUtil {
 		for (CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries) {
 
 			LibHolderObject libHolderObject = cqlModel.getIncludedCQLLibXMLMap().get(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName());
-			cqlIncludeLibrary.getAliasName();
-
-			libHolderObject.getMeasureXML();
+			if(libHolderObject != null) {
+				cqlIncludeLibrary.getAliasName();
+				libHolderObject.getMeasureXML();
+			}
 		}
 	}
 

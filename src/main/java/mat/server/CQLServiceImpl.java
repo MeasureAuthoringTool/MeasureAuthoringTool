@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -36,7 +37,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import mat.CQLFormatter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -68,6 +68,7 @@ import mat.model.cql.CQLParametersWrapper;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.model.cql.validator.CQLIncludeLibraryValidator;
+import mat.server.cqlparser.CQLLinter;
 import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.cqlparser.ReverseEngineerListener;
 import mat.server.service.MeasurePackageService;
@@ -99,7 +100,7 @@ public class CQLServiceImpl implements CQLService {
 	private static final int COMMENTS_MAX_LENGTH = 2500;
 	
 	private static final String CODE_TAG = "<code ";
-	private static final String CODE_SYSTEM_TAG = "<codeSystem ";
+	private static final String CODE_SYSTEM_TAG = "<codeSystem ";	
 	private static final String VALUESET_TAG = "<valueset ";
 	private static final String CODE_MAPPING = "CodeMapping.xml";
 	private static final String CODE_SYSTEMS_MAPPING = "CodeSystemsMapping.xml";
@@ -173,8 +174,10 @@ public class CQLServiceImpl implements CQLService {
 
 	public SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config) {
 		XmlProcessor processor = new XmlProcessor(xml);
+		CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(xml);
+		config.setPreviousCQLModel(previousModel);
 		try {
-			ReverseEngineerListener listener = new ReverseEngineerListener(cql);
+			ReverseEngineerListener listener = new ReverseEngineerListener(cql, previousModel);
 			CQLModel reversedEngineeredCQLModel = listener.getCQLModel();			
 			String reverseEngineeredCQLLookup = marshallCQLModel(reversedEngineeredCQLModel);
 			processor.replaceNode(reverseEngineeredCQLLookup, "cqlLookUp", "measure");
@@ -192,7 +195,7 @@ public class CQLServiceImpl implements CQLService {
 			if (parsedResult.getCqlErrors().isEmpty()) {
 				CQLFormatter formatter = new CQLFormatter();
 				String formattedCQL = formatter.format(CQLUtilityClass.getCqlString(reversedEngineeredCQLModel, ""));
-				CQLModel formattedReversedEngineeredCQLModel = reverseEngineerCQLModel(formattedCQL);
+				CQLModel formattedReversedEngineeredCQLModel = reverseEngineerCQLModel(formattedCQL, previousModel);
 				String formattedCQLLookup = marshallCQLModel(formattedReversedEngineeredCQLModel);
 				parsedResult.setXml(formattedCQLLookup);
 				parsedResult.setCqlString(formattedCQL);
@@ -201,7 +204,9 @@ public class CQLServiceImpl implements CQLService {
 				parsedResult.setCqlString(cql);
 			}
 			
-			parsedResult.setLinterErrors(CQLUtil.lint(parsedResult.getCqlString(), config));
+			CQLLinter linter = CQLUtil.lint(parsedResult.getCqlString(), config);
+			parsedResult.getLinterErrors().addAll(linter.getErrors());
+			parsedResult.getLinterErrorMessages().addAll(linter.getErrorMessages());
 			
 			parsedResult.setSuccess(true);				
 			return parsedResult;
@@ -218,8 +223,8 @@ public class CQLServiceImpl implements CQLService {
 		return CQLUtilityClass.getXMLFromCQLModel(cqlModel);
 	}
 
-	private CQLModel reverseEngineerCQLModel(String cql) throws IOException {
-		ReverseEngineerListener listener = new ReverseEngineerListener(cql);
+	private CQLModel reverseEngineerCQLModel(String cql, CQLModel previousModel) throws IOException {
+		ReverseEngineerListener listener = new ReverseEngineerListener(cql, previousModel);
 		CQLModel reversedEngineeredCQLModel = listener.getCQLModel();	
 		return reversedEngineeredCQLModel;
 	}
@@ -683,89 +688,64 @@ public class CQLServiceImpl implements CQLService {
 		return builder.toString();
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
-	public SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String xml, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> includedLibraryList) throws InvalidLibraryException {
+	public SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String xml, CQLIncludeLibrary includedLibraryWithOriginalContent,
+			CQLIncludeLibrary includedLibraryWithEdits, List<CQLIncludeLibrary> includedLibraryList) throws InvalidLibraryException {
 
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
-		if (xml != null && !xml.isEmpty()) {
-			XmlProcessor processor = new XmlProcessor(xml);
-			checkAndAppendIncludeLibraryParentNode(processor);
-			if (toBeModifiedObj != null) { // this is a part of Modify
-				result = modifyIncludedLibrary(toBeModifiedObj, currentObj, includedLibraryList, wrapper, processor);
+		result.setXml(xml); // if any failure, it will use this xml, which is the original
+
+		if (StringUtils.isEmpty(xml)) {
+			return result;
+		}
+
+		try {
+			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);	
+			if(includedLibraryWithOriginalContent != null) {
+				includedLibraryWithEdits.setId(includedLibraryWithOriginalContent.getId());
 			} else {
-				result = createNewIncludedLibrary(xml, currentObj, includedLibraryList, wrapper);
+				includedLibraryWithEdits.setId(UUID.randomUUID().toString());
 			}
-		}
+						
+			// check if there is a library that has a name, identifier, and version the one being saved
+			// if there is, update and return.
+			List<CQLIncludeLibrary> previousMatchingLibraries = cqlModel.getCqlIncludeLibrarys().stream()
+			.filter(l -> 
+				(l.getAliasName().equals(includedLibraryWithEdits.getAliasName())
+				&& l.getCqlLibraryName().equals(includedLibraryWithEdits.getCqlLibraryName())
+				&& l.getVersion().equals(includedLibraryWithEdits.getVersion())
+				&& l.getCqlLibraryId() == null)
+			).collect(Collectors.toList());
+			
+			if(!previousMatchingLibraries.isEmpty()) {
+				previousMatchingLibraries.forEach(l -> {
+					l.setCqlLibraryId(includedLibraryWithEdits.getCqlLibraryId());
+					l.setMeasureId(includedLibraryWithEdits.getMeasureId());
+					l.setQdmVersion(includedLibraryWithEdits.getQdmVersion());
+					l.setSetId(includedLibraryWithEdits.getSetId());
+				});
+			} else {
+				Optional<CQLIncludeLibrary> includedLibraryToBeEditedFromModel = cqlModel.getCqlIncludeLibrarys().stream().filter(l -> includedLibraryWithEdits.getId().equals(l.getId())).findFirst();
+				if(includedLibraryToBeEditedFromModel.isPresent()) {
+					includedLibraryToBeEditedFromModel.get().setAliasName(includedLibraryWithEdits.getAliasName());
+				} else {
+					CQLIncludeLibraryValidator libraryValidator = new CQLIncludeLibraryValidator();
+					libraryValidator.validate(includedLibraryWithEdits, cqlModel);
 
-		if (result.isSuccess()) {
-			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(result.getXml());
+					if (!libraryValidator.isValid()) {
+						throw new InvalidLibraryException(libraryValidator.getMessages());
+					}	
+
+					cqlModel.getCqlIncludeLibrarys().add(includedLibraryWithEdits);
+				}
+			}		
+	
+			result.setSuccess(true);
+			result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));
 			result.setCqlModel(cqlModel);
-			CQLUtil.getIncludedCQLExpressions(cqlModel, cqlLibraryDAO);
-		}
-
-		return result;
-	}
-
-	private SaveUpdateCQLResult createNewIncludedLibrary(String xml, CQLIncludeLibrary currentObj,
-			List<CQLIncludeLibrary> includedLibraryList, CQLIncludeLibraryWrapper wrapper)
-			throws InvalidLibraryException {
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		XmlProcessor processor = new XmlProcessor(xml);
-		CQLModel modelBeforeSave = CQLUtilityClass.getCQLModelFromXML(xml);
-		currentObj.setId(UUID.randomUUID().toString());
-
-		CQLIncludeLibraryValidator libraryValidator = new CQLIncludeLibraryValidator();
-		libraryValidator.validate(currentObj, modelBeforeSave);
-
-		if (!libraryValidator.isValid()) {
-			throw new InvalidLibraryException(libraryValidator.getMessages());
-		}
-
-		try {
-			String XPATH_EXPRESSION_INCLUDES = "//cqlLookUp/includeLibrarys";
-			String cqlString = createIncludeLibraryXML(currentObj);
-
-			processor.appendNode(cqlString, "includeLibrary", XPATH_EXPRESSION_INCLUDES);
-			processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-			String finalUpdatedXml = processor.transform(processor.getOriginalDoc());
-			result.setXml(finalUpdatedXml);
-			result.setSuccess(true);
-			result.setIncludeLibrary(currentObj);
-			includedLibraryList.add(currentObj);
-			wrapper.setCqlIncludeLibrary(includedLibraryList);
+			result.setIncludeLibrary(includedLibraryWithEdits);
 		} catch (Exception e) {
-			logger.error("Failed to save CQL Included Library: " + e.getMessage());
-		}
-
-		return result;
-	}
-
-	private SaveUpdateCQLResult modifyIncludedLibrary(CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
-			List<CQLIncludeLibrary> incLibraryList, CQLIncludeLibraryWrapper wrapper, XmlProcessor processor) {
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		currentObj.setId(toBeModifiedObj.getId());
-		currentObj.setAliasName(toBeModifiedObj.getAliasName());
-		String XPATH_EXPRESSION_INCLUDES = "//includeLibrary[@cqlLibRefId='" + toBeModifiedObj.getCqlLibraryId() + "']";
-		try {
-			Node nodeIncludes = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_INCLUDES);
-			String cqlLibraryXML = createIncludeLibraryXML(currentObj);
-			String XPATH_EXPRESSION_INCLUDELIBRARYS = "//cqlLookUp/includeLibrarys";
-			processor.removeFromParent(nodeIncludes);
-			processor.appendNode(cqlLibraryXML, "includeLibrary", XPATH_EXPRESSION_INCLUDELIBRARYS);
-			processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-			String finalUpdatedXml = processor.transform(processor.getOriginalDoc());
-			result.setXml(finalUpdatedXml);
-			result.setSuccess(true);
-			result.setIncludeLibrary(currentObj);
-			wrapper.setCqlIncludeLibrary(modifyIncludesList(toBeModifiedObj, currentObj, incLibraryList));
-		} catch (XPathExpressionException | SAXException | IOException | MarshalException | ValidationException
-				| MappingException | NullPointerException e) {
-			logger.error("Failed to replace CQL included Library: " + e.getMessage());
+			e.printStackTrace();
 		}
 
 		return result;
@@ -793,30 +773,6 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public List<CQLLibraryAssociation> getAssociations(String associatedWithId) {
 		return cqlLibraryAssociationDAO.getAssociations(associatedWithId);
-	}
-
-	/**
-	 * Check and append include library parent node.
-	 *
-	 * @param processor the processor
-	 */
-	private void checkAndAppendIncludeLibraryParentNode(XmlProcessor processor) {
-
-		try {
-			Node cqlNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp");
-			if (cqlNode != null) {
-
-				Node cqlIncludeLibNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/includeLibrarys");
-				if (cqlIncludeLibNode == null) {
-					Element includesChildElem = processor.getOriginalDoc().createElement("includeLibrarys");
-					cqlNode.appendChild(includesChildElem);
-				}
-
-			}
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	/**
@@ -1371,16 +1327,6 @@ public class CQLServiceImpl implements CQLService {
 		return createNewXML("CQLParameterModelMapping.xml", wrapper);
 	}
 	
-	private String createFunctionsXML(CQLFunctions function) {
-		logger.info("In CQLServiceImpl.createFunctionsXML");
-		CQLFunctionsWrapper wrapper = new CQLFunctionsWrapper();
-		List<CQLFunctions> funcList = new ArrayList<>();
-		funcList.add(function);
-		wrapper.setCqlFunctionsList(funcList);
-		
-		return createNewXML("CQLFunctionModelMapping.xml", wrapper);
-	}
-
 	@Override
 	public String createDefinitionsXML(CQLDefinition definition) {
 		logger.info("In CQLServiceImpl.createDefinitionsXML");
@@ -1434,21 +1380,6 @@ public class CQLServiceImpl implements CQLService {
 		return CQLKeywordsUtil.getCQLKeywords();
 	}
 
-	private List<CQLIncludeLibrary> modifyIncludesList(CQLIncludeLibrary toBeModified, CQLIncludeLibrary currentObj,
-			List<CQLIncludeLibrary> incLibraryList) {
-		Iterator<CQLIncludeLibrary> iterator = incLibraryList.iterator();
-		while (iterator.hasNext()) {
-			CQLIncludeLibrary cqlParam = iterator.next();
-			if (cqlParam.getId().equals(toBeModified.getId())) {
-
-				iterator.remove();
-				break;
-			}
-		}
-		incLibraryList.add(currentObj);
-		return incLibraryList;
-	}
-
 	/**
 	 * Sort definitions list.
 	 *
@@ -1486,19 +1417,6 @@ public class CQLServiceImpl implements CQLService {
 		Collections.sort(funcList, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
 
 		return funcList;
-	}
-
-	/**
-	 * Sort include lib list.
-	 *
-	 * @param IncLibList the inc lib list
-	 * @return the list
-	 */
-	private List<CQLIncludeLibrary> sortIncludeLibList(List<CQLIncludeLibrary> IncLibList) {
-
-		Collections.sort(IncLibList, (o1, o2) -> o1.getAliasName().compareToIgnoreCase(o2.getAliasName()));
-
-		return IncLibList;
 	}
 
 	@Override

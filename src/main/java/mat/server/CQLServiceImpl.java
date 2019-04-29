@@ -696,54 +696,52 @@ public class CQLServiceImpl implements CQLService {
 			return result;
 		}
 
-		try {
-			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);	
-			if(includedLibraryWithOriginalContent != null) {
-				includedLibraryWithEdits.setId(includedLibraryWithOriginalContent.getId());
-			} else {
-				includedLibraryWithEdits.setId(UUID.randomUUID().toString());
-			}
-						
-			// check if there is a library that has a name, identifier, and version the one being saved
-			// if there is, update and return.
-			List<CQLIncludeLibrary> previousMatchingLibraries = cqlModel.getCqlIncludeLibrarys().stream()
-			.filter(l -> 
-				(l.getAliasName().equals(includedLibraryWithEdits.getAliasName())
-				&& l.getCqlLibraryName().equals(includedLibraryWithEdits.getCqlLibraryName())
-				&& l.getVersion().equals(includedLibraryWithEdits.getVersion())
-				&& l.getCqlLibraryId() == null)
-			).collect(Collectors.toList());
-			
-			if(!previousMatchingLibraries.isEmpty()) {
-				previousMatchingLibraries.forEach(l -> {
-					l.setCqlLibraryId(includedLibraryWithEdits.getCqlLibraryId());
-					l.setMeasureId(includedLibraryWithEdits.getMeasureId());
-					l.setQdmVersion(includedLibraryWithEdits.getQdmVersion());
-					l.setSetId(includedLibraryWithEdits.getSetId());
-				});
-			} else {
-				Optional<CQLIncludeLibrary> includedLibraryToBeEditedFromModel = cqlModel.getCqlIncludeLibrarys().stream().filter(l -> includedLibraryWithEdits.getId().equals(l.getId())).findFirst();
-				if(includedLibraryToBeEditedFromModel.isPresent()) {
-					includedLibraryToBeEditedFromModel.get().setAliasName(includedLibraryWithEdits.getAliasName());
-				} else {
-					CQLIncludeLibraryValidator libraryValidator = new CQLIncludeLibraryValidator();
-					libraryValidator.validate(includedLibraryWithEdits, cqlModel);
 
-					if (!libraryValidator.isValid()) {
-						throw new InvalidLibraryException(libraryValidator.getMessages());
-					}	
-
-					cqlModel.getCqlIncludeLibrarys().add(includedLibraryWithEdits);
-				}
-			}		
-	
-			result.setSuccess(true);
-			result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));
-			result.setCqlModel(cqlModel);
-			result.setIncludeLibrary(includedLibraryWithEdits);
-		} catch (Exception e) {
-			e.printStackTrace();
+		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);	
+		if(includedLibraryWithOriginalContent != null) {
+			includedLibraryWithEdits.setId(includedLibraryWithOriginalContent.getId());
+		} else {
+			includedLibraryWithEdits.setId(UUID.randomUUID().toString());
 		}
+
+		// check if there is a library that has a name, identifier, and version the one being saved
+		// if there is, update and return.
+		List<CQLIncludeLibrary> previousMatchingLibraries = cqlModel.getCqlIncludeLibrarys().stream()
+				.filter(l -> 
+				(l.getAliasName().equals(includedLibraryWithEdits.getAliasName())
+						&& l.getCqlLibraryName().equals(includedLibraryWithEdits.getCqlLibraryName())
+						&& l.getVersion().equals(includedLibraryWithEdits.getVersion())
+						&& l.getCqlLibraryId() == null)
+						).collect(Collectors.toList());
+
+		if(!previousMatchingLibraries.isEmpty()) {
+			previousMatchingLibraries.forEach(l -> {
+				l.setCqlLibraryId(includedLibraryWithEdits.getCqlLibraryId());
+				l.setMeasureId(includedLibraryWithEdits.getMeasureId());
+				l.setQdmVersion(includedLibraryWithEdits.getQdmVersion());
+				l.setSetId(includedLibraryWithEdits.getSetId());
+			});
+		} else {
+			Optional<CQLIncludeLibrary> includedLibraryToBeEditedFromModel = cqlModel.getCqlIncludeLibrarys().stream().filter(l -> includedLibraryWithEdits.getId().equals(l.getId())).findFirst();
+			if(includedLibraryToBeEditedFromModel.isPresent()) {
+				includedLibraryToBeEditedFromModel.get().setAliasName(includedLibraryWithEdits.getAliasName());
+			} else {
+				CQLIncludeLibraryValidator libraryValidator = new CQLIncludeLibraryValidator();
+				libraryValidator.validate(includedLibraryWithEdits, cqlModel);
+
+				if (!libraryValidator.isValid()) {
+					throw new InvalidLibraryException(libraryValidator.getMessages());
+				}	
+
+				cqlModel.getCqlIncludeLibrarys().add(includedLibraryWithEdits);
+			}
+		}		
+
+		result.setSuccess(true);
+		result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));
+		result.setCqlModel(cqlModel);
+		result.setIncludeLibrary(includedLibraryWithEdits);
+
 
 		return result;
 	}

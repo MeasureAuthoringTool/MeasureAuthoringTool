@@ -302,7 +302,7 @@ public final class CQLUtilityClass {
 		return cqlModel;
 	}
 	
-	public static String getXMLFromCQLModel(CQLModel cqlModel) throws IOException, MappingException, MarshalException, ValidationException {
+	public static String getXMLFromCQLModel(CQLModel cqlModel) {
 		String xml = "";
 
 		try (ByteArrayOutputStream stream = new ByteArrayOutputStream();) {
@@ -312,6 +312,8 @@ public final class CQLUtilityClass {
 			marshaller.setMapping(mapping);
 			marshaller.marshal(cqlModel);
 			xml = stream.toString();
+		} catch (MarshalException | ValidationException | IOException | MappingException e) {
+			e.printStackTrace();
 		}
 
 

@@ -43,7 +43,6 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
 import mat.client.shared.MatException;
-import mat.client.shared.ValueSetNameInputValidator;
 import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.CQLValueSetTransferObject;
@@ -101,10 +100,8 @@ public class CQLServiceImpl implements CQLService {
 	
 	private static final String CODE_TAG = "<code ";
 	private static final String CODE_SYSTEM_TAG = "<codeSystem ";	
-	private static final String VALUESET_TAG = "<valueset ";
 	private static final String CODE_MAPPING = "CodeMapping.xml";
 	private static final String CODE_SYSTEMS_MAPPING = "CodeSystemsMapping.xml";
-	private static final String VALUESET_MAPPING = "ValueSetsMapping.xml"; 
 
 	@Autowired private CQLLibraryDAO cqlLibraryDAO;
 	@Autowired private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
@@ -1686,120 +1683,83 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult parseCQLStringForError(String cqlFileString) {
 		return null;
 	}
-
-	/**
-	 * Save QD sto measure.
-	 *
-	 * @param valueSetTransferObject the value set transfer object
-	 * @return the save update code list result
-	 */
+	
 	@Override
-	public final SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject) {
+	public SaveUpdateCQLResult saveCQLValueset(String xml, CQLValueSetTransferObject valueSetTransferObject) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
-		ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<>();
-		wrapper.setQualityDataDTO(qdsList);
-		valueSetTransferObject.scrubForMarkUp();
-
+		CQLModel model = CQLUtilityClass.getCQLModelFromXML(xml);
+		
 		if (!valueSetTransferObject.validateModel()) {
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION);
 			return result;
 		}
+		
+		// TODO: Check if a valueset with the id already exists....
+		Optional<CQLQualityDataSetDTO> existingValueset = model.getValueSetList().stream().filter(v -> v.getUuid().equals(valueSetTransferObject.getCqlQualityDataSetDTO().getUuid())).findFirst();
+		
+		CQLQualityDataSetDTO qds = convertValueSetTransferObjectToQualityDataSetDTO(valueSetTransferObject);
+		
+		// if this is an edit, make sure the UUID and ID are the same as the valuset being edited
+		// and remove it from the list
+		if(existingValueset.isPresent()) {
+			qds.setUuid(existingValueset.get().getUuid());
+			qds.setId(existingValueset.get().getId());
+			model.getValueSetList().remove(qds);
+		} else {
+			if(isDuplicate(valueSetTransferObject, true)) {
+				result.setSuccess(false);
+				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
+				return result;
+			}
+		}
+		
+		model.getValueSetList().add(qds);
+		result.setSuccess(true);
+		result.setCqlAppliedQDMList(sortQualityDataSetList(model.getValueSetList()));
+		result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));
+		return result;
+		
+	}
 
+	private CQLQualityDataSetDTO convertValueSetTransferObjectToQualityDataSetDTO(CQLValueSetTransferObject valueSetTransferObject) {
 		CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
 		MatValueSet matValueSet = valueSetTransferObject.getMatValueSet();
-		qds.setOid(matValueSet.getID());
+		qds.setUuid(UUID.randomUUID().toString());
 		qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 		qds.setName(valueSetTransferObject.getCqlQualityDataSetDTO().getName());
 		qds.setSuffix(valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
 		qds.setOriginalCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
-		qds.setRelease(valueSetTransferObject.getCqlQualityDataSetDTO().getRelease());
-		qds.setProgram(valueSetTransferObject.getCqlQualityDataSetDTO().getProgram());
-		qds.setVersion("");
-		qds.setValueSetType(matValueSet.getType());
-		if (matValueSet.isGrouping()) {
-			qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
-		} else {
-			qds.setTaxonomy(matValueSet.getCodeSystemName());
-		}
-		qds.setUuid(UUID.randomUUID().toString());
 
-		ArrayList<CQLQualityDataSetDTO> qualityDataSetDTOs = (ArrayList<CQLQualityDataSetDTO>) valueSetTransferObject
-				.getAppliedQDMList();
-
-		// Treat as regular QDM
-		if (!isDuplicate(valueSetTransferObject, true)) {
-			wrapper.getQualityDataDTO().add(qds);
-			String xmlString = generateXmlForAppliedValuesetAndCodes(VALUESET_MAPPING, VALUESET_TAG, wrapper);
-			result.setSuccess(true);
-			qualityDataSetDTOs.add(qds);
-			result.setCqlAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
-			result.setXml(xmlString);
-		} else {
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
-		}
-
-		return result;
-	}
-
-	/**
-	 * Sort quality data set list.
-	 *
-	 * @param finalList the final list
-	 * @return the list
-	 */
-	private List<CQLQualityDataSetDTO> sortQualityDataSetList(final List<CQLQualityDataSetDTO> finalList) {
-
-		Collections.sort(finalList, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
-
-		return finalList;
-
-	}
-
-	@Override
-	public SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject) {
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
-		matValueSetTransferObject.scrubForMarkUp();
-
-		if (!matValueSetTransferObject.validateModel()) {
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
-			return result;
-		}
-
-		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
-		String errorMessage = validator.validate(matValueSetTransferObject);
-		if (errorMessage.isEmpty()) {
-			ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<>();
-
-			wrapper.setQualityDataDTO(qdsList);
-			CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
+		// if the oid is empty, that means it is a user defined valueset and we need to save some special data
+		// or if the oid is the user defined oid
+		if(StringUtils.isEmpty(valueSetTransferObject.getCqlQualityDataSetDTO().getOid()) ||
+				valueSetTransferObject.getCqlQualityDataSetDTO().getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
 			qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
-			qds.setId(UUID.randomUUID().toString());
-			qds.setName(matValueSetTransferObject.getCqlQualityDataSetDTO().getName());
-			qds.setSuffix(matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
-			qds.setOriginalCodeListName(matValueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
 			qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
 			qds.setValueSetType(StringUtils.EMPTY);
-			qds.setUuid(UUID.randomUUID().toString());
 			qds.setVersion("1.0");
 			qds.setRelease("");
 			qds.setProgram("");
-			wrapper.getQualityDataDTO().add(qds);
-
-			String qdmXMLString = generateXmlForAppliedValuesetAndCodes(VALUESET_MAPPING, VALUESET_TAG, wrapper);
-			result.setSuccess(true);
-			result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
-			result.setXml(qdmXMLString);
-
 		} else {
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION);
+			qds.setOid(matValueSet.getID());
+			qds.setRelease(valueSetTransferObject.getCqlQualityDataSetDTO().getRelease());
+			qds.setProgram(valueSetTransferObject.getCqlQualityDataSetDTO().getProgram());
+			qds.setVersion("");
+			qds.setValueSetType(matValueSet.getType());
+			if (matValueSet.isGrouping()) {
+				qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
+			} else {
+				qds.setTaxonomy(matValueSet.getCodeSystemName());
+			}
 		}
-		return result;
+		
+		return qds;
+	}
+
+	private List<CQLQualityDataSetDTO> sortQualityDataSetList(final List<CQLQualityDataSetDTO> finalList) {
+		Collections.sort(finalList, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+		return finalList;
 	}
 
 	@Override
@@ -1895,80 +1855,6 @@ public class CQLServiceImpl implements CQLService {
 		return isQDSExist;
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject) {
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		matValueSetTransferObject.scrubForMarkUp();
-		if (!matValueSetTransferObject.validateModel()) {
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION);
-			return result;
-		}
-		if (matValueSetTransferObject.getMatValueSet() != null) {
-			result = modifyVSACValueSetInCQLLookUp(matValueSetTransferObject);
-		} else if (matValueSetTransferObject.getCodeListSearchDTO() != null) {
-			result = modifyUserDefineValuesetInCQLLookUp(matValueSetTransferObject);
-		}
-		return result;
-	}
-
-	/**
-	 * Update VSAC value set in element look up.
-	 *
-	 * @param matValueSetTransferObject the mat value set transfer object
-	 * @return the save update code list result
-	 */
-	private SaveUpdateCQLResult modifyVSACValueSetInCQLLookUp(CQLValueSetTransferObject matValueSetTransferObject) {
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		CQLQualityDataSetDTO oldQdm = new CQLQualityDataSetDTO();
-		populatedOldQDM(oldQdm, matValueSetTransferObject.getCqlQualityDataSetDTO());
-		// Treat as regular QDM
-		List<CQLQualityDataSetDTO> origAppliedQDMList = matValueSetTransferObject.getAppliedQDMList();
-		List<CQLQualityDataSetDTO> tempAppliedQDMList = new ArrayList<>();
-		tempAppliedQDMList.addAll(matValueSetTransferObject.getAppliedQDMList());
-		// Removing the QDS that is being modified from the
-		// tempAppliedQDMList.
-		Iterator<CQLQualityDataSetDTO> iterator = tempAppliedQDMList.iterator();
-		while (iterator.hasNext()) {
-			CQLQualityDataSetDTO qualityDataSetDTO = iterator.next();
-			if (qualityDataSetDTO.getUuid().equals(matValueSetTransferObject.getCqlQualityDataSetDTO().getUuid())) {
-				iterator.remove();
-				break;
-			}
-		}
-		matValueSetTransferObject.setAppliedQDMList(tempAppliedQDMList);
-
-		if (!isDuplicate(matValueSetTransferObject, true)) {
-			matValueSetTransferObject.setAppliedQDMList(origAppliedQDMList);
-			CQLQualityDataSetDTO qds = matValueSetTransferObject.getCqlQualityDataSetDTO();
-			MatValueSet matValueSet = matValueSetTransferObject.getMatValueSet();
-			qds.setOid(matValueSet.getID());
-			qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-			qds.setName(matValueSet.getDisplayName());
-			qds.setValueSetType(matValueSet.getType());
-			if (matValueSet.isGrouping()) {
-				qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
-			} else {
-				qds.setTaxonomy(matValueSet.getCodeSystemName());
-			}
-
-			CQLQualityDataModelWrapper wrapper = modifyAppliedElementList(qds,
-					(ArrayList<CQLQualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());
-
-			result.setSuccess(true);
-			result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
-			result.setCqlQualityDataSetDTO(qds);
-		} else {
-			matValueSetTransferObject.setAppliedQDMList(origAppliedQDMList);
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
-		}
-		return result;
-	}
-
 	@Override
 	public SaveUpdateCQLResult updateCQLLookUpTag(String xml, CQLQualityDataSetDTO modifyWithDTO,
 			final CQLQualityDataSetDTO modifyDTO) {
@@ -2051,48 +1937,6 @@ public class CQLServiceImpl implements CQLService {
 
 	}
 
-	/**
-	 * Update user define QDM in element look up.
-	 *
-	 * @param matValueSetTransferObject the mat value set transfer object
-	 * @return the save update code list result
-	 */
-	private SaveUpdateCQLResult modifyUserDefineValuesetInCQLLookUp(
-			CQLValueSetTransferObject matValueSetTransferObject) {
-		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
-		List<String> messageList = new ArrayList<>();
-		validator.validate(matValueSetTransferObject);
-		if (messageList.isEmpty()) {
-			if (!isDuplicate(matValueSetTransferObject, false)) {
-				ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<>();
-				wrapper.setQualityDataDTO(qdsList);
-				CQLQualityDataSetDTO qds = matValueSetTransferObject.getCqlQualityDataSetDTO();
-				qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
-				qds.setId(UUID.randomUUID().toString());
-				qds.setName(matValueSetTransferObject.getCodeListSearchDTO().getName());
-				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
-				qds.setValueSetType(StringUtils.EMPTY);
-				qds.setVersion("1.0");
-				wrapper = modifyAppliedElementList(qds,
-						(ArrayList<CQLQualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());
-				String qdmXMLString = generateXmlForAppliedValuesetAndCodes(VALUESET_MAPPING, VALUESET_TAG, wrapper);
-				result.setSuccess(true);
-				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
-				result.setXml(qdmXMLString);
-				result.setCqlQualityDataSetDTO(qds);
-			} else {
-				result.setSuccess(false);
-				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
-			}
-		} else {
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION);
-		}
-		return result;
-	}
-
 	private String generateXmlForAppliedValuesetAndCodes(String mapping, String startTag, Object object) {
 		logger.info("addAppliedQDMInMeasureXML Method Call Start.");
 		String xmlString = null;
@@ -2104,44 +1948,6 @@ public class CQLServiceImpl implements CQLService {
 			logger.debug("addAppliedQDMInMeasureXML Method Call xmlString :: " + xmlString);
 		}
 		return xmlString;
-	}
-
-	/**
-	 * Modify applied element list.
-	 *
-	 * @param dataSetDTO the data set DTO
-	 * @param appliedQDM the applied QDM
-	 * @return the CQL quality data model wrapper
-	 */
-	private CQLQualityDataModelWrapper modifyAppliedElementList(final CQLQualityDataSetDTO dataSetDTO,
-			final ArrayList<CQLQualityDataSetDTO> appliedQDM) {
-		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
-		Iterator<CQLQualityDataSetDTO> iterator = appliedQDM.iterator();
-		while (iterator.hasNext()) {
-			CQLQualityDataSetDTO qualityDataSetDTO = iterator.next();
-			if (qualityDataSetDTO.getUuid().equals(dataSetDTO.getUuid())) {
-				iterator.remove();
-				break;
-			}
-		}
-		appliedQDM.add(dataSetDTO);
-		wrapper.setQualityDataDTO(appliedQDM);
-		return wrapper;
-	}
-
-	/**
-	 * Populated old QDM.
-	 *
-	 * @param oldQdm            the old qdm
-	 * @param qualityDataSetDTO the quality data set DTO
-	 */
-	private void populatedOldQDM(CQLQualityDataSetDTO oldQdm, CQLQualityDataSetDTO qualityDataSetDTO) {
-		oldQdm.setName(qualityDataSetDTO.getName());
-		oldQdm.setSuffix(qualityDataSetDTO.getSuffix());
-		oldQdm.setOriginalCodeListName(qualityDataSetDTO.getOriginalCodeListName());
-		oldQdm.setOid(qualityDataSetDTO.getOid());
-		oldQdm.setUuid(qualityDataSetDTO.getUuid());
-		oldQdm.setVersion(qualityDataSetDTO.getVersion());
 	}
 
 	@Override

@@ -5573,76 +5573,54 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
-			List<CQLQualityDataSetDTO> appliedValueSetList, String measureId) {
-
-		StringBuilder finalXmlString = new StringBuilder("<valuesets>");
-		SaveUpdateCQLResult finalResult = new SaveUpdateCQLResult();
+	public CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList, List<CQLQualityDataSetDTO> appliedValueSetList, String measureId) {
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
+		MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			for (CQLValueSetTransferObject transferObject : transferObjectList) {
 				SaveUpdateCQLResult result = null;
 				transferObject.setAppliedQDMList(appliedValueSetList);
 				if (transferObject.getCqlQualityDataSetDTO().getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
-					result = getCqlService().saveCQLUserDefinedValueset(transferObject);
+					result = getCqlService().saveCQLValueset(measureXMLModel.getMeasureId(), transferObject);
 				} else {
-					result = getCqlService().saveCQLValueset(transferObject);
+					result = getCqlService().saveCQLValueset(measureXMLModel.getMeasureId(), transferObject);
 				}
 
-				if (result != null && result.isSuccess() && StringUtils.isNotBlank(result.getXml())) {
-					finalXmlString = finalXmlString.append(result.getXml());
+				// TODO: Going to the database for each save is not a good idea
+				if (result.isSuccess()) {
+					XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
+					processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+					measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
+					measurePackageService.saveMeasureXml(measureXMLModel);
 				}
 			}
 
-			finalXmlString.append("</valuesets>");
-			finalResult.setXml(finalXmlString.toString());
-			logger.info(finalXmlString);
-			saveCQLValuesetInMeasureXml(finalResult, measureId);
+			// TODO: probably don't need to go to the database for this
 			wrapper = getCQLValusets(measureId);
 		}
+		
 		return wrapper;
 	}
 
 	@Override
 	public SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject) {
-
-		SaveUpdateCQLResult result = null;
-		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, valueSetTransferObject.getMeasureId())) {
-			result = getCqlService().saveCQLValueset(valueSetTransferObject);
-			if (result != null && result.isSuccess()) {
-				saveCQLValuesetInMeasureXml(result, valueSetTransferObject.getMeasureId());
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		
+		// TODO: there has to be a better way to get the current measure id... maybe pass it in?
+		MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(valueSetTransferObject.getMeasureId());
+		
+		if (measureXMLModel != null) {
+			MatContextServiceUtil.get().setMeasure(true);
+			result = getCqlService().saveCQLValueset(measureXMLModel.getXml(), valueSetTransferObject);
+			if (result.isSuccess()) {
+				XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
+				processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+				measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
+				measurePackageService.saveMeasureXml(measureXMLModel);
 			}
 		}
-		return result;
-	}
 
-	@Override
-	public SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(
-			CQLValueSetTransferObject matValueSetTransferObject) {
-
-		SaveUpdateCQLResult result = null;
-		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO,
-				matValueSetTransferObject.getMeasureId())) {
-			result = getCqlService().saveCQLUserDefinedValueset(matValueSetTransferObject);
-			if (result != null && result.isSuccess()) {
-				saveCQLValuesetInMeasureXml(result, matValueSetTransferObject.getMeasureId());
-			}
-		}
-		return result;
-	}
-
-	@Override
-	public SaveUpdateCQLResult modifyCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject) {
-
-		SaveUpdateCQLResult result = null;
-		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO,
-				matValueSetTransferObject.getMeasureId())) {
-			result = getCqlService().modifyCQLValueSets(matValueSetTransferObject);
-			if (result != null && result.isSuccess()) {
-				updateCQLLookUpTagWithModifiedValueSet(result.getCqlQualityDataSetDTO(),
-						matValueSetTransferObject.getCqlQualityDataSetDTO(), matValueSetTransferObject.getMeasureId());
-			}
-		}
 		return result;
 	}
 
@@ -5869,24 +5847,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		return appendAndSaveNode(xmlModal, nodeName);
 
-	}
-
-	/**
-	 * Save CQL valueset in measure xml.
-	 *
-	 * @param result
-	 *            the result
-	 */
-	private void saveCQLValuesetInMeasureXml(SaveUpdateCQLResult result, String measureId) {
-		final String nodeName = "valueset";
-		MeasureXmlModel xmlModal = new MeasureXmlModel();
-		xmlModal.setMeasureId(measureId);
-		xmlModal.setParentNode("/measure/cqlLookUp/valuesets");
-		xmlModal.setToReplaceNode(nodeName);
-
-		xmlModal.setXml(result.getXml());
-
-		appendAndSaveNode(xmlModal, nodeName);
 	}
 
 	@Override

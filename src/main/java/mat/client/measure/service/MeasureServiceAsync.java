@@ -672,12 +672,6 @@ public interface MeasureServiceAsync {
 	void saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject, 
 			AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject,
-			AsyncCallback<SaveUpdateCQLResult> callback);
-
-	void updateCQLValuesetsToMeasure(CQLValueSetTransferObject matValueSetTransferObject,
-			AsyncCallback<SaveUpdateCQLResult> callback);
-
 	void saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
 			List<CQLIncludeLibrary> incLibraryList, AsyncCallback<SaveUpdateCQLResult> callback);
 

@@ -1875,14 +1875,15 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		CQLValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(MatContext.get().getCurrentCQLLibraryId());
 		matValueSetTransferObject.scrubForMarkUp();
 		matValueSetTransferObject.setMatValueSet(null);
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setOid("");
 		if ((matValueSetTransferObject.getUserDefinedText().length() > 0)) {
 			ValueSetNameInputValidator valueSetNameInputValidator = new ValueSetNameInputValidator();
 			String message = valueSetNameInputValidator.validate(matValueSetTransferObject);
 			if (message.isEmpty()) {
 				final String userDefinedInput = matValueSetTransferObject.getCqlQualityDataSetDTO().getName(); 
-				if (!cqlWorkspaceView.getValueSetView().checkNameInValueSetList(userDefinedInput,appliedValueSetTableList)) {
+				if (!cqlWorkspaceView.getValueSetView().checkNameInValueSetList(userDefinedInput, appliedValueSetTableList)) {
 					showSearchingBusy(true);
-					MatContext.get().getLibraryService().saveCQLUserDefinedValueset(matValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
+					MatContext.get().getLibraryService().saveCQLValueset(matValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
 						@Override
 						public void onFailure(final Throwable caught) {
 							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());

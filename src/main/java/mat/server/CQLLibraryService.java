@@ -1140,11 +1140,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, valueSetTransferObject.getCqlLibraryId())) {
 			CQLLibrary library = cqlLibraryDAO.find(valueSetTransferObject.getCqlLibraryId());
 			if (library != null) {
-				result = cqlService.saveCQLValueset(valueSetTransferObject);
+				result = cqlService.saveCQLValueset(getCQLLibraryXml(library), valueSetTransferObject);
 				if (result != null && result.isSuccess()) {
-					String nodeName = "valueset";
-					String parentNode = "//cqlLookUp/valuesets";
-					appendAndSaveNode(library, nodeName, result.getXml(), parentNode);
+					library.setCQLByteArray(result.getXml().getBytes());
+					cqlLibraryDAO.save(library);
 				}
 			}
 		}
@@ -1310,61 +1309,34 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	}
 
 	@Override
-	public SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject) {
-		
-		SaveUpdateCQLResult result = null;
-		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO,
-				matValueSetTransferObject.getCqlLibraryId())) {
-			CQLLibrary library = cqlLibraryDAO.find(matValueSetTransferObject.getCqlLibraryId());
-			if (library != null) {
-				result = cqlService.saveCQLUserDefinedValueset(matValueSetTransferObject);
-				if (result != null && result.isSuccess()) {
-					String nodeName = "valueset";
-					String parentNode = "//cqlLookUp/valuesets";
-					appendAndSaveNode(library, nodeName, result.getXml(), parentNode);
-				}
-			}
-		}
-		return result;
-	}
-	
-	@Override
 	public CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList , 
 			List<CQLQualityDataSetDTO> appliedValueSetList , String cqlLibraryId) {
 		
-		StringBuilder finalXmlString = new StringBuilder("<valuesets>");
-		SaveUpdateCQLResult finalResult = new SaveUpdateCQLResult();
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
+		CQLLibrary library = cqlLibraryDAO.find(cqlLibraryId);
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibraryId)) {
 			for (CQLValueSetTransferObject  transferObject : transferObjectList) {
 				SaveUpdateCQLResult result = null;
 				transferObject.setAppliedQDMList(appliedValueSetList);
 				if(transferObject.getCqlQualityDataSetDTO().getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
-					result = cqlService.saveCQLUserDefinedValueset(transferObject);
+					// TODO replace with different save method
+					result = cqlService.saveCQLValueset(getCQLLibraryXml(library), transferObject);
 				} else {
-					result = cqlService.saveCQLValueset(transferObject);
+					// TODO replace with different save method
+					result = cqlService.saveCQLValueset(getCQLLibraryXml(library), transferObject);
 				}
 				
-				if(result != null && result.isSuccess()) {
-					if ((result.getXml() != null) && !StringUtils.isEmpty(result.getXml())) {
-						finalXmlString = finalXmlString.append(result.getXml());
-					}	
+				if (result != null && result.isSuccess()) {
+					library.setCQLByteArray(result.getXml().getBytes());
+					cqlLibraryDAO.save(library);
 				}
 			}
 			
-			finalXmlString.append("</valuesets>");
-			finalResult.setXml(finalXmlString.toString());
-			logger.info(finalXmlString);
-			CQLLibrary library = cqlLibraryDAO.find(cqlLibraryId);
+			// TODO: i don't think we would have to go back to the database to get this information...
 			if (library != null) {
-				String nodeName = "valueset";
-				String parentNode = "//cqlLookUp/valuesets";
-				appendAndSaveNode(library, nodeName, finalResult.getXml(), parentNode);
 				cqlLibraryDAO.refresh(library);
-				List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
-						.sortCQLQualityDataSetDto(getCQLData(cqlLibraryId).getCqlModel().getAllValueSetAndCodeList());
+				List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass.sortCQLQualityDataSetDto(getCQLData(cqlLibraryId).getCqlModel().getAllValueSetAndCodeList());
 				wrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
-				
 			}
 		}
 		
@@ -1374,16 +1346,14 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
 	@Override
 	public SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject) {
-		
+		// TODO: This whole thing can be combined with the save method
 		SaveUpdateCQLResult result = null;
-		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO,
-				matValueSetTransferObject.getCqlLibraryId())) {
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, matValueSetTransferObject.getCqlLibraryId())) {
 			CQLLibrary library = cqlLibraryDAO.find(matValueSetTransferObject.getCqlLibraryId());
 			if (library != null) {
-				result = cqlService.modifyCQLValueSets(matValueSetTransferObject);
+				result = cqlService.saveCQLValueset(getCQLLibraryXml(library), matValueSetTransferObject);
 				if (result != null && result.isSuccess()) {
-					result = cqlService.updateCQLLookUpTag(getCQLLibraryXml(library), result.getCqlQualityDataSetDTO(),
-							matValueSetTransferObject.getCqlQualityDataSetDTO());
+					result = cqlService.updateCQLLookUpTag(getCQLLibraryXml(library), result.getCqlQualityDataSetDTO(), matValueSetTransferObject.getCqlQualityDataSetDTO());
 					if (result != null && result.isSuccess()) {
 						library.setCQLByteArray(result.getXml().getBytes());
 						save(library);

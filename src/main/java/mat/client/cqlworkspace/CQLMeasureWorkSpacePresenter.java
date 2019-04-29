@@ -1860,6 +1860,10 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		final String codeListName = (originalCodeListName != null ? originalCodeListName : EMPTY_STRING)
 				+ (!suffix.isEmpty() ? " (" + suffix + ")" : EMPTY_STRING);
 
+		saveValueset(matValueSetTransferObject, codeListName);
+	}
+
+	private void saveValueset(CQLValueSetTransferObject matValueSetTransferObject, final String codeListName) {
 		if (!cqlWorkspaceView.getValueSetView().checkNameInValueSetList(codeListName, appliedValueSetTableList)) {
 			showSearchingBusy(true);
 			MatContext.get().getMeasureService().saveCQLValuesettoMeasure(matValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
@@ -1907,6 +1911,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	@Override
 	protected void addUserDefinedValueSet() {
 		CQLValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(MatContext.get().getCurrentMeasureId());
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setOid("");
 		matValueSetTransferObject.scrubForMarkUp();
 		matValueSetTransferObject.setMatValueSet(null);
 		if ((matValueSetTransferObject.getUserDefinedText().length() > 0)) {
@@ -1914,51 +1919,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			String message = valueSetNameInputValidator.validate(matValueSetTransferObject);
 			if (message.isEmpty()) {
 				final String userDefinedInput = matValueSetTransferObject.getCqlQualityDataSetDTO().getName();
-				// Check if QDM name already exists in the list.
-				if (!cqlWorkspaceView.getValueSetView().checkNameInValueSetList(userDefinedInput,
-						appliedValueSetTableList)) {
-					showSearchingBusy(true);
-					MatContext.get().getMeasureService().saveCQLUserDefinedValuesettoMeasure(matValueSetTransferObject,
-							new AsyncCallback<SaveUpdateCQLResult>() {
-						@Override
-						public void onFailure(final Throwable caught) {
-							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							showSearchingBusy(false);
-							cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(false);
-						}
-
-						@Override
-						public void onSuccess(final SaveUpdateCQLResult result) {
-							if (result != null) {
-								if (result.isSuccess()) {
-									if (result.getXml() != null) {
-										messagePanel.getSuccessMessageAlert().createAlert(getValuesetSuccessMessage(userDefinedInput));
-										MatContext.get().setValuesets(result.getCqlAppliedQDMList());
-										cqlWorkspaceView.getValueSetView().resetCQLValuesetearchPanel();
-										getAppliedValueSetList();
-									}
-								} else {
-									if (result.getFailureReason() == SaveUpdateCQLResult.ALREADY_EXISTS) {
-										messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(result.getCqlQualityDataSetDTO().getName()));
-									} else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
-										messagePanel.getErrorMessageAlert().createAlert(INVALID_INPUT_DATA);
-									}
-								}
-							}
-
-							getUsedArtifacts();
-							cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(false);
-							showSearchingBusy(false);
-						}
-					});
-				} else {
-					messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(userDefinedInput));
-				}
-			} else {
-				messagePanel.getErrorMessageAlert().createAlert(message);
+				saveValueset(matValueSetTransferObject, userDefinedInput);
 			}
-		} else {
-			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
 		}
 	}
 
@@ -1974,7 +1936,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 		matValueSetTransferObject.scrubForMarkUp();
 		showSearchingBusy(true);
-		MatContext.get().getMeasureService().updateCQLValuesetsToMeasure(matValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
+		MatContext.get().getMeasureService().saveCQLValuesettoMeasure(matValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
 			@Override
 			public void onFailure(final Throwable caught) {
 				showSearchingBusy(false);

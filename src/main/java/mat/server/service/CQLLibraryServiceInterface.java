@@ -101,8 +101,6 @@ public interface CQLLibraryServiceInterface {
 
 	SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId);
 
-	SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject);
-
 	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);
 
 	VsacApiResult updateCQLVSACValueSets(String cqlLibraryId, String expansionId, String sessionId);

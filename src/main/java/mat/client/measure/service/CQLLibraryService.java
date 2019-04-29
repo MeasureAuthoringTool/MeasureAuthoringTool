@@ -95,9 +95,7 @@ public interface CQLLibraryService extends RemoteService {
 	
 	SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, 
 			List<CQLParameter> parameterList);
-		
-	SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject);
-	
+			
 	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);
 	
 	VsacApiResult updateCQLVSACValueSets(String currentCQLLibraryId, String expansionId);

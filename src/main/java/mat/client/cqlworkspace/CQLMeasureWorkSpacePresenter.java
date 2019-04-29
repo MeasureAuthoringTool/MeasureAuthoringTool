@@ -199,11 +199,25 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 	private void addGeneralInfoEventHandlers() {
 		cqlWorkspaceView.getCqlGeneralInformationView().getSaveButton().addClickHandler(event -> saveCQLGeneralInformation());
-		cqlWorkspaceView.getCqlGeneralInformationView().getComments().addValueChangeHandler(event -> resetMessagesAndSetPageDirty(true));
+		cqlWorkspaceView.getCqlGeneralInformationView().getComments().addKeyUpHandler(event -> keyUpEvent());
+		cqlWorkspaceView.getCqlGeneralInformationView().getComments().addBlurHandler(event -> generalCommentBlurEvent());
+	}
+	
+	private void generalCommentBlurEvent() {
+		cqlWorkspaceView.resetMessageDisplay();
+		cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.NONE);
+		String comment = cqlWorkspaceView.getCqlGeneralInformationView().getComments().getText();
+		if (validator.isCommentMoreThan2500Characters(comment)) {
+			cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.ERROR);
+			messagePanel.getErrorMessageAlert().createAlert(CQLGeneralInformationUtility.COMMENT_LENGTH_ERROR);
+		} else if(validator.doesCommentContainInvalidCharacters(comment)){
+			cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.ERROR);
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
+		}
 	}
 
 	private void saveCQLGeneralInformation() {
-		resetMessagesAndSetPageDirty(false);
+		cqlWorkspaceView.resetMessageDisplay();
 		String comments = cqlWorkspaceView.getCqlGeneralInformationView().getComments().getText().trim();
 		boolean isvalid = CQLGeneralInformationUtility.validateGeneralInformationSection(cqlWorkspaceView.getCqlGeneralInformationView(), messagePanel, null, comments);
 		if(isvalid) {
@@ -227,6 +241,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 					cqlWorkspaceView.getCqlGeneralInformationView().getComments().setText(cqlLibraryComment);
 					cqlWorkspaceView.getCqlGeneralInformationView().getComments().setCursorPos(0);
 					messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getCurrentMeasureName() + " general information successfully updated.");
+					setIsPageDirty(false);
 				}
 				showSearchingBusy(false);
 			}

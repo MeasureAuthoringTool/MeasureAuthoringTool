@@ -8,6 +8,8 @@ import mat.shared.CQLModelValidator;
 
 public class CQLGeneralInformationUtility {
 	
+	public static final String COMMENT_LENGTH_ERROR = "Comment cannot exceed 2500 characters.";
+	
 	public static boolean validateGeneralInformationSection(CQLGeneralInformationView view, MessagePanel messagePanel, String libraryName, String commentBoxContent) {
 		CQLModelValidator validator = new CQLModelValidator();
 
@@ -23,9 +25,9 @@ public class CQLGeneralInformationUtility {
 			return false; 
 		}
 		
-		if(validator.isCommentMoreThan250Characters(commentBoxContent)) {
+		if(validator.isCommentMoreThan2500Characters(commentBoxContent)) {
 			view.getCommentsGroup().setValidationState(ValidationState.ERROR);
-			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+			messagePanel.getErrorMessageAlert().createAlert(COMMENT_LENGTH_ERROR);
 			return false; 
 		}
 		

@@ -3,6 +3,7 @@ package mat.client.cqlworkspace.generalinformation;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.user.client.ui.HTML;
@@ -12,7 +13,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.buttons.SaveToolBarButton;
 import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.inapphelp.component.InAppHelp;
-import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
@@ -35,12 +35,11 @@ public class CQLGeneralInformationView {
 	
 	private static final String STYLE = "style";
 	private static final String PIXEL_150 = "150px";
-	private static final String DISABLED = "disabled";
 	private static final String FONT_SIZE_90_MARGIN_LEFT_15PX = "font-size:90%;margin-left:15px;";
 	private static final String MARGIN_STYLE = "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;";
 	
-	private static final int COMMENTS_MAX_LENGTH = 2500;
-	private CustomTextAreaWithMaxLength comments = new CustomTextAreaWithMaxLength(COMMENTS_MAX_LENGTH);
+	private static final String COMMENTS_MAX_LENGTH = "2500";
+	private TextArea comments = new TextArea();
 	private InAppHelp inAppHelp = new InAppHelp("");
 	
 
@@ -153,7 +152,7 @@ public class CQLGeneralInformationView {
 		commentsLabel.setId("commentsLabel");
 		commentsLabel.setFor("commentsContent");
 		commentsLabel.setText("Comments");
-		comments.getElement().setAttribute("maxlength", "2500");
+		comments.getElement().setAttribute("maxlength", COMMENTS_MAX_LENGTH);
 		comments.getElement().setAttribute("id", "commentsContent");
 		comments.setHeight("220px");
 		comments.setWidth("250px");
@@ -258,11 +257,7 @@ public class CQLGeneralInformationView {
 
 	private void setButtonsAndCommentsReadOnly(boolean isEditable){
 		getSaveButton().setEnabled(isEditable);
-		if(isEditable) {
-			getComments().getElement().removeAttribute(DISABLED);
-		} else {
-			getComments().getElement().setAttribute(DISABLED, DISABLED);
-		}
+		getComments().setEnabled(isEditable);
 	}
 	
 	public void resetAll(){
@@ -325,11 +320,11 @@ public class CQLGeneralInformationView {
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
 
-	public CustomTextAreaWithMaxLength getComments() {
+	public TextArea getComments() {
 		return comments;
 	}
 
-	public void setComments(CustomTextAreaWithMaxLength comments) {
+	public void setComments(TextArea comments) {
 		this.comments = comments;
 	}
 

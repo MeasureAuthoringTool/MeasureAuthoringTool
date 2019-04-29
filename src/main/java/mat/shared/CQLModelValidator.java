@@ -104,4 +104,9 @@ public class CQLModelValidator {
 		return isInValid;
 	}
 	
+	public boolean isCommentMoreThan2500Characters(String comment) {
+		return comment.length() > 2500;
+	}
+
+	
 }

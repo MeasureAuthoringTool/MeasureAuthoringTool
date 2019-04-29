@@ -53,8 +53,7 @@ public class CQLLinter extends cqlBaseListener {
 		
 		if(!name.equals(config.getLibraryName()) || !version.equals(config.getLibraryVersion())) {
 			
-			String message = String.format(
-					"The library name and version must match what is on file for this CQL file: %s version ' %s'", 
+			String message = String.format("%s version '%s' does not match what is on file in the MAT.", 
 					config.getLibraryName(), config.getLibraryVersion());
 			
 			errorMessages.add(message);
@@ -90,7 +89,7 @@ public class CQLLinter extends cqlBaseListener {
 	private void createIncludedLibraryError(IncludeDefinitionContext ctx, String identifier, String version, String alias) {
 		String statement = identifier + " version '" + version + "' called " + alias;		
 		this.missingIncludedLibraries.add(statement);
-		this.errors.add(createError(statement + " does not exist in the Includes section of the MAT", ctx));
+		this.errors.add(createError(statement + " does not exist in the Includes section of the MAT.", ctx));
 	}
 	
 	public List<String> getErrorMessages() {

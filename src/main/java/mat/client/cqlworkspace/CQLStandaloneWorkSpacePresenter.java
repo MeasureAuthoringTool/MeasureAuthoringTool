@@ -291,19 +291,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		cqlWorkspaceView.getCqlGeneralInformationView().getComments().addKeyUpHandler(event -> keyUpEvent());
 		cqlWorkspaceView.getCqlGeneralInformationView().getComments().addBlurHandler(event -> generalCommentBlurEvent());
 	}
-
-	private void generalCommentBlurEvent() {
-		resetMessagesAndSetPageDirty(true);
-		cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.NONE);
-		String comment = cqlWorkspaceView.getCqlGeneralInformationView().getComments().getText();
-		if (validator.isCommentMoreThan2500Characters(comment)) {
-			cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.ERROR);
-			messagePanel.getErrorMessageAlert().createAlert(CQLGeneralInformationUtility.COMMENT_LENGTH_ERROR);
-		} else if(validator.doesCommentContainInvalidCharacters(comment)){
-			cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.ERROR);
-			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
-		}
-	}
 	
 	private void saveCQLGeneralInfo() {
 		resetMessagesAndSetPageDirty(false);

@@ -27,6 +27,7 @@ import mat.client.Mat;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.cqlworkspace.codes.CQLCodesView;
+import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationUtility;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility;
 import mat.client.expressionbuilder.modal.ExpressionBuilderHomeModal;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
@@ -1666,6 +1667,19 @@ public abstract class AbstractCQLWorkspacePresenter {
 		} else if(validator.doesCommentContainInvalidCharacters(comment)){
 			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
 			cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.ERROR);
+		}
+	}
+	
+	protected void generalCommentBlurEvent() {
+		cqlWorkspaceView.resetMessageDisplay();
+		cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.NONE);
+		String comment = cqlWorkspaceView.getCqlGeneralInformationView().getComments().getText();
+		if (validator.isCommentMoreThan2500Characters(comment)) {
+			cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.ERROR);
+			messagePanel.getErrorMessageAlert().createAlert(CQLGeneralInformationUtility.COMMENT_LENGTH_ERROR);
+		} else if(validator.doesCommentContainInvalidCharacters(comment)){
+			cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.ERROR);
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
 		}
 	}
 	

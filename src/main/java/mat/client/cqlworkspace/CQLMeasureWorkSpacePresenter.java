@@ -203,19 +203,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.getCqlGeneralInformationView().getComments().addBlurHandler(event -> generalCommentBlurEvent());
 	}
 	
-	private void generalCommentBlurEvent() {
-		cqlWorkspaceView.resetMessageDisplay();
-		cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.NONE);
-		String comment = cqlWorkspaceView.getCqlGeneralInformationView().getComments().getText();
-		if (validator.isCommentMoreThan2500Characters(comment)) {
-			cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.ERROR);
-			messagePanel.getErrorMessageAlert().createAlert(CQLGeneralInformationUtility.COMMENT_LENGTH_ERROR);
-		} else if(validator.doesCommentContainInvalidCharacters(comment)){
-			cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.ERROR);
-			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
-		}
-	}
-
 	private void saveCQLGeneralInformation() {
 		cqlWorkspaceView.resetMessageDisplay();
 		String comments = cqlWorkspaceView.getCqlGeneralInformationView().getComments().getText().trim();

@@ -3,6 +3,7 @@ package mat.client.cqlworkspace;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
@@ -163,7 +164,12 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
 				@Override
 				public void onSuccess(SaveUpdateCQLResult result) {
-					setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetAndCodeList());
+					List<CQLQualityDataSetDTO> valuesets = result.getCqlModel().getAllValueSetAndCodeList().stream().filter(v -> (
+							v.getOriginalCodeListName() != null &&
+							!v.getOriginalCodeListName().isEmpty())
+					).collect(Collectors.toList());
+					setAppliedValueSetListInTable(valuesets);
+					setAppliedValueSetListInTable(valuesets);
 					showSearchingBusy(false);
 				}
 			});
@@ -1277,19 +1283,26 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetAndCodeList();
 
 				for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
-					if (dto.isSuppDataElement())
+					if (dto.isSuppDataElement() || dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()) {
 						continue;
+					}
+						
 					appliedAllValueSetList.add(dto);
 				}
+				
 				MatContext.get().setCQLModel(result.getCqlModel());
 				MatContext.get().setValuesets(appliedAllValueSetList);
 				appliedValueSetTableList.clear();
 				appliedCodeTableList.clear();
+				
 				for (CQLQualityDataSetDTO dto : result.getCqlModel().getValueSetList()) {
-					if (dto.isSuppDataElement())
+					if (dto.isSuppDataElement() || dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()) {
 						continue;
+					}
+					
 					appliedValueSetTableList.add(dto);
 				}
+				
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setAppliedQdmTableList(appliedValueSetTableList);
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
 
@@ -1305,9 +1318,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().updateDefineMap();
 					MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
-				} else {
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineBadge().setText("00");
-				}
+				} 
 				
 				if (result.getCqlModel().getCqlParameters() != null) {
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewParameterList(result.getCqlModel().getCqlParameters());
@@ -1782,7 +1793,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		matValueSetTransferObject.setUserDefinedText(cqlWorkspaceView.getValueSetView().getUserDefinedInput().getText());
 		matValueSetTransferObject.scrubForMarkUp();
 		showSearchingBusy(true);
-		MatContext.get().getLibraryService().modifyCQLValueSets(matValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
+		MatContext.get().getLibraryService().saveCQLValueset(matValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
 			@Override
 			public void onFailure(final Throwable caught) {
 				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -1825,6 +1836,10 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		String originalCodeListName = matValueSetTransferObject.getMatValueSet().getDisplayName(); 
 		String suffix = cqlWorkspaceView.getValueSetView().getSuffixInput().getValue();
 		final String codeListName = (originalCodeListName!=null ? originalCodeListName : EMPTY_STRING) + (!suffix.isEmpty() ? " (" + suffix + ")" : EMPTY_STRING);
+		saveValueset(matValueSetTransferObject, codeListName);
+	}
+
+	private void saveValueset(CQLValueSetTransferObject matValueSetTransferObject, final String codeListName) {
 		if (!cqlWorkspaceView.getValueSetView().checkNameInValueSetList(codeListName,appliedValueSetTableList)) {
 			showSearchingBusy(true);
 			MatContext.get().getLibraryService().saveCQLValueset(matValueSetTransferObject,
@@ -1881,42 +1896,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 			String message = valueSetNameInputValidator.validate(matValueSetTransferObject);
 			if (message.isEmpty()) {
 				final String userDefinedInput = matValueSetTransferObject.getCqlQualityDataSetDTO().getName(); 
-				if (!cqlWorkspaceView.getValueSetView().checkNameInValueSetList(userDefinedInput, appliedValueSetTableList)) {
-					showSearchingBusy(true);
-					MatContext.get().getLibraryService().saveCQLValueset(matValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
-						@Override
-						public void onFailure(final Throwable caught) {
-							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							showSearchingBusy(false);
-							cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(false);
-						}
-
-						@Override
-						public void onSuccess(final SaveUpdateCQLResult result) {
-							if (result != null) {
-								if (result.isSuccess()) {
-									if (result.getXml() != null) {
-										messagePanel.getSuccessMessageAlert().createAlert(getValuesetSuccessMessage(userDefinedInput));
-										MatContext.get().setValuesets(result.getCqlAppliedQDMList());
-										cqlWorkspaceView.getValueSetView().resetCQLValuesetearchPanel();
-										getAppliedValueSetList();
-									}
-								} else {
-									if (result.getFailureReason() == SaveUpdateCQLResult.ALREADY_EXISTS) {
-										messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(result.getCqlQualityDataSetDTO().getName()));
-									} else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
-										messagePanel.getErrorMessageAlert().createAlert(INVALID_INPUT_DATA);
-									}
-								}
-							}
-							getUsedArtifacts();
-							cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(false);
-							showSearchingBusy(false);
-						}
-					});
-				}  else {
-					messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(userDefinedInput));
-				}
+				saveValueset(matValueSetTransferObject, userDefinedInput);
 			} else {
 				messagePanel.getErrorMessageAlert().createAlert(message);
 			}
@@ -1934,6 +1914,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		String originalCodeListName = cqlWorkspaceView.getValueSetView().getUserDefinedInput().getValue(); 
 		matValueSetTransferObject.setCqlQualityDataSetDTO(new CQLQualityDataSetDTO());
 		matValueSetTransferObject.getCqlQualityDataSetDTO().setOriginalCodeListName(originalCodeListName);
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentMatValueSet.getID());
 
 		if(!cqlWorkspaceView.getValueSetView().getSuffixInput().getValue().isEmpty()){
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(cqlWorkspaceView.getValueSetView().getSuffixInput().getValue());

@@ -209,32 +209,41 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	
 	@Override
 	public void enterValuesetDefinition(ValuesetDefinitionContext ctx) {
-		CQLQualityDataSetDTO valueset = new CQLQualityDataSetDTO();
 		
-		String identifier = parseString(ctx.identifier().getText());
-		String valuesetId = parseString(ctx.valuesetId().getText());
+		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+		String valuesetId = CQLParserUtil.parseString(ctx.valuesetId().getText()).replace(VALUESET_OID_PREFIX, "");
 		
 		String version = "";
 		if(ctx.versionSpecifier() != null) {
 			version = parseString(ctx.versionSpecifier().getText());
 		}
-
-		valueset.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
-		valueset.setUuid(UUID.randomUUID().toString());
-		valueset.setName(identifier);
-		valueset.setVersion(version);
-		valueset.setSuffix(identifier);
 		
-		valueset.setOriginalCodeListName("");
-		valueset.setProgram("");
-		valueset.setRelease("");
-		valueset.setDataType("");
-		valueset.setTaxonomy("");
-		valueset.setSuppDataElement(false);
-		valueset.setType("");
-		valueset.setOid(valuesetId.replace(VALUESET_OID_PREFIX, ""));
+		// check and see if there was a value set with the same identifier and oid as before
+		List<CQLQualityDataSetDTO> previousValuesets = previousModel.getValueSetList().stream().filter(v -> (
+				identifier.equals(v.getName())
+				&& valuesetId.equals(v.getOid())			
+		)).collect(Collectors.toList());
 		
-		cqlModel.getValueSetList().add(valueset);
+		if(!previousValuesets.isEmpty()) {
+			cqlModel.getValueSetList().addAll(previousValuesets);
+		} else {
+			CQLQualityDataSetDTO valueset = new CQLQualityDataSetDTO();
+			valueset.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
+			valueset.setUuid(UUID.randomUUID().toString());
+			valueset.setName(identifier);
+			valueset.setVersion(version);
+			valueset.setSuffix(identifier);
+			
+			valueset.setOriginalCodeListName("");
+			valueset.setProgram("");
+			valueset.setRelease("");
+			valueset.setDataType("");
+			valueset.setTaxonomy("");
+			valueset.setSuppDataElement(false);
+			valueset.setValueSetType("");
+			valueset.setOid(valuesetId);
+			cqlModel.getValueSetList().add(valueset);
+		}
 	}
 	
 	@Override

@@ -203,10 +203,6 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	}
 
 	@Override
-	public SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject) {
-		return this.getCQLLibraryService().modifyCQLValueSets(matValueSetTransferObject);
-	}
-	@Override
 	public VsacApiResult updateCQLVSACValueSets(String currentCQLLibraryId, String expansionId) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		return this.getCQLLibraryService().updateCQLVSACValueSets(currentCQLLibraryId, expansionId, sessionId);

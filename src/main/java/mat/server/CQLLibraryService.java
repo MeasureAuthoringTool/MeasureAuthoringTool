@@ -1319,10 +1319,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				SaveUpdateCQLResult result = null;
 				transferObject.setAppliedQDMList(appliedValueSetList);
 				if(transferObject.getCqlQualityDataSetDTO().getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
-					// TODO replace with different save method
 					result = cqlService.saveCQLValueset(getCQLLibraryXml(library), transferObject);
 				} else {
-					// TODO replace with different save method
 					result = cqlService.saveCQLValueset(getCQLLibraryXml(library), transferObject);
 				}
 				
@@ -1332,7 +1330,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				}
 			}
 			
-			// TODO: i don't think we would have to go back to the database to get this information...
 			if (library != null) {
 				cqlLibraryDAO.refresh(library);
 				List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass.sortCQLQualityDataSetDto(getCQLData(cqlLibraryId).getCqlModel().getAllValueSetAndCodeList());
@@ -1342,26 +1339,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 		
 		return wrapper;
-	}
-
-	@Override
-	public SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject) {
-		// TODO: This whole thing can be combined with the save method
-		SaveUpdateCQLResult result = null;
-		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, matValueSetTransferObject.getCqlLibraryId())) {
-			CQLLibrary library = cqlLibraryDAO.find(matValueSetTransferObject.getCqlLibraryId());
-			if (library != null) {
-				result = cqlService.saveCQLValueset(getCQLLibraryXml(library), matValueSetTransferObject);
-				if (result != null && result.isSuccess()) {
-					result = cqlService.updateCQLLookUpTag(getCQLLibraryXml(library), result.getCqlQualityDataSetDTO(), matValueSetTransferObject.getCqlQualityDataSetDTO());
-					if (result != null && result.isSuccess()) {
-						library.setCQLByteArray(result.getXml().getBytes());
-						save(library);
-					}
-				}
-			}
-		}
-		return result;
 	}
 
 	@Override

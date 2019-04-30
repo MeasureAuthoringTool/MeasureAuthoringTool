@@ -5587,7 +5587,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					result = getCqlService().saveCQLValueset(measureXMLModel.getMeasureId(), transferObject);
 				}
 
-				// TODO: Going to the database for each save is not a good idea
 				if (result.isSuccess()) {
 					XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
 					processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
@@ -5596,7 +5595,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 			}
 
-			// TODO: probably don't need to go to the database for this
 			wrapper = getCQLValusets(measureId);
 		}
 		
@@ -5607,7 +5605,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		
-		// TODO: there has to be a better way to get the current measure id... maybe pass it in?
 		MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(valueSetTransferObject.getMeasureId());
 		
 		if (measureXMLModel != null) {

@@ -945,19 +945,23 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetAndCodeList();
 
 			for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
-				if (dto.isSuppDataElement())
+				if (dto.isSuppDataElement() || dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()) {
 					continue;
+				}
+					
 				appliedAllValueSetList.add(dto);
 			}
+			
 			MatContext.get().setCQLModel(result.getCqlModel());
 			MatContext.get().setValuesets(appliedAllValueSetList);
 			appliedValueSetTableList.clear();
 			appliedCodeTableList.clear();
 			for (CQLQualityDataSetDTO dto : result.getCqlModel().getValueSetList()) {
-				if (dto.isSuppDataElement())
+				if (dto.isSuppDataElement() || dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty())
 					continue;
 				appliedValueSetTableList.add(dto);
 			}
+			
 			if (result.getCqlModel().getCodeList() != null) {
 				appliedCodeTableList.addAll(result.getCqlModel().getCodeList());
 			}
@@ -965,14 +969,14 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().setAppliedCodeTableList(appliedCodeTableList);
+			
 			if (result.getCqlModel().getDefinitionList() != null) {
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().updateDefineMap();
 				MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
-			} else {
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineBadge().setText("00");
-			}
+			} 
+			
 			if (result.getCqlModel().getCqlParameters() != null) {
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewParameterList(result.getCqlModel().getCqlParameters());
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
@@ -1925,7 +1929,11 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			if (message.isEmpty()) {
 				final String userDefinedInput = matValueSetTransferObject.getCqlQualityDataSetDTO().getName();
 				saveValueset(matValueSetTransferObject, userDefinedInput);
+			}  else {
+				messagePanel.getErrorMessageAlert().createAlert(message);
 			}
+		} else {
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
 		}
 	}
 
@@ -1989,7 +1997,11 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 				@Override
 				public void onSuccess(CQLQualityDataModelWrapper result) {
-					setAppliedValueSetListInTable(result.getQualityDataDTO());
+					List<CQLQualityDataSetDTO> valuesets = result.getQualityDataDTO().stream().filter(v -> (
+							v.getOriginalCodeListName() != null &&
+							!v.getOriginalCodeListName().isEmpty())
+					).collect(Collectors.toList());
+					setAppliedValueSetListInTable(valuesets);
 				}
 			});
 		}
@@ -2004,7 +2016,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		String originalCodeListName = cqlWorkspaceView.getValueSetView().getUserDefinedInput().getValue();
 		matValueSetTransferObject.setCqlQualityDataSetDTO(new CQLQualityDataSetDTO());
 		matValueSetTransferObject.getCqlQualityDataSetDTO().setOriginalCodeListName(originalCodeListName);
-
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentMatValueSet.getID());
+		
 		if (!cqlWorkspaceView.getValueSetView().getSuffixInput().getValue().isEmpty()) {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(cqlWorkspaceView.getValueSetView().getSuffixInput().getValue());
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setName(

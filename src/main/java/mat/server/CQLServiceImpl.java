@@ -1691,44 +1691,62 @@ public class CQLServiceImpl implements CQLService {
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION);
 			return result;
-		}
+		}	
 		
-		// TODO: Check if a valueset with the id already exists....
-		Optional<CQLQualityDataSetDTO> existingValueset = model.getValueSetList().stream().filter(v -> v.getUuid().equals(valueSetTransferObject.getCqlQualityDataSetDTO().getUuid())).findFirst();
-		
-		CQLQualityDataSetDTO qds = convertValueSetTransferObjectToQualityDataSetDTO(valueSetTransferObject);
-		
-		// if this is an edit, make sure the UUID and ID are the same as the valuset being edited
-		// and remove it from the list
-		if(existingValueset.isPresent()) {
-			qds.setUuid(existingValueset.get().getUuid());
-			qds.setId(existingValueset.get().getId());
-			model.getValueSetList().remove(qds);
+		CQLQualityDataSetDTO qds = convertValueSetTransferObjectToQualityDataSetDTO(valueSetTransferObject);		
+		List<CQLQualityDataSetDTO> previousMatchingValuesets = model.getValueSetList().stream().filter(v -> 
+				(v.getName().equals(valueSetTransferObject.getCqlQualityDataSetDTO().getName()))
+						&& v.getOid().equals(valueSetTransferObject.getCqlQualityDataSetDTO().getOid())
+						&& StringUtils.isEmpty(v.getOriginalCodeListName())
+				).collect(Collectors.toList());
+						
+		if(!previousMatchingValuesets.isEmpty()) {
+			previousMatchingValuesets.forEach(v -> {
+				v.setSuffix(qds.getSuffix());
+				v.setOriginalCodeListName(qds.getOriginalCodeListName());
+				v.setProgram(qds.getProgram());
+				v.setRelease(qds.getRelease());
+				v.setDataType(qds.getDataType());
+				v.setValueSetType(qds.getTaxonomy());
+				v.setSuppDataElement(qds.isSuppDataElement());
+				v.setType(qds.getType());
+			});
 		} else {
-			if(isDuplicate(valueSetTransferObject, true)) {
-				result.setSuccess(false);
-				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
-				return result;
+			Optional<CQLQualityDataSetDTO> existingValueset = model.getValueSetList().stream().filter(v -> v.getUuid().equals(valueSetTransferObject.getCqlQualityDataSetDTO().getUuid())).findFirst();
+			// if this is an edit, make sure the UUID and ID are the same as the valueset being edited
+			// and remove it from the list
+			if(existingValueset.isPresent()) {
+				qds.setUuid(existingValueset.get().getUuid());
+				qds.setId(existingValueset.get().getId());
+				model.getValueSetList().remove(existingValueset.get());
+			} else {
+				qds.setUuid(UUID.randomUUID().toString());
+				qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+				
+				if(isDuplicate(valueSetTransferObject, true)) {
+					result.setSuccess(false);
+					result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
+					return result;
+				}
 			}
+			
+			model.getValueSetList().add(qds);
 		}
-		
-		model.getValueSetList().add(qds);
+				
 		result.setSuccess(true);
 		result.setCqlAppliedQDMList(sortQualityDataSetList(model.getValueSetList()));
 		result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));
 		return result;
-		
 	}
+	
 
 	private CQLQualityDataSetDTO convertValueSetTransferObjectToQualityDataSetDTO(CQLValueSetTransferObject valueSetTransferObject) {
 		CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
 		MatValueSet matValueSet = valueSetTransferObject.getMatValueSet();
-		qds.setUuid(UUID.randomUUID().toString());
-		qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 		qds.setName(valueSetTransferObject.getCqlQualityDataSetDTO().getName());
 		qds.setSuffix(valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
 		qds.setOriginalCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
-
+		qds.setDataType("");
 		// if the oid is empty, that means it is a user defined valueset and we need to save some special data
 		// or if the oid is the user defined oid
 		if(StringUtils.isEmpty(valueSetTransferObject.getCqlQualityDataSetDTO().getOid()) ||

@@ -496,10 +496,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 				result.getLinterErrorMessages().forEach(e -> errors.add(e));	
 			} 
 			
-			if(!result.getCqlErrors().isEmpty()) {
-				SharedCQLWorkspaceUtility.displayAnnotationForViewCQL(result, cqlWorkspaceView.getViewCQLView().getCqlAceEditor());
-			}
-			
+			SharedCQLWorkspaceUtility.displayAnnotationForViewCQL(result, cqlWorkspaceView.getViewCQLView().getCqlAceEditor());
 			messagePanel.getErrorMessageAlert().createAlert(errors);
 		} else {
 			messagePanel.getSuccessMessageAlert().createAlert("Changes to the CQL File have been successfully saved.");

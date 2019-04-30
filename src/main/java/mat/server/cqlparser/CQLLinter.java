@@ -12,20 +12,26 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.gen.cqlBaseListener;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.gen.cqlParser.IncludeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.LibraryDefinitionContext;
+import org.cqframework.cql.gen.cqlParser.ValuesetDefinitionContext;
 
 import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLError;
 
 public class CQLLinter extends cqlBaseListener {
 	
+	private static final String VALUESET_OID_PREFIX = "urn:oid:";
+
 	private CQLLinterConfig config;
 	private List<String> errorMessages;
 	private List<String> missingIncludedLibraries;
+	private List<String> missingValuesets;
 	private List<CQLError> errors;
 
 	public CQLLinter(String cql, CQLLinterConfig config) throws IOException {
@@ -33,6 +39,7 @@ public class CQLLinter extends cqlBaseListener {
 		this.errors = new ArrayList<>();
 		this.errorMessages = new ArrayList<>();
 		this.missingIncludedLibraries = new ArrayList<>();
+		this.missingValuesets = new ArrayList<>();
 		
 		InputStream stream = new ByteArrayInputStream(cql.getBytes());
 		cqlLexer lexer = new cqlLexer(new ANTLRInputStream(stream));
@@ -85,11 +92,40 @@ public class CQLLinter extends cqlBaseListener {
 			createIncludedLibraryError(ctx, identifier, version, alias);
 		}
 	}
-
+	
 	private void createIncludedLibraryError(IncludeDefinitionContext ctx, String identifier, String version, String alias) {
 		String statement = identifier + " version '" + version + "' called " + alias;		
 		this.missingIncludedLibraries.add(statement);
 		this.errors.add(createError(statement + " does not exist in the Includes section of the MAT.", ctx));
+	}
+	
+	@Override
+	public void enterValuesetDefinition(ValuesetDefinitionContext ctx) {
+		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+		String valuesetId = CQLParserUtil.parseString(ctx.valuesetId().getText()).replace(VALUESET_OID_PREFIX, "");
+
+		// find all libraries that have a matching identifier, alias, and version
+		if(config.getPreviousCQLModel().getValueSetList() != null) {
+			List<CQLQualityDataSetDTO> potentialMatches = config.getPreviousCQLModel().getValueSetList().stream().filter(v -> (
+					identifier.equals(v.getName())
+					&& valuesetId.equals(v.getOid())
+				)).collect(Collectors.toList());
+				
+				// if there were no matches in the previous model, or all matches do not have an id, then return an error. 
+				// not having an original code list name means that it has never been fetched through the valueset section.
+				// if there were no matches in the previous model, that also means it has never been fetched
+				if(potentialMatches.isEmpty() || potentialMatches.stream().filter(v -> StringUtils.isEmpty(v.getOriginalCodeListName())).count() > 0) {
+					createValuesetError(ctx, identifier, valuesetId);
+				}
+		} else {
+			createValuesetError(ctx, identifier, valuesetId);
+		}
+	}
+
+	private void createValuesetError(ValuesetDefinitionContext ctx, String identifier, String oid) {
+		String valueset = identifier + " (" + oid + ")";
+		this.missingValuesets.add(valueset);
+		this.errors.add(createError(valueset + " does not exist in the Value Sets section of the MAT.", ctx));
 	}
 	
 	public List<String> getErrorMessages() {
@@ -98,7 +134,19 @@ public class CQLLinter extends cqlBaseListener {
 			this.errorMessages.add(createMissingIncludedLibraryErrorMessage());
 		}
 		
+		if(!missingValuesets.isEmpty()) {
+			this.errorMessages.add(createMissingValuesetErrorMessage());
+		}
+		
 		return this.errorMessages;
+	}
+	
+	private String createMissingValuesetErrorMessage() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("The following value set(s) does not exist in the Value Set section: ");
+		builder.append(String.join(", ", this.missingValuesets));
+		builder.append(".  Please navigate to the Value Set section and add the value set(s) there to correct the error.");
+		return builder.toString();
 	}
 	
 	private String createMissingIncludedLibraryErrorMessage() {

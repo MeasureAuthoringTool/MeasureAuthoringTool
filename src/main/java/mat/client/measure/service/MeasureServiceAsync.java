@@ -703,9 +703,6 @@ public interface MeasureServiceAsync {
 			List<CQLQualityDataSetDTO> appliedValueSetList, String measureId,
 			AsyncCallback<CQLQualityDataModelWrapper> callback);
 
-	void modifyCQLCodeInMeasure(CQLCode modifyCQLCode, CQLCode refCode, String measureId,
-			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
-
 	void searchComponentMeasures(MeasureSearchModel searchModel, AsyncCallback<ManageMeasureSearchModel> asyncCallback);
 	
 	void buildCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel, AsyncCallback<ManageCompositeMeasureDetailModel> callback);

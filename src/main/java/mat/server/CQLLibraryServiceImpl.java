@@ -227,13 +227,7 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 			List<CQLCode> codeList, String libraryId) {
 		return this.getCQLLibraryService().saveCQLCodeListToCQLLibrary(codeList, libraryId);
 	}
-	
-	@Override
-	public SaveUpdateCQLResult modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode,
-			String cqlLibraryId) {
-		return this.getCQLLibraryService().modifyCQLCodeInCQLLibrary(codeToReplace, replacementCode, cqlLibraryId);
-	}
-	
+		
 	@Override
 	public final void deleteCQLLibrary(final String cqllibId, String loginUserId, String password) throws AuthenticationException {
 		 this.getCQLLibraryService().deleteCQLLibrary(cqllibId, loginUserId, password);

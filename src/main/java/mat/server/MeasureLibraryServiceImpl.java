@@ -5629,30 +5629,29 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(transferObject.getId());
 			if (xmlModel != null && !xmlModel.getXml().isEmpty()) {
 				result = getCqlService().saveCQLCodes(xmlModel.getXml(), transferObject);
-				if (result != null && result.isSuccess()) {
-					String newSavedXml = saveCQLCodesInMeasureXml(result, transferObject.getId());
-					if (StringUtils.isNotBlank(newSavedXml)) {
+				if (result.isSuccess()) {
+					XmlProcessor processor = new XmlProcessor(xmlModel.getXml());		
+					processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+					xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 
-						CQLCodeSystem codeSystem = new CQLCodeSystem();
-						codeSystem.setCodeSystem(transferObject.getCqlCode().getCodeSystemOID());
-						codeSystem.setCodeSystemName(transferObject.getCqlCode().getCodeSystemName());
-						codeSystem.setCodeSystemVersion(transferObject.getCqlCode().getCodeSystemVersion());
-						SaveUpdateCQLResult updatedResult = getCqlService().saveCQLCodeSystem(newSavedXml, codeSystem);
-						if (updatedResult.isSuccess()) {
-							newSavedXml = saveCQLCodeSystemInMeasureXml(updatedResult, transferObject.getId());
-						}
-						CQLCodeWrapper wrapper = getCqlService().getCQLCodes(newSavedXml);
-						if (wrapper != null && !wrapper.getCqlCodeList().isEmpty()) {
-							result.setCqlCodeList(wrapper.getCqlCodeList());
-							CQLModel cqlModel = cqlService.getCQLData(result.getXml())
-									.getCqlModel();
-							result.setCqlModel(cqlModel);
-						}
+					CQLCodeSystem codeSystem = new CQLCodeSystem();
+					codeSystem.setCodeSystem(transferObject.getCqlCode().getCodeSystemOID());
+					codeSystem.setCodeSystemName(transferObject.getCqlCode().getCodeSystemName());
+					codeSystem.setCodeSystemVersion(transferObject.getCqlCode().getCodeSystemVersion());
+					
+					SaveUpdateCQLResult saveCodesystemResult = getCqlService().saveCQLCodeSystem(xmlModel.getXml(), codeSystem);
+					if (saveCodesystemResult.isSuccess()) {
+						processor.replaceNode(saveCodesystemResult.getXml(), "cqlLookUp", "measure");
+						xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+						result = saveCodesystemResult;
 					}
+											
+					measurePackageService.saveMeasureXml(xmlModel);
+					result.setCqlCodeList(result.getCqlModel().getCodeList());
 				}
-
 			}
 		}
+		
 		return result;
 	}
 
@@ -5709,59 +5708,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public SaveUpdateCQLResult modifyCQLCodeInMeasure(CQLCode codeToReplace, CQLCode replacementCode,
-			String measureId) {
-		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
-		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-			MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
-			if (xmlModel != null && !xmlModel.getXml().isEmpty()) {
-				cqlResult = getCqlService().deleteCode(xmlModel.getXml(), codeToReplace.getId());
-				if (cqlResult != null && cqlResult.isSuccess()) {
-					xmlModel.setXml(cqlResult.getXml());
-					MatCodeTransferObject transferObject = new MatCodeTransferObject();
-					transferObject.setCqlCode(replacementCode);
-					transferObject.setId(measureId);
-
-					SaveUpdateCQLResult codeResult = getCqlService().saveCQLCodes(xmlModel.getXml(), transferObject);
-					if (codeResult != null && codeResult.isSuccess()) {
-						String newXml = appendCQLCodesInMeasureXml(codeResult, measureId, xmlModel);
-						if (StringUtils.isNotBlank(newXml)) {
-							xmlModel.setXml(newXml);
-
-							CQLCodeSystem codeSystem = new CQLCodeSystem();
-							codeSystem.setCodeSystem(replacementCode.getCodeSystemOID());
-							codeSystem.setCodeSystemName(replacementCode.getCodeSystemName());
-							codeSystem.setCodeSystemVersion(replacementCode.getCodeSystemVersion());
-							SaveUpdateCQLResult updatedResult = getCqlService().saveCQLCodeSystem(xmlModel.getXml(),
-									codeSystem);
-							if (updatedResult.isSuccess()) {
-								newXml = appendCQLCodeSystemInMeasureXml(updatedResult, measureId, xmlModel);
-								if (StringUtils.isNotBlank(newXml)) {
-									xmlModel.setXml(newXml);
-								}
-							}
-						}
-						measurePackageService.saveMeasureXml(xmlModel);
-						CQLCodeWrapper wrapper = getCqlService().getCQLCodes(xmlModel.getXml());
-						if (wrapper != null && !wrapper.getCqlCodeList().isEmpty()) {
-							cqlResult.setCqlCodeList(wrapper.getCqlCodeList());
-							CQLModel cqlModel = cqlService.getCQLData(cqlResult.getXml())
-									.getCqlModel();
-							cqlResult.setCqlModel(cqlModel);
-						}
-					}
-					cqlResult.setXml(xmlModel.getXml());
-				} else {
-					cqlResult.setSuccess(false);
-				}
-
-			}
-		}
-
-		return cqlResult;
-	}
-
-	@Override
 	public CQLCodeWrapper getCQLCodes(String measureID) {
 		CQLCodeWrapper cqlCodeWrapper = new CQLCodeWrapper();
 		MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureID);
@@ -5771,24 +5717,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 		return cqlCodeWrapper;
-	}
-
-	/**
-	 * Save CQL codes in measure xml.
-	 *
-	 * @param result
-	 *            the result
-	 */
-	private String saveCQLCodesInMeasureXml(SaveUpdateCQLResult result, String measureId) {
-		final String nodeName = "code";
-		MeasureXmlModel xmlModal = new MeasureXmlModel();
-		xmlModal.setMeasureId(measureId);
-		xmlModal.setParentNode("//cqlLookUp/codes");
-		xmlModal.setToReplaceNode(nodeName);
-		xmlModal.setXml(result.getXml());
-
-		return appendAndSaveNode(xmlModal, nodeName);
-
 	}
 
 	/**

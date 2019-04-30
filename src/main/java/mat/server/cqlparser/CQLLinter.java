@@ -16,12 +16,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.gen.cqlBaseListener;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
+import org.cqframework.cql.gen.cqlParser.CodeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.IncludeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.LibraryDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ValuesetDefinitionContext;
 
+import mat.model.cql.CQLCode;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.CQLUtilityClass;
 import mat.shared.CQLError;
 
 public class CQLLinter extends cqlBaseListener {
@@ -32,6 +35,7 @@ public class CQLLinter extends cqlBaseListener {
 	private List<String> errorMessages;
 	private List<String> missingIncludedLibraries;
 	private List<String> missingValuesets;
+	private List<String> missingCodes;
 	private List<CQLError> errors;
 
 	public CQLLinter(String cql, CQLLinterConfig config) throws IOException {
@@ -40,6 +44,7 @@ public class CQLLinter extends cqlBaseListener {
 		this.errorMessages = new ArrayList<>();
 		this.missingIncludedLibraries = new ArrayList<>();
 		this.missingValuesets = new ArrayList<>();
+		this.missingCodes = new ArrayList<>();
 		
 		InputStream stream = new ByteArrayInputStream(cql.getBytes());
 		cqlLexer lexer = new cqlLexer(new ANTLRInputStream(stream));
@@ -100,6 +105,37 @@ public class CQLLinter extends cqlBaseListener {
 	}
 	
 	@Override
+	public void enterCodeDefinition(CodeDefinitionContext ctx) {
+		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+		String codeId = CQLParserUtil.parseString(ctx.codeId().getText());	
+		
+		// find all codes that have a matching identifier and code id
+		// in MAT the identifier is mapped the displayName field (which is also called the descriptor)
+		if(config.getPreviousCQLModel().getCodeList() != null) {
+			List<CQLCode> potentialMatches = config.getPreviousCQLModel().getCodeList().stream().filter(c -> 
+				(c.getDisplayName().equals(identifier) 
+				&& c.getCodeOID().equals(codeId))
+			).collect(Collectors.toList());
+			
+			
+			// if there were no matches in the previous model, or all matches do not have a code identifier, then return an error. 
+			// not having a code identifier means that it has never been fetched through the codes section.
+			// if there were no matches in the previous model, that also means it has never been fetched
+			if(potentialMatches.isEmpty() 
+					|| potentialMatches.stream().filter(c -> StringUtils.isEmpty(c.getCodeIdentifier())).count() > 0) {
+				createCodeError(ctx, identifier);
+			}
+		} else {
+			createCodeError(ctx, identifier);
+		}
+	}
+	
+	private void createCodeError(CodeDefinitionContext ctx, String identifier) {
+		this.missingCodes.add(identifier);
+		this.errors.add(createError(identifier + " does not exist in the Codes section of the MAT.", ctx));
+	}
+
+	@Override
 	public void enterValuesetDefinition(ValuesetDefinitionContext ctx) {
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
 		String valuesetId = CQLParserUtil.parseString(ctx.valuesetId().getText()).replace(VALUESET_OID_PREFIX, "");
@@ -138,12 +174,24 @@ public class CQLLinter extends cqlBaseListener {
 			this.errorMessages.add(createMissingValuesetErrorMessage());
 		}
 		
+		if(!this.missingCodes.isEmpty()) {
+			this.errorMessages.add(createMissingCodeErrorMessage());
+		}
+		
 		return this.errorMessages;
+	}
+	
+	private String createMissingCodeErrorMessage() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("The following code(s) does not exist in the Codes section of the MAT: ");
+		builder.append(String.join(", ", this.missingCodes));
+		builder.append(". Please navigate to the Codes section and add the code(s) there to correct the error.");
+		return builder.toString();
 	}
 	
 	private String createMissingValuesetErrorMessage() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("The following value set(s) does not exist in the Value Set section: ");
+		builder.append("The following value set(s) does not exist in the Value Set section of the MAT: ");
 		builder.append(String.join(", ", this.missingValuesets));
 		builder.append(".  Please navigate to the Value Set section and add the value set(s) there to correct the error.");
 		return builder.toString();

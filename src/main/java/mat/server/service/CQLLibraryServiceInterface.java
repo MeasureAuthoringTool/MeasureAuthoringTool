@@ -126,8 +126,6 @@ public interface CQLLibraryServiceInterface {
 
 	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
-
-	SaveUpdateCQLResult modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode, String cqlLibraryId);
 	
 	public void saveCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML);
 }

@@ -50,7 +50,6 @@ import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
-import mat.model.cql.CQLCodeSystemWrapper;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
@@ -97,11 +96,6 @@ public class CQLServiceImpl implements CQLService {
 	private static final Log logger = LogFactory.getLog(CQLServiceImpl.class);
 
 	private static final int COMMENTS_MAX_LENGTH = 2500;
-	
-	private static final String CODE_TAG = "<code ";
-	private static final String CODE_SYSTEM_TAG = "<codeSystem ";	
-	private static final String CODE_MAPPING = "CodeMapping.xml";
-	private static final String CODE_SYSTEMS_MAPPING = "CodeSystemsMapping.xml";
 
 	@Autowired private CQLLibraryDAO cqlLibraryDAO;
 	@Autowired private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
@@ -1783,33 +1777,47 @@ public class CQLServiceImpl implements CQLService {
 		logger.info("::: CQLServiceImpl saveCQLCodes Start :::");
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		codeTransferObject.scrubForMarkUp();
+		CQLModel model = CQLUtilityClass.getCQLModelFromXML(xml);		
+		
 		if (codeTransferObject.isValidModel()) {
 
-			XmlProcessor xmlProcessor = new XmlProcessor(xml);
 			CQLCode appliedCode = codeTransferObject.getCqlCode();
-			appliedCode.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 
-			try {
-				Node existingCodeList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-						"//cqlLookUp/codes/code[@displayName=\"" + appliedCode.getDisplayName() + "\" ]");
-				if (existingCodeList != null) {
-					logger.info("::: Duplicate Code :::");
-					result.setSuccess(false);
-					result.setFailureReason(result.getDuplicateCode());
+			List<CQLCode> previousMatchingCodes = model.getCodeList().stream().filter(c -> (
+					c.getDisplayName().equals(appliedCode.getDisplayName()) 
+					&& c.getCodeOID().equals(appliedCode.getCodeOID())
+					&& StringUtils.isEmpty(c.getCodeIdentifier()))
+					).collect(Collectors.toList());
+
+			if(!previousMatchingCodes.isEmpty()) {
+				previousMatchingCodes.forEach(c -> {
+					c.setSuffix(appliedCode.getSuffix());
+					c.setCodeIdentifier(appliedCode.getCodeIdentifier());
+					c.setIsCodeSystemVersionIncluded(appliedCode.isIsCodeSystemVersionIncluded());
+				});
+			} else {
+				Optional<CQLCode> existingCode = model.getCodeList().stream().filter(c -> c.getId().equals(appliedCode.getId())).findFirst();
+				if(existingCode.isPresent()) {
+					appliedCode.setId(existingCode.get().getId());
+					model.getCodeList().remove(existingCode.get());
+					model.getCodeList().add(appliedCode);
 				} else {
-					CQLCodeWrapper wrapper = new CQLCodeWrapper();
-					ArrayList<CQLCode> codeList = new ArrayList<>();
-					wrapper.setCqlCodeList(codeList);
-					wrapper.getCqlCodeList().add(codeTransferObject.getCqlCode());
-					String codeXMLString = generateXmlForAppliedValuesetAndCodes(CODE_MAPPING, CODE_TAG, wrapper);
-					result.setSuccess(true);
-					result.setXml(codeXMLString);
+					if (model.getCodeList().stream().filter(c -> c.getDisplayName().equals(appliedCode.getDisplayName())).count() > 0) {
+						result.setSuccess(false);
+						result.setFailureReason(result.getDuplicateCode());
+						return result;
+					} 
+
+					appliedCode.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+					model.getCodeList().add(appliedCode);
 				}
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
+			}	
+
+			result.setSuccess(true);
+			result.setCqlModel(model);
+			result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));
 		}
-		logger.info("::: CQLServiceImpl saveCQLCodes End :::");
+
 		return result;
 	}
 
@@ -1817,29 +1825,33 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult saveCQLCodeSystem(String xml, CQLCodeSystem codeSystem) {
 		logger.info("::: CQLServiceImpl saveCQLCodeSystem Start :::");
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		XmlProcessor xmlProcessor = new XmlProcessor(xml);
+		CQLModel model = CQLUtilityClass.getCQLModelFromXML(xml);
 
-		codeSystem.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-		try {
-			Node existingCodeSystemList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-					"//cqlLookUp/codeSystems/codeSystem[@codeSystemName='" + codeSystem.getCodeSystemName()
-							+ "' and @codeSystemVersion='" + codeSystem.getCodeSystemVersion() + "' ]");
-
-			if (existingCodeSystemList != null) {
+		Optional<CQLCodeSystem> existingCodesystem = model.getCodeSystemList().stream().filter(cs -> cs.getId().equals(codeSystem.getId())).findFirst();
+		
+		if(existingCodesystem.isPresent()) {
+			// edit codesystem
+			codeSystem.setId(existingCodesystem.get().getId());
+			model.getCodeSystemList().remove(existingCodesystem.get());
+			model.getCodeSystemList().add(codeSystem);
+		} else {
+			// new code system 
+			
+			if(model.getCodeSystemList().stream().filter(cs -> (cs.getCodeSystemName().equals(codeSystem.getCodeSystemName()) 
+					&& cs.getCodeSystemVersion().equals(codeSystem.getCodeSystemVersion()))).count() > 0 ) {
 				logger.info("::: CodeSystem Already added :::");
 				result.setSuccess(false);
-			} else {
-				CQLCodeSystemWrapper wrapper = new CQLCodeSystemWrapper();
-				ArrayList<CQLCodeSystem> codeSystemList = new ArrayList<>();
-				wrapper.setCqlCodeSystemList(codeSystemList);
-				wrapper.getCqlCodeSystemList().add(codeSystem);
-				String codeSystemXMLString = generateXmlForAppliedValuesetAndCodes(CODE_SYSTEMS_MAPPING, CODE_SYSTEM_TAG, wrapper); 
-				result.setSuccess(true);
-				result.setXml(codeSystemXMLString);
-			}
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
+				return result;
+			} 
+				
+			codeSystem.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+			model.getCodeSystemList().add(codeSystem);	
 		}
+		
+		result.setCqlModel(model);
+		result.setSuccess(true);
+		result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));
+
 		logger.info("::: CQLServiceImpl saveCQLCodeSystem End :::");
 		return result;
 	}
@@ -1951,19 +1963,6 @@ public class CQLServiceImpl implements CQLService {
 		}
 		return result;
 
-	}
-
-	private String generateXmlForAppliedValuesetAndCodes(String mapping, String startTag, Object object) {
-		logger.info("addAppliedQDMInMeasureXML Method Call Start.");
-		String xmlString = null;
-		String stream = createNewXML(mapping, object);
-		if (StringUtils.isNotBlank(stream)) {
-			int startIndex = stream.indexOf(startTag, 0);
-			int lastIndex = stream.indexOf("/>", startIndex);
-			xmlString = stream.substring(startIndex, lastIndex + 2);
-			logger.debug("addAppliedQDMInMeasureXML Method Call xmlString :: " + xmlString);
-		}
-		return xmlString;
 	}
 
 	@Override

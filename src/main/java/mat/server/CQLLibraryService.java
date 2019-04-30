@@ -1167,28 +1167,27 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			
 			CQLLibrary cqlLibrary = cqlLibraryDAO.find(transferObject.getId());
 			if (cqlLibrary != null) {
+				
 				String cqlXml = getCQLLibraryXml(cqlLibrary);
 				if(!cqlXml.isEmpty()){
+					
 					result = cqlService.saveCQLCodes(cqlXml,transferObject);
 					if(result != null && result.isSuccess()) {
-						String nodeName = "code";
-						String parentNode = "//cqlLookUp/codes";
-						String newXml= appendAndSaveNode(cqlLibrary, nodeName, result.getXml(), parentNode);
-						cqlLibraryDAO.refresh(cqlLibrary);
-						System.out.println("newXml ::: " + newXml);
-						
-						SaveUpdateCQLResult updatedResult = updateCodeSystem(newXml, transferObject.getCqlCode());
-						if(updatedResult.isSuccess()) {
-							newXml = saveCQLCodeSystemInLibrary(cqlLibrary, updatedResult);
-							System.out.println("Updated newXml ::: " + newXml);
+						cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+						SaveUpdateCQLResult saveCodeSystemResult = updateCodeSystem(result.getXml(), transferObject.getCqlCode());
+					
+						if(saveCodeSystemResult.isSuccess()) {
+							cqlLibrary.setCQLByteArray(saveCodeSystemResult.getXml().getBytes());
+							result = saveCodeSystemResult;
 						}
-						result.setCqlCodeList(getSortedCQLCodes(newXml).getCqlCodeList());
-						CQLModel cqlModel = ((SaveUpdateCQLResult)cqlService.getCQLData(newXml)).getCqlModel();
-						result.setCqlModel(cqlModel);
+
+						save(cqlLibrary);
+						result.setCqlCodeList(result.getCqlModel().getCodeList());
 					}
 				}
 			}
 		}
+		
 		return result;
 	}
 
@@ -1233,47 +1232,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
 		return result;
 	}
-	
-	@Override
-	public SaveUpdateCQLResult modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode,
-			String cqlLibraryId) {
-		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
-		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibraryId)) {
-			CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlLibraryId);
-			if (cqlLibrary != null) {
-				String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
-				if(!cqlLibraryXml.isEmpty()){
-					cqlResult = cqlService.deleteCode(getCQLLibraryXml(cqlLibrary), codeToReplace.getId());
-					if (cqlResult != null && cqlResult.isSuccess()) {
-						cqlLibraryXml = cqlResult.getXml();
-						
-						MatCodeTransferObject transferObject = new MatCodeTransferObject();
-						transferObject.setCqlCode(replacementCode);
-						transferObject.setId(cqlLibraryId);
-						SaveUpdateCQLResult codeResult = cqlService.saveCQLCodes(cqlLibraryXml,transferObject);
-						if(codeResult != null && codeResult.isSuccess()) {
-							cqlLibraryXml = appendCQLCodeInLibrary(cqlLibraryXml, codeResult);
-							SaveUpdateCQLResult updatedResult = updateCodeSystem(cqlLibraryXml, transferObject.getCqlCode());
-							if(updatedResult.isSuccess()) {
-								cqlLibraryXml = appendCQLCodeSystemInLibrary(cqlLibraryXml, updatedResult);
-							}
-							cqlResult.setXml(cqlLibraryXml);
-							cqlLibrary.setCQLByteArray(cqlResult.getXml().getBytes());
-							save(cqlLibrary);
-							cqlResult.setCqlCodeList(getSortedCQLCodes(cqlResult.getXml()).getCqlCodeList());
-							CQLModel cqlModel = ((SaveUpdateCQLResult)cqlService.getCQLData(cqlResult.getXml())).getCqlModel();
-							cqlResult.setCqlModel(cqlModel);
-						} else {
-							cqlResult.setSuccess(false);
-						}
-					}
-				}
-
-			}
-		}
-		return cqlResult;
-	}
-	
+		
 	private String appendCQLCodeInLibrary(String cqlLibraryXml, SaveUpdateCQLResult codeResult) {
 		String result = cqlLibraryXml;
 		String nodeName = "code";
@@ -1292,13 +1251,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		return result;
 	}
 
-	private String saveCQLCodeSystemInLibrary(CQLLibrary cqlLibrary, SaveUpdateCQLResult updatedResult) {
-		String nodeName = "codeSystem";
-		String parentNode = "//cqlLookUp/codeSystems";
-		 return appendAndSaveNode(cqlLibrary, nodeName, updatedResult.getXml(), parentNode);
-	}
-	
-	
 	private CQLCodeWrapper getSortedCQLCodes(String newXml) {
 		CQLCodeWrapper cqlCodeWrapper = new CQLCodeWrapper();
 		if(newXml != null && !newXml.isEmpty()){

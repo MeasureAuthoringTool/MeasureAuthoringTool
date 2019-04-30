@@ -191,20 +191,31 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		String codeId = parseString(ctx.codeId().getText());
 		String codeSystemName = parseString(ctx.codesystemIdentifier().getText());
 		String displayClause = parseString(ctx.displayClause().STRING().getText());
-		Optional<CQLCodeSystem> codeSystem = cqlModel.getCodeSystemList().stream().filter(cs -> cs.getCodeSystemName().equals(codeSystemName)).findFirst();
 	
-		code.setId(UUID.randomUUID().toString());
-		code.setDisplayName(identifier);
-		code.setCodeName(displayClause);
-		code.setCodeOID(codeId);
 		
-		if(codeSystem.isPresent()) {
-			code.setCodeSystemName(codeSystemName);
-			code.setCodeSystemOID(codeSystem.get().getCodeSystem());
-			code.setCodeSystemVersion(codeSystem.get().getCodeSystemVersion());
+		List<CQLCode> previousCodes = previousModel.getCodeList().stream().filter(c -> (
+				c.getDisplayName().equals(identifier)
+				&& c.getCodeOID().equals(codeId)
+			)).collect(Collectors.toList());
+		
+		if(!previousCodes.isEmpty()) {
+			cqlModel.getCodeList().addAll(previousCodes);
+		} else {
+			Optional<CQLCodeSystem> codeSystem = cqlModel.getCodeSystemList().stream().filter(cs -> cs.getCodeSystemName().equals(codeSystemName)).findFirst();
+
+			code.setId(UUID.randomUUID().toString());
+			code.setDisplayName(identifier);
+			code.setCodeName(displayClause);
+			code.setCodeOID(codeId);
+			
+			if(codeSystem.isPresent()) {
+				code.setCodeSystemName(codeSystemName);
+				code.setCodeSystemOID(codeSystem.get().getCodeSystem());
+				code.setCodeSystemVersion(codeSystem.get().getCodeSystemVersion());
+			}
+			
+			cqlModel.getCodeList().add(code);
 		}
-		
-		cqlModel.getCodeList().add(code);
 	}
 	
 	@Override

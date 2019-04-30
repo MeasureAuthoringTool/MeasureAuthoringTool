@@ -64,8 +64,7 @@ public class CQLLinter extends cqlBaseListener {
 		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
 		
 		if(!name.equals(config.getLibraryName()) || !version.equals(config.getLibraryVersion())) {
-			
-			String message = String.format("%s version '%s' does not match what is on file in the MAT.", 
+				String message = String.format("The library name and version must match what is on file for this CQL file: %s version '%s'.", 
 					config.getLibraryName(), config.getLibraryVersion());
 			
 			errorMessages.add(message);

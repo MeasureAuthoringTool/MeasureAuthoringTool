@@ -38,6 +38,8 @@ public final class CQLUtilityClass {
 	private static final String PATIENT = "Patient";
 
 	private static final String POPULATION = "Population";
+	
+	public static final String VERSION = " version ";
 
 	private static StringBuilder toBeInsertedAtEnd;
 
@@ -108,7 +110,7 @@ public final class CQLUtilityClass {
 		if (StringUtils.isNotBlank(cqlModel.getLibraryName())) {
 
 			sb.append("library ").append(cqlModel.getLibraryName());
-			sb.append(" version ").append("'" + cqlModel.getVersionUsed()).append("'");
+			sb.append(VERSION).append("'" + cqlModel.getVersionUsed()).append("'");
 			sb.append(System.lineSeparator()).append(System.lineSeparator());
 			
 			if(StringUtils.isNotBlank(cqlModel.getLibraryComment())) {
@@ -116,7 +118,8 @@ public final class CQLUtilityClass {
 				sb.append(System.lineSeparator()).append(System.lineSeparator());
 			}
 			
-			sb.append("using QDM version ");			
+			sb.append("using ").append(cqlModel.getUsingName());
+			sb.append(VERSION);			
 			sb.append("'").append(cqlModel.getQdmVersion()).append("'");
 			sb.append("\n\n");			
 		}
@@ -403,7 +406,7 @@ public final class CQLUtilityClass {
 		if(!CollectionUtils.isEmpty(includeLibList)){
 			for(CQLIncludeLibrary includeLib : includeLibList){
 				sb.append("include ").append(includeLib.getCqlLibraryName());
-				sb.append(" version ").append("'").append(includeLib.getVersion()).append("' ");
+				sb.append(VERSION).append("'").append(includeLib.getVersion()).append("' ");
 				sb.append("called ").append(includeLib.getAliasName());
 				sb.append("\n");
 			}

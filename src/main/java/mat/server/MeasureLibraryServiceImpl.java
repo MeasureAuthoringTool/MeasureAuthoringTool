@@ -5243,9 +5243,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			CQLLinterConfig config = new CQLLinterConfig();
 			config.setLibraryName(MeasureUtility.cleanString(measure.getDescription()));
 			config.setLibraryVersion(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
-			result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config);
+			config.setQdmVersion(measure.getQdmVersion());
 			
-
+			result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config);
 			
 			XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
 			processor.replaceNode(result.getXml(), "cqlLookUp", "measure");

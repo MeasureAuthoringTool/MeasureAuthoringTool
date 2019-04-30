@@ -19,6 +19,7 @@ import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.gen.cqlParser.CodeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.IncludeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.LibraryDefinitionContext;
+import org.cqframework.cql.gen.cqlParser.UsingDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ValuesetDefinitionContext;
 
 import mat.model.cql.CQLCode;
@@ -30,7 +31,8 @@ import mat.shared.CQLError;
 public class CQLLinter extends cqlBaseListener {
 	
 	private static final String VALUESET_OID_PREFIX = "urn:oid:";
-
+	private static final String MODEL_IDENTIFIER = "QDM";
+	
 	private CQLLinterConfig config;
 	private List<String> errorMessages;
 	private List<String> missingIncludedLibraries;
@@ -72,6 +74,25 @@ public class CQLLinter extends cqlBaseListener {
 		}
 	}
 	
+	@Override
+	public void enterUsingDefinition(UsingDefinitionContext ctx) {
+		String model = CQLParserUtil.parseString(ctx.modelIdentifier().getText());
+		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
+		
+		if (!StringUtils.equals(model, MODEL_IDENTIFIER) || !StringUtils.equals(version, config.getQdmVersion())) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("The model and version declaration must match the current model and version used by the MAT: ");
+			sb.append(config.getPreviousCQLModel().getUsingName());
+			sb.append(CQLUtilityClass.VERSION);
+			sb.append(config.getPreviousCQLModel().getQdmVersion());
+
+			String annotation = model + " version '" + version + "' does not match what is on file for the MAT.";
+
+			errorMessages.add(sb.toString());
+			errors.add(createError(annotation, ctx));
+		}
+	}
+
 	@Override
 	public void enterIncludeDefinition(IncludeDefinitionContext ctx) {
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());

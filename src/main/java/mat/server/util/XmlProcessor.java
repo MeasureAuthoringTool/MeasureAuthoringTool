@@ -74,8 +74,8 @@ public class XmlProcessor {
 	private static final String XPATH_MEASURE_DETAILS_NUM_EXCLUSIONS = "/measure/measureDetails/numeratorExclusionsDescription";
 	private static final String XPATH_DENOMINATOR_EXCLUSIONS = "/measure/populations/denominatorExclusions";
 	private static final String RATIO = "RATIO";
-	private static final String PROPOR = "PROPOR";
-	private static final String SCORING_TYPE_CONTVAR = "CONTVAR";
+	private static final String PROPORTION = "PROPORTION";
+	private static final String SCORING_TYPE_CONTINUOUS_VARIABLE = "CONTINUOUS VARIABLE";
 	private static final String NUMERATOR_EXCLUSIONS = "numeratorExclusions";
 	private static final String DENOMINATOR_EXCEPTIONS = "denominatorExceptions";
 	private static final String DENOMINATOR_EXCLUSIONS = "denominatorExclusions";
@@ -442,18 +442,11 @@ public class XmlProcessor {
 	 * 
 	 * @return the string
 	 */
-	public String checkForScoringType(String releaseVersion) {
+	public String checkForScoringType(String releaseVersion, String scoringType) {
 		if (originalDoc == null) {
 			return "";
 		}
-		// Get the scoring type from originalDoc
-		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		try {
-			String scoringType = (String) xPath.evaluate(
-					"/measure/measureDetails/scoring/@id",
-					originalDoc.getDocumentElement(), XPathConstants.STRING);
-			LOG.info("scoringType:" + scoringType);
-			
 			removeNodesBasedOnScoring(scoringType);
 			createNewNodesBasedOnScoring(scoringType,releaseVersion);
 		} catch (XPathExpressionException e) {
@@ -489,7 +482,7 @@ public class XmlProcessor {
 				xPathList.add(XPATH_MEASURE_OBSERVATIONS);
 				xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_OBSERVATIONS);
 			}
-		} else if (PROPOR.equalsIgnoreCase(scoringType)) {
+		} else if (PROPORTION.equalsIgnoreCase(scoringType)) {
 			// Measure Population Exlusions, Measure Populations
 			xPathList.add(XPATH_MEASURE_POPULATIONS);
 			xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
@@ -499,7 +492,7 @@ public class XmlProcessor {
 			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_POPULATION_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_OBSERVATIONS);
 			
-		} else if (SCORING_TYPE_CONTVAR.equalsIgnoreCase(scoringType)) {
+		} else if (SCORING_TYPE_CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType)) {
 			// Numerators,Numerator Exclusions, Denominators, Denominator
 			// Exceptions, Denominator Exclusions
 			xPathList.add(XPATH_NUMERATORS);
@@ -673,7 +666,7 @@ public class XmlProcessor {
 		 */
 		Node measureObservationsNode = findNode(originalDoc, XPATH_MEASURE_OBSERVATIONS);
 		Node patientBasedMeasureNode = findNode(originalDoc, XPATH_FOR_PATIENT_BASED_INDICATOR);
-		if ((SCORING_TYPE_CONTVAR.equals(scoringType) || (RATIO.equals(scoringType) && patientBasedMeasureNode != null && !"true".equals(patientBasedMeasureNode.getTextContent()))) 
+		if ((SCORING_TYPE_CONTINUOUS_VARIABLE.equals(scoringType) || (RATIO.equals(scoringType) && patientBasedMeasureNode != null && !"true".equals(patientBasedMeasureNode.getTextContent()))) 
 				&& (measureObservationsNode == null)) {
 			// Create a new measureObservations element.
 			String nodeName = MEASURE_OBSERVATION;
@@ -899,24 +892,24 @@ public class XmlProcessor {
 	 */
 	private List<String> retrieveScoreBasedNodes(String scoringType) {
 		List<String> scoreBasedNodes = new ArrayList<String>();
-		if (SCORING_TYPE_CONTVAR.equals(scoringType)) {
+		if (SCORING_TYPE_CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType)) {
 			scoreBasedNodes.add(INITIAL_POPULATIONS);
 			scoreBasedNodes.add(MEASURE_POPULATIONS);
 			scoreBasedNodes.add(MEASURE_POPULATION_EXCLUSIONS);
-		} else if (PROPOR.equals(scoringType)) {
+		} else if (PROPORTION.equalsIgnoreCase(scoringType)) {
 			scoreBasedNodes.add(INITIAL_POPULATIONS);
 			scoreBasedNodes.add(NUMERATORS);
 			scoreBasedNodes.add(NUMERATOR_EXCLUSIONS);
 			scoreBasedNodes.add(DENOMINATORS);
 			scoreBasedNodes.add(DENOMINATOR_EXCLUSIONS);
 			scoreBasedNodes.add(DENOMINATOR_EXCEPTIONS);
-		} else if (RATIO.equals(scoringType)) {
+		} else if (RATIO.equalsIgnoreCase(scoringType)) {
 			scoreBasedNodes.add(INITIAL_POPULATIONS);
 			scoreBasedNodes.add(NUMERATORS);
 			scoreBasedNodes.add(NUMERATOR_EXCLUSIONS);
 			scoreBasedNodes.add(DENOMINATORS);
 			scoreBasedNodes.add(DENOMINATOR_EXCLUSIONS);
-		} else if (COHORT.equals(scoringType)) {
+		} else if (COHORT.equalsIgnoreCase(scoringType)) {
 			scoreBasedNodes.add(INITIAL_POPULATIONS);
 		}
 		return scoreBasedNodes;

@@ -1469,7 +1469,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		manageMeasureDetailModel.setMeasScoring(measure.getMeasureScoring());
 		manageMeasureDetailModel.setIsPatientBased(measure.getPatientBased());
 		manageMeasureDetailModel.setFinalizedDate(measure.getFinalizedDate() == null ? "" : String.valueOf(measure.getFinalizedDate()));
-
+		manageMeasureDetailModel.setGroupId(measure.getMeasureSet().getId());
+		manageMeasureDetailModel.seteMeasureId(measure.geteMeasureId());
+		Integer isNQF =  measure.getNqfNumber();
+		manageMeasureDetailModel.setEndorseByNQF(isNQF == null ? false : true);
+		manageMeasureDetailModel.setNqfId(isNQF == null ? "" : String.valueOf(isNQF));
+		Timestamp calendarYearFrom = measure.getCalendarYearFrom();
+		Timestamp calendarYearTo = measure.getCalendarYearTo();
+		
+		manageMeasureDetailModel.setCalenderYear(calendarYearFrom == null && calendarYearTo == null ? true : false);
+		if(calendarYearFrom != null && calendarYearTo != null) {
+			manageMeasureDetailModel.setMeasFromPeriod(new SimpleDateFormat("MM/dd/yyyy").format(calendarYearFrom));
+			manageMeasureDetailModel.setMeasToPeriod(new SimpleDateFormat("MM/dd/yyyy").format(calendarYearTo));
+		}
 	}
 
 	private void generateMeasureTypeFromDatabaseData(Measure measure, MeasureDetailResult measureDetailResult,
@@ -2341,10 +2353,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		model.scrubForMarkUp();
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
 		List<String> message = manageMeasureModelValidator.validateMeasure(model);
+		String existingMeasureScoringType = "";
 		if (message.isEmpty()) {
 			if (model.getId() != null) {
 				setMeasureCreated(true);
 				measure = measurePackageService.getById(model.getId());
+				
+				existingMeasureScoringType = measure.getMeasureScoring();
+				
 				measure.setDescription(model.getName());
 				String shortName = buildMeasureShortName(model);
 
@@ -2358,10 +2374,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				measure.setMeasureTypes(getSelectedMeasureTypes(measure, model));
 				measure.setMeasureDevelopers(getSelectedDeveloperList(measure, model));
 				measure.setMeasureStewardId(model.getStewardId());
+
+				measure.seteMeasureId(model.geteMeasureId());
+				measure.setNqfNumber(Integer.valueOf(model.getNqfId()));
+				calculateCalendarYearForMeasure(model, measure);
+				
+				
 				
 				measurePackageService.save(measure);
 			}
 			model.setRevisionNumber(measure.getRevisionNumber());
+
+			updateMeasureXml(model, measure, existingMeasureScoringType);
 			
 			SaveMeasureResult result = new SaveMeasureResult();
 			result.setSuccess(true);
@@ -2373,6 +2397,47 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result.setMessages(message);
 			logger.info("Saving of Measure Details Failed. Invalid Data issue.");
 			return result;
+		}
+	}
+
+	private void updateMeasureXml(final ManageMeasureDetailModel model, Measure measure,
+			String exsistingMeasureScoreingType) {
+		// update measure xml biased off of measure details changed
+		MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measure.getId());
+		XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+		
+		xmlProcessor.checkForScoringType(MATPropertiesService.get().getQmdVersion(), model.getMeasScoring());
+		if (!exsistingMeasureScoreingType.equalsIgnoreCase(model.getMeasScoring())) {
+			deleteExistingGroupings(xmlProcessor);
+			MatContext.get().setCurrentMeasureScoringType(model.getMeasScoring());
+		}
+		
+		String newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
+		xmlModel.setXml(newXml);
+		measurePackageService.saveMeasureXml(xmlModel);
+	}
+
+	private void calculateCalendarYearForMeasure(final ManageMeasureDetailModel model, Measure measure) {
+		if(model.isCalenderYear()) {
+			measure.setCalendarYearFrom(null);
+			measure.setCalendarYearTo(null);
+		} else {
+			try {
+			    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+			    Date fromDate = dateFormat.parse(model.getMeasFromPeriod());
+			    
+			    Timestamp fromTimestamp = new java.sql.Timestamp(fromDate.getTime());
+			    measure.setCalendarYearFrom(fromTimestamp);
+			    
+			    Date toDate = dateFormat.parse(model.getMeasToPeriod());
+			    Timestamp toTimestamp = new java.sql.Timestamp(toDate.getTime());
+				measure.setCalendarYearTo(toTimestamp);
+				
+			} catch(Exception e) {
+			    // look the origin of exception 
+				logger.debug("failed to convert date");
+			}
+			
 		}
 	}
 
@@ -2436,20 +2501,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureXmlModel.getMeasureId())) {
 				XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 				try {
-					String scoringTypeBeforeNewXml = (String) xPath.evaluate("/measure/measureDetails/scoring/@id",
-							xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
 					String newXml = xmlProcessor.replaceNode(measureXmlModel.getXml(),
 							measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
-					String scoringTypeAfterNewXml = (String) xPath.evaluate("/measure/measureDetails/scoring/@id",
-							xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
-					xmlProcessor.checkForScoringType(MATPropertiesService.get().getQmdVersion());
+					
 					xmlProcessor.updateCQLLibraryName();
 					checkForDefaultCQLParametersAndAppend(xmlProcessor);
 					checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
 					updateCQLVersion(xmlProcessor);
-					if (!scoringTypeBeforeNewXml.equalsIgnoreCase(scoringTypeAfterNewXml)) {
-						deleteExistingGroupings(xmlProcessor);
-					}
+					
 					newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
 					measureXmlModel.setXml(newXml);
 				} catch (XPathExpressionException e) {
@@ -2460,7 +2519,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		} else {
 			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
 			processor.addParentNode(MEASURE);
-			processor.checkForScoringType(MATPropertiesService.get().getQmdVersion());
 			processor.transform(processor.getOriginalDoc());
 			try {
 				String libraryName = (String) xPath.evaluate("/measure/measureDetails/title/text()",
@@ -6028,10 +6086,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			model.setShortName(shortName);
 			Measure pkg = null;
 			MeasureSet measureSet = null;
+			String existingMeasureScoringType = "";
 			if (model.getId() != null) {
 				setMeasureCreated(true);
 				// editing an existing measure
 				pkg = measurePackageService.getById(model.getId());
+				existingMeasureScoringType = pkg.getMeasureScoring();
 				model.setVersionNumber(pkg.getVersion());
 				if (pkg.isDraft()) {
 					model.setRevisionNumber(pkg.getRevisionNumber());
@@ -6068,6 +6128,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			pkg.setMeasureDevelopers(getSelectedDeveloperList(pkg, model));
 			pkg.setMeasureStewardId(model.getStewardId());
 			
+			pkg.seteMeasureId(model.geteMeasureId());
+			pkg.setNqfNumber(Integer.valueOf(model.getNqfId()));
+			
+			calculateCalendarYearForMeasure(model, pkg);
+			
 			setValueFromModel(model, pkg);
 			SaveMeasureResult result = new SaveMeasureResult();
 			try {
@@ -6088,6 +6153,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				result.setId(pkg.getId());
 				return result;
 			}
+			
+			updateMeasureXml(model, pkg, existingMeasureScoringType);
+			
 			result.setSuccess(true);
 			result.setId(pkg.getId());
 			model.setMeasureTypeSelectedList(getMeasureTypeForComposite(model.getMeasureTypeSelectedList()));

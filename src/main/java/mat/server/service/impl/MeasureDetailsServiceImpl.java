@@ -35,6 +35,7 @@ public class MeasureDetailsServiceImpl implements MeasureDetailsService {
 		measureDetails.setNumeratorExclusions(model.getNumeratorExclusions());
 		measureDetails.setMeasureObservations(model.getMeasureObservations());
 		measureDetails.setMeasurePopulation(model.getMeasurePopulation());
+		measureDetails.setMeasurePopulationExclusions(model.getMeasurePopulationExclusions());
 		measureDetails.setDenominatorExceptions(model.getDenominatorExceptions());
 		measureDetails.setSupplementalDataElements(model.getSupplementalData());
 		measureDetails.setMeasureSet(model.getGroupName());
@@ -76,6 +77,7 @@ public class MeasureDetailsServiceImpl implements MeasureDetailsService {
 			model.setNumeratorExclusions(measureDetails.getNumeratorExclusions());
 			model.setMeasureObservations(measureDetails.getMeasureObservations());
 			model.setMeasurePopulation(measureDetails.getMeasurePopulation());
+			model.setMeasurePopulationExclusions(measureDetails.getMeasurePopulationExclusions());
 			model.setDenominatorExceptions(measureDetails.getDenominatorExceptions());
 			model.setSupplementalData(measureDetails.getSupplementalDataElements());
 			model.setGroupName(measureDetails.getMeasureSet());

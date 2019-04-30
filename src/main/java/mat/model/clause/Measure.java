@@ -85,6 +85,12 @@ public class Measure {
 	private MeasureDetails measureDetails;
 	
 	private String measureStewardId;
+	
+	private Integer nqfNumber;
+	
+	private Timestamp calendarYearFrom;
+	
+	private Timestamp calendarYearTo;
 
 	@Column(name = "VALUE_SET_DATE", length = 19)
 	public Timestamp getValueSetDate() {
@@ -407,5 +413,32 @@ public class Measure {
 
 	public void setMeasureStewardId(String measureStewardId) {
 		this.measureStewardId = measureStewardId;
+	}
+
+	@Column(name = "NQF_NUMBER")
+	public Integer getNqfNumber() {
+		return nqfNumber;
+	}
+
+	public void setNqfNumber(Integer nqfNumber) {
+		this.nqfNumber = nqfNumber;
+	}
+
+	@Column(name = "CALENDAR_YEAR_FROM")
+	public Timestamp getCalendarYearFrom() {
+		return calendarYearFrom;
+	}
+
+	public void setCalendarYearFrom(Timestamp calendarYearFrom) {
+		this.calendarYearFrom = calendarYearFrom;
+	}
+
+	@Column(name = "CALENDAR_YEAR_TO")
+	public Timestamp getCalendarYearTo() {
+		return calendarYearTo;
+	}
+
+	public void setCalendarYearTo(Timestamp calendarYearTo) {
+		this.calendarYearTo = calendarYearTo;
 	}
 }

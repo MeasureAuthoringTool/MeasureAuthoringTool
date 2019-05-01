@@ -1475,8 +1475,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Integer isNQF =  measure.getNqfNumber();
 		manageMeasureDetailModel.setEndorseByNQF(isNQF == null ? false : true);
 		manageMeasureDetailModel.setNqfId(isNQF == null ? "" : String.valueOf(isNQF));
-		Timestamp calendarYearFrom = measure.getCalendarYearFrom();
-		Timestamp calendarYearTo = measure.getCalendarYearTo();
+		Timestamp calendarYearFrom = measure.getMeasurementPeriodFrom();
+		Timestamp calendarYearTo = measure.getMeasurementPeriodTo();
 		
 		manageMeasureDetailModel.setCalenderYear(calendarYearFrom == null && calendarYearTo == null ? true : false);
 		if(calendarYearFrom != null && calendarYearTo != null) {
@@ -2377,7 +2377,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				measure.setMeasureStewardId(model.getStewardId());
 
 				measure.seteMeasureId(model.geteMeasureId());
-				measure.setNqfNumber(Integer.valueOf(model.getNqfId()));
+				measure.setNqfNumber(model.getNqfId() == null ? null : Integer.valueOf(model.getNqfId()));
 				calculateCalendarYearForMeasure(model, measure);
 				
 				
@@ -2402,13 +2402,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	private void updateMeasureXml(final ManageMeasureDetailModel model, Measure measure,
-			String exsistingMeasureScoreingType) {
+			String existingMeasureScoringType) {
 		// update measure xml biased off of measure details changed
 		MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measure.getId());
 		XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 		
 		xmlProcessor.checkForScoringType(MATPropertiesService.get().getQmdVersion(), model.getMeasScoring());
-		if (!exsistingMeasureScoreingType.equalsIgnoreCase(model.getMeasScoring())) {
+		if (!existingMeasureScoringType.equalsIgnoreCase(model.getMeasScoring())) {
 			deleteExistingGroupings(xmlProcessor);
 			MatContext.get().setCurrentMeasureScoringType(model.getMeasScoring());
 		}
@@ -2420,19 +2420,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	private void calculateCalendarYearForMeasure(final ManageMeasureDetailModel model, Measure measure) {
 		if(model.isCalenderYear()) {
-			measure.setCalendarYearFrom(null);
-			measure.setCalendarYearTo(null);
+			measure.setMeasurementPeriodFrom(null);
+			measure.setMeasurementPeriodTo(null);
 		} else {
 			try {
 			    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 			    Date fromDate = dateFormat.parse(model.getMeasFromPeriod());
 			    
 			    Timestamp fromTimestamp = new java.sql.Timestamp(fromDate.getTime());
-			    measure.setCalendarYearFrom(fromTimestamp);
+			    measure.setMeasurementPeriodFrom(fromTimestamp);
 			    
 			    Date toDate = dateFormat.parse(model.getMeasToPeriod());
 			    Timestamp toTimestamp = new java.sql.Timestamp(toDate.getTime());
-				measure.setCalendarYearTo(toTimestamp);
+				measure.setMeasurementPeriodTo(toTimestamp);
 				
 			} catch(Exception e) {
 			    // look the origin of exception 

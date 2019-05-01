@@ -88,9 +88,9 @@ public class Measure {
 	
 	private Integer nqfNumber;
 	
-	private Timestamp calendarYearFrom;
+	private Timestamp measurementPeriodFrom;
 	
-	private Timestamp calendarYearTo;
+	private Timestamp measurementPeriodTo;
 
 	@Column(name = "VALUE_SET_DATE", length = 19)
 	public Timestamp getValueSetDate() {
@@ -424,21 +424,21 @@ public class Measure {
 		this.nqfNumber = nqfNumber;
 	}
 
-	@Column(name = "CALENDAR_YEAR_FROM")
-	public Timestamp getCalendarYearFrom() {
-		return calendarYearFrom;
+	@Column(name = "MEASUREMENT_PERIOD_FROM")
+	public Timestamp getMeasurementPeriodFrom() {
+		return measurementPeriodFrom;
 	}
 
-	public void setCalendarYearFrom(Timestamp calendarYearFrom) {
-		this.calendarYearFrom = calendarYearFrom;
+	public void setMeasurementPeriodFrom(Timestamp measurementPeriodFrom) {
+		this.measurementPeriodFrom = measurementPeriodFrom;
 	}
 
-	@Column(name = "CALENDAR_YEAR_TO")
-	public Timestamp getCalendarYearTo() {
-		return calendarYearTo;
+	@Column(name = "MEASUREMENT_PERIOD_TO")
+	public Timestamp getMeasurementPeriodTo() {
+		return measurementPeriodTo;
 	}
 
-	public void setCalendarYearTo(Timestamp calendarYearTo) {
-		this.calendarYearTo = calendarYearTo;
+	public void setMeasurementPeriodTo(Timestamp measurementPeriodTo) {
+		this.measurementPeriodTo = measurementPeriodTo;
 	}
 }

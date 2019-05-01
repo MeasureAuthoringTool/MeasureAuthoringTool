@@ -75,7 +75,7 @@ public class XmlProcessor {
 	private static final String XPATH_DENOMINATOR_EXCLUSIONS = "/measure/populations/denominatorExclusions";
 	private static final String RATIO = "RATIO";
 	private static final String PROPORTION = "PROPORTION";
-	private static final String SCORING_TYPE_CONTINUOUS_VARIABLE = "CONTINUOUS VARIABLE";
+	private static final String CONTINUOUS_VARIABLE = "CONTINUOUS VARIABLE";
 	private static final String NUMERATOR_EXCLUSIONS = "numeratorExclusions";
 	private static final String DENOMINATOR_EXCEPTIONS = "denominatorExceptions";
 	private static final String DENOMINATOR_EXCLUSIONS = "denominatorExclusions";
@@ -492,7 +492,7 @@ public class XmlProcessor {
 			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_POPULATION_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_OBSERVATIONS);
 			
-		} else if (SCORING_TYPE_CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType)) {
+		} else if (CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType)) {
 			// Numerators,Numerator Exclusions, Denominators, Denominator
 			// Exceptions, Denominator Exclusions
 			xPathList.add(XPATH_NUMERATORS);
@@ -666,7 +666,7 @@ public class XmlProcessor {
 		 */
 		Node measureObservationsNode = findNode(originalDoc, XPATH_MEASURE_OBSERVATIONS);
 		Node patientBasedMeasureNode = findNode(originalDoc, XPATH_FOR_PATIENT_BASED_INDICATOR);
-		if ((SCORING_TYPE_CONTINUOUS_VARIABLE.equals(scoringType) || (RATIO.equals(scoringType) && patientBasedMeasureNode != null && !"true".equals(patientBasedMeasureNode.getTextContent()))) 
+		if ((CONTINUOUS_VARIABLE.equals(scoringType) || (RATIO.equals(scoringType) && patientBasedMeasureNode != null && !"true".equals(patientBasedMeasureNode.getTextContent()))) 
 				&& (measureObservationsNode == null)) {
 			// Create a new measureObservations element.
 			String nodeName = MEASURE_OBSERVATION;
@@ -892,7 +892,7 @@ public class XmlProcessor {
 	 */
 	private List<String> retrieveScoreBasedNodes(String scoringType) {
 		List<String> scoreBasedNodes = new ArrayList<String>();
-		if (SCORING_TYPE_CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType)) {
+		if (CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType)) {
 			scoreBasedNodes.add(INITIAL_POPULATIONS);
 			scoreBasedNodes.add(MEASURE_POPULATIONS);
 			scoreBasedNodes.add(MEASURE_POPULATION_EXCLUSIONS);

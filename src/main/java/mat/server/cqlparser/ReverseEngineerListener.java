@@ -243,7 +243,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 			valueset.setUuid(UUID.randomUUID().toString());
 			valueset.setName(identifier);
 			valueset.setVersion(version);
-			valueset.setSuffix(identifier);
+			valueset.setSuffix("");
 			
 			valueset.setOriginalCodeListName("");
 			valueset.setProgram("");

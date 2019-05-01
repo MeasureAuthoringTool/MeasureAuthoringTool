@@ -5930,6 +5930,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public VsacApiResult updateCQLVSACValueSets(String measureId, String expansionId, String sessionId) {
 		CQLQualityDataModelWrapper details = getCQLAppliedQDMFromMeasureXml(measureId, false);
 		List<CQLQualityDataSetDTO> appliedQDMList = details.getQualityDataDTO();
+		appliedQDMList = appliedQDMList.stream().filter(v -> StringUtils.isEmpty(v.getOriginalCodeListName())).collect(Collectors.toList());
 		VsacApiResult result = getVsacService().updateCQLVSACValueSets(appliedQDMList, expansionId, sessionId);
 		if (result.isSuccess()) {
 			updateAllCQLInMeasureXml(result.getCqlQualityDataSetMap(), measureId);

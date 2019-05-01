@@ -147,6 +147,7 @@ import mat.server.util.CQLUtil;
 import mat.server.util.ExportSimpleXML;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
+import mat.server.util.QDMUtil;
 import mat.server.util.UuidUtility;
 import mat.server.util.XmlProcessor;
 import mat.server.validator.measure.CompositeMeasureValidator;
@@ -5218,10 +5219,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	private void lintAndAddToResult(String measureId, SaveUpdateCQLResult result) {
 		Measure measure = measureDAO.find(measureId);
-		CQLLinterConfig config = new CQLLinterConfig();
-		config.setLibraryName(MeasureUtility.cleanString(measure.getDescription()));
-		config.setLibraryVersion(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
+		CQLLinterConfig config = new CQLLinterConfig(MeasureUtility.cleanString(measure.getDescription()),
+				MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
+				QDMUtil.QDM_MODEL_IDENTIFIER, measure.getQdmVersion());
 		config.setPreviousCQLModel(result.getCqlModel());
+
 		CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
 		result.getLinterErrors().addAll(linter.getErrors());
 		result.getLinterErrorMessages().addAll(linter.getErrorMessages());
@@ -5240,15 +5242,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 			MatContextServiceUtil.get().setMeasure(true);
 			Measure measure = measureDAO.find(measureId);
-			CQLLinterConfig config = new CQLLinterConfig();
-			config.setLibraryName(MeasureUtility.cleanString(measure.getDescription()));
-			config.setLibraryVersion(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
-			config.setQdmVersion(measure.getQdmVersion());
+
+			CQLLinterConfig config = new CQLLinterConfig(MeasureUtility.cleanString(measure.getDescription()),
+					MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
+					QDMUtil.QDM_MODEL_IDENTIFIER, measure.getQdmVersion());
 			
 			result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config);
 			
 			XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
-			processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+			processor.replaceNode(result.getXml(), CQL_LOOKUP, MEASURE);
 			measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));			
 			measurePackageService.saveMeasureXml(measureXMLModel);			
 		}

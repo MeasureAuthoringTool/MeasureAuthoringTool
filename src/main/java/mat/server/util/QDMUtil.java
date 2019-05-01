@@ -20,7 +20,8 @@ import mat.client.shared.QDMContainer;
 public class QDMUtil {
 
 	private static QdmModelInfoProvider qdmModelInfoProvider = new QdmModelInfoProvider();
-
+	
+	public static final String QDM_MODEL_IDENTIFIER = "QDM";
 	
 	private QDMUtil() {
 		throw new IllegalStateException();

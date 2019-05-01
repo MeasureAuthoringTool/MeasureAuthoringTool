@@ -31,7 +31,6 @@ import mat.shared.CQLError;
 public class CQLLinter extends cqlBaseListener {
 	
 	private static final String VALUESET_OID_PREFIX = "urn:oid:";
-	private static final String MODEL_IDENTIFIER = "QDM";
 	
 	private CQLLinterConfig config;
 	private List<String> errorMessages;
@@ -79,12 +78,10 @@ public class CQLLinter extends cqlBaseListener {
 		String model = CQLParserUtil.parseString(ctx.modelIdentifier().getText());
 		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
 		
-		if (!StringUtils.equals(model, MODEL_IDENTIFIER) || !StringUtils.equals(version, config.getQdmVersion())) {
+		if (!StringUtils.equals(model, config.getModelIdentifier()) || !StringUtils.equals(version, config.getModelVersion())) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("The model and version declaration must match the current model and version used by the MAT: ");
-			sb.append(config.getPreviousCQLModel().getUsingName());
-			sb.append(CQLUtilityClass.VERSION);
-			sb.append(config.getPreviousCQLModel().getQdmVersion());
+			sb.append(config.getModelIdentifier()).append(CQLUtilityClass.VERSION).append(config.getModelVersion());
 
 			String annotation = model + " version '" + version + "' does not match what is on file for the MAT.";
 

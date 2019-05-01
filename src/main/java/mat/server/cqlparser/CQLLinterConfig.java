@@ -6,12 +6,21 @@ public class CQLLinterConfig {
 
 	private String libraryName;
 	private String libraryVersion;
-	private String qdmVersion;
+	private String modelIdentifier;
+	private String modelVersion;
 	
 	private CQLModel previousCQLModel;
 	
 	public CQLLinterConfig() {
 		
+	}
+	
+	public CQLLinterConfig(String libraryName, String libraryVersion, String modelIdentifier, String modelVersion) {
+		super();
+		this.libraryName = libraryName;
+		this.libraryVersion = libraryVersion;
+		this.modelIdentifier = modelIdentifier;
+		this.modelVersion = modelVersion;
 	}
 
 	public String getLibraryName() {
@@ -30,12 +39,20 @@ public class CQLLinterConfig {
 		this.libraryVersion = version;
 	}
 
-	public String getQdmVersion() {
-		return qdmVersion;
+	public String getModelIdentifier() {
+		return modelIdentifier;
 	}
 
-	public void setQdmVersion(String qdmVersion) {
-		this.qdmVersion = qdmVersion;
+	public void setModelIdentifier(String modelIdentifier) {
+		this.modelIdentifier = modelIdentifier;
+	}
+
+	public String getModelVersion() {
+		return modelVersion;
+	}
+
+	public void setModelVersion(String modelVersion) {
+		this.modelVersion = modelVersion;
 	}
 
 	public CQLModel getPreviousCQLModel() {

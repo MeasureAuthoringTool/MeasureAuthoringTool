@@ -78,6 +78,7 @@ import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.CQLUtil;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
+import mat.server.util.QDMUtil;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.CQLModelValidator;
@@ -851,13 +852,12 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 			String cqlXml = getCQLLibraryXml(cqlLibrary);
 			
-			
-			CQLLinterConfig config = new CQLLinterConfig();
-			config.setLibraryName(cqlLibrary.getName());
-			config.setLibraryVersion(MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()));			
+			CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(), 
+					MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()), 
+					QDMUtil.QDM_MODEL_IDENTIFIER, cqlLibrary.getQdmVersion());
+
 			result = cqlService.saveCQLFile(cqlXml, cql, config);
-			XmlProcessor processor = new XmlProcessor(cqlXml);		
-			processor.replaceNode(result.getXml(), "cqlLookUp", null);
+
 			cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 			cqlLibraryDAO.save(cqlLibrary);			
 		}
@@ -1093,10 +1093,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	}
 
 	private void lintAndAddToResult(SaveUpdateCQLResult result, CQLLibrary cqlLibrary) {
-		CQLLinterConfig config = new CQLLinterConfig();
-		config.setLibraryName(cqlLibrary.getName());
-		config.setLibraryVersion(MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()));			
+		CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(), 
+				MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()),
+				QDMUtil.QDM_MODEL_IDENTIFIER, cqlLibrary.getQdmVersion());
 		config.setPreviousCQLModel(result.getCqlModel());
+		
 		CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
 		result.getLinterErrors().addAll(linter.getErrors());
 		result.getLinterErrorMessages().addAll(linter.getErrorMessages());

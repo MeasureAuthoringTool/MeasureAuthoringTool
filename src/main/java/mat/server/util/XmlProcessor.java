@@ -1233,7 +1233,7 @@ public class XmlProcessor {
 				versionChildElem.setTextContent(version);
 				
 				Element usingChildElem = originalDoc.createElement("usingModel");
-				usingChildElem.setTextContent("QDM");
+				usingChildElem.setTextContent(QDMUtil.QDM_MODEL_IDENTIFIER);
 				
 				Element usingVerChildElem = originalDoc.createElement("usingModelVersion");
 				usingVerChildElem.setTextContent(releaseVersion);

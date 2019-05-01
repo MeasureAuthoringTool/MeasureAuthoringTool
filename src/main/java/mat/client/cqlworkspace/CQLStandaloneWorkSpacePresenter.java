@@ -169,7 +169,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 							!v.getOriginalCodeListName().isEmpty())
 					).collect(Collectors.toList());
 					setAppliedValueSetListInTable(valuesets);
-					setAppliedValueSetListInTable(valuesets);
 					showSearchingBusy(false);
 				}
 			});
@@ -2107,7 +2106,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		MatContext.get().setValuesets(allValuesets);
 		for (CQLQualityDataSetDTO valueset : allValuesets) {
 			if((valueset.getOid().equals("419099009") || valueset.getOid().equals("21112-8") 
-					|| (valueset.getType() !=null) && valueset.getType().equalsIgnoreCase("code"))){
+					|| (valueset.getType() !=null) && valueset.getType().equalsIgnoreCase("code"))
+					|| appliedValueSetTableList.stream().filter(v -> v.getName().equals(valueset.getName())).count() > 0){
 				continue;
 			}
 			appliedValueSetTableList.add(valueset);

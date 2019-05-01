@@ -942,10 +942,10 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			}
 
 			List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<>();
-			List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetAndCodeList();
-
+			List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetAndCodeList();			
 			for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
-				if (dto.isSuppDataElement() || dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()) {
+				if (dto.isSuppDataElement() || dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()
+						|| appliedAllValueSetList.stream().filter(v -> v.getName().equals(dto.getName())).count() > 0) {
 					continue;
 				}
 					
@@ -957,7 +957,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			appliedValueSetTableList.clear();
 			appliedCodeTableList.clear();
 			for (CQLQualityDataSetDTO dto : result.getCqlModel().getValueSetList()) {
-				if (dto.isSuppDataElement() || dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty())
+				if (dto.isSuppDataElement() || dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()
+						|| appliedValueSetTableList.stream().filter(v -> v.getName().equals(dto.getName())).count() > 0)
 					continue;
 				appliedValueSetTableList.add(dto);
 			}
@@ -2104,9 +2105,10 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		}
 		MatContext.get().setValuesets(allValuesets);
 		for (CQLQualityDataSetDTO valueset : allValuesets) {
-			// filtering out codes from valuesets list
+			// filtering out codes from valuesets list and duplicate values
 			if ((valueset.getOid().equals("419099009") || valueset.getOid().equals("21112-8")
-					|| (valueset.getType() != null) && valueset.getType().equalsIgnoreCase("code"))) {
+					|| (valueset.getType() != null) && valueset.getType().equalsIgnoreCase("code"))
+					|| appliedValueSetTableList.stream().filter(v -> v.getName().equals(valueset.getName())).count() > 0) {
 				continue;
 			}
 			appliedValueSetTableList.add(valueset);

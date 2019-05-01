@@ -1720,6 +1720,7 @@ public class CQLServiceImpl implements CQLService {
 				if(isDuplicate(valueSetTransferObject, true)) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
+					result.setCqlQualityDataSetDTO(qds);
 					return result;
 				}
 			}

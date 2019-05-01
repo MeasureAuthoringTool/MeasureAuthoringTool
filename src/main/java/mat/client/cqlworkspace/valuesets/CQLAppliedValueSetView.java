@@ -1137,7 +1137,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			Iterator<CQLQualityDataSetDTO> iterator = appliedValueSetTableList.iterator();
 			while (iterator.hasNext()) {
 				CQLQualityDataSetDTO dataSetDTO = iterator.next();
-				if ((dataSetDTO.getOriginalCodeListName().isEmpty() || dataSetDTO.getOriginalCodeListName() == null) && dataSetDTO.getName().equalsIgnoreCase(userDefinedInput)) {
+				if (!dataSetDTO.getOriginalCodeListName().isEmpty() && dataSetDTO.getOriginalCodeListName() != null && dataSetDTO.getName().equalsIgnoreCase(userDefinedInput)) {
 					return true;
 				}
 			}

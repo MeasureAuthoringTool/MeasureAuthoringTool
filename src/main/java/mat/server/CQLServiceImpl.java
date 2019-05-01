@@ -732,6 +732,7 @@ public class CQLServiceImpl implements CQLService {
 		}		
 
 		result.setSuccess(true);
+		CQLUtil.getIncludedCQLExpressions(cqlModel, cqlLibraryDAO);
 		result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));
 		result.setCqlModel(cqlModel);
 		result.setIncludeLibrary(includedLibraryWithEdits);

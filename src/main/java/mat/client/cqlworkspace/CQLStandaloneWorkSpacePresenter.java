@@ -1097,8 +1097,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				appliedValueSetTableList.clear();
 				if (result.getCqlModel().getAllValueSetAndCodeList() != null) {
 					for (CQLQualityDataSetDTO dto : result.getCqlModel().getAllValueSetAndCodeList()) {
-						if(dto.isSuppDataElement() || 
-								dto.getOid().equals("419099009") || dto.getOid().equals("21112-8") 
+						if(dto.getOid().equals("419099009") || dto.getOid().equals("21112-8") 
 								|| (dto.getType() !=null && dto.getType().equalsIgnoreCase("code")))
 							continue;
 						appliedValueSetTableList.add(dto);
@@ -1284,7 +1283,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetAndCodeList();
 
 				for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
-					if (dto.isSuppDataElement() || dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()) {
+					if (dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()) {
 						continue;
 					}
 						
@@ -1297,7 +1296,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				appliedCodeTableList.clear();
 				
 				for (CQLQualityDataSetDTO dto : result.getCqlModel().getValueSetList()) {
-					if (dto.isSuppDataElement() || dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()) {
+					if (dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()) {
 						continue;
 					}
 					
@@ -2099,8 +2098,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		appliedValueSetTableList.clear();
 		List<CQLQualityDataSetDTO> allValuesets = new ArrayList<>();
 		for (CQLQualityDataSetDTO dto : valueSetList) {
-			if (dto.isSuppDataElement())
-				continue;
 			allValuesets.add(dto);
 		}
 		MatContext.get().setValuesets(allValuesets);

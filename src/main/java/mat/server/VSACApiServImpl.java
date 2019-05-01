@@ -245,7 +245,6 @@ public class VSACApiServImpl implements VSACApiService{
 				// supplemental data elements.
 				if (ConstantMessages.TIMING_ELEMENT.equals(cqlQualityDataSetDTO.getDataType())
 						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(cqlQualityDataSetDTO.getOid())
-						|| cqlQualityDataSetDTO.isSuppDataElement()
 						|| ConstantMessages.BIRTHDATE_OID.equals(cqlQualityDataSetDTO.getOid())
 						|| ConstantMessages.DEAD_OID.equals(cqlQualityDataSetDTO.getOid())) {
 					LOGGER.info("VSACAPIServiceImpl updateCQLVSACValueSets :: QDM filtered as it is of either"

@@ -944,7 +944,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<>();
 			List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetAndCodeList();			
 			for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
-				if (dto.isSuppDataElement() || dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()
+				if (dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()
 						|| appliedAllValueSetList.stream().filter(v -> v.getName().equals(dto.getName())).count() > 0) {
 					continue;
 				}
@@ -957,7 +957,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			appliedValueSetTableList.clear();
 			appliedCodeTableList.clear();
 			for (CQLQualityDataSetDTO dto : result.getCqlModel().getValueSetList()) {
-				if (dto.isSuppDataElement() || dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()
+				if (dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()
 						|| appliedValueSetTableList.stream().filter(v -> v.getName().equals(dto.getName())).count() > 0)
 					continue;
 				appliedValueSetTableList.add(dto);
@@ -1480,7 +1480,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				appliedValueSetTableList.clear();
 				if (result.getQualityDataDTO() != null) {
 					for (CQLQualityDataSetDTO dto : result.getQualityDataDTO()) {
-						if (dto.isSuppDataElement() || dto.getOid().equals("419099009") || dto.getOid().equals("21112-8") || (dto.getType() != null && dto.getType().equalsIgnoreCase("code")))
+						if (dto.getOid().equals("419099009") || dto.getOid().equals("21112-8") || (dto.getType() != null && dto.getType().equalsIgnoreCase("code")))
 							continue;
 						appliedValueSetTableList.add(dto);
 					}
@@ -2099,8 +2099,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		appliedValueSetTableList.clear();
 		List<CQLQualityDataSetDTO> allValuesets = new ArrayList<>();
 		for (CQLQualityDataSetDTO dto : valueSetList) {
-			if (dto.isSuppDataElement())
-				continue;
 			allValuesets.add(dto);
 		}
 		MatContext.get().setValuesets(allValuesets);

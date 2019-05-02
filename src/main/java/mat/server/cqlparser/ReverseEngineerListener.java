@@ -98,9 +98,17 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	}
 
 	@Override
-	public void enterLibraryDefinition(LibraryDefinitionContext ctx) {		
-		String identifier = parseString(ctx.identifier().getText());
-		String version = parseString(ctx.versionSpecifier().getText());
+	public void enterLibraryDefinition(LibraryDefinitionContext ctx) {	
+		String identifier = "";
+		if(ctx.identifier() != null) {
+			identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+		}
+		
+		String version  = "";
+		if(ctx.versionSpecifier() != null) {
+			version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
+		}
+		
 		String comment = getLibraryComment(ctx);
 
 		cqlModel.setLibraryName(identifier);
@@ -129,9 +137,15 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	
 	@Override
 	public void enterUsingDefinition(UsingDefinitionContext ctx) {
-		String identifier = parseString(ctx.modelIdentifier().identifier().getText());
-		String version = parseString(ctx.versionSpecifier().getText());
+		String identifier = "";
+		if(ctx.modelIdentifier() != null) {
+			identifier = CQLParserUtil.parseString(ctx.modelIdentifier().getText());
+		}
 		
+		String version  = "";
+		if(ctx.versionSpecifier() != null) {
+			version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
+		}		
 		
 		cqlModel.setUsingName(identifier);
 		cqlModel.setQdmVersion(version);
@@ -139,9 +153,9 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	
 	@Override
 	public void enterIncludeDefinition(IncludeDefinitionContext ctx) {
-		String identifier = parseString(ctx.identifier().getText());
-		String version = parseString(ctx.versionSpecifier().getText());
-		String alias = parseString(ctx.localIdentifier().getText());
+		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
+		String alias = CQLParserUtil.parseString(ctx.localIdentifier().getText());
 		
 		
 		// check and see if there was a model the name, version, and alias as before
@@ -166,12 +180,12 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	
 	@Override
 	public void enterCodesystemDefinition(CodesystemDefinitionContext ctx) {
-		String identifier = parseString(ctx.identifier().getText());
-		String codesystemId = parseString(ctx.codesystemId().getText());
+		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+		String codesystemId = CQLParserUtil.parseString(ctx.codesystemId().getText());
 		
 		String version = "";
 		if(ctx.versionSpecifier() != null) {
-			version = parseString(ctx.versionSpecifier().getText());
+			version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
 		}
 
 		CQLCodeSystem codeSystem = new CQLCodeSystem();
@@ -187,10 +201,10 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	public void enterCodeDefinition(CodeDefinitionContext ctx) {
 		CQLCode code = new CQLCode();
 		
-		String identifier = parseString(ctx.identifier().getText());
-		String codeId = parseString(ctx.codeId().getText());
-		String codeSystemName = parseString(ctx.codesystemIdentifier().getText());
-		String displayClause = parseString(ctx.displayClause().STRING().getText());
+		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+		String codeId = CQLParserUtil.parseString(ctx.codeId().getText());
+		String codeSystemName = CQLParserUtil.parseString(ctx.codesystemIdentifier().getText());
+		String displayClause = CQLParserUtil.parseString(ctx.displayClause().STRING().getText());
 	
 		
 		List<CQLCode> previousCodes = previousModel.getCodeList().stream().filter(c -> (
@@ -226,7 +240,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		
 		String version = "";
 		if(ctx.versionSpecifier() != null) {
-			version = parseString(ctx.versionSpecifier().getText());
+			version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
 		}
 		
 		// check and see if there was a value set with the same identifier and oid as before
@@ -264,7 +278,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	
 	@Override
 	public void enterParameterDefinition(ParameterDefinitionContext ctx) {
-		String identifier = parseString(ctx.identifier().getText());
+		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
 		String comment = getExpressionComment(ctx);		
 		String logic = getParameterLogic(ctx, ctx.identifier().getText());
 		
@@ -309,7 +323,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	
 	@Override
 	public void enterExpressionDefinition(ExpressionDefinitionContext ctx) {		
-		String identifier = parseString(ctx.identifier().getText());
+		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
 		String logic = getDefinitionAndFunctionLogic(ctx);
 	    String comment = getExpressionComment(ctx);		
 						
@@ -326,7 +340,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	
 	@Override
 	public void enterFunctionDefinition(FunctionDefinitionContext ctx) {
-		String identifier = parseString(ctx.identifier().getText());	
+		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());	
 		String logic = getDefinitionAndFunctionLogic(ctx);
 		String comment = getExpressionComment(ctx);
 		
@@ -339,9 +353,9 @@ public class ReverseEngineerListener extends cqlBaseListener {
 				functionArgument.setId(UUID.nameUUIDFromBytes(name.getBytes()).toString());
 				functionArgument.setArgumentName(name);
 				
-				if(QDMUtil.getQDMContainer().getDatatypes().contains(parseString(type))) {
+				if(QDMUtil.getQDMContainer().getDatatypes().contains(CQLParserUtil.parseString(type))) {
 					functionArgument.setArgumentType("QDM Datatype");
-					functionArgument.setQdmDataType(parseString(type));
+					functionArgument.setQdmDataType(CQLParserUtil.parseString(type));
 				} else if (CQLKeywordsUtil.getCQLKeywords().getCqlDataTypeList().contains(type)) {
 					functionArgument.setArgumentType(type);
 				} else {
@@ -415,19 +429,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	public CQLModel getCQLModel() {
 		return this.cqlModel;
 	}
-	
-	private String parseString(String identifier) {
-		if(Character.toString(identifier.charAt(0)).equals("\"") || Character.toString(identifier.charAt(0)).equals("'")) {
-			return identifier.substring(1, identifier.length() - 1);
-		}
 		
-		if(Character.toString(identifier.charAt(identifier.length() - 1)).equals("\"") || Character.toString(identifier.charAt(0)).equals("'")) {
-			return identifier.substring(0, identifier.length() - 2);
-		}
-		
-		return identifier;
-	}
-	
 	/**
 	 * A definition or function body should be considered done when it reaches the next define statement
 	 * or it reaches a comment for the next expression. 

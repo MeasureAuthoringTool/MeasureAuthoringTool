@@ -44,7 +44,7 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 	private CQLParametersView cqlParametersView;
 	private CQLDefinitionsView cqlDefinitionsView;
 	private CQLFunctionsView cqlFunctionsView;
-	private CQLView cqlViewCQLView;
+	private CQLLibraryEditorView cqlViewCQLView;
 	private CQLLeftNavBarPanelView cqlLeftNavBarPanelView;
 	public String clickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 	public String nextClickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
@@ -60,7 +60,7 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 		codesView = new CQLCodesView();
 		valueSetView = new CQLAppliedValueSetView();
 		cqlIncludeLibraryView = new CQLIncludeLibraryView();
-		cqlViewCQLView = new CQLView();
+		cqlViewCQLView = new CQLLibraryEditorView();
 		cqlLeftNavBarPanelView = new CQLLeftNavBarPanelView();
 		resetAll();
 	}
@@ -417,7 +417,7 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 		this.lockedButtonHPanel = lockedButtonVPanel;
 	}
 
-	public CQLView getViewCQLView(){
+	public CQLLibraryEditorView getCQLLibraryEditorView(){
 		return cqlViewCQLView;
 	}
 

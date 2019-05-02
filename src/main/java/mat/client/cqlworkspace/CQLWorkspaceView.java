@@ -23,7 +23,7 @@ public interface CQLWorkspaceView {
 	CQLLeftNavBarPanelView getCQLLeftNavBarPanelView();
 	public VerticalPanel getMainPanel();
 	public CQLDefinitionsView getCQLDefinitionsView();
-	public CQLView getViewCQLView();
+	public CQLLibraryEditorView getCQLLibraryEditorView();
 	public CQLFunctionsView getCQLFunctionsView();
 	public AceEditor getViewCQLEditor();
 	public CQLIncludeLibraryView getIncludeView();

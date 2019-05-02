@@ -92,8 +92,8 @@ public class CQLFunctionsView {
 	private FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
 	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
-	private CQLEditorPanel editorPanel = new CQLEditorPanel(FUNCTION, "Build CQL Expression", false);
-	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("functionViewCQL", "Click to View CQL", true);
+	private CQLEditorPanel editorPanel = new CQLEditorPanel(FUNCTION, "CQL Expression Editor", false);
+	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("functionViewCQL", "CQL Library Viewer", true);
 
 	
 	public CQLFunctionsView() {

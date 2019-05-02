@@ -46,8 +46,8 @@ public class CQLDefinitionsView {
 	private FocusPanel mainDefineViewVerticalPanel = new FocusPanel();
 	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
-	private CQLEditorPanel editorPanel= new CQLEditorPanel(DEFINITION, "Build CQL Expression", false);
-	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("definitionViewCQL", "Click to View CQL", true);
+	private CQLEditorPanel editorPanel= new CQLEditorPanel(DEFINITION, "CQL Expression Editor", false);
+	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("definitionViewCQL", "CQL Library Viewer", true);
 
 	
 	public CQLDefinitionsView() {

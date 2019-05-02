@@ -56,6 +56,7 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
 
 public class CQLLeftNavBarPanelView {
+	private static final String CQL_LIBRARY_EDITOR_ANCHOR = "cqlLibraryEditor_Anchor";
 	private VerticalPanel rightHandNavPanel = new VerticalPanel();
 	private Map<String, String> defineNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 	private Map<String, String> funcNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
@@ -81,7 +82,7 @@ public class CQLLeftNavBarPanelView {
 	PanelCollapse includesCollapse = new PanelCollapse();
 	PanelCollapse codesCollapse = new PanelCollapse();
 	PanelCollapse valueSetCollapse = new PanelCollapse();
-	private AnchorListItem viewCQL;
+	private AnchorListItem cqlLibraryEditorTab;
 	private AnchorListItem appliedQDM;
 	private AnchorListItem codesLibrary;
 	private AnchorListItem generalInformation;
@@ -236,7 +237,7 @@ public class CQLLeftNavBarPanelView {
 		parameterLibrary = new AnchorListItem();
 		definitionLibrary = new AnchorListItem();
 		functionLibrary = new AnchorListItem();
-		viewCQL = new AnchorListItem();
+		cqlLibraryEditorTab = new AnchorListItem();
 
 		
 		buildGeneralInfoTab();
@@ -247,7 +248,7 @@ public class CQLLeftNavBarPanelView {
 		buildParameterTab();
 		buildDefinitionsTab();
 		buildFunctionsTab();
-		buildViewCQLTab();
+		buildCQLLibraryEditorTab();
 		
 		navPills.add(generalInformation);
 		navPills.add(anchor);
@@ -257,7 +258,7 @@ public class CQLLeftNavBarPanelView {
 		navPills.add(parameterLibrary);
 		navPills.add(definitionLibrary);
 		navPills.add(functionLibrary);
-		navPills.add(viewCQL);
+		navPills.add(cqlLibraryEditorTab);
 
 		rightHandNavPanel.add(navPills);
 	}
@@ -413,11 +414,11 @@ public class CQLLeftNavBarPanelView {
 		functionLibrary.add(functionCollapse);
 	}
 	
-	private void buildViewCQLTab() {
-		viewCQL.setIcon(IconType.BOOK);
-		viewCQL.setText("View CQL");
-		viewCQL.setTitle("View CQL");
-		viewCQL.setId("viewCQL_Anchor");
+	private void buildCQLLibraryEditorTab() {
+		cqlLibraryEditorTab.setIcon(IconType.BOOK);
+		cqlLibraryEditorTab.setText("CQL Library Editor");
+		cqlLibraryEditorTab.setTitle("CQL Library Editor");
+		cqlLibraryEditorTab.setId(CQL_LIBRARY_EDITOR_ANCHOR);
 	}
 	
 	
@@ -1127,12 +1128,12 @@ public class CQLLeftNavBarPanelView {
 		this.functionLibrary = functionLibrary;
 	}
 
-	public AnchorListItem getViewCQL() {
-		return viewCQL;
+	public AnchorListItem getCQLLibraryEditorTab() {
+		return cqlLibraryEditorTab;
 	}
 
-	public void setViewCQL(AnchorListItem viewCQL) {
-		this.viewCQL = viewCQL;
+	public void setCQLLibraryEditorTab(AnchorListItem viewCQL) {
+		this.cqlLibraryEditorTab = viewCQL;
 	}
 
 	public List<CQLQualityDataSetDTO> getAppliedQdmTableList() {
@@ -1497,6 +1498,6 @@ public class CQLLeftNavBarPanelView {
 		getFunctionLibrary().setActive(false);
 		getParameterLibrary().setActive(false);
 		getDefinitionLibrary().setActive(false);
-		getViewCQL().setActive(false);
+		getCQLLibraryEditorTab().setActive(false);
 	}
 }

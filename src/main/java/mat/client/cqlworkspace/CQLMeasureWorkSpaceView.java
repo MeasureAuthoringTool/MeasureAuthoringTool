@@ -38,7 +38,7 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 	private CQLParametersView cqlParametersView;
 	private CQLDefinitionsView cqlDefinitionsView;
 	private CQLFunctionsView cqlFunctionsView;
-	private CQLView cqlViewCQLView;
+	private CQLLibraryEditorView cqlViewCQLView;
 	private CQLLeftNavBarPanelView cqlLeftNavBarPanelView;
 	private CQLComponentLibraryPresenter componentPresenter;
 	private HelpBlock helpBlock = new HelpBlock();
@@ -53,7 +53,7 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 		codesView = new CQLCodesView();
 		valueSetView = new CQLAppliedValueSetView();
 		inclView = new CQLIncludeLibraryView();
-		cqlViewCQLView = new CQLView();
+		cqlViewCQLView = new CQLLibraryEditorView();
 		cqlLeftNavBarPanelView = new CQLLeftNavBarPanelView();
 		
 		resetAll();
@@ -316,7 +316,7 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 		return cqlParametersView;
 	}
 
-	public CQLView getViewCQLView(){
+	public CQLLibraryEditorView getCQLLibraryEditorView(){
 		return cqlViewCQLView;
 	}
 

@@ -19,16 +19,17 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.shared.CQLError;
 
-public class CQLView {
-	private VerticalPanel cqlViewVP = new VerticalPanel();
+public class CQLLibraryEditorView {
+	private static final String CQL_LIBRARY_EDITOR_ID = "cqlLibraryEditor";
+	private VerticalPanel cqlLibraryEditorVP = new VerticalPanel();
 	private Button exportErrorFile = new Button();
 	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
-	private CQLEditorPanel editorPanel = new CQLEditorPanel("viewCQL", "View CQL file here", false);
-	private Button saveButton = new SaveButton("viewCQL");
+	private CQLEditorPanel editorPanel = new CQLEditorPanel(CQL_LIBRARY_EDITOR_ID, "CQL Library Editor", false);
+	private Button saveButton = new SaveButton(CQL_LIBRARY_EDITOR_ID);
 	
-	public CQLView(){	
-		cqlViewVP.clear();
+	public CQLLibraryEditorView(){	
+		cqlLibraryEditorVP.clear();
 		exportErrorFile.setType(ButtonType.PRIMARY);
 		exportErrorFile.setIcon(IconType.DOWNLOAD);
 		exportErrorFile.setText("Export Error File");
@@ -41,12 +42,12 @@ public class CQLView {
 	}
 	
 	public VerticalPanel buildView(boolean isEditable){
-		cqlViewVP.clear();
-		cqlViewVP.getElement().setId("cqlViewCQL_Id");
+		cqlLibraryEditorVP.clear();
+		cqlLibraryEditorVP.getElement().setId("cqlLibraryEditor_Id");
 		heading.addStyleName("leftAligned");
 					
-		cqlViewVP.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
-		cqlViewVP.add(new SpacerWidget());
+		cqlLibraryEditorVP.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
+		cqlLibraryEditorVP.add(new SpacerWidget());
 		
 		getCqlAceEditor().setText("");
 		getCqlAceEditor().clearAnnotations();
@@ -54,19 +55,19 @@ public class CQLView {
 		getCqlAceEditor().setReadOnly(!isEditable);
 		getSaveButton().setEnabled(isEditable);
 		if(isEditable) {
-			cqlViewVP.add(exportErrorFile);
+			cqlLibraryEditorVP.add(exportErrorFile);
 		}
 		
 		editorPanel.setSize("650px", "500px");
-		cqlViewVP.add(editorPanel);
+		cqlLibraryEditorVP.add(editorPanel);
 				
 		saveButton.setPull(Pull.RIGHT);
-		cqlViewVP.add(saveButton);
+		cqlLibraryEditorVP.add(saveButton);
 		
-		cqlViewVP.setStyleName("cqlRightContainer");
-		cqlViewVP.setWidth("700px");
-		cqlViewVP.setStyleName("marginLeft15px");
-		return cqlViewVP;
+		cqlLibraryEditorVP.setStyleName("cqlRightContainer");
+		cqlLibraryEditorVP.setWidth("700px");
+		cqlLibraryEditorVP.setStyleName("marginLeft15px");
+		return cqlLibraryEditorVP;
 	}
 
 	public CQLEditor getCqlAceEditor() {
@@ -90,7 +91,7 @@ public class CQLView {
 		this.exportErrorFile = exportErrorFile;
 	}
 	
-	public void setViewCQLAnnotations(List<CQLError> cqlErrors, String prefix, AceAnnotationType aceAnnotationType) {
+	public void setCQLLibraryEditorAnnotations(List<CQLError> cqlErrors, String prefix, AceAnnotationType aceAnnotationType) {
 		for (CQLError error : cqlErrors) {
 			int line = error.getErrorInLine();
 			int column = error.getErrorAtOffeset();

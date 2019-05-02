@@ -1690,8 +1690,8 @@ public class CQLServiceImpl implements CQLService {
 		
 		CQLQualityDataSetDTO qds = convertValueSetTransferObjectToQualityDataSetDTO(valueSetTransferObject);		
 		List<CQLQualityDataSetDTO> previousMatchingValuesets = model.getValueSetList().stream().filter(v -> 
-				(v.getName().equals(valueSetTransferObject.getCqlQualityDataSetDTO().getName()))
-						&& v.getOid().equals(valueSetTransferObject.getCqlQualityDataSetDTO().getOid())
+				(v.getName().equals(qds.getName()))
+						&& v.getOid().equals(qds.getOid())
 						&& StringUtils.isEmpty(v.getOriginalCodeListName())
 				).collect(Collectors.toList());
 						

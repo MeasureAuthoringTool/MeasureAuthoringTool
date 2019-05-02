@@ -175,7 +175,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected abstract void addAndModifyParameters();
 	protected abstract void addAndModifyFunction();
 	protected abstract void addAndModifyDefintions();
-	protected abstract void getAppliedValueSetList();
+	protected abstract void getAppliedValuesetAndCodeList();
 	
 	protected HelpBlock buildHelpBlock() {
 		helpBlock = new HelpBlock();
@@ -1201,7 +1201,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected void successfullyDeletedValueSet(final SaveUpdateCQLResult result) {
 		if (result != null && result.getCqlErrors().isEmpty()) {
 			modifyValueSetDTO = null;
-			getAppliedValueSetList();
+			getAppliedValuesetAndCodeList();
 			messagePanel.getSuccessMessageAlert().createAlert(buildRemovedSuccessfullyMessage(VALUESET, result.getCqlQualityDataSetDTO().getName()));
 			messagePanel.getSuccessMessageAlert().setVisible(true);
 		}

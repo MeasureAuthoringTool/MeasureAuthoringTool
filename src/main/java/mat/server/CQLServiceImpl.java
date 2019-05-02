@@ -1815,6 +1815,7 @@ public class CQLServiceImpl implements CQLService {
 				}
 			}	
 
+			result.setCqlCodeList(model.getCodeList());
 			result.setSuccess(true);
 			result.setCqlModel(model);
 			result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));

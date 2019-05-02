@@ -149,7 +149,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 
 	@Override
-	protected void getAppliedValueSetList() {
+	protected void getAppliedValuesetAndCodeList() {
 		showSearchingBusy(true);
 		String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();
 		if ((cqlLibraryId != null) && !cqlLibraryId.equals(EMPTY_STRING)) {
@@ -165,8 +165,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				@Override
 				public void onSuccess(SaveUpdateCQLResult result) {
 					List<CQLQualityDataSetDTO> valuesets = result.getCqlModel().getAllValueSetAndCodeList().stream().filter(v -> (
-							v.getOriginalCodeListName() != null &&
-							!v.getOriginalCodeListName().isEmpty())
+							(v.getOriginalCodeListName() != null &&
+							!v.getOriginalCodeListName().isEmpty()) 
+							|| (v.getCodeIdentifier() != null && !v.getCodeIdentifier().isEmpty()))
 					).collect(Collectors.toList());
 					setAppliedValueSetListInTable(valuesets);
 					showSearchingBusy(false);
@@ -1077,7 +1078,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					MatContext.get().getCQLModel().setCodeList(result.getCqlModel().getCodeList());
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 					cqlWorkspaceView.getCodesView().buildCodesCellTable(appliedCodeTableList, checkForEditPermission());
-					getAppliedValueSetList();
+					getAppliedValuesetAndCodeList();
 				} else {
 					messagePanel.getErrorMessageAlert().createAlert("Unable to delete.");		
 				}
@@ -1623,7 +1624,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 							setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetAndCodeList());
 						}
 						cqlWorkspaceView.getCodesView().buildCodesCellTable(appliedCodeTableList, checkForEditPermission());
-						getAppliedValueSetList();
+						getAppliedValuesetAndCodeList();
 						showSearchingBusy(false);
 						cqlWorkspaceView.getCodesView().getSaveButton().setEnabled(false);
 						isCodeModified = false;
@@ -1659,7 +1660,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 						appliedCodeTableList.addAll(codesToView);
 						cqlWorkspaceView.getCodesView().buildCodesCellTable(appliedCodeTableList, checkForEditPermission());
 						cqlWorkspaceView.getCQLLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
-						getAppliedValueSetList();
+						getAppliedValuesetAndCodeList();
 					} else {
 						messagePanel.getSuccessMessageAlert().clearAlert();
 						if(result.getFailureReason()==result.getDuplicateCode()){
@@ -1818,7 +1819,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 						currentMatValueSet = null;
 						cqlWorkspaceView.getValueSetView().resetCQLValuesetearchPanel();
 						messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFUL_MODIFY_APPLIED_VALUESET);
-						getAppliedValueSetList();
+						getAppliedValuesetAndCodeList();
 					} else {
 						if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
 							messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(result.getCqlQualityDataSetDTO().getName()));
@@ -1872,7 +1873,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 							previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
 							isProgramListBoxEnabled = true;
 							loadProgramsAndReleases(); 
-							getAppliedValueSetList();
+							getAppliedValuesetAndCodeList();
 						} else {
 							if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
 								messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(result.getCqlQualityDataSetDTO().getName()));

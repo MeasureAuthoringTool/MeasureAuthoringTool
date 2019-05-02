@@ -1726,9 +1726,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
 						appliedCodeTableList.clear();
 						List<CQLCode> codesToView = result.getCqlModel().getCodeList();
-						
-						codesToView.forEach(c -> GWT.log(c.getDisplayName()));
-						
+												
 						codesToView = codesToView.stream().filter(c -> c.getCodeIdentifier() != null && !c.getCodeIdentifier().isEmpty()).collect(Collectors.toList());
 						appliedCodeTableList.addAll(codesToView);
 						cqlWorkspaceView.getCQLLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);

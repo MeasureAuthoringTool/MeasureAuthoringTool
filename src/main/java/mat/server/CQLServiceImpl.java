@@ -1795,6 +1795,7 @@ public class CQLServiceImpl implements CQLService {
 				previousMatchingCodes.forEach(c -> {
 					c.setSuffix(appliedCode.getSuffix());
 					c.setCodeIdentifier(appliedCode.getCodeIdentifier());
+					c.setCodeSystemOID(appliedCode.getCodeSystemOID());
 					c.setCodeSystemName(appliedCode.getCodeSystemName());
 					c.setCodeSystemVersion(appliedCode.getCodeSystemVersion());
 					c.setIsCodeSystemVersionIncluded(appliedCode.isIsCodeSystemVersionIncluded());

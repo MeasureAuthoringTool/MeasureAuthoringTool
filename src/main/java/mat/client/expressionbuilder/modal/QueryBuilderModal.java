@@ -51,7 +51,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 
 	public static final String SOURCE = "Source";
 	public static final String RELATIONSHIP = "Relationship (Optional)";
-	public static final String FILTER = "Filter";
+	public static final String FILTER = "Filter (Optional)";
 	public static final String SORT = "Sort (Optional)";
 	public static final String REVIEW_QUERY = "Review Query";
 
@@ -107,8 +107,8 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private void onApplyButtonClick() {
 		CQLModelValidator validator = new CQLModelValidator();
 		
-		if (queryModel.getSource().getChildModels().isEmpty() || queryModel.getFilter().getChildModels().isEmpty()) {
-			this.getErrorAlert().createAlert("A source and filter are required for a query.");
+		if (queryModel.getSource().getChildModels().isEmpty()) {
+			this.getErrorAlert().createAlert("A source and a source alias are required for a query.");
 		} else if(queryModel.getAlias().isEmpty() || !validator.doesAliasNameFollowCQLAliasNamingConvention(queryModel.getAlias())) {
 			this.getErrorAlert().createAlert("The name of your source must start with an alpha character and can not contain spaces or special characters other than an underscore.");
 		} else {

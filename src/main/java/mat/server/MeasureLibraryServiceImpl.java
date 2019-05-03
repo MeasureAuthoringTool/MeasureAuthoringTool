@@ -1472,9 +1472,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		manageMeasureDetailModel.setFinalizedDate(measure.getFinalizedDate() == null ? "" : String.valueOf(measure.getFinalizedDate()));
 		manageMeasureDetailModel.setGroupId(measure.getMeasureSet().getId());
 		manageMeasureDetailModel.seteMeasureId(measure.geteMeasureId());
-		Integer isNQF =  measure.getNqfNumber();
-		manageMeasureDetailModel.setEndorseByNQF(isNQF == null ? false : true);
-		manageMeasureDetailModel.setNqfId(isNQF == null ? "" : String.valueOf(isNQF));
+		String nqfNum =  measure.getNqfNumber();
+		manageMeasureDetailModel.setEndorseByNQF(StringUtils.isNotBlank(nqfNum));
+		manageMeasureDetailModel.setNqfId(StringUtils.trimToEmpty(nqfNum));
 		Timestamp calendarYearFrom = measure.getMeasurementPeriodFrom();
 		Timestamp calendarYearTo = measure.getMeasurementPeriodTo();
 		
@@ -2377,7 +2377,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				measure.setMeasureStewardId(model.getStewardId());
 
 				measure.seteMeasureId(model.geteMeasureId());
-				measure.setNqfNumber(model.getNqfId() == null ? null : Integer.valueOf(model.getNqfId()));
+				measure.setNqfNumber(model.getNqfId());
 				calculateCalendarYearForMeasure(model, measure);
 				
 				
@@ -2413,9 +2413,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MatContext.get().setCurrentMeasureScoringType(model.getMeasScoring());
 		}
 		
+		try {
+			xmlProcessor.updateCQLLibraryName(measure.getDescription());
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		
 		String newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
 		xmlModel.setXml(newXml);
 		measurePackageService.saveMeasureXml(xmlModel);
+		
+
+		
 	}
 
 	private void calculateCalendarYearForMeasure(final ManageMeasureDetailModel model, Measure measure) {
@@ -2501,20 +2510,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureXmlModel.getMeasureId())) {
 				XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
-				try {
-					String newXml = xmlProcessor.replaceNode(measureXmlModel.getXml(),
-							measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
-					
-					xmlProcessor.updateCQLLibraryName();
-					checkForDefaultCQLParametersAndAppend(xmlProcessor);
-					checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
-					updateCQLVersion(xmlProcessor);
-					
-					newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
-					measureXmlModel.setXml(newXml);
-				} catch (XPathExpressionException e) {
-					logger.debug("Exception in saveMeasureXml while updating scoring :" + e);
-				}
+				String newXml = xmlProcessor.replaceNode(measureXmlModel.getXml(),
+						measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
+				
+				checkForDefaultCQLParametersAndAppend(xmlProcessor);
+				checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
+				updateCQLVersion(xmlProcessor);
+				
+				newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
+				measureXmlModel.setXml(newXml);
 				measurePackageService.saveMeasureXml(measureXmlModel);
 			}
 		} else {
@@ -6132,7 +6136,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			pkg.setMeasureStewardId(model.getStewardId());
 			
 			pkg.seteMeasureId(model.geteMeasureId());
-			pkg.setNqfNumber(Integer.valueOf(model.getNqfId()));
+			pkg.setNqfNumber(model.getNqfId());
 			
 			calculateCalendarYearForMeasure(model, pkg);
 			

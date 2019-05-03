@@ -86,7 +86,7 @@ public class Measure {
 	
 	private String measureStewardId;
 	
-	private Integer nqfNumber;
+	private String nqfNumber;
 	
 	private Timestamp measurementPeriodFrom;
 	
@@ -416,11 +416,11 @@ public class Measure {
 	}
 
 	@Column(name = "NQF_NUMBER")
-	public Integer getNqfNumber() {
+	public String getNqfNumber() {
 		return nqfNumber;
 	}
 
-	public void setNqfNumber(Integer nqfNumber) {
+	public void setNqfNumber(String nqfNumber) {
 		this.nqfNumber = nqfNumber;
 	}
 

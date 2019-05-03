@@ -454,24 +454,18 @@ public final class CQLUtilityClass {
 
 		StringBuilder sb = new StringBuilder();
 
-		List<String> valueSetAlreadyUsed = new ArrayList<>();
-
 		if (!CollectionUtils.isEmpty(valueSetList)) {
 
 			for (CQLQualityDataSetDTO valueset : valueSetList) {
-
-				if(!valueSetAlreadyUsed.contains(valueset.getName())){
-
-					String version = valueset.getVersion().replaceAll(" ", "%20");
-					sb.append("valueset ").append('"').append(valueset.getName()).append('"');
-					sb.append(": 'urn:oid:").append(valueset.getOid()).append("' ");
-					//Check if QDM has expansion identifier or not.
-					if(StringUtils.isNotBlank(version) && !version.equals("1.0") ){
-						sb.append("version 'urn:hl7:version:").append(version).append("' ");
-					}
-					sb.append("\n");
-					valueSetAlreadyUsed.add(valueset.getName());
+				String version = valueset.getVersion().replaceAll(" ", "%20");
+				sb.append("valueset ").append('"').append(valueset.getName()).append('"');
+				sb.append(": 'urn:oid:").append(valueset.getOid()).append("' ");
+				//Check if QDM has expansion identifier or not.
+				if(StringUtils.isNotBlank(version) && !version.equals("1.0") ){
+					sb.append("version 'urn:hl7:version:").append(version).append("' ");
 				}
+				sb.append("\n");
+
 			}
 
 			sb.append("\n");

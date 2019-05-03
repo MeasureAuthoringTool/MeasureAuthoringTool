@@ -1434,7 +1434,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		manageMeasureDetailModel.setShortName(measure.getaBBRName());
 		manageMeasureDetailModel.setMeasureOwnerId(measure.getOwner().getId());
 		manageMeasureDetailModel.setMeasScoring(measure.getMeasureScoring());
-		manageMeasureDetailModel.setIsPatientBased(measure.getPatientBased());
+		manageMeasureDetailModel.setIsPatientBased(measure.getPatientBased() == null ? calculateDefaultPatientBasedIndicatorBasedOnScoringType(measure.getMeasureScoring()) : measure.getPatientBased());
 		manageMeasureDetailModel.setFinalizedDate(measure.getFinalizedDate() == null ? "" : String.valueOf(measure.getFinalizedDate()));
 		manageMeasureDetailModel.setGroupId(measure.getMeasureSet().getId());
 		manageMeasureDetailModel.seteMeasureId(measure.geteMeasureId());
@@ -1452,6 +1452,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			manageMeasureDetailModel.setMeasFromPeriod(new SimpleDateFormat("MM/dd/yyyy").format(calendarYearFrom));
 			manageMeasureDetailModel.setMeasToPeriod(new SimpleDateFormat("MM/dd/yyyy").format(calendarYearTo));
 		}
+	}
+
+	private boolean calculateDefaultPatientBasedIndicatorBasedOnScoringType(String measureScoring) {
+		return !StringUtils.equals(measureScoring, ConstantMessages.CONTINUOUS_VARIABLE_SCORING);
 	}
 
 	private void generateMeasureTypeFromDatabaseData(Measure measure, MeasureDetailResult measureDetailResult,

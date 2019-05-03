@@ -1283,6 +1283,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<>();
 				List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetAndCodeList();
 
+				MatContext.get().setValuesets(appliedValueSetListInXML);
 				for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
 					if (dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()) {
 						continue;
@@ -1292,7 +1293,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				}
 				
 				MatContext.get().setCQLModel(result.getCqlModel());
-				MatContext.get().setValuesets(appliedAllValueSetList);
 				appliedValueSetTableList.clear();
 				appliedCodeTableList.clear();
 				

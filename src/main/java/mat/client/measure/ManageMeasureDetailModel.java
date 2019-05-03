@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import mat.DTO.MeasureTypeDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.model.Author;
 import mat.model.BaseModel;

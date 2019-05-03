@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -962,7 +963,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public final String createMeasureDetailsXml(final ManageMeasureDetailModel measureDetailModel,
 			final Measure measure) {
 		logger.info("In MeasureLibraryServiceImpl.createMeasureDetailsXml()");
-		setAdditionalAttrsForMeasureXml(measureDetailModel, measure);
+		//setAdditionalAttrsForMeasureXml(measureDetailModel, measure);
 		logger.info("creating XML from Measure Details Model");
 		return createXml(measureDetailModel);
 	}
@@ -1436,9 +1437,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		manageMeasureDetailModel.setFinalizedDate(measure.getFinalizedDate() == null ? "" : String.valueOf(measure.getFinalizedDate()));
 		manageMeasureDetailModel.setGroupId(measure.getMeasureSet().getId());
 		manageMeasureDetailModel.seteMeasureId(measure.geteMeasureId());
+		manageMeasureDetailModel.setMeasureSetId(measure.getMeasureSet().getId());
 		String nqfNum =  measure.getNqfNumber();
 		manageMeasureDetailModel.setEndorseByNQF(StringUtils.isNotBlank(nqfNum));
 		manageMeasureDetailModel.setNqfId(StringUtils.trimToEmpty(nqfNum));
+		manageMeasureDetailModel.setVersionNumber(MeasureUtility.getVersionText(measure.getVersion(),
+				measure.getRevisionNumber(), measure.isDraft()));
 		Timestamp calendarYearFrom = measure.getMeasurementPeriodFrom();
 		Timestamp calendarYearTo = measure.getMeasurementPeriodTo();
 		
@@ -1963,6 +1967,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
 		List<String> message = manageMeasureModelValidator.validateMeasure(model);
+		String existingMeasureScoringType = "";
 		if (message.isEmpty()) {
 			Measure pkg = null;
 			MeasureSet measureSet = null;
@@ -1984,6 +1989,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					// delete any groupings for that measure and save.
 					measurePackageService.deleteExistingPackages(pkg.getId());
 				}
+				existingMeasureScoringType = pkg.getMeasureScoring();
 			} else {
 				// creating a new measure.
 				setMeasureCreated(false);
@@ -2011,6 +2017,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result.setSuccess(true);
 			result.setId(pkg.getId());
 			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
+			// Adds population nodes to new measures
+			updateMeasureXml(model, pkg, existingMeasureScoringType);
 			return result;
 		} else {
 			logger.info("Validation Failed for measure :: Invalid Data Issues.");
@@ -4891,7 +4899,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 
 				if(CollectionUtils.isNotEmpty(authorList)) {
-					authorList.forEach(id -> usedAuthorList.add(getAuthorFromOrganization(id, allOrganization)));
+					authorList.forEach(id -> addAuthorsToList(allOrganization, usedAuthorList, id));
 				}
 			}
 
@@ -4902,8 +4910,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return usedAuthorList;
 	}
 
+	private void addAuthorsToList(List<Organization> allOrganization, List<Author> usedAuthorList, Long id) {
+		Author author = getAuthorFromOrganization(id, allOrganization);
+		if(author != null) {
+			usedAuthorList.add(author);
+		}
+	}
+
 	private Author getAuthorFromOrganization(Long id, List<Organization> allOrganization){
-		Organization org = allOrganization.stream().filter(o -> o.getId().equals(id)).findFirst().get();
+		Organization org;
+		try{
+			org = allOrganization.stream().filter(o -> o.getId().equals(id)).findFirst().get();
+		} catch(NoSuchElementException exc) {
+			return null;
+		}
 		return new Author(String.valueOf(org.getId()), org.getOrganizationName(), org.getOrganizationOID());
 	}
 	
@@ -6249,25 +6269,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MeasurePackageService service = measurePackageService;
 			Measure measure = service.getById(measureId);
 			int eMeasureId = service.saveAndReturnMaxEMeasureId(measure);
-			saveMaxEmeasureIdinMeasureXML(measureId, eMeasureId);
 			return eMeasureId;
 		}
 		return -1;
-	}
-	
-	public void saveMaxEmeasureIdinMeasureXML(String measureId, int eMeasureId) {
-		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
-		XmlProcessor xmlProcessor = new XmlProcessor(model.getXml());
-		try {
-			xmlProcessor.createEmeasureIdNode(eMeasureId);
-			String newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
-			model.setXml(newXml);
-
-		} catch (XPathExpressionException e) {
-			logger.debug("saveMaxEmeasureIdinMeasureXML:" + e.getMessage());
-		}
-
-		measurePackageService.saveMeasureXml(model);
 	}
 
 	@Override

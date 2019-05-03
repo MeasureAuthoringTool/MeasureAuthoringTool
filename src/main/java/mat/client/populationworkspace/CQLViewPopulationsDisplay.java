@@ -106,10 +106,7 @@ public class CQLViewPopulationsDisplay {
 					setMeasureElementsMap();
 					NodeList nodeList = document.getElementsByTagName("scoring");
 					if ((nodeList != null) && (nodeList.getLength() > 0)) {
-						Node scoringNode = nodeList.item(0);
-						Node scoringIdAttribute = scoringNode.getAttributes()
-								.getNamedItem("id");
-						String scoringIdAttributeValue = scoringIdAttribute.getNodeValue();
+						String scoringIdAttributeValue = MatContext.get().getCurrentMeasureScoringType();
 						buildView(scoringIdAttributeValue);
 					}
 					Mat.hideLoadingMessage();

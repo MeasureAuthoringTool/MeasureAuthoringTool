@@ -87,7 +87,7 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 	private ConfirmationDialogBox buildSaveConfirmationDialogbox() {
 		String messageText = "Changing the 'Composite Scoring Method' and/or the 'Measure Scoring' will have the following impacts:<p><ul>" +
 		"<li>Populations in the Population Workspace that do not apply to the new settings will be deleted.</li>" +
-		"<li>Existing Groupings in the Measure Packager will be deleted..</li>" +
+		"<li>Existing Groupings in the Measure Packager will be deleted.</li>" +
 		"<li>The Patient-based Measure field will be reset to its default status for the scoring selected.</li>" +
 		"</ul><p>Do you want to continue?";
 		ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox(messageText, "Yes", "No");

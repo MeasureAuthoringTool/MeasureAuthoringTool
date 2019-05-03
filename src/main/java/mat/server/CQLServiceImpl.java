@@ -195,13 +195,15 @@ public class CQLServiceImpl implements CQLService {
 				parsedResult.setCqlString(cql);
 			}
 			
-			CQLLinter linter = CQLUtil.lint(parsedResult.getCqlString(), config);
-			parsedResult.getLinterErrors().addAll(linter.getErrors());
-			parsedResult.getLinterErrorMessages().addAll(linter.getErrorMessages());
-			parsedResult.setCqlModel(CQLUtilityClass.getCQLModelFromXML(parsedResult.getXml()));
+			CQLLinter linter = CQLUtil.lint(parsedResult.getCqlString(), config);			
+			SaveUpdateCQLResult result = getCQLDataForLoad(parsedResult.getXml());
+			result.setCqlString(parsedResult.getCqlString());
+			result.setXml(parsedResult.getXml());
+			result.getLinterErrors().addAll(linter.getErrors());
+			result.getLinterErrorMessages().addAll(linter.getErrorMessages());
+			result.setSuccess(true);		
 			
-			parsedResult.setSuccess(true);				
-			return parsedResult;
+			return result;
 
 		} catch (IOException | MappingException | MarshalException | ValidationException e) {
 			e.printStackTrace();

@@ -67,16 +67,6 @@ public interface MeasureService extends RemoteService {
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName);
 	
 	/**
-	 * Clone measure xml.
-	 *
-	 * @param creatingDraft            the creating draft	 * @param oldMeasureId
-	 *            the old measure id
-	 * @param oldMeasureId the old measure id
-	 * @param clonedMeasureId            the cloned measure id
-	 */
-	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId, String clonedMeasureId);
-	
-	/**
 	 * Creates the and save element look up.
 	 *
 	 * @param list            the list

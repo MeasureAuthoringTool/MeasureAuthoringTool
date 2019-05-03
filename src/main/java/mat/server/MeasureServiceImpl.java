@@ -57,14 +57,7 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 		this.getMeasureLibraryService().appendAndSaveNode(measureXmlModel, nodeName);
 		
 	}
-	
-	@Override
-	public void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
-			String clonedMeasureId) {
-		this.getMeasureLibraryService().cloneMeasureXml(creatingDraft, oldMeasureId, clonedMeasureId);
 		
-	}
-	
 	@Override
 	public void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
 			String measureID, String expProfileToAllQDM) {

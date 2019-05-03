@@ -704,42 +704,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 * Method called when Measure Details Clone operation is done or Drafting of
-	 * a version measure is done.
-	 * 
-	 * @param creatingDraft
-	 *            the creating draft
-	 * @param oldMeasureId
-	 *            the old measure id
-	 * @param clonedMeasureId
-	 *            the cloned measure id
-	 */
-	@Override
-	public final void cloneMeasureXml(final boolean creatingDraft, final String oldMeasureId,
-			final String clonedMeasureId) {
-		logger.info("In MeasureLibraryServiceImpl.cloneMeasureXml() method. Clonig for Measure: " + oldMeasureId);
-		ManageMeasureDetailModel measureDetailModel = null;
-		if (creatingDraft) {
-			measureDetailModel = getMeasure(oldMeasureId);// get the
-			// measureDetailsmodel object for which draft have to be created..
-			Measure measure = measurePackageService.getById(clonedMeasureId);
-			// get the Cloned Measure Revision Number reset to '000' when cloned.
-			measure.setRevisionNumber("000");
-			// Cloned version of the Measure.
-			createMeasureDetailsModelFromMeasure(measureDetailModel, measure); // apply
-			// measure values in the created MeasureDetailsModel.
-		} else {
-			measureDetailModel = getMeasure(clonedMeasureId);
-		}
-		MeasureXmlModel measureXmlModel = new MeasureXmlModel();
-		measureXmlModel.setMeasureId(measureDetailModel.getId());
-		measureXmlModel.setXml(createXml(measureDetailModel));
-		measureXmlModel.setToReplaceNode(MEASURE_DETAILS);		
-		saveMeasureXml(measureXmlModel); 
-		logger.info("Clone of Measure_xml is Successful");
-	}
-
-	/**
 	 * Adding additonal fields in model from measure table.
 	 * 
 	 * @param manageMeasureDetailModel
@@ -5824,18 +5788,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		result = callAppendNode(xmlModel, codeSystemXmlModel.getXml(), systemNodeName,
 				codeSystemXmlModel.getParentNode());
 		return result;
-	}
-
-	private String saveCQLCodeSystemInMeasureXml(SaveUpdateCQLResult result, String measureId) {
-		final String nodeName = "codeSystem";
-		MeasureXmlModel xmlModal = new MeasureXmlModel();
-		xmlModal.setMeasureId(measureId);
-		xmlModal.setParentNode("//cqlLookUp/codeSystems");
-		xmlModal.setToReplaceNode(nodeName);
-		xmlModal.setXml(result.getXml());
-
-		return appendAndSaveNode(xmlModal, nodeName);
-
 	}
 
 	@Override

@@ -45,22 +45,7 @@ import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 public interface MeasureServiceAsync {
 	
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, AsyncCallback<Void> callback);
-	
-	/**
-	 * Clone measure xml.
-	 * 
-	 * @param creatingDraft
-	 *            the creating draft
-	 * @param oldMeasureId
-	 *            the old measure id
-	 * @param clonedMeasureId
-	 *            the cloned measure id
-	 * @param callback
-	 *            the callback
-	 */
-	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
-			String clonedMeasureId, AsyncCallback<Void> callback);
-	
+		
 	/**
 	 * Creates the and save element look up.
 	 *

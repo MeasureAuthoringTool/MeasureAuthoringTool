@@ -963,7 +963,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public final String createMeasureDetailsXml(final ManageMeasureDetailModel measureDetailModel,
 			final Measure measure) {
 		logger.info("In MeasureLibraryServiceImpl.createMeasureDetailsXml()");
-		//setAdditionalAttrsForMeasureXml(measureDetailModel, measure);
+		setAdditionalAttrsForMeasureXml(measureDetailModel, measure);
 		logger.info("creating XML from Measure Details Model");
 		return createXml(measureDetailModel);
 	}
@@ -1432,6 +1432,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		generateMeasureTypeFromDatabaseData(measure, measureDetailResult, manageMeasureDetailModel);
 		manageMeasureDetailModel.setName(measure.getDescription());
 		manageMeasureDetailModel.setShortName(measure.getaBBRName());
+		manageMeasureDetailModel.setMeasureOwnerId(measure.getOwner().getId());
 		manageMeasureDetailModel.setMeasScoring(measure.getMeasureScoring());
 		manageMeasureDetailModel.setIsPatientBased(measure.getPatientBased());
 		manageMeasureDetailModel.setFinalizedDate(measure.getFinalizedDate() == null ? "" : String.valueOf(measure.getFinalizedDate()));
@@ -2731,59 +2732,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private void setAdditionalAttrsForMeasureXml(final ManageMeasureDetailModel measureDetailModel,
 			final Measure measure) {
 		logger.info("In MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()");
-		measureDetailModel.setId(measure.getId());
-		measureDetailModel.setMeasureSetId(measure.getMeasureSet() != null ? measure.getMeasureSet().getId() : null);
 		measureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(measureDetailModel.getRevisionNumber(),
 				String.valueOf(measure.getVersionNumber())));
 		measureDetailModel.setVersionNumber(MeasureUtility.getVersionText(measureDetailModel.getOrgVersionNumber(),
 				measureDetailModel.getRevisionNumber(), measure.isDraft()));
-		measureDetailModel.setId(UuidUtility.idToUuid(measureDetailModel.getId())); // have to change on unmarshalling.
-		PeriodModel periodModel = new PeriodModel();
-		periodModel.setUuid(UUID.randomUUID().toString());
-		// for New measures checking Calender year to add Default Dates
-		if (!isMeasureCreated()) {
-			measureDetailModel.setCalenderYear(true);
-		}
-		periodModel.setCalenderYear(measureDetailModel.isCalenderYear());
-		if (!measureDetailModel.isCalenderYear()) {
-			periodModel.setStartDate(measureDetailModel.getMeasFromPeriod());
-			periodModel.setStopDate(measureDetailModel.getMeasToPeriod());
-		} else { // for Default Dates
-			periodModel.setStartDate("01/01/20XX");
-			periodModel.setStopDate("12/31/20XX");
-		}
-
-		measureDetailModel.setPeriodModel(periodModel);
-
-		if (StringUtils.isNotBlank(measureDetailModel.getGroupName())) {
-			measureDetailModel.setQltyMeasureSetUuid(UUID.randomUUID().toString());
-		}
-
-		measureDetailModel.setScoringAbbr(setScoringAbbreviation(measureDetailModel.getMeasScoring()));
-
-		if (measureDetailModel instanceof ManageCompositeMeasureDetailModel) {
-			((ManageCompositeMeasureDetailModel) measureDetailModel)
-					.setCompositeScoringAbbreviation(getCompositeScoringAbbreviation(
-							((ManageCompositeMeasureDetailModel) measureDetailModel).getCompositeScoringMethod()));
-		}
-
-		if ((measureDetailModel.getEndorseByNQF() != null) && measureDetailModel.getEndorseByNQF()) {
-			measureDetailModel.setEndorsement("National Quality Forum");
-			measureDetailModel.setEndorsementId("2.16.840.1.113883.3.560");
-		} else {
-			measureDetailModel.setEndorsement(null);
-			measureDetailModel.setEndorsementId(null);
-		}
-
-		NqfModel nqfModel = new NqfModel();
-		nqfModel.setExtension(measureDetailModel.getNqfId());
-		nqfModel.setRoot("2.16.840.1.113883.3.560.1");
-		measureDetailModel.setNqfModel(nqfModel);
-		if (CollectionUtils.isEmpty(MeasureDetailsUtil.getTrimmedList(measureDetailModel.getReferencesList()))) {
-			measureDetailModel.setReferencesList(null);
-		}
-
-		logger.info("Exiting MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()..");
+		
 	}
 
 	/**

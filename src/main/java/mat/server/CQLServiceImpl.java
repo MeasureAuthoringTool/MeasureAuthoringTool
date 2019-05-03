@@ -198,6 +198,7 @@ public class CQLServiceImpl implements CQLService {
 			CQLLinter linter = CQLUtil.lint(parsedResult.getCqlString(), config);
 			parsedResult.getLinterErrors().addAll(linter.getErrors());
 			parsedResult.getLinterErrorMessages().addAll(linter.getErrorMessages());
+			parsedResult.setCqlModel(CQLUtilityClass.getCQLModelFromXML(parsedResult.getXml()));
 			
 			parsedResult.setSuccess(true);				
 			return parsedResult;

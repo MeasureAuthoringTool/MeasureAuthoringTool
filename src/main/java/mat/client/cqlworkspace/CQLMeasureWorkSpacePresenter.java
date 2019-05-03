@@ -943,6 +943,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 			List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<>();
 			List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetAndCodeList();			
+			
+			MatContext.get().setValuesets(appliedValueSetListInXML);
 			for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
 				if (dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()
 						|| appliedAllValueSetList.stream().filter(v -> v.getName().equals(dto.getName())).count() > 0) {
@@ -953,7 +955,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			}
 			
 			MatContext.get().setCQLModel(result.getCqlModel());
-			MatContext.get().setValuesets(appliedAllValueSetList);
 			appliedValueSetTableList.clear();
 			appliedCodeTableList.clear();
 			for (CQLQualityDataSetDTO dto : result.getCqlModel().getValueSetList()) {

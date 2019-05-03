@@ -1435,15 +1435,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		manageMeasureDetailModel.setMeasureOwnerId(measure.getOwner().getId());
 		manageMeasureDetailModel.setMeasScoring(measure.getMeasureScoring());
 		manageMeasureDetailModel.setIsPatientBased(measure.getPatientBased() == null ? calculateDefaultPatientBasedIndicatorBasedOnScoringType(measure.getMeasureScoring()) : measure.getPatientBased());
-		manageMeasureDetailModel.setFinalizedDate(measure.getFinalizedDate() == null ? "" : String.valueOf(measure.getFinalizedDate()));
+		manageMeasureDetailModel.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
 		manageMeasureDetailModel.setGroupId(measure.getMeasureSet().getId());
 		manageMeasureDetailModel.seteMeasureId(measure.geteMeasureId());
 		manageMeasureDetailModel.setMeasureSetId(measure.getMeasureSet().getId());
 		String nqfNum =  measure.getNqfNumber();
 		manageMeasureDetailModel.setEndorseByNQF(StringUtils.isNotBlank(nqfNum));
 		manageMeasureDetailModel.setNqfId(StringUtils.trimToEmpty(nqfNum));
-		manageMeasureDetailModel.setVersionNumber(MeasureUtility.getVersionText(measure.getVersion(),
-				measure.getRevisionNumber(), measure.isDraft()));
+		manageMeasureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(),
+				String.valueOf(measure.getVersionNumber())));
+		manageMeasureDetailModel.setVersionNumber(
+				MeasureUtility.getVersionText(manageMeasureDetailModel.getOrgVersionNumber(), measure.isDraft()));
 		Timestamp calendarYearFrom = measure.getMeasurementPeriodFrom();
 		Timestamp calendarYearTo = measure.getMeasurementPeriodTo();
 		

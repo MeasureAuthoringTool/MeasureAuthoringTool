@@ -197,6 +197,10 @@ public class CQLServiceImpl implements CQLService {
 			
 			CQLLinter linter = CQLUtil.lint(parsedResult.getCqlString(), config);			
 			SaveUpdateCQLResult result = getCQLDataForLoad(parsedResult.getXml());
+			result.setCqlErrors(parsedResult.getCqlErrors());
+			result.setCqlWarnings(parsedResult.getCqlWarnings());
+			result.setLibraryNameErrorsMap(parsedResult.getLibraryNameErrorsMap());
+			result.setLibraryNameWarningsMap(parsedResult.getLibraryNameWarningsMap());
 			result.setCqlString(parsedResult.getCqlString());
 			result.setXml(parsedResult.getXml());
 			result.getLinterErrors().addAll(linter.getErrors());

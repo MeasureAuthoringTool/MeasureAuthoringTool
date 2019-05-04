@@ -941,19 +941,19 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						result.getCqlModel().getQdmVersion(), "QDM", cqlLibraryComment);
 			}
 
-			List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<>();
-			List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetAndCodeList();			
+			List<CQLQualityDataSetDTO> appliedValueSetAndCodeList = new ArrayList<>();
+			List<CQLQualityDataSetDTO> appliedValueSetAndCodeListFromXML = result.getCqlModel().getAllValueSetAndCodeList();			
 
-			MatContext.get().setValuesets(appliedValueSetListInXML);
-			for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
-				if (dto.getOriginalCodeListName() == null || dto.getOriginalCodeListName().isEmpty()
-						|| appliedAllValueSetList.stream().filter(v -> v.getName().equals(dto.getName())).count() > 0) {
-					continue;
-				}
-					
-				appliedAllValueSetList.add(dto);
+			for (CQLQualityDataSetDTO dto : appliedValueSetAndCodeListFromXML) {
+				if((dto.getOriginalCodeListName() != null && !dto.getOriginalCodeListName().isEmpty()) 
+						|| (dto.getCodeIdentifier() != null && !dto.getCodeIdentifier().isEmpty()) &&
+						appliedValueSetAndCodeList.stream().filter(v -> v.getName().equals(dto.getName())).count() == 0) {
+					appliedValueSetAndCodeList.add(dto);
+
+				}					
 			}
 			
+			MatContext.get().setValuesets(appliedValueSetAndCodeList);
 			MatContext.get().setCQLModel(result.getCqlModel());
 			appliedValueSetTableList.clear();
 			appliedCodeTableList.clear();

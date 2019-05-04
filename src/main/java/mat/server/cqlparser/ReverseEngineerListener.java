@@ -207,13 +207,13 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		String displayClause = CQLParserUtil.parseString(ctx.displayClause().STRING().getText());
 	
 		
-		List<CQLCode> previousCodes = previousModel.getCodeList().stream().filter(c -> (
+		Optional<CQLCode> previousCode = previousModel.getCodeList().stream().filter(c -> (
 				c.getDisplayName().equals(identifier)
 				&& c.getCodeOID().equals(codeId)
-			)).collect(Collectors.toList());
+			)).findFirst();
 		
-		if(!previousCodes.isEmpty()) {
-			cqlModel.getCodeList().addAll(previousCodes);
+		if(previousCode.isPresent()) {
+			cqlModel.getCodeList().add(previousCode.get());
 		} else {
 			Optional<CQLCodeSystem> codeSystem = cqlModel.getCodeSystemList().stream().filter(cs -> cs.getCodeSystemName().equals(codeSystemName)).findFirst();
 
@@ -244,13 +244,13 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		}
 		
 		// check and see if there was a value set with the same identifier and oid as before
-		List<CQLQualityDataSetDTO> previousValuesets = previousModel.getValueSetList().stream().filter(v -> (
+		Optional<CQLQualityDataSetDTO> previousValueset = previousModel.getValueSetList().stream().filter(v -> (
 				identifier.equals(v.getName())
 				&& valuesetId.equals(v.getOid())			
-		)).collect(Collectors.toList());
+		)).findFirst();
 		
-		if(!previousValuesets.isEmpty()) {
-			cqlModel.getValueSetList().addAll(previousValuesets);
+		if(previousValueset.isPresent()) {
+			cqlModel.getValueSetList().add(previousValueset.get());
 		} else {
 			CQLQualityDataSetDTO valueset = new CQLQualityDataSetDTO();
 			valueset.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());

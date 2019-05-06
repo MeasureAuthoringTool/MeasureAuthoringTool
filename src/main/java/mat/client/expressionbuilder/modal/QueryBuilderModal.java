@@ -417,6 +417,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		TextBox aliasTextBox = new TextBox();
 		aliasTextBox.addChangeHandler(event -> {
 			alias = aliasTextBox.getValue();
+			QueryFinderHelper.updateAliasInChildModels(queryModel, queryModel.getAlias(), alias);
 			queryModel.setAlias(alias);
 			this.updateCQLDisplay();
 		});

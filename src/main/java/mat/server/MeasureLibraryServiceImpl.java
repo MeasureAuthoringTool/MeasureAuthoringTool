@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -4737,7 +4738,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 
 				if(CollectionUtils.isNotEmpty(authorList)) {
-					authorList.forEach(id -> usedAuthorList.add(getAuthorFromOrganization(id, allOrganization)));
+					authorList.forEach(id -> addAuthorsToList(allOrganization, usedAuthorList, id));
 				}
 			}
 
@@ -4748,9 +4749,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return usedAuthorList;
 	}
 
+	private void addAuthorsToList(List<Organization> allOrganization, List<Author> usedAuthorList, Long id) {
+		Author author = getAuthorFromOrganization(id, allOrganization);
+		if(author != null) {
+			usedAuthorList.add(author);
+		}
+	}
+
 	private Author getAuthorFromOrganization(Long id, List<Organization> allOrganization){
-		Organization org = allOrganization.stream().filter(o -> o.getId().equals(id)).findFirst().get();
-		return new Author(String.valueOf(org.getId()), org.getOrganizationName(), org.getOrganizationOID());
+		Optional<Organization> organization = allOrganization.stream().filter(o -> o.getId().equals(id)).findFirst();
+		if(organization.isPresent()) {
+			Organization org = organization.get();
+			return new Author(String.valueOf(org.getId()), org.getOrganizationName(), org.getOrganizationOID());
+		}
+		return null;
 	}
 	
 	/**

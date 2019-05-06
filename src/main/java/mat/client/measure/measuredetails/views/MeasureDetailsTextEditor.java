@@ -13,7 +13,7 @@ public class MeasureDetailsTextEditor extends Composite {
 
 	private VerticalPanel createMeasureDetailsEditor() {
 		textEditor = new TextArea();
-		textEditor.setCharacterWidth(100);
+		textEditor.setWidth("100%");
 		textEditor.setVisibleLines(22);
 		
 		

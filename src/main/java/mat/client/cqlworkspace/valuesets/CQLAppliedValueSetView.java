@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -368,6 +369,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	}
 
 	public void buildAppliedValueSetCellTable(List<CQLQualityDataSetDTO> appliedValueSetList, boolean isEditable) {
+		appliedValueSetList = appliedValueSetList.stream().filter(v -> v.getOriginalCodeListName() != null).collect(Collectors.toList());
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
@@ -391,8 +393,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			table.redraw();
 			listDataProvider.refresh();
 			listDataProvider.getList().addAll(appliedValueSetList);
-			ListHandler<CQLQualityDataSetDTO> sortHandler = new ListHandler<>(
-					listDataProvider.getList());
+			ListHandler<CQLQualityDataSetDTO> sortHandler = new ListHandler<>(listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
 			table = addColumnToTable(table, sortHandler, isEditable);
 			listDataProvider.addDataDisplay(table);
@@ -1136,7 +1137,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			Iterator<CQLQualityDataSetDTO> iterator = appliedValueSetTableList.iterator();
 			while (iterator.hasNext()) {
 				CQLQualityDataSetDTO dataSetDTO = iterator.next();
-				if (dataSetDTO.getName().equalsIgnoreCase(userDefinedInput)) {
+				if (!dataSetDTO.getOriginalCodeListName().isEmpty() && dataSetDTO.getOriginalCodeListName() != null && dataSetDTO.getName().equalsIgnoreCase(userDefinedInput)) {
 					return true;
 				}
 			}

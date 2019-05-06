@@ -1,12 +1,20 @@
 package mat.server;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
 import org.springframework.util.CollectionUtils;
 
 import mat.client.shared.CQLWorkSpaceConstants;
@@ -20,6 +28,7 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.impl.XMLMarshalUtil;
+import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 
 public final class CQLUtilityClass {
@@ -29,6 +38,8 @@ public final class CQLUtilityClass {
 	private static final String PATIENT = "Patient";
 
 	private static final String POPULATION = "Population";
+	
+	public static final String VERSION = " version ";
 
 	private static StringBuilder toBeInsertedAtEnd;
 
@@ -99,7 +110,7 @@ public final class CQLUtilityClass {
 		if (StringUtils.isNotBlank(cqlModel.getLibraryName())) {
 
 			sb.append("library ").append(cqlModel.getLibraryName());
-			sb.append(" version ").append("'" + cqlModel.getVersionUsed()).append("'");
+			sb.append(VERSION).append("'" + cqlModel.getVersionUsed()).append("'");
 			sb.append(System.lineSeparator()).append(System.lineSeparator());
 			
 			if(StringUtils.isNotBlank(cqlModel.getLibraryComment())) {
@@ -107,7 +118,8 @@ public final class CQLUtilityClass {
 				sb.append(System.lineSeparator()).append(System.lineSeparator());
 			}
 			
-			sb.append("using QDM version ");			
+			sb.append("using ").append(cqlModel.getUsingName());
+			sb.append(VERSION);			
 			sb.append("'").append(cqlModel.getQdmVersion()).append("'");
 			sb.append("\n\n");			
 		}
@@ -226,7 +238,7 @@ public final class CQLUtilityClass {
 
 
 			cqlStr = cqlStr.append(func + "(");
-			if(function.getArgumentList()!=null) {
+			if(function.getArgumentList() != null && !function.getArgumentList().isEmpty()) {
 				for (CQLFunctionArgument argument : function.getArgumentList()) {
 					StringBuilder argumentType = new StringBuilder();
 					if (argument.getArgumentType().equalsIgnoreCase("QDM Datatype")) {
@@ -291,6 +303,24 @@ public final class CQLUtilityClass {
 			}
 		}
 		return cqlModel;
+	}
+	
+	public static String getXMLFromCQLModel(CQLModel cqlModel) {
+		String xml = "";
+
+		try (ByteArrayOutputStream stream = new ByteArrayOutputStream();) {
+			Mapping mapping = new Mapping();
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLModelMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+			marshaller.marshal(cqlModel);
+			xml = stream.toString();
+		} catch (MarshalException | ValidationException | IOException | MappingException e) {
+			e.printStackTrace();
+		}
+
+
+		return xml;
 	}
 	
 	public static void getValueSet(CQLModel cqlModel, String cqlLookUpXMLString){
@@ -376,7 +406,7 @@ public final class CQLUtilityClass {
 		if(!CollectionUtils.isEmpty(includeLibList)){
 			for(CQLIncludeLibrary includeLib : includeLibList){
 				sb.append("include ").append(includeLib.getCqlLibraryName());
-				sb.append(" version ").append("'").append(includeLib.getVersion()).append("' ");
+				sb.append(VERSION).append("'").append(includeLib.getVersion()).append("' ");
 				sb.append("called ").append(includeLib.getAliasName());
 				sb.append("\n");
 			}
@@ -424,24 +454,18 @@ public final class CQLUtilityClass {
 
 		StringBuilder sb = new StringBuilder();
 
-		List<String> valueSetAlreadyUsed = new ArrayList<>();
-
 		if (!CollectionUtils.isEmpty(valueSetList)) {
 
 			for (CQLQualityDataSetDTO valueset : valueSetList) {
-
-				if(!valueSetAlreadyUsed.contains(valueset.getName())){
-
-					String version = valueset.getVersion().replaceAll(" ", "%20");
-					sb.append("valueset ").append('"').append(valueset.getName()).append('"');
-					sb.append(": 'urn:oid:").append(valueset.getOid()).append("' ");
-					//Check if QDM has expansion identifier or not.
-					if(StringUtils.isNotBlank(version) && !version.equals("1.0") ){
-						sb.append("version 'urn:hl7:version:").append(version).append("' ");
-					}
-					sb.append("\n");
-					valueSetAlreadyUsed.add(valueset.getName());
+				String version = valueset.getVersion().replaceAll(" ", "%20");
+				sb.append("valueset ").append('"').append(valueset.getName()).append('"');
+				sb.append(": 'urn:oid:").append(valueset.getOid()).append("' ");
+				//Check if QDM has expansion identifier or not.
+				if(StringUtils.isNotBlank(version) && !version.equals("1.0") ){
+					sb.append("version 'urn:hl7:version:").append(version).append("' ");
 				}
+				sb.append("\n");
+
 			}
 
 			sb.append("\n");

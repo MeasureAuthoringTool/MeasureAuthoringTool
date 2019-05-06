@@ -51,6 +51,7 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 	private HorizontalPanel lockedButtonHPanel = new HorizontalPanel();
 	private HelpBlock helpBlock = new HelpBlock();
 	private MessagePanel messagePanel;
+	
 	public CQLStandaloneWorkSpaceView() {
 		generalInformationView = new CQLGeneralInformationView();
 		cqlParametersView = new CQLParametersView();
@@ -98,7 +99,6 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 		mainFlowPanel.clear();
 		setGeneralInfoHeading();
 		mainFlowPanel.add(generalInformationView.getCQLView());
-
 	}
 	
 	public void buildIncludesView() {

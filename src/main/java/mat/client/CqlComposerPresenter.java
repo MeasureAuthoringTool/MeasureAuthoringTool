@@ -95,7 +95,8 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	private MatTabLayoutPanel cqlComposerTabLayout;
 	
 	/** The meta data presenter. */
-	private CQLStandaloneWorkSpacePresenter cqlStandaloneWorkSpacePresenter;
+	private CQLStandaloneWorkSpacePresenter cqlStandaloneWorkspacePresenter;
+	private CQLStandaloneWorkSpaceView cqlStandaloneWorkspaceView;
 	
 	/**
 	 * Instantiates a new measure composer presenter.
@@ -103,10 +104,10 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	@SuppressWarnings("unchecked")
 	public CqlComposerPresenter() {
 		emptyWidget.getElement().setId("emptyWidget_SimplePanel");
-		cqlStandaloneWorkSpacePresenter = (CQLStandaloneWorkSpacePresenter) buildCQLWorkSpaceTab();
+		cqlStandaloneWorkspacePresenter = (CQLStandaloneWorkSpacePresenter) buildCQLWorkSpaceTab();
 		cqlComposerTabLayout = new MatTabLayoutPanel(this);
 		cqlComposerTabLayout.getElement().setAttribute("id", "cqlComposerTabLayout");
-		cqlComposerTabLayout.add(cqlStandaloneWorkSpacePresenter.getWidget(), "CQL Library Workspace", true);
+		cqlComposerTabLayout.add(cqlStandaloneWorkspacePresenter.getWidget(), "CQL Library Workspace", true);
 		
 		cqlComposerTabLayout.setHeight("98%");
 		cqlComposerTab = ConstantMessages.CQL_COMPOSER_TAB;
@@ -197,7 +198,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 			fp.add(cqlComposerTabLayout);
 			cqlComposerContent.setContent(fp);
 			cqlComposerTabLayout.selectTab(0);
-			cqlStandaloneWorkSpacePresenter.beforeDisplay();
+			cqlStandaloneWorkspacePresenter.beforeDisplay();
 		} else {
 			cqlComposerContent.setHeading("No Library Selected", "CqlComposer");
 			cqlComposerContent.setContent(emptyWidget);
@@ -219,17 +220,11 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 		cqlComposerContent.setHeading(heading, "CqlComposer");
 	}
 	
-	/**
-	 * Builds the cql work space tab.
-	 *
-	 * @return the mat presenter
-	 */
 	private MatPresenter buildCQLWorkSpaceTab(){
-		CQLStandaloneWorkSpaceView cqlView = new CQLStandaloneWorkSpaceView();
-		CQLStandaloneWorkSpacePresenter cqlPresenter =
-				new CQLStandaloneWorkSpacePresenter(cqlView);
-		cqlPresenter.getWidget();
-		return cqlPresenter;
+		cqlStandaloneWorkspaceView = new CQLStandaloneWorkSpaceView();
+		cqlStandaloneWorkspacePresenter = new CQLStandaloneWorkSpacePresenter(cqlStandaloneWorkspaceView);
+		cqlStandaloneWorkspacePresenter.getWidget();
+		return cqlStandaloneWorkspacePresenter;
 	}
 	
 	/* (non-Javadoc)
@@ -277,7 +272,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 		notifyCurrentTabOfClosing();
 
 		if(targetPresenter == null && targetTabLayout == null) {
-			targetPresenter = cqlStandaloneWorkSpacePresenter;
+			targetPresenter = cqlStandaloneWorkspacePresenter;
 			targetTabLayout = cqlComposerTabLayout;
 		}
 
@@ -295,8 +290,8 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	@Override
 	public boolean isValid() {
 		boolean isValid = true;
-		CQLStandaloneWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
-		if (cqlStandaloneWorkSpacePresenter.getIsPageDirty()) {
+		this.cqlStandaloneWorkspaceView.resetMessageDisplay();
+		if (cqlStandaloneWorkspacePresenter.getIsPageDirty()) {
 			isValid = false;
 		}
 		return isValid;
@@ -304,14 +299,14 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 
 	@Override
 	public void updateOnBeforeSelection() {
-		cqlStandaloneWorkSpacePresenter.beforeDisplay();	
+		cqlStandaloneWorkspacePresenter.beforeDisplay();	
 	}
 
 	@Override
 	public void showUnsavedChangesError() {
 		WarningConfirmationMessageAlert saveErrorMessageAlert = null;
 		String auditMessage = null;
-		saveErrorMessageAlert = cqlStandaloneWorkSpacePresenter.getMessagePanel().getGlobalWarningConfirmationMessageAlert();
+		saveErrorMessageAlert = cqlStandaloneWorkspacePresenter.getMessagePanel().getGlobalWarningConfirmationMessageAlert();
 		if(saveErrorMessageAlert != null) {
 			showErrorMessageAlert(saveErrorMessageAlert);
 		}
@@ -321,8 +316,8 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 
 	@Override
 	public void notifyCurrentTabOfClosing() {
-		MatContext.get().setAriaHidden(cqlStandaloneWorkSpacePresenter.getWidget(), "true");
-		cqlStandaloneWorkSpacePresenter.beforeClosingDisplay();
+		MatContext.get().setAriaHidden(cqlStandaloneWorkspacePresenter.getWidget(), "true");
+		cqlStandaloneWorkspacePresenter.beforeClosingDisplay();
 	}
 	
 	private void removeHandlers() {
@@ -344,5 +339,9 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 		this.targetTabLayout = targetTabLayout;
 		this.targetPresenter = targetPresenter;
 		this.sourcePresenter = sourcePresenter;
+	}
+	
+	public CQLStandaloneWorkSpacePresenter getCQLStandaloneWorkspacePresenter() {
+		return this.cqlStandaloneWorkspacePresenter;
 	}
 }

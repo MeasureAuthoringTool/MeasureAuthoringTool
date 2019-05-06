@@ -37,6 +37,8 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.server.CQLUtilityClass;
+import mat.server.cqlparser.CQLLinter;
+import mat.server.cqlparser.CQLLinterConfig;
 import mat.shared.CQLError;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
@@ -469,6 +471,15 @@ public class CQLUtil {
 			List<String> exprList) {
 		return parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList, false);
 	}
+	
+	public static CQLLinter lint(String cql, CQLLinterConfig config) {
+		try {
+			return new CQLLinter(cql, config);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	/**
 	 * Parses the CQL library for errors.
@@ -611,7 +622,7 @@ public class CQLUtil {
 		for (CqlTranslatorException cte : cqlToELM.getWarnings()) {
 			setCQLErrors(warnings, libraryNameWarningsMap, cte);
 		}
-		
+				
 		parsedCQL.setCqlModel(cqlModel);
 		parsedCQL.setCqlErrors(errors);
 		parsedCQL.setCqlWarnings(warnings);
@@ -758,9 +769,10 @@ public class CQLUtil {
 		for (CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries) {
 
 			LibHolderObject libHolderObject = cqlModel.getIncludedCQLLibXMLMap().get(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName());
-			cqlIncludeLibrary.getAliasName();
-
-			libHolderObject.getMeasureXML();
+			if(libHolderObject != null) {
+				cqlIncludeLibrary.getAliasName();
+				libHolderObject.getMeasureXML();
+			}
 		}
 	}
 

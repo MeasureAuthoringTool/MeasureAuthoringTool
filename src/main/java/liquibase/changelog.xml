@@ -238,5 +238,9 @@
 		<include file="classpath:/liquibase/deploy_Sprint-151_MAT-9386_QDM_v5_4_updates_v3.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-151_MAT-9323.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-161_MAT-9640_CQL_LIBRARY_MODIFIED_INFO.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-167_MAT-9769_CM_Alias_Length.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-166_MAT-9621_New_Tables_For_Measure_Details.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-168_MAT-9844_New_fields_for_general_measure_information.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-168_MAT-9844_update_NQF_fields.xml"/>
 		
 </databaseChangeLog>

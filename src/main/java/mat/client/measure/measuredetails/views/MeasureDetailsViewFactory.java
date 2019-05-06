@@ -36,7 +36,7 @@ import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MeasureDetailsConstants.PopulationItems;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
-import mat.shared.measure.measuredetails.models.MeasureDetailsRichTextAbstractModel;
+import mat.shared.measure.measuredetails.models.MeasureDetailsTextAbstractModel;
 import mat.shared.measure.measuredetails.models.MeasureStewardDeveloperModel;
 import mat.shared.measure.measuredetails.models.ReferencesModel;
 
@@ -148,7 +148,7 @@ public class MeasureDetailsViewFactory {
 		return view; 
 	}
 
-	private MeasureDetailViewInterface buildRichTextEditorView(MeasureDetailsRichTextAbstractModel model, MeasureDetailViewInterface view, MeasureDetailsComponentObserver observer) {
+	private MeasureDetailViewInterface buildRichTextEditorView(MeasureDetailsTextAbstractModel model, MeasureDetailViewInterface view, MeasureDetailsComponentObserver observer) {
 		view.setMeasureDetailsComponentModel(model);
 		observer.setView(view);
 		view.setObserver(observer);

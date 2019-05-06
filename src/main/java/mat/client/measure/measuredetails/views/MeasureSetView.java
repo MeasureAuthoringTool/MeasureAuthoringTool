@@ -1,18 +1,18 @@
 package mat.client.measure.measuredetails.views;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.measure.measuredetails.observers.MeasureSetObserver;
 import mat.client.shared.ConfirmationDialogBox;
-import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureSetModel;
 
 public class MeasureSetView implements MeasureDetailViewInterface {
 	private final FlowPanel mainPanel = new FlowPanel();
-	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor;
+	private MeasureDetailsTextEditor measureDetailsTextEditor;
 	private MeasureSetModel model;
 	private MeasureSetModel originalModel;
 	private MeasureSetObserver observer;
@@ -39,15 +39,16 @@ public class MeasureSetView implements MeasureDetailViewInterface {
 
 	@Override
 	public void buildDetailView() {
-		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
-		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Measure Set Editor");
-		measureDetailsRichTextEditor.getRichTextEditor().setEditorText(this.model.getFormattedText());	
+		measureDetailsTextEditor = new MeasureDetailsTextEditor();
+		mainPanel.add(measureDetailsTextEditor);
+		measureDetailsTextEditor.setTitle("Measure Set Editor");
+		measureDetailsTextEditor.setText(this.model.getEditorText());	
 		addEventHandlers();		
 	}
 
 	@Override
 	public void setReadOnly(boolean readOnly) {
-		this.measureDetailsRichTextEditor.setReadOnly(readOnly);
+		this.measureDetailsTextEditor.setReadOnly(readOnly);
 	}
 
 	@Override
@@ -67,8 +68,8 @@ public class MeasureSetView implements MeasureDetailViewInterface {
 	}
 
 	@Override
-	public RichTextEditor getRichTextEditor() {
-		return measureDetailsRichTextEditor.getRichTextEditor();
+	public TextArea getTextEditor() {
+		return measureDetailsTextEditor.getTextEditor();
 	}
 
 	@Override
@@ -94,11 +95,11 @@ public class MeasureSetView implements MeasureDetailViewInterface {
 	}
 
 	private void addEventHandlers() {
-		measureDetailsRichTextEditor.getRichTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());		
+		measureDetailsTextEditor.getTextEditor().addKeyUpHandler(event -> observer.handleValueChanged());		
 	}
 
 	@Override
 	public Widget getFirstElement() {
-		return measureDetailsRichTextEditor.getRichTextEditor();
+		return null;
 	}
 }

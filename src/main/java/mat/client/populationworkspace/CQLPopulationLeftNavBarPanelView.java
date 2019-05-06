@@ -112,11 +112,7 @@ public class CQLPopulationLeftNavBarPanelView {
 			setTextAndIcons(stratifications, POPULATIONS.STRATIFICATION.popName(), IconType.PENCIL);
 			setTextAndIcons(measureObservations, POPULATIONS.MEASURE_OBSERVATIONS.popName(), IconType.PENCIL);
 			
-			/**
-			 * Find Scoring type for the measure from the Measure XML.
-			 */
-			Node scoringNode = document.getElementsByTagName(CQLWorkSpaceConstants.SCORING).item(0);
-			String scoringIdAttributeValue = ((Element) scoringNode).getAttribute("id");
+			String scoringIdAttributeValue = MatContext.get().getCurrentMeasureScoringType();
 			
 			Node patientBasedMeasureNode = document.getElementsByTagName(CQLWorkSpaceConstants.PATIENT_BASED_INDICATOR).item(0);
 
@@ -143,16 +139,16 @@ public class CQLPopulationLeftNavBarPanelView {
 	private void addAchorsByScoring(NavPills navPills, String scoringIdAttributeValue, boolean isPatientBasedMeasure) {
 		navPills.add(initialPopulation);
 		//COHORT scoring has the initial population and stratifications. 
-		if("PROPOR".equals(scoringIdAttributeValue)){			
+		if("PROPORTION".equalsIgnoreCase(scoringIdAttributeValue)){	
 			addNumDenoNavPills(navPills);
 			navPills.add(denominatorExceptions);			
 			navPills.add(stratifications);
-		} else if("CONTVAR".equals(scoringIdAttributeValue)){			
+		} else if("CONTINUOUS VARIABLE".equalsIgnoreCase(scoringIdAttributeValue)){
 			navPills.add(measurePopulations);
 			navPills.add(measurePopulationExclusions);
 			navPills.add(stratifications);
 			navPills.add(measureObservations);			
-		} else if("RATIO".equals(scoringIdAttributeValue)){			
+		} else if("RATIO".equalsIgnoreCase(scoringIdAttributeValue)){			
 			addNumDenoNavPills(navPills);
 			navPills.add(stratifications);
 			//Measure Observations are not available 
@@ -160,7 +156,7 @@ public class CQLPopulationLeftNavBarPanelView {
 			if (!isPatientBasedMeasure) {
 				navPills.add(measureObservations);
 			}
-		} else if("COHORT".equals(scoringIdAttributeValue)) {
+		} else if("COHORT".equalsIgnoreCase(scoringIdAttributeValue)) {
 			navPills.add(stratifications);
 		}
 

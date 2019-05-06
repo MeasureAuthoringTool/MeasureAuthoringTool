@@ -79,19 +79,6 @@ public interface MeasureLibraryService {
 	void checkForTimingElementsAndAppend(XmlProcessor xmlProcessor);
 	
 	/**
-	 * Clone measure xml.
-	 * 
-	 * @param creatingDraft
-	 *            the creating draft
-	 * @param oldMeasureId
-	 *            the old measure id
-	 * @param clonedMeasureId
-	 *            the cloned measure id
-	 */
-	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
-			String clonedMeasureId);
-	
-	/**
 	 * Creates the and save element look up.
 	 *
 	 * @param list            the list
@@ -686,10 +673,6 @@ public interface MeasureLibraryService {
 
 	SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject);
 
-	SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
-
-	SaveUpdateCQLResult modifyCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
-
 	void updateCQLLookUpTagWithModifiedValueSet(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
 			String measureId);
 	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
@@ -720,8 +703,6 @@ public interface MeasureLibraryService {
 	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
 			List<CQLQualityDataSetDTO> appliedValueSetList, String measureId);
 
-	SaveUpdateCQLResult modifyCQLCodeInMeasure(CQLCode modifyCQLCode, CQLCode refCode, String measureId);
-
 	SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts);
 
 	ManageMeasureSearchModel searchComponentMeasures(MeasureSearchModel searchModel);
@@ -743,4 +724,6 @@ public interface MeasureLibraryService {
 	int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
 
 	String getHumanReadableForMeasureDetails(String measureId);
+
+	SaveUpdateCQLResult saveCQLFile(String measureId, String cql);
 }

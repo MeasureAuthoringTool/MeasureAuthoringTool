@@ -27,8 +27,7 @@ public class MeasurePopulationObserver implements MeasureDetailsComponentObserve
 	
 	private MeasurePopulationModel updateFromView() {
 		MeasurePopulationModel model = (MeasurePopulationModel) view.getMeasureDetailsComponentModel();
-		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
+		model.setEditorText(view.getTextEditor().getText());
 		return model;
 	}
 }

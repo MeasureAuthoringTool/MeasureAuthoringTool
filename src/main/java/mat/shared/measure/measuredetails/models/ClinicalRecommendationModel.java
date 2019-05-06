@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class ClinicalRecommendationModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
+public class ClinicalRecommendationModel extends MeasureDetailsTextAbstractModel implements IsSerializable{
 	public ClinicalRecommendationModel()  {
-		super("", "");
+		super("");
 	}
 	
 	public ClinicalRecommendationModel(ClinicalRecommendationModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getEditorText());
 	}
 	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

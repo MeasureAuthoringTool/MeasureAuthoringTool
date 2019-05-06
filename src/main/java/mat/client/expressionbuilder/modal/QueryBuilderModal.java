@@ -11,6 +11,7 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.NavPills;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -20,6 +21,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.expressionbuilder.component.ExpandCollapseCQLExpressionPanel;
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.component.ViewCQLExpressionWidget;
 import mat.client.expressionbuilder.constant.ExpressionType;
@@ -29,6 +31,7 @@ import mat.client.expressionbuilder.model.QueryModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.OperatorTypeUtil;
 import mat.client.expressionbuilder.util.QueryFinderHelper;
+import mat.client.shared.ListBoxMVP;
 import mat.client.shared.SpacerWidget;
 import mat.shared.CQLModelValidator;
 
@@ -36,37 +39,52 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 
 	private static final String EXIT_QUERY = "Exit Query";
 	private static final String STYLE = "style";
+	private static final String SELECTORS_PANEL = "selectorsPanel";
 	private static final String NAV_PILL_BACKGROUND_COLOR = "background-color: #F1F1F1";
 	private static final String HOW_WOULD_YOU_LIKE_TO_SORT_THE_DATA = "How would you like to sort the data?";
 	private static final String REVIEW_QUERY = "Review Query";
 	private static final String SORT = "Sort (Optional)";
+	private static final String RELATIONSHIP = "Relationship (Optional)";
 	private static final String FILTER = "Filter";
 	private static final String SOURCE = "Source";
 	private static final String ALIAS_TEXT_BOX_LABEL = "What would you like to name (alias) your source?";
-	private AnchorListItem reviewQueryListItem;
+	private static final String SELECT_RELATIONSHIP = "-- Select a relationship --";
+	private static final String RELATIONSHIP_TEXT_LABEL = "Which relationship would you like to build?";
+
+	private boolean isAscendingSort = true;
+
+	private String alias = "";
+	private String currentScreen = SOURCE;
+
+	private AnchorListItem sourceListItem;
+	private AnchorListItem relationshipListItem;
 	private AnchorListItem filterListItem;
 	private AnchorListItem sortListItem;
-	private AnchorListItem sourceListItem;
+	private AnchorListItem reviewQueryListItem;
+
 	private Button previousButton;
 	private Button nextButton;
-	private QueryModel queryModel;
-	private VerticalPanel queryBuilderContentPanel;
-	private BuildButtonObserver sourceBuildButtonObserver;
-	private String currentScreen = SOURCE;
-	
-	private String alias = "";
-	private BuildButtonObserver filterBuildButtonObserver;
-	private NavPills pills;
+
 	private ExpressionTypeSelectorList sourceSelector;
 	private ExpressionTypeSelectorList filterSelector;
 	private ExpressionTypeSelectorList sortSelector;
+
+	private BuildButtonObserver sourceBuildButtonObserver;
+	private BuildButtonObserver filterBuildButtonObserver;
 	private BuildButtonObserver sortBuildButtonObserver;
+	private BuildButtonObserver relationshipBuildButtonObserver;
+
+	private NavPills pills;
 	
+	private QueryModel queryModel;
+
+	private VerticalPanel queryBuilderContentPanel;
+
 	private HandlerRegistration previousHandler;
 	private HandlerRegistration nextHandler;
 	
-	private boolean isAscendingSort = true;
-
+	private ListBoxMVP availableExpressionsForRelationship;
+	
 	public QueryBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
 			ExpressionBuilderModel mainModel) {
 		super("Query", parent, parentModel, mainModel);
@@ -76,6 +94,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		sourceBuildButtonObserver = new BuildButtonObserver(this, queryModel.getSource(), mainModel);
 		filterBuildButtonObserver = new BuildButtonObserver(this, queryModel.getFilter(), mainModel);
 		sortBuildButtonObserver = new BuildButtonObserver(this, queryModel.getSort().getSortExpression(), mainModel);
+		relationshipBuildButtonObserver  = new BuildButtonObserver(this, queryModel.getRelationship(), mainModel);
 		
 		this.getApplyButton().setVisible(false);
 		this.getApplyButton().addClickHandler(event -> onApplyButtonClick());
@@ -85,7 +104,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private void onApplyButtonClick() {
 		CQLModelValidator validator = new CQLModelValidator();
 		
-		if(queryModel.getSource().getChildModels().size() == 0 || queryModel.getFilter().getChildModels().size() == 0) {
+		if (queryModel.getSource().getChildModels().isEmpty() || queryModel.getFilter().getChildModels().isEmpty()) {
 			this.getErrorAlert().createAlert("A source and filter are required for a query.");
 		} else if(queryModel.getAlias().isEmpty() || !validator.doesAliasNameFollowCQLAliasNamingConvention(queryModel.getAlias())) {
 			this.getErrorAlert().createAlert("The name of your source must start with an alpha character and can not contain spaces or special characters other than an underscore.");
@@ -114,7 +133,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		navPillsAndContentPanel.setWidth("100%");		
 		
 		queryBuilderContentPanel = new VerticalPanel();
-		queryBuilderContentPanel.setStyleName("selectorsPanel");
+		queryBuilderContentPanel.setStyleName(SELECTORS_PANEL);
 		
 		navPillsAndContentPanel.add(buildNavPanel());
 		pills.getElement().getParentElement().setAttribute(STYLE, "vertical-align: top; width: 20%");
@@ -139,38 +158,69 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private Widget buildNavPanel() {
+		
+		buildSourceNav();
+
+		buildRelationshipNav();
+		
+		buildFilterNav();
+		
+		buildSortNav();
+
+		buildReviewQueryNav();
+
+		return buildQueryNavPills();
+	}
+
+	private Widget buildQueryNavPills() {
 		pills = new NavPills();
-		pills.setWidth("150px");
+		pills.setWidth("163px");
 		pills.setMarginRight(15.0);
+
+		pills.add(sourceListItem);
+		pills.add(relationshipListItem);
+		pills.add(filterListItem);
+		pills.add(sortListItem);
+		pills.add(reviewQueryListItem);
+		pills.setStacked(true);
+		
+		return pills;
+	}
+
+	private void buildReviewQueryNav() {
+		reviewQueryListItem = new AnchorListItem(REVIEW_QUERY);
+		reviewQueryListItem.addClickHandler(event -> navigate(REVIEW_QUERY));
+		reviewQueryListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
+	}
+
+	private void buildRelationshipNav() {
+		relationshipListItem = new AnchorListItem(RELATIONSHIP);
+		relationshipListItem.addClickHandler(event -> navigate(RELATIONSHIP));
+		relationshipListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
+	}
+
+	private void buildSortNav() {
+		sortListItem = new AnchorListItem(SORT);
+		sortListItem.addClickHandler(event -> navigate(SORT));
+		sortListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
+	}
+
+	private void buildFilterNav() {
+		filterListItem = new AnchorListItem(FILTER);
+		filterListItem.addClickHandler(event -> navigate(FILTER));
+		filterListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
+	}
+
+	private void buildSourceNav() {
 		sourceListItem = new AnchorListItem(SOURCE);
 		sourceListItem.addClickHandler(event -> navigate(SOURCE));
 		sourceListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
 		sourceListItem.setActive(true);
-		
-		filterListItem = new AnchorListItem(FILTER);
-		filterListItem.addClickHandler(event -> navigate(FILTER));
-		filterListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
-		
-		sortListItem = new AnchorListItem(SORT);
-		sortListItem.addClickHandler(event -> navigate(SORT));
-		sortListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
-		
-		reviewQueryListItem = new AnchorListItem(REVIEW_QUERY);
-		reviewQueryListItem.addClickHandler(event -> navigate(REVIEW_QUERY));
-		reviewQueryListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
-
-		pills.add(sourceListItem);
-		pills.add(filterListItem);
-		pills.add(sortListItem);
-		pills.add(reviewQueryListItem);
-		
-		pills.setStacked(true);
-		return pills;
 	}
 	
 	private Widget buildSourceWidget() {
 		VerticalPanel sourcePanel = new VerticalPanel();
-		sourcePanel.setStyleName("selectorsPanel");
+		sourcePanel.setStyleName(SELECTORS_PANEL);
 		List<ExpressionType> availableExpressionsForSouce = new ArrayList<>();
 		availableExpressionsForSouce.add(ExpressionType.ATTRIBUTE);	
 		availableExpressionsForSouce.add(ExpressionType.RETRIEVE);
@@ -197,7 +247,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	
 	private Widget buildFilterWidget() {
 		VerticalPanel filterPanel = new VerticalPanel();
-		filterPanel.setStyleName("selectorsPanel");
+		filterPanel.setStyleName(SELECTORS_PANEL);
 		List<ExpressionType> availableExpressionsForFilter = new ArrayList<>();
 		availableExpressionsForFilter.add(ExpressionType.COMPARISON);
 		availableExpressionsForFilter.add(ExpressionType.DEFINITION);
@@ -220,9 +270,79 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		return filterPanel;
 	}
 	
+	private Widget buildRelationshipWidget() {
+		VerticalPanel filterPanel = new VerticalPanel();
+		
+		if (queryModel.getRelationship() != null && !queryModel.getRelationship().getChildModels().isEmpty()) {
+			ExpandCollapseCQLExpressionPanel expressionPanelGroup = new ExpandCollapseCQLExpressionPanel("Relationship", 
+					queryModel.getRelationship().getChildModels().get(0).getCQL(""));
+			
+			expressionPanelGroup.getDeleteButton().addClickHandler(event -> onDeleteRelationshipClick());
+			
+			filterPanel.add(expressionPanelGroup);
+			filterPanel.setWidth("100%");
+			
+		} else {
+			
+			filterPanel.setStyleName(SELECTORS_PANEL);
+			filterPanel.setWidth("50%");
+			
+			FormLabel label = new FormLabel();
+			label.setText(RELATIONSHIP_TEXT_LABEL);
+			label.setTitle(RELATIONSHIP_TEXT_LABEL);
+
+			HorizontalPanel labelPanel = new HorizontalPanel();
+			labelPanel.add(label);
+			
+			availableExpressionsForRelationship = new ListBoxMVP();
+			availableExpressionsForRelationship.insertItem(SELECT_RELATIONSHIP, SELECT_RELATIONSHIP);
+			availableExpressionsForRelationship.insertItem("with", "with");
+			availableExpressionsForRelationship.insertItem("without", "without");
+			availableExpressionsForRelationship.addChangeHandler(event -> this.getErrorAlert().clearAlert());
+			
+			HorizontalPanel dropdownPanel = new HorizontalPanel();
+			dropdownPanel.add(availableExpressionsForRelationship);
+			dropdownPanel.setWidth("100%");
+			dropdownPanel.add(buildBuildButton());
+
+			filterPanel.add(labelPanel);
+			filterPanel.add(dropdownPanel);
+		}
+
+		return filterPanel;
+	}
+
+	private void onDeleteRelationshipClick() {
+		queryBuilderContentPanel.clear();
+		this.queryModel.setRelationshipType(null);
+		this.queryModel.getRelationship().getChildModels().clear();
+		queryBuilderContentPanel.add(buildRelationshipWidget());
+		this.updateCQLDisplay();
+	}
+
+	private Button buildBuildButton() {
+		Button buildButton = new Button();
+		buildButton.setText("Build");
+		buildButton.setTitle("Build");
+		buildButton.setType(ButtonType.PRIMARY);
+		buildButton.setMarginLeft(5.0);
+		buildButton.setIcon(IconType.WRENCH);
+		buildButton.addClickHandler(event -> displayRelationshipModalScreen());
+		return buildButton;
+	}
+	
+	private void displayRelationshipModalScreen() {
+		if (availableExpressionsForRelationship.getSelectedIndex() > 0) {
+			queryModel.setRelationshipType(availableExpressionsForRelationship.getSelectedValue());
+			relationshipBuildButtonObserver.onBuildButtonClick(RelationshipBuilderModal.SOURCE, null);
+		} else {
+			this.getErrorAlert().createAlert("An expression type is required.");
+		}
+	}
+	
 	private Widget buildSortByWidget() {
 		VerticalPanel sortByPanel = new VerticalPanel();
-		sortByPanel.setStyleName("selectorsPanel");
+		sortByPanel.setStyleName(SELECTORS_PANEL);
 		
 		List<ExpressionType> availableExpressionsForSort = new ArrayList<>();
 		availableExpressionsForSort.add(ExpressionType.ATTRIBUTE);
@@ -246,8 +366,6 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		FormLabel sortDirectionFormLabel = new FormLabel();
 		sortDirectionFormLabel.setText(HOW_WOULD_YOU_LIKE_TO_SORT_THE_DATA);
 		sortDirectionFormLabel.setTitle(HOW_WOULD_YOU_LIKE_TO_SORT_THE_DATA);
-
-		
 		
 		RadioButton ascendingSortRadioButton = new RadioButton("sortDirectionRadioButton", "Ascending");
 		RadioButton descendingSortRadioButton = new RadioButton("sortDirectionRadioButton", "Descending");
@@ -268,7 +386,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		
 		HorizontalPanel sortDirectionHorizontalPanel = new HorizontalPanel();
-		sortDirectionHorizontalPanel.setStyleName("selectorsPanel");
+		sortDirectionHorizontalPanel.setStyleName(SELECTORS_PANEL);
 		sortDirectionHorizontalPanel.setWidth("250px");
 		sortDirectionHorizontalPanel.add(ascendingSortRadioButton);
 		sortDirectionHorizontalPanel.add(descendingSortRadioButton);
@@ -281,7 +399,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	
 	private Widget buildReviewQueryWidget() {
 		VerticalPanel filterPanel = new VerticalPanel();
-		filterPanel.setStyleName("selectorsPanel");
+		filterPanel.setStyleName(SELECTORS_PANEL);
 		ViewCQLExpressionWidget cqlExpressionModal = new ViewCQLExpressionWidget();
 		cqlExpressionModal.setCQLDisplay(this.getMainModel().getCQL(""));
 		filterPanel.add(cqlExpressionModal);		
@@ -334,17 +452,37 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private void displaySource() {
 		updateTitle(SOURCE);
 		previousButton.setVisible(false);
-		updateNextButton(FILTER, event -> navigate(FILTER));
+		updateNextButton(RELATIONSHIP, event -> navigate(RELATIONSHIP));
 		queryBuilderContentPanel.clear();
 		queryBuilderContentPanel.add(buildSourceWidget());
+		
+		sourceListItem.setActive(true);
+		if(sourceSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
+			sourceSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
+		}
 	}
 
+	private void displayRelationship() {
+		updateTitle(RELATIONSHIP);
+		updatePreviousButton(SOURCE, event -> navigate(SOURCE));
+		updateNextButton(FILTER, event -> navigate(FILTER));
+		queryBuilderContentPanel.clear();
+		queryBuilderContentPanel.add(buildRelationshipWidget());
+		availableExpressionsForRelationship.setFocus(true);
+		relationshipListItem.setActive(true);
+	}
+	
 	private void displayFilter() {
 		updateTitle(FILTER);
-		updatePreviousButton(SOURCE, event -> navigate(SOURCE));
+		updatePreviousButton(RELATIONSHIP, event -> navigate(RELATIONSHIP));
 		updateNextButton(SORT, event -> navigate(SORT));
 		queryBuilderContentPanel.clear();
 		queryBuilderContentPanel.add(buildFilterWidget());
+		
+		filterListItem.setActive(true);
+		if(filterSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
+			filterSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
+		}
 	}
 
 	private void displaySort() {
@@ -353,6 +491,12 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		updateNextButton(REVIEW_QUERY, event -> navigate(REVIEW_QUERY));
 		queryBuilderContentPanel.clear();
 		queryBuilderContentPanel.add(buildSortByWidget());
+		
+		sortListItem.setActive(true);
+		if(sortSelector.getSelector()!= null && sortSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
+			sortSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
+		}
+
 	}
 
 	private void displayReviewQuery() {
@@ -365,6 +509,9 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		queryBuilderContentPanel.clear();
 		queryBuilderContentPanel.add(buildReviewQueryWidget());
+		
+		reviewQueryListItem.setActive(true);
+		this.setCQLPanelVisible(false);
 	}
 	
 	private void navigate(String text) {
@@ -378,38 +525,36 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private void displayCurrentTab(String tab) {
 		this.currentScreen = tab;
 		this.setCQLPanelVisible(true);
-		if(tab.equals(SOURCE)) {
-			sourceListItem.setActive(true);
+
+		switch(tab) {
+		case SOURCE:
 			displaySource();
-			
-			if(sourceSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
-				sourceSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
-			}
-			
-		} else if(tab.equals(FILTER)) {
-			filterListItem.setActive(true);
+			break;
+
+		case RELATIONSHIP:
+			displayRelationship();
+			break;
+
+		case FILTER:
 			displayFilter();
-			
-			if(filterSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
-				filterSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
-			}
-			
-		} else if(tab.equals(SORT)) {
-			sortListItem.setActive(true);
+			break;
+
+		case SORT:
 			displaySort();
-			
-			if(sortSelector.getSelector()!= null && sortSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
-				sortSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
-			}
- 		} else if(tab.equals(REVIEW_QUERY)) {
- 			reviewQueryListItem.setActive(true);
- 			this.setCQLPanelVisible(false);
- 			displayReviewQuery();
- 		}
+			break;
+
+		case REVIEW_QUERY:
+			displayReviewQuery();
+			break;	
+
+		default: break;
+		}
+
 	}
 
 	private void unActivateTabs() {
-		sourceListItem.setActive(false);
+		sourceListItem.setActive(false);		
+		relationshipListItem.setActive(false);
 		filterListItem.setActive(false);
 		sortListItem.setActive(false);
 		reviewQueryListItem.setActive(false);

@@ -2,6 +2,8 @@ package mat.client.measure;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.model.Author;
 import mat.model.BaseModel;
@@ -9,8 +11,6 @@ import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.model.util.MeasureDetailsUtil;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 
 public class ManageMeasureDetailModel implements IsSerializable, BaseModel{

@@ -13,7 +13,6 @@ import mat.dao.CodeSystemDAO;
 import mat.dao.DataTypeDAO;
 import mat.dao.EmailAuditLogDAO;
 import mat.dao.ListObjectDAO;
-import mat.dao.ListObjectLTDAO;
 import mat.dao.MatFlagDAO;
 import mat.dao.MeasureAuditLogDAO;
 import mat.dao.MeasureScoreDAO;
@@ -40,6 +39,8 @@ import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.CQLLibraryShareDAO;
 import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.clause.MeasureDAO;
+import mat.dao.clause.MeasureDetailsReferenceDAO;
+import mat.dao.clause.MeasureDeveloperDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureSetDAO;
 import mat.dao.clause.MeasureXMLDAO;
@@ -132,6 +133,10 @@ public class DAOService {
 	private EmailAuditLogDAO emailAuditLogDAO; 
 	@Autowired
 	private ComponentMeasuresDAO componentMeasureDAO;
+	@Autowired
+	private MeasureDetailsReferenceDAO measureDetailsReferenceDAO;
+	@Autowired
+	private MeasureDeveloperDAO measureDeveloperDAO;
 
 	public AuditLogDAO getAuditLogDAO() {
 		return auditLogDAO;
@@ -175,6 +180,10 @@ public class DAOService {
 	
 	public MeasureDAO getMeasureDAO() {
 		return measureDAO;
+	}
+	
+	public MeasureDetailsReferenceDAO getMeasureDetailsReferenceDAO() {
+		return measureDetailsReferenceDAO;
 	}
 	
 	public MeasureExportDAO getMeasureExportDAO() {
@@ -299,6 +308,10 @@ public class DAOService {
 	
 	public void setMeasureDAO(MeasureDAO measureDAO) {
 		this.measureDAO = measureDAO;
+	}
+	
+	public void setMeasureDetailsReferenceDAO(MeasureDetailsReferenceDAO measureDetailsReferenceDAO) {
+		this.measureDetailsReferenceDAO = measureDetailsReferenceDAO;
 	}
 	
 	public void setMeasureExportDAO(MeasureExportDAO measureExportDAO) {
@@ -461,6 +474,14 @@ public class DAOService {
 
 	public void setComponentMeasureDAO(ComponentMeasuresDAO componentMeasureDAO) {
 		this.componentMeasureDAO = componentMeasureDAO;
+	}
+
+	public MeasureDeveloperDAO getMeasureDeveloperDAO() {
+		return measureDeveloperDAO;
+	}
+
+	public void setMeasureDeveloperDAO(MeasureDeveloperDAO measureDeveloperDAO) {
+		this.measureDeveloperDAO = measureDeveloperDAO;
 	}
 	
 }

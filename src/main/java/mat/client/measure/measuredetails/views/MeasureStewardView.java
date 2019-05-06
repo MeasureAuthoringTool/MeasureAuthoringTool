@@ -16,6 +16,7 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSe
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -29,7 +30,6 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.editor.RichTextEditor;
 import mat.client.util.CellTableUtility;
 import mat.model.Author;
 import mat.model.MeasureSteward;
@@ -277,7 +277,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 	}
 
 	@Override
-	public RichTextEditor getRichTextEditor() {
+	public TextArea getTextEditor() {
 		// TODO Auto-generated method stub
 		return null;
 	}

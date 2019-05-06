@@ -13,10 +13,10 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,7 +31,6 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.editor.RichTextEditor;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.MatConstants;
 import mat.shared.StringUtility;
@@ -680,7 +679,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	}
 
 	@Override
-	public RichTextEditor getRichTextEditor() {
+	public TextArea getTextEditor() {
 		//No rich text editor on this page
 		return null;
 	}

@@ -19,8 +19,7 @@ public class NumeratorObserver implements MeasureDetailsComponentObserver {
 	
 	private NumeratorModel updateFromView() {
 		NumeratorModel model = (NumeratorModel) view.getMeasureDetailsComponentModel();
-		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
+		model.setEditorText(view.getTextEditor().getText());
 		return model;
 	}
 }

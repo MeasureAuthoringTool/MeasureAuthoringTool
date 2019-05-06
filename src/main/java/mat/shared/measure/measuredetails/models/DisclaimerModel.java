@@ -4,14 +4,14 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class DisclaimerModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable {
+public class DisclaimerModel extends MeasureDetailsTextAbstractModel implements IsSerializable {
 
 	public DisclaimerModel() {
-		super("", "");
+		super("");
 	}
 	
 	public DisclaimerModel(DisclaimerModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getEditorText());
 	}
 
 	@Override
@@ -19,11 +19,10 @@ public class DisclaimerModel extends MeasureDetailsRichTextAbstractModel impleme
 		DisclaimerModel disclaimerModel = (DisclaimerModel) model;
 		if(disclaimerModel == null) {
 			return false;
-		} else if(disclaimerModel.getFormattedText() != null && getFormattedText() != null) {
-			return this.getFormattedText().equals(disclaimerModel.getFormattedText()) && 
-					this.getPlainText().equals(disclaimerModel.getPlainText());
+		} else if(disclaimerModel.getEditorText() != null && getEditorText() != null) {
+			return this.getEditorText().equals(disclaimerModel.getEditorText());
 		} else {
-			return disclaimerModel.getFormattedText() == null && getFormattedText() == null;
+			return disclaimerModel.getEditorText() == null && getEditorText() == null;
 		}
 	}
 	

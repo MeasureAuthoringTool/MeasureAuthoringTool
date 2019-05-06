@@ -19,8 +19,7 @@ public class DenominatorObserver implements MeasureDetailsComponentObserver {
 	
 	private DenominatorModel updateFromView() {
 		DenominatorModel model = (DenominatorModel) view.getMeasureDetailsComponentModel();
-		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
+		model.setEditorText(view.getTextEditor().getText());
 		return model;
 	}
 }

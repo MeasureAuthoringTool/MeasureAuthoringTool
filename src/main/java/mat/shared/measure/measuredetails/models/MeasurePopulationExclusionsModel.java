@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class MeasurePopulationExclusionsModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
+public class MeasurePopulationExclusionsModel extends MeasureDetailsTextAbstractModel implements IsSerializable{
 	public MeasurePopulationExclusionsModel() {
-		super("", "");
+		super("");
 	}
 	
 	public MeasurePopulationExclusionsModel(MeasurePopulationExclusionsModel model) {
-		super(model.getPlainText(), model.getFormattedText());
+		super(model.getEditorText());
 	}
 	
 	public void update(MeasureDetailsModelVisitor measureDetailsModelVisitor) {

@@ -67,16 +67,6 @@ public interface MeasureService extends RemoteService {
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName);
 	
 	/**
-	 * Clone measure xml.
-	 *
-	 * @param creatingDraft            the creating draft	 * @param oldMeasureId
-	 *            the old measure id
-	 * @param oldMeasureId the old measure id
-	 * @param clonedMeasureId            the cloned measure id
-	 */
-	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId, String clonedMeasureId);
-	
-	/**
 	 * Creates the and save element look up.
 	 *
 	 * @param list            the list
@@ -533,14 +523,8 @@ public interface MeasureService extends RemoteService {
 //	SaveUpdateCQLResult getCQLData(String measureId, String fromTable);
 	
 	SaveUpdateCQLResult getMeasureCQLData(String measureId);
-	
-	/**
-	 * Gets the CQL file data.
-	 *
-	 * @param measureId the measure id
-	 * @return the CQL file data
-	 */
-//	SaveUpdateCQLResult getCQLFileData(String measureId);
+		
+	SaveUpdateCQLResult saveCQLFile(String measureId, String cql);	
 	
 	/**
 	 * Save and modify definitions.
@@ -648,10 +632,6 @@ public interface MeasureService extends RemoteService {
 
 	SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject);
 
-	SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject);
-
-	SaveUpdateCQLResult updateCQLValuesetsToMeasure(CQLValueSetTransferObject matValueSetTransferObject);
-
 	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult getMeasureCQLFileData(String measureId);
@@ -666,8 +646,6 @@ public interface MeasureService extends RemoteService {
 	
 	SaveUpdateCQLResult saveCQLCodeListToMeasure(List<CQLCode> codeList, String measureId);
 	
-	SaveUpdateCQLResult modifyCQLCodeInMeasure(CQLCode modifyCQLCode, CQLCode refCode, String measureId);
-
 	CQLCodeWrapper getCQLCodes(String measureID);
 
 	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String measureID);

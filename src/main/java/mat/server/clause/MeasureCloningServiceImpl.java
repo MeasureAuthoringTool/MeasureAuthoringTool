@@ -279,7 +279,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 				
 				//create the default 4 CMS supplemental definitions
 				appendSupplementalDefinitions(xmlProcessor, false);
-				xmlProcessor.updateCQLLibraryName();
+				xmlProcessor.updateCQLLibraryName(measure.getDescription());
 				// Always set latest QDM Version.
 				MeasureUtility.updateLatestQDMVersion(xmlProcessor);
 			}

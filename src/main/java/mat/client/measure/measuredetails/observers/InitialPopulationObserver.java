@@ -27,8 +27,7 @@ public class InitialPopulationObserver implements MeasureDetailsComponentObserve
 	
 	private InitialPopulationModel updateFromView() {
 		InitialPopulationModel model = (InitialPopulationModel) view.getMeasureDetailsComponentModel();
-		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
+		model.setEditorText(view.getTextEditor().getText());
 		return model;
 	}
 }

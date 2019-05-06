@@ -31,17 +31,32 @@ public class SharedCQLWorkspaceUtility {
 	}
 
 	public static boolean validateCQLArtifact(SaveUpdateCQLResult result, AceEditor aceEditor, MessagePanel messagePanel, String expressionType, String expressionName) {
-		result.getCqlErrors().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor));
-		result.getCqlWarnings().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor));		
+		displayAnnotations(result, aceEditor);		
 		SharedCQLWorkspaceUtility.displayMessageBanner(result, messagePanel, expressionType, expressionName); 
 		return !result.getCqlErrors().isEmpty();
 	}
+
+	public static void displayAnnotations(SaveUpdateCQLResult result, AceEditor aceEditor) {
+		aceEditor.clearAnnotations();
+		result.getCqlErrors().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor));
+		result.getCqlWarnings().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor));
+		aceEditor.setAnnotations();
+	}
 	
 	public static void displayMessagesForViewCQL(SaveUpdateCQLResult result, AceEditor aceEditor, MessagePanel messagePanel) {
+		aceEditor.clearAnnotations();
+		displayAnnotationForViewCQL(result, aceEditor);
+		SharedCQLWorkspaceUtility.displayMessageBannerForViewCQL(result, messagePanel);
+		aceEditor.setAnnotations();
+	}
+
+	public static void displayAnnotationForViewCQL(SaveUpdateCQLResult result, AceEditor aceEditor) {
+		aceEditor.clearAnnotations();
 		String formattedName = result.getCqlModel().getFormattedName();
 		SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameErrorsMap().get(formattedName), ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor);
 		SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameWarningsMap().get(formattedName), WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor);
-		SharedCQLWorkspaceUtility.displayMessageBannerForViewCQL(result, messagePanel);
+		SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLinterErrors(), ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor);
+		aceEditor.setAnnotations();
 	}
 
 	private static void displayMessageBannerForViewCQL(SaveUpdateCQLResult result, MessagePanel messagePanel) {
@@ -49,8 +64,9 @@ public class SharedCQLWorkspaceUtility {
 		List<String> errorMessages = new ArrayList<String>();
 		if(!result.isQDMVersionMatching()) {
 			errorMessages.add(AbstractCQLWorkspacePresenter.INVALID_QDM_VERSION_IN_INCLUDES);
-		} else if(!result.getCqlErrors().isEmpty()) {
+		} else if(!result.getCqlErrors().isEmpty() || !result.getLinterErrorMessages().isEmpty()) {
 			errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE);
+			result.getLinterErrorMessages().forEach(e -> errorMessages.add(e));
 		}
 		if(!result.isDatatypeUsedCorrectly()) {
 			errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE);

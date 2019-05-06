@@ -28,8 +28,7 @@ public class ClinicalRecommendationObserver implements MeasureDetailsComponentOb
 	
 	private ClinicalRecommendationModel updateFromView() {
 		ClinicalRecommendationModel model = (ClinicalRecommendationModel) view.getMeasureDetailsComponentModel();
-		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
+		model.setEditorText(view.getTextEditor().getText());
 		return model;
 	}
 }

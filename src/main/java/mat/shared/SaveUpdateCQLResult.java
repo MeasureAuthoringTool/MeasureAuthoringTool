@@ -38,6 +38,10 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	private List<CQLError> cqlWarnings = new ArrayList<>();
 	
+	private List<CQLError> linterErrors = new ArrayList<>();
+	
+	private List<String> linterErrorMessages = new ArrayList<>();
+	
 	/** The definition. */
 	private CQLDefinition definition;
 	
@@ -82,6 +86,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	public static final int BIRTHDATE_OR_DEAD_ERROR = 9;
 	
 	public static final int DUPLICATE_CQL_KEYWORD = 10;
+	
+	public static final int SYNTAX_ERRORS = 11;
 	
 	/** The cql applied QDM list. */
 	List<CQLQualityDataSetDTO> cqlAppliedQDMList ;
@@ -431,6 +437,22 @@ public class SaveUpdateCQLResult extends GenericResult{
 
 	public void setLibraryNameWarningsMap(Map<String, List<CQLError>> libraryNameWarningsMap) {
 		this.libraryNameWarningsMap = libraryNameWarningsMap;
+	}
+
+	public List<CQLError> getLinterErrors() {
+		return linterErrors;
+	}
+
+	public void setLinterErrors(List<CQLError> linterErrors) {
+		this.linterErrors = linterErrors;
+	}
+
+	public List<String> getLinterErrorMessages() {
+		return linterErrorMessages;
+	}
+
+	public void setLinterErrorMessages(List<String> linterErrorMessages) {
+		this.linterErrorMessages = linterErrorMessages;
 	}
 	
 }

@@ -40,7 +40,7 @@ import mat.shared.measure.measuredetails.models.DenominatorExceptionsModel;
 import mat.shared.measure.measuredetails.models.DenominatorExclusionsModel;
 import mat.shared.measure.measuredetails.models.DenominatorModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
-import mat.shared.measure.measuredetails.models.MeasureDetailsRichTextAbstractModel;
+import mat.shared.measure.measuredetails.models.MeasureDetailsTextAbstractModel;
 import mat.shared.measure.measuredetails.models.MeasureObservationsModel;
 import mat.shared.measure.measuredetails.models.MeasurePopulationExclusionsModel;
 import mat.shared.measure.measuredetails.models.MeasurePopulationModel;
@@ -687,9 +687,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		return MeasureDetailState.BLANK;
 	}
 
-	private MeasureDetailState getRichTextEditableTabState(MeasureDetailsRichTextAbstractModel model) {
+	private MeasureDetailState getRichTextEditableTabState(MeasureDetailsTextAbstractModel model) {
 		if(model != null) {
-			if(model.getPlainText() == null || model.getPlainText().isEmpty()) {
+			if(model.getEditorText() == null || model.getEditorText().isEmpty()) {
 				return MeasureDetailState.BLANK;
 			} else {
 				return MeasureDetailState.COMPLETE;
@@ -699,7 +699,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 	
 	private MeasureDetailState getPopulationsState(MeasureDetailsModel measureDetailsModel) {
-		List<MeasureDetailsRichTextAbstractModel> applicableModels = new ArrayList<>();
+		List<MeasureDetailsTextAbstractModel> applicableModels = new ArrayList<>();
 		if(scoringType.equals(MeasureDetailsConstants.COHORT)) {
 			applicableModels.add(measureDetailsModel.getInitialPopulationModel());
 		} else if (scoringType.equals(MeasureDetailsConstants.CONTINUOUS_VARIABLE)) {
@@ -728,9 +728,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		return calculateStateOffOfList(applicableModels);
 	}
 	
-	private MeasureDetailState calculateStateOffOfList(List<MeasureDetailsRichTextAbstractModel> applicableModels) {
+	private MeasureDetailState calculateStateOffOfList(List<MeasureDetailsTextAbstractModel> applicableModels) {
 		int completedPopulationCount = 0;
-		for(MeasureDetailsRichTextAbstractModel model : applicableModels) {
+		for(MeasureDetailsTextAbstractModel model : applicableModels) {
 			if(getRichTextEditableTabState(model) == MeasureDetailState.COMPLETE) {
 				completedPopulationCount++;
 			}

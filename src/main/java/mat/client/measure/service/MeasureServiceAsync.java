@@ -45,22 +45,7 @@ import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 public interface MeasureServiceAsync {
 	
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, AsyncCallback<Void> callback);
-	
-	/**
-	 * Clone measure xml.
-	 * 
-	 * @param creatingDraft
-	 *            the creating draft
-	 * @param oldMeasureId
-	 *            the old measure id
-	 * @param clonedMeasureId
-	 *            the cloned measure id
-	 * @param callback
-	 *            the callback
-	 */
-	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
-			String clonedMeasureId, AsyncCallback<Void> callback);
-	
+		
 	/**
 	 * Creates the and save element look up.
 	 *
@@ -564,6 +549,8 @@ public interface MeasureServiceAsync {
 	 */
 	void parseCQL(String cqlBuilder , AsyncCallback<CQLModel> asyncCallback);
 	
+	void saveCQLFile(String measureId, String cql, AsyncCallback<SaveUpdateCQLResult> asyncCallback);
+	
 	/**
 	 * Save and modify definitions.
 	 *
@@ -670,12 +657,6 @@ public interface MeasureServiceAsync {
 	void saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject, 
 			AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject,
-			AsyncCallback<SaveUpdateCQLResult> callback);
-
-	void updateCQLValuesetsToMeasure(CQLValueSetTransferObject matValueSetTransferObject,
-			AsyncCallback<SaveUpdateCQLResult> callback);
-
 	void saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
 			List<CQLIncludeLibrary> incLibraryList, AsyncCallback<SaveUpdateCQLResult> callback);
 
@@ -706,9 +687,6 @@ public interface MeasureServiceAsync {
 	void saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
 			List<CQLQualityDataSetDTO> appliedValueSetList, String measureId,
 			AsyncCallback<CQLQualityDataModelWrapper> callback);
-
-	void modifyCQLCodeInMeasure(CQLCode modifyCQLCode, CQLCode refCode, String measureId,
-			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 
 	void searchComponentMeasures(MeasureSearchModel searchModel, AsyncCallback<ManageMeasureSearchModel> asyncCallback);
 	

@@ -31,7 +31,6 @@ import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 
@@ -49,9 +48,9 @@ public class MeasureDetailsView {
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
 	private Button viewHumanReadableButton;
 	private MeasureDetailsModel measureDetailsModel;
-	private RichTextEditor currentRichTextEditor;
 	private MessagePanel messagePanel;
 	private MeasureDetailsObserver measureDetailsObserver;
+	private HTML headingHTML;
 	
 	public MeasureDetailsView(MeasureDetailsModel measureDetailsModel, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel, MeasureDetailsObserver measureDetailsObserver) {
 		currentMeasureDetail = measureDetail;
@@ -73,7 +72,7 @@ public class MeasureDetailsView {
 
 	private void buildHeading() {
 		headingPanel.clear();
-		HTML headingHTML = new HTML();
+		headingHTML = new HTML();
 		headingHTML.setHTML("<h4><b>" + currentMeasureDetail.displayName() + "</b></h4>");
 		headingHTML.getElement().setId("measureDetailsView_HeadingContent");
 		headingHTML.setTitle(currentMeasureDetail.displayName());
@@ -160,10 +159,6 @@ public class MeasureDetailsView {
 		
 		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsModel, currentMeasureDetail, this.measureDetailsObserver);
 
-		currentRichTextEditor = componentDetailView.getRichTextEditor();
-		if(currentRichTextEditor != null) {
-			currentRichTextEditor.addKeyUpHandler(keyUpEvent -> handleRichTextTabOut(keyUpEvent));
-		}
 		widgetComponentPanel.add(componentDetailView.getWidget());
 		widgetComponentPanel.setWidth("100%");
 		widgetComponentPanel.setStyleName("marginLeft15px");
@@ -174,7 +169,11 @@ public class MeasureDetailsView {
 	}
 	
 	public void setFocusOnFirstElement() {
-		componentDetailView.getFirstElement().getElement().focus();
+		if(componentDetailView.getFirstElement() != null) {
+			componentDetailView.getFirstElement().getElement().focus();
+		} else {
+			headingHTML.getElement().focus();
+		}
 	}
 	
 	private void handleRichTextTabOut(KeyUpEvent keyUpEvent) {

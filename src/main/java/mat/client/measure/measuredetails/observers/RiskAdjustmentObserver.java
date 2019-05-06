@@ -28,8 +28,7 @@ public class RiskAdjustmentObserver implements MeasureDetailsComponentObserver{
 	
 	private RiskAdjustmentModel updateFromView() {
 		RiskAdjustmentModel model = (RiskAdjustmentModel) view.getMeasureDetailsComponentModel();
-		model.setFormattedText(view.getRichTextEditor().getFormattedText());
-		model.setPlainText(view.getRichTextEditor().getPlainText());
+		model.setEditorText(view.getTextEditor().getText());
 		return model;
 	}
 }

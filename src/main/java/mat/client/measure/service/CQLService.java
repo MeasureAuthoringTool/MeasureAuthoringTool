@@ -20,6 +20,7 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.cqlparser.CQLLinterConfig;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
@@ -164,12 +165,8 @@ public interface CQLService {
 
 	CQLQualityDataModelWrapper getCQLValusets(String measureID, CQLQualityDataModelWrapper cqlQualityDataModelWrapper);
 
-	SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject);
-
-	SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject);
-
-	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);
-
+	SaveUpdateCQLResult saveCQLValueset(String xml, CQLValueSetTransferObject valueSetTransferObject);
+	
 	SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult deleteInclude(String currentMeasureId,
@@ -204,4 +201,6 @@ public interface CQLService {
 	SaveUpdateCQLResult getCQLDataForLoad(String xmlString);
 	
 	String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) throws MarshalException, ValidationException, IOException, MappingException;
+
+	SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config);
 }

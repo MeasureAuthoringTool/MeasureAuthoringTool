@@ -76,6 +76,8 @@ public interface CQLLibraryServiceInterface {
 
 	int countNumberOfAssociation(String id);
 	
+	SaveUpdateCQLResult saveCQLFile(String libraryId, String cql);
+	
 	SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable);
 
@@ -98,10 +100,6 @@ public interface CQLLibraryServiceInterface {
 	SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject);
 
 	SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId);
-
-	SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject);
-
-	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);
 
 	VsacApiResult updateCQLVSACValueSets(String cqlLibraryId, String expansionId, String sessionId);
 	CQLKeywords getCQLKeywordsLists();
@@ -128,8 +126,6 @@ public interface CQLLibraryServiceInterface {
 
 	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
-
-	SaveUpdateCQLResult modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode, String cqlLibraryId);
 	
 	public void saveCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML);
 }

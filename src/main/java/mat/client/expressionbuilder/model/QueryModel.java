@@ -9,7 +9,9 @@ public class QueryModel extends ExpressionBuilderModel {
 	private String alias;
 	private ExpressionBuilderModel filter;
 	private QuerySortModel sort;
-
+	private ExpressionBuilderModel relationship;
+	private String relationshipType;	
+	
 	public QueryModel(ExpressionBuilderModel source, String alias, ExpressionBuilderModel filter, ExpressionBuilderModel parent) {
 		super(parent);
 		this.source = source;
@@ -24,6 +26,7 @@ public class QueryModel extends ExpressionBuilderModel {
 		this.source = new ExpressionBuilderModel(this);
 		this.filter = new ExpressionBuilderModel(this); 
 		this.sort = new QuerySortModel(this);
+		this.relationship = new ExpressionBuilderModel(this);
 		this.alias = "";
 	}
 	
@@ -46,6 +49,10 @@ public class QueryModel extends ExpressionBuilderModel {
 	public QuerySortModel getSort() {
 		return sort;
 	}	
+	
+	public ExpressionBuilderModel getRelationship() {
+		return relationship;
+	}
 
 	@Override
 	public String getCQL(String indentation) {		
@@ -59,22 +66,30 @@ public class QueryModel extends ExpressionBuilderModel {
 				
 		builder.append(" ");
 		builder.append(alias);
+
+		String queryContentIndentation = indentation + "  ";
 		
-		String filterIdentation = indentation + "  ";
-		builder.append("\n" + filterIdentation);
-		builder.append("where ");
 		
+		if (!relationship.getChildModels().isEmpty()) {
+			 builder.append("\n").append(queryContentIndentation);
+			 builder.append(relationship.getCQL(indentation + "  "));
+		 }
+				
+		if (!filter.getChildModels().isEmpty()) {
+			builder.append("\n").append(queryContentIndentation);
+			builder.append("where ");
+		}
 		
 		if(this.getChildModels().size() == 1) {
-			builder.append(this.getChildModels().get(0).getCQL(filterIdentation));
+			builder.append(this.getChildModels().get(0).getCQL(queryContentIndentation));
 		} else {
 			if (!filter.getChildModels().isEmpty()) {
-				builder.append(filter.getCQL(filterIdentation));
+				builder.append(filter.getCQL(queryContentIndentation));
 			}
 		}
 
 		if(!sort.getSortExpression().getChildModels().isEmpty()) {
-			builder.append("\n" + filterIdentation);
+			builder.append("\n").append(queryContentIndentation);
 			builder.append(sort.getCQL(""));
 		}
 		
@@ -94,4 +109,13 @@ public class QueryModel extends ExpressionBuilderModel {
 	public String getDisplayName() {
 		return ExpressionType.QUERY.getDisplayName();
 	}
+
+	public String getRelationshipType() {
+		return relationshipType;
+	}
+
+	public void setRelationshipType(String relationshipType) {
+		this.relationshipType = relationshipType;
+	}
+
 }

@@ -401,7 +401,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			title = ClientConstants.TITLE_MEASURE_LIB;
 			mainTabLayout.add(measureLibrary.getWidget(), title, true);
 			presenterList.add(measureLibrary);
-			
+					
 			measureComposer= buildMeasureComposer();
 			title = ClientConstants.TITLE_MEASURE_COMPOSER;
 			mainTabLayout.add(measureComposer.getWidget(), title, true);
@@ -539,7 +539,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	
 	private void showUMLSModal(String userFirstName, boolean isAlreadySignedIn) {
 		final UmlsLoginDialogBox login = new UmlsLoginDialogBox();
-		login.showUMLSLogInDialog();
+		login.showUMLSLogInDialog(this.measureComposer.getCQLWorkspacePresenter(), this.cqlComposer.getCQLStandaloneWorkspacePresenter());
 		new ManageUmlsPresenter(login, userFirstName, isAlreadySignedIn);
 		login.showModal();
 	}

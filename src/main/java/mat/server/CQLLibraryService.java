@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathConstants;
@@ -69,6 +70,8 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.cqlparser.CQLLinter;
+import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.model.MatUserDetails;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.service.UserService;
@@ -76,6 +79,7 @@ import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.CQLUtil;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
+import mat.server.util.QDMUtil;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.CQLModelValidator;
@@ -361,8 +365,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			return result;
 		}
 		
-		SaveUpdateCQLResult cqlResult  = getCQLData(libraryId);
-		if(cqlResult.getCqlErrors().size() >0 || !cqlResult.isDatatypeUsedCorrectly()){
+		SaveUpdateCQLResult cqlResult = getCQLData(libraryId);
+		if(!cqlResult.getCqlErrors().isEmpty() || !cqlResult.getLinterErrors().isEmpty() || !cqlResult.isDatatypeUsedCorrectly()){
 			result.setSuccess(false);
 			result.setFailureReason(ConstantMessages.INVALID_CQL_DATA);
 			return result;
@@ -707,6 +711,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 		if(cqlLibraryXml != null) {
 			cqlResult = cqlService.getCQLData(cqlLibraryXml);
+			lintAndAddToResult(cqlResult, cqlLibrary);
 			cqlResult.setSetId(cqlLibrary.getSet_id());
 			cqlResult.setSuccess(true);
 		}
@@ -837,6 +842,27 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				}
 			}
 		}
+		return result;
+	}
+	
+	@Override
+	public SaveUpdateCQLResult saveCQLFile(String libraryId, String cql) {
+		SaveUpdateCQLResult result = null;
+		
+		if(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
+			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+			String cqlXml = getCQLLibraryXml(cqlLibrary);
+			
+			CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(), 
+					MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()), 
+					QDMUtil.QDM_MODEL_IDENTIFIER, cqlLibrary.getQdmVersion());
+
+			result = cqlService.saveCQLFile(cqlXml, cql, config);
+
+			cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+			cqlLibraryDAO.save(cqlLibrary);			
+		}
+		
 		return result;
 	}
 	
@@ -1040,6 +1066,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 		if (cqlXml != null && !StringUtils.isEmpty(cqlXml)) {
 			result = cqlService.getCQLFileData(cqlXml);
+			
+			lintAndAddToResult(result, cqlLibrary);
 			result.setSuccess(true);
 		} else {
 			result.setSuccess(false);
@@ -1056,12 +1084,24 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 		if (cqlXml != null && !StringUtils.isEmpty(cqlXml)) {
 			result = cqlService.getCQLLibraryData(cqlXml);
+			lintAndAddToResult(result, cqlLibrary);
 			result.setSuccess(true);
 		} else {
 			result.setSuccess(false);
 		}
 		
 		return result;		
+	}
+
+	private void lintAndAddToResult(SaveUpdateCQLResult result, CQLLibrary cqlLibrary) {
+		CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(), 
+				MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()),
+				QDMUtil.QDM_MODEL_IDENTIFIER, cqlLibrary.getQdmVersion());
+		config.setPreviousCQLModel(result.getCqlModel());
+		
+		CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
+		result.getLinterErrors().addAll(linter.getErrors());
+		result.getLinterErrorMessages().addAll(linter.getErrorMessages());
 	}
 
 	public void updateCQLLibraryFamily(List<CQLLibraryDataSetObject> detailModelList) {
@@ -1102,11 +1142,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, valueSetTransferObject.getCqlLibraryId())) {
 			CQLLibrary library = cqlLibraryDAO.find(valueSetTransferObject.getCqlLibraryId());
 			if (library != null) {
-				result = cqlService.saveCQLValueset(valueSetTransferObject);
+				result = cqlService.saveCQLValueset(getCQLLibraryXml(library), valueSetTransferObject);
 				if (result != null && result.isSuccess()) {
-					String nodeName = "valueset";
-					String parentNode = "//cqlLookUp/valuesets";
-					appendAndSaveNode(library, nodeName, result.getXml(), parentNode);
+					library.setCQLByteArray(result.getXml().getBytes());
+					cqlLibraryDAO.save(library);
 				}
 			}
 		}
@@ -1130,28 +1169,27 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			
 			CQLLibrary cqlLibrary = cqlLibraryDAO.find(transferObject.getId());
 			if (cqlLibrary != null) {
+				
 				String cqlXml = getCQLLibraryXml(cqlLibrary);
 				if(!cqlXml.isEmpty()){
+					
 					result = cqlService.saveCQLCodes(cqlXml,transferObject);
 					if(result != null && result.isSuccess()) {
-						String nodeName = "code";
-						String parentNode = "//cqlLookUp/codes";
-						String newXml= appendAndSaveNode(cqlLibrary, nodeName, result.getXml(), parentNode);
-						cqlLibraryDAO.refresh(cqlLibrary);
-						System.out.println("newXml ::: " + newXml);
-						
-						SaveUpdateCQLResult updatedResult = updateCodeSystem(newXml, transferObject.getCqlCode());
-						if(updatedResult.isSuccess()) {
-							newXml = saveCQLCodeSystemInLibrary(cqlLibrary, updatedResult);
-							System.out.println("Updated newXml ::: " + newXml);
+						cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+						SaveUpdateCQLResult saveCodeSystemResult = updateCodeSystem(result.getXml(), transferObject.getCqlCode());
+					
+						if(saveCodeSystemResult.isSuccess()) {
+							cqlLibrary.setCQLByteArray(saveCodeSystemResult.getXml().getBytes());
+							result = saveCodeSystemResult;
 						}
-						result.setCqlCodeList(getSortedCQLCodes(newXml).getCqlCodeList());
-						CQLModel cqlModel = ((SaveUpdateCQLResult)cqlService.getCQLData(newXml)).getCqlModel();
-						result.setCqlModel(cqlModel);
+
+						save(cqlLibrary);
+						result.setCqlCodeList(result.getCqlModel().getCodeList());
 					}
 				}
 			}
 		}
+		
 		return result;
 	}
 
@@ -1196,47 +1234,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
 		return result;
 	}
-	
-	@Override
-	public SaveUpdateCQLResult modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode,
-			String cqlLibraryId) {
-		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
-		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibraryId)) {
-			CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlLibraryId);
-			if (cqlLibrary != null) {
-				String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
-				if(!cqlLibraryXml.isEmpty()){
-					cqlResult = cqlService.deleteCode(getCQLLibraryXml(cqlLibrary), codeToReplace.getId());
-					if (cqlResult != null && cqlResult.isSuccess()) {
-						cqlLibraryXml = cqlResult.getXml();
-						
-						MatCodeTransferObject transferObject = new MatCodeTransferObject();
-						transferObject.setCqlCode(replacementCode);
-						transferObject.setId(cqlLibraryId);
-						SaveUpdateCQLResult codeResult = cqlService.saveCQLCodes(cqlLibraryXml,transferObject);
-						if(codeResult != null && codeResult.isSuccess()) {
-							cqlLibraryXml = appendCQLCodeInLibrary(cqlLibraryXml, codeResult);
-							SaveUpdateCQLResult updatedResult = updateCodeSystem(cqlLibraryXml, transferObject.getCqlCode());
-							if(updatedResult.isSuccess()) {
-								cqlLibraryXml = appendCQLCodeSystemInLibrary(cqlLibraryXml, updatedResult);
-							}
-							cqlResult.setXml(cqlLibraryXml);
-							cqlLibrary.setCQLByteArray(cqlResult.getXml().getBytes());
-							save(cqlLibrary);
-							cqlResult.setCqlCodeList(getSortedCQLCodes(cqlResult.getXml()).getCqlCodeList());
-							CQLModel cqlModel = ((SaveUpdateCQLResult)cqlService.getCQLData(cqlResult.getXml())).getCqlModel();
-							cqlResult.setCqlModel(cqlModel);
-						} else {
-							cqlResult.setSuccess(false);
-						}
-					}
-				}
-
-			}
-		}
-		return cqlResult;
-	}
-	
+		
 	private String appendCQLCodeInLibrary(String cqlLibraryXml, SaveUpdateCQLResult codeResult) {
 		String result = cqlLibraryXml;
 		String nodeName = "code";
@@ -1255,13 +1253,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		return result;
 	}
 
-	private String saveCQLCodeSystemInLibrary(CQLLibrary cqlLibrary, SaveUpdateCQLResult updatedResult) {
-		String nodeName = "codeSystem";
-		String parentNode = "//cqlLookUp/codeSystems";
-		 return appendAndSaveNode(cqlLibrary, nodeName, updatedResult.getXml(), parentNode);
-	}
-	
-	
 	private CQLCodeWrapper getSortedCQLCodes(String newXml) {
 		CQLCodeWrapper cqlCodeWrapper = new CQLCodeWrapper();
 		if(newXml != null && !newXml.isEmpty()){
@@ -1272,88 +1263,36 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	}
 
 	@Override
-	public SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject) {
-		
-		SaveUpdateCQLResult result = null;
-		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO,
-				matValueSetTransferObject.getCqlLibraryId())) {
-			CQLLibrary library = cqlLibraryDAO.find(matValueSetTransferObject.getCqlLibraryId());
-			if (library != null) {
-				result = cqlService.saveCQLUserDefinedValueset(matValueSetTransferObject);
-				if (result != null && result.isSuccess()) {
-					String nodeName = "valueset";
-					String parentNode = "//cqlLookUp/valuesets";
-					appendAndSaveNode(library, nodeName, result.getXml(), parentNode);
-				}
-			}
-		}
-		return result;
-	}
-	
-	@Override
 	public CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList , 
 			List<CQLQualityDataSetDTO> appliedValueSetList , String cqlLibraryId) {
 		
-		StringBuilder finalXmlString = new StringBuilder("<valuesets>");
-		SaveUpdateCQLResult finalResult = new SaveUpdateCQLResult();
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
+		CQLLibrary library = cqlLibraryDAO.find(cqlLibraryId);
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibraryId)) {
 			for (CQLValueSetTransferObject  transferObject : transferObjectList) {
 				SaveUpdateCQLResult result = null;
 				transferObject.setAppliedQDMList(appliedValueSetList);
 				if(transferObject.getCqlQualityDataSetDTO().getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
-					result = cqlService.saveCQLUserDefinedValueset(transferObject);
+					result = cqlService.saveCQLValueset(getCQLLibraryXml(library), transferObject);
 				} else {
-					result = cqlService.saveCQLValueset(transferObject);
+					result = cqlService.saveCQLValueset(getCQLLibraryXml(library), transferObject);
 				}
 				
-				if(result != null && result.isSuccess()) {
-					if ((result.getXml() != null) && !StringUtils.isEmpty(result.getXml())) {
-						finalXmlString = finalXmlString.append(result.getXml());
-					}	
+				if (result != null && result.isSuccess()) {
+					library.setCQLByteArray(result.getXml().getBytes());
+					cqlLibraryDAO.save(library);
 				}
 			}
 			
-			finalXmlString.append("</valuesets>");
-			finalResult.setXml(finalXmlString.toString());
-			logger.info(finalXmlString);
-			CQLLibrary library = cqlLibraryDAO.find(cqlLibraryId);
 			if (library != null) {
-				String nodeName = "valueset";
-				String parentNode = "//cqlLookUp/valuesets";
-				appendAndSaveNode(library, nodeName, finalResult.getXml(), parentNode);
 				cqlLibraryDAO.refresh(library);
-				List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
-						.sortCQLQualityDataSetDto(getCQLData(cqlLibraryId).getCqlModel().getAllValueSetAndCodeList());
+				List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass.sortCQLQualityDataSetDto(getCQLData(cqlLibraryId).getCqlModel().getAllValueSetAndCodeList());
 				wrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
-				
 			}
 		}
 		
 		
 		return wrapper;
-	}
-
-	@Override
-	public SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject) {
-		
-		SaveUpdateCQLResult result = null;
-		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO,
-				matValueSetTransferObject.getCqlLibraryId())) {
-			CQLLibrary library = cqlLibraryDAO.find(matValueSetTransferObject.getCqlLibraryId());
-			if (library != null) {
-				result = cqlService.modifyCQLValueSets(matValueSetTransferObject);
-				if (result != null && result.isSuccess()) {
-					result = cqlService.updateCQLLookUpTag(getCQLLibraryXml(library), result.getCqlQualityDataSetDTO(),
-							matValueSetTransferObject.getCqlQualityDataSetDTO());
-					if (result != null && result.isSuccess()) {
-						library.setCQLByteArray(result.getXml().getBytes());
-						save(library);
-					}
-				}
-			}
-		}
-		return result;
 	}
 
 	@Override
@@ -1538,6 +1477,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	@Override
 	public VsacApiResult updateCQLVSACValueSets(String cqlLibraryId, String expansionId, String sessionId) {
 		List<CQLQualityDataSetDTO> appliedQDMList = getCQLData(cqlLibraryId).getCqlModel().getAllValueSetAndCodeList();
+		appliedQDMList = appliedQDMList.stream().filter(v -> !StringUtils.isEmpty(v.getOriginalCodeListName())).collect(Collectors.toList());
 		VsacApiResult result = getVsacService().updateCQLVSACValueSets(appliedQDMList, expansionId, sessionId);
 		if(result.isSuccess()){
 			updateAllCQLInLibraryXml(result.getCqlQualityDataSetMap(), cqlLibraryId);

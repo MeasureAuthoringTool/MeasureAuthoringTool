@@ -23,6 +23,7 @@ import mat.client.expressionbuilder.model.NotModel;
 import mat.client.expressionbuilder.model.OperatorModel;
 import mat.client.expressionbuilder.model.QuantityModel;
 import mat.client.expressionbuilder.model.QueryModel;
+import mat.client.expressionbuilder.model.RelationshipModel;
 import mat.client.expressionbuilder.model.TimeBoundaryModel;
 import mat.client.expressionbuilder.model.TimingModel;
 import mat.client.expressionbuilder.model.TimingPhraseModel;
@@ -109,8 +110,8 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 					lastModel instanceof TimingModel ||
 					lastModel instanceof TimingPhraseModel ||
 					lastModel instanceof DateTimeModel ||
-					lastModel instanceof QuantityModel) {
-
+					lastModel instanceof QuantityModel ||
+					lastModel instanceof RelationshipModel) {
 					
 				this.getParentModel().getChildModels().remove(size);
 				int newSize = this.getParentModel().getChildModels().size() - 1;

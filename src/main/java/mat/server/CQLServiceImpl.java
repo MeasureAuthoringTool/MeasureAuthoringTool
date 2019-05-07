@@ -2029,50 +2029,16 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult deleteInclude(String xml, CQLIncludeLibrary toBeModifiedIncludeObj,
 			List<CQLIncludeLibrary> viewIncludeLibrarys) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
-		XmlProcessor processor = new XmlProcessor(xml);
-
-		if (xml != null) {
-			String XPATH_EXPRESSION_CQLLOOKUP_INCLUDE = "//cqlLookUp//includeLibrary[@id='"
-					+ toBeModifiedIncludeObj.getId() + "']";
-			logger.info("XPATH: " + XPATH_EXPRESSION_CQLLOOKUP_INCLUDE);
-			try {
-				Node includeNode = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_INCLUDE);
-
-				if (includeNode != null) {
-					logger.info("FOUND NODE");
-
-					// remove from xml
-					Node deletedNode = includeNode.getParentNode().removeChild(includeNode);
-					logger.debug(deletedNode.getAttributes().getNamedItem("name").toString());
-					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-					result.setXml(processor.getOriginalXml());
-
-					// remove from library list
-					viewIncludeLibrarys.remove(toBeModifiedIncludeObj);
-					wrapper.setCqlIncludeLibrary(viewIncludeLibrarys);
-					result.setSuccess(true);
-					result.setIncludeLibrary(toBeModifiedIncludeObj);
-				}
-
-				else {
-					logger.info("NOT FOUND NODE");
-					result.setSuccess(false);
-					result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
-				}
-
-			} catch (XPathExpressionException e) {
-				result.setSuccess(false);
-				logger.error("deleteInclude" + e.getMessage());
-			}
-		}
-
+		result.setXml(xml);
+		
+		CQLModel model = CQLUtilityClass.getCQLModelFromXML(xml);
+		model.getCqlIncludeLibrarys().removeIf(m -> m.getId().equals(toBeModifiedIncludeObj.getId()));
+		result.setSuccess(true);
+		
 		if (result.isSuccess()) {
-			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(result.getXml());
-			result.setCqlModel(cqlModel);
-			CQLUtil.getIncludedCQLExpressions(cqlModel, cqlLibraryDAO);
-			logger.info(result.getXml());
-			logger.info(result.isSuccess());
+			result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));
+			result.setCqlModel(model);
+			CQLUtil.getIncludedCQLExpressions(model, cqlLibraryDAO);
 		}
 
 		return result;

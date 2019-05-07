@@ -63,8 +63,6 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.ManageMeasureShareModel;
-import mat.client.measure.NqfModel;
-import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveMeasureResult;
@@ -149,7 +147,6 @@ import mat.server.util.ExportSimpleXML;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.QDMUtil;
-import mat.server.util.UuidUtility;
 import mat.server.util.XmlProcessor;
 import mat.server.validator.measure.CompositeMeasureValidator;
 import mat.shared.CQLValidationResult;
@@ -2753,39 +2750,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	public void setContext(ApplicationContext context) {
 		this.context = context;
-	}
-
-	/**
-	 * Sets the measure package service.
-	 * 
-	 * @param measurePackagerService
-	 *            the new measure package service
-	 */
-	public final void setMeasurePackageService(final MeasurePackageService measurePackagerService) {
-	}
-
-	/**
-	 * Sets the scoring abbreviation.
-	 * 
-	 * @param measScoring
-	 *            the meas scoring
-	 * @return the string
-	 */
-	private String setScoringAbbreviation(final String measScoring) {
-		return MeasureDetailsUtil.getScoringAbbr(measScoring);
-	}
-
-	private String getCompositeScoringAbbreviation(final String compositeMeasureScoring) {
-		return MeasureDetailsUtil.getCompositeScoringAbbreviation(compositeMeasureScoring);
-	}
-
-	/**
-	 * Sets the user service.
-	 * 
-	 * @param usersService
-	 *            the new user service
-	 */
-	public final void setUserService(final UserService usersService) {
 	}
 
 	/**
@@ -5851,7 +5815,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (xmlModel != null) {
 				result = getCqlService().deleteInclude(xmlModel.getXml(), toBeModifiedIncludeObj, viewIncludeLibrarys);
 				if (result.isSuccess()) {
-					xmlModel.setXml(result.getXml());
+					XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+					processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+					xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 					measurePackageService.saveMeasureXml(xmlModel);
 					getCqlService().deleteCQLAssociation(toBeModifiedIncludeObj, currentMeasureId);
 				}

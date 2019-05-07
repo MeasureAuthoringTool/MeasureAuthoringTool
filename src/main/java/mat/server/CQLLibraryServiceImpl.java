@@ -139,9 +139,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 		return this.getCQLLibraryService().saveIncludeLibrayInCQLLookUp(libraryId, toBeModifiedObj, currentObj, incLibraryList);
 	}
 	@Override
-	public SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj,
-			List<CQLIncludeLibrary> viewIncludeLibrarys) {
-		return this.getCQLLibraryService().deleteInclude(libraryId, toBeModifiedIncludeObj, viewIncludeLibrarys);
+	public SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeDeletedIncludeObj) {
+		return this.getCQLLibraryService().deleteInclude(libraryId, toBeDeletedIncludeObj);
 	}
 	@Override
 	public GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId) {

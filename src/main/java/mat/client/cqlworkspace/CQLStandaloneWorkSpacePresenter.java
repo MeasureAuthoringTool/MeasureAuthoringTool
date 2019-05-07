@@ -991,10 +991,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					.getIncludeLibraryMap()
 					.get(cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId());
 			showSearchingBusy(true);
-			MatContext.get().getCQLLibraryService().deleteInclude(MatContext.get().getCurrentCQLLibraryId(),
-					toBeModifiedIncludeObj, 
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().getViewIncludeLibrarys(),
-					new AsyncCallback<SaveUpdateCQLResult>() {
+			MatContext.get().getCQLLibraryService().deleteInclude(MatContext.get().getCurrentCQLLibraryId(), toBeModifiedIncludeObj, 
+				new AsyncCallback<SaveUpdateCQLResult>() {
 
 				@Override
 				public void onFailure(Throwable caught) {

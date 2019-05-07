@@ -73,8 +73,7 @@ public interface CQLLibraryServiceAsync {
 	void saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
 			List<CQLIncludeLibrary> incLibraryList, AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj, 
-			List<CQLIncludeLibrary> viewIncludeLibrarys, AsyncCallback<SaveUpdateCQLResult> callback);
+	void deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getUsedCqlArtifacts(String libraryId, AsyncCallback<GetUsedCQLArtifactsResult> callback);
 

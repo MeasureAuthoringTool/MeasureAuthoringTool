@@ -661,10 +661,7 @@ public interface MeasureServiceAsync {
 
 	void getMeasureCQLFileData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void deleteInclude(String currentMeasureId,
-			CQLIncludeLibrary toBeModifiedIncludeObj,
-			List<CQLIncludeLibrary> viewIncludeLibrarys,
-			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
+	void deleteInclude(String currentMeasureId, CQLIncludeLibrary toBeModifiedIncludeObj, AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 
 	void updateCQLVSACValueSets(String currentMeasureId, String expansionId,
 			AsyncCallback<VsacApiResult> asyncCallback);

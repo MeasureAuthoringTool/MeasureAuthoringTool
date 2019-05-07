@@ -197,9 +197,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 		return this.getCQLLibraryService().deleteFunctions(libraryId, toBeDeletedObj, functionsList);
 	}
 	@Override
-	public SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj,
-			List<CQLParameter> parameterList) {
-		return this.getCQLLibraryService().deleteParameter(libraryId, toBeDeletedObj, parameterList);
+	public SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj) {
+		return this.getCQLLibraryService().deleteParameter(libraryId, toBeDeletedObj);
 	}
 
 	@Override

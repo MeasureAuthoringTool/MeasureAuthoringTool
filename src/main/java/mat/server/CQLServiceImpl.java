@@ -1041,13 +1041,8 @@ public class CQLServiceImpl implements CQLService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SaveUpdateCQLResult deleteParameter(String xml, CQLParameter toBeDeletedObj,
-			List<CQLParameter> parameterList) {
+	public SaveUpdateCQLResult deleteParameter(String xml, CQLParameter toBeDeletedObj) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		CQLParametersWrapper wrapper = new CQLParametersWrapper();
-
-		CQLModel cqlModel = new CQLModel();
-		result.setCqlModel(cqlModel);
 
 		if (toBeDeletedObj.isReadOnly()) {
 			result.setSuccess(false);
@@ -1060,63 +1055,19 @@ public class CQLServiceImpl implements CQLService {
 				&& artifactsResult.getUsedCQLParameters().contains(toBeDeletedObj.getName())) {
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
-		} else {
-			XmlProcessor processor = new XmlProcessor(xml);
-
-			if (xml != null) {
-				String XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "//cqlLookUp//parameter[@id='" + toBeDeletedObj.getId()
-						+ "']";
-				try {
-					Node parameterNode = processor.findNode(processor.getOriginalDoc(),
-							XPATH_EXPRESSION_CQLLOOKUP_PARAMETER);
-
-					if (parameterNode != null) {
-
-						// remove from xml
-						parameterNode.getParentNode().removeChild(parameterNode);
-						processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-						result.setXml(processor.getOriginalXml());
-
-						// remove from parameter list
-						parameterList.remove(toBeDeletedObj);
-						wrapper.setCqlParameterList(parameterList);
-						result.setSuccess(true);
-						result.setParameter(toBeDeletedObj);
-					}
-
-					else {
-						result.setSuccess(false);
-						result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
-					}
-
-				} catch (XPathExpressionException e) {
-					result.setSuccess(false);
-					e.printStackTrace();
-				}
-
-			}
-		}
-		if (result.isSuccess() && (wrapper.getCqlParameterList().size() > 0)) {
-			result.getCqlModel().setCqlParameters(sortParametersList(wrapper.getCqlParameterList()));
-		}
-
+			return result;
+		} 
+		
+		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
+		cqlModel.getCqlParameters().removeIf(p -> p.getId().equals(toBeDeletedObj.getId()));
+		result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));
+		result.setCqlModel(cqlModel);	
+		result.setSuccess(true);
+		result.getCqlModel().setCqlParameters(sortParametersList(result.getCqlModel().getCqlParameters()));
+	
 		return result;
 	}
 
-	/**
-	 * Update risk adjustment variables.
-	 *
-	 * @param processor       the processor
-	 * @param toBeModifiedObj the to be modified obj
-	 * @param currentObj      the current obj
-	 */
-
-
-
-
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
 	public SaveUpdateCQLResult getCQLData(String xmlString) {
 		CQLModel cqlModel = new CQLModel();

@@ -407,9 +407,8 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 
 	@Override
-	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, 
-			List<CQLParameter> parameterList) {
-		return this.getMeasureLibraryService().deleteParameter(measureId, toBeDeletedObj, parameterList);
+	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj) {
+		return this.getMeasureLibraryService().deleteParameter(measureId, toBeDeletedObj);
 	}
 	
 	@Override

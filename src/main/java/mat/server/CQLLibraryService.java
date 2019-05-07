@@ -1008,15 +1008,14 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	}
 
 	@Override
-	public SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, 
-			List<CQLParameter> parameterList) {
+	public SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj) {
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
 			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 			String cqlXml = getCQLLibraryXml(cqlLibrary);
 
 			if (cqlXml != null) {
-				result = cqlService.deleteParameter(cqlXml, toBeDeletedObj, parameterList);
+				result = cqlService.deleteParameter(cqlXml, toBeDeletedObj);
 				if (result != null && result.isSuccess()) {
 					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 					cqlLibraryDAO.save(cqlLibrary);

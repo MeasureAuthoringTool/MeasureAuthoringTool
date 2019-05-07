@@ -1320,7 +1320,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setText(parameterName.trim());
 			} else {
 				showSearchingBusy(true);
-				MatContext.get().getMeasureService().deleteParameter(MatContext.get().getCurrentMeasureId(), toBeModifiedParamObj, cqlWorkspaceView.getCQLLeftNavBarPanelView().getViewParameterList(), new AsyncCallback<SaveUpdateCQLResult>() {
+				MatContext.get().getMeasureService().deleteParameter(MatContext.get().getCurrentMeasureId(), toBeModifiedParamObj, new AsyncCallback<SaveUpdateCQLResult>() {
 
 					@Override
 					public void onFailure(Throwable caught) {

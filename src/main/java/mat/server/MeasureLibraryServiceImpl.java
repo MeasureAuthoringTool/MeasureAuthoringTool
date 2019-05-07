@@ -5463,21 +5463,23 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj,
-			List<CQLParameter> parameterList) {
+	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj) {
 
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 
 			if (xmlModel != null) {
-				result = getCqlService().deleteParameter(xmlModel.getXml(), toBeDeletedObj, parameterList);
+				result = getCqlService().deleteParameter(xmlModel.getXml(), toBeDeletedObj);
 				if (result.isSuccess()) {
-					xmlModel.setXml(result.getXml());
+					XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+					processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+					xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 					measurePackageService.saveMeasureXml(xmlModel);
 				}
 			}
 		}
+		
 		return result;
 	}
 

@@ -125,12 +125,9 @@ public interface CQLService {
 	 * 
 	 * @param measureId the measure id
 	 * @param toBeDeletedObj the to be deleted obj
-	 * @param currentObj the current obj
-	 * @param parameterList the parameter list
 	 * @return the save and update result
 	 */
-	SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, 
-			List<CQLParameter> parameterList);
+	SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj);
 	
 	/**
 	 * Gets the CQL data type list.

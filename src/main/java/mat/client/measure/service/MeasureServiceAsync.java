@@ -631,12 +631,9 @@ public interface MeasureServiceAsync {
 	 * 
 	 * @param measureId the measure id
 	 * @param toBeDeletedObj the to be deleted obj
-	 * @param currentObj the current obj
-	 * @param parameterList the parameter list
 	 * @param callback the callback
 	 */
-	void deleteParameter(String measureId, CQLParameter toBeDeletedObj, 
-			List<CQLParameter> parameterList, AsyncCallback<SaveUpdateCQLResult> callback);
+	void deleteParameter(String measureId, CQLParameter toBeDeletedObj, AsyncCallback<SaveUpdateCQLResult> callback);
 	
 	void getUsedCQLArtifacts(String currentMeasureId, AsyncCallback<GetUsedCQLArtifactsResult> asyncCallback);
 

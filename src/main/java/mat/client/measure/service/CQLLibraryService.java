@@ -93,8 +93,7 @@ public interface CQLLibraryService extends RemoteService {
 	SaveUpdateCQLResult deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, 
 			List<CQLFunctions> functionsList);
 	
-	SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, 
-			List<CQLParameter> parameterList);
+	SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj);
 				
 	VsacApiResult updateCQLVSACValueSets(String currentCQLLibraryId, String expansionId);
 	 CQLKeywords getCQLKeywordsLists();

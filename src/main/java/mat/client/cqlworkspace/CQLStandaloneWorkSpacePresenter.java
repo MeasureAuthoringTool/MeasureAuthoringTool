@@ -936,9 +936,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setText(parameterName.trim());
 			} else {
 				showSearchingBusy(true);
-				MatContext.get().getCQLLibraryService().deleteParameter(MatContext.get().getCurrentCQLLibraryId(),
-						toBeModifiedParamObj,
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().getViewParameterList(),
+				MatContext.get().getCQLLibraryService().deleteParameter(MatContext.get().getCurrentCQLLibraryId(), toBeModifiedParamObj,
 						new AsyncCallback<SaveUpdateCQLResult>() {
 
 					@Override

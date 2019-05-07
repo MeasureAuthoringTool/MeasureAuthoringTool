@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.expressionbuilder.constant.ExpressionType;
+import mat.client.expressionbuilder.modal.RelationshipBuilderModal;
 import mat.client.expressionbuilder.model.AliasModel;
 import mat.client.expressionbuilder.model.AttributeModel;
 import mat.client.expressionbuilder.model.ComparisonModel;
@@ -14,6 +15,7 @@ import mat.client.expressionbuilder.model.IntervalModel;
 import mat.client.expressionbuilder.model.MembershipInModel;
 import mat.client.expressionbuilder.model.QueryModel;
 import mat.client.expressionbuilder.model.QuerySortModel;
+import mat.client.expressionbuilder.model.RelationshipModel;
 import mat.client.expressionbuilder.model.TimingModel;
 
 public class QueryFinderHelper {
@@ -37,9 +39,15 @@ public class QueryFinderHelper {
 	}
 	
 	public static void updateAliasInChildModels(QueryModel current, String previousAlias, String updatedAlias) {
+		current.getSource().getChildModels().forEach(m -> updateAlias(m, previousAlias, updatedAlias));
 		current.getFilter().getChildModels().forEach(m -> updateAlias(m, previousAlias, updatedAlias));
 		current.getSort().getChildModels().forEach(m -> updateAlias(m, previousAlias, updatedAlias));
+		current.getRelationship().getChildModels().forEach(m -> updateAlias(m, previousAlias, updatedAlias));
+	}
+	
+	private static void updateAliasInRelationships(RelationshipModel current, String previousAlias, String updatedAlias) {
 		current.getSource().getChildModels().forEach(m -> updateAlias(m, previousAlias, updatedAlias));
+		current.getCriteria().getChildModels().forEach(m -> updateAlias(m, previousAlias, updatedAlias));
 	}
 	
 	private static void updateAlias(IExpressionBuilderModel model, String previousAlias, String updatedAlias) {
@@ -84,6 +92,10 @@ public class QueryFinderHelper {
 		
 		if(model.getDisplayName().equals(ExpressionType.QUERY.getDisplayName())) {
 			updateAliasInChildModels(((QueryModel) model), previousAlias, updatedAlias);
+		}
+		
+		if(model.getDisplayName().equals(RelationshipBuilderModal.SOURCE.toString())) {
+			updateAliasInRelationships(((RelationshipModel) model), previousAlias, updatedAlias);
 		}
 
 		

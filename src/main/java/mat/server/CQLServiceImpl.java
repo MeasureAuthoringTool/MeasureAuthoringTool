@@ -863,36 +863,23 @@ public class CQLServiceImpl implements CQLService {
 
 	@Override
 	public SaveUpdateCQLResult deleteValueSet(String xml, String toBeDelValueSetId) {
-		logger.info("Start deleteValueSet : ");
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		XmlProcessor xmlProcessor = new XmlProcessor(xml);
-		try {
-			String xpathforValueSet = "//cqlLookUp//valueset[@id='" + toBeDelValueSetId + "']";
-			Node valueSetElements = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xpathforValueSet);
-
-			if (valueSetElements != null) {
-				String valueSetName = valueSetElements.getAttributes().getNamedItem("name").getNodeValue();
-				CQLQualityDataSetDTO valueSet = new CQLQualityDataSetDTO();
-				valueSet.setName(valueSetName);
-				Node parentNode = valueSetElements.getParentNode();
-				parentNode.removeChild(valueSetElements);
-				result.setSuccess(true);
-				result.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
-				result.setCqlQualityDataSetDTO(valueSet);
-
-			} else {
-				logger.info("Unable to find the selected valueset element with id in deleteValueSet : "
-						+ toBeDelValueSetId);
-				result.setSuccess(false);
-			}
-		} catch (XPathExpressionException e) {
+		CQLModel model = CQLUtilityClass.getCQLModelFromXML(xml);
+		
+		Optional<CQLQualityDataSetDTO> valuesetToDelete = model.getValueSetList().stream().filter(v -> v.getId().equals(toBeDelValueSetId)).findFirst();
+		
+		if(valuesetToDelete.isPresent()) {
+			model.getValueSetList().removeIf(v -> v.getId().equals(toBeDelValueSetId));
+			result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));
+			result.setCqlModel(model);
+			result.setSuccess(true);
+			result.setCqlAppliedQDMList(model.getValueSetList());
+			result.setCqlQualityDataSetDTO(valuesetToDelete.get());
+		} else {
 			result.setSuccess(false);
-			logger.info("Error in method deleteValueSet: " + e.getMessage());
 		}
-
-		logger.info("END deleteValueSet : ");
+		
 		return result;
-
 	}
 
 	@Override

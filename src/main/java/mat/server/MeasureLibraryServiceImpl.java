@@ -5507,11 +5507,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (model != null && model.getXml() != null) {
 				cqlResult = getCqlService().deleteValueSet(model.getXml(), toBeDelValueSetId);
 				if (cqlResult != null && cqlResult.isSuccess()) {
-					model.setXml(cqlResult.getXml());
+					XmlProcessor processor = new XmlProcessor(model.getXml());		
+					processor.replaceNode(cqlResult.getXml(), "cqlLookUp", "measure");
+					model.setXml(processor.transform(processor.getOriginalDoc()));
 					measurePackageService.saveMeasureXml(model);
 				}
 			}
 		}
+		
 		return cqlResult;
 	}
 

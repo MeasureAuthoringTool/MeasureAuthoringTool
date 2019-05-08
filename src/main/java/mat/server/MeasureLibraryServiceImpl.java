@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -4840,13 +4840,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	private Author getAuthorFromOrganization(Long id, List<Organization> allOrganization){
-		Organization org;
-		try{
-			org = allOrganization.stream().filter(o -> o.getId().equals(id)).findFirst().get();
-		} catch(NoSuchElementException exc) {
-			return null;
+		Optional<Organization> organization = allOrganization.stream().filter(o -> o.getId().equals(id)).findFirst();
+		if(organization.isPresent()) {
+			Organization org = organization.get();
+			return new Author(String.valueOf(org.getId()), org.getOrganizationName(), org.getOrganizationOID());
 		}
-		return new Author(String.valueOf(org.getId()), org.getOrganizationName(), org.getOrganizationOID());
+
+		return null;
 	}
 	
 	/**

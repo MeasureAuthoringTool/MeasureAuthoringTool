@@ -273,7 +273,8 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			
 			boolean isUpdatedForCQL = updateForCQLMeasure(measure, xmlProcessor, clonedMeasure, isNonCQLtoCQLDraft);
 			xmlProcessor.clearValuesetVersionAttribute();
-
+			resetVersionOnCloning(xmlProcessor);
+			
 			if(!isUpdatedForCQL){
 				//this means this is a CQL Measure to CQL Measure draft/clone.
 				
@@ -854,4 +855,17 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 		return major + "." + StringUtils.leftPad(minor, 3, "0");
 	}
 
+	private void resetVersionOnCloning(XmlProcessor processor) {
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		String cqlVersionXPath = "//cqlLookUp/version";
+		try {
+			Node node = (Node) xPath.evaluate(cqlVersionXPath, processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
+			if (node != null) {
+				node.setTextContent("0.0.000");
+			}
+		} catch (XPathExpressionException e) {
+			logger.error(e.getMessage());
+		}
+
+	}
 }

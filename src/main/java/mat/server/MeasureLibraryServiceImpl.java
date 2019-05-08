@@ -5293,16 +5293,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj,
-			List<CQLDefinition> definitionList) {
+	public SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj) {
 
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 			if (xmlModel != null) {
-				result = getCqlService().deleteDefinition(xmlModel.getXml(), toBeDeletedObj, definitionList);
+				result = getCqlService().deleteDefinition(xmlModel.getXml(), toBeDeletedObj);
 				if (result.isSuccess()) {
-					xmlModel.setXml(result.getXml());
+					XmlProcessor processor = new XmlProcessor(result.getXml());
+					processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
+					xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 					cleanPopulationsAndGroups(toBeDeletedObj, xmlModel);
 					measurePackageService.saveMeasureXml(xmlModel);
 				}

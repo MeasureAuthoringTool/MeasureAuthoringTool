@@ -1179,7 +1179,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			} else {
 				showSearchingBusy(true);
 				MatContext.get().getMeasureService().deleteDefinition(MatContext.get().getCurrentMeasureId(),
-						toBeModifiedObj, cqlWorkspaceView.getCQLLeftNavBarPanelView().getViewDefinitions(),
+						toBeModifiedObj,
 						new AsyncCallback<SaveUpdateCQLResult>() {
 
 					@Override

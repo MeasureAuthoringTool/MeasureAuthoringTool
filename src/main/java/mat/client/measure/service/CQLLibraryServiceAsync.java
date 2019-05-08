@@ -88,8 +88,7 @@ public interface CQLLibraryServiceAsync {
 	void saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList, boolean isFormatable, AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj, 
-			List<CQLDefinition> definitionList, AsyncCallback<SaveUpdateCQLResult> callback);
+	void deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, 
 			List<CQLFunctions> functionsList, AsyncCallback<SaveUpdateCQLResult> callback);

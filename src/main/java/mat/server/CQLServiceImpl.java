@@ -800,12 +800,10 @@ public class CQLServiceImpl implements CQLService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SaveUpdateCQLResult deleteDefinition(String xml, CQLDefinition toBeDeletedObj,
-			List<CQLDefinition> definitionList) {
+	public SaveUpdateCQLResult deleteDefinition(String xml, CQLDefinition toBeDeletedObj) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
 
-		CQLModel cqlModel = new CQLModel();
+		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
 		result.setCqlModel(cqlModel);
 
 		if (toBeDeletedObj.isSupplDataElement()) {
@@ -819,45 +817,15 @@ public class CQLServiceImpl implements CQLService {
 				&& artifactsResult.getUsedCQLDefinitions().contains(toBeDeletedObj.getName())) {
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
-		} else {
-			XmlProcessor processor = new XmlProcessor(xml);
-
-			if (xml != null && !xml.isEmpty()) {
-				String XPATH_EXPRESSION_CQLLOOKUP_DEFINITION = "//cqlLookUp//definition[@id='" + toBeDeletedObj.getId()
-						+ "']";
-				try {
-					Node definitionNode = processor.findNode(processor.getOriginalDoc(),
-							XPATH_EXPRESSION_CQLLOOKUP_DEFINITION);
-
-					if (definitionNode != null) {
-						// remove from xml
-						definitionNode.getParentNode().removeChild(definitionNode);
-						processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-						result.setXml(processor.getOriginalXml());
-
-						// remove from definition list
-						definitionList.remove(toBeDeletedObj);
-						wrapper.setCqlDefinitions(definitionList);
-						result.setSuccess(true);
-						result.setDefinition(toBeDeletedObj);
-					}
-
-					else {
-						result.setSuccess(false);
-						result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
-					}
-
-				} catch (XPathExpressionException e) {
-					result.setSuccess(false);
-					e.printStackTrace();
-				}
-
-			}
-		}
-		if (result.isSuccess() && (wrapper.getCqlDefinitions().size() > 0)) {
-			result.getCqlModel().setDefinitionList(sortDefinitionsList(wrapper.getCqlDefinitions()));
-		}
-
+			return result;
+		} 
+			
+		cqlModel.getDefinitionList().removeIf(d -> d.getId().equals(toBeDeletedObj.getId()));
+		result.setSuccess(true);
+		result.setCqlModel(cqlModel);
+		result.getCqlModel().setDefinitionList(sortDefinitionsList(cqlModel.getDefinitionList()));
+		result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));
+		
 		return result;
 	}
 

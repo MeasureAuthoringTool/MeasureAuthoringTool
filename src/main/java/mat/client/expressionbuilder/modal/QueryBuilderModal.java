@@ -39,11 +39,13 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private static final String STYLE = "style";
 	private static final String NAV_PILL_BACKGROUND_COLOR = "background-color: #F1F1F1";
 	private static final String HOW_WOULD_YOU_LIKE_TO_SORT_THE_DATA = "How would you like to sort the data?";
-	private static final String REVIEW_QUERY = "Review Query";
-	private static final String SORT = "Sort (Optional)";
-	private static final String FILTER = "Filter";
-	private static final String SOURCE = "Source";
 	private static final String ALIAS_TEXT_BOX_LABEL = "What would you like to name (alias) your source?";
+	
+	public static final String REVIEW_QUERY = "Review Query";
+	public static final String SORT = "Sort (Optional)";
+	public static final String FILTER = "Filter";
+	public static final String SOURCE = "Source";
+
 	private AnchorListItem reviewQueryListItem;
 	private AnchorListItem filterListItem;
 	private AnchorListItem sortListItem;

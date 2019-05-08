@@ -856,6 +856,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(), 
 					MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()), 
 					QDMUtil.QDM_MODEL_IDENTIFIER, cqlLibrary.getQdmVersion());
+			
+			CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
+			config.setPreviousCQLModel(previousModel);
 
 			result = cqlService.saveCQLFile(cqlXml, cql, config);
 

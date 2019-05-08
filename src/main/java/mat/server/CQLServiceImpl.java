@@ -165,10 +165,8 @@ public class CQLServiceImpl implements CQLService {
 
 	public SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config) {
 		XmlProcessor processor = new XmlProcessor(xml);
-		CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(xml);
-		config.setPreviousCQLModel(previousModel);
 		try {
-			ReverseEngineerListener listener = new ReverseEngineerListener(cql, previousModel);
+			ReverseEngineerListener listener = new ReverseEngineerListener(cql, config.getPreviousCQLModel());
 			CQLModel reversedEngineeredCQLModel = listener.getCQLModel();			
 			String reverseEngineeredCQLLookup = marshallCQLModel(reversedEngineeredCQLModel);
 			processor.replaceNode(reverseEngineeredCQLLookup, "cqlLookUp", "measure");
@@ -186,7 +184,7 @@ public class CQLServiceImpl implements CQLService {
 			if (parsedResult.getCqlErrors().isEmpty()) {
 				CQLFormatter formatter = new CQLFormatter();
 				String formattedCQL = formatter.format(CQLUtilityClass.getCqlString(reversedEngineeredCQLModel, ""));
-				CQLModel formattedReversedEngineeredCQLModel = reverseEngineerCQLModel(formattedCQL, previousModel);
+				CQLModel formattedReversedEngineeredCQLModel = reverseEngineerCQLModel(formattedCQL, config.getPreviousCQLModel());
 				String formattedCQLLookup = marshallCQLModel(formattedReversedEngineeredCQLModel);
 				parsedResult.setXml(formattedCQLLookup);
 				parsedResult.setCqlString(formattedCQL);

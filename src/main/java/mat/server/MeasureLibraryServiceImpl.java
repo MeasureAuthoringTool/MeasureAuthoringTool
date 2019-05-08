@@ -5157,11 +5157,26 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
 					QDMUtil.QDM_MODEL_IDENTIFIER, measure.getQdmVersion());
 			
+			CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(measureXMLModel.getXml());
+			config.setPreviousCQLModel(previousModel);
+			
 			result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config);
 			
 			XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
 			processor.replaceNode(result.getXml(), CQL_LOOKUP, MEASURE);
-			measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));			
+			measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
+			
+			// need to clean definitions from populations and groupings. 
+			// go through all of the definitions in the previous model and check if they are in the new model
+			// if the old definition is not in the new model, clean the groupings
+			for(CQLDefinition previousDefinition : previousModel.getDefinitionList()) {
+				Optional<CQLDefinition> previousDefinitionInNewModel = result.getCqlModel().getDefinitionList().stream().filter(d -> d.getId().equals((previousDefinition.getId()))).findFirst();
+				if(!previousDefinitionInNewModel.isPresent()) {
+					cleanPopulationsAndGroups(previousDefinition, measureXMLModel);
+				}
+			}
+			
+			
 			measurePackageService.saveMeasureXml(measureXMLModel);			
 		}
 		

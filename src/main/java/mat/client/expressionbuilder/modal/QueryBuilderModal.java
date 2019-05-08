@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.component.ViewCQLExpressionWidget;
+import mat.client.expressionbuilder.constant.ExpressionBuilderUserAssistText;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
@@ -419,5 +420,6 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private void updateTitle(String text) {
 		this.setTitle(this.getExpressionBuilderParent().getModalTitle() + " > " +  "Query > " + text);
 		this.setModalTitle(this.getExpressionBuilderParent().getModalTitle() + " > " +  "Query > " + text);
+		this.setLabel(ExpressionBuilderUserAssistText.getEnumByTitle(text).getValue());
 	}
 }

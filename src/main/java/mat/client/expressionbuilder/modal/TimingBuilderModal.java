@@ -85,9 +85,6 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 		
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("selectorsPanel");
-		panel.add(buildLabel());
-		panel.add(new SpacerWidget());
-		panel.add(new SpacerWidget());
 
 		List<ExpressionType> availableExpressionForLeftSideOfTiming = new ArrayList<>();
 		availableExpressionForLeftSideOfTiming.add(ExpressionType.ATTRIBUTE);
@@ -130,15 +127,6 @@ public class TimingBuilderModal extends SubExpressionBuilderModal {
 		panel.add(rightHandSideOfTimingSelectorList);
 		
 		return panel;
-	}
-	
-	private Widget buildLabel() {
-		String label =  "A timing is built with two expressions and a timing phrase between them. Example: [first expression] starts before start of [second expression].";
-		FormLabel formLabel = new FormLabel();
-		formLabel.setText(label);
-		formLabel.setTitle(label);
-		formLabel.setStyleName("attr-Label");
-		return formLabel;
 	}
 
 	private Widget buildTimingButtonPanel() {

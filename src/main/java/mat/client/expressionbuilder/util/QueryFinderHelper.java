@@ -97,7 +97,6 @@ public class QueryFinderHelper {
 		if(model.getDisplayName().equals(RelationshipBuilderModal.SOURCE.toString())) {
 			updateAliasInRelationships(((RelationshipModel) model), previousAlias, updatedAlias);
 		}
-
 		
 		model.getChildModels().forEach(m -> updateAlias(m, previousAlias, updatedAlias));
 	}

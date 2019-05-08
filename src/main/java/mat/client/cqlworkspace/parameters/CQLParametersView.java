@@ -43,7 +43,7 @@ public class CQLParametersView {
 
 	
 	public CQLParametersView() {
-		editorPanel = new CQLEditorPanel(PARAMETER, "Build CQL Expression", true);
+		editorPanel = new CQLEditorPanel(PARAMETER, "CQL Expression Editor", true);
 		mainParamViewVerticalPanel.getElement().setId("mainParamViewVerticalPanel");
 		heading.addStyleName("leftAligned");
 	}

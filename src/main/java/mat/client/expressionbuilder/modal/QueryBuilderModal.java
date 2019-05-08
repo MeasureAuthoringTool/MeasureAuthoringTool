@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.expressionbuilder.component.ExpandCollapseCQLExpressionPanel;
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.component.ViewCQLExpressionWidget;
+import mat.client.expressionbuilder.constant.ExpressionBuilderUserAssistText;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
@@ -42,14 +43,15 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private static final String SELECTORS_PANEL = "selectorsPanel";
 	private static final String NAV_PILL_BACKGROUND_COLOR = "background-color: #F1F1F1";
 	private static final String HOW_WOULD_YOU_LIKE_TO_SORT_THE_DATA = "How would you like to sort the data?";
-	private static final String REVIEW_QUERY = "Review Query";
-	private static final String SORT = "Sort (Optional)";
 	private static final String RELATIONSHIP = "Relationship (Optional)";
-	private static final String FILTER = "Filter";
-	private static final String SOURCE = "Source";
 	private static final String ALIAS_TEXT_BOX_LABEL = "What would you like to name (alias) your source?";
 	private static final String SELECT_RELATIONSHIP = "-- Select a relationship --";
 	private static final String RELATIONSHIP_TEXT_LABEL = "Which relationship would you like to build?";
+
+	public static final String REVIEW_QUERY = "Review Query";
+	public static final String SORT = "Sort (Optional)";
+	public static final String FILTER = "Filter";
+	public static final String SOURCE = "Source";
 
 	private boolean isAscendingSort = true;
 
@@ -564,5 +566,6 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private void updateTitle(String text) {
 		this.setTitle(this.getExpressionBuilderParent().getModalTitle() + " > " +  "Query > " + text);
 		this.setModalTitle(this.getExpressionBuilderParent().getModalTitle() + " > " +  "Query > " + text);
+		this.setLabel(ExpressionBuilderUserAssistText.getEnumByTitle(text).getValue());
 	}
 }

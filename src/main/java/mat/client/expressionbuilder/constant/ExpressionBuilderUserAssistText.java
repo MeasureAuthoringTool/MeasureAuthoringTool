@@ -34,6 +34,8 @@ public enum ExpressionBuilderUserAssistText {
 	QUERY(ExpressionType.QUERY.getDisplayName(), ""),
 	
 	QUERY_SOURCE(QueryBuilderModal.SOURCE, "When building a query you first need to designate what data you want to start with. This is your query source. This source also needs to have an alias assigned that will allow you refer back to the source within the rest of the query. For Example: [Encounter, Performed : \"Office Visit\"] visit."),
+	
+	QUERY_RELATIONSHIP(QueryBuilderModal.RELATIONSHIP, ""),
 
 	QUERY_FILTER(QueryBuilderModal.FILTER, "The Filter statement (also known as the where statement) in the query is a way for you to narrow down the results returned from the source data. For Example: where visit.relevantPeriod starts during \"Measurement Period\"."),
 

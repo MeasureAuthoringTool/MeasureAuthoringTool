@@ -591,12 +591,9 @@ public interface MeasureService extends RemoteService {
 	 *  
 	 * @param measureId the measure id
 	 * @param toBeDeletedObj the to be deleted obj
-	 * @param currentObj the current obj
-	 * @param functionsList the functions list
 	 * @return the save update cql result
 	 */
-	SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeletedObj,  
-			List<CQLFunctions> functionsList); 
+	SaveUpdateCQLResult deleteFunction(String measureId, CQLFunctions toBeDeletedObj); 
 	
 	/**
 	 * Delete parameter

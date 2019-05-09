@@ -90,8 +90,7 @@ public interface CQLLibraryServiceAsync {
 
 	void deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj, AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, 
-			List<CQLFunctions> functionsList, AsyncCallback<SaveUpdateCQLResult> callback);
+	void deleteFunction(String libraryId, CQLFunctions toBeDeletedObj, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void deleteParameter(String libraryId, CQLParameter toBeDeletedObj, AsyncCallback<SaveUpdateCQLResult> callback);
 	

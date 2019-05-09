@@ -355,7 +355,7 @@ public class CQLServiceImpl implements CQLService {
 
 			result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));
 			result.setFunction(functionWithEdits);
-			result.getCqlModel().setCqlFunctions(sortFunctionssList(result.getCqlModel().getCqlFunctions()));
+			result.getCqlModel().setCqlFunctions(sortFunctionList(result.getCqlModel().getCqlFunctions()));
 			result.setSuccess(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -929,17 +929,10 @@ public class CQLServiceImpl implements CQLService {
 		return isCodeSystemUsed;
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
-	public SaveUpdateCQLResult deleteFunctions(String xml, CQLFunctions toBeDeletedObj,
-			List<CQLFunctions> functionsList) {
-
+	public SaveUpdateCQLResult deleteFunction(String xml, CQLFunctions toBeDeletedObj) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		CQLFunctionsWrapper wrapper = new CQLFunctionsWrapper();
-
-		CQLModel cqlModel = new CQLModel();
+		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
 		result.setCqlModel(cqlModel);
 
 		GetUsedCQLArtifactsResult artifactsResult = getUsedCQlArtifacts(xml);
@@ -947,52 +940,18 @@ public class CQLServiceImpl implements CQLService {
 				&& artifactsResult.getUsedCQLFunctions().contains(toBeDeletedObj.getName())) {
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
-		} else {
-
-			XmlProcessor processor = new XmlProcessor(xml);
-
-			if (xml != null && !xml.isEmpty()) {
-				String XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "//cqlLookUp//function[@id='" + toBeDeletedObj.getId()
-						+ "']";
-				try {
-					Node functionNode = processor.findNode(processor.getOriginalDoc(),
-							XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
-
-					if (functionNode != null) {
-
-						// remove from xml
-						functionNode.getParentNode().removeChild(functionNode);
-						processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-						result.setXml(processor.getOriginalXml());
-
-						// remove from function list
-						functionsList.remove(toBeDeletedObj);
-						wrapper.setCqlFunctionsList(functionsList);
-						result.setSuccess(true);
-						result.setFunction(toBeDeletedObj);
-					}
-
-					else {
-						result.setSuccess(false);
-						result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
-					}
-
-				} catch (XPathExpressionException e) {
-					result.setSuccess(false);
-					e.printStackTrace();
-				}
-			}
+			return result;
 		}
-		if (result.isSuccess() && (wrapper.getCqlFunctionsList().size() > 0)) {
-			result.getCqlModel().setCqlFunctions(sortFunctionssList(wrapper.getCqlFunctionsList()));
-		}
+		
+		cqlModel.getCqlFunctions().removeIf(f -> f.getId().equals(toBeDeletedObj.getId()));
+		result.setCqlModel(cqlModel);
+		result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));
+		result.setSuccess(true);
+		result.getCqlModel().setCqlFunctions(sortFunctionList(result.getCqlModel().getCqlFunctions()));
 
 		return result;
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
 	public SaveUpdateCQLResult deleteParameter(String xml, CQLParameter toBeDeletedObj) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -1313,7 +1272,7 @@ public class CQLServiceImpl implements CQLService {
 	 * @param funcList the Function list
 	 * @return the list
 	 */
-	private List<CQLFunctions> sortFunctionssList(List<CQLFunctions> funcList) {
+	private List<CQLFunctions> sortFunctionList(List<CQLFunctions> funcList) {
 
 		Collections.sort(funcList, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
 

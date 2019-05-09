@@ -88,8 +88,7 @@ public interface CQLLibraryServiceInterface {
 
 	SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj);
 
-	SaveUpdateCQLResult deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, 
-			List<CQLFunctions> functionsList);
+	SaveUpdateCQLResult deleteFunction(String libraryId, CQLFunctions toBeDeletedObj);
 
 	SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj);
 

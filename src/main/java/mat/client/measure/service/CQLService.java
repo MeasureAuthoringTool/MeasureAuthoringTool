@@ -110,12 +110,9 @@ public interface CQLService {
 	 * 
 	 * @param measureId the measure id
 	 * @param toBeDeltedObj the to be deleted obj
-	 * @param currentObj the current obj
-	 * @param functionsList the functions list
 	 * @return the save and update result
 	 */
-	SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeltedObj, 
-			List<CQLFunctions> functionsList);
+	SaveUpdateCQLResult deleteFunction(String measureId, CQLFunctions toBeDeltedObj);
 	
 	/**
 	 * Delete parameter

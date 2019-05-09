@@ -1,5 +1,6 @@
 package mat.client.expressionbuilder.modal;
 
+import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
@@ -13,13 +14,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.expressionbuilder.component.ViewCQLExpressionWidget;
+import mat.client.expressionbuilder.constant.ExpressionBuilderUserAssistText;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
 
 public abstract class ExpressionBuilderModal extends Modal {
-	private static final String CQL_EXPRESSION = "CQL Expression";
 	private String modalTitle;
 	private ModalHeader header;
 	private ModalBody body;
@@ -31,6 +33,7 @@ public abstract class ExpressionBuilderModal extends Modal {
 	private HelpBlock helpBlock;
 	private ViewCQLExpressionWidget viewCQLExpressionModal;
 	private ClickHandler handler;
+	private FormLabel formLabel;
 	
 	public ExpressionBuilderModal(String title, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
 		this.parentModel = parentModel;
@@ -57,6 +60,11 @@ public abstract class ExpressionBuilderModal extends Modal {
 		
 		body.add(buildHelpBlock(""));
 		body.add(buildErrorAlert());
+		if (ExpressionBuilderUserAssistText.isKeyPresent(title.substring(title.lastIndexOf('>') + 2))) {
+			body.add(buildLabel());
+			body.add(new SpacerWidget());
+			body.add(new SpacerWidget());
+		}
 		body.add(contentPanel);
 		body.add(this.viewCQLExpressionModal);
 		
@@ -162,4 +170,16 @@ public abstract class ExpressionBuilderModal extends Modal {
 		this.hide();
 		this.show();
 	}
+	
+	private Widget buildLabel() {
+		formLabel = new FormLabel();
+		formLabel.setStyleName("attr-Label");
+		return formLabel;
+	}
+
+	public void setLabel(String label) {
+		formLabel.setText(label);
+		formLabel.setTitle(label);
+	}
+	
 }

@@ -216,6 +216,7 @@ public class MeasureDetailsView {
 	public void clear() {
 		componentDetailView.clear();
 		messagePanel.clearAlerts();
+		errorAlert.clearAlert();
 	}
 	
 	public void clearAlerts() {

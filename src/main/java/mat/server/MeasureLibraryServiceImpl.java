@@ -5176,6 +5176,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 			}
 			
+			// do the same thing for functions
+			for(CQLFunctions previousFunction : previousModel.getCqlFunctions()) {
+				Optional<CQLFunctions> previousFunctionInNewModel = result.getCqlModel().getCqlFunctions().stream().filter(f -> f.getId().equals((previousFunction.getId()))).findFirst();
+				if(!previousFunctionInNewModel.isPresent()) {
+					cleanMeasureObservationAndGroups(previousFunction, measureXMLModel);
+				}
+			}
 			
 			measurePackageService.saveMeasureXml(measureXMLModel);			
 		}
@@ -5416,7 +5423,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					XmlProcessor processor = new XmlProcessor(result.getXml());
 					processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
 					xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
-					cleanMsrObservationsAndGroups(toBeDeletedObj, xmlModel);
+					cleanMeasureObservationAndGroups(toBeDeletedObj, xmlModel);
 					measurePackageService.saveMeasureXml(xmlModel);
 				}
 			}
@@ -5425,7 +5432,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 	}
 
-	private void cleanMsrObservationsAndGroups(CQLFunctions toBeDeletedObj, MeasureXmlModel xmlModel) {
+	private void cleanMeasureObservationAndGroups(CQLFunctions toBeDeletedObj, MeasureXmlModel xmlModel) {
 
 		List<String> deletedClauseUUIDs = new ArrayList<>();
 

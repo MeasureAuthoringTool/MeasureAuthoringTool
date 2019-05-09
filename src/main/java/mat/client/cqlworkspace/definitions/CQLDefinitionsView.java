@@ -11,6 +11,7 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -98,7 +99,7 @@ public class CQLDefinitionsView {
 		editorPanel.setSize("650px", "200px");
 		editorPanel.getEditor().setText("");
 		editorPanel.getEditor().clearAnnotations();
-		editorPanel.getEditor().redisplay();
+		this.editorPanel.getEditor().addDomHandler(event -> editorPanel.catchTabOutKeyCommand(event, defineButtonBar.getSaveButton()), KeyUpEvent.getType());
 		
 		viewCQLEditorPanel.setSize("655px", "200px");
 		viewCQLEditorPanel.setCollabsable();

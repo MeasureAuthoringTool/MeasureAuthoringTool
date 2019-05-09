@@ -7,6 +7,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -51,13 +52,12 @@ public class CQLLibraryEditorView {
 		
 		getCqlAceEditor().setText("");
 		getCqlAceEditor().clearAnnotations();
-		getCqlAceEditor().redisplay();
 		getCqlAceEditor().setReadOnly(!isEditable);
 		getSaveButton().setEnabled(isEditable);
 		if(isEditable) {
 			cqlLibraryEditorVP.add(exportErrorFile);
 		}
-		
+		this.editorPanel.getEditor().addDomHandler(event -> editorPanel.catchTabOutKeyCommand(event, saveButton), KeyUpEvent.getType());
 		editorPanel.setSize("650px", "500px");
 		cqlLibraryEditorVP.add(editorPanel);
 				

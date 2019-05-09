@@ -1,6 +1,7 @@
 package mat.client.cqlworkspace.shared;
 
 import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
@@ -9,10 +10,12 @@ import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.Composite;
 
 public class CQLEditorPanel extends Composite {
 
+	private static final String CQL_EDITOR_LABEL = "You are entering a CQL Editor. To exit the editor backward press control and up arrow. To exit the editor forward press control and down arrow.";
 	private PanelHeader header;
 	private String text;
 	private CQLEditor editor;
@@ -75,6 +78,19 @@ public class CQLEditorPanel extends Composite {
 		header.add(anchor);
 	}
 	
+	public void catchTabOutKeyCommand(KeyUpEvent event, Button tabForwardTo) {
+		if(event.isControlKeyDown() && event.getNativeKeyCode() == 38) {
+			event.preventDefault();
+			event.stopPropagation();
+			this.header.getElement().focus();
+		}
+		if(event.isControlKeyDown() && event.getNativeKeyCode() == 40) {
+			event.preventDefault();
+			event.stopPropagation();
+			tabForwardTo.setFocus(true);
+		}
+	}
+	
 	public CQLEditor getEditor() {
 		return editor;
 	}
@@ -94,6 +110,8 @@ public class CQLEditorPanel extends Composite {
 	public void setHeaderText(String text) {
 		this.header.setText(text);
 		this.header.setTitle(text);
+		this.header.getElement().setTabIndex(0);
+		this.header.getElement().setAttribute("aria-label", CQL_EDITOR_LABEL);
 	}
 	
 	public void setEditorSize(String width, String height) {

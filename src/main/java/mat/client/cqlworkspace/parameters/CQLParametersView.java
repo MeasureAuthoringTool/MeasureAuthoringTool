@@ -9,6 +9,7 @@ import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -44,6 +45,7 @@ public class CQLParametersView {
 	
 	public CQLParametersView() {
 		editorPanel = new CQLEditorPanel(PARAMETER, "CQL Expression Editor", true);
+		this.editorPanel.getEditor().addDomHandler(event -> editorPanel.catchTabOutKeyCommand(event, parameterButtonBar.getSaveButton()), KeyUpEvent.getType());
 		mainParamViewVerticalPanel.getElement().setId("mainParamViewVerticalPanel");
 		heading.addStyleName("leftAligned");
 	}
@@ -61,7 +63,6 @@ public class CQLParametersView {
 		editorPanel.setSize("650px", "200px");
 		editorPanel.getEditor().setText("");
 		editorPanel.getEditor().clearAnnotations();
-		editorPanel.getEditor().redisplay();
 		editorPanel.getPanelGroup().setMarginBottom(-10.0);
 		
 		viewCQLEditorPanel.setSize("655px", "200px");

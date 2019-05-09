@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.gwt.dom.client.Style.Unit;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
-import edu.ycp.cs.dh.acegwt.client.ace.AceCommand;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -25,11 +24,10 @@ public class CQLEditor extends AceEditor {
 		this.clearAnnotations();
 		this.getElement().getStyle().setFontSize(14, Unit.PX);
 		this.setText("");
-		
-		this.removeCommand(AceCommand.INDENT);
-		this.removeCommand(AceCommand.OUTDENT);
 	}
 	
+	
+
 	public CQLEditor(boolean isReadOnly) {
 		this();
 		this.setReadOnly(isReadOnly);

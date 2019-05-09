@@ -1575,7 +1575,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.getCodesView().getSelectAllButton().addClickHandler(event -> selectAllCodes());
 		cqlWorkspaceView.getCodesView().getClearButton().addClickHandler(event -> codesViewClearButtonClicked());
 		cqlWorkspaceView.getCodesView().getRetrieveFromVSACButton().addClickHandler(event -> codesViewRetrieveFromVSACButtonClicked());
-		cqlWorkspaceView.getCodesView().getSaveButton().addClickHandler(event -> codesViewSaveButtonClicked());
+		cqlWorkspaceView.getCodesView().getApplyButton().addClickHandler(event -> codesViewSaveButtonClicked());
 		cqlWorkspaceView.getCodesView().getCancelCodeButton().addClickHandler(event -> codesViewCancelButtonClicked());
 		cqlWorkspaceView.getCodesView().setDelegator(new Delegator() {
 			@Override
@@ -1693,7 +1693,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						}
 						getAppliedValuesetAndCodeList();
 						showSearchingBusy(false);
-						cqlWorkspaceView.getCodesView().getSaveButton().setEnabled(false);
+						cqlWorkspaceView.getCodesView().getApplyButton().setEnabled(false);
 						isCodeModified = false;
 						modifyCQLCode = null;
 					}

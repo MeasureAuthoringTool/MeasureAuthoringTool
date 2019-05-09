@@ -12,7 +12,6 @@ import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
@@ -35,7 +34,6 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -72,6 +70,9 @@ import mat.shared.StringUtility;
 
 public class CQLCodesView {
 	
+	private static final String APPLY = "Apply";
+
+
 	public static interface Delegator {
 		
 		void onDeleteClicked(CQLCode result, int index);
@@ -115,7 +116,7 @@ public class CQLCodesView {
 
 	private MatSimplePager spager;
 
-	private Button saveCode = new Button("Apply");
+	private Button applyButton = new Button(APPLY);
 
 	private Button cancelButton = new CancelButton("CQLCodesView");
 
@@ -225,15 +226,15 @@ public class CQLCodesView {
 		searchPanel.setHeight("350px");
 		searchPanelBody.add(new SpacerWidget());
 
-		saveCode.setText("Apply");
-		saveCode.setTitle("Apply");
-		saveCode.setType(ButtonType.PRIMARY);
+		applyButton.setText(APPLY);
+		applyButton.setTitle(APPLY);
+		applyButton.setType(ButtonType.PRIMARY);
 
 		Grid searchGrid = new Grid(1, 1);
 		Grid codeDescriptorAndSuffixGrid = new Grid(1, 2);
 		Grid codeGrid = new Grid(2, 3);
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		buttonToolBar.add(saveCode);
+		buttonToolBar.add(applyButton);
 		buttonToolBar.add(cancelButton);
 
 		VerticalPanel buttonPanel = new VerticalPanel();
@@ -422,8 +423,8 @@ public class CQLCodesView {
 		return sWidget.getGo();
 	}
 
-	public Button getSaveButton(){
-		return saveCode;
+	public Button getApplyButton(){
+		return applyButton;
 	}
 
 	public CQLCode getSelectedElementToRemove() {
@@ -490,7 +491,7 @@ public class CQLCodesView {
 		getRetrieveFromVSACButton().setEnabled(editable);
 		getCancelCodeButton().setEnabled(editable);
 		getIncludeCodeSystemVersionCheckBox().setEnabled(isEditable);
-		getSaveButton().setEnabled(false);
+		getApplyButton().setEnabled(false);
 		
 	}
 
@@ -501,7 +502,7 @@ public class CQLCodesView {
 		getCodeSystemInput().setValue("");
 		getSuffixTextBox().setValue("");
 		getCodeSystemVersionInput().setValue("");
-		getSaveButton().setEnabled(false);
+		getApplyButton().setEnabled(false);
 		getIncludeCodeSystemVersionCheckBox().setValue(false);
 	}
 
@@ -554,7 +555,7 @@ public class CQLCodesView {
 		getCodeSystemVersionInput().setValue("");
 		setCodeSystemOid("");
 		getSuffixTextBox().setValue("");
-		getSaveButton().setEnabled(false);
+		getApplyButton().setEnabled(false);
 		getIncludeCodeSystemVersionCheckBox().setValue(false);
 	}
 
@@ -1029,7 +1030,7 @@ public class CQLCodesView {
 
 	public void setReadOnly(boolean isEditable) {		
 		getIncludeCodeSystemVersionCheckBox().setEnabled(isEditable);
-		getSaveButton().setEnabled(isEditable);
+		getApplyButton().setEnabled(isEditable);
 		getCancelCodeButton().setEnabled(isEditable);
 		getRetrieveFromVSACButton().setEnabled(isEditable);
 		this.setIsLoading(!isEditable);

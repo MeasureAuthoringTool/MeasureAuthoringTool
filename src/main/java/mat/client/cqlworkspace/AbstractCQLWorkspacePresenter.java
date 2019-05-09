@@ -435,7 +435,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		}
 
 		if (validator.validateForCodeIdentifier(url)) {
-			cqlWorkspaceView.getCodesView().getSaveButton().setEnabled(false);
+			cqlWorkspaceView.getCodesView().getApplyButton().setEnabled(false);
 			messagePanel.getErrorMessageAlert().createAlert(UMLS_INVALID_CODE_IDENTIFIER);
 
 			return;
@@ -465,7 +465,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 					cqlWorkspaceView.getCodesView().getCodeSystemVersionInput().setValue(result.getDirectReferenceCode().getCodeSystemVersion());
 					cqlWorkspaceView.getCodesView().setCodeSystemOid(result.getDirectReferenceCode().getCodeSystemOid());
 					messagePanel.getSuccessMessageAlert().createAlert("Code " + result.getDirectReferenceCode().getCode() + " successfully retrieved from VSAC.");
-					cqlWorkspaceView.getCodesView().getSaveButton().setEnabled(true);
+					cqlWorkspaceView.getCodesView().getApplyButton().setEnabled(true);
 					CQLCode code = buildCQLCodeFromCodesView(StringUtility.removeEscapedCharsFromString(cqlWorkspaceView.getCodesView().getCodeDescriptorInput().getValue()));
 					cqlWorkspaceView.getCodesView().setValidateCodeObject(code);
 				} else {
@@ -597,7 +597,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		codesView.getCodeSystemVersionInput().setValue(cqlCode.getCodeSystemVersion());
 		codesView.setCodeSystemOid(cqlCode.getCodeSystemOID());
 		codesView.getIncludeCodeSystemVersionCheckBox().setValue(cqlCode.isIsCodeSystemVersionIncluded());
-		codesView.getSaveButton().setEnabled(true);
+		codesView.getApplyButton().setEnabled(false);
 	}
 	
 	protected void copyCodes() {
@@ -1544,7 +1544,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	
 	protected void shiftFocusToCodeSearchPanel(SaveUpdateCQLResult result) {
 		cqlWorkspaceView.getCodesView().getCodeSearchInput().setFocus(true);
-		cqlWorkspaceView.getCodesView().getSaveButton().setEnabled(!result.isSuccess());
+		cqlWorkspaceView.getCodesView().getApplyButton().setEnabled(!result.isSuccess());
 	}
 	
 	protected void parameterShowEvent() {

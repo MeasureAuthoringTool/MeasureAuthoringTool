@@ -666,7 +666,7 @@ public class XmlProcessor {
 		 */
 		Node measureObservationsNode = findNode(originalDoc, XPATH_MEASURE_OBSERVATIONS);
 		Node patientBasedMeasureNode = findNode(originalDoc, XPATH_FOR_PATIENT_BASED_INDICATOR);
-		if ((CONTINUOUS_VARIABLE.equals(scoringType) || (RATIO.equals(scoringType) && patientBasedMeasureNode != null && !"true".equals(patientBasedMeasureNode.getTextContent()))) 
+		if ((CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType) || (RATIO.equalsIgnoreCase(scoringType) && patientBasedMeasureNode != null && !"true".equals(patientBasedMeasureNode.getTextContent()))) 
 				&& (measureObservationsNode == null)) {
 			// Create a new measureObservations element.
 			String nodeName = MEASURE_OBSERVATION;

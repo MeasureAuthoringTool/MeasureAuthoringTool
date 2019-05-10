@@ -24,6 +24,7 @@ import mat.model.ComponentMeasureTabObject;
 
 public class CQLComponentLibraryView extends GenericLeftNavSectionView  {
 
+	private static final String CQL_LIBRARY_VIEWER = "CQL Library Viewer";
 	private static final String LABEL_WIDTH = "150px";
 	private static final String LABEL_STYLE = "font-size:90%;margin-left:15px;";
 	private static final String TEXT_BOX_STYLE = "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;";
@@ -129,16 +130,16 @@ public class CQLComponentLibraryView extends GenericLeftNavSectionView  {
 		cqlAceEditor.clearAnnotations();
 		
 		Label viewCQlFileLabel = new Label(LabelType.INFO);
-		viewCQlFileLabel.setText("View CQL file here");
-		viewCQlFileLabel.setTitle("View CQL file here");
+		viewCQlFileLabel.setText(CQL_LIBRARY_VIEWER);
+		viewCQlFileLabel.setTitle(CQL_LIBRARY_VIEWER);
 		
 		Panel viewCQLPanel = new Panel(PanelType.PRIMARY);	
 		viewCQLPanel.setMarginTop(20);
 		viewCQLPanel.setId("IncludeCQLViewPanel_Id");
 		
 		PanelHeader viewCQLHeader = new PanelHeader();
-		viewCQLHeader.setText("View CQL file here");
-		viewCQLHeader.setTitle("View CQL file here");
+		viewCQLHeader.setText(CQL_LIBRARY_VIEWER);
+		viewCQLHeader.setTitle(CQL_LIBRARY_VIEWER);
 		viewCQLHeader.setId("IncludeCQLViewPanelHeader_id");
 		
 		PanelBody viewCQLBody = new PanelBody();

@@ -6,13 +6,13 @@ public class InAppHelpMessages {
 	
 	private static final String SAVE_HELP = "<b>Save:</b> The Save icon is to save your current work.<br>";
 	
-	private static final String ERASE_HELP = "<b>Erase:</b> The Erase icon will clear any logic entered into the CQL Editor. The name and comment boxes will not be cleared.<br>";
+	private static final String ERASE_HELP = "<b>Erase:</b> The Erase icon will clear any logic entered into the CQL Expression Editor. The name and comment boxes will not be cleared.<br>";
 	
-	private static final String VIEW_CQL_LIBRARY_HELP =  "<b>Click to View CQL:</b> Clicking on this link will display the current CQL file for the library being worked on. This is available to allow you to review other items you have already added to the library while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+	private static final String VIEW_CQL_LIBRARY_HELP =  "<b>CQL Library Viewer:</b> Clicking on this link will display the current CQL file for the library being worked on. This is available to allow you to review other items you have already added to the library while you are working on your current expression. Clicking the link again will collapse the area to save space.";
 	
-	private static final String BUILD_CQL_EXPRESSION_HELP =  "<b>Build CQL Expression (CQL Editor):</b> The CQL Editor is in a box titled Build CQL Expression. This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>";
+	private static final String BUILD_CQL_EXPRESSION_HELP =  "<b>CQL Expression Editor:</b> This is the place designated for you to enter your CQL logic. For information on CQL or help with CQL logic please visit the eCQI Resource center CQL page (https://ecqi.healthit.gov/cql-clinical-quality-language)<br>";
 	
-	private static final String VIEW_CQL_MEASURE_HELP =  "<b>Click to View CQL:</b> Clicking on this link will display the current CQL library for the measure being worked on. This is available to allow you to review other items you have already added to the measure while you are working on your current expression. Clicking the link again will collapse the area to save space.";
+	private static final String VIEW_CQL_MEASURE_HELP =  "<b>CQL Library Viewer:</b> Clicking on this link will display the current CQL library for the measure being worked on. This is available to allow you to review other items you have already added to the measure while you are working on your current expression. Clicking the link again will collapse the area to save space.";
 	
 	public static final String MEASURE_CQL_LIBRARY_GENERAL_INFORMATION = "<b>CQL Library Name:</b> This is a name that is constructed from the measure name but has been adjusted so that it starts with an alpha-character or underscore followed by alpha-numeric character(s) or underscore(s) and does not contain spaces. This name identifies the library of CQL expressions being created with this measure. This field is not editable.<br>" +
 			"<br>" +
@@ -174,7 +174,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Available Libraries:</b> This box will list the libraries that were returned from the search. To select a library to include in your measure click the checkbox next to the library you wish to include and then click the Save icon in the top-right of the screen.<br>" +
 			"<br>" +
-			"<b>View CQL file here:</b> When a library in the list of available libraries is selected, the CQL file for that library will display here. This gives you a way to ensure this is the one you want before you click the Save button.";
+			"<b>CQL Library Viewer:</b> When a library in the list of available libraries is selected, the CQL file for that library will display here. This gives you a way to ensure this is the one you want before you click the Save button.";
 
 	public static final String STANDALONE_CQL_LIBRARY_INCLUDES = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the assigned aliases of any included libraries. To open a library already included within the library, double-click on the alias. There is a search box just above this list which can be used to find a specific library alias within the list.<br>" +
 			"<br>" +
@@ -184,7 +184,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Available Libraries:</b> This box will list the libraries that were returned from the search. To select a library to include in your library click the checkbox next to the library you wish to include and then click the Save icon in the top-right of the screen.<br>" +
 			"<br>" +
-			"<b>View CQL file here:</b> When a library in the list of available libraries is selected, the CQL file for that library will display here. This gives you a way to ensure this is the one you want before you click the Save button.";
+			"<b>CQL Library Viewer:</b> When a library in the list of available libraries is selected, the CQL file for that library will display here. This gives you a way to ensure this is the one you want before you click the Save button.";
 
 	public static final String CQL_LIBRARY_INSERT_MODAL ="<b>Item Type:</b> The item type field contains a list of items that can be inserted into the CQL editor. Options under Item Type include:<br>" +
 			"<br>" +
@@ -312,11 +312,11 @@ public class InAppHelpMessages {
 	
 	public static final String MEASURE_CQL_LIBRARY_VIEW_CQL = "<b>Export Error File:</b> If your CQL file has errors or warnings, you can export a report that will show your entire CQL file with line numbers and list which line numbers are showing the errors and/or warnings. This file will open as a .txt file.<br>" + 
 			"<br>" + 
-			"<b>View CQL file here:</b> This section displays the entire CQL file for the measure as it currently stands. If there are any errors they will be indicated on the line number with a red square. If there are any warnings they will be shown on the line number with a yellow triangle. Hover over the error or warning icons to see the messages. This area is not editable. You will need to go back to the individual expression to fix any errors or warnings.";
+			"<b>CQL Library Editor:</b> This section displays the entire CQL file for the measure as it currently stands. If there are any errors they will be indicated on the line number with a red square. If there are any warnings they will be shown on the line number with a yellow triangle. Hover over the error or warning icons to see the messages. This area is not editable. You will need to go back to the individual expression to fix any errors or warnings.";
 	
 	public static final String STANDALONE_CQL_LIBRARY_VIEW_CQL = "<b>Export Error File:</b> If your CQL file has errors or warnings, you can export a report that will show your entire CQL file with line numbers and list which line numbers are showing the errors and/or warnings. This file will open as a .txt file.<br>" + 
 			"<br>" + 
-			"<b>View CQL file here:</b> This section displays the entire CQL file for the library as it currently stands. If there are any errors they will be indicated on the line number with a red square. If there are any warnings they will be shown on the line number with a yellow triangle. Hover over the error or warning icons to see the messages. This area is not editable. You will need to go back to the individual expression to fix any errors or warnings.";
+			"<b>CQL Library Editor:</b> This section displays the entire CQL file for the library as it currently stands. If there are any errors they will be indicated on the line number with a red square. If there are any warnings they will be shown on the line number with a yellow triangle. Hover over the error or warning icons to see the messages. This area is not editable. You will need to go back to the individual expression to fix any errors or warnings.";
 	
 	public static final String EXPRESSION_BUILDER = "<b>Comparison:</b> Choose this type of expression if you want to compare one thing to another.</span><br>" + 
 			"<span style='margin-left:2em'>Example: AgeInYearsAt (start of “Measurement Period”) > 18</span><br>" + 

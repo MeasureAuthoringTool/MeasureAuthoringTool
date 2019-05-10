@@ -70,7 +70,7 @@ public class CQLIncludeLibraryView {
 	private static final String STYLE = "style";
 	private static final String REPLACE = "Replace";
 	private static final String ALIAS_NAME = "aliasName";
-	private static final String VIEW_CQL_FILE = "View CQL file here";
+	private static final String CQL_LIBRARY_VIEWER = "CQL Library Viewer";
 	private static final String TWO_HUNDRED_AND_SIXTY_PIXELS = "260px";
 	private static final String INCLUDE_LIBRARY_SUMMARY = "includeLibrarySummary";
 
@@ -226,8 +226,8 @@ public class CQLIncludeLibraryView {
 
 	private PanelHeader buildVIewCQLHeader() {
 		PanelHeader viewCQLHeader = new PanelHeader();
-		viewCQLHeader.setText(VIEW_CQL_FILE);
-		viewCQLHeader.setTitle(VIEW_CQL_FILE);
+		viewCQLHeader.setText(CQL_LIBRARY_VIEWER);
+		viewCQLHeader.setTitle(CQL_LIBRARY_VIEWER);
 		viewCQLHeader.setId("IncludeCQLViewPanelHeader_id");
 		return viewCQLHeader;
 	}

@@ -1,3 +1,4 @@
+ <#ftl output_format="HTML" strip_whitespace=true>
 <li class="list-unstyled" style="list-style:none;padding-left:0px;">
   <div class="treeview hover p-l-10">
     <ul class="list-unstyled">

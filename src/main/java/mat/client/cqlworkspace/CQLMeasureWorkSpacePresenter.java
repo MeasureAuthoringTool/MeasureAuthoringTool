@@ -1685,12 +1685,12 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFUL_MODIFY_APPLIED_CODE);
 						cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
 						appliedCodeTableList.clear();
+						List<CQLCode> codesToView = result.getCqlModel().getCodeList();				
+						codesToView = codesToView.stream().filter(c -> c.getCodeIdentifier() != null && !c.getCodeIdentifier().isEmpty()).collect(Collectors.toList());
+						appliedCodeTableList.addAll(codesToView);
 						appliedCodeTableList.addAll(result.getCqlCodeList());
 						cqlWorkspaceView.getCodesView().buildCodesCellTable(appliedCodeTableList, checkForEditPermission());
 						cqlWorkspaceView.getCQLLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
-						if (result.getCqlModel().getAllValueSetAndCodeList() != null) {
-							setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetAndCodeList());
-						}
 						getAppliedValuesetAndCodeList();
 						showSearchingBusy(false);
 						cqlWorkspaceView.getCodesView().getApplyButton().setEnabled(false);
@@ -1725,8 +1725,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						messagePanel.getSuccessMessageAlert().createAlert(getCodeSuccessMessage(cqlWorkspaceView.getCodesView().getCodeInput().getText()));
 						cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
 						appliedCodeTableList.clear();
-						List<CQLCode> codesToView = result.getCqlModel().getCodeList();
-												
+						List<CQLCode> codesToView = result.getCqlModel().getCodeList();				
 						codesToView = codesToView.stream().filter(c -> c.getCodeIdentifier() != null && !c.getCodeIdentifier().isEmpty()).collect(Collectors.toList());
 						appliedCodeTableList.addAll(codesToView);
 						cqlWorkspaceView.getCQLLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);

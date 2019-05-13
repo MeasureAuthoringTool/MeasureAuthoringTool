@@ -1614,12 +1614,11 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 						messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFUL_MODIFY_APPLIED_CODE);
 						cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
 						appliedCodeTableList.clear();
-						appliedCodeTableList.addAll(result.getCqlCodeList());
+						List<CQLCode> codesToView = result.getCqlModel().getCodeList();				
+						codesToView = codesToView.stream().filter(c -> c.getCodeIdentifier() != null && !c.getCodeIdentifier().isEmpty()).collect(Collectors.toList());
+						appliedCodeTableList.addAll(codesToView);
 						MatContext.get().getCQLModel().setCodeList(appliedCodeTableList);
 						cqlWorkspaceView.getCQLLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
-						if (result.getCqlModel().getAllValueSetAndCodeList() != null) {
-							setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetAndCodeList());
-						}
 						cqlWorkspaceView.getCodesView().buildCodesCellTable(appliedCodeTableList, checkForEditPermission());
 						getAppliedValuesetAndCodeList();
 						showSearchingBusy(false);

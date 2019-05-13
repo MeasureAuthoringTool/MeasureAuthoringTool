@@ -261,9 +261,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			clonedXml.setMeasureId(clonedMeasure.getId());
 			
 			XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
-			if (!creatingDraft) {
-				xmlProcessor.removeUnusedDefaultCodes(usedCodeList);	
-			}
+			xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
 			
 			if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) || currentDetails.isPatientBased()) {
 
@@ -275,7 +273,9 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			
 			boolean isUpdatedForCQL = updateForCQLMeasure(measure, xmlProcessor, clonedMeasure, isNonCQLtoCQLDraft);
 			xmlProcessor.clearValuesetVersionAttribute();
-			resetVersionOnCloning(xmlProcessor);
+			if (!creatingDraft) {
+				resetVersionOnCloning(xmlProcessor);
+			}
 			
 			if(!isUpdatedForCQL){
 				//this means this is a CQL Measure to CQL Measure draft/clone.

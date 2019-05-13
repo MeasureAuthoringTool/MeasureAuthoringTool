@@ -1,3 +1,4 @@
+ <#ftl output_format="HTML" strip_whitespace=true>
 <html>
 <head>
 	<title>${population.name}</title>

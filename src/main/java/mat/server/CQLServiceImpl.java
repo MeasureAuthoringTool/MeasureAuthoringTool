@@ -873,6 +873,7 @@ public class CQLServiceImpl implements CQLService {
 				parentNode.removeChild(codeNode);
 				result.setSuccess(true);
 				result.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+				result.setCqlModel(CQLUtilityClass.getCQLModelFromXML(result.getXml()));
 				result.setCqlCodeList(getCQLCodes(result.getXml()).getCqlCodeList());
 				result.setCqlCode(cqlCode);
 			} else {

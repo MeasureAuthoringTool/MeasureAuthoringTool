@@ -1,3 +1,4 @@
+<#ftl output_format="HTML" strip_whitespace=true>
   <li class="list-unstyled">
     <div class="treeview hover p-l-10">
       <input type="checkbox" id="${expression.id}">

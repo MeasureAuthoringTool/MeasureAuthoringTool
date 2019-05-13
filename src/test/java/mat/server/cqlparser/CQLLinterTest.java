@@ -1,0 +1,69 @@
+package mat.server.cqlparser;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import mat.model.cql.CQLModel;
+import mat.model.cql.CQLQualityDataSetDTO;
+
+public class CQLLinterTest {
+	
+	private CQLModel model;
+
+	@Before
+	public void before() {
+		model = new CQLModel();
+		addValuesetInfoToModel("Ethnicity", "2.16.840.1.114222.4.11.837", "Ethnicity", model);
+		addValuesetInfoToModel("ONC Administrative Sex", "2.16.840.1.113762.1.4.1", "ONC Administrative Sex", model);
+		addValuesetInfoToModel("Payer", "2.16.840.1.114222.4.11.3591", "Payer", model);
+		addValuesetInfoToModel("Race", "2.16.840.1.114222.4.11.836", "Race", model);
+	}
+
+	@Test
+	public void testCommentError() throws IOException {
+		testCommentsBetweenValueset();
+		testWrongCommentsValuesetsBetweenModelDeclarationAndValuesets();
+	}
+	
+	private void testCommentsBetweenValueset() throws IOException {
+		File file = new File(getClass().getClassLoader().getResource("test-cql/testwrongcommentsbetweenvaluesets.cql").getFile());
+		
+		String cql = new String(Files.readAllBytes(file.toPath()));
+		CQLLinterConfig config = new CQLLinterConfig("testwrongcommentsbetweenvaluesets", "0.0.000", "QDM", "5.4");
+		config.setPreviousCQLModel(model);
+		CQLLinter linter = new CQLLinter(cql, config);
+		
+		assertEquals(linter.getErrorMessages().size(), 1);
+		assertEquals(linter.getErrorMessages().get(0), "A comment was added in an incorrect location and could not be saved. "
+					+ "Comments are permitted between the CQL Library declaration and the Model declaration, "
+					+ "directly above a parameter or define statement, or within a parameter or define statement.");
+	}
+	
+	private void testWrongCommentsValuesetsBetweenModelDeclarationAndValuesets() throws IOException {
+		File file = new File(getClass().getClassLoader().getResource("test-cql/testwrongcomments.cql").getFile());
+		
+		String cql = new String(Files.readAllBytes(file.toPath()));
+		CQLLinterConfig config = new CQLLinterConfig("testwrongcomments", "0.0.000", "QDM", "5.4");
+		config.setPreviousCQLModel(model);
+		CQLLinter linter = new CQLLinter(cql, config);
+		
+		assertEquals(linter.getErrorMessages().size(), 1);
+		assertEquals(linter.getErrorMessages().get(0), "A comment was added in an incorrect location and could not be saved. "
+					+ "Comments are permitted between the CQL Library declaration and the Model declaration, "
+					+ "directly above a parameter or define statement, or within a parameter or define statement.");
+	}
+	
+	private void addValuesetInfoToModel(String name, String oid, String codeName, CQLModel model) {
+		CQLQualityDataSetDTO dto = new CQLQualityDataSetDTO();
+		dto.setName(name);
+		dto.setOid(oid);
+		dto.setOriginalCodeListName(codeName);
+		model.getValueSetList().add(dto);
+	}
+}

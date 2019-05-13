@@ -291,34 +291,8 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		cqlModel.getCqlParameters().add(parameter);		
 	}
 	
-	private String getParameterLogic(ParameterDefinitionContext ctx, String identifier) {
-		int index = tokens.size() - 1; // Initialize to the last token
-		List<Token> ts = tokens.getTokens(ctx.start.getTokenIndex(), tokens.size() - 1);
-		
-		// find the next parameter or context statement
-		boolean startAdding = false;
-		for(Token t : ts) {
-			if((t.getText().equals(CONTEXT) || t.getText().equals(PARAMETER)) && startAdding) {
-				index = t.getTokenIndex();
-				break;
-			}
-			
-			// wait until the first parameter 
-			if(t.getText().equals(PARAMETER)) {
-				startAdding = true;
-			}
-		}
-		
-		 Token twoTokensBeforeToken = tokens.get(index - 2);
-		    // check if the expression has a comment associated to it
-		    // if it does, return the token before it
-	    	if(twoTokensBeforeToken.getType() == cqlLexer.COMMENT) {
-	    		index = twoTokensBeforeToken.getTokenIndex() -1 ;
-	    	} else {
-	        	index = index - 1;
-	    	}	
-		
-		return getLogicForParameter(ctx.start.getTokenIndex(), index, identifier);
+	private String getParameterLogic(ParameterDefinitionContext ctx, String identifier) {		
+		return getLogicForParameter(ctx.start.getTokenIndex(), findExpressionLogicStop(ctx), identifier);
 	}
 	
 	@Override
@@ -390,7 +364,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	}
 
 	private String getDefinitionAndFunctionLogic(ParserRuleContext ctx) {
-		return getTextBetweenTokenIndexes(ctx.start.getTokenIndex(), findDefinitionAndFunctionBodyStop(ctx));
+		return getTextBetweenTokenIndexes(ctx.start.getTokenIndex(), findExpressionLogicStop(ctx));
 	}
 	
 	private String getLogicForParameter(int startTokenIndex, int stopTokenIndex, String identifier) {
@@ -401,7 +375,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 			builder.append(t.getText());
 		}
 		
-		return builder.toString().replace(PARAMETER, "").replace(identifier, "").trim();
+		return builder.toString().replaceFirst(PARAMETER, "").replace(identifier, "").trim();
 	}
 	
 	private String getTextBetweenTokenIndexes(int startTokenIndex, int stopTokenIndex) {
@@ -436,22 +410,27 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	 * @param ctx the context to find the end of the body of
 	 * @return the index of the last token in the body
 	 */
-	private int findDefinitionAndFunctionBodyStop(ParserRuleContext ctx) {
+	private int findExpressionLogicStop(ParserRuleContext ctx) {
 		int index = tokens.size() - 1; // Initialize to the last token
 		List<Token> ts = tokens.getTokens(ctx.start.getTokenIndex(), tokens.size() - 1);
 		
 		// find the next define statement
 		boolean startAdding = false;
 		for(Token t : ts) {
-			if((t.getText().equals("define") || t.getText().equals("context")) && startAdding) {
+			if((t.getText().equals("define") || t.getText().contentEquals("parameter") || t.getText().equals("context")) && startAdding) {
 				index = t.getTokenIndex();
 				break;
 			}
 			
-			// wait until the first define 
-			if(t.getText().equals("define")) {
+			// wait until the first define or parameter
+			if(t.getText().equals("define") || t.getText().equals("parameter")) {
 				startAdding = true;
 			}
+		}
+		
+		
+		if(tokens.get(index).getText().equals("context")) {
+			return index - 1;
 		}
 		
 	    Token twoTokensBeforeToken = tokens.get(index - 2);

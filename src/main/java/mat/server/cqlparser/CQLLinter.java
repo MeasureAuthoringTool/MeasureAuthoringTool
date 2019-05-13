@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ import org.cqframework.cql.gen.cqlBaseListener;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.gen.cqlParser.CodeDefinitionContext;
+import org.cqframework.cql.gen.cqlParser.ConceptDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.IncludeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.LibraryDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.UsingDefinitionContext;
@@ -38,7 +40,11 @@ public class CQLLinter extends cqlBaseListener {
 	private List<String> missingValuesets;
 	private List<String> missingCodes;
 	private List<CQLError> errors;
-
+	
+	private int libraryDefinitionStartLine = 0;
+	private int noCommentZoneStartLine = 0;
+	private int noCommentZoneEndLine = 0;
+	
 	public CQLLinter(String cql, CQLLinterConfig config) throws IOException {
 		this.config = config;
 		this.errors = new ArrayList<>();
@@ -52,15 +58,67 @@ public class CQLLinter extends cqlBaseListener {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		tokens.fill();
 		cqlParser parser = new cqlParser(tokens);
-        parser.setBuildParseTree(true);      
-        
+        parser.setBuildParseTree(true);    
     	ParseTree tree = parser.library();
 		ParseTreeWalker walker = new ParseTreeWalker();
 		walker.walk(this, tree);
+		doPostProcessing(parser, tokens);
 	} 
+	
+	private void doPostProcessing(cqlParser parser, CommonTokenStream tokens) {
+		if(isCommentInNoCommentZone(parser, tokens)) {
+			this.errorMessages.add("A comment was added in an incorrect location and could not be saved. "
+					+ "Comments are permitted between the CQL Library declaration and the Model declaration, "
+					+ "directly above a parameter or define statement, or within a parameter or define statement.");
+		}
+	}
+	
+	/**
+	 * the "no comment zone" goes from the beginning of the file to the library declaration statement and then
+	 * the using statement to the end of the concept definition section
+	 * any comment that appears in between here will not be saved and thus we need to throw an error
+	 * @return
+	 */
+	private boolean isCommentInNoCommentZone(cqlParser parser, CommonTokenStream tokens) {
+		List<Token> comments = new ArrayList<>();
+		for(Token token: tokens.getTokens()) {
+			if(token.getText().startsWith("//") || token.getText().startsWith("/*")) {
+				comments.add(token);
+			}
+		}
+		
+		if(isCommentBeforeLibraryDeclaration(comments) || isCommentBetweenUsingDeclarationAndConceptDeclaration(comments)) {
+			return true;
+		}
+		
+		
+		return false;
+	}
+	
+	private boolean isCommentBetweenUsingDeclarationAndConceptDeclaration(List<Token> comments) {
+		// the "no comment zone" goes from the beginning of the using statement to the end of the concept definition section
+		// any comment that appears in between here will not be saved and thus we need to throw an error		
+		for(Token comment : comments) {
+			if(comment.getLine() >= noCommentZoneStartLine && comment.getLine() <= noCommentZoneEndLine) {
+				return true;
+			}
+		}		
+		return false;
+	}
+	
+	private boolean isCommentBeforeLibraryDeclaration(List<Token> comments) {
+		for(Token comment : comments) {
+			if(comment.getLine() <= libraryDefinitionStartLine) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
 	@Override
 	public void enterLibraryDefinition(LibraryDefinitionContext ctx) {
+		libraryDefinitionStartLine = ctx.getStart().getLine();
 		String name = CQLParserUtil.parseString(ctx.identifier().getText());
 		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
 		
@@ -88,6 +146,9 @@ public class CQLLinter extends cqlBaseListener {
 			errorMessages.add(sb.toString());
 			errors.add(createError(annotation, ctx));
 		}
+		
+		noCommentZoneStartLine = ctx.getStart().getLine();
+		noCommentZoneEndLine = ctx.getStop().getLine();
 	}
 
 	@Override
@@ -145,6 +206,8 @@ public class CQLLinter extends cqlBaseListener {
 		} else {
 			createCodeError(ctx, identifier);
 		}
+		
+		noCommentZoneEndLine = ctx.getStop().getLine();
 	}
 	
 	private void createCodeError(CodeDefinitionContext ctx, String identifier) {
@@ -173,6 +236,12 @@ public class CQLLinter extends cqlBaseListener {
 		} else {
 			createValuesetError(ctx, identifier, valuesetId);
 		}
+		
+		noCommentZoneEndLine = ctx.getStop().getLine();
+	}
+	
+	public void enterConceptDefinition(ConceptDefinitionContext ctx) {
+		noCommentZoneEndLine = ctx.getStop().getLine();
 	}
 
 	private void createValuesetError(ValuesetDefinitionContext ctx, String identifier, String oid) {

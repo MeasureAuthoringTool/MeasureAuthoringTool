@@ -159,15 +159,15 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		
 		
 		// check and see if there was a model the name, version, and alias as before
-		List<CQLIncludeLibrary> previousLibraries = previousModel.getCqlIncludeLibrarys().stream().filter(l -> (
+		Optional<CQLIncludeLibrary> previousLibrary = previousModel.getCqlIncludeLibrarys().stream().filter(l -> (
 				identifier.equals(l.getCqlLibraryName())
 				&& alias.equals(l.getAliasName())
 				&& version.equals(l.getVersion())
 			
-		)).collect(Collectors.toList());
+		)).findFirst();
 		
-		if(!previousLibraries.isEmpty()) {
-			cqlModel.getCqlIncludeLibrarys().addAll(previousLibraries);
+		if(previousLibrary.isPresent()) {
+			cqlModel.getCqlIncludeLibrarys().add(previousLibrary.get());
 		} else {
 			CQLIncludeLibrary includedLibrary = new CQLIncludeLibrary();
 			includedLibrary.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());

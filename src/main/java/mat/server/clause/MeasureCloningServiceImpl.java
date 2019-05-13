@@ -261,7 +261,9 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			clonedXml.setMeasureId(clonedMeasure.getId());
 			
 			XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
-			xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
+			if (!creatingDraft) {
+				xmlProcessor.removeUnusedDefaultCodes(usedCodeList);	
+			}
 			
 			if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) || currentDetails.isPatientBased()) {
 

@@ -1571,7 +1571,8 @@ public class CQLServiceImpl implements CQLService {
 				v.setProgram(qds.getProgram());
 				v.setRelease(qds.getRelease());
 				v.setDataType(qds.getDataType());
-				v.setValueSetType(qds.getTaxonomy());
+				v.setValueSetType(qds.getValueSetType());
+				v.setTaxonomy(qds.getTaxonomy());
 				v.setSuppDataElement(qds.isSuppDataElement());
 				v.setType(qds.getType());
 			});

@@ -39,10 +39,10 @@ public class CQLLinterTest {
 		config.setPreviousCQLModel(model);
 		CQLLinter linter = new CQLLinter(cql, config);
 		
-		assertEquals(linter.getErrorMessages().size(), 1);
-		assertEquals(linter.getErrorMessages().get(0), "A comment was added in an incorrect location and could not be saved. "
-					+ "Comments are permitted between the CQL Library declaration and the Model declaration, "
-					+ "directly above a parameter or define statement, or within a parameter or define statement.");
+		assertEquals(1, linter.getErrorMessages().size());
+		assertEquals("A comment was added in an incorrect location and could not be saved. "
+				+ "Comments are permitted between the CQL Library declaration and the Model declaration, "
+				+ "directly above a parameter or define statement, or within a parameter or define statement.", linter.getErrorMessages().get(0));
 	}
 	
 	private void testWrongCommentsValuesetsBetweenModelDeclarationAndValuesets() throws IOException {
@@ -53,10 +53,10 @@ public class CQLLinterTest {
 		config.setPreviousCQLModel(model);
 		CQLLinter linter = new CQLLinter(cql, config);
 		
-		assertEquals(linter.getErrorMessages().size(), 1);
-		assertEquals(linter.getErrorMessages().get(0), "A comment was added in an incorrect location and could not be saved. "
-					+ "Comments are permitted between the CQL Library declaration and the Model declaration, "
-					+ "directly above a parameter or define statement, or within a parameter or define statement.");
+		assertEquals(1, linter.getErrorMessages().size());
+		assertEquals("A comment was added in an incorrect location and could not be saved. "
+				+ "Comments are permitted between the CQL Library declaration and the Model declaration, "
+				+ "directly above a parameter or define statement, or within a parameter or define statement.", linter.getErrorMessages().get(0));
 	}
 	
 	private void addValuesetInfoToModel(String name, String oid, String codeName, CQLModel model) {

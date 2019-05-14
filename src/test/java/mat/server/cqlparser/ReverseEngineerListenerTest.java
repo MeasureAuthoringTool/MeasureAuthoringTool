@@ -49,7 +49,7 @@ public class ReverseEngineerListenerTest {
 		
 		assertEquals("Other Parameter", parameter2.getName());
 		assertEquals("Interval<DateTime> /* other parameter logic comment */", parameter2.getLogic());
-		assertEquals("other parameter comment", parameter2.getCommentString(), "other parameter comment");
+		assertEquals("other parameter comment", parameter2.getCommentString());
 	}
 	
 	@Test
@@ -101,31 +101,30 @@ public class ReverseEngineerListenerTest {
 		CQLFunctions function1 = model.getCqlFunctions().get(0);
 		CQLFunctions function2 = model.getCqlFunctions().get(1);
 		
-		assertEquals(function1.getName(), "test");
-		assertEquals(function1.getContext(), "Patient");
-		assertEquals(function1.getLogic(), "true");
-		assertEquals(function1.getCommentString(), "test comment");
-		assertEquals(function1.getArgumentList().size(), 3);
-		assertEquals(function1.getArgumentList().get(0).getArgumentName(), "arg1");
-		assertEquals(function1.getArgumentList().get(0).getArgumentType(), "Boolean");
-		assertEquals(function1.getArgumentList().get(1).getArgumentName(), "arg2");
-		assertEquals(function1.getArgumentList().get(1).getOtherType(), "Interval<DateTime>");
-		assertEquals(function1.getArgumentList().get(2).getArgumentName(), "arg3");
-		assertEquals(function1.getArgumentList().get(2).getQdmDataType(), "Encounter, Performed");
-
-		
-		assertEquals(function2.getName(), "testpouplationfunction");
-		assertEquals(function2.getContext(), "Population");
-		assertEquals(function2.getLogic(), "true");
-		assertEquals(function2.getCommentString(), "testpouplationfunction comment");
-		assertEquals(function2.getArgumentList().size(), 0);
+		assertEquals("test", function1.getName());
+		assertEquals( "Patient", function1.getContext());
+		assertEquals("true", function1.getLogic());
+		assertEquals("test comment", function1.getCommentString());
+		assertEquals(3, function1.getArgumentList().size(), 3);
+		assertEquals("arg1", function1.getArgumentList().get(0).getArgumentName(), "arg1");
+		assertEquals("Boolean", function1.getArgumentList().get(0).getArgumentType());
+		assertEquals("arg2", function1.getArgumentList().get(1).getArgumentName());
+		assertEquals("Interval<DateTime>", function1.getArgumentList().get(1).getOtherType());
+		assertEquals("arg3", function1.getArgumentList().get(2).getArgumentName());
+		assertEquals("Encounter, Performed", function1.getArgumentList().get(2).getQdmDataType());
+	
+		assertEquals("testpopulationfunction", function2.getName());
+		assertEquals("Population", function2.getContext());
+		assertEquals("true", function2.getLogic());
+		assertEquals("testpouplationfunction comment", function2.getCommentString());
+		assertEquals(0, function2.getArgumentList().size());
 	}
 	
 	private void testFunctionsWithSyntaxErrors() throws IOException {
 		File file = new File(getClass().getClassLoader().getResource("test-cql/testfunctionwithsyntaxerror.cql").getFile());
 		String cql = new String(Files.readAllBytes(file.toPath()));
 		ReverseEngineerListener listener = new ReverseEngineerListener(cql, new CQLModel());		
-		assertEquals(listener.getSyntaxErrors().isEmpty(), false);
+		assertEquals(false, listener.getSyntaxErrors().isEmpty());
 	}
 
 }

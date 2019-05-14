@@ -49,6 +49,7 @@ import mat.shared.CQLError;
 
 public class ReverseEngineerListener extends cqlBaseListener {
 	
+	private static final String DEFINE = "define";
 	private static final String VALUESET_OID_PREFIX = "urn:oid:";
 	private static final String CONTEXT = "context";
 	private static final String PARAMETER = "parameter";
@@ -291,8 +292,15 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		cqlModel.getCqlParameters().add(parameter);		
 	}
 	
-	private String getParameterLogic(ParameterDefinitionContext ctx, String identifier) {		
-		return getLogicForParameter(ctx.start.getTokenIndex(), findExpressionLogicStop(ctx), identifier);
+	private String getParameterLogic(ParameterDefinitionContext ctx, String identifier) {	
+		List<Token> ts = tokens.getTokens(ctx.start.getTokenIndex(), findExpressionLogicStop(ctx));
+		
+		StringBuilder builder = new StringBuilder();
+		for(Token t : ts) {
+			builder.append(t.getText());
+		}
+		
+		return builder.toString().replaceFirst(PARAMETER, "").replace(identifier, "").trim();
 	}
 	
 	@Override
@@ -425,19 +433,19 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		// find the next define statement
 		boolean startAdding = false;
 		for(Token t : ts) {
-			if((t.getText().equals("define") || t.getText().contentEquals("parameter") || t.getText().equals("context")) && startAdding) {
+			if((t.getText().equals(DEFINE) || t.getText().contentEquals(PARAMETER) || t.getText().equals(CONTEXT)) && startAdding) {
 				index = t.getTokenIndex();
 				break;
 			}
 			
 			// wait until the first define or parameter
-			if(t.getText().equals("define") || t.getText().equals("parameter")) {
+			if(t.getText().equals(DEFINE) || t.getText().equals(PARAMETER)) {
 				startAdding = true;
 			}
 		}
 		
 		
-		if(tokens.get(index).getText().equals("context")) {
+		if(tokens.get(index).getText().equals(CONTEXT)) {
 			return index - 1;
 		}
 		

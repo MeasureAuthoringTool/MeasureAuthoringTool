@@ -11,5 +11,5 @@ define function "test"(arg1 Boolean, arg2 Interval<DateTime>, arg3 "Encounter, P
 context Population
 
 /* testpouplationfunction comment */
-define function "testpouplationfunction"():
+define function "testpopulationfunction"():
   true

@@ -66,7 +66,7 @@ public class CQLLinter extends cqlBaseListener {
 	} 
 	
 	private void doPostProcessing(cqlParser parser, CommonTokenStream tokens) {
-		if(isCommentInNoCommentZone(parser, tokens)) {
+		if(isCommentInNoCommentZone(tokens)) {
 			this.errorMessages.add("A comment was added in an incorrect location and could not be saved. "
 					+ "Comments are permitted between the CQL Library declaration and the Model declaration, "
 					+ "directly above a parameter or define statement, or within a parameter or define statement.");
@@ -79,7 +79,7 @@ public class CQLLinter extends cqlBaseListener {
 	 * any comment that appears in between here will not be saved and thus we need to throw an error
 	 * @return
 	 */
-	private boolean isCommentInNoCommentZone(cqlParser parser, CommonTokenStream tokens) {
+	private boolean isCommentInNoCommentZone(CommonTokenStream tokens) {
 		List<Token> comments = new ArrayList<>();
 		for(Token token: tokens.getTokens()) {
 			if(token.getText().startsWith("//") || token.getText().startsWith("/*")) {
@@ -87,12 +87,7 @@ public class CQLLinter extends cqlBaseListener {
 			}
 		}
 		
-		if(isCommentBeforeLibraryDeclaration(comments) || isCommentBetweenUsingDeclarationAndConceptDeclaration(comments)) {
-			return true;
-		}
-		
-		
-		return false;
+		return isCommentBeforeLibraryDeclaration(comments) || isCommentBetweenUsingDeclarationAndConceptDeclaration(comments);
 	}
 	
 	private boolean isCommentBetweenUsingDeclarationAndConceptDeclaration(List<Token> comments) {

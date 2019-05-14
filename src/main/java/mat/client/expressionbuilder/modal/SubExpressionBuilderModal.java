@@ -8,6 +8,7 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 import mat.client.expressionbuilder.constant.ExpressionBuilderUserAssistText;
+import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.AttributeModel;
 import mat.client.expressionbuilder.model.ComparisonModel;
 import mat.client.expressionbuilder.model.ComputationModel;
@@ -41,7 +42,7 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 			ExpressionBuilderModel mainModel) {
 		super(parent.getModalTitle() + " > " + title, parentModel, mainModel);
 		this.parent = parent;
-		if (ExpressionBuilderUserAssistText.isKeyPresent(title)) {
+		if (!ExpressionType.QUERY.getDisplayName().equals(title) && ExpressionBuilderUserAssistText.isKeyPresent(title)) {
 			setLabel(ExpressionBuilderUserAssistText.getEnumByTitle(title).getValue());
 		}
 		this.getFooter().add(buildFooter());

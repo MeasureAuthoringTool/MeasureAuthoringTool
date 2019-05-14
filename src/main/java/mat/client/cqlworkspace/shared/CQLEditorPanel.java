@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 public class CQLEditorPanel extends Composite {
 
-	private static final String CQL_EDITOR_LABEL = "You are entering a CQL Editor. To exit the editor backward press control and up arrow. To exit the editor forward press control and down arrow.";
+	private static final String CQL_EDITOR_LABEL = "You are entering a CQL Editor. To exit the editor backward press shift and up arrow. To exit the editor forward press shift and down arrow.";
 	private PanelHeader header;
 	private String text;
 	private CQLEditor editor;
@@ -79,12 +79,12 @@ public class CQLEditorPanel extends Composite {
 	}
 	
 	public void catchTabOutKeyCommand(KeyUpEvent event, Button tabForwardTo) {
-		if(event.isControlKeyDown() && event.getNativeKeyCode() == 38) {
+		if(event.isShiftKeyDown() && event.getNativeKeyCode() == 38) {
 			event.preventDefault();
 			event.stopPropagation();
 			this.header.getElement().focus();
 		}
-		if(event.isControlKeyDown() && event.getNativeKeyCode() == 40) {
+		if(event.isShiftKeyDown() && event.getNativeKeyCode() == 40) {
 			event.preventDefault();
 			event.stopPropagation();
 			tabForwardTo.setFocus(true);

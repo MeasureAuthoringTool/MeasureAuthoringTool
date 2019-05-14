@@ -1,5 +1,7 @@
 package mat.client.measure.measuredetails.views;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.cell.client.FieldUpdater;
@@ -31,20 +33,47 @@ import mat.shared.measure.measuredetails.models.MeasureTypeModel;
 
 public class MeasureTypeView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();
-	private MeasureTypeModel originalMeasureTypeModel;
 	private MeasureTypeModel measureTypeModel;
 	private CellTable<MeasureType> measureTypeCellTable;
-	private MultiSelectionModel<MeasureType> measureTypeSelectioModel; 
-	private List<MeasureType> measureTypeList; 
+	private MultiSelectionModel<MeasureType> measureTypeSelectionModel; 
+	private List<MeasureType> measureTypeList = new ArrayList<>(); 
 	private MeasureTypeObserver observer; 
 	private static final String COMPOSITE = "COMPOSITE";
+	private static final String SELECT_TOOLTIP = "Click checkbox to select ";
+	private static final String COMPOSITE_TOOLTIP = "Pre-selected composite measure type. Uneditable.";
 	
-	public MeasureTypeView(MeasureTypeModel originaMeasureTypeModel, List<MeasureType> measureTypeList) {
-		this.originalMeasureTypeModel = originaMeasureTypeModel;
-		this.measureTypeList = measureTypeList; 
-		measureTypeList.removeIf(m -> m.getAbbrName().equals(COMPOSITE));
-		buildMeasureTypeModel(originaMeasureTypeModel);
+	public MeasureTypeView(boolean isCompositeMeasure, MeasureTypeModel originalMeasureTypeModel, List<MeasureType> measureTypeList) {
+		getMeasureTypeList().addAll(measureTypeList);
+		
+ 		if (originalMeasureTypeModel.getMeasureTypeList() != null && !originalMeasureTypeModel.getMeasureTypeList().isEmpty()) {
+ 			moveSelectedListToTop(originalMeasureTypeModel.getMeasureTypeList());
+		}
+
+ 		updateForCompositeType(isCompositeMeasure);
+		
+		buildMeasureTypeModel(originalMeasureTypeModel);
 		buildDetailView();
+	}
+	
+	private void updateForCompositeType(boolean isCompositeMeasure) {
+		final MeasureType compositeType = getMeasureTypeList().stream().filter(m -> m.getAbbrName().equals(COMPOSITE)).findFirst().orElse(new MeasureType());
+		
+		if (isCompositeMeasure) {			
+			final int index = getMeasureTypeList().indexOf(compositeType);
+			Collections.rotate(getMeasureTypeList().subList(0, index + 1), 1);
+		} else {
+			getMeasureTypeList().remove(compositeType);
+		}
+	}
+	
+	private void moveSelectedListToTop(List<MeasureType> selectedTypeList) {
+		selectedTypeList.sort((m1, m2) -> m1.getDescription().compareTo(m2.getDescription()));
+		final int size = selectedTypeList.size();
+		
+		for(int i = 0; i < size; i++) {
+			final int index = getMeasureTypeList().indexOf(selectedTypeList.get(i));
+			Collections.rotate(getMeasureTypeList().subList(i, index + 1), 1);
+		}
 	}
 	
 	@Override
@@ -54,7 +83,6 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 
 	@Override
 	public boolean hasUnsavedChanges() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -84,7 +112,7 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 	}
 	
 	private void updateMeasureTypeSelectedList(List<MeasureType> measureTypeList) {
-		if (measureTypeModel.getMeasureTypeList().size() != 0) {
+		if (!measureTypeModel.getMeasureTypeList().isEmpty()) {
 			for (int i = 0; i < measureTypeModel.getMeasureTypeList().size(); i++) {
 				for (int j = 0; j < measureTypeList.size(); j++) {
 					if (measureTypeModel.getMeasureTypeList().get(i).getDescription().equalsIgnoreCase(measureTypeList.get(j).getDescription())) {
@@ -104,16 +132,23 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(measureSearchHeader.getElement());
-		measureTypeSelectioModel = new MultiSelectionModel<MeasureType>();
-		measureTypeCellTable.setSelectionModel(measureTypeSelectioModel);
-		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true, !editable);
+		measureTypeSelectionModel = new MultiSelectionModel<MeasureType>();
+		measureTypeCellTable.setSelectionModel(measureTypeSelectionModel);
+		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true);
 		
 		Column<MeasureType, Boolean> selectColumn = new Column<MeasureType, Boolean>(chbxCell) {
 			@Override
 			public Boolean getValue(MeasureType object) {
-				chbxCell.setTitle("Click checkbox to select " + object.getDescription());
+				if (COMPOSITE.equals(object.getAbbrName())) {
+					chbxCell.setUsed(true);
+					chbxCell.setTitle(COMPOSITE_TOOLTIP);
+				} else {
+					chbxCell.setUsed(!editable);	
+					chbxCell.setTitle(SELECT_TOOLTIP + object.getDescription());	
+				}
+				
 				boolean isSelected = false;
-				if (measureTypeModel.getMeasureTypeList().size() > 0) {
+				if (!measureTypeModel.getMeasureTypeList().isEmpty()) {
 					for (int i = 0; i < measureTypeModel.getMeasureTypeList().size(); i++) {
 						if (measureTypeModel.getMeasureTypeList().get(i).getDescription().equalsIgnoreCase(object.getDescription())) {
 							isSelected = true;
@@ -129,12 +164,14 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 		selectColumn.setFieldUpdater(new FieldUpdater<MeasureType, Boolean>() {
 			@Override
 			public void update(int index, MeasureType object, Boolean value) {
-				measureTypeSelectioModel.setSelected(object, value);
+				measureTypeSelectionModel.setSelected(object, value);
 				if (value) {
 					measureTypeModel.getMeasureTypeList().add(object);
 				} else {
 					for (int i = 0; i < measureTypeModel.getMeasureTypeList().size(); i++) {
-						if (measureTypeModel.getMeasureTypeList().get(i).getDescription().equalsIgnoreCase(object.getDescription())) {
+						if (measureTypeModel.getMeasureTypeList().get(i).getDescription().equalsIgnoreCase(object.getDescription())
+								//Added this check to prevent any modifications through developer tools since Composite should never be editable.
+								&& !COMPOSITE.equals(object.getAbbrName())) {
 							measureTypeModel.getMeasureTypeList().remove(i);
 							break;
 						}
@@ -204,5 +241,13 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 	@Override
 	public Widget getFirstElement() {
 		return measureTypeCellTable.asWidget();
+	}
+
+	public List<MeasureType> getMeasureTypeList() {
+		return measureTypeList;
+	}
+
+	public void setMeasureTypeList(List<MeasureType> measureTypeList) {
+		this.measureTypeList = measureTypeList;
 	}
 }

@@ -956,10 +956,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            the measure
 	 * @return the string
 	 */
-	public final String createMeasureDetailsXml(final ManageMeasureDetailModel measureDetailModel,
-			final Measure measure) {
-		logger.info("In MeasureLibraryServiceImpl.createMeasureDetailsXml()");
-		setAdditionalAttrsForMeasureXml(measureDetailModel, measure);
+	public final String createMeasureDetailsXml(final ManageMeasureDetailModel measureDetailModel) {
 		logger.info("creating XML from Measure Details Model");
 		return createXml(measureDetailModel);
 	}
@@ -981,7 +978,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			final Measure measure, final String replaceNode, final String parentNode) {
 		MeasureXmlModel measureXmlModel = new MeasureXmlModel();
 		measureXmlModel.setMeasureId(measure.getId());
-		measureXmlModel.setXml(createMeasureDetailsXml(manageMeasureDetailModel, measure));
+		measureXmlModel.setXml(createMeasureDetailsXml(manageMeasureDetailModel));
 		measureXmlModel.setToReplaceNode(replaceNode);
 		measureXmlModel.setParentNode(parentNode);
 		return measureXmlModel;
@@ -2019,7 +2016,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			result.setSuccess(true);
 			result.setId(pkg.getId());
-			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
+			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE), pkg.getId());
 			// Adds population nodes to new measures
 			updateMeasureXml(model, pkg, existingMeasureScoringType);
 			return result;
@@ -2382,7 +2379,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measure.getId());
 		XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 		
-		xmlProcessor.checkForScoringType(MATPropertiesService.get().getQmdVersion(), model.getMeasScoring());
+		xmlProcessor.checkForScoringType(MATPropertiesService.get().getQmdVersion(), model.getMeasScoring(), model.isPatientBased());
 		if (!existingMeasureScoringType.equalsIgnoreCase(model.getMeasScoring())) {
 			deleteExistingGroupings(xmlProcessor);
 			MatContext.get().setCurrentMeasureScoringType(model.getMeasScoring());
@@ -2479,7 +2476,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public final void saveMeasureXml(final MeasureXmlModel measureXmlModel) {
+	public final void saveMeasureXml(final MeasureXmlModel measureXmlModel, String measureId) {
 
 		MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
@@ -2501,10 +2498,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			processor.addParentNode(MEASURE);
 			processor.transform(processor.getOriginalDoc());
 			try {
-				String libraryName = (String) xPath.evaluate("/measure/measureDetails/title/text()",
-						processor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
-				String version = (String) xPath.evaluate("/measure/measureDetails/version/text()",
-						processor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
+				Measure measure = measureDAO.find(measureId);
+				String libraryName = measure.getDescription();
+				String version = MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion());
 
 				XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
 				String cqlLookUpTag = cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)),
@@ -2721,24 +2717,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		return result;
 
-	}
-
-	/**
-	 * Setting Additional Attributes for Measure Xml.
-	 * 
-	 * @param measureDetailModel
-	 *            - {@link ManageMeasureDetailModel}.
-	 * @param measure
-	 *            - {@link Measure}.
-	 */
-	private void setAdditionalAttrsForMeasureXml(final ManageMeasureDetailModel measureDetailModel,
-			final Measure measure) {
-		logger.info("In MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()");
-		measureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(measureDetailModel.getRevisionNumber(),
-				String.valueOf(measure.getVersionNumber())));
-		measureDetailModel.setVersionNumber(MeasureUtility.getVersionText(measureDetailModel.getOrgVersionNumber(),
-				measureDetailModel.getRevisionNumber(), measure.isDraft()));
-		
 	}
 
 	/**
@@ -3557,8 +3535,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							boolean isTypeCheckInValid = false;
 							try {
 								for (Map.Entry<Integer, MeasurePackageDetail> entry : seqDetailMap.entrySet()) {
+									Measure measure = measureDAO.find(entry.getValue().getMeasureId());
 									List<String> messages = PatientBasedValidator.checkPatientBasedValidations(
-											xmlModel.getXml(), entry.getValue(), cqlLibraryDAO);
+											xmlModel.getXml(), entry.getValue(), cqlLibraryDAO, measure);
 									if (!messages.isEmpty()) {
 										allMessages = allMessages + "Grouping " + entry.getKey() + ", ";
 										isTypeCheckInValid = true;

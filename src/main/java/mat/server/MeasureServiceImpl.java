@@ -160,8 +160,8 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 	
 	@Override
-	public void saveMeasureXml(MeasureXmlModel measureXmlModel) {
-		this.getMeasureLibraryService().saveMeasureXml(measureXmlModel);
+	public void saveMeasureXml(MeasureXmlModel measureXmlModel, String measureId) {
+		this.getMeasureLibraryService().saveMeasureXml(measureXmlModel, measureId);
 		
 	}
 	

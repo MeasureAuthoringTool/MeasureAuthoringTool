@@ -1,6 +1,6 @@
 package mat.client.populationworkspace;
 
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.shared.ConstantMessages;
 
 public class PopulationTreeBuilderStrategyFactory {
 	private final CohortTreeBuildingStrategy cohortTreeBuildingStrategy = new CohortTreeBuildingStrategy();
@@ -10,13 +10,13 @@ public class PopulationTreeBuilderStrategyFactory {
 
 	PopulationTreeBuilderStrategy getPopulationTreeBuilderStrategy(String scoringType) {
 		switch(scoringType) {
-		case PopulationWorkSpaceConstants.SCORING_TYPE_COHORT:
+		case ConstantMessages.COHORT_SCORING:
 			return cohortTreeBuildingStrategy;
-		case PopulationWorkSpaceConstants.SCORING_TYPE_CONTINOUS_VARIABLE:
+		case ConstantMessages.CONTINUOUS_VARIABLE_SCORING:
 			return continousVariableTreeBuildingStrategy;
-		case PopulationWorkSpaceConstants.SCORING_TYPE_RATIO:
+		case ConstantMessages.RATIO_SCORING:
 			return ratioTreeBuildingStrategy;
-		case PopulationWorkSpaceConstants.SCORING_TYPE_PROPORTION:
+		case ConstantMessages.PROPORTION_SCORING:
 			return proportionTreeBuildingStrategy;
 		}
 		return continousVariableTreeBuildingStrategy;

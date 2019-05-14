@@ -453,7 +453,7 @@ public class XmlTreePresenter {
 							.getXmlTree().getRootTreeNode().getChildValue(0);
 					final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper
 							.createXmlFromTree(cellTreeNode));
-					service.saveMeasureXml(measureXmlModel,
+					service.saveMeasureXml(measureXmlModel, MatContext.get().getCurrentMeasureId(),
 							new AsyncCallback<Void>() {
 						@Override
 						public void onFailure(final Throwable caught) {

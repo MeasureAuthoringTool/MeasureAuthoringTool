@@ -104,11 +104,9 @@ public class CQLViewPopulationsDisplay {
 					document = XMLParser.parse(measureXml);
 					PopulationWorkSpaceConstants.subTreeLookUpName = result.getClauseMap();
 					setMeasureElementsMap();
-					NodeList nodeList = document.getElementsByTagName("scoring");
-					if ((nodeList != null) && (nodeList.getLength() > 0)) {
-						String scoringIdAttributeValue = MatContext.get().getCurrentMeasureScoringType();
-						buildView(scoringIdAttributeValue);
-					}
+					String scoringIdAttributeValue = MatContext.get().getCurrentMeasureScoringType();
+					
+					buildView(scoringIdAttributeValue);
 					Mat.hideLoadingMessage();
 				}
 

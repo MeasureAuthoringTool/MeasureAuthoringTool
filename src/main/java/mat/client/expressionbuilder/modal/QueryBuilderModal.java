@@ -6,6 +6,7 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.DescriptionData;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.NavPills;
@@ -16,6 +17,7 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -67,10 +69,6 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private Button previousButton;
 	private Button nextButton;
 
-	private ExpressionTypeSelectorList sourceSelector;
-	private ExpressionTypeSelectorList filterSelector;
-	private ExpressionTypeSelectorList sortSelector;
-
 	private BuildButtonObserver sourceBuildButtonObserver;
 	private BuildButtonObserver filterBuildButtonObserver;
 	private BuildButtonObserver sortBuildButtonObserver;
@@ -84,8 +82,11 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 
 	private HandlerRegistration previousHandler;
 	private HandlerRegistration nextHandler;
-	
+
 	private ListBoxMVP availableExpressionsForRelationship;
+
+	private DescriptionData description;
+	private FocusPanel focusPanel;
 	
 	public QueryBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
 			ExpressionBuilderModel mainModel) {
@@ -121,6 +122,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		this.getContentPanel().add(buildContentPanel());
 		this.updateCQLDisplay();
 		navigate(currentScreen);
+		focusPanel.setFocus(true);
 	}
 
 	private Widget buildContentPanel() {
@@ -156,6 +158,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(buttonPanel);
+		buildLabel();
 		return mainPanel;
 	}
 	
@@ -221,8 +224,8 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private Widget buildSourceWidget() {
-		VerticalPanel sourcePanel = new VerticalPanel();
-		sourcePanel.setStyleName(SELECTORS_PANEL);
+		VerticalPanel sourcePanel = buildFocusPanel();
+
 		List<ExpressionType> availableExpressionsForSouce = new ArrayList<>();
 		availableExpressionsForSouce.add(ExpressionType.ATTRIBUTE);	
 		availableExpressionsForSouce.add(ExpressionType.RETRIEVE);
@@ -231,7 +234,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		availableExpressionsForSouce.add(ExpressionType.QUERY);
 		List<OperatorType> availableOperatorsForSource = new ArrayList<>(OperatorTypeUtil.getSetOperators());
 		
-		sourceSelector = new ExpressionTypeSelectorList(
+		ExpressionTypeSelectorList sourceSelector = new ExpressionTypeSelectorList(
 				availableExpressionsForSouce, availableOperatorsForSource, QueryFinderHelper.findAliasNames(this.getParentModel()),
 				sourceBuildButtonObserver, queryModel.getSource(), 
 				"What type of expression would you like to use as your data source?", this);
@@ -248,8 +251,8 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private Widget buildFilterWidget() {
-		VerticalPanel filterPanel = new VerticalPanel();
-		filterPanel.setStyleName(SELECTORS_PANEL);
+		VerticalPanel filterPanel = buildFocusPanel();
+		
 		List<ExpressionType> availableExpressionsForFilter = new ArrayList<>();
 		availableExpressionsForFilter.add(ExpressionType.COMPARISON);
 		availableExpressionsForFilter.add(ExpressionType.DEFINITION);
@@ -263,7 +266,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		List<OperatorType> availableOperatorsForFilter = new ArrayList<>(OperatorTypeUtil.getBooleanOperators());
 		
-		filterSelector = new ExpressionTypeSelectorList(
+		ExpressionTypeSelectorList filterSelector = new ExpressionTypeSelectorList(
 				availableExpressionsForFilter, availableOperatorsForFilter, QueryFinderHelper.findAliasNames(this.queryModel),
 				filterBuildButtonObserver, queryModel.getFilter(), 
 				 "What would you like to use to filter your source?", this);
@@ -343,14 +346,13 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private Widget buildSortByWidget() {
-		VerticalPanel sortByPanel = new VerticalPanel();
-		sortByPanel.setStyleName(SELECTORS_PANEL);
+		VerticalPanel sortByPanel = buildFocusPanel();
 		
 		List<ExpressionType> availableExpressionsForSort = new ArrayList<>();
 		availableExpressionsForSort.add(ExpressionType.ATTRIBUTE);
 		availableExpressionsForSort.add(ExpressionType.TIME_BOUNDARY);
 		
-		sortSelector = new ExpressionTypeSelectorList(availableExpressionsForSort, new ArrayList<>(), 
+		ExpressionTypeSelectorList sortSelector = new ExpressionTypeSelectorList(availableExpressionsForSort, new ArrayList<>(), 
 				sortBuildButtonObserver, queryModel.getSort().getSortExpression(), 
 				"What would you like to sort?", this);
 		
@@ -400,12 +402,12 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private Widget buildReviewQueryWidget() {
-		VerticalPanel filterPanel = new VerticalPanel();
-		filterPanel.setStyleName(SELECTORS_PANEL);
+		VerticalPanel reviewPanel = buildFocusPanel();
+		
 		ViewCQLExpressionWidget cqlExpressionModal = new ViewCQLExpressionWidget();
 		cqlExpressionModal.setCQLDisplay(this.getMainModel().getCQL(""));
-		filterPanel.add(cqlExpressionModal);		
-		return filterPanel;
+		reviewPanel.add(cqlExpressionModal);		
+		return reviewPanel;
 	}
 	
 	private FormGroup buildAliasNameGroup() {
@@ -460,9 +462,6 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		queryBuilderContentPanel.add(buildSourceWidget());
 		
 		sourceListItem.setActive(true);
-		if(sourceSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
-			sourceSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
-		}
 	}
 
 	private void displayRelationship() {
@@ -483,9 +482,6 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		queryBuilderContentPanel.add(buildFilterWidget());
 		
 		filterListItem.setActive(true);
-		if(filterSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
-			filterSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
-		}
 	}
 
 	private void displaySort() {
@@ -496,10 +492,6 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		queryBuilderContentPanel.add(buildSortByWidget());
 		
 		sortListItem.setActive(true);
-		if(sortSelector.getSelector()!= null && sortSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
-			sortSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
-		}
-
 	}
 
 	private void displayReviewQuery() {
@@ -523,6 +515,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		displayCurrentTab(text);
 		this.getErrorAlert().clearAlert();
 		this.updateCQLDisplay();
+		focusPanel.setFocus(true);	
 	}
 	
 	private void displayCurrentTab(String tab) {
@@ -566,8 +559,31 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private void updateTitle(String text) {
 		this.setTitle(this.getExpressionBuilderParent().getModalTitle() + " > " +  "Query > " + text);
 		this.setModalTitle(this.getExpressionBuilderParent().getModalTitle() + " > " +  "Query > " + text);
-		if (ExpressionBuilderUserAssistText.isKeyPresent(text)) {
-			this.setLabel(ExpressionBuilderUserAssistText.getEnumByTitle(text).getValue());
-		}
+		setLabelText(ExpressionBuilderUserAssistText.getEnumByTitle(text).getValue());
 	}
+	
+	private Widget buildLabel() {
+		description = new DescriptionData();
+		description.setStyleName("attr-Label");
+		description.setId("queryLabel");
+		return description;
+	}
+
+	public void setLabelText(String label) {		
+		description.setText(label);
+		description.setTitle(label);
+	}
+	
+	private VerticalPanel buildFocusPanel() {
+		VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.setStyleName(SELECTORS_PANEL);
+		
+		focusPanel = new FocusPanel(description);
+		
+		verticalPanel.add(focusPanel);
+		verticalPanel.add(new SpacerWidget());
+		
+		return verticalPanel;
+	}
+
 }

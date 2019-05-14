@@ -34,6 +34,7 @@ public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 	
 	@Override
 	public void display() {
+		this.getErrorAlert().clearAlert();
 		this.getContentPanel().add(buildContentPanel());
 		this.updateCQLDisplay();
 	}

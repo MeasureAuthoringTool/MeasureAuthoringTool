@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.expressionbuilder.component.ViewCQLExpressionWidget;
 import mat.client.expressionbuilder.constant.ExpressionBuilderUserAssistText;
+import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
@@ -60,7 +61,8 @@ public abstract class ExpressionBuilderModal extends Modal {
 		
 		body.add(buildHelpBlock(""));
 		body.add(buildErrorAlert());
-		if (ExpressionBuilderUserAssistText.isKeyPresent(title.substring(title.lastIndexOf('>') + 2))) {
+		String exprName = title.substring(title.lastIndexOf('>') + 2);
+		if (!ExpressionType.QUERY.getDisplayName().equals(exprName) && ExpressionBuilderUserAssistText.isKeyPresent(exprName)) {
 			body.add(buildLabel());
 			body.add(new SpacerWidget());
 			body.add(new SpacerWidget());

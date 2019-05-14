@@ -61,7 +61,7 @@ public class MeasureDetailsViewFactory {
 			case DISCLAIMER:
 				return buildRichTextEditorView(measureDetailsModel.getDisclaimerModel(), new DisclaimerView(), new DisclaimerObserver());
 			case MEASURE_TYPE:
-				return buildMeasureTypeView(new MeasureTypeView(measureDetailsModel.getMeasureTypeModeModel(), MatContext.get().getMeasureTypeList()), new MeasureTypeObserver());
+				return buildMeasureTypeView(new MeasureTypeView(measureDetailsModel.isComposite(), measureDetailsModel.getMeasureTypeModeModel(), MatContext.get().getMeasureTypeList()), new MeasureTypeObserver());
 			case STRATIFICATION:
 				return buildRichTextEditorView(measureDetailsModel.getStratificationModel(), new StratificationView(), new StratificationObserver());
 			case RISK_ADJUSTMENT:

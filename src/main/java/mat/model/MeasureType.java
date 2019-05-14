@@ -1,11 +1,12 @@
 package mat.model;
 
+import java.util.Comparator;
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import java.util.Comparator;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -13,15 +14,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 @Table(name="MEASURE_TYPES")
 public class MeasureType implements IsSerializable{
 	
-	/**
-	 * The Class Comparator.
-	 */
 	public static class MeasureTypeComparator implements Comparator<MeasureType>, IsSerializable {
 
-		/* (non-Javadoc)
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
-		@Override
 		public int compare(MeasureType o1, MeasureType o2) {
 			return o1.getDescription().compareTo(o2.getDescription());
 		}
@@ -64,6 +58,24 @@ public class MeasureType implements IsSerializable{
 
 	public void setAbbrName(String abbrName) {
 		this.abbrName = abbrName;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(abbrName, description, id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MeasureType other = (MeasureType) obj;
+		return Objects.equals(abbrName, other.abbrName) && Objects.equals(description, other.description)
+				&& Objects.equals(id, other.id);
 	}
 
 }

@@ -44,6 +44,8 @@ public class MeasureSelectedEvent extends GwtEvent<MeasureSelectedEvent.Handler>
 	
 	private boolean isDraft;
 	
+	private boolean isPatientBased;
+	
 
 	/**
 	 * Instantiates a new measure selected event.
@@ -67,7 +69,8 @@ public class MeasureSelectedEvent extends GwtEvent<MeasureSelectedEvent.Handler>
 	 * @param isDraft
 	 * 			tells us if te measure is in a draft state
 	 */
-	public MeasureSelectedEvent(String measureId, String measureVersion, String measureName, String shortName, String scoringType, boolean isEditable,boolean isLocked,String lockedUserId, boolean isDraft) {
+	public MeasureSelectedEvent(String measureId, String measureVersion, String measureName, String shortName, String scoringType, boolean isEditable,
+			boolean isLocked,String lockedUserId, boolean isDraft, boolean isPatientBased) {
 		this.measureId = measureId;
 		this.measureVersion = measureVersion;
 		this.measureName = measureName;
@@ -77,6 +80,7 @@ public class MeasureSelectedEvent extends GwtEvent<MeasureSelectedEvent.Handler>
 		this.isLocked = isLocked;
 		this.lockedUserId = lockedUserId;
 		this.setDraft(isDraft);
+		this.isPatientBased = isPatientBased;
 	}
 	
 	
@@ -262,6 +266,18 @@ public class MeasureSelectedEvent extends GwtEvent<MeasureSelectedEvent.Handler>
 
 	public void setDraft(boolean isDraft) {
 		this.isDraft = isDraft;
+	}
+
+
+
+	public boolean isPatientBased() {
+		return isPatientBased;
+	}
+
+
+
+	public void setPatientBased(boolean isPatientBased) {
+		this.isPatientBased = isPatientBased;
 	}
 
 }

@@ -7,10 +7,17 @@ import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Node;
+
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.MeasureDAO;
+import mat.model.clause.Measure;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
 import mat.server.util.CQLUtil;
@@ -18,10 +25,6 @@ import mat.server.util.XmlProcessor;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
 import mat.shared.SaveUpdateCQLResult;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Node;
 
 public class PatientBasedValidator {
 	
@@ -48,19 +51,15 @@ public class PatientBasedValidator {
 
 	private static final String MEASURE_OBSERVATION = "measureObservation";
 
-	private static final String XPATH_FOR_MEASURE_SCORING = "/measure/measureDetails/scoring";
-
-	private static final String XPATH_FOR_PATIENT_BASED_INDICATOR = "/measure/measureDetails/patientBasedIndicator";
-
 	//Indicator for CQL return types of Integer,Decimal, or Quantity.
 	private static final String CQL_RETURN_TYPE_NUMERIC = "NUMERIC";
 
 	//Indicator for CQL return types of Boolean.
-	private static final String CQL_RETURN_TYPE_BOOLEAN = "BOOLEAN";	
+	private static final String CQL_RETURN_TYPE_BOOLEAN = "BOOLEAN";
+		
 	
 	
-	
-	public static List<String> checkPatientBasedValidations(String measureXmlL, MeasurePackageDetail detail, CQLLibraryDAO cqlLibraryDAO) throws XPathExpressionException {
+	public static List<String> checkPatientBasedValidations(String measureXmlL, MeasurePackageDetail detail, CQLLibraryDAO cqlLibraryDAO, Measure measure) throws XPathExpressionException {
 		Map<String, List<String>> expressionPopMap = new HashMap<String,List<String>>();
 		Map<String, List<String>> assoExpressionPopMap = new HashMap<String,List<String>>();
 		
@@ -68,8 +67,7 @@ public class PatientBasedValidator {
 		
 		XmlProcessor xmlProcessor = new XmlProcessor(measureXmlL);
 
-		Node scoringNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), XPATH_FOR_MEASURE_SCORING);
-		String scoringType = scoringNode.getTextContent();
+		String scoringType = measure.getMeasureScoring();
 		
 		List<String> exprList = new ArrayList<String>();
 		List<String> msrObsFunctionList = new ArrayList<String>();
@@ -181,9 +179,7 @@ public class PatientBasedValidator {
 				}
 			}
 
-			Node patientBasedIndicatorNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), XPATH_FOR_PATIENT_BASED_INDICATOR);
-			String patientBasedIndicator = patientBasedIndicatorNode.getTextContent();
-			boolean isPatientBasedIndicator = patientBasedIndicator.equals("true");
+			boolean isPatientBasedIndicator = measure.getPatientBased();
 			
 			if(isPatientBasedIndicator){
 

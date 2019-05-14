@@ -442,13 +442,13 @@ public class XmlProcessor {
 	 * 
 	 * @return the string
 	 */
-	public String checkForScoringType(String releaseVersion, String scoringType) {
+	public String checkForScoringType(String releaseVersion, String scoringType, boolean isPatientBased) {
 		if (originalDoc == null) {
 			return "";
 		}
 		try {
 			removeNodesBasedOnScoring(scoringType);
-			createNewNodesBasedOnScoring(scoringType,releaseVersion);
+			createNewNodesBasedOnScoring(scoringType,releaseVersion, isPatientBased);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
@@ -650,7 +650,7 @@ public class XmlProcessor {
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	public void createNewNodesBasedOnScoring(String scoringType, String releaseVersion)
+	public void createNewNodesBasedOnScoring(String scoringType, String releaseVersion, boolean isPatientBased)
 			throws XPathExpressionException {
 		List<String> scoreBasedNodes = retrieveScoreBasedNodes(scoringType);
 		Node populationsNode = findNode(originalDoc, XPATH_POPULATIONS);
@@ -665,8 +665,7 @@ public class XmlProcessor {
 		 * and scoring type is Continuous Variable.
 		 */
 		Node measureObservationsNode = findNode(originalDoc, XPATH_MEASURE_OBSERVATIONS);
-		Node patientBasedMeasureNode = findNode(originalDoc, XPATH_FOR_PATIENT_BASED_INDICATOR);
-		if ((CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType) || (RATIO.equalsIgnoreCase(scoringType) && patientBasedMeasureNode != null && !"true".equals(patientBasedMeasureNode.getTextContent()))) 
+		if ((CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType) || (RATIO.equalsIgnoreCase(scoringType) && isPatientBased)) 
 				&& (measureObservationsNode == null)) {
 			// Create a new measureObservations element.
 			String nodeName = MEASURE_OBSERVATION;
@@ -928,12 +927,11 @@ public class XmlProcessor {
 		Element populationsElem = originalDoc.createElement("populations");
 		populationsElem.setAttribute(DISPLAY_NAME,
 				XmlProcessor.constantsMap.get("populations"));
-		Node measureDetailsNode = findNode(originalDoc,
-				"/measure/measureDetails");
-		Node measureNode = measureDetailsNode.getParentNode();
+		Node measureNode = findNode(originalDoc,
+				"/measure");
 		Element measureElement = (Element) measureNode;
 		measureElement.insertBefore(populationsElem,
-				measureDetailsNode.getNextSibling());
+				measureNode.getFirstChild());
 		return populationsElem;
 	}
 	

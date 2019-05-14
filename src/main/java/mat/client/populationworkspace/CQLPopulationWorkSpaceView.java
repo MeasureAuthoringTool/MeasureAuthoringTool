@@ -112,7 +112,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 		mainHPPanel.add(mainPanel);
 
-		mainVPanel.add(mainHPPanel);		
+		mainVPanel.add(mainHPPanel);
 	}
 
 	private void setCautionText(String displayName) {
@@ -131,7 +131,6 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 	@Override
 	public void displayMeasureObservations() {
-
 		mainFlowPanel.clear();
 		populationDataModel.loadPopulations(document);
 		cqlMeasureObservationDetailView = new CQLMeasureObservationDetailView(populationDataModel, 

@@ -232,7 +232,7 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	void saveMeasureXml(MeasureXmlModel measureXmlModel,
+	void saveMeasureXml(MeasureXmlModel measureXmlModel, String measureId,
 			AsyncCallback<Void> callback);
 	
 	/**

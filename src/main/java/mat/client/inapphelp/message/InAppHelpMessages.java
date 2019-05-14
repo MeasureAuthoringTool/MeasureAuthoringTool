@@ -218,6 +218,8 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Cancel Button:</b> the Cancel button will close the attribute builder and not save any changes or selections that were made inside of it.";
 
+	private static final String EDIT_CODE_HELP = "<b>Editing a Code:</b> To edit a code, click on the edit icon (pencil) to put the information back into the top of the screen, add an updated REST API URL (from VSAC) if necessary and click the Retrieve button. Once the information is retrieved from VSAC, changes can be made to the version inclusion and the suffix if necessary. Then click Apply to see the changes applied in the table.";
+	
 	public static final String MEASURE_CQL_LIBRARY_CODES = "<b>Retrieve:</b> Codes are retrieved from VSAC by use of a REST API URL found on the VSAC website. To retrieve a code, copy that REST API URL from VSAC, paste it into this field, and then click the Retrieve button. Note: you must be logged in to UMLS to successfully retrieve a code from VSAC.<br>" +
 			"<br>" +
 			"<b>Code Descriptor:</b> This field will fill in with the code descriptor associated with a code once it has been successfully retrieved from VSAC. This field is not editable.<br>" +
@@ -234,8 +236,10 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Applied Codes table:</b> This table shows all directly-referenced codes currently applied to this measure. This table contains an Edit icon, a Delete icon, and a checkbox which can be used in the process to copy the code.<br>" +
 			"<br>" +
-			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of codes from one measure to another measure or library. To copy a code, click the checkboxes next to the code(s) you wish to copy, click the Copy icon, navigate to another measure or library and click on the Paste icon above the Applied Codes table. To select all codes at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
-
+			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of codes from one measure to another measure or library. To copy a code, click the checkboxes next to the code(s) you wish to copy, click the Copy icon, navigate to another measure or library and click on the Paste icon above the Applied Codes table. To select all codes at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.<br>" +
+			"<br>" 
+			+ EDIT_CODE_HELP;
+	
 	public static final String STANDALONE_CQL_LIBRARY_CODES = "<b>Retrieve:</b> Codes are retrieved from VSAC by use of a REST API URL found on the VSAC website. To retrieve a code, copy that REST API URL from VSAC, paste it into this field, and then click the Retrieve button. Note: you must be logged in to UMLS to successfully retrieve a code from VSAC.<br>" +
 			"<br>" +
 			"<b>Code Descriptor:</b> This field will fill in with the code descriptor associated with a code once it has been successfully retrieved from VSAC. This field is not editable.<br>" +
@@ -252,8 +256,12 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Applied Codes table:</b> This table shows all directly-referenced codes currently applied to this library. This table contains an Edit icon, a Delete icon, and a checkbox which can be used in the process to copy the code.<br>" +
 			"<br>" +
-			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of codes from one library to another library or measure. To copy a code, click the checkboxes next to the code(s) you wish to copy, click the Copy icon, navigate to another library or measure and click on the Paste icon above the Applied Codes table. To select all codes at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
+			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of codes from one library to another library or measure. To copy a code, click the checkboxes next to the code(s) you wish to copy, click the Copy icon, navigate to another library or measure and click on the Paste icon above the Applied Codes table. To select all codes at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.<br>" +
+			"<br>" 
+			+ EDIT_CODE_HELP;
+	
 
+	
 	public static final String MEASURE_CQL_LIBRARY_DEFINITION = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any definitions already included in the measure. Each measure already contains the four supplemental data element definitions as defaults. To open a definition already added to the measure, double-click on the name.  There is a search box just above this list which can be used to find a specific definition name within the list.<br>" + 
 			"<br>" + 
 			"<b>+Add New:</b> Select this link when you are ready to add a new definition. This will clear all the fields in preparation for the new entries.<br>" + 
@@ -281,6 +289,7 @@ public class InAppHelpMessages {
 			BUILD_CQL_EXPRESSION_HELP + 
 			"<br>" + 
 			VIEW_CQL_MEASURE_HELP;
+	
 
 	public static final String STANDALONE_CQL_LIBRARY_DEFINITION = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any definitions already included in the library. To open a definition already added to the library, double-click on the name.  There is a search box just above this list which can be used to find a specific definition name within the list.<br>" + 
 			"<br>" + 

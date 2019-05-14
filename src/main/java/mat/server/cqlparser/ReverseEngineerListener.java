@@ -321,8 +321,16 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		List<CQLFunctionArgument> functionArguments = new ArrayList<>();
 		if(ctx.operandDefinition() != null) {
 			for(OperandDefinitionContext operand : ctx.operandDefinition()) {
-				String name = operand.identifier().getText();
-				String type = operand.typeSpecifier().getText();
+				String name = "";
+				String type = "";
+				if(operand.identifier() != null) {
+					name = operand.identifier().getText();
+				}
+				
+				if(operand.typeSpecifier() != null) {
+					type = operand.typeSpecifier().getText();
+				}
+
 				CQLFunctionArgument functionArgument = new CQLFunctionArgument();
 				functionArgument.setId(UUID.nameUUIDFromBytes(name.getBytes()).toString());
 				functionArgument.setArgumentName(name);

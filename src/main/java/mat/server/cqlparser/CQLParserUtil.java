@@ -1,5 +1,7 @@
 package mat.server.cqlparser;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class CQLParserUtil {
 
 	private CQLParserUtil() {
@@ -7,6 +9,11 @@ public class CQLParserUtil {
 	}
 	
 	public static String parseString(String identifier) {
+		
+		if(StringUtils.isEmpty(identifier)) {
+			return identifier;
+		}
+		
 		if(Character.toString(identifier.charAt(0)).equals("\"") || Character.toString(identifier.charAt(0)).equals("'")) {
 			return identifier.substring(1, identifier.length() - 1);
 		}

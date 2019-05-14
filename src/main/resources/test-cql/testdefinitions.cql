@@ -6,7 +6,6 @@ context Patient
 
 /* test comment */
 define "test":
-  /* test comment before logic */
   true
   
 define "testwithnocomment":

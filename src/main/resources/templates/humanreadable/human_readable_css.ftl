@@ -89,7 +89,6 @@
       margin-bottom: 1em;
       margin-right: 0.5em;
       font-weight: 700;
-      display: inline-block;
     }
 
     .cql-keyword-new {
@@ -180,7 +179,6 @@
     }
 
     .treeview input[type=checkbox]~ul {
-      max-height: 100%;
       margin-right: 20%;
       opacity: 1;
     }

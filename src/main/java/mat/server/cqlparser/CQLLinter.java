@@ -113,12 +113,8 @@ public class CQLLinter extends cqlBaseListener {
 
 	@Override
 	public void enterLibraryDefinition(LibraryDefinitionContext ctx) {
-<<<<<<< HEAD
 		libraryDefinitionStartLine = ctx.getStart().getLine();
-		String name = CQLParserUtil.parseString(ctx.identifier().getText());
-=======
 		String name = CQLParserUtil.parseString(ctx.qualifiedIdentifier().getText());
->>>>>>> MAT-9817 updates CQL to ELM to v1.4.1-SNAPSHOT
 		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
 		
 		if(!name.equals(config.getLibraryName()) || !version.equals(config.getLibraryVersion())) {

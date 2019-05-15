@@ -13,15 +13,19 @@ public class QDMTemplateProcessorFactory {
 		String fileName = ""; 
 
 		if(qdmVersion == 5.3) {
-			fileName = "qdm_templates/qdm_v5_3_datatype_templates.xml";
+			fileName = "templates/hqmf/qdm_v5_3_datatype_templates.xml";
 		}
 		
 		else if(qdmVersion == 5.4) {
-			fileName = "qdm_templates/qdm_v5_4_datatype_templates.xml";
+			fileName = "templates/hqmf/qdm_v5_4_datatype_templates.xml";
 		} 
 		
+		else if(qdmVersion == 5.5) {
+			fileName = "templates/hqmf/qdm_v5_5_datatype_templates.xml";
+		}
+		
 		else {
-			fileName = "qdm_templates/qdm_v4_x_datatype_templates.xml";
+			fileName = "templates/hqmf/qdm_v4_x_datatype_templates.xml";
 		}
 		
 		

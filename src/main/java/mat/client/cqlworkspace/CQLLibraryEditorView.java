@@ -3,15 +3,20 @@ package mat.client.cqlworkspace;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
+import mat.client.buttons.InfoDropDownMenu;
+import mat.client.buttons.InfoToolBarButton;
+import mat.client.buttons.InsertToolBarButton;
 import mat.client.buttons.SaveButton;
 import mat.client.cqlworkspace.shared.CQLEditor;
 import mat.client.cqlworkspace.shared.CQLEditorPanel;
@@ -23,11 +28,16 @@ import mat.shared.CQLError;
 public class CQLLibraryEditorView {
 	private static final String CQL_LIBRARY_EDITOR_ID = "cqlLibraryEditor";
 	private VerticalPanel cqlLibraryEditorVP = new VerticalPanel();
-	private Button exportErrorFile = new Button();
 	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
 	private CQLEditorPanel editorPanel = new CQLEditorPanel(CQL_LIBRARY_EDITOR_ID, "CQL Library Editor", false);
+
+	private Button exportErrorFile = new Button();
+	private Button infoButton = new InfoToolBarButton(CQL_LIBRARY_EDITOR_ID);
+	private Button insertButton = new InsertToolBarButton(CQL_LIBRARY_EDITOR_ID);
 	private Button saveButton = new SaveButton(CQL_LIBRARY_EDITOR_ID);
+	
+	private ButtonGroup infoInsertBtnGroup;
 	
 	public CQLLibraryEditorView(){	
 		cqlLibraryEditorVP.clear();
@@ -54,9 +64,19 @@ public class CQLLibraryEditorView {
 		getCqlAceEditor().clearAnnotations();
 		getCqlAceEditor().setReadOnly(!isEditable);
 		getSaveButton().setEnabled(isEditable);
+		
 		if(isEditable) {
-			cqlLibraryEditorVP.add(exportErrorFile);
+			FlowPanel fp = new FlowPanel();
+
+			exportErrorFile.setPull(Pull.LEFT);
+			fp.add(exportErrorFile);
+
+			buildInfoInsertBtnGroup();
+			fp.add(infoInsertBtnGroup);
+
+			cqlLibraryEditorVP.add(fp);
 		}
+		
 		this.editorPanel.getEditor().addDomHandler(event -> editorPanel.catchTabOutKeyCommand(event, saveButton), KeyUpEvent.getType());
 		editorPanel.setSize("650px", "500px");
 		cqlLibraryEditorVP.add(editorPanel);
@@ -70,6 +90,21 @@ public class CQLLibraryEditorView {
 		return cqlLibraryEditorVP;
 	}
 
+	private void buildInfoInsertBtnGroup() {
+		//Setting this to allow for display of long text
+		infoButton.setWidth("200px");
+		ButtonGroup infoBtnGroup = new ButtonGroup();
+		infoBtnGroup.getElement().setAttribute("class", "btn-group");
+		infoBtnGroup.add(infoButton);
+		infoBtnGroup.add(new InfoDropDownMenu());
+		infoBtnGroup.setPull(Pull.LEFT);
+
+		infoInsertBtnGroup = new ButtonGroup();
+		infoInsertBtnGroup.add(infoBtnGroup);
+		infoInsertBtnGroup.add(insertButton);
+		infoInsertBtnGroup.setPull(Pull.RIGHT);
+	}
+	
 	public CQLEditor getCqlAceEditor() {
 		return editorPanel.getEditor();
 	}
@@ -106,4 +141,13 @@ public class CQLLibraryEditorView {
 	public void setInAppHelp(InAppHelp inAppHelp) {
 		this.inAppHelp = inAppHelp;
 	}
+
+	public Button getInsertButton() {
+		return insertButton;
+	}
+
+	public Button getInfoButton() {
+		return infoButton;
+	}
+
 }

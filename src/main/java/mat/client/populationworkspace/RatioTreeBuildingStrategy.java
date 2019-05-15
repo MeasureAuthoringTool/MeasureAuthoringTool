@@ -16,7 +16,7 @@ import mat.client.shared.MatContext;
 public class RatioTreeBuildingStrategy implements PopulationTreeBuilderStrategy{
 	
 	@Override
-	public CQLCellTreeNode buildCQLTreeNode(String scoringType, Document document) {
+	public CQLCellTreeNode buildCQLTreeNode(String scoringType, Document document, boolean isPatientBased) {
 		List<CQLCellTreeNode> parentchilds = new ArrayList<CQLCellTreeNode>();
 		CQLCellTreeNode parentNode = new CQLCellTreeNodeImpl();
 		parentNode.setName(MatContext.get().getCurrentShortName());
@@ -40,8 +40,7 @@ public class RatioTreeBuildingStrategy implements PopulationTreeBuilderStrategy{
 		stratificationNode.setParent(parentNode);
 		stratificationNode.setOpen(true);
 		
-		NodeList nodeList = document.getElementsByTagName("patientBasedIndicator");
-		if (nodeList != null && nodeList.getLength() > 0 && nodeList.item(0).getFirstChild() != null && !("true").equals(nodeList.item(0).getFirstChild().getNodeValue())) {
+		if (!isPatientBased) {
 			CQLCellTreeNode moNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, PopulationWorkSpaceConstants.ROOT_NODE_MEASURE_OBSERVATIONS);
 			moNode.setLabel(PopulationWorkSpaceConstants.get(PopulationWorkSpaceConstants.ROOT_NODE_MEASURE_OBSERVATIONS));
 			parentchilds.add(moNode.getChilds().get(0));

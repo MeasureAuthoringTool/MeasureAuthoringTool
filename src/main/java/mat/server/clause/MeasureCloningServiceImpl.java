@@ -338,7 +338,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 
 	private MeasureDeveloperAssociation createMeasureDetailsAssociation(Author author, Measure measure) {
 		if(isOrgPresent(author.getId())) {
-			Organization organization = organizationDAO.findByOid(author.getOrgId());
+			Organization organization = organizationDAO.findById(author.getId());
 			return new MeasureDeveloperAssociation(measure, organization);
 		}
 		return null;

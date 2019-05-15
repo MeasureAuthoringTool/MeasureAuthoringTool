@@ -15,7 +15,7 @@ import mat.client.shared.MatContext;
 public class ContinuousVariableTreeBuildingStrategy  implements PopulationTreeBuilderStrategy{
 
 	@Override
-	public CQLCellTreeNode buildCQLTreeNode(String scoringType, Document document) {
+	public CQLCellTreeNode buildCQLTreeNode(String scoringType, Document document, boolean isPatientBased) {
 		List<CQLCellTreeNode> parentchilds = new ArrayList<CQLCellTreeNode>();
 		CQLCellTreeNode parentNode = new CQLCellTreeNodeImpl();
 		parentNode.setName(MatContext.get().getCurrentShortName());

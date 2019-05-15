@@ -362,7 +362,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	public void fireMeasureSelected(ManageMeasureSearchModel.Result result){
 		fireMeasureSelectedEvent(result.getId(), result.getVersion(), result.getName(),
 				result.getShortName(), result.getScoringType(), result.isEditable(),
-				result.isMeasureLocked(), result.getLockedUserId(result.getLockedUserInfo()), result.isDraft(), result.isPatientBased());
+				result.isMeasureLocked(), result.getLockedUserId(result.getLockedUserInfo()), result.isDraft(), calulatePatientBased(result.isPatientBased(), result.getScoringType()));
 		setSearchingBusy(false);
 		isClone = false;
 	}
@@ -1375,7 +1375,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							final boolean isMeasureLocked = result.isMeasureLocked();
 							final boolean isDraft = result.isDraft();
 							final String userId = result.getLockedUserId(result.getLockedUserInfo());
-							final boolean isPatientBased = result.isPatientBased();
+							final boolean isPatientBased = calulatePatientBased(result.isPatientBased(), scoringType);
 
 							MatContext.get().getMeasureLockService().isMeasureLocked(mid);
 							Command waitForLockCheck = new Command() {
@@ -1426,7 +1426,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							final boolean isMeasureLocked = result.isMeasureLocked();
 							final boolean isDraft = result.isDraft();
 							final String userId = result.getLockedUserId(result.getLockedUserInfo());
-							final boolean isPatientBased = result.isPatientBased();
+							final boolean isPatientBased = calulatePatientBased(result.isPatientBased(), scoringType);
 							MatContext.get().getMeasureLockService().isMeasureLocked(mid);
 							Command waitForLockCheck = new Command() {
 								@Override
@@ -1565,6 +1565,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 		searchDisplay.getClearButton().addClickHandler(event -> clearAllMeasureOwnershipTransfers());
 
+	}
+
+	protected boolean calulatePatientBased(Boolean patientBased, String scoringType) {
+		if(patientBased == null) {
+			return !scoringType.equals(ConstantMessages.CONTINUOUS_VARIABLE_SCORING);
+		}
+		return patientBased;
 	}
 
 	private void displayActiveMATUsersToTransferMeasureOwnership() {
@@ -1835,7 +1842,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			final String scoringType = currentDetails.getMeasScoring();
 			final String version = currentDetails.getVersionNumber()+"."+currentDetails.getRevisionNumber();		
 			final boolean isDraft = currentDetails.isDraft();
-			final boolean isPatientBased = currentDetails.isPatientBased();
+			final boolean isPatientBased = calulatePatientBased(currentDetails.isPatientBased(), scoringType);
 			MatContext.get().getMeasureService().save(currentDetails, new AsyncCallback<SaveMeasureResult>() {
 
 				@Override
@@ -1929,7 +1936,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		final String scoringType = currentCompositeMeasureDetails.getMeasScoring();
 		final String version = currentCompositeMeasureDetails.getVersionNumber() + "." + currentCompositeMeasureDetails.getRevisionNumber();
 		final boolean isDraft = currentCompositeMeasureDetails.isDraft();
-		final boolean isPatientBased = currentCompositeMeasureDetails.isPatientBased();
+		final boolean isPatientBased = calulatePatientBased(currentCompositeMeasureDetails.isPatientBased(), scoringType);
 		MatContext.get().getMeasureService().saveCompositeMeasure(currentCompositeMeasureDetails, new AsyncCallback<SaveMeasureResult>() {
 
 			@Override

@@ -531,6 +531,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				MatDetailItem activeMenuItem = navigationPanel.getActiveMenuItem();
 				scoringType = measureDetailsModel.getGeneralInformationModel().getScoringMethod();
 				isPatientBased = measureDetailsModel.getGeneralInformationModel().isPatientBased();
+				MatContext.get().getCurrentMeasureInfo().setScoringType(scoringType);
+				MatContext.get().getCurrentMeasureInfo().setPatientBased(isPatientBased);
 				MatContext.get().setCurrentMeasureScoringType(scoringType);
 				MatContext.get().setCurrentMeasureName(measureDetailsModel.getGeneralInformationModel().getMeasureName());
 				measureHeading.updateMeasureHeading();

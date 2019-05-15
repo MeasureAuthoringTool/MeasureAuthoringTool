@@ -665,7 +665,7 @@ public class XmlProcessor {
 		 * and scoring type is Continuous Variable.
 		 */
 		Node measureObservationsNode = findNode(originalDoc, XPATH_MEASURE_OBSERVATIONS);
-		if ((CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType) || (RATIO.equalsIgnoreCase(scoringType) && isPatientBased)) 
+		if ((CONTINUOUS_VARIABLE.equalsIgnoreCase(scoringType) || (RATIO.equalsIgnoreCase(scoringType) && !isPatientBased)) 
 				&& (measureObservationsNode == null)) {
 			// Create a new measureObservations element.
 			String nodeName = MEASURE_OBSERVATION;

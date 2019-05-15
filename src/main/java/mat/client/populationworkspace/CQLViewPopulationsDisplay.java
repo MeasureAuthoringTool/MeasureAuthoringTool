@@ -64,10 +64,10 @@ public class CQLViewPopulationsDisplay {
 		CellTree.Style cellTreeStyle();
 	}
 	
-	private void buildView(String scoringType) {
+	private void buildView(String scoringType, boolean patientBased) {
 		PopulationTreeBuilderStrategyFactory populationTreeBuilderStrategyFactory = new PopulationTreeBuilderStrategyFactory();
 		PopulationTreeBuilderStrategy populationTreeBuilderStrategy = populationTreeBuilderStrategyFactory.getPopulationTreeBuilderStrategy(scoringType);
-		CQLCellTreeNode parentNode = populationTreeBuilderStrategy.buildCQLTreeNode(scoringType, document);
+		CQLCellTreeNode parentNode = populationTreeBuilderStrategy.buildCQLTreeNode(scoringType, document, patientBased);
 		
 		CQLCellTreeNode topmainNode = new CQLCellTreeNodeImpl();
 		List<CQLCellTreeNode> topchilds = new ArrayList<CQLCellTreeNode>();
@@ -104,9 +104,10 @@ public class CQLViewPopulationsDisplay {
 					document = XMLParser.parse(measureXml);
 					PopulationWorkSpaceConstants.subTreeLookUpName = result.getClauseMap();
 					setMeasureElementsMap();
-					String scoringIdAttributeValue = MatContext.get().getCurrentMeasureScoringType();
+					String scoringIdAttributeValue = MatContext.get().getCurrentMeasureInfo().getScoringType();
+					boolean patientBased = MatContext.get().getCurrentMeasureInfo().isPatientBased();
 					
-					buildView(scoringIdAttributeValue);
+					buildView(scoringIdAttributeValue, patientBased);
 					Mat.hideLoadingMessage();
 				}
 

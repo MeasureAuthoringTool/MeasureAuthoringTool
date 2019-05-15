@@ -101,8 +101,8 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	@Override
 	public void enterLibraryDefinition(LibraryDefinitionContext ctx) {	
 		String identifier = "";
-		if(ctx.identifier() != null) {
-			identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+		if(ctx.qualifiedIdentifier() != null) {
+			identifier = CQLParserUtil.parseString(ctx.qualifiedIdentifier().getText());
 		}
 		
 		String version  = "";
@@ -154,7 +154,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	
 	@Override
 	public void enterIncludeDefinition(IncludeDefinitionContext ctx) {
-		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+		String identifier = CQLParserUtil.parseString(ctx.qualifiedIdentifier().getText());
 		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
 		String alias = CQLParserUtil.parseString(ctx.localIdentifier().getText());
 		

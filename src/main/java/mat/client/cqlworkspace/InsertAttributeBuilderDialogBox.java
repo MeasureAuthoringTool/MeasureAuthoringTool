@@ -59,8 +59,6 @@ public class InsertAttributeBuilderDialogBox {
 	private static final String QUANTITY_UNIT_ALERT = "Quantity field is now enabled. Units dropdown is now enabled.";
 	private static final String FACILITY_LOCATIONS = "facilityLocations";
 	private static final String ATTR_ID = "id";
-	private static final String PRESCRIBER_ID = "prescriberId";
-	private static final String DISPENSER_ID = "dispenserId";
 	private static final String DIAGNOSES = "diagnoses";
 	private static final String COMPONENTS = "components";
 	private static final String VALUE_SETS = "Value Sets";
@@ -442,8 +440,7 @@ public class InsertAttributeBuilderDialogBox {
 
 	private static boolean isModeDisabledEntry(final String attrSelected) {
 		return attrSelected.equalsIgnoreCase(COMPONENTS) || attrSelected.equalsIgnoreCase(DIAGNOSES)
-				|| attrSelected.equalsIgnoreCase(FACILITY_LOCATIONS) || attrSelected.equalsIgnoreCase(ATTR_ID)
-				|| attrSelected.equalsIgnoreCase(PRESCRIBER_ID) || attrSelected.equalsIgnoreCase(DISPENSER_ID);
+				|| attrSelected.equalsIgnoreCase(FACILITY_LOCATIONS) || attrSelected.equalsIgnoreCase(ATTR_ID);
 	}
 
 	private static void clearAllFormGroups() {

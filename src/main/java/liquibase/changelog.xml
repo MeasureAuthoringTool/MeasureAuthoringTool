@@ -243,4 +243,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-168_MAT-9844_New_fields_for_general_measure_information.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-168_MAT-9844_update_NQF_fields.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-171-9856_Add_Related_Person.xml" />
+		<include file="classpath:/liquibase/deploy_Sprint-171-9878_Remove_Attributes.xml" />
 </databaseChangeLog>

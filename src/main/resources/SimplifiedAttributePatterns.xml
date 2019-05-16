@@ -99,18 +99,8 @@
  <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
- <attribute attribName="ordinality">
-  <mode mode="Nullable" />
-  <mode mode="ValueSets" />
-  <mode mode="Codes" />
- </attribute>
  <attribute attribName="prevalencePeriod">
   <mode mode="Nullable" />
- </attribute>
- <attribute attribName="principalDiagnosis">
-  <mode mode="Nullable" />
-  <mode mode="ValueSets" />
-  <mode mode="Codes" />
  </attribute>
  <attribute attribName="radiationDosage">
   <mode mode="Comparison" />

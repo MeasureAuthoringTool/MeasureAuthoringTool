@@ -36,6 +36,7 @@ public class CQLLinter extends cqlBaseListener {
 	
 	private CQLLinterConfig config;
 	private List<String> errorMessages;
+	private List<String> warningMessages;
 	private List<String> missingIncludedLibraries;
 	private List<String> missingValuesets;
 	private List<String> missingCodes;
@@ -49,6 +50,7 @@ public class CQLLinter extends cqlBaseListener {
 		this.config = config;
 		this.errors = new ArrayList<>();
 		this.errorMessages = new ArrayList<>();
+		this.setWarningMessages(new ArrayList<>());
 		this.missingIncludedLibraries = new ArrayList<>();
 		this.missingValuesets = new ArrayList<>();
 		this.missingCodes = new ArrayList<>();
@@ -67,7 +69,7 @@ public class CQLLinter extends cqlBaseListener {
 	
 	private void doPostProcessing(cqlParser parser, CommonTokenStream tokens) {
 		if(isCommentInNoCommentZone(tokens)) {
-			this.errorMessages.add("A comment was added in an incorrect location and could not be saved. Comments are permitted between the CQL Library declaration and the Model declaration, directly above a parameter, definition, or function.");
+			this.warningMessages.add("A comment was added in an incorrect location and could not be saved. Comments are permitted between the CQL Library declaration and the Model declaration, directly above a parameter, definition, or function.");
 		}
 	}
 	
@@ -299,5 +301,13 @@ public class CQLLinter extends cqlBaseListener {
 		error.setEndErrorInLine(ctx.getStop().getLine());
 		error.setErrorAtOffeset(ctx.getStop().getCharPositionInLine());
 		return error;
+	}
+
+	public List<String> getWarningMessages() {
+		return warningMessages;
+	}
+
+	public void setWarningMessages(List<String> warningMessages) {
+		this.warningMessages = warningMessages;
 	}
 }

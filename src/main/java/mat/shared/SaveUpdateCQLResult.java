@@ -42,6 +42,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	private List<String> linterErrorMessages = new ArrayList<>();
 	
+	private List<String> linterWarningMessages = new ArrayList<>();
+	
 	/** The definition. */
 	private CQLDefinition definition;
 	
@@ -453,6 +455,14 @@ public class SaveUpdateCQLResult extends GenericResult{
 
 	public void setLinterErrorMessages(List<String> linterErrorMessages) {
 		this.linterErrorMessages = linterErrorMessages;
+	}
+
+	public List<String> getLinterWarningMessages() {
+		return linterWarningMessages;
+	}
+
+	public void setLinterWarningMessages(List<String> linterWarningMessages) {
+		this.linterWarningMessages = linterWarningMessages;
 	}
 	
 }

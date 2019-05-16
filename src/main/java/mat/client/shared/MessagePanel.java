@@ -13,8 +13,8 @@ public class MessagePanel extends VerticalPanel {
 	
 	public MessagePanel() {
 		add(successMessageAlert);
-		add(warningMessageAlert);
 		add(errorMessageAlert);
+		add(warningMessageAlert);
 		add(warningConfirmationMessageAlert);
 		add(globalWarningConfirmationMessageAlert);
 		clearAlerts();

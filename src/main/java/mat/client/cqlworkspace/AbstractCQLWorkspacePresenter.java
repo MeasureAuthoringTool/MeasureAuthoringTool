@@ -503,6 +503,11 @@ public abstract class AbstractCQLWorkspacePresenter {
 		} else {
 			messagePanel.getSuccessMessageAlert().createAlert("Changes to the CQL File have been successfully saved.");
 		}
+		
+		if(!result.getLinterWarningMessages().isEmpty()) {
+			messagePanel.getWarningMessageAlert().createAlert(result.getLinterWarningMessages());
+			messagePanel.getWarningMessageAlert().setMarginTop(0.0);
+		}
 	}
 	
 	protected void onSaveCQLFileFailure(SaveUpdateCQLResult result) {

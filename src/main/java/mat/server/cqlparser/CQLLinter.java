@@ -67,9 +67,7 @@ public class CQLLinter extends cqlBaseListener {
 	
 	private void doPostProcessing(cqlParser parser, CommonTokenStream tokens) {
 		if(isCommentInNoCommentZone(tokens)) {
-			this.errorMessages.add("A comment was added in an incorrect location and could not be saved. "
-					+ "Comments are permitted between the CQL Library declaration and the Model declaration, "
-					+ "directly above a parameter or define statement, or within a parameter or define statement.");
+			this.errorMessages.add("A comment was added in an incorrect location and could not be saved. Comments are permitted between the CQL Library declaration and the Model declaration, directly above a parameter, definition, or function.");
 		}
 	}
 	

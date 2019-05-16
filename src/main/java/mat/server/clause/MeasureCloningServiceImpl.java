@@ -258,7 +258,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) || currentDetails.isPatientBased()) {
 
 				String scoringTypeId = clonedMeasure.getMeasureScoring();
-				xmlProcessor.removeNodesBasedOnScoring(scoringTypeId);
+				xmlProcessor.removeNodesBasedOnScoring(scoringTypeId, currentDetails.isPatientBased());
 				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId, MATPropertiesService.get().getQmdVersion(), clonedMeasure.getPatientBased());  
 				clonedXml.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
 			}

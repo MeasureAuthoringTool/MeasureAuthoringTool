@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -173,14 +172,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private static final Log logger = LogFactory.getLog(MeasureLibraryServiceImpl.class);
 
 	private static final String MEASURE = "measure";
-
+	
 	private static final String MEASURE_DETAILS = "measureDetails";
-
-	private static final String XPATH_EXPRESSION_COMPONENT_MEASURES = "/measure//measureDetails//componentMeasures";
-
-	private static final String XPATH_EXPRESSION_STEWARD = "/measure//measureDetails//steward";
-
-	private static final String XPATH_EXPRESSION_DEVELOPERS = "/measure//measureDetails//developers";
 
 	private static final String INSTANCE = "instance";
 
@@ -699,15 +692,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 	}
-
-	/**
-	 * Adding additonal fields in model from measure table.
-	 * 
-	 * @param manageMeasureDetailModel
-	 *            - {@link ManageMeasureDetailModel}.
-	 * @param measure
-	 *            - {@link Measure}.
-	 */
+	
 	private void convertAddlXmlElementsToModel(final ManageMeasureDetailModel manageMeasureDetailModel,
 			final Measure measure) {
 		logger.info("In easureLibraryServiceImpl.convertAddlXmlElementsToModel()");
@@ -753,6 +738,37 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return details;
 	
 	}
+	
+	private ManageMeasureDetailModel createModelFromXML(String xml, final Measure measure) {
+		ManageMeasureDetailModel result = null;
+		try {
+			if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+				result = createObjectFromXMLMapping(xml, "CompositeMeasureDetailsModelMapping.xml", ManageCompositeMeasureDetailModel.class);
+				createMeasureDetailsModelForCompositeMeasure((ManageCompositeMeasureDetailModel) result, measure);
+			} else {
+				result = createObjectFromXMLMapping(xml, "MeasureDetailsModelMapping.xml", ManageMeasureDetailModel.class);
+			}
+			convertAddlXmlElementsToModel(result, measure);
+		} catch(Exception e) {
+			logger.error("Exception in createModelFromXML: " + e);
+		}
+		return result;
+	}
+
+	private ManageMeasureDetailModel createObjectFromXMLMapping(String xml, String xmlMapping, Class<?> clazz) {
+
+		Object result = null;
+		XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+		try {
+			result = xmlMarshalUtil.convertXMLToObject(xmlMapping, xml, clazz);
+			
+		} catch (MarshalException | ValidationException | MappingException | IOException e) {
+			logger.error("Failed to load MeasureDetailsModelMapping.xml" + e.getMessage());
+			e.printStackTrace();
+		}
+		return (ManageMeasureDetailModel) result;
+
+	}
 
 	private ManageMeasureDetailModel createModelForNoXML(final Measure measure) {
 		ManageMeasureDetailModel details = null;
@@ -785,37 +801,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		
 		model.setAliasMapping(aliasMapping);
-	}
-	
-	private ManageMeasureDetailModel createModelFromXML(String xml, final Measure measure) {
-		ManageMeasureDetailModel result = null;
-		try {
-			if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
-				result = createObjectFromXMLMapping(xml, "CompositeMeasureDetailsModelMapping.xml", ManageCompositeMeasureDetailModel.class);
-				createMeasureDetailsModelForCompositeMeasure((ManageCompositeMeasureDetailModel) result, measure);
-			} else {
-				result = createObjectFromXMLMapping(xml, "MeasureDetailsModelMapping.xml", ManageMeasureDetailModel.class);
-			}
-			convertAddlXmlElementsToModel(result, measure);
-		} catch(Exception e) {
-			logger.error("Exception in createModelFromXML: " + e);
-		}
-		return result;
-	}
-
-	private ManageMeasureDetailModel createObjectFromXMLMapping(String xml, String xmlMapping, Class<?> clazz) {
-
-		Object result = null;
-		XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
-		try {
-			result = xmlMarshalUtil.convertXMLToObject(xmlMapping, xml, clazz);
-			
-		} catch (MarshalException | ValidationException | MappingException | IOException e) {
-			logger.error("Failed to load MeasureDetailsModelMapping.xml" + e.getMessage());
-			e.printStackTrace();
-		}
-		return (ManageMeasureDetailModel) result;
-
 	}
 
 	/**
@@ -850,7 +835,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return details;
 	}
-
+	
 	@Override
 	public final void createAndSaveElementLookUp(final List<QualityDataSetDTO> list, final String measureID,
 			String expProfileToAllQDM) {
@@ -968,18 +953,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            the manage measure detail model
 	 * @param measure
 	 *            the measure
-	 * @param replaceNode
-	 *            the replace node
 	 * @param parentNode
 	 *            the parent node
 	 * @return the measure xml model
 	 */
 	private MeasureXmlModel createMeasureXmlModel(final ManageMeasureDetailModel manageMeasureDetailModel,
-			final Measure measure, final String replaceNode, final String parentNode) {
+			final Measure measure,  final String parentNode) {
 		MeasureXmlModel measureXmlModel = new MeasureXmlModel();
 		measureXmlModel.setMeasureId(measure.getId());
-		measureXmlModel.setXml(createMeasureDetailsXml(manageMeasureDetailModel));
-		measureXmlModel.setToReplaceNode(replaceNode);
 		measureXmlModel.setParentNode(parentNode);
 		return measureXmlModel;
 	}
@@ -1113,7 +1094,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XPATH_EXPRESSION = XPATH_EXPRESSION.concat("'").concat(dataSetDTO.getUuid())
 					.concat("' or /measure//subTree//elementRef/attribute/@qdmUUID= '").concat(dataSetDTO.getUuid())
 					.concat("' or /measure/supplementalDataElements//@id='").concat(dataSetDTO.getUuid())
-					.concat("' or /measure/measureDetails/itemCount//@id='").concat(dataSetDTO.getUuid())
 					.concat("' or /measure//measureGrouping//packageClause//elementRef/@id='")
 					.concat(dataSetDTO.getUuid()).concat("'");
 
@@ -1520,111 +1500,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		return manageCompositeMeasureDetailModel;
 	}
-	
-	@Override
-	public void updateMeasureXmlForDeletedComponentMeasureAndOrg(String measureId) {
-		logger.info("In MeasureLibraryServiceImpl. updateMeasureXmlForDeletedComponentMeasureAndOrg() method..");
-		logger.info("Updating Measure for MeasueId: " + measureId);
-		MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
-		if (xmlModel != null) {
-			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-			removeDeletedComponentMeasures(processor);
-			removeDeletedSteward(processor);
-			removeDeletedDevelopers(processor);
-			xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
-			measurePackageService.saveMeasureXml(xmlModel);
-		}
-
-	}
-
-	/**
-	 * Update measure developers on deletion.
-	 *
-	 * @param processor
-	 *            the processor
-	 */
-	private void removeDeletedDevelopers(XmlProcessor processor) {
-		try {
-			NodeList developerParentNodeList = (NodeList) xPath.evaluate(XPATH_EXPRESSION_DEVELOPERS,
-					processor.getOriginalDoc(), XPathConstants.NODESET);
-			Node developerParentNode = developerParentNodeList.item(0);
-			if (developerParentNode != null) {
-				NodeList developerNodeList = developerParentNode.getChildNodes();
-				for (int i = 0; i < developerNodeList.getLength(); i++) {
-					Node newNode = developerNodeList.item(i);
-					String developerId = newNode.getAttributes().getNamedItem(ID).getNodeValue();
-					Organization org = organizationDAO.findById(developerId);
-					if (org == null) {
-						developerParentNode.removeChild(newNode);
-						logger.info("Deleted MeasureDevelopers Deleted successFully From MeasureXml.");
-					} else {
-						newNode.setTextContent(org.getOrganizationName());
-						logger.info("Developer's Name updated in MeasureXml.");
-					}
-				}
-			}
-		} catch (XPathExpressionException e) {
-			logger.debug("Failed to delete MeasureDevelopers From MeasureXml. Exception occured." + e);
-		}
-
-	}
-
-	/**
-	 * Update steward on deletion.
-	 *
-	 * @param processor
-	 *            the processor
-	 */
-	private void removeDeletedSteward(XmlProcessor processor) {
-		try {
-			// steward
-			Node stewardParentNode = (Node) xPath.evaluate(XPATH_EXPRESSION_STEWARD, processor.getOriginalDoc(),
-					XPathConstants.NODE);
-			if (stewardParentNode != null) {
-				String id = stewardParentNode.getAttributes().getNamedItem(ID).getNodeValue();
-				Organization org = organizationDAO.findById(id);
-				if (org == null) {
-					removeNode(XPATH_EXPRESSION_STEWARD, processor.getOriginalDoc());
-					logger.info("Deleted steward Deleted successFully From MeasureXml.");
-				} else {
-					stewardParentNode.setTextContent(org.getOrganizationName());
-					logger.info("Steward Name updated in measure Xml.");
-				}
-			}
-		} catch (XPathExpressionException e) {
-			logger.debug("Failed to delete steward From MeasureXml. Exception occured." + e);
-		}
-
-	}
-
-	/**
-	 * Update component measures on deletion.
-	 *
-	 * @param processor
-	 *            the processor
-	 */
-	private void removeDeletedComponentMeasures(XmlProcessor processor) {
-		try {
-			NodeList componentMeasureParentNodeList = (NodeList) xPath.evaluate(XPATH_EXPRESSION_COMPONENT_MEASURES,
-					processor.getOriginalDoc(), XPathConstants.NODESET);
-			Node componentMeasureParentNode = componentMeasureParentNodeList.item(0);
-			if (componentMeasureParentNode != null) {
-				NodeList nodeList = componentMeasureParentNode.getChildNodes();
-
-				for (int i = 0; i < nodeList.getLength(); i++) {
-					Node newNode = nodeList.item(i);
-					String id = newNode.getAttributes().getNamedItem(ID).getNodeValue();
-					boolean isDeleted = measureDAO.getMeasure(id);
-					if (!isDeleted) {
-						componentMeasureParentNode.removeChild(newNode);
-					}
-				}
-			}
-			logger.info("Deleted componentMeasures Deleted successFully From MeasureXml.");
-		} catch (XPathExpressionException e) {
-			logger.debug("Failed to delete  componentMeasures From MeasureXml. Exception occured." + e);
-		}
-	}
 
 
 	/**
@@ -1846,14 +1721,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     private String replaceVersionInXMLString(String measureXML, String versionStr, String measureId) throws XPathExpressionException {
     	XmlProcessor xmlProcessor = new XmlProcessor(measureXML);
     	String cqlVersionXPath = "//cqlLookUp/version";
-    	String measureVersionXPath = "//measureDetails/version";
-    	Node measureVersionNode = (Node) xPath.evaluate(measureVersionXPath,
-    			xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
-    	if (measureVersionNode != null) {
-    		measureVersionNode.setTextContent(MeasureUtility.formatVersionText(versionStr));
-    	} else {
-    		logger.info("measureDetails Node not found. This is in measure : " + measureId);
-    	}
 
     	Node cqlVersionNode = (Node) xPath.evaluate(cqlVersionXPath,
     			xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
@@ -2016,7 +1883,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			result.setSuccess(true);
 			result.setId(pkg.getId());
-			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE), pkg.getId());
+			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE), pkg.getId());
 			// Adds population nodes to new measures
 			updateMeasureXml(model, pkg, existingMeasureScoringType);
 			return result;
@@ -2498,8 +2365,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				measurePackageService.saveMeasureXml(measureXmlModel);
 			}
 		} else {
-			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
-			processor.addParentNode(MEASURE);
+			XmlProcessor processor = new XmlProcessor("<measure> </measure>");
 			processor.transform(processor.getOriginalDoc());
 			try {
 
@@ -4739,11 +4605,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("In MeasureLibraryServiceImpl.getUsedStewardAndDevelopersList() method..");
 		logger.info("Loading Measure for MeasueId: " + measureId);
 		MeasureDetailResult usedStewardAndAuthorList = new MeasureDetailResult();
-		MeasureXmlModel xml = getMeasureXmlForMeasure(measureId);
+		
+		Measure measure = measureDAO.find(measureId);
 		
 		List<Organization> allOrganization = getAllOrganizations();
-		usedStewardAndAuthorList.setUsedAuthorList(getAuthorsList(xml, allOrganization));
-		usedStewardAndAuthorList.setUsedSteward(getSteward(xml, allOrganization));
+		usedStewardAndAuthorList.setUsedAuthorList(getAuthorsList(measure, allOrganization));
+		usedStewardAndAuthorList.setUsedSteward(getSteward(measure, allOrganization));
 		usedStewardAndAuthorList.setAllAuthorList(getAllAuthorList(allOrganization));
 		usedStewardAndAuthorList.setAllStewardList(getAllStewardList(allOrganization));
 
@@ -4779,43 +4646,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            the xml model
 	 * @return the authors list
 	 */
-	private List<Author> getAuthorsList(MeasureXmlModel xmlModel, List<Organization> allOrganization) {
-		XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-		String XPATH_EXPRESSION_DEVELOPERS = "/measure//measureDetails//developers";
-		List<Author> usedAuthorList = new ArrayList<>();
-
-		try {
-			NodeList developerParentNodeList = (NodeList) xPath.evaluate(XPATH_EXPRESSION_DEVELOPERS, processor.getOriginalDoc(), XPathConstants.NODESET);
-			Node developerParentNode = developerParentNodeList.item(0);
-
-			if (developerParentNode != null) {
-				NodeList developerNodeList = developerParentNode.getChildNodes();
-
-				int childNodes =  developerNodeList.getLength();
-
-				LinkedHashSet<Long> authorList = new LinkedHashSet<>();
-
-				for (int i = 0; i < childNodes; i++) {
-					authorList.add(Long.parseLong(developerNodeList.item(i).getAttributes().getNamedItem(ID).getNodeValue()));
-				}
-
-				if(CollectionUtils.isNotEmpty(authorList)) {
-					authorList.forEach(id -> addAuthorsToList(allOrganization, usedAuthorList, id));
-				}
-			}
-
-		} catch (XPathExpressionException e) {
-			logger.debug("getAuthorsList: " + e);
+	private List<Author> getAuthorsList(Measure measure, List<Organization> allOrganizations) {
+		List<Author> usedAuthor = new ArrayList<>();
+		if(measure.getMeasureDevelopers() != null) {
+			usedAuthor = measure.getMeasureDevelopers()
+				.stream()
+				.map(association -> getAuthorFromOrganization(association.getOrganization().getId(), allOrganizations))
+				.collect(Collectors.toList());
 		}
-
-		return usedAuthorList;
-	}
-
-	private void addAuthorsToList(List<Organization> allOrganization, List<Author> usedAuthorList, Long id) {
-		Author author = getAuthorFromOrganization(id, allOrganization);
-		if(author != null) {
-			usedAuthorList.add(author);
-		}
+		return usedAuthor;
 	}
 
 	private Author getAuthorFromOrganization(Long id, List<Organization> allOrganization){
@@ -4831,32 +4670,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/**
 	 * Gets the steward id.
 	 *
-	 * @param xmlModel
+	 * @param measure
 	 *            the xml model
 	 * @return the steward id
 	 */
-	private MeasureSteward getSteward(MeasureXmlModel xmlModel, List<Organization> allOrganization) {
-		MeasureSteward measureSteward = new MeasureSteward();
-		XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-		String XPATH_EXPRESSION_STEWARD = "/measure//measureDetails//steward";
-
-		try {
-			Node stewardParentNode = (Node) xPath.evaluate(XPATH_EXPRESSION_STEWARD, processor.getOriginalDoc(), XPathConstants.NODE);
-			
-			if (stewardParentNode != null) {
-				String id = stewardParentNode.getAttributes().getNamedItem(ID).getNodeValue();
-
-				Organization organization = allOrganization.stream().filter(org -> id.equalsIgnoreCase(Long.toString(org.getId()))).findAny().orElse(new Organization());
-				measureSteward.setId(id);
-				measureSteward.setOrgName(organization.getOrganizationName());
-				measureSteward.setOrgOid(organization.getOrganizationOID());
-			}
-
-		} catch (XPathExpressionException e) {
-			logger.debug("getSteward: " + e);
+	private MeasureSteward getSteward(Measure measure, List<Organization> allOrganization) {
+		if(measure.getMeasureStewardId() != null) {
+			MeasureSteward measureSteward = new MeasureSteward();
+			Organization organization = allOrganization.stream().filter(org -> measure.getMeasureStewardId().equalsIgnoreCase(Long.toString(org.getId()))).findAny().orElse(new Organization());
+			measureSteward.setId(String.valueOf(organization.getId()));
+			measureSteward.setOrgName(organization.getOrganizationName());
+			measureSteward.setOrgOid(organization.getOrganizationOID());
+	
+			return measureSteward;
 		}
-
-		return measureSteward;
+		return null;
 	}
 
 	/**
@@ -4940,23 +4768,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						String organizationName = user.getOrganizationName();
 						String measureDescription = measure.getDescription();
 						int cmsNumber = measure.geteMeasureId();
-						XmlProcessor processor = new XmlProcessor(measureXmlString);
-						String xpathNqfId = "/measure/measureDetails/nqfid";
-						String xpathGuid = "/measure/measureDetails/guid";
-						Node nqfNode = processor.findNode(processor.getOriginalDoc(), xpathNqfId);
-						String nqfId = "";
-						if (nqfNode != null) {
-							if (nqfNode.getAttributes().getNamedItem("extension") != null) {
-								String nqfNumber = nqfNode.getAttributes().getNamedItem("extension").getNodeValue();
-								nqfId = nqfNumber;
-							}
-						}
-						Node guidNode = processor.findNode(processor.getOriginalDoc(), xpathGuid);
-						String guid = "";
-						if (guidNode != null) {
-							String guidNumber = guidNode.getTextContent();
-							guid = guidNumber;
-						}
+						String nqfId = measure.getNqfNumber();
+						String guid = measure.getMeasureSet().getId();
 
 						MeasureOwnerReportDTO ownerReportDTO = new MeasureOwnerReportDTO(firstName, lastName,
 								organizationName, measureDescription, cmsNumber, nqfId, guid);
@@ -5888,8 +5701,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				result.setFailureReason(SaveMeasureResult.INVALID_PACKAGE_GROUPING);
 				return result;
 			}
-
-			updateMeasureXmlForDeletedComponentMeasureAndOrg(measureId);			
+			
 			ValidateMeasureResult validateExports = validateExports(measureId);
 			if(!validateExports.isValid()) {
 				result.setSuccess(false);
@@ -6065,7 +5877,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				return result;
 			}
 			
-			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE), pkg.getId());
+			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE), pkg.getId());
 			
 			updateMeasureXml(model, pkg, existingMeasureScoringType);
 			

@@ -464,13 +464,6 @@ public interface MeasureService extends RemoteService {
 	MeasureDetailResult getUsedStewardAndDevelopersList(String measureId);
 	
 	/**
-	 * Update measure xml for deleted component measure and org.
-	 *
-	 * @param id the id
-	 */
-	void updateMeasureXmlForDeletedComponentMeasureAndOrg(String id);
-	
-	/**
 	 * Update measure xml for expansion identifier.
 	 *
 	 * @param modifyWithDTO the modify with dto

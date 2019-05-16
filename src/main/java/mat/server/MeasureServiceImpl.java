@@ -259,12 +259,6 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 	
 	@Override
-	public void updateMeasureXmlForDeletedComponentMeasureAndOrg(String measureId) {
-		
-		this.getMeasureLibraryService().updateMeasureXmlForDeletedComponentMeasureAndOrg(measureId);
-	}
-	
-	@Override
 	public ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model) {
 		
 		return this.getMeasureLibraryService().validateForGroup(model);

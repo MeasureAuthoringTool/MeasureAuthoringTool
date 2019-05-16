@@ -402,13 +402,6 @@ public interface MeasureLibraryService {
 			MeasureXmlModel measureXmlModel);
 	
 	/**
-	 * Update component measures on deletion.
-	 *
-	 * @param measureId the measure id
-	 */
-	void updateMeasureXmlForDeletedComponentMeasureAndOrg(String measureId);
-	
-	/**
 	 * Validate for group.
 	 *
 	 * @param model the model

@@ -98,9 +98,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	private ShareLevelDAO shareLevelDAO;
 	
 	@Autowired
-	private StewardDAO stewardDAO;
-	
-	@Autowired
 	private UserDAO userDAO;
 		
 	@Autowired

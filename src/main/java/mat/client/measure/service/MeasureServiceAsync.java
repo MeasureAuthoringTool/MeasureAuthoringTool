@@ -493,15 +493,6 @@ public interface MeasureServiceAsync {
 			AsyncCallback<MeasureDetailResult> asyncCallback);
 	
 	/**
-	 * Update measure xml for deleted component measure and org.
-	 *
-	 * @param id the id
-	 * @param asyncCallback the async callback
-	 */
-	void updateMeasureXmlForDeletedComponentMeasureAndOrg(String id,
-			AsyncCallback<Void> asyncCallback);
-	
-	/**
 	 * Update measure xml for expansion identifier.
 	 *
 	 * @param list the list

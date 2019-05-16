@@ -469,7 +469,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(ValidateMeasureResult result) {
 				if (result.isValid()) {
-					updateMeasureXmlForDeletedComponentMeasureAndOrg();
+					String measureId = MatContext.get().getCurrentMeasureId();
+					validateExports(measureId);
 				} else {
 					Mat.hideLoadingMessage();
 					if (result.getValidationMessages() != null) {
@@ -482,26 +483,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 			
 		});
 		
-	}
-	
-	private void updateMeasureXmlForDeletedComponentMeasureAndOrg(){
-		
-		MatContext.get().getMeasureService().updateMeasureXmlForDeletedComponentMeasureAndOrg(model.getId(), new AsyncCallback<Void>() {
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				Mat.hideLoadingMessage();
-				enablePackageButtons(true);
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				view.getInProgressMessageDisplay().clearAlert();
-			}
-			
-			@Override
-			public void onSuccess(Void result) {
-				String measureId = MatContext.get().getCurrentMeasureId();
-				validateExports(measureId);
-			}
-		});
 	}
 	
 	private void validateExports(final String measureId) {

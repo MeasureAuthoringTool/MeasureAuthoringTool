@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -37,7 +39,7 @@ public class CQLLibraryEditorView {
 	private Button insertButton = new InsertToolBarButton(CQL_LIBRARY_EDITOR_ID);
 	private Button saveButton = new SaveButton(CQL_LIBRARY_EDITOR_ID);
 	
-	private ButtonGroup infoInsertBtnGroup;
+	private ButtonGroup infoBtnGroup;
 	
 	public CQLLibraryEditorView(){	
 		cqlLibraryEditorVP.clear();
@@ -66,14 +68,13 @@ public class CQLLibraryEditorView {
 		getSaveButton().setEnabled(isEditable);
 		
 		if(isEditable) {
-			FlowPanel fp = new FlowPanel();
-
 			exportErrorFile.setPull(Pull.LEFT);
-			fp.add(exportErrorFile);
-
+			cqlLibraryEditorVP.add(exportErrorFile);
+			
+			FlowPanel fp = new FlowPanel();
 			buildInfoInsertBtnGroup();
-			fp.add(infoInsertBtnGroup);
-
+			fp.add(infoBtnGroup);
+			fp.add(insertButton);
 			cqlLibraryEditorVP.add(fp);
 		}
 		
@@ -91,18 +92,18 @@ public class CQLLibraryEditorView {
 	}
 
 	private void buildInfoInsertBtnGroup() {
-		//Setting this to allow for display of long text
-		infoButton.setWidth("200px");
-		ButtonGroup infoBtnGroup = new ButtonGroup();
+		DropDownMenu ddm = new InfoDropDownMenu();
+		ddm.getElement().getStyle().setMarginLeft(3, Unit.PX);
+
+		infoButton.setMarginLeft(-10);
+		
+		infoBtnGroup = new ButtonGroup();
 		infoBtnGroup.getElement().setAttribute("class", "btn-group");
 		infoBtnGroup.add(infoButton);
-		infoBtnGroup.add(new InfoDropDownMenu());
+		infoBtnGroup.add(ddm);
 		infoBtnGroup.setPull(Pull.LEFT);
 
-		infoInsertBtnGroup = new ButtonGroup();
-		infoInsertBtnGroup.add(infoBtnGroup);
-		infoInsertBtnGroup.add(insertButton);
-		infoInsertBtnGroup.setPull(Pull.RIGHT);
+		insertButton.setPull(Pull.RIGHT);
 	}
 	
 	public CQLEditor getCqlAceEditor() {

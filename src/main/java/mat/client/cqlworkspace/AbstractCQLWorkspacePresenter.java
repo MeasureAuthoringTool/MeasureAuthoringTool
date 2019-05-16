@@ -244,7 +244,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 	
 	protected void buildInsertPopUp() {
 		cqlWorkspaceView.resetMessageDisplay();
-		curAceEditor = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor();
 		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(curAceEditor, this);
 	}
 	
@@ -1451,6 +1450,8 @@ public abstract class AbstractCQLWorkspacePresenter {
 			cqlWorkspaceView.buildCQLFileView(checkForEditPermission());
 			buildCQLView();
 		}
+		curAceEditor = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor();
+		curAceEditor.setText("");
 		cqlWorkspaceView.getCQLLibraryEditorView().setHeading(getWorkspaceTitle() + " > View CQL", "cqlViewCQL_Id");
 		focusSkipLists();
 	}

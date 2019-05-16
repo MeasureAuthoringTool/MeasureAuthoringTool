@@ -141,6 +141,11 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
+ <attribute attribName="relevantDatetime">
+ 	<mode mode="Comparison" />
+ 	<mode mode="Computative" />
+ 	<mode mode="Nullable" />
+ </attribute>
  <attribute attribName="relevantPeriod">
   <mode mode="Nullable" />
  </attribute>

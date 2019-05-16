@@ -120,6 +120,11 @@
  	<mode mode="ValueSets"/>
  	<mode mode="Codes"/>
  </attribute>
+ <attribute attribName="receivedDatetime">
+ 	<mode mode="Comparison"/>
+ 	<mode mode="Computative"/>
+ 	<mode mode="Nullable"/>
+ </attribute> 
  <attribute attribName="referenceRange">
   <mode mode="Nullable" />
  </attribute>
@@ -164,6 +169,11 @@
  	<mode mode="Nullable" />
  	<mode mode="ValueSets" />
  	<mode mode="Codes" />
+ </attribute>
+  <attribute attribName="sentDatetime">
+ 	<mode mode="Comparison" />
+ 	<mode mode="Computative" />
+ 	<mode mode="Nullable" />
  </attribute>
  <attribute attribName="severity">
   <mode mode="Nullable" />

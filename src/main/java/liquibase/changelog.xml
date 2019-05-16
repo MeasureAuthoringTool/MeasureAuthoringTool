@@ -246,4 +246,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-171-9878_Remove_Attributes.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-170-9893_Add_sentDateTime_receivedDatetime.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-170-9890_add_relevantDatetime.xml" />
+		<include file="classpath:/liquibase/deploy_Sprint-170-9875_add_priority.xml" />
 </databaseChangeLog>

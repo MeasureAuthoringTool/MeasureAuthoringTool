@@ -102,6 +102,11 @@
  <attribute attribName="prevalencePeriod">
   <mode mode="Nullable" />
  </attribute>
+ <attribute attribName="priority">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" /> 
+ </attribute>
  <attribute attribName="radiationDosage">
   <mode mode="Comparison" />
   <mode mode="Nullable" />

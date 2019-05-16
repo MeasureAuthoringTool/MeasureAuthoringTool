@@ -2478,6 +2478,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public final void saveMeasureXml(final MeasureXmlModel measureXmlModel, String measureId) {
 
+		Measure measure = measureDAO.find(measureId);
+		String libraryName = measure.getDescription();
+		String version = MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion());
+		
 		MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureXmlModel.getMeasureId())) {
@@ -2487,7 +2491,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				
 				checkForDefaultCQLParametersAndAppend(xmlProcessor);
 				checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
-				updateCQLVersion(xmlProcessor);
+				updateCQLVersion(xmlProcessor, version);
 				
 				newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
 				measureXmlModel.setXml(newXml);
@@ -2498,9 +2502,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			processor.addParentNode(MEASURE);
 			processor.transform(processor.getOriginalDoc());
 			try {
-				Measure measure = measureDAO.find(measureId);
-				String libraryName = measure.getDescription();
-				String version = MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion());
 
 				XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
 				String cqlLookUpTag = cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)),
@@ -2563,12 +2564,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *
 	 * @param processor
 	 *            the processor
+	 * @param version 
 	 */
-	private void updateCQLVersion(XmlProcessor processor) {
+	private void updateCQLVersion(XmlProcessor processor, String version) {
 		String cqlVersionXPath = "//cqlLookUp/version";
 		try {
-			String version = (String) xPath.evaluate("/measure/measureDetails/version/text()",
-					processor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
 			Node node = (Node) xPath.evaluate(cqlVersionXPath, processor.getOriginalDoc().getDocumentElement(),
 					XPathConstants.NODE);
 			if (node != null) {
@@ -6064,6 +6064,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				result.setId(pkg.getId());
 				return result;
 			}
+			
+			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE), pkg.getId());
 			
 			updateMeasureXml(model, pkg, existingMeasureScoringType);
 			

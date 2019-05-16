@@ -232,6 +232,11 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 				cloneMeasure(currentDetails.isPatientBased());
 			}
 			
+			String formattedVersion = MeasureUtility.formatVersionText(clonedMeasure.getRevisionNumber(), clonedMeasure.getVersion());
+			
+			String formattedVersionWithText = MeasureUtility.getVersionTextWithRevisionNumber(clonedMeasure.getVersion(), 
+					clonedMeasure.getRevisionNumber(), clonedMeasure.isDraft());
+			
 			SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(originalXml);
 			List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
 			
@@ -260,8 +265,13 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			
 			boolean isUpdatedForCQL = updateForCQLMeasure(measure, xmlProcessor, clonedMeasure, isNonCQLtoCQLDraft);
 			xmlProcessor.clearValuesetVersionAttribute();
+			
+			
+			
 			if (!creatingDraft) {
 				resetVersionOnCloning(xmlProcessor);
+			} else {
+				updateCQLLookUpVersionOnDraft(xmlProcessor, formattedVersion);
 			}
 			
 			if(!isUpdatedForCQL){
@@ -269,7 +279,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 				
 				//create the default 4 CMS supplemental definitions
 				appendSupplementalDefinitions(xmlProcessor, false);
-				xmlProcessor.updateCQLLibraryName(measure.getDescription());
+				xmlProcessor.updateCQLLibraryName(clonedMeasure.getDescription());
 				// Always set latest QDM Version.
 				MeasureUtility.updateLatestQDMVersion(xmlProcessor);
 			}
@@ -282,9 +292,8 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			result.setName(currentDetails.getName());
 			result.setShortName(currentDetails.getShortName());
 			result.setScoringType(currentDetails.getMeasScoring());
-			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(clonedMeasure.getVersion(), 
-					clonedMeasure.getRevisionNumber(), clonedMeasure.isDraft());
-			result.setVersion(formattedVersion);
+			
+			result.setVersion(formattedVersionWithText);
 			result.setEditable(Boolean.TRUE);
 			result.setClonable(Boolean.TRUE);
 			result.setPatientBased(clonedMeasure.getPatientBased());
@@ -451,17 +460,6 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 		}
 		
 		clonedMsr.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
-		//MAT-9206 changes
-		if (isNonCQLtoCQLDraft) {
-			Node versionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/measureDetails/version");
-			if (versionNode != null) {				
-				String major = StringUtils.substringBeforeLast(measure.getVersion(), ".");
-				String minor = StringUtils.substringAfterLast(measure.getVersion(), ".");
-				minor = StringUtils.stripStart(minor, "0");
-				String ver = major + "." + minor + ".000";
-				versionNode.setTextContent(ver);
-			}	
-		}
 		
 		Node populationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/populations");
 		if(populationsNode != null){
@@ -877,6 +875,20 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			Node node = (Node) xPath.evaluate(cqlVersionXPath, processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
 			if (node != null) {
 				node.setTextContent("0.0.000");
+			}
+		} catch (XPathExpressionException e) {
+			logger.error(e.getMessage());
+		}
+
+	}
+	
+	private void updateCQLLookUpVersionOnDraft(XmlProcessor processor, String version) {
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		String cqlVersionXPath = "//cqlLookUp/version";
+		try {
+			Node node = (Node) xPath.evaluate(cqlVersionXPath, processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
+			if (node != null) {
+				node.setTextContent(version);
 			}
 		} catch (XPathExpressionException e) {
 			logger.error(e.getMessage());

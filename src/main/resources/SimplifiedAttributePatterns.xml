@@ -143,7 +143,6 @@
   <!-- <mode mode="Codes" /> -->
  </attribute>
  <attribute attribName="relationship">
-  <mode mode="Nullable" />
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>

@@ -189,7 +189,7 @@ public class CQLServiceImpl implements CQLService {
 				parsedResult.setCqlString(formattedCQL);
 			} else {
 				parsedResult.setXml(reverseEngineeredCQLLookup);
-				parsedResult.setCqlString(cql);
+				parsedResult.setCqlString(CQLUtilityClass.getCqlString(reversedEngineeredCQLModel, ""));
 			}
 			
 			CQLLinter linter = CQLUtil.lint(cql, config);			

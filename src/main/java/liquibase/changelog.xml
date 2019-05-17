@@ -248,4 +248,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-170-9890_add_relevantDatetime.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-170-9875_add_priority.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-170-9891_add_performer.xml" />
+		<include file="classpath:/liquibase/deploy_Sprint-170-9895_Add_requester.xml" />
 </databaseChangeLog>

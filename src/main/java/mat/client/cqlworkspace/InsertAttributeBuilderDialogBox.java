@@ -62,6 +62,7 @@ public class InsertAttributeBuilderDialogBox {
 	private static final String DIAGNOSES = "diagnoses";
 	private static final String COMPONENTS = "components";
 	private static final String PERFORMER = "performer";
+	private static final String REQUESTER = "requester";
 	private static final String VALUE_SETS = "Value Sets";
 	private static final String CODES = "Codes";
 	private static final String NULLABLE = "Nullable";
@@ -442,7 +443,7 @@ public class InsertAttributeBuilderDialogBox {
 	private static boolean isModeDisabledEntry(final String attrSelected) {
 		return attrSelected.equalsIgnoreCase(COMPONENTS) || attrSelected.equalsIgnoreCase(DIAGNOSES)
 				|| attrSelected.equalsIgnoreCase(FACILITY_LOCATIONS) || attrSelected.equalsIgnoreCase(PERFORMER) || 
-				attrSelected.equalsIgnoreCase(ATTR_ID);
+				attrSelected.equalsIgnoreCase(REQUESTER) || attrSelected.equalsIgnoreCase(ATTR_ID);
 	}
 
 	private static void clearAllFormGroups() {

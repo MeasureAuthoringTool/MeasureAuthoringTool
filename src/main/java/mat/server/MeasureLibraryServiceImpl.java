@@ -2321,7 +2321,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private List<MeasureTypeAssociation> getSelectedMeasureTypes(Measure measure, ManageMeasureDetailModel model){
 		List<MeasureTypeAssociation> mtaList = new ArrayList<>();
 		List<MeasureType> mtList = model.getMeasureTypeSelectedList();
-		if(mtList != null) {
+		if(CollectionUtils.isNotEmpty(mtList)) {
 			mtList.forEach(typ -> mtaList.add(new MeasureTypeAssociation(measure, findMeasureTypeById(typ.getId()))));
 		}
 		return mtaList;
@@ -5798,6 +5798,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	@Override
 	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) {
+		boolean isExisting = false;
 		// Scrubbing out Mark Up.
 		if (model != null) {
 			model.scrubForMarkUp();
@@ -5811,6 +5812,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MeasureSet measureSet = null;
 			String existingMeasureScoringType = "";
 			if (model.getId() != null) {
+				isExisting = true;
 				setMeasureCreated(true);
 				// editing an existing measure
 				pkg = measurePackageService.getById(model.getId());
@@ -5837,6 +5839,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 				pkg.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 				pkg.setIsCompositeMeasure(Boolean.TRUE);
+				List<MeasureTypeAssociation> measureTypes = new ArrayList<>(1);
+				MeasureType composite = findMeasureTypeById("1");
+				measureTypes.add(new MeasureTypeAssociation(pkg, composite));
+				pkg.setMeasureTypes(measureTypes);
+				
 				model.setRevisionNumber("000");
 				measureSet = new MeasureSet();
 				measureSet.setId(UUID.randomUUID().toString());
@@ -5847,7 +5854,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			MeasureDetails measureDetails = generateMeasureDetailsFromDatabaseData(model, pkg);
 			pkg.setMeasureDetails(measureDetails);
-			pkg.setMeasureTypes(getSelectedMeasureTypes(pkg, model));
+			if (isExisting) {
+				pkg.setMeasureTypes(getSelectedMeasureTypes(pkg, model));
+			}
 			pkg.setMeasureDevelopers(getSelectedDeveloperList(pkg, model));
 			pkg.setMeasureStewardId(model.getStewardId());
 			

@@ -2319,12 +2319,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	private List<MeasureTypeAssociation> getSelectedMeasureTypes(Measure measure, ManageMeasureDetailModel model){
-		List<MeasureTypeAssociation> mtaList = new ArrayList<>();
-		List<MeasureType> mtList = model.getMeasureTypeSelectedList();
-		if(CollectionUtils.isNotEmpty(mtList)) {
-			mtList.forEach(typ -> mtaList.add(new MeasureTypeAssociation(measure, findMeasureTypeById(typ.getId()))));
+		List<MeasureTypeAssociation> measureTypeAssociationList = new ArrayList<>();
+		List<MeasureType> measureTypeList = model.getMeasureTypeSelectedList();
+		if(CollectionUtils.isNotEmpty(measureTypeList)) {
+			measureTypeList.forEach(typ -> measureTypeAssociationList.add(new MeasureTypeAssociation(measure, findMeasureTypeById(typ.getId()))));
 		}
-		return mtaList;
+		return measureTypeAssociationList;
 	}
 	
 	private MeasureType findMeasureTypeById(String measureTypeId) {

@@ -242,8 +242,8 @@
 		<include file="classpath:/liquibase/deploy_Sprint-166_MAT-9621_New_Tables_For_Measure_Details.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-168_MAT-9844_New_fields_for_general_measure_information.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-168_MAT-9844_update_NQF_fields.xml"/>
-		<include file="classpath:/liquibase/deploy_Sprint-171-9856_Add_Related_Person.xml" />
-		<include file="classpath:/liquibase/deploy_Sprint-171-9878_Remove_Attributes.xml" />
+		<include file="classpath:/liquibase/deploy_Sprint-170-9856_Add_Related_Person.xml" />
+		<include file="classpath:/liquibase/deploy_Sprint-170-9878_Remove_Attributes.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-170-9893_Add_sentDateTime_receivedDatetime.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-170-9890_add_relevantDatetime.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-170-9875_add_priority.xml" />

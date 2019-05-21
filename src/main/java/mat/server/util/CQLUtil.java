@@ -585,7 +585,8 @@ public class CQLUtil {
 		
 		// get the strings for parsing
 		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "");
-		libraryMap.put(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed(), parentCQLString);
+		String parentLibraryName = cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed();
+		libraryMap.put(parentLibraryName, parentCQLString);
 		for (String cqlLibName : cqlLibNameMap.keySet()) {
 			CQLModel includedCQLModel = CQLUtilityClass.getCQLModelFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
 
@@ -615,12 +616,12 @@ public class CQLUtil {
 		Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>(); 
 
 		for (CqlTranslatorException cte : cqlToELM.getErrors()) {
-			setCQLErrors(errors, libraryNameErrorsMap, cte);
+			setCQLErrors(parentLibraryName, errors, libraryNameErrorsMap, cte);
 		}
 		
 		List<CQLError> warnings = new ArrayList<>();
 		for (CqlTranslatorException cte : cqlToELM.getWarnings()) {
-			setCQLErrors(warnings, libraryNameWarningsMap, cte);
+			setCQLErrors(parentLibraryName, warnings, libraryNameWarningsMap, cte);
 		}
 				
 		parsedCQL.setCqlModel(cqlModel);
@@ -630,7 +631,7 @@ public class CQLUtil {
 		parsedCQL.setLibraryNameWarningsMap(libraryNameWarningsMap);
 	}
 
-	private static void setCQLErrors(List<CQLError> errors, Map<String, List<CQLError>> libraryToErrorsMap, CqlTranslatorException cte) {
+	private static void setCQLErrors(String parentLibraryName, List<CQLError> errors, Map<String, List<CQLError>> libraryToErrorsMap, CqlTranslatorException cte) {
 		CQLError cqlError = new CQLError();
 		cqlError.setStartErrorInLine(cte.getLocator().getStartLine());
 		cqlError.setErrorInLine(cte.getLocator().getStartLine());
@@ -639,8 +640,12 @@ public class CQLUtil {
 		cqlError.setEndErrorAtOffset(cte.getLocator().getEndChar());
 		cqlError.setErrorMessage(cte.getMessage());
 		cqlError.setSeverity(cte.getSeverity().toString());
-		
+
 		String libraryName = cte.getLocator().getLibrary().getId() + "-" + cte.getLocator().getLibrary().getVersion();
+		if(cte.getLocator().getLibrary().getId().equals("unknown")) {
+			libraryName = parentLibraryName; 
+		}
+						
 		initializeErrorsListForLibraryIfNeeded(libraryToErrorsMap, libraryName);
 		libraryToErrorsMap.get(libraryName).add(cqlError);
 		errors.add(cqlError);

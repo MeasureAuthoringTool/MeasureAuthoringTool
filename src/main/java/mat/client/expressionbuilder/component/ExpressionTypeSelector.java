@@ -67,8 +67,7 @@ public class ExpressionTypeSelector extends Composite {
 		if(isFirstSelection) {
 			panel.add(buildExpressionTypeSelectorPanel());
 		} else {
-			Panel addMorePanel = buildAddMorePanel();
-			panel.add(addMorePanel);
+			panel.add(buildAddMorePanel());
 		}
 		
 		return panel;
@@ -122,15 +121,24 @@ public class ExpressionTypeSelector extends Composite {
 		
 		expressionTypeSelectorListBox.setWidth("100%");
 		
-		expressionTypeSelectorListBox.insertItem(SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE);
+		expressionTypeSelectorListBox.insertItem(SELECT_EXPRESSION_TYPE, SELECT_EXPRESSION_TYPE);
 		for(ExpressionType type : this.availableExpressionTypes) {
-			expressionTypeSelectorListBox.insertItem(type.getDisplayName(), type.getValue(), type.getDisplayName());
+			expressionTypeSelectorListBox.insertItem(type.getValue(), type.getDisplayName());
 		}
 		
 		for(String alias : this.availableAliases) {
-			expressionTypeSelectorListBox.insertItem(alias + " (Query Source)", alias, alias + " (Query Source)");
+			expressionTypeSelectorListBox.insertItem(alias, alias + " (Query Source)");
 		}
 		
+		expressionTypeSelectorBuildButtonPanel.add(expressionTypeSelectorListBox);
+		expressionTypeSelectorBuildButtonPanel.add(buildBuildButton());
+
+		expressionTypeSelectorPanel.add(expressionTypeSelectorBuildButtonPanel);
+		
+		return expressionTypeSelectorPanel;
+	}
+
+	private Button buildBuildButton() {
 		Button buildButton = new Button();
 		buildButton.setText("Build");
 		buildButton.setTitle("Build");
@@ -138,12 +146,7 @@ public class ExpressionTypeSelector extends Composite {
 		buildButton.setMarginLeft(5.0);
 		buildButton.setIcon(IconType.WRENCH);
 		buildButton.addClickHandler(event -> onBuildButtonClick());
-		
-		expressionTypeSelectorBuildButtonPanel.add(expressionTypeSelectorListBox);
-		expressionTypeSelectorBuildButtonPanel.add(buildButton);
-		expressionTypeSelectorPanel.add(expressionTypeSelectorBuildButtonPanel);
-		
-		return expressionTypeSelectorPanel;
+		return buildButton;
 	}
 	
 	private VerticalPanel buildExpressionAndOperatorTypeSelector() {
@@ -152,7 +155,6 @@ public class ExpressionTypeSelector extends Composite {
 		
 		expressionAndOperatorSelectorPanel.add(buildOperatorTypeSelectorPanel());
 		expressionAndOperatorSelectorPanel.add(buildExpressionTypeSelectorPanel());
-		
 		
 		return expressionAndOperatorSelectorPanel;
 	}

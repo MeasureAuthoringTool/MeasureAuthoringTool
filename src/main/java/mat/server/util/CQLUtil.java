@@ -641,10 +641,13 @@ public class CQLUtil {
 		cqlError.setErrorMessage(cte.getMessage());
 		cqlError.setSeverity(cte.getSeverity().toString());
 
-		String libraryName = cte.getLocator().getLibrary().getId() + "-" + cte.getLocator().getLibrary().getVersion();
-		if(cte.getLocator().getLibrary().getId().equals("unknown")) {
+		String libraryName = "";
+		if(cte.getLocator().getLibrary() != null && !"unknown".equals(cte.getLocator().getLibrary().getId())) {
+			libraryName = cte.getLocator().getLibrary().getId() + "-" + cte.getLocator().getLibrary().getVersion();
+		} else {
 			libraryName = parentLibraryName; 
 		}
+		
 						
 		initializeErrorsListForLibraryIfNeeded(libraryToErrorsMap, libraryName);
 		libraryToErrorsMap.get(libraryName).add(cqlError);

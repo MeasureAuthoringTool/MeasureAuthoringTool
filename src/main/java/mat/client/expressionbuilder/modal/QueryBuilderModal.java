@@ -52,6 +52,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	public static final String SOURCE = "Source";
 	public static final String RELATIONSHIP = "Relationship (Optional)";
 	public static final String FILTER = "Filter (Optional)";
+	public static final String RETURN = "Return (Optional)";
 	public static final String SORT = "Sort (Optional)";
 	public static final String REVIEW_QUERY = "Review Query";
 
@@ -63,6 +64,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private AnchorListItem sourceListItem;
 	private AnchorListItem relationshipListItem;
 	private AnchorListItem filterListItem;
+	private AnchorListItem returnListItem;
 	private AnchorListItem sortListItem;
 	private AnchorListItem reviewQueryListItem;
 
@@ -71,6 +73,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 
 	private BuildButtonObserver sourceBuildButtonObserver;
 	private BuildButtonObserver filterBuildButtonObserver;
+	private BuildButtonObserver returnBuildButtonObserver;
 	private BuildButtonObserver sortBuildButtonObserver;
 	private BuildButtonObserver relationshipBuildButtonObserver;
 
@@ -96,6 +99,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		sourceBuildButtonObserver = new BuildButtonObserver(this, queryModel.getSource(), mainModel);
 		filterBuildButtonObserver = new BuildButtonObserver(this, queryModel.getFilter(), mainModel);
+		returnBuildButtonObserver = new BuildButtonObserver(this, queryModel.getReturnClause(), mainModel);
 		sortBuildButtonObserver = new BuildButtonObserver(this, queryModel.getSort().getSortExpression(), mainModel);
 		relationshipBuildButtonObserver  = new BuildButtonObserver(this, queryModel.getRelationship(), mainModel);
 		
@@ -170,6 +174,8 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		buildFilterNav();
 		
+		buildReturnNav();
+		
 		buildSortNav();
 
 		buildReviewQueryNav();
@@ -185,6 +191,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		pills.add(sourceListItem);
 		pills.add(relationshipListItem);
 		pills.add(filterListItem);
+		pills.add(returnListItem);
 		pills.add(sortListItem);
 		pills.add(reviewQueryListItem);
 		pills.setStacked(true);
@@ -209,7 +216,13 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		sortListItem.addClickHandler(event -> navigate(SORT));
 		sortListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
 	}
-
+	
+	private void buildReturnNav() {
+		returnListItem = new AnchorListItem(RETURN);
+		returnListItem.addClickHandler(event -> navigate(RETURN));
+		returnListItem.getElement().setAttribute(STYLE, NAV_PILL_BACKGROUND_COLOR);
+	}
+	
 	private void buildFilterNav() {
 		filterListItem = new AnchorListItem(FILTER);
 		filterListItem.addClickHandler(event -> navigate(FILTER));
@@ -273,6 +286,29 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		
 		filterPanel.add(filterSelector);		
 		return filterPanel;
+	}
+	
+	private Widget buildReturnWidget() {
+		VerticalPanel returnPanel = buildFocusPanel();
+		
+		List<ExpressionType> availableExpressionsForReturn = new ArrayList<>();
+		availableExpressionsForReturn.add(ExpressionType.ATTRIBUTE);
+		availableExpressionsForReturn.add(ExpressionType.RETRIEVE);
+		availableExpressionsForReturn.add(ExpressionType.DEFINITION);
+		availableExpressionsForReturn.add(ExpressionType.FUNCTION);
+		availableExpressionsForReturn.add(ExpressionType.INTERVAL);
+		availableExpressionsForReturn.add(ExpressionType.QUERY);
+		availableExpressionsForReturn.add(ExpressionType.TIME_BOUNDARY);
+		
+		List<OperatorType> availableOperatorsForReturn = new ArrayList<>(OperatorTypeUtil.getBooleanOperators());
+		
+		ExpressionTypeSelectorList returnSelector = new ExpressionTypeSelectorList(
+				availableExpressionsForReturn, availableOperatorsForReturn, QueryFinderHelper.findAliasNames(this.queryModel),
+				returnBuildButtonObserver, queryModel.getReturnClause(), 
+				 "What type of expression would you like to return?", this);
+		
+		returnPanel.add(returnSelector);		
+		return returnPanel;
 	}
 	
 	private Widget buildRelationshipWidget() {
@@ -477,16 +513,26 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	private void displayFilter() {
 		updateTitle(FILTER);
 		updatePreviousButton(RELATIONSHIP, event -> navigate(RELATIONSHIP));
-		updateNextButton(SORT, event -> navigate(SORT));
+		updateNextButton(RETURN, event -> navigate(RETURN));
 		queryBuilderContentPanel.clear();
 		queryBuilderContentPanel.add(buildFilterWidget());
 		
 		filterListItem.setActive(true);
 	}
 
+	private void displayReturn() {
+		updateTitle(RETURN);
+		updatePreviousButton(FILTER, event -> navigate(FILTER));
+		updateNextButton(SORT, event -> navigate(SORT));
+		queryBuilderContentPanel.clear();
+		queryBuilderContentPanel.add(buildReturnWidget());
+		
+		returnListItem.setActive(true);
+	}
+	
 	private void displaySort() {
 		updateTitle(SORT);
-		updatePreviousButton(FILTER, event -> navigate(FILTER));
+		updatePreviousButton(RETURN, event -> navigate(RETURN));
 		updateNextButton(REVIEW_QUERY, event -> navigate(REVIEW_QUERY));
 		queryBuilderContentPanel.clear();
 		queryBuilderContentPanel.add(buildSortByWidget());
@@ -535,6 +581,10 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 			displayFilter();
 			break;
 
+		case RETURN:
+			displayReturn();
+			break;
+
 		case SORT:
 			displaySort();
 			break;
@@ -552,6 +602,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		sourceListItem.setActive(false);		
 		relationshipListItem.setActive(false);
 		filterListItem.setActive(false);
+		returnListItem.setActive(false);
 		sortListItem.setActive(false);
 		reviewQueryListItem.setActive(false);
 	}

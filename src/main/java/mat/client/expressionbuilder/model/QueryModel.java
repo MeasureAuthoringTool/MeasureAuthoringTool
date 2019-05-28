@@ -8,6 +8,7 @@ public class QueryModel extends ExpressionBuilderModel {
 	private ExpressionBuilderModel source;
 	private String alias;
 	private ExpressionBuilderModel filter;
+	private ExpressionBuilderModel returnClause;
 	private QuerySortModel sort;
 	private ExpressionBuilderModel relationship;
 	private String relationshipType;	
@@ -25,6 +26,7 @@ public class QueryModel extends ExpressionBuilderModel {
 		super(parent);
 		this.source = new ExpressionBuilderModel(this);
 		this.filter = new ExpressionBuilderModel(this); 
+		this.returnClause = new ExpressionBuilderModel(this);
 		this.sort = new QuerySortModel(this);
 		this.relationship = new ExpressionBuilderModel(this);
 		this.alias = "";
@@ -46,6 +48,10 @@ public class QueryModel extends ExpressionBuilderModel {
 		return filter;
 	}
 	
+	public ExpressionBuilderModel getReturnClause() {
+		return returnClause;
+	}
+
 	public QuerySortModel getSort() {
 		return sort;
 	}	
@@ -78,6 +84,12 @@ public class QueryModel extends ExpressionBuilderModel {
 		if (!filter.getChildModels().isEmpty()) {
 			builder.append("\n").append(queryContentIndentation);
 			builder.append("where ");
+		}
+		
+		if (!returnClause.getChildModels().isEmpty()) {
+			builder.append("\n").append(queryContentIndentation);
+			builder.append("return ");
+			builder.append(returnClause.getCQL(indentation + "  "));
 		}
 		
 		if(this.getChildModels().size() == 1) {

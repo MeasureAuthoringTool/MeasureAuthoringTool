@@ -38,7 +38,9 @@ public enum ExpressionBuilderUserAssistText {
 	QUERY_RELATIONSHIP(QueryBuilderModal.RELATIONSHIP, ""),
 
 	QUERY_FILTER(QueryBuilderModal.FILTER, "The Filter statement (also known as the where statement) in the query is a way for you to narrow down the results returned from the source data. For Example: where visit.relevantPeriod starts during \"Measurement Period\"."),
-
+	
+	QUERY_RETURN(QueryBuilderModal.RETURN, "A return statement is used to indicate what specific piece of data you would like to get back from a data source that contains multiple items. For Example if your data source is a list of encounters, those encounters will contain timeframes, symptoms, diagnoses, etc. The return statement specifies at which one you would like to look. (return start of Encounter.relevantPeriod)"),
+	
 	QUERY_SORT(QueryBuilderModal.SORT, "A Query Sort indicates in what order you would like the data from your query returned. For Example: sort by start of relevantPeriod asc"),
 
 	QUERY_REVIEW(QueryBuilderModal.REVIEW_QUERY, "This screen gives you one last opportunity to review the query you have built before applying it into your expression. Clicking on the Apply button will accept this query and place it into your expression. Clicking on the Exit Query button here will cancel everything that has been built in this query and take you back to the screen you were on before choosing Query."),

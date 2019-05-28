@@ -150,8 +150,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected abstract void buildCQLView();
 	protected abstract boolean checkForEditPermission();
 	public abstract boolean isStandaloneCQLLibrary();
-	protected abstract void getUsedArtifacts();
-	protected abstract void getUsedCodes();
 	protected abstract void exportErrorFile();
 	protected abstract void setWidgetReadOnly(boolean isEditable);
 	protected abstract void addVSACCQLValueset();
@@ -960,7 +958,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 				appliedValueSetTableList.add(modifyValueSetDTO);
 				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(usrDefDisplayName));
 			}
-			getUsedArtifacts();
 		} else {
 			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
 		}
@@ -1020,7 +1017,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(displayName));
 				appliedValueSetTableList.add(modifyValueSetDTO);
 			}
-			getUsedArtifacts();
 		} else {
 			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getMODIFY_VALUE_SET_SELECT_ATLEAST_ONE());
 		}
@@ -1212,7 +1208,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 			messagePanel.getSuccessMessageAlert().createAlert(buildRemovedSuccessfullyMessage(VALUESET, result.getCqlQualityDataSetDTO().getName()));
 			messagePanel.getSuccessMessageAlert().setVisible(true);
 		}
-		getUsedArtifacts();
 		showSearchingBusy(false);
 	}
 
@@ -1705,7 +1700,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 			cqlWorkspaceView.getCodesView().buildCodesCellTable(appliedCodeTableList, isEditable);
 			cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
 			cqlWorkspaceView.getCodesView().setWidgetsReadOnly(isEditable);
-			getUsedCodes();
 			cqlWorkspaceView.getCodesView().getPasteButton().setEnabled(isEditable);
 		}
 		cqlWorkspaceView.getCodesView().setHeading(getWorkspaceTitle() + " > Codes", "codesContainerPanel");
@@ -1880,7 +1874,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 		cqlWorkspaceView.getValueSetView().buildAppliedValueSetCellTable(cqlWorkspaceView.getCQLLeftNavBarPanelView().getAppliedQdmTableList(), isEditable);
 		cqlWorkspaceView.getValueSetView().resetCQLValuesetearchPanel();
 		cqlWorkspaceView.getValueSetView().setWidgetsReadOnly(isEditable);
-		getUsedArtifacts();
 	}
 	
 	public void setNextSelection() {

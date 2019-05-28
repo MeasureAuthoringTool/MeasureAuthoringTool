@@ -807,7 +807,6 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public SaveUpdateCQLResult deleteDefinition(String xml, CQLDefinition toBeDeletedObj) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
 		result.setCqlModel(cqlModel);
 
@@ -816,14 +815,6 @@ public class CQLServiceImpl implements CQLService {
 			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
 			return result;
 		}
-
-		GetUsedCQLArtifactsResult artifactsResult = getUsedCQlArtifacts(xml);
-		if (artifactsResult.getCqlErrors().isEmpty()
-				&& artifactsResult.getUsedCQLDefinitions().contains(toBeDeletedObj.getName())) {
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
-			return result;
-		} 
 			
 		cqlModel.getDefinitionList().removeIf(d -> d.getId().equals(toBeDeletedObj.getId()));
 		result.setSuccess(true);
@@ -941,16 +932,7 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult deleteFunction(String xml, CQLFunctions toBeDeletedObj) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
-		result.setCqlModel(cqlModel);
-
-		GetUsedCQLArtifactsResult artifactsResult = getUsedCQlArtifacts(xml);
-		if (artifactsResult.getCqlErrors().isEmpty()
-				&& artifactsResult.getUsedCQLFunctions().contains(toBeDeletedObj.getName())) {
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
-			return result;
-		}
-		
+		result.setCqlModel(cqlModel);		
 		cqlModel.getCqlFunctions().removeIf(f -> f.getId().equals(toBeDeletedObj.getId()));
 		result.setCqlModel(cqlModel);
 		result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));
@@ -969,14 +951,6 @@ public class CQLServiceImpl implements CQLService {
 			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
 			return result;
 		}
-
-		GetUsedCQLArtifactsResult artifactsResult = getUsedCQlArtifacts(xml);
-		if (artifactsResult.getCqlErrors().isEmpty()
-				&& artifactsResult.getUsedCQLParameters().contains(toBeDeletedObj.getName())) {
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
-			return result;
-		} 
 		
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
 		cqlModel.getCqlParameters().removeIf(p -> p.getId().equals(toBeDeletedObj.getId()));

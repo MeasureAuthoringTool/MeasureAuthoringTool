@@ -449,16 +449,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 										messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
 									}
 								}
+								
 								showSearchingBusy(false);
-								if(!result.getCqlErrors().isEmpty()) {
-									cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
-								} else {
-									if(result.getUsedCQLArtifacts().getUsedCQLFunctions().contains(functionName)) {
-										cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
-									} else {
-										cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
-									}
-								}
 							}
 						});
 			}
@@ -542,15 +534,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 									}
 								}
 								showSearchingBusy(false);
-								if (!result.getCqlErrors().isEmpty()) {
-									cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
-								} else {
-									if (result.getUsedCQLArtifacts().getUsedCQLParameters().contains(parameterName)) {
-										cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
-									} else {
-										cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
-									}
-								}
 							}
 						});
 			}
@@ -692,16 +675,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 										}
 									}
 								}
+								
 								showSearchingBusy(false);
-								if (!result.getCqlErrors().isEmpty()) { // if there are errors, enable the definition button
-									cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
-								} else {
-									if (result.getUsedCQLArtifacts().getUsedCQLDefinitions().contains(definitionName)) {
-										cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
-									} else {
-										cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
-									}
-								}
 							}
 						});
 			}
@@ -1372,42 +1347,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().getCQLLibraryEditorTab().addClickHandler(event -> leftNavCQLLibraryEditorViewEvent());
 	}
 
-	@Override
-	protected void getUsedArtifacts() {
-		showSearchingBusy(true);
-		MatContext.get().getLibraryService().getUsedCqlArtifacts(MatContext.get().getCurrentCQLLibraryId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						showSearchingBusy(false);
-					}
-
-					@Override
-					public void onSuccess(GetUsedCQLArtifactsResult result) {
-						showSearchingBusy(false);
-						if(!result.getCqlErrors().isEmpty()) {
-							for(CQLQualityDataSetDTO cqlDTo : cqlWorkspaceView.getCQLLeftNavBarPanelView().getAppliedQdmTableList()){
-								cqlDTo.setUsed(false);
-							}
-						} else {
-							for(CQLQualityDataSetDTO cqlDTo : cqlWorkspaceView.getCQLLeftNavBarPanelView().getAppliedQdmTableList()){
-								if (result.getUsedCQLValueSets().contains(cqlDTo.getName())) {
-									cqlDTo.setUsed(true);
-								} else{
-									cqlDTo.setUsed(false);
-								}
-							}
-						}
-
-						if(cqlWorkspaceView.getCQLLeftNavBarPanelView().getAppliedQdmTableList().size() > 0) {
-							cqlWorkspaceView.getValueSetView().getCelltable().redraw();
-							cqlWorkspaceView.getValueSetView().getListDataProvider().refresh();
-						}
-					}
-				});
-	}
-
 	private void addValueSetEventHandlers() {
 		cqlWorkspaceView.getValueSetView().getCancelQDMButton().addClickHandler(event -> valueSetViewCancelQDMButtonClicked());
 		cqlWorkspaceView.getValueSetView().getUpdateFromVSACButton().addClickHandler(event -> valueSetViewUpdateFromVSACClicked());
@@ -1884,7 +1823,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 							}
 						}
 					}
-					getUsedArtifacts();
 					currentMatValueSet = null;
 					cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(false);
 					showSearchingBusy(false);
@@ -1954,45 +1892,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		matValueSetTransferObject.setUserDefinedText(cqlWorkspaceView.getValueSetView().getUserDefinedInput().getText());
 		return matValueSetTransferObject;
 	}
-
-
-	@Override
-	protected void getUsedCodes() {
-		showSearchingBusy(true);
-
-		MatContext.get().getLibraryService().getUsedCqlArtifacts(MatContext.get().getCurrentCQLLibraryId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				showSearchingBusy(false);
-			}
-
-			@Override
-			public void onSuccess(GetUsedCQLArtifactsResult result) {
-				showSearchingBusy(false);
-				if(!result.getCqlErrors().isEmpty()) {
-					for(CQLCode cqlCode : appliedCodeTableList){
-						cqlCode.setUsed(false);
-					}
-				} else {
-					for(CQLCode cqlCode : appliedCodeTableList){
-						if (result.getUsedCQLcodes().contains(cqlCode.getDisplayName())) {
-							cqlCode.setUsed(true);
-						} else{
-							cqlCode.setUsed(false);
-						}
-					}
-				}
-
-				if(cqlWorkspaceView.getCQLLeftNavBarPanelView().getAppliedCodeTableList().size() > 0) {
-					cqlWorkspaceView.getCodesView().getCelltable().redraw();
-					cqlWorkspaceView.getCodesView().getListDataProvider().refresh();
-				}
-			}
-		});
-	}
-
 
 	@Override
 	protected void focusSkipLists() {
@@ -2180,13 +2079,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		CQLParameter currentParameter = cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID);
 		if (checkForEditPermission()) {
 			cqlWorkspaceView.getCQLParametersView().setWidgetReadOnly(!isReadOnly);
-			if (!currentParameter.isReadOnly()) {
-				if (!result.getCqlErrors().isEmpty() || !result.getUsedCQLParameters().contains(currentParameter.getName())) {
-					cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
-				} else{
-					cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
-				}
-			}
 		}
 		SharedCQLWorkspaceUtility.setCQLWorkspaceExceptionAnnotations(currentParameter.getName(), result.getCqlErrorsPerExpression(), result.getCqlWarningsPerExpression(), curAceEditor);
 
@@ -2315,12 +2207,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 																SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(errorsForLibrary, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, editor);
 																SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(warningsForLibrary, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, editor);
 																editor.setAnnotations();
-
-																if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLLibraries().contains(
-																		cqlIncludeLibrary.getCqlLibraryName()+ "-"+ cqlIncludeLibrary.getVersion()+ "|"
-																				+ cqlIncludeLibrary.getAliasName())) {
-																	cqlWorkspaceView.getIncludeView().getDeleteButton().setEnabled(true);
-																}
 															}
 
 														});
@@ -2424,12 +2310,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
 		if (checkForEditPermission()) {
 			cqlWorkspaceView.getCQLDefinitionsView().setWidgetReadOnly(!isReadOnly);
-			if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLDefinitions().contains(currentDefinition.getName())) {
-				cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
-			} else {
-				cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
-			}
 		}
+		
 		SharedCQLWorkspaceUtility.setCQLWorkspaceExceptionAnnotations(currentDefinition.getName(), result.getCqlErrorsPerExpression(), result.getCqlWarningsPerExpression(), curAceEditor);
 		if(result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null){
 			cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap().get(currentDefinition.getName()));
@@ -2542,12 +2424,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		CQLFunctions currentFunction = cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId);
 		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 			cqlWorkspaceView.getCQLFunctionsView().setWidgetReadOnly(true);
-
-			if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLFunctions().contains(currentFunction.getName())) {
-				cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
-			} else {
-				cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
-			}
 		}
 
 		SharedCQLWorkspaceUtility.setCQLWorkspaceExceptionAnnotations(currentFunction.getName(), result.getCqlErrorsPerExpression(), 

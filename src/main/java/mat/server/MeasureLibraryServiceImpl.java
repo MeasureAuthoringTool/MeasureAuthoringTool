@@ -3518,7 +3518,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null);
 
 		if (cqlResult.getCqlErrors() != null && cqlResult.getCqlErrors().isEmpty()) {
-			String exportedXML = ExportSimpleXML.export(newXml, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel);
+			String exportedXML = ExportSimpleXML.export(newXml, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel, measureTypeDAO);
 
 			CQLModel model = CQLUtilityClass.getCQLModelFromXML(exportedXML);
 

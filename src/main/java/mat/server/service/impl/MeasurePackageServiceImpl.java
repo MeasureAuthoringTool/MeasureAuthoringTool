@@ -16,6 +16,7 @@ import mat.client.shared.MatContext;
 import mat.dao.CQLLibraryAuditLogDAO;
 import mat.dao.DataTypeDAO;
 import mat.dao.MeasureAuditLogDAO;
+import mat.dao.MeasureTypeDAO;
 import mat.dao.OrganizationDAO;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.StewardDAO;
@@ -72,6 +73,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	
 	@Autowired
 	private MeasureDAO measureDAO;
+	
+	@Autowired
+	private MeasureTypeDAO measureTypeDAO;
 	
 	@Autowired
 	private OrganizationDAO organizationDAO;
@@ -155,7 +159,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
 		if (measure.getReleaseVersion() != null && MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
 			final CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getMeasureXMLAsString());
-			exportedXML = ExportSimpleXML.export(measureXML, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel);
+			exportedXML = ExportSimpleXML.export(measureXML, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel, measureTypeDAO);
 		} else {
 			exportedXML = ExportSimpleXML.export(measureXML, measureDAO, organizationDAO);
 		}

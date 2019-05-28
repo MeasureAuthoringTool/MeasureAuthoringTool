@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.w3c.dom.Node;
 
+import mat.dao.MeasureTypeDAO;
 import mat.dao.OrganizationDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
@@ -27,6 +28,8 @@ public class ExportSimpleXMLTest {
 	private CQLLibraryDAO cqlLibraryDAO;
 	@Mock
 	private MeasureDAO measureDAO;
+	@Mock
+	private MeasureTypeDAO measureTypeDAO;
 
 	
 	@Before
@@ -42,7 +45,7 @@ public class ExportSimpleXMLTest {
 		when(testXML.getMeasureId()).thenReturn("8ae46199641932f301641935eca30002");
 		when(measureDAO.find(anyString())).thenReturn(buildTestMeasure());
 		CQLModel cqlModel = new CQLModel();
-		String simpleXML = ExportSimpleXML.export(testXML, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel);
+		String simpleXML = ExportSimpleXML.export(testXML, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel, measureTypeDAO);
 		XmlProcessor xmlProcessor = new XmlProcessor(simpleXML);
 
 		try {

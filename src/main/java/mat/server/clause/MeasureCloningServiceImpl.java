@@ -52,8 +52,6 @@ import mat.model.Organization;
 import mat.model.User;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
-import mat.model.clause.MeasureDetails;
-import mat.model.clause.MeasureDetailsReference;
 import mat.model.clause.MeasureDeveloperAssociation;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureTypeAssociation;
@@ -65,6 +63,7 @@ import mat.server.SpringRemoteServiceServlet;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.MATPropertiesService;
+import mat.server.util.ManageMeasureDetailModelConversions;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
@@ -218,8 +217,8 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 				clonedMeasure.setNqfNumber(currentDetails.getNqfId());
 				clonedMeasure.setMeasurementPeriodFrom(getTimestampFromDateString(currentDetails.getMeasFromPeriod()));
 				clonedMeasure.setMeasurementPeriodTo(getTimestampFromDateString(currentDetails.getMeasToPeriod()));
-				
-				createMeasureDetails(clonedMeasure, currentDetails);
+				ManageMeasureDetailModelConversions conversion = new ManageMeasureDetailModelConversions();
+				conversion.createMeasureDetails(clonedMeasure, currentDetails);
 				createMeasureType(clonedMeasure, currentDetails);
 				createMeasureDevelopers(clonedMeasure, currentDetails);
 			}
@@ -360,44 +359,6 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 					.collect(Collectors.toList());
 			clonedMeasure.setMeasureTypes(typesAssociations);
 		}
-	}
-
-	private void createMeasureDetails(Measure clonedMeasure, ManageMeasureDetailModel currentDetails) {
-		MeasureDetails measureDetails = new MeasureDetails();
-		measureDetails.setMeasure(clonedMeasure);
-		measureDetails.setDescription(currentDetails.getDescription());
-		measureDetails.setCopyright(currentDetails.getCopyright());
-		measureDetails.setDisclaimer(currentDetails.getDisclaimer());
-		measureDetails.setStratification(currentDetails.getStratification());
-		measureDetails.setRiskAdjustment(currentDetails.getRiskAdjustment());
-		measureDetails.setRateAggregation(currentDetails.getRateAggregation());
-		measureDetails.setRationale(currentDetails.getRationale());
-		measureDetails.setClinicalRecommendation(currentDetails.getClinicalRecomms());
-		measureDetails.setImprovementNotation(currentDetails.getImprovNotations());
-		measureDetails.setDefinition(currentDetails.getDefinitions());
-		measureDetails.setGuidance(currentDetails.getGuidance());
-		measureDetails.setTransmissionFormat(currentDetails.getTransmissionFormat());
-		measureDetails.setInitialPopulation(currentDetails.getInitialPop());
-		measureDetails.setDenominator(currentDetails.getDenominator());
-		measureDetails.setDenominatorExclusions(currentDetails.getDenominatorExclusions());
-		measureDetails.setNumerator(currentDetails.getNumerator());
-		measureDetails.setNumeratorExclusions(currentDetails.getNumeratorExclusions());
-		measureDetails.setMeasureObservations(currentDetails.getMeasureObservations());
-		measureDetails.setMeasurePopulation(currentDetails.getMeasurePopulation());
-		measureDetails.setMeasurePopulationExclusions(currentDetails.getMeasurePopulationExclusions());
-		measureDetails.setDenominatorExceptions(currentDetails.getDenominatorExceptions());
-		measureDetails.setSupplementalDataElements(currentDetails.getSupplementalData());
-		measureDetails.setMeasureSet(currentDetails.getGroupName());
-		List<MeasureDetailsReference> references = new ArrayList<>();
-		if(currentDetails.getReferencesList() != null) {
-			for(int i=0; i< currentDetails.getReferencesList().size(); i++) {
-				MeasureDetailsReference reference = new MeasureDetailsReference(measureDetails, currentDetails.getReferencesList().get(i), i);
-				references.add(reference);
-			}
-		}
-		measureDetails.setMeasureDetailsReference(references);
-		
-		clonedMeasure.setMeasureDetails(measureDetails);
 	}
 
 	private List<ComponentMeasure> cloneAndSetComponentMeasures(List<ComponentMeasure> componentMeasures, Measure clonedMeasure) {

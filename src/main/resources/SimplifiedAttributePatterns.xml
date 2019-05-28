@@ -145,6 +145,7 @@
  <attribute attribName="relationship">
   <mode mode="ValueSets" />
   <mode mode="Codes" />
+  <mode mode="Nullable" />
  </attribute>
  <attribute attribName="relevantDatetime">
  	<mode mode="Comparison" />

@@ -48,7 +48,9 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Applied Value Sets table:</b> This table shows all value sets currently applied to this measure. This table contains an Edit icon, a Delete icon, and a checkbox which can be used in the process to copy the value set.<br>" +
 			"<br>" +
-			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of value sets from one measure to another measure or library. To copy a value set, select the checkboxes next to the value set(s) you wish to copy, click the Copy icon, navigate to another measure or library and click on the Paste icon above the Applied Value Sets table. To select all value sets at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
+			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of value sets from one measure to another measure or library. To copy a value set, select the checkboxes next to the value set(s) you wish to copy, click the Copy icon, navigate to another measure or library and click on the Paste icon above the Applied Value Sets table. To select all value sets at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.<br>" +
+			"<br>" +
+			"<b>Editing a Value Set:</b> To edit a value set, click on the edit icon (pencil) to put the information back into the top of the screen, add an updated OID and change the program and release if necessary (optional) and click the Retrieve button. Once the information is retrieved from VSAC, changes can be made to the suffix. Then click Apply to see the changes applied in the table.";
 
 	public static final String STANDALONE_CQL_LIBRARY_VALUE_SET = "<b>OID:</b> Each value set is identified with a unique Object Identifier (OID). Enter the OID for the desired value set to include in the library and then click the Retrieve OID button. Note: You must be signed in to UMLS to retrieve a Value Set from the Value Set Authority Center (VSAC) through the MAT.<br>" +
 			"<br>" +
@@ -64,7 +66,9 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Applied Value Sets table:</b> This table shows all value sets currently applied to this library. This table contains an Edit icon, a Delete icon, and a checkbox which can be used in the process to copy the value set.<br>" +
 			"<br>" +
-			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of value sets from one library to another library or measure. To copy a value set, select the checkboxes next to the value set(s) you wish to copy, click the Copy icon, navigate to another library or measure and click on the Paste icon above the Applied Value Sets table. To select all value sets at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.";
+			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of value sets from one library to another library or measure. To copy a value set, select the checkboxes next to the value set(s) you wish to copy, click the Copy icon, navigate to another library or measure and click on the Paste icon above the Applied Value Sets table. To select all value sets at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.<br>" +
+			"<br>" +
+			"<b>Editing a Value Set:</b> To edit a value set, click on the edit icon (pencil) to put the information back into the top of the screen, add an updated OID and change the program and release if necessary (optional) and click the Retrieve button. Once the information is retrieved from VSAC, changes can be made to the suffix. Then click Apply to see the changes applied in the table.";
 
 	public static final String MEASURE_CQL_LIBRARY_PARAMETER = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the names of any parameters already included in the measure. Each measure already contains the Measurement Period parameter as a default. To open a parameter already added to the measure, double-click on the name. There is a search box just above this list which can be used to find a specific parameter name within the list.<br>" +
 			"<br>" +

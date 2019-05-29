@@ -30,7 +30,9 @@ public class ExpressionTypeSelectorList extends Composite {
 
 	private ExpressionBuilderModel model;
 	private List<ExpressionType> availableExpressionTypes;
+	private List<ExpressionType> originalAvailableExpressionTypes; 
 	private List<OperatorType> availableOperatorTypes;
+	private List<OperatorType> originalAvailableOperatorTypes;
 	private List<String> availableAliases;
 
 	private BuildButtonObserver buildButtonObserver;
@@ -51,6 +53,8 @@ public class ExpressionTypeSelectorList extends Composite {
 			List<String> availableAliases, 
 			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText, ExpressionBuilderModal parentModal) {
 		this.availableExpressionTypes = availableExpressionTypes;
+		this.originalAvailableExpressionTypes = new ArrayList<>(availableExpressionTypes);
+		this.originalAvailableOperatorTypes = new ArrayList<>(availableOperatorTypes);
 		this.availableAliases = availableAliases;
 		this.availableOperatorTypes = new ArrayList<>();
 		this.availableOperatorTypes.addAll(availableOperatorTypes);
@@ -84,6 +88,8 @@ public class ExpressionTypeSelectorList extends Composite {
 		// filter available operators and expressions based on first expression type selected
 		if(!this.model.getChildModels().isEmpty()) {
 			updateOperatorsAndExpressionsBasedOnFirstSelection();
+		} else {
+			resetOperatorsAndExpressions();
 		}
 		
 		for(int i = 0; i < this.model.getChildModels().size(); i++) {
@@ -165,6 +171,11 @@ public class ExpressionTypeSelectorList extends Composite {
 
 		this.availableOperatorTypes =  newAvailableOperators;
 		this.availableExpressionTypes = ExpressionTypeUtil.getAvailableExpressionsCQLType(firstType);
+	}
+	
+	private void resetOperatorsAndExpressions() {
+		this.availableOperatorTypes = this.originalAvailableOperatorTypes;
+		this.availableExpressionTypes = this.originalAvailableExpressionTypes;
 	}
 	
 	private void handleOpen() {

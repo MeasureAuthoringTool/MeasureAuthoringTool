@@ -2192,7 +2192,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 			final CQLLibraryDataSetObject dto = editIncludedLibraryDialogBox.getSelectedList().get(0);
 			if (dto != null) {
 				final CQLIncludeLibrary currentObject = new CQLIncludeLibrary(dto);
-
+				currentObject.setAliasName(toBeModified.getAliasName());
 				MatContext.get().getCQLLibraryService().saveIncludeLibrayInCQLLookUp(
 						MatContext.get().getCurrentCQLLibraryId(), toBeModified, currentObject,
 						cqlWorkspaceView.getCQLLeftNavBarPanelView().getViewIncludeLibrarys(),

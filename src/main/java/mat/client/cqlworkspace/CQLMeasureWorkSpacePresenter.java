@@ -2541,6 +2541,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			final CQLLibraryDataSetObject dto = editIncludedLibraryDialogBox.getSelectedList().get(0);
 			if (dto != null) {
 				final CQLIncludeLibrary currentObject = new CQLIncludeLibrary(dto);
+				currentObject.setAliasName(toBeModified.getAliasName());
 				MatContext.get().getMeasureService().saveIncludeLibrayInCQLLookUp(MatContext.get().getCurrentMeasureId(), toBeModified, currentObject, cqlWorkspaceView.getCQLLeftNavBarPanelView().getViewIncludeLibrarys(), new AsyncCallback<SaveUpdateCQLResult>() {
 
 							@Override

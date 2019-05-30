@@ -12,14 +12,14 @@
 		<xsl:value-of select="/measure/measureReleaseVersion/@releaseVersion"></xsl:value-of>
 	</xsl:variable>
 
-	<xsl:template match="/">
+	<xsl:template match="/measure">
 
 		<xsl:text>
          
          </xsl:text>
 		<QualityMeasureDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xmlns="urn:hl7-org:v3" xmlns:cql-ext="urn:hhs-cql:hqmf-n1-extensions:v1">
-			<xsl:apply-templates select="measure" />
+			<xsl:apply-templates select="measureDetails" />
 		</QualityMeasureDocument>
 	</xsl:template>
 

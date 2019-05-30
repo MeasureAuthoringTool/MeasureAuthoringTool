@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.NqfModel;
@@ -23,6 +25,7 @@ import mat.model.clause.MeasureDetails;
 import mat.model.clause.MeasureDetailsReference;
 import mat.model.clause.MeasureDeveloperAssociation;
 import mat.model.clause.MeasureTypeAssociation;
+import mat.shared.ConstantMessages;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 public class ManageMeasureDetailModelConversions {
@@ -140,7 +143,27 @@ public class ManageMeasureDetailModelConversions {
 		measureDetailModel.setGroupId(measure.getMeasureSet().getId());
 		measureDetailModel.setFinalizedDate(getSimpleDateFormat(measure.getFinalizedDate()));
 		measureDetailModel.setMeasScoring(measure.getMeasureScoring());
+		measureDetailModel.setNqfModel(createNQFModel(measure));
+		measureDetailModel.setNqfId(measure.getNqfNumber());
+		measureDetailModel.setPeriodModel(createPeriodModel(measure));
+		measureDetailModel.setMeasureSetId(measure.getMeasureSet().getId());
+		measureDetailModel.setDraft(measure.isDraft());
+		measureDetailModel.setValueSetDate(String.valueOf(measure.getValueSetDate()));
+		
+		if("null".equals(measureDetailModel.getValueSetDate())) {
+			measureDetailModel.setValueSetDate(null);
+		}
+ 		
+		measureDetailModel.seteMeasureId(measure.geteMeasureId());
+		measureDetailModel.setMeasureOwnerId(measure.getOwner().getId());
 		createMeasureSteward(measure, measureDetailModel, organizationDao);
+		measureDetailModel.setAuthorSelectedList(getAuthorsSelectedList(measure.getMeasureDevelopers(), organizationDao));
+		measureDetailModel.setMeasureTypeSelectedList(getMeasureTypeSelectedList(measure.getMeasureTypes(), measureTypeDao));		
+		measureDetailModel.setScoringAbbr(MeasureDetailsUtil.getScoringAbbr(measure.getMeasureScoring()));
+		measureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
+		measureDetailModel.setCalenderYear(measure.getMeasurementPeriodFrom() == null);
+		measureDetailModel.setIsPatientBased(measure.getPatientBased() == null ? calculateDefaultPatientBasedIndicatorBasedOnScoringType(measure.getMeasureScoring()) : measure.getPatientBased());
+		
 		boolean endorseByNQF = measure.getNqfNumber() != null;
 		measureDetailModel.setEndorseByNQF(endorseByNQF);
 		if(endorseByNQF) {
@@ -148,46 +171,38 @@ public class ManageMeasureDetailModelConversions {
 			measureDetailModel.setEndorsementId(NQF_ENDORSEMENT_ID);
 		}
 		MeasureDetails measureDetails = measure.getMeasureDetails();
-		measureDetailModel.setGroupName(measureDetails.getMeasureSet());
-		measureDetailModel.setDescription(measureDetails.getDescription());
-		measureDetailModel.setCopyright(measureDetails.getCopyright());
-		measureDetailModel.setClinicalRecomms(measureDetails.getClinicalRecommendation());
-		measureDetailModel.setDefinitions(measureDetails.getDefinition());
-		measureDetailModel.setGuidance(measureDetails.getGuidance());
-		measureDetailModel.setTransmissionFormat(measureDetails.getTransmissionFormat());
-		measureDetailModel.setRationale(measureDetails.getRationale());
-		measureDetailModel.setImprovNotations(measureDetails.getImprovementNotation());
-		measureDetailModel.setStratification(measureDetails.getStratification());
-		measureDetailModel.setDraft(measure.isDraft());
-		measureDetailModel.setMeasureSetId(measure.getMeasureSet().getId());
-		measureDetailModel.setValueSetDate(String.valueOf(measure.getValueSetDate()));
-		measureDetailModel.setDisclaimer(measureDetails.getDisclaimer());
-		measureDetailModel.setRiskAdjustment(measureDetails.getRiskAdjustment());
-		measureDetailModel.setDisclaimer(measureDetails.getDisclaimer());
-		measureDetailModel.setRateAggregation(measureDetails.getRateAggregation());
-		measureDetailModel.setInitialPop(measureDetails.getInitialPopulation());
-		measureDetailModel.setDenominator(measureDetails.getDenominator());
-		measureDetailModel.setDenominatorExclusions(measureDetails.getDenominatorExclusions());
-		measureDetailModel.setNumerator(measureDetails.getNumerator());
-		measureDetailModel.setNumeratorExclusions(measureDetails.getNumeratorExclusions());
-		measureDetailModel.setDenominatorExceptions(measureDetails.getDenominatorExceptions());
-		measureDetailModel.setMeasurePopulation(measureDetails.getMeasurePopulation());
-		measureDetailModel.setMeasureObservations(measureDetails.getMeasureObservations());
-		measureDetailModel.seteMeasureId(measure.geteMeasureId());
-		measureDetailModel.setMeasureOwnerId(measure.getOwner().getId());
-		measureDetailModel.setMeasurePopulationExclusions(measureDetails.getMeasurePopulationExclusions());
-		measureDetailModel.setCalenderYear(measure.getMeasurementPeriodFrom() == null);
-		measureDetailModel.setIsPatientBased(measure.getPatientBased());
-		measureDetailModel.setQdmVersion(measure.getQdmVersion());
-		measureDetailModel.setAuthorSelectedList(getAuthorsSelectedList(measure.getMeasureDevelopers(), organizationDao));
-		measureDetailModel.setMeasureTypeSelectedList(getMeasureTypeSelectedList(measure.getMeasureTypes(), measureTypeDao));
-		measureDetailModel.setPeriodModel(createPeriodModel(measure));
-		measureDetailModel.setNqfModel(createNQFModel(measure));
-		measureDetailModel.setScoringAbbr(MeasureDetailsUtil.getScoringAbbr(measure.getMeasureScoring()));
-		measureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
-		measureDetailModel.setReferencesList(createReferenceList(measureDetails.getMeasureDetailsReference()));
+		if(measureDetails != null) {
+			measureDetailModel.setGroupName(measureDetails.getMeasureSet());
+			measureDetailModel.setDescription(measureDetails.getDescription());
+			measureDetailModel.setCopyright(measureDetails.getCopyright());
+			measureDetailModel.setClinicalRecomms(measureDetails.getClinicalRecommendation());
+			measureDetailModel.setDefinitions(measureDetails.getDefinition());
+			measureDetailModel.setGuidance(measureDetails.getGuidance());
+			measureDetailModel.setTransmissionFormat(measureDetails.getTransmissionFormat());
+			measureDetailModel.setRationale(measureDetails.getRationale());
+			measureDetailModel.setImprovNotations(measureDetails.getImprovementNotation());
+			measureDetailModel.setStratification(measureDetails.getStratification());
+			measureDetailModel.setDisclaimer(measureDetails.getDisclaimer());
+			measureDetailModel.setRiskAdjustment(measureDetails.getRiskAdjustment());
+			measureDetailModel.setDisclaimer(measureDetails.getDisclaimer());
+			measureDetailModel.setRateAggregation(measureDetails.getRateAggregation());
+			measureDetailModel.setInitialPop(measureDetails.getInitialPopulation());
+			measureDetailModel.setDenominator(measureDetails.getDenominator());
+			measureDetailModel.setDenominatorExclusions(measureDetails.getDenominatorExclusions());
+			measureDetailModel.setNumerator(measureDetails.getNumerator());
+			measureDetailModel.setNumeratorExclusions(measureDetails.getNumeratorExclusions());
+			measureDetailModel.setDenominatorExceptions(measureDetails.getDenominatorExceptions());
+			measureDetailModel.setMeasurePopulation(measureDetails.getMeasurePopulation());
+			measureDetailModel.setMeasureObservations(measureDetails.getMeasureObservations());
+			measureDetailModel.setMeasurePopulationExclusions(measureDetails.getMeasurePopulationExclusions());
+			measureDetailModel.setReferencesList(createReferenceList(measureDetails.getMeasureDetailsReference()));
+			measureDetailModel.setSupplementalData(measureDetails.getSupplementalDataElements());
+		}		
 	}
 	
+	private boolean calculateDefaultPatientBasedIndicatorBasedOnScoringType(String measureScoring) {
+		return !StringUtils.equals(measureScoring, ConstantMessages.CONTINUOUS_VARIABLE_SCORING);
+	}
 
 	private List<String> createReferenceList(List<MeasureDetailsReference> measureDetailsReference) {
 		return measureDetailsReference.stream().map(reference -> reference.getReference()).collect(Collectors.toList());

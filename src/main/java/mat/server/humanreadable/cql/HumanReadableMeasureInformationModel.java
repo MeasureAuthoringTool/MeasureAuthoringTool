@@ -1,6 +1,12 @@
 package mat.server.humanreadable.cql;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+
+import mat.client.measure.ManageCompositeMeasureDetailModel;
+import mat.client.measure.ManageMeasureDetailModel;
 
 public class HumanReadableMeasureInformationModel {
 	private String ecqmTitle; 
@@ -47,6 +53,74 @@ public class HumanReadableMeasureInformationModel {
  
 	public HumanReadableMeasureInformationModel() {
 		
+	}
+	
+	public HumanReadableMeasureInformationModel(ManageMeasureDetailModel model) {
+		this.ecqmTitle = model.getName();
+		this.ecqmIdentifier = model.geteMeasureId() + "";
+		this.ecqmVersionNumber = model.getVersionNumber().replace("Draft based on", "");
+		this.nqfNumber = model.getNqfId();
+		this.guid = model.getMeasureSetId();
+		this.isCalendarYear = model.isCalenderYear();
+		this.measurementPeriodStartDate = model.getMeasFromPeriod(); 
+		this.measurementPeriodEndDate = model.getMeasToPeriod();
+		this.measureSteward = model.getStewardValue();
+		
+		this.measureDevelopers = new ArrayList<>();
+		if(!CollectionUtils.isEmpty(model.getAuthorSelectedList())) {
+			model.getAuthorSelectedList().forEach(d -> this.measureDevelopers.add(d.getAuthorName()));
+		}
+		
+		this.endorsedBy = model.getEndorsement();
+		this.description = model.getDescription();
+		this.copyright = model.getCopyright();
+		this.disclaimer = model.getDisclaimer();
+		
+		if(!CollectionUtils.isEmpty(model.getComponentMeasuresSelectedList())) {
+			ManageCompositeMeasureDetailModel compositeModel = (ManageCompositeMeasureDetailModel) model; 
+			this.componentMeasures = new ArrayList<>();
+			compositeModel.getComponentMeasuresSelectedList().forEach(r -> {
+				HumanReadableComponentMeasureModel componentModel = new HumanReadableComponentMeasureModel();
+				componentModel.setId(r.getId());
+				componentModel.setMeasureSetId(r.getMeasureSetId());
+				componentModel.setName(r.getName());
+				componentModel.setVersion(r.getVersion());
+			});
+			
+			this.compositeScoringMethod = compositeModel.getCompositeScoringMethod();
+		}
+		
+		this.measureScoring = model.getMeasScoring();
+		this.measureTypes = new ArrayList<>();
+		
+		if(!CollectionUtils.isEmpty(model.getMeasureTypeSelectedList())) {
+			model.getMeasureTypeSelectedList().forEach(mt -> this.measureTypes.add(mt.getDescription()));
+		}
+		
+		this.stratification = model.getStratification();
+		this.riskAdjustment = model.getRiskAdjustment();
+		this.rateAggregation = model.getRateAggregation();
+		this.rationale = model.getRationale();
+		this.clinicalRecommendationStatement = model.getClinicalRecomms();
+		this.improvementNotation = model.getImprovNotations();
+		
+		this.references = new ArrayList<>(model.getReferencesList());
+		
+		this.definition = model.getDefinitions();
+		this.guidance = model.getGuidance();
+		this.transmissionFormat = model.getTransmissionFormat();
+		this.initialPopulation = model.getInitialPop();
+		this.denominator = model.getDenominator();
+		this.denominatorExclusions = model.getDenominatorExclusions();
+		this.denominatorExceptions = model.getDenominatorExceptions();
+		this.numerator = model.getNumerator();
+		this.numeratorExclusions = model.getNumeratorExclusions();
+		this.measurePopulation = model.getMeasurePopulation();
+		this.measurePopulationExclusions = model.getMeasurePopulationExclusions();
+		this.measureObservations = model.getMeasureObservations();
+		this.supplementalDataElements = model.getSupplementalData();
+		this.measureSet = model.getGroupName(); 
+		this.patientBased = model.isPatientBased();
 	}
 	
 	public HumanReadableMeasureInformationModel(String eCQMTitle, String eCQMIdentifier, String eCQMVersionNumber, String nqfNumber,

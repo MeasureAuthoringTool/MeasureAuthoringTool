@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1378,18 +1379,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("Loading Measure for MeasueId: " + key);
 		Measure measure = measurePackageService.getById(key);
 		if(!measure.getIsCompositeMeasure()) {
-			
-			
-			
 			MeasureXmlModel xmlModel = getMeasureXmlForMeasure(key);
-			MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
 			String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 		
-			ManageMeasureDetailModel manageMeasureDetailModel = new ManageMeasureDetailModel();			
+			ManageMeasureDetailModel manageMeasureDetailModel = new ManageMeasureDetailModel();		
+			MeasureDetailResult measureDetailResult = new MeasureDetailResult();
 			if(xmlString == null) {
 				manageMeasureDetailModel = setManageMeasureDetailModelFromDatabaseData(measure, measureDetailResult);
+				measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
 			} else {
 				manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
+				measureDetailResult = getUsedStewardAndDeveloperFromXml(measure.getId());
 			}
 			
 			manageMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
@@ -1417,14 +1417,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId) {
 		Measure measure = measurePackageService.getById(measureId);
 		MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
-		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
+		MeasureDetailResult measureDetailResult = new MeasureDetailResult();
 		String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 		
 		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = new ManageCompositeMeasureDetailModel();
 		if(xmlString == null) {
 			manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) setManageMeasureDetailModelFromDatabaseData(measure, measureDetailResult);
+			measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
 		} else {
 			manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXMLToModel(xmlString, measure);
+			measureDetailResult = getUsedStewardAndDeveloperFromXml(measure.getId());
 		}
 		
 		
@@ -4559,6 +4561,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		return usedStewardAndAuthorList;
 	}
+	
+	private MeasureDetailResult getUsedStewardAndDeveloperFromXml(String measureId) {
+		logger.info("In MeasureLibraryServiceImpl.getUsedStewardAndDevelopersList() method..");
+		logger.info("Loading Measure for MeasueId: " + measureId);
+		MeasureDetailResult usedStewardAndAuthorList = new MeasureDetailResult();
+		MeasureXmlModel xml = getMeasureXmlForMeasure(measureId);
+		
+		List<Organization> allOrganization = getAllOrganizations();
+		usedStewardAndAuthorList.setUsedAuthorList(getAuthorsList(xml, allOrganization));
+		usedStewardAndAuthorList.setUsedSteward(getSteward(xml, allOrganization));
+		usedStewardAndAuthorList.setAllAuthorList(getAllAuthorList(allOrganization));
+		usedStewardAndAuthorList.setAllStewardList(getAllStewardList(allOrganization));
+
+		return usedStewardAndAuthorList;
+	}
 
 	/**
 	 * Gets the all steward list.
@@ -4580,6 +4597,69 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		return organizationList.stream().map(
 				org -> new Author(String.valueOf(org.getId()), org.getOrganizationName(), org.getOrganizationOID())).collect(Collectors.toList());
+	}
+	
+	private void addAuthorsToList(List<Organization> allOrganization, List<Author> usedAuthorList, Long id) {
+		Author author = getAuthorFromOrganization(id, allOrganization);
+		if(author != null) {
+			usedAuthorList.add(author);
+		}
+	}
+	
+	private List<Author> getAuthorsList(MeasureXmlModel xmlModel, List<Organization> allOrganization) {
+		XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+		String XPATH_EXPRESSION_DEVELOPERS = "/measure//measureDetails//developers";
+		List<Author> usedAuthorList = new ArrayList<>();
+
+		try {
+			NodeList developerParentNodeList = (NodeList) xPath.evaluate(XPATH_EXPRESSION_DEVELOPERS, processor.getOriginalDoc(), XPathConstants.NODESET);
+			Node developerParentNode = developerParentNodeList.item(0);
+
+			if (developerParentNode != null) {
+				NodeList developerNodeList = developerParentNode.getChildNodes();
+
+				int childNodes =  developerNodeList.getLength();
+
+				LinkedHashSet<Long> authorList = new LinkedHashSet<>();
+
+				for (int i = 0; i < childNodes; i++) {
+					authorList.add(Long.parseLong(developerNodeList.item(i).getAttributes().getNamedItem(ID).getNodeValue()));
+				}
+
+				if(CollectionUtils.isNotEmpty(authorList)) {
+					authorList.forEach(id -> addAuthorsToList(allOrganization, usedAuthorList, id));
+				}
+			}
+
+		} catch (XPathExpressionException e) {
+			logger.debug("getAuthorsList: " + e);
+		}
+
+		return usedAuthorList;
+	}
+	
+	private MeasureSteward getSteward(MeasureXmlModel xmlModel, List<Organization> allOrganization) {
+		MeasureSteward measureSteward = new MeasureSteward();
+		XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+		String XPATH_EXPRESSION_STEWARD = "/measure//measureDetails//steward";
+
+		try {
+			Node stewardParentNode = (Node) xPath.evaluate(XPATH_EXPRESSION_STEWARD, processor.getOriginalDoc(), XPathConstants.NODE);
+			
+			if (stewardParentNode != null) {
+				String id = stewardParentNode.getAttributes().getNamedItem(ID).getNodeValue();
+
+				Organization organization = allOrganization.stream().filter(org -> id.equalsIgnoreCase(Long.toString(org.getId()))).findAny().orElse(new Organization());
+				measureSteward.setId(id);
+				measureSteward.setOrgName(organization.getOrganizationName());
+				measureSteward.setOrgOid(organization.getOrganizationOID());
+			}
+
+		} catch (XPathExpressionException e) {
+			logger.debug("getSteward: " + e);
+		}
+		
+		return measureSteward;
 	}
 
 	/**

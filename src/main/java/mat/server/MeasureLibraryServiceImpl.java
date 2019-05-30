@@ -1384,12 +1384,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 			ManageMeasureDetailModel manageMeasureDetailModel = new ManageMeasureDetailModel();		
 			MeasureDetailResult measureDetailResult = new MeasureDetailResult();
-			if(xmlString == null) {
+			if(measure.getMeasureDetails() != null) {
 				manageMeasureDetailModel = setManageMeasureDetailModelFromDatabaseData(measure, measureDetailResult);
 				measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
 			} else {
 				manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
 				measureDetailResult = getUsedStewardAndDeveloperFromXml(measure.getId());
+				addIdsToMeasureType(manageMeasureDetailModel);
 			}
 			
 			manageMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
@@ -1400,8 +1401,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		else {
 			return getCompositeMeasure(key);
 		}
+	}
 		
-
+	private void addIdsToMeasureType(ManageMeasureDetailModel model) {
+		model.getMeasureTypeSelectedList().forEach(mt -> mt.setId(measureTypeDAO.getMeasureTypeByName(mt.getDescription()).getId()));
 	}
 
 	private ManageMeasureDetailModel setManageMeasureDetailModelFromDatabaseData(Measure measure, MeasureDetailResult measureDetailResult) {

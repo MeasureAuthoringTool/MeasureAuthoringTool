@@ -45,6 +45,18 @@ public class MeasureTypeDAOImpl extends GenericDAO<MeasureType, String> implemen
 		
 		return session.createQuery(query).getResultList();
 	}
+	
+	@Override
+	public MeasureType getMeasureTypeByName(String name) {
+        final Session session = getSessionFactory().getCurrentSession();
+        final CriteriaBuilder cb = session.getCriteriaBuilder();
+        final CriteriaQuery<MeasureType> query = cb.createQuery(MeasureType.class);
+        final Root<MeasureType> root = query.from(MeasureType.class);
+
+        query.select(root).where(cb.equal(root.get("description"), name));
+        
+        return session.createQuery(query).getResultList().get(0);
+ }
 
 	@Override
 	public void deleteAllMeasureTypeAssociationsByMeasureId(String measureId) {

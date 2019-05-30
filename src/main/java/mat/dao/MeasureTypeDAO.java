@@ -18,4 +18,6 @@ public interface MeasureTypeDAO extends IDAO<MeasureType, String> {
 	public List<MeasureTypeDTO> getAllMeasureTypes();
 	
 	public void deleteAllMeasureTypeAssociationsByMeasureId(String measureId);
+
+	MeasureType getMeasureTypeByName(String name);
 }

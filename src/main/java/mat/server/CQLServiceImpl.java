@@ -724,6 +724,12 @@ public class CQLServiceImpl implements CQLService {
 			Optional<CQLIncludeLibrary> includedLibraryToBeEditedFromModel = cqlModel.getCqlIncludeLibrarys().stream().filter(l -> includedLibraryWithEdits.getId().equals(l.getId())).findFirst();
 			if(includedLibraryToBeEditedFromModel.isPresent()) {
 				includedLibraryToBeEditedFromModel.get().setAliasName(includedLibraryWithEdits.getAliasName());
+				includedLibraryToBeEditedFromModel.get().setCqlLibraryId(includedLibraryWithEdits.getCqlLibraryId());
+				includedLibraryToBeEditedFromModel.get().setCqlLibraryName(includedLibraryWithEdits.getCqlLibraryName());
+				includedLibraryToBeEditedFromModel.get().setMeasureId(includedLibraryWithEdits.getMeasureId());
+				includedLibraryToBeEditedFromModel.get().setQdmVersion(includedLibraryWithEdits.getQdmVersion());
+				includedLibraryToBeEditedFromModel.get().setSetId(includedLibraryWithEdits.getSetId());
+				includedLibraryToBeEditedFromModel.get().setVersion(includedLibraryWithEdits.getVersion());
 			} else {
 				CQLIncludeLibraryValidator libraryValidator = new CQLIncludeLibraryValidator();
 				libraryValidator.validate(includedLibraryWithEdits, cqlModel);

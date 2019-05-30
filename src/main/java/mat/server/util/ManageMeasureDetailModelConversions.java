@@ -26,6 +26,7 @@ import mat.model.clause.MeasureDetailsReference;
 import mat.model.clause.MeasureDeveloperAssociation;
 import mat.model.clause.MeasureTypeAssociation;
 import mat.shared.ConstantMessages;
+import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 public class ManageMeasureDetailModelConversions {
@@ -122,7 +123,6 @@ public class ManageMeasureDetailModelConversions {
 	public ManageMeasureDetailModel createManageMeasureDetailModel(Measure measure, OrganizationDAO organizationDao, MeasureTypeDAO measureTypeDao) {
 		ManageMeasureDetailModel measureDetailModel = new ManageMeasureDetailModel();
 		createMeasureDetailModel(measure, organizationDao, measureTypeDao, measureDetailModel);
-		
 		return measureDetailModel;
 	}
 	
@@ -141,7 +141,7 @@ public class ManageMeasureDetailModelConversions {
 		measureDetailModel.setVersionNumber(measure.getVersion());
 		measureDetailModel.setRevisionNumber(measure.getRevisionNumber());
 		measureDetailModel.setGroupId(measure.getMeasureSet().getId());
-		measureDetailModel.setFinalizedDate(getSimpleDateFormat(measure.getFinalizedDate()));
+		measureDetailModel.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
 		measureDetailModel.setMeasScoring(measure.getMeasureScoring());
 		measureDetailModel.setNqfModel(createNQFModel(measure));
 		measureDetailModel.setNqfId(measure.getNqfNumber());

@@ -104,7 +104,9 @@ public class HumanReadableMeasureInformationModel {
 		this.clinicalRecommendationStatement = model.getClinicalRecomms();
 		this.improvementNotation = model.getImprovNotations();
 		
-		this.references = new ArrayList<>(model.getReferencesList());
+		if(!CollectionUtils.isEmpty(model.getReferencesList())) {
+			this.references = new ArrayList<>(model.getReferencesList());
+		}
 		
 		this.definition = model.getDefinitions();
 		this.guidance = model.getGuidance();

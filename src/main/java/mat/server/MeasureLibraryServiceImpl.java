@@ -706,10 +706,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					? manageMeasureDetailModel.getPeriodModel().getStopDate() : null);
 		}
 		manageMeasureDetailModel.setEndorseByNQF(StringUtils.isNotBlank(manageMeasureDetailModel.getEndorsement()));
-		manageMeasureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(),
-				String.valueOf(measure.getVersionNumber())));
-		manageMeasureDetailModel.setVersionNumber(
-				MeasureUtility.getVersionText(manageMeasureDetailModel.getOrgVersionNumber(), measure.isDraft()));
+		manageMeasureDetailModel.setFormattedVersion(MeasureUtility.getVersionText(measure.getVersion(), measure.getRevisionNumber(), measure.isDraft()));
+		manageMeasureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(), String.valueOf(measure.getVersionNumber())));
+		manageMeasureDetailModel.setVersionNumber(MeasureUtility.getVersionText(manageMeasureDetailModel.getOrgVersionNumber(), measure.isDraft()));
 		manageMeasureDetailModel.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
 		manageMeasureDetailModel.setDraft(measure.isDraft());
 		manageMeasureDetailModel.setValueSetDate(DateUtility.convertDateToStringNoTime(measure.getValueSetDate()));

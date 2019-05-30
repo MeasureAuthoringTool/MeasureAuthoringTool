@@ -10,6 +10,7 @@ import mat.model.BaseModel;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
+import mat.server.util.MeasureUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 
@@ -80,6 +81,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	private boolean isPatientBased; 
 	private MeasureDetailResult measureDetailResult; 
 	private String qdmVersion;
+	private String formattedVersion;
 	
 	public ManageMeasureDetailModel() {
 		
@@ -146,7 +148,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	public String getVersionNumber() {
 		return versionNumber;
 	}
-
+	
 	public void setVersionNumber(String versionNumber) {
 		this.versionNumber = doTrim(versionNumber);
 	}
@@ -154,6 +156,8 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	public String getMeasureId() {
 		return measureId;
 	}
+	
+	
 
 	public void setMeasureId(String measureId) {
 		this.measureId = doTrim(measureId);
@@ -1156,5 +1160,13 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 				this.setNqfId(noMarkupText);
 			}
 		}
+	}
+
+	public String getFormattedVersion() {
+		return formattedVersion;
+	}
+
+	public void setFormattedVersion(String formattedVersion) {
+		this.formattedVersion = formattedVersion;
 	}
 }

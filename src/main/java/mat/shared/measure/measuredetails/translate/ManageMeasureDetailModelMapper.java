@@ -269,7 +269,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		generalInformationModel.setFinalizedDate(manageMeasureDetailModel.getFinalizedDate());
 		generalInformationModel.setPatientBased(manageMeasureDetailModel.isPatientBased());
 		generalInformationModel.setGuid(manageMeasureDetailModel.getMeasureSetId());
-		generalInformationModel.seteCQMVersionNumber(manageMeasureDetailModel.getVersionNumber());
+		generalInformationModel.seteCQMVersionNumber(manageMeasureDetailModel.getFormattedVersion());
 		generalInformationModel.setScoringMethod(manageMeasureDetailModel.getMeasScoring());
 		generalInformationModel.setNqfId(manageMeasureDetailModel.getNqfId());
 		generalInformationModel.setEndorseByNQF(manageMeasureDetailModel.getEndorseByNQF());

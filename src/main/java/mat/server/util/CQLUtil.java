@@ -18,9 +18,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import mat.CQLtoELM;
 import org.cqframework.cql.cql2elm.CqlTranslatorException;
-import mat.MATCQLFilter;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.OperandDef;
 import org.w3c.dom.Document;
@@ -28,6 +26,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import mat.CQLtoELM;
+import mat.MATCQLFilter;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLCode;
@@ -43,10 +43,10 @@ import mat.shared.CQLError;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
 import mat.shared.CQLObject;
+import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
-import mat.shared.ConstantMessages;
 
 /**
  * The Class CQLUtil.
@@ -739,6 +739,7 @@ public class CQLUtil {
 			
 			usedArtifacts.setIncludeLibMap(includedLibraries);
 			usedArtifacts.setNameToReturnTypeMap(cqlFilter.getAllNamesToReturnTypeMap());
+			usedArtifacts.setExpressionToReturnTypeMap(cqlFilter.getExpressionToReturnTypeMap());
 			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
 		}
 		

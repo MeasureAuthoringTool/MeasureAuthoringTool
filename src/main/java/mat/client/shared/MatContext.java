@@ -224,6 +224,8 @@ public class MatContext implements IsSerializable {
 	
 	private List<MeasureType> measureTypeList = new ArrayList<>(); 
 	
+	private Map<String, String> expressionToReturnTypeMap = new HashMap<>();
+	
 	public void clearDVIMessages(){
 		if(qdsView !=null){
 			qdsView.getSuccessMessageDisplay().clear();
@@ -1525,4 +1527,13 @@ public class MatContext implements IsSerializable {
 			}
 		};
 	}
+
+	public Map<String, String> getExpressionToReturnTypeMap() {
+		return expressionToReturnTypeMap;
+	}
+
+	public void setExpressionToReturnTypeMap(Map<String, String> expressionToReturnTypeMap) {
+		this.expressionToReturnTypeMap = expressionToReturnTypeMap;
+	}
+
 }

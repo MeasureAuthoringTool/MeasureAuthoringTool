@@ -5644,6 +5644,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (model != null && StringUtils.isNotBlank(model.getXml())) {
 			String xmlString = model.getXml();
 			result = cqlService.getCQLDataForLoad(xmlString);
+			result.setUsedCQLArtifacts(cqlService.getUsedCQlArtifacts(xmlString));
 			result.setSetId(measure.getMeasureSet().getId());
 			result.setSuccess(true);
 		} else {
@@ -5668,6 +5669,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 					measurePackageService.saveMeasureXml(xmlModel);
 					getCqlService().deleteCQLAssociation(toBeModifiedIncludeObj, currentMeasureId);
+					result.setUsedCQLArtifacts(cqlService.getUsedCQlArtifacts(xmlModel.getXml()));
 				}
 			}
 		}

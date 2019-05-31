@@ -22,6 +22,7 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 	private List<CQLError> cqlErrors = new ArrayList<>();
 
 	private Map<String, String> expressionReturnTypeMap = new HashMap<>();
+	private Map<String, String> expressionToReturnTypeMap = new HashMap<>();
 
 	private Map<String, List<String>> definitionToDefinitionMap = new HashMap<>();
 	private Map<String, List<String>> definitionToFunctionMap = new HashMap<>();
@@ -180,6 +181,14 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 
 	public void setExpressionReturnTypeMap(Map<String, String> expressionReturnTypeMap) {
 		this.expressionReturnTypeMap = expressionReturnTypeMap;
+	}
+
+	public Map<String, String> getExpressionToReturnTypeMap() {
+		return expressionToReturnTypeMap;
+	}
+
+	public void setExpressionToReturnTypeMap(Map<String, String> expressionToReturnTypeMap) {
+		this.expressionToReturnTypeMap = expressionToReturnTypeMap;
 	}
 
 	public Map<String, List<CQLError>> getCqlErrorsPerExpression() {

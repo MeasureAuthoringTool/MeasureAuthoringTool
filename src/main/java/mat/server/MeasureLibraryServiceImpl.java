@@ -1383,7 +1383,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 			ManageMeasureDetailModel manageMeasureDetailModel = new ManageMeasureDetailModel();		
 			MeasureDetailResult measureDetailResult = new MeasureDetailResult();
-			if(xmlString == null) {
+			if(xmlString == null || measure.getMeasureDetails() != null) {
 				manageMeasureDetailModel = setManageMeasureDetailModelFromDatabaseData(measure, measureDetailResult);
 				measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
 			} else {
@@ -1425,7 +1425,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 		
 		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = new ManageCompositeMeasureDetailModel();
-		if(xmlString == null) {
+		if(xmlString == null || measure.getMeasureDetails() != null) {
 			manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) setManageMeasureDetailModelFromDatabaseData(measure, measureDetailResult);
 			measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
 		} else {

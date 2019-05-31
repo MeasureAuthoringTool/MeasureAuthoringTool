@@ -6,6 +6,7 @@ public class CQLIdentifierObject implements IsSerializable {
 	private String aliasName; 
 	private String id;
 	private String identifier;
+	private String returnType;
 
 	public CQLIdentifierObject(String aliasName, String identifier, String id) {
 		this.aliasName = aliasName;
@@ -62,6 +63,14 @@ public class CQLIdentifierObject implements IsSerializable {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getReturnType() {
+		return returnType;
+	}
+
+	public void setReturnType(String returnType) {
+		this.returnType = returnType;
 	}
 	
 }

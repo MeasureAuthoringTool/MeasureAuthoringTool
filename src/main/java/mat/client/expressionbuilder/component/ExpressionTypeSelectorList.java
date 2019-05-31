@@ -170,7 +170,7 @@ public class ExpressionTypeSelectorList extends Composite {
 		}
 
 		this.availableOperatorTypes =  newAvailableOperators;
-		this.availableExpressionTypes = ExpressionTypeUtil.getAvailableExpressionsCQLType(firstType);
+		this.availableExpressionTypes = ExpressionTypeUtil.getFilteredExpressionsCQLType(firstType);
 	}
 	
 	private void resetOperatorsAndExpressions() {

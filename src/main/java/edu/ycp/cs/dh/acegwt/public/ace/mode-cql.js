@@ -46,7 +46,7 @@ var SqlHighlightRules = function() {
 	        //data type attribute constants
 	        'activeDatetime|admissionSource|anatomicalLocationSite|authorDatetime|birthDatetime|category|cause|code|components|daysSupplied|denominator|diagnoses|dischargeDisposition|dosage|expiredDatetime|' +
 	        'facilityLocation|facilityLocations|frequency|high|id|incisionDatetime|lengthOfStay|locationPeriod|low|medium|method|negationRationale|numerator|participationPeriod|performer|prevalencePeriod|' +
-	        'priority|reason|recipient|receivedDatetime|recorder|referenceRange|refills|relatedTo|relationship|relevantDatetime|relevantPeriod|reporter|result|resultDatetime|requester|route|sender|sentDatetime|setting|severity|status|supply|targetOutcome|type'
+	        'statusDate|priority|reason|recipient|receivedDatetime|recorder|referenceRange|refills|relatedTo|relationship|relevantDatetime|relevantPeriod|reporter|result|resultDatetime|requester|route|sender|sentDatetime|setting|severity|status|supply|targetOutcome|type'
 	    );
 	    
     var keywordMapper = this.createKeywordMapper({

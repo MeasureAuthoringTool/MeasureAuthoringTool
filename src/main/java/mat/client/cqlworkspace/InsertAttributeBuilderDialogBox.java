@@ -719,6 +719,8 @@ public class InsertAttributeBuilderDialogBox {
 		String modeName = modelistBox.getItemText(modelistBox.getSelectedIndex());
 		attributeName = attributeName.toLowerCase();
 		modeName = modeName.toLowerCase();
+
+
 		if (modeName.equalsIgnoreCase("comparison") || modeName.equalsIgnoreCase("computative")) {
 			if (attributeName.contains("datetime") && modeName.equalsIgnoreCase("comparison")) {
 				// the date time field is about to be enabled. If the it is currently disabled,
@@ -728,12 +730,18 @@ public class InsertAttributeBuilderDialogBox {
 						&& !dtw.getMsTxtBox().isEnabled()) {
 					messageHelpBlock.setText(DATE_TIME_ALERT);
 				}
-
 				dtw.setDateTimeEnabled(true);
 				quantityTextBox.setEnabled(false);
 				unitslistBox.setEnabled(false);
+				
 			} else if (attributeName.equalsIgnoreCase("result")) {
 				setEnabled(true);
+				
+			} else if(attributeName.contains("statusdate") && modeName.equalsIgnoreCase("comparison")) {
+				dtw.setDateTimeEnabled(true);
+				quantityTextBox.setEnabled(false);
+				unitslistBox.setEnabled(false);
+				
 			} else {
 				dtw.setDateTimeEnabled(false);
 
@@ -742,6 +750,7 @@ public class InsertAttributeBuilderDialogBox {
 				if(!quantityTextBox.isEnabled() && !unitslistBox.isEnabled()) {
 					messageHelpBlock.setText(QUANTITY_UNIT_ALERT);
 				}
+
 
 				quantityTextBox.setEnabled(true);
 				unitslistBox.setEnabled(true);

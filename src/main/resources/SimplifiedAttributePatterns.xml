@@ -218,4 +218,9 @@
  <attribute attribName="participationPeriod">
   <mode mode="Nullable" />
  </attribute>
+ <attribute attribName="statusDate">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
 </matattributes>

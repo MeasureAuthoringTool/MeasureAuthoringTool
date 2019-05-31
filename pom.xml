@@ -73,12 +73,6 @@
             <artifactId>hibernate-validator</artifactId>
             <version>5.3.2.Final</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <version>${gwtVersion}</version>
-        </dependency>
         <dependency>
             <groupId>com.google.gwt.inject</groupId>
             <artifactId>gin</artifactId>
@@ -222,11 +216,6 @@
         </dependency>
         <dependency>
             <groupId>org.codehaus.castor</groupId>
-            <artifactId>castor-xml</artifactId>
-            <version>1.4.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.castor</groupId>
             <artifactId>castor-core</artifactId>
             <version>1.4.1</version>
         </dependency>
@@ -318,7 +307,7 @@
         <dependency>
             <groupId>mat</groupId>
             <artifactId>CQLtoELM</artifactId>
-            <version>1.4.3.30</version>
+            <version>1.4.3.33</version>
         </dependency>
         <dependency>
             <groupId>mat</groupId>

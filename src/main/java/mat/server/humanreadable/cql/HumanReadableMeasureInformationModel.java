@@ -58,7 +58,7 @@ public class HumanReadableMeasureInformationModel {
 	public HumanReadableMeasureInformationModel(ManageMeasureDetailModel model) {
 		this.ecqmTitle = model.getName();
 		this.ecqmIdentifier = model.geteMeasureId() == 0 ? "" : model.geteMeasureId() + "";		
-		this.ecqmVersionNumber = model.getFormattedVersion().replace("Draft based on", "").trim();
+		this.ecqmVersionNumber = model.getFormattedVersion().replace("Draft based on", "").replace("v", "").trim();
 		this.nqfNumber = model.getNqfId();
 		this.guid = model.getMeasureSetId();
 		this.isCalendarYear = model.isCalenderYear();

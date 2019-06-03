@@ -398,6 +398,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 									if (result.isSuccess()) {
 										cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewFunctions(result.getCqlModel().getCqlFunctions());
 										MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
+										MatContext.get().setExpressionToReturnTypeMap(result.getUsedCQLArtifacts().getExpressionToReturnTypeMap());
 										cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedFunctionObjId(result.getFunction().getId());
 										cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
 										cqlWorkspaceView.getCQLLeftNavBarPanelView().updateFunctionMap();
@@ -515,6 +516,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 								if (result != null) {
 									if (result.isSuccess()) {
 										cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewParameterList(result.getCqlModel().getCqlParameters());
+										MatContext.get().setParameters(getParameterList(result.getCqlModel().getCqlParameters()));
 										MatContext.get().setParameters(getParameterList(result.getCqlModel().getCqlParameters()));
 										MatContext.get().setCQLModel(result.getCqlModel());
 										cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedParamerterObjId(result.getParameter().getId());
@@ -645,6 +647,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 									if (result.isSuccess()) {
 										cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
 										MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
+										MatContext.get().setExpressionToReturnTypeMap(result.getUsedCQLArtifacts().getExpressionToReturnTypeMap());
 										cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(result.getDefinition().getId());
 										cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
 										cqlWorkspaceView.getCQLLeftNavBarPanelView().updateDefineMap();
@@ -806,6 +809,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 						if (result.isSuccess()) {
 							cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
 							MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
+							MatContext.get().setExpressionToReturnTypeMap(result.getUsedCQLArtifacts().getExpressionToReturnTypeMap());
 							cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
 							cqlWorkspaceView.getCQLLeftNavBarPanelView().updateDefineMap();
 							messagePanel.getErrorMessageAlert().clearAlert();
@@ -860,6 +864,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 						if (result.isSuccess()) {
 							cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewFunctions(result.getCqlModel().getCqlFunctions());
 							MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
+							MatContext.get().setExpressionToReturnTypeMap(result.getUsedCQLArtifacts().getExpressionToReturnTypeMap());
 							cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
 							cqlWorkspaceView.getCQLLeftNavBarPanelView().updateFunctionMap();
 							messagePanel.getErrorMessageAlert().clearAlert();
@@ -950,6 +955,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 						if (result != null) {
 							if (result.isSuccess()) {
 								cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewParameterList((result.getCqlModel().getCqlParameters()));
+								MatContext.get().setParameters(getParameterList(result.getCqlModel().getCqlParameters()));
 								MatContext.get().setParameters(getParameterList(result.getCqlModel().getCqlParameters()));
 								cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
 								cqlWorkspaceView.getCQLLeftNavBarPanelView().updateParamMap();

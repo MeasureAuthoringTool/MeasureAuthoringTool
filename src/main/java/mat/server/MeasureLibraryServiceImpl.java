@@ -5143,7 +5143,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (xmlModel != null) {
 				result = getCqlService().deleteDefinition(xmlModel.getXml(), toBeDeletedObj);
 				if (result.isSuccess()) {
-					XmlProcessor processor = new XmlProcessor(result.getXml());
+					XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 					processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
 					xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 					cleanPopulationsAndGroups(toBeDeletedObj, xmlModel);
@@ -5240,7 +5240,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (xmlModel != null) {
 				result = getCqlService().deleteFunction(xmlModel.getXml(), toBeDeletedObj);
 				if (result.isSuccess()) {
-					XmlProcessor processor = new XmlProcessor(result.getXml());
+					XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 					processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
 					xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 					cleanMeasureObservationAndGroups(toBeDeletedObj, xmlModel);

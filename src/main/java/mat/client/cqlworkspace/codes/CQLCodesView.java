@@ -930,7 +930,7 @@ public class CQLCodesView {
 					@Override
 					public void update(int index, CQLCode object,
 							SafeHtml value) {
-						if ((object != null) && !object.isUsed()) {
+						if (object != null) {
 							lastSelectedObject = object;
 							delegator.onDeleteClicked(object, index);
 						}
@@ -944,14 +944,8 @@ public class CQLCodesView {
 				String title = "Click to delete Code";
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-trash fa-lg";
-				if (object.isUsed()) {
-					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
-				} else {
-					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
-				}
-								
+				sb.appendHtmlConstant("<button type=\"button\" title='"
+						+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");						
 				return sb.toSafeHtml();
 			}
 		};

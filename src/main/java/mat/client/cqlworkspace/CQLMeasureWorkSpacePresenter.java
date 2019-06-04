@@ -2348,7 +2348,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 									currentIncludeLibraryId = result.getId();
 									cqlWorkspaceView.getIncludeView().buildIncludesReadOnlyView();
 									cqlWorkspaceView.getIncludeView().getSaveModifyButton().setEnabled(false);
-									cqlWorkspaceView.getIncludeView().getSaveModifyButton().setEnabled(false);
 
 									if (checkForEditPermission()) {
 										cqlWorkspaceView.getIncludeView().setWidgetReadOnly(false);
@@ -2372,6 +2371,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 												SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(errorsForLibrary, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, cqlWorkspaceView.getIncludeView().getViewCQLEditor());
 												SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(warningsForLibrary, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, cqlWorkspaceView.getIncludeView().getViewCQLEditor());
 												cqlWorkspaceView.getIncludeView().getViewCQLEditor().setAnnotations();
+												cqlWorkspaceView.getIncludeView().getDeleteButton().setEnabled(true);
 											}
 										});
 									} else {

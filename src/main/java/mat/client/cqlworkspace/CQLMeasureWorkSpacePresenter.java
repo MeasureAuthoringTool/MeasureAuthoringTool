@@ -1092,6 +1092,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 							if (result.isSuccess()) {
 								cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
 								MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
+								MatContext.get().setExpressionToReturnTypeMap(result.getUsedCQLArtifacts().getExpressionToReturnTypeMap());
 								cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
 								cqlWorkspaceView.getCQLLeftNavBarPanelView().updateDefineMap();
 								messagePanel.getErrorMessageAlert().clearAlert();
@@ -1145,6 +1146,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						if (result.isSuccess()) {
 							cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewFunctions(result.getCqlModel().getCqlFunctions());
 							MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
+							MatContext.get().setExpressionToReturnTypeMap(result.getUsedCQLArtifacts().getExpressionToReturnTypeMap());
 							cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
 							messagePanel.getErrorMessageAlert().clearAlert();
 							cqlWorkspaceView.getCQLLeftNavBarPanelView().updateFunctionMap();
@@ -1226,6 +1228,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						if (result.isSuccess()) {
 							cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewParameterList((result.getCqlModel().getCqlParameters()));
 							MatContext.get().setParameters(getParameterList(result.getCqlModel().getCqlParameters()));
+							MatContext.get().setExpressionToReturnTypeMap(result.getUsedCQLArtifacts().getExpressionToReturnTypeMap());
 							cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
 							cqlWorkspaceView.getCQLLeftNavBarPanelView().updateParamMap();
 							messagePanel.getErrorMessageAlert().clearAlert();

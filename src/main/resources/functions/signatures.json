@@ -1253,6 +1253,51 @@
 		"documentation": "The Log operator computes the logarithm of its first argument, using the second argument as the base."
 	},
 	{
+		"name": "Lower",
+		"returnType": "String",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The Lower operator returns the given string with all characters converted to their lower case equivalents."
+	},
+	{
+		"name": "Matches",
+		"returnType": "Boolean",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			},
+			{
+				"name": "pattern",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The Matches operator returns true if the given string matches the given regular expression pattern."
+	},
+	{
+		"name": "Matches",
+		"returnType": "Boolean",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			},
+			{
+				"name": "pattern",
+				"returnType": "String"
+			},
+			{
+				"name": "substitution",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The Matches operator returns true if the given string matches the given regular expression pattern."
+	},
+	{
 		"name": "Max",
 		"returnType": "Integer",
 		"arguments": [
@@ -1502,6 +1547,21 @@
 		"documentation": "The StdDev operator returns the statistical standard deviation of the elements in source."
 	},
 	{
+		"name": "PositionOf",
+		"returnType": "Integer",
+		"arguments": [
+			{
+				"name": "pattern",
+				"returnType": "String"
+			},
+			{
+				"name": "argument",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The PositionOf operator returns the 0-based index of the given pattern in the given string. If the pattern is not found, the result is -1."
+	},
+	{
 		"name": "Product",
 		"returnType": "Integer",
 		"arguments": [
@@ -1561,6 +1621,228 @@
 		"documentation": "The Round function returns the nearest whole number to its argument. The semantics of round are defined as a traditional round, meaning that a decimal value of 0. 5 or higher will round to 1. When invoked with an Integer argument, the argument will be implicitly converted to Decimal. If the argument is null, the result is null. Precision determines the decimal place at which the rounding will occur. If precision is not specified or null, 0 is assumed. "
 	},
 	{
+		"name": "Size",
+		"returnType": "Integer",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Interval<Integer>"
+			}
+		],
+		"documentation": "The Size operator returns the size of an interval. Note that because CQL defines duration and difference operations for date and time valued intervals, size is not defined for intervals of these types."
+	},
+	{
+		"name": "Size",
+		"returnType": "Decimal",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Interval<Decimal>"
+			}
+		],
+		"documentation": "The Size operator returns the size of an interval. Note that because CQL defines duration and difference operations for date and time valued intervals, size is not defined for intervals of these types."
+	},
+
+
+	{
+		"name": "Size",
+		"returnType": "Date",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Interval<Date>"
+			}
+		],
+		"documentation": "The Size operator returns the size of an interval. Note that because CQL defines duration and difference operations for date and time valued intervals, size is not defined for intervals of these types."
+	},
+	{
+		"name": "Size",
+		"returnType": "DateTime",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Interval<DateTime>"
+			}
+		],
+		"documentation": "The Size operator returns the size of an interval. Note that because CQL defines duration and difference operations for date and time valued intervals, size is not defined for intervals of these types."
+	},
+	{
+		"name": "Size",
+		"returnType": "Time",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Interval<Time>"
+			}
+		],
+		"documentation": "The Size operator returns the size of an interval. Note that because CQL defines duration and difference operations for date and time valued intervals, size is not defined for intervals of these types."
+	},
+	{
+		"name": "Skip",
+		"returnType": "List<Date>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Date>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Skip operator returns the elements in the list, skipping the first number elements. If the list has less number elements, the result is empty."
+	},
+	{
+		"name": "Skip",
+		"returnType": "List<DateTime>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<DateTime>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Skip operator returns the elements in the list, skipping the first number elements. If the list has less number elements, the result is empty."
+	},
+	{
+		"name": "Skip",
+		"returnType": "List<Decimal>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Decimal>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Skip operator returns the elements in the list, skipping the first number elements. If the list has less number elements, the result is empty."
+	},
+	{
+		"name": "Skip",
+		"returnType": "List<Integer>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Integer>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Skip operator returns the elements in the list, skipping the first number elements. If the list has less number elements, the result is empty."
+	},
+	{
+		"name": "Skip",
+		"returnType": "List<Quantity>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Quantity>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Skip operator returns the elements in the list, skipping the first number elements. If the list has less number elements, the result is empty."
+	},
+	{
+		"name": "Skip",
+		"returnType": "List<Ratio>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Ratio>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Skip operator returns the elements in the list, skipping the first number elements. If the list has less number elements, the result is empty."
+	},
+	{
+		"name": "Skip",
+		"returnType": "List<String>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Skip operator returns the elements in the list, skipping the first number elements. If the list has less number elements, the result is empty."
+	},
+	{
+		"name": "Skip",
+		"returnType": "List<Time>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Time>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Skip operator returns the elements in the list, skipping the first number elements. If the list has less number elements, the result is empty."
+	},
+	{
+		"name": "Split",
+		"returnType": "List<String>",
+		"arguments": [
+			{
+				"name": "stringToSplit",
+				"returnType": "String"
+			},
+			{
+				"name": "separator",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The Split operator splits a string into a list of strings using a separator."
+	},
+	{
+		"name": "SplitOnMatches",
+		"returnType": "List<String>",
+		"arguments": [
+			{
+				"name": "stringToSplit",
+				"returnType": "String"
+			},
+			{
+				"name": "separatorPattern",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The SplitOnMatches operator splits a string into a list of strings using a separator that is defined by a regular expression pattern. If the stringToSplit argument is null, the result is null."
+	},
+	{
+		"name": "StartsWith",
+		"returnType": "Boolean",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			},
+			{
+				"name": "prefix",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The StartsWith operator returns true if the given string starts with the given prefix. If the prefix is the empty string, the result is true."
+	},
+	{
 		"name": "StdDev",
 		"returnType": "Decimal",
 		"arguments": [
@@ -1581,6 +1863,40 @@
 			}
 		],
 		"documentation": "The PopulationVariance operator returns the statistical population variance of the elements in source."
+	},
+	{
+		"name": "Substring",
+		"returnType": "String",
+		"arguments": [
+			{
+				"name": "stringToSub",
+				"returnType": "String"
+			},
+			{
+				"name": "startIndex",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Substring operator returns the string within stringToSub, starting at the 0-based index startIndex, and consisting of length characters. If length is omitted, the substring returned starts at startIndex and continues to the end of stringToSub."
+	},
+	{
+		"name": "Substring",
+		"returnType": "String",
+		"arguments": [
+			{
+				"name": "stringToSub",
+				"returnType": "String"
+			},
+			{
+				"name": "startIndex",
+				"returnType": "Integer"
+			},
+			{
+				"name": "length",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Substring operator returns the string within stringToSub, starting at the 0-based index startIndex, and consisting of length characters. If length is omitted, the substring returned starts at startIndex and continues to the end of stringToSub."
 	},
 	{
 		"name": "Sum",
@@ -1614,6 +1930,214 @@
 			}
 		],
 		"documentation": "The Sum operator returns the sum of non-null elements in the source."
+	},
+	{
+		"name": "Tail",
+		"returnType": "List<Date>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Date>"
+			}
+		],
+		"documentation": "The Tail operator returns all but the first element from the given list. If the list is empty, the result is empty."
+	},
+	{
+		"name": "Tail",
+		"returnType": "List<Datetime>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<DateTime>"
+			}
+		],
+		"documentation": "The Tail operator returns all but the first element from the given list. If the list is empty, the result is empty."
+	},
+	{
+		"name": "Tail",
+		"returnType": "List<Decimal>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Decimal>"
+			}
+		],
+		"documentation": "The Tail operator returns all but the first element from the given list. If the list is empty, the result is empty."
+	},
+	{
+		"name": "Tail",
+		"returnType": "List<Integer>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Integer>"
+			}
+		],
+		"documentation": "The Tail operator returns all but the first element from the given list. If the list is empty, the result is empty."
+	},
+	{
+		"name": "Tail",
+		"returnType": "List<Quantity>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Quantity>"
+			}
+		],
+		"documentation": "The Tail operator returns all but the first element from the given list. If the list is empty, the result is empty."
+	},
+	{
+		"name": "Tail",
+		"returnType": "List<Ratio>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Ratio>"
+			}
+		],
+		"documentation": "The Tail operator returns all but the first element from the given list. If the list is empty, the result is empty."
+	},
+	{
+		"name": "Tail",
+		"returnType": "List<String>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<String>"
+			}
+		],
+		"documentation": "The Tail operator returns all but the first element from the given list. If the list is empty, the result is empty."
+	},
+	{
+		"name": "Tail",
+		"returnType": "List<Time>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Time>"
+			}
+		],
+		"documentation": "The Tail operator returns all but the first element from the given list. If the list is empty, the result is empty."
+	},
+	{
+		"name": "Take",
+		"returnType": "List<Date>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Date>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Take operator returns the first number elements from the given list. If the list has less than number elements, the result only contains the elements in the list."
+	},
+	{
+		"name": "Take",
+		"returnType": "List<DateTime>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<DateTime>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Take operator returns the first number elements from the given list. If the list has less than number elements, the result only contains the elements in the list."
+	},
+	{
+		"name": "Take",
+		"returnType": "List<Decimal>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Decimal>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Take operator returns the first number elements from the given list. If the list has less than number elements, the result only contains the elements in the list."
+	},
+	{
+		"name": "Take",
+		"returnType": "List<Integer>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Integer>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Take operator returns the first number elements from the given list. If the list has less than number elements, the result only contains the elements in the list."
+	},
+	{
+		"name": "Take",
+		"returnType": "List<Quantity>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Quantity>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Take operator returns the first number elements from the given list. If the list has less than number elements, the result only contains the elements in the list."
+	},
+	{
+		"name": "Take",
+		"returnType": "List<Ratio>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Ratio>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Take operator returns the first number elements from the given list. If the list has less than number elements, the result only contains the elements in the list."
+	},
+	{
+		"name": "Take",
+		"returnType": "List<String>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Take operator returns the first number elements from the given list. If the list has less than number elements, the result only contains the elements in the list."
+	},
+	{
+		"name": "Take",
+		"returnType": "List<Time>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Time>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Take operator returns the first number elements from the given list. If the list has less than number elements, the result only contains the elements in the list."
 	},
 	{
 		"name": "Time",
@@ -1711,8 +2235,30 @@
 		"documentation": "The Time operator constructs a time value from the given components."
 	},
 	{
+		"name": "ToBoolean",
+		"returnType": "Boolean",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The ToBoolean operator converts the value of its argument to a Boolean value."
+	},
+	{
 		"name": "ToDate",
-		"returnType": "DateTime",
+		"returnType": "Date",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "DateTime"
+			}
+		],
+		"documentation": "The ToDate operator converts the value of its argument to a Date value."
+	},
+	{
+		"name": "ToDate",
+		"returnType": "Date",
 		"arguments": [
 			{
 				"name": "argument",
@@ -1721,6 +2267,184 @@
 		],
 		"documentation": "The ToDate operator converts the value of its argument to a Date value."
 	},
+	{
+		"name": "ToDateTime",
+		"returnType": "DateTime",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Date"
+			}
+		],
+		"documentation": "The ToDateTime operator converts the value of its argument to a Date value."
+	},
+	{
+		"name": "ToDateTime",
+		"returnType": "DateTime",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The ToDateTime operator converts the value of its argument to a Date value."
+	},
+	{
+		"name": "ToDecimal",
+		"returnType": "Decimal",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The ToDecimal operator converts the value of its argument to a Decimal value."
+	},
+	{
+		"name": "ToInteger",
+		"returnType": "Integer",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The ToInteger operator converts the value of its argument to a Integer value."
+	},
+	
+	{
+		"name": "ToQuantity",
+		"returnType": "Quantity",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Decimal"
+			}
+		],
+		"documentation": "The ToQuantity operator converts the value of its argument to a Quantity value."
+	},
+		{
+		"name": "ToQuantity",
+		"returnType": "Quantity",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The ToQuantity operator converts the value of its argument to a Quantity value."
+	},
+		{
+		"name": "ToQuantity",
+		"returnType": "Quantity",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The ToQuantity operator converts the value of its argument to a Quantity value."
+	},
+	
+	{
+		"name": "ToString",
+		"returnType": "String",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Boolean"
+			}
+		],
+		"documentation": "The ToString operator converts the value of its argument to a String value."
+	},
+	{
+		"name": "ToString",
+		"returnType": "String",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The ToString operator converts the value of its argument to a String value."
+	},
+	{
+		"name": "ToString",
+		"returnType": "String",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Decimal"
+			}
+		],
+		"documentation": "The ToString operator converts the value of its argument to a String value."
+	},
+	{
+		"name": "ToString",
+		"returnType": "String",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Quantity"
+			}
+		],
+		"documentation": "The ToString operator converts the value of its argument to a String value."
+	},
+	{
+		"name": "ToString",
+		"returnType": "String",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Ratio"
+			}
+		],
+		"documentation": "The ToString operator converts the value of its argument to a String value."
+	},
+	{
+		"name": "ToString",
+		"returnType": "String",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Date"
+			}
+		],
+		"documentation": "The ToString operator converts the value of its argument to a String value."
+	},
+	{
+		"name": "ToString",
+		"returnType": "String",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "DateTime"
+			}
+		],
+		"documentation": "The ToString operator converts the value of its argument to a String value."
+	},
+	{
+		"name": "ToString",
+		"returnType": "String",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Time"
+			}
+		],
+		"documentation": "The ToString operator converts the value of its argument to a String value."
+	},
+	{
+		"name": "ToTime",
+		"returnType": "Time",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The ToTime operator converts the value of its argument to a Time value."
+	},	
 	{
 		"name": "TimeOfDay",
 		"returnType": "Time",
@@ -1745,6 +2469,17 @@
 			}
 		],
 		"documentation": "The Truncate operator returns the integer component of its argument."
+	},
+	{
+		"name": "Upper",
+		"returnType": "String",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "String"
+			}
+		],
+		"documentation": "The Upper operator returns the given string with all characters converted to their upper case equivalents."
 	},
 	{
 		"name": "Variance",

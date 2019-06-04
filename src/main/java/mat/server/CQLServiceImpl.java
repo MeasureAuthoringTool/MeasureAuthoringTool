@@ -747,6 +747,7 @@ public class CQLServiceImpl implements CQLService {
 		result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));
 		result.setCqlModel(cqlModel);
 		result.setIncludeLibrary(includedLibraryWithEdits);
+		result.setUsedCQLArtifacts(getUsedCQlArtifacts(result.getXml()));
 
 
 		return result;
@@ -1028,6 +1029,7 @@ public class CQLServiceImpl implements CQLService {
 		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
 		CQLUtil.setIncludedCQLExpressions(cqlModel);
 		result.setCqlModel(cqlModel);
+		result.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
 
 		return result;
 	}
@@ -1909,6 +1911,7 @@ public class CQLServiceImpl implements CQLService {
 			result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));
 			result.setCqlModel(model);
 			CQLUtil.getIncludedCQLExpressions(model, cqlLibraryDAO);
+			result.setUsedCQLArtifacts(getUsedCQlArtifacts(result.getXml()));
 		}
 
 		return result;

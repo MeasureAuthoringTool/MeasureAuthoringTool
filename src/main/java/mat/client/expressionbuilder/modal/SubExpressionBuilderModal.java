@@ -32,6 +32,8 @@ import mat.client.expressionbuilder.model.TimingPhraseModel;
 import mat.client.shared.MatContext;
 
 public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
+	private boolean firstSelection;
+
 	private Button cancelButton;
 	private Button applyButton;
 	private ExpressionBuilderModal parent;
@@ -137,4 +139,13 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 
 	@Override
 	public abstract void display();
+
+	public boolean isFirstSelection() {
+		return firstSelection;
+	}
+
+	public void setFirstSelection(boolean firstSelection) {
+		this.firstSelection = firstSelection;
+	}
+
 }

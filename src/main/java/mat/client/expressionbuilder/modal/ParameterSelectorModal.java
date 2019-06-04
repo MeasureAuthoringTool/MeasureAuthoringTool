@@ -10,8 +10,9 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.expressionbuilder.model.ParameterModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
+import mat.client.expressionbuilder.model.ParameterModel;
+import mat.client.expressionbuilder.util.ExpressionTypeUtil;
 import mat.client.expressionbuilder.util.IdentifierSortUtil;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -23,7 +24,8 @@ public class ParameterSelectorModal extends SubExpressionBuilderModal {
 	private static final String SELECT_PARAMETER_PLACEHOLDER = "-- Select parameter --";
 	private ListBoxMVP parameterListBox;
 
-	public ParameterSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
+	public ParameterSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel,
+			boolean isFirstSelection) {
 		super("Parameter", parent, parentModel, mainModel);
 		this.setHideOtherModals(false);
 		this.setClosable(false);
@@ -32,6 +34,7 @@ public class ParameterSelectorModal extends SubExpressionBuilderModal {
 		this.setCQLPanelVisible(false);
 		this.getElement().getStyle().setZIndex(9999);
 		this.getApplyButton().addClickHandler(event -> applyButtonClickHandler());
+		this.setFirstSelection(isFirstSelection);
 		display();
 	}
 	
@@ -73,13 +76,17 @@ public class ParameterSelectorModal extends SubExpressionBuilderModal {
 		label.setText(SELECT_A_PARAMETER);
 		label.setTitle(SELECT_A_PARAMETER);
 		
-		
 		parameterListBox = new ListBoxMVP();
-		parameterListBox.insertItem(SELECT_PARAMETER_PLACEHOLDER, SELECT_PARAMETER_PLACEHOLDER, SELECT_PARAMETER_PLACEHOLDER);
+		parameterListBox.insertItem(SELECT_PARAMETER_PLACEHOLDER, SELECT_PARAMETER_PLACEHOLDER);
+
 		List<CQLIdentifierObject> parameters = new ArrayList<>();
-		parameters.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getParameters()));
-		parameters.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedParamNames()));
-		
+
+		if (this.isFirstSelection()) {
+			parameters.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getParameters()));
+			parameters.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedParamNames()));
+		} else {
+			parameters.addAll(ExpressionTypeUtil.getParametersBasedOnReturnType(this.getParentModel().getChildModels().get(0).getType()));
+		}
 		
 		for(CQLIdentifierObject parameter : parameters) {
 			parameterListBox.insertItem(parameter.getDisplay().substring(0, 90), parameter.toString(), parameter.getDisplay());

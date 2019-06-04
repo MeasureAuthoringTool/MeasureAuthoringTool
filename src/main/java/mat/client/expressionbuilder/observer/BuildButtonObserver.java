@@ -45,8 +45,10 @@ public class BuildButtonObserver {
 		this.mainModel = mainModel;
 	}
 
-	public void onBuildButtonClick(String expression, String operator) {		
+	public void onBuildButtonClick(String expression, String operator) {	
+		boolean isFirstSelection = true;
 		if(operator != null && !operator.isEmpty()) {
+			isFirstSelection = false;
 			this.parentModel.appendExpression(operatorModel(operator));
 		}
 		
@@ -56,7 +58,7 @@ public class BuildButtonObserver {
 		}
 		
 		else if(expression.equals(ExpressionType.DEFINITION.getValue())) {
-			ExpressionBuilderModal definitionModal = new DefinitionSelectorModal(this.parentModal, this.parentModel, this.mainModel);
+			ExpressionBuilderModal definitionModal = new DefinitionSelectorModal(this.parentModal, this.parentModel, this.mainModel, isFirstSelection);
 			definitionModal.show();
 		}
 		
@@ -96,7 +98,7 @@ public class BuildButtonObserver {
 		}
 		
 		else if(expression.equals(ExpressionType.PARAMETER.getValue())) {
-			ParameterSelectorModal parameterModal = new ParameterSelectorModal(this.parentModal, this.parentModel, this.mainModel);
+			ParameterSelectorModal parameterModal = new ParameterSelectorModal(this.parentModal, this.parentModel, this.mainModel, isFirstSelection);
 			parameterModal.show();
 		}
 		
@@ -141,7 +143,7 @@ public class BuildButtonObserver {
 		}
 		
 		else if(expression.equals(ExpressionType.FUNCTION.getValue())) {
-			ExpressionBuilderModal functionModal = new FunctionBuilderModal(this.parentModal, this.parentModel, this.mainModel);
+			ExpressionBuilderModal functionModal = new FunctionBuilderModal(this.parentModal, this.parentModel, this.mainModel, isFirstSelection);
 			functionModal.show();
 		}
 		

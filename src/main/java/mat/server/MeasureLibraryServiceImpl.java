@@ -5668,6 +5668,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 					measurePackageService.saveMeasureXml(xmlModel);
 					getCqlService().deleteCQLAssociation(toBeModifiedIncludeObj, currentMeasureId);
+					result.setUsedCQLArtifacts(cqlService.getUsedCQlArtifacts(xmlModel.getXml()));
 				}
 			}
 		}

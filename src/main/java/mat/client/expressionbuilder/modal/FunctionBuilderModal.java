@@ -14,9 +14,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.expressionbuilder.component.ExpandCollapseCQLExpressionPanel;
+import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.FunctionModel;
 import mat.client.expressionbuilder.observer.FunctionBuildButtonObserver;
+import mat.client.expressionbuilder.util.ExpressionTypeUtil;
 import mat.client.expressionbuilder.util.IdentifierSortUtil;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -44,11 +46,12 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 	private VerticalPanel functionNamePanel;
 
 	public FunctionBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
-			ExpressionBuilderModel mainModel) {
+			ExpressionBuilderModel mainModel, boolean isFirstSelection) {
 		super("Function", parent, parentModel, mainModel);
 		functionModel = new FunctionModel(parentModel);
 		this.getParentModel().appendExpression(functionModel);
 		this.getApplyButton().addClickHandler(event -> onApplyButtonClick());
+		this.setFirstSelection(isFirstSelection);
 		display();
 		functionSignaturePanel.setVisible(false);
 	}
@@ -266,14 +269,24 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 		functionNameListBox.clear();
 		functionNameListBox.addItem(SELECT_FUNCTION, SELECT_FUNCTION);			
 		List<CQLIdentifierObject> userDefinedFunctions = new ArrayList<>();
-		userDefinedFunctions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getFuncs()));
-		userDefinedFunctions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedFuncNames()));
-		userDefinedFunctions.forEach(f -> {
-			functionNameListBox.insertItem(f.getDisplay(), f.toString(), f.getDisplay());
-		});
 		
-		List<String> predefinedNames = new ArrayList<>(MatContext.get().getCqlConstantContainer().getFunctionNames());
+		CQLType firstReturnType = null;
+		
+		if (this.isFirstSelection()) {
+			userDefinedFunctions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getFuncs()));
+			userDefinedFunctions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedFuncNames()));
+		} else {
+			firstReturnType = this.getParentModel().getChildModels().get(0).getType();
+			userDefinedFunctions.addAll(ExpressionTypeUtil.getFunctionsBasedOnReturnType(firstReturnType));
+		}
+		
+		userDefinedFunctions.forEach(f -> {
+			functionNameListBox.insertItem(f.toString(), f.getDisplay());
+		});
+
+		List<String> predefinedNames = new ArrayList<>(ExpressionTypeUtil.getPreDefinedFunctionsBasedOnReturnType(firstReturnType));
 		predefinedNames.remove("Coalesce");
+
 		predefinedNames.forEach(f -> {
 			functionNameListBox.insertItem(f, f);
 		});

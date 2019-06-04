@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.expressionbuilder.model.DefinitionModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
+import mat.client.expressionbuilder.util.ExpressionTypeUtil;
 import mat.client.expressionbuilder.util.IdentifierSortUtil;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -23,7 +24,8 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 	private static final String SELECT_DEFINITION_PLACEHOLDER = "-- Select definition --";
 	private ListBoxMVP definitionListBox;
 
-	public DefinitionSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel) {
+	public DefinitionSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel,
+			boolean isFirstSelection) {
 		super("Definition", parent, parentModel, mainModel);
 		this.setHideOtherModals(false);
 		this.setClosable(false);
@@ -32,6 +34,7 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 		this.setCQLPanelVisible(false);
 		this.getElement().getStyle().setZIndex(9999);
 		this.getApplyButton().addClickHandler(event -> applyButtonClickHandler());
+		this.setFirstSelection(isFirstSelection);
 		display();
 	}
 	
@@ -73,14 +76,17 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 		label.setText(SELECT_A_DEFINITION);
 		label.setTitle(SELECT_A_DEFINITION);
 		
-		
 		definitionListBox = new ListBoxMVP();
-		definitionListBox.insertItem(SELECT_DEFINITION_PLACEHOLDER, SELECT_DEFINITION_PLACEHOLDER, SELECT_DEFINITION_PLACEHOLDER);
+		definitionListBox.insertItem(SELECT_DEFINITION_PLACEHOLDER, SELECT_DEFINITION_PLACEHOLDER);
 		List<CQLIdentifierObject> definitions = new ArrayList<>();
-		definitions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getDefinitions()));
-		definitions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedDefNames()));
 		
-		
+		if (this.isFirstSelection()) {
+			definitions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getDefinitions()));
+			definitions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedDefNames()));
+		} else {			
+			definitions.addAll(ExpressionTypeUtil.getDefinitionsBasedOnReturnType(this.getParentModel().getChildModels().get(0).getType()));
+		}
+
 		for(CQLIdentifierObject definition : definitions) {
 			definitionListBox.insertItem(definition.getDisplay().substring(0, 90), definition.toString(), definition.getDisplay());
 		}

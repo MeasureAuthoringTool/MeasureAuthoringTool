@@ -1,6 +1,5 @@
 package mat.client.expressionbuilder.observer;
 
-import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.modal.AttributeBuilderModal;
@@ -33,7 +32,6 @@ import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IntersectModel;
 import mat.client.expressionbuilder.model.OrModel;
 import mat.client.expressionbuilder.model.UnionModel;
-import mat.client.expressionbuilder.util.ExpressionTypeUtil;
 import mat.client.expressionbuilder.util.QueryFinderHelper;
 
 public class BuildButtonObserver {
@@ -49,10 +47,8 @@ public class BuildButtonObserver {
 
 	public void onBuildButtonClick(String expression, String operator) {	
 		boolean isFirstSelection = true;
-		CQLType type = null;
 		if(operator != null && !operator.isEmpty()) {
 			isFirstSelection = false;
-			type = ExpressionTypeUtil.getCQLTypeBasedOnOperator(operator);
 			this.parentModel.appendExpression(operatorModel(operator));
 		}
 		
@@ -62,7 +58,7 @@ public class BuildButtonObserver {
 		}
 		
 		else if(expression.equals(ExpressionType.DEFINITION.getValue())) {
-			ExpressionBuilderModal definitionModal = new DefinitionSelectorModal(this.parentModal, this.parentModel, this.mainModel, isFirstSelection, type);
+			ExpressionBuilderModal definitionModal = new DefinitionSelectorModal(this.parentModal, this.parentModel, this.mainModel, isFirstSelection);
 			definitionModal.show();
 		}
 		
@@ -102,7 +98,7 @@ public class BuildButtonObserver {
 		}
 		
 		else if(expression.equals(ExpressionType.PARAMETER.getValue())) {
-			ParameterSelectorModal parameterModal = new ParameterSelectorModal(this.parentModal, this.parentModel, this.mainModel, isFirstSelection, type);
+			ParameterSelectorModal parameterModal = new ParameterSelectorModal(this.parentModal, this.parentModel, this.mainModel, isFirstSelection);
 			parameterModal.show();
 		}
 		
@@ -147,7 +143,7 @@ public class BuildButtonObserver {
 		}
 		
 		else if(expression.equals(ExpressionType.FUNCTION.getValue())) {
-			ExpressionBuilderModal functionModal = new FunctionBuilderModal(this.parentModal, this.parentModel, this.mainModel, isFirstSelection, type);
+			ExpressionBuilderModal functionModal = new FunctionBuilderModal(this.parentModal, this.parentModel, this.mainModel, isFirstSelection);
 			functionModal.show();
 		}
 		

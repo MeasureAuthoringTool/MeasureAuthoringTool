@@ -5644,7 +5644,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (model != null && StringUtils.isNotBlank(model.getXml())) {
 			String xmlString = model.getXml();
 			result = cqlService.getCQLDataForLoad(xmlString);
-			result.setUsedCQLArtifacts(cqlService.getUsedCQlArtifacts(xmlString));
 			result.setSetId(measure.getMeasureSet().getId());
 			result.setSuccess(true);
 		} else {

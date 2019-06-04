@@ -65,7 +65,7 @@ public class IntervalModel extends ExpressionBuilderModel {
 	
 	@Override
 	public CQLType getType() {
-		return CQLType.LIST;
+		return CQLType.INTERVAL;
 	}
 	
 	@Override

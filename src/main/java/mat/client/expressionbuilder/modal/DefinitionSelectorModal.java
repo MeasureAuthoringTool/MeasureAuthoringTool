@@ -10,7 +10,6 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.model.DefinitionModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.util.ExpressionTypeUtil;
@@ -26,7 +25,7 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 	private ListBoxMVP definitionListBox;
 
 	public DefinitionSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel,
-			boolean isFirstSelection, CQLType cqlType) {
+			boolean isFirstSelection) {
 		super("Definition", parent, parentModel, mainModel);
 		this.setHideOtherModals(false);
 		this.setClosable(false);
@@ -36,7 +35,6 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 		this.getElement().getStyle().setZIndex(9999);
 		this.getApplyButton().addClickHandler(event -> applyButtonClickHandler());
 		this.setFirstSelection(isFirstSelection);
-		this.setFirstReturnType(cqlType);
 		display();
 	}
 	
@@ -86,7 +84,7 @@ public class DefinitionSelectorModal extends SubExpressionBuilderModal {
 			definitions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getDefinitions()));
 			definitions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedDefNames()));
 		} else {			
-			definitions.addAll(ExpressionTypeUtil.getDefinitionsBasedOnReturnType(this.getFirstReturnType()));
+			definitions.addAll(ExpressionTypeUtil.getDefinitionsBasedOnReturnType(this.getParentModel().getChildModels().get(0).getType()));
 		}
 
 		for(CQLIdentifierObject definition : definitions) {

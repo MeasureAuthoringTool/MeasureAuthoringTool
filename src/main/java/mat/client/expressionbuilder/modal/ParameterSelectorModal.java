@@ -10,7 +10,6 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.ParameterModel;
 import mat.client.expressionbuilder.util.ExpressionTypeUtil;
@@ -26,7 +25,7 @@ public class ParameterSelectorModal extends SubExpressionBuilderModal {
 	private ListBoxMVP parameterListBox;
 
 	public ParameterSelectorModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel,
-			boolean isFirstSelection, CQLType cqlType) {
+			boolean isFirstSelection) {
 		super("Parameter", parent, parentModel, mainModel);
 		this.setHideOtherModals(false);
 		this.setClosable(false);
@@ -36,7 +35,6 @@ public class ParameterSelectorModal extends SubExpressionBuilderModal {
 		this.getElement().getStyle().setZIndex(9999);
 		this.getApplyButton().addClickHandler(event -> applyButtonClickHandler());
 		this.setFirstSelection(isFirstSelection);
-		this.setFirstReturnType(cqlType);
 		display();
 	}
 	
@@ -87,7 +85,7 @@ public class ParameterSelectorModal extends SubExpressionBuilderModal {
 			parameters.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getParameters()));
 			parameters.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedParamNames()));
 		} else {
-			parameters.addAll(ExpressionTypeUtil.getParametersBasedOnReturnType(this.getFirstReturnType()));
+			parameters.addAll(ExpressionTypeUtil.getParametersBasedOnReturnType(this.getParentModel().getChildModels().get(0).getType()));
 		}
 		
 		for(CQLIdentifierObject parameter : parameters) {

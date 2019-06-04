@@ -1029,6 +1029,7 @@ public class CQLServiceImpl implements CQLService {
 		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
 		CQLUtil.setIncludedCQLExpressions(cqlModel);
 		result.setCqlModel(cqlModel);
+		result.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
 
 		return result;
 	}

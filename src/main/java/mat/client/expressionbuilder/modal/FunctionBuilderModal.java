@@ -46,13 +46,12 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 	private VerticalPanel functionNamePanel;
 
 	public FunctionBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel,
-			ExpressionBuilderModel mainModel, boolean isFirstSelection, CQLType cqlType) {
+			ExpressionBuilderModel mainModel, boolean isFirstSelection) {
 		super("Function", parent, parentModel, mainModel);
 		functionModel = new FunctionModel(parentModel);
 		this.getParentModel().appendExpression(functionModel);
 		this.getApplyButton().addClickHandler(event -> onApplyButtonClick());
 		this.setFirstSelection(isFirstSelection);
-		this.setFirstReturnType(cqlType);
 		display();
 		functionSignaturePanel.setVisible(false);
 	}
@@ -270,19 +269,22 @@ public class FunctionBuilderModal extends SubExpressionBuilderModal {
 		functionNameListBox.clear();
 		functionNameListBox.addItem(SELECT_FUNCTION, SELECT_FUNCTION);			
 		List<CQLIdentifierObject> userDefinedFunctions = new ArrayList<>();
-
+		
+		CQLType firstReturnType = null;
+		
 		if (this.isFirstSelection()) {
 			userDefinedFunctions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getFuncs()));
 			userDefinedFunctions.addAll(IdentifierSortUtil.sortIdentifierList(MatContext.get().getIncludedFuncNames()));
 		} else {
-			userDefinedFunctions.addAll(ExpressionTypeUtil.getFunctionsBasedOnReturnType(this.getFirstReturnType()));
+			firstReturnType = this.getParentModel().getChildModels().get(0).getType();
+			userDefinedFunctions.addAll(ExpressionTypeUtil.getFunctionsBasedOnReturnType(firstReturnType));
 		}
 		
 		userDefinedFunctions.forEach(f -> {
 			functionNameListBox.insertItem(f.toString(), f.getDisplay());
 		});
 
-		List<String> predefinedNames = new ArrayList<>(ExpressionTypeUtil.getPreDefinedFunctionsBasedOnReturnType(this.getFirstReturnType()));
+		List<String> predefinedNames = new ArrayList<>(ExpressionTypeUtil.getPreDefinedFunctionsBasedOnReturnType(firstReturnType));
 		predefinedNames.remove("Coalesce");
 
 		predefinedNames.forEach(f -> {

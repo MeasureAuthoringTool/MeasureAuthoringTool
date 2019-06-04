@@ -1,7 +1,6 @@
 package mat.client.expressionbuilder.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,9 @@ import mat.shared.cql.model.FunctionSignature;
 
 public class ExpressionTypeUtil {
 
+	private static final String PARSER_BOOLEAN = "System.Boolean";
+	private static final String SIGNATURES_JSON_BOOLEAN = "Boolean";
+	
 	private ExpressionTypeUtil() {
 		throw new IllegalStateException("Expression Type Util");
 	}
@@ -67,22 +69,24 @@ public class ExpressionTypeUtil {
 		final Map<String, String> nameToReturnTypeMap = new HashMap<>(); 
 		nameToReturnTypeMap.putAll(MatContext.get().getExpressionToReturnTypeMap());
 
-		expressions.forEach(def -> def.setReturnType(nameToReturnTypeMap.get(def.getDisplay())));
-
-		if (type.equals(CQLType.BOOLEAN) || type.equals(CQLType.LIST)) {
-			expressions.removeIf(def -> !getCQLTypeBasedOnReturnType(def.getReturnType()).equals(type));
+		if (!nameToReturnTypeMap.isEmpty() && isFilterable(type)) {
+			expressions.removeIf(def -> !getCQLTypeBasedOnReturnType(nameToReturnTypeMap.get(def.getDisplay())).equals(type));
 		}
 
 		return expressions;
 	}
 
+	private static boolean isFilterable(CQLType type) {
+		return type.equals(CQLType.BOOLEAN) || type.equals(CQLType.LIST) || type.equals(CQLType.INTERVAL);
+	}
+	
 	public static List<String> getPreDefinedFunctionsBasedOnReturnType(CQLType type) {
 		if (type == null) {
 			return new ArrayList<>(MatContext.get().getCqlConstantContainer().getFunctionNames());
 		}
 			
 		List<FunctionSignature> signatures = new ArrayList<>(MatContext.get().getCqlConstantContainer().getFunctionSignatures());
-		if (type.equals(CQLType.BOOLEAN) || type.equals(CQLType.LIST)) {
+		if (isFilterable(type)) {
 			signatures.removeIf(func -> !getCQLTypeBasedOnReturnType(func.getReturnType()).equals(type));
 		}
 		return signatures.stream().map(s -> s.getName()).collect(Collectors.toList());
@@ -173,26 +177,16 @@ public class ExpressionTypeUtil {
 
 	private static CQLType getCQLTypeBasedOnReturnType(String returnType) {
 		CQLType cqlType = CQLType.ANY;
-		returnType = returnType.toLowerCase();
-		final List<String> returnTypes = Arrays.asList("list<", "interval<", "tuple");
-		if ("System.Boolean".equalsIgnoreCase(returnType) || "Boolean".equalsIgnoreCase(returnType)) {
-			cqlType = CQLType.BOOLEAN;
-		} else if (returnTypes.stream().anyMatch(returnType::contains)) {
-			cqlType = CQLType.LIST;
+		if (null != returnType) {
+			returnType = returnType.toLowerCase();
+			if (PARSER_BOOLEAN.equalsIgnoreCase(returnType) || SIGNATURES_JSON_BOOLEAN.equalsIgnoreCase(returnType)) {
+				cqlType = CQLType.BOOLEAN;
+			} else if (returnType.startsWith("list<") || returnType.startsWith("tuple")) {
+				cqlType = CQLType.LIST;
+			} else if (returnType.startsWith("interval<")) {
+				cqlType = CQLType.INTERVAL;
+			}
 		}
 		return cqlType;
 	}
-
-	public static CQLType getCQLTypeBasedOnOperator(String operator) {
-		CQLType cqlType = CQLType.ANY;
-		
-		if(OperatorTypeUtil.getBooleanOperators().stream().anyMatch(op -> op.getValue().equals(operator))) {
-			cqlType = CQLType.BOOLEAN;
-		} else if (OperatorTypeUtil.getSetOperators().stream().anyMatch(op -> op.getValue().equals(operator))) {
-			cqlType = CQLType.LIST;
-		}
-		
-		return cqlType;
-	}
-	
 }

@@ -13,7 +13,7 @@ public class OperatorTypeUtil {
 	}
 	
 	public static List<OperatorType> getAvailableOperatorsCQLType(CQLType type) {
-		if(type.equals(CQLType.LIST)) {
+		if(type.equals(CQLType.LIST) || type.equals(CQLType.INTERVAL)) {
 			return getSetOperators();
 		}
 		

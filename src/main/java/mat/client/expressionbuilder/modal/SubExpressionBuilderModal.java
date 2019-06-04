@@ -7,7 +7,6 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
-import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionBuilderUserAssistText;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.AttributeModel;
@@ -34,7 +33,6 @@ import mat.client.shared.MatContext;
 
 public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 	private boolean firstSelection;
-	private CQLType firstReturnType;
 
 	private Button cancelButton;
 	private Button applyButton;
@@ -148,14 +146,6 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 
 	public void setFirstSelection(boolean firstSelection) {
 		this.firstSelection = firstSelection;
-	}
-
-	public CQLType getFirstReturnType() {
-		return firstReturnType;
-	}
-
-	public void setFirstReturnType(CQLType firstReturnType) {
-		this.firstReturnType = firstReturnType;
 	}
 
 }

@@ -3082,6 +3082,6 @@
 				"returnType": "String"
 			}
 		],
-		"documentation": "The Coalesce operator returns the first non-null result in a list of arguments."
+		"documentation": "The Coalesce operator returns the first non-null result in a list of arguments"
 	}
 ]

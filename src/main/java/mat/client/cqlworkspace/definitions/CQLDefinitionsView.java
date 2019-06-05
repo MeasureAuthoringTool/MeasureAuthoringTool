@@ -1,16 +1,12 @@
 package mat.client.cqlworkspace.definitions;
 
-import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -33,9 +29,6 @@ public class CQLDefinitionsView {
 	
 	private HelpBlock helpBlock = new HelpBlock();
 	private MatTextBox defineNameTxtArea = new MatTextBox();
-	private ButtonGroup contextGroup = new ButtonGroup();
-	private InlineRadio contextDefinePATRadioBtn = new InlineRadio("Patient");
-	private InlineRadio contextDefinePOPRadioBtn = new InlineRadio("Population");
 	private DefinitionFunctionButtonToolBar defineButtonBar = new DefinitionFunctionButtonToolBar(DEFINITION);
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton(DEFINITION);
 	private TextArea defineCommentTextArea = new TextArea();
@@ -89,7 +82,6 @@ public class CQLDefinitionsView {
 		definitionVP.add(buildHelpBlock());
 		
 		definitionNameGroup = buildDefinitionNameFormGroup();
-		definitionContextGroup = buildDefinitionContextGroup();
 		defineCommentGroup = buildDefinitionCommentGroup();
 		returnTypeAndButtonPanelGroup = buildReturnTypeAndButtonPanelGroup();
 		
@@ -185,34 +177,6 @@ public class CQLDefinitionsView {
 		return commentGroup;
 	}
 
-	private FormGroup buildDefinitionContextGroup() {
-		FormGroup contextGrouop = new FormGroup();
-		FormLabel defineContextLabel = new FormLabel();
-		defineContextLabel.setText("Context");
-		defineContextLabel.setTitle("Context");
-		defineContextLabel.setId("DefinitionContext_Label");
-		defineContextLabel.setFor("contextGroup");
-		
-		FlowPanel defineContextPanel = new FlowPanel();
-		contextDefinePATRadioBtn.setValue(true);
-		contextDefinePATRadioBtn.setText("Patient");
-		contextDefinePATRadioBtn.setId("context_PatientRadioButton");
-		contextDefinePOPRadioBtn.setValue(false);
-		contextDefinePOPRadioBtn.setText("Population");
-		contextDefinePOPRadioBtn.setId("context_PopulationRadioButton");
-		contextGroup.setId("contextGroup");
-		contextGroup.add(contextDefinePATRadioBtn);
-		contextGroup.add(contextDefinePOPRadioBtn);
-		contextGroup.setStyleName("contextToggleSwitch");
-		defineContextPanel.add(contextGroup);
-		
-		HorizontalPanel defineContextHPanel = new HorizontalPanel();
-		defineContextHPanel.add(defineContextLabel);
-		defineContextHPanel.add(defineContextPanel);
-		defineContextHPanel.setWidth("500px");
-		contextGrouop.add(defineContextHPanel);
-		return contextGrouop;
-	}
 
 	private FormGroup buildDefinitionNameFormGroup() {
 		FormGroup nameGroup = new FormGroup();
@@ -261,18 +225,6 @@ public class CQLDefinitionsView {
 		return this.editorPanel.getEditor();
 	}
 
-	public ButtonGroup getContextGroup() {
-		return contextGroup;
-	}
-
-	public InlineRadio getContextDefinePATRadioBtn() {
-		return contextDefinePATRadioBtn;
-	}
-
-	public InlineRadio getContextDefinePOPRadioBtn() {
-		return contextDefinePOPRadioBtn;
-	}
-
 	public DefinitionFunctionButtonToolBar getDefineButtonBar() {
 		return defineButtonBar;
 	}
@@ -298,8 +250,6 @@ public class CQLDefinitionsView {
 		getDefineNameTxtArea().setEnabled(isEditable);
 		getDefineCommentTextArea().setEnabled(isEditable);
 		getDefineAceEditor().setReadOnly(!isEditable);
-		getContextDefinePATRadioBtn().setEnabled(isEditable);
-		getContextDefinePOPRadioBtn().setEnabled(isEditable);
 		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
 		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);

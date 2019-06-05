@@ -7,10 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -73,9 +71,6 @@ public class CQLFunctionsView {
 	private MatTextBox funcNameTxtArea = new MatTextBox();
 	private Button addNewArgumentButton = new Button();
 	private DefinitionFunctionButtonToolBar functionButtonBar = new DefinitionFunctionButtonToolBar(FUNCTION);
-	private ButtonGroup contextGroup = new ButtonGroup();
-	private InlineRadio contextFuncPATRadioBtn = new InlineRadio("Patient");
-	private InlineRadio contextFuncPOPRadioBtn = new InlineRadio("Population");
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton(FUNCTION);
 	private List<CQLFunctionArgument> functionArgumentList = new ArrayList<>();
 	private VerticalPanel cellTablePanel = new VerticalPanel();
@@ -127,7 +122,6 @@ public class CQLFunctionsView {
 		
 		funcNameGroup = buildFunctionNameFormGroup();
 		buildAddNewArgumentButton();
-		funcContextGroup = buildFunctionContextFormGroup();
 		funcCommentGroup = buildFunctionCommentGroup();
 		returnTypeAndButtonPanelGroup = buildReturnTypeAndButtonPanelGroup();
 		
@@ -226,33 +220,6 @@ public class CQLFunctionsView {
 		return commentGroup;
 	}
 
-	private FormGroup buildFunctionContextFormGroup() {
-		FormGroup contextGroup = new FormGroup();
-		FormLabel funcContextLabel = new FormLabel();
-		funcContextLabel.setText("Context");
-		funcContextLabel.setTitle("Context");
-		funcContextLabel.setId("FunctionContext_Label");
-
-		contextFuncPATRadioBtn.setValue(true);
-		contextFuncPATRadioBtn.setText("Patient");
-		contextFuncPATRadioBtn.setId("context_PatientRadioButton");
-		contextFuncPOPRadioBtn.setValue(false);
-		contextFuncPOPRadioBtn.setText("Population");
-		contextFuncPOPRadioBtn.setId("context_PopulationRadioButton");
-		functionButtonBar.getTimingExpButton().setVisible(false);
-		functionButtonBar.getCloseButton().setVisible(false);
-		contextGroup.add(contextFuncPATRadioBtn);
-		contextGroup.add(contextFuncPOPRadioBtn);
-		contextGroup.setStyleName("contextToggleSwitch");
-		
-		HorizontalPanel funcContextHPanel = new HorizontalPanel();
-		funcContextHPanel.add(funcContextLabel);
-		funcContextHPanel.add(contextGroup);
-		funcContextHPanel.setWidth("500px");
-		
-		funcContextGroup.add(funcContextHPanel);
-		return funcContextGroup;
-	}
 
 	private FormGroup buildFunctionNameFormGroup() {
 		FormGroup nameGroup = new FormGroup();
@@ -580,8 +547,6 @@ public class CQLFunctionsView {
 		getFunctionBodyAceEditor().setReadOnly(!isEditable);
 		getFunctionButtonBar().setEnabled(isEditable);
 		getAddNewArgument().setEnabled(isEditable);
-		getContextFuncPATRadioBtn().setEnabled(isEditable);
-		getContextFuncPOPRadioBtn().setEnabled(isEditable);
 		getFunctionButtonBar().getDeleteButton().setTitle("Delete");
 	}
 	
@@ -635,18 +600,6 @@ public class CQLFunctionsView {
 
 	public DefinitionFunctionButtonToolBar getFunctionButtonBar() {
 		return functionButtonBar;
-	}
-
-	public ButtonGroup getContextGroup() {
-		return contextGroup;
-	}
-	
-	public InlineRadio getContextFuncPATRadioBtn() {
-		return contextFuncPATRadioBtn;
-	}
-
-	public InlineRadio getContextFuncPOPRadioBtn() {
-		return contextFuncPOPRadioBtn;
 	}
 
 	public List<CQLFunctionArgument> getFunctionArgumentList() {

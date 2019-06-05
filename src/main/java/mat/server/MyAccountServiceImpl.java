@@ -15,6 +15,7 @@ import mat.client.myAccount.service.SaveMyAccountResult;
 import mat.dao.UserDAO;
 import mat.model.SecurityQuestions;
 import mat.model.User;
+import mat.model.UserPreference;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
@@ -51,11 +52,12 @@ MyAccountService {
 		model.setEmailAddress(user.getEmailAddress());
 		model.setPhoneNumber(user.getPhoneNumber());
 		model.setTitle(user.getTitle());
-		model.setOrganisation(user.getOrganizationName());
+		model.setOrganization(user.getOrganizationName());
 		model.setOid(user.getOrgOID());
-		//model.setRootoid(user.getRootOID());
 		model.setLoginId(user.getLoginId());
-		logger.info("Model Object for User " + user.getLoginId() +" is updated and returned with Organisation ::: " + model.getOrganisation());
+		boolean enableFreeTextEditor = user.getUserPreference() != null && user.getUserPreference().isFreeTextEditorEnabled();
+		model.setEnableFreeTextEditor(enableFreeTextEditor);
+		logger.info("Model Object for User " + user.getLoginId() +" is updated and returned with Organisation ::: " + model.getOrganization());
 		return model;
 	}
 	
@@ -73,7 +75,11 @@ MyAccountService {
 		user.setLastName(model.getLastName());
 		user.setEmailAddress(model.getEmailAddress());
 		user.setPhoneNumber(model.getPhoneNumber());
-		user.setTitle(model.getTitle());	
+		user.setTitle(model.getTitle());
+		UserPreference userPreference = user.getUserPreference() == null ? new UserPreference() : user.getUserPreference();
+		userPreference.setUser(user);
+		userPreference.setFreeTextEditorEnabled(model.isEnableFreeTextEditor());
+		user.setUserPreference(userPreference);
 	}
 	
 	/**

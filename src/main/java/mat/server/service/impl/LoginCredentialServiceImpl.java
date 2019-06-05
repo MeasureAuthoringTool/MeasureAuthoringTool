@@ -17,12 +17,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import mat.DTO.UserPreferenceDTO;
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
 import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserPassword;
+import mat.model.UserPreference;
 import mat.model.UserSecurityQuestion;
 import mat.server.hibernate.HibernateUserDetailService;
 import mat.server.model.MatUserDetails;
@@ -388,6 +390,12 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		loginModel.setEmail(userDetails.getEmailAddress());
 		loginModel.setLoginId(userDetails.getLoginId());
 		loginModel.setFirstName(userDetails.getUsername());
+		UserPreference userPreference = userDetails.getUserPreference();
+		UserPreferenceDTO userPreferenceDTO = new UserPreferenceDTO();
+		if(userPreference != null) {
+			userPreferenceDTO.setFreeTextEditorEnabled(userPreference.isFreeTextEditorEnabled());
+		}
+		loginModel.setUserPreference(userPreferenceDTO);
 		return loginModel;
 	}
 

@@ -255,4 +255,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-170-9892_add_statusDate.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-170-9901_Add_prescriber.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-171-9903_remove_recorder.xml" />
+		<include file="classpath:/liquibase/deploy_Sprint-171_MAT-9881_new_user_reference_table.xml"/>
 </databaseChangeLog>

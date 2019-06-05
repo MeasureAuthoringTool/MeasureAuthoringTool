@@ -31,7 +31,7 @@ public class MyAccountModelValidator {
 		if("".equals(model.getLastName().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getLastNameRequiredMessage());
 		}
-		if("".equals(model.getOrganisation().trim())) {
+		if("".equals(model.getOrganization().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getOrgRequiredMessage());
 		}
 		if("".equals(model.getOid().trim())) {

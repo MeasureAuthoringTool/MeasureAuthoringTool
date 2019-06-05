@@ -11,9 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
-import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.dao.MeasureTypeDAO;
 import mat.dao.OrganizationDAO;
 import mat.model.Author;
@@ -92,6 +92,7 @@ public class ManageMeasureDetailModelConversions {
 		return compositeMeasureDetailModel;
 	}
 	
+
 	private List<Result> createResultObjectForComponentMeasures(List<ComponentMeasure> componentMeasures) {
 		List<Result> measureResults = new ArrayList<>();
 		measureResults.addAll(componentMeasures.stream().map(measure -> createResultObject(measure)).collect(Collectors.toList()));

@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
+import mat.DTO.UserPreferenceDTO;
 import mat.client.buttons.InfoDropDownMenu;
 import mat.client.buttons.InfoToolBarButton;
 import mat.client.buttons.InsertToolBarButton;
@@ -23,6 +24,7 @@ import mat.client.buttons.SaveButton;
 import mat.client.cqlworkspace.shared.CQLEditor;
 import mat.client.cqlworkspace.shared.CQLEditorPanel;
 import mat.client.inapphelp.component.InAppHelp;
+import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.shared.CQLError;
@@ -64,8 +66,11 @@ public class CQLLibraryEditorView {
 		
 		getCqlAceEditor().setText("");
 		getCqlAceEditor().clearAnnotations();
-		getCqlAceEditor().setReadOnly(!isEditable);
-		getSaveButton().setEnabled(isEditable);
+		UserPreferenceDTO userPreference = MatContext.get().getLoggedInUserPreference();
+		boolean enableFreeTextEditor = (userPreference != null && userPreference.isFreeTextEditorEnabled()) && isEditable;
+		
+		getCqlAceEditor().setReadOnly(!enableFreeTextEditor);
+		getSaveButton().setEnabled(enableFreeTextEditor);
 		
 		if(isEditable) {
 			exportErrorFile.setPull(Pull.LEFT);
@@ -80,6 +85,7 @@ public class CQLLibraryEditorView {
 		
 		this.editorPanel.getEditor().addDomHandler(event -> editorPanel.catchTabOutKeyCommand(event, saveButton), KeyUpEvent.getType());
 		editorPanel.setSize("650px", "500px");
+		
 		cqlLibraryEditorVP.add(editorPanel);
 				
 		saveButton.setPull(Pull.RIGHT);

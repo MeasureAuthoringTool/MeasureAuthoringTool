@@ -1,8 +1,10 @@
 package mat.server;
 
 
+import mat.DTO.UserPreferenceDTO;
 import mat.client.login.service.SessionManagementService;
 import mat.model.User;
+import mat.model.UserPreference;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.UserService;
 
@@ -33,6 +35,12 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet  imple
 		result.userLastName = user.getLastName();
 		result.currentSessionId = getThreadLocalRequest().getSession().getId();
 		result.activeSessionId = user.getSessionId();
+		UserPreference userPreference = user.getUserPreference();
+		UserPreferenceDTO userPreferenceDTO = new UserPreferenceDTO();
+		if(userPreference != null) {
+			userPreferenceDTO.setFreeTextEditorEnabled(userPreference.isFreeTextEditorEnabled());
+		}
+		result.userPreference = userPreferenceDTO;
 		return result;
 	}
 	

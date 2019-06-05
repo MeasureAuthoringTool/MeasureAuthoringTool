@@ -6,6 +6,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import mat.DTO.UserPreferenceDTO;
+
 /**
  * The Interface SessionManagementService.
  */
@@ -38,6 +40,8 @@ public interface SessionManagementService extends RemoteService{
 		public String currentSessionId;
 		
 		public String activeSessionId;
+		
+		public UserPreferenceDTO userPreference;
 	}
 	
 	public SessionManagementService.Result getCurrentUserRole();

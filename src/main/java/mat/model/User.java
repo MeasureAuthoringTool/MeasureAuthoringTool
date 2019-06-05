@@ -82,6 +82,8 @@ public class User  {
 	
 	private Set<UserPasswordHistory> passwordHistory;
 	
+	private UserPreference userPreference;
+	
 	
 	@Id
 	@GeneratedValue(generator="uuid")
@@ -388,6 +390,19 @@ public class User  {
 	@Transient
 	public String getFullName() {
 		return this.firstName + " " + this.lastName;
+	}
+	
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade=CascadeType.ALL)
+	public UserPreference getUserPreference() {
+		return userPreference;
+	}
+
+	public void setUserPreference(UserPreference userPreference) {
+		if(userPreference != null && userPreference.getUser() == null) {
+			userPreference.setUser(this);
+		}
+		
+		this.userPreference = userPreference;
 	}
 
 }

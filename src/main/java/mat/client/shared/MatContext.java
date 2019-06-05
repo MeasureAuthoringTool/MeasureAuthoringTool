@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.CompositeMeasureScoreDTO;
 import mat.DTO.OperatorDTO;
+import mat.DTO.UserPreferenceDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
 import mat.client.admin.service.AdminServiceAsync;
@@ -154,6 +155,8 @@ public class MatContext implements IsSerializable {
 	private String loginId;
 
 	private String userRole;
+	
+	private UserPreferenceDTO userPreference;
 
 	private QDSCodeListSearchView qdsView;
 
@@ -270,11 +273,12 @@ public class MatContext implements IsSerializable {
 		this.listBoxCodeProvider = listBoxCodeProvider;
 	}
 
-	public void setUserInfo(String userId, String userEmail, String userRole,String loginId) {
+	public void setUserInfo(String userId, String userEmail, String userRole,String loginId, UserPreferenceDTO userPreference) {
 		this.userId = userId;
 		this.userEmail = userEmail;
 		this.userRole = userRole;
 		this.loginId=loginId;
+		this.userPreference = userPreference;
 	}
 
 	protected MatContext(){
@@ -425,7 +429,15 @@ public class MatContext implements IsSerializable {
 	public String getLoggedInUserRole() {
 		return userRole;
 	}
+	
+	public UserPreferenceDTO getLoggedInUserPreference() {
+		return userPreference;
+	}
 
+	public void setLoggedInUserPreference(UserPreferenceDTO userPreference) {
+		this.userPreference = userPreference;
+	}
+	
 	public String getLoggedinUserId(){
 		return userId;
 	}
@@ -1527,7 +1539,6 @@ public class MatContext implements IsSerializable {
 			}
 		};
 	}
-
 	public Map<String, String> getExpressionToReturnTypeMap() {
 		return expressionToReturnTypeMap;
 	}
@@ -1536,4 +1547,11 @@ public class MatContext implements IsSerializable {
 		this.expressionToReturnTypeMap = expressionToReturnTypeMap;
 	}
 
+	public UserPreferenceDTO getUserPreference() {
+		return userPreference;
+	}
+
+	public void setUserPreference(UserPreferenceDTO userPreference) {
+		this.userPreference = userPreference;
+	}
 }

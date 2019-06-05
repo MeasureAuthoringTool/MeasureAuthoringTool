@@ -2,9 +2,11 @@ package mat.client.login;
 
 
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+import mat.DTO.UserPreferenceDTO;
 import mat.model.BaseModel;
 import mat.model.SecurityRole;
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * The Class LoginModel.
@@ -58,6 +60,8 @@ public class LoginModel implements IsSerializable , BaseModel{
 	
 	/** The question3 answer. */
 	private String question3Answer;
+	
+	private UserPreferenceDTO userPreference;
 	
 	/**
 	 * Checks if is initial password.
@@ -388,6 +392,14 @@ public class LoginModel implements IsSerializable , BaseModel{
 			this.setEmail(noMarkupText);
 		}
 		
+	}
+
+	public UserPreferenceDTO getUserPreference() {
+		return userPreference;
+	}
+
+	public void setUserPreference(UserPreferenceDTO userPreference) {
+		this.userPreference = userPreference;
 	}
 	
 }

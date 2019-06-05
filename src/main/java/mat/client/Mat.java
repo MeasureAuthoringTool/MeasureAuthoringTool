@@ -153,7 +153,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 						final Date current = new Date();
 						final boolean isAlreadySignedIn = MatContext.get().isAlreadySignedIn(lastSignOut, lastSignIn, current);
 						MatContext.get().setUserSignInDate(result.userId);
-						MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole,result.loginId);
+						MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole,result.loginId, result.userPreference);
 						loadMatWidgets(result.userFirstName, result.userLastName, isAlreadySignedIn, resultMatVersion);
 					}
 				}

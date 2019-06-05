@@ -1,23 +1,28 @@
 package mat.client.myAccount;
 
+import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.PanelType;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.SaveContinueCancelButtonBar;
-import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
@@ -29,7 +34,7 @@ import mat.client.shared.SuccessMessageAlert;
 
 public class PersonalInformationView implements PersonalInformationPresenter.Display {
 	
-	private FlowPanel vPanel;
+	private VerticalPanel vPanel;
 	
 	private ContentWithHeadingWidget headingPanel;
 	
@@ -49,6 +54,8 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 					
 	private PhoneNumberWidget phoneWidget = new PhoneNumberWidget();
 	
+	private CheckBox freeTextEditor;
+	
 	private PasswordEditInfoWidget passwordEditInfoWidget = new PasswordEditInfoWidget();
 	
 	private SaveContinueCancelButtonBar buttons = new SaveContinueCancelButtonBar("personalInfo");
@@ -59,9 +66,9 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 
 	public PersonalInformationView() {
 		
-		vPanel = new FlowPanel();
+		vPanel = new VerticalPanel();
 
-		vPanel.addStyleName("leftAligned");
+		vPanel.setWidth("100%");
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		HTML required = new HTML(RequiredIndicator.get() + " indicates required field");
@@ -98,6 +105,8 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		FormGroup organizationOidGroup = new FormGroup();
 		FormGroup emailAddressGroup = new FormGroup();
 		FormGroup phoneNumberGroup = new FormGroup();
+		
+		FormGroup freeTextEditorGroup = new FormGroup();
 		
 		FormGroup passwordGroup = new FormGroup();
 		
@@ -207,19 +216,60 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		
 		phoneNumberGroup.add(phoneNumberLabel);
 		phoneNumberGroup.add(phoneWidget);
-		
-		passwordGroup.add(passwordEditInfoWidget.getPasswordExistingGroup());
-		
+
 		FieldSet formFieldSet = new FieldSet();
+		formFieldSet.setWidth("50%");
+		formFieldSet.getElement().setAttribute("style", "float: left;");
 		formFieldSet.add(nameGrid);
 		formFieldSet.add(titleGroup);
 		formFieldSet.add(organizationGroup);
 		formFieldSet.add(organizationOidGroup);
 		formFieldSet.add(emailAddressGroup);
 		formFieldSet.add(phoneNumberGroup);
-		formFieldSet.add(passwordGroup);
 		
-		userNameForm.add(formFieldSet);
+		SafeHtmlBuilder builder = new SafeHtmlBuilder();
+		builder.appendHtmlConstant("<strong>Enable the CQL Library Editor</strong>");
+		
+		freeTextEditor = new CheckBox(builder.toSafeHtml());
+		
+		freeTextEditor.setId("freeTextEditor_CheckBox");
+		freeTextEditor.setTitle("Enable the CQL Library Editor");
+		
+		freeTextEditorGroup.add(freeTextEditor);
+		
+		
+		FieldSet rightFormSet = new FieldSet();
+		rightFormSet.getElement().setAttribute("style", "width:85%;float: left;");
+		
+		Panel userPreferencePanel = new Panel();
+		userPreferencePanel.getElement().setAttribute("style", "margin-left: 20px;");
+		userPreferencePanel.setType(PanelType.PRIMARY);
+		PanelHeader header = new PanelHeader();
+		header.setText("User Preferences:");
+		header.getElement().setTabIndex(0);
+		
+		PanelBody body = new PanelBody();
+		body.add(freeTextEditorGroup);
+		userPreferencePanel.add(header);
+		userPreferencePanel.add(body);
+		
+		rightFormSet.add(userPreferencePanel);
+		
+		FieldSet bottomFormSet = new FieldSet();
+		passwordGroup.add(passwordEditInfoWidget.getPasswordExistingGroup());
+		bottomFormSet.add(passwordGroup);
+		
+		HorizontalPanel topPanel = new HorizontalPanel();
+		topPanel.setWidth("100%");
+		topPanel.add(formFieldSet);
+		topPanel.add(rightFormSet);
+		
+		VerticalPanel wrapPanel = new VerticalPanel();
+		wrapPanel.setWidth("100%");
+		wrapPanel.add(topPanel);
+		wrapPanel.add(bottomFormSet);
+		
+		userNameForm.add(wrapPanel);
 		return userNameForm;
 	}
 	
@@ -347,5 +397,15 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	@Override
 	public Input getPasswordInput() {
 		return passwordEditInfoWidget.getPassword();
+	}
+	
+	@Override
+	public boolean isFreeTextEditorEnabled() {
+		return freeTextEditor.getValue();
+	}
+	
+	@Override
+	public CheckBox getFreeTextEditorCheckBox() {
+		return freeTextEditor;
 	}
 }

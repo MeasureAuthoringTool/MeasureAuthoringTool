@@ -5,17 +5,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
@@ -28,6 +26,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.SecurityRole;
 import mat.model.Status;
 import mat.model.UserPassword;
+import mat.model.UserPreference;
 
 @Entity
 @Table(name = "USER", uniqueConstraints = @UniqueConstraint(columnNames = "LOGIN_ID"))
@@ -62,6 +61,8 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
     private String userLastName;
     
     private String sessionId;
+    
+    private UserPreference userPreference;
     
     public MatUserDetails() {
     	
@@ -255,6 +256,15 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 
 	public void setUserLastName(String userLastName) {
 		this.userLastName = userLastName;
+	}
+
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade=CascadeType.ALL)
+	public UserPreference getUserPreference() {
+		return userPreference;
+	}
+
+	public void setUserPreference(UserPreference userPreference) {
+		this.userPreference = userPreference;
 	}
 }
 

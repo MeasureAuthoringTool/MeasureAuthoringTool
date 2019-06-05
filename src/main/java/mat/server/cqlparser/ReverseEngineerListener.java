@@ -227,6 +227,8 @@ public class ReverseEngineerListener extends cqlBaseListener {
 				code.setCodeSystemName(codeSystemName);
 				code.setCodeSystemOID(codeSystem.get().getCodeSystem());
 				code.setCodeSystemVersion(codeSystem.get().getCodeSystemVersion());
+			} else {
+				code.setCodeSystemName(codeSystemName);
 			}
 			
 			cqlModel.getCodeList().add(code);

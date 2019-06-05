@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -18,6 +19,7 @@ import org.cqframework.cql.gen.cqlBaseListener;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.gen.cqlParser.CodeDefinitionContext;
+import org.cqframework.cql.gen.cqlParser.CodesystemDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ConceptDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.IncludeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.LibraryDefinitionContext;
@@ -25,6 +27,7 @@ import org.cqframework.cql.gen.cqlParser.UsingDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ValuesetDefinitionContext;
 
 import mat.model.cql.CQLCode;
+import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.CQLUtilityClass;
@@ -46,6 +49,10 @@ public class CQLLinter extends cqlBaseListener {
 	private int noCommentZoneStartLine = 0;
 	private int noCommentZoneEndLine = 0;
 	
+	
+	private List<CQLCodeSystem> codeSystems;
+	private List<CQLCode> matchedCodes;
+	
 	public CQLLinter(String cql, CQLLinterConfig config) throws IOException {
 		this.config = config;
 		this.errors = new ArrayList<>();
@@ -54,6 +61,8 @@ public class CQLLinter extends cqlBaseListener {
 		this.missingIncludedLibraries = new ArrayList<>();
 		this.missingValuesets = new ArrayList<>();
 		this.missingCodes = new ArrayList<>();
+		this.codeSystems = new ArrayList<>();
+		this.matchedCodes = new ArrayList<>();
 		
 		InputStream stream = new ByteArrayInputStream(cql.getBytes());
 		cqlLexer lexer = new cqlLexer(new ANTLRInputStream(stream));
@@ -71,8 +80,50 @@ public class CQLLinter extends cqlBaseListener {
 		if(isCommentInNoCommentZone(tokens)) {
 			this.warningMessages.add("A comment was added in an incorrect location and could not be saved. Comments are permitted between the CQL Library declaration and the Model declaration, directly above a parameter, definition, or function.");
 		}
+		
+		if(hasExtraneousCodesystem() || hasMissingCodesystem()) {
+			this.warningMessages.add("The MAT was unable to save the change made to the codesystem or codesystem version. These items are pulled directly from what is on file from the Codes Section of the CQL Workspace/CQL Composer.");
+		}
 	}
 	
+	private boolean hasMissingCodesystem() {
+		for(CQLCode code : matchedCodes) {
+			Optional<CQLCodeSystem> codeSystem = this.codeSystems.stream().filter(cs -> cs.getCodeSystemName().equals(code.getCodeSystemName())).findFirst();
+			if(codeSystem.isPresent()) {
+				if(doesCodeCodeSystemNotMatchCodeSystemDeclaration(code, codeSystem.get())) {
+					return true;
+				}
+			} else {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	private boolean doesCodeCodeSystemNotMatchCodeSystemDeclaration(CQLCode code, CQLCodeSystem codeSystem) {
+		return !codeSystem.getCodeSystem().replace("urn:oid:", "").equals(code.getCodeSystemOID()) 
+				|| !codeSystem.getCodeSystemName().equals(code.getCodeSystemName()) 
+				|| (code.isIsCodeSystemVersionIncluded() && !code.getCodeSystemVersion().equals(codeSystem.getCodeSystemVersion()))
+				|| (!code.isIsCodeSystemVersionIncluded() && StringUtils.isNotEmpty(codeSystem.getCodeSystemVersion()));
+	}
+
+	private boolean hasExtraneousCodesystem() {
+		for(CQLCodeSystem codesystem : codeSystems) {
+			
+			Optional<CQLCode> code = this.matchedCodes.stream().filter(c -> c.getCodeSystemName().equals(codesystem.getCodeSystemName())).findFirst();
+			if(code.isPresent()) {
+				if(doesCodeCodeSystemNotMatchCodeSystemDeclaration(code.get(), codesystem)) {
+					return true;
+				}
+			} else {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
 	/**
 	 * the "no comment zone" goes from the beginning of the file to the library declaration statement and then
 	 * the using statement to the end of the concept definition section
@@ -178,6 +229,19 @@ public class CQLLinter extends cqlBaseListener {
 	}
 	
 	@Override
+	public void enterCodesystemDefinition(CodesystemDefinitionContext ctx) {
+		CQLCodeSystem codesystem = new CQLCodeSystem();
+		codesystem.setCodeSystem(CQLParserUtil.parseString(ctx.codesystemId().getText()));
+		codesystem.setCodeSystemName(CQLParserUtil.parseString(ctx.identifier().getText()));
+		
+		if(ctx.versionSpecifier() != null) {
+			codesystem.setCodeSystemVersion(CQLParserUtil.parseString(ctx.versionSpecifier().getText()));
+		}
+		
+		this.codeSystems.add(codesystem);
+	}
+	
+	@Override
 	public void enterCodeDefinition(CodeDefinitionContext ctx) {
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
 		String codeId = CQLParserUtil.parseString(ctx.codeId().getText());	
@@ -197,6 +261,8 @@ public class CQLLinter extends cqlBaseListener {
 			if(potentialMatches.isEmpty() 
 					|| potentialMatches.stream().filter(c -> StringUtils.isEmpty(c.getCodeIdentifier())).count() > 0) {
 				createCodeError(ctx, identifier);
+			}  else {
+				this.matchedCodes.addAll(potentialMatches);
 			}
 		} else {
 			createCodeError(ctx, identifier);

@@ -1678,6 +1678,17 @@
 		"documentation": "The Size operator returns the size of an interval. Note that because CQL defines duration and difference operations for date and time valued intervals, size is not defined for intervals of these types."
 	},
 	{
+		"name": "Size",
+		"returnType": "Quantity",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Interval<Quantity>"
+			}
+		],
+		"documentation": "The Size operator returns the size of an interval. Note that because CQL defines duration and difference operations for date and time valued intervals, size is not defined for intervals of these types."
+	},
+	{
 		"name": "Skip",
 		"returnType": "List<Date>",
 		"arguments": [

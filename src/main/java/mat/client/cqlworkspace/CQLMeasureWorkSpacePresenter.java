@@ -1058,56 +1058,51 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 		if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedDefinitionObjId() != null) {
 			final CQLDefinition toBeModifiedObj = cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap().get(cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedDefinitionObjId());
-			if (toBeModifiedObj.isSupplDataElement()) {
-				messagePanel.getSuccessMessageAlert().clearAlert();
-				messagePanel.getErrorMessageAlert().createAlert("Unauthorized delete operation.");
-				cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().setText(definitionName.trim());
-			} else {
-				showSearchingBusy(true);
-				MatContext.get().getMeasureService().deleteDefinition(MatContext.get().getCurrentMeasureId(),
-						toBeModifiedObj,
-						new AsyncCallback<SaveUpdateCQLResult>() {
+			showSearchingBusy(true);
+			MatContext.get().getMeasureService().deleteDefinition(MatContext.get().getCurrentMeasureId(),
+					toBeModifiedObj,
+					new AsyncCallback<SaveUpdateCQLResult>() {
 
-					@Override
-					public void onFailure(Throwable caught) {
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
-						messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						showSearchingBusy(false);
-					}
+				@Override
+				public void onFailure(Throwable caught) {
+					cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
+					messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					showSearchingBusy(false);
+				}
 
-					@Override
-					public void onSuccess(SaveUpdateCQLResult result) {
-						if (result != null) {
-							if (result.isSuccess()) {
-								cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
-								MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
-								MatContext.get().setExpressionToReturnTypeMap(result.getUsedCQLArtifacts().getExpressionToReturnTypeMap());
-								cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
-								cqlWorkspaceView.getCQLLeftNavBarPanelView().updateDefineMap();
-								messagePanel.getErrorMessageAlert().clearAlert();
-								messagePanel.getSuccessMessageAlert().setVisible(true);
-								cqlWorkspaceView.getCQLLeftNavBarPanelView().getSearchSuggestDefineTextBox().setText(EMPTY_STRING);
-								cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().setText(EMPTY_STRING);
-								cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().setText(EMPTY_STRING);
-								cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
-								setIsPageDirty(false);
-								cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
-								cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
-								cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().setAnnotations();
-								cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
-								messagePanel.getSuccessMessageAlert().createAlert(buildRemovedSuccessfullyMessage(DEFINITION, toBeModifiedObj.getName()));
-								cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
-							} else if (result.getFailureReason() == SaveUpdateCQLResult.NODE_NOT_FOUND) {
-								displayErrorMessage(UNABLE_TO_FIND_NODE_TO_MODIFY, definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
-							} else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
-								displayErrorMessage(UNAUTHORIZED_DELETE_OPERATION, definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
-							}
+				@Override
+				public void onSuccess(SaveUpdateCQLResult result) {
+					if (result != null) {
+						if (result.isSuccess()) {
+							cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
+							MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
+							MatContext.get().setExpressionToReturnTypeMap(result.getUsedCQLArtifacts().getExpressionToReturnTypeMap());
+							cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
+							cqlWorkspaceView.getCQLLeftNavBarPanelView().updateDefineMap();
+							messagePanel.getErrorMessageAlert().clearAlert();
+							messagePanel.getSuccessMessageAlert().setVisible(true);
+							cqlWorkspaceView.getCQLLeftNavBarPanelView().getSearchSuggestDefineTextBox().setText(EMPTY_STRING);
+							cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().setText(EMPTY_STRING);
+							cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().setText(EMPTY_STRING);
+							cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
+							setIsPageDirty(false);
+							cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
+							cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
+							cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().setAnnotations();
+							cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+							messagePanel.getSuccessMessageAlert().createAlert(buildRemovedSuccessfullyMessage(DEFINITION, toBeModifiedObj.getName()));
+							cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
+						} else if (result.getFailureReason() == SaveUpdateCQLResult.NODE_NOT_FOUND) {
+							displayErrorMessage(UNABLE_TO_FIND_NODE_TO_MODIFY, definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
+						} else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
+							displayErrorMessage(UNAUTHORIZED_DELETE_OPERATION, definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
 						}
-						showSearchingBusy(false);
-						cqlWorkspaceView.getCQLDefinitionsView().getMainDefineViewVerticalPanel().setFocus(true);
 					}
-				});
-			}
+					showSearchingBusy(false);
+					cqlWorkspaceView.getCQLDefinitionsView().getMainDefineViewVerticalPanel().setFocus(true);
+				}
+			});
+
 		} else {
 			cqlWorkspaceView.resetMessageDisplay();
 			messagePanel.getErrorMessageAlert().createAlert(SELECT_DEFINITION_TO_DELETE);

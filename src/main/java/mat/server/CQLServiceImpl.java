@@ -808,14 +808,7 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult deleteDefinition(String xml, CQLDefinition toBeDeletedObj) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
-		result.setCqlModel(cqlModel);
-
-		if (toBeDeletedObj.isSupplDataElement()) {
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
-			return result;
-		}
-			
+		result.setCqlModel(cqlModel);			
 		cqlModel.getDefinitionList().removeIf(d -> d.getId().equals(toBeDeletedObj.getId()));
 		result.setSuccess(true);
 		result.setCqlModel(cqlModel);
@@ -944,14 +937,7 @@ public class CQLServiceImpl implements CQLService {
 
 	@Override
 	public SaveUpdateCQLResult deleteParameter(String xml, CQLParameter toBeDeletedObj) {
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-
-		if (toBeDeletedObj.isReadOnly()) {
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
-			return result;
-		}
-		
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();		
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
 		cqlModel.getCqlParameters().removeIf(p -> p.getId().equals(toBeDeletedObj.getId()));
 		result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));

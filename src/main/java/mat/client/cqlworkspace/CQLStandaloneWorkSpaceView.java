@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Icon;
-import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
@@ -322,26 +321,9 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 	public DefinitionFunctionButtonToolBar getFunctionButtonBar() {
 		return cqlFunctionsView.getFunctionButtonBar();
 	}
-	
-	public InlineRadio getContextDefinePATRadioBtn() {
-		return cqlDefinitionsView.getContextDefinePATRadioBtn();
-	}
-
-
-	public InlineRadio getContextDefinePOPRadioBtn() {
-		return cqlDefinitionsView.getContextDefinePOPRadioBtn();
-	}
 
 	public AceEditor getFunctionBodyAceEditor() {
 		return cqlFunctionsView.getFunctionBodyAceEditor();
-	}
-
-	public InlineRadio getContextFuncPATRadioBtn() {
-		return cqlFunctionsView.getContextFuncPATRadioBtn();
-	}
-
-	public InlineRadio getContextFuncPOPRadioBtn() {
-		return cqlFunctionsView.getContextFuncPOPRadioBtn();
 	}
 
 	public Map<String, CQLFunctionArgument> getFunctionArgNameMap() {

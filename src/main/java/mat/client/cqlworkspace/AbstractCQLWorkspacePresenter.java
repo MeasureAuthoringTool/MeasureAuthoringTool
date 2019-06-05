@@ -845,42 +845,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 		}
 	}
 	
-	protected void cqlFunctionViewContextFuncPOPRadioBtnValueChangedEvent() {
-		setIsPageDirty(true);
-		if (cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().getValue()) {
-			cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(false);
-		} else {
-			cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(true);
-		}
-	}
-	
-	protected void cqlFunctionViewContextFuncPATRadioBtnValueChangedEvent() {
-		setIsPageDirty(true);
-		if (cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().getValue()) {
-			cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().setValue(false);
-		} else {
-			cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().setValue(true);
-		}
-	}
-	
-	protected void cqlDefinitionsViewContextDefinePOPRadioBtnValueChangedEvent() {
-		setIsPageDirty(true);
-		if (cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().getValue()) {
-			cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().setValue(false);
-		} else {
-			cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().setValue(true);
-		}
-	}
-	
-	protected void cqlDefinitionsViewContextDefinePATRadioBtnValueChangedEvent() {
-		setIsPageDirty(true);
-		if (cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().getValue()) {
-			cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().setValue(false);
-		} else {
-			cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().setValue(true);
-		}
-	}
-	
 	protected void createAddArgumentViewForFunctions() {
 		cqlWorkspaceView.getCQLFunctionsView().createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>(), checkForEditPermission());
 	}
@@ -1051,13 +1015,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 		} else {
 			parameterEvent();
 		}
-	}
-	
-	protected void addEventHandlersOnContextRadioButtons() {
-		cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().addValueChangeHandler(event -> cqlDefinitionsViewContextDefinePATRadioBtnValueChangedEvent());
-		cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().addValueChangeHandler(event -> cqlDefinitionsViewContextDefinePOPRadioBtnValueChangedEvent());
-		cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().addValueChangeHandler(event -> cqlFunctionViewContextFuncPATRadioBtnValueChangedEvent());
-		cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().addValueChangeHandler(event -> cqlFunctionViewContextFuncPOPRadioBtnValueChangedEvent());
 	}
 	
 	protected void addEventHandlerOnAceEditors() {
@@ -1314,8 +1271,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().getFuncNameListBox().setItemSelected(
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().getFuncNameListBox().getSelectedIndex(), false);
 		}
-		cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(true);
-		cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().setValue(false);
 		cqlWorkspaceView.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
 	}
@@ -1344,15 +1299,11 @@ public abstract class AbstractCQLWorkspacePresenter {
 
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().setEnabled(true);
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().setReadOnly(false);
-		cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().setEnabled(true);
-		cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(true);
 		cqlWorkspaceView.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getSaveButton().setEnabled(true);
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getInsertButton().setEnabled(true);
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getTimingExpButton().setEnabled(true);
-		cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().setValue(true);
-		cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().setValue(false);
 
 	}
 	

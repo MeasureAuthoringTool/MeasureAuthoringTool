@@ -280,16 +280,22 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	@Override
 	public void enterParameterDefinition(ParameterDefinitionContext ctx) {
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
-		String comment = getExpressionComment(ctx);		
-		String logic = getParameterLogic(ctx, ctx.identifier().getText());
+		String comment = getExpressionComment(ctx).trim();		
+		String logic = getParameterLogic(ctx, ctx.identifier().getText()).trim();
 		
+		Optional<CQLParameter> existingParameter = previousModel.getCqlParameters().stream().filter(d -> d.getParameterName().equals(identifier)).findFirst();
 		CQLParameter parameter = new CQLParameter();
-		parameter.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
-		parameter.setName(identifier);
+		if(existingParameter.isPresent()) {
+			parameter = existingParameter.get();
+		} else {
+			parameter.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
+			parameter.setName(identifier);
+		}
+		
 		parameter.setCommentString(comment);
 		parameter.setLogic(logic);
 		
-		cqlModel.getCqlParameters().add(parameter);		
+		cqlModel.getCqlParameters().add(parameter);	
 	}
 	
 	private String getParameterLogic(ParameterDefinitionContext ctx, String identifier) {	
@@ -306,25 +312,31 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	@Override
 	public void enterExpressionDefinition(ExpressionDefinitionContext ctx) {		
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
-		String logic = getDefinitionAndFunctionLogic(ctx);
-	    String comment = getExpressionComment(ctx);		
+		String logic = getDefinitionAndFunctionLogic(ctx).trim();
+	    String comment = getExpressionComment(ctx).trim();		
 						
-		CQLDefinition definition = new CQLDefinition();
 		
-		definition.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
+		Optional<CQLDefinition> existingDefinition = previousModel.getDefinitionList().stream().filter(d -> d.getDefinitionName().equals(identifier)).findFirst();
+		CQLDefinition definition = new CQLDefinition();
+		if(existingDefinition.isPresent()) {
+			definition = existingDefinition.get();
+		} else {
+			definition.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
+			definition.setName(identifier);
+		}
+		
 		definition.setContext(currentContext);
-		definition.setName(identifier);
-		definition.setCommentString(comment.trim());
-		definition.setLogic(logic.trim());
-			
+		definition.setCommentString(comment);
+		definition.setLogic(logic);
+
 		cqlModel.getDefinitionList().add(definition);
 	}
 	
 	@Override
 	public void enterFunctionDefinition(FunctionDefinitionContext ctx) {
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());	
-		String logic = getDefinitionAndFunctionLogic(ctx);
-		String comment = getExpressionComment(ctx);
+		String logic = getDefinitionAndFunctionLogic(ctx).trim();
+		String comment = getExpressionComment(ctx).trim();
 		
 		List<CQLFunctionArgument> functionArguments = new ArrayList<>();
 		if(ctx.operandDefinition() != null) {
@@ -357,15 +369,21 @@ public class ReverseEngineerListener extends cqlBaseListener {
 				functionArguments.add(functionArgument);
 			}
 		}
-
-		CQLFunctions function = new CQLFunctions();
 		
-		function.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
-		function.setName(identifier);
+		Optional<CQLFunctions> existingFunction = previousModel.getCqlFunctions().stream().filter(d -> d.getFunctionName().equals(identifier)).findFirst();
+		CQLFunctions function = new CQLFunctions();
+		if(existingFunction.isPresent()) {
+			function = existingFunction.get();
+		} else {
+			function.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
+			function.setName(identifier);
+		}
+		
 		function.setCommentString(comment);
 		function.setLogic(logic);
 		function.setArgumentList(functionArguments);
 		function.setContext(currentContext);
+
 		cqlModel.getCqlFunctions().add(function);
 	}
 

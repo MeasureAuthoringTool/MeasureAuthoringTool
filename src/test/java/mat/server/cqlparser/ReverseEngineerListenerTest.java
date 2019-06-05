@@ -5,13 +5,15 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 
 import org.junit.Test;
-
 import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
+import mat.models.CQLFunctionModelObject.FunctionArgument;
 
 public class ReverseEngineerListenerTest {
 	
@@ -33,6 +35,31 @@ public class ReverseEngineerListenerTest {
 	
 	@Test
 	public void testParameters() throws IOException {
+		testValidParameter();
+		testParameterCopy();
+	}
+
+	private void testParameterCopy() throws IOException {
+		File file = new File(getClass().getClassLoader().getResource("test-cql/testexistingexpressions.cql").getFile());
+		
+		CQLModel existingCqlModel = new CQLModel();
+		CQLParameter parameter = new CQLParameter();
+		parameter.setName("TestParameter");
+		parameter.setParameterLogic("Interval<DateTime>");
+		parameter.setId("123456");
+		existingCqlModel.setCqlParameters(Arrays.asList(parameter));
+		
+		String cql = new String(Files.readAllBytes(file.toPath()));
+		ReverseEngineerListener listener = new ReverseEngineerListener(cql, existingCqlModel);
+		
+		CQLParameter parameterAfterReverseEngineer = listener.getCQLModel().getCqlParameters().get(0);
+		assertEquals("TestParameter", parameterAfterReverseEngineer.getParameterName());
+		assertEquals("Boolean", parameterAfterReverseEngineer.getParameterLogic());
+		assertEquals("123456", parameterAfterReverseEngineer.getId());		
+		
+	}
+
+	private void testValidParameter() throws IOException {
 		File file = new File(getClass().getClassLoader().getResource("test-cql/testparameters.cql").getFile());
 		
 		String cql = new String(Files.readAllBytes(file.toPath()));
@@ -54,6 +81,30 @@ public class ReverseEngineerListenerTest {
 	
 	@Test
 	public void testDefinitions() throws IOException {
+		testValidDefinition();
+		testDefinitionCopy();
+	}
+
+	private void testDefinitionCopy() throws IOException {
+		File file = new File(getClass().getClassLoader().getResource("test-cql/testexistingexpressions.cql").getFile());
+		
+		CQLModel existingCqlModel = new CQLModel();
+		CQLDefinition definition = new CQLDefinition();
+		definition.setName("testdefinition");
+		definition.setDefinitionLogic("false");
+		definition.setId("123456");
+		existingCqlModel.setDefinitionList(Arrays.asList(definition));
+		
+		String cql = new String(Files.readAllBytes(file.toPath()));
+		ReverseEngineerListener listener = new ReverseEngineerListener(cql, existingCqlModel);
+		
+		CQLDefinition definitionAfterReverseEngineer = listener.getCQLModel().getDefinitionList().get(0);
+		assertEquals("testdefinition", definitionAfterReverseEngineer.getDefinitionName());
+		assertEquals("true", definitionAfterReverseEngineer.getDefinitionLogic());
+		assertEquals("123456", definitionAfterReverseEngineer.getId());				
+	}
+
+	private void testValidDefinition() throws IOException {
 		File file = new File(getClass().getClassLoader().getResource("test-cql/testdefinitions.cql").getFile());
 		String cql = new String(Files.readAllBytes(file.toPath()));
 		
@@ -90,8 +141,35 @@ public class ReverseEngineerListenerTest {
 	public void testFunctions() throws IOException {
 		testValidFuntions();
 		testFunctionsWithSyntaxErrors();
+		testExistingFunctionCopy();
 	}
 	
+	private void testExistingFunctionCopy() throws IOException {
+		File file = new File(getClass().getClassLoader().getResource("test-cql/testexistingexpressions.cql").getFile());
+		
+		CQLModel existingCqlModel = new CQLModel();
+		CQLFunctions function = new CQLFunctions();
+		function.setName("testfunction");
+		function.setFunctionLogic("false");
+		function.setId("123456");
+		CQLFunctionArgument argument = new CQLFunctionArgument();
+		argument.setArgumentName("arg");
+		argument.setArgumentType("String");
+		function.setArgumentList(Arrays.asList(argument));
+		existingCqlModel.setCqlFunctions(Arrays.asList(function));
+		
+		String cql = new String(Files.readAllBytes(file.toPath()));
+		ReverseEngineerListener listener = new ReverseEngineerListener(cql, existingCqlModel);
+		
+		CQLFunctions functionAfterReverseEngineer = listener.getCQLModel().getCqlFunctions().get(0);
+		assertEquals("testfunction", functionAfterReverseEngineer.getFunctionName());
+		assertEquals("true", functionAfterReverseEngineer.getFunctionLogic());
+		assertEquals("123456", functionAfterReverseEngineer.getId());
+		assertEquals(1, functionAfterReverseEngineer.getArgumentList().size());
+		assertEquals("Boolean", functionAfterReverseEngineer.getArgumentList().get(0).getArgumentType());
+		assertEquals("arg1", functionAfterReverseEngineer.getArgumentList().get(0).getArgumentName());		
+	}
+
 	private void testValidFuntions() throws IOException {
 		File file = new File(getClass().getClassLoader().getResource("test-cql/testfunctions.cql").getFile());
 		String cql = new String(Files.readAllBytes(file.toPath()));

@@ -66,6 +66,7 @@ public class InsertAttributeBuilderDialogBox {
 	private static final String PRESCRIBER = "prescriber";
 	private static final String SENDER = "sender";
 	private static final String RECIPIENT = "recipient";
+	private static final String RECORDER = "recorder";
 	private static final String VALUE_SETS = "Value Sets";
 	private static final String CODES = "Codes";
 	private static final String NULLABLE = "Nullable";
@@ -448,7 +449,7 @@ public class InsertAttributeBuilderDialogBox {
 				|| attrSelected.equalsIgnoreCase(FACILITY_LOCATIONS) || attrSelected.equalsIgnoreCase(PERFORMER) || 
 				attrSelected.equalsIgnoreCase(PRESCRIBER) || attrSelected.equalsIgnoreCase(REQUESTER) || 
 				attrSelected.equalsIgnoreCase(SENDER) || attrSelected.equalsIgnoreCase(RECIPIENT) || 
-				attrSelected.equalsIgnoreCase(ATTR_ID);
+				attrSelected.equalsIgnoreCase(RECORDER) || attrSelected.equalsIgnoreCase(ATTR_ID);
 	}
 
 	private static void clearAllFormGroups() {

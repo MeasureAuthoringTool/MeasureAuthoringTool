@@ -421,27 +421,26 @@ public final class CQLUtilityClass {
 
 		List<String> codeSystemAlreadyUsed = new ArrayList<>();
 
-		if(!CollectionUtils.isEmpty(codeSystemList)){
-
+		if(!CollectionUtils.isEmpty(codeSystemList)) {
 			for(CQLCode codes : codeSystemList){
+				if(codes.getCodeSystemOID() != null && !codes.getCodeSystemOID().isEmpty() && !"null".equals(codes.getCodeSystemOID())) {
+					String codeSysStr = codes.getCodeSystemName();
+					String codeSysVersion = "";
 
-				String codeSysStr = codes.getCodeSystemName();
-				String codeSysVersion = "";
+					if(codes.isIsCodeSystemVersionIncluded()) {
+						codeSysStr = codeSysStr + ":" + codes.getCodeSystemVersion().replaceAll(" ", "%20");
+						codeSysVersion = "version 'urn:hl7:version:" + codes.getCodeSystemVersion() + "'";
+					}
 
-				if(codes.isIsCodeSystemVersionIncluded()) {
-					codeSysStr = codeSysStr + ":" + codes.getCodeSystemVersion().replaceAll(" ", "%20");
-					codeSysVersion = "version 'urn:hl7:version:" + codes.getCodeSystemVersion() + "'";
+					if(!codeSystemAlreadyUsed.contains(codeSysStr)){
+						sb.append("codesystem \"").append(codeSysStr).append('"').append(": ");
+						sb.append("'urn:oid:").append(codes.getCodeSystemOID()).append("' ");
+						sb.append(codeSysVersion);
+						sb.append("\n");
+
+						codeSystemAlreadyUsed.add(codeSysStr);
+					}
 				}
-
-				if(!codeSystemAlreadyUsed.contains(codeSysStr)){
-					sb.append("codesystem \"").append(codeSysStr).append('"').append(": ");
-					sb.append("'urn:oid:").append(codes.getCodeSystemOID()).append("' ");
-					sb.append(codeSysVersion);
-					sb.append("\n");
-
-					codeSystemAlreadyUsed.add(codeSysStr);
-				}
-
 			}
 
 			sb.append("\n");

@@ -88,7 +88,7 @@ public class CQLLinter extends cqlBaseListener {
 	
 	private boolean hasMissingCodesystem() {
 		for(CQLCode code : matchedCodes) {
-			Optional<CQLCodeSystem> codeSystem = this.codeSystems.stream().filter(cs -> cs.getCodeSystemName().equals(code.getCodeSystemName())).findFirst();
+			Optional<CQLCodeSystem> codeSystem = this.codeSystems.stream().filter(cs -> cs.getCodeSystemName().equals(getCodeSystemIdentifier(code))).findFirst();
 			if(codeSystem.isPresent()) {
 				if(doesCodeCodeSystemNotMatchCodeSystemDeclaration(code, codeSystem.get())) {
 					return true;
@@ -102,16 +102,33 @@ public class CQLLinter extends cqlBaseListener {
 	}
 
 	private boolean doesCodeCodeSystemNotMatchCodeSystemDeclaration(CQLCode code, CQLCodeSystem codeSystem) {
-		return !codeSystem.getCodeSystem().replace("urn:oid:", "").equals(code.getCodeSystemOID()) 
-				|| !codeSystem.getCodeSystemName().equals(code.getCodeSystemName()) 
-				|| (code.isIsCodeSystemVersionIncluded() && !code.getCodeSystemVersion().equals(codeSystem.getCodeSystemVersion()))
-				|| (!code.isIsCodeSystemVersionIncluded() && StringUtils.isNotEmpty(codeSystem.getCodeSystemVersion()));
+		
+		String codeSystemOIDFromCodeSystem = codeSystem.getCodeSystem().replace("urn:oid:", "");
+		String codeSystemOIDFromCode = code.getCodeSystemOID();
+		
+		boolean isCodeSystemOIDNotMatching = !codeSystemOIDFromCodeSystem.equals(codeSystemOIDFromCode);
+		
+		String codeSystemNameFromCodeSystem = codeSystem.getCodeSystemName();
+		String codeSystemNameFromCode = getCodeSystemIdentifier(code);
+		boolean isCodeSystemNameNotMatching =  !codeSystemNameFromCodeSystem.equals(codeSystemNameFromCode);
+		
+		String codeSystemVersionFromCodeSystem = codeSystem.getCodeSystemVersion().replace("urn:hl7:version:", "");
+		String codeSystemVersionFromCode = code.getCodeSystemVersion();
+		boolean isCodeSystemVersionNotMatching =  code.isIsCodeSystemVersionIncluded() && !codeSystemVersionFromCode.equals(codeSystemVersionFromCodeSystem);				
+		
+		boolean isCodeSystemVersionNotMissing = !code.isIsCodeSystemVersionIncluded() && StringUtils.isNotEmpty(codeSystemVersionFromCodeSystem);
+		
+		return  isCodeSystemOIDNotMatching || isCodeSystemNameNotMatching || isCodeSystemVersionNotMatching || isCodeSystemVersionNotMissing;
 	}
 
 	private boolean hasExtraneousCodesystem() {
 		for(CQLCodeSystem codesystem : codeSystems) {
+			Optional<CQLCode> code = this.matchedCodes.stream().filter(c -> {
+				String codesystemName = getCodeSystemIdentifier(c);
+				
+				return codesystemName.equals(codesystem.getCodeSystemName());
+			}).findFirst();
 			
-			Optional<CQLCode> code = this.matchedCodes.stream().filter(c -> c.getCodeSystemName().equals(codesystem.getCodeSystemName())).findFirst();
 			if(code.isPresent()) {
 				if(doesCodeCodeSystemNotMatchCodeSystemDeclaration(code.get(), codesystem)) {
 					return true;
@@ -122,6 +139,14 @@ public class CQLLinter extends cqlBaseListener {
 		}
 		
 		return false;
+	}
+
+	private String getCodeSystemIdentifier(CQLCode c) {
+		String codesystemName = c.getCodeSystemName();
+		if(c.isIsCodeSystemVersionIncluded()) {
+			codesystemName += ":" + c.getCodeSystemVersion();
+		}
+		return codesystemName;
 	}
 
 	/**
@@ -236,6 +261,8 @@ public class CQLLinter extends cqlBaseListener {
 		
 		if(ctx.versionSpecifier() != null) {
 			codesystem.setCodeSystemVersion(CQLParserUtil.parseString(ctx.versionSpecifier().getText()));
+		} else {
+			codesystem.setCodeSystemVersion("");
 		}
 		
 		this.codeSystems.add(codesystem);

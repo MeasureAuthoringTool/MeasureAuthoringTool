@@ -206,7 +206,6 @@ public class CQLDefinitionsView {
 		defineButtonBar.getEraseButton().setMarginRight(5.00);
 		defineButtonBar.getInsertButton().setMarginRight(5.00);
 		defineButtonBar.getExpressionBuilderButton().setMarginLeft(-5.00);
-		
 		defineButtonBar.getSaveButton().setMarginLeft(480.00);
 	}
 

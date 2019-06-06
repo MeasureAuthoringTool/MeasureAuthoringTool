@@ -344,7 +344,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		final String functionName = cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea().getText();
 		String functionBody = cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().getText();
 		String functionComment = cqlWorkspaceView.getCQLFunctionsView().getFunctionCommentTextArea().getText();
-		String funcContext = EMPTY_STRING;
 
 		boolean isValidFunctionName = isValidExpressionName(functionName);
 		if (isValidFunctionName) {
@@ -364,7 +363,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				function.setName(functionName);
 				function.setCommentString(functionComment);
 				function.setArgumentList(cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList());
-				function.setContext(funcContext);
 				CQLFunctions toBeModifiedParamObj = null;
 
 				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionObjId() != null) {

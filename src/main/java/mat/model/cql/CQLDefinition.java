@@ -13,7 +13,7 @@ public class CQLDefinition implements CQLExpression, IsSerializable, Cell<CQLDef
 	private String id;
 	private String definitionName;
 	private String definitionLogic;
-	private String context;
+	private String context = "Patient";
 	private boolean supplDataElement;
 	private boolean popDefinition;
 	private String commentString = "";

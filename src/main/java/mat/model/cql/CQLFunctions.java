@@ -21,7 +21,7 @@ public class CQLFunctions implements CQLExpression, IsSerializable {
 	private List<CQLFunctionArgument> argument;
 	
 	/** The context. */
-	private String context;
+	private String context = "Patient";
 	
 	private String commentString = "";
 	

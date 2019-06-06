@@ -427,7 +427,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		final String functionName = cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea().getText();
 		String functionBody = cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().getText();
 		String funcComment = cqlWorkspaceView.getCQLFunctionsView().getFunctionCommentTextArea().getText();
-		String funcContext = EMPTY_STRING;
 
 		boolean isValidFunctionName = isValidExpressionName(functionName);
 		if (isValidFunctionName) {
@@ -447,7 +446,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				function.setName(functionName);
 				function.setCommentString(funcComment);
 				function.setArgumentList(cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList());
-				function.setContext(funcContext);
 				CQLFunctions toBeModifiedParamObj = null;
 
 				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionObjId() != null) {
@@ -653,7 +651,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		final String definitionName = cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().getText();
 		String definitionLogic = cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().getText();
 		String definitionComment = cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().getText();
-		String defineContext = EMPTY_STRING;
 
 		boolean isValidDefinitionName = isValidExpressionName(definitionName);
 		if (isValidDefinitionName) {
@@ -672,7 +669,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				define.setName(definitionName);
 				define.setLogic(definitionLogic);
 				define.setCommentString(definitionComment);
-				define.setContext(defineContext);
 				CQLDefinition toBeModifiedObj = null;
 				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedDefinitionObjId() != null) {
 					toBeModifiedObj = cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap()

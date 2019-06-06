@@ -10434,13 +10434,6 @@ exports.commands = [
     },
     readOnly: true
 }, {
-    name: "find",
-    bindKey: bindKey("Ctrl-F", "Command-F"),
-    exec: function(editor) {
-        config.loadModule("ace/ext/searchbox", function(e) {e.Search(editor)});
-    },
-    readOnly: true
-}, {
     name: "overwrite",
     bindKey: "Insert",
     exec: function(editor) { editor.toggleOverwrite(); },
@@ -10731,7 +10724,7 @@ exports.commands = [
     multiSelectAction: "forEach"
 }, {
     name: "replace",
-    bindKey: bindKey("Ctrl-H", "Command-Option-F"),
+    bindKey: bindKey("Ctrl-F", "Command-F"),
     exec: function(editor) {
         config.loadModule("ace/ext/searchbox", function(e) {e.Search(editor, true)});
     }

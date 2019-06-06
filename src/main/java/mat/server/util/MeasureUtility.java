@@ -76,17 +76,12 @@ public class MeasureUtility {
 	 *
 	 * @param orgVersionNumber the org version number
 	 * @param revisionNumber the revision number
-	 * @param draft the draft
+	 * @param draft the isDraft
 	 * @return the version text
 	 */
-	public static String getVersionText(String orgVersionNumber, String revisionNumber, boolean draft) {
-		String mVersion = formatVersionText(orgVersionNumber);
-		
-		if(draft) {
-			return "Draft based on v" + mVersion + "." + revisionNumber;
-		} else {
-			return "v" + mVersion;
-		}
+	public static String getVersionText(String orgVersionNumber, String revisionNumber, boolean isDraft) {
+		String mVersion = "v" + formatVersionText(orgVersionNumber);
+		return isDraft ? ("Draft " + mVersion + "." + revisionNumber) : mVersion;
 	}
 	
 	/**

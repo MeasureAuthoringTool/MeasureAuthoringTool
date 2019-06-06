@@ -4973,11 +4973,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MatContextServiceUtil.get().setMeasure(true);
 			Measure measure = measureDAO.find(measureId);
 
-			CQLLinterConfig config = new CQLLinterConfig(MeasureUtility.cleanString(measure.getDescription()),
+			CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(measureXMLModel.getXml());
+
+			CQLLinterConfig config = new CQLLinterConfig(previousModel.getLibraryName(),
 					MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
 					QDMUtil.QDM_MODEL_IDENTIFIER, measure.getQdmVersion());
 			
-			CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(measureXMLModel.getXml());
 			config.setPreviousCQLModel(previousModel);
 			
 			result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config);

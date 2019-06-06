@@ -13,7 +13,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.buttons.SaveToolBarButton;
 import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.inapphelp.component.InAppHelp;
-import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
@@ -21,17 +20,17 @@ import mat.client.util.MatTextBox;
 public class CQLGeneralInformationView {
 
 	private HorizontalPanel generalInfoMainHPanel = new HorizontalPanel();
-	private MatTextBox libraryNameValue = new MatTextBox();
-	private MatTextBox libraryVersionValue = new MatTextBox();
-	private MatTextBox usingModelValue = new MatTextBox();
-	private MatTextBox modelVersionValue = new MatTextBox();
+	private MatTextBox libraryNameTextBox = new MatTextBox();
+	private MatTextBox libraryVersionTextBox = new MatTextBox();
+	private MatTextBox usingModelTextBox = new MatTextBox();
+	private MatTextBox modelVersionTextBox = new MatTextBox();
 	private SaveToolBarButton saveButton = new SaveToolBarButton("GeneralInfo");
-	private FormGroup libNameGroup = new FormGroup();
+	private FormGroup libraryNameGroup = new FormGroup();
 	private FormGroup usingModelGroup = new FormGroup();
-	private FormGroup libVersionGroup = new FormGroup();
+	private FormGroup libraryVersionGroup = new FormGroup();
 	private FormGroup modelVersionGroup = new FormGroup();
 	private FormGroup commentsGroup = new FormGroup();
-	HTML heading = new HTML();
+	private HTML heading = new HTML();
 	
 	private static final String STYLE = "style";
 	private static final String PIXEL_150 = "150px";
@@ -49,9 +48,9 @@ public class CQLGeneralInformationView {
 
 	private void buildView() {
 		
-		libNameGroup.clear();
+		libraryNameGroup.clear();
 		usingModelGroup.clear();
-		libVersionGroup.clear();
+		libraryVersionGroup.clear();
 		modelVersionGroup.clear();
 		commentsGroup.clear();
 		heading.addStyleName("leftAligned");
@@ -65,12 +64,12 @@ public class CQLGeneralInformationView {
 		libraryNameLabel.setId("libraryNameLabel_Label");
 		libraryNameLabel.setFor("libraryNameValue_TextBox");
 
-		libraryNameValue.getElement().setAttribute(STYLE, MARGIN_STYLE);
-		libraryNameValue.getElement().setId("libraryNameValue_TextBox");
-		libraryNameValue.setTitle("Required");
+		libraryNameTextBox.getElement().setAttribute(STYLE, MARGIN_STYLE);
+		libraryNameTextBox.getElement().setId("libraryNameValue_TextBox");
+		libraryNameTextBox.setTitle("Required");
 		
-		libNameGroup.add(libraryNameLabel);
-		libNameGroup.add(libraryNameValue);
+		libraryNameGroup.add(libraryNameLabel);
+		libraryNameGroup.add(libraryNameTextBox);
 		
 		FormLabel libraryVersionLabel = new FormLabel();
 		libraryVersionLabel.setText("CQL Library Version");
@@ -80,12 +79,12 @@ public class CQLGeneralInformationView {
 		libraryVersionLabel.setId("libraryVersionLabel_Label");
 		libraryVersionLabel.setFor("libraryVersionValue_TextBox");
 
-		libraryVersionValue.getElement().setAttribute(STYLE, MARGIN_STYLE);
-		libraryVersionValue.getElement().setId("libraryVersionValue_TextBox");
-		libraryVersionValue.setReadOnly(true);
+		libraryVersionTextBox.getElement().setAttribute(STYLE, MARGIN_STYLE);
+		libraryVersionTextBox.getElement().setId("libraryVersionValue_TextBox");
+		libraryVersionTextBox.setReadOnly(true);
 
-		libVersionGroup.add(libraryVersionLabel);
-		libVersionGroup.add(libraryVersionValue);
+		libraryVersionGroup.add(libraryVersionLabel);
+		libraryVersionGroup.add(libraryVersionTextBox);
 
 		FormLabel usingModeLabel = new FormLabel();
 		usingModeLabel.setText("Using Model");
@@ -95,12 +94,12 @@ public class CQLGeneralInformationView {
 		usingModeLabel.setWidth(PIXEL_150);
 		usingModeLabel.setFor("usingModelValue_TextBox");
 
-		usingModelValue.getElement().setAttribute(STYLE, MARGIN_STYLE);
-		usingModelValue.getElement().setId("usingModelValue_TextBox");
-		usingModelValue.setReadOnly(true);
+		usingModelTextBox.getElement().setAttribute(STYLE, MARGIN_STYLE);
+		usingModelTextBox.getElement().setId("usingModelValue_TextBox");
+		usingModelTextBox.setReadOnly(true);
 		
 		usingModelGroup.add(usingModeLabel);
-		usingModelGroup.add(usingModelValue);
+		usingModelGroup.add(usingModelTextBox);
 		
 		FormLabel modelVersionLabel = new FormLabel();
 		modelVersionLabel.setText("Model Version");
@@ -110,12 +109,12 @@ public class CQLGeneralInformationView {
 		modelVersionLabel.setWidth(PIXEL_150);
 		modelVersionLabel.setFor("modelVersionValue_TextBox");
 
-		modelVersionValue.getElement().setAttribute(STYLE, "margin-left:15px;width:250px;height:32px;");
-		modelVersionValue.getElement().setId("modelVersionValue_TextBox");
-		modelVersionValue.setReadOnly(true);
+		modelVersionTextBox.getElement().setAttribute(STYLE, "margin-left:15px;width:250px;height:32px;");
+		modelVersionTextBox.getElement().setId("modelVersionValue_TextBox");
+		modelVersionTextBox.setReadOnly(true);
 		
 		modelVersionGroup.add(modelVersionLabel);
-		modelVersionGroup.add(modelVersionValue);
+		modelVersionGroup.add(modelVersionTextBox);
 		
 		heading.getElement().setTabIndex(0);
 		
@@ -124,10 +123,10 @@ public class CQLGeneralInformationView {
 		generalInfoTopPanel.add(new SpacerWidget());
 		generalInfoTopPanel.add(new SpacerWidget());
 		
-		generalInfoTopPanel.add(libNameGroup);
+		generalInfoTopPanel.add(libraryNameGroup);
 		generalInfoTopPanel.add(new SpacerWidget());
 		
-		generalInfoTopPanel.add(libVersionGroup);
+		generalInfoTopPanel.add(libraryVersionGroup);
 		generalInfoTopPanel.add(new SpacerWidget());
 		
 		generalInfoTopPanel.add(usingModelGroup);
@@ -193,126 +192,77 @@ public class CQLGeneralInformationView {
 		return cleanedString;
 	}
 
-	public HorizontalPanel getView(){
+	public HorizontalPanel getView(boolean isEditable){
 		generalInfoMainHPanel.clear();
 		buildView();
 		buildButtonLayoutPanel();
-		setWidgetReadOnlyForMeasure(MatContext.get().isCurrentMeasureEditable());
+		setIsEditable(isEditable);
 		return generalInfoMainHPanel;
 	}
 	
-	public HorizontalPanel getCQLView(){
-		generalInfoMainHPanel.clear();
-		buildView();	
-		buildButtonLayoutPanel();
-		setWidgetReadOnlyForCQLLibrary(MatContext.get().getLibraryLockService().checkForEditPermission());
-		return generalInfoMainHPanel;
+	public MatTextBox getLibraryNameTextBox() {
+		return libraryNameTextBox;
 	}
 
-	public MatTextBox getLibraryNameValue() {
-		return libraryNameValue;
+	public MatTextBox getLibraryVersionTextBox() {
+		return libraryVersionTextBox;
 	}
 
-	public void setLibraryNameValue(MatTextBox libraryNameValue) {
-		this.libraryNameValue = libraryNameValue;
+	public MatTextBox getUsingModelTextBox() {
+		return usingModelTextBox;
 	}
 
-	public MatTextBox getLibraryVersionValue() {
-		return libraryVersionValue;
-	}
-
-	public void setLibraryVersionValue(MatTextBox libraryVersionValue) {
-		this.libraryVersionValue = libraryVersionValue;
-	}
-
-	public MatTextBox getUsingModelValue() {
-		return usingModelValue;
-	}
-
-	public void setUsingModelValue(MatTextBox usingModelValue) {
-		this.usingModelValue = usingModelValue;
-	}
-
-	public MatTextBox getModelVersionValue() {
-		return modelVersionValue;
-	}
-
-	public void setModelVersionValue(MatTextBox modelVersionValue) {
-		this.modelVersionValue = modelVersionValue;
+	public MatTextBox getModelVersionTextBox() {
+		return modelVersionTextBox;
 	}
 	
 	public Button getSaveButton(){
 		return saveButton;
 	}
 
-	public void setWidgetReadOnlyForMeasure(boolean isEditable) {
-		getLibraryNameValue().setReadOnly(true);
-		setButtonsAndCommentsReadOnly(isEditable);
-	}
-
-	public void setWidgetReadOnlyForCQLLibrary(boolean isEditable) {
-		getLibraryNameValue().setReadOnly(!isEditable);
-		setButtonsAndCommentsReadOnly(isEditable);
-	}
-
-	private void setButtonsAndCommentsReadOnly(boolean isEditable){
+	public void setIsEditable(boolean isEditable) {
+		getLibraryNameTextBox().setEnabled(isEditable);
 		getSaveButton().setEnabled(isEditable);
-		getComments().setEnabled(isEditable);
+		getCommentsTextBox().setEnabled(isEditable);
 	}
 	
 	public void resetAll(){
-		getLibraryNameValue().setText("");
-		getLibraryVersionValue().setText("");
-		getUsingModelValue().setText("");
-		getModelVersionValue().setText("");
-		getComments().setText("");
+		getLibraryNameTextBox().setText("");
+		getLibraryVersionTextBox().setText("");
+		getUsingModelTextBox().setText("");
+		getModelVersionTextBox().setText("");
+		getCommentsTextBox().setText("");
 	}
 	
 	public void resetFormGroup(){
-		getLibNameGroup().setValidationState(ValidationState.NONE);
+		getLibraryNameGroup().setValidationState(ValidationState.NONE);
 		getCommentsGroup().setValidationState(ValidationState.NONE);
 	}
 
-	public FormGroup getLibNameGroup() {
-		return libNameGroup;
-	}
-
-	public void setLibNameGroup(FormGroup libNameGroup) {
-		this.libNameGroup = libNameGroup;
+	public FormGroup getLibraryNameGroup() {
+		return libraryNameGroup;
 	}
 
 	public FormGroup getUsingModelGroup() {
 		return usingModelGroup;
 	}
 
-	public void setUsingModelGroup(FormGroup usingModelGroup) {
-		this.usingModelGroup = usingModelGroup;
-	}
-
-	public FormGroup getLibVersionGroup() {
-		return libVersionGroup;
-	}
-
-	public void setLibVersionGroup(FormGroup libVersionGroup) {
-		this.libVersionGroup = libVersionGroup;
+	public FormGroup getLibraryVersionGroup() {
+		return libraryVersionGroup;
 	}
 
 	public FormGroup getModelVersionGroup() {
 		return modelVersionGroup;
 	}
 
-	public void setModelVersionGroup(FormGroup modelVersionGroup) {
-		this.modelVersionGroup = modelVersionGroup;
-	}
-
 	public void setGeneralInfoOfLibrary(String libraryName, String version, String qdmVersion , String modelUsed,
 			String comments) {
-		getLibraryVersionValue().setText(version);
-		getUsingModelValue().setText(modelUsed);
-		getModelVersionValue().setText(qdmVersion);
-		getLibraryNameValue().setText(libraryName);
-		getComments().setText(comments);
-		getComments().setCursorPos(0);
+		getLibraryVersionTextBox().setText(version);
+		getUsingModelTextBox().setText(modelUsed);
+		getModelVersionTextBox().setText(qdmVersion);
+		getLibraryNameTextBox().setText(libraryName);
+		getCommentsTextBox().setText(comments);
+		getCommentsTextBox().setCursorPos(0);
 	}
 	
 	public void setHeading(String text,String linkName) {
@@ -320,12 +270,8 @@ public class CQLGeneralInformationView {
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
 
-	public TextArea getComments() {
+	public TextArea getCommentsTextBox() {
 		return comments;
-	}
-
-	public void setComments(TextArea comments) {
-		this.comments = comments;
 	}
 
 	public FormGroup getCommentsGroup() {
@@ -334,9 +280,5 @@ public class CQLGeneralInformationView {
 
 	public InAppHelp getInAppHelp() {
 		return inAppHelp;
-	}
-
-	public void setInAppHelp(InAppHelp inAppHelp) {
-		this.inAppHelp = inAppHelp;
 	}
 }

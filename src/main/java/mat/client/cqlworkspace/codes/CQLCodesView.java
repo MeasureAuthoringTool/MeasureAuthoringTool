@@ -1022,7 +1022,7 @@ public class CQLCodesView {
 		return copyPasteClearButtonToolBar.getPasteButton();
 	}
 
-	public void setReadOnly(boolean isEditable) {		
+	public void setIsEditable(boolean isEditable) {		
 		getIncludeCodeSystemVersionCheckBox().setEnabled(isEditable);
 		getApplyButton().setEnabled(isEditable);
 		getCancelCodeButton().setEnabled(isEditable);

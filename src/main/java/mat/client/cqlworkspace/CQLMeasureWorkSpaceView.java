@@ -60,14 +60,14 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 	}
 
 
-	public void buildView(MessagePanel messagePanel, HelpBlock helpBlock) {
+	public void buildView(MessagePanel messagePanel, HelpBlock helpBlock, boolean isEditable) {
 		this.messagePanel = messagePanel;
 		this.messagePanel.getElement().getStyle().setProperty("marginLeft", "5px");
 		this.helpBlock = helpBlock;
 		resetAll();
 		unsetEachSectionSelectedObject();
 	
-		buildGeneralInformation();
+		buildGeneralInformation(isEditable);
 		mainFlowPanel.setWidth("700px");
 		mainPanel.getElement().setId("CQLWorkspaceView.containerPanel");
 		mainPanel.add(new SpacerWidget());
@@ -95,11 +95,11 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 
 	}
 
-	public void buildGeneralInformation() {
+	public void buildGeneralInformation(boolean isEditable) {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
 		setGeneralInfoHeading();
-		mainFlowPanel.add(generalInformationView.getView());
+		mainFlowPanel.add(generalInformationView.getView(isEditable));
 
 	}
 

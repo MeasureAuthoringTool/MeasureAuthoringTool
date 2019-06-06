@@ -10,17 +10,21 @@ public class CQLGeneralInformationUtility {
 	
 	public static final String COMMENT_LENGTH_ERROR = "Comment cannot exceed 2500 characters.";
 	
+	private CQLGeneralInformationUtility() {
+		throw new IllegalStateException("CQL General Information Utility");
+	}
+	
 	public static boolean validateGeneralInformationSection(CQLGeneralInformationView view, MessagePanel messagePanel, String libraryName, String commentBoxContent) {
 		CQLModelValidator validator = new CQLModelValidator();
 
 		if(libraryName != null && libraryName.isEmpty()) {
-			view.getLibNameGroup().setValidationState(ValidationState.ERROR);
+			view.getLibraryNameGroup().setValidationState(ValidationState.ERROR);
 			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getLibraryNameRequired());
 			return false; 
 		} 
 		
 		if(libraryName != null && !validator.doesAliasNameFollowCQLAliasNamingConvention(libraryName)) {
-			view.getLibNameGroup().setValidationState(ValidationState.ERROR);
+			view.getLibraryNameGroup().setValidationState(ValidationState.ERROR);
 			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
 			return false; 
 		}

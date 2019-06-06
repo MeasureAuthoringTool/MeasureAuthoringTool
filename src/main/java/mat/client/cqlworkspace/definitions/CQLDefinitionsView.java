@@ -258,7 +258,7 @@ public class CQLDefinitionsView {
 		getDefineButtonBar().getExpressionBuilderButton().setEnabled(isEditable);
 	}
 	
-	public void setReadOnly(boolean isEditable) {		
+	public void setIsEditable(boolean isEditable) {		
 		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
 		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
 		getDefineButtonBar().getEraseButton().setEnabled(isEditable);

@@ -772,7 +772,7 @@ public class CQLIncludeLibraryView {
 	 * Added this method as part of MAT-8882.
 	 * @param isEditable
 	 */
-	public void setReadOnly(boolean isEditable) {		
+	public void setIsEditable(boolean isEditable) {		
 		getSaveButton().setEnabled(isEditable);
 		getEraseButton().setEnabled(isEditable);
 		getSearchButton().setEnabled(isEditable);

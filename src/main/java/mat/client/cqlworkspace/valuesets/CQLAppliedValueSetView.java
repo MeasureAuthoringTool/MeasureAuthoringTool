@@ -1071,7 +1071,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		return copyPasteClearButtonToolBar.getPasteButton();
 	}
 
-	public void setReadOnly(boolean isEditable) {		
+	public void setIsEditable(boolean isEditable) {		
 		getCancelQDMButton().setEnabled(isEditable);
 		getUpdateFromVSACButton().setEnabled(isEditable);
 		getRetrieveFromVSACButton().setEnabled(isEditable);

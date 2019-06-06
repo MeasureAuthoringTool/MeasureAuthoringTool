@@ -33,11 +33,11 @@ public interface CQLWorkspaceView {
 	public CQLGeneralInformationView getCqlGeneralInformationView();
 	public void buildIncludesView();
 	public Widget asWidget();
-	public void buildView(MessagePanel messagePanel, HelpBlock helpBlock);
+	public void buildView(MessagePanel messagePanel, HelpBlock helpBlock, boolean isEditable);
 	public void setGeneralInfoHeading();
 	public void buildCodes();
 	public void resetAll();
-	public void buildGeneralInformation();
+	public void buildGeneralInformation(boolean isEditable);
 	public void buildAppliedQDM();
 	public FlowPanel getMainFlowPanel();
 	public void buildParameterLibraryView();

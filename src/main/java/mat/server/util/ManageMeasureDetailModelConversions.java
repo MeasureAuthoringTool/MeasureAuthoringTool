@@ -148,6 +148,10 @@ public class ManageMeasureDetailModelConversions {
 		measureDetailModel.setNqfModel(createNQFModel(measure));
 		measureDetailModel.setNqfId(measure.getNqfNumber());
 		measureDetailModel.setPeriodModel(createPeriodModel(measure));
+		if(measure.getMeasurementPeriodFrom() != null && measure.getMeasurementPeriodTo() != null) {
+			measureDetailModel.setMeasFromPeriod(getSimpleDateFormat(measure.getMeasurementPeriodFrom()));
+			measureDetailModel.setMeasToPeriod(getSimpleDateFormat(measure.getMeasurementPeriodTo()));
+		}
 		measureDetailModel.setMeasureSetId(measure.getMeasureSet().getId());
 		measureDetailModel.setDraft(measure.isDraft());
 		measureDetailModel.setValueSetDate(String.valueOf(measure.getValueSetDate()));

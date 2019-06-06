@@ -145,6 +145,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	@Override
 	public void displayStratification() {
 		mainFlowPanel.clear();
+		mainFlowPanel.setHeight("100%");
 		cqlStratificationDetailView  = new CQLStratificationDetailView();
 		populationDataModel.loadPopulations(document);
 		mainFlowPanel.add(cqlStratificationDetailView.buildView(populationDataModel));
@@ -182,11 +183,11 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 	@Override
 	public void buildViewPopulations() {
-		// resetAll();
 		mainFlowPanel.clear();
 		cautionPanel.clear();
 		cqlViewPopulationsDisplay.getMeasureXmlAndBuildView();
 		mainFlowPanel.add(cqlViewPopulationsDisplay.getMainPanel());
+		mainFlowPanel.setHeight("100%");
 	}
 
 	/*

@@ -16,8 +16,6 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
 import mat.client.populationworkspace.model.PopulationClauseObject;
@@ -40,8 +38,9 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 	@Override
 	public void displayPopulationDetail(FlowPanel mainFlowPanel) {
 		mainFlowPanel.clear();
+		mainFlowPanel.setHeight("250px");
 		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup("", "",
-				"Save", "Add New");
+				"Save", "Add New", 35.00);
 		List<PopulationClauseObject> popClauses = populationsObject.getPopulationClauseObjectList();
 		cqlPopulationTopLevelButtonGroup.getAddNewButton()
 				.setId("addNewButton_" + populationsObject.getPopulationType());
@@ -56,28 +55,20 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 
 		for (int i = 0; i < popClauses.size(); i++) {
 			populateGrid(popClauses, populationGrid, i);
-
 		}
 
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(event -> onAddNewPopulationClickHandler(populationGrid, populationsObject));
 		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(event -> onSavePopulationClickHandler(populationGrid, populationsObject));
+
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
-		scrollPanel.setSize("700px", "250px");
+		scrollPanel.setWidth("700px");
 
+		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());
 		
-		mainFlowPanel.add(new SpacerWidget());
-		mainFlowPanel.add(new SpacerWidget());
-		
-		HorizontalPanel btnPanel = new HorizontalPanel();
-		btnPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		btnPanel.setStyleName("marginLeftButtons");
-
-		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
-
-		mainFlowPanel.add(btnPanel);
+		mainFlowPanel.add(cqlPopulationTopLevelButtonGroup.getAddNewButton());
 		mainFlowPanel.add(scrollPanel);
-		mainFlowPanel.add(new SpacerWidget());
+		mainFlowPanel.add(cqlPopulationTopLevelButtonGroup.getSaveButton());
 		mainFlowPanel.add(new SpacerWidget());
 	}
 

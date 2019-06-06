@@ -21,6 +21,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
@@ -141,7 +142,7 @@ public class CQLXmlTreeView extends Composite implements  CQLXmlTreeDisplay, Tre
 	public void buildView(CellTree cellTree) {
 		this.cellTree = cellTree;
 		mainPanel.clear();
-		
+		mainPanel.setHeight("100%");
 		VerticalPanel treePanel =  new VerticalPanel();
 		treePanel.getElement().setId("treePanel_VerticalPanelCW");
 		HorizontalPanel expandCollapse  = new HorizontalPanel();
@@ -160,7 +161,7 @@ public class CQLXmlTreeView extends Composite implements  CQLXmlTreeDisplay, Tre
 		if (cellTree != null) {
 			treePanel.add(expandCollapse);
 			treePanel.add(cellTree);
-			addHandlers();;
+			addHandlers();
 			cellTreeHandlers();
 			openAllNodes(cellTree.getRootTreeNode()); // all nodes should be open on load
 		} else {

@@ -920,17 +920,6 @@
 		"documentation": "The First operator returns the first element in a list."
 	},
 	{
-		"name": "First",
-		"returnType": "Integer",
-		"arguments": [
-			{
-				"name": "argument",
-				"returnType": "List<QDM>"
-			}
-		],
-		"documentation": "The First operator returns the first element in a list."
-	},
-	{
 		"name": "GeometricMean",
 		"returnType": "Decimal",
 		"arguments": [

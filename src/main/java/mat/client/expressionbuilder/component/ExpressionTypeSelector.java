@@ -1,5 +1,7 @@
 package mat.client.expressionbuilder.component;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -44,8 +46,10 @@ public class ExpressionTypeSelector extends Composite {
 	public ExpressionTypeSelector(List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes, List<String> availableAliases, 
 			BuildButtonObserver observer, boolean isFirstSelection, ExpressionBuilderModal parentModal) {
 		this.availableExpressionTypes = availableExpressionTypes;
+		this.availableExpressionTypes.sort(Comparator.comparing(ExpressionType::getDisplayName));
 		this.availableOperatorTypes = availableOperatorTypes;
 		this.availableAliases = availableAliases;
+		Collections.sort(this.availableAliases);
 		this.observer = observer;
 		this.isFirstSelection = isFirstSelection;
 		

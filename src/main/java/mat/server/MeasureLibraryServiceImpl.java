@@ -4940,7 +4940,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	private void lintAndAddToResult(String measureId, SaveUpdateCQLResult result) {
 		Measure measure = measureDAO.find(measureId);
-		CQLLinterConfig config = new CQLLinterConfig(MeasureUtility.cleanString(measure.getDescription()),
+		CQLLinterConfig config = new CQLLinterConfig(result.getCqlModel().getLibraryName(),
 				MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
 				QDMUtil.QDM_MODEL_IDENTIFIER, measure.getQdmVersion());
 		config.setPreviousCQLModel(result.getCqlModel());

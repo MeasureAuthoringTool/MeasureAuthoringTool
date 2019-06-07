@@ -605,40 +605,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		// empty method body
 	}
 
-
-	/**
-	 * Append cql parameters.
-	 *
-	 * @param xmlProcessor
-	 *            the xml processor
-	 */
-	public void checkForDefaultCQLDefinitionsAndAppend(XmlProcessor xmlProcessor) {
-
-		NodeList defaultCQLDefNodeList = findDefaultDefinitions(xmlProcessor);
-
-		if (defaultCQLDefNodeList != null && defaultCQLDefNodeList.getLength() == 4) {
-			logger.info("All Default parameter elements present in the measure.");
-			return;
-		}
-
-		String defStr = getCqlService().getSupplementalDefinitions();
-		try {
-			xmlProcessor.appendNode(defStr, "definition", "/measure/cqlLookUp/definitions");
-
-			NodeList supplementalDefnNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(),
-					"/measure/cqlLookUp/definitions/definition[@supplDataElement='true']");
-
-			if (supplementalDefnNodes != null) {
-				for (int i = 0; i < supplementalDefnNodes.getLength(); i++) {
-					Node supplNode = supplementalDefnNodes.item(i);
-					supplNode.getAttributes().getNamedItem(ID).setNodeValue(UUIDUtilClient.uuid());
-				}
-			}
-		} catch (SAXException | IOException| XPathExpressionException e) {
-			logger.debug("checkForDefaultCQLDefinitionsAndAppend:" + e.getMessage());
-		}
-	}
-
 	/**
 	 * This method will look into XPath "/measure/cqlLookUp/definitions/" and
 	 * try and NodeList for Definitions with the following names; 'SDE
@@ -660,38 +626,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 		}
 		return returnNodeList;
-	}
-
-
-	/**
-	 * Check for default cql parameters and append.
-	 *
-	 * @param xmlProcessor
-	 *            the xml processor
-	 */
-	public void checkForDefaultCQLParametersAndAppend(XmlProcessor xmlProcessor) {
-
-		List<String> missingDefaultCQLParameters = xmlProcessor.checkForDefaultParameters();
-
-		if (missingDefaultCQLParameters.isEmpty()) {
-			logger.info("All Default parameter elements present in the measure.");
-			return;
-		}
-		logger.info("Found the following Default parameter elements missing:" + missingDefaultCQLParameters);
-		CQLParameter parameter = new CQLParameter();
-
-		parameter.setId(UUID.randomUUID().toString());
-		parameter.setName(CQLWorkSpaceConstants.CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_NAME);
-		parameter.setLogic(CQLWorkSpaceConstants.CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_LOGIC);
-		parameter.setReadOnly(true);
-		String parStr = getCqlService().createParametersXML(parameter);
-
-		try {
-			xmlProcessor.appendNode(parStr, "parameter", "/measure/cqlLookUp/parameters");
-		} catch (SAXException | IOException e) {
-			logger.debug("checkForDefaultCQLParametersAndAppend:" + e.getMessage());
-		}
-
 	}
 	
 	private void convertAddlXmlElementsToModel(final ManageMeasureDetailModel manageMeasureDetailModel,
@@ -2296,9 +2230,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 				String newXml = xmlProcessor.replaceNode(measureXmlModel.getXml(),
 						measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
-				
-				checkForDefaultCQLParametersAndAppend(xmlProcessor);
-				checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
+			
 				updateCQLVersion(xmlProcessor, version);
 				
 				newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());

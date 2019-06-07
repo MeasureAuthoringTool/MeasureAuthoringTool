@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.gen.cqlBaseListener;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
+import org.cqframework.cql.gen.cqlParser.AccessModifierContext;
 import org.cqframework.cql.gen.cqlParser.CodeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.CodesystemDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ConceptDefinitionContext;
@@ -185,6 +186,11 @@ public class CQLLinter extends cqlBaseListener {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public void enterAccessModifier(AccessModifierContext ctx) {
+		this.warningMessages.add("The MAT does not support access modifiers tied to expressions. Any entered access modifiers have been removed from the CQL file.");
 	}
 
 	@Override

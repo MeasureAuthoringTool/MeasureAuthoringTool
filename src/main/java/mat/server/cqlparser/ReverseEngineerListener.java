@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -205,12 +204,13 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
 		String codeId = CQLParserUtil.parseString(ctx.codeId().getText());
 		String codeSystemName = CQLParserUtil.parseString(ctx.codesystemIdentifier().getText());
-		String displayClause = CQLParserUtil.parseString(ctx.displayClause().STRING().getText());
+		String displayClause = ctx.displayClause() != null ? CQLParserUtil.parseString(ctx.displayClause().STRING().getText()) : "";
 	
 		
 		Optional<CQLCode> previousCode = previousModel.getCodeList().stream().filter(c -> (
 				c.getDisplayName().equals(identifier)
 				&& c.getCodeOID().equals(codeId)
+				&& c.getName().equals(displayClause)
 			)).findFirst();
 		
 		if(previousCode.isPresent()) {

@@ -293,12 +293,15 @@ public class CQLLinter extends cqlBaseListener {
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
 		String codeId = CQLParserUtil.parseString(ctx.codeId().getText());	
 		
+		String displayClause = ctx.displayClause() != null ? CQLParserUtil.parseString(ctx.displayClause().STRING().getText()) : "";
+		
 		// find all codes that have a matching identifier and code id
 		// in MAT the identifier is mapped the displayName field (which is also called the descriptor)
 		if(config.getPreviousCQLModel().getCodeList() != null) {
 			List<CQLCode> potentialMatches = config.getPreviousCQLModel().getCodeList().stream().filter(c -> 
 				(c.getDisplayName().equals(identifier) 
-				&& c.getCodeOID().equals(codeId))
+				&& c.getCodeOID().equals(codeId) 
+				&& c.getName().equals(displayClause))
 			).collect(Collectors.toList());
 			
 			

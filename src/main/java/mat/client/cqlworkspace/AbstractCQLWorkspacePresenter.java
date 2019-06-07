@@ -1400,7 +1400,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		}
 		curAceEditor = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor();
 		curAceEditor.setText("");
-		cqlWorkspaceView.getCQLLibraryEditorView().setHeading(getWorkspaceTitle() + " > View CQL", "cqlViewCQL_Id");
+		cqlWorkspaceView.getCQLLibraryEditorView().setHeading(getWorkspaceTitle() + " > CQL Library Editor", "cqlViewCQL_Id");
 		focusSkipLists();
 	}
 	

@@ -323,11 +323,25 @@ public class InAppHelpMessages {
 			"<br>" + 
 			VIEW_CQL_LIBRARY_HELP;
 	
-	public static final String MEASURE_CQL_LIBRARY_VIEW_CQL = "<b>Export Error File:</b> If your CQL file has errors or warnings, you can export a report that will show your entire CQL file with line numbers and list which line numbers are showing the errors and/or warnings. This file will open as a .txt file.<br>" + 
+	public static final String MEASURE_CQL_LIBRARY_VIEW_CQL = 
+			"<b>Information:</b> Selecting the Information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Library Editor.<br>" +
+			"<br>" +
+			"<b>Insert:</b> Clicking this icon will open a dialog box that will allow you to choose items that will then be inserted into the CQL Library Editor in the correct CQL format. Items include Parameters, Definitions, Functions, Timings, Pre-defined Functions, Applied Value Sets / Codes, and Attributes.<br>" + 
+			"<br>" + 
+			"<b>Export Error File:</b> If your CQL file has errors or warnings, you can export a report that will show your entire CQL file with line numbers and list which line numbers are showing the errors and/or warnings. This file will open as a .txt file.<br>" + 
+			"<br>" + 
+			"<b>Enable the CQL Library Editor:</b> The CQL Library Editor is a feature that users will need to enable before it can be used. To enable editing on this page, click on the profile icon in the upper-right-hand corner, choose MAT Account, and on the Personal Information page, click the checkbox titled Enable the CQL Library Editor, enter your current password, and click save and continue.<br>" +
 			"<br>" + 
 			"<b>CQL Library Editor:</b> This section displays the entire CQL file for the measure as it currently stands. If there are any errors they will be indicated with a message or on the line number with a red square. If there are any warnings they will be shown with a message or on the line number with a yellow triangle. Hover over the error or warning icons to see the messages. This area is not editable by default. If you want to be able to edit your CQL library within this section, pull down the options under the profile icon in the upper-right corner of the screen, select MAT Account, go to the Personal Information Tab, and check the checkbox Enable the CQL Library Editor.";
 	
-	public static final String STANDALONE_CQL_LIBRARY_VIEW_CQL = "<b>Export Error File:</b> If your CQL file has errors or warnings, you can export a report that will show your entire CQL file with line numbers and list which line numbers are showing the errors and/or warnings. This file will open as a .txt file.<br>" + 
+	public static final String STANDALONE_CQL_LIBRARY_VIEW_CQL = 
+			"<b>Information:</b> Selecting the Information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Library Editor.<br>" +
+			"<br>" +
+			"<b>Insert:</b> Clicking this icon will open a dialog box that will allow you to choose items that will then be inserted into the CQL Library Editor in the correct CQL format. Items include Parameters, Definitions, Functions, Timings, Pre-defined Functions, Applied Value Sets / Codes, and Attributes.<br>" + 
+			"<br>" +
+			"<b>Export Error File:</b> If your CQL file has errors or warnings, you can export a report that will show your entire CQL file with line numbers and list which line numbers are showing the errors and/or warnings. This file will open as a .txt file.<br>" + 
+			"<br>" + 
+			"<b>Enable the CQL Library Editor:</b> The CQL Library Editor is a feature that users will need to enable before it can be used. To enable editing on this page, click on the profile icon in the upper-right-hand corner, choose MAT Account, and on the Personal Information page, click the checkbox titled Enable the CQL Library Editor, enter your current password, and click save and continue.<br>" +
 			"<br>" + 
 			"<b>CQL Library Editor:</b> This section displays the entire CQL file for the library as it currently stands. If there are any errors they will be indicated with a message or on the line number with a red square. If there are any warnings they will be shown with a message or on the line number with a yellow triangle. Hover over the error or warning icons to see the messages. This area is not editable by default. If you want to be able to edit your CQL library within this section, pull down the options under the profile icon in the upper-right corner of the screen, select MAT Account, go to the Personal Information Tab, and check the checkbox Enable the CQL Library Editor.";
 	

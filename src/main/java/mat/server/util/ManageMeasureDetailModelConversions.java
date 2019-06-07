@@ -3,7 +3,9 @@ package mat.server.util;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -89,9 +91,17 @@ public class ManageMeasureDetailModelConversions {
 		compositeMeasureDetailModel.setComponentMeasuresSelectedList(resultObjectForComponentMeasures);
 		compositeMeasureDetailModel.setAppliedComponentMeasures(resultObjectForComponentMeasures);
 		
+		compositeMeasureDetailModel.setAliasMapping(createAliasMapping(measure));
+		
 		return compositeMeasureDetailModel;
 	}
 	
+
+	private Map<String, String> createAliasMapping(Measure measure) {
+		Map<String, String> aliasMap = new HashMap<>();
+		measure.getComponentMeasures().stream().forEach(component -> aliasMap.put(component.getComponentMeasure().getId(), component.getAlias()));
+		return aliasMap;
+	}
 
 	private List<Result> createResultObjectForComponentMeasures(List<ComponentMeasure> componentMeasures) {
 		List<Result> measureResults = new ArrayList<>();

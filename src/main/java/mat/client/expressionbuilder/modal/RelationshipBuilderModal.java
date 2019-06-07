@@ -277,8 +277,7 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 		availableExpressionsForSouce.add(ExpressionType.QUERY);
 		final List<OperatorType> availableOperatorsForSource = new ArrayList<>(OperatorTypeUtil.getSetOperators());
 		
-		sourceSelector = new ExpressionTypeSelectorList(availableExpressionsForSouce, availableOperatorsForSource, 
-				QueryFinderHelper.findAliasNames(getParentModel()), sourceBuildButtonObserver, relationshipModel.getSource(), 
+		sourceSelector = new ExpressionTypeSelectorList(availableExpressionsForSouce, availableOperatorsForSource, sourceBuildButtonObserver, relationshipModel.getSource(), 
 				RELATED_SOURCE_TEXT_LABEL, this);
 		
 		sourcePanel.add(sourceSelector);
@@ -307,8 +306,7 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 		
 		final List<OperatorType> availableOperatorsForFilter = new ArrayList<>(OperatorTypeUtil.getBooleanOperators());
 		
-		criteriaSelector = new ExpressionTypeSelectorList(availableExpressionsForFilter, availableOperatorsForFilter, 
-				QueryFinderHelper.findAliasNames(relationshipModel), criteriaBuildButtonObserver, relationshipModel.getCriteria(), 
+		criteriaSelector = new ExpressionTypeSelectorList(availableExpressionsForFilter, availableOperatorsForFilter, criteriaBuildButtonObserver, relationshipModel.getCriteria(), 
 				RELATED_CRITERIA_TEXT_LABEL, this);
 		
 		filterPanel.add(criteriaSelector);		

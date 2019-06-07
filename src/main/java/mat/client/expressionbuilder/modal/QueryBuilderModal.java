@@ -280,7 +280,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		List<OperatorType> availableOperatorsForFilter = new ArrayList<>(OperatorTypeUtil.getBooleanOperators());
 		
 		ExpressionTypeSelectorList filterSelector = new ExpressionTypeSelectorList(
-				availableExpressionsForFilter, availableOperatorsForFilter, QueryFinderHelper.findAliasNames(this.queryModel),
+				availableExpressionsForFilter, availableOperatorsForFilter,
 				filterBuildButtonObserver, queryModel.getFilter(), 
 				 "What would you like to use to filter your source?", this);
 		

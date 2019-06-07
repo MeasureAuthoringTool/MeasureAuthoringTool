@@ -2202,18 +2202,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MatContext.get().setCurrentMeasureScoringType(model.getMeasScoring());
 		}
 		
-		try {
-			xmlProcessor.updateCQLLibraryName(measure.getDescription());
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-		}
-		
 		String newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
 		xmlModel.setXml(newXml);
 		measurePackageService.saveMeasureXml(xmlModel);
-		
-
-		
 	}
 
 	private void calculateCalendarYearForMeasure(final ManageMeasureDetailModel model, Measure measure) {

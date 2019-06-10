@@ -2128,10 +2128,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID).getLogic());
 		cqlWorkspaceView.getCQLParametersView().getParameterCommentTextArea().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID).getCommentString());
 		CQLParameter currentParameter = cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID);
-		boolean isReadOnly = cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID).isReadOnly();
-
 		if (hasEditPermissions()) {
-			cqlWorkspaceView.getCQLParametersView().setWidgetReadOnly(!isReadOnly);
+			cqlWorkspaceView.getCQLParametersView().setWidgetReadOnly(true);
 		}
 		
 		SharedCQLWorkspaceUtility.setCQLWorkspaceExceptionAnnotations(currentParameter.getName(), result.getCqlErrorsPerExpression(), result.getCqlWarningsPerExpression(), curAceEditor);

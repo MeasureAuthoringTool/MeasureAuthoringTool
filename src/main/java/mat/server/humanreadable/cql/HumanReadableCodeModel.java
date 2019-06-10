@@ -65,7 +65,7 @@ public class HumanReadableCodeModel implements HumanReadableTerminologyModel {
 	private void createTerminologyDisplay() {
 		String codeSystemVersion = "";
 		if (isCodesystemVersionIncluded) {
-			codeSystemVersion = " version " + codeSystemVersion;
+			codeSystemVersion = " version " + codesystemVersion;
 		}
 
 		String codeOutput = "code \"" + name + "\" (\"" + codesystemName + codeSystemVersion + " Code (" + oid

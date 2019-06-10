@@ -137,6 +137,8 @@ public class CQLFunctionsView {
 		funcVP.add(cellTablePanel);
 		
 		HorizontalPanel buttonPanel = new HorizontalPanel();
+		functionButtonBar.getTimingExpButton().setVisible(false);
+		functionButtonBar.getCloseButton().setVisible(false);
 		buttonPanel.add(functionButtonBar.getInfoButtonGroup());
 		buttonPanel.add(functionButtonBar);
 		funcVP.add(buttonPanel);
@@ -247,10 +249,10 @@ public class CQLFunctionsView {
 
 
 	public void setMarginInButtonBar() {
-		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:365px;");
+		
+		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:518px;");
 		functionButtonBar.getEraseButton().setMarginRight(5.00);
-		functionButtonBar.getInsertButton().setMarginRight(5.00);
-		functionButtonBar.getExpressionBuilderButton().setMarginLeft(-5.00);
+		functionButtonBar.getInsertButton().setMarginRight(-5.00);
 		functionButtonBar.getSaveButton().setMarginLeft(480.00);
 	}
 

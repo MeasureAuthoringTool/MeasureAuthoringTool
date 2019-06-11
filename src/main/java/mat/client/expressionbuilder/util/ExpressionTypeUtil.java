@@ -1,9 +1,11 @@
 package mat.client.expressionbuilder.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import mat.client.expressionbuilder.constant.CQLType;
@@ -85,7 +87,7 @@ public class ExpressionTypeUtil {
 			return new ArrayList<>(MatContext.get().getCqlConstantContainer().getFunctionNames());
 		}
 			
-		List<FunctionSignature> signatures = new ArrayList<>(MatContext.get().getCqlConstantContainer().getFunctionSignatures());
+		final List<FunctionSignature> signatures = new ArrayList<>(MatContext.get().getCqlConstantContainer().getFunctionSignatures());
 		if (isFilterable(type)) {
 			signatures.removeIf(func -> !getCQLTypeBasedOnReturnType(func.getReturnType()).equals(type));
 		}
@@ -185,6 +187,23 @@ public class ExpressionTypeUtil {
 				cqlType = CQLType.LIST;
 			} else if (returnType.startsWith("interval<")) {
 				cqlType = CQLType.INTERVAL;
+			}
+		}
+		return cqlType;
+	}
+	
+	public static CQLType getTypeBasedOnSelectedExpression(String identifier) {
+		final String returnType = MatContext.get().getExpressionToReturnTypeMap().get(identifier.replace("\"", ""));
+		return (returnType != null) ? ExpressionTypeUtil.convertReturnTypeToCQLType(returnType) : CQLType.ANY;
+	}
+	
+	public static CQLType convertReturnTypeToCQLType(String returnType) {
+		CQLType cqlType = CQLType.ANY;
+		if (null != returnType) {
+			final String returnTypeLower = returnType.toLowerCase();
+			final Optional<CQLType> cqlTypeMatch = Arrays.stream(CQLType.values()).filter(c -> returnTypeLower.contains(c.getName().toLowerCase())).findAny();
+			if (cqlTypeMatch.isPresent()) {
+				cqlType = cqlTypeMatch.get();
 			}
 		}
 		return cqlType;

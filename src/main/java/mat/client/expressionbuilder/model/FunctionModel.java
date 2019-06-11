@@ -5,6 +5,7 @@ import java.util.List;
 
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
+import mat.client.expressionbuilder.util.ExpressionTypeUtil;
 
 public class FunctionModel extends ExpressionBuilderModel {
 	private String name;
@@ -54,7 +55,7 @@ public class FunctionModel extends ExpressionBuilderModel {
 	
 	@Override
 	public CQLType getType() {
-		return CQLType.ANY;
+		return ExpressionTypeUtil.getTypeBasedOnSelectedExpression(name);
 	}
 	
 	@Override

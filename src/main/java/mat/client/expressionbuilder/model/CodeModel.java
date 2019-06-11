@@ -28,7 +28,7 @@ public class CodeModel extends ExpressionBuilderModel {
 	
 	@Override
 	public CQLType getType() {
-		return CQLType.ANY;
+		return CQLType.CODE;
 	}
 	
 	@Override

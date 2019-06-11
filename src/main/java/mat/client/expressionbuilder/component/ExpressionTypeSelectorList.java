@@ -2,6 +2,7 @@ package mat.client.expressionbuilder.component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Code;
@@ -85,12 +86,7 @@ public class ExpressionTypeSelectorList extends Composite {
 
 		panel.add(buildLabelPanel());
 				
-		// filter available operators and expressions based on first expression type selected
-		if(!this.model.getChildModels().isEmpty()) {
-			updateOperatorsAndExpressionsBasedOnFirstSelection();
-		} else {
-			resetOperatorsAndExpressions();
-		}
+		resetOperatorsAndExpressions();
 		
 		for(int i = 0; i < this.model.getChildModels().size(); i++) {
 			IExpressionBuilderModel currentChildModel = this.model.getChildModels().get(i);
@@ -117,17 +113,26 @@ public class ExpressionTypeSelectorList extends Composite {
 			}
 		}
 		
-		boolean cannotAddMoreFunctionality = areSingleSelectScreensOnly(this.model.getChildModels());
+		boolean cannotAddMoreFunctionality = areSingleSelectScreensOnly();
 		
-		boolean canAddAnother = hasNoSelections || canOnlyMakeOneSelection || cannotAddMoreFunctionality;
-		
-		if (!(!this.model.getChildModels().isEmpty() && (canOnlyMakeOneSelection || cannotAddMoreFunctionality))) {
+		if (canBuildExpressionTypeSelector(cannotAddMoreFunctionality)) {
+			// filter available operators and expressions based on first expression type selected
+			if(!this.hasNoSelections) {
+				updateOperatorsAndExpressionsBasedOnFirstSelection();
+			}
+			
+			boolean canAddAnother = hasNoSelections || canOnlyMakeOneSelection || cannotAddMoreFunctionality;
+
 			selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, availableAliases, buildButtonObserver, canAddAnother, this.parentModal);		
 			panel.add(selector);
 		}
 		
 	
 		return panel;
+	}
+	
+	private boolean canBuildExpressionTypeSelector(boolean cannotAddMoreFunctionality) {
+		return !(!this.hasNoSelections && (canOnlyMakeOneSelection || cannotAddMoreFunctionality));
 	}
 
 	private HorizontalPanel buildLabelPanel() {
@@ -156,20 +161,8 @@ public class ExpressionTypeSelectorList extends Composite {
 
 	private void updateOperatorsAndExpressionsBasedOnFirstSelection() {
 		CQLType firstType = this.model.getChildModels().get(0).getType();
-
-		List<OperatorType> availableOperatorTypesForFirstExpressionType = new ArrayList<>();
-		availableOperatorTypesForFirstExpressionType.addAll(OperatorTypeUtil.getAvailableOperatorsCQLType(firstType));
-
-		this.availableOperatorTypes = availableOperatorTypesForFirstExpressionType;
-
-		List<OperatorType> newAvailableOperators = new ArrayList<>();
-		for(OperatorType type : this.availableOperatorTypes) {
-			if(availableOperatorTypesForFirstExpressionType.contains(type)) {
-				newAvailableOperators.add(type);
-			}
-		}
-
-		this.availableOperatorTypes =  newAvailableOperators;
+		
+		this.availableOperatorTypes = OperatorTypeUtil.getAvailableOperatorsCQLType(firstType);
 		this.availableExpressionTypes = ExpressionTypeUtil.getFilteredExpressionsCQLType(firstType);
 	}
 	
@@ -222,11 +215,40 @@ public class ExpressionTypeSelectorList extends Composite {
 		this.parentModal.updateCQLDisplay();
 	}
 
-	private boolean areSingleSelectScreensOnly(List<IExpressionBuilderModel> childModels) {
-		//Screens to hide Add more functionality
-		List<String> singleModels = Arrays.asList(ExpressionType.COMPUTATION.getDisplayName(), ExpressionType.DATE_TIME.getDisplayName(),
-				ExpressionType.QUANTITY.getDisplayName(), ExpressionType.TIME_BOUNDARY.getDisplayName());
+	private boolean areSingleSelectScreensOnly() {
+		boolean cannotAddMore = false;
 		
-		return childModels.stream().anyMatch(e -> singleModels.stream().anyMatch(e.getDisplayName()::contains));
+		if (!hasNoSelections) {
+			cannotAddMore = screensWithoutAddMore() || returnTypesWithoutAddMore();
+		}
+		
+		return cannotAddMore;
+	}
+	
+	private boolean screensWithoutAddMore() {
+		//Screens to hide Add more functionality
+		final List<String> singleModels = Arrays.asList(ExpressionType.COMPUTATION.getDisplayName(), ExpressionType.DATE_TIME.getDisplayName(),
+				ExpressionType.QUANTITY.getDisplayName(), ExpressionType.TIME_BOUNDARY.getDisplayName());
+
+		return model.getChildModels().stream().anyMatch(e -> singleModels.stream().anyMatch(e.getDisplayName()::contains));
+	}
+	
+	private boolean returnTypesWithoutAddMore() {
+		boolean cannotAddMore = false;
+
+		final IExpressionBuilderModel currentChildModel = model.getChildModels().get(0);
+
+		final List<String> expressionModels = Arrays.asList(ExpressionType.DEFINITION.getDisplayName(), ExpressionType.FUNCTION.getDisplayName(),
+				ExpressionType.PARAMETER.getDisplayName());
+		
+		if (expressionModels.stream().anyMatch(currentChildModel.getDisplayName()::equals)) {
+			//if the Definition, Function, or Parameter chosen returns one of the following, the Add More functionality is not available
+			final EnumSet<CQLType> excludedReturnTypes = EnumSet.of(CQLType.CODE, CQLType.INTEGER, CQLType.DECIMAL, CQLType.RATIO, 
+					CQLType.QUANTITY, CQLType.DATE, CQLType.TIME, CQLType.DATETIME, CQLType.QDM, CQLType.STRING);
+			
+			cannotAddMore = excludedReturnTypes.stream().anyMatch(currentChildModel.getType()::equals);
+		}
+		
+		return cannotAddMore;
 	}
 }

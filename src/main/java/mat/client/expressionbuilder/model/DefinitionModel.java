@@ -2,6 +2,7 @@ package mat.client.expressionbuilder.model;
 
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
+import mat.client.expressionbuilder.util.ExpressionTypeUtil;
 
 public class DefinitionModel extends ExpressionBuilderModel {
 
@@ -27,7 +28,7 @@ public class DefinitionModel extends ExpressionBuilderModel {
 	
 	@Override
 	public CQLType getType() {
-		return CQLType.ANY;
+		return ExpressionTypeUtil.getTypeBasedOnSelectedExpression(identifier);
 	}
 	
 	@Override

@@ -235,7 +235,7 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 		relationshipBuilderContentPanel.add(buildSourceWidget());
 		
 		sourceListItem.setActive(true);
-		if(sourceSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
+		if (sourceSelector.getSelector() != null && sourceSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
 			sourceSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
 		}
 	}
@@ -248,7 +248,7 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 		relationshipBuilderContentPanel.add(buildCriteriaWidget());
 		
 		criteriaListItem.setActive(true);
-		if(criteriaSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
+		if (criteriaSelector.getSelector() != null && criteriaSelector.getSelector().getExpressionTypeSelectorListBox() != null) {
 			criteriaSelector.getSelector().getExpressionTypeSelectorListBox().setFocus(true);
 		}
 	}
@@ -342,7 +342,7 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 		aliasTextBox.setTitle("Enter an Alias");
 		aliasTextBox.setText(alias);
 		group.add(aliasTextBox);
-		group.setWidth("36%");
+		group.setWidth("37%");
 		
 		return group;
 	}

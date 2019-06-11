@@ -343,7 +343,7 @@ public class CQLServiceImpl implements CQLService {
 
 			// do some processing if the are no errors in the CQL
 			if (result.getCqlErrors().isEmpty()) {
-				Optional<CQLExpressionObject> expressionObject = findExpressionObject(functionWithEdits.getName(), result.getCqlObject().getCqlDefinitionObjectList());
+				Optional<CQLExpressionObject> expressionObject = findExpressionObject(functionWithEdits.getName(), result.getCqlObject().getCqlFunctionObjectList());
 				if (expressionObject.isPresent()) {
 					functionWithEdits.setReturnType(expressionObject.get().getReturnType());
 				}

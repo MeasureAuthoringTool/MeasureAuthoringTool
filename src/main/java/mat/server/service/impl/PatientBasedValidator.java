@@ -10,6 +10,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
@@ -81,10 +82,15 @@ public class PatientBasedValidator {
 			
 			if(type.equalsIgnoreCase("stratification")){
 				Node stratificationNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure//stratification[@uuid='"+populationUUID+"']");
+				NodeList childNodes = stratificationNode.getChildNodes();
+				for(int i = 0; i < childNodes.getLength(); i++) {
+					Node child = childNodes.item(i);
+					String definitionName = child.getFirstChild().getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+					
+					createExpressionsToBeCheckedData(expressionPopMap, exprList, name, definitionName);
+				}
 				
-				String definitionName = stratificationNode.getFirstChild().getFirstChild().getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 				
-				createExpressionsToBeCheckedData(expressionPopMap, exprList, name, definitionName);
 			}
 			else if(type.equals(MEASURE_OBSERVATION)){
 				

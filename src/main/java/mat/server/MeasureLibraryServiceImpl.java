@@ -5043,18 +5043,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	@Override
 	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId, String libraryName, String comments) {
-
-		MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(currentMeasureId);
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		if (xmlModel != null) {
-			result = getCqlService().saveAndModifyCQLGeneralInfo(xmlModel.getXml(), libraryName, comments);
-			if (result.isSuccess()) {
-				xmlModel.setXml(result.getXml());
-				measurePackageService.saveMeasureXml(xmlModel);
+		if(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentMeasureId)) {
+			MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(currentMeasureId);
+			if (xmlModel != null) {
+				result = getCqlService().saveAndModifyCQLGeneralInfo(xmlModel.getXml(), libraryName, comments);
+				if (result.isSuccess()) {
+					xmlModel.setXml(result.getXml());
+					measurePackageService.saveMeasureXml(xmlModel);
+				}
+
 			}
-
 		}
-
+		
 		return result;
 	}
 

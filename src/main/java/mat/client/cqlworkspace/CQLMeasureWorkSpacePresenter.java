@@ -196,7 +196,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().getComponentsListBox().addKeyPressHandler(event -> listBoxKeyPress(cqlWorkspaceView.getCQLLeftNavBarPanelView().getComponentsListBox(), event));
 	}
 
-	private void addGeneralInfoEventHandlers() {
+	private void addGeneralInfoEventHandlers() {		
 		cqlWorkspaceView.getCqlGeneralInformationView().getSaveButton().addClickHandler(event -> saveCQLGeneralInformation());
 		cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().addKeyUpHandler(event -> resetMessagesAndSetPageDirty(true));
 		cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().addKeyUpHandler(event -> keyUpEvent());
@@ -204,12 +204,14 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	}
 	
 	private void saveCQLGeneralInformation() {
-		cqlWorkspaceView.resetMessageDisplay();
-		String libraryName = cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().getText().trim();
-		String comments = cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().getText().trim();
-		boolean isvalid = CQLGeneralInformationUtility.validateGeneralInformationSection(cqlWorkspaceView.getCqlGeneralInformationView(), messagePanel, libraryName, comments);
-		if(isvalid) {
-			saveCQLGeneralInformationAsync(libraryName, comments);
+		if(hasEditPermissions()) {
+			cqlWorkspaceView.resetMessageDisplay();
+			String libraryName = cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().getText().trim();
+			String comments = cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().getText().trim();
+			boolean isvalid = CQLGeneralInformationUtility.validateGeneralInformationSection(cqlWorkspaceView.getCqlGeneralInformationView(), messagePanel, libraryName, comments);
+			if(isvalid) {
+				saveCQLGeneralInformationAsync(libraryName, comments);
+			}		
 		}
 	}
 

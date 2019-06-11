@@ -298,13 +298,18 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 	
 	private void saveCQLGeneralInfo() {
-		resetMessagesAndSetPageDirty(false);
-		String libraryName = cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().getText().trim();
-		String commentContent = cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().getText().trim();
-		boolean isValid = CQLGeneralInformationUtility.validateGeneralInformationSection(cqlWorkspaceView.getCqlGeneralInformationView(), messagePanel, libraryName, commentContent);
-		if(isValid) {
-			saveCQLGeneralInformation(libraryName, commentContent);
+		
+		if(hasEditPermissions()) {
+			resetMessagesAndSetPageDirty(false);
+			String libraryName = cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().getText().trim();
+			String commentContent = cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().getText().trim();
+			boolean isValid = CQLGeneralInformationUtility.validateGeneralInformationSection(cqlWorkspaceView.getCqlGeneralInformationView(), messagePanel, libraryName, commentContent);
+			if(isValid) {
+				saveCQLGeneralInformation(libraryName, commentContent);
+			}
 		}
+		
+
 	}
 
 	private void addIncludeCQLLibraryHandlers() {

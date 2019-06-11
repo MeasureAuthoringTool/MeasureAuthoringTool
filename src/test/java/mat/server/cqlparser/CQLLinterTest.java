@@ -31,6 +31,35 @@ public class CQLLinterTest {
 		testWrongCommentsValuesetsBetweenModelDeclarationAndValuesets();
 	}
 	
+	@Test
+	public void testWarningForMissingURNOID() throws IOException {
+		testWarningForMissingURNOIDValueset();
+		testWarningForMissingURNORIDCodeSystem();
+	}
+	
+	private void testWarningForMissingURNOIDValueset() throws IOException {
+		File file = new File(getClass().getClassLoader().getResource("test-cql/testmissingurnoidvalueset.cql").getFile());
+		
+		String cql = new String(Files.readAllBytes(file.toPath()));
+		CQLLinterConfig config = new CQLLinterConfig("testmissingurnoidvalueset", "0.0.000", "QDM", "5.4");
+		config.setPreviousCQLModel(model);
+		CQLLinter linter = new CQLLinter(cql, config);
+		
+		assertEquals(1, linter.getWarningMessages().size());
+		assertEquals("The MAT has added \"urn:oid:\" to value set and/or codesystem declarations where necessary to ensure items are in the correct format.", linter.getWarningMessages().get(0));
+	}
+	
+	private void testWarningForMissingURNORIDCodeSystem() throws IOException {
+		File file = new File(getClass().getClassLoader().getResource("test-cql/testmissingurnoidcodesystem.cql").getFile());
+		
+		String cql = new String(Files.readAllBytes(file.toPath()));
+		CQLLinterConfig config = new CQLLinterConfig("testmissingurnoidcodesystem", "0.0.000", "QDM", "5.4");
+		config.setPreviousCQLModel(model);
+		CQLLinter linter = new CQLLinter(cql, config);
+		
+		assertEquals(true, linter.getWarningMessages().contains("The MAT has added \"urn:oid:\" to value set and/or codesystem declarations where necessary to ensure items are in the correct format."));
+	}
+	
 	private void testCommentsBetweenValueset() throws IOException {
 		File file = new File(getClass().getClassLoader().getResource("test-cql/testwrongcommentsbetweenvaluesets.cql").getFile());
 		
@@ -39,10 +68,8 @@ public class CQLLinterTest {
 		config.setPreviousCQLModel(model);
 		CQLLinter linter = new CQLLinter(cql, config);
 		
-		assertEquals(1, linter.getErrorMessages().size());
-		assertEquals("A comment was added in an incorrect location and could not be saved. "
-				+ "Comments are permitted between the CQL Library declaration and the Model declaration, "
-				+ "directly above a parameter or define statement, or within a parameter or define statement.", linter.getErrorMessages().get(0));
+		assertEquals(1, linter.getWarningMessages().size());
+		assertEquals("A comment was added in an incorrect location and could not be saved. Comments are permitted between the CQL Library declaration and the Model declaration, directly above a parameter, definition, or function.", linter.getWarningMessages().get(0));
 	}
 	
 	private void testWrongCommentsValuesetsBetweenModelDeclarationAndValuesets() throws IOException {

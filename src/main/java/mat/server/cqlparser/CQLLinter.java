@@ -42,7 +42,7 @@ import mat.shared.CQLError;
 
 public class CQLLinter extends cqlBaseListener {
 	
-	private static final String VALUESET_OID_PREFIX = "urn:oid:";
+	private static final String OID_PREFIX = "urn:oid:";
 	
 	private CQLLinterConfig config;
 	private List<String> errorMessages;
@@ -59,6 +59,7 @@ public class CQLLinter extends cqlBaseListener {
 	
 	private List<CQLCodeSystem> codeSystems;
 	private List<CQLCode> matchedCodes;
+
 	
 	public CQLLinter(String cql, CQLLinterConfig config) throws IOException {
 		this.config = config;
@@ -275,8 +276,16 @@ public class CQLLinter extends cqlBaseListener {
 	public void enterCodesystemDefinition(CodesystemDefinitionContext ctx) {
 		createErrorIfIdentifierIsUnquoted(ctx.identifier());
 		CQLCodeSystem codesystem = new CQLCodeSystem();
-		codesystem.setCodeSystem(CQLParserUtil.parseString(ctx.codesystemId().getText()));
-		codesystem.setCodeSystemName(CQLParserUtil.parseString(ctx.identifier().getText()));
+		String codeSystemId = CQLParserUtil.parseString(ctx.codesystemId().getText());
+		String codeSystemName = CQLParserUtil.parseString(ctx.identifier().getText());
+		
+		codesystem.setCodeSystem(codeSystemId);
+		codesystem.setCodeSystemName(codeSystemName);
+		
+		
+		if(!codeSystemId.startsWith(OID_PREFIX)) {
+			createWarningMessageForMissingOIDPrefix();
+		}
 		
 		if(ctx.versionSpecifier() != null) {
 			codesystem.setCodeSystemVersion(CQLParserUtil.parseString(ctx.versionSpecifier().getText()));
@@ -330,26 +339,38 @@ public class CQLLinter extends cqlBaseListener {
 	public void enterValuesetDefinition(ValuesetDefinitionContext ctx) {
 		createErrorIfIdentifierIsUnquoted(ctx.identifier());
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
-		String valuesetId = CQLParserUtil.parseString(ctx.valuesetId().getText()).replace(VALUESET_OID_PREFIX, "");
+		String valuesetId = CQLParserUtil.parseString(ctx.valuesetId().getText());
+		
+		System.out.println(valuesetId);
+		if(!valuesetId.startsWith(OID_PREFIX)) {
+			createWarningMessageForMissingOIDPrefix();
+		}
+		
+		String parsedValuesetId = valuesetId.replace(OID_PREFIX, "");
+		
 
 		// find all libraries that have a matching identifier, alias, and version
 		if(config.getPreviousCQLModel().getValueSetList() != null) {
 			List<CQLQualityDataSetDTO> potentialMatches = config.getPreviousCQLModel().getValueSetList().stream().filter(v -> (
 					identifier.equals(v.getName())
-					&& valuesetId.equals(v.getOid())
+					&& parsedValuesetId.equals(v.getOid())
 				)).collect(Collectors.toList());
 				
 				// if there were no matches in the previous model, or all matches do not have an id, then return an error. 
 				// not having an original code list name means that it has never been fetched through the valueset section.
 				// if there were no matches in the previous model, that also means it has never been fetched
 				if(potentialMatches.isEmpty() || potentialMatches.stream().filter(v -> StringUtils.isEmpty(v.getOriginalCodeListName())).count() > 0) {
-					createValuesetError(ctx, identifier, valuesetId);
+					createValuesetError(ctx, identifier, parsedValuesetId);
 				}
 		} else {
-			createValuesetError(ctx, identifier, valuesetId);
+			createValuesetError(ctx, identifier, parsedValuesetId);
 		}
 		
 		noCommentZoneEndLine = ctx.getStop().getLine();
+	}
+
+	private void createWarningMessageForMissingOIDPrefix() {
+		this.warningMessages.add("The MAT has added \"urn:oid:\" to value set and/or codesystem declarations where necessary to ensure items are in the correct format.");
 	}
 	
 	@Override

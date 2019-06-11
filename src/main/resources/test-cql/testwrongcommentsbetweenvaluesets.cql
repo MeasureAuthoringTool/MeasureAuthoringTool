@@ -1,6 +1,7 @@
 library testwrongcommentsbetweenvaluesets version '0.0.000'
 
 using QDM version '5.4'
+/* a comment should not go here */
 
 
 valueset "Ethnicity": 'urn:oid:2.16.840.1.114222.4.11.837' 

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -152,6 +153,8 @@ public class PersonalInformationPresenter implements MatPresenter {
 		boolean isFreeTextEditorEnabled();
 
 		CheckBox getFreeTextEditorCheckBox();
+		
+		public Panel getUserPreferencePanel();
 	}
 	
 	/** The submit on enter handler. */
@@ -338,6 +341,10 @@ public class PersonalInformationPresenter implements MatPresenter {
 		display.getOID().setWidth(getRequiredWidth(display.getOID().getValue().length()));
 		display.getFreeTextEditorCheckBox().setValue(model.isEnableFreeTextEditor());
 		display.getPassword().setValue("");
+		if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
+				.getLoggedInUserRole())){
+			display.getUserPreferencePanel().setVisible(false);
+		}
 	}
 	
 	private String getRequiredWidth(int length) {

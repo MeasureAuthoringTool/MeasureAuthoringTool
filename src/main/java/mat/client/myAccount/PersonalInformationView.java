@@ -60,6 +60,8 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	
 	private SaveContinueCancelButtonBar buttons = new SaveContinueCancelButtonBar("personalInfo");
 	
+	private Panel userPreferencePanel;
+	
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	private MessageAlert successMessages = new SuccessMessageAlert();
@@ -240,8 +242,8 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		
 		FieldSet rightFormSet = new FieldSet();
 		rightFormSet.getElement().setAttribute("style", "width:85%;float: left;");
-		
-		Panel userPreferencePanel = new Panel();
+
+		userPreferencePanel = new Panel();
 		userPreferencePanel.getElement().setAttribute("style", "margin-left: 20px;");
 		userPreferencePanel.setType(PanelType.PRIMARY);
 		PanelHeader header = new PanelHeader();
@@ -407,5 +409,14 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	@Override
 	public CheckBox getFreeTextEditorCheckBox() {
 		return freeTextEditor;
+	}
+	
+	@Override
+	public Panel getUserPreferencePanel() {
+		return userPreferencePanel;
+	}
+
+	public void setUserPreferencePanel(Panel userPreferencePanel) {
+		this.userPreferencePanel = userPreferencePanel;
 	}
 }

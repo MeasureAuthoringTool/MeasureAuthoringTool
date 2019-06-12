@@ -96,12 +96,11 @@ public class CQLDefinitionsView {
 		viewCQLEditorPanel.setSize("655px", "200px");
 		viewCQLEditorPanel.setCollabsable();
 		editorPanel.getPanelGroup().setMarginBottom(-10.0);
-
+		addNewButtonBar.getaddNewButton().setMarginRight(-13);
 
 		definitionVP.add(addNewButtonBar);
 		definitionVP.add(definitionNameGroup);
 		definitionVP.add(new SpacerWidget());
-		definitionVP.add(definitionContextGroup);
 		definitionVP.add(defineCommentGroup);
 		
 		definitionVP.add(new SpacerWidget());
@@ -134,14 +133,14 @@ public class CQLDefinitionsView {
 		FormLabel returnTypeLabel = new FormLabel();
 		returnTypeLabel.setText("Return Type");
 		returnTypeLabel.setTitle("Return Type");
-		returnTypeLabel.setMarginRight(42);
+		returnTypeLabel.setMarginRight(44);
 		returnTypeLabel.setId("returnType_Label");
 		returnTypeLabel.setFor("returnTypeTextArea_Id");
 		
 		returnTypeTextBox.setId("returnTypeTextArea_Id");
 		returnTypeTextBox.setTitle("Return Type of CQL Expression");
 		returnTypeTextBox.setReadOnly(true);
-		returnTypeTextBox.setWidth("550px");
+		returnTypeTextBox.setSize("550px", "32px");
 		setMarginInButtonBar();
 		
 		HorizontalPanel returnTypeHP = new HorizontalPanel();
@@ -163,7 +162,7 @@ public class CQLDefinitionsView {
 		defineCommentLabel.setFor("DefineCommentTextArea_Id");
 		
 		defineCommentTextArea.setId("DefineCommentTextArea_Id");
-		defineCommentTextArea.setSize("550px", "40px");
+		defineCommentTextArea.setSize("550px", "32px");
 		defineCommentTextArea.setText("");
 		defineCommentTextArea.setName("Definition Comment");
 		defineCommentTextArea.setTitle("Enter Comment");
@@ -183,7 +182,7 @@ public class CQLDefinitionsView {
 		FormLabel defineNameLabel = new FormLabel();
 		defineNameLabel.setText("Definition Name");
 		defineNameLabel.setTitle("Definition Name");
-		defineNameLabel.setMarginRight(15);
+		defineNameLabel.setMarginRight(14);
 		defineNameLabel.setId("DefinitionName_Label");
 		defineNameLabel.setFor("defineNameField");
 		
@@ -204,8 +203,8 @@ public class CQLDefinitionsView {
 	public void setMarginInButtonBar() {
 		defineButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:365px;");
 		defineButtonBar.getEraseButton().setMarginRight(5.00);
-		defineButtonBar.getInsertButton().setMarginRight(5.00);
-		defineButtonBar.getExpressionBuilderButton().setMarginLeft(-5.00);
+		defineButtonBar.getInsertButton().setMarginRight(-9.00);
+		defineButtonBar.getExpressionBuilderButton().setMarginLeft(8.00);
 		defineButtonBar.getSaveButton().setMarginLeft(480.00);
 	}
 

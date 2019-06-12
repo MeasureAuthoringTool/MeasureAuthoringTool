@@ -129,7 +129,6 @@ public class CQLFunctionsView {
 		
 		funcVP.add(addNewButtonBar);
 		funcVP.add(funcNameGroup);
-		funcVP.add(funcContextGroup);
 		funcVP.add(funcCommentGroup);
 		funcVP.add(returnTypeAndButtonPanelGroup);
 		funcVP.add(addNewArgumentButton);
@@ -171,7 +170,7 @@ public class CQLFunctionsView {
 		addNewArgumentButton.setId("Add_Argument_ID");
 		addNewArgumentButton.setIcon(IconType.PLUS);
 		addNewArgumentButton.setSize(ButtonSize.SMALL);
-		addNewArgumentButton.setMarginLeft(580.00);
+		addNewArgumentButton.setMarginLeft(600.00);
 		addNewArgumentButton.setMarginBottom(-10.00);
 		return addNewArgumentButton;
 	}
@@ -181,14 +180,14 @@ public class CQLFunctionsView {
 		FormLabel returnTypeLabel = new FormLabel();
 		returnTypeLabel.setText("Return Type");
 		returnTypeLabel.setTitle("Return Type");
-		returnTypeLabel.setMarginRight(42);
+		returnTypeLabel.setMarginRight(41);
 		returnTypeLabel.setId("returnType_Label");
 		returnTypeLabel.setFor("returnTypeTextArea_Id");
 
 		returnTypeTextBox.setId("returnTypeTextArea_Id");
 		returnTypeTextBox.setTitle("Return Type of CQL Expression");
 		returnTypeTextBox.setReadOnly(true);
-		returnTypeTextBox.setWidth("550px");
+		returnTypeTextBox.setSize("550px", "32px");
 
 		HorizontalPanel returnTypeHP = new HorizontalPanel();
 		returnTypeHP.add(returnTypeLabel);
@@ -208,7 +207,7 @@ public class CQLFunctionsView {
 		funcCommentLabel.setFor("FunctionCommentTextArea_Id");
 		
 		funcCommentTextArea.setId("FunctionCommentTextArea_Id");
-		funcCommentTextArea.setSize("550px", "40px");
+		funcCommentTextArea.setSize("550px", "32px");
 		funcCommentTextArea.setText("");
 		funcCommentTextArea.setName("Function Comment");
 		funcCommentTextArea.setTitle("Enter Comment");
@@ -228,7 +227,7 @@ public class CQLFunctionsView {
 		FormLabel functionNameLabel = new FormLabel();
 		functionNameLabel.setText("Function Name");
 		functionNameLabel.setTitle("Function Name");
-		functionNameLabel.setMarginRight(15);
+		functionNameLabel.setMarginRight(16);
 		functionNameLabel.setId("FunctionName_Label");
 		functionNameLabel.setFor("FunctionNameField");
 		

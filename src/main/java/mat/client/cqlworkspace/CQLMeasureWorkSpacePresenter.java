@@ -282,7 +282,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
 			incLibrary.setAliasName(aliasName);
 			incLibrary.setCqlLibraryId(cqlLibraryDataSetObject.getId());
-			String versionValue = cqlLibraryDataSetObject.getVersion().replace("v", EMPTY_STRING) + "." + cqlLibraryDataSetObject.getRevisionNumber();
+			String versionValue = cqlLibraryDataSetObject.getVersion().replace("v", EMPTY_STRING) + "." + "000";
 			incLibrary.setVersion(versionValue);
 			incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
 			incLibrary.setQdmVersion(cqlLibraryDataSetObject.getQdmVersion());

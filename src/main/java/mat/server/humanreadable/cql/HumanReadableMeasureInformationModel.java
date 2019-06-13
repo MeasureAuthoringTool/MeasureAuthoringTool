@@ -85,6 +85,7 @@ public class HumanReadableMeasureInformationModel {
 				componentModel.setMeasureSetId(r.getMeasureSetId());
 				componentModel.setName(r.getName());
 				componentModel.setVersion(r.getVersion());
+				this.componentMeasures.add(componentModel);
 			});
 			
 			this.compositeScoringMethod = compositeModel.getCompositeScoringMethod();

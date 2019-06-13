@@ -116,7 +116,7 @@ public class ManageMeasureDetailModelConversions {
 		result.setName(measure.getDescription());
 		result.setScoringType(measure.getMeasureScoring());
 		result.setShortName(measure.getaBBRName());
-		result.setVersion(measure.getVersion());
+		result.setVersion(MeasureUtility.formatVersionText("000", measure.getVersion()));
 		result.setFinalizedDate(measure.getFinalizedDate());
 		result.setDraft(measure.isDraft());
 		result.setMeasureSetId(measure.getMeasureSet().getId());

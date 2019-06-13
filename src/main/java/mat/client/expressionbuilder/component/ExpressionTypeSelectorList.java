@@ -85,8 +85,13 @@ public class ExpressionTypeSelectorList extends Composite {
 		panel.setWidth("100%");
 
 		panel.add(buildLabelPanel());
-				
-		resetOperatorsAndExpressions();
+
+		// filter available operators and expressions based on first expression type selected
+		if(!this.hasNoSelections) {
+			updateOperatorsAndExpressionsBasedOnFirstSelection();
+		} else {
+			resetOperatorsAndExpressions();
+		}
 		
 		for(int i = 0; i < this.model.getChildModels().size(); i++) {
 			IExpressionBuilderModel currentChildModel = this.model.getChildModels().get(i);
@@ -116,11 +121,6 @@ public class ExpressionTypeSelectorList extends Composite {
 		boolean cannotAddMoreFunctionality = areSingleSelectScreensOnly();
 		
 		if (canBuildExpressionTypeSelector(cannotAddMoreFunctionality)) {
-			// filter available operators and expressions based on first expression type selected
-			if(!this.hasNoSelections) {
-				updateOperatorsAndExpressionsBasedOnFirstSelection();
-			}
-			
 			boolean canAddAnother = hasNoSelections || canOnlyMakeOneSelection || cannotAddMoreFunctionality;
 
 			selector = new ExpressionTypeSelector(availableExpressionTypes, availableOperatorTypes, availableAliases, buildButtonObserver, canAddAnother, this.parentModal);		

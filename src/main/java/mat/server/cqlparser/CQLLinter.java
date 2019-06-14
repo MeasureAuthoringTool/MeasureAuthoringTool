@@ -27,6 +27,7 @@ import org.cqframework.cql.gen.cqlParser.ConceptDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ExpressionDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.FunctionDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.IdentifierContext;
+import org.cqframework.cql.gen.cqlParser.ContextDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.IncludeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.LibraryDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ParameterDefinitionContext;
@@ -340,8 +341,6 @@ public class CQLLinter extends cqlBaseListener {
 		createErrorIfIdentifierIsUnquoted(ctx.identifier());
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
 		String valuesetId = CQLParserUtil.parseString(ctx.valuesetId().getText());
-		
-		System.out.println(valuesetId);
 		if(!valuesetId.startsWith(OID_PREFIX)) {
 			createWarningMessageForMissingOIDPrefix();
 		}
@@ -376,6 +375,13 @@ public class CQLLinter extends cqlBaseListener {
 	@Override
 	public void enterConceptDefinition(ConceptDefinitionContext ctx) {
 		noCommentZoneEndLine = ctx.getStop().getLine();
+	}
+	
+	@Override
+	public void enterContextDefinition(ContextDefinitionContext ctx) {
+		if(!"Patient".equals(CQLParserUtil.parseString(ctx.identifier().getText()))) {
+			this.warningMessages.add("The MAT only supports expressions with a context of patient. All expressions have been placed under context patient.");
+		}
 	}
 
 	private void createValuesetError(ValuesetDefinitionContext ctx, String identifier, String oid) {

@@ -273,11 +273,6 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	}
 	
 	@Override
-	public void enterContextDefinition(ContextDefinitionContext ctx) {
-		currentContext = ctx.identifier().getText();
-	}
-	
-	@Override
 	public void enterParameterDefinition(ParameterDefinitionContext ctx) {
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
 		String comment = getExpressionComment(ctx).trim();		

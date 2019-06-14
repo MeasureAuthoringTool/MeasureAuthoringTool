@@ -171,7 +171,8 @@ public class ExpressionTypeUtil {
 		availableExpressionTypes.addAll(getAvailableExpressionsCQLType(type));
 
 		availableExpressionTypes.removeIf(exp -> exp.equals(ExpressionType.DEFINITION) && getDefinitionList(type).isEmpty() && getIncludesDefinitionList(type).isEmpty());	
-		availableExpressionTypes.removeIf(exp -> exp.equals(ExpressionType.FUNCTION) && getFunctionList(type).isEmpty() && getIncludesFunctionList(type).isEmpty());
+		availableExpressionTypes.removeIf(exp -> exp.equals(ExpressionType.FUNCTION) && getFunctionList(type).isEmpty() && getIncludesFunctionList(type).isEmpty() 
+				&& getPreDefinedFunctionsBasedOnReturnType(type).isEmpty());
 		availableExpressionTypes.removeIf(exp -> exp.equals(ExpressionType.PARAMETER) && getParameterList(type).isEmpty() && getIncludesParameterList(type).isEmpty());
 		
 		return availableExpressionTypes;

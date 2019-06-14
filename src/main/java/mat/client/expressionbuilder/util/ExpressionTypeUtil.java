@@ -91,7 +91,7 @@ public class ExpressionTypeUtil {
 		if (isFilterable(type)) {
 			signatures.removeIf(func -> !getCQLTypeBasedOnReturnType(func.getReturnType()).equals(type));
 		}
-		return signatures.stream().map(s -> s.getName()).collect(Collectors.toList());
+		return signatures.stream().map(s -> s.getName()).distinct().collect(Collectors.toList());
 	}
 	
 	public static List<CQLIdentifierObject> getDefinitionsBasedOnReturnType(CQLType type) {

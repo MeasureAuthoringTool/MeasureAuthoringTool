@@ -920,6 +920,17 @@
 		"documentation": "The First operator returns the first element in a list."
 	},
 	{
+		"name": "Floor",
+		"returnType": "Integer",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "Decimal"
+			}
+		],
+		"documentation": "The Floor operator returns the first integer less than or equal to the argument."
+	},
+	{
 		"name": "GeometricMean",
 		"returnType": "Decimal",
 		"arguments": [

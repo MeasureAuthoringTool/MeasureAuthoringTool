@@ -425,7 +425,7 @@ public class CQLLinter extends cqlBaseListener {
 	
 	private String createMissingCodeErrorMessage() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("The following code(s) does not exist in the Codes section of the MAT: ");
+		builder.append("The following Code(s) does not exist in the Codes section of the MAT: ");
 		builder.append(String.join(", ", this.missingCodes));
 		builder.append(". Please navigate to the Codes section and add the code(s) there to correct the error.");
 		return builder.toString();

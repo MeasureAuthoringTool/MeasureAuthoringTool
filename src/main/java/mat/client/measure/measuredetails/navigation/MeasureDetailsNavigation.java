@@ -23,6 +23,7 @@ import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MeasureDetailsConstants.PopulationItems;
 
 public class MeasureDetailsNavigation {
+	private static final String RATIO = "ratio";
 	private FlowPanel mainPanel = new FlowPanel();
 	private Map<MatDetailItem, MeasureDetailsAnchorListItem> menuItemMap;
 	private MeasureDetailsObserver observer;
@@ -71,7 +72,7 @@ public class MeasureDetailsNavigation {
 				if(applicableScoringType.equalsIgnoreCase(scoringType)) {
 					
 					// don't add measure observation for ratio && patient based measures
-					if(populationDetail.equals(PopulationItems.MEASURE_OBSERVATIONS) && this.isPatientBased && this.scoringType.equalsIgnoreCase("ratio")) {
+					if(populationDetail.equals(PopulationItems.MEASURE_OBSERVATIONS) && this.isPatientBased && this.scoringType.equalsIgnoreCase(RATIO)) {
 						continue; 
 					}
 					
@@ -106,7 +107,8 @@ public class MeasureDetailsNavigation {
 			} else {
 				anchorListItem = new MeasureDetailsAnchorListItem(measureDetail.abbreviatedName());
 				//if not a composite measure skip the component menu item
-				if(measureDetail == MeasureDetailsItems.COMPONENT_MEASURES && !isComposite) {
+				if((measureDetail == MeasureDetailsItems.COMPONENT_MEASURES && !isComposite) || 
+						(measureDetail == MeasureDetailsItems.STRATIFICATION && RATIO.equalsIgnoreCase(this.scoringType))) {
 					continue;
 				}
 				navPills.add(anchorListItem);

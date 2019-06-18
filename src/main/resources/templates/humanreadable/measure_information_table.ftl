@@ -133,16 +133,16 @@
 				</td>
 			</tr>
 		</#if>
-		
-		<tr>
-			<td style="background-color:#656565; width:20%"><span class="td_label">Stratification</span></td>
-			<td style="width:80%" colspan="3">
-      			<div style="width:660px;overflow-x:hidden;overflow-y:auto">
-       				<pre>${model.measureInformation.stratification!""}</pre>
-       			</div>
-  			</td>
-		</tr>
-		
+		<#if model.measureInformation.measureScoring?lower_case != "ratio" && model.measureInformation.qdmVersion < 5.5 >
+			<tr>
+				<td style="background-color:#656565; width:20%"><span class="td_label">Stratification</span></td>
+				<td style="width:80%" colspan="3">
+	      			<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	       				<pre>${model.measureInformation.stratification!""}</pre>
+	       			</div>
+	  			</td>
+			</tr>
+		</#if>
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Risk Adjustment</span></td>
 	     	<td style="width:80%" colspan="3">

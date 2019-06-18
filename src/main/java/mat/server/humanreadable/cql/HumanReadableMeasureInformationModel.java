@@ -9,6 +9,7 @@ import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 
 public class HumanReadableMeasureInformationModel {
+	private double qdmVersion;
 	private String ecqmTitle; 
 	private String ecqmIdentifier;
 	private String ecqmVersionNumber; 
@@ -56,6 +57,7 @@ public class HumanReadableMeasureInformationModel {
 	}
 	
 	public HumanReadableMeasureInformationModel(ManageMeasureDetailModel model) {
+		this.qdmVersion = Double.parseDouble(model.getQdmVersion());
 		this.ecqmTitle = model.getName();
 		this.ecqmIdentifier = model.geteMeasureId() == 0 ? "" : model.geteMeasureId() + "";		
 		this.ecqmVersionNumber = model.getFormattedVersion().replace("Draft based on", "").replace("v", "").trim();
@@ -445,6 +447,14 @@ public class HumanReadableMeasureInformationModel {
 
 	public void setPatientBased(boolean patientBased) {
 		this.patientBased = patientBased;
+	}
+
+	public double getQdmVersion() {
+		return qdmVersion;
+	}
+
+	public void setQdmVersion(double qdmVersion) {
+		this.qdmVersion = qdmVersion;
 	} 
 	
 	

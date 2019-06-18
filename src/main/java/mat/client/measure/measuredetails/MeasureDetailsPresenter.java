@@ -48,6 +48,7 @@ import mat.shared.measure.measuredetails.models.MeasureStewardDeveloperModel;
 import mat.shared.measure.measuredetails.models.NumeratorExclusionsModel;
 import mat.shared.measure.measuredetails.models.NumeratorModel;
 import mat.shared.measure.measuredetails.models.ReferencesModel;
+import mat.shared.measure.measuredetails.models.StratificationModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.shared.measure.measuredetails.validate.GeneralInformationValidator;
 
@@ -512,6 +513,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				measureDetailsModel.setMeasurePopulationModel(new MeasurePopulationModel());
 				measureDetailsModel.setMeasurePopulationExclusionsModel(new MeasurePopulationExclusionsModel());
 				measureDetailsModel.setDenominatorExceptionsModel(new DenominatorExceptionsModel());
+				measureDetailsModel.setStratificationModel(new StratificationModel());
 				break;
 			default:
 				break;

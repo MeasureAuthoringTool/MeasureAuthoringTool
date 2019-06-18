@@ -10,7 +10,6 @@ import mat.model.BaseModel;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
-import mat.server.util.MeasureUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 

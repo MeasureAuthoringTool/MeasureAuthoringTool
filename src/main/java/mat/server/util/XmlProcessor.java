@@ -635,7 +635,7 @@ public class XmlProcessor {
 		// Create stratifications node
 		Node measureStratificationsNode = findNode(originalDoc,
 				XPATH_MEASURE_STRATIFICATIONS);
-		if (measureStratificationsNode == null) {
+		if (measureStratificationsNode == null && !RATIO.equalsIgnoreCase(scoringType)) {
 			String stratificationsNodeName = "strata";
 			String clauseDisplayName = "Stratum";
 			Element stratificationElement = createTemplateNode(
@@ -668,6 +668,11 @@ public class XmlProcessor {
 				measureElement.insertBefore(stratificationElement,
 						populationsNode.getNextSibling());
 			}
+		} else if (measureStratificationsNode != null && RATIO.equalsIgnoreCase(scoringType)) {
+			Node measureNode = measureStratificationsNode.getParentNode();
+			Element measureElement = (Element) measureNode;
+			
+			measureElement.removeChild(measureStratificationsNode);
 		}
 		// Create supplementalDataElements node
 		releaseVersion = releaseVersion.replaceAll("Draft ", "").trim();

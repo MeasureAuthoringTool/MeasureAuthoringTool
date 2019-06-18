@@ -1601,7 +1601,6 @@ public class ExportSimpleXML {
 			list.add("numerator");
 			list.add("numeratorExclusions");
 			list.add("measureObservation");
-			list.add("stratum");
 		}
 		return list;
 	}

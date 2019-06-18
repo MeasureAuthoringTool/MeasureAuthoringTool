@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.NodeList;
 
 import mat.client.clause.clauseworkspace.model.CQLCellTreeNode;
 import mat.client.clause.clauseworkspace.model.CQLCellTreeNodeImpl;
@@ -33,12 +32,6 @@ public class RatioTreeBuildingStrategy implements PopulationTreeBuilderStrategy{
 		parentchilds.add(firstLevelChild);
 		populationsNode.setParent(parentNode);
 		populationsNode.setOpen(true);
-		
-		CQLCellTreeNode stratificationNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, PopulationWorkSpaceConstants.MASTER_ROOT_NODE_STRATA);
-		stratificationNode.setLabel(PopulationWorkSpaceConstants.get(PopulationWorkSpaceConstants.MASTER_ROOT_NODE_STRATA));
-		parentchilds.add(stratificationNode.getChilds().get(0));
-		stratificationNode.setParent(parentNode);
-		stratificationNode.setOpen(true);
 		
 		if (!isPatientBased) {
 			CQLCellTreeNode moNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, PopulationWorkSpaceConstants.ROOT_NODE_MEASURE_OBSERVATIONS);

@@ -70,7 +70,6 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
-import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.GenericResult;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
@@ -158,7 +157,6 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
-import mat.shared.UUIDUtilClient;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
@@ -4872,14 +4870,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	private void lintAndAddToResult(String measureId, SaveUpdateCQLResult result) {
 		Measure measure = measureDAO.find(measureId);
-		CQLLinterConfig config = new CQLLinterConfig(result.getCqlModel().getLibraryName(),
-				MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
-				QDMUtil.QDM_MODEL_IDENTIFIER, measure.getQdmVersion());
-		config.setPreviousCQLModel(result.getCqlModel());
+		if (measure.isDraft()) {
+			CQLLinterConfig config = new CQLLinterConfig(result.getCqlModel().getLibraryName(),
+					MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
+					QDMUtil.QDM_MODEL_IDENTIFIER, measure.getQdmVersion());
+			config.setPreviousCQLModel(result.getCqlModel());
 
-		CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
-		result.getLinterErrors().addAll(linter.getErrors());
-		result.getLinterErrorMessages().addAll(linter.getErrorMessages());
+			CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
+			result.getLinterErrors().addAll(linter.getErrors());
+			result.getLinterErrorMessages().addAll(linter.getErrorMessages());
+		} else {
+			result.getCqlErrors().clear();
+			result.getLibraryNameErrorsMap().clear();
+			result.getLibraryNameWarningsMap().clear();
+		}
 	}
 
 	@Override

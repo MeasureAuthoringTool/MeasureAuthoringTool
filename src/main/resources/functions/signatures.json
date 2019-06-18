@@ -931,6 +931,66 @@
 		"documentation": "The GeometricMean operator returns the geometric mean of the non-null elements in the source."
 	},
 	{
+		"name": "HighBoundary",
+		"returnType": "Decimal",
+		"arguments": [
+			{
+				"name": "input",
+				"returnType": "Decimal"
+			},
+			{
+				"name": "precision",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The HighBoundary function returns the greatest possible value of the input to the specified precision."
+	},
+	{
+		"name": "HighBoundary",
+		"returnType": "Date",
+		"arguments": [
+			{
+				"name": "input",
+				"returnType": "Date"
+			},
+			{
+				"name": "precision",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The HighBoundary function returns the greatest possible value of the input to the specified precision."
+	},
+	{
+		"name": "HighBoundary",
+		"returnType": "DateTime",
+		"arguments": [
+			{
+				"name": "input",
+				"returnType": "DateTime"
+			},
+			{
+				"name": "precision",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The HighBoundary function returns the greatest possible value of the input to the specified precision."
+	},
+	{
+		"name": "HighBoundary",
+		"returnType": "Time",
+		"arguments": [
+			{
+				"name": "input",
+				"returnType": "Time"
+			},
+			{
+				"name": "precision",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The HighBoundary function returns the greatest possible value of the input to the specified precision."
+	},
+	{
 		"name": "IndexOf",
 		"returnType": "Integer",
 		"arguments": [

@@ -2,6 +2,7 @@ package mat.server.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cqframework.cql.cql2elm.CqlTranslatorException;
+import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.OperandDef;
 import org.w3c.dom.Document;
@@ -615,6 +617,11 @@ public class CQLUtil {
 		Map<String, List<CQLError>> libraryNameErrorsMap = new HashMap<>(); 
 		Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>(); 
 
+
+		if(cqlToELM.getErrors().isEmpty()) {
+			validateMeasurementPeriodReturnType(cqlToELM, parentLibraryName, errors, libraryNameErrorsMap);
+		}
+		
 		for (CqlTranslatorException cte : cqlToELM.getErrors()) {
 			setCQLErrors(parentLibraryName, errors, libraryNameErrorsMap, cte);
 		}
@@ -623,12 +630,30 @@ public class CQLUtil {
 		for (CqlTranslatorException cte : cqlToELM.getWarnings()) {
 			setCQLErrors(parentLibraryName, warnings, libraryNameWarningsMap, cte);
 		}
-				
+						
 		parsedCQL.setCqlModel(cqlModel);
 		parsedCQL.setCqlErrors(errors);
 		parsedCQL.setCqlWarnings(warnings);
 		parsedCQL.setLibraryNameErrorsMap(libraryNameErrorsMap);
 		parsedCQL.setLibraryNameWarningsMap(libraryNameWarningsMap);
+	}
+
+	private static void validateMeasurementPeriodReturnType(CQLtoELM cqlToELM, String libraryName, List<CQLError> errors, Map<String, List<CQLError>> libraryNameErrorsMap) {
+		if(!"interval<System.DateTime>".equals(cqlToELM.getExpressionReturnType("Measurement Period"))) {
+			TrackBack trackback = cqlToELM.getTrackBackMap().get("Measurement Period");
+			if(trackback != null) {
+				CQLError error = new CQLError();
+				error.setStartErrorInLine(trackback.getStartLine());
+				error.setErrorInLine(trackback.getStartLine());
+				error.setErrorAtOffeset(trackback.getStartChar());
+				error.setEndErrorInLine(trackback.getEndLine());
+				error.setEndErrorAtOffset(trackback.getEndChar());
+				error.setErrorMessage("A Parameter titled \"Measurement Period\" must return an Interval<DateTime>");
+				error.setSeverity(CqlTranslatorException.ErrorSeverity.Error.toString());
+				libraryNameErrorsMap.put(libraryName, Arrays.asList(error));
+				errors.add(error);
+			}
+		}
 	}
 
 	private static void setCQLErrors(String parentLibraryName, List<CQLError> errors, Map<String, List<CQLError>> libraryToErrorsMap, CqlTranslatorException cte) {

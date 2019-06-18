@@ -1551,6 +1551,50 @@
 		"documentation": "The PositionOf operator returns the 0-based index of the given pattern in the given string. If the pattern is not found, the result is -1."
 	},
 	{
+		"name": "Precision",
+		"returnType": "Integer",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Decimal>"
+			}
+		],
+		"documentation": "The Precision function returns the number of digits of precision in the input value."
+	},
+	{
+		"name": "Precision",
+		"returnType": "Integer",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Date>"
+			}
+		],
+		"documentation": "The Precision function returns the number of digits of precision in the input value."
+	},
+	{
+		"name": "Precision",
+		"returnType": "Integer",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<DateTime>"
+			}
+		],
+		"documentation": "The Precision function returns the number of digits of precision in the input value."
+	},
+	{
+		"name": "Precision",
+		"returnType": "Integer",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<Time>"
+			}
+		],
+		"documentation": "The Precision function returns the number of digits of precision in the input value."
+	},
+	{
 		"name": "Product",
 		"returnType": "Integer",
 		"arguments": [

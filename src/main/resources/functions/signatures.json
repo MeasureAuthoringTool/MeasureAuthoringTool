@@ -1302,6 +1302,66 @@
 		"documentation": "The Log operator computes the logarithm of its first argument, using the second argument as the base."
 	},
 	{
+		"name": "LowBoundary",
+		"returnType": "Decimal",
+		"arguments": [
+			{
+				"name": "input",
+				"returnType": "Decimal"
+			},
+			{
+				"name": "precision",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The LowBoundary function returns the least possible value of the input to the specified precision."
+	},
+	{
+		"name": "LowBoundary",
+		"returnType": "Date",
+		"arguments": [
+			{
+				"name": "input",
+				"returnType": "Date"
+			},
+			{
+				"name": "precision",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The LowBoundary function returns the least possible value of the input to the specified precision."
+	},
+	{
+		"name": "LowBoundary",
+		"returnType": "DateTime",
+		"arguments": [
+			{
+				"name": "input",
+				"returnType": "DateTime"
+			},
+			{
+				"name": "precision",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The LowBoundary function returns the least possible value of the input to the specified precision."
+	},
+	{
+		"name": "LowBoundary",
+		"returnType": "Time",
+		"arguments": [
+			{
+				"name": "input",
+				"returnType": "Time"
+			},
+			{
+				"name": "precision",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The LowBoundary function returns the least possible value of the input to the specified precision."
+	},
+	{
 		"name": "Lower",
 		"returnType": "String",
 		"arguments": [

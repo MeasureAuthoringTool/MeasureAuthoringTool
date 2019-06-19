@@ -25,7 +25,7 @@ import mat.shared.UUIDUtilClient;
 
 public class HQMFDataCriteriaElementGenerator implements Generator {
 	
-	private static final String DATA_CRITERIA_EXTENSION = "2018-05-01";
+	private static final String DATA_CRITERIA_EXTENSION = "2019-05-01";
 	
 	/** The occurrence map. */
 	private Map<String, Node> occurrenceMap = new HashMap<String, Node>();

@@ -22,7 +22,6 @@ import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.gen.cqlParser.CodeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.CodesystemDefinitionContext;
-import org.cqframework.cql.gen.cqlParser.ContextDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ExpressionDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.FunctionDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.IncludeDefinitionContext;

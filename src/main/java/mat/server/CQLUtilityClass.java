@@ -489,13 +489,12 @@ public final class CQLUtilityClass {
 					codeSysStr = codeSysStr + ":" + codes.getCodeSystemVersion().replaceAll(" ", "%20");	
 				}
 
-				if(!codesAlreadyUsed.contains(codesStr)){
-					sb.append("code ").append(codesStr).append(" ").append("from ");
-					sb.append('"').append(codeSysStr).append('"').append(" ");
-					sb.append("display " +"'" +escapeSingleQuote(codes)+"'");
-					sb.append("\n");
-					codesAlreadyUsed.add(codesStr);
-				}
+				sb.append("code ").append(codesStr).append(" ").append("from ");
+				sb.append('"').append(codeSysStr).append('"').append(" ");
+				sb.append("display " +"'" +escapeSingleQuote(codes)+"'");
+				sb.append("\n");
+				codesAlreadyUsed.add(codesStr);
+				
 			}
 
 			sb.append("\n");

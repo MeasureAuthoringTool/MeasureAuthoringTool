@@ -1557,8 +1557,7 @@ public class CQLServiceImpl implements CQLService {
 			} else {
 				qds.setUuid(UUID.randomUUID().toString());
 				qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-				
-				if(isDuplicate(valueSetTransferObject, true)) {
+				if(model.getValueSetList().stream().filter(v -> v.getName().equals(qds.getName())).count() > 0) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
 					result.setCqlQualityDataSetDTO(qds);
@@ -1628,12 +1627,14 @@ public class CQLServiceImpl implements CQLService {
 			List<CQLCode> previousMatchingCodes = model.getCodeList().stream().filter(c -> (
 					c.getDisplayName().equals(appliedCode.getDisplayName()) 
 					&& c.getCodeOID().equals(appliedCode.getCodeOID())
+					&& c.getCodeName().equals(appliedCode.getCodeName())
 					&& StringUtils.isEmpty(c.getCodeIdentifier()))
 					).collect(Collectors.toList());
 
 			if(!previousMatchingCodes.isEmpty()) {
 				previousMatchingCodes.forEach(c -> {
 					c.setSuffix(appliedCode.getSuffix());
+					c.setCodeOID(appliedCode.getCodeOID());
 					c.setCodeIdentifier(appliedCode.getCodeIdentifier());
 					c.setCodeSystemOID(appliedCode.getCodeSystemOID());
 					c.setCodeSystemName(appliedCode.getCodeSystemName());

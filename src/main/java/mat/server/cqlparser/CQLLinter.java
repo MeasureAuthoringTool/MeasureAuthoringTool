@@ -425,9 +425,9 @@ public class CQLLinter extends cqlBaseListener {
 	
 	private String createMissingCodeErrorMessage() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("The following Code(s) does not exist in the Codes section of the MAT: ");
+		builder.append("The following code(s) does not exist in the Codes section of the MAT: ");
 		builder.append(String.join(", ", this.missingCodes));
-		builder.append(". Please navigate to the Codes section and add the code(s) there to correct the error.");
+		builder.append(". Please navigate to the Codes section and ensure the codes there match what is in the CQL Library Editor.");
 		return builder.toString();
 	}
 	
@@ -435,7 +435,7 @@ public class CQLLinter extends cqlBaseListener {
 		StringBuilder builder = new StringBuilder();
 		builder.append("The following value set(s) does not exist in the Value Set section of the MAT: ");
 		builder.append(String.join(", ", this.missingValuesets));
-		builder.append(".  Please navigate to the Value Set section and add the value set(s) there to correct the error.");
+		builder.append(". Please navigate to the Value Set section and ensure the value sets there match what is in the CQL Library Editor.");
 		return builder.toString();
 	}
 	

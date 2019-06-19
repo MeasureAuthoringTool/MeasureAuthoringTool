@@ -157,7 +157,7 @@ public class BuildButtonObserver {
 			relationshipModal.show();
 		}
 		
-		else if(QueryFinderHelper.findAliasNames(this.parentModel).contains(expression)) {
+		else if(QueryFinderHelper.findAliasNames(this.parentModel).stream().anyMatch(a -> a.getAlias().equals(expression))) {
 			AliasModel model = new AliasModel(this.parentModel);
 			model.setAlias(expression);
 			this.parentModel.appendExpression(model);

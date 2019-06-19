@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
+import mat.client.expressionbuilder.model.AliasModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.FunctionModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
@@ -99,7 +100,7 @@ public class FunctionArgumentsBuilderModal extends SubExpressionBuilderModal {
 			
 			
 			// Aliases should not appear for List<QDM> elements
-			List<String> availableAliasNames = new ArrayList<>();
+			List<AliasModel> availableAliasNames = new ArrayList<>();
 			if(!returnType.startsWith("List") && !returnType.startsWith("list")) {
 				availableAliasNames.addAll(QueryFinderHelper.findAliasNames(this.functionModel));
 			}

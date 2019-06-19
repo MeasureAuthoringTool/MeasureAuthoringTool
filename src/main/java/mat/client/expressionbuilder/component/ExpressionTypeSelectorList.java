@@ -19,6 +19,7 @@ import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.modal.ExpressionBuilderModal;
 import mat.client.expressionbuilder.modal.InAppHelpModal;
+import mat.client.expressionbuilder.model.AliasModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.IExpressionBuilderModel;
 import mat.client.expressionbuilder.model.ModelAndOperatorTypeUtil;
@@ -34,7 +35,7 @@ public class ExpressionTypeSelectorList extends Composite {
 	private List<ExpressionType> originalAvailableExpressionTypes; 
 	private List<OperatorType> availableOperatorTypes;
 	private List<OperatorType> originalAvailableOperatorTypes;
-	private List<String> availableAliases;
+	private List<AliasModel> availableAliases;
 
 	private BuildButtonObserver buildButtonObserver;
 	private boolean hasNoSelections;
@@ -51,7 +52,7 @@ public class ExpressionTypeSelectorList extends Composite {
 	
 	public ExpressionTypeSelectorList(
 			List<ExpressionType> availableExpressionTypes, List<OperatorType> availableOperatorTypes,
-			List<String> availableAliases, 
+			List<AliasModel> availableAliases, 
 			BuildButtonObserver observer, ExpressionBuilderModel model, String labelText, ExpressionBuilderModal parentModal) {
 		this.availableExpressionTypes = availableExpressionTypes;
 		this.originalAvailableExpressionTypes = new ArrayList<>(availableExpressionTypes);

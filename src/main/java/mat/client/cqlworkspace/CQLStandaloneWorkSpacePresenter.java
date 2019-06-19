@@ -1073,12 +1073,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 						while (iterator.hasNext()) {
 							CQLQualityDataSetDTO dataSetDTO = iterator.next();
 							if (dataSetDTO.getUuid() != null) {
-								if (dataSetDTO.getUuid().equals(cqlWorkspaceView.getValueSetView()
-										.getSelectedElementToRemove().getUuid())) {
-									if (!dataSetDTO.isUsed()) {
-										deleteValueSet(dataSetDTO.getId());
-										iterator.remove();
-									}
+								if (dataSetDTO.getUuid().equals(cqlWorkspaceView.getValueSetView().getSelectedElementToRemove().getUuid())) {
+									deleteValueSet(dataSetDTO.getId());
 								}
 							}
 						}

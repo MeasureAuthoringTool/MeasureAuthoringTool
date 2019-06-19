@@ -1371,10 +1371,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 							CQLQualityDataSetDTO dataSetDTO = iterator.next();
 							if (dataSetDTO.getUuid() != null) {
 								if (dataSetDTO.getUuid().equals(cqlWorkspaceView.getValueSetView().getSelectedElementToRemove().getUuid())) {
-									if (!dataSetDTO.isUsed()) {
-										deleteValueSet(dataSetDTO.getId());
-										iterator.remove();
-									}
+									deleteValueSet(dataSetDTO.getId());
+									iterator.remove();
 								}
 							}
 						}

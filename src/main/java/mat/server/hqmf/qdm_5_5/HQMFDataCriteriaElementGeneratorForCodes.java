@@ -182,7 +182,8 @@ public class HQMFDataCriteriaElementGeneratorForCodes implements Generator {
 		String oidValue = templateNode.getAttributes().getNamedItem(OID).getNodeValue();
 		String classCodeValue = templateNode.getAttributes().getNamedItem(CLASS).getNodeValue();
 		String moodValue = templateNode.getAttributes().getNamedItem(MOOD).getNodeValue();
-		String statusValue = templateNode.getAttributes().getNamedItem("status").getNodeValue();
+		Node statusNode= templateNode.getAttributes().getNamedItem("status");
+		String statusValue = statusNode != null ? statusNode.getNodeValue() : "";
 		String rootValue = qdmNode.getAttributes().getNamedItem(ID).getNodeValue();
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 
@@ -245,9 +246,12 @@ public class HQMFDataCriteriaElementGeneratorForCodes implements Generator {
 		Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TITLE);
 		titleElem.setAttribute(VALUE, dataType);
 		dataCriteriaElem.appendChild(titleElem);
-		Element statusCodeElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement("statusCode");
-		statusCodeElem.setAttribute(CODE, statusValue);
-		dataCriteriaElem.appendChild(statusCodeElem);
+		if(StringUtils.isNotEmpty(statusValue)) {
+			Element statusCodeElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement("statusCode");
+			statusCodeElem.setAttribute(CODE, statusValue);
+			dataCriteriaElem.appendChild(statusCodeElem);
+		}
+		
 		// Add value tag in entry element.
 		String addValueSetElement = templateNode.getAttributes().getNamedItem("addValueTag").getNodeValue();
 		if ("true".equalsIgnoreCase(addValueSetElement)) {

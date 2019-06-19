@@ -206,8 +206,10 @@
 
 	<!-- Communication Datatypes -->
   	<template oid="2.16.840.1.113883.10.20.28.4.132" class="ACT" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" addValueSetInCode="false" addCodeTag="false" specificExtensionValue="2019-05-01" includeSubTemplate="communication" addValueTag="false">communication, not performed</template>
-  	 <template oid="2.16.840.1.113883.10.20.28.4.132" class="ACT" mood="EVN" status="COMPLETED" addValueSetInCode="false" addCodeTag="false" specificExtensionValue="2019-05-01" includeSubTemplate="communication" addValueTag="false">communication, performed</template>
-  	
+ 	<template oid="2.16.840.1.113883.10.20.28.4.132" class="ACT" mood="EVN" status="COMPLETED" addValueSetInCode="false" addCodeTag="false" specificExtensionValue="2019-05-01" includeSubTemplate="communication" addValueTag="false">communication, performed</template>
+  	  	
+ 	<!-- Related Person -->
+  	<template oid="2.16.840.1.113883.10.20.28.4.141" class="OBS" mood="EVN" valueType="CD" addValueTag="true" addCodeTag="true" code="444018008" codeSystem="2.16.840.1.113883.6.96" specificExtensionValue="2019-05-01">related person</template>
   
 	<subtemplates>
 		<communication changeAttribute="value,item,id">

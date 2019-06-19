@@ -235,9 +235,10 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	@Override
 	public void enterValuesetDefinition(ValuesetDefinitionContext ctx) {
 		
-		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
-		String valuesetId = CQLParserUtil.parseString(ctx.valuesetId().getText()).replace(VALUESET_OID_PREFIX, "");
+		String identifier = ctx.identifier() != null ? CQLParserUtil.parseString(ctx.identifier().getText()) : "";
+		String valuesetId =  ctx.valuesetId() != null ? CQLParserUtil.parseString(ctx.valuesetId().getText()).replace(VALUESET_OID_PREFIX, "") : "";
 		
+	
 		String version = "";
 		if(ctx.versionSpecifier() != null) {
 			version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());

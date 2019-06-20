@@ -192,6 +192,14 @@ public class CQLServiceImpl implements CQLService {
 				parsedResult.setFailureReason(SaveUpdateCQLResult.SYNTAX_ERRORS);				
 				return parsedResult;
 			}
+			
+			if (CQLValidationUtil.doesModelHaveDuplicateIdentifierOrIdentifierAsKeyword(reversedEngineeredCQLModel)) {
+				parsedResult.setXml(xml); // retain the old xml if there are duplicate identifiers (essentially not saving)
+				parsedResult.setCqlString(cql);
+				parsedResult.setSuccess(false);
+				parsedResult.setFailureReason(SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD);				
+				return parsedResult;
+			}
 
 			if (parsedResult.getCqlErrors().isEmpty()) {
 				CQLFormatter formatter = new CQLFormatter();

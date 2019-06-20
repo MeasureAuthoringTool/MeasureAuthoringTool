@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.xml.bind.annotation.XmlElement;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.shared.CQLIdentifierObject;

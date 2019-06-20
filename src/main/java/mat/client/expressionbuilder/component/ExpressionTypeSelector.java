@@ -50,7 +50,7 @@ public class ExpressionTypeSelector extends Composite {
 		this.availableExpressionTypes.sort(Comparator.comparing(ExpressionType::getDisplayName));
 		this.availableOperatorTypes = availableOperatorTypes;
 		this.availableAliases = availableAliases;
-		Collections.sort(this.availableAliases, Comparator.comparing(AliasModel::getAlias));
+		Collections.sort(this.availableAliases, Comparator.comparing(AliasModel::getAlias, String.CASE_INSENSITIVE_ORDER));
 		this.observer = observer;
 		this.isFirstSelection = isFirstSelection;
 		

@@ -329,7 +329,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	
 	@Override
 	public void enterFunctionDefinition(FunctionDefinitionContext ctx) {
-		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());	
+		String identifier = CQLParserUtil.parseString(ctx.identifierOrFunctionIdentifier().getText());	
 		String logic = getDefinitionAndFunctionLogic(ctx).trim();
 		String comment = getExpressionComment(ctx).trim();
 		
@@ -338,8 +338,8 @@ public class ReverseEngineerListener extends cqlBaseListener {
 			for(OperandDefinitionContext operand : ctx.operandDefinition()) {
 				String name = "";
 				String type = "";
-				if(operand.identifier() != null) {
-					name = operand.identifier().getText();
+				if(operand.referentialIdentifier() != null) {
+					name = operand.referentialIdentifier().getText();
 				}
 				
 				if(operand.typeSpecifier() != null) {

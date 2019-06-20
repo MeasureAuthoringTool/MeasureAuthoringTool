@@ -24,10 +24,10 @@ import org.cqframework.cql.gen.cqlParser.AccessModifierContext;
 import org.cqframework.cql.gen.cqlParser.CodeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.CodesystemDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ConceptDefinitionContext;
+import org.cqframework.cql.gen.cqlParser.ContextDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ExpressionDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.FunctionDefinitionContext;
-import org.cqframework.cql.gen.cqlParser.IdentifierContext;
-import org.cqframework.cql.gen.cqlParser.ContextDefinitionContext;
+import org.cqframework.cql.gen.cqlParser.IdentifierOrFunctionIdentifierContext;
 import org.cqframework.cql.gen.cqlParser.IncludeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.LibraryDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ParameterDefinitionContext;
@@ -196,8 +196,8 @@ public class CQLLinter extends cqlBaseListener {
 		return false;
 	}
 	
-	private void createErrorIfIdentifierIsUnquoted(IdentifierContext ctx) {
-		if(!ctx.getText().startsWith("\"") || !ctx.getText().endsWith("\"")) {
+	private void createErrorIfIdentifierIsUnquoted(String ctx) {
+		if(!ctx.startsWith("\"") || !ctx.endsWith("\"")) {
 			this.warningMessages.add("The MAT requires quotation marks around definition, parameter, function, value set, code, and codesystem names. We have added quotation marks in the CQL file where they were missing.");
 		}
 	}
@@ -275,7 +275,7 @@ public class CQLLinter extends cqlBaseListener {
 	
 	@Override
 	public void enterCodesystemDefinition(CodesystemDefinitionContext ctx) {
-		createErrorIfIdentifierIsUnquoted(ctx.identifier());
+		createErrorIfIdentifierIsUnquoted(ctx.identifier().getText());
 		CQLCodeSystem codesystem = new CQLCodeSystem();
 		String codeSystemId = CQLParserUtil.parseString(ctx.codesystemId().getText());
 		String codeSystemName = CQLParserUtil.parseString(ctx.identifier().getText());
@@ -299,7 +299,7 @@ public class CQLLinter extends cqlBaseListener {
 	
 	@Override
 	public void enterCodeDefinition(CodeDefinitionContext ctx) {
-		createErrorIfIdentifierIsUnquoted(ctx.identifier());
+		createErrorIfIdentifierIsUnquoted(ctx.identifier().getText());
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
 		String codeId = CQLParserUtil.parseString(ctx.codeId().getText());	
 		
@@ -338,7 +338,7 @@ public class CQLLinter extends cqlBaseListener {
 
 	@Override
 	public void enterValuesetDefinition(ValuesetDefinitionContext ctx) {
-		createErrorIfIdentifierIsUnquoted(ctx.identifier());
+		createErrorIfIdentifierIsUnquoted(ctx.identifier().getText());
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
 		String valuesetId = CQLParserUtil.parseString(ctx.valuesetId().getText());
 		if(!valuesetId.startsWith(OID_PREFIX)) {
@@ -392,17 +392,17 @@ public class CQLLinter extends cqlBaseListener {
 	
 	@Override
 	public void enterParameterDefinition(ParameterDefinitionContext ctx) {
-		createErrorIfIdentifierIsUnquoted(ctx.identifier());
+		createErrorIfIdentifierIsUnquoted(ctx.identifier().getText());
 	}
 	
 	@Override
 	public void enterExpressionDefinition(ExpressionDefinitionContext ctx) {
-		createErrorIfIdentifierIsUnquoted(ctx.identifier());
+		createErrorIfIdentifierIsUnquoted(ctx.identifier().getText());
 	}
 	
 	@Override
 	public void enterFunctionDefinition(FunctionDefinitionContext ctx) {
-		createErrorIfIdentifierIsUnquoted(ctx.identifier());
+		createErrorIfIdentifierIsUnquoted(ctx.identifierOrFunctionIdentifier().getText());
 
 	}
 	

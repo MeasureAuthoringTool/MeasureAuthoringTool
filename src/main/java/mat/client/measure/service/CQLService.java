@@ -9,6 +9,9 @@ import org.exolab.castor.xml.ValidationException;
 
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
+import mat.model.clause.CQLLibrary;
+import mat.model.clause.CQLLibraryHistory;
+import mat.model.clause.Measure;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
@@ -192,4 +195,6 @@ public interface CQLService {
 	String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) throws MarshalException, ValidationException, IOException, MappingException;
 
 	SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config);
+	
+	List<CQLLibraryHistory> createCQLLibraryHistory(List<CQLLibraryHistory> exsistingLibraryHistory, String CQLLibraryString, CQLLibrary cqlLibrary, Measure measure);
 }

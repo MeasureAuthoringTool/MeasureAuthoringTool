@@ -23,6 +23,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import mat.model.clause.CQLLibraryHistory;
 import mat.model.clause.MeasureShare;
 import mat.model.cql.CQLLibraryShare;
 
@@ -83,6 +84,8 @@ public class User  {
 	private Set<UserPasswordHistory> passwordHistory;
 	
 	private UserPreference userPreference;
+	
+	private List<CQLLibraryHistory> cqlLibraryHistory;
 	
 	
 	@Id
@@ -403,6 +406,15 @@ public class User  {
 		}
 		
 		this.userPreference = userPreference;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "lastModifiedBy", cascade=CascadeType.ALL)
+	public List<CQLLibraryHistory> getCqlLibraryHistory() {
+		return cqlLibraryHistory;
+	}
+
+	public void setCqlLibraryHistory(List<CQLLibraryHistory> cqlLibraryHistory) {
+		this.cqlLibraryHistory = cqlLibraryHistory;
 	}
 
 }

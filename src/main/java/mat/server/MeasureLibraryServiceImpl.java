@@ -78,6 +78,7 @@ import mat.dao.DataTypeDAO;
 import mat.dao.MeasureTypeDAO;
 import mat.dao.OrganizationDAO;
 import mat.dao.RecentMSRActivityLogDAO;
+import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.clause.MeasureDAO;
@@ -104,6 +105,7 @@ import mat.model.RecentMSRActivityLog;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
+import mat.model.clause.CQLLibraryHistory;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureDetails;
@@ -247,7 +249,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private CQLLibraryService cqlLibraryService;
 	
 	@Autowired
-	private MeasureExportDAO measureExportDAO; 
+	private MeasureExportDAO measureExportDAO;
+	
+	@Autowired
+	private UserDAO userDAO;
 
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 
@@ -4930,7 +4935,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 			}
 			
-			measurePackageService.saveMeasureXml(measureXMLModel);			
+			measurePackageService.saveMeasureXml(measureXMLModel);
+			
+			if(result.isSuccess()) {
+				measure.setCqlLibraryHistory(cqlService.createCQLLibraryHistory(measure.getCqlLibraryHistory(), result.getCqlString(), null, measure));
+				
+				measureDAO.save(measure);
+			}
 		}
 		
 		return result;

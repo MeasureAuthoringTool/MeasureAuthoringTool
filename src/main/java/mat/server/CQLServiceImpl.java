@@ -43,11 +43,16 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
 import mat.client.shared.MatException;
+import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
+import mat.model.User;
+import mat.model.clause.CQLLibrary;
+import mat.model.clause.CQLLibraryHistory;
+import mat.model.clause.Measure;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeWrapper;
@@ -96,9 +101,17 @@ public class CQLServiceImpl implements CQLService {
 
 	private static final int COMMENTS_MAX_LENGTH = 2500;
 
-	@Autowired private CQLLibraryDAO cqlLibraryDAO;
-	@Autowired private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
-	@Autowired private MeasurePackageService measurePackageService;
+	@Autowired 
+	private CQLLibraryDAO cqlLibraryDAO;
+	
+	@Autowired 
+	private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
+	
+	@Autowired 
+	private MeasurePackageService measurePackageService;
+	
+	@Autowired
+	private UserDAO userDAO;
 
 	/** The cql supplemental definition XML string. */
 	private String cqlSupplementalDefinitionXMLString =
@@ -212,6 +225,23 @@ public class CQLServiceImpl implements CQLService {
 			return null;
 		}
 
+	}
+	
+	public List<CQLLibraryHistory> createCQLLibraryHistory(List<CQLLibraryHistory> existingLibraryHistoryList, String CQLLibraryString, CQLLibrary cqlLibrary, Measure measure){
+		CQLLibraryHistory cqlLibraryHistory = new CQLLibraryHistory();
+		
+		cqlLibraryHistory.setMeasure(measure);
+		cqlLibraryHistory.setCqlLibrary(cqlLibrary);
+		cqlLibraryHistory.setFreeTextEditorUsed(true);
+		cqlLibraryHistory.setCqlLibraryString(CQLLibraryString);
+		String loggedinUserId = LoggedInUserUtil.getLoggedInUser();
+		User user = userDAO.find(loggedinUserId);
+		cqlLibraryHistory.setLastModifiedBy(user);
+		if(existingLibraryHistoryList == null) {
+			existingLibraryHistoryList = new ArrayList<>();
+		}
+		existingLibraryHistoryList.add(cqlLibraryHistory);
+		return existingLibraryHistoryList;
 	}
 
 	private String marshallCQLModel(CQLModel cqlModel)

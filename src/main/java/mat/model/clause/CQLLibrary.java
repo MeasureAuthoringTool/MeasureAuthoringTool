@@ -7,8 +7,10 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -65,6 +67,8 @@ public class CQLLibrary {
 	private Set<CQLLibraryShare> shares;
 
 	private Blob cqlXML;
+	
+	private List<CQLLibraryHistory> cqlLibraryHistory;
 
 	@Id
 	@GeneratedValue(generator="uuid")
@@ -304,6 +308,15 @@ public class CQLLibrary {
 
 	public void setLastModifiedBy(User lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "cqlLibrary", cascade=CascadeType.ALL)
+	public List<CQLLibraryHistory> getCqlLibraryHistory() {
+		return cqlLibraryHistory;
+	}
+
+	public void setCqlLibraryHistory(List<CQLLibraryHistory> cqlLibraryHistory) {
+		this.cqlLibraryHistory = cqlLibraryHistory;
 	}
 
 }

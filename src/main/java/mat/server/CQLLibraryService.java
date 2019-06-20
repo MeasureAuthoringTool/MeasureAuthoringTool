@@ -54,6 +54,7 @@ import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibraryExport;
+import mat.model.clause.CQLLibraryHistory;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
@@ -861,6 +862,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			config.setPreviousCQLModel(previousModel);
 
 			result = cqlService.saveCQLFile(cqlXml, cql, config);
+			
+			if(result.isSuccess()) {			
+				cqlLibrary.setCqlLibraryHistory(cqlService.createCQLLibraryHistory(cqlLibrary.getCqlLibraryHistory(), result.getCqlString(), cqlLibrary, null));
+			}
 
 			cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 			cqlLibraryDAO.save(cqlLibrary);			

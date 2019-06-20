@@ -91,6 +91,8 @@ public class Measure {
 	private Timestamp measurementPeriodFrom;
 	
 	private Timestamp measurementPeriodTo;
+	
+	private List<CQLLibraryHistory> cqlLibraryHistory;
 
 	@Column(name = "VALUE_SET_DATE", length = 19)
 	public Timestamp getValueSetDate() {
@@ -440,5 +442,14 @@ public class Measure {
 
 	public void setMeasurementPeriodTo(Timestamp measurementPeriodTo) {
 		this.measurementPeriodTo = measurementPeriodTo;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "measure", cascade=CascadeType.ALL)
+	public List<CQLLibraryHistory> getCqlLibraryHistory() {
+		return cqlLibraryHistory;
+	}
+
+	public void setCqlLibraryHistory(List<CQLLibraryHistory> cqlLibraryHistory) {
+		this.cqlLibraryHistory = cqlLibraryHistory;
 	}
 }

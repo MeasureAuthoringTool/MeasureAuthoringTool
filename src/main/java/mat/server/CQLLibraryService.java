@@ -14,8 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -1092,14 +1092,18 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	}
 
 	private void lintAndAddToResult(SaveUpdateCQLResult result, CQLLibrary cqlLibrary) {
-		CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(), 
-				MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()),
-				QDMUtil.QDM_MODEL_IDENTIFIER, cqlLibrary.getQdmVersion());
-		config.setPreviousCQLModel(result.getCqlModel());
-		
-		CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
-		result.getLinterErrors().addAll(linter.getErrors());
-		result.getLinterErrorMessages().addAll(linter.getErrorMessages());
+		if (cqlLibrary.isDraft()) {
+			CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(), 
+					MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()),
+					QDMUtil.QDM_MODEL_IDENTIFIER, cqlLibrary.getQdmVersion());
+			config.setPreviousCQLModel(result.getCqlModel());
+			
+			CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
+			result.getLinterErrors().addAll(linter.getErrors());
+			result.getLinterErrorMessages().addAll(linter.getErrorMessages());
+		} else {
+			result.resetErrors();
+		}
 	}
 
 	public void updateCQLLibraryFamily(List<CQLLibraryDataSetObject> detailModelList) {

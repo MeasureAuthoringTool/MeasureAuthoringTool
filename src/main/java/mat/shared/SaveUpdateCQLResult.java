@@ -465,4 +465,10 @@ public class SaveUpdateCQLResult extends GenericResult{
 		this.linterWarningMessages = linterWarningMessages;
 	}
 	
+	public void resetErrors() {
+		getCqlErrors().clear();
+		getLibraryNameErrorsMap().clear();
+		getLibraryNameWarningsMap().clear();
+	}
+	
 }

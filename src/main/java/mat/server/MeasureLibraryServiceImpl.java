@@ -4880,9 +4880,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result.getLinterErrors().addAll(linter.getErrors());
 			result.getLinterErrorMessages().addAll(linter.getErrorMessages());
 		} else {
-			result.getCqlErrors().clear();
-			result.getLibraryNameErrorsMap().clear();
-			result.getLibraryNameWarningsMap().clear();
+			result.resetErrors();
 		}
 	}
 

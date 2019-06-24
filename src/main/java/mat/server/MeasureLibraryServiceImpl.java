@@ -105,7 +105,6 @@ import mat.model.RecentMSRActivityLog;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
-import mat.model.clause.CQLLibraryHistory;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureDetails;
@@ -5339,11 +5338,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			for (CQLValueSetTransferObject transferObject : transferObjectList) {
 				SaveUpdateCQLResult result = null;
 				transferObject.setAppliedQDMList(appliedValueSetList);
-				if (transferObject.getCqlQualityDataSetDTO().getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
-					result = getCqlService().saveCQLValueset(measureXMLModel.getMeasureId(), transferObject);
-				} else {
-					result = getCqlService().saveCQLValueset(measureXMLModel.getMeasureId(), transferObject);
-				}
+				result = getCqlService().saveCQLValueset(measureXMLModel.getXml(), transferObject);
 
 				if (result.isSuccess()) {
 					XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());		
@@ -5426,22 +5421,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					transferObject.setId(measureId);
 					SaveUpdateCQLResult codeResult = getCqlService().saveCQLCodes(xmlModel.getXml(), transferObject);
 					if (codeResult != null && codeResult.isSuccess()) {
-						String newXml = appendCQLCodesInMeasureXml(codeResult, measureId, xmlModel);
-						if (StringUtils.isNotBlank(newXml)) {
-							xmlModel.setXml(newXml);
+						XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+						processor.replaceNode(codeResult.getXml(), "cqlLookUp", "measure");
+						xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 
-							CQLCodeSystem codeSystem = new CQLCodeSystem();
-							codeSystem.setCodeSystem(cqlCode.getCodeSystemOID());
-							codeSystem.setCodeSystemName(cqlCode.getCodeSystemName());
-							codeSystem.setCodeSystemVersion(cqlCode.getCodeSystemVersion());
-							SaveUpdateCQLResult updatedResult = getCqlService().saveCQLCodeSystem(xmlModel.getXml(),
-									codeSystem);
-							if (updatedResult.isSuccess()) {
-								newXml = appendCQLCodeSystemInMeasureXml(updatedResult, measureId, xmlModel);
-								if (StringUtils.isNotBlank(newXml)) {
-									xmlModel.setXml(newXml);
-								}
-							}
+						CQLCodeSystem codeSystem = new CQLCodeSystem();
+						codeSystem.setCodeSystem(cqlCode.getCodeSystemOID());
+						codeSystem.setCodeSystemName(cqlCode.getCodeSystemName());
+						codeSystem.setCodeSystemVersion(cqlCode.getCodeSystemVersion());
+						
+						SaveUpdateCQLResult updatedResult = getCqlService().saveCQLCodeSystem(xmlModel.getXml(), codeSystem);
+						if (updatedResult.isSuccess()) {
+							processor.replaceNode(updatedResult.getXml(), "cqlLookUp", "measure");
+							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 						}
 						result.setXml(xmlModel.getXml());
 					} else {
@@ -5454,8 +5446,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					CQLCodeWrapper wrapper = getCqlService().getCQLCodes(xmlModel.getXml());
 					if (wrapper != null && !wrapper.getCqlCodeList().isEmpty()) {
 						result.setCqlCodeList(wrapper.getCqlCodeList());
-						CQLModel cqlModel = cqlService.getCQLData(result.getXml())
-								.getCqlModel();
+						CQLModel cqlModel = cqlService.getCQLData(result.getXml()).getCqlModel();
 						result.setCqlModel(cqlModel);
 					}
 				}

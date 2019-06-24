@@ -301,7 +301,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 			builder.append(t.getText());
 		}
 		
-		return builder.toString().replaceFirst(PARAMETER, "").replace(identifier, "").trim();
+		return builder.toString().replaceFirst(PARAMETER, "").replace("public", "").replace("private", "").replace(identifier, "").trim();
 	}
 	
 	@Override
@@ -395,18 +395,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	private String getDefinitionAndFunctionLogic(ParserRuleContext ctx) {
 		return getTextBetweenTokenIndexes(ctx.start.getTokenIndex(), findExpressionLogicStop(ctx));
 	}
-	
-	private String getLogicForParameter(int startTokenIndex, int stopTokenIndex, String identifier) {
-		List<Token> ts = tokens.getTokens(startTokenIndex, stopTokenIndex);
 		
-		StringBuilder builder = new StringBuilder();
-		for(Token t : ts) {
-			builder.append(t.getText());
-		}
-		
-		return builder.toString().replaceFirst(PARAMETER, "").replace(identifier, "").trim();
-	}
-	
 	private String getTextBetweenTokenIndexes(int startTokenIndex, int stopTokenIndex) {
 		List<Token> ts = tokens.getTokens(startTokenIndex, stopTokenIndex);
 		

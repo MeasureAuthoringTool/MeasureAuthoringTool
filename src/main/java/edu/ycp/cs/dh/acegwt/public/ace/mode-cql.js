@@ -33,9 +33,10 @@ var SqlHighlightRules = function() {
 	    		"Abs|AgeInDays|AgeInDaysAt|AgeInHours|AgeInHoursAt|AgeInMinutes|AgeInMinutesAt|AgeInMonths|AgeInMonthsAt|AgeInSeconds|" +
 	    		"AgeInSecondsAt|AgeInWeeks|AgeInWeeksAt|AgeInYears|AgeInYearsAt|AllTrue|AnyTrue|Avg|CalculateAgeInDays|CalculateAgeInDaysAt|CalculateAgeInHours|" +
 	    		"CalculateAgeInHoursAt|CalculateAgeInMinutes|CalculateAgeInMinutesAt|CalculateAgeInMonths|CalculateAgeInMonthsAt|CalculateAgeInSeconds|" +
-	    		"CalculateAgeInSecondsAt|CalculateAgeInWeeks|CalculateAgeInWeeksAt|CalculateAgeInYears|CalculateAgeInYearsAt|Ceiling|Coalesce|Count|DateTime|Exp|First|Floor|GeometricMean|IndexOf|Last|" +
-	    		"Length|Ln|Log|Max|Median|Min|Mode|Now|PopulationStdDev|PopulationVariance|Product|Round|StdDev|Sum|Time|TimeOfDay|ToDate|Today|" +
-	    		"Truncate|Variance"
+	    		"CalculateAgeInSecondsAt|CalculateAgeInWeeks|CalculateAgeInWeeksAt|CalculateAgeInYears|CalculateAgeInYearsAt|Ceiling|Coalesce|Count|DateTime|Exp|First|" +
+	    		"Floor|GeometricMean|HighBoundary|IndexOf|Last|Length|Ln|Log|LowBoundary|Lower|Matches|Max|Median|Min|Mode|Now|PopulationStdDev|PopulationVariance|Precision|" +
+	    		"Product|Round|Size|Skip|Split|SplitOnMatches|StartsWith|StdDev|Substring|Sum|Tail|Take|Time|TimeOfDay|ToBoolean|ToDate|ToDateTime|ToDecimal|ToInteger|ToQuantity|" +
+	    		"ToString|ToTime|Today|Truncate|Upper|Variance|"
 	    );
 
 	    var builtinConstants = (

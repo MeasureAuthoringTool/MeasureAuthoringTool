@@ -128,11 +128,15 @@
 		<function>First()</function>
 		<function>Floor()</function>
 		<function>GeometricMean()</function>
+		<function>HighBoundary()</function>
 		<function>IndexOf()</function>
 		<function>Last()</function>
 		<function>Length()</function>
 		<function>Ln()</function>
 		<function>Log()</function>
+		<function>LowBoundary()</function>
+		<function>Lower()</function>
+		<function>Matches()</function>
 		<function>Max()</function>
 		<function>Median()</function>
 		<function>Min()</function>
@@ -140,15 +144,32 @@
 		<function>Now()</function>
 		<function>PopulationStdDev()</function>
 		<function>PopulationVariance()</function>
+		<function>Precision()</function>
 		<function>Product()</function>
 		<function>Round()</function>
+		<function>Size()</function>
+		<function>Skip()</function>
+		<function>Split()</function>
+		<function>SplitOnMatches()</function>
+		<function>StartsWith()</function>
 		<function>StdDev()</function>
+		<function>Substring()</function>
 		<function>Sum()</function>
+		<function>Tail()</function>
+		<function>Take()</function>
 		<function>Time()</function>
 		<function>TimeOfDay()</function>
+		<function>ToBoolean()</function>
 		<function>ToDate()</function>
+		<function>ToDateTime()</function>
 		<function>Today()</function>
+		<function>ToDecimal()</function>
+		<function>ToInteger()</function>
+		<function>ToQuantity()</function>
+		<function>ToString()</function>
+		<function>ToTime()</function>
 		<function>Truncate()</function>
+		<function>Upper()</function>
 		<function>Variance()</function>
 	</functions>
 

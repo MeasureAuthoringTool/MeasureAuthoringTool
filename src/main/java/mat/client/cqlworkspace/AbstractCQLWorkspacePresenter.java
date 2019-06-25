@@ -1120,7 +1120,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected void eraseDefinition() {
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
 		if ((cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().getText() != null)) {
-			cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().setText(EMPTY_STRING);
+			cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().replace(EMPTY_STRING);
 			setIsPageDirty(true);
 		}
 	}
@@ -1128,7 +1128,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected void eraseFunction() {
 		cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().clearAnnotations();
 		if ((cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().getText() != null)) {
-			cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().setText(EMPTY_STRING);
+			cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().replace(EMPTY_STRING);
 			setIsPageDirty(true);
 		}
 	}
@@ -1136,7 +1136,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected void eraseParameter() {
 		cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().clearAnnotations();
 		if (cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().getText() != null) {
-			cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().setText(EMPTY_STRING);
+			cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().replace(EMPTY_STRING);
 			setIsPageDirty(true);
 		}
 	}

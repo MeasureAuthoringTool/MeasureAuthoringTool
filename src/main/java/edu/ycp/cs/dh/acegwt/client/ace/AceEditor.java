@@ -688,6 +688,15 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		editor.commands.removeCommand(command);
 	}-*/;
 	
+	public native void replace(String newString) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		var lastRow = editor.getSession().getLength();
+		var lastRowLength = editor.getSession().getRowLength(lastRow);
+		var Range = $wnd.ace.require('ace/range').Range;
+		var myRange = new Range(0, 0, lastRow, lastRowLength);
+		editor.getSession().replace(myRange , newString)
+	}-*/;
+	
 	/**
 	 * Construct java wrapper for registered Ace command.
 	 * @param command name of command

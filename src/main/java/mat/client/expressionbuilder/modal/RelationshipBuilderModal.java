@@ -6,6 +6,7 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.DescriptionData;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.NavPills;
@@ -15,19 +16,20 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.component.ViewCQLExpressionWidget;
+import mat.client.expressionbuilder.constant.ExpressionBuilderUserAssistText;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.RelationshipModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.OperatorTypeUtil;
-import mat.client.expressionbuilder.util.QueryFinderHelper;
 import mat.client.shared.SpacerWidget;
 import mat.shared.CQLModelValidator;
 
@@ -35,8 +37,8 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 
 	public static final String SOURCE = "Related Source";
 
-	private static final String CRITERIA = "Relationship Criteria";
-	private static final String REVIEW = "Review Relationship";
+	public static final String CRITERIA = "Relationship Criteria";
+	public static final String REVIEW = "Review Relationship";
 	private static final String EXIT_RELATIONSHIP = "Exit Relationship";
 	
 	private static final String STYLE = "style";
@@ -74,6 +76,9 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 	private VerticalPanel relationshipBuilderContentPanel;
 	
 	private String clause;
+	
+	private DescriptionData description;
+	private FocusPanel focusPanel;
 	
 	public RelationshipBuilderModal(ExpressionBuilderModal parent, ExpressionBuilderModel parentModel, ExpressionBuilderModel mainModel,
 			String selectedClause) {
@@ -133,7 +138,7 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(buttonPanel);
-		
+		buildLabel();
 		return mainPanel;
 	}
 	
@@ -268,7 +273,8 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private Widget buildSourceWidget() {
-		final VerticalPanel sourcePanel = new VerticalPanel();
+		VerticalPanel sourcePanel = buildFocusPanel();
+		
 		sourcePanel.setStyleName(SELECTORS_PANEL);
 		final List<ExpressionType> availableExpressionsForSouce = new ArrayList<>();
 		availableExpressionsForSouce.add(ExpressionType.RETRIEVE);
@@ -291,7 +297,8 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private Widget buildCriteriaWidget() {
-		final VerticalPanel filterPanel = new VerticalPanel();
+		VerticalPanel filterPanel = buildFocusPanel();
+		
 		filterPanel.setStyleName(SELECTORS_PANEL);
 		final List<ExpressionType> availableExpressionsForFilter = new ArrayList<>();
 		availableExpressionsForFilter.add(ExpressionType.COMPARISON);
@@ -314,12 +321,13 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private Widget buildReviewQueryWidget() {
-		final VerticalPanel filterPanel = new VerticalPanel();
-		filterPanel.setStyleName(SELECTORS_PANEL);
+		VerticalPanel viewPanel = buildFocusPanel();
+		
+		viewPanel.setStyleName(SELECTORS_PANEL);
 		final ViewCQLExpressionWidget cqlExpressionModal = new ViewCQLExpressionWidget();
 		cqlExpressionModal.setCQLDisplay(getMainModel().getCQL(""));
-		filterPanel.add(cqlExpressionModal);		
-		return filterPanel;
+		viewPanel.add(cqlExpressionModal);		
+		return viewPanel;
 	}
 	
 	private FormGroup buildAliasNameGroup() {
@@ -368,7 +376,33 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 	private void updateTitle(String text) {
 		setTitle(getExpressionBuilderParent().getModalTitle() + " > " + text);
 		setModalTitle(getExpressionBuilderParent().getModalTitle() + " > " + text);
+		setLabelText(ExpressionBuilderUserAssistText.getEnumByTitle(text).getValue());
 	}
+	
+	public void setLabelText(String label) {		
+		description.setText(label);
+		description.setTitle(label);
+	}
+	
+	private Widget buildLabel() {
+		description = new DescriptionData();
+		description.setStyleName("attr-Label");
+		description.setId("queryLabel");
+		return description;
+	}
+	
+	private VerticalPanel buildFocusPanel() {
+		VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.setStyleName(SELECTORS_PANEL);
+		
+		focusPanel = new FocusPanel(description);
+		
+		verticalPanel.add(focusPanel);
+		verticalPanel.add(new SpacerWidget());
+		
+		return verticalPanel;
+	}
+
 	
 	public String getClause() {
 		return clause;

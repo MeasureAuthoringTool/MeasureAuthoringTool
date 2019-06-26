@@ -62,7 +62,8 @@ public abstract class ExpressionBuilderModal extends Modal {
 		body.add(buildHelpBlock(""));
 		body.add(buildErrorAlert());
 		String exprName = title.substring(title.lastIndexOf('>') + 2);
-		if (!ExpressionType.QUERY.getDisplayName().equals(exprName) && ExpressionBuilderUserAssistText.isKeyPresent(exprName)) {
+		 if (!(ExpressionType.QUERY.getDisplayName().equals(exprName) || RelationshipBuilderModal.SOURCE.equals(exprName)) 
+					&& ExpressionBuilderUserAssistText.isKeyPresent(exprName)) {
 			body.add(buildLabel());
 			body.add(new SpacerWidget());
 			body.add(new SpacerWidget());

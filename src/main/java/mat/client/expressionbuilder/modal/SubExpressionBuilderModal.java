@@ -45,7 +45,9 @@ public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 			ExpressionBuilderModel mainModel) {
 		super(parent.getModalTitle() + " > " + title, parentModel, mainModel);
 		this.parent = parent;
-		if (!ExpressionType.QUERY.getDisplayName().equals(title) && ExpressionBuilderUserAssistText.isKeyPresent(title)) {
+		if (!ExpressionType.QUERY.getDisplayName().equals(title) 
+				&& !RelationshipBuilderModal.SOURCE.equals(title)
+				&& ExpressionBuilderUserAssistText.isKeyPresent(title)) {
 			setLabel(ExpressionBuilderUserAssistText.getEnumByTitle(title).getValue());
 		}
 		this.getFooter().add(buildFooter());

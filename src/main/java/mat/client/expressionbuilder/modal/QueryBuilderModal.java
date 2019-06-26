@@ -312,7 +312,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	}
 	
 	private Widget buildRelationshipWidget() {
-		VerticalPanel filterPanel = new VerticalPanel();
+		VerticalPanel filterPanel = buildFocusPanel();
 		
 		if (queryModel.getRelationship() != null && !queryModel.getRelationship().getChildModels().isEmpty()) {
 			ExpandCollapseCQLExpressionPanel expressionPanelGroup = new ExpandCollapseCQLExpressionPanel("Relationship", 
@@ -323,11 +323,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 			filterPanel.add(expressionPanelGroup);
 			filterPanel.setWidth("100%");
 			
-		} else {
-			
-			filterPanel.setStyleName(SELECTORS_PANEL);
-			filterPanel.setWidth("50%");
-			
+		} else {			
 			FormLabel label = new FormLabel();
 			label.setText(RELATIONSHIP_TEXT_LABEL);
 			label.setTitle(RELATIONSHIP_TEXT_LABEL);
@@ -343,7 +339,7 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 			
 			HorizontalPanel dropdownPanel = new HorizontalPanel();
 			dropdownPanel.add(availableExpressionsForRelationship);
-			dropdownPanel.setWidth("100%");
+			dropdownPanel.setWidth("50%");
 			dropdownPanel.add(buildBuildButton());
 
 			filterPanel.add(labelPanel);
@@ -439,7 +435,8 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 	
 	private Widget buildReviewQueryWidget() {
 		VerticalPanel reviewPanel = buildFocusPanel();
-		
+		reviewPanel.setStyleName(SELECTORS_PANEL);
+
 		ViewCQLExpressionWidget cqlExpressionModal = new ViewCQLExpressionWidget();
 		cqlExpressionModal.setCQLDisplay(this.getMainModel().getCQL(""));
 		reviewPanel.add(cqlExpressionModal);		

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mat.client.expressionbuilder.modal.QueryBuilderModal;
+import mat.client.expressionbuilder.modal.RelationshipBuilderModal;
 
 public enum ExpressionBuilderUserAssistText {
 
@@ -35,7 +36,13 @@ public enum ExpressionBuilderUserAssistText {
 	
 	QUERY_SOURCE(QueryBuilderModal.SOURCE, "When building a query you first need to designate what data you want to start with. This is your query source. This source also needs to have an alias assigned that will allow you refer back to the source within the rest of the query. For Example: [Encounter, Performed : \"Office Visit\"] visit."),
 	
-	QUERY_RELATIONSHIP(QueryBuilderModal.RELATIONSHIP, ""),
+	QUERY_RELATIONSHIP(QueryBuilderModal.RELATIONSHIP, "A relationship is a way to use a second source of data and show a specific correlation between the two sources. Use this screen to indicate if you want to include or exclude this second set of data from the first. Example: \"Face to Face Encounter During Measurement Period\" Encounter with [\"Diagnosis\": \"Heart Failure\"] HeartFailure"),
+
+	QUERY_RELATIONSHIP_REALTED_SOURCE(RelationshipBuilderModal.SOURCE, "The Related Source is where you designate the second set of data you are associating with your query source. Example: \"[\"Diagnosis\": \"Heart Failure\"] HeartFailure"),
+	
+	QUERY_RELATIONSHIP_RELATIONSHIP_CRITERIA(RelationshipBuilderModal.CRITERIA, "The Relationship Criteria is where you build an expression to show how your related source is associated to the query source. Example: \"such that HeartFailure.prevalencePeriod overlaps FaceToFaceEncounter.relevantPeriod\""),
+	
+	QUERY_RELATIONSHIP_RELATIONSHIP_REVIEW(RelationshipBuilderModal.REVIEW, "This screen gives you one last opportunity to review the relationship you have built before applying it into your query. Clicking on the Apply button will accept this relationship and place it into your query. Clicking on the Exit Relationship button here will cancel everything that has been built in this relationship and take you back to the Relationship screen in the query."),
 
 	QUERY_FILTER(QueryBuilderModal.FILTER, "The Filter statement (also known as the where statement) in the query is a way for you to narrow down the results returned from the source data. For Example: where visit.relevantPeriod starts during \"Measurement Period\"."),
 	

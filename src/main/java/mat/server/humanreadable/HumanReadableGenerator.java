@@ -57,6 +57,10 @@ public class HumanReadableGenerator {
 	private final String CQLDEFINITION = "cqldefinition";
 	
 	private static final Log logger = LogFactory.getLog(HumanReadableGenerator.class);
+	
+	private Map<String, Integer> populationCountMap = new HashMap<>();
+	private Map<String, Integer> popCountMultipleMap = new HashMap<>();
+	private Map<String, String> populationNameMap = new HashMap<>(); 
 
 	private static final String[] POPULATION_NAME_ARRAY = {MatConstants.INITIAL_POPULATION,
 			MatConstants.DENOMINATOR, MatConstants.DENOMINATOR_EXCLUSIONS, MatConstants.NUMERATOR,
@@ -461,6 +465,8 @@ public class HumanReadableGenerator {
 		
 		NodeList groupNodes = processor.findNodeList(processor.getOriginalDoc(), "/measure/measureGrouping/group");
 		for(int i = 0; i < groupNodes.getLength(); i++) {
+			populationCountMap.clear();
+			popCountMultipleMap.clear();
 			Node group = groupNodes.item(i);
 			
 			int populationCriteriaNumber = Integer.parseInt(group.getAttributes().getNamedItem("sequence").getNodeValue());
@@ -468,7 +474,14 @@ public class HumanReadableGenerator {
 			List<HumanReadablePopulationModel> populations = new ArrayList<>();
 			
 			NodeList populationNodes = group.getChildNodes();
-			for(int j = 0; j < populationNodes.getLength(); j++) {
+			int popCount = populationNodes.getLength();
+			for(int k = 0; k < popCount; k++) {
+				Node clauseNode = populationNodes.item(k);
+				String popType = clauseNode.getAttributes().getNamedItem("type").getNodeValue();
+				countSimilarPopulationsInGroup(popType, processor);
+			}
+			
+			for(int j = 0; j < popCount; j++) {
 				Node populationNode = populationNodes.item(j);
 				HumanReadablePopulationModel population = getPopulationCriteria(processor, populationNode);
 				populations.add(population);
@@ -486,7 +499,20 @@ public class HumanReadableGenerator {
 		groups.sort(Comparator.comparing(HumanReadablePopulationCriteriaModel::getSequence));
 		return groups; 
 	}
-	 
+	
+	private void countSimilarPopulationsInGroup(String popTyp, XmlProcessor processor) {
+		if (!populationCountMap.containsKey(popTyp)) {
+			String xPathString = "count(//clause[@type='" + popTyp + "'])";  
+			try {
+				int count = processor.getNodeCount(processor.getOriginalDoc(), xPathString);
+				populationCountMap.put(popTyp, count);
+			} catch (XPathExpressionException e) {
+				logger.debug("Exception in countPopulations : " + e);
+			}
+
+		}
+	}
+	
 	private List<HumanReadablePopulationModel> sortPopulations(List<HumanReadablePopulationModel> populations) {
 		List<HumanReadablePopulationModel> sortedPopulations = new ArrayList<>();  
 		
@@ -515,28 +541,25 @@ public class HumanReadableGenerator {
 		String name = "";
 		if (population != null) {
 			String type = population.getAttributes().getNamedItem("type").getNodeValue();
-			int numberOfPopulationsWithSameType = countSimilarPopulationsInGroup(type, population.getParentNode());
+			int numberOfPopulationsWithSameType = populationCountMap.get(type);
 			
 			// if there is only one of the population kind, then we only want to display the population name (without a number attached to it)
-			name = (numberOfPopulationsWithSameType == 1)? getPopulationNameByType(type) : population.getAttributes().getNamedItem("displayName").getNodeValue();
+			name = (numberOfPopulationsWithSameType == 1)? getPopulationNameByType(type) : getPopulationNameByTypeAndNum(type);
 		}
 		
 		return name; 
 	}
 	
-	private int countSimilarPopulationsInGroup(String type, Node node) {
-		int count = 0;
-		NodeList childClauses = node.getChildNodes();
-		if (childClauses != null) {
-			for (int i = 0; i < childClauses.getLength(); i++) {
-				Node clauseNode = childClauses.item(i);
-				String popType = clauseNode.getAttributes().getNamedItem("type").getNodeValue();
-				if (popType.equals(type)) {
-					count++;
-				}
-			}
+	private String getPopulationNameByTypeAndNum(String type) {
+		int total = populationCountMap.get(type);
+		int count = popCountMultipleMap.containsKey(type) ? popCountMultipleMap.get(type) : 0;
+		
+		if (total > count) {
+			count++; 
+			popCountMultipleMap.put(type, count);
 		}
-		return count;
+		
+		return getPopulationNameByType(type) + " " + count;
 	}
 	
 	private String getPopulationNameByType(String type) {
@@ -576,15 +599,18 @@ public class HumanReadableGenerator {
 		
 		if(populationNode.getAttributes().getNamedItem("associatedPopulationUUID") != null) {
 			String uuid = populationNode.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue();
-			associatedPopulationName = getPopulationNameByUUID(uuid, processor);
+			associatedPopulationName = populationNameMap.get(uuid);
 		}
 		
 		
 		if(populationNode.getAttributes().getNamedItem("isInGrouping") != null) {
 			isInGroup= Boolean.parseBoolean(populationNode.getAttributes().getNamedItem("isInGrouping").getNodeValue());
 		}
-				
-		String populationName = getPopulationNameByUUID(populationNode.getAttributes().getNamedItem("uuid").getNodeValue(), processor);
+		
+		String populationUUID = populationNode.getAttributes().getNamedItem("uuid").getNodeValue();
+		String populationName = getPopulationNameByUUID(populationUUID, processor);
+		populationNameMap.put(populationUUID, populationName);
+
 		String type = populationNode.getAttributes().getNamedItem("type").getNodeValue();
 		if(populationName.contains("Measure Observation")) {
 			
@@ -608,6 +634,7 @@ public class HumanReadableGenerator {
 
 				
 				if(aggregation != null) {
+					
 					logic = aggregation + " (\n  " + logic + "\n)"; // for measures, add in the aggregation
 				}
 			}
@@ -628,6 +655,7 @@ public class HumanReadableGenerator {
 			}
 		}
 		
+		populationNode.getAttributes().getNamedItem("displayName").setNodeValue(populationName);
 		HumanReadablePopulationModel population = new HumanReadablePopulationModel(populationName, logic, expressionName, expressionUUID, aggregation, associatedPopulationName, isInGroup, type);
 		return population;
 	}

@@ -2290,7 +2290,7 @@
 		"arguments": [
 			{
 				"name": "argument",
-				"returnType": "String"
+				"returnType": "List<String>"
 			},
 			{
 				"name": "number",

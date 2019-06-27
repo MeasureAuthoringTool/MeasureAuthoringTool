@@ -237,6 +237,7 @@ public class CQLDefinitionsView {
 	}
 	
 	public void resetAll() {
+		editorPanel= new CQLEditorPanel(DEFINITION, "CQL Expression Editor", false);
 		getDefineNameTxtArea().setText("");
 		getDefineAceEditor().setText("");
 		getViewCQLAceEditor().setText("");

@@ -57,6 +57,7 @@ public class CQLLibraryEditorView {
 	}
 	
 	public VerticalPanel buildView(boolean isEditable){
+		editorPanel = new CQLEditorPanel(CQL_LIBRARY_EDITOR_ID, "CQL Library Editor", false);
 		cqlLibraryEditorVP.clear();
 		cqlLibraryEditorVP.getElement().setId("cqlLibraryEditor_Id");
 		heading.addStyleName("leftAligned");
@@ -117,6 +118,7 @@ public class CQLLibraryEditorView {
 	}
 
 	public void resetAll() {
+		editorPanel = new CQLEditorPanel(CQL_LIBRARY_EDITOR_ID, "CQL Library Editor", false);
 		getCqlAceEditor().setText("");
 	}
 	

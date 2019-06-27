@@ -263,6 +263,7 @@ public class CQLFunctionsView {
 	}
 	
 	public void resetAll() {
+		editorPanel = new CQLEditorPanel(FUNCTION, "CQL Expression Editor", false);
 		getFuncNameTxtArea().setText("");
 		getFunctionBodyAceEditor().setText("");
 		getReturnTypeTextBox().setText("");

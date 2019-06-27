@@ -39,7 +39,7 @@ public class CQLParametersView {
 	private FormGroup parameterCommentGroup = new FormGroup();
 	private HTML heading = new HTML();
 	private InAppHelp inAppHelp = new InAppHelp("");
-	private CQLEditorPanel editorPanel = new CQLEditorPanel(PARAMETER, "CQL Expression Editor", true);
+	private CQLEditorPanel editorPanel = new CQLEditorPanel(PARAMETER, "CQL Expression Editor", false);
 	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("parameterViewCQL", "CQL Library Viewer", true);
 
 	
@@ -177,6 +177,7 @@ public class CQLParametersView {
 	}
 
 	public void resetAll() {
+		editorPanel = new CQLEditorPanel(PARAMETER, "CQL Expression Editor", false);
 		getParameterAceEditor().setText("");
 		getParameterNameTxtArea().setText("");
 		getParameterAceEditor().getElement().blur();

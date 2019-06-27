@@ -84,6 +84,7 @@ public class QueryModel extends ExpressionBuilderModel {
 		if (!filter.getChildModels().isEmpty()) {
 			builder.append("\n").append(queryContentIndentation);
 			builder.append("where ");
+			builder.append(filter.getCQL(queryContentIndentation));
 		}
 		
 		if (!returnClause.getChildModels().isEmpty()) {
@@ -92,14 +93,6 @@ public class QueryModel extends ExpressionBuilderModel {
 			builder.append(returnClause.getCQL(indentation + "  "));
 		}
 		
-		if(this.getChildModels().size() == 1) {
-			builder.append(this.getChildModels().get(0).getCQL(queryContentIndentation));
-		} else {
-			if (!filter.getChildModels().isEmpty()) {
-				builder.append(filter.getCQL(queryContentIndentation));
-			}
-		}
-
 		if(!sort.getSortExpression().getChildModels().isEmpty()) {
 			builder.append("\n").append(queryContentIndentation);
 			builder.append(sort.getCQL(""));

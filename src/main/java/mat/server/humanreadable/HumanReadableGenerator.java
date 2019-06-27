@@ -478,7 +478,7 @@ public class HumanReadableGenerator {
 			for(int k = 0; k < popCount; k++) {
 				Node clauseNode = populationNodes.item(k);
 				String popType = clauseNode.getAttributes().getNamedItem("type").getNodeValue();
-				countSimilarPopulationsInGroup(popType, processor);
+				countSimilarPopulationsInGroup((i + 1), popType, processor);
 			}
 			
 			for(int j = 0; j < popCount; j++) {
@@ -500,9 +500,9 @@ public class HumanReadableGenerator {
 		return groups; 
 	}
 	
-	private void countSimilarPopulationsInGroup(String popTyp, XmlProcessor processor) {
+	private void countSimilarPopulationsInGroup(int groupNo, String popTyp, XmlProcessor processor) {
 		if (!populationCountMap.containsKey(popTyp)) {
-			String xPathString = "count(//clause[@type='" + popTyp + "'])";  
+			String xPathString = "count(//group[@sequence='" + groupNo + "']/clause[@type='" + popTyp + "'])";  
 			try {
 				int count = processor.getNodeCount(processor.getOriginalDoc(), xPathString);
 				populationCountMap.put(popTyp, count);

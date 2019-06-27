@@ -622,7 +622,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	
 	@Override
 	protected void saveCQLFile() {
-		setIsPageDirty(false);
 		String currentCQL = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().getText();		
 		
 		MatContext.get().getMeasureService().saveCQLFile(MatContext.get().getCurrentMeasureId(), currentCQL, new AsyncCallback<SaveUpdateCQLResult>() {
@@ -640,6 +639,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				} else {
 					onSaveCQLFileSuccess(result);
 					handleCQLData(result);
+					setIsPageDirty(false);
 				}
 				
 				cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().focus();

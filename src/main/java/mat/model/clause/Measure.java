@@ -93,6 +93,8 @@ public class Measure {
 	private Timestamp measurementPeriodTo;
 	
 	private List<CQLLibraryHistory> cqlLibraryHistory;
+	
+	private String cqlLibraryName;
 
 	@Column(name = "VALUE_SET_DATE", length = 19)
 	public Timestamp getValueSetDate() {
@@ -451,5 +453,14 @@ public class Measure {
 
 	public void setCqlLibraryHistory(List<CQLLibraryHistory> cqlLibraryHistory) {
 		this.cqlLibraryHistory = cqlLibraryHistory;
+	}
+
+	@Column(name = "CQL_NAME")
+	public String getCqlLibraryName() {
+		return cqlLibraryName;
+	}
+
+	public void setCqlLibraryName(String cqlLibraryName) {
+		this.cqlLibraryName = cqlLibraryName;
 	}
 }

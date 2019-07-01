@@ -258,5 +258,6 @@
 		<include file="classpath:/liquibase/deploy_Sprint-171_MAT-9881_new_user_reference_table.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-172_MAT-9882_free_text_editor_save_table.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-173-9982_Add_relevantPeriod_to_AssessmentPerformed.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-173-9983_Add_participant_to_EncounterPerformed.xml"/>
 		
 </databaseChangeLog>

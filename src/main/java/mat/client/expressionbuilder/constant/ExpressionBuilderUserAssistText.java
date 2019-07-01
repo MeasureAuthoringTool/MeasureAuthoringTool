@@ -38,7 +38,7 @@ public enum ExpressionBuilderUserAssistText {
 	
 	QUERY_RELATIONSHIP(QueryBuilderModal.RELATIONSHIP, "A relationship is a way to use a second source of data and show a specific correlation between the two sources. Use this screen to indicate if you want to include or exclude this second set of data from the first. Example: \"Face to Face Encounter During Measurement Period\" Encounter with [\"Diagnosis\": \"Heart Failure\"] HeartFailure"),
 
-	QUERY_RELATIONSHIP_REALTED_SOURCE(RelationshipBuilderModal.SOURCE, "The Related Source is where you designate the second set of data you are associating with your query source. Example: \"[\"Diagnosis\": \"Heart Failure\"] HeartFailure"),
+	QUERY_RELATIONSHIP_REALTED_SOURCE(RelationshipBuilderModal.SOURCE, "The Related Source is where you designate the second set of data you are associating with your query source. Example: [\"Diagnosis\": \"Heart Failure\"] HeartFailure"),
 	
 	QUERY_RELATIONSHIP_RELATIONSHIP_CRITERIA(RelationshipBuilderModal.CRITERIA, "The Relationship Criteria is where you build an expression to show how your related source is associated to the query source. Example: \"such that HeartFailure.prevalencePeriod overlaps FaceToFaceEncounter.relevantPeriod\""),
 	

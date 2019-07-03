@@ -260,5 +260,6 @@
 		<include file="classpath:/liquibase/deploy_Sprint-173-9982_Add_relevantPeriod_to_AssessmentPerformed.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-173-9983_Add_participant_to_EncounterPerformed.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-173_MAT-9964_add_cql_library_name_to_measure_table.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-173-9989_remove_relationship_from_Related_Person.xml"/>
 		
 </databaseChangeLog>

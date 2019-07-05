@@ -61,6 +61,7 @@ public class InsertAttributeBuilderDialogBox {
 	private static final String FACILITY_LOCATIONS = "facilityLocations";
 	private static final String ATTR_ID = "id";
 	private static final String DIAGNOSES = "diagnoses";
+	private static final String DISPENSER = "dispenser";
 	private static final String COMPONENTS = "components";
 	private static final String PERFORMER = "performer";
 	private static final String REQUESTER = "requester";
@@ -447,7 +448,7 @@ public class InsertAttributeBuilderDialogBox {
 	}
 
 	private static boolean isModeDisabledEntry(final String attrSelected) {
-		Set<String> hashset = new HashSet<>(Arrays.asList(COMPONENTS, DIAGNOSES, FACILITY_LOCATIONS, PARTICIPANT, PERFORMER, 
+		Set<String> hashset = new HashSet<>(Arrays.asList(COMPONENTS, DIAGNOSES, DISPENSER, FACILITY_LOCATIONS, PARTICIPANT, PERFORMER, 
 				PRESCRIBER, REQUESTER, RECIPIENT, SENDER, RECORDER, ATTR_ID));
 		return hashset.contains(attrSelected);
 	}

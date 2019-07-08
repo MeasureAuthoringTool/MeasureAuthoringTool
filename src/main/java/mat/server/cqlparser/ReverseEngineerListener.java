@@ -77,8 +77,8 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	
 	public ReverseEngineerListener(String cql, CQLModel previousModel) throws IOException {
 		this.previousModel = previousModel;
+		initializeNewModel();
 		syntaxErrors = new ArrayList<>();
-		cqlModel = new CQLModel();
 		cqlModel.setContext(currentContext);
 		InputStream stream = new ByteArrayInputStream(cql.getBytes());
 		cqlLexer lexer = new cqlLexer(new ANTLRInputStream(stream));
@@ -95,181 +95,19 @@ public class ReverseEngineerListener extends cqlBaseListener {
         syntaxErrors.addAll(((SyntaxErrorListener) parser.getErrorListeners().get(1)).errors);
 		hasSyntaxErrors = !syntaxErrors.isEmpty();	
 	}
-
-	@Override
-	public void enterLibraryDefinition(LibraryDefinitionContext ctx) {	
-		String identifier = "";
-		if(ctx.qualifiedIdentifier() != null) {
-			identifier = CQLParserUtil.parseString(ctx.qualifiedIdentifier().getText());
-		}
-		
-		String version  = "";
-		if(ctx.versionSpecifier() != null) {
-			version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
-		}
-		
-		String comment = getLibraryComment(ctx);
-
-		cqlModel.setLibraryName(identifier);
-		cqlModel.setVersionUsed(version);		
-		cqlModel.setLibraryComment(comment);
-	}
 	
-	public String getLibraryComment(LibraryDefinitionContext ctx) {
-		int index = tokens.size() - 1; // Initialize to the last token
-		List<Token> ts = tokens.getTokens(ctx.stop.getTokenIndex(), tokens.size() - 1);
-		for(Token t : ts) {
-			if(t.getText().equals("using")) {
-				index = t.getTokenIndex();
-				break;
-			}
-		}
+	private void initializeNewModel() {
+		cqlModel = new CQLModel();
+		cqlModel.setLibraryName(previousModel.getLibraryName());
+		cqlModel.setVersionUsed(previousModel.getVersionUsed());		
+		cqlModel.setLibraryComment(previousModel.getLibraryComment());
+		cqlModel.setUsingName(previousModel.getUsingName());
+		cqlModel.setQdmVersion(previousModel.getQdmVersion());
 		
-		ts = tokens.getTokens(ctx.stop.getTokenIndex() + 1, index - 1);
-		StringBuilder builder = new StringBuilder();
-		for(Token t : ts) {
-			builder.append(t.getText());
-		}
-		
-		return trimComment(builder.toString());
-	}
-	
-	@Override
-	public void enterUsingDefinition(UsingDefinitionContext ctx) {
-		String identifier = "";
-		if(ctx.modelIdentifier() != null) {
-			identifier = CQLParserUtil.parseString(ctx.modelIdentifier().getText());
-		}
-		
-		String version  = "";
-		if(ctx.versionSpecifier() != null) {
-			version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
-		}		
-		
-		cqlModel.setUsingName(identifier);
-		cqlModel.setQdmVersion(version);
-	}
-	
-	@Override
-	public void enterIncludeDefinition(IncludeDefinitionContext ctx) {
-		String identifier = CQLParserUtil.parseString(ctx.qualifiedIdentifier().getText());
-		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
-		String alias = CQLParserUtil.parseString(ctx.localIdentifier().getText());
-		
-		
-		// check and see if there was a model the name, version, and alias as before
-		Optional<CQLIncludeLibrary> previousLibrary = previousModel.getCqlIncludeLibrarys().stream().filter(l -> (
-				identifier.equals(l.getCqlLibraryName())
-				&& alias.equals(l.getAliasName())
-				&& version.equals(l.getVersion())
-			
-		)).findFirst();
-		
-		if(previousLibrary.isPresent()) {
-			cqlModel.getCqlIncludeLibrarys().add(previousLibrary.get());
-		} else {
-			CQLIncludeLibrary includedLibrary = new CQLIncludeLibrary();
-			includedLibrary.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
-			includedLibrary.setCqlLibraryName(identifier);
-			includedLibrary.setAliasName(alias);
-			includedLibrary.setVersion(version);
-			cqlModel.getCqlIncludeLibrarys().add(includedLibrary);
-		}
-	}
-	
-	@Override
-	public void enterCodesystemDefinition(CodesystemDefinitionContext ctx) {
-		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
-		String codesystemId = CQLParserUtil.parseString(ctx.codesystemId().getText());
-		
-		String version = "";
-		if(ctx.versionSpecifier() != null) {
-			version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
-		}
-
-		CQLCodeSystem codeSystem = new CQLCodeSystem();
-		codeSystem.setCodeSystemName(identifier);
-		codeSystem.setCodeSystemVersion(version);
-		codeSystem.setCodeSystem(codesystemId.replace(VALUESET_OID_PREFIX, ""));
-		codeSystem.setId(UUID.randomUUID().toString());
-		
-		cqlModel.getCodeSystemList().add(codeSystem);
-	}
-	
-	@Override
-	public void enterCodeDefinition(CodeDefinitionContext ctx) {
-		CQLCode code = new CQLCode();
-		
-		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
-		String codeId = CQLParserUtil.parseString(ctx.codeId().getText());
-		String codeSystemName = CQLParserUtil.parseString(ctx.codesystemIdentifier().getText());
-		String displayClause = ctx.displayClause() != null ? CQLParserUtil.parseString(ctx.displayClause().STRING().getText()) : "";
-	
-		
-		Optional<CQLCode> previousCode = previousModel.getCodeList().stream().filter(c -> (
-				c.getDisplayName().equals(identifier)
-				&& c.getCodeOID().equals(codeId)
-				&& c.getName().equals(displayClause)
-			)).findFirst();
-		
-		if(previousCode.isPresent()) {
-			cqlModel.getCodeList().add(previousCode.get());
-		} else {
-			Optional<CQLCodeSystem> codeSystem = cqlModel.getCodeSystemList().stream().filter(cs -> cs.getCodeSystemName().equals(codeSystemName)).findFirst();
-
-			code.setId(UUID.randomUUID().toString());
-			code.setDisplayName(identifier);
-			code.setCodeName(displayClause);
-			code.setCodeOID(codeId);
-			code.setCodeSystemName(codeSystemName);
-
-			if(codeSystem.isPresent()) {
-				code.setCodeSystemOID(codeSystem.get().getCodeSystem());
-				code.setCodeSystemVersion(codeSystem.get().getCodeSystemVersion());
-			} 
-			
-			cqlModel.getCodeList().add(code);
-		}
-	}
-	
-	@Override
-	public void enterValuesetDefinition(ValuesetDefinitionContext ctx) {
-		
-		String identifier = ctx.identifier() != null ? CQLParserUtil.parseString(ctx.identifier().getText()) : "";
-		String valuesetId =  ctx.valuesetId() != null ? CQLParserUtil.parseString(ctx.valuesetId().getText()).replace(VALUESET_OID_PREFIX, "") : "";
-		
-	
-		String version = "";
-		if(ctx.versionSpecifier() != null) {
-			version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
-		}
-		
-		// check and see if there was a value set with the same identifier and oid as before
-		Optional<CQLQualityDataSetDTO> previousValueset = previousModel.getValueSetList().stream().filter(v -> (
-				identifier.equals(v.getName())
-				&& valuesetId.equals(v.getOid())			
-		)).findFirst();
-		
-		if(previousValueset.isPresent()) {
-			cqlModel.getValueSetList().add(previousValueset.get());
-		} else {
-			CQLQualityDataSetDTO valueset = new CQLQualityDataSetDTO();
-			valueset.setId(UUID.nameUUIDFromBytes(identifier.getBytes()).toString());
-			valueset.setUuid(UUID.randomUUID().toString());
-			valueset.setName(identifier);
-			valueset.setVersion(version);
-			valueset.setSuffix("");
-			
-			valueset.setOriginalCodeListName("");
-			valueset.setProgram("");
-			valueset.setRelease("");
-			valueset.setDataType("");
-			valueset.setTaxonomy("");
-			valueset.setSuppDataElement(false);
-			valueset.setValueSetType("");
-			valueset.setOid(valuesetId);
-			cqlModel.getValueSetList().add(valueset);
-		}
+		cqlModel.setCqlIncludeLibrarys(previousModel.getCqlIncludeLibrarys());
+		cqlModel.setCodeSystemList(previousModel.getCodeSystemList());
+		cqlModel.setCodeList(previousModel.getCodeList());
+		cqlModel.setValueSetList(previousModel.getValueSetList());
 	}
 	
 	@Override

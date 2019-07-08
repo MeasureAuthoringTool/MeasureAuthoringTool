@@ -21,14 +21,21 @@ public class ReverseEngineerListenerTest {
 	public void testLibrary() throws IOException {
 		File file = new File(getClass().getClassLoader().getResource("test-cql/testlibrary.cql").getFile());
 		
+		CQLModel previousModel = new CQLModel();
+		previousModel.setLibraryName("test2");
+		previousModel.setVersionUsed("0.0.2");
+		previousModel.setUsingName("QDM");
+		previousModel.setQdmVersion("5.4");
+		previousModel.setLibraryComment("a library comment");
+
 		String cql = new String(Files.readAllBytes(file.toPath()));
-		ReverseEngineerListener listener = new ReverseEngineerListener(cql, new CQLModel());	
+		ReverseEngineerListener listener = new ReverseEngineerListener(cql, previousModel);	
 		
 		CQLModel model = listener.getCQLModel();
 		
 		assertEquals("a library comment", model.getLibraryComment());
-		assertEquals("test", model.getLibraryName());
-		assertEquals("0.0.1", model.getVersionUsed());
+		assertEquals("test2", model.getLibraryName());
+		assertEquals("0.0.2", model.getVersionUsed());
 		assertEquals("QDM", model.getUsingName());
 		assertEquals("5.4", model.getQdmVersion());
 	}
@@ -134,7 +141,7 @@ public class ReverseEngineerListenerTest {
 		assertEquals("true\n" + 
 				"\n" + 
 				"  /* last comment */", definition3.getLogic().replaceAll("\\r\\n", "\n"));
-		assertEquals("Population", definition3.getContext());
+		assertEquals("Patient", definition3.getContext());
 	}
 	
 	@Test
@@ -192,7 +199,7 @@ public class ReverseEngineerListenerTest {
 		assertEquals("Encounter, Performed", function1.getArgumentList().get(2).getQdmDataType());
 	
 		assertEquals("testpopulationfunction", function2.getName());
-		assertEquals("Population", function2.getContext());
+		assertEquals("Patient", function2.getContext());
 		assertEquals("true", function2.getLogic());
 		assertEquals("testpouplationfunction comment", function2.getCommentString());
 		assertEquals(0, function2.getArgumentList().size());

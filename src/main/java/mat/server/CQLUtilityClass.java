@@ -450,20 +450,26 @@ public final class CQLUtilityClass {
 	}
 
 	private static String createValueSetsSection(List<CQLQualityDataSetDTO> valueSetList) {
-
 		StringBuilder sb = new StringBuilder();
+
+		List<String> valueSetAlreadyUsed = new ArrayList<>();
 
 		if (!CollectionUtils.isEmpty(valueSetList)) {
 
 			for (CQLQualityDataSetDTO valueset : valueSetList) {
-				String version = valueset.getVersion().replaceAll(" ", "%20");
-				sb.append("valueset ").append('"').append(valueset.getName()).append('"');
-				sb.append(": 'urn:oid:").append(valueset.getOid()).append("' ");
-				//Check if QDM has expansion identifier or not.
-				if(StringUtils.isNotBlank(version) && !version.equals("1.0") ){
-					sb.append("version 'urn:hl7:version:").append(version).append("' ");
+
+				if(!valueSetAlreadyUsed.contains(valueset.getName())){
+
+					String version = valueset.getVersion().replaceAll(" ", "%20");
+					sb.append("valueset ").append('"').append(valueset.getName()).append('"');
+					sb.append(": 'urn:oid:").append(valueset.getOid()).append("' ");
+					//Check if QDM has expansion identifier or not.
+					if(StringUtils.isNotBlank(version) && !version.equals("1.0") ){
+						sb.append("version 'urn:hl7:version:").append(version).append("' ");
+					}
+					sb.append("\n");
+					valueSetAlreadyUsed.add(valueset.getName());
 				}
-				sb.append("\n");
 
 			}
 
@@ -489,12 +495,14 @@ public final class CQLUtilityClass {
 					codeSysStr = codeSysStr + ":" + codes.getCodeSystemVersion().replaceAll(" ", "%20");	
 				}
 
-				sb.append("code ").append(codesStr).append(" ").append("from ");
-				sb.append('"').append(codeSysStr).append('"').append(" ");
-				sb.append("display " +"'" +escapeSingleQuote(codes)+"'");
-				sb.append("\n");
-				codesAlreadyUsed.add(codesStr);
-				
+				if(!codesAlreadyUsed.contains(codesStr)){
+					sb.append("code ").append(codesStr).append(" ").append("from ");
+					sb.append('"').append(codeSysStr).append('"').append(" ");
+					sb.append("display " +"'" +escapeSingleQuote(codes)+"'");
+					sb.append("\n");
+					codesAlreadyUsed.add(codesStr);
+				}
+
 			}
 
 			sb.append("\n");

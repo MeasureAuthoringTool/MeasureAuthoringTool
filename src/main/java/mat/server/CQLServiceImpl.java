@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -741,44 +740,27 @@ public class CQLServiceImpl implements CQLService {
 			includedLibraryWithEdits.setId(UUID.randomUUID().toString());
 		}
 
-		// check if there is a library that has a name, identifier, and version the one being saved
-		// if there is, update and return.
-		List<CQLIncludeLibrary> previousMatchingLibraries = cqlModel.getCqlIncludeLibrarys().stream()
-				.filter(l -> 
-				(l.getAliasName().equals(includedLibraryWithEdits.getAliasName())
-						&& l.getCqlLibraryName().equals(includedLibraryWithEdits.getCqlLibraryName())
-						&& l.getVersion().equals(includedLibraryWithEdits.getVersion())
-						&& l.getCqlLibraryId() == null)
-						).collect(Collectors.toList());
 
-		if(!previousMatchingLibraries.isEmpty()) {
-			previousMatchingLibraries.forEach(l -> {
-				l.setCqlLibraryId(includedLibraryWithEdits.getCqlLibraryId());
-				l.setMeasureId(includedLibraryWithEdits.getMeasureId());
-				l.setQdmVersion(includedLibraryWithEdits.getQdmVersion());
-				l.setSetId(includedLibraryWithEdits.getSetId());
-			});
+		Optional<CQLIncludeLibrary> includedLibraryToBeEditedFromModel = cqlModel.getCqlIncludeLibrarys().stream().filter(l -> includedLibraryWithEdits.getId().equals(l.getId())).findFirst();
+		if(includedLibraryToBeEditedFromModel.isPresent()) {
+			includedLibraryToBeEditedFromModel.get().setAliasName(includedLibraryWithEdits.getAliasName());
+			includedLibraryToBeEditedFromModel.get().setCqlLibraryId(includedLibraryWithEdits.getCqlLibraryId());
+			includedLibraryToBeEditedFromModel.get().setCqlLibraryName(includedLibraryWithEdits.getCqlLibraryName());
+			includedLibraryToBeEditedFromModel.get().setMeasureId(includedLibraryWithEdits.getMeasureId());
+			includedLibraryToBeEditedFromModel.get().setQdmVersion(includedLibraryWithEdits.getQdmVersion());
+			includedLibraryToBeEditedFromModel.get().setSetId(includedLibraryWithEdits.getSetId());
+			includedLibraryToBeEditedFromModel.get().setVersion(includedLibraryWithEdits.getVersion());
 		} else {
-			Optional<CQLIncludeLibrary> includedLibraryToBeEditedFromModel = cqlModel.getCqlIncludeLibrarys().stream().filter(l -> includedLibraryWithEdits.getId().equals(l.getId())).findFirst();
-			if(includedLibraryToBeEditedFromModel.isPresent()) {
-				includedLibraryToBeEditedFromModel.get().setAliasName(includedLibraryWithEdits.getAliasName());
-				includedLibraryToBeEditedFromModel.get().setCqlLibraryId(includedLibraryWithEdits.getCqlLibraryId());
-				includedLibraryToBeEditedFromModel.get().setCqlLibraryName(includedLibraryWithEdits.getCqlLibraryName());
-				includedLibraryToBeEditedFromModel.get().setMeasureId(includedLibraryWithEdits.getMeasureId());
-				includedLibraryToBeEditedFromModel.get().setQdmVersion(includedLibraryWithEdits.getQdmVersion());
-				includedLibraryToBeEditedFromModel.get().setSetId(includedLibraryWithEdits.getSetId());
-				includedLibraryToBeEditedFromModel.get().setVersion(includedLibraryWithEdits.getVersion());
-			} else {
-				CQLIncludeLibraryValidator libraryValidator = new CQLIncludeLibraryValidator();
-				libraryValidator.validate(includedLibraryWithEdits, cqlModel);
+			CQLIncludeLibraryValidator libraryValidator = new CQLIncludeLibraryValidator();
+			libraryValidator.validate(includedLibraryWithEdits, cqlModel);
 
-				if (!libraryValidator.isValid()) {
-					throw new InvalidLibraryException(libraryValidator.getMessages());
-				}	
+			if (!libraryValidator.isValid()) {
+				throw new InvalidLibraryException(libraryValidator.getMessages());
+			}	
 
-				cqlModel.getCqlIncludeLibrarys().add(includedLibraryWithEdits);
-			}
-		}		
+			cqlModel.getCqlIncludeLibrarys().add(includedLibraryWithEdits);
+		}
+
 
 		result.setSuccess(true);
 		CQLUtil.getIncludedCQLExpressions(cqlModel, cqlLibraryDAO);
@@ -1546,9 +1528,6 @@ public class CQLServiceImpl implements CQLService {
 		return cqlResult.getUsedCQLArtifacts();
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
 	public SaveUpdateCQLResult parseCQLStringForError(String cqlFileString) {
 		return null;
@@ -1558,54 +1537,35 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult saveCQLValueset(String xml, CQLValueSetTransferObject valueSetTransferObject) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel model = CQLUtilityClass.getCQLModelFromXML(xml);
-		
+
 		if (!valueSetTransferObject.validateModel()) {
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION);
 			return result;
 		}	
-		
+
 		CQLQualityDataSetDTO qds = convertValueSetTransferObjectToQualityDataSetDTO(valueSetTransferObject);		
-		List<CQLQualityDataSetDTO> previousMatchingValuesets = model.getValueSetList().stream().filter(v -> 
-				(v.getName().equals(qds.getName()))
-						&& v.getOid().equals(qds.getOid())
-						&& StringUtils.isEmpty(v.getOriginalCodeListName())
-				).collect(Collectors.toList());
-						
-		if(!previousMatchingValuesets.isEmpty()) {
-			previousMatchingValuesets.forEach(v -> {
-				v.setSuffix(qds.getSuffix());
-				v.setOriginalCodeListName(qds.getOriginalCodeListName());
-				v.setProgram(qds.getProgram());
-				v.setRelease(qds.getRelease());
-				v.setDataType(qds.getDataType());
-				v.setValueSetType(qds.getValueSetType());
-				v.setTaxonomy(qds.getTaxonomy());
-				v.setSuppDataElement(qds.isSuppDataElement());
-				v.setType(qds.getType());
-			});
+		Optional<CQLQualityDataSetDTO> existingValueset = model.getValueSetList().stream().filter(v -> v.getUuid().equals(valueSetTransferObject.getCqlQualityDataSetDTO().getUuid())).findFirst();
+		// if this is an edit, make sure the UUID and ID are the same as the valueset being edited
+		// and remove it from the list
+		if(existingValueset.isPresent()) {
+			qds.setUuid(existingValueset.get().getUuid());
+			qds.setId(existingValueset.get().getId());
+			model.getValueSetList().remove(existingValueset.get());
 		} else {
-			Optional<CQLQualityDataSetDTO> existingValueset = model.getValueSetList().stream().filter(v -> v.getUuid().equals(valueSetTransferObject.getCqlQualityDataSetDTO().getUuid())).findFirst();
-			// if this is an edit, make sure the UUID and ID are the same as the valueset being edited
-			// and remove it from the list
-			if(existingValueset.isPresent()) {
-				qds.setUuid(existingValueset.get().getUuid());
-				qds.setId(existingValueset.get().getId());
-				model.getValueSetList().remove(existingValueset.get());
-			} else {
-				qds.setUuid(UUID.randomUUID().toString());
-				qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-				if(model.getValueSetList().stream().filter(v -> v.getName().equals(qds.getName())).count() > 0) {
-					result.setSuccess(false);
-					result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
-					result.setCqlQualityDataSetDTO(qds);
-					return result;
-				}
+			qds.setUuid(UUID.randomUUID().toString());
+			qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+			if(model.getValueSetList().stream().filter(v -> v.getName().equals(qds.getName())).count() > 0) {
+				result.setSuccess(false);
+				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
+				result.setCqlQualityDataSetDTO(qds);
+				return result;
 			}
-			
-			model.getValueSetList().add(qds);
 		}
-				
+
+		model.getValueSetList().add(qds);
+
+
 		result.setSuccess(true);
 		result.setCqlAppliedQDMList(sortQualityDataSetList(model.getValueSetList()));
 		result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));
@@ -1653,55 +1613,36 @@ public class CQLServiceImpl implements CQLService {
 
 	@Override
 	public SaveUpdateCQLResult saveCQLCodes(String xml, MatCodeTransferObject codeTransferObject) {
-		logger.info("::: CQLServiceImpl saveCQLCodes Start :::");
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		codeTransferObject.scrubForMarkUp();
 		CQLModel model = CQLUtilityClass.getCQLModelFromXML(xml);		
-		
+
 		if (codeTransferObject.isValidModel()) {
 
 			CQLCode appliedCode = codeTransferObject.getCqlCode();
 
-			List<CQLCode> previousMatchingCodes = model.getCodeList().stream().filter(c -> (
-					c.getDisplayName().equals(appliedCode.getDisplayName()) 
-					&& c.getCodeOID().equals(appliedCode.getCodeOID())
-					&& c.getCodeName().equals(appliedCode.getCodeName())
-					&& StringUtils.isEmpty(c.getCodeIdentifier()))
-					).collect(Collectors.toList());
-
-			if(!previousMatchingCodes.isEmpty()) {
-				previousMatchingCodes.forEach(c -> {
-					c.setSuffix(appliedCode.getSuffix());
-					c.setCodeOID(appliedCode.getCodeOID());
-					c.setCodeIdentifier(appliedCode.getCodeIdentifier());
-					c.setCodeSystemOID(appliedCode.getCodeSystemOID());
-					c.setCodeSystemName(appliedCode.getCodeSystemName());
-					c.setCodeSystemVersion(appliedCode.getCodeSystemVersion());
-					c.setIsCodeSystemVersionIncluded(appliedCode.isIsCodeSystemVersionIncluded());
-				});
+			Optional<CQLCode> existingCode = model.getCodeList().stream().filter(c -> c.getId().equals(appliedCode.getId())).findFirst();
+			if(existingCode.isPresent()) {
+				appliedCode.setId(existingCode.get().getId());
+				model.getCodeList().remove(existingCode.get());
+				model.getCodeList().add(appliedCode);
 			} else {
-				Optional<CQLCode> existingCode = model.getCodeList().stream().filter(c -> c.getId().equals(appliedCode.getId())).findFirst();
-				if(existingCode.isPresent()) {
-					appliedCode.setId(existingCode.get().getId());
-					model.getCodeList().remove(existingCode.get());
-					model.getCodeList().add(appliedCode);
-				} else {
-					if (model.getCodeList().stream().filter(c -> c.getDisplayName().equals(appliedCode.getDisplayName())).count() > 0) {
-						result.setSuccess(false);
-						result.setFailureReason(result.getDuplicateCode());
-						return result;
-					} 
+				if (model.getCodeList().stream().filter(c -> c.getDisplayName().equals(appliedCode.getDisplayName())).count() > 0) {
+					result.setSuccess(false);
+					result.setFailureReason(result.getDuplicateCode());
+					return result;
+				} 
 
-					appliedCode.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-					model.getCodeList().add(appliedCode);
-				}
-			}	
+				appliedCode.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+				model.getCodeList().add(appliedCode);
+			}
+		}	
 
-			result.setCqlCodeList(model.getCodeList());
-			result.setSuccess(true);
-			result.setCqlModel(model);
-			result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));
-		}
+		result.setCqlCodeList(model.getCodeList());
+		result.setSuccess(true);
+		result.setCqlModel(model);
+		result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));
+
 
 		return result;
 	}

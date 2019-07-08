@@ -299,11 +299,9 @@ public class QueryBuilderModal extends SubExpressionBuilderModal {
 		availableExpressionsForReturn.add(ExpressionType.INTERVAL);
 		availableExpressionsForReturn.add(ExpressionType.QUERY);
 		availableExpressionsForReturn.add(ExpressionType.TIME_BOUNDARY);
-		
-		List<OperatorType> availableOperatorsForReturn = new ArrayList<>(OperatorTypeUtil.getBooleanOperators());
-		
+				
 		ExpressionTypeSelectorList returnSelector = new ExpressionTypeSelectorList(
-				availableExpressionsForReturn, availableOperatorsForReturn, QueryFinderHelper.findAliasNames(this.queryModel),
+				availableExpressionsForReturn, new ArrayList<>(), QueryFinderHelper.findAliasNames(this.queryModel),
 				returnBuildButtonObserver, queryModel.getReturnClause(), 
 				 "What type of expression would you like to return?", this);
 		

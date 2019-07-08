@@ -80,7 +80,7 @@ var SqlHighlightRules = function() {
             regex : "\\w+"
         }, {
             token : "keyword.operator",
-            regex : "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="
+            regex : "\\+|\\-|\\/|\\/\\/|\\*|%|<@>|@>|<@|&|\\^|~|!~|<|>|<=|=>|==|!=|<>|="
         }, {
             token : "paren.lparen",
             regex : "[\\(]"

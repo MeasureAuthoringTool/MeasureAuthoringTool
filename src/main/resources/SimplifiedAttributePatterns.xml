@@ -72,6 +72,9 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
+ <attribute attribName="identifier">
+  <mode mode="Nullable" />
+ </attribute>
  <attribute attribName="incisionDatetime">
   <mode mode="Comparison" />
   <mode mode="Computative" />
@@ -207,6 +210,9 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
+ <attribute attribName="rank">
+  <mode mode="Comparison" />
+ </attribute>
  <attribute attribName="recorder">
   <mode mode="ValueSets" />
   <mode mode="Codes" />
@@ -222,9 +228,5 @@
   <mode mode="Comparison" />
   <mode mode="Computative" />
   <mode mode="Nullable" />
- </attribute>
-  <attribute attribName="rank">
-  <mode mode="Comparison" />
-  <mode mode="Nullable" />
- </attribute>
+ </attribute>	
 </matattributes>

@@ -2005,4 +2005,9 @@ public class CQLServiceImpl implements CQLService {
 	public CQLModel parseCQL(String cqlBuilder) {
 		return new CQLModel();
 	}
+
+	@Override
+	public boolean checkIfLibraryNameExists(String libraryName, String setId) {
+		return cqlLibraryDAO.isLibraryNameExists(libraryName, setId);
+	}
 }

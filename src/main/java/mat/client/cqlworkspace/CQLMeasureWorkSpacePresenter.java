@@ -227,12 +227,19 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
 				if (result != null) {
-					cqlLibraryName = result.getCqlModel().getLibraryName();
-					cqlLibraryComment = result.getCqlModel().getLibraryComment();
-					cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setText(cqlLibraryComment);
-					cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setCursorPos(0);
-					messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getCurrentMeasureName() + " general information successfully updated.");
-					setIsPageDirty(false);
+					if (result.isSuccess()) {
+						cqlLibraryName = result.getCqlModel().getLibraryName();
+						cqlLibraryComment = result.getCqlModel().getLibraryComment();
+						cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setText(cqlLibraryComment);
+						cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setCursorPos(0);
+						messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getCurrentMeasureName() + " general information successfully updated.");
+						setIsPageDirty(false);
+						
+					} else {
+						if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
+							messagePanel.getErrorMessageAlert().createAlert(DUPLICATE_LIBRARY_NAME_SAVE);
+						}
+					}
 				}
 				showSearchingBusy(false);
 			}
@@ -889,6 +896,9 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				setId = result.getSetId();
 			}
 			if (result.getCqlModel().getLibraryName() != null) {
+				if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
+					messagePanel.getErrorMessageAlert().createAlert(DUPLICATE_LIBRARY_NAME);
+				}
 				cqlLibraryName = cqlWorkspaceView.getCqlGeneralInformationView().createCQLLibraryName(result.getCqlModel().getLibraryName());
 				cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().setText(cqlLibraryName);
 

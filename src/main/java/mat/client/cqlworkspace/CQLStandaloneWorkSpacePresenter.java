@@ -1106,15 +1106,22 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
 				if (result != null) {
-					cqlLibraryName = result.getCqlModel().getLibraryName().trim();
-					cqlLibraryComment = result.getCqlModel().getLibraryComment();
-					cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().setText(cqlLibraryName);
-					cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setText(result.getCqlModel().getLibraryComment());
-					cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setCursorPos(0);
-					messagePanel.getSuccessMessageAlert().createAlert(cqlLibraryName + " general information successfully updated");
-					setIsPageDirty(false);
-					MatContext.get().getCurrentLibraryInfo().setLibraryName(cqlLibraryName);
-					CqlComposerPresenter.setContentHeading();
+					if (result.isSuccess()) {
+						cqlLibraryName = result.getCqlModel().getLibraryName().trim();
+						cqlLibraryComment = result.getCqlModel().getLibraryComment();
+						cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().setText(cqlLibraryName);
+						cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setText(result.getCqlModel().getLibraryComment());
+						cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setCursorPos(0);
+						messagePanel.getSuccessMessageAlert().createAlert(cqlLibraryName + " general information successfully updated");
+						setIsPageDirty(false);
+						MatContext.get().getCurrentLibraryInfo().setLibraryName(cqlLibraryName);
+						CqlComposerPresenter.setContentHeading();
+						
+					} else {
+						if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
+							messagePanel.getErrorMessageAlert().createAlert(DUPLICATE_LIBRARY_NAME_SAVE);
+						}
+					}
 				}
 				showSearchingBusy(false);
 			}
@@ -1229,6 +1236,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					setId = result.getSetId();
 				}
 				if (result.getCqlModel().getLibraryName() != null) {
+					if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
+						messagePanel.getErrorMessageAlert().createAlert(DUPLICATE_LIBRARY_NAME);
+					}
 					cqlLibraryName = cqlWorkspaceView.getCqlGeneralInformationView().createCQLLibraryName(MatContext.get().getCurrentCQLLibraryeName());
 					cqlLibraryComment = result.getCqlModel().getLibraryComment();
 					String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();

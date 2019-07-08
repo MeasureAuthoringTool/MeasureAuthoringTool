@@ -708,4 +708,6 @@ public interface MeasureLibraryService {
 	String getHumanReadableForMeasureDetails(String measureId);
 
 	SaveUpdateCQLResult saveCQLFile(String measureId, String cql);
+	
+	boolean checkIfLibraryNameExists(String libraryName, String setId);
 }

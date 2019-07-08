@@ -5057,15 +5057,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId, String libraryName, String comments) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		if(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentMeasureId)) {
-			MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(currentMeasureId);
-			if (xmlModel != null) {
-				result = getCqlService().saveAndModifyCQLGeneralInfo(xmlModel.getXml(), libraryName, comments);
-				if (result.isSuccess()) {
-					xmlModel.setXml(result.getXml());
-					measurePackageService.saveMeasureXml(xmlModel);
+			Measure measure = measureDAO.find(currentMeasureId);
+			if (checkIfLibraryNameExists(libraryName, measure.getMeasureSet().getId())) {
+				result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+				result.setSuccess(false);
+			} else {
+				MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(currentMeasureId);
+				if (xmlModel != null) {
+					result = getCqlService().saveAndModifyCQLGeneralInfo(xmlModel.getXml(), libraryName, comments);
+					if (result.isSuccess()) {
+						xmlModel.setXml(result.getXml());
+						measurePackageService.saveMeasureXml(xmlModel);
+					}
 				}
-
 			}
+
 		}
 		
 		return result;
@@ -6019,5 +6025,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			measureInformationModel.setMeasurementPeriodStartDate(startDate);
 			measureInformationModel.setMeasurementPeriodEndDate(endDate);
 		}
+	}
+
+	@Override
+	public boolean checkIfLibraryNameExists(String libraryName, String setId) {
+		return getCqlService().checkIfLibraryNameExists(libraryName, setId);
 	}
 }

@@ -91,6 +91,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	public static final int SYNTAX_ERRORS = 11;
 	
+	public static final int DUPLICATE_LIBRARY_NAME = 12;
+	
 	/** The cql applied QDM list. */
 	List<CQLQualityDataSetDTO> cqlAppliedQDMList ;
 	

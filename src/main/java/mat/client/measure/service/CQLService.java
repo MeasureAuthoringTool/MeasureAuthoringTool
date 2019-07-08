@@ -197,4 +197,6 @@ public interface CQLService {
 	SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config);
 	
 	List<CQLLibraryHistory> createCQLLibraryHistory(List<CQLLibraryHistory> exsistingLibraryHistory, String CQLLibraryString, CQLLibrary cqlLibrary, Measure measure);
+	
+	boolean checkIfLibraryNameExists(String libraryName, String setId);
 }

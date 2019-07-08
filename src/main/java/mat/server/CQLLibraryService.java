@@ -729,6 +729,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			cqlResult = cqlService.getCQLDataForLoad(cqlLibraryXml);
 			cqlResult.setSetId(cqlLibrary.getSet_id());
 			cqlResult.setSuccess(true);
+			
+			if (cqlService.checkIfLibraryNameExists(cqlLibrary.getName(), cqlLibrary.getSet_id())) {
+				cqlResult.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);	
+			}
 		}
 		
 		return cqlResult;
@@ -917,16 +921,23 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	
 	@Override
 	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryName, String libraryComment) {
-		SaveUpdateCQLResult result = null;
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		if(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)){
 			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
-			String cqlXml = getCQLLibraryXml(cqlLibrary);
-			if (cqlXml != null) {
-				result = cqlService.saveAndModifyCQLGeneralInfo(cqlXml, libraryName, libraryComment);
-				if (result != null && result.isSuccess()) {
-					cqlLibrary.setName(libraryName);
-					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
-					cqlLibraryDAO.save(cqlLibrary);
+			
+			if (cqlService.checkIfLibraryNameExists(libraryName, cqlLibrary.getSet_id())) {
+				result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+				result.setSuccess(false);
+				
+			} else {
+				String cqlXml = getCQLLibraryXml(cqlLibrary);
+				if (cqlXml != null) {
+					result = cqlService.saveAndModifyCQLGeneralInfo(cqlXml, libraryName, libraryComment);
+					if (result != null && result.isSuccess()) {
+						cqlLibrary.setName(libraryName);
+						cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+						cqlLibraryDAO.save(cqlLibrary);
+					}
 				}
 			}
 		}

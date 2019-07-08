@@ -1,5 +1,6 @@
 package mat.dao.clause.impl;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -788,6 +790,42 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		entity.setLastModifiedOn(LocalDateTime.now());
 		entity.setLastModifiedBy(userDAO.findByLoginId(LoggedInUserUtil.getLoggedInLoginId()));
 		super.save(entity);
+	}
+	
+	@Override
+	public boolean isLibraryNameExists(String name, String setId) {
+		final Session session = getSessionFactory().getCurrentSession();
+
+		final String libraryNameExistsQuery = buildLibraryNameCheckQuery(setId);
+
+		final NativeQuery<?> booleanQuery = session.createNativeQuery(libraryNameExistsQuery);
+		booleanQuery.setParameter("name", name);
+		if (StringUtils.isNotBlank(setId)) {
+			booleanQuery.setParameter("setId", setId);
+		}
+		
+		final int count = ((BigInteger) booleanQuery.uniqueResult()).intValue();
+		return (count == 1);
+	}
+	
+	private String buildLibraryNameCheckQuery(String setId) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append(buildNameCheckQuery(setId, "MEASURE", "MEASURE_SET_ID"));
+		sb.append(" UNION ");
+		sb.append(buildNameCheckQuery(setId, "CQL_LIBRARY", "SET_ID"));
+		return sb.toString();
+	}
+
+	private String buildNameCheckQuery(String setId, String tableName, String columnName) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("SELECT EXISTS(");
+		sb.append("SELECT 1 FROM ").append(tableName).append(" where lower(CQL_NAME) = :name ");
+		if (StringUtils.isNotBlank(setId)) {
+			sb.append("and ").append(columnName).append(" <> :setId ");
+		}
+		sb.append("and (DRAFT = 1 ");
+		sb.append("OR (DRAFT = 0 and CAST(TRIM(LEADING 'v' from RELEASE_VERSION) AS decimal(2,1)) >= 5.8))) ver");
+		return sb.toString();
 	}
 
 }

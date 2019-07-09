@@ -264,7 +264,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 	private GeneralInformationModel buildGeneralInformationModel() {
 		GeneralInformationModel generalInformationModel = new GeneralInformationModel();
 		generalInformationModel.seteMeasureId(manageMeasureDetailModel.geteMeasureId());
-		generalInformationModel.setMeasureName(manageMeasureDetailModel.getName());
+		generalInformationModel.setMeasureName(manageMeasureDetailModel.getMeasureName());
 		generalInformationModel.seteCQMAbbreviatedTitle(manageMeasureDetailModel.getShortName());
 		generalInformationModel.setFinalizedDate(manageMeasureDetailModel.getFinalizedDate());
 		generalInformationModel.setPatientBased(manageMeasureDetailModel.isPatientBased());
@@ -309,7 +309,8 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		manageMeasureDetailModel.setDisclaimer(getDisclaimer());
 		manageMeasureDetailModel.setIsPatientBased(getPatientBased());
 		manageMeasureDetailModel.setMeasScoring(getScoringMethod());
-		manageMeasureDetailModel.setName(getMeasureName());
+		manageMeasureDetailModel.setMeasureName(getMeasureName());
+		manageMeasureDetailModel.setCQLLibraryName(getCQLLibraryName());
 		manageMeasureDetailModel.setFinalizedDate(getFinalizedDate());
 		manageMeasureDetailModel.setVersionNumber(getversionNumber());
 		manageMeasureDetailModel.setShortName(getShortName());
@@ -442,6 +443,13 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 	private String getMeasureName() {
 		if(measureDetailsModel.getGeneralInformationModel() != null) {
 			return measureDetailsModel.getGeneralInformationModel().getMeasureName();
+		}
+		return null;
+	}
+	
+	private String getCQLLibraryName() {
+		if(measureDetailsModel.getGeneralInformationModel() != null) {
+			return measureDetailsModel.getGeneralInformationModel().getCQLLibraryName();
 		}
 		return null;
 	}

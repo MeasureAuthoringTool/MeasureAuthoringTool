@@ -1624,7 +1624,7 @@ public class CQLServiceImpl implements CQLService {
 			Optional<CQLCode> existingCode = model.getCodeList().stream().filter(c -> c.getId().equals(appliedCode.getId())).findFirst();
 			if(existingCode.isPresent()) {
 				appliedCode.setId(existingCode.get().getId());
-				model.getCodeList().remove(existingCode.get());
+				model.getCodeList().removeIf(c -> c.getId().equals(existingCode.get().getId()));
 				model.getCodeList().add(appliedCode);
 			} else {
 				if (model.getCodeList().stream().filter(c -> c.getDisplayName().equals(appliedCode.getDisplayName())).count() > 0) {

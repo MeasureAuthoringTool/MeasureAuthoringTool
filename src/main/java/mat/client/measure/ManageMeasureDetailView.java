@@ -15,14 +15,22 @@ public class ManageMeasureDetailView extends AbstractManageMeasureDetailView {
 
 	public ManageMeasureDetailView() {
 		buildMainPanel();
-		FlowPanel fPanel = buildFlowPanel();	
-		measureNameLabel.getElement().setId("measureNameLabel_MeasureNameLabel");
+		FlowPanel fPanel = buildFlowPanel();
 		
+		measureNameLabel.getElement().setId("measureNameLabel_MeasureNameLabel");
 		Form createMeasureForm = new Form();
 		FormLabel measureNameLabel = buildMeasureNameLabel();
-		buildNameTextArea();
+		buildMeasureNameTextArea();
 		measureNameGroup.add(measureNameLabel);
-		measureNameGroup.add(name);
+		measureNameGroup.add(measureName);
+		
+		
+		cqlLibraryNameLabel.getElement().setId("cqlLibraryNamePanel_CQLLibraryNameLabel"); //TODO create id possibly
+		Form createCQLLibraryForm = new Form();
+		FormLabel cqlLibraryNameLabel = buildCQLLibraryNameLabel();
+		buildCQLLibraryTextArea();
+		cqlLibraryNameGroup.add(cqlLibraryNameLabel);
+		cqlLibraryNameGroup.add(cqlLibraryName);
 		
 		FormLabel shortNameLabel = buildShortNameLabel();
 		buildShortNameTextBox();
@@ -53,6 +61,10 @@ public class ManageMeasureDetailView extends AbstractManageMeasureDetailView {
 		createMeasureForm.add(formFieldSet);
 		createMeasureForm.add(messageFormGrp);
 		fPanel.add(createMeasureForm);
+		
+		createCQLLibraryForm.add(formFieldSet);
+		createCQLLibraryForm.add(messageFormGrp);
+		fPanel.add(createCQLLibraryForm);
 		mainPanel.add(fPanel);
 				
 	}

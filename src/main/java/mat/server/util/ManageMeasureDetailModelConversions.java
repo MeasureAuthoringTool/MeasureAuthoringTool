@@ -147,7 +147,7 @@ public class ManageMeasureDetailModelConversions {
 	private void createMeasureDetailModel(Measure measure, OrganizationDAO organizationDao,
 			MeasureTypeDAO measureTypeDao, ManageMeasureDetailModel measureDetailModel) {
 		measureDetailModel.setId(measure.getId());
-		measureDetailModel.setName(measure.getDescription());
+		measureDetailModel.setMeasureName(measure.getDescription());
 		measureDetailModel.setShortName(measure.getaBBRName());
 		measureDetailModel.setVersionNumber(measure.getVersion());
 		measureDetailModel.setRevisionNumber(measure.getRevisionNumber());

@@ -22,8 +22,8 @@ public class ManageCompositeMeasureModelValidator extends ManageMeasureModelVali
 		List<String> message = new ArrayList<String>();
 
 		CommonMeasureValidator commonMeasureValidator = new CommonMeasureValidator();
-		message.addAll(commonMeasureValidator.validateMeasureName(model.getName()));
-		message.addAll(commonMeasureValidator.validateMeasureName(model.getName()));
+		message.addAll(commonMeasureValidator.validateMeasureName(model.getMeasureName()));
+		message.addAll(commonMeasureValidator.validateMeasureName(model.getMeasureName()));
 		message.addAll(commonMeasureValidator.validateECQMAbbreviation(model.getShortName()));
 		String compositeScoring = model.getCompositeScoringMethod();
 		if((compositeScoring == null) || !CommonMeasureValidator.isValidValue(compositeScoring)) {

@@ -853,7 +853,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private void createMeasureDetailsModelFromMeasure(final ManageMeasureDetailModel model, final Measure measure) {
 		logger.info("In MeasureLibraryServiceImpl.createMeasureDetailsModelFromMeasure()");
 		model.setId(measure.getId());
-		model.setName(measure.getDescription());
+		model.setMeasureName(measure.getDescription());
 		model.setShortName(measure.getaBBRName());
 		model.setMeasScoring(measure.getMeasureScoring());
 		model.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(),
@@ -2087,7 +2087,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				
 				existingMeasureScoringType = measure.getMeasureScoring();
 				
-				measure.setDescription(model.getName());
+				measure.setDescription(model.getMeasureName());
 				String shortName = buildMeasureShortName(model);
 
 				model.setShortName(shortName);
@@ -2479,7 +2479,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            the measure
 	 */
 	private void setValueFromModel(final ManageMeasureDetailModel model, final Measure measure) {
-		measure.setDescription(model.getName());
+		measure.setDescription(model.getMeasureName());
 		measure.setaBBRName(model.getShortName());
 		// US 421. Scoring choice is not part of core measure.
 		measure.setMeasureScoring(model.getMeasScoring());

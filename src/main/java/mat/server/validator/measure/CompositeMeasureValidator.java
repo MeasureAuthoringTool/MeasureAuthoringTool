@@ -219,7 +219,7 @@ public class CompositeMeasureValidator {
 	private List<String> validateMeasuresAllUseTheCorrectQDMVersion(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
 		List<String> messages = new ArrayList<>();
 		if(!manageCompositeMeasureDetailModel.getQdmVersion().equals(MATPropertiesService.get().getQmdVersion())) {
-			messages.add("The measure " + manageCompositeMeasureDetailModel.getName() + " is not using the correct version of the QDM");
+			messages.add("The measure " + manageCompositeMeasureDetailModel.getMeasureName() + " is not using the correct version of the QDM");
 		} else {
 			for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
 				if(!appliedComponentMeasure.getQdmVersion().equals(MATPropertiesService.get().getQmdVersion())) {

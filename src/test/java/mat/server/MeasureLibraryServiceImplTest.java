@@ -57,7 +57,7 @@ public class MeasureLibraryServiceImplTest {
 		ManageMeasureDetailModel manageMeasureDetailModel = new ManageMeasureDetailModel();
 		String measureModelId = UUID.randomUUID().toString();
 		manageMeasureDetailModel.setId(measureModelId);
-		manageMeasureDetailModel.setName("Test Measure");
+		manageMeasureDetailModel.setMeasureName("Test Measure");
 		manageMeasureDetailModel.setShortName("Test Measure");
 		manageMeasureDetailModel.setMeasScoring("Ratio");
 		manageMeasureDetailModel.setIsPatientBased(false);

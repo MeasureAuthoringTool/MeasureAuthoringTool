@@ -192,7 +192,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			Document originalDoc = docBuilder.parse(oldXmlstream);
 			clonedDoc = originalDoc;
 			clonedMeasure.setaBBRName(currentDetails.getShortName());
-			clonedMeasure.setDescription(currentDetails.getName());
+			clonedMeasure.setDescription(currentDetails.getMeasureName());
 			
 			clonedMeasure.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 			clonedMeasure.setReleaseVersion(measure.getReleaseVersion());			
@@ -292,7 +292,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			logger.info("Final XML after cloning/draft" + clonedXml.getMeasureXMLAsString());
 			measureXmlDAO.save(clonedXml);
 			result.setId(clonedMeasure.getId());
-			result.setName(currentDetails.getName());
+			result.setName(currentDetails.getMeasureName());
 			result.setShortName(currentDetails.getShortName());
 			result.setScoringType(currentDetails.getMeasScoring());
 			

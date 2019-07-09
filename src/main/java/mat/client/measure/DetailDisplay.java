@@ -23,13 +23,17 @@ public interface DetailDisplay extends BaseDisplay {
 
 	public HasValue<String> getMeasureVersion();
 
-	public HasValue<String> getName();
+	public HasValue<String> getMeasureName();
+	
+	public HasValue<String> getCQLLibraryName();
 
 	public HasClickHandlers getSaveButton();
 
 	public HasValue<String> getShortName();
 
 	public void setMeasureName(String name);
+	
+	public void setCQLLibraryName(String name);
 
 	void setScoringChoices(List<? extends HasListBox> texts);
 

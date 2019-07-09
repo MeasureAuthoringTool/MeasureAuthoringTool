@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.codelist.HasListBox;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
+import mat.client.shared.CQLLibraryNameLabel;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -32,7 +33,9 @@ import mat.client.shared.TextAreaWithMaxLength;
 public class AbstractManageMeasureDetailView implements DetailDisplay{
 	protected SimplePanel mainPanel = new SimplePanel();
 	protected MeasureNameLabel measureNameLabel = new MeasureNameLabel();
-	protected TextAreaWithMaxLength name = new TextAreaWithMaxLength();
+	protected CQLLibraryNameLabel cqlLibraryNameLabel = new CQLLibraryNameLabel();
+	protected TextAreaWithMaxLength measureName = new TextAreaWithMaxLength();
+	protected TextAreaWithMaxLength cqlLibraryName = new TextAreaWithMaxLength();
 	protected TextBox shortName = new TextBox();
 	protected MessageAlert errorMessages = new ErrorMessageAlert();
 	protected ListBoxMVP  measureScoringInput = new ListBoxMVP();
@@ -41,6 +44,7 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	protected HelpBlock helpBlock = new HelpBlock();
 	protected FormGroup messageFormGrp = new FormGroup();
     protected FormGroup measureNameGroup = new FormGroup();	
+    protected FormGroup cqlLibraryNameGroup = new FormGroup();
     protected FormGroup shortNameGroup = new FormGroup();
     protected FormGroup scoringGroup = new FormGroup();
     protected FormGroup patientBasedFormGrp = new FormGroup();
@@ -69,7 +73,7 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 
 	@Override
 	public void clearFields() {
-		name.setText("");
+		measureName.setText("");
 		shortName.setText("");
 		measureScoringInput.setSelectedIndex(0);//default to --Select-- value.
 		helpBlock.setText("");
@@ -97,8 +101,13 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	}
 
 	@Override
-	public HasValue<String> getName() {
-		return name;
+	public HasValue<String> getMeasureName() {
+		return measureName;
+	}
+	//TODO look into call hierarchy of getMeasureName to implement getCQLLibraryName
+	@Override
+	public HasValue<String> getCQLLibraryName() {
+		return cqlLibraryName;
 	}
 
 	@Override
@@ -114,6 +123,11 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	@Override
 	public void setMeasureName(String name) {
 		measureNameLabel.setMeasureName(name);
+	}
+	//TODO look into call hier of setMeasureName to implement setCQLLibraryName
+	@Override
+	public void setCQLLibraryName(String name) {
+		cqlLibraryNameLabel.setCQLLibraryName(name);
 	}
 
 	@Override
@@ -136,6 +150,11 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	public void showMeasureName(boolean show) {
 		MatContext.get().setVisible(measureNameLabel,show);	
 	}
+//	TODO ?
+//	@Override
+//	public void showCQLLibraryName(boolean show) {
+//		MatContext.get().setVisible(measureNameLabel,show);	
+//	}
 
 	@Override
 	public ListBoxMVP getPatientBasedInput() {
@@ -189,20 +208,38 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	
 	protected FormLabel buildMeasureNameLabel() {
 		FormLabel measureNameLabel = new FormLabel();
-		measureNameLabel.setText("Name");
-		measureNameLabel.setTitle("Name");
-		measureNameLabel.setFor("NameTextArea");
+		measureNameLabel.setText("Measure Name");
+		measureNameLabel.setTitle("Measure Name");
+		measureNameLabel.setFor("MeasureNameTextArea");
 		measureNameLabel.setShowRequiredIndicator(true);
-		measureNameLabel.setId("NameTextArea_Id");
+		measureNameLabel.setId("MeasureNameTextArea_Id");
 		return measureNameLabel;
 	}
 	
-	protected void buildNameTextArea() {
-		name.setId("NameTextArea");
-		name.setTitle("Enter Measure Name Required.");
-		name.setWidth("400px");
-		name.setHeight("50px");
-		name.setMaxLength(500);
+	protected void buildMeasureNameTextArea() {
+		measureName.setId("MeasureNameTextArea");
+		measureName.setTitle("Enter Measure Name Required.");
+		measureName.setWidth("400px");
+		measureName.setHeight("50px");
+		measureName.setMaxLength(500);
+	}
+	
+	protected FormLabel buildCQLLibraryNameLabel() {
+		FormLabel cqlLibraryNameLabel = new FormLabel();
+		cqlLibraryNameLabel.setText("CQL Library Name");
+		cqlLibraryNameLabel.setTitle("CQL Library Name");
+		cqlLibraryNameLabel.setFor("CqlLibraryNameTextArea");
+		cqlLibraryNameLabel.setShowRequiredIndicator(true);
+		cqlLibraryNameLabel.setId("CqlLibraryNameTextArea_Id");
+		return cqlLibraryNameLabel;
+	}
+	
+	protected void buildCQLLibraryTextArea() {
+		cqlLibraryName.setId("CqlLibraryNameTextArea");
+		cqlLibraryName.setTitle("Enter CQL Library Name Required.");
+		cqlLibraryName.setWidth("400px");
+		cqlLibraryName.setHeight("50px");
+		cqlLibraryName.setMaxLength(500);
 	}
 	
 	protected FormLabel buildShortNameLabel() {
@@ -279,6 +316,7 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 		buttonFormGroup.add(buttonBar);
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(measureNameGroup);
+		formFieldSet.add(cqlLibraryNameGroup);
 		formFieldSet.add(shortNameGroup);
 		formFieldSet.add(scoringGroup);
 		formFieldSet.add(patientBasedFormGrp);

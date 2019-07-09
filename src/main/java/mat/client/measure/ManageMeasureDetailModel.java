@@ -15,7 +15,8 @@ import mat.shared.model.util.MeasureDetailsUtil;
 
 public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	private String id;
-	private String name;
+	private String measureName;
+	private String cqlLibraryName;
 	private String shortName;
 	private String versionNumber = "0.0";
 	private String revisionNumber = "000";
@@ -290,12 +291,20 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 		this.id = doTrim(id);
 	}
 	
-	public String getName() {
-		return name;
+	public String getMeasureName() {
+		return measureName;
 	}
 	
-	public void setName(String name) {
-		this.name = doTrim(name);
+	public void setMeasureName(String name) {
+		this.measureName = doTrim(name);
+	}
+	//TODO make sure these are correlate with measure hierarchy
+	public String getCQLLibraryName() {
+		return cqlLibraryName;
+	}
+	
+	public void setCQLLibraryName(String name) {
+		this.cqlLibraryName = doTrim(name);
 	}
 	
 	public String getShortName() {
@@ -511,7 +520,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 				+ ((toCompareMeasure == null) ? 0 : toCompareMeasure.hashCode());
 		result = (prime * result)
 				+ ((toCompareComponentMeasures == null) ? 0 : toCompareComponentMeasures.hashCode());
-		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
+		result = (prime * result) + ((measureName == null) ? 0 : measureName.hashCode());
 		result = (prime * result) + ((nqfId == null) ? 0 : nqfId.hashCode());
 		result = (prime * result)
 				+ ((numerator == null) ? 0 : numerator.hashCode());
@@ -988,7 +997,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 
 	@Override
 	public String toString() {
-		return "ManageMeasureDetailModel [id=" + id + ", name=" + name
+		return "ManageMeasureDetailModel [id=" + id + ", name=" + measureName
 				+ ", shortName=" + shortName + ", versionNumber="
 				+ versionNumber + ", revisionNumber=" + revisionNumber
 				+ ", measureId=" + measureId + ", groupName=" + groupName
@@ -1138,11 +1147,11 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	@Override
 	public void scrubForMarkUp() {
 		String markupRegExp = "<[^>]+>";
-		if(this.getName() != null) {
-			String noMarkupText = this.getName().trim().replaceAll(markupRegExp, "");
+		if(this.getMeasureName() != null) {
+			String noMarkupText = this.getMeasureName().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure name:"+noMarkupText);
-			if(this.getName().trim().length() > noMarkupText.length()){
-				this.setName(noMarkupText);
+			if(this.getMeasureName().trim().length() > noMarkupText.length()){
+				this.setMeasureName(noMarkupText);
 			}
 		}
 		if(this.getShortName() != null) {

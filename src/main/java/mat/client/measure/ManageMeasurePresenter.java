@@ -87,12 +87,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 				isClone = false;
 	
 				if(detailDisplay != null) {
-					detailDisplay.getName().setValue("");
+					detailDisplay.getMeasureName().setValue("");
 					detailDisplay.getShortName().setValue("");
 				}
 	
 				if(compositeDetailDisplay != null) {
-					compositeDetailDisplay.getName().setValue("");
+					compositeDetailDisplay.getMeasureName().setValue("");
 					compositeDetailDisplay.getShortName().setValue("");
 					compositeDetailDisplay.clearFields();
 				}
@@ -530,13 +530,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 				
 				// create new measure flow
 				if(!isClone && currentDetails.getId() == null) {
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getName().getValue()));
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getMeasureName().getValue()));
 					
 				} else if(isClone) { // if clone
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getCloneMeasureSuccessfulMessage(detailDisplay.getName().getValue()));
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getCloneMeasureSuccessfulMessage(detailDisplay.getMeasureName().getValue()));
 					
 				} else { //if edit
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getEditMeasureSuccessfulMessage(detailDisplay.getName().getValue()));	
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getEditMeasureSuccessfulMessage(detailDisplay.getMeasureName().getValue()));	
 				}
 			
 			}
@@ -618,7 +618,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		detailDisplay.clearFields();
 		resetPatientBasedInput(detailDisplay); 
 		
-		detailDisplay.setMeasureName(currentDetails.getName());
+		detailDisplay.setMeasureName(currentDetails.getMeasureName());
 		detailDisplay.showMeasureName(true);
 		detailDisplay.showCautionMsg(true);
 		detailDisplay.getMeasScoringChoice().setValueMetadata(currentDetails.getMeasScoring());
@@ -1651,14 +1651,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 
 	private void setCompositeDetailsToView() {
-		compositeDetailDisplay.getName().setValue(currentCompositeMeasureDetails.getName());
+		compositeDetailDisplay.getMeasureName().setValue(currentCompositeMeasureDetails.getMeasureName());
 		compositeDetailDisplay.getShortName().setValue(currentCompositeMeasureDetails.getShortName());
 		((ManageCompositeMeasureDetailView) compositeDetailDisplay).setCompositeScoringSelectedValue(currentCompositeMeasureDetails.getCompositeScoringMethod());
 		compositeDetailDisplay.getMeasScoringChoice().setValueMetadata(currentCompositeMeasureDetails.getMeasScoring());
 	}
 	
 	private void setDetailsToView() {
-		detailDisplay.getName().setValue(currentDetails.getName());
+		detailDisplay.getMeasureName().setValue(currentDetails.getMeasureName());
 		detailDisplay.getShortName().setValue(currentDetails.getShortName());
 		detailDisplay.getMeasScoringChoice().setValueMetadata(currentDetails.getMeasScoring());
 	}
@@ -1848,7 +1848,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			cloneMeasure(currentDetails, false);
 		} else if (isValid(currentDetails, false)) {
 			final boolean isInsert = currentDetails.getId() == null;
-			final String name = currentDetails.getName();
+			final String name = currentDetails.getMeasureName();
 			final String shortName = currentDetails.getShortName();
 			final String scoringType = currentDetails.getMeasScoring();
 			final String version = currentDetails.getVersionNumber()+"."+currentDetails.getRevisionNumber();		
@@ -1875,7 +1875,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * Update details from view.
 	 */
 	private void updateDetailsFromView() {
-		currentDetails.setName(detailDisplay.getName().getValue().trim());
+		currentDetails.setMeasureName(detailDisplay.getMeasureName().getValue().trim());
 		currentDetails.setShortName(detailDisplay.getShortName().getValue().trim());
 		String measureScoring = detailDisplay.getMeasScoringValue();
 
@@ -1888,15 +1888,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 		
 		currentDetails.scrubForMarkUp();
-		detailDisplay.getName().setValue(currentDetails.getName());
+		detailDisplay.getMeasureName().setValue(currentDetails.getMeasureName());
 		detailDisplay.getShortName().setValue(currentDetails.getShortName());
-		MatContext.get().setCurrentMeasureName(currentDetails.getName());
+		MatContext.get().setCurrentMeasureName(currentDetails.getMeasureName());
 		MatContext.get().setCurrentShortName(currentDetails.getShortName());
 		MatContext.get().setCurrentMeasureScoringType(currentDetails.getMeasScoring());
 	}
 	
 	private void updateCompositeDetailsFromCompositeDetailView() {
-		currentCompositeMeasureDetails.setName(compositeDetailDisplay.getName().getValue().trim());
+		currentCompositeMeasureDetails.setMeasureName(compositeDetailDisplay.getMeasureName().getValue().trim());
 		currentCompositeMeasureDetails.setShortName(compositeDetailDisplay.getShortName().getValue().trim());
 		currentCompositeMeasureDetails.setCompositeScoringMethod(((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringValue());
 		String measureScoring = compositeDetailDisplay.getMeasScoringValue();
@@ -1942,7 +1942,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void saveCompositeMeasure() {
 		final boolean isInsert = currentCompositeMeasureDetails.getId() == null;
-		final String name = currentCompositeMeasureDetails.getName();
+		final String name = currentCompositeMeasureDetails.getMeasureName();
 		final String shortName = currentCompositeMeasureDetails.getShortName();
 		final String scoringType = currentCompositeMeasureDetails.getMeasScoring();
 		final String version = currentCompositeMeasureDetails.getVersionNumber() + "." + currentCompositeMeasureDetails.getRevisionNumber();

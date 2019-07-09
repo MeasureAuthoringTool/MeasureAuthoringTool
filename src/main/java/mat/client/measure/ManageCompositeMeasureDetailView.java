@@ -44,13 +44,20 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	public ManageCompositeMeasureDetailView() {
 		buildMainPanel();
 		FlowPanel fPanel = buildFlowPanel();
+		
 		measureNameLabel.getElement().setId("measureNameLabel_MeasureNameLabel");
 		Form createMeasureForm = new Form();
 		FormLabel measureNameLabel = buildMeasureNameLabel();
-		
-		buildNameTextArea();
+		buildMeasureNameTextArea();
 		measureNameGroup.add(measureNameLabel);
-		measureNameGroup.add(name);
+		measureNameGroup.add(measureName);
+		
+		cqlLibraryNameLabel.getElement().setId("cqlLibraryNamePanel_CQLLibraryNameLabel");
+		Form createCQLLibraryForm = new Form();
+		FormLabel cqlLibraryNameLabel = buildCQLLibraryNameLabel();
+		buildCQLLibraryTextArea();
+		cqlLibraryNameGroup.add(cqlLibraryNameLabel);
+		cqlLibraryNameGroup.add(cqlLibraryName);
 		
 		FormLabel shortNameLabel = buildShortNameLabel();
 		buildShortNameTextBox();
@@ -92,6 +99,9 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 		createMeasureForm.add(formFieldSet);
 		createMeasureForm.add(messageFormGrp);
 		fPanel.add(createMeasureForm);
+		createCQLLibraryForm.add(formFieldSet);
+		createCQLLibraryForm.add(messageFormGrp);
+		fPanel.add(createMeasureForm);
 
 		mainPanel.add(fPanel);
 	}
@@ -112,6 +122,7 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 		fPanel.setWidth("90%");	
 		fPanel.setHeight("100%");
 		fPanel.add(measureNameLabel);
+		fPanel.add(cqlLibraryNameLabel);
 		
 		fPanel.add(requiredInstructions);
 		requiredInstructions.getElement().setId("requiredInstructions_HTML");

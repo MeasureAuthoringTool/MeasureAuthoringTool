@@ -265,4 +265,6 @@
 		<include file="classpath:/liquibase/deploy_Sprint-173-9984_Add_patientId_to_all_datatypes.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-173-9986_Add_rank_attribute.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-173-9987_Add_additional_attributes_RelatedPerson.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-173-9988_removed_reporter.xml"/>
+
 </databaseChangeLog>

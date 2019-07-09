@@ -217,10 +217,6 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
- <attribute attribName="reporter">
-  <mode mode="ValueSets" />
-  <mode mode="Codes" />
- </attribute>
  <attribute attribName="participationPeriod">
   <mode mode="Nullable" />
  </attribute>

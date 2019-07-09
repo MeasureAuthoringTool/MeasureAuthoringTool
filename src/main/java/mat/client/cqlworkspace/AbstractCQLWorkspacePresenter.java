@@ -119,6 +119,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected String currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 	protected String nextSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 	protected boolean isModified = false;
+	protected boolean isLibraryNameExists = false;
 	protected AceEditor curAceEditor;
 	protected CQLModelValidator validator = new CQLModelValidator();
 	protected CQLCode modifyCQLCode;
@@ -1661,7 +1662,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		focusSkipLists();
 	}
 	
-	protected void generalInfoEvent() {
+	private void generalInfoEvent() {
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(true);
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
 		cqlWorkspaceView.getValueSetView().getCellTableMainPanel().clear();
@@ -1675,17 +1676,31 @@ public abstract class AbstractCQLWorkspacePresenter {
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().getGeneralInformation().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 			cqlWorkspaceView.buildGeneralInformation(hasEditPermissions());
-			boolean isValidQDMVersion = cqlWorkspaceView.getCQLLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion(isStandaloneCQLLibrary());
-			if(!isValidQDMVersion){
-				messagePanel.getErrorMessageAlert().createAlert(INVALID_QDM_VERSION_IN_INCLUDES);
-			} else {
-				messagePanel.getErrorMessageAlert().clearAlert();
-			}
+
+			buildOrClearErrorPanel();
+			
 			cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().setText(cqlLibraryName);
 			cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setText(cqlLibraryComment);
 		}
 		cqlWorkspaceView.setGeneralInfoHeading();
 		cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setCursorPos(0);
+	}
+	
+	protected void buildOrClearErrorPanel() {
+		boolean isValidQDMVersion = cqlWorkspaceView.getCQLLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion(isStandaloneCQLLibrary());
+		List<String> errorMessageList = new ArrayList<>();
+		if (isLibraryNameExists) {
+			errorMessageList.add(DUPLICATE_LIBRARY_NAME);
+		}
+		if(!isValidQDMVersion){
+			errorMessageList.add(INVALID_QDM_VERSION_IN_INCLUDES);
+		} 
+
+		if (errorMessageList.isEmpty()) {
+			messagePanel.getErrorMessageAlert().clearAlert();
+		} else {
+			messagePanel.getErrorMessageAlert().createAlert(errorMessageList);
+		} 
 	}
 	
 	protected void leftNavDefinitionClicked(ClickEvent event) {
@@ -1922,4 +1937,21 @@ public abstract class AbstractCQLWorkspacePresenter {
 			}
 		}
 	}
+	
+	protected void checkIfLibraryNameExistsAndLoadGeneralInfo() {
+		MatContext.get().getMeasureService().checkIfLibraryNameExists(this.cqlLibraryName, this.setId, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				showSearchingBusy(false);
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+				isLibraryNameExists = result;
+				generalInfoEvent();
+			}
+		});		
+	}
+	
 }

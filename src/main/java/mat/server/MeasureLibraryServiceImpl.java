@@ -5058,7 +5058,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		if(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentMeasureId)) {
 			Measure measure = measureDAO.find(currentMeasureId);
-			if (checkIfLibraryNameExists(libraryName, measure.getMeasureSet().getId())) {
+			if (libraryNameExists(libraryName, measure.getMeasureSet().getId())) {
 				result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
 				result.setSuccess(false);
 			} else {
@@ -5581,6 +5581,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result = cqlService.getCQLDataForLoad(xmlString);
 			result.setSetId(measure.getMeasureSet().getId());
 			result.setSuccess(true);
+			if (libraryNameExists(result.getCqlModel().getLibraryName(), result.getSetId())) {
+				result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+			}
 		} else {
 			result.setSuccess(false);
 		}
@@ -6028,7 +6031,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public boolean checkIfLibraryNameExists(String libraryName, String setId) {
+	public boolean libraryNameExists(String libraryName, String setId) {
 		return getCqlService().checkIfLibraryNameExists(libraryName, setId);
 	}
 }

@@ -799,9 +799,9 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		final String libraryNameExistsQuery = buildLibraryNameCheckQuery(setId);
 
 		final NativeQuery<?> booleanQuery = session.createNativeQuery(libraryNameExistsQuery);
-		booleanQuery.setParameter("name", name);
+		booleanQuery.setParameter("name", name.toLowerCase());
 		if (StringUtils.isNotBlank(setId)) {
-			booleanQuery.setParameter("setId", setId);
+			booleanQuery.setParameter(SET_ID, setId);
 		}
 		
 		final int count = ((BigInteger) booleanQuery.uniqueResult()).intValue();
@@ -810,9 +810,11 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 	
 	private String buildLibraryNameCheckQuery(String setId) {
 		final StringBuilder sb = new StringBuilder();
+		sb.append("SELECT EXISTS(");
 		sb.append(buildNameCheckQuery(setId, "MEASURE", "MEASURE_SET_ID"));
 		sb.append(" UNION ");
 		sb.append(buildNameCheckQuery(setId, "CQL_LIBRARY", "SET_ID"));
+		sb.append(")");
 		return sb.toString();
 	}
 
@@ -824,7 +826,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 			sb.append("and ").append(columnName).append(" <> :setId ");
 		}
 		sb.append("and (DRAFT = 1 ");
-		sb.append("OR (DRAFT = 0 and CAST(TRIM(LEADING 'v' from RELEASE_VERSION) AS decimal(2,1)) >= 5.8))) ver");
+		sb.append("OR (DRAFT = 0 and CAST(TRIM(LEADING 'v' from RELEASE_VERSION) AS decimal(2,1)) >= 5.8)))");
 		return sb.toString();
 	}
 

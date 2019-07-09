@@ -653,4 +653,6 @@ public interface MeasureService extends RemoteService {
 	public int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
 	
 	public String getHumanReadableForMeasureDetails(String measureId);
+	
+    public boolean checkIfLibraryNameExists(String libraryName, String setId);
 }

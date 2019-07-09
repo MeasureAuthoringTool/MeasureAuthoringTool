@@ -234,9 +234,10 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setCursorPos(0);
 						messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getCurrentMeasureName() + " general information successfully updated.");
 						setIsPageDirty(false);
-						
+						isLibraryNameExists = false;
 					} else {
 						if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
+							isLibraryNameExists = true;
 							messagePanel.getErrorMessageAlert().createAlert(DUPLICATE_LIBRARY_NAME_SAVE);
 						}
 					}
@@ -896,9 +897,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				setId = result.getSetId();
 			}
 			if (result.getCqlModel().getLibraryName() != null) {
-				if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
-					messagePanel.getErrorMessageAlert().createAlert(DUPLICATE_LIBRARY_NAME);
-				}
+				isLibraryNameExists = (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
 				cqlLibraryName = cqlWorkspaceView.getCqlGeneralInformationView().createCQLLibraryName(result.getCqlModel().getLibraryName());
 				cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().setText(cqlLibraryName);
 
@@ -973,11 +972,9 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().udpateIncludeLibraryMap();
 				MatContext.get().setIncludedValues(result);
 			}
-
-			boolean isValidQDMVersion = cqlWorkspaceView.getCQLLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion(false); //false because it is a measures cql view
-			if (!isValidQDMVersion) {
-				messagePanel.getErrorMessageAlert().createAlert(INVALID_QDM_VERSION_IN_INCLUDES);
-			} 
+			
+			buildOrClearErrorPanel();
+			
 		} else {
 			Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 		}
@@ -2445,7 +2442,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 	private void leftNavGeneralInformationClicked() {
 		cqlWorkspaceView.hideAceEditorAutoCompletePopUp();
-		generalInfoEvent();
+		checkIfLibraryNameExistsAndLoadGeneralInfo();
 	}
 
 	private void leftNavComponentsClicked(ClickEvent event) {

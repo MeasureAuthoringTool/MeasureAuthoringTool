@@ -38,9 +38,9 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.MeasureLibraryService;
-import mat.shared.MeasureSearchModel;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
@@ -549,4 +549,10 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	public String getHumanReadableForMeasureDetails(String measureId) {
 		return this.getMeasureLibraryService().getHumanReadableForMeasureDetails(measureId);
 	}
+
+	@Override
+	public boolean checkIfLibraryNameExists(String libraryName, String setId) {
+        return this.getMeasureLibraryService().libraryNameExists(libraryName, setId);
+	}
+	
 }

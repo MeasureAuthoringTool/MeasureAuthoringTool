@@ -709,5 +709,5 @@ public interface MeasureLibraryService {
 
 	SaveUpdateCQLResult saveCQLFile(String measureId, String cql);
 	
-	boolean checkIfLibraryNameExists(String libraryName, String setId);
+	boolean libraryNameExists(String libraryName, String setId);
 }

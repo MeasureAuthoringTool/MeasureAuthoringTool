@@ -1882,6 +1882,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 		SaveUpdateCQLResult cqlResult = getMeasureCQLFileData(measureId);
+		
+		if (libraryNameExists(cqlResult.getCqlModel().getLibraryName(), m.getMeasureSet().getId())) {
+			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
+			return returnFailureReason(saveMeasureResult, SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+		}		
+		
 		if(!cqlResult.getCqlErrors().isEmpty() || !cqlResult.getLinterErrors().isEmpty() || !cqlResult.isDatatypeUsedCorrectly()){
 			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_CQL_DATA);

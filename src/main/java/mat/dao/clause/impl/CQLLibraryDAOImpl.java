@@ -810,9 +810,9 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 	
 	private String buildLibraryNameCheckQuery(String setId) {
 		final StringBuilder sb = new StringBuilder();
-		sb.append("SELECT EXISTS(");
+		sb.append("SELECT (");
 		sb.append(buildNameCheckQuery(setId, "MEASURE", "MEASURE_SET_ID"));
-		sb.append(" UNION ");
+		sb.append(" ) OR ( ");
 		sb.append(buildNameCheckQuery(setId, "CQL_LIBRARY", "SET_ID"));
 		sb.append(")");
 		return sb.toString();

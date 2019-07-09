@@ -69,6 +69,7 @@ import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.MeasureSearchModel;
+import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
 import mat.shared.validator.measure.ManageCompositeMeasureModelValidator;
 import mat.shared.validator.measure.ManageMeasureModelValidator;
@@ -1003,51 +1004,64 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void saveFinalizedVersion(final String measureId, final String measureName, final boolean isMajor, final String version, boolean shouldPackage, boolean ignoreUnusedLibraries) {
 		setSearchingBusy(true);
 		MatContext.get().getMeasureService().saveFinalizedVersion(measureId, isMajor, version, shouldPackage, ignoreUnusedLibraries, new AsyncCallback<SaveMeasureResult>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						setSearchingBusy(false);
-						versionDisplay.getErrorMessageDisplay()
-								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(null, null, null,
-								"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+			@Override
+			public void onFailure(Throwable caught) {
+				setSearchingBusy(false);
+				versionDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+			}
+
+			@Override
+			public void onSuccess(SaveMeasureResult result) {
+				setSearchingBusy(false);
+				if (result.isSuccess()) {
+					displaySearch();
+					String versionStr = result.getVersionStr();
+					recordMeasureAuditEvent(measureId, versionStr);
+					isMeasureVersioned = true;
+
+					if(shouldPackage) {
+						fireSuccessfulVersionAndPackageEvent(isMeasureVersioned, measureName, MatContext.get().getMessageDelegate().getVersionAndPackageSuccessfulMessage(measureName, versionStr));
+					} else  {
+						fireSuccessfulVersionEvent(isMeasureVersioned, measureName, MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(measureName, versionStr));
 					}
 
-					@Override
-					public void onSuccess(SaveMeasureResult result) {
-						setSearchingBusy(false);
-						if (result.isSuccess()) {
-							displaySearch();
-							String versionStr = result.getVersionStr();
-							recordMeasureAuditEvent(measureId, versionStr);
-							isMeasureVersioned = true;
-							
-							if(shouldPackage) {
-								fireSuccessfullVersionAndPackageEvent(isMeasureVersioned, measureName, MatContext.get().getMessageDelegate().getVersionAndPackageSuccessfulMessage(measureName, versionStr));
-							} else  {
-								fireSuccessfullVersionEvent(isMeasureVersioned, measureName, MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(measureName, versionStr));
-							}
-							
-						} else {
-							isMeasureVersioned = false;
-							if (result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA) {
-								versionDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
-							} else if (result.getFailureReason() == SaveMeasureResult.UNUSED_LIBRARY_FAIL) {
-								getUnusedLibraryDialog(measureId, measureName, isMajor, version, shouldPackage);
-							} else if(result.getFailureReason() == SaveMeasureResult.PACKAGE_FAIL) {
-								getVersionWithoutPackageDialog(measureId, measureName, isMajor, version, false).show();
-							}
-						}
-					}
-				});
+				} else {
+					versionFailureEvent(measureId, measureName, isMajor, version, shouldPackage, result);
+				}
+			}
+		});
 	}
 
-	private void fireSuccessfullVersionEvent(boolean isSuccess, String name, String message){
+	private void versionFailureEvent(final String measureId, final String measureName, final boolean isMajor, final String version, 
+			final boolean shouldPackage, final SaveMeasureResult result) { 
+		isMeasureVersioned = false;
+		switch (result.getFailureReason()) {
+		case ConstantMessages.INVALID_CQL_DATA :
+			versionDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
+			break;
+		case SaveMeasureResult.UNUSED_LIBRARY_FAIL :
+			getUnusedLibraryDialog(measureId, measureName, isMajor, version, shouldPackage);
+			break;
+		case SaveMeasureResult.PACKAGE_FAIL :
+			getVersionWithoutPackageDialog(measureId, measureName, isMajor, version, false).show();
+			break;
+		case SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME :
+			versionDisplay.getErrorMessageDisplay().createAlert(MessageDelegate.VERSION_LIBRARY_NAME_ERROR_MESSAGE);
+			break;
+		default:
+			break;
+		}
+
+	}
+	
+	private void fireSuccessfulVersionEvent(boolean isSuccess, String name, String message){
 		MeasureVersionEvent versionEvent = new MeasureVersionEvent(isSuccess, name, message);
 		MatContext.get().getEventBus().fireEvent(versionEvent);
 	}
 	
-	private void fireSuccessfullVersionAndPackageEvent(boolean isSuccess, String name, String message) {
-		fireSuccessfullVersionEvent(isSuccess, name, message);
+	private void fireSuccessfulVersionAndPackageEvent(boolean isSuccess, String name, String message) {
+		fireSuccessfulVersionEvent(isSuccess, name, message);
 	}
 
 	private void search(final String searchText, int startIndex, int pageSize, final int filter, boolean didUserSelectSearch) {

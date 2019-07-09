@@ -42,7 +42,7 @@ public class CQLLibrary {
 
 	private User ownerId;
 	
-	private String set_id;
+	private String setId;
 
 	private String version;
 
@@ -283,12 +283,12 @@ public class CQLLibrary {
 	}
 
 	@Column(name = "SET_ID", nullable = false, length = 45)
-	public String getSet_id() {
-		return set_id;
+	public String getSetId() {
+		return setId;
 	}
 
-	public void setSet_id(String set_id) {
-		this.set_id = set_id;
+	public void setSetId(String setId) {
+		this.setId = setId;
 	}
 	
 	@Column(name = "LAST_MODIFIED_ON", length = 19)

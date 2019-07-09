@@ -55,7 +55,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 	private static final Log logger = LogFactory.getLog(CQLLibraryDAOImpl.class);
 	
 	private static final String DRAFT = "draft";
-	private static final String SET_ID = "set_id";
+	private static final String SET_ID = "setId";
 	private static final String VERSION = "version";
 	private static final String OWNER_ID = "ownerId";
 	private static final String LAST_NAME = "lastName";
@@ -219,7 +219,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		final HashMap<String, String> cqlSetIdToShareLevel = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(orderedList)) {
 			for (final CQLLibraryShare share : shareList) {
-				final String msid = share.getCqlLibrary().getSet_id();
+				final String msid = share.getCqlLibrary().getSetId();
 				final String shareLevel = share.getShareLevel().getId();
 				final String existingShareLevel = cqlSetIdToShareLevel.get(msid);
 				if (existingShareLevel == null){
@@ -322,7 +322,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		if (CollectionUtils.isNotEmpty(libraries)) {
 			final Set<String> cqlLibSetIds = new HashSet<>();
 			for (final CQLLibrary m : libraries) {
-				cqlLibSetIds.add(m.getSet_id());
+				cqlLibSetIds.add(m.getSetId());
 			}
 
 			final Session session = getSessionFactory().getCurrentSession();
@@ -343,8 +343,8 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		for (final CQLLibrary cqlLib : libraryResultList) {
 			boolean hasList = false;
 			for (final List<CQLLibrary> list : libraryList) {
-				final String cqlsetId = list.get(0).getSet_id();
-				if (cqlLib.getSet_id().equalsIgnoreCase(cqlsetId)) {
+				final String cqlsetId = list.get(0).getSetId();
+				if (cqlLib.getSetId().equalsIgnoreCase(cqlsetId)) {
 					list.add(cqlLib);
 					hasList = true;
 					break;
@@ -600,7 +600,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		dto.setDraft(cqlLibrary.isDraft());
 		dto.setVersion(cqlLibrary.getVersion());
 		dto.setFinalizedDate(cqlLibrary.getFinalizedDate());
-		dto.setCqlLibrarySetId(cqlLibrary.getSet_id());
+		dto.setCqlLibrarySetId(cqlLibrary.getSetId());
 		dto.setRevisionNumber(cqlLibrary.getRevisionNumber());
 		final boolean isLocked = isLocked(cqlLibrary.getLockedOutDate());
 		dto.setLocked(isLocked);
@@ -642,8 +642,8 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		for (final CQLLibrary lib : libraryResultList) {
 			boolean hasList = false;
 			for (final List<CQLLibrary> clist : librariesLists) {
-				final String setId = clist.get(0).getSet_id();
-				if (lib.getSet_id().equalsIgnoreCase(setId)) {
+				final String setId = clist.get(0).getSetId();
+				if (lib.getSetId().equalsIgnoreCase(setId)) {
 					clist.add(lib);
 					hasList = true;
 					break;
@@ -672,7 +672,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 			
 			if (!isDraftAvailable && (cql != null)) {
 				
-				final String maxVersion = findMaxVersion(cql.getSet_id(), cql.getOwnerId().getId());
+				final String maxVersion = findMaxVersion(cql.getSetId(), cql.getOwnerId().getId());
 
 				for (final CQLLibrary lib : clist) {
 					if (!lib.isDraft() && lib.getVersion().equalsIgnoreCase(maxVersion)) {

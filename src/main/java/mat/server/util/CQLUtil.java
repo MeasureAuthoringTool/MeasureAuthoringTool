@@ -1041,7 +1041,7 @@ public class CQLUtil {
 			libNode.setAttribute("alias", cqlLibrary.getAliasName());
 			libNode.setAttribute("name", cqlLibrary.getCqlLibraryName());
 			libNode.setAttribute("version", cqlLibrary.getVersion());
-			libNode.setAttribute("setId", cqlLibraryDAO.find(cqlLibrary.getCqlLibraryId()).getSet_id());
+			libNode.setAttribute("setId", cqlLibraryDAO.find(cqlLibrary.getCqlLibraryId()).getSetId());
 			libNode.setAttribute("isUnUsedGrandChild", "false");
 			//Marking if the library is a component measure
 			libNode.setAttribute("isComponent", cqlLibrary.getIsComponent());
@@ -1099,7 +1099,7 @@ public class CQLUtil {
 								libNode.setAttribute("alias", grandChildLib.getAliasName());
 								libNode.setAttribute("name", grandChildLib.getCqlLibraryName());
 								libNode.setAttribute("version", grandChildLib.getVersion());
-								libNode.setAttribute("setId", cqlLibraryDAO.find(grandChildLib.getCqlLibraryId()).getSet_id());
+								libNode.setAttribute("setId", cqlLibraryDAO.find(grandChildLib.getCqlLibraryId()).getSetId());
 								libNode.setAttribute("isUnUsedGrandChild", "true");
 								//Marking if the library is part of a component measure
 								libNode.setAttribute("isComponent", library.getIsComponent());

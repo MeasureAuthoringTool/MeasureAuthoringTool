@@ -237,7 +237,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		dataSetObject.setOwnerLastName(user.getLastName());
 		dataSetObject.setOwnerEmailAddress(user.getEmailAddress());
 		dataSetObject.setOwnerId(user.getId());
-		dataSetObject.setCqlSetId(cqlLibrary.getSet_id());
+		dataSetObject.setCqlSetId(cqlLibrary.getSetId());
 		
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
@@ -312,7 +312,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			CQLLibrary newLibraryObject = new CQLLibrary();
 			newLibraryObject.setDraft(true);
 			newLibraryObject.setName(existingLibrary.getName());
-			newLibraryObject.setSet_id(existingLibrary.getSet_id());;
+			newLibraryObject.setSetId(existingLibrary.getSetId());;
 			newLibraryObject.setOwnerId(existingLibrary.getOwnerId());
 			newLibraryObject.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 			newLibraryObject.setQdmVersion(MATPropertiesService.get().getQmdVersion());
@@ -389,7 +389,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		if(library != null){
 			String versionNumber = null;
 			if (isMajor) {
-				versionNumber = cqlLibraryDAO.findMaxVersion(library.getSet_id(), null);
+				versionNumber = cqlLibraryDAO.findMaxVersion(library.getSetId(), null);
 				if (versionNumber == null) {
 					versionNumber = "0.000";
 				}
@@ -399,7 +399,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				logger.info("Min Version number passed from Page Model: " + versionIndex);
 				String selectedVersion = version.substring(versionIndex + 1);
 				logger.info("Min Version number after trim: " + selectedVersion);
-				versionNumber = cqlLibraryDAO.findMaxOfMinVersion(library.getSet_id(), selectedVersion);
+				versionNumber = cqlLibraryDAO.findMaxOfMinVersion(library.getSetId(), selectedVersion);
 			}
 			
 			int endIndex = versionNumber.indexOf('.');
@@ -541,7 +541,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			CQLLibrary library = new CQLLibrary();
 			library.setDraft(true);
 			library.setName(cqlLibraryDataSetObject.getCqlName());
-			library.setSet_id(UUID.randomUUID().toString());
+			library.setSetId(UUID.randomUUID().toString());
 			library.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 			library.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 			library.setRevisionNumber("000");
@@ -712,7 +712,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		if(cqlLibraryXml != null) {
 			cqlResult = cqlService.getCQLData(cqlLibraryXml);
 			lintAndAddToResult(cqlResult, cqlLibrary);
-			cqlResult.setSetId(cqlLibrary.getSet_id());
+			cqlResult.setSetId(cqlLibrary.getSetId());
 			cqlResult.setSuccess(true);
 		}
 		
@@ -727,10 +727,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 		if(cqlLibraryXml != null) {
 			cqlResult = cqlService.getCQLDataForLoad(cqlLibraryXml);
-			cqlResult.setSetId(cqlLibrary.getSet_id());
+			cqlResult.setSetId(cqlLibrary.getSetId());
 			cqlResult.setSuccess(true);
 			
-			if (cqlService.checkIfLibraryNameExists(cqlLibrary.getName(), cqlLibrary.getSet_id())) {
+			if (cqlService.checkIfLibraryNameExists(cqlLibrary.getName(), cqlLibrary.getSetId())) {
 				cqlResult.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);	
 			}
 		}
@@ -925,7 +925,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		if(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)){
 			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 			
-			if (cqlService.checkIfLibraryNameExists(libraryName, cqlLibrary.getSet_id())) {
+			if (cqlService.checkIfLibraryNameExists(libraryName, cqlLibrary.getSetId())) {
 				result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
 				result.setSuccess(false);
 				
@@ -1568,7 +1568,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 }
                 String versionNumber = "v" + cqlLibrary.getVersionNumber(); 
                 String id = cqlLibrary.getId();
-                String setId = cqlLibrary.getSet_id();
+                String setId = cqlLibrary.getSetId();
                 String firstName = user.getFirstName();
                 String lastName = user.getLastName(); 
                 String organization = user.getOrganization().getOrganizationName();

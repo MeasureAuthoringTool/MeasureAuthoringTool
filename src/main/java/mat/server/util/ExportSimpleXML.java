@@ -455,7 +455,7 @@ public class ExportSimpleXML {
 	private static void updateCqlLibraryToHaveSetId(CQLLibraryDAO cqlLibraryDAO, SaveUpdateCQLResult result) {
 		for(CQLIncludeLibrary library : result.getUsedCQLArtifacts().getIncludeLibMap().values()) {
 			CQLLibrary includedLibrary = cqlLibraryDAO.find(library.getCqlLibraryId());
-			library.setSetId(includedLibrary.getSet_id());
+			library.setSetId(includedLibrary.getSetId());
 		}
 	}
 

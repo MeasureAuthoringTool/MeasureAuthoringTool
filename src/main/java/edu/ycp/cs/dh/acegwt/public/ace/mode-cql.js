@@ -46,9 +46,9 @@ var SqlHighlightRules = function() {
 	    		        
 	        //data type attribute constants
 	        'activeDatetime|admissionSource|anatomicalLocationSite|authorDatetime|birthDatetime|category|cause|code|components|daysSupplied|denominator|diagnoses|dischargeDisposition|dispenser|dosage|expiredDatetime|' +
-	        'facilityLocation|facilityLocations|frequency|high|id|identifier|incisionDatetime|lengthOfStay|linkedPatientId|locationPeriod|low|medium|method|negationRationale|numerator|participationPeriod|patientId|performer|prevalencePeriod|' +
-	        'priority|prescriber|rank|reason|recipient|receivedDatetime|recorder|referenceRange|refills|relatedTo|relationship|relevantDatetime|relevantPeriod|result|resultDatetime|requester|route|sender|statusDate|sentDatetime|setting|severity|status|supply|targetOutcome|type|' + 
-	        'Entity|PatientEntity|Organization|participant|Practitioner|CarePartner'
+	        'facilityLocation|facilityLocations|frequency|high|id|identifier|incisionDatetime|lengthOfStay|linkedPatientId|locationPeriod|low|medium|method|namingSystem|negationRationale|numerator|participationPeriod|patientId|performer|presentOnAdmissionIndicator|prevalencePeriod|' +
+	        'priority|prescriber|qualification|rank|reason|recipient|receivedDatetime|recorder|referenceRange|refills|relatedTo|relationship|relevantDatetime|relevantPeriod|result|resultDatetime|requester|role|route|sender|specialty|statusDate|sentDatetime|setting|severity|status|supply|targetOutcome|type|' + 
+	        'unit|value|Entity|PatientEntity|Organization|participant|Practitioner|CarePartner'
 	    );
 	    
     var keywordMapper = this.createKeywordMapper({

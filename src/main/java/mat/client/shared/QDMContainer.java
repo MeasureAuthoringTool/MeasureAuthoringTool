@@ -15,6 +15,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class QDMContainer implements IsSerializable {
 
+	private static final String SYSTEM_QUANTITY = "System.Quantity";
 	private Map<String, List<String>> datatypeToAttributesMap = new HashMap<>();
 	private Map<String, List<String>> qdmAttributeToTypeMap = new HashMap<>();
 
@@ -78,6 +79,10 @@ public class QDMContainer implements IsSerializable {
 
 	private List<String> getSubAttributesList(){
 		qdmAttributeToTypeMap.put("locationPeriod", Arrays.asList("interval<System.DateTime>"));
-		return Arrays.asList("denominator", "high", "locationPeriod", "low", "namingSystem", "numerator", "unit", "value");
+		qdmAttributeToTypeMap.put("denominator", Arrays.asList(SYSTEM_QUANTITY));
+		qdmAttributeToTypeMap.put("numerator", Arrays.asList(SYSTEM_QUANTITY));
+		qdmAttributeToTypeMap.put("low", Arrays.asList(SYSTEM_QUANTITY));
+		qdmAttributeToTypeMap.put("high", Arrays.asList(SYSTEM_QUANTITY));
+		return Arrays.asList("denominator", "high", "locationPeriod", "low", "namingSystem", "numerator", "unit", "value", "presentOnAdmissionIndicator", "specialty", "role", "qualification");
 	}
 }

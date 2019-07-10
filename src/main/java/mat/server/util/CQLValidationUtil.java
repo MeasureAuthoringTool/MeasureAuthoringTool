@@ -48,7 +48,7 @@ public class CQLValidationUtil {
 	    		if (identifiersSet.contains(code.getDisplayName())) {
 	    			return true;
 	    		}
-    			identifiersSet.add(code.getName());
+    			identifiersSet.add(code.getDisplayName());
 	    	}
 	    	for (CQLDefinition def : cqlModel.getDefinitionList()) {
 	    		if (identifiersSet.contains(def.getDefinitionName())) {

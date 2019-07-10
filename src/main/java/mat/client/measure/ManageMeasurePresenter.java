@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -23,6 +24,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -166,6 +168,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private VersionDisplay versionDisplay;
 
 	private ManageExportView exportView;
+	
+	private HandlerRegistration saveHandler = null;
+
+	private HandlerRegistration compositeSaveHandler = null;
 
 	public ManageMeasurePresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg, DetailDisplay compositeDisplayArg, ComponentMeasureDisplay componentMeasureDisplayArg, ShareDisplay shareDisplayArg,
 			ManageExportView exportView, HistoryDisplay hDisplay,
@@ -185,7 +191,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		displaySearch();
 		if (searchDisplay != null) {
 			searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
-			searchDisplayHandlers(searchDisplay);
+			addMeasureLibrarySearchHandlers(searchDisplay);
 		}
 
 		if (versionDisplay != null) {
@@ -325,41 +331,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		versionDisplay.getMinorRadioButton().setValue(false);
 	}
 
-	private void cloneMeasure(final ManageMeasureDetailModel currentDetails, final boolean isDraftCreation) {
-		String loggedinUserId = MatContext.get().getLoggedinUserId();
-		searchDisplay.resetMessageDisplay();
-		MeasureCloningServiceAsync mcs = (MeasureCloningServiceAsync) GWT.create(MeasureCloningService.class);
-		
-		mcs.clone(currentDetails, loggedinUserId, isDraftCreation,
-				new AsyncCallback<ManageMeasureSearchModel.Result>() {
-					@Override
-					public void onFailure(Throwable caught) {
-
-						setSearchingBusy(false);
-						shareDisplay.getErrorMessageDisplay()
-								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(null, null, null,
-								"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-					}
-
-					@Override
-					public void onSuccess(ManageMeasureSearchModel.Result result) {
-						resultToFireEvent = result;
-						if(isDraftCreation){
-						searchDisplay.getDraftConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(result.getName()));
-						searchDisplay.getDraftConfirmationDialogBox().getYesButton().setTitle("Continue");
-						searchDisplay.getDraftConfirmationDialogBox().getYesButton().setText("Continue");
-						searchDisplay.getDraftConfirmationDialogBox().getYesButton().setFocus(true);
-						}
-						else if(isClone){
-							fireMeasureSelected(result);
-						}
-					
-					}
-				});
-	}
-
-	public void fireMeasureSelected(ManageMeasureSearchModel.Result result){
+	public void fireMeasureSelected(ManageMeasureSearchModel.Result result) {
 		fireMeasureSelectedEvent(result.getId(), result.getVersion(), result.getName(),
 				result.getShortName(), result.getScoringType(), result.isEditable(),
 				result.isMeasureLocked(), result.getLockedUserId(result.getLockedUserInfo()), result.isDraft(), calculatePatientBased(result.isPatientBased(), result.getScoringType()));
@@ -376,22 +348,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(Boolean result) {}
 				});
-	}
-
-	private void createDraftOfSelectedVersion(ManageMeasureDetailModel currentDetails) {
-		cloneMeasure(currentDetails, true);
-	}
-
-	private void createNewMeasure() {
-		clearErrorMessageAlerts();
-		currentDetails = new ManageMeasureDetailModel();
-		displayNewMeasureWidget();
-	}
-	
-	protected void createNewCompositeMeasure() {
-		clearErrorMessageAlerts();
-		currentCompositeMeasureDetails = new ManageCompositeMeasureDetailModel();
-		displayNewCompositeMeasureWidget();
 	}
 	
 	private void clearErrorMessageAlerts() {
@@ -438,7 +394,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					public void onSuccess(CompositeMeasureValidationResult result) {
 						currentCompositeMeasureDetails = result.getModel();
 						if(isValidCompositeMeasureForSave(result.getMessages())){
-							saveCompositeMeasure();
+							createNewCompositeMeasure();
 						}
 					}
 				});
@@ -468,9 +424,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringListBox().addChangeHandler(event -> createSelectionMapAndSetScorings());
 		
 		compositeDetailDisplay.getMeasureScoringListBox().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice(compositeDetailDisplay));
-		
-		compositeDetailDisplay.getSaveButton().addClickHandler(event -> updateCompositeDetailsOnContinueButton());
-
 	}
 
 	private void createSelectionMapAndSetScorings() {
@@ -481,7 +434,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	
 	private void updateCompositeDetailsOnContinueButton() { 
-
 		boolean isEdit = false;
 		if(componentMeasureDisplay != null) {
 			if(currentCompositeMeasureDetails.getId()!=null) {
@@ -508,46 +460,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	}
 	
+	private void showConfirmationDialog(final String message) {
+		detailDisplay.getConfirmationDialogBox().show(message);
+		detailDisplay.getConfirmationDialogBox().getYesButton().setDataDismiss(ButtonDismiss.MODAL);
+		detailDisplay.getConfirmationDialogBox().getYesButton().setTitle("Continue");
+		detailDisplay.getConfirmationDialogBox().getYesButton().setText("Continue");
+		detailDisplay.getConfirmationDialogBox().getYesButton().setFocus(true);
+	}
+	
 	private void detailDisplayHandlers(final DetailDisplay detailDisplay) {
-		
-		detailDisplay.getConfirmationDialogBox().getYesButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				update();
-			}
-		});
-		
-		detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				
-				updateDetailsFromView();
-				if(!isValid(currentDetails, isClone)){
-					return;
-				}
-				
-				// create new measure flow
-				if(!isClone && currentDetails.getId() == null) {
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
-					
-				} else if(isClone) { // if clone
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getCloneMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
-					
-				} else { //if edit
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getEditMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));	
-				}
-			
-			}
-
-			private void showConfirmationDialog(final String message) {
-				detailDisplay.getConfirmationDialogBox().show(message);
-				detailDisplay.getConfirmationDialogBox().getYesButton().setTitle("Continue");
-				detailDisplay.getConfirmationDialogBox().getYesButton().setText("Continue");
-				detailDisplay.getConfirmationDialogBox().getYesButton().setFocus(true);
-			}
-		});
-
 		detailDisplay.getCancelButton().addClickHandler(cancelClickHandler);
 		
 		MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
@@ -592,11 +513,156 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setContent(detailDisplay.asWidget());
 	}
 	
+	private void cloneMeasure() {
+		if (!MatContext.get().getLoadingQueue().isEmpty()) {
+			return;
+		}
+
+		setSearchingBusy(true);
+		updateDetailsFromView();
+
+		String loggedinUserId = MatContext.get().getLoggedinUserId();
+		searchDisplay.resetMessageDisplay();
+		MeasureCloningServiceAsync mcs = (MeasureCloningServiceAsync) GWT.create(MeasureCloningService.class);
+
+		if(isValid(currentDetails, false)) {
+			mcs.clone(currentDetails, loggedinUserId, false, new AsyncCallback<ManageMeasureSearchModel.Result>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					setSearchingBusy(false);
+					shareDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+				}
+
+				@Override
+				public void onSuccess(ManageMeasureSearchModel.Result result) {
+					setSearchingBusy(false);
+					resultToFireEvent = result;
+					fireMeasureSelected(result);
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getCloneMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
+				}
+			});
+		}
+	}
+	
+	private void draftCompositeMeasure() {
+		if (!MatContext.get().getLoadingQueue().isEmpty()) {
+			return;
+		}
+
+		setSearchingBusy(true);
+		updateCompositeDetailsFromComponentMeasureDisplay();
+		
+		String loggedinUserId = MatContext.get().getLoggedinUserId();
+		searchDisplay.resetMessageDisplay();
+		MeasureCloningServiceAsync mcs = (MeasureCloningServiceAsync) GWT.create(MeasureCloningService.class);
+		if(isValidCompositeMeasure(currentCompositeMeasureDetails)) {
+			mcs.clone(currentCompositeMeasureDetails, loggedinUserId, true, new AsyncCallback<ManageMeasureSearchModel.Result>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					setSearchingBusy(false);
+					shareDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+				}
+
+				@Override
+				public void onSuccess(ManageMeasureSearchModel.Result result) {
+					setSearchingBusy(false);
+					resultToFireEvent = result;
+					fireMeasureSelected(result);
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(compositeDetailDisplay.getMeasureNameTextBox().getValue()));	
+				}
+			});
+		}
+	}
+	
+	private void draftMeasure() {
+		if (!MatContext.get().getLoadingQueue().isEmpty()) {
+			return;
+		}
+
+		setSearchingBusy(true);
+		updateDetailsFromView();
+		
+		String loggedinUserId = MatContext.get().getLoggedinUserId();
+		searchDisplay.resetMessageDisplay();
+		MeasureCloningServiceAsync mcs = (MeasureCloningServiceAsync) GWT.create(MeasureCloningService.class);
+		if(isValid(currentDetails, true)) {
+			mcs.clone(currentDetails, loggedinUserId, true, new AsyncCallback<ManageMeasureSearchModel.Result>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					setSearchingBusy(false);
+					shareDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+				}
+
+				@Override
+				public void onSuccess(ManageMeasureSearchModel.Result result) {
+					setSearchingBusy(false);
+					resultToFireEvent = result;
+					fireMeasureSelected(result);
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));	
+				}
+			});
+		}
+	}
+	
+	private void createNewMeasure() {
+		if (!MatContext.get().getLoadingQueue().isEmpty()) {
+			return;
+		}
+
+		setSearchingBusy(true);
+		updateDetailsFromView();		
+		final String name = currentDetails.getMeasureName();
+		final String shortName = currentDetails.getShortName();
+		final String scoringType = currentDetails.getMeasScoring();
+		final String version = currentDetails.getVersionNumber()+"."+currentDetails.getRevisionNumber();		
+		final boolean isDraft = currentDetails.isDraft();
+		final boolean isPatientBased = calculatePatientBased(currentDetails.isPatientBased(), scoringType);
+		
+		if(isValid(currentDetails, false)) {
+			MatContext.get().getMeasureService().save(currentDetails, new AsyncCallback<SaveMeasureResult>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
+					setSearchingBusy(false);
+				}
+
+				@Override
+				public void onSuccess(SaveMeasureResult result) {
+					postSaveMeasureEvents(true, result, detailDisplay, name, shortName, scoringType, version, isDraft, isPatientBased);
+					setSearchingBusy(false);
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
+				}
+			});
+		}
+	}
+	
+	private void updateSaveButtonClickHandler(ClickHandler handler) {
+		if(saveHandler != null) {
+			saveHandler.removeHandler();
+		} 
+		
+		saveHandler = detailDisplay.getSaveButton().addClickHandler(handler);
+	}
+	
+	private void updateCompositeSaveButtonClickHandler(ClickHandler handler) {
+		if(compositeSaveHandler  != null) {
+			compositeSaveHandler.removeHandler();
+		} 
+		
+		compositeSaveHandler = compositeDetailDisplay.getSaveButton().addClickHandler(handler);
+	}
+	
 	private void displayNewMeasureWidget() {
+		currentDetails = new ManageMeasureDetailModel();
 		detailDisplay.showCautionMsg(false);
 		displayCommonDetailForAdd(detailDisplay);
 		panel.setHeading("My Measures > Create New Measure", MEASURE_LIBRARY);
 		setDetailsToView();
+		updateSaveButtonClickHandler(event -> createNewMeasure());
 		panel.setContent(detailDisplay.asWidget());
 	}
 
@@ -611,7 +677,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		detailDisplay.getMeasureNameTextBox().setValue("");
 		detailDisplay.getECQMAbbreviatedTitleTextBox().setValue("");
 		detailDisplay.getCQLLibraryNameTextBox().setValue("");
-
+		updateSaveButtonClickHandler(event -> cloneMeasure());
+		detailDisplay.getSaveButton().addClickHandler(event -> cloneMeasure());
 		panel.setContent(detailDisplay.asWidget());
 	}
 	
@@ -621,14 +688,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Mat.focusSkipLists(MEASURE_LIBRARY);
 		detailDisplay.showCautionMsg(true);
 		setDetailsToView();
+		updateSaveButtonClickHandler(event -> draftMeasure());
 		panel.setContent(detailDisplay.asWidget());
 	}
 	
 	private void displayNewCompositeMeasureWidget() {
+		clearErrorMessageAlerts();
+		currentCompositeMeasureDetails = new ManageCompositeMeasureDetailModel();
 		displayCommonDetailForAdd(compositeDetailDisplay);	
 		panel.setHeading("My Measures > Create New Composite Measure", "CompositeMeasure");	
 		setCompositeDetailsToView();
 		Mat.focusSkipLists("CompositeMeasure");
+		updateCompositeSaveButtonClickHandler(event -> updateCompositeDetailsOnContinueButton());
 		panel.setContent(compositeDetailDisplay.asWidget());
 	}
 	
@@ -639,6 +710,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		compositeDetailDisplay.showCautionMsg(true);
 		setCompositeDetailsToView();
 		Mat.focusSkipLists("CompositeMeasure");
+		updateCompositeSaveButtonClickHandler(event -> draftCompositeMeasure());
 		panel.setContent(compositeDetailDisplay.asWidget());
 	}
 		
@@ -775,28 +847,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 					.createAlert(MatContext.get().getMessageDelegate().getTransferCheckBoxErrorMeasure());
 		}
 
-	}
-
-	private void editClone(String id) {
-		detailDisplay.getErrorMessageDisplay().clearAlert();
-		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-		MatContext.get().getMeasureService().getMeasure(id, new AsyncCallback<ManageMeasureDetailModel>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				detailDisplay.getErrorMessageDisplay()
-						.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				MatContext.get().recordTransactionEvent(null, null, null,
-						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-			}
-
-			@Override
-			public void onSuccess(ManageMeasureDetailModel result) {
-				currentDetails = result;
-				displayCloneMeasureWidget();
-				Mat.hideLoadingMessage();
-			}
-		});
 	}
 
 	private void export(ManageMeasureSearchModel.Result result) {
@@ -1338,48 +1388,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					versionDisplay.setSelectedMeasure(selectedMeasure);
 					createVersion();
 				}
-
 			}
-
-			private void draftCompositeMeasure(Result selectedMeasure) {
-				MatContext.get().getMeasureService().getCompositeMeasure(selectedMeasure.getId(),
-						new AsyncCallback<ManageCompositeMeasureDetailModel>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								setSearchingBusy(false);
-								searchDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-								MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-							}
-
-							@Override
-							public void onSuccess(ManageCompositeMeasureDetailModel result) {
-								searchDisplay.getErrorMessageDisplay().clearAlert();
-								currentDetails = result;
-								createDraftOfSelectedVersion(currentDetails);
-							}
-						});
-				
-			}
-
-			private void draftMeasure(ManageMeasureSearchModel.Result selectedMeasure) {
-				MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(),
-						new AsyncCallback<ManageMeasureDetailModel>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						setSearchingBusy(false);
-						searchDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(null, null, null,"Unhandled Exception: "+ caught.getLocalizedMessage(),0);
-					}
-
-					@Override
-					public void onSuccess(ManageMeasureDetailModel result) {
-						searchDisplay.getErrorMessageDisplay().clearAlert();
-						currentDetails = result;
-						createDraftOfSelectedVersion(currentDetails);
-					}
-				});
-			}
-
 		};
 	}
 	
@@ -1405,7 +1414,23 @@ public class ManageMeasurePresenter implements MatPresenter {
 		subSkipContentHolder.setFocus(true);
 	}
 
-	private void searchDisplayHandlers(final SearchDisplay searchDisplay) {
+	private void onNewMeasureButtonClick() {
+		searchDisplay.resetMessageDisplay();
+		measureDeletion = false;
+		isMeasureDeleted = false;
+		isMeasureVersioned = false;
+		displayNewMeasureWidget();
+	}
+	
+	private void onNewCompositeMeasureButtonClick() {
+		searchDisplay.resetMessageDisplay();
+		measureDeletion = false;
+		isMeasureDeleted = false;
+		isMeasureVersioned = false;
+		displayNewCompositeMeasureWidget();
+	}
+	
+	private void addMeasureLibrarySearchHandlers(final SearchDisplay searchDisplay) {
 		searchDisplay.getDraftConfirmationDialogBox().getYesButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -1416,132 +1441,111 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
-		searchDisplay.getSelectIdForEditTool()
-				.addSelectionHandler(new SelectionHandler<ManageMeasureSearchModel.Result>() {
-
-					@Override
-					public void onSelection(SelectionEvent<ManageMeasureSearchModel.Result> event) {
-
-						searchDisplay.getErrorMeasureDeletion().clearAlert();
-						searchDisplay.getSuccessMeasureDeletion().clearAlert();
-						measureDeletion = false;
-						isMeasureDeleted = false;
-						isMeasureVersioned = false;
-						if (!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
-							final String mid = event.getSelectedItem().getId();
-							Result result = event.getSelectedItem();
-
-							final String name = result.getName();
-							final String version = result.getVersion();
-							final String shortName = result.getShortName();
-							final String scoringType = result.getScoringType();
-							final boolean isEditable = result.isEditable();
-							final boolean isMeasureLocked = result.isMeasureLocked();
-							final boolean isDraft = result.isDraft();
-							final String userId = result.getLockedUserId(result.getLockedUserInfo());
-							final boolean isPatientBased = calculatePatientBased(result.isPatientBased(), scoringType);
-
-							MatContext.get().getMeasureLockService().isMeasureLocked(mid);
-							Command waitForLockCheck = new Command() {
-								@Override
-								public void execute() {
-									SynchronizationDelegate synchDel = MatContext.get().getSynchronizationDelegate();
-									if (!synchDel.isCheckingLock()) {
-										if (!synchDel.measureIsLocked()) {
-											fireMeasureSelectedEvent(mid, version, name, shortName, scoringType,
-													isEditable, isMeasureLocked, userId, isDraft, isPatientBased);
-											if (isEditable) {
-												MatContext.get().getMeasureLockService().setMeasureLock();
-											}
-										} else {
-											fireMeasureSelectedEvent(mid, version, name, shortName, scoringType, false,
-													isMeasureLocked, userId, isDraft, isPatientBased);
-											if (isEditable) {
-												MatContext.get().getMeasureLockService().setMeasureLock();
-											}
-										}
-									} else {
-										Scheduler.get().scheduleDeferred(this);
-									}
-								}
-							};
-							waitForLockCheck.execute();
-						}
-					}
-				});
-
-		searchDisplay.getMostRecentMeasureWidget().getSelectIdForEditTool()
-				.addSelectionHandler(new SelectionHandler<ManageMeasureSearchModel.Result>() {
-					@Override
-					public void onSelection(SelectionEvent<ManageMeasureSearchModel.Result> event) {
-						searchDisplay.getErrorMeasureDeletion().clearAlert();
-						searchDisplay.getSuccessMeasureDeletion().clearAlert();
-						measureDeletion = false;
-						isMeasureDeleted = false;
-						isMeasureVersioned = false;
-						if (!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
-							final String mid = event.getSelectedItem().getId();
-							Result result = event.getSelectedItem();
-							final String name = result.getName();
-							final String version = result.getVersion();
-							final String shortName = result.getShortName();
-							final String scoringType = result.getScoringType();
-							final boolean isEditable = result.isEditable();
-							final boolean isMeasureLocked = result.isMeasureLocked();
-							final boolean isDraft = result.isDraft();
-							final String userId = result.getLockedUserId(result.getLockedUserInfo());
-							final boolean isPatientBased = calculatePatientBased(result.isPatientBased(), scoringType);
-							MatContext.get().getMeasureLockService().isMeasureLocked(mid);
-							Command waitForLockCheck = new Command() {
-								@Override
-								public void execute() {
-									SynchronizationDelegate synchDel = MatContext.get().getSynchronizationDelegate();
-									if (!synchDel.isCheckingLock()) {
-										if (!synchDel.measureIsLocked()) {
-											fireMeasureSelectedEvent(mid, version, name, shortName, scoringType,
-													isEditable, isMeasureLocked, userId, isDraft, isPatientBased);
-											if (isEditable) {
-												MatContext.get().getMeasureLockService().setMeasureLock();
-											}
-										} else {
-											fireMeasureSelectedEvent(mid, version, name, shortName, scoringType, false,
-													isMeasureLocked, userId, isDraft, isPatientBased);
-											if (isEditable) {
-												MatContext.get().getMeasureLockService().setMeasureLock();
-											}
-										}
-									} else {
-										Scheduler.get().scheduleDeferred(this);
-									}
-								}
-							};
-							waitForLockCheck.execute();
-						}
-					}
-				});
-		searchDisplay.getCreateMeasureButton().addClickHandler(new ClickHandler() {
+		searchDisplay.getSelectIdForEditTool().addSelectionHandler(new SelectionHandler<ManageMeasureSearchModel.Result>() {
 
 			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.resetMessageDisplay();
+			public void onSelection(SelectionEvent<ManageMeasureSearchModel.Result> event) {
+
+				searchDisplay.getErrorMeasureDeletion().clearAlert();
+				searchDisplay.getSuccessMeasureDeletion().clearAlert();
 				measureDeletion = false;
 				isMeasureDeleted = false;
 				isMeasureVersioned = false;
-				createNewMeasure(); 
+				if (!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
+					final String mid = event.getSelectedItem().getId();
+					Result result = event.getSelectedItem();
+
+					final String name = result.getName();
+					final String version = result.getVersion();
+					final String shortName = result.getShortName();
+					final String scoringType = result.getScoringType();
+					final boolean isEditable = result.isEditable();
+					final boolean isMeasureLocked = result.isMeasureLocked();
+					final boolean isDraft = result.isDraft();
+					final String userId = result.getLockedUserId(result.getLockedUserInfo());
+					final boolean isPatientBased = calculatePatientBased(result.isPatientBased(), scoringType);
+
+					MatContext.get().getMeasureLockService().isMeasureLocked(mid);
+					Command waitForLockCheck = new Command() {
+						@Override
+						public void execute() {
+							SynchronizationDelegate synchDel = MatContext.get().getSynchronizationDelegate();
+							if (!synchDel.isCheckingLock()) {
+								if (!synchDel.measureIsLocked()) {
+									fireMeasureSelectedEvent(mid, version, name, shortName, scoringType,
+											isEditable, isMeasureLocked, userId, isDraft, isPatientBased);
+									if (isEditable) {
+										MatContext.get().getMeasureLockService().setMeasureLock();
+									}
+								} else {
+									fireMeasureSelectedEvent(mid, version, name, shortName, scoringType, false,
+											isMeasureLocked, userId, isDraft, isPatientBased);
+									if (isEditable) {
+										MatContext.get().getMeasureLockService().setMeasureLock();
+									}
+								}
+							} else {
+								Scheduler.get().scheduleDeferred(this);
+							}
+						}
+					};
+					waitForLockCheck.execute();
+				}
 			}
 		});
+
+		searchDisplay.getMostRecentMeasureWidget().getSelectIdForEditTool().addSelectionHandler(new SelectionHandler<ManageMeasureSearchModel.Result>() {
+			@Override
+			public void onSelection(SelectionEvent<ManageMeasureSearchModel.Result> event) {
+				searchDisplay.getErrorMeasureDeletion().clearAlert();
+				searchDisplay.getSuccessMeasureDeletion().clearAlert();
+				measureDeletion = false;
+				isMeasureDeleted = false;
+				isMeasureVersioned = false;
+				if (!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
+					final String mid = event.getSelectedItem().getId();
+					Result result = event.getSelectedItem();
+					final String name = result.getName();
+					final String version = result.getVersion();
+					final String shortName = result.getShortName();
+					final String scoringType = result.getScoringType();
+					final boolean isEditable = result.isEditable();
+					final boolean isMeasureLocked = result.isMeasureLocked();
+					final boolean isDraft = result.isDraft();
+					final String userId = result.getLockedUserId(result.getLockedUserInfo());
+					final boolean isPatientBased = calculatePatientBased(result.isPatientBased(), scoringType);
+					MatContext.get().getMeasureLockService().isMeasureLocked(mid);
+					Command waitForLockCheck = new Command() {
+						@Override
+						public void execute() {
+							SynchronizationDelegate synchDel = MatContext.get().getSynchronizationDelegate();
+							if (!synchDel.isCheckingLock()) {
+								if (!synchDel.measureIsLocked()) {
+									fireMeasureSelectedEvent(mid, version, name, shortName, scoringType,
+											isEditable, isMeasureLocked, userId, isDraft, isPatientBased);
+									if (isEditable) {
+										MatContext.get().getMeasureLockService().setMeasureLock();
+									}
+								} else {
+									fireMeasureSelectedEvent(mid, version, name, shortName, scoringType, false,
+											isMeasureLocked, userId, isDraft, isPatientBased);
+									if (isEditable) {
+										MatContext.get().getMeasureLockService().setMeasureLock();
+									}
+								}
+							} else {
+								Scheduler.get().scheduleDeferred(this);
+							}
+						}
+					};
+					waitForLockCheck.execute();
+				}
+			}
+		});
+				
+		searchDisplay.getCreateMeasureButton().addClickHandler(event -> onNewMeasureButtonClick());
 		
-		searchDisplay.getCreateCompositeMeasureButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.resetMessageDisplay();
-				measureDeletion = false;
-				isMeasureDeleted = false;
-				isMeasureVersioned = false;
-				createNewCompositeMeasure();
-			}
-		});
+		searchDisplay.getCreateCompositeMeasureButton().addClickHandler(event -> onNewCompositeMeasureButtonClick());
 
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -1918,41 +1922,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		displayTransferView(transferDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE);
 	}
 	
-	private void update() {
-		if (!MatContext.get().getLoadingQueue().isEmpty()) {
-			return;
-		}
-
-		setSearchingBusy(true);
-		updateDetailsFromView();
-
-		if (isClone && isValid(currentDetails, isClone)) {
-			cloneMeasure(currentDetails, false);
-		} else if (isValid(currentDetails, false)) {
-			final boolean isInsert = currentDetails.getId() == null;
-			final String name = currentDetails.getMeasureName();
-			final String shortName = currentDetails.getShortName();
-			final String scoringType = currentDetails.getMeasScoring();
-			final String version = currentDetails.getVersionNumber()+"."+currentDetails.getRevisionNumber();		
-			final boolean isDraft = currentDetails.isDraft();
-			final boolean isPatientBased = calculatePatientBased(currentDetails.isPatientBased(), scoringType);
-			MatContext.get().getMeasureService().save(currentDetails, new AsyncCallback<SaveMeasureResult>() {
-
-				@Override
-				public void onFailure(Throwable caught) {
-					detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
-					setSearchingBusy(false);
-				}
-
-				@Override
-				public void onSuccess(SaveMeasureResult result) {
-					postSaveMeasureEvents(isInsert, result, detailDisplay, name, shortName, scoringType, version, isDraft, isPatientBased);
-					setSearchingBusy(false);
-				}
-			});
-		}
-	}
-
 	/**
 	 * Update details from view.
 	 */
@@ -1980,6 +1949,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void updateCompositeDetailsFromCompositeDetailView() {
 		currentCompositeMeasureDetails.setMeasureName(compositeDetailDisplay.getMeasureNameTextBox().getValue().trim());
+		currentCompositeMeasureDetails.setCQLLibraryName(compositeDetailDisplay.getCQLLibraryNameTextBox().getValue().trim());
 		currentCompositeMeasureDetails.setShortName(compositeDetailDisplay.getECQMAbbreviatedTitleTextBox().getValue().trim());
 		currentCompositeMeasureDetails.setCompositeScoringMethod(((NewCompositeMeasureView)compositeDetailDisplay).getCompositeScoringValue());
 		String measureScoring = compositeDetailDisplay.getMeasureScoringValue();
@@ -2021,9 +1991,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		componentMeasureDisplay.setComponentBusy(false);
 	}
 	
-
-	
-	private void saveCompositeMeasure() {
+	private void createNewCompositeMeasure() {
+		updateCompositeDetailsFromComponentMeasureDisplay();
+		updateCompositeDetailsFromCompositeDetailView();
 		final boolean isInsert = currentCompositeMeasureDetails.getId() == null;
 		final String name = currentCompositeMeasureDetails.getMeasureName();
 		final String shortName = currentCompositeMeasureDetails.getShortName();
@@ -2042,13 +2012,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
 				postSaveMeasureEvents(isInsert, result, compositeDetailDisplay, name, shortName, scoringType, version, isDraft, isPatientBased);
+				showConfirmationDialog(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(name));
 				componentMeasureDisplay.setComponentBusy(false);
-
 			}
-			
 		});
 	}
-
+	
 
 	private void updateTransferIDs(Result result, ManageMeasureSearchModel model) {
 		if (result.isTransferable()) {

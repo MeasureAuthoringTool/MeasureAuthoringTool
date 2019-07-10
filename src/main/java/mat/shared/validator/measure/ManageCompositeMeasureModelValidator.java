@@ -23,13 +23,13 @@ public class ManageCompositeMeasureModelValidator extends ManageMeasureModelVali
 
 		CommonMeasureValidator commonMeasureValidator = new CommonMeasureValidator();
 		message.addAll(commonMeasureValidator.validateMeasureName(model.getMeasureName()));
-		message.addAll(commonMeasureValidator.validateMeasureName(model.getMeasureName()));
+		message.addAll(commonMeasureValidator.validateLibraryName(model.getCQLLibraryName()));
 		message.addAll(commonMeasureValidator.validateECQMAbbreviation(model.getShortName()));
 		String compositeScoring = model.getCompositeScoringMethod();
 		if((compositeScoring == null) || !CommonMeasureValidator.isValidValue(compositeScoring)) {
 			message.add(ERR_COMPOSITE_MEASURE_SCORE_REQUIRED);
 		}
-		message.addAll(commonMeasureValidator.validateMeasureScore(model.getMeasScoring()));
+		message.addAll(commonMeasureValidator.validateMeasureScore(model.getMeasScoring()));		
 		return message;
 	}
 }

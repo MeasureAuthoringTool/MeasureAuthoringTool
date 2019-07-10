@@ -52,8 +52,6 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 		measureNameGroup.add(measureNameLabel);
 		measureNameGroup.add(measureNameTextBox);
 		
-		cqlLibraryNameLabel.getElement().setId("cqlLibraryNamePanel_CQLLibraryNameLabel");
-		Form createCQLLibraryForm = new Form();
 		FormLabel cqlLibraryNameLabel = buildCQLLibraryNameLabel();
 		buildCQLLibraryTextArea();
 		cqlLibraryNameGroup.add(cqlLibraryNameLabel);
@@ -99,10 +97,6 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 		createMeasureForm.add(formFieldSet);
 		createMeasureForm.add(messageFormGrp);
 		fPanel.add(createMeasureForm);
-		createCQLLibraryForm.add(formFieldSet);
-		createCQLLibraryForm.add(messageFormGrp);
-		fPanel.add(createMeasureForm);
-
 		mainPanel.add(fPanel);
 	}
 	
@@ -121,9 +115,7 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 		fPanel.getElement().setId("fPanel_FlowPanel");
 		fPanel.setWidth("90%");	
 		fPanel.setHeight("100%");
-		fPanel.add(measureNameLabel);
-		fPanel.add(cqlLibraryNameLabel);
-		
+		fPanel.add(measureNameLabel);		
 		fPanel.add(requiredInstructions);
 		requiredInstructions.getElement().setId("requiredInstructions_HTML");
 		fPanel.add(new SpacerWidget());
@@ -144,6 +136,7 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 		buttonFormGroup.add(buttonBar);
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(measureNameGroup);
+		formFieldSet.add(cqlLibraryNameGroup);
 		formFieldSet.add(shortNameGroup);
 		formFieldSet.add(compositeScoringGroup);
 		formFieldSet.add(scoringGroup);

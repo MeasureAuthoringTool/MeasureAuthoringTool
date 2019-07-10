@@ -22,7 +22,6 @@ public class NewMeasureView extends AbstractNewMeasureView {
 		measureNameGroup.add(measureNameTextBox);
 		
 		
-		cqlLibraryNameLabel.getElement().setId("cqlLibraryNamePanel_CQLLibraryNameLabel"); 
 		FormLabel cqlLibraryNameLabel = buildCQLLibraryNameLabel();
 		buildCQLLibraryTextArea();
 		cqlLibraryNameGroup.add(cqlLibraryNameLabel);

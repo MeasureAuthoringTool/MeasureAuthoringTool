@@ -599,13 +599,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		setDetailsToView();
 		panel.setContent(detailDisplay.asWidget());
 	}
-	
-	private void displayNewCompositeMeasureWidget() {
-		displayCommonDetailForAdd(compositeDetailDisplay);	
-		panel.setHeading("My Measures > Create New Composite Measure", "CompositeMeasure");	
-		setCompositeDetailsToView();
-		Mat.focusSkipLists("CompositeMeasure");
-	}
+
 	
 	private void displayCloneMeasureWidget() {
 		panel.setHeading("My Measures > Clone Measure", "CompositeMeasure");	
@@ -630,13 +624,22 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setContent(detailDisplay.asWidget());
 	}
 	
-	private void displayDraftCompositeMeasureWidget() {
-		panel.setHeading("My Measures > Draft Composite Measure", MEASURE_LIBRARY);
-		detailDisplay.setMeasureName(currentDetails.getMeasureName());
-		Mat.focusSkipLists(MEASURE_LIBRARY);
-		detailDisplay.showCautionMsg(true);
+	private void displayNewCompositeMeasureWidget() {
+		displayCommonDetailForAdd(compositeDetailDisplay);	
+		panel.setHeading("My Measures > Create New Composite Measure", "CompositeMeasure");	
 		setCompositeDetailsToView();
-		panel.setContent(detailDisplay.asWidget());
+		Mat.focusSkipLists("CompositeMeasure");
+		panel.setContent(compositeDetailDisplay.asWidget());
+	}
+	
+	private void displayDraftCompositeMeasureWidget() {
+		displayCommonDetailForAdd(compositeDetailDisplay);	
+		panel.setHeading("My Measures > Draft Composite Measure", "CompositeMeasure");
+		compositeDetailDisplay.setMeasureName(currentCompositeMeasureDetails.getMeasureName());
+		compositeDetailDisplay.showCautionMsg(true);
+		setCompositeDetailsToView();
+		Mat.focusSkipLists("CompositeMeasure");
+		panel.setContent(compositeDetailDisplay.asWidget());
 	}
 		
 	private void displayComponentDetails(String panelHeading) {
@@ -1310,7 +1313,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							@Override
 							public void onSuccess(ManageCompositeMeasureDetailModel result) {
 								setSearchingBusy(false);
-								currentDetails = result;
+								currentCompositeMeasureDetails = result;
 								displayDraftCompositeMeasureWidget();
 							}
 						});
@@ -1698,10 +1701,26 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 
 	private void setCompositeDetailsToView() {
+		compositeDetailDisplay.clearFields();
+		resetPatientBasedInput(compositeDetailDisplay);
 		compositeDetailDisplay.getMeasureNameTextBox().setValue(currentCompositeMeasureDetails.getMeasureName());
 		compositeDetailDisplay.getECQMAbbreviatedTitleTextBox().setValue(currentCompositeMeasureDetails.getShortName());
+		compositeDetailDisplay.getCQLLibraryNameTextBox().setValue(currentCompositeMeasureDetails.getCQLLibraryName());
 		((NewCompositeMeasureView) compositeDetailDisplay).setCompositeScoringSelectedValue(currentCompositeMeasureDetails.getCompositeScoringMethod());
 		compositeDetailDisplay.getMeasureScoringListBox().setValueMetadata(currentCompositeMeasureDetails.getMeasScoring());
+
+		if(!StringUtility.isEmptyOrNull(currentCompositeMeasureDetails.getMeasureName())) {
+			if(currentCompositeMeasureDetails.isPatientBased()) {
+				compositeDetailDisplay.getPatientBasedListBox().setSelectedIndex(1);
+			} else {
+				compositeDetailDisplay.getPatientBasedListBox().setSelectedIndex(0);
+			}
+			
+			if(currentCompositeMeasureDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
+				compositeDetailDisplay.getPatientBasedListBox().removeItem(1);
+				compositeDetailDisplay.getPatientBasedListBox().setSelectedIndex(0);
+			}
+		} 
 	}
 	
 	private void setDetailsToView() {

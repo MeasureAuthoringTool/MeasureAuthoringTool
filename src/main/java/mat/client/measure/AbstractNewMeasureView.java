@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.codelist.HasListBox;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
-import mat.client.shared.CQLLibraryNameLabel;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -33,7 +32,6 @@ import mat.client.shared.TextAreaWithMaxLength;
 public class AbstractNewMeasureView implements DetailDisplay {
 	protected SimplePanel mainPanel = new SimplePanel();
 	protected MeasureNameLabel measureNameLabel = new MeasureNameLabel();
-	protected CQLLibraryNameLabel cqlLibraryNameLabel = new CQLLibraryNameLabel();
 	protected TextAreaWithMaxLength measureNameTextBox = new TextAreaWithMaxLength();
 	protected TextAreaWithMaxLength cqlLibraryNameTextBox = new TextAreaWithMaxLength();
 	protected TextBox eCQMAbbreviatedTitleTextBox = new TextBox();

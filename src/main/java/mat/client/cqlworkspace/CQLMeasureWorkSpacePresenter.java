@@ -645,8 +645,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				if(!result.isSuccess()) {
 					onSaveCQLFileFailure(result);
 				} else {
-					onSaveCQLFileSuccess(result);
 					handleCQLData(result);
+					onSaveCQLFileSuccess(result);
 					setIsPageDirty(false);
 				}
 				

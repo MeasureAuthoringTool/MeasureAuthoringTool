@@ -561,8 +561,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				if(!result.isSuccess()) {
 					onSaveCQLFileFailure(result);
 				} else {
-					onSaveCQLFileSuccess(result);
 					handleCQLData(result);
+					onSaveCQLFileSuccess(result);
 					setIsPageDirty(false);
 				}
 				

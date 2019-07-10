@@ -586,36 +586,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void displayCommonDetailForAdd(DetailDisplay detailDisplay) {
 		panel.getButtonPanel().clear();
 		resetPatientBasedInput(detailDisplay);
-		
 		detailDisplay.showMeasureName(false);
 		detailDisplay.showCautionMsg(false);
 		panel.setContent(detailDisplay.asWidget());
 	}
 	
 	private void displayNewMeasureWidget() {
+		detailDisplay.showCautionMsg(false);
 		displayCommonDetailForAdd(detailDisplay);
 		panel.setHeading("My Measures > Create New Measure", MEASURE_LIBRARY);
 		setDetailsToView();
+		panel.setContent(detailDisplay.asWidget());
 	}
 	
-	private void displayCloneMeasureWidget() {
-		displayCommonDetailForAdd(detailDisplay);
-		panel.setHeading("My Measures > Clone Measure", "CompositeMeasure");	
-		Mat.focusSkipLists(MEASURE_LIBRARY);
-	}
-	
-	private void displayDraftMeasureWidget() {
-		displayCommonDetailForAdd(detailDisplay);
-		panel.setHeading("My Measures > Draft Measure", MEASURE_LIBRARY);
-		setDetailsToView();
-	}
-	
-	private void displayDraftCompositeMeasureWidget() {
-		displayCommonDetailForAdd(detailDisplay);
-		panel.setHeading("My Measures > Draft Composite Measure", MEASURE_LIBRARY);
-		setCompositeDetailsToView();
-	}
-		
 	private void displayNewCompositeMeasureWidget() {
 		displayCommonDetailForAdd(compositeDetailDisplay);	
 		panel.setHeading("My Measures > Create New Composite Measure", "CompositeMeasure");	
@@ -623,6 +606,30 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Mat.focusSkipLists("CompositeMeasure");
 	}
 	
+	private void displayCloneMeasureWidget() {
+		panel.setHeading("My Measures > Clone Measure", "CompositeMeasure");	
+		detailDisplay.setMeasureName(currentDetails.getMeasureName());
+		Mat.focusSkipLists(MEASURE_LIBRARY);
+		setDetailsToView();
+		panel.setContent(detailDisplay.asWidget());
+	}
+	
+	private void displayDraftMeasureWidget() {
+		panel.setHeading("My Measures > Draft Measure", MEASURE_LIBRARY);
+		detailDisplay.setMeasureName(currentDetails.getMeasureName());
+		Mat.focusSkipLists(MEASURE_LIBRARY);
+		setDetailsToView();
+		panel.setContent(detailDisplay.asWidget());
+	}
+	
+	private void displayDraftCompositeMeasureWidget() {
+		panel.setHeading("My Measures > Draft Composite Measure", MEASURE_LIBRARY);
+		detailDisplay.setMeasureName(currentDetails.getMeasureName());
+		Mat.focusSkipLists(MEASURE_LIBRARY);
+		setCompositeDetailsToView();
+		panel.setContent(detailDisplay.asWidget());
+	}
+		
 	private void displayComponentDetails(String panelHeading) {
 		panel.getButtonPanel().clear();
 		panel.setHeading(panelHeading, "ComponentMeasure");
@@ -1677,6 +1684,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void setDetailsToView() {
 		detailDisplay.getMeasureNameTextBox().setValue(currentDetails.getMeasureName());
+		detailDisplay.getCQLLibraryNameTextBox().setValue(currentDetails.getCQLLibraryName());
 		detailDisplay.getECQMAbbreviatedTitleTextBox().setValue(currentDetails.getShortName());
 		detailDisplay.getMeasureScoringListBox().setValueMetadata(currentDetails.getMeasScoring());
 	}

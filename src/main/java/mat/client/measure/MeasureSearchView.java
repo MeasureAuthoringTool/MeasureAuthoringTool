@@ -73,66 +73,19 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 	 * about Admin information as the Admin is constructed.
 	 */
 	public static interface AdminObserver {
-		/**
-		 * On history clicked.
-		 * @param result
-		 *            the result
-		 */
 		void onHistoryClicked(ManageMeasureSearchModel.Result result);
-		/**
-		 * On transfer selected clicked.
-		 * @param result
-		 *            the result
-		 */
 		void onTransferSelectedClicked(ManageMeasureSearchModel.Result result);
 	}
+	
 	public static interface Observer {
-		/**
-		 * On edit clicked.
-		 * @param result
-		 *            the result
-		 */
-		/**
-		 * On clone clicked.
-		 * @param result
-		 *            the result
-		 */
 		void onCloneClicked(ManageMeasureSearchModel.Result result);
-		/**
-		 * On share clicked.
-		 * @param result
-		 *            the result
-		 */
 		void onShareClicked(ManageMeasureSearchModel.Result result);
-		/**
-		 * On export clicked.
-		 * @param result
-		 *            the result
-		 */
 		void onExportClicked(ManageMeasureSearchModel.Result result);
-		/**
-		 * On history clicked.
-		 * @param result
-		 *            the result
-		 */
 		void onHistoryClicked(ManageMeasureSearchModel.Result result);
-		/**
-		 * On export selected clicked.
-		 * @param checkBox
-		 *            the check box
-		 */
 		void onExportSelectedClicked(CustomCheckBox checkBox);
-		/**
-		 * On export selected clicked.
-		 *
-		 * @param result the result
-		 * @param isCBChecked the Boolean.
-		 */
 		void onExportSelectedClicked(ManageMeasureSearchModel.Result result, boolean  isCBChecked);
-
 		void onClearAllBulkExportClicked();
-		
-		void onCreateClicked(ManageMeasureSearchModel.Result object);
+		void onDraftOrVersionClick(ManageMeasureSearchModel.Result object);
 	}
 	/**
 	 * Instantiates a new measure search view.

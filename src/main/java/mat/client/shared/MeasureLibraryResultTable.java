@@ -119,7 +119,7 @@ public class MeasureLibraryResultTable {
 					if (!object.isDraftable() && !object.isVersionable()) {
 						event.preventDefault();
 					} else {
-						observer.onCreateClicked(object);
+						observer.onDraftOrVersionClick(object);
 					}
 				} else {
 					if (!object.isDraftable() && !object.isVersionable()) {

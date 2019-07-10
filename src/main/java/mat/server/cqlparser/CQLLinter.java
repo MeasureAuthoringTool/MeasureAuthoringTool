@@ -97,7 +97,6 @@ public class CQLLinter extends cqlBaseListener {
 		
 		if((CollectionUtils.size(config.getPreviousCQLModel().getCqlIncludeLibrarys()) != numberOfIncludedLibraries)
 				|| (CollectionUtils.size(config.getPreviousCQLModel().getValueSetList()) != numberOfValuesets)
-				|| (CollectionUtils.size(config.getPreviousCQLModel().getCodeSystemList()) != numberOfCodesystems)
 				|| (CollectionUtils.size(config.getPreviousCQLModel().getCodeList()) != numberOfCodes)) {
 			hasInvalidEdits = true;
 		}

@@ -8,12 +8,9 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
-public class ManageMeasureDetailView extends AbstractManageMeasureDetailView {
-    Label invisibleRadioYes;   
-    Label invisibleRadioNo;
-
-
-	public ManageMeasureDetailView() {
+public class NewMeasureView extends AbstractNewMeasureView {
+	
+	public NewMeasureView() {
 		buildMainPanel();
 		FlowPanel fPanel = buildFlowPanel();
 		
@@ -22,7 +19,7 @@ public class ManageMeasureDetailView extends AbstractManageMeasureDetailView {
 		FormLabel measureNameLabel = buildMeasureNameLabel();
 		buildMeasureNameTextArea();
 		measureNameGroup.add(measureNameLabel);
-		measureNameGroup.add(measureName);
+		measureNameGroup.add(measureNameTextBox);
 		
 		
 		cqlLibraryNameLabel.getElement().setId("cqlLibraryNamePanel_CQLLibraryNameLabel"); //TODO create id possibly
@@ -30,12 +27,12 @@ public class ManageMeasureDetailView extends AbstractManageMeasureDetailView {
 		FormLabel cqlLibraryNameLabel = buildCQLLibraryNameLabel();
 		buildCQLLibraryTextArea();
 		cqlLibraryNameGroup.add(cqlLibraryNameLabel);
-		cqlLibraryNameGroup.add(cqlLibraryName);
+		cqlLibraryNameGroup.add(cqlLibraryNameTextBox);
 		
 		FormLabel shortNameLabel = buildShortNameLabel();
 		buildShortNameTextBox();
 		shortNameGroup.add(shortNameLabel);
-		shortNameGroup.add(shortName);
+		shortNameGroup.add(eCQMAbbreviatedTitleTextBox);
 		
 		FormLabel scoringLabel = buildScoringLabel();
 		scoringGroup.add(scoringLabel);

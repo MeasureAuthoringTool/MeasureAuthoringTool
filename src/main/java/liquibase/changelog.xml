@@ -261,7 +261,7 @@
 		<include file="classpath:/liquibase/deploy_Sprint-173-9983_Add_participant_to_EncounterPerformed.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-173_MAT-9964_add_cql_library_name_to_measure_table.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-173-9989_remove_relationship_from_Related_Person.xml"/>
-		<include file="classpath:/liquibase/deploy_Sprint-173-9985_Add_dispenser_to_MedicationDispensed"/>
+		<include file="classpath:/liquibase/deploy_Sprint-173-9985_Add_dispenser_to_MedicationDispensed.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-173-9984_Add_patientId_to_all_datatypes.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-173-9986_Add_rank_attribute.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-173-9987_Add_additional_attributes_RelatedPerson.xml"/>

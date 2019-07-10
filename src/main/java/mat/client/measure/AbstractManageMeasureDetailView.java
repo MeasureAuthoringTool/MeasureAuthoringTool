@@ -75,6 +75,7 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	public void clearFields() {
 		measureName.setText("");
 		shortName.setText("");
+		cqlLibraryName.setText("");
 		measureScoringInput.setSelectedIndex(0);//default to --Select-- value.
 		helpBlock.setText("");
 		messageFormGrp.setValidationState(ValidationState.NONE);

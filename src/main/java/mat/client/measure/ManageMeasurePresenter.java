@@ -1896,6 +1896,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void updateDetailsFromView() {
 		currentDetails.setMeasureName(detailDisplay.getMeasureName().getValue().trim());
 		currentDetails.setShortName(detailDisplay.getShortName().getValue().trim());
+		currentDetails.setCQLLibraryName(detailDisplay.getCQLLibraryName().getValue().trim());
 		String measureScoring = detailDisplay.getMeasScoringValue();
 
 		currentDetails.setMeasScoring(measureScoring);

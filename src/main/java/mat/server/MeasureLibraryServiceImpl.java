@@ -2223,7 +2223,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public final void saveMeasureXml(final MeasureXmlModel measureXmlModel, String measureId) {
 
 		Measure measure = measureDAO.find(measureId);
-		String libraryName = measure.getDescription();
+		String libraryName = measure.getCqlLibraryName();
 		String version = MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion());
 		
 		MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
@@ -2480,6 +2480,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private void setValueFromModel(final ManageMeasureDetailModel model, final Measure measure) {
 		measure.setDescription(model.getMeasureName());
+		measure.setCqlLibraryName(model.getCQLLibraryName());
 		measure.setaBBRName(model.getShortName());
 		// US 421. Scoring choice is not part of core measure.
 		measure.setMeasureScoring(model.getMeasScoring());

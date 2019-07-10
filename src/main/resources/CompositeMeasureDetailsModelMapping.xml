@@ -11,7 +11,7 @@
       <bind-xml name="uuid" node="element"/>
     </field>
 
-    <field name="name"
+    <field name="measureName"
            type="java.lang.String">
       <bind-xml name="title" node="element"/>
     </field>

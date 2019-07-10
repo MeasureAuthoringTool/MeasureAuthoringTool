@@ -22,8 +22,7 @@ public class NewMeasureView extends AbstractNewMeasureView {
 		measureNameGroup.add(measureNameTextBox);
 		
 		
-		cqlLibraryNameLabel.getElement().setId("cqlLibraryNamePanel_CQLLibraryNameLabel"); //TODO create id possibly
-		Form createCQLLibraryForm = new Form();
+		cqlLibraryNameLabel.getElement().setId("cqlLibraryNamePanel_CQLLibraryNameLabel"); 
 		FormLabel cqlLibraryNameLabel = buildCQLLibraryNameLabel();
 		buildCQLLibraryTextArea();
 		cqlLibraryNameGroup.add(cqlLibraryNameLabel);
@@ -59,11 +58,7 @@ public class NewMeasureView extends AbstractNewMeasureView {
 		createMeasureForm.add(messageFormGrp);
 		fPanel.add(createMeasureForm);
 		
-		createCQLLibraryForm.add(formFieldSet);
-		createCQLLibraryForm.add(messageFormGrp);
-		fPanel.add(createCQLLibraryForm);
-		mainPanel.add(fPanel);
-				
+		mainPanel.add(fPanel);	
 	}
 
 }

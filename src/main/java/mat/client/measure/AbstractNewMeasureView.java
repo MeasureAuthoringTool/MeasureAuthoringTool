@@ -57,7 +57,6 @@ public class AbstractNewMeasureView implements DetailDisplay {
 	protected String cautionMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'Measure Scoring' will have the following impacts:<br/>" +
 			   "<img src='images/bullet.png'/> Populations in the Population Workspace that do not apply to the 'Measure Scoring' selected will be deleted.<br/>" +
             "<img src='images/bullet.png'/> Existing Groupings in the Measure Packager will be deleted.</div>";
-	protected HTML instructions = new HTML("Enter a measure name and abbreviated name. Then continue to the Measure Composer.");
     protected HTML requiredInstructions = new HTML("All fields are required.");
 	protected Label patientBasedMeasure = new Label();
 	
@@ -180,8 +179,6 @@ public class AbstractNewMeasureView implements DetailDisplay {
 		fPanel.setHeight("100%");
 		fPanel.add(measureNameLabel);
 		
-		fPanel.add(instructions);
-		instructions.getElement().setId("instructions_HTML");
 		fPanel.add(new SpacerWidget());
 		fPanel.add(requiredInstructions);
 		requiredInstructions.getElement().setId("requiredInstructions_HTML");

@@ -1226,13 +1226,14 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 						transferObject.setId(libraryId);
 						SaveUpdateCQLResult codeResult = cqlService.saveCQLCodes(cqlLibraryXml,transferObject);
 						if(codeResult != null && codeResult.isSuccess()) {
+							cqlLibraryXml = codeResult.getXml();
 							cqlLibrary.setCQLByteArray(codeResult.getXml().getBytes());
 							SaveUpdateCQLResult updatedResult = updateCodeSystem(codeResult.getXml(), transferObject.getCqlCode());
 							if(updatedResult.isSuccess()) {
 								cqlLibrary.setCQLByteArray(updatedResult.getXml().getBytes());
 								cqlLibraryXml = updatedResult.getXml();
 							}
-							result.setXml(updatedResult.getXml());
+							result.setXml(cqlLibraryXml);
 						} else {
 							result.setSuccess(false);
 							break;

@@ -212,6 +212,7 @@
  </attribute>
  <attribute attribName="rank">
   <mode mode="Comparison" />
+  <mode mode="Nullable" />
  </attribute>
  <attribute attribName="recorder">
   <mode mode="ValueSets" />

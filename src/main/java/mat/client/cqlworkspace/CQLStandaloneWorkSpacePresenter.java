@@ -596,7 +596,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				define.setName(definitionName);
 				define.setLogic(definitionLogic);
 				define.setCommentString(definitionComment);
-				define.setContext(defineContext);
 				CQLDefinition toBeModifiedObj = null;
 
 				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedDefinitionObjId() != null) {

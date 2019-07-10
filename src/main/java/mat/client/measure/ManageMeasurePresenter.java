@@ -87,13 +87,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 				isClone = false;
 	
 				if(detailDisplay != null) {
-					detailDisplay.getMeasureName().setValue("");
-					detailDisplay.getShortName().setValue("");
+					detailDisplay.clearFields();
 				}
 	
 				if(compositeDetailDisplay != null) {
-					compositeDetailDisplay.getMeasureName().setValue("");
-					compositeDetailDisplay.getShortName().setValue("");
+					compositeDetailDisplay.getMeasureNameTextBox().setValue("");
+					compositeDetailDisplay.getECQMAbbreviatedTitleTextBox().setValue("");
 					compositeDetailDisplay.clearFields();
 				}
 				
@@ -462,20 +461,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 				MatContext.get().createSelectionMap(result);
 
 				List<CompositeMeasureScoreDTO> compositeChoices = MatContext.get().buildCompositeScoringChoiceList();
-				((ManageCompositeMeasureDetailView) compositeDetailDisplay).setCompositeScoringChoices(compositeChoices);
+				((NewCompositeMeasureView) compositeDetailDisplay).setCompositeScoringChoices(compositeChoices);
 			}
 		});
 
-		((ManageCompositeMeasureDetailView) compositeDetailDisplay).getCompositeScoringMethodInput().addChangeHandler(event -> createSelectionMapAndSetScorings());
+		((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringListBox().addChangeHandler(event -> createSelectionMapAndSetScorings());
 		
-		compositeDetailDisplay.getMeasScoringChoice().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice(compositeDetailDisplay));
+		compositeDetailDisplay.getMeasureScoringListBox().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice(compositeDetailDisplay));
 		
 		compositeDetailDisplay.getSaveButton().addClickHandler(event -> updateCompositeDetailsOnContinueButton());
 
 	}
 
 	private void createSelectionMapAndSetScorings() {
-		String compositeScoringValue = ((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringValue();
+		String compositeScoringValue = ((NewCompositeMeasureView)compositeDetailDisplay).getCompositeScoringValue();
 		compositeDetailDisplay.setScoringChoices(MatContext.get().getSelectionMap().get(compositeScoringValue));
 		setPatientBasedIndicatorBasedOnScoringChoice(compositeDetailDisplay);
 	}
@@ -530,13 +529,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 				
 				// create new measure flow
 				if(!isClone && currentDetails.getId() == null) {
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getMeasureName().getValue()));
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
 					
 				} else if(isClone) { // if clone
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getCloneMeasureSuccessfulMessage(detailDisplay.getMeasureName().getValue()));
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getCloneMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
 					
 				} else { //if edit
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getEditMeasureSuccessfulMessage(detailDisplay.getMeasureName().getValue()));	
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getEditMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));	
 				}
 			
 			}
@@ -563,17 +562,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
-		detailDisplay.getMeasScoringChoice().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice((detailDisplay)));
+		detailDisplay.getMeasureScoringListBox().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice((detailDisplay)));
 	}
 
 	private void setPatientBasedIndicatorBasedOnScoringChoice(DetailDisplay detailDisplay) {
 
-		if (MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()))) {
-			if(detailDisplay.getPatientBasedInput().getItemCount() > 1) {
+		if (MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(detailDisplay.getMeasureScoringListBox().getItemText(detailDisplay.getMeasureScoringListBox().getSelectedIndex()))) {
+			if(detailDisplay.getPatientBasedListBox().getItemCount() > 1) {
 				// yes is the second element in the list, so the 1 index. 
-				detailDisplay.getPatientBasedInput().removeItem(1);
+				detailDisplay.getPatientBasedListBox().removeItem(1);
 			}
-			detailDisplay.getPatientBasedInput().setSelectedIndex(0);
+			detailDisplay.getPatientBasedListBox().setSelectedIndex(0);
 			detailDisplay.getHelpBlock().setText("Patient based indicator set to no.");
 			
 		} else {
@@ -633,11 +632,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 
 	private void resetPatientBasedInput(DetailDisplay currentDisplay) {
-		currentDisplay.getPatientBasedInput().clear();
-		currentDisplay.getPatientBasedInput().addItem("No", "No");
-		currentDisplay.getPatientBasedInput().addItem("Yes", "Yes");
+		currentDisplay.getPatientBasedListBox().clear();
+		currentDisplay.getPatientBasedListBox().addItem("No", "No");
+		currentDisplay.getPatientBasedListBox().addItem("Yes", "Yes");
 		// default the selected index to be 1, which is yes.  				
-		currentDisplay.getPatientBasedInput().setSelectedIndex(1);
+		currentDisplay.getPatientBasedListBox().setSelectedIndex(1);
 	}
 
 	private void displayHistory(String measureId, String measureName) {
@@ -1684,16 +1683,16 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 
 	private void setCompositeDetailsToView() {
-		compositeDetailDisplay.getMeasureName().setValue(currentCompositeMeasureDetails.getMeasureName());
-		compositeDetailDisplay.getShortName().setValue(currentCompositeMeasureDetails.getShortName());
-		((ManageCompositeMeasureDetailView) compositeDetailDisplay).setCompositeScoringSelectedValue(currentCompositeMeasureDetails.getCompositeScoringMethod());
-		compositeDetailDisplay.getMeasScoringChoice().setValueMetadata(currentCompositeMeasureDetails.getMeasScoring());
+		compositeDetailDisplay.getMeasureNameTextBox().setValue(currentCompositeMeasureDetails.getMeasureName());
+		compositeDetailDisplay.getECQMAbbreviatedTitleTextBox().setValue(currentCompositeMeasureDetails.getShortName());
+		((NewCompositeMeasureView) compositeDetailDisplay).setCompositeScoringSelectedValue(currentCompositeMeasureDetails.getCompositeScoringMethod());
+		compositeDetailDisplay.getMeasureScoringListBox().setValueMetadata(currentCompositeMeasureDetails.getMeasScoring());
 	}
 	
 	private void setDetailsToView() {
-		detailDisplay.getMeasureName().setValue(currentDetails.getMeasureName());
-		detailDisplay.getShortName().setValue(currentDetails.getShortName());
-		detailDisplay.getMeasScoringChoice().setValueMetadata(currentDetails.getMeasScoring());
+		detailDisplay.getMeasureNameTextBox().setValue(currentDetails.getMeasureName());
+		detailDisplay.getECQMAbbreviatedTitleTextBox().setValue(currentDetails.getShortName());
+		detailDisplay.getMeasureScoringListBox().setValueMetadata(currentDetails.getMeasScoring());
 	}
 
 	private void shareDisplayHandlers(final ShareDisplay shareDisplay) {
@@ -1908,34 +1907,34 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * Update details from view.
 	 */
 	private void updateDetailsFromView() {
-		currentDetails.setMeasureName(detailDisplay.getMeasureName().getValue().trim());
-		currentDetails.setShortName(detailDisplay.getShortName().getValue().trim());
-		currentDetails.setCQLLibraryName(detailDisplay.getCQLLibraryName().getValue().trim());
-		String measureScoring = detailDisplay.getMeasScoringValue();
+		currentDetails.setMeasureName(detailDisplay.getMeasureNameTextBox().getValue().trim());
+		currentDetails.setShortName(detailDisplay.getECQMAbbreviatedTitleTextBox().getValue().trim());
+		currentDetails.setCQLLibraryName(detailDisplay.getCQLLibraryNameTextBox().getValue().trim());
+		String measureScoring = detailDisplay.getMeasureScoringValue();
 
 		currentDetails.setMeasScoring(measureScoring);
 
-		if(detailDisplay.getPatientBasedInput().getItemText(detailDisplay.getPatientBasedInput().getSelectedIndex()).equalsIgnoreCase("Yes")) {
+		if(detailDisplay.getPatientBasedListBox().getItemText(detailDisplay.getPatientBasedListBox().getSelectedIndex()).equalsIgnoreCase("Yes")) {
 			currentDetails.setIsPatientBased(true);
 		} else {
 			currentDetails.setIsPatientBased(false);
 		}
 		
 		currentDetails.scrubForMarkUp();
-		detailDisplay.getMeasureName().setValue(currentDetails.getMeasureName());
-		detailDisplay.getShortName().setValue(currentDetails.getShortName());
+		detailDisplay.getMeasureNameTextBox().setValue(currentDetails.getMeasureName());
+		detailDisplay.getECQMAbbreviatedTitleTextBox().setValue(currentDetails.getShortName());
 		MatContext.get().setCurrentMeasureName(currentDetails.getMeasureName());
 		MatContext.get().setCurrentShortName(currentDetails.getShortName());
 		MatContext.get().setCurrentMeasureScoringType(currentDetails.getMeasScoring());
 	}
 	
 	private void updateCompositeDetailsFromCompositeDetailView() {
-		currentCompositeMeasureDetails.setMeasureName(compositeDetailDisplay.getMeasureName().getValue().trim());
-		currentCompositeMeasureDetails.setShortName(compositeDetailDisplay.getShortName().getValue().trim());
-		currentCompositeMeasureDetails.setCompositeScoringMethod(((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringValue());
-		String measureScoring = compositeDetailDisplay.getMeasScoringValue();
+		currentCompositeMeasureDetails.setMeasureName(compositeDetailDisplay.getMeasureNameTextBox().getValue().trim());
+		currentCompositeMeasureDetails.setShortName(compositeDetailDisplay.getECQMAbbreviatedTitleTextBox().getValue().trim());
+		currentCompositeMeasureDetails.setCompositeScoringMethod(((NewCompositeMeasureView)compositeDetailDisplay).getCompositeScoringValue());
+		String measureScoring = compositeDetailDisplay.getMeasureScoringValue();
 		currentCompositeMeasureDetails.setMeasScoring(measureScoring);
-		if(compositeDetailDisplay.getPatientBasedInput().getItemText(compositeDetailDisplay.getPatientBasedInput().getSelectedIndex()).equalsIgnoreCase("Yes")) {
+		if(compositeDetailDisplay.getPatientBasedListBox().getItemText(compositeDetailDisplay.getPatientBasedListBox().getSelectedIndex()).equalsIgnoreCase("Yes")) {
 			currentCompositeMeasureDetails.setIsPatientBased(true);
 		} else {
 			currentCompositeMeasureDetails.setIsPatientBased(false);

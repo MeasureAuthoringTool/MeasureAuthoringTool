@@ -17,38 +17,33 @@ public interface DetailDisplay extends BaseDisplay {
 
 	public HasClickHandlers getCancelButton();
 
-	public ListBoxMVP getMeasScoringChoice();
+	public ListBoxMVP getMeasureScoringListBox();
 
-	public String getMeasScoringValue();
+	public String getMeasureScoringValue();
 
 	public HasValue<String> getMeasureVersion();
 
-	public HasValue<String> getMeasureName();
+	public HasValue<String> getMeasureNameTextBox();
 	
-	public HasValue<String> getCQLLibraryName();
+	public HasValue<String> getCQLLibraryNameTextBox();
 
 	public HasClickHandlers getSaveButton();
 
-	public HasValue<String> getShortName();
+	public HasValue<String> getECQMAbbreviatedTitleTextBox();
 
 	public void setMeasureName(String name);
 	
-	public void setCQLLibraryName(String name);
-
 	void setScoringChoices(List<? extends HasListBox> texts);
 
 	public void showCautionMsg(boolean show);
 
 	public void showMeasureName(boolean show);
 
-	
-	ListBoxMVP getPatientBasedInput();
+	ListBoxMVP getPatientBasedListBox();
 
 	HelpBlock getHelpBlock();
 
 	FormGroup getMessageFormGrp();
-
-	void setPatientBasedInput(ListBoxMVP patientBasedInput);
 	
 	EditConfirmationDialogBox getConfirmationDialogBox();
 }

@@ -30,16 +30,16 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.TextAreaWithMaxLength;
 
-public class AbstractManageMeasureDetailView implements DetailDisplay{
+public class AbstractNewMeasureView implements DetailDisplay {
 	protected SimplePanel mainPanel = new SimplePanel();
 	protected MeasureNameLabel measureNameLabel = new MeasureNameLabel();
 	protected CQLLibraryNameLabel cqlLibraryNameLabel = new CQLLibraryNameLabel();
-	protected TextAreaWithMaxLength measureName = new TextAreaWithMaxLength();
-	protected TextAreaWithMaxLength cqlLibraryName = new TextAreaWithMaxLength();
-	protected TextBox shortName = new TextBox();
+	protected TextAreaWithMaxLength measureNameTextBox = new TextAreaWithMaxLength();
+	protected TextAreaWithMaxLength cqlLibraryNameTextBox = new TextAreaWithMaxLength();
+	protected TextBox eCQMAbbreviatedTitleTextBox = new TextBox();
 	protected MessageAlert errorMessages = new ErrorMessageAlert();
-	protected ListBoxMVP  measureScoringInput = new ListBoxMVP();
-	protected ListBoxMVP patientBasedInput = new ListBoxMVP();
+	protected ListBoxMVP  measureScoringListBox = new ListBoxMVP();
+	protected ListBoxMVP patientBasedListBox = new ListBoxMVP();
 	protected SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("measureDetail");
 	protected HelpBlock helpBlock = new HelpBlock();
 	protected FormGroup messageFormGrp = new FormGroup();
@@ -73,10 +73,10 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 
 	@Override
 	public void clearFields() {
-		measureName.setText("");
-		shortName.setText("");
-		cqlLibraryName.setText("");
-		measureScoringInput.setSelectedIndex(0);//default to --Select-- value.
+		measureNameTextBox.setText("");
+		eCQMAbbreviatedTitleTextBox.setText("");
+		cqlLibraryNameTextBox.setText("");
+		measureScoringListBox.setSelectedIndex(0);//default to --Select-- value.
 		helpBlock.setText("");
 		messageFormGrp.setValidationState(ValidationState.NONE);
 	}
@@ -87,13 +87,13 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	}
 
 	@Override
-	public ListBoxMVP getMeasScoringChoice() {
-		return measureScoringInput;
+	public ListBoxMVP getMeasureScoringListBox() {
+		return measureScoringListBox;
 	}
 
 	@Override
-	public String getMeasScoringValue() {
-		return measureScoringInput.getItemText(measureScoringInput.getSelectedIndex());
+	public String getMeasureScoringValue() {
+		return measureScoringListBox.getItemText(measureScoringListBox.getSelectedIndex());
 	}
 
 	@Override
@@ -102,13 +102,12 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	}
 
 	@Override
-	public HasValue<String> getMeasureName() {
-		return measureName;
+	public HasValue<String> getMeasureNameTextBox() {
+		return measureNameTextBox;
 	}
-	//TODO look into call hierarchy of getMeasureName to implement getCQLLibraryName
 	@Override
-	public HasValue<String> getCQLLibraryName() {
-		return cqlLibraryName;
+	public HasValue<String> getCQLLibraryNameTextBox() {
+		return cqlLibraryNameTextBox;
 	}
 
 	@Override
@@ -117,23 +116,18 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	}
 
 	@Override
-	public HasValue<String> getShortName() {
-		return shortName;
+	public HasValue<String> getECQMAbbreviatedTitleTextBox() {
+		return eCQMAbbreviatedTitleTextBox;
 	}
 
 	@Override
 	public void setMeasureName(String name) {
 		measureNameLabel.setMeasureName(name);
 	}
-	//TODO look into call hier of setMeasureName to implement setCQLLibraryName
-	@Override
-	public void setCQLLibraryName(String name) {
-		cqlLibraryNameLabel.setCQLLibraryName(name);
-	}
-
+	
 	@Override
 	public void setScoringChoices(List<? extends HasListBox> texts) {
-		MatContext.get().setListBoxItems(measureScoringInput, texts, MatContext.PLEASE_SELECT);
+		MatContext.get().setListBoxItems(measureScoringListBox, texts, MatContext.PLEASE_SELECT);
 	}
 
 	@Override
@@ -151,15 +145,11 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	public void showMeasureName(boolean show) {
 		MatContext.get().setVisible(measureNameLabel,show);	
 	}
-//	TODO ?
-//	@Override
-//	public void showCQLLibraryName(boolean show) {
-//		MatContext.get().setVisible(measureNameLabel,show);	
-//	}
 
+	
 	@Override
-	public ListBoxMVP getPatientBasedInput() {
-		return patientBasedInput;
+	public ListBoxMVP getPatientBasedListBox() {
+		return patientBasedListBox;
 	}
 
 	@Override
@@ -170,11 +160,6 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	@Override
 	public FormGroup getMessageFormGrp() {
 		return messageFormGrp;
-	}
-
-	@Override
-	public void setPatientBasedInput(ListBoxMVP patientBasedInput) {
-		this.patientBasedInput = patientBasedInput;
 	}
 
 	@Override
@@ -218,11 +203,11 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	}
 	
 	protected void buildMeasureNameTextArea() {
-		measureName.setId("MeasureNameTextArea");
-		measureName.setTitle("Enter Measure Name Required.");
-		measureName.setWidth("400px");
-		measureName.setHeight("50px");
-		measureName.setMaxLength(500);
+		measureNameTextBox.setId("MeasureNameTextArea");
+		measureNameTextBox.setTitle("Enter Measure Name Required.");
+		measureNameTextBox.setWidth("400px");
+		measureNameTextBox.setHeight("50px");
+		measureNameTextBox.setMaxLength(500);
 	}
 	
 	protected FormLabel buildCQLLibraryNameLabel() {
@@ -236,11 +221,11 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	}
 	
 	protected void buildCQLLibraryTextArea() {
-		cqlLibraryName.setId("CqlLibraryNameTextArea");
-		cqlLibraryName.setTitle("Enter CQL Library Name Required.");
-		cqlLibraryName.setWidth("400px");
-		cqlLibraryName.setHeight("50px");
-		cqlLibraryName.setMaxLength(500);
+		cqlLibraryNameTextBox.setId("CqlLibraryNameTextArea");
+		cqlLibraryNameTextBox.setTitle("Enter CQL Library Name Required.");
+		cqlLibraryNameTextBox.setWidth("400px");
+		cqlLibraryNameTextBox.setHeight("50px");
+		cqlLibraryNameTextBox.setMaxLength(500);
 	}
 	
 	protected FormLabel buildShortNameLabel() {
@@ -254,10 +239,10 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	}
 	
 	protected void buildShortNameTextBox() {
-		shortName.setId("ShortNameTextBox");
-		shortName.setTitle("Enter eCQM Abbreviated Title Required");
-		shortName.setWidth("18em");
-		shortName.setMaxLength(32);	
+		eCQMAbbreviatedTitleTextBox.setId("ShortNameTextBox");
+		eCQMAbbreviatedTitleTextBox.setTitle("Enter eCQM Abbreviated Title Required");
+		eCQMAbbreviatedTitleTextBox.setWidth("18em");
+		eCQMAbbreviatedTitleTextBox.setMaxLength(32);	
 	}
 	
 	protected FormLabel buildScoringLabel() {
@@ -271,16 +256,16 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	}
 	
 	protected void buildMeasureScoringInput() {
-		measureScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
-		measureScoringInput.setTitle("Measure Scoring Required.");
-		measureScoringInput.setStyleName("form-control");
-		measureScoringInput.setVisibleItemCount(1);
-		measureScoringInput.setWidth("18em");
+		measureScoringListBox.getElement().setId("measScoringInput_ListBoxMVP");
+		measureScoringListBox.setTitle("Measure Scoring Required.");
+		measureScoringListBox.setStyleName("form-control");
+		measureScoringListBox.setVisibleItemCount(1);
+		measureScoringListBox.setWidth("18em");
 	}
 	
 	protected HorizontalPanel buildScoringPanel() {
 		HorizontalPanel scoringPanel = new HorizontalPanel();
-		scoringPanel.add(measureScoringInput);
+		scoringPanel.add(measureScoringListBox);
 		scoringPanel.add(new HTML("&nbsp;"));
 		scoringPanel.add(cautionMsgPlaceHolder);
 		return scoringPanel;
@@ -297,16 +282,16 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	}
 	
 	protected void buildPatientBasedInput() {
-		patientBasedInput.getElement().setId("patientBasedMeasure_listbox");
-		patientBasedInput.setTitle("Patient Based Indicator Required.");
-		patientBasedInput.setStyleName("form-control");
-		patientBasedInput.setVisibleItemCount(1);
-		patientBasedInput.setWidth("18em");
+		patientBasedListBox.getElement().setId("patientBasedMeasure_listbox");
+		patientBasedListBox.setTitle("Patient Based Indicator Required.");
+		patientBasedListBox.setStyleName("form-control");
+		patientBasedListBox.setVisibleItemCount(1);
+		patientBasedListBox.setWidth("18em");
 	}
 	
 	protected HorizontalPanel buildPatientBasedPanel() {
 		 HorizontalPanel patientBasedPanel = new HorizontalPanel();
-		 patientBasedPanel.add(patientBasedInput);
+		 patientBasedPanel.add(patientBasedListBox);
 		 patientBasedPanel.add(new HTML("&nbsp;"));
 		 patientBasedPanel.add(cautionPatientbasedMsgPlaceHolder);
 		 return patientBasedPanel;

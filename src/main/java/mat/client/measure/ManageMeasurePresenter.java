@@ -608,10 +608,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void displayCloneMeasureWidget() {
 		panel.setHeading("My Measures > Clone Measure", "CompositeMeasure");	
-		detailDisplay.setMeasureName(currentDetails.getMeasureName());
+		detailDisplay.setMeasureName(currentDetails.getMeasureName());		
 		Mat.focusSkipLists(MEASURE_LIBRARY);
 		detailDisplay.showCautionMsg(true);
 		setDetailsToView();
+		
+		detailDisplay.getMeasureNameTextBox().setValue("");
+		detailDisplay.getECQMAbbreviatedTitleTextBox().setValue("");
+		detailDisplay.getCQLLibraryNameTextBox().setValue("");
+
 		panel.setContent(detailDisplay.asWidget());
 	}
 	
@@ -1686,10 +1691,25 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void setDetailsToView() {
+		detailDisplay.clearFields();
+		resetPatientBasedInput(detailDisplay);
 		detailDisplay.getMeasureNameTextBox().setValue(currentDetails.getMeasureName());
 		detailDisplay.getCQLLibraryNameTextBox().setValue(currentDetails.getCQLLibraryName());
 		detailDisplay.getECQMAbbreviatedTitleTextBox().setValue(currentDetails.getShortName());
 		detailDisplay.getMeasureScoringListBox().setValueMetadata(currentDetails.getMeasScoring());
+		
+		if(!StringUtility.isEmptyOrNull(currentDetails.getMeasureName())) {
+			if(currentDetails.isPatientBased()) {
+				detailDisplay.getPatientBasedListBox().setSelectedIndex(1);
+			} else {
+				detailDisplay.getPatientBasedListBox().setSelectedIndex(0);
+			}
+			
+			if(currentDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
+				detailDisplay.getPatientBasedListBox().removeItem(1);
+				detailDisplay.getPatientBasedListBox().setSelectedIndex(0);
+			}
+		} 
 	}
 
 	private void shareDisplayHandlers(final ShareDisplay shareDisplay) {

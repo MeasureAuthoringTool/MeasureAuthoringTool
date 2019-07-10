@@ -610,6 +610,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setHeading("My Measures > Clone Measure", "CompositeMeasure");	
 		detailDisplay.setMeasureName(currentDetails.getMeasureName());
 		Mat.focusSkipLists(MEASURE_LIBRARY);
+		detailDisplay.showCautionMsg(true);
 		setDetailsToView();
 		panel.setContent(detailDisplay.asWidget());
 	}
@@ -618,6 +619,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setHeading("My Measures > Draft Measure", MEASURE_LIBRARY);
 		detailDisplay.setMeasureName(currentDetails.getMeasureName());
 		Mat.focusSkipLists(MEASURE_LIBRARY);
+		detailDisplay.showCautionMsg(true);
 		setDetailsToView();
 		panel.setContent(detailDisplay.asWidget());
 	}
@@ -626,6 +628,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setHeading("My Measures > Draft Composite Measure", MEASURE_LIBRARY);
 		detailDisplay.setMeasureName(currentDetails.getMeasureName());
 		Mat.focusSkipLists(MEASURE_LIBRARY);
+		detailDisplay.showCautionMsg(true);
 		setCompositeDetailsToView();
 		panel.setContent(detailDisplay.asWidget());
 	}

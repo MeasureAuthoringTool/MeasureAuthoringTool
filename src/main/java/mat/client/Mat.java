@@ -28,7 +28,7 @@ import mat.client.admin.reports.ManageAdminReportingPresenter;
 import mat.client.admin.reports.ManageAdminReportingView;
 import mat.client.bonnie.BonnieModal;
 import mat.client.codelist.ListBoxCodeProvider;
-import mat.client.cql.CQLLibraryDetailView;
+import mat.client.cql.NewLibraryView;
 import mat.client.cql.CQLLibraryHistoryView;
 import mat.client.cql.CQLLibraryShareView;
 import mat.client.cql.CQLLibraryVersionView;
@@ -214,7 +214,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
 	private CqlLibraryPresenter buildCqlLibraryWidget() {
 		CqlLibraryView cqlLibraryView = new CqlLibraryView();
-		CQLLibraryDetailView detailView = new CQLLibraryDetailView();
+		NewLibraryView detailView = new NewLibraryView();
 		CQLLibraryVersionView versionView = new CQLLibraryVersionView();
 		CQLLibraryShareView shareView = new CQLLibraryShareView();
 		CQLLibraryHistoryView historyView = new CQLLibraryHistoryView();

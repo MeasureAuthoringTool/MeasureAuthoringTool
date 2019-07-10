@@ -19,7 +19,7 @@ import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
-public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
+public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 	
 
 	private TextArea nameField = new TextArea();
@@ -31,7 +31,7 @@ public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 	
 	SaveContinueCancelButtonBar buttonToolBar = new SaveContinueCancelButtonBar("cqlDetail");
 	
-	public CQLLibraryDetailView(){
+	public NewLibraryView(){
 		resetAll();
 		mainDetailViewVP.clear();
 	}

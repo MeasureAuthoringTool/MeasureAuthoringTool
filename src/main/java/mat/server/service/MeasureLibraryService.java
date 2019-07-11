@@ -192,7 +192,7 @@ public interface MeasureLibraryService {
 	 *            the model
 	 * @return the save measure result
 	 */
-	SaveMeasureResult save(ManageMeasureDetailModel model);
+	SaveMeasureResult saveOrUpdateMeasure(ManageMeasureDetailModel model);
 	
 	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model);
 	

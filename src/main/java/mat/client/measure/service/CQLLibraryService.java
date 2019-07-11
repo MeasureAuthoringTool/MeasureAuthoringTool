@@ -29,7 +29,7 @@ public interface CQLLibraryService extends RemoteService {
 
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryID);
 
-	SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlModel);
+	SaveCQLLibraryResult saveCQLLibrary(CQLLibraryDataSetObject cqlModel);
 
 	SaveUpdateCQLResult getCQLData(String id);
 

@@ -929,5 +929,17 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		
 		return cb.and(predicatesList.toArray(new Predicate[predicatesList.size()]));
 	}
+	
+	public String getMeasureNameIfDraftAlreadyExists(String measureSetId) {
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+		final Root<Measure> root = query.from(Measure.class);
+		
+		query.select(root.get("description")).where(cb.and(cb.equal(root.get(MEASURE_SET).get("id"), measureSetId), 
+				cb.equal(root.get(DRAFT), true)));
+
+		return session.createQuery(query).getSingleResult();
+	}
 
 }

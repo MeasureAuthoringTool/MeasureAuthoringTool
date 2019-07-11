@@ -135,8 +135,8 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 	
 	@Override
-	public SaveMeasureResult save(ManageMeasureDetailModel model) {
-		return this.getMeasureLibraryService().save(model);
+	public SaveMeasureResult saveNewMeasure(ManageMeasureDetailModel model) {
+		return this.getMeasureLibraryService().saveOrUpdateMeasure(model);
 	}
 	
 	@Override

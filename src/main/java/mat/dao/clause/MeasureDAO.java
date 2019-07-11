@@ -188,4 +188,6 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	ShareLevel findShareLevelForUser(String measureId, String userID, String measureSetId);
 
 	List<MeasureShareDTO> getComponentMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel, User user);
+	
+	String getMeasureNameIfDraftAlreadyExists(String measureSetId);
 }

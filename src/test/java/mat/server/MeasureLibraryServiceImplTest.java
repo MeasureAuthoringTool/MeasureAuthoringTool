@@ -75,7 +75,7 @@ public class MeasureLibraryServiceImplTest {
 		Mockito.when(measurePackageService.getById(measureModelId)).thenReturn(testMeasure);
 		Mockito.when(measurePackageService.findMeasureSet(measureSetId)).thenReturn(testMeasureSet);
 
-		measureLibraryService.save(manageMeasureDetailModel);
+		measureLibraryService.saveOrUpdateMeasure(manageMeasureDetailModel);
 	}
 	
 	@Test

@@ -194,7 +194,7 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	void save(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
+	void saveNewMeasure(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
 	
 	void saveCompositeMeasure(ManageCompositeMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
 	

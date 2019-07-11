@@ -32,7 +32,7 @@ public interface CQLLibraryServiceInterface {
 	void save(CQLLibrary cqlLibrary);
 
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
-	public SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlLibraryDataSetObject);
+	public SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject);
 
 	String createCQLLookUpTag(String libraryName,String version);
 

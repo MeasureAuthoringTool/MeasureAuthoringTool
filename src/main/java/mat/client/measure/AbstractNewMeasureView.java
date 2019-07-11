@@ -76,6 +76,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
 		measureScoringListBox.setSelectedIndex(0);//default to --Select-- value.
 		helpBlock.setText("");
 		messageFormGrp.setValidationState(ValidationState.NONE);
+		getErrorMessageDisplay().clearAlert();
 	}
 
 	@Override

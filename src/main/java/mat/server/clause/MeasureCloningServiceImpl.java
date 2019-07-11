@@ -22,11 +22,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,11 +37,13 @@ import org.xml.sax.SAXException;
 
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.MeasureCloningService;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
+import mat.client.shared.MessageDelegate;
 import mat.dao.OrganizationDAO;
 import mat.dao.UserDAO;
 import mat.dao.clause.MeasureDAO;
@@ -139,16 +141,40 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	private static final String GROUPING = "Grouping";
 	private static final String EXTENSIONAL = "Extensional";
 	
+	private static final String CANNOT_ACCESS_MEASURE = "Cannot access this measure.";
+	
 	private Document clonedDoc;
 	
 	Measure clonedMeasure;
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureCloningService#clone(mat.client.measure.ManageMeasureDetailModel, java.lang.String, boolean)
-	 */
 	@Override
-	public ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails, String loggedinUserId, boolean creatingDraft) throws MatException {
+	public ManageMeasureSearchModel.Result cloneExistingMeasure(ManageMeasureDetailModel currentDetails) throws MatException {
+		currentDetails.setMeasureSetId(null);		
+		if (MatContextServiceUtil.get().isCurrentMeasureDraftable(measureDAO, userDAO, currentDetails.getId())) {
+			createException(CANNOT_ACCESS_MEASURE);
+		}
+		return clone(currentDetails, false);
+	}
+	
+	@Override
+	public Result draftExistingMeasure(ManageMeasureDetailModel currentDetails) throws MatException {
+		if (MatContextServiceUtil.get().isCurrentMeasureClonable(measureDAO, currentDetails.getId())) {
+			createException(CANNOT_ACCESS_MEASURE);
+		}
+		String name = measureDAO.getMeasureNameIfDraftAlreadyExists(currentDetails.getMeasureSetId());
+		if (StringUtils.isNotBlank(name)) {
+			createException("This draft can not be created. A draft of " + name + " has already been created in the system.");
+		}
+		return clone(currentDetails, true);
+	}
+
+	private void createException(String message) throws MatException {
+		Exception e = new Exception(message);
+		log(e.getMessage(), e);
+		throw new MatException(e.getMessage());
+	}
+	
+	private ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails, boolean creatingDraft) throws MatException {
 		logger.info("In MeasureCloningServiceImpl.clone() method..");
 		measureDAO = (MeasureDAO) context.getBean("measureDAO");
 		measureXmlDAO = (MeasureXMLDAO) context.getBean("measureXMLDAO");
@@ -158,23 +184,14 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 
 		cqlLibraryService = (CQLLibraryService) context.getBean("cqlLibraryService");
 
-		boolean isMeasureClonable = false;
-		if(creatingDraft){
-			isMeasureClonable = MatContextServiceUtil.get().isCurrentMeasureDraftable(measureDAO, userDAO, currentDetails.getId());
-		}else{
-			isMeasureClonable = MatContextServiceUtil.get().isCurrentMeasureClonable(measureDAO, currentDetails.getId());
-		}
-		
-		if(!isMeasureClonable){
-			Exception e = new Exception("Cannot access this measure.");
-			log(e.getMessage(), e);
-			throw new MatException(e.getMessage());
+		if (cqlService.checkIfLibraryNameExists(currentDetails.getCQLLibraryName(), currentDetails.getMeasureSetId())){
+			throw new MatException(MessageDelegate.DUPLICATE_LIBRARY_NAME);
 		}
 		
 		try {
 			ManageMeasureSearchModel.Result result = new ManageMeasureSearchModel.Result();
 			Measure measure = measureDAO.find(currentDetails.getId());
-			
+
 			if(checkNonCQLCloningValidation(measure, creatingDraft)){
 				Exception e = new Exception("Cannot clone this measure.");
 				log(e.getMessage(), e);
@@ -193,12 +210,13 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			clonedDoc = originalDoc;
 			clonedMeasure.setaBBRName(currentDetails.getShortName());
 			clonedMeasure.setDescription(currentDetails.getMeasureName());
-			
+			clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName());
 			clonedMeasure.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 			clonedMeasure.setReleaseVersion(measure.getReleaseVersion());			
 			clonedMeasure.setDraft(Boolean.TRUE);
 			clonedMeasure.setPatientBased(currentDetails.isPatientBased());
-			if(!CollectionUtils.isEmpty(measure.getComponentMeasures()) && measure.getIsCompositeMeasure()){
+			
+			if(CollectionUtils.isNotEmpty(measure.getComponentMeasures()) && measure.getIsCompositeMeasure()){
 				clonedMeasure.setIsCompositeMeasure(measure.getIsCompositeMeasure());
 				clonedMeasure.setCompositeScoring(measure.getCompositeScoring());
 				clonedMeasure.setComponentMeasures(cloneAndSetComponentMeasures(measure.getComponentMeasures(),clonedMeasure));
@@ -228,7 +246,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 				isNonCQLtoCQLDraft = createDraftAndDetermineIfNonCQL(currentDetails.getVersionNumber(), measure);
 				
 			} else { 
-				cloneMeasure(currentDetails.isPatientBased());
+				cloneMeasure();
 			}
 			
 			String formattedVersion = MeasureUtility.formatVersionText(clonedMeasure.getRevisionNumber(), clonedMeasure.getVersion());
@@ -389,7 +407,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 		return isNonCQLtoCQLDraft;
 	}
 	
-	private void cloneMeasure(boolean isPatientBased) {
+	private void cloneMeasure() {
 		 
 		// Clear the measureDetails tag
 		if (LoggedInUserUtil.getLoggedInUser() != null) {
@@ -860,4 +878,5 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 		}
 
 	}
+
 }

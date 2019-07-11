@@ -8,6 +8,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -306,9 +307,25 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId){
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		CQLLibrary existingLibrary = cqlLibraryDAO.find(libraryId);
-		boolean isDraftable = MatContextServiceUtil.get().isCurrentCQLLibraryDraftable(
-				cqlLibraryDAO, libraryId);
+		boolean isDraftable = MatContextServiceUtil.get().isCurrentCQLLibraryDraftable(cqlLibraryDAO, libraryId);
+		
 		if(existingLibrary != null && isDraftable){
+			
+			if (cqlService.checkIfLibraryNameExists(existingLibrary.getName(), existingLibrary.getSetId())) {
+				result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+				result.setSuccess(false);
+				return result;
+			}
+			
+			String name = cqlLibraryDAO.getLibraryNameIfDraftAlreadyExists(existingLibrary.getSetId());
+			if (StringUtils.isNotBlank(name)) {
+				String msg = "This draft can not be created. A draft of " + name + " has already been created in the system.";
+				result.setMessages(Arrays.asList(msg));
+				result.setFailureReason(SaveCQLLibraryResult.INVALID_DATA);
+				result.setSuccess(false);
+				return result;
+			}
+			
 			CQLLibrary newLibraryObject = new CQLLibrary();
 			newLibraryObject.setDraft(true);
 			newLibraryObject.setName(existingLibrary.getName());
@@ -529,15 +546,21 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	}
 
 	@Override
-	public SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlLibraryDataSetObject) {
+	public SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject) {
 
 		if (cqlLibraryDataSetObject != null) {
 			cqlLibraryDataSetObject.scrubForMarkUp();
 		}
 
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
+		if (cqlService.checkIfLibraryNameExists(cqlLibraryDataSetObject.getCqlName(), cqlLibraryDataSetObject.getCqlSetId())) {
+			result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+			result.setSuccess(false);
+			return result;
+		}
+		
 		List<String> message = isValidCQLLibrary(cqlLibraryDataSetObject);
-		if (message.size() == 0) {
+		if (message.isEmpty()) {
 			CQLLibrary library = new CQLLibrary();
 			library.setDraft(true);
 			library.setName(cqlLibraryDataSetObject.getCqlName());

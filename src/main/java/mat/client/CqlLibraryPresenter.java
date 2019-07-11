@@ -38,12 +38,12 @@ import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.advancedsearch.AdvancedSearchPillPanel;
 import mat.client.buttons.CustomButton;
-import mat.client.cql.NewLibraryView;
 import mat.client.cql.CQLLibraryHistoryView;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.cql.CQLLibrarySearchView.Observer;
 import mat.client.cql.CQLLibraryShareView;
 import mat.client.cql.CQLLibraryVersionView;
+import mat.client.cql.NewLibraryView;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.event.CQLLibraryDeleteEvent;
 import mat.client.event.CQLLibraryEditEvent;
@@ -71,6 +71,7 @@ import mat.model.cql.CQLLibraryShareDTO;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.LibrarySearchModel;
+import mat.shared.SaveUpdateCQLResult;
 import mat.shared.error.AuthenticationException;
 
 
@@ -1004,7 +1005,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		libraryDataSetObject.setCqlName(detailDisplay.getNameField().getText());
 
 		if(isValid()) {
-			MatContext.get().getCQLLibraryService().save(libraryDataSetObject, new AsyncCallback<SaveCQLLibraryResult>() {
+			MatContext.get().getCQLLibraryService().saveCQLLibrary(libraryDataSetObject, new AsyncCallback<SaveCQLLibraryResult>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -1019,7 +1020,11 @@ public class CqlLibraryPresenter implements MatPresenter {
 						fireCqlLibraryEditEvent();
 						showDialogBox(MatContext.get().getMessageDelegate().getCreateNewLibrarySuccessfulMessage(detailDisplay.getName().getValue()));
 					} else {
-						detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+						if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
+							detailDisplay.getErrorMessage().createAlert(MessageDelegate.DUPLICATE_LIBRARY_NAME);
+						} else {
+							detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+						}
 					}
 				}
 			});

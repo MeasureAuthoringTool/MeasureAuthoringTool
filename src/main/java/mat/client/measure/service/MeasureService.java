@@ -188,7 +188,7 @@ public interface MeasureService extends RemoteService {
 	 *            the model
 	 * @return the save measure result
 	 */
-	SaveMeasureResult save(ManageMeasureDetailModel model);
+	SaveMeasureResult saveNewMeasure(ManageMeasureDetailModel model);
 	
 	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model);
 	

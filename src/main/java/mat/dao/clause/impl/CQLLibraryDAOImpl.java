@@ -829,5 +829,17 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		sb.append("OR (DRAFT = 0 and CAST(TRIM(LEADING 'v' from RELEASE_VERSION) AS decimal(2,1)) >= 5.8)))");
 		return sb.toString();
 	}
+	
+	public String getLibraryNameIfDraftAlreadyExists(String librarySetId) {
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+		final Root<CQLLibrary> root = query.from(CQLLibrary.class);
+		
+		query.select(root.get("description")).where(cb.and(cb.equal(root.get(SET_ID), librarySetId), 
+				cb.equal(root.get(DRAFT), true)));
+
+		return session.createQuery(query).getSingleResult();
+	}
 
 }

@@ -22,6 +22,7 @@ import mat.client.shared.SuccessMessageAlert;
 public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 	
 
+	private static final String CQL_LIBRARY_NAME = "CQL Library Name";
 	private TextArea nameField = new TextArea();
 	private ErrorMessageAlert errorMessage = new ErrorMessageAlert();
 	private SuccessMessageAlert successMessage = new SuccessMessageAlert();
@@ -49,13 +50,13 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 		
 		FormGroup nameGroup = new FormGroup();
 		FormLabel nameLabel = new FormLabel();
-		nameLabel.setText("Name");
-		nameLabel.setTitle("Name");
+		nameLabel.setText(CQL_LIBRARY_NAME);
+		nameLabel.setTitle(CQL_LIBRARY_NAME);
 		nameLabel.setShowRequiredIndicator(true);
 		nameLabel.setMarginTop(5);
 		nameLabel.setId("cqlLibraryName_Label");
 		nameField.setId("CQLLibraryName_Input");
-		nameField.setTitle("Enter Name Required");
+		nameField.setTitle("Enter CQL Library Name Required");
 		nameField.setMaxLength(500);
 		nameField.setWidth("400px");
 		nameField.setHeight("50px");

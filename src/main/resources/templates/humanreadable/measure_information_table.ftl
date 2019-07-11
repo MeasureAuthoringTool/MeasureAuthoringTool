@@ -103,11 +103,11 @@
 				</tr>
 			</#list>
 			
-			<#else>
-				<tr>
-					<td style="background-color:#656565; width:20%"><span class="td_label">Measure Type</span></td>
-					<td style="width:80%" colspan="3">${""}</td>
-				</tr>
+		<#else>
+			<tr>
+				<td style="background-color:#656565; width:20%"><span class="td_label">Measure Type</span></td>
+				<td style="width:80%" colspan="3">${""}</td>
+			</tr>
 		</#if>
 		
 		<#if model.measureInformation.componentMeasures??>
@@ -133,7 +133,7 @@
 				</td>
 			</tr>
 		</#if>
-		<#if model.measureInformation.measureScoring?lower_case != "ratio" && model.measureInformation.qdmVersion < 5.5 >
+		<#if model.measureInformation.measureScoring?lower_case != "ratio" || model.measureInformation.qdmVersion < 5.5 >
 			<tr>
 				<td style="background-color:#656565; width:20%"><span class="td_label">Stratification</span></td>
 				<td style="width:80%" colspan="3">

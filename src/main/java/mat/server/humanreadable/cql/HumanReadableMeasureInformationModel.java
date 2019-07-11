@@ -68,8 +68,8 @@ public class HumanReadableMeasureInformationModel {
 		this.measurementPeriodEndDate = model.getMeasToPeriod();
 		this.measureSteward = model.getStewardValue();
 		
-		this.measureDevelopers = new ArrayList<>();
 		if(!CollectionUtils.isEmpty(model.getAuthorSelectedList())) {
+			this.measureDevelopers = new ArrayList<>();
 			model.getAuthorSelectedList().forEach(d -> this.measureDevelopers.add(d.getAuthorName()));
 		}
 		
@@ -94,9 +94,9 @@ public class HumanReadableMeasureInformationModel {
 		}
 		
 		this.measureScoring = model.getMeasScoring();
-		this.measureTypes = new ArrayList<>();
 		
 		if(!CollectionUtils.isEmpty(model.getMeasureTypeSelectedList())) {
+			this.measureTypes = new ArrayList<>();
 			model.getMeasureTypeSelectedList().forEach(mt -> this.measureTypes.add(mt.getDescription()));
 		}
 		

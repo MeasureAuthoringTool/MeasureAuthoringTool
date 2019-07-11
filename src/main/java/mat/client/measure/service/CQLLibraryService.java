@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
@@ -48,7 +49,7 @@ public interface CQLLibraryService extends RemoteService {
 	
 	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
 	
-	SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
+	SaveCQLLibraryResult saveDraftFromVersion(String libraryId, String libraryName) throws MatException;
 	
 	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 

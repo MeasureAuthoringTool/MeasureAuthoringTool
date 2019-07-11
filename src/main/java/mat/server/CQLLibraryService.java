@@ -8,7 +8,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,6 +36,8 @@ import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatException;
+import mat.client.shared.MessageDelegate;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
 import mat.dao.CQLLibraryAuditLogDAO;
@@ -304,32 +305,27 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	}
 	
 	@Override
-	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId){
+	public SaveCQLLibraryResult draftExistingCQLLibrary(String libraryId, String libraryName) throws MatException{
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		CQLLibrary existingLibrary = cqlLibraryDAO.find(libraryId);
 		boolean isDraftable = MatContextServiceUtil.get().isCurrentCQLLibraryDraftable(cqlLibraryDAO, libraryId);
 		
 		if(existingLibrary != null && isDraftable){
 			
-			if (cqlService.checkIfLibraryNameExists(existingLibrary.getName(), existingLibrary.getSetId())) {
-				result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
-				result.setSuccess(false);
-				return result;
+			if (cqlService.checkIfLibraryNameExists(libraryName, existingLibrary.getSetId())) {
+				throw new MatException(MessageDelegate.DUPLICATE_LIBRARY_NAME);
 			}
 			
 			String name = cqlLibraryDAO.getLibraryNameIfDraftAlreadyExists(existingLibrary.getSetId());
 			if (StringUtils.isNotBlank(name)) {
 				String msg = "This draft can not be created. A draft of " + name + " has already been created in the system.";
-				result.setMessages(Arrays.asList(msg));
-				result.setFailureReason(SaveCQLLibraryResult.INVALID_DATA);
-				result.setSuccess(false);
-				return result;
+				throw new MatException(msg);
 			}
 			
 			CQLLibrary newLibraryObject = new CQLLibrary();
 			newLibraryObject.setDraft(true);
-			newLibraryObject.setName(existingLibrary.getName());
-			newLibraryObject.setSetId(existingLibrary.getSetId());;
+			newLibraryObject.setName(libraryName);
+			newLibraryObject.setSetId(existingLibrary.getSetId());
 			newLibraryObject.setOwnerId(existingLibrary.getOwnerId());
 			newLibraryObject.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 			newLibraryObject.setQdmVersion(MATPropertiesService.get().getQmdVersion());

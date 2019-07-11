@@ -10,6 +10,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -23,7 +24,6 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -92,12 +92,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	private ShareDisplay shareDisplay;
 	
-	private boolean isSearchFilterVisible = true;
-	
-	private boolean isSearchVisibleOnVersion = true;
-	
-	private boolean isSearchVisibleOnDraft = true;
-	
 	private boolean isLoading = false;
 
 	private CQLModelValidator validator = new CQLModelValidator();
@@ -127,6 +121,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 	private DeleteConfirmDialogBox dialogBox;
 
 	private HandlerRegistration saveHandler;
+	
+	private static final String CONTINUE = "Continue";
 
 	
 	/**
@@ -699,13 +695,20 @@ public class CqlLibraryPresenter implements MatPresenter {
 	protected void draftCQLLibrary(CQLLibraryDataSetObject selectedLibrary) {
 		selectedLibrary.setCqlName(detailDisplay.getNameField().getValue().trim());
 		cqlLibraryView.resetMessageDisplay();
+		
+		if(isValid()) {
+			createDraftFromLibrary(selectedLibrary.getId(), selectedLibrary.getCqlName());
+		}
+	}
+	
+	private void createDraftFromLibrary(String libraryId, String libraryName) {
 		showSearchingBusy(true);
-		MatContext.get().getCQLLibraryService().saveDraftFromVersion(selectedLibrary.getId(), new AsyncCallback<SaveCQLLibraryResult>() {
+		MatContext.get().getCQLLibraryService().saveDraftFromVersion(libraryId, libraryName, new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
 				showSearchingBusy(false);
-				cqlLibraryView.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				detailDisplay.getErrorMessage().createAlert(caught.getLocalizedMessage());
 			}
 
 			@Override
@@ -762,7 +765,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 								}
 							}
 						} else {
-							DeferredCommand.addCommand(this);
+							Scheduler.get().scheduleDeferred(this);
 						}
 					}
 				};
@@ -803,7 +806,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 								}
 							}
 						} else {
-							DeferredCommand.addCommand(this);
+							Scheduler.get().scheduleDeferred(this);
 						}
 					}
 				};
@@ -927,7 +930,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 							String versionStr = result.getVersionStr();
 							recordSuccessCQLLibraryVersionEvent(libraryId, versionStr);
 							isCqlLibraryVersioned = true;
-							fireSuccessfullVersionEvent(isCqlLibraryVersioned,cqlLibName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(cqlLibName, versionStr));
+							fireSuccessfulVersionEvent(isCqlLibraryVersioned,cqlLibName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(cqlLibName, versionStr));
 						} else {
 							isCqlLibraryVersioned = false;
 							if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA) {
@@ -935,7 +938,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 							} else if(result.getFailureReason() == ConstantMessages.INVALID_CQL_LIBRARIES) {
 								String libraryName = versionDisplay.getSelectedLibrary().getCqlName();
 								String errorMessage =  MatContext.get().getMessageDelegate().getUnusedIncludedLibraryWarning(libraryName);
-								ConfirmationDialogBox dialogBox = versionDisplay.createConfirmationDialogBox(errorMessage, "Continue", "Cancel", null, false);
+								ConfirmationDialogBox dialogBox = versionDisplay.createConfirmationDialogBox(errorMessage, CONTINUE, "Cancel", null, false);
 								dialogBox.setObserver(new ConfirmationObserver() {
 									
 									@Override
@@ -960,7 +963,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		});
 	}
 
-	private void fireSuccessfullVersionEvent(boolean isSuccess, String name, String message){
+	private void fireSuccessfulVersionEvent(boolean isSuccess, String name, String message){
 		CQLVersionEvent versionEvent = new CQLVersionEvent(isSuccess, name, message);
 		MatContext.get().getEventBus().fireEvent(versionEvent);
 	}
@@ -995,8 +998,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 	private void showDialogBox(String message) {
 		detailDisplay.getCreateNewConfirmationDialogBox().show(message);
 		detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setDataDismiss(ButtonDismiss.MODAL);
-		detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setTitle("Continue");
-		detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setText("Continue");
+		detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setTitle(CONTINUE);
+		detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setText(CONTINUE);
 		detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setFocus(true);
 	}
 	
@@ -1229,7 +1232,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		buildCreateLibrary(); 
 		
 		fp.add(cqlLibraryView.asWidget());
-		isSearchFilterVisible = true;
+		
 		panel.setContent(fp);
 		Mat.focusSkipLists("CQLLibrary");
 	}
@@ -1374,7 +1377,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				if (!MatContext.get().getLibraryLockService().isResettingLock()) {
 					displaySearch();
 				} else {
-					DeferredCommand.addCommand(this);
+					Scheduler.get().scheduleDeferred(this);
 				}
 			}
 		};

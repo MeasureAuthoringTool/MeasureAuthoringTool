@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
@@ -938,8 +939,12 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		
 		query.select(root.get("description")).where(cb.and(cb.equal(root.get(MEASURE_SET).get("id"), measureSetId), 
 				cb.equal(root.get(DRAFT), true)));
-
-		return session.createQuery(query).getSingleResult();
+		
+		try {
+			return session.createQuery(query).getSingleResult();	
+		} catch (NoResultException nre) {
+			return null;
+		}
 	}
 
 }

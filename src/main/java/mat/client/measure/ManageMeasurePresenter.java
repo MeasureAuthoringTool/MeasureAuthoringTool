@@ -434,7 +434,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	
-	private void updateCompositeDetailsOnContinueButton() { 
+	private void updateCompositeDetailsOnContinueButton() {
+		compositeDetailDisplay.getErrorMessageDisplay().clearAlert();
 		boolean isEdit = false;
 		if(componentMeasureDisplay != null) {
 			if(currentCompositeMeasureDetails.getId()!=null) {

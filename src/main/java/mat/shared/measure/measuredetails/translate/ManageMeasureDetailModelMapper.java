@@ -310,7 +310,6 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		manageMeasureDetailModel.setIsPatientBased(getPatientBased());
 		manageMeasureDetailModel.setMeasScoring(getScoringMethod());
 		manageMeasureDetailModel.setMeasureName(getMeasureName());
-		manageMeasureDetailModel.setCQLLibraryName(getCQLLibraryName());
 		manageMeasureDetailModel.setFinalizedDate(getFinalizedDate());
 		manageMeasureDetailModel.setVersionNumber(getversionNumber());
 		manageMeasureDetailModel.setShortName(getShortName());
@@ -447,13 +446,6 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		return null;
 	}
 	
-	private String getCQLLibraryName() {
-		if(measureDetailsModel.getGeneralInformationModel() != null) {
-			return measureDetailsModel.getGeneralInformationModel().getCQLLibraryName();
-		}
-		return null;
-	}
-
 	private String getScoringMethod() {
 		if(measureDetailsModel.getGeneralInformationModel() != null) {
 			return measureDetailsModel.getGeneralInformationModel().getScoringMethod();

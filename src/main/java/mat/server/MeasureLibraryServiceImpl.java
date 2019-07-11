@@ -2098,7 +2098,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public final SaveMeasureResult saveMeasureDetails(final ManageMeasureDetailModel model) {
 		logger.info("In MeasureLibraryServiceImpl.saveMeasureDetails() method..");
-		Measure measure = null;
+		Measure measure = measurePackageService.getById(model.getId());
+		setCQLLibraryName(measure, model);
 		model.scrubForMarkUp();
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
 		List<String> message = manageMeasureModelValidator.validateMeasure(model);
@@ -2106,7 +2107,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (message.isEmpty()) {
 			if (model.getId() != null) {
 				setMeasureCreated(true);
-				measure = measurePackageService.getById(model.getId());
 				
 				existingMeasureScoringType = measure.getMeasureScoring();
 				

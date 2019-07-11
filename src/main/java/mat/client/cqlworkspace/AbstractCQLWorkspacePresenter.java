@@ -489,6 +489,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected abstract void saveCQLFile();
 	
 	protected void onSaveCQLFileSuccess(SaveUpdateCQLResult result) {
+		cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().clearAnnotations();
 		List<String> errorMessages = new ArrayList<>();
 		if(!result.getLinterErrorMessages().isEmpty() || !result.getCqlErrors().isEmpty()) {
 			errorMessages.add("The CQL file was saved with errors.");

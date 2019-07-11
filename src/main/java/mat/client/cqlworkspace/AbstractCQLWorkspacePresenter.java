@@ -1938,19 +1938,25 @@ public abstract class AbstractCQLWorkspacePresenter {
 	}
 	
 	protected void checkIfLibraryNameExistsAndLoadGeneralInfo() {
-		MatContext.get().getMeasureService().checkIfLibraryNameExists(this.cqlLibraryName, this.setId, new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				showSearchingBusy(false);
-			}
+		if (hasEditPermissions() && StringUtility.isNotBlank(this.cqlLibraryName)) {
+			MatContext.get().getMeasureService().checkIfLibraryNameExists(this.cqlLibraryName, this.setId, new AsyncCallback<Boolean>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					showSearchingBusy(false);
+				}
 
-			@Override
-			public void onSuccess(Boolean result) {
-				isLibraryNameExists = result;
-				generalInfoEvent();
-			}
-		});		
+				@Override
+				public void onSuccess(Boolean result) {
+					isLibraryNameExists = result;
+					generalInfoEvent();
+				}
+			});
+			
+		} else {
+			generalInfoEvent();
+		}
+			
 	}
 	
 }

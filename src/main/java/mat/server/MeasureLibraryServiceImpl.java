@@ -4866,11 +4866,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult getMeasureCQLFileData(String measureId) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
+		Measure measure = measureDAO.find(measureId);
+		
 		if (model != null && StringUtils.isNotBlank(model.getXml())) {
 			String xmlString = model.getXml();
 			result = cqlService.getCQLFileData(xmlString);
 			lintAndAddToResult(measureId, result);
 			result.setSuccess(true);
+			if (measure.isDraft() && libraryNameExists(result.getCqlModel().getLibraryName(), result.getSetId())) {
+				result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+			}
 		} else {
 			result.setSuccess(false);
 		}
@@ -5607,7 +5612,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result = cqlService.getCQLDataForLoad(xmlString);
 			result.setSetId(measure.getMeasureSet().getId());
 			result.setSuccess(true);
-			if (libraryNameExists(result.getCqlModel().getLibraryName(), result.getSetId())) {
+			if (measure.isDraft() && libraryNameExists(result.getCqlModel().getLibraryName(), result.getSetId())) {
 				result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
 			}
 		} else {

@@ -560,6 +560,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 					showConfirmationDialog(MatContext.get().getMessageDelegate().getCloneMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
 				}
 			});
+		} else {
+			setSearchingBusy(false);
 		}
 	}
 	
@@ -590,6 +592,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 					showConfirmationDialog(MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(compositeDetailDisplay.getMeasureNameTextBox().getValue()));	
 				}
 			});
+		} else {
+			setSearchingBusy(false);
 		}
 	}
 	
@@ -620,6 +624,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 					showConfirmationDialog(MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));	
 				}
 			});
+		} else {
+			setSearchingBusy(false);
 		}
 	}
 	

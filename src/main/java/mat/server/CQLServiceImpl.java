@@ -2008,6 +2008,6 @@ public class CQLServiceImpl implements CQLService {
 
 	@Override
 	public boolean checkIfLibraryNameExists(String libraryName, String setId) {
-		return cqlLibraryDAO.isLibraryNameExists(libraryName, setId);
+		return StringUtils.isNotBlank(libraryName) && cqlLibraryDAO.isLibraryNameExists(libraryName, setId);
 	}
 }

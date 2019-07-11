@@ -659,7 +659,8 @@ private void saveMeasureAtPackage(){
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
 														
-							if(result.getCqlErrors().isEmpty() && result.getLinterErrors().isEmpty()) {
+							if(result.getCqlErrors().isEmpty() && result.getLinterErrors().isEmpty()
+									&& result.getFailureReason() != SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
 								getMeasure(MatContext.get().getCurrentMeasureId());
 							} else{
 								panel.clear();

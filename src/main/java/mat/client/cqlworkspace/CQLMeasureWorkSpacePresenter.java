@@ -782,11 +782,12 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().getParamCollapse().getElement().setClassName(PANEL_COLLAPSE_COLLAPSE);
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineCollapse().getElement().setClassName(PANEL_COLLAPSE_COLLAPSE);
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionCollapse().getElement().setClassName(PANEL_COLLAPSE_COLLAPSE);
-		if (cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList().size() > 0) {
+		if (!cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList().isEmpty()) {
 			cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList().clear();
 		}
 		isModified = false;
 		isCodeModified = false;
+		isLibraryNameExists = false;
 		setId = null;
 		currentIncludeLibrarySetId = null;
 		currentIncludeLibraryId = null;

@@ -23,6 +23,7 @@ import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.gen.cqlParser.AccessModifierContext;
 import org.cqframework.cql.gen.cqlParser.CodeDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.CodesystemDefinitionContext;
+import org.cqframework.cql.gen.cqlParser.ConceptDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ContextDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ExpressionDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.FunctionDefinitionContext;
@@ -39,6 +40,9 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLError;
 
 public class CQLLinter extends cqlBaseListener {
+	private static final String VERSION_PREFIX = "urn:hl7:version:";
+
+
 	private static final String OID_PREFIX = "urn:oid:";
 
 	
@@ -125,7 +129,7 @@ public class CQLLinter extends cqlBaseListener {
 
 	private boolean doesCodeCodeSystemNotMatchCodeSystemDeclaration(CQLCode code, CQLCodeSystem codeSystem) {
 		
-		String codeSystemOIDFromCodeSystem = codeSystem.getCodeSystem().replace("urn:oid:", "");
+		String codeSystemOIDFromCodeSystem = codeSystem.getCodeSystem().replaceFirst(OID_PREFIX, "");
 		String codeSystemOIDFromCode = code.getCodeSystemOID();
 		
 		boolean isCodeSystemOIDNotMatching = !codeSystemOIDFromCodeSystem.equals(codeSystemOIDFromCode);
@@ -134,7 +138,7 @@ public class CQLLinter extends cqlBaseListener {
 		String codeSystemNameFromCode = getCodeSystemIdentifier(code);
 		boolean isCodeSystemNameNotMatching =  !codeSystemNameFromCodeSystem.equals(codeSystemNameFromCode);
 		
-		String codeSystemVersionFromCodeSystem = codeSystem.getCodeSystemVersion().replace("urn:hl7:version:", "");
+		String codeSystemVersionFromCodeSystem = codeSystem.getCodeSystemVersion().replaceFirst(VERSION_PREFIX, "");
 		String codeSystemVersionFromCode = code.getCodeSystemVersion();
 		boolean isCodeSystemVersionNotMatching =  code.isIsCodeSystemVersionIncluded() && !codeSystemVersionFromCode.equals(codeSystemVersionFromCodeSystem);				
 		
@@ -269,8 +273,22 @@ public class CQLLinter extends cqlBaseListener {
 		String codeSystemId = CQLParserUtil.parseString(ctx.codesystemId().getText());
 		String codeSystemName = CQLParserUtil.parseString(ctx.identifier().getText());
 		
+		if(ctx.codesystemId() != null && !CQLParserUtil.parseString(ctx.codesystemId().getText()).startsWith(OID_PREFIX)) {
+			hasInvalidEdits = true;
+		}
+		
+		if(ctx.versionSpecifier() != null && !CQLParserUtil.parseString(ctx.versionSpecifier().getText()).startsWith(VERSION_PREFIX)) {
+			hasInvalidEdits = true;
+		}
+		
+		if(ctx.accessModifier() != null) {
+			hasInvalidEdits = true;
+		}
+		
 		codesystem.setCodeSystem(codeSystemId);
 		codesystem.setCodeSystemName(codeSystemName);
+		
+
 		
 		if(ctx.versionSpecifier() != null) {
 			codesystem.setCodeSystemVersion(CQLParserUtil.parseString(ctx.versionSpecifier().getText()));
@@ -286,13 +304,24 @@ public class CQLLinter extends cqlBaseListener {
 	public void enterValuesetDefinition(ValuesetDefinitionContext ctx) {
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
 		String valuesetId = CQLParserUtil.parseString(ctx.valuesetId().getText());		
-		String parsedValuesetId = valuesetId.replace(OID_PREFIX, "");
+		
+		if(ctx.accessModifier() != null) {
+			hasInvalidEdits = true;
+		}
+		
+		if(ctx.versionSpecifier() != null) {
+			hasInvalidEdits = true;
+		}
+		
+		if(ctx.codesystems() != null) {
+			hasInvalidEdits = true;
+		}
 
 		// find all valuesets that have a matching identifier and oid
 		if(config.getPreviousCQLModel().getValueSetList() != null) {
 			List<CQLQualityDataSetDTO> potentialMatches = config.getPreviousCQLModel().getValueSetList().stream().filter(v -> (
 					identifier.equals(v.getName())
-					&& parsedValuesetId.equals(v.getOid())
+					&& valuesetId.equals(OID_PREFIX + v.getOid())
 					)).collect(Collectors.toList());
 
 			// if there is an valueset that does not match one that was in the previous model,
@@ -312,6 +341,10 @@ public class CQLLinter extends cqlBaseListener {
 		String codeId = CQLParserUtil.parseString(ctx.codeId().getText());	
 		String codesystemIdentifier = CQLParserUtil.parseString(ctx.codesystemIdentifier().getText());
 		String displayClause = ctx.displayClause() != null ? CQLParserUtil.parseString(ctx.displayClause().STRING().getText()) : "";
+		
+		if(ctx.accessModifier() != null) {
+			hasInvalidEdits = true;
+		}
 		
 		// find all codes that have a matching identifier and code id
 		// in MAT the identifier is mapped the displayName field (which is also called the descriptor)
@@ -335,8 +368,14 @@ public class CQLLinter extends cqlBaseListener {
 	}
 	
 	@Override
-	public void enterAccessModifier(AccessModifierContext ctx) {
-		this.warningMessages.add("The MAT does not support access modifiers tied to expressions. Any entered access modifiers have been removed from the CQL file.");
+	public void enterConceptDefinition(ConceptDefinitionContext ctx) {
+		// TODO: 
+	}
+	
+	private void createErrorIfAccessModifier(AccessModifierContext ctx) {
+		if(ctx != null) {
+			this.warningMessages.add("The MAT does not support access modifiers tied to expressions. Any entered access modifiers have been removed from the CQL file.");
+		}
 	}
 	
 	@Override
@@ -348,16 +387,19 @@ public class CQLLinter extends cqlBaseListener {
 	
 	@Override
 	public void enterParameterDefinition(ParameterDefinitionContext ctx) {
+		createErrorIfAccessModifier(ctx.accessModifier());
 		createErrorIfIdentifierIsUnquoted(ctx.identifier().getText());
 	}
 	
 	@Override
 	public void enterExpressionDefinition(ExpressionDefinitionContext ctx) {
+		createErrorIfAccessModifier(ctx.accessModifier());
 		createErrorIfIdentifierIsUnquoted(ctx.identifier().getText());
 	}
 	
 	@Override
 	public void enterFunctionDefinition(FunctionDefinitionContext ctx) {
+		createErrorIfAccessModifier(ctx.accessModifier());
 		createErrorIfIdentifierIsUnquoted(ctx.identifierOrFunctionIdentifier().getText());
 
 	}

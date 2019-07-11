@@ -1328,6 +1328,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				addIdsToMeasureType(manageMeasureDetailModel);
 			}
 			
+			setCQLLibraryName(measure, manageMeasureDetailModel);
 			manageMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
 			manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 			
@@ -1335,6 +1336,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		else {
 			return getCompositeMeasure(key);
+		}
+	}
+
+	private void setCQLLibraryName(Measure measure, ManageMeasureDetailModel manageMeasureDetailModel) {
+		if(StringUtils.isNotBlank(measure.getCqlLibraryName())) {
+			manageMeasureDetailModel.setCQLLibraryName(measure.getCqlLibraryName());
+		} else {
+			manageMeasureDetailModel.setCQLLibraryName(MeasureUtility.cleanString(measure.getDescription()));
 		}
 	}
 		
@@ -1370,7 +1379,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			addIdsToMeasureType(manageCompositeMeasureDetailModel);
 		}
 		
-		
+		setCQLLibraryName(measure, manageCompositeMeasureDetailModel);
 		manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 		manageCompositeMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
 				

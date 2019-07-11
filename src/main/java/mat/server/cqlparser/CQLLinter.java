@@ -114,8 +114,8 @@ public class CQLLinter extends cqlBaseListener {
 		}
 		
 		if(hasInvalidEdits) {
-			this.warningMessages.add("Changes made to the CQL Library Name, Included Libraries, Value Sets, Codes, Codesystems, "
-					+ "and/or Codesystem versions, can not be saved through the CQL Library Editor. "
+			this.warningMessages.add("Changes made to the CQL library declaration, model declaration, "
+					+ "included libraries, value sets, codes, codesystems, and/or codesystem versions, can not be saved through the CQL Library Editor. "
 					+ "Please make those changes in the appropriate areas of the CQL Workspace.");
 		}
 	}

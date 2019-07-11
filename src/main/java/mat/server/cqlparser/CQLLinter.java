@@ -60,6 +60,8 @@ public class CQLLinter extends cqlBaseListener {
 	 * what was in the existing model. 
 	 */
 	private boolean hasInvalidEdits = false;
+	private boolean enteredLibraryDefinition = false;
+	private boolean enteredUsingDefinition = false;
 	private int libraryDefinitionStartLine;
 	private int noCommentZoneStartLine;
 	private int noCommentZoneEndLine;
@@ -68,6 +70,8 @@ public class CQLLinter extends cqlBaseListener {
 	int numberOfValuesets = 0;
 	int numberOfCodes = 0;
 	int numberOfCodesystems = 0;
+
+
 		
 	public CQLLinter(String cql, CQLLinterConfig config) throws IOException {
 		this.config = config;
@@ -90,7 +94,7 @@ public class CQLLinter extends cqlBaseListener {
 		doPostProcessing(parser, tokens);
 	} 
 	
-	private void doPostProcessing(cqlParser parser, CommonTokenStream tokens) {
+	private void doPostProcessing(cqlParser parser, CommonTokenStream tokens) {		
 		if(isCommentInNoCommentZone(tokens)) {
 			hasInvalidEdits = true;
 		}
@@ -102,6 +106,10 @@ public class CQLLinter extends cqlBaseListener {
 		if((CollectionUtils.size(config.getPreviousCQLModel().getCqlIncludeLibrarys()) != numberOfIncludedLibraries)
 				|| (CollectionUtils.size(config.getPreviousCQLModel().getValueSetList()) != numberOfValuesets)
 				|| (CollectionUtils.size(config.getPreviousCQLModel().getCodeList()) != numberOfCodes)) {
+			hasInvalidEdits = true;
+		}
+		
+		if(!enteredLibraryDefinition || !enteredUsingDefinition) {
 			hasInvalidEdits = true;
 		}
 		
@@ -221,20 +229,31 @@ public class CQLLinter extends cqlBaseListener {
 	
 	@Override
 	public void enterLibraryDefinition(LibraryDefinitionContext ctx) {
+		enteredLibraryDefinition = true;
+		
+		if(ctx.versionSpecifier() == null) {
+			hasInvalidEdits = true;
+			return;
+		}
+		
 		libraryDefinitionStartLine = ctx.getStart().getLine();
 		String name = CQLParserUtil.parseString(ctx.qualifiedIdentifier().getText());
 		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
-		
-		if(!name.equals(config.getLibraryName()) || !version.equals(config.getLibraryVersion())) {
+		if(!StringUtils.equals(name, config.getLibraryName()) || !StringUtils.equals(version, config.getLibraryVersion())) {
 			hasInvalidEdits = true;
 		}
 	}
 	
 	@Override
 	public void enterUsingDefinition(UsingDefinitionContext ctx) {
+		enteredUsingDefinition = true;
+		if(ctx.versionSpecifier() == null) {
+			hasInvalidEdits = true;
+			return;
+		}
+		
 		String model = CQLParserUtil.parseString(ctx.modelIdentifier().getText());
 		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
-		
 		if (!StringUtils.equals(model, config.getModelIdentifier()) || !StringUtils.equals(version, config.getModelVersion())) {
 			hasInvalidEdits = true;
 		}

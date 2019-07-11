@@ -34,6 +34,7 @@ import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageDelegate;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.ValueSetNameInputValidator;
 import mat.client.umls.service.VSACAPIServiceAsync;
@@ -107,8 +108,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected static final String PANEL_COLLAPSE_IN = "panel-collapse collapse in";
 	protected static final String PANEL_COLLAPSE_COLLAPSE = "panel-collapse collapse";
 	protected static final String INVALID_INPUT_DATA = "Invalid Input data.";
-	protected static final String DUPLICATE_LIBRARY_NAME = "The CQL library name is used by one or more CQL libraries within the MAT. Please edit the CQL library name.";
-	protected static final String DUPLICATE_LIBRARY_NAME_SAVE = "The MAT was unable to save the change to the CQL library name. All CQL library names must be unique within the MAT.";
 	
 	protected static final String EMPTY_STRING = "";
 	protected HelpBlock helpBlock = new HelpBlock();
@@ -1690,7 +1689,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		boolean isValidQDMVersion = cqlWorkspaceView.getCQLLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion(isStandaloneCQLLibrary());
 		List<String> errorMessageList = new ArrayList<>();
 		if (isLibraryNameExists) {
-			errorMessageList.add(DUPLICATE_LIBRARY_NAME);
+			errorMessageList.add(MessageDelegate.DUPLICATE_LIBRARY_NAME);
 		}
 		if(!isValidQDMVersion){
 			errorMessageList.add(INVALID_QDM_VERSION_IN_INCLUDES);

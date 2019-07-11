@@ -23,9 +23,9 @@ import mat.client.shared.SpacerWidget;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.StringUtility;
 
-public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetailView {
+public class NewCompositeMeasureView extends AbstractNewMeasureView {
 	private String cautionMsgStr = "Caution: The Composite Scoring Method field controls the options available in the Measure Scoring field. The Measure Scoring field controls the options available in the Patient-based Measure field. Changing the selection in the Composite Scoring Method will reset the Measure Scoring and Patient-based Measure fields. Changing the Measure Scoring field will reset the Patient-based Measure field.";
-	private ListBoxMVP compositeScoringMethodInput = new ListBoxMVP();
+	private ListBoxMVP compositeScoringListBox = new ListBoxMVP();
     private FormGroup compositeScoringGroup = new FormGroup();
     protected HTML compScoringMsgPlaceHolder = new HTML();
 	private String compScoringMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'Composite Scoring Method and/or Measure Scoring' will have the following impacts:<br/>" +
@@ -37,25 +37,30 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	@Override
 	public void clearFields() {
 		super.clearFields();
-		compositeScoringMethodInput.setSelectedIndex(0);//default to --Select-- value.
+		compositeScoringListBox.setSelectedIndex(0);//default to --Select-- value.
 		errorMessages.clearAlert();
 	}
 	
-	public ManageCompositeMeasureDetailView() {
+	public NewCompositeMeasureView() {
 		buildMainPanel();
 		FlowPanel fPanel = buildFlowPanel();
+		
 		measureNameLabel.getElement().setId("measureNameLabel_MeasureNameLabel");
 		Form createMeasureForm = new Form();
 		FormLabel measureNameLabel = buildMeasureNameLabel();
-		
-		buildNameTextArea();
+		buildMeasureNameTextArea();
 		measureNameGroup.add(measureNameLabel);
-		measureNameGroup.add(name);
+		measureNameGroup.add(measureNameTextBox);
+		
+		FormLabel cqlLibraryNameLabel = buildCQLLibraryNameLabel();
+		buildCQLLibraryTextArea();
+		cqlLibraryNameGroup.add(cqlLibraryNameLabel);
+		cqlLibraryNameGroup.add(cqlLibraryNameTextBox);
 		
 		FormLabel shortNameLabel = buildShortNameLabel();
 		buildShortNameTextBox();
 		shortNameGroup.add(shortNameLabel);
-		shortNameGroup.add(shortName);
+		shortNameGroup.add(eCQMAbbreviatedTitleTextBox);
 		
 		FormLabel compositeScoringLabel = buildCompositeScoringLabel();
 		compositeScoringGroup.add(compositeScoringLabel);
@@ -92,7 +97,6 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 		createMeasureForm.add(formFieldSet);
 		createMeasureForm.add(messageFormGrp);
 		fPanel.add(createMeasureForm);
-
 		mainPanel.add(fPanel);
 	}
 	
@@ -111,8 +115,7 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 		fPanel.getElement().setId("fPanel_FlowPanel");
 		fPanel.setWidth("90%");	
 		fPanel.setHeight("100%");
-		fPanel.add(measureNameLabel);
-		
+		fPanel.add(measureNameLabel);		
 		fPanel.add(requiredInstructions);
 		requiredInstructions.getElement().setId("requiredInstructions_HTML");
 		fPanel.add(new SpacerWidget());
@@ -133,6 +136,7 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 		buttonFormGroup.add(buttonBar);
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(measureNameGroup);
+		formFieldSet.add(cqlLibraryNameGroup);
 		formFieldSet.add(shortNameGroup);
 		formFieldSet.add(compositeScoringGroup);
 		formFieldSet.add(scoringGroup);
@@ -152,23 +156,23 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	}
 	
 	private void buildCompositeScoringInput() {
-		compositeScoringMethodInput.getElement().setId("compositeScoringInput_ListBoxMVP");
-		compositeScoringMethodInput.setTitle("Composite Scoring Method Required");
-		compositeScoringMethodInput.setStyleName("form-control");
-		compositeScoringMethodInput.setVisibleItemCount(1);
-		compositeScoringMethodInput.setWidth("18em");
+		compositeScoringListBox.getElement().setId("compositeScoringInput_ListBoxMVP");
+		compositeScoringListBox.setTitle("Composite Scoring Method Required");
+		compositeScoringListBox.setStyleName("form-control");
+		compositeScoringListBox.setVisibleItemCount(1);
+		compositeScoringListBox.setWidth("18em");
 	}
 
 	public void setCompositeScoringChoices(List<? extends HasListBox> texts) {
-		MatContext.get().setListBoxItems(compositeScoringMethodInput, texts, MatContext.PLEASE_SELECT);
+		MatContext.get().setListBoxItems(compositeScoringListBox, texts, MatContext.PLEASE_SELECT);
 	}
 	
-	public ListBoxMVP getCompositeScoringMethodInput() {
-		return compositeScoringMethodInput;
+	public ListBoxMVP getCompositeScoringListBox() {
+		return compositeScoringListBox;
 	}
 
 	public String getCompositeScoringValue() {
-		return compositeScoringMethodInput.getItemText(compositeScoringMethodInput.getSelectedIndex());
+		return compositeScoringListBox.getItemText(compositeScoringListBox.getSelectedIndex());
 	}
 	
 	public MessageAlert getErrorMessageDisplay() {
@@ -177,13 +181,13 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	
 	public void setCompositeScoringSelectedValue(String compositeScoringMethod) {
 		if (CompositeMethodScoringConstant.ALL_OR_NOTHING.equals(compositeScoringMethod)) {
-			getCompositeScoringMethodInput().setSelectedIndex(1);	
+			getCompositeScoringListBox().setSelectedIndex(1);	
 		} else if (CompositeMethodScoringConstant.OPPORTUNITY.equals(compositeScoringMethod)) {
-			getCompositeScoringMethodInput().setSelectedIndex(2);
+			getCompositeScoringListBox().setSelectedIndex(2);
 		} else if (CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR.equals(compositeScoringMethod)) {
-			getCompositeScoringMethodInput().setSelectedIndex(3);
+			getCompositeScoringListBox().setSelectedIndex(3);
 		} else {
-			getCompositeScoringMethodInput().setSelectedIndex(0);
+			getCompositeScoringListBox().setSelectedIndex(0);
 		}
 		
 		compositeScoringMethod = StringUtility.isEmptyOrNull(compositeScoringMethod) ? MatContext.PLEASE_SELECT : compositeScoringMethod;
@@ -202,7 +206,7 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	
 	private HorizontalPanel buildCompositeScoringPanel() {
 		HorizontalPanel scoringPanel = new HorizontalPanel();
-		scoringPanel.add(compositeScoringMethodInput);
+		scoringPanel.add(compositeScoringListBox);
 		scoringPanel.add(new HTML("&nbsp;"));
 		scoringPanel.add(compScoringMsgPlaceHolder);
 		return scoringPanel;

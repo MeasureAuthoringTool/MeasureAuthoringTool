@@ -39,7 +39,8 @@ public class ManageMeasureModelValidator {
 	private List<String> performCommonMeasureValidation(ManageMeasureDetailModel model) {
 		List<String> message = new ArrayList<String>();
 		CommonMeasureValidator commonMeasureValidator = new CommonMeasureValidator();
-		message.addAll(commonMeasureValidator.validateMeasureName(model.getName()));
+		message.addAll(commonMeasureValidator.validateMeasureName(model.getMeasureName()));
+		message.addAll(commonMeasureValidator.validateLibraryName(model.getCQLLibraryName()));
 		message.addAll(commonMeasureValidator.validateECQMAbbreviation(model.getShortName()));
 		String scoring = model.getMeasScoring();
 		message.addAll(commonMeasureValidator.validateMeasureScore(scoring));

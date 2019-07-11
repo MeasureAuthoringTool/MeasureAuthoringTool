@@ -26,7 +26,7 @@ public interface CQLLibraryServiceAsync {
 	
 	void findCQLLibraryByID(String cqlLibraryID, AsyncCallback<CQLLibraryDataSetObject> callback);
 
-	void save(CQLLibraryDataSetObject cqlModel, AsyncCallback<SaveCQLLibraryResult> callback);
+	void saveCQLLibrary(CQLLibraryDataSetObject cqlModel, AsyncCallback<SaveCQLLibraryResult> callback);
 
 
 	void getCQLData(String id, AsyncCallback<SaveUpdateCQLResult> callback);
@@ -49,7 +49,7 @@ public interface CQLLibraryServiceAsync {
 			AsyncCallback<SaveCQLLibraryResult> callback);
 
 
-	void saveDraftFromVersion(String libraryId, AsyncCallback<SaveCQLLibraryResult> callback);
+	void saveDraftFromVersion(String libraryId, String libraryName, AsyncCallback<SaveCQLLibraryResult> callback);
 	
 	void getLibraryCQLFileData(String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
 	

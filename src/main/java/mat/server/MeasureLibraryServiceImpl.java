@@ -853,7 +853,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private void createMeasureDetailsModelFromMeasure(final ManageMeasureDetailModel model, final Measure measure) {
 		logger.info("In MeasureLibraryServiceImpl.createMeasureDetailsModelFromMeasure()");
 		model.setId(measure.getId());
-		model.setName(measure.getDescription());
+		model.setMeasureName(measure.getDescription());
 		model.setShortName(measure.getaBBRName());
 		model.setMeasScoring(measure.getMeasureScoring());
 		model.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(),
@@ -1708,16 +1708,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			model.setRevisionNumber(String.format("%03d", revisionNumber));
 		}
 		measurePackageService.save(measure);
-		SaveMeasureResult result = save(model);
+		SaveMeasureResult result = saveOrUpdateMeasure(model);
 		return result;
 	}
 
 	@Override
-	public final SaveMeasureResult save(ManageMeasureDetailModel model) {
+	public final SaveMeasureResult saveOrUpdateMeasure(ManageMeasureDetailModel model) {
 		// Scrubbing out Mark Up.
 		if (model != null) {
 			model.scrubForMarkUp();
 		}
+		
+		SaveMeasureResult result = new SaveMeasureResult();
+		if (libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
+			result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+			result.setSuccess(false);
+			return result;
+		}
+			
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
 		List<String> message = manageMeasureModelValidator.validateMeasure(model);
 		String existingMeasureScoringType = "";
@@ -1749,6 +1757,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				pkg = new Measure();
 				pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 				pkg.setQdmVersion(MATPropertiesService.get().getQmdVersion());
+				pkg.setCqlLibraryName(model.getCQLLibraryName());
 				model.setRevisionNumber("000");
 				measureSet = new MeasureSet();
 				measureSet.setId(UUID.randomUUID().toString());
@@ -1756,7 +1765,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			pkg.setMeasureSet(measureSet);
 			setValueFromModel(model, pkg);
-			SaveMeasureResult result = new SaveMeasureResult();
+			
 			try {
 				getAndValidateValueSetDate(model.getValueSetDate());
 				pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
@@ -1775,7 +1784,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			return result;
 		} else {
 			logger.info("Validation Failed for measure :: Invalid Data Issues.");
-			SaveMeasureResult result = new SaveMeasureResult();
 			result.setSuccess(false);
 			result.setFailureReason(SaveMeasureResult.INVALID_DATA);
 			return result;
@@ -2093,7 +2101,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				
 				existingMeasureScoringType = measure.getMeasureScoring();
 				
-				measure.setDescription(model.getName());
+				measure.setDescription(model.getMeasureName());
 				String shortName = buildMeasureShortName(model);
 
 				model.setShortName(shortName);
@@ -2229,7 +2237,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public final void saveMeasureXml(final MeasureXmlModel measureXmlModel, String measureId) {
 
 		Measure measure = measureDAO.find(measureId);
-		String libraryName = measure.getDescription();
+		String libraryName = measure.getCqlLibraryName();
 		String version = MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion());
 		
 		MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
@@ -2485,7 +2493,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            the measure
 	 */
 	private void setValueFromModel(final ManageMeasureDetailModel model, final Measure measure) {
-		measure.setDescription(model.getName());
+		measure.setDescription(model.getMeasureName());
+		measure.setCqlLibraryName(model.getCQLLibraryName());
 		measure.setaBBRName(model.getShortName());
 		// US 421. Scoring choice is not part of core measure.
 		measure.setMeasureScoring(model.getMeasScoring());
@@ -5072,6 +5081,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if (xmlModel != null) {
 					result = getCqlService().saveAndModifyCQLGeneralInfo(xmlModel.getXml(), libraryName, comments);
 					if (result.isSuccess()) {
+						measure.setCqlLibraryName(libraryName);
+						measureDAO.save(measure);
 						xmlModel.setXml(result.getXml());
 						measurePackageService.saveMeasureXml(xmlModel);
 					}
@@ -5776,6 +5787,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (model != null) {
 			model.scrubForMarkUp();
 		}
+		
+		SaveMeasureResult result = new SaveMeasureResult();
+		if (libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
+			result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+			result.setSuccess(false);
+			return result;
+		}
+		
 		ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
 		List<String> message = manageCompositeMeasureModelValidator.validateMeasure(model);
 		if (message.isEmpty()) {
@@ -5812,6 +5831,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 				pkg.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 				pkg.setIsCompositeMeasure(Boolean.TRUE);
+				pkg.setCqlLibraryName(model.getCQLLibraryName());
 				List<MeasureTypeAssociation> measureTypes = new ArrayList<>(1);
 				MeasureType composite = findMeasureTypeById("1");
 				measureTypes.add(new MeasureTypeAssociation(pkg, composite));
@@ -5839,7 +5859,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			calculateCalendarYearForMeasure(model, pkg);
 			
 			setValueFromModel(model, pkg);
-			SaveMeasureResult result = new SaveMeasureResult();
 			try {
 				getAndValidateValueSetDate(model.getValueSetDate());
 				pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
@@ -5870,7 +5889,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			return result;
 		} else {
 			logger.info("Validation Failed for measure :: Invalid Data Issues.");
-			SaveMeasureResult result = new SaveMeasureResult();
 			result.setSuccess(false);
 			result.setFailureReason(SaveMeasureResult.INVALID_DATA);
 			return result;

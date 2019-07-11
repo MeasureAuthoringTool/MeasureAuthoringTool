@@ -43,4 +43,6 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 	List<CQLLibrary> searchForReplaceLibraries(String setId);
 	
 	boolean isLibraryNameExists(String name, String setId);
+
+	String getLibraryNameIfDraftAlreadyExists(String setId);
 }

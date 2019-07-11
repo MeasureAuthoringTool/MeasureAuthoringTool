@@ -8,26 +8,29 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
-public class ManageMeasureDetailView extends AbstractManageMeasureDetailView {
-    Label invisibleRadioYes;   
-    Label invisibleRadioNo;
-
-
-	public ManageMeasureDetailView() {
+public class NewMeasureView extends AbstractNewMeasureView {
+	
+	public NewMeasureView() {
 		buildMainPanel();
-		FlowPanel fPanel = buildFlowPanel();	
-		measureNameLabel.getElement().setId("measureNameLabel_MeasureNameLabel");
+		FlowPanel fPanel = buildFlowPanel();
 		
+		measureNameLabel.getElement().setId("measureNameLabel_MeasureNameLabel");
 		Form createMeasureForm = new Form();
 		FormLabel measureNameLabel = buildMeasureNameLabel();
-		buildNameTextArea();
+		buildMeasureNameTextArea();
 		measureNameGroup.add(measureNameLabel);
-		measureNameGroup.add(name);
+		measureNameGroup.add(measureNameTextBox);
+		
+		
+		FormLabel cqlLibraryNameLabel = buildCQLLibraryNameLabel();
+		buildCQLLibraryTextArea();
+		cqlLibraryNameGroup.add(cqlLibraryNameLabel);
+		cqlLibraryNameGroup.add(cqlLibraryNameTextBox);
 		
 		FormLabel shortNameLabel = buildShortNameLabel();
 		buildShortNameTextBox();
 		shortNameGroup.add(shortNameLabel);
-		shortNameGroup.add(shortName);
+		shortNameGroup.add(eCQMAbbreviatedTitleTextBox);
 		
 		FormLabel scoringLabel = buildScoringLabel();
 		scoringGroup.add(scoringLabel);
@@ -53,8 +56,8 @@ public class ManageMeasureDetailView extends AbstractManageMeasureDetailView {
 		createMeasureForm.add(formFieldSet);
 		createMeasureForm.add(messageFormGrp);
 		fPanel.add(createMeasureForm);
-		mainPanel.add(fPanel);
-				
+		
+		mainPanel.add(fPanel);	
 	}
 
 }

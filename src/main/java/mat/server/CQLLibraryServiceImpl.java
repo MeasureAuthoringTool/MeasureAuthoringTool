@@ -4,6 +4,7 @@ import java.util.List;
 
 import mat.client.measure.service.CQLLibraryService;
 import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
@@ -61,8 +62,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	}
 	
 	
-	public SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlLibraryDataSetObject) {
-		return this.getCQLLibraryService().save(cqlLibraryDataSetObject);
+	public SaveCQLLibraryResult saveCQLLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject) {
+		return this.getCQLLibraryService().saveLibrary(cqlLibraryDataSetObject);
 	}
 	
 	public String createCQLLookUpTag(String libraryName,String version) {
@@ -121,8 +122,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	}
 
 	@Override
-	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId) {
-		return this.getCQLLibraryService().saveDraftFromVersion(libraryId);
+	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId, String libraryName) throws MatException {
+		return this.getCQLLibraryService().draftExistingCQLLibrary(libraryId, libraryName);
 	}
 	
 	@Override

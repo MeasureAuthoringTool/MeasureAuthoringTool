@@ -28,7 +28,7 @@ import mat.client.admin.reports.ManageAdminReportingPresenter;
 import mat.client.admin.reports.ManageAdminReportingView;
 import mat.client.bonnie.BonnieModal;
 import mat.client.codelist.ListBoxCodeProvider;
-import mat.client.cql.CQLLibraryDetailView;
+import mat.client.cql.NewLibraryView;
 import mat.client.cql.CQLLibraryHistoryView;
 import mat.client.cql.CQLLibraryShareView;
 import mat.client.cql.CQLLibraryVersionView;
@@ -43,8 +43,8 @@ import mat.client.export.ManageExportView;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.SessionManagementService.Result;
 import mat.client.measure.ComponentMeasureDisplay;
-import mat.client.measure.ManageCompositeMeasureDetailView;
-import mat.client.measure.ManageMeasureDetailView;
+import mat.client.measure.NewCompositeMeasureView;
+import mat.client.measure.NewMeasureView;
 import mat.client.measure.ManageMeasureHistoryView;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchView;
@@ -193,8 +193,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 					null, transferOS);
 		} else {
 			ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
-			ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
-			ManageCompositeMeasureDetailView compositeMeasureDetailView = new ManageCompositeMeasureDetailView();
+			NewMeasureView measureDetailView = new NewMeasureView();
+			NewCompositeMeasureView compositeMeasureDetailView = new NewCompositeMeasureView();
 			ManageMeasureVersionView versionView = new ManageMeasureVersionView();
 			ManageMeasureShareView measureShareView = new ManageMeasureShareView();
 			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();		
@@ -214,7 +214,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
 	private CqlLibraryPresenter buildCqlLibraryWidget() {
 		CqlLibraryView cqlLibraryView = new CqlLibraryView();
-		CQLLibraryDetailView detailView = new CQLLibraryDetailView();
+		NewLibraryView detailView = new NewLibraryView();
 		CQLLibraryVersionView versionView = new CQLLibraryVersionView();
 		CQLLibraryShareView shareView = new CQLLibraryShareView();
 		CQLLibraryHistoryView historyView = new CQLLibraryHistoryView();

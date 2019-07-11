@@ -8,6 +8,7 @@ import mat.shared.StringUtility;
 
 public class GeneralInformationModel implements MeasureDetailsComponentModel, IsSerializable {
 	private String measureName;
+	private String cqlLibraryName;
 	private String finalizedDate;
 	private boolean patientBased;
 	private String guid;
@@ -27,6 +28,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	
 	public GeneralInformationModel(GeneralInformationModel model) {
 		this.measureName = model.getMeasureName();
+		this.cqlLibraryName = model.getCQLLibraryName();
 		this.finalizedDate = model.getFinalizedDate();
 		this.patientBased = model.isPatientBased();
 		this.guid = model.getGuid();
@@ -120,6 +122,14 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 		this.measureName = measureName;
 	}
 	
+	public String getCQLLibraryName() {
+		return cqlLibraryName;
+	}
+	
+	public void setCQLLibraryName(String cqlLibraryName) {
+		this.cqlLibraryName = cqlLibraryName;
+	}
+	
 	public String getScoringMethod() {
 		return scoringMethod;
 	}
@@ -146,6 +156,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("measureName: " + measureName);
+		sb.append("cqlLibraryName: " + cqlLibraryName);
 		sb.append(", finalizedDate: " + finalizedDate);
 		sb.append(", patientBased: " + patientBased);
 		sb.append(", guid: " + guid);

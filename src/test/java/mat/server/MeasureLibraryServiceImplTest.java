@@ -57,7 +57,7 @@ public class MeasureLibraryServiceImplTest {
 		ManageMeasureDetailModel manageMeasureDetailModel = new ManageMeasureDetailModel();
 		String measureModelId = UUID.randomUUID().toString();
 		manageMeasureDetailModel.setId(measureModelId);
-		manageMeasureDetailModel.setName("Test Measure");
+		manageMeasureDetailModel.setMeasureName("Test Measure");
 		manageMeasureDetailModel.setShortName("Test Measure");
 		manageMeasureDetailModel.setMeasScoring("Ratio");
 		manageMeasureDetailModel.setIsPatientBased(false);
@@ -75,7 +75,7 @@ public class MeasureLibraryServiceImplTest {
 		Mockito.when(measurePackageService.getById(measureModelId)).thenReturn(testMeasure);
 		Mockito.when(measurePackageService.findMeasureSet(measureSetId)).thenReturn(testMeasureSet);
 
-		measureLibraryService.save(manageMeasureDetailModel);
+		measureLibraryService.saveOrUpdateMeasure(manageMeasureDetailModel);
 	}
 	
 	@Test

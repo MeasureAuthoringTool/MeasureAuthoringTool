@@ -97,7 +97,7 @@ public class CQLLibraryResultTable {
 					if(!object.isDraftable() && !object.isVersionable()){
 						event.preventDefault();
 					} else {
-						observer.onCreateClicked(object);
+						observer.onDraftOrVersionClick(object);
 					}
 				} else {
 					if(!object.isDraftable() && !object.isVersionable()){

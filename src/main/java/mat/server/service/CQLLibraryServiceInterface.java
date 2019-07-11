@@ -3,6 +3,7 @@ package mat.server.service;
 import java.util.List;
 
 import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.CQLValueSetTransferObject;
@@ -32,7 +33,7 @@ public interface CQLLibraryServiceInterface {
 	void save(CQLLibrary cqlLibrary);
 
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
-	public SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlLibraryDataSetObject);
+	public SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject);
 
 	String createCQLLookUpTag(String libraryName,String version);
 
@@ -55,7 +56,7 @@ public interface CQLLibraryServiceInterface {
 
 	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
 
-	SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
+	SaveCQLLibraryResult draftExistingCQLLibrary(String libraryId, String libraryName) throws MatException;
 
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context, String libraryComment);
 

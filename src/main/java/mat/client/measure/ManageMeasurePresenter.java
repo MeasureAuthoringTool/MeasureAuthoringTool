@@ -96,7 +96,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	private ClickHandler cancelClickHandler = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent event) {
-			isDirty = false;
+			setIsPageDirty(false);
 			if(!isLoading) {
 				isClone = false;
 	
@@ -279,7 +279,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
 	@Override
 	public void beforeClosingDisplay() {
-		isDirty = false;
+		setIsPageDirty(false);
 		searchDisplay.resetMessageDisplay();
 		isMeasureDeleted = false;
 		measureShared = false;
@@ -445,13 +445,17 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 			}
 		});
 
-		((NewCompositeMeasureView) compositeDetailDisplay).getMeasureNameTextBox().addValueChangeHandler(event -> {isDirty = true;});
-		((NewCompositeMeasureView) compositeDetailDisplay).getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> {isDirty = true;});
-		((NewCompositeMeasureView) compositeDetailDisplay).getCQLLibraryNameTextBox().addValueChangeHandler(event -> {isDirty = true;});
-		((NewCompositeMeasureView) compositeDetailDisplay).getMeasureScoringListBox().addValueChangeHandler(event -> {isDirty = true;});
-		((NewCompositeMeasureView) compositeDetailDisplay).getPatientBasedListBox().addValueChangeHandler(event -> {isDirty = true;});
-		((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringListBox().addChangeHandler(event -> {isDirty = true;});
+		((NewCompositeMeasureView) compositeDetailDisplay).getMeasureNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
+		((NewCompositeMeasureView) compositeDetailDisplay).getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
+		((NewCompositeMeasureView) compositeDetailDisplay).getCQLLibraryNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
+		((NewCompositeMeasureView) compositeDetailDisplay).getMeasureScoringListBox().addValueChangeHandler(event -> setIsPageDirty(true));
+		((NewCompositeMeasureView) compositeDetailDisplay).getPatientBasedListBox().addValueChangeHandler(event -> setIsPageDirty(true));
+		((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringListBox().addChangeHandler(event -> setIsPageDirty(true));
 		((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringListBox().addChangeHandler(event -> createSelectionMapAndSetScorings());
+	}
+
+	private void setIsPageDirty(boolean isPageDirty) {
+		isDirty = isPageDirty;
 	}
 
 	private void createSelectionMapAndSetScorings() {
@@ -531,11 +535,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 		
 		detailDisplay.getMeasureScoringListBox().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice((detailDisplay)));
 		
-		detailDisplay.getMeasureNameTextBox().addValueChangeHandler(event -> {isDirty = true;});
-		detailDisplay.getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> {isDirty = true;});
-		detailDisplay.getCQLLibraryNameTextBox().addValueChangeHandler(event -> {isDirty = true;});
-		detailDisplay.getMeasureScoringListBox().addValueChangeHandler(event -> {isDirty = true;});
-		detailDisplay.getPatientBasedListBox().addValueChangeHandler(event -> {isDirty = true;});
+		detailDisplay.getMeasureNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
+		detailDisplay.getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
+		detailDisplay.getCQLLibraryNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
+		detailDisplay.getMeasureScoringListBox().addValueChangeHandler(event -> setIsPageDirty(true));
+		detailDisplay.getPatientBasedListBox().addValueChangeHandler(event -> setIsPageDirty(true));
 	}
 
 	private void setPatientBasedIndicatorBasedOnScoringChoice(DetailDisplay detailDisplay) {
@@ -566,12 +570,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 	
 	private void cloneMeasure() {
-		isDirty = false;
+		setIsPageDirty(false);
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
 		}
 
-		setSearchingBusy(true);
 		updateDetailsFromView();
 
 		searchDisplay.resetMessageDisplay();
@@ -581,7 +584,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 			measureCloningService.cloneExistingMeasure(currentDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
 				@Override
 				public void onFailure(Throwable caught) {
-					setSearchingBusy(false);
 					detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
 					MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
 				}
@@ -597,7 +599,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 	
 	private void draftCompositeMeasure() {
-		isDirty = false;
+		setIsPageDirty(false);
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
 		}
@@ -635,12 +637,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 
 	private void draftMeasure() {
-		isDirty = false;
+		setIsPageDirty(false);
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
 		}
 
-		setSearchingBusy(true);
 		updateDetailsFromView();
 		
 		searchDisplay.resetMessageDisplay();
@@ -649,7 +650,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 			measureCloningService.draftExistingMeasure(currentDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
 				@Override
 				public void onFailure(Throwable caught) {
-					setSearchingBusy(false);
 					detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
 					MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
 				}
@@ -665,12 +665,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 	
 	private void createNewMeasure() {
-		isDirty = false;
+		setIsPageDirty(false);
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
 		}
 
-		setSearchingBusy(true);
 		updateDetailsFromView();		
 
 		if (isValid(currentDetails, false)) {
@@ -679,18 +678,15 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 				@Override
 				public void onFailure(Throwable caught) {
 					detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
-					setSearchingBusy(false);
 				}
 
 				@Override
 				public void onSuccess(SaveMeasureResult result) {
-
 					if (result.isSuccess()) {
 						displaySuccessAndRedirectToMeasure(result.getId());
 					} else {
 						detailDisplay.getErrorMessageDisplay().createAlert(displayErrorMessage(result));
 					}
-					setSearchingBusy(false);
 				}
 			});
 		} else {
@@ -2070,7 +2066,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 	
 	private void createNewCompositeMeasure() {
-		isDirty = false;
+		setIsPageDirty(false);
 		updateCompositeDetailsFromComponentMeasureDisplay();
 		updateCompositeDetailsFromCompositeDetailView();
 		MatContext.get().getMeasureService().saveCompositeMeasure(currentCompositeMeasureDetails, new AsyncCallback<SaveMeasureResult>() {
@@ -2183,7 +2179,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 	
 	private void resetMeasureFlags() {
-		isDirty = false;
+		setIsPageDirty(false);
 		measureDeletion = false;
 		measureShared = false;
 		isMeasureDeleted = false;

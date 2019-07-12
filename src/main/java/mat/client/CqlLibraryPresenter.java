@@ -996,7 +996,11 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 			}
 		});
 		
-		detailDisplay.getNameField().addValueChangeHandler(event -> {isDirty = true;});
+		detailDisplay.getNameField().addValueChangeHandler(event -> setIsPageDirty(true));
+	}
+
+	private void setIsPageDirty(boolean isPageDirty) {
+		isDirty = isPageDirty;
 	}
 
 	private boolean isLibraryNameValid() {
@@ -1129,7 +1133,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 	}
 
 	private void displayHistoryWidget(String cqlLibraryId, String cqlLibraryName) {
-		isDirty = false;
+		setIsPageDirty(false);
 		int startIndex = 0;
 		int pageSize = Integer.MAX_VALUE;
 		String heading = "My CQL Library > History";
@@ -1169,7 +1173,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 	}
 
 	private void displayShareWidget(){
-		isDirty = false;
+		setIsPageDirty(false);;
 		String searchText = shareDisplay.getSearchWidgetBootStrap().getSearchBox().getValue();
 	    final String lastSearchText = (searchText != null) ? searchText.trim() : null;
 	    shareDisplay.resetMessageDisplay();
@@ -1217,7 +1221,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 	 * This method is called when New Library Option is selected from CreateNewItemWidget. 
 	 */
 	private void displayNewCQLLibraryWidget() {
-		isDirty = false;
+		setIsPageDirty(false);
 		warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationAlert();
 		warningConfirmationMessageAlert.clearAlert();
 		panel.getButtonPanel().clear();
@@ -1228,7 +1232,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 	}
 	
 	private void displayDraftCQLLibraryWidget(CQLLibraryDataSetObject selectedLibrary) {
-		isDirty = false;
+		setIsPageDirty(false);
 		warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationAlert();
 		warningConfirmationMessageAlert.clearAlert();
 		panel.getButtonPanel().clear();

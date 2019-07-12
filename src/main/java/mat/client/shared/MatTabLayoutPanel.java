@@ -1,6 +1,5 @@
 package mat.client.shared;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -62,7 +61,6 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	
 	@Override
 	public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
-		GWT.log("ON BEFORE SELECTION: ");
 		targetSelection =  event.getItem();
 		if (!getSelectedIndex().equals(targetSelection)) {
 			if(tabObserver.isValid()) {

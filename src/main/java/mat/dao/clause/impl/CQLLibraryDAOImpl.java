@@ -800,7 +800,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		final String libraryNameExistsQuery = buildLibraryNameCheckQuery(setId);
 
 		final NativeQuery<?> booleanQuery = session.createNativeQuery(libraryNameExistsQuery);
-		booleanQuery.setParameter("name", name.toLowerCase());
+		booleanQuery.setParameter("name", name);
 		if (StringUtils.isNotBlank(setId)) {
 			booleanQuery.setParameter(SET_ID, setId);
 		}
@@ -822,7 +822,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 	private String buildNameCheckQuery(String setId, String tableName, String columnName) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("SELECT EXISTS(");
-		sb.append("SELECT 1 FROM ").append(tableName).append(" where lower(CQL_NAME) = :name ");
+		sb.append("SELECT 1 FROM ").append(tableName).append(" where CQL_NAME = :name ");
 		if (StringUtils.isNotBlank(setId)) {
 			sb.append("and ").append(columnName).append(" <> :setId ");
 		}

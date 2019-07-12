@@ -266,5 +266,6 @@
 		<include file="classpath:/liquibase/deploy_Sprint-173-9986_Add_rank_attribute.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-173-9987_Add_additional_attributes_RelatedPerson.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-173-9988_removed_reporter.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-173_MAT-9940_CQL_LIBRARY.xml"/>
 
 </databaseChangeLog>

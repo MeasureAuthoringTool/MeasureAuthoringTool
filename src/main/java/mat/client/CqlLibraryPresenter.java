@@ -1086,6 +1086,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 				public void onSuccess(SaveCQLLibraryResult result) {
 					resultToFireEvent = result;
 					if(result.isSuccess()){
+						setIsPageDirty(false);
 						fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), result.isEditable(), false,
 								null,"","", true); //true because the library is being saved so it is a draft
 						fireCqlLibraryEditEvent();

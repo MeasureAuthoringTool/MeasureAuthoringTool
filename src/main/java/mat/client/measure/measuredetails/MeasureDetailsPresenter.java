@@ -340,7 +340,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 	
 	private void saveCompositeMeasure() {
-		MatContext.get().getMeasureService().saveCompositeMeasure(currentCompositeMeasureDetails, new AsyncCallback<SaveMeasureResult>() {
+		MatContext.get().getMeasureService().saveCompositeMeasure(currentCompositeMeasureDetails, false, new AsyncCallback<SaveMeasureResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -474,7 +474,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
 		ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
 		if(measureDetailsModel.isComposite()) {
-			MatContext.get().getMeasureService().saveCompositeMeasure((ManageCompositeMeasureDetailModel) manageMeasureDetails, getSaveCallback());
+			MatContext.get().getMeasureService().saveCompositeMeasure((ManageCompositeMeasureDetailModel) manageMeasureDetails, false,  getSaveCallback());
 		} else {
 			MatContext.get().getMeasureService().saveMeasureDetails(manageMeasureDetails, getSaveCallback());
 		}

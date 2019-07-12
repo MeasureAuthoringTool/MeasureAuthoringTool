@@ -196,7 +196,7 @@ public interface MeasureServiceAsync {
 	 */
 	void saveNewMeasure(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
 	
-	void saveCompositeMeasure(ManageCompositeMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
+	void saveCompositeMeasure(ManageCompositeMeasureDetailModel model, boolean isNewMeasureSave, AsyncCallback<SaveMeasureResult> callback);
 	
 	void deleteMeasure(String measureId, String loggedInUserId, String password, AsyncCallback<Void> callback);
 	

@@ -190,7 +190,7 @@ public interface MeasureService extends RemoteService {
 	 */
 	SaveMeasureResult saveNewMeasure(ManageMeasureDetailModel model);
 	
-	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model);
+	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model, boolean isNewMeasureSave);
 	
 	/**
 	 * Save Called To update Revision Number at Create New Package button Click.

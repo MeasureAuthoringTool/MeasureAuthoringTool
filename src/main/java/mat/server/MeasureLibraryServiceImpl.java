@@ -5792,27 +5792,28 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) {
+	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model, boolean isNewMeasureSave) {
 		boolean isExisting = false;
 		// Scrubbing out Mark Up.
 		if (model != null) {
 			model.scrubForMarkUp();
 		}
 		
+		Measure pkg = null;
+		if(model.getId() != null) {
+			pkg = measurePackageService.getById(model.getId());
+			model.setCQLLibraryName(pkg.getCqlLibraryName());
+			model.setMeasureSetId(pkg.getMeasureSet().getId());
+		}
+		
 		SaveMeasureResult result = new SaveMeasureResult();
-		if (libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
+		if (isNewMeasureSave && libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
 			result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
 			result.setSuccess(false);
 			return result;
 		}
 		
 		ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
-		
-		Measure pkg = null;
-		if(model.getId() != null) {
-			pkg = measurePackageService.getById(model.getId());
-			model.setCQLLibraryName(pkg.getCqlLibraryName());
-		}
 		
 		List<String> message = manageCompositeMeasureModelValidator.validateMeasure(model);
 		if (message.isEmpty()) {

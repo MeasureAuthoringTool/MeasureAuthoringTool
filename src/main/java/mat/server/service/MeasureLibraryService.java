@@ -194,7 +194,7 @@ public interface MeasureLibraryService {
 	 */
 	SaveMeasureResult saveOrUpdateMeasure(ManageMeasureDetailModel model);
 	
-	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model);
+	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model, boolean isNewMeasureSave);
 	
 	void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException, AuthenticationException;
 	

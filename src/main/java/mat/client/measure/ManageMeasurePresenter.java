@@ -2029,7 +2029,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void createNewCompositeMeasure() {
 		updateCompositeDetailsFromComponentMeasureDisplay();
 		updateCompositeDetailsFromCompositeDetailView();
-		MatContext.get().getMeasureService().saveCompositeMeasure(currentCompositeMeasureDetails, new AsyncCallback<SaveMeasureResult>() {
+		MatContext.get().getMeasureService().saveCompositeMeasure(currentCompositeMeasureDetails, true, new AsyncCallback<SaveMeasureResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

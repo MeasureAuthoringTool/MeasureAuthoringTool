@@ -365,8 +365,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	}
 	
 	@Override
-	public SaveCQLLibraryResult saveFinalizedVersion(String libraryId,  boolean isMajor,
-			 String version, boolean ignoreUnusedLibraries){
+	public SaveCQLLibraryResult saveFinalizedVersion(String libraryId,  boolean isMajor, String version, boolean ignoreUnusedLibraries){
 		logger.info("Inside saveFinalizedVersion: Start");
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		
@@ -378,7 +377,16 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			return result;
 		}
 		
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+
+		if (cqlService.checkIfLibraryNameExists(cqlLibrary.getName(), cqlLibrary.getSetId())) {
+			result.setSuccess(false);
+			result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+			return result;
+		}
+		
 		SaveUpdateCQLResult cqlResult = getCQLData(libraryId);
+		
 		if(!cqlResult.getCqlErrors().isEmpty() || !cqlResult.getLinterErrors().isEmpty() || !cqlResult.isDatatypeUsedCorrectly()){
 			result.setSuccess(false);
 			result.setFailureReason(ConstantMessages.INVALID_CQL_DATA);
@@ -386,7 +394,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}
 		
 		List<String> usedLibraries = cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries();
-		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+		
 		String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
 		if(CQLUtil.checkForUnusedIncludes(cqlLibraryXml, usedLibraries)){
 			if(!ignoreUnusedLibraries) {

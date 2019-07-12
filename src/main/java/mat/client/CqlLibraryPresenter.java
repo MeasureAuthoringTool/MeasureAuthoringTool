@@ -139,7 +139,9 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 	private HandlerRegistration noHandler;
 	
 	private static final String CONTINUE = "Continue";
-		
+	
+	private static final String CQL_LIBRARY = "CQLLibrary";
+	
 	/**
 	 * The Interface ViewDisplay.
 	 */
@@ -924,62 +926,105 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 	protected void saveFinalizedVersion(final String libraryId, final String cqlLibName, Boolean isMajor, String version, boolean ignoreUnusedLibraries) {
 		versionDisplay.getErrorMessages().clearAlert();
 		showSearchingBusy(true);
-		((Button)versionDisplay.getSaveButton()).setEnabled(false);
-		((Button)versionDisplay.getCancelButton()).setEnabled(false);
-		MatContext.get().getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version, ignoreUnusedLibraries,
-				new AsyncCallback<SaveCQLLibraryResult>() {
+		versionDisplay.getSaveButton().setEnabled(false);
+		versionDisplay.getCancelButton().setEnabled(false);
+		
+		MatContext.get().getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version, ignoreUnusedLibraries, new AsyncCallback<SaveCQLLibraryResult>() {
 
-					@Override
-					public void onFailure(Throwable caught) {
-						showSearchingBusy(false);
-						versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						((Button) versionDisplay.getSaveButton()).setEnabled(true);
-						((Button) versionDisplay.getCancelButton()).setEnabled(true);
-					}
+			@Override
+			public void onFailure(Throwable caught) {
+				showSearchingBusy(false);
+				versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				versionDisplay.getSaveButton().setEnabled(true);
+				versionDisplay.getCancelButton().setEnabled(true);
+			}
 
-					@Override
-					public void onSuccess(SaveCQLLibraryResult result) {
-						showSearchingBusy(false);
-						((Button) versionDisplay.getSaveButton()).setEnabled(true);
-						((Button) versionDisplay.getCancelButton()).setEnabled(true);
-						if (result.isSuccess()) {
-							displaySearch();
-							String versionStr = result.getVersionStr();
-							recordSuccessCQLLibraryVersionEvent(libraryId, versionStr);
-							isCqlLibraryVersioned = true;
-							fireSuccessfulVersionEvent(isCqlLibraryVersioned,cqlLibName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(cqlLibName, versionStr));
-						} else {
-							isCqlLibraryVersioned = false;
-							if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA) {
-								versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
-							} else if(result.getFailureReason() == ConstantMessages.INVALID_CQL_LIBRARIES) {
-								String libraryName = versionDisplay.getSelectedLibrary().getCqlName();
-								String errorMessage =  MatContext.get().getMessageDelegate().getUnusedIncludedLibraryWarning(libraryName);
-								ConfirmationDialogBox dialogBox = versionDisplay.createConfirmationDialogBox(errorMessage, CONTINUE, "Cancel", null, false);
-								dialogBox.setObserver(new ConfirmationObserver() {
-									
-									@Override
-									public void onYesButtonClicked() {
-										saveFinalizedVersion(libraryId, cqlLibName, isMajor, version, true);												
-									}
-									
-									@Override
-									public void onNoButtonClicked() {
-										displaySearch(); 
-									}
-									
-									@Override
-									public void onClose() {
-										displaySearch();										
-									}
-								});
-								dialogBox.show();
-							}
-						}
-					}
+			@Override
+			public void onSuccess(SaveCQLLibraryResult result) {
+				showSearchingBusy(false);
+				versionDisplay.getSaveButton().setEnabled(true);
+				versionDisplay.getCancelButton().setEnabled(true);
+				if (result.isSuccess()) {
+					versionSuccessfulEvent(libraryId, cqlLibName, result);
+				} else {
+					versionFailureEvent(result.getFailureReason(), libraryId, cqlLibName, isMajor, version);
+				}
+			}
 		});
 	}
+	
+	private void versionSuccessfulEvent(final String libraryId, final String cqlLibName, SaveCQLLibraryResult result) {
+		displaySearch();
+		String versionStr = result.getVersionStr();
+		recordSuccessCQLLibraryVersionEvent(libraryId, versionStr);
+		isCqlLibraryVersioned = true;
+		fireSuccessfulVersionEvent(isCqlLibraryVersioned,cqlLibName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(cqlLibName, versionStr));
+	}
 
+	private void versionFailureEvent(int failureReason, final String libraryId, final String cqlLibName, Boolean isMajor, String version) {
+		isCqlLibraryVersioned = false;
+		switch (failureReason) {
+		case ConstantMessages.INVALID_CQL_DATA:
+			versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
+			break;
+		case ConstantMessages.INVALID_CQL_LIBRARIES:
+			displayInvalidLibraryDialog(libraryId, cqlLibName, isMajor, version);
+			break;
+		case SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME:
+			displayDuplicateLibraryDialog();
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void displayDuplicateLibraryDialog() {
+		ConfirmationDialogBox confirmationDialogBox = versionDisplay.createConfirmationDialogBox(MessageDelegate.VERSION_STANDALONE_LIBRARY_NAME_ERROR_MESSAGE, "Return to CQL Library", "Cancel", null, true);
+		confirmationDialogBox.getNoButton().setVisible(false);
+		confirmationDialogBox.setObserver(new ConfirmationObserver() {
+
+			@Override
+			public void onYesButtonClicked() {
+				displaySearch();								
+			}
+
+			@Override
+			public void onNoButtonClicked() {
+				 
+			}
+
+			@Override
+			public void onClose() {
+														
+			}
+		});
+		confirmationDialogBox.show();
+	
+	}
+
+	private void displayInvalidLibraryDialog(final String libraryId, final String cqlLibName, Boolean isMajor, String version) {
+		String errorMessage =  MatContext.get().getMessageDelegate().getUnusedIncludedLibraryWarning(versionDisplay.getSelectedLibrary().getCqlName());
+		ConfirmationDialogBox confirmationDialogBox = versionDisplay.createConfirmationDialogBox(errorMessage, CONTINUE, "Cancel", null, false);
+		confirmationDialogBox.setObserver(new ConfirmationObserver() {
+
+			@Override
+			public void onYesButtonClicked() {
+				saveFinalizedVersion(libraryId, cqlLibName, isMajor, version, true);												
+			}
+
+			@Override
+			public void onNoButtonClicked() {
+				displaySearch(); 
+			}
+
+			@Override
+			public void onClose() {
+				displaySearch();										
+			}
+		});
+		confirmationDialogBox.show();
+	}
+	
 	private void fireSuccessfulVersionEvent(boolean isSuccess, String name, String message){
 		CQLVersionEvent versionEvent = new CQLVersionEvent(isSuccess, name, message);
 		MatContext.get().getEventBus().fireEvent(versionEvent);
@@ -1094,21 +1139,19 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		});
 		
 		
-		cqlLibraryView.getSearchButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				int startIndex = 1;
-				cqlLibraryDeletion = false;
-				cqlLibraryShared = false;
-				isCqlLibraryVersioned = false;
-				cqlLibraryView.resetMessageDisplay();
-				int filter = cqlLibraryView.getSelectedFilter();
-				search(cqlLibraryView.getSearchString().getValue(),filter, startIndex,Integer.MAX_VALUE);
-			}
-		});
-
+		cqlLibraryView.getSearchButton().addClickHandler(event -> onSearchButtonClick());
 	}
 
+	private void onSearchButtonClick() {
+		int startIndex = 1;
+		cqlLibraryDeletion = false;
+		cqlLibraryShared = false;
+		isCqlLibraryVersioned = false;
+		cqlLibraryView.resetMessageDisplay();
+		int filter = cqlLibraryView.getSelectedFilter();
+		search(cqlLibraryView.getSearchString().getValue(),filter, startIndex,Integer.MAX_VALUE);
+	}
+	
 	/**
 	 * Method is invoked When Option to Create Library Version of Draft is selected from CreateNewItemWidget.
 	 */
@@ -1116,9 +1159,9 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		versionDisplay.getErrorMessages().clearAlert();
 		cqlLibraryView.resetMessageDisplay();
 		panel.getButtonPanel().clear();
-		panel.setHeading("My CQL Library > Create CQL Library Version of Draft", "CQLLibrary");
+		panel.setHeading("My CQL Library > Create CQL Library Version of Draft", CQL_LIBRARY);
 		panel.setContent(versionDisplay.asWidget());
-		Mat.focusSkipLists("CQLLibrary");
+		Mat.focusSkipLists(CQL_LIBRARY);
 		versionDisplay.clearRadioButtonSelection();
 	}
 
@@ -1127,9 +1170,9 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		shareDisplay.setCQLibraryName(cqlSharedDataSetObject.getCqlName());
 		shareDisplay.getSearchWidgetBootStrap().getSearchBox().setValue("");
 		panel.getButtonPanel().clear();
-		panel.setHeading("My CQL Libraries > CQL Library Sharing", "CQLLibrary");
+		panel.setHeading("My CQL Libraries > CQL Library Sharing", CQL_LIBRARY);
 		panel.setContent(shareDisplay.asWidget());
-		Mat.focusSkipLists("CQLLibrary");
+		Mat.focusSkipLists(CQL_LIBRARY);
 	}
 
 	private void displayHistoryWidget(String cqlLibraryId, String cqlLibraryName) {
@@ -1138,12 +1181,12 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		int pageSize = Integer.MAX_VALUE;
 		String heading = "My CQL Library > History";
 		panel.getButtonPanel().clear();
-		panel.setHeading(heading, "CQLLibrary");
+		panel.setHeading(heading, CQL_LIBRARY);
 		displayHistoryWidget(cqlLibraryId, startIndex, pageSize);
 		historyDisplay.setCQLLibraryId(cqlLibraryId);
 		historyDisplay.setCQLLibraryName(cqlLibraryName);
 		panel.setContent(historyDisplay.asWidget());
-		Mat.focusSkipLists("CQLLibrary");
+		Mat.focusSkipLists(CQL_LIBRARY);
 	}
 
 	private void displayEdit(CQLLibraryDataSetObject result) {
@@ -1173,7 +1216,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 	}
 
 	private void displayShareWidget(){
-		setIsPageDirty(false);;
+		setIsPageDirty(false);
 		String searchText = shareDisplay.getSearchWidgetBootStrap().getSearchBox().getValue();
 	    final String lastSearchText = (searchText != null) ? searchText.trim() : null;
 	    shareDisplay.resetMessageDisplay();
@@ -1225,10 +1268,10 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationAlert();
 		warningConfirmationMessageAlert.clearAlert();
 		panel.getButtonPanel().clear();
-		panel.setHeading("My CQL Library > Create New CQL Library", "CQLLibrary");
+		panel.setHeading("My CQL Library > Create New CQL Library", CQL_LIBRARY);
 		panel.setContent(detailDisplay.asWidget());
 		updateSaveButtonHandler(event -> createCQLLibrary());
-		Mat.focusSkipLists("CQLLibrary");
+		Mat.focusSkipLists(CQL_LIBRARY);
 	}
 	
 	private void displayDraftCQLLibraryWidget(CQLLibraryDataSetObject selectedLibrary) {
@@ -1236,11 +1279,11 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationAlert();
 		warningConfirmationMessageAlert.clearAlert();
 		panel.getButtonPanel().clear();
-		panel.setHeading("My CQL Library > Draft CQL Library", "CQLLibrary");
+		panel.setHeading("My CQL Library > Draft CQL Library", CQL_LIBRARY);
 		panel.setContent(detailDisplay.asWidget());
 		detailDisplay.getNameField().setText(selectedLibrary.getCqlName());
 		updateSaveButtonHandler(event -> draftCQLLibrary(selectedLibrary));
-		Mat.focusSkipLists("CQLLibrary");
+		Mat.focusSkipLists(CQL_LIBRARY);
 	}
 	
 	/**
@@ -1251,7 +1294,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		cqlLibraryView.resetMessageDisplay();
 		
 		String heading = "CQL Library";
-		panel.setHeading(heading, "CQLLibrary");
+		panel.setHeading(heading, CQL_LIBRARY);
 		setSubSkipEmbeddedLink("CQLSearchView_mainPanel");
 		FlowPanel fp = new FlowPanel();
 		fp.getElement().setId("fp_FlowPanel_CQL");
@@ -1265,7 +1308,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		fp.add(cqlLibraryView.asWidget());
 		
 		panel.setContent(fp);
-		Mat.focusSkipLists("CQLLibrary");
+		Mat.focusSkipLists(CQL_LIBRARY);
 	}
 	
 	private void buildCreateLibrary() {
@@ -1456,8 +1499,8 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		isLoading= busy;
 		((Button) cqlLibraryView.getSearchButton()).setEnabled(!busy);
 		((TextBox) (cqlLibraryView.getSearchString())).setEnabled(!busy);
-		((Button) cqlLibraryView.getCreateNewLibraryButton()).setEnabled(!busy);
-		((CustomCheckBox) cqlLibraryView.getCustomFilterCheckBox()).setEnabled(!busy);
+		cqlLibraryView.getCreateNewLibraryButton().setEnabled(!busy);
+		cqlLibraryView.getCustomFilterCheckBox().setEnabled(!busy);
 		cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getAdvanceSearchAnchor().setEnabled(!busy);
 		if (busy) {
 			Mat.showLoadingMessage();

@@ -151,7 +151,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	public ManageMeasureSearchModel.Result cloneExistingMeasure(ManageMeasureDetailModel currentDetails) throws MatException {
 		
 		currentDetails.setMeasureSetId(null);
-		if (MatContextServiceUtil.get().isCurrentMeasureClonable(measureDAO, currentDetails.getId())) {
+		if (!MatContextServiceUtil.get().isCurrentMeasureClonable(measureDAO, currentDetails.getId())) {
 			createException(CANNOT_ACCESS_MEASURE);
 		}
 		
@@ -161,7 +161,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	@Override
 	public Result draftExistingMeasure(ManageMeasureDetailModel currentDetails) throws MatException {
 		
-		if (MatContextServiceUtil.get().isCurrentMeasureDraftable(measureDAO, userDAO, currentDetails.getId())) {
+		if (!MatContextServiceUtil.get().isCurrentMeasureDraftable(measureDAO, userDAO, currentDetails.getId())) {
 			createException(CANNOT_ACCESS_MEASURE);
 		}
 		

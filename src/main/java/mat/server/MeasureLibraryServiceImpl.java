@@ -5798,9 +5798,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (model != null) {
 			model.scrubForMarkUp();
 		}
+		Measure pkg = null;
+		
+		
+		if (model.getId() != null) {
+			pkg = measurePackageService.getById(model.getId());
+			setCQLLibraryName(pkg, model);
+			isExisting = true;
+		}
+		
+		
 		
 		SaveMeasureResult result = new SaveMeasureResult();
-		if (libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
+		if (!isExisting && libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
 			result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
 			result.setSuccess(false);
 			return result;
@@ -5811,14 +5821,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (message.isEmpty()) {
 			String shortName = buildMeasureShortName(model);
 			model.setShortName(shortName);
-			Measure pkg = null;
+			
 			MeasureSet measureSet = null;
 			String existingMeasureScoringType = "";
 			if (model.getId() != null) {
-				isExisting = true;
+				
 				setMeasureCreated(true);
 				// editing an existing measure
-				pkg = measurePackageService.getById(model.getId());
+				
 				existingMeasureScoringType = pkg.getMeasureScoring();
 				model.setVersionNumber(pkg.getVersion());
 				if (pkg.isDraft()) {

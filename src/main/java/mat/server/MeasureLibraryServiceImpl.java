@@ -5807,18 +5807,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		
 		ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
+		
+		Measure pkg = null;
+		if(model.getId() != null) {
+			pkg = measurePackageService.getById(model.getId());
+			model.setCQLLibraryName(pkg.getCqlLibraryName());
+		}
+		
 		List<String> message = manageCompositeMeasureModelValidator.validateMeasure(model);
 		if (message.isEmpty()) {
 			String shortName = buildMeasureShortName(model);
 			model.setShortName(shortName);
-			Measure pkg = null;
 			MeasureSet measureSet = null;
 			String existingMeasureScoringType = "";
 			if (model.getId() != null) {
 				isExisting = true;
 				setMeasureCreated(true);
 				// editing an existing measure
-				pkg = measurePackageService.getById(model.getId());
+				
 				existingMeasureScoringType = pkg.getMeasureScoring();
 				model.setVersionNumber(pkg.getVersion());
 				if (pkg.isDraft()) {

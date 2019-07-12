@@ -72,6 +72,9 @@ public class CQLLinter extends cqlBaseListener {
 	int numberOfCodesystems = 0;
 
 
+	private CommonTokenStream tokens;
+
+
 		
 	public CQLLinter(String cql, CQLLinterConfig config) throws IOException {
 		this.config = config;
@@ -84,7 +87,7 @@ public class CQLLinter extends cqlBaseListener {
 		
 		InputStream stream = new ByteArrayInputStream(cql.getBytes());
 		cqlLexer lexer = new cqlLexer(new ANTLRInputStream(stream));
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		tokens = new CommonTokenStream(lexer);
 		tokens.fill();
 		cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);    
@@ -239,9 +242,44 @@ public class CQLLinter extends cqlBaseListener {
 		libraryDefinitionStartLine = ctx.getStart().getLine();
 		String name = CQLParserUtil.parseString(ctx.qualifiedIdentifier().getText());
 		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
-		if(!StringUtils.equals(name, config.getLibraryName()) || !StringUtils.equals(version, config.getLibraryVersion())) {
-			hasInvalidEdits = true;
+		String comment = getLibraryComment(ctx);
+		String previousComment = config.getPreviousCQLModel().getLibraryComment();
+		
+		if(StringUtils.isEmpty(comment)) {
+			comment = null;
 		}
+		
+		if(StringUtils.isEmpty(previousComment)) {
+			previousComment = null;
+		}
+		
+		if(!StringUtils.equals(name, config.getLibraryName()) || !StringUtils.equals(version, config.getLibraryVersion()) 
+				|| !StringUtils.equals(comment, previousComment)) {
+			hasInvalidEdits = true;
+		}		
+	}
+	
+	public String getLibraryComment(LibraryDefinitionContext ctx) {
+		int index = tokens.size() - 1; // Initialize to the last token
+		List<Token> ts = tokens.getTokens(ctx.stop.getTokenIndex(), tokens.size() - 1);
+		for(Token t : ts) {
+			if(t.getText().equals("using")) {
+				index = t.getTokenIndex();
+				break;
+			}
+		}
+		
+		ts = tokens.getTokens(ctx.stop.getTokenIndex() + 1, index - 1);
+		StringBuilder builder = new StringBuilder();
+		for(Token t : ts) {
+			builder.append(t.getText());
+		}
+		
+		return trimComment(builder.toString());
+	}
+	
+	private String trimComment(String comment) {
+		return comment.replace("/*", "").replace("*/", "").trim();
 	}
 	
 	@Override

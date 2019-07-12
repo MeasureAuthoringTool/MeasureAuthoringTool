@@ -39,6 +39,7 @@ import mat.DTO.CompositeMeasureScoreDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.TabObserver;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.events.OnChangeMeasureVersionOptionsEvent;
 import mat.client.event.MeasureDeleteEvent;
@@ -58,12 +59,14 @@ import mat.client.shared.ConfirmationObserver;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SynchronizationDelegate;
+import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
 import mat.client.util.MatTextBox;
@@ -76,7 +79,7 @@ import mat.shared.StringUtility;
 import mat.shared.validator.measure.ManageCompositeMeasureModelValidator;
 import mat.shared.validator.measure.ManageMeasureModelValidator;
 
-public class ManageMeasurePresenter implements MatPresenter {
+public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
 	private static final String CONTINUE = "Continue";
 	 
@@ -87,10 +90,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private static final String UNHANDLED_EXCEPTION = "Unhandled Exception: ";
 	
 	private List<String> bulkExportMeasureIds;
+	
+	private WarningConfirmationMessageAlert warningConfirmationMessageAlert;
 
 	private ClickHandler cancelClickHandler = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent event) {
+			isDirty = false;
 			if(!isLoading) {
 				isClone = false;
 	
@@ -178,6 +184,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private HandlerRegistration saveHandler = null;
 
 	private HandlerRegistration compositeSaveHandler = null;
+	
+	private boolean isDirty = false;
+
+	private MatPresenter targetPresenter;
+
+	private MatTabLayoutPanel targetTabLayout;
+
+	private MatPresenter sourcePresenter;
+
+	private HandlerRegistration yesHandler;
+
+	private HandlerRegistration noHandler;
 
 	public ManageMeasurePresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg, DetailDisplay compositeDisplayArg, ComponentMeasureDisplay componentMeasureDisplayArg, ShareDisplay shareDisplayArg,
 			ManageExportView exportView, HistoryDisplay hDisplay,
@@ -261,6 +279,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	@Override
 	public void beforeClosingDisplay() {
+		isDirty = false;
 		searchDisplay.resetMessageDisplay();
 		isMeasureDeleted = false;
 		measureShared = false;
@@ -302,6 +321,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Mat.focusSkipLists(MEASURE_LIBRARY);
 	}
 
+	public WarningConfirmationMessageAlert getWarningConfirmationMessageAlert() {
+		return warningConfirmationMessageAlert;
+	}
 
 
 	private void bulkExport(List<String> selectedMeasureIds) {
@@ -358,6 +380,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void clearErrorMessageAlerts() {
+		detailDisplay.getWarningConfirmationMessageAlert().clearAlert();
+		compositeDetailDisplay.getWarningConfirmationMessageAlert().clearAlert();
 		detailDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		Mat.focusSkipLists(MEASURE_LIBRARY);
@@ -381,7 +405,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void validateOnCompositeContinueButtonClick() {
-
 		componentMeasureDisplay.setComponentBusy(true);
 		updateCompositeDetailsFromComponentMeasureDisplay();
 		
@@ -422,9 +445,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 
+		((NewCompositeMeasureView) compositeDetailDisplay).getMeasureNameTextBox().addValueChangeHandler(event -> {isDirty = true;});
+		((NewCompositeMeasureView) compositeDetailDisplay).getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> {isDirty = true;});
+		((NewCompositeMeasureView) compositeDetailDisplay).getCQLLibraryNameTextBox().addValueChangeHandler(event -> {isDirty = true;});
+		((NewCompositeMeasureView) compositeDetailDisplay).getMeasureScoringListBox().addValueChangeHandler(event -> {isDirty = true;});
+		((NewCompositeMeasureView) compositeDetailDisplay).getPatientBasedListBox().addValueChangeHandler(event -> {isDirty = true;});
+		((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringListBox().addChangeHandler(event -> {isDirty = true;});
 		((NewCompositeMeasureView) compositeDetailDisplay).getCompositeScoringListBox().addChangeHandler(event -> createSelectionMapAndSetScorings());
-		
-		compositeDetailDisplay.getMeasureScoringListBox().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice(compositeDetailDisplay));
 	}
 
 	private void createSelectionMapAndSetScorings() {
@@ -503,6 +530,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});
 		
 		detailDisplay.getMeasureScoringListBox().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice((detailDisplay)));
+		
+		detailDisplay.getMeasureNameTextBox().addValueChangeHandler(event -> {isDirty = true;});
+		detailDisplay.getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> {isDirty = true;});
+		detailDisplay.getCQLLibraryNameTextBox().addValueChangeHandler(event -> {isDirty = true;});
+		detailDisplay.getMeasureScoringListBox().addValueChangeHandler(event -> {isDirty = true;});
+		detailDisplay.getPatientBasedListBox().addValueChangeHandler(event -> {isDirty = true;});
 	}
 
 	private void setPatientBasedIndicatorBasedOnScoringChoice(DetailDisplay detailDisplay) {
@@ -533,6 +566,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void cloneMeasure() {
+		isDirty = false;
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
 		}
@@ -563,6 +597,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void draftCompositeMeasure() {
+		isDirty = false;
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
 		}
@@ -600,6 +635,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 
 	private void draftMeasure() {
+		isDirty = false;
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
 		}
@@ -629,6 +665,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void createNewMeasure() {
+		isDirty = false;
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
 		}
@@ -713,6 +750,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void displayNewMeasureWidget() {
+		warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationMessageAlert();
 		currentDetails = new ManageMeasureDetailModel();
 		detailDisplay.showCautionMsg(false);
 		displayCommonDetailForAdd(detailDisplay);
@@ -724,6 +762,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	
 	private void displayCloneMeasureWidget() {
+		warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationMessageAlert();
 		panel.setHeading("My Measures > Clone Measure", COMPOSITE_MEASURE);	
 		detailDisplay.setMeasureName(currentDetails.getMeasureName());		
 		Mat.focusSkipLists(MEASURE_LIBRARY);
@@ -739,6 +778,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void displayDraftMeasureWidget() {
+		warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationMessageAlert();
 		panel.setHeading("My Measures > Draft Measure", MEASURE_LIBRARY);
 		detailDisplay.setMeasureName(currentDetails.getMeasureName());
 		Mat.focusSkipLists(MEASURE_LIBRARY);
@@ -750,6 +790,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void displayNewCompositeMeasureWidget() {
 		clearErrorMessageAlerts();
+		warningConfirmationMessageAlert = compositeDetailDisplay.getWarningConfirmationMessageAlert();
 		displayCommonDetailForAdd(compositeDetailDisplay);	
 		panel.setHeading("My Measures > Create New Composite Measure", COMPOSITE_MEASURE);	
 		setCompositeDetailsToView();
@@ -759,6 +800,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void displayDraftCompositeMeasureWidget() {
+		warningConfirmationMessageAlert = compositeDetailDisplay.getWarningConfirmationMessageAlert();
 		displayCommonDetailForAdd(compositeDetailDisplay);	
 		panel.setHeading("My Measures > Draft Composite Measure", COMPOSITE_MEASURE);
 		compositeDetailDisplay.setMeasureName(currentCompositeMeasureDetails.getMeasureName());
@@ -858,6 +900,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 
 	private void displayShare(String userName, String id) {
+		warningConfirmationMessageAlert = null;
 		getShareDetails(userName, id, 1);
 		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Measure Sharing", MEASURE_LIBRARY);
@@ -2027,6 +2070,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void createNewCompositeMeasure() {
+		isDirty = false;
 		updateCompositeDetailsFromComponentMeasureDisplay();
 		updateCompositeDetailsFromCompositeDetailView();
 		MatContext.get().getMeasureService().saveCompositeMeasure(currentCompositeMeasureDetails, new AsyncCallback<SaveMeasureResult>() {
@@ -2139,6 +2183,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void resetMeasureFlags() {
+		isDirty = false;
 		measureDeletion = false;
 		measureShared = false;
 		isMeasureDeleted = false;
@@ -2149,5 +2194,74 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	public ContentWithHeadingWidget getPanel() {
 		return panel;
+	}
+	
+	public boolean isDirty() {
+		return isDirty;
+	}
+	
+	public void setTabTargets(MatTabLayoutPanel targetTabLayout, MatPresenter sourcePresenter, MatPresenter targetPresenter) {
+		this.targetPresenter = targetPresenter;
+		this.targetTabLayout = targetTabLayout;		
+		this.sourcePresenter = sourcePresenter;
+	}
+
+	@Override
+	public boolean isValid() {
+		return !isDirty();
+	}
+
+	@Override
+	public void showUnsavedChangesError() {
+		warningConfirmationMessageAlert.createAlert();
+		warningConfirmationMessageAlert.getWarningConfirmationYesButton().setFocus(true);
+		handleClickEventsOnUnsavedChangesMsg(warningConfirmationMessageAlert);
+	}
+	
+	private void removeHandlers() {
+		if(yesHandler!=null) {
+			yesHandler.removeHandler();
+		}
+		if(noHandler!=null) {	
+			noHandler.removeHandler();
+		}
+	}
+	
+	private void handleClickEventsOnUnsavedChangesMsg(final WarningConfirmationMessageAlert saveErrorMessage) {
+		removeHandlers();
+		yesHandler = saveErrorMessage.getWarningConfirmationYesButton().addClickHandler(event -> onYesButtonClicked(saveErrorMessage));
+		noHandler = saveErrorMessage.getWarningConfirmationNoButton().addClickHandler(event -> onNoButtonClicked(saveErrorMessage));
+	}
+	
+	private void onNoButtonClicked(WarningConfirmationMessageAlert saveErrorMessage) {
+		saveErrorMessage.clearAlert();
+		resetTabTargets();
+	}
+
+	private void onYesButtonClicked(WarningConfirmationMessageAlert saveErrorMessage) {
+		saveErrorMessage.clearAlert();
+		notifyCurrentTabOfClosing();		
+		targetTabLayout.setIndexFromTargetSelection();
+		MatContext.get().setAriaHidden(targetPresenter.getWidget(),  "false");
+		targetPresenter.beforeDisplay();
+		resetTabTargets();
+	}
+
+	private void resetTabTargets() {
+		targetPresenter = null;
+		targetTabLayout = null;
+		sourcePresenter = null;
+	}
+
+	@Override
+	public void updateOnBeforeSelection() {		
+	}
+
+	@Override
+	public void notifyCurrentTabOfClosing() {
+		if(sourcePresenter != null) {
+			MatContext.get().setAriaHidden(sourcePresenter.getWidget(), "true");
+			sourcePresenter.beforeClosingDisplay();
+		}		
 	}
 }

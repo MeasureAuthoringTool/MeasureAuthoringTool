@@ -26,6 +26,7 @@ import mat.client.cqlworkspace.CQLMeasureWorkSpacePresenter;
 import mat.client.cqlworkspace.CQLMeasureWorkSpaceView;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
+import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.measuredetails.MeasureDetailsPresenter;
 import mat.client.measure.metadata.events.ContinueToMeasurePackageEvent;
 import mat.client.measurepackage.MeasurePackagePresenter;
@@ -381,7 +382,7 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
 			presenter.getView().getSaveErrorMessageDisplayOnEdit().clearAlert();
 			saveErrorMessageAlert = presenter.getView().getSaveErrorMessageDisplay();
 			saveButton = presenter.getView().getPackageGroupingWidget().getSaveGrouping();
-		}
+		} 
 		
 		if(saveErrorMessageAlert != null) {
 			showErrorMessageAlert(saveErrorMessageAlert);

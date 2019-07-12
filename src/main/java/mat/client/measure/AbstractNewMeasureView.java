@@ -28,6 +28,8 @@ import mat.client.shared.MeasureNameLabel;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.TextAreaWithMaxLength;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.WarningMessageAlert;
 
 public class AbstractNewMeasureView implements DetailDisplay {
 	protected SimplePanel mainPanel = new SimplePanel();
@@ -36,6 +38,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
 	protected TextAreaWithMaxLength cqlLibraryNameTextBox = new TextAreaWithMaxLength();
 	protected TextBox eCQMAbbreviatedTitleTextBox = new TextBox();
 	protected MessageAlert errorMessages = new ErrorMessageAlert();
+	protected WarningConfirmationMessageAlert warningMessageAlert = new WarningConfirmationMessageAlert();
 	protected ListBoxMVP  measureScoringListBox = new ListBoxMVP();
 	protected ListBoxMVP patientBasedListBox = new ListBoxMVP();
 	protected SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("measureDetail");
@@ -62,6 +65,11 @@ public class AbstractNewMeasureView implements DetailDisplay {
 	public Widget asWidget() {
 		return mainPanel;
 	}
+	
+	@Override
+	public WarningConfirmationMessageAlert getWarningConfirmationMessageAlert() {
+		return warningMessageAlert;
+	}
 
 	@Override
 	public MessageAlert getErrorMessageDisplay() {
@@ -77,6 +85,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
 		helpBlock.setText("");
 		messageFormGrp.setValidationState(ValidationState.NONE);
 		getErrorMessageDisplay().clearAlert();
+		warningMessageAlert.clearAlert();
 	}
 
 	@Override
@@ -183,6 +192,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
 		requiredInstructions.getElement().setId("requiredInstructions_HTML");
 		fPanel.add(new SpacerWidget());
 		fPanel.add(errorMessages);
+		fPanel.add(warningMessageAlert);
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
 		
 		return fPanel;

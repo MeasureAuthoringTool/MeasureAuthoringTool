@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import mat.client.codelist.HasListBox;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.shared.ListBoxMVP;
+import mat.client.shared.WarningConfirmationMessageAlert;
 
 public interface DetailDisplay extends BaseDisplay {
 	public void clearFields();
@@ -46,4 +47,6 @@ public interface DetailDisplay extends BaseDisplay {
 	FormGroup getMessageFormGrp();
 	
 	EditConfirmationDialogBox getConfirmationDialogBox();
+
+	WarningConfirmationMessageAlert getWarningConfirmationMessageAlert();
 }

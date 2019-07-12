@@ -39,6 +39,7 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 		super.clearFields();
 		compositeScoringListBox.setSelectedIndex(0);//default to --Select-- value.
 		errorMessages.clearAlert();
+		warningMessageAlert.clearAlert();
 	}
 	
 	public NewCompositeMeasureView() {
@@ -124,6 +125,7 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 		cautionHTML.getElement().setId("cautionMessage_HTML");
 		
 		fPanel.add(errorMessages);
+		fPanel.add(warningMessageAlert);
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
 		
 		fPanel.getElement().appendChild(DOM.createElement(BRElement.TAG));

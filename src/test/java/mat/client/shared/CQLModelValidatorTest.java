@@ -13,6 +13,7 @@ public class CQLModelValidatorTest {
 	public void testDoesAliasNameFollowCQLAliasNamingConvention() {
 		testValidName();
 		testInvalidName(); 
+		testContainsSpecialCharacter();
 	}
 	
 	private void testInvalidName() {
@@ -34,5 +35,10 @@ public class CQLModelValidatorTest {
 		assertEquals(true, validator.doesAliasNameFollowCQLAliasNamingConvention(startsWithLetterAndContainsUnderscore));
 		assertEquals(true, validator.doesAliasNameFollowCQLAliasNamingConvention(startsWithLetterAndContainsUnderscoreAndHasNumber));		
 	}
+	private void testContainsSpecialCharacter() {
 
+		assertEquals(false, validator.hasSpecialCharacter("gabe"));
+		assertEquals(true, validator.hasSpecialCharacter("gabe("));
+		assertEquals(true, validator.hasSpecialCharacter("gab*e"));
+	}
 }

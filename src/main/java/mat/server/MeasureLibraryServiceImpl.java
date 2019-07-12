@@ -1892,21 +1892,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Measure m = measurePackageService.getById(measureId);
 		logger.info("Measure Loaded for: " + measureId);
 
+		SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
+		
 		boolean isMeasureVersionable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId);
 		if (!isMeasureVersionable) {
-			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_DATA);
 		}
 
 		SaveUpdateCQLResult cqlResult = getMeasureCQLFileData(measureId);
 		
-		if (libraryNameExists(cqlResult.getCqlModel().getLibraryName(), m.getMeasureSet().getId())) {
-			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
+		if (cqlResult.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
 			return returnFailureReason(saveMeasureResult, SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
 		}		
 		
 		if(!cqlResult.getCqlErrors().isEmpty() || !cqlResult.getLinterErrors().isEmpty() || !cqlResult.isDatatypeUsedCorrectly()){
-			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_CQL_DATA);
 		}
 
@@ -1914,7 +1913,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		MeasureXmlModel measureXmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 		String measureXml = measureXmlModel.getXml();
 		if(!ignoreUnusedLibraries && CQLUtil.checkForUnusedIncludes(measureXml, cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries())) {
-			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			saveMeasureResult.setFailureReason(SaveMeasureResult.UNUSED_LIBRARY_FAIL);
 			logger.info("Measure Package and Version Failed for measure with id " + measureId + " because there are libraries that are unused.");
 			return saveMeasureResult;
@@ -1924,7 +1922,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if(shouldPackage) {
 			SaveMeasureResult validatePackageResult = validateAndPackage(getMeasure(measureId), false);
 			if(!validatePackageResult.isSuccess()) {
-				SaveMeasureResult saveMeasureResult = new SaveMeasureResult(); 
 				return returnFailureReason(saveMeasureResult, SaveMeasureResult.PACKAGE_FAIL);
 			}
 		}
@@ -4873,7 +4870,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result = cqlService.getCQLFileData(xmlString);
 			lintAndAddToResult(measureId, result);
 			result.setSuccess(true);
-			if (measure.isDraft() && libraryNameExists(result.getCqlModel().getLibraryName(), result.getSetId())) {
+			if (measure.isDraft() && libraryNameExists(result.getCqlModel().getLibraryName(), measure.getMeasureSet().getId())) {
 				result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
 			}
 		} else {
@@ -5605,14 +5602,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult getMeasureCQLDataForLoad(String measureId) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
-		Measure measure = measurePackageService.getById(measureId);
+		Measure measure = measureDAO.find(measureId);
 
 		if (model != null && StringUtils.isNotBlank(model.getXml())) {
 			String xmlString = model.getXml();
 			result = cqlService.getCQLDataForLoad(xmlString);
 			result.setSetId(measure.getMeasureSet().getId());
 			result.setSuccess(true);
-			if (measure.isDraft() && libraryNameExists(result.getCqlModel().getLibraryName(), result.getSetId())) {
+			if (measure.isDraft() && libraryNameExists(result.getCqlModel().getLibraryName(), measure.getMeasureSet().getId())) {
 				result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
 			}
 		} else {

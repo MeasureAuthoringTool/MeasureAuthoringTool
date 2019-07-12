@@ -554,10 +554,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 				@Override
 				public void onSuccess(ManageMeasureSearchModel.Result result) {
-					setSearchingBusy(false);
-					resultToFireEvent = result;
-					fireMeasureSelected(result);
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getCloneMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
+					displaySuccessAndFireSelectedEvent(result, MatContext.get().getMessageDelegate().getCloneMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
 				}
 			});
 		} else {
@@ -586,17 +583,22 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 				@Override
 				public void onSuccess(ManageMeasureSearchModel.Result result) {
-					setSearchingBusy(false);
-					resultToFireEvent = result;
-					fireMeasureSelected(result);
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(compositeDetailDisplay.getMeasureNameTextBox().getValue()));	
+					displaySuccessAndFireSelectedEvent(result, MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(compositeDetailDisplay.getMeasureNameTextBox().getValue()));	
 				}
+
 			});
 		} else {
 			setSearchingBusy(false);
 		}
 	}
-	
+
+	private void displaySuccessAndFireSelectedEvent(ManageMeasureSearchModel.Result result, String successMessage) {
+		setSearchingBusy(false);
+		resultToFireEvent = result;
+		fireMeasureSelected(result);
+		showConfirmationDialog(successMessage);
+	}
+
 	private void draftMeasure() {
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
@@ -618,10 +620,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 				@Override
 				public void onSuccess(ManageMeasureSearchModel.Result result) {
-					setSearchingBusy(false);
-					resultToFireEvent = result;
-					fireMeasureSelected(result);
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));	
+					displaySuccessAndFireSelectedEvent(result, MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
 				}
 			});
 		} else {
@@ -1003,16 +1002,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 	public boolean isValid(ManageMeasureDetailModel model, boolean isClone) {
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
 		List<String> message = manageMeasureModelValidator.validateMeasureWithClone(model, isClone);
-		boolean valid = message.size() == 0;
-		if (!valid) {
-			String errorMessage = "";
-			if(message.size() > 0) {
-				errorMessage = message.get(0);
-			}
-			detailDisplay.getErrorMessageDisplay().createAlert(errorMessage);
-		} else {
+		boolean valid = message.isEmpty();
+		if (valid) {
 			detailDisplay.getErrorMessageDisplay().clearAlert();
 			searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+		} else {
+			String errorMessage = message.get(0);
+			detailDisplay.getErrorMessageDisplay().createAlert(errorMessage);
 		}
 		return valid;
 	}
@@ -1021,11 +1017,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
 		List<String> message = manageCompositeMeasureModelValidator.validateMeasureWithClone(compositeMeasureDetails, isClone);
 		boolean valid = message.isEmpty();
-		if(!valid) {
+		if(valid) {
+			compositeDetailDisplay.getErrorMessageDisplay().clearAlert();
+		} else {
 			String errorMessage = message.get(0);
 			compositeDetailDisplay.getErrorMessageDisplay().createAlert(errorMessage);
-		} else {
-			compositeDetailDisplay.getErrorMessageDisplay().clearAlert();
 		}
 		return valid;
 	}
@@ -1033,12 +1029,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private boolean isValidCompositeMeasureForSave(List<String> message) {
 		boolean valid = message.isEmpty();
 		componentMeasureDisplay.getSuccessMessage().clearAlert();
-		if(!valid) {
+		if(valid) {
+			componentMeasureDisplay.getErrorMessageDisplay().clearAlert();
+		} else {
 			String errorMessage = message.get(0);
 			componentMeasureDisplay.setComponentBusy(false);
 			componentMeasureDisplay.getErrorMessageDisplay().createAlert(errorMessage);
-		} else {
-			componentMeasureDisplay.getErrorMessageDisplay().clearAlert();
 		}
 		return valid;
 	}
@@ -2116,31 +2112,32 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
-		versionDisplay.getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if(!isLoading) {
-					isMeasureDeleted = false;
-					measureDeletion = false;
-					ManageMeasureSearchModel.Result selectedMeasure = versionDisplay.getSelectedMeasure();
-					versionDisplay.getErrorMessageDisplay().clearAlert();
-					if (((selectedMeasure != null) && (selectedMeasure.getId() != null))
-							&& (versionDisplay.getMajorRadioButton().getValue()
-									|| versionDisplay.getMinorRadioButton().getValue())) {
-						
-						boolean shouldPackage = true; 
-						boolean ignoreUnusedIncludedLibraries = false; 
-						saveFinalizedVersion(selectedMeasure.getId(), selectedMeasure.getName(),versionDisplay.getMajorRadioButton().getValue(), selectedMeasure.getVersion(), shouldPackage, ignoreUnusedIncludedLibraries);		
-					} else {
-						versionDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getERROR_LIBRARY_VERSION());
-					}
-				}
-			}
-		});
+		versionDisplay.getSaveButton().addClickHandler(event -> onPackageAndVersionButtonClick());
 
 		versionDisplay.getCancelButton().addClickHandler(cancelClickHandler);
 	}
 
+	private void onPackageAndVersionButtonClick() {
+
+		if(!isLoading) {
+			isMeasureDeleted = false;
+			measureDeletion = false;
+			ManageMeasureSearchModel.Result selectedMeasure = versionDisplay.getSelectedMeasure();
+			versionDisplay.getErrorMessageDisplay().clearAlert();
+			if (((selectedMeasure != null) && (selectedMeasure.getId() != null))
+					&& (versionDisplay.getMajorRadioButton().getValue()
+							|| versionDisplay.getMinorRadioButton().getValue())) {
+				
+				boolean shouldPackage = true; 
+				boolean ignoreUnusedIncludedLibraries = false; 
+				saveFinalizedVersion(selectedMeasure.getId(), selectedMeasure.getName(),versionDisplay.getMajorRadioButton().getValue(), selectedMeasure.getVersion(), shouldPackage, ignoreUnusedIncludedLibraries);		
+			} else {
+				versionDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getERROR_LIBRARY_VERSION());
+			}
+		}
+	
+	}
+	
 	private void resetMeasureFlags() {
 		measureDeletion = false;
 		measureShared = false;

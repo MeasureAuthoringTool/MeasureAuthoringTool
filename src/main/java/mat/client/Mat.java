@@ -663,6 +663,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 					((CqlComposerPresenter) presenter).setTabTargets(mainTabLayout, presenter, targetPresenter);
 				} else if(presenter instanceof ManageMeasurePresenter) {
 					((ManageMeasurePresenter) presenter).setTabTargets(mainTabLayout, presenter, targetPresenter);
+				} else if(presenter instanceof CqlLibraryPresenter) {
+					((CqlLibraryPresenter) presenter).setTabTargets(mainTabLayout, presenter, targetPresenter);
 				}
 			}
 			((TabObserver) presenter).showUnsavedChangesError();

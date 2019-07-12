@@ -23,6 +23,7 @@ import mat.client.shared.MostRecentCQLLibraryWidget;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.LibrarySearchModel;
 
@@ -160,6 +161,8 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public void setErrorMessageAlert(MessageAlert errorMessageAlert) {
 		this.errorMessageAlert = errorMessageAlert;
 	}
+	
+
 	
 	@Override
 	public CQLLibrarySearchView getCQLLibrarySearchView() {

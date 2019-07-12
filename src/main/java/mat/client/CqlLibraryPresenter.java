@@ -57,6 +57,7 @@ import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.MostRecentCQLLibraryWidget;
@@ -64,6 +65,7 @@ import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SynchronizationDelegate;
+import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.client.util.ClientConstants;
 import mat.model.cql.CQLLibraryDataSetObject;
@@ -79,7 +81,7 @@ import mat.shared.error.AuthenticationException;
  * The Class CqlLibraryPresenter.
 
  */
-public class CqlLibraryPresenter implements MatPresenter {
+public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
 	
 	private static FocusableWidget subSkipContentHolder;
@@ -121,10 +123,23 @@ public class CqlLibraryPresenter implements MatPresenter {
 	private DeleteConfirmDialogBox dialogBox;
 
 	private HandlerRegistration saveHandler;
+
+	private MatPresenter targetPresenter;
+
+	private MatTabLayoutPanel targetTabLayout;
+
+	private MatPresenter sourcePresenter;
+
+	private WarningConfirmationMessageAlert warningConfirmationMessageAlert;
+
+	private boolean isDirty;
+
+	private HandlerRegistration yesHandler;
+
+	private HandlerRegistration noHandler;
 	
 	private static final String CONTINUE = "Continue";
-
-	
+		
 	/**
 	 * The Interface ViewDisplay.
 	 */
@@ -344,6 +359,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 		ErrorMessageAlert getErrorMessage();
 		
 		EditConfirmationDialogBox getCreateNewConfirmationDialogBox();
+
+		WarningConfirmationMessageAlert getWarningConfirmationAlert();
 	}
 	
 	
@@ -696,7 +713,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		selectedLibrary.setCqlName(detailDisplay.getNameField().getValue().trim());
 		cqlLibraryView.resetMessageDisplay();
 		
-		if(isValid()) {
+		if(isLibraryNameValid()) {
 			createDraftFromLibrary(selectedLibrary.getId(), selectedLibrary.getCqlName());
 		}
 	}
@@ -978,9 +995,11 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 			}
 		});
+		
+		detailDisplay.getNameField().addValueChangeHandler(event -> {isDirty = true;});
 	}
 
-	private boolean isValid() {
+	private boolean isLibraryNameValid() {
 		detailDisplay.getErrorMessage().clearAlert();
 		if (detailDisplay.getNameField().getText().isEmpty()) {
 			detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getLibraryNameRequired());
@@ -1007,7 +1026,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		CQLLibraryDataSetObject libraryDataSetObject = new CQLLibraryDataSetObject();
 		libraryDataSetObject.setCqlName(detailDisplay.getNameField().getText());
 
-		if(isValid()) {
+		if(isLibraryNameValid()) {
 			MatContext.get().getCQLLibraryService().saveCQLLibrary(libraryDataSetObject, new AsyncCallback<SaveCQLLibraryResult>() {
 				@Override
 				public void onFailure(Throwable caught) {
@@ -1110,6 +1129,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}
 
 	private void displayHistoryWidget(String cqlLibraryId, String cqlLibraryName) {
+		isDirty = false;
 		int startIndex = 0;
 		int pageSize = Integer.MAX_VALUE;
 		String heading = "My CQL Library > History";
@@ -1149,6 +1169,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}
 
 	private void displayShareWidget(){
+		isDirty = false;
 		String searchText = shareDisplay.getSearchWidgetBootStrap().getSearchBox().getValue();
 	    final String lastSearchText = (searchText != null) ? searchText.trim() : null;
 	    shareDisplay.resetMessageDisplay();
@@ -1196,6 +1217,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 * This method is called when New Library Option is selected from CreateNewItemWidget. 
 	 */
 	private void displayNewCQLLibraryWidget() {
+		isDirty = false;
+		warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationAlert();
+		warningConfirmationMessageAlert.clearAlert();
 		panel.getButtonPanel().clear();
 		panel.setHeading("My CQL Library > Create New CQL Library", "CQLLibrary");
 		panel.setContent(detailDisplay.asWidget());
@@ -1204,6 +1228,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}
 	
 	private void displayDraftCQLLibraryWidget(CQLLibraryDataSetObject selectedLibrary) {
+		isDirty = false;
+		warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationAlert();
+		warningConfirmationMessageAlert.clearAlert();
 		panel.getButtonPanel().clear();
 		panel.setHeading("My CQL Library > Draft CQL Library", "CQLLibrary");
 		panel.setContent(detailDisplay.asWidget());
@@ -1433,5 +1460,74 @@ public class CqlLibraryPresenter implements MatPresenter {
 		} else {
 			Mat.hideLoadingMessage();
 		}
+	}
+	
+	public boolean isDirty() {
+		return isDirty;
+	}
+	
+	public void setTabTargets(MatTabLayoutPanel targetTabLayout, MatPresenter sourcePresenter, MatPresenter targetPresenter) {
+		this.targetPresenter = targetPresenter;
+		this.targetTabLayout = targetTabLayout;		
+		this.sourcePresenter = sourcePresenter;
+	}
+
+	@Override
+	public boolean isValid() {
+		return !isDirty();
+	}
+
+	@Override
+	public void showUnsavedChangesError() {
+		warningConfirmationMessageAlert.createAlert();
+		warningConfirmationMessageAlert.getWarningConfirmationYesButton().setFocus(true);
+		handleClickEventsOnUnsavedChangesMsg(warningConfirmationMessageAlert);
+	}
+	
+	private void removeHandlers() {
+		if(yesHandler!=null) {
+			yesHandler.removeHandler();
+		}
+		if(noHandler!=null) {	
+			noHandler.removeHandler();
+		}
+	}
+	
+	private void handleClickEventsOnUnsavedChangesMsg(final WarningConfirmationMessageAlert saveErrorMessage) {
+		removeHandlers();
+		yesHandler = saveErrorMessage.getWarningConfirmationYesButton().addClickHandler(event -> onYesButtonClicked(saveErrorMessage));
+		noHandler = saveErrorMessage.getWarningConfirmationNoButton().addClickHandler(event -> onNoButtonClicked(saveErrorMessage));
+	}
+	
+	private void onNoButtonClicked(WarningConfirmationMessageAlert saveErrorMessage) {
+		saveErrorMessage.clearAlert();
+		resetTabTargets();
+	}
+
+	private void onYesButtonClicked(WarningConfirmationMessageAlert saveErrorMessage) {
+		saveErrorMessage.clearAlert();
+		notifyCurrentTabOfClosing();		
+		targetTabLayout.setIndexFromTargetSelection();
+		MatContext.get().setAriaHidden(targetPresenter.getWidget(),  "false");
+		targetPresenter.beforeDisplay();
+		resetTabTargets();
+	}
+
+	private void resetTabTargets() {
+		targetPresenter = null;
+		targetTabLayout = null;
+		sourcePresenter = null;
+	}
+
+	@Override
+	public void updateOnBeforeSelection() {		
+	}
+
+	@Override
+	public void notifyCurrentTabOfClosing() {
+		if(sourcePresenter != null) {
+			MatContext.get().setAriaHidden(sourcePresenter.getWidget(), "true");
+			sourcePresenter.beforeClosingDisplay();
+		}		
 	}
 }

@@ -19,12 +19,14 @@ import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
 public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 	
 
 	private static final String CQL_LIBRARY_NAME = "CQL Library Name";
 	private TextArea nameField = new TextArea();
 	private ErrorMessageAlert errorMessage = new ErrorMessageAlert();
+	private WarningConfirmationMessageAlert warningConfirmationAlert = new WarningConfirmationMessageAlert();
 	private SuccessMessageAlert successMessage = new SuccessMessageAlert();
 	protected HTML instructions = new HTML("Enter a CQL Library name. Then continue to the CQL Composer.");
 	private SimplePanel mainDetailViewVP = new SimplePanel();
@@ -75,6 +77,7 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 		contentPanel.add(new SpacerWidget());
 		contentPanel.add(instructions);
 		contentPanel.add(errorMessage);
+		contentPanel.add(warningConfirmationAlert);
 		contentPanel.add(new SpacerWidget());
 		contentPanel.add(new SpacerWidget());
 		
@@ -124,6 +127,11 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 	@Override
 	public ErrorMessageAlert getErrorMessage() {
 		return errorMessage;
+	}
+	
+	@Override
+	public WarningConfirmationMessageAlert getWarningConfirmationAlert() {
+		return warningConfirmationAlert;
 	}
 
 	public void setErrorMessage(ErrorMessageAlert errorMessage) {

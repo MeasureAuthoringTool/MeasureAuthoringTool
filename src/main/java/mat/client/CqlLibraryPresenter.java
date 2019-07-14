@@ -1291,6 +1291,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 	 * This method is called from beforeDisplay and this becomes main method for CQL Library View. 
 	 */
 	private void displaySearch() {
+		setIsPageDirty(false);
 		cqlLibraryView.getCellTablePanel().clear();
 		cqlLibraryView.resetMessageDisplay();
 		

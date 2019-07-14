@@ -570,7 +570,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 	
 	private void cloneMeasure() {
-		setIsPageDirty(false);
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
 		}
@@ -590,6 +589,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
 				@Override
 				public void onSuccess(ManageMeasureSearchModel.Result result) {
+					setIsPageDirty(false);
 					displaySuccessAndFireSelectedEvent(result, MatContext.get().getMessageDelegate().getCloneMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
 				}
 			});
@@ -630,6 +630,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 
 	private void displaySuccessAndFireSelectedEvent(ManageMeasureSearchModel.Result result, String successMessage) {
+		setIsPageDirty(false);
 		setSearchingBusy(false);
 		resultToFireEvent = result;
 		fireMeasureSelected(result);
@@ -637,7 +638,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 
 	private void draftMeasure() {
-		setIsPageDirty(false);
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
 		}
@@ -665,7 +665,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 	
 	private void createNewMeasure() {
-		setIsPageDirty(false);
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
 		}
@@ -2081,7 +2080,9 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	
 	private void postSaveMeasureEvents(boolean isInsert, String measureId, DetailDisplay detailDisplay,
 			String name, String shortName, String scoringType, String version, boolean isDraft, boolean isPatientBased) {
-
+		
+		
+		setIsPageDirty(false);
 		if (isInsert) {
 			fireMeasureSelectedEvent(measureId, version, name, shortName, scoringType, true, false, null, isDraft, isPatientBased);
 			fireMeasureEditEvent();
@@ -2092,7 +2093,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 	
 	private void createNewCompositeMeasure() {
-		setIsPageDirty(false);
 		updateCompositeDetailsFromComponentMeasureDisplay();
 		updateCompositeDetailsFromCompositeDetailView();
 		MatContext.get().getMeasureService().saveCompositeMeasure(currentCompositeMeasureDetails, new AsyncCallback<SaveMeasureResult>() {
@@ -2235,6 +2235,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
 	@Override
 	public void showUnsavedChangesError() {
+		detailDisplay.getErrorMessageDisplay().clearAlert();
+		compositeDetailDisplay.getErrorMessageDisplay().clearAlert();
 		warningConfirmationMessageAlert.createAlert();
 		warningConfirmationMessageAlert.getWarningConfirmationYesButton().setFocus(true);
 		handleClickEventsOnUnsavedChangesMsg(warningConfirmationMessageAlert);

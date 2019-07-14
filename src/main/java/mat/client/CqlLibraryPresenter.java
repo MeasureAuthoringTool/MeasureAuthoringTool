@@ -1528,6 +1528,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
 	@Override
 	public void showUnsavedChangesError() {
+		detailDisplay.getErrorMessage().clearAlert();
 		warningConfirmationMessageAlert.createAlert();
 		warningConfirmationMessageAlert.getWarningConfirmationYesButton().setFocus(true);
 		handleClickEventsOnUnsavedChangesMsg(warningConfirmationMessageAlert);

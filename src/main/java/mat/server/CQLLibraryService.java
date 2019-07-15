@@ -757,7 +757,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			cqlResult.setSetId(cqlLibrary.getSetId());
 			cqlResult.setSuccess(true);
 			
-			if (cqlService.checkIfLibraryNameExists(cqlLibrary.getName(), cqlLibrary.getSetId())) {
+			if (cqlLibrary.isDraft() && cqlService.checkIfLibraryNameExists(cqlLibrary.getName(), cqlLibrary.getSetId())) {
 				cqlResult.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);	
 			}
 		}

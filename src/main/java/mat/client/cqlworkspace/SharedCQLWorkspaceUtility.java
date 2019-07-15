@@ -20,7 +20,6 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
 
 public class SharedCQLWorkspaceUtility {
-	private static final String INCORRECT_VALUE_SET_CODE_DATATYPE_COMBINATION = " successfully saved with errors. There is an incorrect value set/code datatype combination.";
 	public static final String ERROR_PREFIX = "ERROR:";
 	public static final String WARNING_PREFIX = "WARNING:";
 
@@ -86,7 +85,7 @@ public class SharedCQLWorkspaceUtility {
 		if(!result.getCqlErrors().isEmpty()) {
 			messagePanel.getErrorMessageAlert().createAlert(expressionType + " " + StringUtility.trimTextToSixtyChars(expressionName) + " successfully saved with errors.");
 		} else if(!result.isDatatypeUsedCorrectly()) {
-			messagePanel.getErrorMessageAlert().createAlert(expressionType + " " + StringUtility.trimTextToSixtyChars(expressionName) + INCORRECT_VALUE_SET_CODE_DATATYPE_COMBINATION);
+			messagePanel.getErrorMessageAlert().createAlert(expressionType + " " + StringUtility.trimTextToSixtyChars(expressionName) + "  successfully saved with errors. " + AbstractCQLWorkspacePresenter.INCORRECT_VALUE_SET_CODE_DATATYPE_COMBINATION);
 		} else if(!result.getCqlWarnings().isEmpty()) {
 			messagePanel.getWarningMessageAlert().createAlert(expressionType + " " + StringUtility.trimTextToSixtyChars(expressionName) + " successfully saved with warnings.");
 		}   else {

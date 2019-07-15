@@ -98,6 +98,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected static final String VSAC_UPDATE_SUCCESSFULL = "Successfully updated applied Value Set list with VSAC data.";
 	protected static final String SUCCESSFUL_MODIFY_APPLIED_VALUESET = "Selected value set has been modified successfully.";
 	protected static final String SUCCESSFUL_MODIFY_APPLIED_CODE = "Selected code has been modified successfully.";
+	protected static final String INCORRECT_VALUE_SET_CODE_DATATYPE_COMBINATION = "There is an incorrect value set/code datatype combination.";
 	protected static final String ARGUMENT = "Argument";
 	protected static final String LIBRARY = "Library";
 	protected static final String PARAMETER = "Parameter";
@@ -498,8 +499,10 @@ public abstract class AbstractCQLWorkspacePresenter {
 				result.getLinterErrorMessages().forEach(e -> errorMessages.add(e));	
 			} 
 			
-
 			SharedCQLWorkspaceUtility.displayAnnotationForViewCQL(result, cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor());
+			messagePanel.getErrorMessageAlert().createAlert(errorMessages);
+		} else if(!result.isDatatypeUsedCorrectly()) {
+			errorMessages.add(INCORRECT_VALUE_SET_CODE_DATATYPE_COMBINATION);
 			messagePanel.getErrorMessageAlert().createAlert(errorMessages);
 		} else {
 			messagePanel.getSuccessMessageAlert().createAlert("Changes to the CQL File have been successfully saved.");
@@ -518,7 +521,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		} 
 		else if(result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD) {
 			messagePanel.getErrorMessageAlert().createAlert("The CQL file could not be saved. All identifiers must be unique and can not match any CQL keywords");
-		}
+		} 
 	}
 	
 	protected void onModifyValueSet(CQLQualityDataSetDTO result, boolean isUserDefined) {

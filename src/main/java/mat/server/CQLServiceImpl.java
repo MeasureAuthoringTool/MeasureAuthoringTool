@@ -223,7 +223,9 @@ public class CQLServiceImpl implements CQLService {
 			result.getLinterErrors().addAll(linter.getErrors());
 			result.getLinterWarningMessages().addAll(linter.getWarningMessages());
 			result.getLinterErrorMessages().addAll(linter.getErrorMessages());
+			result.setDatatypeUsedCorrectly(CQLUtil.validateDatatypeCombinations(result.getCqlModel(), result.getUsedCQLArtifacts().getValueSetDataTypeMap(), result.getUsedCQLArtifacts().getCodeDataTypeMap()));
 			result.setSuccess(true);		
+			
 			
 			return result;
 

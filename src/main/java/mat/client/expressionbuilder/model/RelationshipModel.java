@@ -39,7 +39,7 @@ public class RelationshipModel extends ExpressionBuilderModel {
 		
 		if(getParentModel().getParentModel() != null) {
 			QueryModel queryModel = (QueryModel) getParentModel().getParentModel();
-			builder.append(queryModel.getRelationshipType()).append(" ").append("(");
+			builder.append(queryModel.getRelationshipType()).append(" ");
 		}
 						
 		builder.append(source.getCQL(indentation + "  "));
@@ -59,10 +59,6 @@ public class RelationshipModel extends ExpressionBuilderModel {
 			if (!criteria.getChildModels().isEmpty()) {
 				builder.append(criteria.getCQL(filterIdentation));
 			}
-		}
-
-		if(getParentModel().getParentModel() != null) {
-			builder.append(")");
 		}
 				
 		return builder.toString();

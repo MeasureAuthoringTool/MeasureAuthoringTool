@@ -297,6 +297,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 			transferDisplay.getSearchString().setValue("");
 		searchDisplay.getMeasureSearchFilterWidget().setVisible(false);
 		searchDisplay.getMostRecentMeasureVerticalPanel().setVisible(false);
+		removeHandlers();
 	}
 
 	@Override
@@ -768,7 +769,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 		detailDisplay.getECQMAbbreviatedTitleTextBox().setValue("");
 		detailDisplay.getCQLLibraryNameTextBox().setValue("");
 		updateSaveButtonClickHandler(event -> cloneMeasure());
-		detailDisplay.getSaveButton().addClickHandler(event -> cloneMeasure());
 		panel.setContent(detailDisplay.asWidget());
 	}
 	

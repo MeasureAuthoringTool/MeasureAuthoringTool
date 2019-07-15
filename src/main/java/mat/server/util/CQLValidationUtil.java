@@ -13,13 +13,25 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.CQLKeywordsUtil;
 
 public class CQLValidationUtil {
+	
+	private static String getCodeSystemIdentifier(CQLCode c) {
+		String codesystemName = c.getCodeSystemName();
+		if(c.isIsCodeSystemVersionIncluded()) {
+			codesystemName += ":" + c.getCodeSystemVersion();
+		}
+		return codesystemName;
+	}
+	
 	public static boolean isDuplicateIdentifierName(String identifierName, CQLModel model) {
+		boolean isLibraryNameMatch = model.getLibraryName().equals(identifierName);
+		boolean isAliasMatch = model.getCqlIncludeLibrarys().stream().anyMatch(l -> l.getAliasName().equals(identifierName));
 		boolean isDefinitionMatch = model.getDefinitionList().stream().anyMatch(d -> d.getDefinitionName().equals(identifierName));
 		boolean isFunctionMatch = model.getCqlFunctions().stream().anyMatch(f -> f.getFunctionName().equals(identifierName));
 		boolean isParameterMatch = model.getCqlParameters().stream().anyMatch(p -> p.getParameterName().equals(identifierName));
 		boolean isValuesetMatch = model.getValueSetList().stream().anyMatch(v -> v.getName().equals(identifierName));
 		boolean isCodeMatch = model.getCodeList().stream().anyMatch(c -> c.getDisplayName().equals(identifierName));
-		return isDefinitionMatch || isFunctionMatch || isParameterMatch || isValuesetMatch || isCodeMatch;
+		boolean isCodesystemMatch = model.getCodeList().stream().anyMatch(c -> getCodeSystemIdentifier(c).equals(identifierName));
+		return isLibraryNameMatch || isAliasMatch || isDefinitionMatch || isFunctionMatch || isParameterMatch || isValuesetMatch || isCodeMatch || isCodesystemMatch;
 	}
 	
 	public static boolean isCQLReservedWord(String expressionName) {
@@ -37,6 +49,15 @@ public class CQLValidationUtil {
 	public static boolean doesModelHaveDuplicateIdentifierOrIdentifierAsKeyword(CQLModel cqlModel) {
 
 		    Set<String> identifiersSet = new HashSet<>(); 
+		    identifiersSet.add(cqlModel.getLibraryName());
+		    
+		    for(CQLIncludeLibrary library : cqlModel.getCqlIncludeLibrarys()) {
+		    	if(identifiersSet.contains(library.getAliasName())) {
+		    		return true;
+		    	}
+		    	
+		    	identifiersSet.add(library.getAliasName());
+		    }
 		    
 		    for (CQLQualityDataSetDTO dto : cqlModel.getValueSetList()) {
 		    	if (identifiersSet.contains(dto.getName())) {
@@ -49,6 +70,11 @@ public class CQLValidationUtil {
 	    			return true;
 	    		}
     			identifiersSet.add(code.getDisplayName());
+
+	    		if(identifiersSet.contains(getCodeSystemIdentifier(code))) {
+	    			return true;
+	    		}
+	    		identifiersSet.add(getCodeSystemIdentifier(code));
 	    	}
 	    	for (CQLDefinition def : cqlModel.getDefinitionList()) {
 	    		if (identifiersSet.contains(def.getDefinitionName())) {

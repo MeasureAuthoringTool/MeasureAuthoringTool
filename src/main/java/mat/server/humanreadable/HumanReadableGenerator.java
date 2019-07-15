@@ -190,6 +190,7 @@ public class HumanReadableGenerator {
 	
 	private HumanReadablePopulationModel getPopulationModel(String measureXML, Node populationNode) throws XPathExpressionException {
 		XmlProcessor processor = new XmlProcessor(measureXML);
+		resetPopulationMaps();
 		return getPopulationCriteria(processor, populationNode);
 	}
 	
@@ -465,8 +466,7 @@ public class HumanReadableGenerator {
 		
 		NodeList groupNodes = processor.findNodeList(processor.getOriginalDoc(), "/measure/measureGrouping/group");
 		for(int i = 0; i < groupNodes.getLength(); i++) {
-			populationCountMap.clear();
-			popCountMultipleMap.clear();
+			resetPopulationMaps();
 			Node group = groupNodes.item(i);
 			
 			int populationCriteriaNumber = Integer.parseInt(group.getAttributes().getNamedItem("sequence").getNodeValue());
@@ -541,13 +541,37 @@ public class HumanReadableGenerator {
 		String name = "";
 		if (population != null) {
 			String type = population.getAttributes().getNamedItem("type").getNodeValue();
-			int numberOfPopulationsWithSameType = populationCountMap.get(type);
-			
-			// if there is only one of the population kind, then we only want to display the population name (without a number attached to it)
-			name = (numberOfPopulationsWithSameType == 1)? getPopulationNameByType(type) : getPopulationNameByTypeAndNum(type);
+			name = populationCountMap.containsKey(type) ? getNameForMeasurePackaging(type) : getNameForPopulationWorkspaceViewHR(type, population);  
 		}
-		
 		return name; 
+	}
+	
+	private String getNameForMeasurePackaging(String type) {
+		int numberOfPopulationsWithSameType = populationCountMap.get(type);
+		// if there is only one of the population kind, then we only want to display the population name (without a number attached to it)
+		return (numberOfPopulationsWithSameType == 1) ? getPopulationNameByType(type) : getPopulationNameByTypeAndNum(type);
+		
+	}
+	
+	private String getNameForPopulationWorkspaceViewHR(String type, Node population) {
+		int numberOfPopulationsWithSameType = countSimilarPopulationsInGroup(type, population.getParentNode());
+		return (numberOfPopulationsWithSameType == 1) ? getPopulationNameByType(type) : population.getAttributes().getNamedItem("displayName").getNodeValue();
+	}
+	
+	private int countSimilarPopulationsInGroup(String type, Node node) {
+		int count = 0;
+		NodeList childClauses = node.getChildNodes();
+		if (childClauses != null) {
+			int length = childClauses.getLength();
+			for (int i = 0; i < length; i++) {
+				Node clauseNode = childClauses.item(i);
+				String popType = clauseNode.getAttributes().getNamedItem("type").getNodeValue();
+				if (popType.equals(type)) {
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 	
 	private String getPopulationNameByTypeAndNum(String type) {
@@ -660,4 +684,9 @@ public class HumanReadableGenerator {
 		return population;
 	}
 	
+	private void resetPopulationMaps() {
+		populationCountMap.clear();
+		popCountMultipleMap.clear();
+		populationNameMap.clear();
+	}
 }

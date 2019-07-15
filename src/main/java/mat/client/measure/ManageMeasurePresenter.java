@@ -762,6 +762,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 		panel.setHeading("My Measures > Clone Measure", COMPOSITE_MEASURE);	
 		detailDisplay.setMeasureName(currentDetails.getMeasureName());		
 		Mat.focusSkipLists(MEASURE_LIBRARY);
+		detailDisplay.showMeasureName(true);
 		detailDisplay.showCautionMsg(true);
 		setDetailsToView();
 		
@@ -778,6 +779,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 		detailDisplay.setMeasureName(currentDetails.getMeasureName());
 		Mat.focusSkipLists(MEASURE_LIBRARY);
 		detailDisplay.showCautionMsg(true);
+		detailDisplay.showMeasureName(true);
 		setDetailsToView();
 		updateSaveButtonClickHandler(event -> draftMeasure());
 		panel.setContent(detailDisplay.asWidget());
@@ -800,6 +802,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 		panel.setHeading("My Measures > Draft Composite Measure", COMPOSITE_MEASURE);
 		compositeDetailDisplay.setMeasureName(currentCompositeMeasureDetails.getMeasureName());
 		compositeDetailDisplay.showCautionMsg(true);
+		compositeDetailDisplay.showMeasureName(true);
 		setCompositeDetailsToView();
 		Mat.focusSkipLists(COMPOSITE_MEASURE);
 		updateCompositeSaveButtonClickHandler(event -> draftCompositeMeasure());

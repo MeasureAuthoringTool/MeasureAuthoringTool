@@ -920,6 +920,17 @@
 		"documentation": "The First operator returns the first element in a list."
 	},
 	{
+		"name": "First",
+		"returnType": "QDM",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<QDM>"
+			}
+		],
+		"documentation": "The First operator returns the first element in a list."
+	},
+	{
 		"name": "Floor",
 		"returnType": "Integer",
 		"arguments": [
@@ -1973,6 +1984,21 @@
 		"documentation": "The Skip operator returns the elements in the list, skipping the first number elements. If the list has less number elements, the result is empty."
 	},
 	{
+		"name": "Skip",
+		"returnType": "List<QDM>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<QDM>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Skip operator returns the elements in the list, skipping the first number elements. If the list has less number elements, the result is empty."
+	},
+	{
 		"name": "Split",
 		"returnType": "List<String>",
 		"arguments": [
@@ -2195,6 +2221,17 @@
 		"documentation": "The Tail operator returns all but the first element from the given list. If the list is empty, the result is empty."
 	},
 	{
+		"name": "Tail",
+		"returnType": "List<QDM>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<QDM>"
+			}
+		],
+		"documentation": "The Tail operator returns all but the first element from the given list. If the list is empty, the result is empty."
+	},
+	{
 		"name": "Take",
 		"returnType": "List<Date>",
 		"arguments": [
@@ -2306,6 +2343,21 @@
 			{
 				"name": "argument",
 				"returnType": "List<Time>"
+			},
+			{
+				"name": "number",
+				"returnType": "Integer"
+			}
+		],
+		"documentation": "The Take operator returns the first number elements from the given list. If the list has less than number elements, the result only contains the elements in the list."
+	},
+	{
+		"name": "Take",
+		"returnType": "List<QDM>",
+		"arguments": [
+			{
+				"name": "argument",
+				"returnType": "List<QDM>"
 			},
 			{
 				"name": "number",

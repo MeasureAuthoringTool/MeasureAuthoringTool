@@ -101,12 +101,7 @@ public class CQLValidationUtil {
 	    		}
     			identifiersSet.add(func.getFunctionName());
 	    	}
-	    	for (CQLIncludeLibrary lib : cqlModel.getCqlIncludeLibrarys()) {
-	    		if (identifiersSet.contains(lib.getCqlLibraryName())) {
-	    			return true;
-	    		}
-    			identifiersSet.add(lib.getCqlLibraryName());
-	    	}
+
 	    	for (String name : MatContext.get().getCqlConstantContainer().getFunctionNames()) {
 	    		if (identifiersSet.contains(name)) {
 	    			return true;

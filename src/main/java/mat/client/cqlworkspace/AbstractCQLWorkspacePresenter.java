@@ -1802,7 +1802,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 	}
 	
 	private void viewCQLAceEditorKeyDownEvent() {
-		GWT.log("ACE EDITOR KEY DOWN HANDLER: " + cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().isReadOnly());
 		if (!cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().isReadOnly()) {
 			cqlWorkspaceView.resetMessageDisplay();
 			setIsPageDirty(true);

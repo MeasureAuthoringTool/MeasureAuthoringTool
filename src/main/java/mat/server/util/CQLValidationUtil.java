@@ -49,6 +49,8 @@ public class CQLValidationUtil {
 	public static boolean doesModelHaveDuplicateIdentifierOrIdentifierAsKeyword(CQLModel cqlModel) {
 
 		    Set<String> identifiersSet = new HashSet<>(); 
+		    Set<String> codesystemsSet = new HashSet<>();
+		    
 		    identifiersSet.add(cqlModel.getLibraryName());
 		    
 		    for(CQLIncludeLibrary library : cqlModel.getCqlIncludeLibrarys()) {
@@ -71,11 +73,10 @@ public class CQLValidationUtil {
 	    		}
     			identifiersSet.add(code.getDisplayName());
 
-	    		if(identifiersSet.contains(getCodeSystemIdentifier(code))) {
-	    			return true;
-	    		}
-	    		identifiersSet.add(getCodeSystemIdentifier(code));
+    			codesystemsSet.add(getCodeSystemIdentifier(code));
 	    	}
+	    	identifiersSet.addAll(codesystemsSet);
+	    	
 	    	for (CQLDefinition def : cqlModel.getDefinitionList()) {
 	    		if (identifiersSet.contains(def.getDefinitionName())) {
 	    			return true;

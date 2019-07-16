@@ -516,7 +516,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	}
 	
 	protected void onSaveCQLFileFailure(SaveUpdateCQLResult result) {
-		SharedCQLWorkspaceUtility.displayAnnotations(result, cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor());
+		SharedCQLWorkspaceUtility.displayAnnotationForViewCQL(result, cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor());
 		if (result.getFailureReason() == SaveUpdateCQLResult.SYNTAX_ERRORS)  {
 			messagePanel.getErrorMessageAlert().createAlert("The MAT was unable to save the changes. All items entered must be written in the correct CQL syntax. The line where MAT is no longer able to read the file is marked with a red square.");
 		} 

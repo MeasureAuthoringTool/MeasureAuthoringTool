@@ -1411,6 +1411,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 			cqlWorkspaceView.buildCQLFileView(hasEditPermissions() && userPreference.isFreeTextEditorEnabled());
 			buildCQLView();
 		}
+		addEventHandlerOnAceEditors();
 		curAceEditor = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor();
 		curAceEditor.setText("");
 		cqlWorkspaceView.getCQLLibraryEditorView().setHeading(getWorkspaceTitle() + " > CQL Library Editor", "cqlViewCQL_Id");
@@ -1428,7 +1429,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		currentSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
 		cqlWorkspaceView.buildFunctionLibraryView();
 		cqlWorkspaceView.getCQLFunctionsView().setWidgetReadOnly(hasEditPermissions());
-
+		addEventHandlerOnAceEditors();
 		cqlWorkspaceView.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(hasEditPermissions());
 		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
 		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setTitle("Delete");
@@ -1447,6 +1448,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		currentSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
 		cqlWorkspaceView.buildParameterLibraryView();
 		cqlWorkspaceView.getCQLParametersView().setWidgetReadOnly(hasEditPermissions());
+		addEventHandlerOnAceEditors();
 		cqlWorkspaceView.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(hasEditPermissions());
 		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setTitle("Delete");
@@ -1467,6 +1469,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		currentSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
 		cqlWorkspaceView.buildDefinitionLibraryView();
 		cqlWorkspaceView.getCQLDefinitionsView().setWidgetReadOnly(hasEditPermissions());
+		addEventHandlerOnAceEditors();
 		cqlWorkspaceView.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(hasEditPermissions());
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setTitle("Delete");
@@ -1799,6 +1802,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	}
 	
 	private void viewCQLAceEditorKeyDownEvent() {
+		GWT.log("ACE EDITOR KEY DOWN HANDLER: " + cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().isReadOnly());
 		if (!cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().isReadOnly()) {
 			cqlWorkspaceView.resetMessageDisplay();
 			setIsPageDirty(true);

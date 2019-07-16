@@ -3296,6 +3296,12 @@ select[multiple].form-group-lg .form-control,textarea.form-group-lg .form-contro
 	border-radius: 4px
 }
 
+.btn-wrap-text {
+	text-align: left; !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+}
+
 .btn.active.focus,.btn.active:focus,.btn.focus,.btn:active.focus,.btn:active:focus,.btn:focus
 	{
 	outline: thin dotted;

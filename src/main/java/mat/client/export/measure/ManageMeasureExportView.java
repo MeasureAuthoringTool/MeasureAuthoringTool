@@ -86,6 +86,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 	public void createMeasureInformationContent() {
 		measureNameLink.getElement().setId("measureNameLabel");
 		measureNameLink.setType(ButtonType.LINK);
+		measureNameLink.setStyleName("btn-wrap-text", true);
 		
 		FormGroup group = new FormGroup();
 		FormLabel measureNameLabel = new FormLabel();

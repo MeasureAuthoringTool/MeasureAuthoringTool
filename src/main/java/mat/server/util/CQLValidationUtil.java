@@ -75,6 +75,12 @@ public class CQLValidationUtil {
 
     			codesystemsSet.add(getCodeSystemIdentifier(code));
 	    	}
+	    	for(String codesystem : codesystemsSet) {
+	    		if(identifiersSet.contains(codesystem)) {
+	    			return true;
+	    		}
+	    	}
+	    	
 	    	identifiersSet.addAll(codesystemsSet);
 	    	
 	    	for (CQLDefinition def : cqlModel.getDefinitionList()) {

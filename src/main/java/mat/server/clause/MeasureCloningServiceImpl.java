@@ -288,40 +288,39 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			boolean isUpdatedForCQL = updateForCQLMeasure(measure, xmlProcessor, clonedMeasure, isNonCQLtoCQLDraft);
 			xmlProcessor.clearValuesetVersionAttribute();
 			
-			
-			
-			if (!creatingDraft) {
-				resetVersionOnCloning(xmlProcessor);
-			} else {
+			if (creatingDraft) {
 				updateCQLLookUpVersionOnDraft(xmlProcessor, formattedVersion);
+			} else {
+				resetVersionOnCloning(xmlProcessor);
 			}
-			
+
+			//this means this is a CQL Measure to CQL Measure draft/clone.
 			if(!isUpdatedForCQL){
-				//this means this is a CQL Measure to CQL Measure draft/clone.
-				
 				//create the default 4 CMS supplemental definitions
 				appendSupplementalDefinitions(xmlProcessor, false);
-
-				xmlProcessor.updateCQLLibraryName(clonedMeasure.getCqlLibraryName());
-				
 				// Always set latest QDM Version.
 				MeasureUtility.updateLatestQDMVersion(xmlProcessor);
 			}
-			
+	
+			// Update CQL Library Name from the UI field
+			xmlProcessor.updateCQLLibraryName(clonedMeasure.getCqlLibraryName());
+
 			clonedXml.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
 			
 			logger.info("Final XML after cloning/draft" + clonedXml.getMeasureXMLAsString());
 			measureXmlDAO.save(clonedXml);
+			
 			result.setId(clonedMeasure.getId());
 			result.setName(currentDetails.getMeasureName());
 			result.setShortName(currentDetails.getShortName());
 			result.setScoringType(currentDetails.getMeasScoring());
-			
 			result.setVersion(formattedVersionWithText);
 			result.setEditable(Boolean.TRUE);
 			result.setClonable(Boolean.TRUE);
 			result.setPatientBased(clonedMeasure.getPatientBased());
+			
 			return result;
+			
 		} catch (Exception e) {
 			log(e.getMessage(), e);
 			throw new MatException(e.getMessage());

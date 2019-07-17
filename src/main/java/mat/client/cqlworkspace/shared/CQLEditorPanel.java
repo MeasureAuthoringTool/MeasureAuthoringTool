@@ -22,10 +22,12 @@ public class CQLEditorPanel extends Composite {
 	private PanelCollapse panelCollapse;
 	private String name;
 	private PanelGroup panelGroup;
+	private boolean isReadOnly;
 
 	public CQLEditorPanel(String name, String text, boolean isReadOnly) {
 		this.text = text;
 		this.name = name;
+		this.isReadOnly = isReadOnly;
 		this.editor = new CQLEditor(isReadOnly);
 		this.editor.getElement().getElementsByTagName("textarea").getItem(0).setTitle(text);
 		this.editor.getElement().setTitle(text);
@@ -33,6 +35,9 @@ public class CQLEditorPanel extends Composite {
 	}
 	
 	private PanelGroup buildWidget() {
+		if(isReadOnly) {
+			this.text = this.text + " (Read Only)";
+		}
 		panelGroup = new PanelGroup();
 		panelGroup.setId(name + "_panelGroup");
 		
@@ -116,5 +121,13 @@ public class CQLEditorPanel extends Composite {
 	
 	public void setEditorSize(String width, String height) {
 		this.editor.setSize(width, height);
+	}
+	
+	public void setIsReadOnly(boolean isReadOnly) {
+		this.isReadOnly = isReadOnly;
+		getEditor().setReadOnly(isReadOnly);
+		if(isReadOnly) {
+			setHeaderText(text + " (Read Only)");
+		}
 	}
 }

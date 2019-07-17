@@ -205,8 +205,7 @@ public class CQLParametersView {
 	public void setWidgetReadOnly(boolean isEditable) {
 		getParameterNameTxtArea().setEnabled(isEditable);
 		getParameterCommentTextArea().setEnabled(isEditable);
-		getParameterAceEditor().setReadOnly(!isEditable);
-		
+		editorPanel.setIsReadOnly(!isEditable);
 		getParameterButtonBar().getSaveButton().setEnabled(isEditable);
 		getParameterButtonBar().getDeleteButton().setEnabled(isEditable);
 		getParameterButtonBar().getInsertButton().setEnabled(isEditable);

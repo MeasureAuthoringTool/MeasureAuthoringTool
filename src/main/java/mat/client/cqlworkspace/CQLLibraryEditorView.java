@@ -16,7 +16,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
-import mat.DTO.UserPreferenceDTO;
 import mat.client.buttons.InfoDropDownMenu;
 import mat.client.buttons.InfoToolBarButton;
 import mat.client.buttons.InsertToolBarButton;
@@ -24,7 +23,6 @@ import mat.client.buttons.SaveButton;
 import mat.client.cqlworkspace.shared.CQLEditor;
 import mat.client.cqlworkspace.shared.CQLEditorPanel;
 import mat.client.inapphelp.component.InAppHelp;
-import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.shared.CQLError;
@@ -58,7 +56,7 @@ public class CQLLibraryEditorView {
 	
 	public VerticalPanel buildView(boolean isEditable){
 
-		editorPanel = new CQLEditorPanel(CQL_LIBRARY_EDITOR_ID, "CQL Library Editor", false);
+		editorPanel = new CQLEditorPanel(CQL_LIBRARY_EDITOR_ID, "CQL Library Editor", !isEditable);
 		cqlLibraryEditorVP.clear();
 		cqlLibraryEditorVP.getElement().setId("cqlLibraryEditor_Id");
 		heading.addStyleName("leftAligned");
@@ -69,16 +67,16 @@ public class CQLLibraryEditorView {
 		getCqlAceEditor().setText("");
 		getCqlAceEditor().clearAnnotations();
 		
+		if(isEditable) {
+			exportErrorFile.setPull(Pull.LEFT);
+			cqlLibraryEditorVP.add(exportErrorFile);
+		}
+		
 		FlowPanel fp = new FlowPanel();
 		buildInfoInsertBtnGroup();
 		fp.add(infoBtnGroup);
 		fp.add(insertButton);
 		cqlLibraryEditorVP.add(fp);
-		
-		if(isEditable) {
-			exportErrorFile.setPull(Pull.LEFT);
-			cqlLibraryEditorVP.add(exportErrorFile);
-		}
 		
 		getCqlAceEditor().setReadOnly(!isEditable); 
 		getSaveButton().setEnabled(isEditable);

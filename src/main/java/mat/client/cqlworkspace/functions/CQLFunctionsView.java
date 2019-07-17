@@ -546,7 +546,7 @@ public class CQLFunctionsView {
 	public void setWidgetReadOnly(boolean isEditable) {
 		getFuncNameTxtArea().setEnabled(isEditable);
 		getFunctionCommentTextArea().setEnabled(isEditable);
-		getFunctionBodyAceEditor().setReadOnly(!isEditable);
+		editorPanel.setIsReadOnly(!isEditable);
 		getFunctionButtonBar().setEnabled(isEditable);
 		getAddNewArgument().setEnabled(isEditable);
 		getFunctionButtonBar().getDeleteButton().setTitle("Delete");

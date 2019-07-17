@@ -248,7 +248,7 @@ public class CQLDefinitionsView {
 	public void setWidgetReadOnly(boolean isEditable) {
 		getDefineNameTxtArea().setEnabled(isEditable);
 		getDefineCommentTextArea().setEnabled(isEditable);
-		getDefineAceEditor().setReadOnly(!isEditable);
+		editorPanel.setIsReadOnly(!isEditable);
 		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
 		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);

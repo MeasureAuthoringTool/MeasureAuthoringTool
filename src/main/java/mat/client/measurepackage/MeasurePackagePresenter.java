@@ -348,6 +348,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 							@Override
 							public void onFailure(final Throwable caught) {
 								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+								getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
 								showMeasurePackagerBusy(false);
 							}
 							
@@ -355,8 +356,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 							public void onSuccess(final MeasurePackageSaveResult result) {
 								if (result.isSuccess()) {
 									updateDetailsFromView(currentDetail);
-									getMeasurePackageOverview(MatContext.get()
-											.getCurrentMeasureId());
+									getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
 									view.getPackageSuccessMessageDisplay().createAlert(
 											MatContext.get().getMessageDelegate().
 											getGroupingSavedMessage());
@@ -368,6 +368,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 									if (result.getMessages().size() > 0) {
 										view.getPackageErrorMessageDisplay().
 										createAlert(result.getMessages());
+										getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
 									} else {
 										view.getPackageErrorMessageDisplay().clearAlert();
 									}
@@ -377,12 +378,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 						});
 						
 						showMeasurePackagerBusy(false);
+					} else {
+						getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
 					}
 				}
 			}
 		});
-	}
-	
+	}	
 	protected void validateUMLSLogIn() {
 		MatContext.get().getVsacapiServiceAsync().getTicketGrantingToken(new AsyncCallback<VsacTicketInformation>() {
 			

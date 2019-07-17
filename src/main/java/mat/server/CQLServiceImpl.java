@@ -206,7 +206,7 @@ public class CQLServiceImpl implements CQLService {
 				CQLModel formattedReversedEngineeredCQLModel = reverseEngineerCQLModel(formattedCQL, config.getPreviousCQLModel());
 				String formattedCQLLookup = marshallCQLModel(formattedReversedEngineeredCQLModel);
 				parsedResult.setXml(formattedCQLLookup);
-				parsedResult.setCqlString(formattedCQL);
+				parsedResult.setCqlString(CQLUtilityClass.getCqlString(formattedReversedEngineeredCQLModel, ""));
 			} else {
 				parsedResult.setXml(reverseEngineeredCQLLookup);
 				parsedResult.setCqlString(CQLUtilityClass.getCqlString(reversedEngineeredCQLModel, ""));
@@ -389,11 +389,14 @@ public class CQLServiceImpl implements CQLService {
 
 				if (isFormatable) {
 					functionWithEdits.setLogic(formatFunction(functionWithEdits));
+					cqlModel.getCqlFunctions().removeIf(f -> f.getId().equals(functionWithEdits.getId()));
+					cqlModel.getCqlFunctions().add(functionWithEdits);
 				}
 			}
 
 			result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));
 			result.setFunction(functionWithEdits);
+			result.setCqlModel(cqlModel);
 			result.getCqlModel().setCqlFunctions(sortFunctionList(result.getCqlModel().getCqlFunctions()));
 			result.setSuccess(true);
 		} catch (Exception e) {
@@ -609,28 +612,15 @@ public class CQLServiceImpl implements CQLService {
 				return result;
 			}
 
-			// validate that the context does not change if the expression is used
-			if (definitionWithOriginalContent != null && !definitionWithOriginalContent.getContext().equalsIgnoreCase(definitionWithEdits.getContext())) {
-				parseCQLExpressionForErrors(result, xml,
-						"define" + " \"" + definitionWithOriginalContent.getName() + "\"",
-						definitionWithOriginalContent.getLogic(), definitionWithOriginalContent.getName(),
-						"Definition");
-				if (result.getUsedCQLArtifacts().getUsedCQLDefinitions().contains(definitionWithOriginalContent.getName())) {
-					definitionWithEdits.setContext(definitionWithOriginalContent.getContext());
-				}
-			}
-
-			// update the the information the model
+			// if the definition already exists in the model, then get the id, set the definition with edits id, 
+			// remove the current definition from the model, then add the one with edits to the model. 
 			Optional<CQLDefinition> definitionToBeEditedFromModel = cqlModel.getDefinitionList().stream().filter(d -> d.getId().equals(definitionWithEdits.getId())).findFirst();
 			if (definitionToBeEditedFromModel.isPresent()) {
-				definitionToBeEditedFromModel.get().setName(definitionWithEdits.getName());
-				definitionToBeEditedFromModel.get().setCommentString(definitionWithEdits.getCommentString());
-				definitionToBeEditedFromModel.get().setContext(definitionWithEdits.getContext());
-				definitionToBeEditedFromModel.get().setDefinitionLogic(definitionWithEdits.getDefinitionLogic());
-			} else {
-				cqlModel.getDefinitionList().add(definitionWithEdits);
+				definitionWithEdits.setId(definitionToBeEditedFromModel.get().getId());
+				cqlModel.getDefinitionList().removeIf(d -> d.getId().equals(definitionWithEdits.getId()));
 			}
-
+			
+			cqlModel.getDefinitionList().add(definitionWithEdits);
 			String cqlExpressionName = "define" + " \"" + definitionWithEdits.getName() + "\"";
 			parseCQLExpressionForErrors(result, CQLUtilityClass.getXMLFromCQLModel(cqlModel), cqlExpressionName,
 					definitionWithEdits.getLogic(), definitionWithEdits.getName(), "Definition");
@@ -642,13 +632,17 @@ public class CQLServiceImpl implements CQLService {
 					definitionWithEdits.setReturnType(expressionObject.get().getReturnType());
 				}
 
+				// if the definition is able to be formatted, format it, remove it from the existing model, and add back the formatted object
 				if (isFormatable) {
 					definitionWithEdits.setLogic(formatDefinition(definitionWithEdits));
+					cqlModel.getDefinitionList().removeIf(d -> d.getId().equals(definitionWithEdits.getId()));
+					cqlModel.getDefinitionList().add(definitionWithEdits);
 				}
 			}
 
 			result.setXml(CQLUtilityClass.getXMLFromCQLModel(cqlModel));
 			result.setDefinition(definitionWithEdits);
+			result.setCqlModel(cqlModel);
 			result.getCqlModel().setDefinitionList(sortDefinitionsList(result.getCqlModel().getDefinitionList()));
 			result.setSuccess(true);
 		} catch (Exception e) {
@@ -670,7 +664,7 @@ public class CQLServiceImpl implements CQLService {
 	private String formatDefinition(CQLDefinition definition) throws IOException {
 
 		String definitionStatement = "define" + " \"" + definition.getName() + "\":";
-		String tempDefinitionString = definitionStatement + "\n\t" + definition.getLogic();
+		String tempDefinitionString = definitionStatement + "\n" + definition.getLogic();
 
 		String definitionLogic = "";
 		if (definition.getLogic() != null && !definition.getLogic().isEmpty()) {

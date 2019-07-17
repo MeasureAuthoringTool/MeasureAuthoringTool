@@ -234,8 +234,11 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			}
 			
 			if (creatingDraft) {
-				if(isOrgPresent(currentDetails.getStewardId())) {
-					clonedMeasure.setMeasureStewardId(currentDetails.getStewardId());
+				if(isOrgPresentCheckByOID(currentDetails.getStewardId())) {
+					Organization organization = organizationDAO.findByOid(currentDetails.getStewardId());
+					if(organization != null) {
+						clonedMeasure.setMeasureStewardId(String.valueOf(organization.getId()));
+					}
 				}
 				clonedMeasure.setNqfNumber(currentDetails.getNqfId());
 				clonedMeasure.setMeasurementPeriodFrom(getTimestampFromDateString(currentDetails.getMeasFromPeriod()));
@@ -355,8 +358,8 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 		
 	}
 	
-	private boolean isOrgPresent(String stewardId) {
-		return organizationDAO.getAllOrganizations().stream().anyMatch(org -> String.valueOf(org.getId()).equals(stewardId)); 
+	private boolean isOrgPresentCheckByOID(String stewardOID) {
+		return organizationDAO.getAllOrganizations().stream().anyMatch(org -> String.valueOf(org.getOrganizationOID()).equals(stewardOID)); 
 	}
 
 	private void createMeasureDevelopers(Measure clonedMeasure, ManageMeasureDetailModel currentDetails) {
@@ -369,9 +372,11 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	private MeasureDeveloperAssociation createMeasureDetailsAssociation(Author author, Measure measure) {
-		if(isOrgPresent(author.getId())) {
-			Organization organization = organizationDAO.findById(author.getId());
-			return new MeasureDeveloperAssociation(measure, organization);
+		if(isOrgPresentCheckByOID(author.getId())) {
+			Organization organization = organizationDAO.findByOid(author.getId());
+			if(organization != null) {
+				return new MeasureDeveloperAssociation(measure, organization);
+			}
 		}
 		return null;
 	}

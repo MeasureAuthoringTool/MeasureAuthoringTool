@@ -233,25 +233,10 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 				clonedMeasure.setMeasureScoring(measure.getMeasureScoring());
 			}
 			
-			if (creatingDraft) {
-				if(isOrgPresentCheckByOID(currentDetails.getStewardId())) {
-					Organization organization = organizationDAO.findByOid(currentDetails.getStewardId());
-					if(organization != null) {
-						clonedMeasure.setMeasureStewardId(String.valueOf(organization.getId()));
-					}
-				}
-				clonedMeasure.setNqfNumber(currentDetails.getNqfId());
-				clonedMeasure.setMeasurementPeriodFrom(getTimestampFromDateString(currentDetails.getMeasFromPeriod()));
-				clonedMeasure.setMeasurementPeriodTo(getTimestampFromDateString(currentDetails.getMeasToPeriod()));
-				ManageMeasureDetailModelConversions conversion = new ManageMeasureDetailModelConversions();
-				conversion.createMeasureDetails(clonedMeasure, currentDetails);
-				createMeasureType(clonedMeasure, currentDetails);
-				createMeasureDevelopers(clonedMeasure, currentDetails);
-			}
 			// when creating a draft of a shared version  Measure then the Measure Owner should not change
 			boolean isNonCQLtoCQLDraft = false; 
 			if (creatingDraft) {
-				isNonCQLtoCQLDraft = createDraftAndDetermineIfNonCQL(currentDetails.getVersionNumber(), measure);
+				isNonCQLtoCQLDraft = createDraftAndDetermineIfNonCQL(currentDetails, measure);
 				
 			} else { 
 				cloneMeasure();
@@ -394,7 +379,10 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 		return componentMeasures.stream().map(f -> new ComponentMeasure(clonedMeasure,f.getComponentMeasure(),f.getAlias())).collect(Collectors.toList());
 	}
 
-	private boolean createDraftAndDetermineIfNonCQL(String version, Measure measure) {
+	private boolean createDraftAndDetermineIfNonCQL(ManageMeasureDetailModel currentDetails, Measure measure ) {
+		
+		copyMeasureDetails(currentDetails);
+		
 		boolean isNonCQLtoCQLDraft = false;
 		clonedMeasure.setOwner(measure.getOwner());
 		clonedMeasure.setMeasureSet(measure.getMeasureSet());
@@ -404,7 +392,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			draftVer = measure.getVersion();
 		}else {
 			isNonCQLtoCQLDraft = true;
-			draftVer = getVersionOnNonCQLDraft(version);
+			draftVer = getVersionOnNonCQLDraft(currentDetails.getVersionNumber());
 		}
 		clonedMeasure.setVersion(draftVer);
 		clonedMeasure.setRevisionNumber("000");
@@ -412,6 +400,22 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 		measureDAO.saveMeasure(clonedMeasure);
 		
 		return isNonCQLtoCQLDraft;
+	}
+
+	private void copyMeasureDetails(ManageMeasureDetailModel currentDetails) {
+		if(isOrgPresentCheckByOID(currentDetails.getStewardId())) {
+			Organization organization = organizationDAO.findByOid(currentDetails.getStewardId());
+			if(organization != null) {
+				clonedMeasure.setMeasureStewardId(String.valueOf(organization.getId()));
+			}
+		}
+		clonedMeasure.setNqfNumber(currentDetails.getNqfId());
+		clonedMeasure.setMeasurementPeriodFrom(getTimestampFromDateString(currentDetails.getMeasFromPeriod()));
+		clonedMeasure.setMeasurementPeriodTo(getTimestampFromDateString(currentDetails.getMeasToPeriod()));
+		ManageMeasureDetailModelConversions conversion = new ManageMeasureDetailModelConversions();
+		conversion.createMeasureDetails(clonedMeasure, currentDetails);
+		createMeasureType(clonedMeasure, currentDetails);
+		createMeasureDevelopers(clonedMeasure, currentDetails);
 	}
 	
 	private void cloneMeasure() {

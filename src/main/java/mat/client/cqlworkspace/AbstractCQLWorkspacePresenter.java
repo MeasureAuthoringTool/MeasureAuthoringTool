@@ -495,18 +495,20 @@ public abstract class AbstractCQLWorkspacePresenter {
 		List<String> errorMessages = new ArrayList<>();
 		if(!result.getLinterErrorMessages().isEmpty() || !result.getCqlErrors().isEmpty()) {
 			errorMessages.add("The CQL file was saved with errors.");
-			
 			if(!result.getLinterErrorMessages().isEmpty()) {
 				result.getLinterErrorMessages().forEach(e -> errorMessages.add(e));	
 			} 
 			
 			SharedCQLWorkspaceUtility.displayAnnotationForViewCQL(result, cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor());
 			messagePanel.getErrorMessageAlert().createAlert(errorMessages);
-		} else if(!result.isDatatypeUsedCorrectly()) {
-			errorMessages.add(INCORRECT_VALUE_SET_CODE_DATATYPE_COMBINATION);
-			messagePanel.getErrorMessageAlert().createAlert(errorMessages);
-		} else {
+		}  else {
 			messagePanel.getSuccessMessageAlert().createAlert("Changes to the CQL File have been successfully saved.");
+		}
+		
+		if(!result.isDatatypeUsedCorrectly()) {
+			errorMessages.add(INCORRECT_VALUE_SET_CODE_DATATYPE_COMBINATION);
+			messagePanel.getErrorMessageAlert().setMarginTop(0.0);
+			messagePanel.getErrorMessageAlert().createAlert(errorMessages);
 		}
 		
 		if(!result.getLinterWarningMessages().isEmpty()) {

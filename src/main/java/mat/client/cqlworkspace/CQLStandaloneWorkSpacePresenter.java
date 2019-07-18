@@ -1247,18 +1247,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					cqlWorkspaceView.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, libraryVersion, result.getCqlModel().getQdmVersion(), "QDM", cqlLibraryComment);
 				}
 
-				List<CQLQualityDataSetDTO> appliedValueSetAndCodeList = new ArrayList<>();
-				List<CQLQualityDataSetDTO> appliedValueSetAndCodeListFromXML = result.getCqlModel().getAllValueSetAndCodeList();
-
-
-				for (CQLQualityDataSetDTO dto : appliedValueSetAndCodeListFromXML) {
-					if((dto.getOriginalCodeListName() != null && !dto.getOriginalCodeListName().isEmpty()) 
-							|| (dto.getCodeIdentifier() != null && !dto.getCodeIdentifier().isEmpty()) &&
-							appliedValueSetAndCodeList.stream().filter(v -> v.getName().equals(dto.getName())).count() == 0) {
-						appliedValueSetAndCodeList.add(dto);
-					}					
-				}
-				
+				List<CQLQualityDataSetDTO> appliedValueSetAndCodeList =  result.getCqlModel().getAllValueSetAndCodeList();				
 				MatContext.get().setValuesets(appliedValueSetAndCodeList);
 				MatContext.get().setCQLModel(result.getCqlModel());
 				appliedValueSetTableList.clear();

@@ -545,30 +545,30 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	
 	@Override
 	protected void saveCQLFile() {
-		String currentCQL = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().getText();		
-		MatContext.get().getLibraryService().saveCQLFile(MatContext.get().getCurrentCQLLibraryId(), currentCQL, new AsyncCallback<SaveUpdateCQLResult>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onSuccess(SaveUpdateCQLResult result) {
-				cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().replace(result.getCqlString());
-				messagePanel.clearAlerts();
-				if(!result.isSuccess()) {
-					onSaveCQLFileFailure(result);
-				} else {
-					handleCQLData(result);
-					onSaveCQLFileSuccess(result);
-					setIsPageDirty(false);
+		
+		if(hasEditPermissions()) {
+			
+			String currentCQL = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().getText();		
+			MatContext.get().getLibraryService().saveCQLFile(MatContext.get().getCurrentCQLLibraryId(), currentCQL, new AsyncCallback<SaveUpdateCQLResult>() {
+	
+				@Override
+				public void onFailure(Throwable caught) {
 				}
-				
-				cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().focus();
-			}
-		});
+				@Override
+				public void onSuccess(SaveUpdateCQLResult result) {
+					cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().replace(result.getCqlString());
+					messagePanel.clearAlerts();
+					if(!result.isSuccess()) {
+						onSaveCQLFileFailure(result);
+					} else {
+						handleCQLData(result);
+						onSaveCQLFileSuccess(result);
+						setIsPageDirty(false);
+					}
+					cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().focus();
+				}
+			});
+		}
 	}
 
 	@Override

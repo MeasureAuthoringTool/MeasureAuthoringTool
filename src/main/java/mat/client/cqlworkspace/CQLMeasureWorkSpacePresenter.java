@@ -630,29 +630,30 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	
 	@Override
 	protected void saveCQLFile() {
-		String currentCQL = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().getText();		
 		
-		MatContext.get().getMeasureService().saveCQLFile(MatContext.get().getCurrentMeasureId(), currentCQL, new AsyncCallback<SaveUpdateCQLResult>() {
-
-			@Override
-			public void onFailure(Throwable caught) {				
-			}
-
-			@Override
-			public void onSuccess(SaveUpdateCQLResult result) {
-				cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().replace(result.getCqlString());
-				messagePanel.clearAlerts();
-				if(!result.isSuccess()) {
-					onSaveCQLFileFailure(result);
-				} else {
-					handleCQLData(result);
-					onSaveCQLFileSuccess(result);
-					setIsPageDirty(false);
+		if(hasEditPermissions()) {
+			
+			String currentCQL = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().getText();		
+			MatContext.get().getMeasureService().saveCQLFile(MatContext.get().getCurrentMeasureId(), currentCQL, new AsyncCallback<SaveUpdateCQLResult>() {
+	
+				@Override
+				public void onFailure(Throwable caught) {				
 				}
-				
-				cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().focus();
-			}
-		});
+				@Override
+				public void onSuccess(SaveUpdateCQLResult result) {
+					cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().replace(result.getCqlString());
+					messagePanel.clearAlerts();
+					if(!result.isSuccess()) {
+						onSaveCQLFileFailure(result);
+					} else {
+						handleCQLData(result);
+						onSaveCQLFileSuccess(result);
+						setIsPageDirty(false);
+					}
+					cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().focus();
+				}
+			});
+		}
 	}
 
 	@Override

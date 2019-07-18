@@ -16,6 +16,8 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.cqlworkspace.GenericLeftNavSectionView;
+import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
+import mat.client.inapphelp.component.InAppHelp;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
@@ -36,6 +38,7 @@ public class CQLComponentLibraryView extends GenericLeftNavSectionView  {
 	private MatTextBox ownerTextBox = new MatTextBox();
 	private MatTextBox libraryTextBox = new MatTextBox();
 	private AceEditor cqlAceEditor = new AceEditor();
+	private InAppHelp inAppHelp = new InAppHelp("");
 	public ManageMeasurePresenter mmp;
 	
 	public CQLComponentLibraryView() {
@@ -46,7 +49,7 @@ public class CQLComponentLibraryView extends GenericLeftNavSectionView  {
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.getElement().setId("vPanel_VerticalPanelIncludeSection");
-		verticalPanel.add(heading);
+		verticalPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 		verticalPanel.add(new SpacerWidget());	
 		verticalPanel.add(getMessagePanel());
 		verticalPanel.add(new SpacerWidget());
@@ -193,6 +196,14 @@ public class CQLComponentLibraryView extends GenericLeftNavSectionView  {
 	
 	public AceEditor getCQLAceEditor() {
 		return cqlAceEditor;
+	}
+	
+	public InAppHelp getInAppHelp() {
+		return inAppHelp;
+	}
+
+	public void setInAppHelp(InAppHelp inAppHelp) {
+		this.inAppHelp = inAppHelp;
 	}
 
 }

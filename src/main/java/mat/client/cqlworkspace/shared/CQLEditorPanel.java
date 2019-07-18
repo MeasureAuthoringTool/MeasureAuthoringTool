@@ -125,7 +125,7 @@ public class CQLEditorPanel extends Composite {
 	
 	public void setIsReadOnly(boolean isReadOnly) {
 		this.isReadOnly = isReadOnly;
-		getEditor().setReadOnly(isReadOnly);
+		getEditor().setReadOnly(!isReadOnly);
 		if(isReadOnly) {
 			setHeaderText(text + " (Read Only)");
 		}

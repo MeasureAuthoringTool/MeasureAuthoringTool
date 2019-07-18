@@ -19,6 +19,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
 import mat.client.cqlworkspace.codes.CQLCodesView;
+import mat.client.cqlworkspace.components.CQLComponentLibraryView;
 import mat.client.cqlworkspace.definitions.CQLDefinitionsView;
 import mat.client.cqlworkspace.functions.CQLFunctionsView;
 import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationView;
@@ -419,5 +420,10 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 	@Override
 	public CQLLeftNavBarPanelView getCQLLeftNavBarPanelView() {
 		return cqlLeftNavBarPanelView;
+	}
+
+	@Override
+	public CQLComponentLibraryView getComponentView() {
+		return null;
 	}
 }

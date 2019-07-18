@@ -51,7 +51,19 @@ public class InAppHelpMessages {
 			"<b>Copy, Paste, Select All, Clear:</b> These icons facilitate the copying of value sets from one measure to another measure or library. To copy a value set, select the checkboxes next to the value set(s) you wish to copy, click the Copy icon, navigate to another measure or library and click on the Paste icon above the Applied Value Sets table. To select all value sets at once, click the Select All icon, and to clear any checkmarks currently selected, click the Clear icon.<br>" +
 			"<br>" +
 			"<b>Editing a Value Set:</b> To edit a value set, click on the edit icon (pencil) to put the information back into the top of the screen, add an updated OID and change the program and release if necessary (optional) and click the Retrieve button. Once the information is retrieved from VSAC, changes can be made to the suffix. Then click Apply to see the changes applied in the table.";
-
+	
+	public static final String MEASURE_CQL_LIBRARY_COMPONENT = "<b>Left-hand Navigation:</b> In the left-hand navigation you will see a box that will contain the the aliases of the component measures currently included in the measure. To review a component measure already added to the measure, double-click on the alias. There is a search box just above this list which can be used to find a specific definition name within the list.<br>" +
+			"<br>" +
+			"<b>Measure Name:</b> This field will fill in with the measure name of the component measure when the alias has been double-clicked in the left-hand navigation.<br>" +
+			"<br>" +
+			"<b>Owner Name:</b> This field will fill in with the owner of the component measure when the alias has been double-clicked in the left-hand navigation.</br>" +
+			"<br>" +
+			"<b>CQL Library Name:</b> This field will fill in with the CQL Library Name associated with the component measure when the alias has been double-clicked in the left-hand navigation.</br>" +
+			"<br>" +
+			"<b>CQL Library Viewer:</b> This area shows you the CQL file of the component measure when the alias has been double-clicked in the left-hand navigation. This area is uneditable.</br>" +
+			"<br>" +
+			"<b>Making changes to the component measure list:</b> To make changes to the component measures that are included within the composite measure, navigate to the Component Measures tab of the Measure Details page and click the Edit Component Measures button.";
+			
 	public static final String STANDALONE_CQL_LIBRARY_VALUE_SET = "<b>OID:</b> Each value set is identified with a unique Object Identifier (OID). Enter the OID for the desired value set to include in the library and then click the Retrieve OID button. Note: You must be signed in to UMLS to retrieve a Value Set from the Value Set Authority Center (VSAC) through the MAT.<br>" +
 			"<br>" +
 			"<b>Program:</b> Value sets contained in the Value Set Authority Center (VSAC) can be assigned to specific programs. Use this field to indicate from which program you would like to retrieve the value set. This field is optional and may be left blank if the program is unknown.  If the program chosen does not contain the value set, an error message will be received.<br>" +

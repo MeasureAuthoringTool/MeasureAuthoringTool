@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.cqlworkspace.codes.CQLCodesView;
+import mat.client.cqlworkspace.components.CQLComponentLibraryView;
 import mat.client.cqlworkspace.definitions.CQLDefinitionsView;
 import mat.client.cqlworkspace.functions.CQLFunctionsView;
 import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationView;
@@ -24,6 +25,7 @@ public interface CQLWorkspaceView {
 	public VerticalPanel getMainPanel();
 	public CQLDefinitionsView getCQLDefinitionsView();
 	public CQLLibraryEditorView getCQLLibraryEditorView();
+	public CQLComponentLibraryView getComponentView();
 	public CQLFunctionsView getCQLFunctionsView();
 	public AceEditor getViewCQLEditor();
 	public CQLIncludeLibraryView getIncludeView();

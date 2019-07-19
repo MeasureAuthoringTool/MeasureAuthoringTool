@@ -1551,6 +1551,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		BigDecimal mVersion = new BigDecimal(maximumVersionNumber);
 		mVersion = mVersion.add(new BigDecimal(incrementBy));
 		mDetail.setVersionNumber(mVersion.toString());
+		mDetail.setRevisionNumber("000");
 		Date currentDate = new Date();
 		mDetail.setFinalizedDate(DateUtility.convertDateToString(currentDate));
 		mDetail.setDraft(false);
@@ -1614,8 +1615,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     private String replaceVersionInXMLString(String measureXML, String versionStr, String measureId) throws XPathExpressionException {
+    	
     	XmlProcessor xmlProcessor = new XmlProcessor(measureXML);
     	String cqlVersionXPath = "//cqlLookUp/version";
+    	String measureVersionXPath = "//measureDetails/version";
+    	Node measureVersionNode = (Node) xPath.evaluate(measureVersionXPath,
+    			xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
+    	if (measureVersionNode != null) {
+    		measureVersionNode.setTextContent(MeasureUtility.formatVersionText(versionStr));
+    	} else {
+    		logger.info("measureDetails Node not found. This is in measure : " + measureId);
+    	}
 
     	Node cqlVersionNode = (Node) xPath.evaluate(cqlVersionXPath,
     			xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);

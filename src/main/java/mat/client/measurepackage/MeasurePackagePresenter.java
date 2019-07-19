@@ -846,6 +846,8 @@ private void saveMeasureAtPackage(){
 					if (mpDetail.getSequence().equalsIgnoreCase(
 							currentDetail.getSequence())) {
 						setMeasurePackage(result.getPackages().get(i).getSequence());
+					} else {
+						setMeasurePackageDetailsOnView();
 					}
 				}
 			} else {

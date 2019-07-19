@@ -85,7 +85,7 @@ public class CodeSelectorModal extends SubExpressionBuilderModal {
 		
 		List<CQLIdentifierObject> filteredCodes = new ArrayList<>();
 		for(int i = 0; i < codeDataSetDTOs.size(); i++) {
-			CQLIdentifierObject o = new CQLIdentifierObject(null, codeDataSetDTOs.get(i).getName());
+			CQLIdentifierObject o = new CQLIdentifierObject(null, codeDataSetDTOs.get(i).getDisplayName());
 			filteredCodes.add(o);
 		}
 		

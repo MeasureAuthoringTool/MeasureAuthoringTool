@@ -606,6 +606,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 		}
 
 		setSearchingBusy(true);
+		updateCompositeDetailsFromCompositeDetailView();
 		updateCompositeDetailsFromComponentMeasureDisplay();
 		
 		searchDisplay.resetMessageDisplay();

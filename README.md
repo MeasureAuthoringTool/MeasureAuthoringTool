@@ -113,7 +113,7 @@ Update the bean with `id="templateMessage"` to use the email address you want th
 Program arguments are used for GWT to determine how to run the application.
 [Run] -> [Run Configurations] -> Select your MAT project on the Left Hand Side and in the [Arguments] tab -> add the following information below into the Program arguments box.
 
-`-logLevel INFO -port 8888 -remoteUI "${gwt_remote_ui_server_port}:${unique_id}" -codeServerPort 9997 -war\war mat.Bonnie mat.Mat mat.Login`
+`-logLevel INFO -port 8888 -remoteUI "${gwt_remote_ui_server_port}:${unique_id}" -codeServerPort 9997 mat.Login mat.Mat mat.Bonnie -war \war mat.Login mat.Bonnie mat.Mat`
 
 ### Configuring VM Arguments
 
@@ -121,21 +121,25 @@ VM arguments are used to pass environment specific parameters to the application
 
 [Run] -> [Run Configurations] -> Select your MAT project on the Left Hand Side and on the [Arguments] tab -> add the following information below into the VM arguments box.
 ```
--Xmx512m
+-Xmx1G 
 -DVSAC_DRC_URL=https://vsac.nlm.nih.gov/vsac
 -DSERVER_TICKET_URL=https://vsac.nlm.nih.gov/vsac/ws/Ticket
--DSERVER_SINGLE_VALUESET_URL=https://vsac.nlm.nih.gov/vsac/ws/RetrieveValueSet?
--DSERVER_MULTIPLE_VALUESET_URL_NEW=https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets?
--DSERVICE_URL=http://umlsks.nlm.nih.gov -DENVIRONMENT=DEV -Dlog4j.ignoreTCL=true
--DPROFILE_SERVICE=https://vsac.nlm.nih.gov/vsac/profiles
--DVERSION_SERVICE=https://vsac.nlm.nih.gov/vsac/oid/
--D2FA_AUTH_CLASS=mat.server.twofactorauth.DefaultOTPValidatorForUser
--DBONNIE_RESPONSE_TYPE=code
--DBONNIE_REDIRECT_URI=https//yourredirectURI.com
--DBONNIE_CLIENT_ID=1234567890
--DBONNIE_URI=https://bonnieURL.org
--DALGORITHM=EncyptionAlgorithm
--DPASSWORDKEY=PasswordKey
+-DSERVER_SINGLE_VALUESET_URL=https://vsac.nlm.nih.gov/vsac/ws/RetrieveValueSet? 
+-DSERVER_MULTIPLE_VALUESET_URL_NEW=https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets? 
+-DSERVICE_URL=http://umlsks.nlm.nih.gov 
+-DENVIRONMENT=DEV 
+-Dlog4j.ignoreTCL=true 
+-DPROFILE_SERVICE=https://vsac.nlm.nih.gov/vsac/profiles 
+-DVERSION_SERVICE=https://vsac.nlm.nih.gov/vsac/oid/ 
+-D2FA_AUTH_CLASS=mat.server.twofactorauth.DefaultOTPValidatorForUser 
+-D2FA_AUTH_CLASS1=mat.server.twofactorauth.DefaultOTPValidatorForUser 
+-DBONNIE_RESPONSE_TYPE=code 
+-DBONNIE_REDIRECT_URI=https//yourredirectURI.com 
+-DBONNIE_CLIENT_ID=1234567890 
+-DBONNIE_CLIENT_SECRET=1234567890
+-DBONNIE_URI=https://bonnieURL.org 
+-DALGORITHM=EncyptionAlgorithm 
+-DPASSWORDKEY=PasswordKey 
 -Dlog4j.configuration=PathToLog4jPropertiesFile
 ```
 

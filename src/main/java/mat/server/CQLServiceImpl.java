@@ -574,7 +574,7 @@ public class CQLServiceImpl implements CQLService {
 
 		try {
 
-			if (StringUtils.isEmpty(xml) || (definitionWithOriginalContent != null && definitionWithOriginalContent.isSupplDataElement())) {
+			if (StringUtils.isEmpty(xml)) {
 				return result;
 			}
 

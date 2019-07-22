@@ -1113,7 +1113,7 @@ public class XmlProcessor {
 	
 	public void updateCQLLibraryName(String libraryName) throws XPathExpressionException{
 		
-		Node cqlLibraryNode = findNode(originalDoc, "/measure/cqlLookUp/library");
+		Node cqlLibraryNode = findNode(originalDoc, "//cqlLookUp/library");
 		
 		if(cqlLibraryNode != null){
 			libraryName = cleanString(libraryName);

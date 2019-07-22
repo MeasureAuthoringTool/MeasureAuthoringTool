@@ -732,6 +732,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
 			@Override
 			public void onSuccess(SaveCQLLibraryResult result) {
+				setIsPageDirty(false);
 				showSearchingBusy(false);
 				resultToFireEvent = result;
 				fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), result.isEditable(), false,

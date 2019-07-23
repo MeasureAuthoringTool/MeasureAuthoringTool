@@ -1842,6 +1842,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 	
 	private void setDetailsToView() {
+		panel.getButtonPanel().clear();
 		detailDisplay.clearFields();
 		resetPatientBasedInput(detailDisplay);
 		detailDisplay.getMeasureNameTextBox().setValue(currentDetails.getMeasureName());
@@ -1860,7 +1861,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 				detailDisplay.getPatientBasedListBox().removeItem(1);
 				detailDisplay.getPatientBasedListBox().setSelectedIndex(0);
 			}
-		} 
+		}
 	}
 
 	private void shareDisplayHandlers(final ShareDisplay shareDisplay) {

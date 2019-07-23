@@ -346,6 +346,10 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	private boolean isOrgPresentCheckByOID(String stewardOID) {
 		return organizationDAO.getAllOrganizations().stream().anyMatch(org -> String.valueOf(org.getOrganizationOID()).equals(stewardOID)); 
 	}
+	
+	private boolean isOrgPresentCheckByID(String stewardID) {
+		return organizationDAO.getAllOrganizations().stream().anyMatch(org -> String.valueOf(org.getId()).equals(stewardID)); 
+	}
 
 	private void createMeasureDevelopers(Measure clonedMeasure, ManageMeasureDetailModel currentDetails) {
 		if(currentDetails.getAuthorSelectedList() != null) {
@@ -403,8 +407,8 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	private void copyMeasureDetails(ManageMeasureDetailModel currentDetails) {
-		if(isOrgPresentCheckByOID(currentDetails.getStewardId())) {
-			Organization organization = organizationDAO.findByOid(currentDetails.getStewardId());
+		if(isOrgPresentCheckByID(currentDetails.getStewardId())) {
+			Organization organization = organizationDAO.findById(currentDetails.getStewardId());
 			if(organization != null) {
 				clonedMeasure.setMeasureStewardId(String.valueOf(organization.getId()));
 			}

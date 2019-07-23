@@ -144,6 +144,9 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected CQLQualityDataSetDTO modifyValueSetDTO;
 	protected MatValueSet currentMatValueSet= null;
 	protected String cqlLibraryName;
+	protected enum Color {
+		RED, YELLOW, GREEN;
+	}
 	
 	protected final VSACAPIServiceAsync vsacapiService = MatContext.get().getVsacapiServiceAsync();
 	protected QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT.create(QDSAttributesService.class);
@@ -491,29 +494,52 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected abstract void saveCQLFile();
 	
 	protected void onSaveCQLFileSuccess(SaveUpdateCQLResult result) {
+		Color c = Color.GREEN;
 		cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().clearAnnotations();
+		SharedCQLWorkspaceUtility.displayAnnotationForViewCQL(result, cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor());
 		List<String> errorMessages = new ArrayList<>();
+		
 		if(!result.getLinterErrorMessages().isEmpty() || !result.getCqlErrors().isEmpty()) {
 			errorMessages.add("The CQL file was saved with errors.");
+			
 			if(!result.getLinterErrorMessages().isEmpty()) {
 				result.getLinterErrorMessages().forEach(e -> errorMessages.add(e));	
 			} 
 			
+			c = Color.RED;
 			SharedCQLWorkspaceUtility.displayAnnotationForViewCQL(result, cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor());
-			messagePanel.getErrorMessageAlert().createAlert(errorMessages);
-		}  else {
-			messagePanel.getSuccessMessageAlert().createAlert("Changes to the CQL File have been successfully saved.");
+		} 
+		
+		else {
+			errorMessages.add("Changes to the CQL File have been successfully saved.");
+		}
+		
+		if(!result.getLinterWarningMessages().isEmpty()) {
+			errorMessages.addAll(result.getLinterWarningMessages());
+			if(c != Color.RED) {
+				c = Color.YELLOW;
+			}
 		}
 		
 		if(!result.isDatatypeUsedCorrectly()) {
 			errorMessages.add(INCORRECT_VALUE_SET_CODE_DATATYPE_COMBINATION);
-			messagePanel.getErrorMessageAlert().setMarginTop(0.0);
-			messagePanel.getErrorMessageAlert().createAlert(errorMessages);
+			c = Color.RED;
 		}
-		
-		if(!result.getLinterWarningMessages().isEmpty()) {
-			messagePanel.getWarningMessageAlert().createAlert(result.getLinterWarningMessages());
-			messagePanel.getWarningMessageAlert().setMarginTop(0.0);
+		setSpecificErrorMessage(c, errorMessages);
+	}
+	
+	private void setSpecificErrorMessage(Color color, List<String> errorMessages) {
+		switch(color) 
+		{
+			case GREEN:
+				messagePanel.getSuccessMessageAlert().createAlert(errorMessages);
+				break;
+			case YELLOW:
+				messagePanel.getWarningMessageAlert().createAlert(errorMessages);
+				break;
+			case RED:
+				messagePanel.getErrorMessageAlert().createAlert(errorMessages);
+				break;
 		}
 	}
 	

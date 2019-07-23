@@ -532,7 +532,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		switch(color) 
 		{
 			case GREEN:
-				messagePanel.getSuccessMessageAlert().createAlert(errorMessages);
+				messagePanel.getSuccessMessageAlert().createAlert("Changes to the CQL File have been successfully saved.");
 				break;
 			case YELLOW:
 				messagePanel.getWarningMessageAlert().createAlert(errorMessages);

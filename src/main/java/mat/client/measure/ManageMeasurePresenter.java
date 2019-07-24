@@ -445,7 +445,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 				((NewCompositeMeasureView) compositeDetailDisplay).setCompositeScoringChoices(compositeChoices);
 			}
 		});
-
+		((NewCompositeMeasureView) compositeDetailDisplay).getMeasureScoringListBox().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice((((NewCompositeMeasureView) compositeDetailDisplay))));
+		
 		((NewCompositeMeasureView) compositeDetailDisplay).getMeasureNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
 		((NewCompositeMeasureView) compositeDetailDisplay).getECQMAbbreviatedTitleTextBox().addValueChangeHandler(event -> setIsPageDirty(true));
 		((NewCompositeMeasureView) compositeDetailDisplay).getCQLLibraryNameTextBox().addValueChangeHandler(event -> setIsPageDirty(true));

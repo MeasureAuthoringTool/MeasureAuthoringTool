@@ -17,6 +17,8 @@ public interface OrganizationDAO extends IDAO<Organization, Long> {
 	void deleteOrganization(Organization entity);
 	
 	Organization findById(String id);
+	
+	Organization findByOidOrId(String oidOrId);
 
 	void updateOrganization(Organization organization);
 	

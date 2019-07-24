@@ -361,8 +361,9 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	private MeasureDeveloperAssociation createMeasureDetailsAssociation(Author author, Measure measure) {
-		if(isOrgPresentCheckByOID(author.getId())) {
-			Organization organization = organizationDAO.findByOid(author.getId());
+		String authorId = author.getId();
+		if(isOrgPresentCheckByOID(authorId) || isOrgPresentCheckByID(authorId)) {
+			Organization organization = organizationDAO.findByOidOrId(author.getId());
 			if(organization != null) {
 				return new MeasureDeveloperAssociation(measure, organization);
 			}
@@ -407,8 +408,9 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	private void copyMeasureDetails(ManageMeasureDetailModel currentDetails) {
-		if(isOrgPresentCheckByID(currentDetails.getStewardId())) {
-			Organization organization = organizationDAO.findById(currentDetails.getStewardId());
+		String stewardId = currentDetails.getStewardId();
+		if(isOrgPresentCheckByID(stewardId) || isOrgPresentCheckByOID(stewardId)) {
+			Organization organization = organizationDAO.findByOidOrId(currentDetails.getStewardId());
 			if(organization != null) {
 				clonedMeasure.setMeasureStewardId(String.valueOf(organization.getId()));
 			}

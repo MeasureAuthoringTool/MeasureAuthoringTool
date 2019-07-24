@@ -138,5 +138,14 @@ public class OrganizationDAOImpl extends GenericDAO<Organization, Long> implemen
 		
 		return session.createQuery(query).getResultList();
 	}
+
+	@Override
+	public Organization findByOidOrId(String oidOrId) {
+		Organization organization = findById(oidOrId);
+		if(organization == null) {
+			organization = findByOid(oidOrId);
+		}
+		return organization;
+	}
 	
 }

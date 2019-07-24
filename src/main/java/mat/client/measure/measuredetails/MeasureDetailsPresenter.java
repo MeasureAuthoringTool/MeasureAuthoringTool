@@ -546,6 +546,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				measureDetailsView.displaySuccessMessage("Changes for the " +  measureDetailsView.getCurrentMeasureDetail().displayName() + " section have been successfully saved.");
 				handleStateChanged();
 				navigationPanel.setActiveMenuItem(activeMenuItem);
+				measureDetailsModel.setCompositeMeasureDetailModel(result.getCompositeMeasureDetailModel());
 			}
 		};
 	}

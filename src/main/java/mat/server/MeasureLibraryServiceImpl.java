@@ -5917,6 +5917,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result.setId(pkg.getId());
 			model.setMeasureTypeSelectedList(getMeasureTypeForComposite(model.getMeasureTypeSelectedList()));
 			createComponentMeasureAsLibraryInMeasureXML(pkg.getId(), model);
+			
+			if (isExisting) {
+				result.setCompositeMeasureDetailModel(getCompositeMeasure(model.getId()));
+			}
+			
 			return result;
 		} else {
 			logger.info("Validation Failed for measure :: Invalid Data Issues.");

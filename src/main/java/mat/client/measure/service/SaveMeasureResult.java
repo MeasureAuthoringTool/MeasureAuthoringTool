@@ -1,6 +1,8 @@
 package mat.client.measure.service;
 
 import java.util.List;
+
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.shared.GenericResult;
 import mat.model.Author;
 import mat.model.MeasureType;
@@ -47,6 +49,8 @@ public class SaveMeasureResult extends GenericResult {
 	private String versionStr;
 		
 	private ValidateMeasureResult validateResult; 
+	
+	private ManageCompositeMeasureDetailModel compositeMeasureDetailModel;
 
 	public List<Author> getAuthorList() {
 		return authorList;
@@ -86,6 +90,14 @@ public class SaveMeasureResult extends GenericResult {
 	
 	public void setVersionStr(String versionStr) {
 		this.versionStr = versionStr;
+	}
+
+	public ManageCompositeMeasureDetailModel getCompositeMeasureDetailModel() {
+		return compositeMeasureDetailModel;
+	}
+
+	public void setCompositeMeasureDetailModel(ManageCompositeMeasureDetailModel compositeMeasureDetailModel) {
+		this.compositeMeasureDetailModel = compositeMeasureDetailModel;
 	}
 	
 }

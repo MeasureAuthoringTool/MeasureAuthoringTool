@@ -204,11 +204,15 @@ public class CQLLeftNavBarPanelView {
 				event.stopPropagation();
 			}
 		});
+		
+		anchor.addClickHandler(event -> {
+			this.anchor.setDataToggle(Toggle.COLLAPSE);
+			this.anchor.setHref("#collapseComponent");
+		});
+		
 		anchor.add(componentLabel);
 		anchor.add(badge);
 		anchor.setDataParent("#navGroup");
-		this.anchor.setDataToggle(Toggle.COLLAPSE);
-		this.anchor.setHref("#collapseComponent");
 		this.anchor.add(collapse);
 	}
 	
@@ -283,6 +287,12 @@ public class CQLLeftNavBarPanelView {
 				event.stopPropagation();
 			}
 		});
+		
+		includesAnchor.addClickHandler(event -> {
+			includesLibrary.setDataToggle(Toggle.COLLAPSE);
+			includesLibrary.setHref("#collapseIncludes");
+		});
+		
 		includesLabel.setStyleName("transparentLabel");
 		includesLabel.setId("includesLabel_Label");
 		includesAnchor.add(includesLabel);
@@ -291,8 +301,6 @@ public class CQLLeftNavBarPanelView {
 		includesBadge.setId("includesBadge_Badge");
 		includesAnchor.add(includesBadge);
 		includesAnchor.setDataParent("#navGroup");
-		includesLibrary.setDataToggle(Toggle.COLLAPSE);
-		includesLibrary.setHref("#collapseIncludes");
 		includesLibrary.setId("includesLibrary_Anchor");
 		includesLibrary.add(includesCollapse);
 	}
@@ -350,6 +358,13 @@ public class CQLLeftNavBarPanelView {
 				event.stopPropagation();
 			}
 		});
+		
+		
+		paramAnchor.addClickHandler(event -> {
+			parameterLibrary.setDataToggle(Toggle.COLLAPSE);
+			parameterLibrary.setHref("#collapseParameter");
+		});
+		
 		paramLabel.setStyleName("transparentLabel");
 		paramLabel.setId("paramLabel_Label");
 		paramAnchor.add(paramLabel);
@@ -357,8 +372,6 @@ public class CQLLeftNavBarPanelView {
 		paramBadge.setId("paramBadge_Badge");
 		paramAnchor.add(paramBadge);
 		paramAnchor.setDataParent("#navGroup");
-		paramAnchor.setDataToggle(Toggle.COLLAPSE);
-		parameterLibrary.setHref("#collapseParameter");
 		parameterLibrary.setId("parameterLibrary_Anchor");
 		parameterLibrary.add(paramCollapse);
 	}
@@ -375,6 +388,12 @@ public class CQLLeftNavBarPanelView {
 				event.stopPropagation();
 			}
 		});
+		
+		defineAnchor.addClickHandler(event -> {
+			definitionLibrary.setDataToggle(Toggle.COLLAPSE);
+			definitionLibrary.setHref("#collapseDefine");
+		});
+				
 		defineLabel.setStyleName("transparentLabel");
 		defineLabel.setId("defineLabel_Label");
 		defineAnchor.add(defineLabel);
@@ -382,8 +401,7 @@ public class CQLLeftNavBarPanelView {
 		defineAnchor.add(defineBadge);
 		defineBadge.setId("defineBadge_Badge");
 		defineAnchor.setDataParent("#navGroup");
-		definitionLibrary.setDataToggle(Toggle.COLLAPSE);
-		definitionLibrary.setHref("#collapseDefine");
+
 		definitionLibrary.add(defineCollapse);
 
 	}
@@ -401,6 +419,12 @@ public class CQLLeftNavBarPanelView {
 				event.stopPropagation();
 			}
 		});
+		
+		funcAnchor.addClickHandler(event -> {
+			functionLibrary.setDataToggle(Toggle.COLLAPSE);
+			functionLibrary.setHref("#collapseFunction");
+		});
+		
 		functionLibLabel.setStyleName("transparentLabel");
 		functionLibLabel.setId("functionLibLabel_label");
 		funcAnchor.add(functionLibLabel);
@@ -409,8 +433,6 @@ public class CQLLeftNavBarPanelView {
 		funcAnchor.add(functionBadge);
 		functionBadge.setId("functionBadge_Badge");
 		funcAnchor.setDataParent("#navGroup");
-		functionLibrary.setDataToggle(Toggle.COLLAPSE);
-		functionLibrary.setHref("#collapseFunction");
 		functionLibrary.add(functionCollapse);
 	}
 	

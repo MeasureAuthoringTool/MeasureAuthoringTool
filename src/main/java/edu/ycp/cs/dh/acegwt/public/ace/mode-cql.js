@@ -42,7 +42,7 @@ var SqlHighlightRules = function() {
 	    var builtinConstants = (
 	        
 	    	//basic constants	
-	    	'Patient|Population|' + 
+	    	'Patient|' + 
 	    		        
 	        //data type attribute constants
 	        'activeDatetime|admissionSource|anatomicalLocationSite|authorDatetime|birthDatetime|category|cause|code|components|daysSupplied|denominator|diagnoses|dischargeDisposition|dispenser|dosage|expiredDatetime|' +

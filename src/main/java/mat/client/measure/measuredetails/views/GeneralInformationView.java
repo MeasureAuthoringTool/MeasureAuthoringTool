@@ -647,6 +647,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		compositeScoringMethod = StringUtility.isEmptyOrNull(compositeScoringMethod) ? MatContext.PLEASE_SELECT : compositeScoringMethod;
 		setScoringChoices(MatContext.get().getSelectionMap().get(compositeScoringMethod));
 		measureScoringInput.setValueMetadata(generalInformationModel.getScoringMethod());
+		setPatientBasedInputOptions(MatContext.get().getPatientBasedIndicatorOptions(generalInformationModel.getScoringMethod()));
 		setPatientbasedIndicator();
 	}
 

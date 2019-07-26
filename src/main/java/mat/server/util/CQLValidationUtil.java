@@ -36,9 +36,7 @@ public class CQLValidationUtil {
 	
 	public static boolean isCQLReservedWord(String expressionName) {
 		final String trimmedExpresion = expressionName.trim();
-				
 		return trimmedExpresion.equalsIgnoreCase("Patient") 
-				|| trimmedExpresion.equalsIgnoreCase("Population")
 				|| CQLKeywordsUtil.getCQLKeywords().getCqlKeywordsList().stream().anyMatch(definedKeyWord -> definedKeyWord.equalsIgnoreCase(trimmedExpresion));
 	}
 	

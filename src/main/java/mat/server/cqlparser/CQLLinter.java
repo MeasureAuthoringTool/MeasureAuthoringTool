@@ -426,7 +426,9 @@ public class CQLLinter extends cqlBaseListener {
 	
 	@Override
 	public void enterConceptDefinition(ConceptDefinitionContext ctx) {
-		// TODO: 
+		if(ctx != null) {
+			this.warningMessages.add("The MAT does not support concept declarations. Any entered concept declarations have been removed from the CQL file.");
+		}
 	}
 	
 	private void createErrorIfAccessModifier(AccessModifierContext ctx) {

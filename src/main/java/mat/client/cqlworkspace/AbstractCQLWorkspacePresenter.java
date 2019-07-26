@@ -216,7 +216,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	
 	protected boolean isValidExpressionName(String expressionName) {
 		final String trimedExpression = expressionName.trim();
-		return !trimedExpression.isEmpty() && !trimedExpression.equalsIgnoreCase(PATIENT) && !trimedExpression.equalsIgnoreCase("Population")
+		return !trimedExpression.isEmpty() && !trimedExpression.equalsIgnoreCase(PATIENT)
 				&& MatContext.get().getCqlConstantContainer() != null 
 				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList() != null
 				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList() != null

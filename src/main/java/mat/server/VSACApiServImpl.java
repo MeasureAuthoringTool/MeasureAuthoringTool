@@ -467,29 +467,29 @@ public class VSACApiServImpl implements VSACApiService{
 		String eightHourTicket = UMLSSessionTicket.getTicket(sessionId).getTicket();
 		
 		if (eightHourTicket != null) {
-			if (oid != null && StringUtils.isNotEmpty(oid) && StringUtils.isNotBlank(oid)) {
+			if (StringUtils.isNotBlank(oid)) {
 				LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
 				String fiveMinServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
 				VSACResponseResult vsacResponseResult = null;
 		
 				if (StringUtils.isNotBlank(release)){					
-					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(oid.trim(), expansionId, fiveMinServiceTicket);
+					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(oid.trim(), release, fiveMinServiceTicket);
 				} else {
 					if (StringUtils.isBlank(expansionId)) {
 						expansionId = getDefaultExpId();
 					}
 					
-					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(oid.trim(),fiveMinServiceTicket, expansionId);
+					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(oid.trim(), fiveMinServiceTicket, expansionId);
 				}
 								
-				if(vsacResponseResult != null && vsacResponseResult.getXmlPayLoad() != null && !StringUtils.isEmpty(vsacResponseResult.getXmlPayLoad())) {
+				if (vsacResponseResult != null && StringUtils.isNotBlank(vsacResponseResult.getXmlPayLoad())) {
 					result.setSuccess(true);
 					VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
 					result.setVsacResponse(wrapper.getValueSetList());
 					LOGGER.info("Successfully converted valueset object from vsac xml payload.");
 				} else {
 					result.setSuccess(false);
-					LOGGER.info("Unable to reterive value set in VSAC.");
+					LOGGER.info("Unable to retrieve value set in VSAC.");
 				}
 			} else {
 				result.setSuccess(false);
@@ -502,7 +502,7 @@ public class VSACApiServImpl implements VSACApiService{
 			LOGGER.info("UMLS Login is required");
 		}
 		LOGGER.info("End VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :"
-				+ oid + "for Expansion Idnetifier entered :" + expansionId);
+				+ oid + "for Expansion Identifier entered :" + expansionId);
 		return result;
 	}
 	

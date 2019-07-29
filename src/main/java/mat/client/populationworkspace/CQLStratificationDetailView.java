@@ -221,6 +221,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 
 		if (!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
 			population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
+			population.setCqlExpressionType("cqldefinition");
 		} else {
 			population.setCqlExpressionDisplayName("");
 		}

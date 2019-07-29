@@ -2103,13 +2103,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public final SaveMeasureResult saveMeasureDetails(final ManageMeasureDetailModel model) {
+	public final SaveMeasureResult saveMeasureDetails(final ManageMeasureDetailModel model) throws MatException {
 		logger.info("In MeasureLibraryServiceImpl.saveMeasureDetails() method..");
 		Measure measure = measurePackageService.getById(model.getId());
 		setCQLLibraryName(measure, model);
 		model.scrubForMarkUp();
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
 		List<String> message = manageMeasureModelValidator.validateMeasure(model);
+		if (isDuplicateMeasureType(model.getMeasureTypeSelectedList()) || isDuplicateMeasureDeveloper(model.getAuthorSelectedList())) {
+			throw new MatException();
+		}
+		
 		String existingMeasureScoringType = "";
 		if (message.isEmpty()) {
 			if (model.getId() != null) {
@@ -2154,6 +2158,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			logger.info("Saving of Measure Details Failed. Invalid Data issue.");
 			return result;
 		}
+	}
+	
+	private boolean isDuplicateMeasureType(List<MeasureType> measureTypes) {
+		Set<MeasureType> allItems = new HashSet<>();
+		Set<MeasureType> duplicates = measureTypes.stream()
+		        .filter(n -> !allItems.add(n)) //Set.add() returns false if the item was already in the set.
+		        .collect(Collectors.toSet());
+		return duplicates.size() > 0;
+	}
+	
+	private boolean isDuplicateMeasureDeveloper(List<Author> measureDevelopers) {
+		Set<Author> allItems = new HashSet<>();
+		Set<Author> duplicates = measureDevelopers.stream()
+		        .filter(n -> !allItems.add(n)) //Set.add() returns false if the item was already in the set.
+		        .collect(Collectors.toSet());
+		return duplicates.size() > 0;
 	}
 
 	private void updateMeasureXml(final ManageMeasureDetailModel model, Measure measure,
@@ -5804,7 +5824,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) {
+	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) throws MatException {
+		
+		if (isDuplicateMeasureType(model.getMeasureTypeSelectedList()) || isDuplicateMeasureDeveloper(model.getAuthorSelectedList())) {
+			throw new MatException();
+		}
+		
 		boolean isExisting = false;
 		// Scrubbing out Mark Up.
 		if (model != null) {

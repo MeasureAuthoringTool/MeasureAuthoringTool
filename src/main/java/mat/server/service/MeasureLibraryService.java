@@ -191,10 +191,11 @@ public interface MeasureLibraryService {
 	 * @param model
 	 *            the model
 	 * @return the save measure result
+	 * @throws MatException 
 	 */
 	SaveMeasureResult saveOrUpdateMeasure(ManageMeasureDetailModel model);
 	
-	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model);
+	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) throws MatException;
 	
 	void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException, AuthenticationException;
 	
@@ -217,8 +218,9 @@ public interface MeasureLibraryService {
 	 * @param model
 	 *            the model
 	 * @return the save measure result
+	 * @throws MatException 
 	 */
-	SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model);
+	SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model) throws MatException;
 	
 	/**
 	 * Save measure xml.

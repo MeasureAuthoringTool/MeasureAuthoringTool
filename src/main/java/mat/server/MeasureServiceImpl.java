@@ -140,7 +140,7 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 	
 	@Override
-	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) {
+	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) throws MatException {
 		return this.getMeasureLibraryService().saveCompositeMeasure(model);
 	}
 	
@@ -155,7 +155,7 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 	
 	@Override
-	public SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model) {
+	public SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model) throws MatException {
 		return this.getMeasureLibraryService().saveMeasureDetails(model);
 	}
 	

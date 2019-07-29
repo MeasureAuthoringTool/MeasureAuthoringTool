@@ -187,10 +187,11 @@ public interface MeasureService extends RemoteService {
 	 * @param model
 	 *            the model
 	 * @return the save measure result
+	 * @throws MatException 
 	 */
 	SaveMeasureResult saveNewMeasure(ManageMeasureDetailModel model);
 	
-	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model);
+	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) throws MatException;
 	
 	/**
 	 * Save Called To update Revision Number at Create New Package button Click.
@@ -220,8 +221,9 @@ public interface MeasureService extends RemoteService {
 	 * @param model
 	 *            the model
 	 * @return the save measure result
+	 * @throws MatException 
 	 */
-	SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model);
+	SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model) throws MatException;
 
 	/**
 	 * Save measure xml.

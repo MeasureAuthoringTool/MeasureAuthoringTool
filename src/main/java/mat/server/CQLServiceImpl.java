@@ -154,7 +154,14 @@ public class CQLServiceImpl implements CQLService {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
-
+		
+		CQLModelValidator validator = new CQLModelValidator();
+		if(validator.isLibraryNameMoreThan500Characters(libraryName)) {
+			result.setSuccess(false);
+			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
+			return result;
+		}
+		
 		if (xml != null) {
 			XmlProcessor processor = new XmlProcessor(xml);
 

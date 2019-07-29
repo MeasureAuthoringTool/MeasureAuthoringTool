@@ -108,5 +108,8 @@ public class CQLModelValidator {
 		return comment.length() > 2500;
 	}
 
+	public boolean isLibraryNameMoreThan500Characters(String name) {
+		return name.length() > 500;
+	}
 	
 }

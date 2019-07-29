@@ -38,6 +38,7 @@ public class CQLGeneralInformationView {
 	private static final String MARGIN_STYLE = "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;";
 	
 	private static final String COMMENTS_MAX_LENGTH = "2500";
+	private static final int CQL_LIBRARY_NAME_MAX_LENGTH = 500;
 	private TextArea comments = new TextArea();
 	private InAppHelp inAppHelp = new InAppHelp("");
 	
@@ -67,6 +68,7 @@ public class CQLGeneralInformationView {
 		libraryNameTextBox.getElement().setAttribute(STYLE, MARGIN_STYLE);
 		libraryNameTextBox.getElement().setId("libraryNameValue_TextBox");
 		libraryNameTextBox.setTitle("Required");
+		libraryNameTextBox.setMaxLength(CQL_LIBRARY_NAME_MAX_LENGTH);
 		
 		libraryNameGroup.add(libraryNameLabel);
 		libraryNameGroup.add(libraryNameTextBox);

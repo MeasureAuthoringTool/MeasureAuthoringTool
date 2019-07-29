@@ -71,6 +71,7 @@ import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
+import mat.shared.validator.measure.ManageMeasureModelValidator;
 
 /**
  * The Class MeasureCloningServiceImpl.
@@ -160,16 +161,15 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	
 	@Override
 	public Result draftExistingMeasure(ManageMeasureDetailModel currentDetails) throws MatException {
-		
 		if (!MatContextServiceUtil.get().isCurrentMeasureDraftable(measureDAO, userDAO, currentDetails.getId())) {
 			createException(CANNOT_ACCESS_MEASURE);
 		}
-		
+			
 		String name = measureDAO.getMeasureNameIfDraftAlreadyExists(currentDetails.getMeasureSetId());
 		if (StringUtils.isNotBlank(name)) {
 			createException("This draft can not be created. A draft of " + name + " has already been created in the system.");
 		}
-		
+	
 		return clone(currentDetails, true);
 	}
 
@@ -188,6 +188,13 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 		cqlService = (CQLService) context.getBean("cqlService");
 
 		cqlLibraryService = (CQLLibraryService) context.getBean("cqlLibraryService");
+		
+		ManageMeasureModelValidator validator = new ManageMeasureModelValidator();
+		List<String> messages = validator.validateMeasure(currentDetails);
+		
+		if(!messages.isEmpty()) {
+			throw new MatException(MessageDelegate.GENERIC_ERROR_MESSAGE);
+		}
 
 		if (cqlService.checkIfLibraryNameExists(currentDetails.getCQLLibraryName(), currentDetails.getMeasureSetId())){
 			throw new MatException(MessageDelegate.DUPLICATE_LIBRARY_NAME);

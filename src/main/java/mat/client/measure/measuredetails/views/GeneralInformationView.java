@@ -41,6 +41,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	private static final String EMPTY_STRING = "";
 	private static final String TEXT_BOX_WIDTH = "300px";
 	private static final int ECQM_ABBR_MAX_LENGTH = 32;
+	private static final int MEASURE_NAME_MAX_LENGTH = 500;
 	private FlowPanel mainPanel = new FlowPanel();
 	private GeneralInformationModel generalInformationModel;
 	private GeneralInformationModel originalModel;
@@ -418,6 +419,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		measureNameInput.setId("measureNameInput");
 		measureNameInput.setText(generalInformationModel.getMeasureName());
 		measureNameInput.setWidth(TEXT_BOX_WIDTH);
+		measureNameInput.setMaxLength(MEASURE_NAME_MAX_LENGTH);
 		measureNamePanel.add(measureNameLabel);
 		measureNamePanel.add(measureNameInput);
 		return measureNamePanel;

@@ -9,6 +9,7 @@ import mat.shared.CQLModelValidator;
 public class CQLGeneralInformationUtility {
 	
 	public static final String COMMENT_LENGTH_ERROR = "Comment cannot exceed 2500 characters.";
+	public static final String LIBRARY_LENGTH_ERROR = "CQL Library Name cannot exceed 500 characters.";
 	
 	private CQLGeneralInformationUtility() {
 		throw new IllegalStateException("CQL General Information Utility");
@@ -26,6 +27,12 @@ public class CQLGeneralInformationUtility {
 		if(libraryName != null && !validator.doesAliasNameFollowCQLAliasNamingConvention(libraryName)) {
 			view.getLibraryNameGroup().setValidationState(ValidationState.ERROR);
 			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+			return false; 
+		}
+		
+		if(validator.isLibraryNameMoreThan500Characters(libraryName)) {
+			view.getLibraryNameGroup().setValidationState(ValidationState.ERROR);
+			messagePanel.getErrorMessageAlert().createAlert(LIBRARY_LENGTH_ERROR);
 			return false; 
 		}
 		

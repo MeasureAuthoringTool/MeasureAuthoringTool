@@ -1120,6 +1120,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 						if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
 							isLibraryNameExists = true;
 							messagePanel.getErrorMessageAlert().createAlert(MessageDelegate.DUPLICATE_LIBRARY_NAME_SAVE);
+						} else {
+							messagePanel.getErrorMessageAlert().createAlert(MessageDelegate.GENERIC_ERROR_MESSAGE);
 						}
 					}
 				}

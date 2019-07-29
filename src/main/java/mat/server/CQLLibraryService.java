@@ -312,6 +312,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 		if(existingLibrary != null && isDraftable){
 			
+			CQLModelValidator validator = new CQLModelValidator();
+			if(validator.isLibraryNameMoreThan500Characters(libraryName)) {
+				throw new MatException(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+			}
+			
 			if (cqlService.checkIfLibraryNameExists(libraryName, existingLibrary.getSetId())) {
 				throw new MatException(MessageDelegate.DUPLICATE_LIBRARY_NAME);
 			}
@@ -614,11 +619,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			message.add(MatContext.get().getMessageDelegate().getLibraryNameRequired());
 		} else {
 			CQLModelValidator cqlLibraryModel = new CQLModelValidator();
-			boolean isValid = cqlLibraryModel.doesAliasNameFollowCQLAliasNamingConvention(model.getCqlName());
-			if(!isValid){
+			boolean isValid = cqlLibraryModel.doesAliasNameFollowCQLAliasNamingConvention(model.getCqlName())
+					|| !cqlLibraryModel.isLibraryNameMoreThan500Characters(model.getCqlName());
+			if(!isValid) {
 				message.add(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
-			}
-			
+			}	
 		}
 
 		return message;

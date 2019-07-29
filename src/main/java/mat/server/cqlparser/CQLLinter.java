@@ -63,6 +63,10 @@ public class CQLLinter extends cqlBaseListener {
 	private boolean enteredLibraryDefinition = false;
 	private boolean enteredUsingDefinition = false;
 	private int libraryDefinitionStartLine;
+	private int definitionStartLine;
+	private int contextLine;
+	private int parameterStartLine;
+	private int terminologyEndLine;
 	private int noCommentZoneStartLine;
 	private int noCommentZoneEndLine;
 	
@@ -96,12 +100,17 @@ public class CQLLinter extends cqlBaseListener {
 		walker.walk(this, tree);
 		doPostProcessing(parser, tokens);
 	} 
-	
+		
 	private void doPostProcessing(cqlParser parser, CommonTokenStream tokens) {		
 		if(isCommentInNoCommentZone(tokens)) {
 			hasInvalidEdits = true;
 		}
 		
+		if(isLineCommentInIncorrectSpot(tokens)) {
+			this.warningMessages.add("End-line comments are not permitted immediately preceding the "
+					+ "parameter or definition sections of the CQL library and have been removed.");
+		}
+				
 		if(hasExtraneousCodesystem() || hasMissingCodesystem()) {
 			hasInvalidEdits = true;
 		}
@@ -186,6 +195,37 @@ public class CQLLinter extends cqlBaseListener {
 		return codesystemName;
 	}
 	
+	private boolean isLineCommentInIncorrectSpot(CommonTokenStream tokens) {
+		List<Token> comments = new ArrayList<>();
+		for(Token token: tokens.getTokens()) {
+			if(token.getText().startsWith("//")) {
+				comments.add(token);
+			}
+		}
+		
+		return isLineCommentBetweenContextAndFirstDefinition(comments) || isLineCommentBetweenTerminologyAndFirstParameter(comments);
+	}
+	
+	private boolean isLineCommentBetweenTerminologyAndFirstParameter(List<Token> comments) {
+		for(Token comment : comments) {
+			if(comment.getLine() >= terminologyEndLine && comment.getLine() <= parameterStartLine) {
+				return true;
+			}
+		}		
+		
+		return false;
+	}
+
+	private boolean isLineCommentBetweenContextAndFirstDefinition(List<Token> comments) {
+		for(Token comment : comments) {
+			if(comment.getLine() >= contextLine && comment.getLine() <= definitionStartLine) {
+				return true;
+			}
+		}		
+		
+		return false;
+	}
+
 	/**
 	 * the "no comment zone" goes from the beginning of the file to the library declaration statement and then
 	 * the using statement to the end of the concept definition section
@@ -389,6 +429,7 @@ public class CQLLinter extends cqlBaseListener {
 		} 
 
 		numberOfValuesets++;
+		terminologyEndLine = ctx.getStop().getLine();
 		noCommentZoneEndLine = ctx.getStop().getLine();
 	}
 
@@ -421,6 +462,7 @@ public class CQLLinter extends cqlBaseListener {
 		} 
 		
 		numberOfCodes++;
+		terminologyEndLine = ctx.getStop().getLine();
 		noCommentZoneEndLine = ctx.getStop().getLine();
 	}
 	
@@ -429,6 +471,8 @@ public class CQLLinter extends cqlBaseListener {
 		if(ctx != null) {
 			this.warningMessages.add("The MAT does not support concept declarations. Any entered concept declarations have been removed from the CQL file.");
 		}
+		
+		terminologyEndLine = ctx.getStop().getLine();
 	}
 	
 	private void createErrorIfAccessModifier(AccessModifierContext ctx) {
@@ -439,6 +483,10 @@ public class CQLLinter extends cqlBaseListener {
 	
 	@Override
 	public void enterContextDefinition(ContextDefinitionContext ctx) {
+		if(contextLine == 0) {
+			contextLine = ctx.getStart().getLine();
+		}
+		
 		if(!"Patient".equals(CQLParserUtil.parseString(ctx.identifier().getText()))) {
 			this.warningMessages.add("The MAT only supports expressions with a context of patient. All expressions have been placed under context patient.");
 		}
@@ -446,12 +494,20 @@ public class CQLLinter extends cqlBaseListener {
 	
 	@Override
 	public void enterParameterDefinition(ParameterDefinitionContext ctx) {
+		if(parameterStartLine == 0) {
+			parameterStartLine = ctx.getStart().getLine();
+		}
+		
 		createErrorIfAccessModifier(ctx.accessModifier());
 		createErrorIfIdentifierIsUnquoted(ctx.identifier().getText());
 	}
 	
 	@Override
 	public void enterExpressionDefinition(ExpressionDefinitionContext ctx) {
+		if(definitionStartLine == 0) {
+			definitionStartLine = ctx.getStart().getLine();
+		}
+		
 		createErrorIfAccessModifier(ctx.accessModifier());
 		createErrorIfIdentifierIsUnquoted(ctx.identifier().getText());
 	}

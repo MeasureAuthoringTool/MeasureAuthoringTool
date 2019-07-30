@@ -121,10 +121,10 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 	}
 	
 	
-	public void buildCQLFileView(boolean isEditable) {
+	public void buildCQLFileView(boolean isEditorEditable, boolean isPageEditable) {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
-		mainFlowPanel.add(cqlViewCQLView.buildView(isEditable));
+		mainFlowPanel.add(cqlViewCQLView.buildView(isEditorEditable, isPageEditable));
 
 	}
 	

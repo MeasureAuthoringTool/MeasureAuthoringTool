@@ -1436,7 +1436,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().getCQLLibraryEditorTab().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_VIEW_MENU;
 			UserPreferenceDTO userPreference = MatContext.get().getLoggedInUserPreference();
-			cqlWorkspaceView.buildCQLFileView(hasEditPermissions() && userPreference.isFreeTextEditorEnabled());
+			cqlWorkspaceView.buildCQLFileView(hasEditPermissions() && userPreference.isFreeTextEditorEnabled(), hasEditPermissions());
 			buildCQLView();
 		}
 		addEventHandlerOnAceEditors();

@@ -23,6 +23,7 @@ import mat.client.buttons.SaveButton;
 import mat.client.cqlworkspace.shared.CQLEditor;
 import mat.client.cqlworkspace.shared.CQLEditorPanel;
 import mat.client.inapphelp.component.InAppHelp;
+import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.shared.CQLError;
@@ -54,9 +55,9 @@ public class CQLLibraryEditorView {
 		return this.saveButton;
 	}
 	
-	public VerticalPanel buildView(boolean isEditable){
+	public VerticalPanel buildView(boolean isEditorEditable, boolean isPageEditable){
 
-		editorPanel = new CQLEditorPanel(CQL_LIBRARY_EDITOR_ID, "CQL Library Editor", !isEditable);
+		editorPanel = new CQLEditorPanel(CQL_LIBRARY_EDITOR_ID, "CQL Library Editor", !isEditorEditable);
 		cqlLibraryEditorVP.clear();
 		cqlLibraryEditorVP.getElement().setId("cqlLibraryEditor_Id");
 		heading.addStyleName("leftAligned");
@@ -67,7 +68,7 @@ public class CQLLibraryEditorView {
 		getCqlAceEditor().setText("");
 		getCqlAceEditor().clearAnnotations();
 		
-		if(isEditable) {
+		if(isPageEditable) {
 			exportErrorFile.setPull(Pull.LEFT);
 			cqlLibraryEditorVP.add(exportErrorFile);
 		}
@@ -78,9 +79,9 @@ public class CQLLibraryEditorView {
 		fp.add(insertButton);
 		cqlLibraryEditorVP.add(fp);
 		
-		getCqlAceEditor().setReadOnly(!isEditable); 
-		getSaveButton().setEnabled(isEditable);
-		insertButton.setEnabled(isEditable);
+		getCqlAceEditor().setReadOnly(!isEditorEditable); 
+		getSaveButton().setEnabled(isEditorEditable);
+		insertButton.setEnabled(isEditorEditable);
 		
 		this.editorPanel.getEditor().addDomHandler(event -> editorPanel.catchTabOutKeyCommand(event, saveButton), KeyUpEvent.getType());
 		editorPanel.setSize("650px", "500px");

@@ -45,6 +45,6 @@ public interface CQLWorkspaceView {
 	public void buildParameterLibraryView();
 	public void buildDefinitionLibraryView();
 	public void buildFunctionLibraryView();
-	public void buildCQLFileView(boolean isEditable);
+	public void buildCQLFileView(boolean isEditorEditable, boolean isPageEditable);
 	public String getClickedMenu();
 }

@@ -6,6 +6,7 @@ import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
@@ -34,8 +35,8 @@ import mat.client.shared.WarningMessageAlert;
 public class AbstractNewMeasureView implements DetailDisplay {
 	protected SimplePanel mainPanel = new SimplePanel();
 	protected MeasureNameLabel measureNameLabel = new MeasureNameLabel();
-	protected TextAreaWithMaxLength measureNameTextBox = new TextAreaWithMaxLength();
-	protected TextAreaWithMaxLength cqlLibraryNameTextBox = new TextAreaWithMaxLength();
+	protected TextArea measureNameTextBox = new TextArea();
+	protected TextArea cqlLibraryNameTextBox = new TextArea();
 	protected TextBox eCQMAbbreviatedTitleTextBox = new TextBox();
 	protected MessageAlert errorMessages = new ErrorMessageAlert();
 	protected WarningConfirmationMessageAlert warningMessageAlert = new WarningConfirmationMessageAlert();

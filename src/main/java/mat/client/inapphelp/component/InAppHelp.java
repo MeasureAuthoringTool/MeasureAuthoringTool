@@ -6,17 +6,21 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalHeader;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
+import org.gwtbootstrap3.client.ui.html.Paragraph;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 
 import mat.client.buttons.InAppHelpButton;
 import mat.client.shared.MatContext;
+import mat.client.util.ClientConstants;
 
 public class InAppHelp extends Composite {
 	
@@ -33,6 +37,8 @@ public class InAppHelp extends Composite {
 	private FocusPanel messageFocusPanel = new FocusPanel();
 	
 	private ClickHandler handler;
+	
+	private HorizontalPanel footerPanel = new HorizontalPanel();
 	
 	public InAppHelp(String message) {
 		this.message = message;
@@ -81,12 +87,34 @@ public class InAppHelp extends Composite {
 		helpModal.add(body);
 		
 		ModalFooter footer = new ModalFooter();
+		Paragraph linkToUserGuideText = new Paragraph();
+        linkToUserGuideText.setText("For additional information, please see the ");
+        linkToUserGuideText.setPaddingRight(8);
+        linkToUserGuideText.setMarginTop(18);
+        
+        Button linkToUserGuideButton = new Button();
+        linkToUserGuideButton.setType(ButtonType.LINK);
+        linkToUserGuideButton.setDataTarget(ClientConstants.USERGUIDE_URL);
+        linkToUserGuideButton.getElement().setId("MAT_User_Guide");
+        linkToUserGuideButton.setTitle("Click this link to navigate to the MAT User Guide");
+        linkToUserGuideButton.setText("MAT User Guide");
+        linkToUserGuideButton.setId("MAT_User_Guide");
+        linkToUserGuideButton.setSize(ButtonSize.SMALL);
+        linkToUserGuideButton.setPaddingRight(150);
+        linkToUserGuideButton.setMarginTop(12);
+        linkToUserGuideButton.setMarginLeft(-16);
+		linkToUserGuideButton.addClickHandler(event -> Window.open(ClientConstants.USERGUIDE_URL,"_blank","disabled"));
+       
 		Button closeButton = new Button("Close");
 		closeButton.setTitle("Close");
 		closeButton.setType(ButtonType.PRIMARY);
 		closeButton.addClickHandler(event -> hideHelpModal());
-		closeButton.setPull(Pull.RIGHT);
-		footer.add(closeButton);
+		linkToUserGuideButton.setMarginRight(218);
+		
+		footerPanel.add(linkToUserGuideText);
+		footerPanel.add(linkToUserGuideButton);
+		footerPanel.add(closeButton);
+		footer.add(footerPanel);
 		footer.getElement().setAttribute("style", "border-color: transparent");
 		helpModal.add(footer);
 		

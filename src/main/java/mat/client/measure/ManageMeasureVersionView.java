@@ -14,6 +14,7 @@ import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 
 public class ManageMeasureVersionView implements VersionDisplay {
@@ -24,6 +25,8 @@ public class ManageMeasureVersionView implements VersionDisplay {
 
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 
+	private MessagePanel messagePanel = new MessagePanel();
+	
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 
 	private FlowPanel mainPanel = new FlowPanel();
@@ -37,8 +40,8 @@ public class ManageMeasureVersionView implements VersionDisplay {
 		mainPanel.addStyleName("leftAligned");
 		mainPanel.add(new SpacerWidget());
 		
-		mainPanel.add(errorMessages);
-		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
+		mainPanel.add(messagePanel);
+		messagePanel.getElement().setId("errorMessages_ErrorMessageDisplay");
 		
 		VerticalPanel radioPanel = new VerticalPanel();
 		radioPanel.getElement().getStyle().setMarginLeft(5, Unit.PX);
@@ -116,5 +119,14 @@ public class ManageMeasureVersionView implements VersionDisplay {
 	@Override
 	public void setSelectedMeasure(ManageMeasureSearchModel.Result selectedMeasure) {
 		this.selectedMeasure = selectedMeasure;
+	}
+	
+	@Override
+	public MessagePanel getMessagePanel() {
+		return messagePanel;
+	}
+
+	public void setMessagePanel(MessagePanel messagePanel) {
+		this.messagePanel = messagePanel;
 	}
 }

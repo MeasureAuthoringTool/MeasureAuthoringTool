@@ -1111,11 +1111,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 						cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().setText(cqlLibraryName);
 						cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setText(result.getCqlModel().getLibraryComment());
 						cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setCursorPos(0);
-						messagePanel.getSuccessMessageAlert().createAlert(cqlLibraryName + " general information successfully updated");
-						setIsPageDirty(false);
+						displayMsgAndResetDirtyPostSave(cqlLibraryName);
 						MatContext.get().getCurrentLibraryInfo().setLibraryName(cqlLibraryName);
 						CqlComposerPresenter.setContentHeading();
-						isLibraryNameExists = false;
 					} else {
 						if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
 							isLibraryNameExists = true;

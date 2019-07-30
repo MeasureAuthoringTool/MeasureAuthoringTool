@@ -102,6 +102,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		
 		private Boolean isComposite;
 		
+		private String cqlLibraryName;
 		
 		public Result() {
 			
@@ -137,6 +138,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 			this.isPatientBased = result.isPatientBased();
 			this.qdmVersion = result.getQdmVersion();
 			this.isComposite = result.getIsComposite();
+			this.cqlLibraryName = result.getCqlLibraryName();
 		}
 		
 
@@ -698,6 +700,14 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 
 		public void setIsComposite(Boolean isComposite) {
 			this.isComposite = isComposite;
+		}
+
+		public String getCqlLibraryName() {
+			return cqlLibraryName;
+		}
+
+		public void setCqlLibraryName(String cqlLibraryName) {
+			this.cqlLibraryName = cqlLibraryName;
 		}
 	}
 	

@@ -6,7 +6,6 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 
 public class NewMeasureView extends AbstractNewMeasureView {
 	
@@ -21,11 +20,8 @@ public class NewMeasureView extends AbstractNewMeasureView {
 		measureNameGroup.add(measureNameLabel);
 		measureNameGroup.add(measureNameTextBox);
 		
-		
-		FormLabel cqlLibraryNameLabel = buildCQLLibraryNameLabel();
-		buildCQLLibraryTextArea();
-		cqlLibraryNameGroup.add(cqlLibraryNameLabel);
-		cqlLibraryNameGroup.add(cqlLibraryNameTextBox);
+		HorizontalPanel cqlLibraryNamePanel = buildCQLLibraryNamePanel();
+		cqlLibraryNameGroup.add(cqlLibraryNamePanel);
 		
 		FormLabel shortNameLabel = buildShortNameLabel();
 		buildShortNameTextBox();

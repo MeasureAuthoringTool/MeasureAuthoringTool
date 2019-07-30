@@ -21,6 +21,7 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.QDSAppliedListModel;
+import mat.client.cqlworkspace.AbstractCQLWorkspacePresenter;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -41,6 +42,7 @@ import mat.model.RiskAdjustmentDTO;
 import mat.model.cql.CQLDefinition;
 import mat.shared.MeasurePackageClauseValidator;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.StringUtility;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
 import mat.shared.bonnie.error.UMLSNotActiveException;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
@@ -149,6 +151,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		MessageAlert getInProgressMessageDisplay();
 
 		WarningMessageAlert getMeasurePackageWarningMsg();
+		WarningMessageAlert getCqlLibraryNameWarningMsg();
 
 		WarningConfirmationMessageAlert getSaveErrorMessageDisplay();
 		WarningConfirmationMessageAlert getSaveErrorMessageDisplayOnEdit();
@@ -611,6 +614,7 @@ private void saveMeasureAtPackage(){
 	}
 	
 	private void clearMessages() {
+		view.getCqlLibraryNameWarningMsg().clearAlert();
 		view.getPackageSuccessMessageDisplay().clearAlert();
 		view.getSupplementalDataElementSuccessMessageDisplay().clearAlert();
 		view.getSupplementalDataElementErrorMessageDisplay().clearAlert(); 
@@ -664,6 +668,9 @@ private void saveMeasureAtPackage(){
 							if(result.getCqlErrors().isEmpty() && result.getLinterErrors().isEmpty()
 									&& result.getFailureReason() != SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
 								getMeasure(MatContext.get().getCurrentMeasureId());
+								
+								checkAndDisplayLibraryNameWarning(result.getCqlModel().getLibraryName());
+								
 							} else{
 								panel.clear();
 								panel.getElement().setId("MeasurePackagerContentFlowPanel");
@@ -684,6 +691,12 @@ private void saveMeasureAtPackage(){
 		
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MeasurePackagerContentFlowPanel");
 		Mat.focusSkipLists("MeasureComposer");
+	}
+	
+	private void checkAndDisplayLibraryNameWarning(String libraryName) {
+		if (isEditable() && StringUtility.isNotBlank(libraryName) && libraryName.length() > AbstractCQLWorkspacePresenter.CQL_LIBRARY_NAME_WARNING_LENGTH) {
+			view.getCqlLibraryNameWarningMsg().createAlert(AbstractCQLWorkspacePresenter.CQL_LIBRARY_NAME_WARNING_MESSAGE);
+		}
 	}
 
 	@Override

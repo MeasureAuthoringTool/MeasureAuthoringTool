@@ -42,6 +42,7 @@ import mat.client.MatPresenter;
 import mat.client.TabObserver;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.events.OnChangeMeasureVersionOptionsEvent;
+import mat.client.cqlworkspace.AbstractCQLWorkspacePresenter;
 import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
@@ -389,13 +390,20 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 
 	private void createVersion() {
-		versionDisplay.getErrorMessageDisplay().clearAlert();
+		versionDisplay.getMessagePanel().clearAlerts();
 		searchDisplay.resetMessageDisplay();
 		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Create Measure Version of Draft", MEASURE_LIBRARY);
 		panel.setContent(versionDisplay.asWidget());
 		Mat.focusSkipLists(MEASURE_LIBRARY);
 		clearRadioButtonSelection();
+		checkAndDisplayLibraryNameWarning();
+	}
+	
+	private void checkAndDisplayLibraryNameWarning() {
+		if (versionDisplay.getSelectedMeasure().getCqlLibraryName().length() > AbstractCQLWorkspacePresenter.CQL_LIBRARY_NAME_WARNING_LENGTH) {
+			versionDisplay.getMessagePanel().getWarningMessageAlert().createAlert(AbstractCQLWorkspacePresenter.CQL_LIBRARY_NAME_WARNING_MESSAGE);
+		}
 	}
 	
 	private void componentMeasureDisplayHandlers() {
@@ -1175,7 +1183,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 			@Override
 			public void onFailure(Throwable caught) {
 				setSearchingBusy(false);
-				versionDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
 			}
 
@@ -1209,7 +1217,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 		isMeasureVersioned = false;
 		switch (failureReason) {
 		case ConstantMessages.INVALID_CQL_DATA :
-			versionDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
+			versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
 			break;
 		case SaveMeasureResult.UNUSED_LIBRARY_FAIL :
 			displayUnusedLibraryDialog(measureId, measureName, isMajor, version, shouldPackage);
@@ -1682,7 +1690,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 				measureDeletion = false;
 				isMeasureVersioned = false;
 				searchDisplay.resetMessageDisplay();
-				versionDisplay.getErrorMessageDisplay().clearAlert();
+				versionDisplay.getMessagePanel().clearAlerts();
 
 				detailDisplay.getErrorMessageDisplay().clearAlert();
 				historyDisplay.getErrorMessageDisplay().clearAlert();
@@ -2195,7 +2203,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 			isMeasureDeleted = false;
 			measureDeletion = false;
 			ManageMeasureSearchModel.Result selectedMeasure = versionDisplay.getSelectedMeasure();
-			versionDisplay.getErrorMessageDisplay().clearAlert();
+			versionDisplay.getMessagePanel().clearAlerts();
 			if (((selectedMeasure != null) && (selectedMeasure.getId() != null))
 					&& (versionDisplay.getMajorRadioButton().getValue()
 							|| versionDisplay.getMinorRadioButton().getValue())) {
@@ -2204,7 +2212,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 				boolean ignoreUnusedIncludedLibraries = false; 
 				saveFinalizedVersion(selectedMeasure.getId(), selectedMeasure.getName(),versionDisplay.getMajorRadioButton().getValue(), selectedMeasure.getVersion(), shouldPackage, ignoreUnusedIncludedLibraries);		
 			} else {
-				versionDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getERROR_LIBRARY_VERSION());
+				versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_LIBRARY_VERSION());
 			}
 		}
 	

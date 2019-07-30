@@ -950,6 +950,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Measure measure = measureDAO.find(dto.getMeasureId());
 		detail.setName(dto.getMeasureName());
 		detail.setShortName(dto.getShortName());
+		detail.setCqlLibraryName(StringUtils.defaultString(measure.getCqlLibraryName()));
 		detail.setScoringType(dto.getScoringType());
 		detail.setStatus(dto.getStatus());
 		detail.setId(dto.getMeasureId());
@@ -1111,6 +1112,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
 		detail.setName(measure.getDescription());
 		detail.setShortName(measure.getaBBRName());
+		detail.setCqlLibraryName(StringUtils.defaultString(measure.getCqlLibraryName()));
 		detail.setId(measure.getId());
 		detail.setDraft(measure.isDraft());
 		detail.setIsComposite(measure.getIsCompositeMeasure());

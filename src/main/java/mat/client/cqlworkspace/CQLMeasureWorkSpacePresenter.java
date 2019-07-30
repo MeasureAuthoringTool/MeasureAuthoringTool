@@ -233,9 +233,9 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						cqlLibraryComment = result.getCqlModel().getLibraryComment();
 						cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setText(cqlLibraryComment);
 						cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setCursorPos(0);
-						messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getCurrentMeasureName() + " general information successfully updated.");
-						setIsPageDirty(false);
-						isLibraryNameExists = false;
+						
+						displayMsgAndResetDirtyPostSave(MatContext.get().getCurrentMeasureName());
+						
 					} else {
 						if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
 							isLibraryNameExists = true;

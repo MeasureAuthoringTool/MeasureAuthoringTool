@@ -117,7 +117,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private MessageAlert riskAdjustmentErrorMessage = new ErrorMessageAlert();
 
 	private WarningMessageAlert measurePackageWarningMsg = new WarningMessageAlert();
-
+	private WarningMessageAlert cqlLibraryNameWarningMsg = new WarningMessageAlert();
+	
 	private WarningConfirmationMessageAlert saveErrorMessageDisplay = new WarningConfirmationMessageAlert();
 	private WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit = new WarningConfirmationMessageAlert();
 
@@ -170,6 +171,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 		content.add(saveErrorMessageDisplay);
 		content.add(saveErrorMessageDisplayOnEdit);
+		content.add(cqlLibraryNameWarningMsg);
 		content.add(cellTablePanel);
 		cellTablePanel.setVisible(false); // default hidden, only show if there is more than 0 groupings
 		content.add(new SpacerWidget());
@@ -1397,6 +1399,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		setCQLElementsInSuppElements(new ArrayList<CQLDefinition>());
 		setCQLQDMElements(new ArrayList<CQLDefinition>());
 
+	}
+
+	public WarningMessageAlert getCqlLibraryNameWarningMsg() {
+		return cqlLibraryNameWarningMsg;
+	}
+
+	public void setCqlLibraryNameWarningMsg(WarningMessageAlert cqlLibraryNameWarningMsg) {
+		this.cqlLibraryNameWarningMsg = cqlLibraryNameWarningMsg;
 	}
 
 }

@@ -9,6 +9,7 @@ import org.gwtbootstrap3.client.ui.TextArea;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -16,10 +17,12 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.CqlLibraryPresenter;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
+import mat.client.measure.AbstractNewMeasureView;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
+
 public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 	
 
@@ -44,35 +47,37 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 		resetAll();
 		mainDetailViewVP.setStylePrimaryName("contentPanel");
 		mainDetailViewVP.addStyleName("leftAligned");
-		
-		VerticalPanel contentPanel = new VerticalPanel();
-		contentPanel.setWidth("90%");	
-		contentPanel.setHeight("100%");
-		
-		
-		FormGroup nameGroup = new FormGroup();
+				
 		FormLabel nameLabel = new FormLabel();
 		nameLabel.setText(CQL_LIBRARY_NAME);
 		nameLabel.setTitle(CQL_LIBRARY_NAME);
 		nameLabel.setShowRequiredIndicator(true);
 		nameLabel.setMarginTop(5);
 		nameLabel.setId("cqlLibraryName_Label");
+		
 		nameField.setId("CQLLibraryName_Input");
 		nameField.setTitle("Enter CQL Library Name Required");
 		nameField.setMaxLength(500);
 		nameField.setWidth("400px");
 		nameField.setHeight("50px");
 		
-		
+		FormGroup nameGroup = new FormGroup();
 		nameGroup.add(nameLabel);
-		nameGroup.add(nameField);
+		nameGroup.add(buildCQLLibraryNamePanel());
+
 		FormGroup buttonGroup = new FormGroup();
 		buttonGroup.add(buttonToolBar);
+		
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(nameGroup);
 		formFieldSet.add(buttonGroup);
+		
 		Form detailForm = new Form();
 		detailForm.add(formFieldSet);
+
+		VerticalPanel contentPanel = new VerticalPanel();
+		contentPanel.setWidth("90%");	
+		contentPanel.setHeight("100%");
 		contentPanel.add(new SpacerWidget());
 		contentPanel.add(new SpacerWidget());
 		contentPanel.add(instructions);
@@ -80,13 +85,19 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 		contentPanel.add(warningConfirmationAlert);
 		contentPanel.add(new SpacerWidget());
 		contentPanel.add(new SpacerWidget());
-		
 		contentPanel.add(detailForm);
 		contentPanel.add(new SpacerWidget());
 		contentPanel.add(new SpacerWidget());
 		
 		
 		mainDetailViewVP.add(contentPanel);
+	}
+
+	private HorizontalPanel buildCQLLibraryNamePanel() {
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.add(nameField);
+		horizontalPanel.add(new HTML(AbstractNewMeasureView.CAUTION_LIBRARY_NAME_MSG_STR));
+		return horizontalPanel;
 	}
 	
 	@Override

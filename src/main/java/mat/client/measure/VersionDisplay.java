@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.MessagePanel;
 
 public interface VersionDisplay extends BaseDisplay {
 
@@ -21,4 +22,6 @@ public interface VersionDisplay extends BaseDisplay {
 	void setSelectedMeasure(Result selectedMeasure);
 
 	MessageAlert getErrorMessageDisplay();
+	
+	MessagePanel getMessagePanel();
 }

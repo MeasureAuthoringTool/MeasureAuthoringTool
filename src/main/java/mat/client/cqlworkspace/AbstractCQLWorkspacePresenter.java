@@ -60,6 +60,10 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
 
 public abstract class AbstractCQLWorkspacePresenter {
+	
+	public static final int CQL_LIBRARY_NAME_WARNING_LENGTH = 200;
+	public static final String CQL_LIBRARY_NAME_WARNING_MESSAGE = "The CQL Library name exceeds 200 characters. Long CQL Library names may cause problems upon export with zip files and file storage.";
+	
 	protected static final String PATIENT = "Patient";
 	protected static final String POPULATION = "Population";
 	protected static final String CODES_SELECTED_SUCCESSFULLY = "All codes successfully selected.";
@@ -494,6 +498,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected abstract void saveCQLFile();
 	
 	protected void onSaveCQLFileSuccess(SaveUpdateCQLResult result) {
+		messagePanel.clearAlerts();
 		Color c = Color.GREEN;
 		cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().clearAnnotations();
 		SharedCQLWorkspaceUtility.displayAnnotationForViewCQL(result, cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor());
@@ -1723,20 +1728,34 @@ public abstract class AbstractCQLWorkspacePresenter {
 	}
 	
 	protected void buildOrClearErrorPanel() {
-		boolean isValidQDMVersion = cqlWorkspaceView.getCQLLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion(isStandaloneCQLLibrary());
-		List<String> errorMessageList = new ArrayList<>();
-		if (isLibraryNameExists) {
-			errorMessageList.add(MessageDelegate.DUPLICATE_LIBRARY_NAME);
+		if (hasEditPermissions()) {
+			boolean isValidQDMVersion = cqlWorkspaceView.getCQLLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion(isStandaloneCQLLibrary());
+			
+			List<String> errorMessageList = new ArrayList<>();
+			if (isLibraryNameExists) {
+				errorMessageList.add(MessageDelegate.DUPLICATE_LIBRARY_NAME);
+			}
+			if(!isValidQDMVersion){
+				errorMessageList.add(INVALID_QDM_VERSION_IN_INCLUDES);
+			} 
+			
+			displayErrorsOrWarnings(errorMessageList);
 		}
-		if(!isValidQDMVersion){
-			errorMessageList.add(INVALID_QDM_VERSION_IN_INCLUDES);
-		} 
-
+	}
+	
+	private void displayErrorsOrWarnings(List<String> errorMessageList) {
 		if (errorMessageList.isEmpty()) {
 			messagePanel.getErrorMessageAlert().clearAlert();
+			checkAndDisplayLibraryNameWarning();
 		} else {
 			messagePanel.getErrorMessageAlert().createAlert(errorMessageList);
 		} 
+	}
+	
+	private void checkAndDisplayLibraryNameWarning() {
+		if (cqlLibraryName.length() > AbstractCQLWorkspacePresenter.CQL_LIBRARY_NAME_WARNING_LENGTH) {
+			messagePanel.getWarningMessageAlert().createAlert(CQL_LIBRARY_NAME_WARNING_MESSAGE);
+		}
 	}
 	
 	protected void leftNavDefinitionClicked(ClickEvent event) {
@@ -1996,4 +2015,17 @@ public abstract class AbstractCQLWorkspacePresenter {
 			
 	}
 	
+	protected void displayMsgAndResetDirtyPostSave(String name) {
+		isLibraryNameExists = false;
+		setIsPageDirty(false);
+		String successMsg = name +  " general information successfully updated.";
+		if (cqlLibraryName.length() > AbstractCQLWorkspacePresenter.CQL_LIBRARY_NAME_WARNING_LENGTH) {
+			List<String> messageList = new ArrayList<>();
+			messageList.add(successMsg);
+			messageList.add(AbstractCQLWorkspacePresenter.CQL_LIBRARY_NAME_WARNING_MESSAGE);
+			messagePanel.getWarningMessageAlert().createAlert(messageList);
+		} else {
+			messagePanel.getSuccessMessageAlert().createAlert(successMsg);
+		}
+	}
 }

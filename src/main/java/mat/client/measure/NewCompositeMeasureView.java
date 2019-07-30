@@ -53,10 +53,8 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 		measureNameGroup.add(measureNameLabel);
 		measureNameGroup.add(measureNameTextBox);
 		
-		FormLabel cqlLibraryNameLabel = buildCQLLibraryNameLabel();
-		buildCQLLibraryTextArea();
-		cqlLibraryNameGroup.add(cqlLibraryNameLabel);
-		cqlLibraryNameGroup.add(cqlLibraryNameTextBox);
+		HorizontalPanel cqlLibraryNamePanel = buildCQLLibraryNamePanel();
+		cqlLibraryNameGroup.add(cqlLibraryNamePanel);
 		
 		FormLabel shortNameLabel = buildShortNameLabel();
 		buildShortNameTextBox();

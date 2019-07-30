@@ -951,6 +951,7 @@ private void saveMeasureAtPackage(){
 		List<MeasurePackageClauseDetail> remainingClauses = removeClauses(packageOverview.getClauses(), packageClauses);
 		view.setPackageName(currentDetail.getPackageName());
 		view.setClausesInPackage(packageClauses);
+		view.getPackageGroupingWidget().setPackageGroupingHeader("Package Grouping (Measure Grouping " + currentDetail.getSequence() + ")");
 		view.setClauses(remainingClauses);
 		if(packageOverview.getReleaseVersion() != null && MatContext.get().isCQLMeasure(packageOverview.getReleaseVersion())){
 			view.setCQLMeasure(true);

@@ -110,6 +110,8 @@ public class MeasurePackageClauseCellListWidget {
 	private SimplePanel clearButtonPanel = new SimplePanel();
 	
 	private MeasurePackagerAssociations associations = new MeasurePackagerAssociations();
+	
+	private PanelHeader packageGroupingPanelHeader = new PanelHeader(); 
 
 	public CellList<MeasurePackageClauseDetail> getRightCellList() {
 		CellList<MeasurePackageClauseDetail> rightCellList = new CellList<>(new RightClauseCell());
@@ -168,8 +170,8 @@ public class MeasurePackageClauseCellListWidget {
 
 		Panel packageGroupingPanel = new Panel(); 
 		packageGroupingPanel.setType(PanelType.PRIMARY);
-
-		PanelHeader packageGroupingPanelHeader = new PanelHeader(); 
+		
+		packageGroupingPanelHeader = new PanelHeader(); 
 		packageGroupingPanelHeader.setText("Package Grouping");
 		packageGroupingPanelHeader.setTitle("Package Grouping");
 
@@ -748,5 +750,10 @@ public class MeasurePackageClauseCellListWidget {
 
 	public void setAssociations(MeasurePackagerAssociations associations) {
 		this.associations = associations;
+	}
+
+	public void setPackageGroupingHeader(String string) {
+		packageGroupingPanelHeader.setText(string);
+		packageGroupingPanelHeader.setTitle(string);
 	}
 }

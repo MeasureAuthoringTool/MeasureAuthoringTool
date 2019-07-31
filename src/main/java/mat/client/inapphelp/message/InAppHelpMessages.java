@@ -236,7 +236,7 @@ public class InAppHelpMessages {
 
 	private static final String EDIT_CODE_HELP = "<b>Editing a Code:</b> To edit a code, click on the edit icon (pencil) to put the information back into the top of the screen, add an updated REST API URL (from VSAC) if necessary and click the Retrieve button. Once the information is retrieved from VSAC, changes can be made to the version inclusion and the suffix if necessary. Then click Apply to see the changes applied in the table.";
 	
-	public static final String MEASURE_CQL_LIBRARY_CODES = "<b>Retrieve:</b> Codes are retrieved from VSAC by use of a REST API URL found on the VSAC website. To retrieve a code, copy that REST API URL from VSAC, paste it into this field, and then click the Retrieve button. Note: you must be logged in to UMLS to successfully retrieve a code from VSAC.<br>" +
+	public static final String MEASURE_CQL_LIBRARY_CODES = "<b>Code URL:</b> Codes are retrieved from VSAC by use of a REST API URL found on the VSAC website. To retrieve a code, copy that REST API URL from VSAC, paste it into this field, and then click the Retrieve button. Note: you must be logged in to UMLS to successfully retrieve a code from VSAC.<br>" +
 			"<br>" +
 			"<b>Code Descriptor:</b> This field will fill in with the code descriptor associated with a code once it has been successfully retrieved from VSAC. This field is not editable.<br>" +
 			"<br>" +
@@ -256,7 +256,7 @@ public class InAppHelpMessages {
 			"<br>" 
 			+ EDIT_CODE_HELP;
 	
-	public static final String STANDALONE_CQL_LIBRARY_CODES = "<b>Retrieve:</b> Codes are retrieved from VSAC by use of a REST API URL found on the VSAC website. To retrieve a code, copy that REST API URL from VSAC, paste it into this field, and then click the Retrieve button. Note: you must be logged in to UMLS to successfully retrieve a code from VSAC.<br>" +
+	public static final String STANDALONE_CQL_LIBRARY_CODES = "<b>Code URL:</b> Codes are retrieved from VSAC by use of a REST API URL found on the VSAC website. To retrieve a code, copy that REST API URL from VSAC, paste it into this field, and then click the Retrieve button. Note: you must be logged in to UMLS to successfully retrieve a code from VSAC.<br>" +
 			"<br>" +
 			"<b>Code Descriptor:</b> This field will fill in with the code descriptor associated with a code once it has been successfully retrieved from VSAC. This field is not editable.<br>" +
 			"<br>" +

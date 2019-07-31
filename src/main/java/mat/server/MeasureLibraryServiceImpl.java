@@ -2112,7 +2112,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		model.scrubForMarkUp();
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
 		List<String> message = manageMeasureModelValidator.validateMeasure(model);
-		if (isDuplicateMeasureType(model.getMeasureTypeSelectedList()) || isDuplicateMeasureDeveloper(model.getAuthorSelectedList())) {
+		if ((CollectionUtils.isNotEmpty(model.getMeasureTypeSelectedList()) && isDuplicateMeasureType(model.getMeasureTypeSelectedList())) || (CollectionUtils.isNotEmpty(model.getAuthorSelectedList()) && isDuplicateMeasureDeveloper(model.getAuthorSelectedList()))) {
 			throw new MatException();
 		}
 		
@@ -2167,7 +2167,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Set<MeasureType> duplicates = measureTypes.stream()
 		        .filter(n -> !allItems.add(n)) //Set.add() returns false if the item was already in the set.
 		        .collect(Collectors.toSet());
-		return duplicates.size() > 0;
+		return !duplicates.isEmpty();
 	}
 	
 	private boolean isDuplicateMeasureDeveloper(List<Author> measureDevelopers) {
@@ -2175,7 +2175,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Set<Author> duplicates = measureDevelopers.stream()
 		        .filter(n -> !allItems.add(n)) //Set.add() returns false if the item was already in the set.
 		        .collect(Collectors.toSet());
-		return duplicates.size() > 0;
+		return !duplicates.isEmpty();
 	}
 
 	private void updateMeasureXml(final ManageMeasureDetailModel model, Measure measure,
@@ -5828,7 +5828,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) throws MatException {
 		
-		if (isDuplicateMeasureType(model.getMeasureTypeSelectedList()) || isDuplicateMeasureDeveloper(model.getAuthorSelectedList())) {
+		if ((CollectionUtils.isNotEmpty(model.getMeasureTypeSelectedList()) && isDuplicateMeasureType(model.getMeasureTypeSelectedList())) || (CollectionUtils.isNotEmpty(model.getAuthorSelectedList()) && isDuplicateMeasureDeveloper(model.getAuthorSelectedList()))) {
 			throw new MatException();
 		}
 		

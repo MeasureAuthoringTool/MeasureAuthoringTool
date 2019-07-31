@@ -63,7 +63,7 @@ public class MessageDelegate {
 	private static final String INVALID_COMMENT_CHARACTERS = "Comments can not contain /* or */.";
 	private static final String PACKAGER_CQL_ERROR = "Your CQL file contains validation errors. Errors must be corrected before proceeding to measure packaging. Please return to the CQL Workspace to make corrections.";
 	private static final String SUCCESSFULLY_SHARED = " sharing status has been successfully updated.";
-	private static final String UMLS_CODE_IDENTIFIER_REQUIRED = "Please enter a code identifier.";	
+	private static final String UMLS_CODE_IDENTIFIER_REQUIRED = "Please enter a Code URL.";	
 	private static final String ACCOUNT_REVOKED = "Your account has been revoked. Please contact Support.";
 	private static final String CLAUSE_WORK_SPACE_VALIDATION_SUCCESS = "Measure logic validation successful.";
 	private static final String ALL_PASSWORD_FIELDS_REQUIRED = "All password fields are required.";

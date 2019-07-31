@@ -271,7 +271,8 @@ public class CQLCodesView {
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
 		sWidget.setSearchBoxWidth("530px");
 		sWidget.getGo().setEnabled(true);
-		sWidget.getGo().setTitle("Retrieve Code Identifier");
+		sWidget.getGo().setTitle("Retrieve Code");
+		searchWidgetFormGroup.add(buildFormLabel("Code URL", "codeURLInput_TextBox"));
 		searchWidgetFormGroup.add(sWidget.getSearchWidget());
 		searchWidgetFormGroup.add(new SpacerWidget());
 		return searchWidgetFormGroup;
@@ -411,7 +412,7 @@ public class CQLCodesView {
 
 	public void resetVSACCodeWidget() {
 		if(MatContext.get().getMeasureLockService().checkForEditPermission()){
-			sWidget.getSearchBox().setTitle("Enter Code Identifier Required");
+			sWidget.getSearchBox().setTitle("Enter the code URL");
 		}
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
 		searchHeader.clear();

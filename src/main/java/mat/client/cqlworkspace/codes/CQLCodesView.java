@@ -69,124 +69,121 @@ import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.StringUtility;
 
 public class CQLCodesView {
-	
-	private static final String APPLY = "Apply";
 
+	private static final int TABLE_ROW_COUNT = 10;
+
+	private static final String APPLY = "Apply";
+	private static final String CODE = "Code";
+	private static final String CODE_SYSTEM = "Code System";
+	private static final String CODE_DESCRIPTOR = "Code Descriptor";
+	private static final String CODE_SYSTEM_VERSION = "Code System Version";
+	private static final String INCLUDE_CODE_SYSTEM_VERSION = "Click to include code system version";
+	private static final String NOT_INCLUDE_CODE_SYSTEM_VERSION = "Click to not include code system version";
+
+	private static final String SPAN_END = "</span>";
 
 	public static interface Delegator {
-		
+
 		void onDeleteClicked(CQLCode result, int index);
 
 		void onModifyClicked(CQLCode object);
-		
+
 	}
-	
-	private Delegator delegator;
 
-	private SimplePanel containerPanel = new SimplePanel();
+	private boolean isEditable;
+	private boolean isLoading; 
 
-	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get()
-			.getVsacapiServiceAsync();
-	
-	private HandlerManager handlerManager = new HandlerManager(this);
+	private String codeSystemOid;
 
-	private Panel cellTablePanel = new Panel();
+	private CQLCode lastSelectedObject;
+	private CQLCode validateCodeObject;
+
+	private List<CQLCode> codesSelectedList;
+	private List<CQLCode> allCodes;
+
+	private MatTextBox codeDescriptorInput = new MatTextBox();
+	private MatTextBox codeInput = new MatTextBox();
+	private MatTextBox codeSystemInput = new MatTextBox();
+	private MatTextBox codeSystemVersionInput = new MatTextBox();
+
+	private CustomCheckBox includeCodeSystemVersionCheckBox;
+	private CustomQuantityTextBox suffixTextBox = new CustomQuantityTextBox(4);
+
+	private Button applyButton = new Button(APPLY);
+	private Button cancelButton = new CancelButton("CQLCodesView");
+
+	private CodesValuesetsButtonToolBar copyPasteClearButtonToolBar = new CodesValuesetsButtonToolBar("codes");
 
 	private CellTable<CQLCode> table;
 
 	private ListDataProvider<CQLCode> listDataProvider;
 
-	private CQLCode lastSelectedObject;
-	
-	private CQLCode validateCodeObject;
-
-	private MatTextBox codeDescriptorInput = new MatTextBox();
-
-	private MatTextBox codeInput = new MatTextBox();
-
-	private MatTextBox codeSystemInput = new MatTextBox();
-
-	private MatTextBox codeSystemVersionInput = new MatTextBox();
-	
-	private CustomQuantityTextBox suffixTextBox = new CustomQuantityTextBox(4);
-	
-	private String codeSystemOid;
-
-	private boolean isEditable;
-
-	private MatSimplePager spager;
-
-	private Button applyButton = new Button(APPLY);
-
-	private Button cancelButton = new CancelButton("CQLCodesView");
-
-	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve","Enter Code Identifier");
+	private MultiSelectionModel<CQLCode> selectionModel;
 
 	private VerticalPanel mainPanel;
 
+	private Panel cellTablePanel = new Panel();
 	private PanelHeader searchHeader = new PanelHeader();
+	private PanelBody cellTablePanelBody = new PanelBody();
 
+	private SimplePanel containerPanel = new SimplePanel();
 	SimplePanel cellTableMainPanel = new SimplePanel();
 
-	private PanelBody cellTablePanelBody = new PanelBody();
-	
-	private static final int TABLE_ROW_COUNT = 10;
-	
-	private CustomCheckBox includeCodeSystemVersionCheckBox;
+	private MatSimplePager spager;
+
+	private Delegator delegator;
+
+	private HandlerManager handlerManager = new HandlerManager(this);
+
+	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get().getVsacapiServiceAsync();
+
+	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve", "Enter Code Identifier");
 
 	HTML heading = new HTML();
-	
-	/**
-	 * Flag for if the codes view is loading
-	 */
-	private boolean isLoading; 
-	
-	private CodesValuesetsButtonToolBar copyPasteClearButtonToolBar = new CodesValuesetsButtonToolBar("codes");
-
-	private MultiSelectionModel<CQLCode> selectionModel;
-
-	private List<CQLCode> codesSelectedList;
-	
-	private List<CQLCode> allCodes;
 
 	private InAppHelp inAppHelp = new InAppHelp("");
 
+
 	public CQLCodesView() {
-		
-		VerticalPanel verticalPanel = new VerticalPanel();
-		HorizontalPanel mainPanel = new HorizontalPanel();
-		mainPanel.getElement().setId("mainPanel_HorizontalPanel");
+		heading.addStyleName("leftAligned");
+
+		HorizontalPanel mainHPanel = new HorizontalPanel();
+		mainHPanel.getElement().setId("mainPanel_HorizontalPanel");
+		mainHPanel.add(buildHeadingAndCodesWidgetVP());
+
+		containerPanel.getElement().setAttribute("id", "codesContainerPanel");
+		containerPanel.add(mainHPanel);
+		containerPanel.setStyleName("cqlcodesContentPanel");
+	}
+
+	private HorizontalPanel buildCodesWidgetHP() {
 		SimplePanel simplePanel = new SimplePanel();
 		simplePanel.getElement().setId("simplePanel_SimplePanel");
 		simplePanel.setWidth("5px");
-		
+
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setId("hp_HorizontalPanel");
 		hp.add(buildElementWithCodesWidget());
 		hp.add(simplePanel);
-		
-		heading.addStyleName("leftAligned");
-		
-		verticalPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
-		
-		verticalPanel.getElement().setId("vPanel_VerticalPanel");
-		verticalPanel.add(new SpacerWidget());
-		
-		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(hp);
-		verticalPanel.add(new SpacerWidget());
-			
-		mainPanel.add(verticalPanel);
-		containerPanel.getElement().setAttribute("id",
-				"codesContainerPanel");
-		containerPanel.add(mainPanel);
-		containerPanel.setStyleName("cqlcodesContentPanel");
+
+		return hp;
 	}
-	
+
+	private VerticalPanel buildHeadingAndCodesWidgetVP() {
+		VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.getElement().setId("vPanel_VerticalPanel");
+		verticalPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(buildCodesWidgetHP());
+		verticalPanel.add(new SpacerWidget());
+		return verticalPanel;
+	}
 
 	public SimplePanel buildCellTableWidget(){
 		cellTableMainPanel.clear();
+
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.setStyleName("cqlqdsContentPanel");
 		vPanel.getElement().setId("hPanel_HorizontalPanel");
@@ -195,13 +192,13 @@ public class CQLCodesView {
 		vPanel.add(cellTablePanel);
 
 		cellTableMainPanel.add(vPanel);
+
 		return cellTableMainPanel;
 	}
-	
+
 	private Widget buildElementWithCodesWidget() {
 		mainPanel = new VerticalPanel();
 		mainPanel.getElement().setId("mainPanel_VerticalPanel");
-		
 		mainPanel.add(buildSearchPanel());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
@@ -209,189 +206,211 @@ public class CQLCodesView {
 	}
 
 	private Widget buildSearchPanel() {
-		HorizontalPanel buttonLayout = new HorizontalPanel();
-		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
-		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		Panel searchPanel = new Panel();
-		PanelBody searchPanelBody = new PanelBody();
 
+		PanelBody searchPanelBody = buildPanelBody();
 
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("cqlvalueSetSearchPanel");
-
 		searchHeader.setStyleName("CqlWorkSpaceTableHeader");
-
-
 		searchPanel.add(searchHeader);
 		searchPanel.setHeight("350px");
+		searchPanel.add(searchPanelBody);
+
+		return searchPanel;
+	}
+
+	private PanelBody buildPanelBody() {
+		PanelBody searchPanelBody = new PanelBody();
 		searchPanelBody.add(new SpacerWidget());
+		searchPanelBody.add(buildCodesVP());
+		return searchPanelBody;
+	}
 
-		applyButton.setText(APPLY);
-		applyButton.setTitle(APPLY);
-		applyButton.setType(ButtonType.PRIMARY);
-
-		Grid searchGrid = new Grid(1, 1);
-		Grid codeDescriptorAndSuffixGrid = new Grid(1, 2);
-		Grid codeGrid = new Grid(2, 3);
-		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		buttonToolBar.add(applyButton);
-		buttonToolBar.add(cancelButton);
-
-		VerticalPanel buttonPanel = new VerticalPanel();
-		buttonPanel.add(new SpacerWidget());
-		buttonPanel.add(buttonToolBar);
-		buttonPanel.add(new SpacerWidget());
-
-
-
-		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
-		sWidget.setSearchBoxWidth("530px");
-		sWidget.getGo().setEnabled(true);
-		sWidget.getGo().setTitle("Retrieve Code Identifier");
-		searchWidgetFormGroup.add(sWidget.getSearchWidget());
-		searchWidgetFormGroup.add(new SpacerWidget());
-
-		VerticalPanel versionFormGroup = new VerticalPanel();
-		FormLabel verLabel = new FormLabel();
-		verLabel.setText("Code System Version");
-		verLabel.setTitle("Code System Version");
-		verLabel.setFor("codeSystemVersionInput_TextBox");
-		codeSystemVersionInput.getElement().setId("codeSystemVersionInput_TextBox");
-		codeSystemVersionInput.setTitle("Code System Version");
-		codeSystemVersionInput.setHeight("30px");
-
-		VerticalPanel codeSystemGroup = new VerticalPanel();
-		FormLabel codeSystemLabel = new FormLabel();
-		codeSystemLabel.setText("Code System");
-		codeSystemLabel.setTitle("Code System");
-		codeSystemLabel.setFor("codeSystemInput_TextBox");
-		codeSystemInput.setTitle("Code System");
-		codeSystemInput.getElement().setId("codeSystemInput_TextBox");
-		codeSystemInput.setWidth("280px");
-		codeSystemInput.setHeight("30px");
-
-		VerticalPanel codeGroup = new VerticalPanel();
-		FormLabel codeLabel = new FormLabel();
-		codeLabel.setText("Code");
-		codeLabel.setTitle("Code");
-		codeLabel.setFor("codeInput_TextBox");
-		codeInput.setTitle("Code");
-		codeInput.getElement().setId("codeInput_TextBox");
-		codeInput.setHeight("30px");
-
-		VerticalPanel codeDescriptorGroup = new VerticalPanel();
-		
-		FormLabel codeDescriptorLabel = new FormLabel();
-		codeDescriptorLabel.setText("Code Descriptor");
-		codeDescriptorLabel.setTitle("Code Descriptor");
-		codeDescriptorLabel.setFor("codeDescriptorInput_TextBox");
-		codeDescriptorInput.setTitle("Code Descriptor");
-		codeDescriptorInput.setWidth("450px");
-		codeDescriptorInput.getElement().setId("codeDescriptorInput_TextBox");
-
-		codeDescriptorGroup.add(codeDescriptorLabel);
-		codeDescriptorGroup.add(codeDescriptorInput);
-		
-		
-		VerticalPanel suffixGroup = new VerticalPanel();
-		
-		FormLabel suffixLabel = new FormLabel();
-		suffixLabel.setText("Suffix (Max Length 4)");
-		suffixLabel.setTitle("Suffix");
-		suffixLabel.setFor("suffixInput_TextBox");
-		suffixTextBox.setTitle("Suffix must be an integer between 1-4 characters");
-		suffixTextBox.getElement().setId("suffixInput_TextBox");
-
-		suffixGroup.add(suffixLabel);
-		suffixGroup.add(suffixTextBox);
-		
-		
-		codeGroup.add(codeLabel);
-		codeGroup.add(codeInput);
-		codeSystemGroup.add(codeSystemLabel);
-		codeSystemGroup.add(codeSystemInput);
-		versionFormGroup.add(verLabel);
-		versionFormGroup.add(codeSystemVersionInput);
-
-		VerticalPanel buttonFormGroup = new VerticalPanel();
-		buttonFormGroup.add(buttonToolBar);
-		buttonFormGroup.add(new SpacerWidget());
-		
-		HorizontalPanel includeCodeSystemPanel = new HorizontalPanel();
-		includeCodeSystemPanel.setHeight("30px");
-		includeCodeSystemPanel.getElement().getStyle().setProperty("width", "100%");
-		includeCodeSystemPanel.getElement().getStyle().setProperty("textAlign", "right");
-		includeCodeSystemPanel.getElement().getStyle().setProperty("verticalAlign", "middle");
-		FormLabel includeCodeSystemVersionLabel = new FormLabel();
-		includeCodeSystemVersionLabel.setText("Include Code System Version");
-		includeCodeSystemVersionLabel.setTitle("Include Code System Version");
-		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("marginTop", "5px");
-		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("fontWeight", "700");
-		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("marginLeft", "-20px");
-		includeCodeSystemVersionLabel.setFor("includeCodeSystemversion_CheckBox");
-		includeCodeSystemVersionCheckBox = new CustomCheckBox("Click to not include code system version", "Click to not include code system version", false);
-		includeCodeSystemVersionCheckBox.getElement().setId("includeCodeSystemversion_CheckBox");
-		
-		includeCodeSystemVersionCheckBox.addValueChangeHandler(event -> onIncludeCodeSystemVersionChange());
-		
-		if(includeCodeSystemVersionCheckBox.isChecked()) {
-			includeCodeSystemVersionCheckBox.setTitle("Click to not include code system version");
-		} else {
-			includeCodeSystemVersionCheckBox.setTitle("Click to include code system version");
-		}
-		
-		
-		
-		includeCodeSystemPanel.add(includeCodeSystemVersionCheckBox);
-		includeCodeSystemPanel.add(includeCodeSystemVersionLabel);
-		
-		
-		searchGrid.setWidget(0, 0, searchWidgetFormGroup);
-		
-		searchGrid.setStyleName("secondLabel");
-		
-		codeDescriptorAndSuffixGrid.setWidget(0, 0, codeDescriptorGroup);
-		codeDescriptorAndSuffixGrid.setWidget(0, 1, suffixGroup);
-		codeDescriptorAndSuffixGrid.setStyleName("code-grid");
-		codeGrid.setWidget(0, 0, codeGroup);
-		codeGrid.setWidget(0, 1, codeSystemGroup);
-		codeGrid.setWidget(0, 2, versionFormGroup);
-		codeGrid.setWidget(1, 0, buttonFormGroup);
-		codeGrid.getCellFormatter().getElement(1, 1).setAttribute("colspan", "2");
-		codeGrid.setWidget(1, 1, includeCodeSystemPanel);
-		codeGrid.setStyleName("code-grid");
+	private VerticalPanel buildCodesVP() {
+		Grid searchGrid = buildSearchGrid();
+		Grid codeDescriptorAndSuffixGrid = buildCodeDescriptorAndSuffixGrid();
+		Grid codeGrid = buildCodeGrid();
 
 		VerticalPanel codeFormGroup = new VerticalPanel();
 		codeFormGroup.add(searchGrid);
 		codeFormGroup.add(codeDescriptorAndSuffixGrid);
 		codeFormGroup.add(codeGrid);
 
-		searchPanelBody.add(codeFormGroup);
+		return codeFormGroup;
+	}
 
-		searchPanel.add(searchPanelBody);
-		return searchPanel;
+	private Grid buildSearchGrid() {
+		Grid searchGrid = new Grid(1, 1);
+		searchGrid.setWidget(0, 0, buildSearchVP());
+		searchGrid.setStyleName("secondLabel");
+		return searchGrid;
+	}
+
+	private Grid buildCodeDescriptorAndSuffixGrid() {
+		Grid codeDescriptorAndSuffixGrid = new Grid(1, 2);
+		codeDescriptorAndSuffixGrid.setWidget(0, 0, buildCodeDescriptorVP());
+		codeDescriptorAndSuffixGrid.setWidget(0, 1, buildSuffixVP());
+		codeDescriptorAndSuffixGrid.setStyleName("code-grid");
+		return codeDescriptorAndSuffixGrid;
+	}
+
+	private Grid buildCodeGrid() {
+		Grid codeGrid = new Grid(2, 3);
+		codeGrid.setWidget(0, 0, buildCodeVP());
+		codeGrid.setWidget(0, 1, buildCodeSystemVP());
+		codeGrid.setWidget(0, 2, buildCodeSystemVersionVP());
+		codeGrid.setWidget(1, 0, buildApplyCancelButtonsVP());
+		codeGrid.getCellFormatter().getElement(1, 1).setAttribute("colspan", "2");
+		codeGrid.setWidget(1, 1, buildCodeSystemHP());
+		codeGrid.setStyleName("code-grid");
+		return codeGrid;
+	}
+
+	private VerticalPanel buildSearchVP() {
+		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
+		sWidget.setSearchBoxWidth("530px");
+		sWidget.getGo().setEnabled(true);
+		sWidget.getGo().setTitle("Retrieve Code Identifier");
+		searchWidgetFormGroup.add(sWidget.getSearchWidget());
+		searchWidgetFormGroup.add(new SpacerWidget());
+		return searchWidgetFormGroup;
+	}
+
+	private VerticalPanel buildCodeDescriptorVP() {
+		codeDescriptorInput.setTitle(CODE_DESCRIPTOR);
+		codeDescriptorInput.setWidth("450px");
+		codeDescriptorInput.getElement().setId("codeDescriptorInput_TextBox");
+
+		VerticalPanel codeDescriptorGroup = new VerticalPanel();
+		codeDescriptorGroup.add(buildFormLabel(CODE_DESCRIPTOR, "codeDescriptorInput_TextBox"));
+		codeDescriptorGroup.add(codeDescriptorInput);
+		return codeDescriptorGroup;
+	}
+
+	private VerticalPanel buildSuffixVP() {
+		FormLabel suffixLabel = new FormLabel();
+		suffixLabel.setText("Suffix (Max Length 4)");
+		suffixLabel.setTitle("Suffix");
+		suffixLabel.setFor("suffixInput_TextBox");
+
+		suffixTextBox.setTitle("Suffix must be an integer between 1-4 characters");
+		suffixTextBox.getElement().setId("suffixInput_TextBox");
+
+		VerticalPanel suffixGroup = new VerticalPanel();
+		suffixGroup.add(suffixLabel);
+		suffixGroup.add(suffixTextBox);
+
+		return suffixGroup;
+	}
+
+	private VerticalPanel buildCodeVP() {
+		codeInput.setTitle(CODE);
+		codeInput.getElement().setId("codeInput_TextBox");
+		codeInput.setHeight("30px");
+
+		VerticalPanel codeGroup = new VerticalPanel();
+		codeGroup.add(buildFormLabel(CODE, "codeInput_TextBox"));
+		codeGroup.add(codeInput);
+
+		return codeGroup;
+	}
+
+	private VerticalPanel buildCodeSystemVP() {
+		codeSystemInput.setTitle(CODE_SYSTEM);
+		codeSystemInput.getElement().setId("codeSystemInput_TextBox");
+		codeSystemInput.setWidth("280px");
+		codeSystemInput.setHeight("30px");
+
+		VerticalPanel codeSystemGroup = new VerticalPanel();
+		codeSystemGroup.add(buildFormLabel(CODE_SYSTEM, "codeSystemInput_TextBox"));
+		codeSystemGroup.add(codeSystemInput);
+
+		return codeSystemGroup;
+	}
+
+	private VerticalPanel buildCodeSystemVersionVP() {
+		codeSystemVersionInput.getElement().setId("codeSystemVersionInput_TextBox");
+		codeSystemVersionInput.setTitle(CODE_SYSTEM_VERSION);
+		codeSystemVersionInput.setHeight("30px");
+
+		VerticalPanel versionFormGroup = new VerticalPanel();
+		versionFormGroup.add(buildFormLabel(CODE_SYSTEM_VERSION, "codeSystemVersionInput_TextBox"));
+		versionFormGroup.add(codeSystemVersionInput);
+
+		return versionFormGroup;
+	}
+
+	private VerticalPanel buildApplyCancelButtonsVP() {
+		ButtonToolBar buttonToolBar = new ButtonToolBar();
+		applyButton.setText(APPLY);
+		applyButton.setTitle(APPLY);
+		applyButton.setType(ButtonType.PRIMARY);
+		buttonToolBar.add(applyButton);
+		buttonToolBar.add(cancelButton);
+
+		VerticalPanel buttonFormGroup = new VerticalPanel();
+		buttonFormGroup.add(buttonToolBar);
+		buttonFormGroup.add(new SpacerWidget());
+
+		return buttonFormGroup;
+	}
+
+	private HorizontalPanel buildCodeSystemHP() {
+		HorizontalPanel includeCodeSystemPanel = new HorizontalPanel();
+
+		includeCodeSystemPanel.setHeight("30px");
+		includeCodeSystemPanel.getElement().getStyle().setProperty("width", "100%");
+		includeCodeSystemPanel.getElement().getStyle().setProperty("textAlign", "right");
+		includeCodeSystemPanel.getElement().getStyle().setProperty("verticalAlign", "middle");
+
+		includeCodeSystemVersionCheckBox = new CustomCheckBox(NOT_INCLUDE_CODE_SYSTEM_VERSION, NOT_INCLUDE_CODE_SYSTEM_VERSION, false);
+		includeCodeSystemVersionCheckBox.getElement().setId("includeCodeSystemversion_CheckBox");
+
+		includeCodeSystemVersionCheckBox.addValueChangeHandler(event -> onIncludeCodeSystemVersionChange());
+
+		if(includeCodeSystemVersionCheckBox.getValue()) {
+			includeCodeSystemVersionCheckBox.setTitle(NOT_INCLUDE_CODE_SYSTEM_VERSION);
+		} else {
+			includeCodeSystemVersionCheckBox.setTitle(INCLUDE_CODE_SYSTEM_VERSION);
+		}
+
+		includeCodeSystemPanel.add(includeCodeSystemVersionCheckBox);
+		includeCodeSystemPanel.add(buildIncludeCSVLabel());
+
+		return includeCodeSystemPanel;
+	}
+
+	private FormLabel buildIncludeCSVLabel() {
+		FormLabel includeCodeSystemVersionLabel = buildFormLabel("Include Code System Version", "includeCodeSystemversion_CheckBox");
+		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("marginTop", "5px");
+		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("fontWeight", "700");
+		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("marginLeft", "-20px");
+		return includeCodeSystemVersionLabel;
+	}
+
+	private FormLabel buildFormLabel(String label, String setFor) {
+		FormLabel formLabel = new FormLabel();
+		formLabel.setText(label);
+		formLabel.setTitle(label);
+		formLabel.setFor(setFor);
+		return formLabel;
 	}
 
 	private void onIncludeCodeSystemVersionChange() {
-		if(includeCodeSystemVersionCheckBox.isChecked()) {
-			includeCodeSystemVersionCheckBox.setTitle("Click to not include code system version");
+		if(includeCodeSystemVersionCheckBox.getValue()) {
+			includeCodeSystemVersionCheckBox.setTitle(NOT_INCLUDE_CODE_SYSTEM_VERSION);
 		} else {
-			includeCodeSystemVersionCheckBox.setTitle("Click to include code system version");
+			includeCodeSystemVersionCheckBox.setTitle(INCLUDE_CODE_SYSTEM_VERSION);
 		}
 	}
-
 
 	public Widget asWidget() {
 		return containerPanel;
 	}
 
-	private boolean checkForEnable() {
-		return MatContext.get().getMeasureLockService()
-				.checkForEditPermission();
-	}
-
 	public void resetVSACCodeWidget() {
-		if(checkForEnable()){
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()){
 			sWidget.getSearchBox().setTitle("Enter Code Identifier Required");
 		}
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
@@ -410,8 +429,7 @@ public class CQLCodesView {
 		this.delegator = delegator;
 	}
 
-	public HandlerRegistration addSelectionHandler(
-			SelectionHandler<Boolean> handler) {
+	public HandlerRegistration addSelectionHandler(SelectionHandler<Boolean> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
 	}
 
@@ -454,7 +472,7 @@ public class CQLCodesView {
 	public boolean isEditable() {
 		return isEditable;
 	}
-	
+
 	public void setEditable(boolean isEditable) {
 		this.isEditable = isEditable;
 	}
@@ -480,19 +498,19 @@ public class CQLCodesView {
 	}
 
 	public void setWidgetsReadOnly(boolean editable){
-		
+
 		getCodeSearchInput().setEnabled(editable);
 		getSuffixTextBox().setEnabled(editable);
 		getCodeDescriptorInput().setEnabled(false);
 		getCodeInput().setEnabled(false);
 		getCodeSystemInput().setEnabled(false);
-		
+
 		getCodeSystemVersionInput().setEnabled(false);
 		getRetrieveFromVSACButton().setEnabled(editable);
 		getCancelCodeButton().setEnabled(editable);
 		getIncludeCodeSystemVersionCheckBox().setEnabled(isEditable);
 		getApplyButton().setEnabled(false);
-		
+
 	}
 
 	public void setWidgetToDefault() {
@@ -526,17 +544,17 @@ public class CQLCodesView {
 	public String convertMessage(final int id) {
 		String message;
 		switch (id) {
-			case VsacApiResult.UMLS_NOT_LOGGEDIN:
-				message = MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN();
-				break;
-			case VsacApiResult.CODE_URL_REQUIRED:
-				message = MatContext.get().getMessageDelegate().getUMLS_CODE_IDENTIFIER_REQUIRED();
-				break;
-			case VsacApiResult.VSAC_REQUEST_TIMEOUT:
-				message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_TIMEOUT();
-				break;
-			default:
-				message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
+		case VsacApiResult.UMLS_NOT_LOGGEDIN:
+			message = MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN();
+			break;
+		case VsacApiResult.CODE_URL_REQUIRED:
+			message = MatContext.get().getMessageDelegate().getUMLS_CODE_IDENTIFIER_REQUIRED();
+			break;
+		case VsacApiResult.VSAC_REQUEST_TIMEOUT:
+			message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_TIMEOUT();
+			break;
+		default:
+			message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
 		}
 		return message;
 	}
@@ -548,7 +566,7 @@ public class CQLCodesView {
 		getRetrieveFromVSACButton().setEnabled(true);
 		getCodeSearchInput().setEnabled(true);
 		getCodeSearchInput().setValue("");
-		
+
 		getCodeDescriptorInput().setValue("");
 		getCodeInput().setValue("");
 		getCodeSystemInput().setValue("");
@@ -564,37 +582,35 @@ public class CQLCodesView {
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		cellTablePanel.setWidth("100%");
+
 		PanelHeader codesElementsHeader = new PanelHeader();
 		codesElementsHeader.getElement().setId("searchHeader_Label");
 		codesElementsHeader.setStyleName("CqlWorkSpaceTableHeader");
 		codesElementsHeader.getElement().setAttribute("tabIndex", "0");
-		
+
 		HTML searchHeaderText = new HTML("<strong>Applied Codes</strong>");
 		codesElementsHeader.add(searchHeaderText);
 		cellTablePanel.add(codesElementsHeader);
-		if ((codesTableList != null)
-				&& (!codesTableList.isEmpty())) {
+
+		if (codesTableList != null && !codesTableList.isEmpty()) {
 			allCodes = codesTableList;
 			StringUtility.removeEscapedCharsFromList(codesTableList);
-			codesSelectedList = new ArrayList<CQLCode>();
-			table = new CellTable<CQLCode>();
+			codesSelectedList = new ArrayList<>();
+			table = new CellTable<>();
 			setEditable(checkForEditPermission);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-			listDataProvider = new ListDataProvider<CQLCode>();
+			listDataProvider = new ListDataProvider<>();
 
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
 			listDataProvider.refresh();
 			listDataProvider.getList().addAll(codesTableList);
-			ListHandler<CQLCode> sortHandler = new ListHandler<CQLCode>(
-					listDataProvider.getList());
+			ListHandler<CQLCode> sortHandler = new ListHandler<>(listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
 			table = addColumnToTable();
 			listDataProvider.addDataDisplay(table);
-			CustomPager.Resources pagerResources = GWT
-					.create(CustomPager.Resources.class);
-			spager = new MatSimplePager(CustomPager.TextLocation.CENTER,
-					pagerResources, false, 0, true,"valuesetAndCodes");
+			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+			spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"valuesetAndCodes");
 			spager.setDisplay(table);
 			spager.setPageStart(0);
 			com.google.gwt.user.client.ui.Label invisibleLabel;
@@ -608,8 +624,7 @@ public class CQLCodesView {
 									+ "The Applied Codes are listed alphabetically in a table.");
 
 			table.getElement().setAttribute("id", "AppliedCodeTable");
-			table.getElement().setAttribute("aria-describedby",
-					"appliedCodeTableSummary");
+			table.getElement().setAttribute("aria-describedby", "appliedCodeTableSummary");
 
 			cellTablePanel.add(invisibleLabel);
 			cellTablePanel.add(table);
@@ -622,38 +637,36 @@ public class CQLCodesView {
 			cellTablePanelBody.add(desc);
 			cellTablePanel.add(cellTablePanelBody);
 		}
-		
+
 	}
 
 	private CellTable<CQLCode> addColumnToTable() {
-		
+
 		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
-			Label searchHeader = new Label("Applied Codes");
-			searchHeader.getElement().setId("searchHeader_Label");
-			searchHeader.getElement().setAttribute("tabIndex", "0");
+			Label appliedCodesLabel = new Label("Applied Codes");
+			appliedCodesLabel.getElement().setId("searchHeader_Label");
+			appliedCodesLabel.getElement().setAttribute("tabIndex", "0");
 			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
-			searchHeader.setVisible(false);
-			caption.appendChild(searchHeader.getElement());
-			selectionModel = new MultiSelectionModel<CQLCode>();
+			appliedCodesLabel.setVisible(false);
+			caption.appendChild(appliedCodesLabel.getElement());
+			selectionModel = new MultiSelectionModel<>();
 			table.setSelectionModel(selectionModel);
-			
-			Column<CQLCode, SafeHtml> nameColumn = new Column<CQLCode, SafeHtml>(
-					new SafeHtmlCell()) {
+
+			Column<CQLCode, SafeHtml> nameColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(CQLCode object) {
 					StringBuilder title = new StringBuilder();
 					String value = object.getDisplayName();
-					
+
 					title.append("Descriptor : ").append(value);
 					title.append("");
-					
+
 					return CellTableUtility.getCodeDescriptorColumnToolTip(value, title.toString(),object.getSuffix());
 				}
 			};
-			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Descriptor\">" + "Descriptor"+ "</span>"));
-			Column<CQLCode, SafeHtml> codeColumn = new Column<CQLCode, SafeHtml>(
-					new SafeHtmlCell()) {
+			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Descriptor\">" + "Descriptor"+ SPAN_END));
+			Column<CQLCode, SafeHtml> codeColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(CQLCode object) {
 					StringBuilder title = new StringBuilder();
@@ -663,8 +676,8 @@ public class CQLCodesView {
 					return CellTableUtility.getColumnToolTip(value, title.toString());
 				}
 			};
-			table.addColumn(codeColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Code\">"+ "Code" + "</span>"));
-			
+			table.addColumn(codeColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Code\">"+ CODE  + SPAN_END));
+
 			Column<CQLCode, SafeHtml> codeSystemColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(CQLCode object) {
@@ -675,10 +688,10 @@ public class CQLCodesView {
 					return CellTableUtility.getColumnToolTip(value, title.toString());
 				}
 			};
-			
-			table.addColumn(codeSystemColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"CodeSystem\">" + "CodeSystem" + "</span>"));
-			
-			
+
+			table.addColumn(codeSystemColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"CodeSystem\">" + "CodeSystem" + SPAN_END));
+
+
 			Column<CQLCode, SafeHtml> versionColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(CQLCode object) {
@@ -688,60 +701,60 @@ public class CQLCodesView {
 					return CellTableUtility.getColumnToolTip(object.getCodeSystemVersion(), title.toString());
 				}
 			};
-			table.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + "</span>"));			
-		
+			table.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + SPAN_END));			
+
 			Column<CQLCode, SafeHtml> isVersionIncludedColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
 
 				@Override
 				public SafeHtml getValue(CQLCode object) {
-					
+
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					
+
 					if (object.isIsCodeSystemVersionIncluded()) {
 						sb.appendHtmlConstant("<div title=\"Version Included\" align=\"right\">");						
 						sb.appendHtmlConstant("<i class=\"fa fa-check\" aria-hidden=\"true\" style=\"color:limegreen;\"></i>");
 						sb.appendHtmlConstant("<span style=\"color: transparent;\">Yes</span>");
-						
+
 					} else {
 						sb.appendHtmlConstant("<div title=\"Version Not Included\">");								
 						sb.appendHtmlConstant("&nbsp;");						
 					}
 					sb.appendHtmlConstant("</div>");
-					
+
 					return sb.toSafeHtml();
 				}
-				
+
 			};
-			table.addColumn(isVersionIncludedColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version Included\">" + "Version Included" + "</span>"));
-			
+			table.addColumn(isVersionIncludedColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version Included\">" + "Version Included" + SPAN_END));
+
 			String colName = "";
 			colName = "Edit";
 			table.addColumn(new Column<CQLCode, CQLCode>(getCompositeCell(isEditable, getModifyButtonCell())) {
-				
+
 				@Override
 				public CQLCode getValue(CQLCode object) {
 					return object;
 				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "+ colName + "</span>"));
-			
+			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "+ colName + SPAN_END));
+
 			colName = "Delete";
 			table.addColumn(new Column<CQLCode, CQLCode>(getCompositeCell(isEditable, getDeleteButtonCell())) {
-				
+
 				@Override
 				public CQLCode getValue(CQLCode object) {
 					return object;
 				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "+ colName + "</span>"));	
-			
+			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "+ colName + SPAN_END));	
+
 			colName = "Copy";
 			table.addColumn(new Column<CQLCode, CQLCode>(getCompositeCell(true, getCheckBoxCell())) {
-				
+
 				@Override
 				public CQLCode getValue(CQLCode object) {
 					return object;
 				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "+ colName + "</span>"));
-			
+			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "+ colName + SPAN_END));
+
 			table.setWidth("100%", true);
 			table.setColumnWidth(0, 30.0, Unit.PCT);
 			table.setColumnWidth(1, 15.0, Unit.PCT);
@@ -753,11 +766,11 @@ public class CQLCodesView {
 			table.setColumnWidth(7, 7.00, Unit.PCT);	
 			table.setStyleName("tableWrap");
 		}
-		
+
 		return table;
 	}
-	
-	
+
+
 	private CompositeCell<CQLCode> getCompositeCell(boolean isEditable, HasCell<CQLCode, ?> cellToAdd) {
 		final List<HasCell<CQLCode, ?>> cells = new LinkedList<HasCell<CQLCode, ?>>();
 		if(isEditable) {
@@ -766,8 +779,7 @@ public class CQLCodesView {
 
 		return new CompositeCell<CQLCode>(cells) {
 			@Override
-			public void render(Context context, CQLCode object,
-					SafeHtmlBuilder sb) {
+			public void render(Context context, CQLCode object, SafeHtmlBuilder sb) {
 				sb.appendHtmlConstant("<table tabindex=\"-1\"><tbody><tr tabindex=\"-1\">");
 				for (HasCell<CQLCode, ?> hasCell : cells) {
 					render(context, object, sb, hasCell);
@@ -776,9 +788,7 @@ public class CQLCodesView {
 			}
 
 			@Override
-			protected <X> void render(Context context,
-					CQLCode object, SafeHtmlBuilder sb,
-					HasCell<CQLCode, X> hasCell) {
+			protected <X> void render(Context context, CQLCode object, SafeHtmlBuilder sb, HasCell<CQLCode, X> hasCell) {
 				Cell<X> cell = hasCell.getCell();
 				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
 				if(object != null) {
@@ -790,8 +800,7 @@ public class CQLCodesView {
 
 			@Override
 			protected Element getContainerElement(Element parent) {
-				return parent.getFirstChildElement().getFirstChildElement()
-						.getFirstChildElement();
+				return parent.getFirstChildElement().getFirstChildElement().getFirstChildElement();
 			}
 		};
 
@@ -825,15 +834,14 @@ public class CQLCodesView {
 				} else {
 					cell.setTitle("Click to add " + object.getName() + " to clipboard");
 				}
-				
+
 				return isSelected;
 			}
 			@Override
 			public FieldUpdater<CQLCode, Boolean> getFieldUpdater() {
 				return new FieldUpdater<CQLCode, Boolean>() {
 					@Override
-					public void update(int index, CQLCode object,
-							Boolean isCBChecked) {
+					public void update(int index, CQLCode object, Boolean isCBChecked) {
 
 						if (isCBChecked) {
 							codesSelectedList.add(object);
@@ -845,13 +853,13 @@ public class CQLCodesView {
 								}
 							}
 						}
-						
+
 						if(isCBChecked) {
 							cell.setTitle("Click to remove " + object.getName() + " from clipboard");
 						} else {
 							cell.setTitle("Click to add " + object.getName() + " to clipboard");
 						}
-						
+
 						selectionModel.setSelected(object, isCBChecked);
 					}
 
@@ -862,7 +870,7 @@ public class CQLCodesView {
 		};
 
 	}
-	
+
 	private HasCell<CQLCode, ?> getModifyButtonCell() {
 
 		return new HasCell<CQLCode, SafeHtml>() {
@@ -910,26 +918,25 @@ public class CQLCodesView {
 		};
 
 	}
-	
+
 
 	private HasCell<CQLCode, SafeHtml> getDeleteButtonCell() {
-		
+
 		return new HasCell<CQLCode, SafeHtml>() {
-			
+
 			ClickableSafeHtmlCell deleteButonCell = new ClickableSafeHtmlCell();
-			
+
 			@Override
 			public Cell<SafeHtml> getCell() {
 				return deleteButonCell;
 			}
-			
+
 			@Override
 			public FieldUpdater<CQLCode, SafeHtml> getFieldUpdater() {
-				
+
 				return new FieldUpdater<CQLCode, SafeHtml>() {
 					@Override
-					public void update(int index, CQLCode object,
-							SafeHtml value) {
+					public void update(int index, CQLCode object, SafeHtml value) {
 						if (object != null) {
 							lastSelectedObject = object;
 							delegator.onDeleteClicked(object, index);
@@ -937,7 +944,7 @@ public class CQLCodesView {
 					}
 				};
 			}
-			
+
 			@Override
 			public SafeHtml getValue(CQLCode object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
@@ -949,28 +956,28 @@ public class CQLCodesView {
 				return sb.toSafeHtml();
 			}
 		};
-				
+
 	}
-	
+
 	public void clearSelectedCheckBoxes(){
 		if(table!=null){
-			List<CQLCode> displayedItems = new ArrayList<CQLCode>();
+			List<CQLCode> displayedItems = new ArrayList<>();
 			displayedItems.addAll(codesSelectedList);
-			codesSelectedList = new  ArrayList<CQLCode>();
+			codesSelectedList = new  ArrayList<>();
 			for (CQLCode dto : displayedItems) {
 				selectionModel.setSelected(dto, false);
 			}
 			table.redraw();
 		}
 	}
-	
+
 	public void selectAll(){
 		if(table!=null){
 			for (CQLCode code : allCodes){
-				   if (!codesSelectedList.contains(code)) {
-					   codesSelectedList.add(code);
-				   }
-				   selectionModel.setSelected(code, true);
+				if (!codesSelectedList.contains(code)) {
+					codesSelectedList.add(code);
+				}
+				selectionModel.setSelected(code, true);
 			}
 			table.redraw();
 		}
@@ -991,7 +998,7 @@ public class CQLCodesView {
 	public void setSuffixTextBox(CustomQuantityTextBox suffixTextBox) {
 		this.suffixTextBox = suffixTextBox;
 	}
-	
+
 	public void setHeading(String text,String linkName) {
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
@@ -1004,20 +1011,20 @@ public class CQLCodesView {
 	public void setIsLoading(boolean isLoading) {
 		this.isLoading = isLoading;
 	}
-	
-	
+
+
 	public Button getClearButton(){
 		return copyPasteClearButtonToolBar.getClearButton();
 	}
-	
+
 	public Button getCopyButton(){
 		return copyPasteClearButtonToolBar.getCopyButton();
 	}
-	
+
 	public Button getSelectAllButton() {
 		return copyPasteClearButtonToolBar.getSelectAllButton();
 	}
-	
+
 	public Button getPasteButton(){
 		return copyPasteClearButtonToolBar.getPasteButton();
 	}
@@ -1035,7 +1042,7 @@ public class CQLCodesView {
 	}
 
 	public List<CQLCode> setMatCodeList(List<CQLCode> copiedCodeList, List<CQLCode> appliedCodeTableList) {
-		List<CQLCode> codesToPaste = new ArrayList<CQLCode>();
+		List<CQLCode> codesToPaste = new ArrayList<>();
 		for(CQLCode cqlCode: copiedCodeList) {
 			boolean isDuplicate = appliedCodeTableList.stream().anyMatch(c -> c.getDisplayName().equals(cqlCode.getDisplayName()));
 			if(!isDuplicate) {
@@ -1044,7 +1051,7 @@ public class CQLCodesView {
 		}
 		return codesToPaste;
 	}	
-	
+
 	public CustomCheckBox getIncludeCodeSystemVersionCheckBox() {
 		return includeCodeSystemVersionCheckBox;
 	}
@@ -1064,21 +1071,16 @@ public class CQLCodesView {
 	public void setValidateCodeObject(CQLCode validateCodeObject) {
 		this.validateCodeObject = validateCodeObject;
 	}
-	
+
 	public MatCodeTransferObject getCodeTransferObject(String libraryId, CQLCode refCode) {
 		MatCodeTransferObject transferObject = new MatCodeTransferObject();
 		transferObject.setCqlCode(refCode);
 		transferObject.setId(libraryId);
 		transferObject.scrubForMarkUp();
-		
-		 if (transferObject.isValidModel() && 
-				 transferObject.isValidCodeData(this.getValidateCodeObject())){
-			 return transferObject;
-		 }
-		 
-		 return null;
+
+		return (transferObject.isValidModel() && transferObject.isValidCodeData(this.getValidateCodeObject())) ? transferObject : null;
 	}
-	
+
 	public List<CQLCode> getAllCodes(){
 		return allCodes;
 	}
@@ -1092,5 +1094,5 @@ public class CQLCodesView {
 	public void setInAppHelp(InAppHelp inAppHelp) {
 		this.inAppHelp = inAppHelp;
 	}
-	
+
 }

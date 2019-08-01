@@ -412,7 +412,7 @@ public class CQLCodesView {
 
 	public void resetVSACCodeWidget() {
 		if(MatContext.get().getMeasureLockService().checkForEditPermission()){
-			sWidget.getSearchBox().setTitle("Enter the code URL");
+			sWidget.getSearchBox().setTitle("Enter the Code URL");
 		}
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
 		searchHeader.clear();

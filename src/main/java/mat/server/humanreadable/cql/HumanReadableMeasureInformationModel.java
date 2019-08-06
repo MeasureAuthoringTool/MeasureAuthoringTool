@@ -1,6 +1,7 @@
 package mat.server.humanreadable.cql;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -98,6 +99,7 @@ public class HumanReadableMeasureInformationModel {
 		if(!CollectionUtils.isEmpty(model.getMeasureTypeSelectedList())) {
 			this.measureTypes = new ArrayList<>();
 			model.getMeasureTypeSelectedList().forEach(mt -> this.measureTypes.add(mt.getDescription()));
+			Collections.sort(this.measureTypes);
 		}
 		
 		this.stratification = model.getStratification();

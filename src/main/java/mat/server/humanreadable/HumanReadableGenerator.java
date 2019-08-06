@@ -116,6 +116,9 @@ public class HumanReadableGenerator {
 				XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
 				
 				HumanReadableModel model = (HumanReadableModel) xmlMarshalUtil.convertXMLToObject("SimpleXMLHumanReadableModelMapping.xml", simpleXml, HumanReadableModel.class);
+				List<String> measureTypes = model.getMeasureInformation().getMeasureTypes();
+				Collections.sort(measureTypes);
+				model.getMeasureInformation().setMeasureTypes(measureTypes);
 				model.setPopulationCriterias(getPopulationCriteriaModels(processor));
 				model.setSupplementalDataElements(getSupplementalDataElements(processor));
 				model.setRiskAdjustmentVariables(getRiskAdjustmentVariables(processor));

@@ -4,7 +4,6 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.html.Paragraph;
 
 import com.google.gwt.user.client.Window;
@@ -58,7 +57,7 @@ public class InAppHelpModal extends SubExpressionBuilderModal {
         linkToUserGuideButton.setPaddingRight(160);
         linkToUserGuideButton.setMarginTop(13);
         linkToUserGuideButton.setMarginLeft(-5);
-		linkToUserGuideButton.addClickHandler(event -> Window.open(ClientConstants.USERGUIDE_URL,"_blank","disabled"));
+		linkToUserGuideButton.addClickHandler(event -> Window.open(ClientConstants.USERGUIDE_URL,"_blank",""));
        
 		Button closeButton = new Button("Close");
 		closeButton.setTitle("Close");

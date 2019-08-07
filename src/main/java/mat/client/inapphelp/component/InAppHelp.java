@@ -103,8 +103,7 @@ public class InAppHelp extends Composite {
         linkToUserGuideButton.setPaddingRight(150);
         linkToUserGuideButton.setMarginTop(12);
         linkToUserGuideButton.setMarginLeft(-16);
-		linkToUserGuideButton.addClickHandler(event -> Window.open(ClientConstants.USERGUIDE_URL,"_blank","disabled"));
-       
+		linkToUserGuideButton.addClickHandler(event -> Window.open(ClientConstants.USERGUIDE_URL,"_blank",""));
 		Button closeButton = new Button("Close");
 		closeButton.setTitle("Close");
 		closeButton.setType(ButtonType.PRIMARY);

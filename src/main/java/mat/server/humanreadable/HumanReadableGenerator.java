@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.MappingException;
@@ -116,8 +117,13 @@ public class HumanReadableGenerator {
 				XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
 				
 				HumanReadableModel model = (HumanReadableModel) xmlMarshalUtil.convertXMLToObject("SimpleXMLHumanReadableModelMapping.xml", simpleXml, HumanReadableModel.class);
-				List<String> measureTypes = model.getMeasureInformation().getMeasureTypes();
-				Collections.sort(measureTypes);
+				List<String> measureTypes = null;
+				if(CollectionUtils.isNotEmpty(model.getMeasureInformation().getMeasureTypes())) {
+					measureTypes = new ArrayList<>();
+					measureTypes.addAll(model.getMeasureInformation().getMeasureTypes());
+					Collections.sort(measureTypes);
+				}
+
 				model.getMeasureInformation().setMeasureTypes(measureTypes);
 				model.setPopulationCriterias(getPopulationCriteriaModels(processor));
 				model.setSupplementalDataElements(getSupplementalDataElements(processor));

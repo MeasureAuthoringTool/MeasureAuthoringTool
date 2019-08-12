@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.populationworkspace.model.PopulationClauseObject;
@@ -55,8 +56,9 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(event -> onAddNewClickHandler(populationGrid, populationsObject));
 		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(event -> onSavePopulationClickHandler(populationGrid, populationsObject));
-		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
-		scrollPanel.setWidth("700px");
+		VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.add(populationGrid);
+		verticalPanel.setWidth("700px");
 
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());
@@ -91,7 +93,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
 		mainFlowPanel.add(headerGrid);
 
-		mainFlowPanel.add(scrollPanel);
+		mainFlowPanel.add(verticalPanel);
 		mainFlowPanel.add(cqlPopulationTopLevelButtonGroup.getSaveButton());
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());

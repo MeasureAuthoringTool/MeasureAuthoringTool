@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.CancelButton;
 import mat.client.buttons.DeleteButton;
 import mat.client.buttons.SaveButton;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
@@ -45,6 +46,7 @@ public class MeasureDetailsView {
 	private MeasureDetailViewInterface componentDetailView;
 	private boolean isMeasureEditable;
 	private SaveButton saveButton = new SaveButton("Measure Details");
+	private CancelButton cancelButton = new CancelButton("MeasureDetails");
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
 	private Button viewHumanReadableButton;
 	private MeasureDetailsModel measureDetailsModel;
@@ -87,14 +89,18 @@ public class MeasureDetailsView {
 	}
 	
 	private void buildSavePanel(MatDetailItem currentMeasureDetail) {
+		ButtonToolBar buttonToolBar = new ButtonToolBar();
+		if(currentMeasureDetail == MeasureDetailsItems.REFERENCES) {
+			buttonToolBar.add(cancelButton);
+		}
 		if(currentMeasureDetail != MeasureDetailsItems.POPULATIONS && currentMeasureDetail != MeasureDetailsItems.COMPONENT_MEASURES) {
 			widgetComponentPanel.add(new SpacerWidget());
 			saveButtonPanel.clear();
 			saveButtonPanel.setWidth("625px");
 			saveButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-			ButtonToolBar buttonToolBar = new ButtonToolBar();
 			saveButton.setPull(Pull.RIGHT);
 			buttonToolBar.add(saveButton);
+			
 			saveButtonPanel.add(buttonToolBar);
 			widgetComponentPanel.add(saveButtonPanel);
 		}
@@ -247,6 +253,14 @@ public class MeasureDetailsView {
 		this.saveButton = saveButton;
 	}
 	
+	public CancelButton getCancelButton() {
+		return cancelButton;
+	}
+
+	public void setCancelButton(CancelButton cancelButton) {
+		this.cancelButton = cancelButton;
+	}
+
 	public void displayErrorMessage(List<String> messages) {
 		messagePanel.clearAlerts();
 		messagePanel.getErrorMessageAlert().createAlert(messages);

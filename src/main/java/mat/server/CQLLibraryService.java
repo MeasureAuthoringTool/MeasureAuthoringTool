@@ -559,6 +559,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	public SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject) {
 
 		if (cqlLibraryDataSetObject != null) {
+			cqlLibraryDataSetObject.setCqlName(StringUtils.trim(cqlLibraryDataSetObject.getCqlName()));
 			cqlLibraryDataSetObject.scrubForMarkUp();
 		}
 
@@ -587,17 +588,18 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				result.setFailureReason(SaveCQLLibraryResult.INVALID_USER);
 				return result;
 			}
-			String cqlLookUpString = createCQLLookUpTag(cqlLibraryDataSetObject.getCqlName(),library.getVersion()+"."+library.getRevisionNumber());
-			if (cqlLookUpString != null && !cqlLookUpString.isEmpty()) {
+			
+			String version = library.getVersion() + "." + library.getRevisionNumber();
+			String cqlLookUpString = createCQLLookUpTag(cqlLibraryDataSetObject.getCqlName(), version);			
+			if (StringUtils.isNotBlank(cqlLookUpString)) {
 				byte[] cqlByteArray = cqlLookUpString.getBytes();
 				library.setCQLByteArray(cqlByteArray);
 				cqlLibraryDAO.save(library);
 				result.setSuccess(true);
 				result.setId(library.getId());
 				result.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
-				result.setVersionStr(library.getVersion()+"."+library.getRevisionNumber());
-				result.setEditable(MatContextServiceUtil.get()
-						.isCurrentCQLLibraryEditable(cqlLibraryDAO, library.getId()));
+				result.setVersionStr(version);
+				result.setEditable(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, library.getId()));
 			} else {
 				result.setSuccess(false);
 				result.setFailureReason(SaveCQLLibraryResult.INVALID_CQL);
@@ -613,9 +615,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
 	private List<String> isValidCQLLibrary(CQLLibraryDataSetObject model) {
 
-		List<String> message = new ArrayList<String>();
+		List<String> message = new ArrayList<>();
 
-		if ((model.getCqlName() == null) || "".equals(model.getCqlName().trim())) {
+		if (StringUtils.isBlank(model.getCqlName())) {
 			message.add(MatContext.get().getMessageDelegate().getLibraryNameRequired());
 		} else {
 			CQLModelValidator cqlLibraryModel = new CQLModelValidator();

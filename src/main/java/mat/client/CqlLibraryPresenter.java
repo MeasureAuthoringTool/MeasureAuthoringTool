@@ -1056,7 +1056,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 			return false;
 		}
 
-		else if(!validator.doesAliasNameFollowCQLAliasNamingConvention(detailDisplay.getNameField().getText().trim())) {
+		else if(!validator.doesAliasNameFollowCQLAliasNamingConvention(detailDisplay.getNameField().getText())) {
 			detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
 			return false;
 		}
@@ -1074,6 +1074,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 	
 	private void createCQLLibrary() {
 		CQLLibraryDataSetObject libraryDataSetObject = new CQLLibraryDataSetObject();
+		detailDisplay.getNameField().setText(detailDisplay.getNameField().getText().trim());
 		libraryDataSetObject.setCqlName(detailDisplay.getNameField().getText());
 
 		if(isLibraryNameValid()) {

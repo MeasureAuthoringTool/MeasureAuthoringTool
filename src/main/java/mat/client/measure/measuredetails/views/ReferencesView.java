@@ -61,7 +61,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 			@Override
 			public SafeHtml getValue(String object) {
 				String reference = object.length()>35 ? object.substring(0, 35) + "..." : object;
-				return CellTableUtility.getColumnToolTip(reference);
+				return CellTableUtility.getColumnToolTip(SafeHtmlUtils.htmlEscape(reference));
 			}
 		};
 		referencesTable.addColumn(descriptionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Description\">" + "Description" + "</span>"));
@@ -111,7 +111,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
 	
 	private void displayDeleteConfirmationDialog(int index, String object) {
 		DeleteConfirmationDialogBox deleteConfirmation = new DeleteConfirmationDialogBox();
-		deleteConfirmation.getMessageAlert().createAlert("You have selected to delete reference: " + (object.length()>60 ? object.substring(0, 59) : object) + ". Please confirm that you want to remove this reference permanently.");
+		deleteConfirmation.getMessageAlert().createAlert("You have selected to delete reference: " + SafeHtmlUtils.htmlEscape(object.length()>60 ? object.substring(0, 59) : object) + ". Please confirm that you want to remove this reference permanently.");
 		deleteConfirmation.getYesButton().addClickHandler(event -> observer.handleDeleteReference(index, object));
 		deleteConfirmation.show();
 	}

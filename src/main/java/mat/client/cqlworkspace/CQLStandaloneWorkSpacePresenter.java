@@ -1415,6 +1415,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				showSearchingBusy(false);
 				messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFULLY_VALUESET_PASTE);
 			}
+			
+			cqlWorkspaceView.getValueSetView().clearSelectedCheckBoxes();
 			MatContext.get().getGlobalCopyPaste().getCopiedValueSetList().clear();
 		} else {
 			showSearchingBusy(false);
@@ -1457,6 +1459,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				showSearchingBusy(false);
 				messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFULLY_PASTED_CODES_IN_MEASURE);
 			}
+			
+			cqlWorkspaceView.getCodesView().clearSelectedCheckBoxes();
 			MatContext.get().getGlobalCopyPaste().getCopiedCodeList().clear();
 		} else {
 			showSearchingBusy(false);

@@ -245,7 +245,6 @@
     }
 
     pre {
-      overflow: auto;
       /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
       white-space: pre-wrap;
       /* css-3 */

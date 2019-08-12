@@ -58,7 +58,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Description</span></td>
 			<td style="width:80%" colspan="3">
-				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+				<div style="width:660px;">
 	     		  <pre>${model.measureInformation.description!""}</pre>
 	     		 </div>
      		 </td>
@@ -67,7 +67,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Copyright</span></td>
 			<td style="width:80%" colspan="3">
-				 <div style="width:660px;overflow-x:hidden;overflow-y:auto">
+				 <div style="width:660px;">
 	  				 <pre>${model.measureInformation.copyright!""}</pre>
       			</div>
       		</td>
@@ -76,7 +76,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Disclaimer</span></td>
 		  	<td style="width:80%" colspan="3">
-      			<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+      			<div style="width:660px;">
      			  <pre>${model.measureInformation.disclaimer!""}</pre>
  		 		</div>
  		 	</td>
@@ -137,7 +137,7 @@
 			<tr>
 				<td style="background-color:#656565; width:20%"><span class="td_label">Stratification</span></td>
 				<td style="width:80%" colspan="3">
-	      			<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	      			<div style="width:660px;">
 	       				<pre>${model.measureInformation.stratification!""}</pre>
 	       			</div>
 	  			</td>
@@ -146,7 +146,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Risk Adjustment</span></td>
 	     	<td style="width:80%" colspan="3">
-      			<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+      			<div style="width:660px;">
        				<pre>${model.measureInformation.riskAdjustment!""}</pre>
       			</div>
   			</td>
@@ -155,7 +155,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Rate Aggregation</span></td>
 		 	<td style="width:80%" colspan="3">
-		 		<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+		 		<div style="width:660px;">
        				<pre>${model.measureInformation.rateAggregation!""}</pre>
   				</div>
 			</td>
@@ -164,7 +164,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Rationale</span></td>
 	     	<td style="width:80%" colspan="3">
- 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+ 				<div style="width:660px;">
        				<pre>${model.measureInformation.rationale!""}</pre>
       			</div>
   			</td>
@@ -173,7 +173,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Clinical Recommendation Statement</span></td>
     		<td style="width:80%" colspan="3">
-      			<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+      			<div style="width:660px;">
        				<pre>${model.measureInformation.clinicalRecommendationStatement!""}</pre>
   				</div>
 			</td>
@@ -182,7 +182,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Improvement Notation</span></td>
 		    <td style="width:80%" colspan="3">
-	      		<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	      		<div style="width:660px;">
 	       			<pre>${model.measureInformation.improvementNotation!""}</pre>
 	      		</div>
       		</td>
@@ -195,7 +195,7 @@
 				<tr>
 					<td style="background-color:#656565; width:20%"><span class="td_label">Reference</span></td>
 					<td style="width:80%" colspan="3">
-			      		<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+			      		<div style="width:660px;">
 			       			<pre>${reference!""}</pre>
 			      		</div>
 		      		</td>
@@ -212,7 +212,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Definition</span></td>
 			<td style="width:80%" colspan="3">
-	      		<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	      		<div style="width:660px;">
 	       			<pre>${model.measureInformation.definition!""}</pre>
 	      		</div>
       		</td>
@@ -221,7 +221,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Guidance</span></td>
 	     	<td style="width:80%" colspan="3">
- 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+ 				<div style="width:660px;">
        				<pre>${model.measureInformation.guidance!""}</pre>
       			</div>	
   			</td>
@@ -230,7 +230,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Transmission Format</span></td>
 	     	<td style="width:80%" colspan="3">
- 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+ 				<div style="width:660px;">
        				<pre>${model.measureInformation.transmissionFormat!""}</pre>
       			</div>	
   			</td>
@@ -240,7 +240,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Initial Population</span></td>
 	     	<td style="width:80%" colspan="3">
- 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+ 				<div style="width:660px;">
        				<pre>${model.measureInformation.initialPopulation!""}</pre>
       			</div>	
   			</td>
@@ -250,7 +250,7 @@
 			<tr>
 				<td style="background-color:#656565; width:20%"><span class="td_label">Denominator</span></td>
 		     	<td style="width:80%" colspan="3">
-	 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.denominator!""}</pre>
 	      			</div>	
   				</td>
@@ -261,7 +261,7 @@
 			<tr>
 				<td style="background-color:#656565; width:20%"><span class="td_label">Denominator Exclusions</span></td>
 		     	<td style="width:80%" colspan="3">
-	 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.denominatorExclusions!""}</pre>
 	      			</div>	
   				</td>
@@ -272,7 +272,7 @@
 			<tr>
 				<td style="background-color:#656565; width:20%"><span class="td_label">Measure Population</span></td>
 		     	<td style="width:80%" colspan="3">
-	 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.measurePopulation!""}</pre>
 	      			</div>	
   				</td>
@@ -283,7 +283,7 @@
 			<tr>
 				<td style="background-color:#656565; width:20%"><span class="td_label">Measure Population Exclusions</span></td>
 		     	<td style="width:80%" colspan="3">
-	 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.measurePopulationExclusions!""}</pre>
 	      			</div>	
   				</td>
@@ -294,7 +294,7 @@
 			<tr>
 				<td style="background-color:#656565; width:20%"><span class="td_label">Measure Observations</span></td>
 		     	<td style="width:80%" colspan="3">
-	 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.measureObservations!""}</pre>
 	      			</div>	
   				</td>
@@ -305,7 +305,7 @@
 			<tr>
 				<td style="background-color:#656565; width:20%"><span class="td_label">Numerator</span></td>
 		     	<td style="width:80%" colspan="3">
-	 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.numerator!""}</pre>
 	      			</div>	
   				</td>
@@ -316,7 +316,7 @@
 			<tr>
 				<td style="background-color:#656565; width:20%"><span class="td_label">Numerator Exclusions</span></td>
 		     	<td style="width:80%" colspan="3">
-	 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.numeratorExclusions!""}</pre>
 	      			</div>	
   				</td>
@@ -327,7 +327,7 @@
 			<tr>
 				<td style="background-color:#656565; width:20%"><span class="td_label">Denominator Exceptions</span></td>
 		     	<td style="width:80%" colspan="3">
-	 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.denominatorExceptions!""}</pre>
 	      			</div>	
   				</td>
@@ -337,7 +337,7 @@
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Supplemental Data Elements</span></td>
 	     	<td style="width:80%" colspan="3">
- 				<div style="width:660px;overflow-x:hidden;overflow-y:auto">
+ 				<div style="width:660px;">
        				<pre>${model.measureInformation.supplementalDataElements!""}</pre>
       			</div>	
 			</td>

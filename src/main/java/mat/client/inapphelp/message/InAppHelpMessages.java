@@ -2,7 +2,7 @@ package mat.client.inapphelp.message;
 
 public class InAppHelpMessages {
 	
-	private static final String INFORMATION_HELP = "<b>Information:</b> Clicking the Information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>";
+	private static final String INFORMATION_HELP = "<b>Information:</b> Clicking the Information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Expression Editor.<br>";
 	
 	private static final String SAVE_HELP = "<b>Save:</b> The Save icon is to save your current work.<br>";
 	
@@ -14,7 +14,7 @@ public class InAppHelpMessages {
 	
 	private static final String VIEW_CQL_MEASURE_HELP =  "<b>CQL Library Viewer:</b> Clicking on this link will display the current CQL library for the measure being worked on. This is available to allow you to review other items you have already added to the measure while you are working on your current expression. Clicking the link again will collapse the area to save space.";
 	
-	public static final String MEASURE_CQL_LIBRARY_GENERAL_INFORMATION = "<b>CQL Library Name:</b> This is a name that is constructed from the measure name upon creation of the measure and has been adjusted so that it starts with an alpha character or underscore followed by alpha-numeric character(s) or underscore(s) and does not contain spaces. This name identifies the library of the CQL expressions being created with this measure. To edit this name, make the change in the field, ensuring it follows the rules listed above, and click save.<br>" +
+	public static final String MEASURE_CQL_LIBRARY_GENERAL_INFORMATION = "<b>CQL Library Name:</b> This is a name that will become the file name for the CQL File, the ELM file, and the JSON file exports. This name must be unique to all other CQL Library Names in the MAT, start with an alpha character or underscore followed by alpha-numeric character(s) or underscore(s) and can not contain spaces. This name identifies the library of the CQL expressions being created with this measure. To edit this name, make the change in the field, ensuring it follows the rules listed above, and click save.<br>" +
 			"<br>" +
 			"                  <b>CQL Library Version:</b> This is the current version of the CQL library that is being created with this measure. This field is not editable.<br>" +
 			"<br>" +
@@ -22,9 +22,9 @@ public class InAppHelpMessages {
 			"<br>" +
 			"                  <b>Model Version:</b> Describes the version of the data model this measure is using. This field is not editable.<br>" +
 			"<br>" +
-			"<b>Comments:</b> This comment box is available to enter information that applies to the CQL library as a whole. Information entered here will show before the model declaration on both the 'View CQL' section of the CQL Workspace and in the CQL file export. Click the Save icon to save comments entered. To remove a comment, remove the text from the comments field and click the Save icon again.";
+			"<b>Comments:</b> This comment box is available to enter information that applies to the CQL library as a whole. Information entered here will show before the model declaration on both the 'CQL Library Editor section of the CQL Workspace and in the CQL file export. Click the Save icon to save comments entered. To remove a comment, remove the text from the comments field and click the Save icon again.";
 
-	public static final String STANDALONE_CQL_LIBRARY_GENERAL_INFORMATION = "<b>CQL Library Name:</b> This is a name that was given when the Library was created. CQL library names must start with an alpha-character or underscore followed by alpha-numeric character(s) or underscore(s) and can not contain spaces. This name identifies the library of the CQL expressions being created with this measure. To edit this name, make the change in the field, ensuring it follows the rules listed above, and click save.<br>" +
+	public static final String STANDALONE_CQL_LIBRARY_GENERAL_INFORMATION = "<b>CQL Library Name:</b> This is a name that will become the file name for the CQL File, the ELM file, and the JSON file exports. This name must be unique to all other CQL Library Names in the MAT, start with an alpha character or underscore followed by alpha-numeric character(s) or underscore(s) and can not contain spaces. This name identifies the library of the CQL expressions being created with this measure. To edit this name, make the change in the field, ensuring it follows the rules listed above, and click save.<br>" +
 			"<br>" +
 			"<b>CQL Library Version:</b> This is the current version of the CQL library. This field is not editable.<br>" +
 			"<br>" +
@@ -32,7 +32,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Model Version:</b> Describes the version of the data model this library is using. This field is not editable.<br>" +
 			"<br>" +
-			"<b>Comments:</b> This comment box is available to enter information that applies to the CQL library as a whole. Information entered here will show before the model declaration in the 'View CQL' section of the CQL Composer. Click the Save icon to save comments entered. To remove a comment, remove the text from the comments field and click the Save icon again.";
+			"<b>Comments:</b> This comment box is available to enter information that applies to the CQL library as a whole. Information entered here will show before the model declaration on both the 'CQL Library Editor section of the CQL Workspace and in the CQL file export. Click the Save icon to save comments entered. To remove a comment, remove the text from the comments field and click the Save icon again.";
 
 	public static final String MEASURE_CQL_LIBRARY_VALUE_SET = "<b>OID:</b> Each value set is identified with a unique Object Identifier (OID). Enter the OID for the desired value set to include in the measure and then click the Retrieve OID button. Note: You must be signed in to UMLS to retrieve a Value Set from the Value Set Authority Center (VSAC) through the MAT.<br>" +
 			"<br>" +
@@ -88,7 +88,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Parameter Name:</b> This field is to give your parameter a name. This name will be used to reference the parameter within the CQL logic and therefore, must be unique to any other identifier within the measure.<br>" +
 			"<br>" +
-			"<b>Comment:</b> This comment box is to add a comment specific to the particular parameter being worked on. This comment will show in the View CQL section of the CQL Workspace just above the parameter and in the CQL file export.<br>" +
+			"<b>Comment:</b> This comment box is to add a comment specific to the particular parameter being worked on. This comment will show in the CQL Library Editor section of the CQL Workspace just above the parameter and in the CQL file export.<br>" +
 			"<br>" +
 			INFORMATION_HELP +
 			"<br>" +
@@ -96,7 +96,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			ERASE_HELP +
 			"<br>" +
-			"<b>Delete:</b> The Delete icon is to delete the currently selected parameter. Note: you will not be able to delete any default parameter or any parameter that has been used elsewhere within your CQL logic.<br>" +
+			"<b>Delete:</b>  The Delete icon is to delete the currently selected parameter.<br>" +
 			"<br>" +
 			BUILD_CQL_EXPRESSION_HELP +
 			"<br>" +
@@ -108,7 +108,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Parameter Name:</b> This field is to give your parameter a name. This name will be used to reference the parameter within the CQL logic and therefore, must be unique to any other identifier within the library.<br>" +
 			"<br>" +
-			"<b>Comment:</b> This comment box is to add a comment specific to the particular parameter being worked on. This comment will show in the View CQL section of the CQL Workspace just above the parameter and in the CQL file export.<br>" +
+			"<b>Comment:</b> This comment box is to add a comment specific to the particular parameter being worked on. This comment will show in the CQL Library Editor section of the CQL Workspace just above the parameter and in the CQL file export.<br>" +
 			"<br>" +
 			INFORMATION_HELP +
 			"<br>" +
@@ -116,7 +116,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			ERASE_HELP +
 			"<br>" +
-			"<b>Delete:</b> The Delete icon is to delete the currently selected parameter. Note: you will not be able to delete any default parameter or any parameter that has been used elsewhere within your CQL logic.<br>" +
+			"<b>Delete:</b>  The Delete icon is to delete the currently selected parameter.<br>" +
 			"<br>" +
 			BUILD_CQL_EXPRESSION_HELP +
 			"<br>" +
@@ -130,7 +130,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Context:</b> Select whether your function is Patient or Population based.<br>" +
 			"<br>" +
-			"<b>Comment:</b> This comment box is to add a comment specific to the particular function being worked on. This comment will show in the View CQL section of the CQL Workspace just above the function and in the CQL file export.<br>" +
+			"<b>Comment:</b> This comment box is to add a comment specific to the particular function being worked on. This comment will show in the CQL Library Editor section of the CQL Workspace just above the function and in the CQL file export.<br>" +
 			"<br>" +
 			"<b>Return Type:</b> This field will populate once the function is saved and will tell you what type of data this function is returning. Note: If there are errors in your CQL file, the Return Type will not populate. Fix any errors in your measure and then the field will show the information.<br>" +
 			"<br>" +
@@ -146,7 +146,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			ERASE_HELP +
 			"<br>" +
-			"<b>Delete:</b> The Delete icon is to delete the currently selected function. Note: you will not be able to delete any function that has been used elsewhere within your CQL logic.<br>" +
+			"<b>Delete:</b> The Delete icon is to delete the currently selected function.<br>" +
 			"<br>" +
 			BUILD_CQL_EXPRESSION_HELP +
 			"<br>" +
@@ -160,7 +160,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Context:</b> Select whether your function is Patient or Population based.<br>" +
 			"<br>" +
-			"<b>Comment:</b> This comment box is to add a comment specific to the particular function being worked on. This comment will show in the View CQL section of the CQL Composer just above the function.<br>" +
+			"<b>Comment:</b> This comment box is to add a comment specific to the particular function being worked on. This comment will show in the CQL Library Editor section of the CQL Workspace just above the function and in the CQL file export.<br>" +
 			"<br>" +
 			"<b>Return Type:</b> This field will populate once the function is saved and will tell you what type of data this function is returning. Note: If there are errors in your CQL file, the Return Type will not populate. Fix any errors in your library and then the field will show the information.<br>" +
 			"<br>" +
@@ -176,7 +176,7 @@ public class InAppHelpMessages {
 			"<br>" +
 			ERASE_HELP +
 			"<br>" +
-			"<b>Delete:</b> The Delete icon is to delete the currently selected function. Note: you will not be able to delete any function that has been used elsewhere within your CQL logic.<br>" +
+			"<b>Delete:</b> The Delete icon is to delete the currently selected function.<br>" +
 			"<br>" +
 			BUILD_CQL_EXPRESSION_HELP +
 			"<br>" +
@@ -286,11 +286,11 @@ public class InAppHelpMessages {
 			"<br>" + 
 			"<b>Context:</b> Select whether your definition is Patient or Population based.<br>" + 
 			"<br>" + 
-			"<b>Comment:</b> This comment box is to add a comment specific to the particular definition being worked on. This comment will show in the View CQL section of the CQL Workspace just above the definition and in the CQL file export.<br>" + 
+			"<b>Comment:</b> This comment box is to add a comment specific to the particular definition being worked on. This comment will show in the CQL Library Editor section of the CQL Workspace just above the definition and in the CQL file export.<br>" + 
 			"<br>" + 
 			"<b>Return Type:</b> This field will populate once the definition is saved and will tell you what type of data this definition is returning. Note: If there are errors in your CQL file, the Return Type will not populate. Fix any errors in your measure and then the field will show the information.<br>" + 
 			"<br>" + 
-			"<b>Information:</b> Selecting the Information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>" + 
+			INFORMATION_HELP + 
 			"<br>" + 
 			"<b>Expression Builder:</b> Selecting this icon will open the Expression Builder which will walk users through creating a CQL expression by selecting options from dropdown menus.<br>" + 
 			"<br>" + 
@@ -300,7 +300,7 @@ public class InAppHelpMessages {
 			"<br>" + 
 			ERASE_HELP + 
 			"<br>" + 
-			"<b>Delete:</b> The Delete icon is to delete the currently selected definition. Note: you will not be able to delete any default definitions or any definition that has been used elsewhere within your CQL logic.<br>" + 
+			"<b>Delete:</b> The Delete icon is to delete the currently selected definition.<br>" + 
 			"<br>" + 
 			BUILD_CQL_EXPRESSION_HELP + 
 			"<br>" + 
@@ -315,11 +315,11 @@ public class InAppHelpMessages {
 			"<br>" + 
 			"<b>Context:</b> Select whether your definition is Patient or Population based.<br>" + 
 			"<br>" + 
-			"<b>Comment:</b> This comment box is to add a comment specific to the particular definition being worked on. This comment will show in the View CQL section of the CQL Composer just above the definition.<br>" + 
+			"<b>Comment:</b> This comment box is to add a comment specific to the particular definition being worked on. This comment will show in the CQL Library Editor section of the CQL Workspace just above the definition and in the CQL file export.<br>" + 
 			"<br>" + 
 			"<b>Return Type:</b> This field will populate once the definition is saved and will tell you what type of data this definition is returning. Note: If there are errors in your CQL file, the Return Type will not populate. Fix any errors in your library and then the field will show the information.<br>" + 
 			"<br>" + 
-			"<b>Information:</b> Selecting the Information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Editor.<br>" + 
+			INFORMATION_HELP + 
 			"<br>" + 
 			"<b>Expression Builder:</b> Selecting this icon will open the Expression Builder which will walk users through creating a CQL expression by selecting options from dropdown menus.<br>" + 
 			"<br>" + 
@@ -329,7 +329,7 @@ public class InAppHelpMessages {
 			"<br>" + 
 			ERASE_HELP + 
 			"<br>" + 
-			"<b>Delete:</b> The Delete icon is to delete the currently selected definition. Note: you will not be able to delete any definition that has been used elsewhere within your CQL logic.<br>" + 
+			"<b>Delete:</b> The Delete icon is to delete the currently selected definition.<br>" + 
 			"<br>" + 
 			BUILD_CQL_EXPRESSION_HELP + 
 			"<br>" + 
@@ -340,6 +340,8 @@ public class InAppHelpMessages {
 			"<br>" +
 			"<b>Insert:</b> Clicking this icon will open a dialog box that will allow you to choose items that will then be inserted into the CQL Library Editor in the correct CQL format. Items include Parameters, Definitions, Functions, Timings, Pre-defined Functions, Applied Value Sets / Codes, and Attributes.<br>" + 
 			"<br>" + 
+			"<b>Save:</b> The Save icon is to save your current work.<br>" + 
+			"<br>" +
 			"<b>Export Error File:</b> If your CQL file has errors or warnings, you can export a report that will show your entire CQL file with line numbers and list which line numbers are showing the errors and/or warnings. This file will open as a .txt file.<br>" + 
 			"<br>" + 
 			"<b>Enable the CQL Library Editor:</b> The CQL Library Editor is a feature that users will need to enable before it can be used. To enable editing on this page, click on the profile icon in the upper-right-hand corner, choose MAT Account, and on the Personal Information page, click the checkbox titled Enable the CQL Library Editor, enter your current password, and click save and continue.<br>" +
@@ -350,6 +352,8 @@ public class InAppHelpMessages {
 			"<b>Information:</b> Selecting the Information icon will present you with a list of all of the shortcut keys available to you when you are typing your CQL logic into the CQL Library Editor.<br>" +
 			"<br>" +
 			"<b>Insert:</b> Clicking this icon will open a dialog box that will allow you to choose items that will then be inserted into the CQL Library Editor in the correct CQL format. Items include Parameters, Definitions, Functions, Timings, Pre-defined Functions, Applied Value Sets / Codes, and Attributes.<br>" + 
+			"<br>" +
+			"<b>Save:</b> The Save icon is to save your current work.<br>" + 
 			"<br>" +
 			"<b>Export Error File:</b> If your CQL file has errors or warnings, you can export a report that will show your entire CQL file with line numbers and list which line numbers are showing the errors and/or warnings. This file will open as a .txt file.<br>" + 
 			"<br>" + 

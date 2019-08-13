@@ -714,7 +714,9 @@ public class CQLServiceImpl implements CQLService {
 			String line = scanner.nextLine();
 
 			if (!line.isEmpty()) {
-				line = line.replaceFirst(CQLUtilityClass.getWhiteSpaceString(isSpaces, indentSize), "");
+				if(line.startsWith(CQLUtilityClass.getWhiteSpaceString(isSpaces, indentSize))) {
+					line = line.replaceFirst(CQLUtilityClass.getWhiteSpaceString(isSpaces, indentSize), "");
+				}
 			}
 
 			builder.append(line + "\n");

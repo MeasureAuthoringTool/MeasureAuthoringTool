@@ -85,9 +85,12 @@ public class PatientBasedValidator {
 				NodeList childNodes = stratificationNode.getChildNodes();
 				for(int i = 0; i < childNodes.getLength(); i++) {
 					Node child = childNodes.item(i);
+					
+					String stratumName = child.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+					
 					String definitionName = child.getFirstChild().getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 					
-					createExpressionsToBeCheckedData(expressionPopMap, exprList, name, definitionName);
+					createExpressionsToBeCheckedData(expressionPopMap, exprList, name + " - " + stratumName, definitionName);
 				}
 				
 				

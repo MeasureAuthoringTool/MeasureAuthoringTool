@@ -956,20 +956,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	}
 
 	private void export(ManageMeasureSearchModel.Result result) {
-		String id = result.getId();
-		MatContext.get().getAuditService().recordMeasureEvent(id, "Measure Exported", null, true,
-				new AsyncCallback<Boolean>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						detailDisplay.getErrorMessageDisplay().createAlert("Error while adding export comment");
-					}
-
-					@Override
-					public void onSuccess(Boolean result) {
-					}
-
-				});
-
 		ManageExportPresenter exportPresenter = new ManageExportPresenter(exportView, result, this);
 
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();

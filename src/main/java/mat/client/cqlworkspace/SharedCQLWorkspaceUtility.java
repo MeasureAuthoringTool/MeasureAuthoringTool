@@ -64,7 +64,16 @@ public class SharedCQLWorkspaceUtility {
 		if(!result.isQDMVersionMatching()) {
 			errorMessages.add(AbstractCQLWorkspacePresenter.INVALID_QDM_VERSION_IN_INCLUDES);
 		} else if(!result.getCqlErrors().isEmpty() || !result.getLinterErrorMessages().isEmpty()) {
-			errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE);
+			if(result.isMeasureComposite() && result.isDoesMeasureHaveIncludedLibraries()) {
+				errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_COMPOSITE_AND_INCLUDED);
+			} else if (result.isMeasureComposite()) {
+				errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_COMPOSITE);
+			} else if (result.isDoesMeasureHaveIncludedLibraries()) {
+				errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_INCLUDED);
+			} else {
+				errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE);
+			}
+			
 			result.getLinterErrorMessages().forEach(e -> errorMessages.add(e));
 		}
 		if(!result.isDatatypeUsedCorrectly()) {

@@ -4941,9 +4941,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
 			result.getLinterErrors().addAll(linter.getErrors());
 			result.getLinterErrorMessages().addAll(linter.getErrorMessages());
+			result.setDoesMeasureHaveIncludedLibraries(checkIfIncludedLibrariesAreCoposite(result.getCqlModel().getIncludedLibrarys(), measure.getIsCompositeMeasure()));
+			result.setMeasureComposite(measure.getIsCompositeMeasure());
 		} else {
 			result.resetErrors();
 		}
+	}
+
+	private boolean checkIfIncludedLibrariesAreCoposite(Map<CQLIncludeLibrary, CQLModel> includedLibrarys, Boolean compositeMeasure) {
+		if(!compositeMeasure) {
+			return includedLibrarys.size() > 0;
+		}
+		return includedLibrarys.keySet().stream().anyMatch(library -> !"true".equals(library.getIsComponent()));
 	}
 
 	@Override

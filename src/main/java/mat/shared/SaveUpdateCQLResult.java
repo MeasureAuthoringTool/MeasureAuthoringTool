@@ -114,7 +114,11 @@ public class SaveUpdateCQLResult extends GenericResult{
 	private boolean isQDMVersionMatching = true;
 
 	private Map<String, List<CQLError>> libraryNameErrorsMap = new HashMap<>(); 
-	private Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>(); 
+	private Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>();
+	
+	private boolean isMeasureComposite = false;
+	
+	private boolean doesMeasureHaveIncludedLibraries = false;
 	
 	/**
 	 * Gets the cql string.
@@ -471,6 +475,22 @@ public class SaveUpdateCQLResult extends GenericResult{
 		getCqlErrors().clear();
 		getLibraryNameErrorsMap().clear();
 		getLibraryNameWarningsMap().clear();
+	}
+
+	public boolean isMeasureComposite() {
+		return isMeasureComposite;
+	}
+
+	public void setMeasureComposite(boolean isMeasureComposite) {
+		this.isMeasureComposite = isMeasureComposite;
+	}
+
+	public boolean isDoesMeasureHaveIncludedLibraries() {
+		return doesMeasureHaveIncludedLibraries;
+	}
+
+	public void setDoesMeasureHaveIncludedLibraries(boolean doesMeasureHaveIncludedLibraries) {
+		this.doesMeasureHaveIncludedLibraries = doesMeasureHaveIncludedLibraries;
 	}
 	
 }

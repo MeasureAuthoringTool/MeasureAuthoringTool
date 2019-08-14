@@ -68,7 +68,7 @@ public abstract class MainLayout {
 	
 	NavbarLink homeLink = new NavbarLink();
 	
-	ListItem signedInAsName = new ListItem();
+	static ListItem signedInAsName = new ListItem();
 	AnchorListItem profile = new AnchorListItem("MAT Account");
 	AnchorListItem signOut = new AnchorListItem("Sign Out");
 	
@@ -279,7 +279,7 @@ public abstract class MainLayout {
 		return li;
 	}
 
-	public void setSignedInName(String name) {
+	public static void setSignedInName(String name) {
 		signedInAsName.setText(name);
 		signedInAsName.setTitle(name);
 		signedInAsName.setStyleName("labelStyling", true);

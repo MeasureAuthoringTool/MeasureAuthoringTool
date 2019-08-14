@@ -28,10 +28,10 @@ import mat.client.admin.reports.ManageAdminReportingPresenter;
 import mat.client.admin.reports.ManageAdminReportingView;
 import mat.client.bonnie.BonnieModal;
 import mat.client.codelist.ListBoxCodeProvider;
-import mat.client.cql.NewLibraryView;
 import mat.client.cql.CQLLibraryHistoryView;
 import mat.client.cql.CQLLibraryShareView;
 import mat.client.cql.CQLLibraryVersionView;
+import mat.client.cql.NewLibraryView;
 import mat.client.event.BackToLoginPageEvent;
 import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.CQLLibraryEditEvent;
@@ -43,13 +43,13 @@ import mat.client.export.ManageExportView;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.SessionManagementService.Result;
 import mat.client.measure.ComponentMeasureDisplay;
-import mat.client.measure.NewCompositeMeasureView;
-import mat.client.measure.NewMeasureView;
 import mat.client.measure.ManageMeasureHistoryView;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchView;
 import mat.client.measure.ManageMeasureShareView;
 import mat.client.measure.ManageMeasureVersionView;
+import mat.client.measure.NewCompositeMeasureView;
+import mat.client.measure.NewMeasureView;
 import mat.client.measure.TransferOwnershipView;
 import mat.client.myAccount.ChangePasswordPresenter;
 import mat.client.myAccount.ChangePasswordView;
@@ -469,7 +469,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
 		setHeader(resultMatVersion.replaceAll("[a-zA-Z]", ""), getHomeLink());
 		
-		setSignedInName(userFirstName + " " + userLastName);
+		setSignedInAsName(userFirstName, userLastName);
 		
 		getHomeLink().addClickHandler(event -> MatContext.get().redirectToMatPage(ClientConstants.HTML_MAT));
 		
@@ -535,6 +535,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		});
 		
 		MatContext.get().restartTimeoutWarning();
+	}
+	
+	public static void setSignedInAsName(String userFirstName, String userLastName) {
+		setSignedInName(userFirstName + " " + userLastName);
 	}
 	
 	private void showUMLSModal(String userFirstName, boolean isAlreadySignedIn) {

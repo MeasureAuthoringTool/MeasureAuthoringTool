@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -1642,7 +1644,10 @@ public class CQLServiceImpl implements CQLService {
 				model.getCodeList().add(appliedCode);
 			}
 		}	
-
+		
+		List<CQLCode> codesList = model.getCodeList().stream().sorted(Comparator.comparing(CQLCode::getCodeName)).collect(Collectors.toList()); 
+		model.setCodeList(codesList);
+		
 		result.setCqlCodeList(model.getCodeList());
 		result.setSuccess(true);
 		result.setCqlModel(model);

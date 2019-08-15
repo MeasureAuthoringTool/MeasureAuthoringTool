@@ -1151,6 +1151,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
 			result.getLinterErrors().addAll(linter.getErrors());
 			result.getLinterErrorMessages().addAll(linter.getErrorMessages());
+			result.setDoesMeasureHaveIncludedLibraries(result.getCqlModel().getIncludedLibrarys().size() > 0);
+			result.setMeasureComposite(false);
 		} else {
 			result.resetErrors();
 		}

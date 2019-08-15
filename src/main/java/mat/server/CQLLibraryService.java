@@ -317,6 +317,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				throw new MatException(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
 			}
 			
+			if(!validator.isIdentifierNotKeyword(libraryName)) {
+				throw new MatException(MatContext.get().getMessageDelegate().getLibraryNameRequired());
+			}
+			
 			if (cqlService.checkIfLibraryNameExists(libraryName, existingLibrary.getSetId())) {
 				throw new MatException(MessageDelegate.DUPLICATE_LIBRARY_NAME);
 			}

@@ -28,6 +28,7 @@ public class MessageDelegate {
 	private static final String LAST_NAME_REQUIRED = "Last Name is required.";
 	private static final String LOGIN_ID_REQUIRED = "User ID is required.";
 	private static final String LIBRARY_NAME_REQUIRED = "Library Name is required.";
+	private final String LIBRARY_NAME_IS_CQL_KEYWORD_ERROR = "The CQL Library Name can not be the same as a CQL Keyword.";
 	private static final String CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name. Library names must start with an alpha-character or underscore, followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
 	private static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has an incorrect format.";
 	private static final String EMAIL_ID_REQUIRED = "Email Address is required.";
@@ -960,5 +961,9 @@ public class MessageDelegate {
 			s = "invalid value set date.";
 		}
 		return pre + s;
+	}
+
+	public String getLibraryNameIsCqlKeywordError() {
+		return LIBRARY_NAME_IS_CQL_KEYWORD_ERROR;
 	}
 }

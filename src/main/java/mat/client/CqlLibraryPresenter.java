@@ -1061,6 +1061,11 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 			return false;
 		}
 		
+		else if(!validator.isIdentifierNotKeyword(detailDisplay.getNameField().getText())) {
+			detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getLibraryNameIsCqlKeywordError());
+			return false;
+		}
+		
 		return true;
 	}
 	

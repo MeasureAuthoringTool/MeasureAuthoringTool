@@ -2,6 +2,8 @@ package mat.shared;
 
 import com.google.gwt.regexp.shared.RegExp;
 
+import mat.client.shared.MatContext;
+
 
 /**
  * The Class CQLModelValidator.
@@ -88,6 +90,15 @@ public class CQLModelValidator {
 	public boolean doesCommentContainInvalidCharacters(String comment) {
 		return commentRegExp.test(comment);
 	}
+	
+    public boolean isIdentifierNotKeyword(String libraryName) {
+    	final String trimedExpression = libraryName.trim();
+		return !trimedExpression.isEmpty()
+				&& MatContext.get().getCqlConstantContainer() != null 
+				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList() != null
+				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList() != null
+				&& !MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList().stream().anyMatch(definedKeyWord -> definedKeyWord.equalsIgnoreCase(trimedExpression));
+    }
 	
 	/**
 	 * Validate for comment text area.

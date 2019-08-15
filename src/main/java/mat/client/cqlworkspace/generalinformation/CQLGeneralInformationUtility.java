@@ -36,6 +36,12 @@ public class CQLGeneralInformationUtility {
 			return false; 
 		}
 		
+		if(!validator.isIdentifierNotKeyword(libraryName)) {
+			view.getLibraryNameGroup().setValidationState(ValidationState.ERROR);
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getLibraryNameIsCqlKeywordError());
+			return false; 
+		}
+		
 		if(validator.isCommentMoreThan2500Characters(commentBoxContent)) {
 			view.getCommentsGroup().setValidationState(ValidationState.ERROR);
 			messagePanel.getErrorMessageAlert().createAlert(COMMENT_LENGTH_ERROR);

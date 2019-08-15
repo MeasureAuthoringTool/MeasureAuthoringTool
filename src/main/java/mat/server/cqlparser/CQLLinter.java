@@ -270,6 +270,10 @@ public class CQLLinter extends cqlBaseListener {
 		}
 	}
 	
+	private String getExpectedIdentifier(String identifier) {
+		return "\"" + identifier + "\"";
+	}
+	
 	@Override
 	public void enterLibraryDefinition(LibraryDefinitionContext ctx) {
 		enteredLibraryDefinition = true;
@@ -280,7 +284,7 @@ public class CQLLinter extends cqlBaseListener {
 		}
 		
 		libraryDefinitionStartLine = ctx.getStart().getLine();
-		String name = CQLParserUtil.parseString(ctx.qualifiedIdentifier().getText());
+		String name = ctx.qualifiedIdentifier().getText();
 		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
 		String comment = getLibraryComment(ctx);
 		String previousComment = config.getPreviousCQLModel().getLibraryComment();
@@ -330,7 +334,7 @@ public class CQLLinter extends cqlBaseListener {
 			return;
 		}
 		
-		String model = CQLParserUtil.parseString(ctx.modelIdentifier().getText());
+		String model = ctx.modelIdentifier().getText();
 		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
 		if (!StringUtils.equals(model, config.getModelIdentifier()) || !StringUtils.equals(version, config.getModelVersion())) {
 			hasInvalidEdits = true;
@@ -342,8 +346,8 @@ public class CQLLinter extends cqlBaseListener {
 	
 	@Override
 	public void enterIncludeDefinition(IncludeDefinitionContext ctx) {
-		String identifier = CQLParserUtil.parseString(ctx.qualifiedIdentifier().getText());
-		String alias = CQLParserUtil.parseString(ctx.localIdentifier().getText());
+		String identifier = ctx.qualifiedIdentifier().getText();
+		String alias = ctx.localIdentifier().getText();
 		String version = CQLParserUtil.parseString(ctx.versionSpecifier().getText());
 
 		// find all libraries that have a matching identifier, alias, and version
@@ -369,6 +373,10 @@ public class CQLLinter extends cqlBaseListener {
 		CQLCodeSystem codesystem = new CQLCodeSystem();
 		String codeSystemId = CQLParserUtil.parseString(ctx.codesystemId().getText());
 		String codeSystemName = CQLParserUtil.parseString(ctx.identifier().getText());
+		
+		if(!getExpectedIdentifier(codeSystemName).equals(ctx.identifier().getText())) {
+			hasInvalidEdits = true;
+		}
 		
 		if(ctx.codesystemId() != null && !CQLParserUtil.parseString(ctx.codesystemId().getText()).startsWith(OID_PREFIX)) {
 			hasInvalidEdits = true;
@@ -399,7 +407,7 @@ public class CQLLinter extends cqlBaseListener {
 	
 	@Override
 	public void enterValuesetDefinition(ValuesetDefinitionContext ctx) {
-		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+		String identifier = ctx.identifier().getText();
 		String valuesetId = CQLParserUtil.parseString(ctx.valuesetId().getText());		
 		
 		if(ctx.accessModifier() != null) {
@@ -417,7 +425,7 @@ public class CQLLinter extends cqlBaseListener {
 		// find all valuesets that have a matching identifier and oid
 		if(config.getPreviousCQLModel().getValueSetList() != null) {
 			List<CQLQualityDataSetDTO> potentialMatches = config.getPreviousCQLModel().getValueSetList().stream().filter(v -> (
-					identifier.equals(v.getName())
+					identifier.equals(getExpectedIdentifier(v.getName()))
 					&& valuesetId.equals(OID_PREFIX + v.getOid())
 					)).collect(Collectors.toList());
 
@@ -435,12 +443,16 @@ public class CQLLinter extends cqlBaseListener {
 
 	@Override
 	public void enterCodeDefinition(CodeDefinitionContext ctx) {
-		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+		String identifier = ctx.identifier().getText();
 		String codeId = CQLParserUtil.parseString(ctx.codeId().getText());	
-		String codesystemIdentifier = CQLParserUtil.parseString(ctx.codesystemIdentifier().getText());
+		String codesystemIdentifier =  CQLParserUtil.parseString(ctx.codesystemIdentifier().getText());
 		String displayClause = ctx.displayClause() != null ? CQLParserUtil.parseString(ctx.displayClause().STRING().getText()) : "";
 		
 		if(ctx.accessModifier() != null) {
+			hasInvalidEdits = true;
+		}
+		
+		if(!getExpectedIdentifier(codesystemIdentifier).equals(ctx.codesystemIdentifier().getText())) {
 			hasInvalidEdits = true;
 		}
 		
@@ -448,7 +460,7 @@ public class CQLLinter extends cqlBaseListener {
 		// in MAT the identifier is mapped the displayName field (which is also called the descriptor)
 		if(config.getPreviousCQLModel().getCodeList() != null) {
 			List<CQLCode> potentialMatches = config.getPreviousCQLModel().getCodeList().stream().filter(c -> 
-				(c.getDisplayName().equals(identifier) 
+				(getExpectedIdentifier(c.getDisplayName()).equals(identifier) 
 				&& c.getCodeOID().equals(codeId) 
 				&& c.getName().equals(displayClause)
 				&& getCodeSystemIdentifier(c).equals(codesystemIdentifier))

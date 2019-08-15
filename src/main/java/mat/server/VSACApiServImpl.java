@@ -357,9 +357,7 @@ public class VSACApiServImpl implements VSACApiService{
 	@Override
 	public final boolean validateVsacUser(final String userName, final String password, String sessionId) {
 		LOGGER.info("Start VSACAPIServiceImpl validateVsacUser");
-		//String eightHourTicketForUser = vGroovyClient.getTicketGrantingTicket(userName, password);
-		//TODO: This is strictly for testing purposes only and needs to be removed once testing is done.
-		String eightHourTicketForUser = "TGT-3560014-cqVjLOuQDfP14XZeoc9iUVttBooBcf0Q73CUCAlbom9Oc1UHht-cas";
+		String eightHourTicketForUser = vGroovyClient.getTicketGrantingTicket(userName, password);
 		VsacTicketInformation ticketInformation = new VsacTicketInformation(eightHourTicketForUser, new Date());
 		UMLSSessionTicket.put(sessionId, ticketInformation);
 		LOGGER.info("End VSACAPIServiceImpl validateVsacUser: " + " Ticket issued for 8 hours: " + eightHourTicketForUser);

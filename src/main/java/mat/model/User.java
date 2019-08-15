@@ -263,7 +263,7 @@ public class User  {
 		this.userSecurityQuestions = securityQuestions;
 	}			
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "SIGN_IN_DATE", length = 10)
 	public Date getSignInDate() {
 		return signInDate;
@@ -278,7 +278,7 @@ public class User  {
 		}
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "SIGN_OUT_DATE", length = 10)
 	public Date getSignOutDate() {
 		return signOutDate;
@@ -292,7 +292,7 @@ public class User  {
 		}
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "LOCKED_OUT_DATE", length = 10)
 	public Date getLockedOutDate() {
 		return lockedOutDate;

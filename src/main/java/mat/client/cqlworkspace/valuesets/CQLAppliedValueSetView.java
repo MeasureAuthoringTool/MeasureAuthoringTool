@@ -66,11 +66,9 @@ import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
-import mat.client.umls.service.VsacApiResult;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.CQLValueSetTransferObject;
@@ -994,24 +992,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		}
 
 		return isUserDefined;
-	}
-
-	public String convertMessage(final int id) {
-		String message;
-		switch (id) {
-		case VsacApiResult.UMLS_NOT_LOGGEDIN:
-			message = MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN();
-			break;
-		case VsacApiResult.OID_REQUIRED:
-			message = MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED();
-			break;
-		case VsacApiResult.VSAC_REQUEST_TIMEOUT:
-			message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_TIMEOUT();
-			break;
-		default:
-			message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
-		}
-		return message;
 	}
 
 	public void resetCQLValuesetearchPanel() {

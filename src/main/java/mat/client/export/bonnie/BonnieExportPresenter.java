@@ -11,6 +11,7 @@ import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageDelegate;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.shared.bonnie.error.BonnieServerException;
@@ -122,6 +123,7 @@ public class BonnieExportPresenter implements MatPresenter {
 			@Override
 			public void onSuccess(VsacTicketInformation result) {
 				if(result == null) {
+					//This error happens when there is no CAS Ticket Granting Ticket
 					view.setHelpBlockMessage(SIGN_INTO_UMLS);
 					createErrorMessage(SIGN_INTO_UMLS);
 					Mat.hideLoadingMessage();
@@ -148,19 +150,22 @@ public class BonnieExportPresenter implements MatPresenter {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				
+				//This error happens when there is CAS Ticket Granting Ticket but unable to retrieve Service Ticket
 				if(caught instanceof UMLSNotActiveException) {
-					view.setHelpBlockMessage(SIGN_INTO_UMLS);
-					createErrorMessage(SIGN_INTO_UMLS);
+					view.setHelpBlockMessage(MessageDelegate.VSAC_UNAUTHORIZED_ERROR);
+					createErrorMessage(MessageDelegate.VSAC_UNAUTHORIZED_ERROR);
 					Mat.hideUMLSActive(true);
-				}
-				if(caught instanceof BonnieUnauthorizedException) {
+					MatContext.get().setUMLSLoggedIn(false);
+					
+				} else if(caught instanceof BonnieUnauthorizedException) {
 					setVeiwAsLoggedOutOfBonnie();
 					view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
 					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
+					
 				} else {
 					createErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
+				
 				Mat.hideLoadingMessage();
 			}
 

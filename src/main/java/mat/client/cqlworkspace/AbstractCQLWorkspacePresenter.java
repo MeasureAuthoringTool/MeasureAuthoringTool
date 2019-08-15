@@ -481,7 +481,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 					CQLCode code = buildCQLCodeFromCodesView(StringUtility.removeEscapedCharsFromString(cqlWorkspaceView.getCodesView().getCodeDescriptorInput().getValue()));
 					cqlWorkspaceView.getCodesView().setValidateCodeObject(code);
 				} else {
-					String message = cqlWorkspaceView.getCodesView().convertMessage(result.getFailureReason());
+					String message = convertMessage(result.getFailureReason());
 					messagePanel.getErrorMessageAlert().createAlert(message);
 					messagePanel.getErrorMessageAlert().setVisible(true);
 				}
@@ -2031,4 +2031,31 @@ public abstract class AbstractCQLWorkspacePresenter {
 			messagePanel.getSuccessMessageAlert().createAlert(successMsg);
 		}
 	}
+	
+	protected String convertMessage(final int id) {
+		String message;
+		switch (id) {
+		case VsacApiResult.UMLS_NOT_LOGGEDIN:
+			message = MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN();
+			break;
+		case VsacApiResult.OID_REQUIRED:
+			message = MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED();
+			break;
+		case VsacApiResult.CODE_URL_REQUIRED:
+			message = MatContext.get().getMessageDelegate().getUMLS_CODE_IDENTIFIER_REQUIRED();
+			break;
+		case VsacApiResult.VSAC_REQUEST_TIMEOUT:
+			message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_TIMEOUT();
+			break;
+		case VsacApiResult.VSAC_UNAUTHORIZED_ERROR:
+			message = MessageDelegate.VSAC_UNAUTHORIZED_ERROR;
+			Mat.hideUMLSActive(true);
+			MatContext.get().setUMLSLoggedIn(false);
+			break;
+		default:
+			message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
+		}
+		return message;
+	}
+	
 }

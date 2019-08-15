@@ -34,6 +34,8 @@ public class VsacApiResult implements IsSerializable {
 	
 	public  final static int INVALID_CODE_URL = 5;
 	
+	public static final int VSAC_UNAUTHORIZED_ERROR = 6;
+	
 	/** The failure reason. */
 	private int failureReason;
 	

@@ -1655,7 +1655,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().setAppliedQdmTableList(appliedValueSetTableList);
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
 				} else {
-					messagePanel.getErrorMessageAlert().createAlert(cqlWorkspaceView.getValueSetView().convertMessage(result.getFailureReason()));
+					messagePanel.getErrorMessageAlert().createAlert(convertMessage(result.getFailureReason()));
 				}
 				showSearchingBusy(false);
 			}
@@ -1702,7 +1702,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					messagePanel.getSuccessMessageAlert().createAlert(getValuesetSuccessfulReterivalMessage(matValueSets.get(0).getDisplayName()));
 					messagePanel.getSuccessMessageAlert().setVisible(true);
 				} else {
-					String message = cqlWorkspaceView.getValueSetView().convertMessage(result.getFailureReason());
+					String message = convertMessage(result.getFailureReason());
 					messagePanel.getErrorMessageAlert().createAlert(message);
 					messagePanel.getErrorMessageAlert().setVisible(true);
 				}

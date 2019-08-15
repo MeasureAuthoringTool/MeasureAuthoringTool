@@ -21,6 +21,7 @@ import mat.model.UserBonnieAccessInfo;
 import mat.model.clause.Measure;
 import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
+import mat.server.VSACApiServImpl;
 import mat.server.bonnie.api.BonnieAPI;
 import mat.server.bonnie.api.BonnieAPIv1;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
@@ -134,7 +135,12 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		String calculationType = measure.getPatientBased() ? "patient" : "episode";
 		String vsacTicketGrantingTicket = vsacTicket.getTicket();
 		String vsacTicketExpiration = String.valueOf(vsacTicket.getTimeout().getTime());
+		String sessionId = getThreadLocalRequest().getSession().getId();
 		
+		if (!getVsacService().isCASTicketGrantingTicketValid(sessionId)) {
+			getVsacService().inValidateVsacUser(sessionId);
+			throw new UMLSNotActiveException();
+		}
 		
 		if(bonnieMeasureResults != null && bonnieMeasureResults.getMeasureExsists()) {
 			bonnieApi.updateMeasureInBonnie(userAccessToken, measureSetId, zipFileContents, fileName, null, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
@@ -146,6 +152,10 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		
 		return isInitialBonnieUpload;
 		
+	}
+	
+	private VSACApiServImpl getVsacService() {
+		return (VSACApiServImpl) context.getBean("vsacapi");
 	}
 	
 	public BonnieCalculatedResult getBonnieExportForMeasure(String userId, String measureId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, BonnieBadParameterException, BonnieDoesNotExistException{

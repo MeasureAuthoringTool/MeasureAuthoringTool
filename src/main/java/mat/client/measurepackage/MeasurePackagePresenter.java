@@ -85,6 +85,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 	private static final String INITIAL_BONNIE_UPLOAD_SUCCESS_MESSAGE = " has been successfully packaged and uploaded as a new measure in Bonnie. Please go to the Bonnie tool to create test cases for this measure.";
 	
+	private static final String VSAC_PACKAGE_UNAUTHORIZED_ERROR = "Unable to retrieve information from VSAC. The package has been created. Please log in to UMLS again to re-establish a connection and try the upload to Bonnie again.";
+	
 	private VsacTicketInformation vsacInfo = null;
 	
 	public List<CQLDefinition> getDbCQLSuppDataElements() {
@@ -1072,16 +1074,19 @@ private void saveMeasureAtPackage(){
 			public void onFailure(Throwable caught) {
 				
 				if(caught instanceof UMLSNotActiveException) {
-					view.getMeasureErrorMessageDisplay().createAlert(SIGN_INTO_UMLS);
+					view.getMeasureErrorMessageDisplay().createAlert(VSAC_PACKAGE_UNAUTHORIZED_ERROR);
 					Mat.hideUMLSActive(true);
-				}
-				if(caught instanceof BonnieUnauthorizedException) {
+					MatContext.get().setUMLSLoggedIn(false);
+					
+				} else if(caught instanceof BonnieUnauthorizedException) {
 					view.getMeasureErrorMessageDisplay().createAlert(SIGN_INTO_BONNIE_MESSAGE);
 					loggedIntoBonnie = false;
 					Mat.hideBonnieActive(true);
+					
 				} else {
 					view.getMeasureErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
+				
 				Mat.hideLoadingMessage();
 				resetPackageButtonsAndMessages();
 			}

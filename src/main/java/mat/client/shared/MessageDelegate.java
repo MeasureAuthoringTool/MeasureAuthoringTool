@@ -16,7 +16,8 @@ public class MessageDelegate {
 	public static final String DUPLICATE_LIBRARY_NAME_SAVE = "The MAT was unable to save the change to the CQL library name. All CQL library names must be unique within the MAT.";
 	public static final String VERSION_LIBRARY_NAME_ERROR_MESSAGE = "The MAT is unable to version the measure. The CQL Library name associated with this measure is not unique. Please edit the CQL Library name before versioning.";
 	public static final String VERSION_STANDALONE_LIBRARY_NAME_ERROR_MESSAGE = "The MAT is unable to version the Library. The CQL Library name is not unique. Please edit the CQL Library name before versioning.";
-	
+	public static final String VSAC_UNAUTHORIZED_ERROR = "Unable to retrieve information from VSAC. Please log in to UMLS again to re-establish a connection.";
+
 	private static final String WELCOME_MESSAGE = "You have successfully logged into the MAT.";
 	private static final String ALERT_LOADING_MESSAGE = "Please wait until loading is complete.";
 	private static final String CHANGES_SAVED = "Changes are successfully saved.";

@@ -26,6 +26,7 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.util.ClientConstants;
 import mat.shared.PasswordVerifier;
+import mat.shared.StringUtility;
 
 /**
  * The Class ChangePasswordPresenter.
@@ -188,9 +189,24 @@ public class ChangePasswordPresenter implements MatPresenter {
 	public void beforeDisplay() {
 		
 		MatContext.get().getMyAccountService().getMyAccount(new AsyncCallback<MyAccountModel>() {
-			
+
 			@Override
 			public void onSuccess(MyAccountModel result) {
+				MatContext.get().getMyAccountService().getSecurityQuestions(new AsyncCallback<SecurityQuestionsModel>() {
+					@Override
+					public void onSuccess(SecurityQuestionsModel result) {
+						if(StringUtility.isEmptyOrNull(result.getQuestion1Answer())) {
+							display.getErrorMessageDisplay().createAlert("Your Security Questions require updating. Please update the Security Questions prior to changing your password.");
+						}
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+					
+					}
+				});
+				
+				
 				myAccountModel = result;
 			}
 			
@@ -200,6 +216,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+ caught.getLocalizedMessage(), 0);
 			}
 		});
+		
 		clearValues();
 		Mat.focusSkipLists("ChangePassword");
 	}
@@ -234,33 +251,46 @@ public class ChangePasswordPresenter implements MatPresenter {
 	 *            the password
 	 */
 	private void saveChangedPassword(String password){
-		loginService.validatePassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<HashMap<String,String>>(){
+		MatContext.get().getMyAccountService().getSecurityQuestions(new AsyncCallback<SecurityQuestionsModel>() {
 			@Override
-			public void onSuccess(HashMap<String,String> resultMap) {
-				String result = resultMap.get("result");
-				if(result.equals("SUCCESS")){
-					try {
-						ValidatePasswordCreation();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}else{
-					display.getErrorMessageDisplay().clearAlert();
-					display.getSuccessMessageDisplay().clearAlert();
-					String displayErrorMsg= resultMap.get("message");
-					if(displayErrorMsg.equals("REDIRECT")){
-						MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-					}else{
-						display.getErrorMessageDisplay().createAlert(displayErrorMsg);
-					}
+			public void onSuccess(SecurityQuestionsModel result) {
+				if(StringUtility.isEmptyOrNull(result.getQuestion1Answer())) {
+					display.getErrorMessageDisplay().createAlert("The password update was not successful. Please update your Security Questions then try again.");
+				} else {
+					loginService.validatePassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<HashMap<String,String>>(){
+						@Override
+						public void onSuccess(HashMap<String,String> resultMap) {
+							String result = resultMap.get("result");
+							if(result.equals("SUCCESS")){
+								try {
+									ValidatePasswordCreation();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							} else {
+								display.getErrorMessageDisplay().clearAlert();
+								display.getSuccessMessageDisplay().clearAlert();
+								String displayErrorMsg= resultMap.get("message");
+								if(displayErrorMsg.equals("REDIRECT")){
+									MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+								}else{
+									display.getErrorMessageDisplay().createAlert(displayErrorMsg);
+								}
+							}
+						}
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						}
+
+					});
 				}
 			}
+
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				
 			}
-			
 		});
 	}
 	

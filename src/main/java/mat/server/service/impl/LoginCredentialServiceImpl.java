@@ -21,6 +21,7 @@ import mat.DTO.UserPreferenceDTO;
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
+import mat.dao.UserSecurityQuestionDAO;
 import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserPassword;
@@ -46,6 +47,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	@Autowired private UserDAO userDAO;
 	@Autowired private UserService userService;
 	@Autowired private TwoFactorValidationService matOtpValidatorService;
+	@Autowired private UserSecurityQuestionDAO userSecurityQuestionDAO;
 	
 	/*
 	 * {@inheritDoc}
@@ -65,6 +67,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		List<UserSecurityQuestion> secQuestions = user.getUserSecurityQuestions();
 		while (secQuestions.size() < 3) {
 			UserSecurityQuestion newQuestion = new UserSecurityQuestion();
+			newQuestion.setUserId(user.getId());
 			secQuestions.add(newQuestion);
 		}
 		String newQuestion1 = model.getQuestion1();
@@ -78,6 +81,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			secQuestions.get(0).setSalt(salt1);
 			String answer1 = HashUtility.getSecurityQuestionHash(salt1, model.getQuestion1Answer());
 			secQuestions.get(0).setSecurityAnswer(answer1);
+			secQuestions.get(0).setRowId("0");
+			userSecurityQuestionDAO.save(secQuestions.get(0));
 		}
 		
 		String newQuestion2 = model.getQuestion2();
@@ -90,6 +95,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			secQuestions.get(1).setSalt(salt2);
 			String answer2 = HashUtility.getSecurityQuestionHash(salt2, model.getQuestion2Answer());
 			secQuestions.get(1).setSecurityAnswer(answer2);
+			secQuestions.get(1).setRowId("1");
+			userSecurityQuestionDAO.save(secQuestions.get(1));
 		}
 
 		
@@ -104,9 +111,11 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			secQuestions.get(2).setSalt(salt3);
 			String answer3 = HashUtility.getSecurityQuestionHash(salt3, model.getQuestion3Answer());
 			secQuestions.get(2).setSecurityAnswer(answer3);
-			user.setUserSecurityQuestions(secQuestions);
+			secQuestions.get(2).setRowId("2");
+			userSecurityQuestionDAO.save(secQuestions.get(2));
 		}
 
+		user.setUserSecurityQuestions(secQuestions);
 		userService.saveExisting(user);
 		MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(user.getLoginId());
 		if (userDetails != null) {

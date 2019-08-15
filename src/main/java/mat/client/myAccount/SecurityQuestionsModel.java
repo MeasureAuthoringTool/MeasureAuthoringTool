@@ -1,6 +1,8 @@
 package mat.client.myAccount;
 
 import mat.model.BaseModel;
+import mat.shared.StringUtility;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -170,24 +172,27 @@ public class SecurityQuestionsModel implements IsSerializable , BaseModel {
 	@Override
 	public void scrubForMarkUp() {
 		String markupRegExp = "<[^>]+>";
-		
-		String noMarkupText = this.getQuestion1Answer().trim().replaceAll(markupRegExp, "");
-		System.out.println(noMarkupText);
-		if (this.getQuestion1Answer().trim().length() > noMarkupText.length()) {
-			this.setQuestion1Answer(noMarkupText);
+		String noMarkupText = "";
+		if(StringUtility.isNotBlank(this.getQuestion1Answer())) {
+			noMarkupText = this.getQuestion1Answer().trim().replaceAll(markupRegExp, "");
+			if (this.getQuestion1Answer().trim().length() > noMarkupText.length()) {
+				this.setQuestion1Answer(noMarkupText);
+			}
 		}
-		noMarkupText = this.getQuestion2Answer().trim().replaceAll(markupRegExp, "");
-		System.out.println(noMarkupText);
-		if (this.getQuestion2Answer().trim().length() > noMarkupText.length()) {
-			this.setQuestion2Answer(noMarkupText);
-		}
-		noMarkupText = this.getQuestion3Answer().trim().replaceAll(markupRegExp, "");
-		System.out.println(noMarkupText);
-		if (this.getQuestion3Answer().trim().length() > noMarkupText.length()) {
-			this.setQuestion3Answer(noMarkupText);
+
+		if(StringUtility.isNotBlank(this.getQuestion2Answer())) {
+			noMarkupText = this.getQuestion2Answer().trim().replaceAll(markupRegExp, "");
+			if (this.getQuestion2Answer().trim().length() > noMarkupText.length()) {
+				this.setQuestion2Answer(noMarkupText);
+			}
 		}
 		
-		
+		if(StringUtility.isNotBlank(this.getQuestion3Answer())) {
+			noMarkupText = this.getQuestion3Answer().trim().replaceAll(markupRegExp, "");
+			if (this.getQuestion3Answer().trim().length() > noMarkupText.length()) {
+				this.setQuestion3Answer(noMarkupText);
+			}
+		}
 	}
 	
 	

@@ -699,33 +699,10 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private String parseOutBody(String cqlExpressionString, String expressionDefinitionString, boolean isSpaces,
 			int indentSize) {
-
 		// remove the definition statement from the expressions string to make the
-		// epxerssion body and then trim whitespace
+		// expression body and then trim whitespace
 		String expressionBodyString = cqlExpressionString.replace(expressionDefinitionString, "").trim();
-
-		Scanner scanner = new Scanner(expressionBodyString);
-		StringBuilder builder = new StringBuilder();
-
-		// go through and rebuild the the format
-		// this will remove the first whitespace in a line so
-		// it properly displays in the ace editor.
-		// without doing this, the the ace editor display
-		// would be indented one too many
-		while (scanner.hasNextLine()) {
-			String line = scanner.nextLine();
-
-			if (!line.isEmpty()) {
-				if(line.startsWith(CQLUtilityClass.getWhiteSpaceString(isSpaces, indentSize))) {
-					line = line.replaceFirst(CQLUtilityClass.getWhiteSpaceString(isSpaces, indentSize), "");
-				}
-			}
-
-			builder.append(line + "\n");
-		}
-
-		scanner.close();
-		return builder.toString();
+		return CQLUtilityClass.replaceFirstWhitespaceInLineForExpression(expressionBodyString);
 	}
 
 	@Override
@@ -1644,7 +1621,7 @@ public class CQLServiceImpl implements CQLService {
 				model.getCodeList().add(appliedCode);
 			}
 		}	
-		
+
 		List<CQLCode> codesList = model.getCodeList().stream().sorted(Comparator.comparing(CQLCode::getCodeName)).collect(Collectors.toList()); 
 		model.setCodeList(codesList);
 		

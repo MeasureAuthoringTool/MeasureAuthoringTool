@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.UUID;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -21,27 +20,17 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cqframework.cql.gen.cqlBaseListener;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
-import org.cqframework.cql.gen.cqlParser.CodeDefinitionContext;
-import org.cqframework.cql.gen.cqlParser.CodesystemDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ExpressionDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.FunctionDefinitionContext;
-import org.cqframework.cql.gen.cqlParser.IncludeDefinitionContext;
-import org.cqframework.cql.gen.cqlParser.LibraryDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.OperandDefinitionContext;
 import org.cqframework.cql.gen.cqlParser.ParameterDefinitionContext;
-import org.cqframework.cql.gen.cqlParser.UsingDefinitionContext;
-import org.cqframework.cql.gen.cqlParser.ValuesetDefinitionContext;
 
 import mat.client.shared.CQLWorkSpaceConstants;
-import mat.model.cql.CQLCode;
-import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
-import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.CQLKeywordsUtil;
 import mat.server.CQLUtilityClass;
 import mat.server.util.QDMUtil;
@@ -145,28 +134,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 	}
 	
 	
-	private String replaceFirstWhitespaceInLineForExpression(String expression) {
-		Scanner scanner = new Scanner(expression);
-		StringBuilder builder = new StringBuilder();
 
-		// go through and rebuild the the format
-		// this will remove the first whitespace in a line so
-		// it properly displays in the ace editor.
-		// without doing this, the the ace editor display
-		// would be indented one too many
-		while (scanner.hasNextLine()) {
-			String line = scanner.nextLine();
-
-			if (!line.isEmpty()) {
-				line = line.replaceFirst(CQLUtilityClass.getWhiteSpaceString(true, 2), "");
-			}
-
-			builder.append(line + "\n");
-		}
-		
-		scanner.close();
-		return builder.toString();
-	}
 	@Override
 	public void enterExpressionDefinition(ExpressionDefinitionContext ctx) {		
 		String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
@@ -185,7 +153,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		
 		definition.setContext(currentContext);
 		definition.setCommentString(comment);
-		definition.setLogic(replaceFirstWhitespaceInLineForExpression(logic));
+		definition.setLogic(CQLUtilityClass.replaceFirstWhitespaceInLineForExpression(logic));
 
 		cqlModel.getDefinitionList().add(definition);
 	}
@@ -238,7 +206,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 		}
 		
 		function.setCommentString(comment);
-		function.setLogic(replaceFirstWhitespaceInLineForExpression(logic));
+		function.setLogic(CQLUtilityClass.replaceFirstWhitespaceInLineForExpression(logic));
 		function.setArgumentList(functionArguments);
 		function.setContext(currentContext);
 

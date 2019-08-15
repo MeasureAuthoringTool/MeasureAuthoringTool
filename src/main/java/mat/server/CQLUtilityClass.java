@@ -52,6 +52,31 @@ public final class CQLUtilityClass {
 	public static StringBuilder getStrToBeInserted(){
 		return toBeInsertedAtEnd;
 	}
+	
+	public static String replaceFirstWhitespaceInLineForExpression(String expression) {
+		Scanner scanner = new Scanner(expression);
+		StringBuilder builder = new StringBuilder();
+
+		// go through and rebuild the the format
+		// this will remove the first whitespace in a line so
+		// it properly displays in the ace editor.
+		// without doing this, the the ace editor display
+		// would be indented one too many
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine();
+
+			if (!line.isEmpty()) {
+				if(line.startsWith(CQLUtilityClass.getWhiteSpaceString(true, 2))) {
+					line = line.replaceFirst(CQLUtilityClass.getWhiteSpaceString(true, 2), "");
+				}
+			}
+
+			builder.append(line + "\n");
+		}
+		
+		scanner.close();
+		return builder.toString();
+	}
 
 	public static String getWhiteSpaceString(boolean isSpaces, int indentSize) {
 		String whiteSpaceString = "";

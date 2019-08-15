@@ -1622,7 +1622,7 @@ public class CQLServiceImpl implements CQLService {
 			}
 		}	
 
-		List<CQLCode> codesList = model.getCodeList().stream().sorted(Comparator.comparing(CQLCode::getCodeName)).collect(Collectors.toList()); 
+		List<CQLCode> codesList = model.getCodeList().stream().sorted(Comparator.comparing(CQLCode::getDisplayName)).collect(Collectors.toList()); 
 		model.setCodeList(codesList);
 		
 		result.setCqlCodeList(model.getCodeList());

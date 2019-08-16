@@ -500,7 +500,6 @@ public class ExportServlet extends HttpServlet {
 		} else {
 			export = getService().createOrGetHQMF(measureId);
 		}
-		getAuditService().recordMeasureEvent(measureId, MEASURE_EXPORTED, null, true);
 		return export;
 	}
 

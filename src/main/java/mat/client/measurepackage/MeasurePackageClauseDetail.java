@@ -164,7 +164,14 @@ public class MeasurePackageClauseDetail implements IsSerializable, Comparable<Me
 	public int compareTo(MeasurePackageClauseDetail oth) {
 		Integer groupingOrder = Integer.parseInt(MeasureGroupingOrder.valueOf(type).getStatusCode());
 		Integer otherGroupingOrder = Integer.parseInt(MeasureGroupingOrder.valueOf(oth.type).getStatusCode());
-		return groupingOrder.compareTo(otherGroupingOrder);
+		
+		// if they are the same population type, sort by the name
+		if(groupingOrder.equals(otherGroupingOrder)) {
+			return name.compareTo(oth.name);
+		} else { // otherwise sort by the population type
+			return groupingOrder.compareTo(otherGroupingOrder);
+		}
+		
 	}
 	
 	

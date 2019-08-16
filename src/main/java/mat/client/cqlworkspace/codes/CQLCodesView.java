@@ -1013,7 +1013,6 @@ public class CQLCodesView {
 
 	public void setIsEditable(boolean isEditable) {		
 		getIncludeCodeSystemVersionCheckBox().setEnabled(isEditable);
-		getApplyButton().setEnabled(isEditable);
 		getCancelCodeButton().setEnabled(isEditable);
 		getRetrieveFromVSACButton().setEnabled(isEditable);
 		this.setIsLoading(!isEditable);

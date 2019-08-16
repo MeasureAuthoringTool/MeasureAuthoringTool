@@ -53,6 +53,7 @@ public class CompositeMeasureValidator {
 	private static final String ERR_ALIAS_NOT_VALID = " cannot be saved. An alias for a component measure must start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), must not contain spaces, and it must be unique. Please correct and try again.";
 	private static final String ERR_LIBRARIES_MUST_HAVE_SAME_VERSION_AND_CONTENT = "CQL libraries within a composite measure can not have the same name with different library content or version.";
 	private static final String ERR_MORE_THAN_ONE_COMPONENT_MEASURE_REQUIRED_ON_PACKAGING = "Expressions must be used from two or more component measures.";
+	private static final String ERR_UNIQUE_ALIAS_NAME_REQUIRED = "Invalid component measure alias. All aliases must be unique, start with an alpha character or underscore, followed by alpha-numeric character(s) or underscore(s), and must not contain spaces.";
 	
 	@Autowired
 	private MeasureLibraryService measureLibraryService;
@@ -67,6 +68,8 @@ public class CompositeMeasureValidator {
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	
 	private boolean isPackage = false; 
+	
+	private HashSet<String> aliasNameSet; 
 	
 	public CompositeMeasureValidationResult validateCompositeMeasureOnPackage(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
 		isPackage = true; 
@@ -91,8 +94,13 @@ public class CompositeMeasureValidator {
 		List<String> packageErrors = validateMeasuresContainAPackage(manageCompositeMeasureDetailModel);
 		messages.addAll(packageErrors);
 
+		aliasNameSet = new HashSet<>();
 		if(!includedLibrariesAllHaveTheSameVersionAndContent(manageCompositeMeasureDetailModel)) {
 			messages.add(ERR_LIBRARIES_MUST_HAVE_SAME_VERSION_AND_CONTENT);
+		}
+		
+		if (isExistingAliasName(manageCompositeMeasureDetailModel.getAliasMapping())) {
+			messages.add(ERR_UNIQUE_ALIAS_NAME_REQUIRED);
 		}
 		
 		List<String> qdmErrors = validateMeasuresAllUseTheCorrectQDMVersion(manageCompositeMeasureDetailModel);
@@ -123,6 +131,14 @@ public class CompositeMeasureValidator {
 		validationResult.setModel(manageCompositeMeasureDetailModel);
 		return validationResult;
 	}
+	
+	private boolean isExistingAliasName(Map<String, String> aliasMapping) {
+		for (Map.Entry<String, String> entry : aliasMapping.entrySet()) {
+			if (!aliasNameSet.add(entry.getValue()))
+				return true;
+		}
+		return false;
+	}
 
 	private boolean compositeMeasureContainsMoreThanOneComponentMeasure(ManageCompositeMeasureDetailModel model) {		
 		return model.getAppliedComponentMeasures().size() > 1;
@@ -147,7 +163,7 @@ public class CompositeMeasureValidator {
 			String compositeXML = xmlModel.getXml();
 			CQLModel compositeCQLModel = CQLUtilityClass.getCQLModelFromXML(compositeXML);
 			nameToVersionMap.put(compositeCQLModel.getLibraryName(), "0.0.000");
-			boolean hasLibrariesThatAlreadyExistInAlreadyAppliedComponents = hasLibraryThatAlreadyExists(compositeCQLModel.getCqlIncludeLibrarys(), nameToVersionMap, nameVersionToIdMap); 
+			boolean hasLibrariesThatAlreadyExistInAlreadyAppliedComponents = hasLibraryThatAlreadyExists(true, compositeCQLModel.getCqlIncludeLibrarys(), nameToVersionMap, nameVersionToIdMap); 
 			if(!hasLibrariesThatAlreadyExistInAlreadyAppliedComponents) {
 				return false; 
 			}
@@ -177,7 +193,7 @@ public class CompositeMeasureValidator {
 			nameToVersionMap.put(componenetLibraryName, componentLibraryVersion);
 			nameVersionToIdMap.put(formattedName, cqlLibraryId);
 			
-			if(!hasLibraryThatAlreadyExists(newlyAppliedComponentCQLModel.getCqlIncludeLibrarys(), nameToVersionMap, nameVersionToIdMap)) {
+			if(!hasLibraryThatAlreadyExists(false, newlyAppliedComponentCQLModel.getCqlIncludeLibrarys(), nameToVersionMap, nameVersionToIdMap)) {
 				return false; 
 			}
 		}
@@ -185,7 +201,7 @@ public class CompositeMeasureValidator {
 		return true;
 	} 
 	
-	private boolean hasLibraryThatAlreadyExists(List<CQLIncludeLibrary> libraries, Map<String, String> nameToVersionMap, Map<String, String> nameVersionToIdMap) {
+	private boolean hasLibraryThatAlreadyExists(boolean isParent, List<CQLIncludeLibrary> libraries, Map<String, String> nameToVersionMap, Map<String, String> nameVersionToIdMap) {
 		for(CQLIncludeLibrary includedLibrary : libraries) {
 			// only run this test if it is not a composite measure. Composite measures are tested by checking the applied composite measures previous to this call. 
 			if(!BooleanUtils.toBoolean(includedLibrary.getIsComponent())) {
@@ -193,7 +209,11 @@ public class CompositeMeasureValidator {
 				String libraryName = libraryModel.getName();
 				String libraryVersion = includedLibrary.getVersion();
 				String libraryId = libraryModel.getId();
-
+				
+				if (isParent) {
+					aliasNameSet.add(includedLibrary.getAliasName());
+				}
+				
 				// check if there is a name with a different version in the map
 				if(nameToVersionMap.get(libraryName) != null && !nameToVersionMap.get(libraryName).equals(libraryVersion)) {
 					return false; 
@@ -209,7 +229,7 @@ public class CompositeMeasureValidator {
 				nameVersionToIdMap.put(formattedName, libraryId);
 				
 				CQLModel includedLibraryModel = CQLUtilityClass.getCQLModelFromXML(new String(libraryModel.getCQLByteArray()));
-				hasLibraryThatAlreadyExists(includedLibraryModel.getCqlIncludeLibrarys(), nameToVersionMap, nameVersionToIdMap);
+				hasLibraryThatAlreadyExists(isParent, includedLibraryModel.getCqlIncludeLibrarys(), nameToVersionMap, nameVersionToIdMap);
 			}
 		}
 		

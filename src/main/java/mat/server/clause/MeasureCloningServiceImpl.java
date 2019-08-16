@@ -64,6 +64,7 @@ import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.service.impl.XMLUtility;
+import mat.server.util.CQLValidationUtil;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.ManageMeasureDetailModelConversions;
 import mat.server.util.MeasureUtility;
@@ -194,6 +195,10 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 		
 		if(!messages.isEmpty()) {
 			throw new MatException(MessageDelegate.GENERIC_ERROR_MESSAGE);
+		}
+		
+		if(CQLValidationUtil.isCQLReservedWord(currentDetails.getCQLLibraryName())) {
+			throw new MatException(MessageDelegate.LIBRARY_NAME_IS_CQL_KEYWORD_ERROR);
 		}
 
 		if (cqlService.checkIfLibraryNameExists(currentDetails.getCQLLibraryName(), currentDetails.getMeasureSetId())){

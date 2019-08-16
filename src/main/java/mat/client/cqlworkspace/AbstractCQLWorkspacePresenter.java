@@ -221,7 +221,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		return isPageDirty;
 	}	
 	
-	protected boolean isValidExpressionName(String expressionName) {
+	public static boolean isValidExpressionName(String expressionName) {
 		final String trimedExpression = expressionName.trim();
 		return !trimedExpression.isEmpty() && !trimedExpression.equalsIgnoreCase(PATIENT)
 				&& MatContext.get().getCqlConstantContainer() != null 

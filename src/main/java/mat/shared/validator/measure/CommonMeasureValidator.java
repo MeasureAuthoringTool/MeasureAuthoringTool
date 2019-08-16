@@ -40,9 +40,7 @@ public class CommonMeasureValidator {
 		} else if(!validator.doesAliasNameFollowCQLAliasNamingConvention(libraryName) ||
 				validator.isCommentMoreThan2500Characters(libraryName)){
 			errorMessages.add(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
-		} else if(!validator.isIdentifierNotKeyword(libraryName)) {
-			errorMessages.add(MatContext.get().getMessageDelegate().getLibraryNameIsCqlKeywordError());
-		}
+		} 
 		
 		return errorMessages;
     }

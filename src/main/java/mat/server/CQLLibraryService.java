@@ -79,6 +79,7 @@ import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.service.UserService;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.CQLUtil;
+import mat.server.util.CQLValidationUtil;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.QDMUtil;
@@ -317,10 +318,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				throw new MatException(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
 			}
 			
-			if(!validator.isIdentifierNotKeyword(libraryName)) {
-				throw new MatException(MatContext.get().getMessageDelegate().getLibraryNameRequired());
+			if(CQLValidationUtil.isCQLReservedWord(libraryName)) {
+				throw new MatException(MessageDelegate.LIBRARY_NAME_IS_CQL_KEYWORD_ERROR);
+
 			}
-			
+						
 			if (cqlService.checkIfLibraryNameExists(libraryName, existingLibrary.getSetId())) {
 				throw new MatException(MessageDelegate.DUPLICATE_LIBRARY_NAME);
 			}
@@ -568,6 +570,13 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}
 
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
+		
+		if(CQLValidationUtil.isCQLReservedWord(cqlLibraryDataSetObject.getCqlName())) {
+			result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD);
+			result.setSuccess(false);
+			return result;
+		}
+		
 		if (cqlService.checkIfLibraryNameExists(cqlLibraryDataSetObject.getCqlName(), cqlLibraryDataSetObject.getCqlSetId())) {
 			result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
 			result.setSuccess(false);

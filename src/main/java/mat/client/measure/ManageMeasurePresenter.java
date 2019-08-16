@@ -733,7 +733,10 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 			message = "Data Validation Failed.Please verify data.";
 		} else if(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME == result.getFailureReason()) {
 			message = MessageDelegate.DUPLICATE_LIBRARY_NAME;
-		}  else {
+		} else if(SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD == result.getFailureReason()) {
+			message = MatContext.get().getMessageDelegate().getLibraryNameIsCqlKeywordError();
+
+		} else {
 			message = "Unknown Code " + result.getFailureReason();
 		}
 		return message;

@@ -142,6 +142,7 @@ import mat.server.service.impl.MeasureAuditServiceImpl;
 import mat.server.service.impl.PatientBasedValidator;
 import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.CQLUtil;
+import mat.server.util.CQLValidationUtil;
 import mat.server.util.ExportSimpleXML;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.ManageMeasureDetailModelConversions;
@@ -149,6 +150,7 @@ import mat.server.util.MeasureUtility;
 import mat.server.util.QDMUtil;
 import mat.server.util.XmlProcessor;
 import mat.server.validator.measure.CompositeMeasureValidator;
+import mat.shared.CQLModelValidator;
 import mat.shared.CQLValidationResult;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
@@ -1743,6 +1745,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		SaveMeasureResult result = new SaveMeasureResult();
 		if (libraryNameExists(model.getCQLLibraryName(), model.getMeasureSetId())) {
 			result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+			result.setSuccess(false);
+			return result;
+		}
+		
+		if(CQLValidationUtil.isCQLReservedWord(model.getCQLLibraryName())) {
+			result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD);
 			result.setSuccess(false);
 			return result;
 		}

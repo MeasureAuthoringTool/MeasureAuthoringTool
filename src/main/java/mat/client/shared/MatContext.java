@@ -1309,7 +1309,6 @@ public class MatContext implements IsSerializable {
 				cqlConstantContainer = result; 
 				setShortCutKeyUnits();
 			}
-			
 		});
 	}
 

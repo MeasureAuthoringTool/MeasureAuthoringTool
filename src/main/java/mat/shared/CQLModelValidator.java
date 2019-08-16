@@ -91,15 +91,6 @@ public class CQLModelValidator {
 		return commentRegExp.test(comment);
 	}
 	
-    public boolean isIdentifierNotKeyword(String libraryName) {
-    	final String trimedExpression = libraryName.trim();
-		return !trimedExpression.isEmpty()
-				&& MatContext.get().getCqlConstantContainer() != null 
-				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList() != null
-				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList() != null
-				&& !MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList().stream().anyMatch(definedKeyWord -> definedKeyWord.equalsIgnoreCase(trimedExpression));
-    }
-	
 	/**
 	 * Validate for comment text area.
 	 *

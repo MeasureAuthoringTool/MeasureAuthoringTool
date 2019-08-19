@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -58,7 +59,10 @@ public class HumanReadableMeasureInformationModel {
 	}
 	
 	public HumanReadableMeasureInformationModel(ManageMeasureDetailModel model) {
-		this.qdmVersion = Double.parseDouble(model.getQdmVersion());
+		if(StringUtils.isNotBlank(model.getQdmVersion())) {
+			this.qdmVersion = Double.parseDouble(model.getQdmVersion());
+		}
+		
 		this.ecqmTitle = model.getMeasureName();
 		this.ecqmIdentifier = model.geteMeasureId() == 0 ? "" : model.geteMeasureId() + "";		
 		this.ecqmVersionNumber = model.getFormattedVersion().replace("Draft based on", "").replace("v", "").trim();

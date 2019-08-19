@@ -118,9 +118,9 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 
 		// select a definition name in the listbox
 		for (int j = 0; j < definitionListBox.getItemCount(); j++) {
-			definitionListBox.setItemSelected(j, true);
-			String definitionUUID = definitionListBox.getSelectedValue();
+			String definitionUUID = definitionListBox.getValue(j);
 			if (definitionUUID.equals(populationClauseObject.getCqlExpressionUUID())) {
+				definitionListBox.setItemSelected(j, true);
 				break;
 			}
 		}
@@ -264,14 +264,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 	}
 	
 	private String getSelectedName(String selectedUuid) {
-		this.populationDataModel.getDefinitionNameList().forEach(d -> d.getUuid());
 		for(ExpressionObject o : this.populationDataModel.getDefinitionNameList()) {
-			if(o.getUuid().equals(selectedUuid)) {
-				return o.getName();
-			}
-		}
-		
-		for(ExpressionObject o : this.populationDataModel.getFunctionNameList()) {
 			if(o.getUuid().equals(selectedUuid)) {
 				return o.getName();
 			}

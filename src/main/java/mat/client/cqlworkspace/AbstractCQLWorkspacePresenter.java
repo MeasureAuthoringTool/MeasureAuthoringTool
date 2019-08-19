@@ -1801,6 +1801,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	}
 	
 	protected void includeViewEraseButtonClicked() {
+		setIsPageDirty(false);
 		cqlWorkspaceView.resetMessageDisplay();
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
@@ -1872,10 +1873,15 @@ public abstract class AbstractCQLWorkspacePresenter {
 	}
 
 	protected void includesViewSaveClicked() {
+		setIsPageDirty(false);
 		if (hasEditPermissions()) {
 			addIncludeLibraryInCQLLookUp();
 			cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
 		}
+	}
+	
+	protected void aliasNameChangeHandler() {
+		setIsPageDirty(true);
 	}
 	
 	protected void includeFocusPanelKeyDown(KeyDownEvent event) {

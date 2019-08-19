@@ -322,10 +322,12 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		cqlWorkspaceView.getIncludeView().getDeleteButton().addClickHandler(event -> includesViewDeleteButtonClicked());
 		cqlWorkspaceView.getIncludeView().getCloseButton().addClickHandler(event -> includeViewCloseButtonClicked());
 		cqlWorkspaceView.getIncludeView().getEraseButton().addClickHandler(event -> includeViewEraseButtonClicked());
+		cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().addValueChangeHandler(event -> aliasNameChangeHandler());
 		cqlWorkspaceView.getIncludeView().setObserver(new CQLIncludeLibraryView.Observer() {
 
 			@Override
 			public void onCheckBoxClicked(CQLLibraryDataSetObject result) {
+				setIsPageDirty(true);
 				MatContext.get().getCQLLibraryService().findCQLLibraryByID(result.getId(),
 						new AsyncCallback<CQLLibraryDataSetObject>() {
 

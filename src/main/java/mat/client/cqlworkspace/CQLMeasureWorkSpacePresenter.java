@@ -258,9 +258,11 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.getIncludeView().getEraseButton().addClickHandler(event -> includeViewEraseButtonClicked());
 		cqlWorkspaceView.getIncludeView().getDeleteButton().addClickHandler(event -> includeViewDeleteButtonClicked());
 		cqlWorkspaceView.getIncludeView().getCloseButton().addClickHandler(event -> includeViewCloseButtonClicked());
+		cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().addValueChangeHandler(event -> aliasNameChangeHandler());
 		cqlWorkspaceView.getIncludeView().setObserver(new CQLIncludeLibraryView.Observer() {
 			@Override
 			public void onCheckBoxClicked(CQLLibraryDataSetObject result) {
+				setIsPageDirty(true);
 				MatContext.get().getCQLLibraryService().findCQLLibraryByID(result.getId(), new AsyncCallback<CQLLibraryDataSetObject>() {
 					@Override
 					public void onFailure(Throwable caught) {
@@ -2423,8 +2425,9 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			editIncludedLibraryDialogBox.getErrorMessageAlert().createAlert(NO_LIBRARY_TO_REPLACE);
 		}
 	}
-
+	
 	private void includeViewSaveModifyClicked() {
+		setIsPageDirty(false);
 		messagePanel.getErrorMessageAlert().clearAlert();
 		messagePanel.getSuccessMessageAlert().clearAlert();
 		final EditIncludedLibraryDialogBox editIncludedLibraryDialogBox = new EditIncludedLibraryDialogBox("Replace Library");

@@ -18,12 +18,12 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.populationworkspace.model.PopulationClauseObject;
 import mat.client.populationworkspace.model.PopulationDataModel;
+import mat.client.populationworkspace.model.PopulationDataModel.ExpressionObject;
 import mat.client.populationworkspace.model.PopulationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
@@ -130,7 +130,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 				popClause.setCqlExpressionUUID("");
 				popClause.setCqlExpressionType("");
 			} else {
-				popClause.setCqlExpressionDisplayName(functionListBox.getSelectedItemText());
+				popClause.setCqlExpressionDisplayName(getSelectedName(functionListBox.getSelectedValue()));
 				popClause.setCqlExpressionUUID(functionListBox.getSelectedValue());
 				popClause.setCqlExpressionType("cqlfunction");
 			}
@@ -179,7 +179,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 			options.getItem(j).setTitle(options.getItem(j).getText());
 		}
 
-		// select a definition name in the listbox
+		// select a function aggregate name in the listbox
 		for (int j = 0; j < aggFuncListBox.getItemCount(); j++) {
 			String functionName = aggFuncListBox.getItemText(j);
 			if (functionName.equals(populationClauseObject.getAggFunctionName())) {
@@ -208,8 +208,8 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
 		// select a definition name in the listbox
 		for (int j = 0; j < functionListBox.getItemCount(); j++) {
-			String functionName = functionListBox.getItemText(j);
-			if (functionName.equals(populationClauseObject.getCqlExpressionDisplayName())) {
+			String functionUUID = functionListBox.getValue(j);
+			if (functionUUID.equals(populationClauseObject.getCqlExpressionUUID())) {
 				functionListBox.setItemSelected(j, true);
 				break;
 			}
@@ -329,5 +329,15 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
 	public void setIsDirty(boolean isViewDirty) {
 		this.isViewDirty = isViewDirty;
+	}
+	
+	private String getSelectedName(String selectedUuid) {
+		for(ExpressionObject o : this.populationDataModel.getFunctionNameList()) {
+			if(o.getUuid().equals(selectedUuid)) {
+				return o.getName();
+			}
+		}
+		
+		return "";
 	}
 }

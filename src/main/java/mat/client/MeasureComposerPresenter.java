@@ -26,7 +26,6 @@ import mat.client.cqlworkspace.CQLMeasureWorkSpacePresenter;
 import mat.client.cqlworkspace.CQLMeasureWorkSpaceView;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
-import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.measuredetails.MeasureDetailsPresenter;
 import mat.client.measure.metadata.events.ContinueToMeasurePackageEvent;
 import mat.client.measurepackage.MeasurePackagePresenter;
@@ -94,7 +93,7 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
 		buttonBar.getElement().setId("buttonBar_PreviousContinueButtonBar");
 		emptyWidget.getElement().setId("emptyWidget_SimplePanel");
 		
-		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
+		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget(this);
 		measureDetailsPresenter = (MeasureDetailsPresenter) buildMeasureDetailsPresenter(this);
 
 		measureComposerTabLayout = new MatTabLayoutPanel(this);
@@ -108,7 +107,6 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
 		MatPresenter cqlPopulationWorkspacePresenter = buildCQLPopulationWorkspaceTab();
 		measureComposerTabLayout.add(cqlPopulationWorkspacePresenter.getWidget(), "Population Workspace", true);
 		presenterList.add(cqlPopulationWorkspacePresenter);
-		MatPresenter measurePackagePresenter = buildMeasurePackageWidget();
 		measureComposerTabLayout.add(measurePackagePresenter.getWidget(), "Measure Packager", true);
 		presenterList.add(measurePackagePresenter);
 		measureComposerTabLayout.add(clauseWorkSpacePresenter.getWidget(), "Clause Workspace", true);
@@ -285,9 +283,9 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
 		return measureDetailsPresenter;
 	}
 	
-	private MatPresenter buildMeasurePackageWidget() {
+	private MatPresenter buildMeasurePackageWidget(MeasureHeading measureHeading) {
 		MeasurePackagerView measurePackagerView = new MeasurePackagerView();
-		MeasurePackagePresenter measurePackagePresenter = new MeasurePackagePresenter(measurePackagerView);
+		MeasurePackagePresenter measurePackagePresenter = new MeasurePackagePresenter(measurePackagerView, measureHeading);
 		measurePackagePresenter.getWidget();
 		return measurePackagePresenter;
 	}

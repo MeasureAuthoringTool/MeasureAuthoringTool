@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.MeasureHeading;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.cqlworkspace.AbstractCQLWorkspacePresenter;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -88,6 +89,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private static final String VSAC_PACKAGE_UNAUTHORIZED_ERROR = "Unable to retrieve information from VSAC. The package has been created. Please log in to UMLS again to re-establish a connection and try the upload to Bonnie again.";
 	
 	private VsacTicketInformation vsacInfo = null;
+	
+	private MeasureHeading measureHeading;
 	
 	public List<CQLDefinition> getDbCQLSuppDataElements() {
 		return dbCQLSuppDataElements;
@@ -200,8 +203,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get().getVsacapiServiceAsync();
 	
-	public MeasurePackagePresenter(PackageView packageView) {
+	public MeasurePackagePresenter(PackageView packageView, MeasureHeading measureHeading) {
 		view = packageView;
+		this.measureHeading = measureHeading;
 		addAllHandlers();
 	}
 	
@@ -229,7 +233,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 					isExportToBonnie = false;
 					view.getInProgressMessageDisplay().createAlert(LOADING_WAIT_MESSAGE);
 					validateGroup();
-					clearMessages(); 
+					clearMessages();
 				}
 			}
 		});
@@ -530,6 +534,7 @@ private void saveMeasureAtPackage(){
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
 				if (result.isSuccess()) {
+					MatContext.get().setCurrentMeasureVersion(result.getVersionStr());
 					createExports(MatContext.get().getCurrentMeasureId());
 					
 				} else {
@@ -575,6 +580,7 @@ private void saveMeasureAtPackage(){
 						handleSuccessfulPackage();
 					}
 					recordMeasurePackageEvent(measureId);
+					measureHeading.updateMeasureHeading();
 				} else {
 					handleUnsuccessfulPackage(result);
 				}

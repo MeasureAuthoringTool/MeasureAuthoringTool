@@ -1805,6 +1805,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				result.setId(pkg.getId());
 				return result;
 			}
+			result.setVersionStr(MeasureUtility.formatVersionText(pkg.getRevisionNumber(), pkg.getVersion()));
 			result.setSuccess(true);
 			result.setId(pkg.getId());
 			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE), pkg.getId());

@@ -118,9 +118,9 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 
 		// select a definition name in the listbox
 		for (int j = 0; j < definitionListBox.getItemCount(); j++) {
-			String definitionName = definitionListBox.getItemText(j);
-			if (definitionName.equals(populationClauseObject.getCqlExpressionDisplayName())) {
-				definitionListBox.setItemSelected(j, true);
+			definitionListBox.setItemSelected(j, true);
+			String definitionUUID = definitionListBox.getSelectedValue();
+			if (definitionUUID.equals(populationClauseObject.getCqlExpressionUUID())) {
 				break;
 			}
 		}

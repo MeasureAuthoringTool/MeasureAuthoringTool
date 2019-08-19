@@ -286,17 +286,25 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 	 *            the new values
 	 */
 	private void setValues(SecurityQuestionsModel result) {
-		display.getSecurityQuestionsWidget().setAnswer1Value(result.getQuestion1Answer());
-		display.getSecurityQuestionsWidget().getAnswer1().setText(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE);
-		display.getQuestion1Text().setValue(result.getQuestion1());
+		if(StringUtility.isNotBlank(result.getQuestion1Answer())) {
+			display.getSecurityQuestionsWidget().setAnswer1Value(result.getQuestion1Answer());
+			display.getSecurityQuestionsWidget().getAnswer1().setText(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE);
+			display.getQuestion1Text().setValue(result.getQuestion1());
+		}
 		
-		display.getSecurityQuestionsWidget().setAnswer2Value(result.getQuestion2Answer());
-		display.getSecurityQuestionsWidget().getAnswer2().setText(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE);
-		display.getSecurityQuestionsWidget().getSecurityQuestion2().setValue(result.getQuestion2());
+		if(StringUtility.isNotBlank(result.getQuestion2Answer())) {
+			display.getSecurityQuestionsWidget().setAnswer2Value(result.getQuestion2Answer());
+			display.getSecurityQuestionsWidget().getAnswer2().setText(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE);
+			display.getSecurityQuestionsWidget().getSecurityQuestion2().setValue(result.getQuestion2());
+		}
+
 		
-		display.getSecurityQuestionsWidget().setAnswer3Value(result.getQuestion3Answer());
-		display.getSecurityQuestionsWidget().getAnswer3().setText(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE);
-		display.getSecurityQuestionsWidget().getSecurityQuestion3().setValue(result.getQuestion3());
+		if(StringUtility.isNotBlank(result.getQuestion3Answer())) {
+			display.getSecurityQuestionsWidget().setAnswer3Value(result.getQuestion3Answer());
+			display.getSecurityQuestionsWidget().getAnswer3().setText(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE);
+			display.getSecurityQuestionsWidget().getSecurityQuestion3().setValue(result.getQuestion3());
+		}
+		
 		display.getPassword().setValue("");
 	}
 	

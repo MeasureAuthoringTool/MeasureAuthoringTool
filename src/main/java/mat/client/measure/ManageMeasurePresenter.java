@@ -370,9 +370,9 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 		isClone = false;
 	}
 	
-	private void auditMeasureSelected(ManageMeasureSearchModel.Result result){
+	private void auditMeasureDraft(ManageMeasureSearchModel.Result result){
 		MatContext.get().getAuditService().recordMeasureEvent(result.getId(), "Draft Created",
-				"Draft created based on Version " + result.getVersionValue(), false,
+				"Draft created based on Version v" + result.getVersionValue(), false,
 				new AsyncCallback<Boolean>() {
 					@Override
 					public void onFailure(Throwable caught) {}
@@ -380,6 +380,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 					public void onSuccess(Boolean result) {}
 				});
 	}
+	
 	
 	private void clearErrorMessageAlerts() {
 		detailDisplay.getWarningConfirmationMessageAlert().clearAlert();
@@ -631,6 +632,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
 				@Override
 				public void onSuccess(ManageMeasureSearchModel.Result result) {
+					auditMeasureDraft(result);
 					displaySuccessAndFireSelectedEvent(result, MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(compositeDetailDisplay.getMeasureNameTextBox().getValue()));	
 				}
 
@@ -667,6 +669,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
 				@Override
 				public void onSuccess(ManageMeasureSearchModel.Result result) {
+					auditMeasureDraft(result);
 					displaySuccessAndFireSelectedEvent(result, MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
 				}
 			});
@@ -1548,7 +1551,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 			@Override
 			public void onClick(ClickEvent event) {
 				fireMeasureSelected(resultToFireEvent);
-				auditMeasureSelected(resultToFireEvent);
+				auditMeasureDraft(resultToFireEvent);
 				resultToFireEvent = new ManageMeasureSearchModel.Result();
 			}
 		});

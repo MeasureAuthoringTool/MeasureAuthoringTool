@@ -447,7 +447,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 					pc.setCqlExpressionUUID("");					
 				} else {					
 					pc.setCqlExpressionType("cqldefinition");
-					pc.setCqlExpressionDisplayName(l.getSelectedItemText());
+					pc.setCqlExpressionDisplayName(getSelectedName(l.getSelectedValue()));
 					pc.setCqlExpressionUUID(l.getSelectedValue());
 				}
 				modifiedStratumList.add(pc);
@@ -464,6 +464,23 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		strataDataModel.getStratificationObjectList().addAll(modifiedList);
 
 		return strataDataModel;		
+	}
+	
+	private String getSelectedName(String selectedUuid) {
+		this.populationDataModel.getDefinitionNameList().forEach(d -> d.getUuid());
+		for(ExpressionObject o : this.populationDataModel.getDefinitionNameList()) {
+			if(o.getUuid().equals(selectedUuid)) {
+				return o.getName();
+			}
+		}
+		
+		for(ExpressionObject o : this.populationDataModel.getFunctionNameList()) {
+			if(o.getUuid().equals(selectedUuid)) {
+				return o.getName();
+			}
+		}
+		
+		return "";
 	}
 
 }

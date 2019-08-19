@@ -1,7 +1,5 @@
 package mat.client.populationworkspace.model;
 
-import com.google.gwt.core.client.GWT;
-
 public class PopulationClauseObject {
 	
 	private String displayName = "";

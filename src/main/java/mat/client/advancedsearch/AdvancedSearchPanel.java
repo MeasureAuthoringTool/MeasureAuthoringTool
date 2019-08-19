@@ -36,6 +36,7 @@ public class AdvancedSearchPanel {
 	private static final String STYLE = "style";
 	private static final String OWNED_BY = " Owned By";
 	private static final String OWNER_PLACEHOLDER = "Enter user first or last name";
+	private static final String SEARCH_BY_LIBRARY_NAME = "Search by CQL Library Name";
 	
 	private boolean isMeasure = false; 
 	
@@ -58,7 +59,9 @@ public class AdvancedSearchPanel {
 	private FormGroup modifiedWithinGroup;
 	private FormGroup modifiedByGroup;
 	private FormGroup ownedByGroup;
+	private FormGroup libraryNameGroup;
 	
+	private Input cqlLibraryName;
 	private Input modifiedBy;
 	private Input ownedBy;
 	
@@ -105,6 +108,7 @@ public class AdvancedSearchPanel {
 			type = "Measure";
 			pluralType = "Measures";
 
+			buildLibraryNameSection();
 			buildPatientSection();
 			buildScoreSection();
 			
@@ -130,12 +134,15 @@ public class AdvancedSearchPanel {
 		advancedSearchVP.setWidth("100%");
 
 		if(isMeasure) {
+			final HorizontalPanel advancedSearchRow = new HorizontalPanel();
+			advancedSearchRow.add(libraryNameGroup);
 			advancedSearchRow1.add(patientIndicatorGroup);
 			advancedSearchRow1.add(scoreGroup);
 			
 			final HorizontalPanel advancedSearchRow2 = new HorizontalPanel();
 			buildCommonSearchHP(advancedSearchRow2);
 			
+			advancedSearchVP.add(advancedSearchRow);
 			advancedSearchVP.add(advancedSearchRow1);
 			advancedSearchVP.add(advancedSearchRow2);
 			
@@ -297,6 +304,25 @@ public class AdvancedSearchPanel {
 		ownedByGroup.setStyleName(ADVANCED_SEARCH_STYLE);
 	}
 	
+	private void buildLibraryNameSection() {
+		final FormLabel libraryNameLabel = new FormLabel();
+		libraryNameLabel.setText(SEARCH_BY_LIBRARY_NAME);
+		libraryNameLabel.setTitle(SEARCH_BY_LIBRARY_NAME);
+		libraryNameLabel.setFor("libraryName");
+		
+		cqlLibraryName = new Input(InputType.TEXT);
+		cqlLibraryName.setWidth("740px");
+		cqlLibraryName.setHeight(HEIGHT_OF_BOXES);
+		cqlLibraryName.setId("libraryName");
+		cqlLibraryName.setPlaceholder(SEARCH_BY_LIBRARY_NAME);
+		cqlLibraryName.setTitle(SEARCH_BY_LIBRARY_NAME);
+		
+		libraryNameGroup = new FormGroup();
+		libraryNameGroup.add(libraryNameLabel);
+		libraryNameGroup.add(cqlLibraryName);
+		libraryNameGroup.setStyleName(ADVANCED_SEARCH_STYLE);
+	}
+	
 	public HorizontalPanel getAnchorPanel() {
 		return anchorPanel;
 	}
@@ -343,6 +369,19 @@ public class AdvancedSearchPanel {
 		return modifiedOnList.getSelectedValue();
 	}
 
+	public Input getCqlLibraryName() {
+		return cqlLibraryName;
+	}
+
+
+	public void setCqlLibraryName(Input cqlLibraryName) {
+		this.cqlLibraryName = cqlLibraryName;
+	}
+
+	public String getCqlLibraryNameByValue() {
+		return cqlLibraryName.getValue();
+	}
+
 	public String getModifiedByValue() {
 		return modifiedBy.getValue();
 	}
@@ -362,6 +401,7 @@ public class AdvancedSearchPanel {
 	}
 
 	private void resetMeasureFields() {
+		cqlLibraryName.setValue("");
 		patientIndicatorListBox.setSelectedIndex(0);
 		proportionCheckbox.setValue(false);
 		ratioCheckbox.setValue(false);

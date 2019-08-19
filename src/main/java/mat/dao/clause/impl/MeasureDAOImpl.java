@@ -497,7 +497,8 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	}
 	
 	private boolean checkIfAdvancedSearchWasUsed(MeasureSearchModel measureSearchModel) {
-		return !measureSearchModel.isDraft().equals(SearchModel.VersionType.ALL) ||
+		return StringUtils.isNotBlank(measureSearchModel.getCqlLibraryName())|| 
+				!measureSearchModel.isDraft().equals(SearchModel.VersionType.ALL) ||
 				!measureSearchModel.isPatientBased().equals(MeasureSearchModel.PatientBasedType.ALL) ||
 				(CollectionUtils.isNotEmpty(measureSearchModel.getScoringTypes()) && measureSearchModel.getScoringTypes().size() < 4) ||
 				measureSearchModel.getModifiedDate() > 0 ||
@@ -518,6 +519,10 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 			predicatesList.add(getSearchByMeasureOrOwnerNamePredicate(measureSearchModel.getSearchTerm(), cb, root));
 		}
 		
+		if (StringUtils.isNotBlank(measureSearchModel.getCqlLibraryName())) {
+			predicatesList.add(cb.like(root.get("cqlLibraryName"), "%" + measureSearchModel.getCqlLibraryName() + "%"));
+		}
+				
 		if(measureSearchModel.isDraft() != VersionType.ALL) {
 			predicatesList.add(cb.equal(root.get(DRAFT), measureSearchModel.isDraft() == VersionType.DRAFT));
 		}

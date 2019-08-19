@@ -14,6 +14,7 @@ import mat.shared.MeasureSearchModel;
 import mat.shared.MeasureSearchModel.PatientBasedType;
 import mat.shared.SearchModel;
 import mat.shared.SearchModel.VersionType;
+import mat.shared.StringUtility;
 
 public class AdvancedSearchPillPanel {
 
@@ -72,6 +73,13 @@ public class AdvancedSearchPillPanel {
 		// create pill for filter by each time
 		final String measureSearchType = searchModel.getIsMyMeasureSearch() == 0? "My " + searchType : "All " + searchType;
 		makeBadge("Filter by: " + measureSearchType);
+		
+		if (isMeasure) {
+			final String libraryName = ((MeasureSearchModel)searchModel).getCqlLibraryName();
+			if (StringUtility.isNotBlank(libraryName)) {
+				makeBadge("CQL Library Name: " + libraryName);
+			}
+		}
 		
 		// create pill for measure state if the user entered an option other then all measures
 		if(searchModel.isDraft() != null && !searchModel.isDraft().equals(VersionType.ALL)) {

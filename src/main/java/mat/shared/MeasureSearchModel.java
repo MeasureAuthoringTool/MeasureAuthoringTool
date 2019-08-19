@@ -19,6 +19,7 @@ public class MeasureSearchModel extends SearchModel implements IsSerializable {
 
 	private String qdmVersion;
 	private String measureSetId;
+	private String cqlLibraryName;
 
 	private List<String> scoringTypes;
 	
@@ -28,6 +29,7 @@ public class MeasureSearchModel extends SearchModel implements IsSerializable {
 	
 	public MeasureSearchModel() {
 		this.searchTerm = "";
+		this.cqlLibraryName = "";
 		this.versionType = VersionType.ALL;
 		this.scoringTypes = new ArrayList<>();
 		this.patientBasedType = PatientBasedType.ALL;
@@ -87,9 +89,18 @@ public class MeasureSearchModel extends SearchModel implements IsSerializable {
 		this.measureSetId = measureSetId;
 	}
 
+	public String getCqlLibraryName() {
+		return cqlLibraryName;
+	}
+
+	public void setCqlLibraryName(String cqlLibraryName) {
+		this.cqlLibraryName = trimWhiteSpaces(cqlLibraryName);
+	}
+
 	@Override
 	public void reset() {
 		super.reset();
+		cqlLibraryName = "";
 		scoringTypes = new ArrayList<>();
 		patientBasedType = PatientBasedType.ALL;
 	}

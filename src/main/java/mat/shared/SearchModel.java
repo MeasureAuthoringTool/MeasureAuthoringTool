@@ -102,7 +102,7 @@ public abstract class SearchModel implements IsSerializable {
 		totalResults = null;
 	}
 	
-	private String trimWhiteSpaces(String str) {
+	public String trimWhiteSpaces(String str) {
 		return str != null ? str.trim() : null;
 	}
 }

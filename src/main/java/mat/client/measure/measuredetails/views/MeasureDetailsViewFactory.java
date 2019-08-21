@@ -34,6 +34,7 @@ import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MeasureDetailsConstants.PopulationItems;
+import mat.client.shared.MessagePanel;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsTextAbstractModel;
@@ -51,7 +52,7 @@ public class MeasureDetailsViewFactory {
 		return instance;
 	}
 
-	public MeasureDetailViewInterface getMeasureDetailComponentView(MeasureDetailsModel measureDetailsModel, MatDetailItem currentMeasureDetail, MeasureDetailsObserver measureDetailsObserver) {
+	public MeasureDetailViewInterface getMeasureDetailComponentView(MeasureDetailsModel measureDetailsModel, MatDetailItem currentMeasureDetail, MeasureDetailsObserver measureDetailsObserver, MessagePanel messagePanel) {
 		if(currentMeasureDetail instanceof MeasureDetailsConstants.MeasureDetailsItems) {
 			switch((MeasureDetailsItems) currentMeasureDetail) {
 			case COMPONENT_MEASURES:
@@ -75,7 +76,7 @@ public class MeasureDetailsViewFactory {
 			case IMPROVEMENT_NOTATION:
 				return buildRichTextEditorView(measureDetailsModel.getImprovementNotationModel(), new ImprovementNotationView(), new ImprovementNotationObserver());
 			case REFERENCES:
-				return buildRefererencesView(measureDetailsModel.getReferencesModel(), measureDetailsObserver);
+				return buildRefererencesView(measureDetailsModel.getReferencesModel(), measureDetailsObserver, messagePanel);
 			case DEFINITION:
 				return buildRichTextEditorView(measureDetailsModel.getDefinitionModel(), new DefinitionView(), new DefinitionObserver());
 			case GUIDANCE:
@@ -121,9 +122,9 @@ public class MeasureDetailsViewFactory {
 		return buildGeneralMeasureInformationView(measureDetailsModel.isComposite(), measureDetailsModel.getGeneralInformationModel());
 	}
 	
-	private MeasureDetailViewInterface buildRefererencesView(ReferencesModel referencesModel, MeasureDetailsObserver measureDetailObserver) {
+	private MeasureDetailViewInterface buildRefererencesView(ReferencesModel referencesModel, MeasureDetailsObserver measureDetailObserver, MessagePanel messagePanel) {
 		ReferencesView referencesView = new ReferencesView(referencesModel);
-		referencesView.setObserver(new ReferencesObserver(referencesView, measureDetailObserver));
+		referencesView.setObserver(new ReferencesObserver(referencesView, measureDetailObserver, messagePanel));
 		return referencesView;
 	}
 

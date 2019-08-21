@@ -5,14 +5,17 @@ import java.util.List;
 import mat.client.measure.measuredetails.MeasureDetailsObserver;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.measure.measuredetails.views.ReferencesView;
+import mat.client.shared.MessagePanel;
 import mat.shared.measure.measuredetails.models.ReferencesModel;
 
 public class ReferencesObserver implements MeasureDetailsComponentObserver {
 	private ReferencesView referencesView;
 	private MeasureDetailsObserver measureDetailsObserver;
-	public ReferencesObserver(ReferencesView referencesView, MeasureDetailsObserver measureDetailObserver) {
+	private MessagePanel messagePanel;
+	public ReferencesObserver(ReferencesView referencesView, MeasureDetailsObserver measureDetailObserver, MessagePanel messagePanel) {
 		this.referencesView = referencesView;
 		this.measureDetailsObserver = measureDetailObserver;
+		this.messagePanel = messagePanel;
 	}
 
 	@Override
@@ -26,7 +29,7 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 	public void handleTextValueChanged() {
 		try {
 			String reference = nullCheckRichTextEditor();
-			referencesView.getReferencesModel().getReferences().set(referencesView.getEditingIndex(), reference);
+			referencesView.getReferencesModel().getReferences().set(referencesView.getEditingIndex(), reference.trim());
 		} catch(IndexOutOfBoundsException iobe) {
 			referencesView.getReferencesModel().getReferences().add(referencesView.getTextEditor().getText().trim());
 		}
@@ -42,6 +45,7 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 	}
 
 	public void handleEditClicked(int index) {
+		messagePanel.clear();
 		List<String> referenceList = referencesView.getOriginalModel().getReferences();
 		referencesView.getReferencesModel().setReferences(referenceList);
 		if(referenceList != null && referenceList.get(index) != null) {

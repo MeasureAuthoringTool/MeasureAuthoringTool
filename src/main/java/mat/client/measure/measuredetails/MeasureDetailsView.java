@@ -163,7 +163,7 @@ public class MeasureDetailsView {
 		widgetComponentPanel.clear();
 		buildHeading();
 		
-		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsModel, currentMeasureDetail, this.measureDetailsObserver);
+		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsModel, currentMeasureDetail, this.measureDetailsObserver, messagePanel);
 
 		widgetComponentPanel.add(componentDetailView.getWidget());
 		widgetComponentPanel.setWidth("100%");
@@ -214,6 +214,7 @@ public class MeasureDetailsView {
 	public void setReadOnly(boolean isReadOnly) {
 		boolean enabled = !isReadOnly;
 		saveButton.setEnabled(enabled);
+		cancelButton.setEnabled(enabled);
 		deleteMeasureButton.setEnabled(enabled);
 		componentDetailView.setReadOnly(isReadOnly);
 		isMeasureEditable = isReadOnly;

@@ -1565,7 +1565,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			List<CQLLibrary> allLibrariesInFamily = cqlLibraryDAO.getAllLibrariesInSet(libraries);
 			for (int j = 0; j < allLibrariesInFamily.size(); j++) {
 				String additionalInfo = "CQL Library Owner transferred from "
-						+ allLibrariesInFamily.get(j).getOwnerId().getEmailAddress() + " to " + toEmail;
+						+ allLibrariesInFamily.get(j).getOwnerId().getFullName() + " to " + userTo.getFullName();
 				allLibrariesInFamily.get(j).setOwnerId(userTo);
 				this.save(allLibrariesInFamily.get(j));
 				cqlLibraryAuditLogDAO.recordCQLLibraryEvent(allLibrariesInFamily.get(j), "CQL Library Ownership Changed", additionalInfo);

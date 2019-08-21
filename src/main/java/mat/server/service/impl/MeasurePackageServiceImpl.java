@@ -349,10 +349,11 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 			//Get All Family Measures for each Measure
 			final List<Measure> allMeasures = measureDAO.getAllMeasuresInSet(ms);
 			for (int j = 0; j < allMeasures.size(); j++) {
+			
 				String additionalInfo = "Measure Owner transferred from "
-						+ allMeasures.get(j).getOwner().getEmailAddress() + " to " + toEmail;
-				transferAssociatedCQLLibraryOnwnerShipToUser(allMeasures.get(j).getId(), userTo, 
-						allMeasures.get(j).getOwner().getEmailAddress());
+						+ allMeasures.get(j).getOwner().getFullName() + " to " + userTo.getFullName();
+				
+				transferAssociatedCQLLibraryOnwnerShipToUser(allMeasures.get(j).getId(), userTo, allMeasures.get(j).getOwner().getFullName());
 				allMeasures.get(j).setOwner(userTo);
 				measureDAO.saveMeasure(allMeasures.get(j));
 				measureAuditLogDAO.recordMeasureEvent(allMeasures.get(j), "Measure Ownership Changed", additionalInfo);
@@ -370,18 +371,18 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		
 	}
 
-	private void transferAssociatedCQLLibraryOnwnerShipToUser(String measureId, User user, String emailUser){
+	private void transferAssociatedCQLLibraryOnwnerShipToUser(String measureId, User toUser, String fromUserFullName){
 		final CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measureId);
 		if(cqlLibrary != null){
 			final String additionalInfo = "CQL Library Owner transferred from "
-					+ emailUser + " to " + user.getEmailAddress();
-			cqlLibrary.setOwnerId(user);
+					+ fromUserFullName + " to " + toUser.getFullName();
+			cqlLibrary.setOwnerId(toUser);
 			cqlLibraryDAO.save(cqlLibrary);
 			cqlLibraryAuditLogDAO.recordCQLLibraryEvent(cqlLibrary, "CQL Library Ownership Changed", additionalInfo);
 			
 			final List<CQLLibraryShare> cqlLibShareInfo = cqlLibraryDAO.getLibraryShareInforForLibrary(cqlLibrary.getId());
 			for (int k = 0; k < cqlLibShareInfo.size(); k++) {
-				cqlLibShareInfo.get(k).setOwner(user);
+				cqlLibShareInfo.get(k).setOwner(toUser);
 				cqlLibraryShareDAO.save(cqlLibShareInfo.get(k));
 			}
 		}
@@ -437,7 +438,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 						auditLogAdditionlInfo.append(", ");
 					}
 					first = false;
-					auditLogAdditionlInfo.append(user.getEmailAddress());
+					auditLogAdditionlInfo.append(user.getFullName());
 					
 					measureShare.setShareLevel(sLevel);
 					measureShareDAO.save(measureShare);
@@ -451,7 +452,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 						auditLogForModifyRemove.append(", ");
 					}
 					firstRemove = false;
-					auditLogForModifyRemove.append(user.getEmailAddress());
+					auditLogForModifyRemove.append(user.getFullName());
 				}
 			}
 		}

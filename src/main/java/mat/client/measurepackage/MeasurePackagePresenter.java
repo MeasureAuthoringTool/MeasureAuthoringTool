@@ -534,7 +534,7 @@ private void saveMeasureAtPackage(){
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
 				if (result.isSuccess()) {
-					MatContext.get().setCurrentMeasureVersion(result.getVersionStr());
+					MatContext.get().setCurrentMeasureVersion("Draft v" + result.getVersionStr());
 					createExports(MatContext.get().getCurrentMeasureId());
 					
 				} else {

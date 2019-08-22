@@ -1873,7 +1873,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 	}
 
 	protected void includesViewSaveClicked() {
-		setIsPageDirty(false);
 		if (hasEditPermissions()) {
 			addIncludeLibraryInCQLLookUp();
 			cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);

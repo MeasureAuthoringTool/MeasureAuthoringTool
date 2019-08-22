@@ -460,7 +460,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 	
 	private void handleCancelButtonClick() {
-		measureDetailsView.getComponentDetailView().resetForm();
+		if(!isReadOnly) {
+			measureDetailsView.getComponentDetailView().resetForm();
+		}
 	}
 
 	private void showSaveConfirmationDialog(ConfirmationDialogBox confirmationDialog) {

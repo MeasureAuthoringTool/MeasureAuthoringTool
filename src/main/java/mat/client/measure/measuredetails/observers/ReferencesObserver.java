@@ -45,7 +45,7 @@ public class ReferencesObserver implements MeasureDetailsComponentObserver {
 	}
 
 	public void handleEditClicked(int index) {
-		messagePanel.clear();
+		messagePanel.clearAlerts();
 		List<String> referenceList = referencesView.getOriginalModel().getReferences();
 		referencesView.getReferencesModel().setReferences(referenceList);
 		if(referenceList != null && referenceList.get(index) != null) {

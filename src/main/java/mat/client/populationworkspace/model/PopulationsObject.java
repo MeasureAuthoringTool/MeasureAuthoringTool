@@ -113,19 +113,19 @@ public class PopulationsObject {
 				break;
 				
 			case "numeratorExclusions":
-				popType = "Numerator Exclusion";
+				popType = "Numerator Exclusions";
 				break;
 				
 			case "denominatorExclusions":
-				popType = "Denominator Exclusion";
+				popType = "Denominator Exclusions";
 				break;
 				
 			case "denominatorExceptions":
-				popType = "Denominator Exception";
+				popType = "Denominator Exceptions";
 				break;
 				
 			case "measurePopulationExclusions":
-				popType = "Measure Population Exclusion";
+				popType = "Measure Population Exclusions";
 				break;
 				
 			case "measureObservations":

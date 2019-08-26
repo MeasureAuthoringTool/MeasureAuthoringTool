@@ -487,7 +487,7 @@ public class HumanReadableGenerator {
 			for(int k = 0; k < popCount; k++) {
 				Node clauseNode = populationNodes.item(k);
 				String popType = clauseNode.getAttributes().getNamedItem("type").getNodeValue();
-				countSimilarPopulationsInGroup((i + 1), popType, processor);
+				countSimilarPopulationsInGroup(populationCriteriaNumber, popType, processor);
 			}
 			
 			for(int j = 0; j < popCount; j++) {

@@ -658,21 +658,28 @@ public class CQLUtil {
 
 	private static void setCQLErrors(String parentLibraryName, List<CQLError> errors, Map<String, List<CQLError>> libraryToErrorsMap, CqlTranslatorException cte) {
 		CQLError cqlError = new CQLError();
-		cqlError.setStartErrorInLine(cte.getLocator().getStartLine());
-		cqlError.setErrorInLine(cte.getLocator().getStartLine());
-		cqlError.setErrorAtOffeset(cte.getLocator().getStartChar());
-		cqlError.setEndErrorInLine(cte.getLocator().getEndLine());
-		cqlError.setEndErrorAtOffset(cte.getLocator().getEndChar());
+		
+		String libraryName = "";
+		if(cte != null && cte.getLocator() != null) {
+			cqlError.setStartErrorInLine(cte.getLocator().getStartLine());
+			cqlError.setErrorInLine(cte.getLocator().getStartLine());
+			cqlError.setErrorAtOffeset(cte.getLocator().getStartChar());
+			cqlError.setEndErrorInLine(cte.getLocator().getEndLine());
+			cqlError.setEndErrorAtOffset(cte.getLocator().getEndChar());
+		
+			if(cte.getLocator().getLibrary() != null && !"unknown".equals(cte.getLocator().getLibrary().getId())) {
+				libraryName = cte.getLocator().getLibrary().getId() + "-" + cte.getLocator().getLibrary().getVersion();
+			} else {
+				libraryName = parentLibraryName; 
+			}
+			
+		}
+		
+
 		cqlError.setErrorMessage(cte.getMessage());
 		cqlError.setSeverity(cte.getSeverity().toString());
 
-		String libraryName = "";
-		if(cte.getLocator().getLibrary() != null && !"unknown".equals(cte.getLocator().getLibrary().getId())) {
-			libraryName = cte.getLocator().getLibrary().getId() + "-" + cte.getLocator().getLibrary().getVersion();
-		} else {
-			libraryName = parentLibraryName; 
-		}
-		
+
 						
 		initializeErrorsListForLibraryIfNeeded(libraryToErrorsMap, libraryName);
 		libraryToErrorsMap.get(libraryName).add(cqlError);

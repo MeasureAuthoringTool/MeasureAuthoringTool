@@ -1059,8 +1059,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	private boolean isValidCompositeMeasure(ManageCompositeMeasureDetailModel compositeMeasureDetails) {
 		ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
 		List<String> message = manageCompositeMeasureModelValidator.validateMeasureWithClone(compositeMeasureDetails, isClone);
-		
-		if(!AbstractCQLWorkspacePresenter.isValidExpressionName(compositeMeasureDetails.getCQLLibraryName())) {
+
+		if(StringUtility.isNotBlank(compositeMeasureDetails.getCQLLibraryName()) && !AbstractCQLWorkspacePresenter.isValidExpressionName(compositeMeasureDetails.getCQLLibraryName())) {
 			message.add(MatContext.get().getMessageDelegate().getLibraryNameIsCqlKeywordError());
 		}
 		

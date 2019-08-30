@@ -29,7 +29,7 @@ public class LibraryNameDuplicateChecker {
 
 			// create our mysql database connection
 			String myDriver = "com.mysql.jdbc.Driver";
-			String myUrl = "jdbc:mysql://***REMOVED***:3306/MAT5-8_STAGE_08282018";
+			String myUrl = "jdbc:mysql://dmmatdmyq01.telligen.us:3306/MAT5-8_STAGE_08282018";
 			Class.forName(myDriver);
 			Connection conn = DriverManager.getConnection(myUrl, USERNAME, PASSWORD);
 

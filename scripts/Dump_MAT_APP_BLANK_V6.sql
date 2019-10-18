@@ -1,12 +1,15 @@
--- MySQL dump 10.13  Distrib 5.6.29, for Linux (x86_64)
+CREATE DATABASE  IF NOT EXISTS `MAT_APP_BLANK` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `MAT_APP_BLANK`;
+-- MySQL dump 10.13  Distrib 8.0.17, for macos10.14 (x86_64)
 --
+-- Host: 127.0.0.1    Database: MAT_APP_BLANK
 -- ------------------------------------------------------
--- Server version	5.6.29
+-- Server version	5.7.27
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -14,9 +17,56 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-DROP SCHEMA IF EXISTS `MAT_APP_BLANK` ;
-CREATE SCHEMA IF NOT EXISTS `MAT_APP_BLANK` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
-USE `MAT_APP_BLANK` ;
+--
+-- Table structure for table `ATTRIBUTES`
+--
+
+DROP TABLE IF EXISTS `ATTRIBUTES`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ATTRIBUTES` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ATTRIBUTE_NAME` varchar(100) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ATTRIBUTES`
+--
+
+LOCK TABLES `ATTRIBUTES` WRITE;
+/*!40000 ALTER TABLE `ATTRIBUTES` DISABLE KEYS */;
+INSERT INTO `ATTRIBUTES` VALUES (1,'activeDatetime'),(2,'admissionSource'),(3,'anatomicalApproachSite'),(4,'anatomicalLocationSite'),(5,'authorDatetime'),(6,'cause'),(7,'code'),(8,'birthDatetime'),(9,'expiredDatetime'),(10,'diagnoses'),(11,'dischargeDisposition'),(12,'dosage'),(13,'supply'),(14,'facilityLocation'),(15,'frequency'),(16,'incisionDatetime'),(17,'lengthOfStay'),(19,'method'),(20,'negationRationale'),(21,'ordinality'),(22,'prevalencePeriod'),(23,'principalDiagnosis'),(26,'reason'),(27,'referenceRange'),(28,'refills'),(29,'relatedTo'),(30,'relationship'),(31,'relevantPeriod'),(32,'result'),(33,'resultDatetime'),(34,'route'),(35,'severity'),(36,'status'),(37,'targetOutcome'),(38,'type'),(39,'id'),(40,'recorder'),(41,'reporter'),(42,'components'),(43,'participationPeriod'),(44,'facilityLocations');
+/*!40000 ALTER TABLE `ATTRIBUTES` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ATTRIBUTES_MODES`
+--
+
+DROP TABLE IF EXISTS `ATTRIBUTES_MODES`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ATTRIBUTES_MODES` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ATTRIBUTE_ID` varchar(32) NOT NULL,
+  `MODE_ID` int(11) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `MODE_FK` (`MODE_ID`),
+  CONSTRAINT `MODE_FK` FOREIGN KEY (`MODE_ID`) REFERENCES `MODES` (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ATTRIBUTES_MODES`
+--
+
+LOCK TABLES `ATTRIBUTES_MODES` WRITE;
+/*!40000 ALTER TABLE `ATTRIBUTES_MODES` DISABLE KEYS */;
+INSERT INTO `ATTRIBUTES_MODES` VALUES (1,'1',1),(2,'1',2),(3,'1',3),(4,'2',3),(5,'2',4),(6,'3',3),(7,'3',4),(8,'4',3),(9,'4',4),(10,'5',1),(11,'5',2),(12,'5',3),(13,'6',3),(14,'6',4),(15,'7',3),(16,'7',4),(17,'8',1),(18,'8',2),(19,'8',3),(20,'9',1),(21,'9',2),(22,'9',3),(23,'10',3),(24,'10',4),(25,'11',3),(26,'11',4),(27,'12',1),(28,'12',3),(29,'13',1),(30,'13',3),(31,'14',3),(32,'14',4),(33,'15',3),(34,'15',4),(35,'16',1),(36,'16',2),(37,'16',3),(38,'17',1),(39,'17',3),(40,'18',3),(41,'19',3),(42,'19',4),(43,'20',3),(44,'20',4),(45,'21',3),(46,'21',4),(47,'22',3),(48,'23',3),(49,'23',4),(50,'24',1),(51,'24',3),(52,'25',1),(53,'25',3),(54,'26',3),(55,'26',4),(56,'27',3),(57,'28',1),(58,'28',3),(59,'29',3),(60,'29',4),(61,'30',3),(62,'30',4),(63,'31',3),(64,'32',1),(65,'32',3),(66,'32',4),(67,'33',1),(68,'33',2),(69,'33',3),(70,'34',3),(71,'34',4),(72,'35',3),(73,'35',4),(74,'36',3),(75,'36',4),(76,'37',1),(77,'37',3),(78,'37',4),(79,'38',3),(80,'38',4),(81,'39',4),(82,'40',4),(83,'41',4);
+/*!40000 ALTER TABLE `ATTRIBUTES_MODES` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `ATTRIBUTE_DETAILS`
@@ -24,7 +74,7 @@ USE `MAT_APP_BLANK` ;
 
 DROP TABLE IF EXISTS `ATTRIBUTE_DETAILS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ATTRIBUTE_DETAILS` (
   `ATTRIBUTE_DETAILS_ID` varchar(64) NOT NULL,
   `ATTR_NAME` varchar(200) NOT NULL,
@@ -53,7 +103,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `AUDIT_LOG`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `AUDIT_LOG` (
   `AUDIT_LOG_ID` varchar(32) NOT NULL,
   `CREATE_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -89,7 +139,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `AUTHOR`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `AUTHOR` (
   `ID` varchar(32) NOT NULL,
   `AUTHOR_NAME` varchar(200) NOT NULL,
@@ -113,7 +163,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `CATEGORY`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `CATEGORY` (
   `CATEGORY_ID` varchar(32) NOT NULL,
   `DESCRIPTION` varchar(50) NOT NULL,
@@ -128,8 +178,32 @@ CREATE TABLE `CATEGORY` (
 
 LOCK TABLES `CATEGORY` WRITE;
 /*!40000 ALTER TABLE `CATEGORY` DISABLE KEYS */;
-INSERT INTO `CATEGORY` VALUES ('1','Care Experience','EXP'),('10','Intervention','INT'),('11','Laboratory Test','LAB'),('12','Medication','MED'),('14','Physical Exam','PE'),('16','Procedure','PRC'),('17','Risk Category/Assessment','RSK'),('18','Substance','SUB'),('19','Symptom','SX'),('2','Care Goal','GOL'),('20','System Characteristic','SYS'),('21','Transfer of Care','TRN'),('22','Measure Timing','TMG'),('23','Attribute','ATT'),('3','Communication','COM'),('4','Condition/Diagnosis/Problem','CDP'),('5','Device','DEV'),('6','Diagnostic Study','DXS'),('7','Encounter','ENC'),('8','Functional Status','FXS'),('9','Individual Characteristic','IND');
+INSERT INTO `CATEGORY` VALUES ('1','Care Experience','EXP'),('10','Intervention','INT'),('11','Laboratory Test','LAB'),('12','Medication','MED'),('14','Physical Exam','PE'),('16','Procedure','PRC'),('17','Risk Category/Assessment','RSK'),('18','Substance','SUB'),('19','Symptom','SX'),('2','Care Goal','GOL'),('20','System Characteristic','SYS'),('21','Transfer of Care','TRN'),('22','Measure Timing','TMG'),('23','Attribute','ATT'),('24','Immunization','IMM'),('25','Assessment','ASM'),('26','Adverse Event','ADV'),('27','Allergy/Intolerance','AGY'),('28','Participation','PAR'),('29','Related Person','RP'),('3','Communication','COM'),('4','Condition/Diagnosis/Problem','CDP'),('5','Device','DEV'),('6','Diagnostic Study','DXS'),('7','Encounter','ENC'),('8','Functional Status','FXS'),('9','Individual Characteristic','IND');
 /*!40000 ALTER TABLE `CATEGORY` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CATEGORY_BACKUP_AUG2015`
+--
+
+DROP TABLE IF EXISTS `CATEGORY_BACKUP_AUG2015`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CATEGORY_BACKUP_AUG2015` (
+  `CATEGORY_ID` varchar(32) NOT NULL,
+  `DESCRIPTION` varchar(50) NOT NULL,
+  `ABBREVIATION` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CATEGORY_BACKUP_AUG2015`
+--
+
+LOCK TABLES `CATEGORY_BACKUP_AUG2015` WRITE;
+/*!40000 ALTER TABLE `CATEGORY_BACKUP_AUG2015` DISABLE KEYS */;
+INSERT INTO `CATEGORY_BACKUP_AUG2015` VALUES ('1','Care Experience','EXP'),('10','Intervention','INT'),('11','Laboratory Test','LAB'),('12','Medication','MED'),('14','Physical Exam','PE'),('16','Procedure','PRC'),('17','Risk Category/Assessment','RSK'),('18','Substance','SUB'),('19','Symptom','SX'),('2','Care Goal','GOL'),('20','System Characteristic','SYS'),('21','Transfer of Care','TRN'),('22','Measure Timing','TMG'),('23','Attribute','ATT'),('3','Communication','COM'),('4','Condition/Diagnosis/Problem','CDP'),('5','Device','DEV'),('6','Diagnostic Study','DXS'),('7','Encounter','ENC'),('8','Functional Status','FXS'),('9','Individual Characteristic','IND');
+/*!40000 ALTER TABLE `CATEGORY_BACKUP_AUG2015` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -138,7 +212,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `CLAUSE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `CLAUSE` (
   `ID` varchar(32) NOT NULL,
   `NAME` varchar(100) DEFAULT NULL,
@@ -173,7 +247,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `CODE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `CODE` (
   `CODE_ID` varchar(36) NOT NULL,
   `CODE` varchar(32) NOT NULL,
@@ -202,7 +276,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `CODE_LIST`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `CODE_LIST` (
   `CODE_LIST_ID` varchar(32) NOT NULL,
   PRIMARY KEY (`CODE_LIST_ID`),
@@ -227,7 +301,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `CODE_LIST_AUDIT_LOG`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `CODE_LIST_AUDIT_LOG` (
   `ID` varchar(32) NOT NULL,
   `CODE_LIST_ID` varchar(32) NOT NULL,
@@ -255,7 +329,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `CODE_SYSTEM`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `CODE_SYSTEM` (
   `CODE_SYSTEM_ID` varchar(32) NOT NULL,
   `DESCRIPTION` varchar(50) NOT NULL,
@@ -278,12 +352,41 @@ INSERT INTO `CODE_SYSTEM` VALUES ('1','SNOMED-CT','1','SNM'),('10','ICD-9','4','
 UNLOCK TABLES;
 
 --
+-- Table structure for table `COMPONENT_MEASURES`
+--
+
+DROP TABLE IF EXISTS `COMPONENT_MEASURES`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `COMPONENT_MEASURES` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `COMPOSITE_MEASURE_ID` varchar(64) NOT NULL,
+  `COMPONENT_MEASURE_ID` varchar(64) NOT NULL,
+  `ALIAS` text,
+  PRIMARY KEY (`ID`),
+  KEY `COMPOSITE_MEASURE_ID_FK` (`COMPOSITE_MEASURE_ID`),
+  KEY `COMPONENT_MEASURE_ID_FK` (`COMPONENT_MEASURE_ID`),
+  CONSTRAINT `COMPONENT_MEASURE_ID_FK` FOREIGN KEY (`COMPONENT_MEASURE_ID`) REFERENCES `MEASURE` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `COMPOSITE_MEASURE_ID_FK` FOREIGN KEY (`COMPOSITE_MEASURE_ID`) REFERENCES `MEASURE` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `COMPONENT_MEASURES`
+--
+
+LOCK TABLES `COMPONENT_MEASURES` WRITE;
+/*!40000 ALTER TABLE `COMPONENT_MEASURES` DISABLE KEYS */;
+/*!40000 ALTER TABLE `COMPONENT_MEASURES` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `CONTEXT`
 --
 
 DROP TABLE IF EXISTS `CONTEXT`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `CONTEXT` (
   `CONTEXT_ID` varchar(64) NOT NULL,
   `DESCRIPTION` varchar(100) NOT NULL,
@@ -302,12 +405,290 @@ INSERT INTO `CONTEXT` VALUES ('1','Population'),('10','User-defined'),('11','Mea
 UNLOCK TABLES;
 
 --
+-- Table structure for table `CQL_AUDIT_LOG`
+--
+
+DROP TABLE IF EXISTS `CQL_AUDIT_LOG`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CQL_AUDIT_LOG` (
+  `ID` varchar(32) NOT NULL,
+  `CQL_ID` varchar(32) NOT NULL,
+  `ACTIVITY_TYPE` varchar(40) NOT NULL,
+  `USER_ID` varchar(40) NOT NULL,
+  `TIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ADDL_INFO` varchar(2000) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `CQL_ID_FK` (`CQL_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CQL_AUDIT_LOG`
+--
+
+LOCK TABLES `CQL_AUDIT_LOG` WRITE;
+/*!40000 ALTER TABLE `CQL_AUDIT_LOG` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CQL_AUDIT_LOG` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CQL_DATA`
+--
+
+DROP TABLE IF EXISTS `CQL_DATA`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CQL_DATA` (
+  `ID` varchar(64) NOT NULL,
+  `MEASURE_ID` varchar(64) NOT NULL,
+  `CQL_DATA` longblob,
+  PRIMARY KEY (`ID`),
+  KEY `CQL_DATA_FK` (`MEASURE_ID`),
+  CONSTRAINT `CQL_DATA_FK` FOREIGN KEY (`MEASURE_ID`) REFERENCES `MEASURE` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CQL_DATA`
+--
+
+LOCK TABLES `CQL_DATA` WRITE;
+/*!40000 ALTER TABLE `CQL_DATA` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CQL_DATA` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CQL_LIBRARY`
+--
+
+DROP TABLE IF EXISTS `CQL_LIBRARY`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CQL_LIBRARY` (
+  `ID` varchar(64) NOT NULL,
+  `MEASURE_ID` varchar(64) DEFAULT NULL,
+  `SET_ID` varchar(45) NOT NULL,
+  `CQL_NAME` varchar(500) DEFAULT NULL,
+  `DRAFT` tinyint(1) DEFAULT '1',
+  `VERSION` decimal(6,3) DEFAULT '0.000',
+  `FINALIZED_DATE` timestamp NULL DEFAULT NULL,
+  `RELEASE_VERSION` varchar(45) DEFAULT NULL,
+  `OWNER_ID` varchar(40) NOT NULL,
+  `LOCKED_USER` varchar(40) DEFAULT NULL,
+  `LOCKED_OUT_DATE` timestamp NULL DEFAULT NULL,
+  `CQL_XML` longblob,
+  `REVISION_NUMBER` int(3) unsigned zerofill DEFAULT '000',
+  `QDM_VERSION` varchar(45) NOT NULL DEFAULT '5.0.2',
+  `LAST_MODIFIED_ON` timestamp NULL DEFAULT NULL,
+  `LAST_MODIFIED_BY` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `LOCKED_USER_ID_FK_idx` (`LOCKED_USER`),
+  KEY `CQL_OWNER_ID_FK_idx` (`OWNER_ID`),
+  KEY `fk_library_user` (`LAST_MODIFIED_BY`),
+  KEY `idx_set_id` (`SET_ID`),
+  KEY `idx_library_cql_name` (`CQL_NAME`),
+  CONSTRAINT `CQL_OWNER_ID_FK` FOREIGN KEY (`OWNER_ID`) REFERENCES `USER` (`USER_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `LOCKED_USER_ID_FK` FOREIGN KEY (`LOCKED_USER`) REFERENCES `USER` (`USER_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_library_user` FOREIGN KEY (`LAST_MODIFIED_BY`) REFERENCES `USER` (`USER_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CQL_LIBRARY`
+--
+
+LOCK TABLES `CQL_LIBRARY` WRITE;
+/*!40000 ALTER TABLE `CQL_LIBRARY` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CQL_LIBRARY` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CQL_LIBRARY_ASSOCIATION`
+--
+
+DROP TABLE IF EXISTS `CQL_LIBRARY_ASSOCIATION`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CQL_LIBRARY_ASSOCIATION` (
+  `ID` varchar(64) NOT NULL,
+  `ASSOCIATION_ID` varchar(64) NOT NULL,
+  `CQL_LIBRARY_ID` varchar(64) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `idx_association_id` (`ASSOCIATION_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CQL_LIBRARY_ASSOCIATION`
+--
+
+LOCK TABLES `CQL_LIBRARY_ASSOCIATION` WRITE;
+/*!40000 ALTER TABLE `CQL_LIBRARY_ASSOCIATION` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CQL_LIBRARY_ASSOCIATION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CQL_LIBRARY_BACKUP`
+--
+
+DROP TABLE IF EXISTS `CQL_LIBRARY_BACKUP`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CQL_LIBRARY_BACKUP` (
+  `ID` varchar(64) NOT NULL,
+  `MEASURE_ID` varchar(64) DEFAULT NULL,
+  `MEASURE_SET_ID` varchar(45) DEFAULT NULL,
+  `CQL_SET_ID` varchar(45) DEFAULT NULL,
+  `CQL_NAME` varchar(300) DEFAULT NULL,
+  `DRAFT` tinyint(1) DEFAULT '1',
+  `VERSION` decimal(6,3) DEFAULT '0.000',
+  `FINALIZED_DATE` timestamp NULL DEFAULT NULL,
+  `RELEASE_VERSION` varchar(45) DEFAULT NULL,
+  `OWNER_ID` varchar(40) NOT NULL,
+  `LOCKED_USER` varchar(40) DEFAULT NULL,
+  `LOCKED_OUT_DATE` timestamp NULL DEFAULT NULL,
+  `CQL_XML` longblob,
+  `REVISION_NUMBER` int(3) unsigned zerofill DEFAULT '000',
+  `QDM_VERSION` varchar(45) NOT NULL DEFAULT '5.0.2'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CQL_LIBRARY_BACKUP`
+--
+
+LOCK TABLES `CQL_LIBRARY_BACKUP` WRITE;
+/*!40000 ALTER TABLE `CQL_LIBRARY_BACKUP` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CQL_LIBRARY_BACKUP` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CQL_LIBRARY_EXPORT`
+--
+
+DROP TABLE IF EXISTS `CQL_LIBRARY_EXPORT`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CQL_LIBRARY_EXPORT` (
+  `ID` varchar(64) NOT NULL,
+  `CQL_LIBRARY_ID` varchar(64) NOT NULL,
+  `CQL` longtext,
+  `ELM` longtext,
+  `JSON` longtext,
+  PRIMARY KEY (`ID`),
+  KEY `CQL_LIBRARY_ID_FK` (`CQL_LIBRARY_ID`),
+  CONSTRAINT `CQL_LIBRARY_ID_FK` FOREIGN KEY (`CQL_LIBRARY_ID`) REFERENCES `CQL_LIBRARY` (`ID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CQL_LIBRARY_EXPORT`
+--
+
+LOCK TABLES `CQL_LIBRARY_EXPORT` WRITE;
+/*!40000 ALTER TABLE `CQL_LIBRARY_EXPORT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CQL_LIBRARY_EXPORT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CQL_LIBRARY_HISTORY`
+--
+
+DROP TABLE IF EXISTS `CQL_LIBRARY_HISTORY`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CQL_LIBRARY_HISTORY` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `MEASURE_ID` varchar(64) DEFAULT NULL,
+  `LIBRARY_ID` varchar(64) DEFAULT NULL,
+  `LAST_MODIFIED_BY` varchar(40) NOT NULL,
+  `CQL_LIBRARY` blob,
+  `LAST_MODIFIED_ON` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `FREE_TEXT_EDITOR_USED` tinyint(1) DEFAULT '1',
+  PRIMARY KEY (`ID`),
+  KEY `CQL_LIBRARY_HISTORY_USER_ID_FK` (`LAST_MODIFIED_BY`),
+  KEY `CQL_LIBRARY_HISTORY_MEASURE_ID_FK` (`MEASURE_ID`),
+  KEY `CQL_LIBRARY_HISTORY_LIBRARY_ID_FK` (`LIBRARY_ID`),
+  CONSTRAINT `CQL_LIBRARY_HISTORY_LIBRARY_ID_FK` FOREIGN KEY (`LIBRARY_ID`) REFERENCES `CQL_LIBRARY` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `CQL_LIBRARY_HISTORY_MEASURE_ID_FK` FOREIGN KEY (`MEASURE_ID`) REFERENCES `MEASURE` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `CQL_LIBRARY_HISTORY_USER_ID_FK` FOREIGN KEY (`LAST_MODIFIED_BY`) REFERENCES `USER` (`USER_ID`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CQL_LIBRARY_HISTORY`
+--
+
+LOCK TABLES `CQL_LIBRARY_HISTORY` WRITE;
+/*!40000 ALTER TABLE `CQL_LIBRARY_HISTORY` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CQL_LIBRARY_HISTORY` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CQL_LIBRARY_SET`
+--
+
+DROP TABLE IF EXISTS `CQL_LIBRARY_SET`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CQL_LIBRARY_SET` (
+  `ID` varchar(36) NOT NULL,
+  `NAME` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CQL_LIBRARY_SET`
+--
+
+LOCK TABLES `CQL_LIBRARY_SET` WRITE;
+/*!40000 ALTER TABLE `CQL_LIBRARY_SET` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CQL_LIBRARY_SET` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CQL_LIBRARY_SHARE`
+--
+
+DROP TABLE IF EXISTS `CQL_LIBRARY_SHARE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CQL_LIBRARY_SHARE` (
+  `CQL_LIBRARY_SHARE_ID` varchar(32) NOT NULL,
+  `CQL_LIBRARY_ID` varchar(32) NOT NULL,
+  `CQL_LIBRARY_OWNER_USER_ID` varchar(40) NOT NULL,
+  `SHARE_USER_ID` varchar(40) NOT NULL,
+  `SHARE_LEVEL_ID` varchar(32) NOT NULL,
+  PRIMARY KEY (`CQL_LIBRARY_SHARE_ID`),
+  KEY `CQL_LIBRARY_SHARE_CQL_LIBRARY_FK` (`CQL_LIBRARY_ID`),
+  KEY `CQL_LIBRARY_SHARE_OWNER_FK` (`CQL_LIBRARY_OWNER_USER_ID`),
+  KEY `CQL_LIBRARY_SHARE_SHARE_FK` (`SHARE_USER_ID`),
+  KEY `CQL_LIBRARY_SHARE_LEVEL_ID` (`SHARE_LEVEL_ID`),
+  CONSTRAINT `CQL_LIBRARY_SHARE_CQL_LIBRARY_FK` FOREIGN KEY (`CQL_LIBRARY_ID`) REFERENCES `CQL_LIBRARY` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `CQL_LIBRARY_SHARE_LEVEL_ID` FOREIGN KEY (`SHARE_LEVEL_ID`) REFERENCES `SHARE_LEVEL` (`SHARE_LEVEL_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `CQL_LIBRARY_SHARE_OWNER_FK` FOREIGN KEY (`CQL_LIBRARY_OWNER_USER_ID`) REFERENCES `USER` (`USER_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `CQL_LIBRARY_SHARE_SHARE_FK` FOREIGN KEY (`SHARE_USER_ID`) REFERENCES `USER` (`USER_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CQL_LIBRARY_SHARE`
+--
+
+LOCK TABLES `CQL_LIBRARY_SHARE` WRITE;
+/*!40000 ALTER TABLE `CQL_LIBRARY_SHARE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CQL_LIBRARY_SHARE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `DATABASECHANGELOG`
 --
 
 DROP TABLE IF EXISTS `DATABASECHANGELOG`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `DATABASECHANGELOG` (
   `ID` varchar(63) NOT NULL,
   `AUTHOR` varchar(63) NOT NULL,
@@ -320,6 +701,9 @@ CREATE TABLE `DATABASECHANGELOG` (
   `COMMENTS` varchar(255) DEFAULT NULL,
   `TAG` varchar(255) DEFAULT NULL,
   `LIQUIBASE` varchar(20) DEFAULT NULL,
+  `CONTEXTS` varchar(255) DEFAULT NULL,
+  `LABELS` varchar(255) DEFAULT NULL,
+  `DEPLOYMENT_ID` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`ID`,`AUTHOR`,`FILENAME`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -330,7 +714,6 @@ CREATE TABLE `DATABASECHANGELOG` (
 
 LOCK TABLES `DATABASECHANGELOG` WRITE;
 /*!40000 ALTER TABLE `DATABASECHANGELOG` DISABLE KEYS */;
-INSERT INTO `DATABASECHANGELOG` VALUES ('1','mat_dev_user','classpath:/liquibase/deploy_01.00.05_20110303.xml','2015-06-11 14:18:25',1,'EXECUTED','3:df5d494ac46a1e8edbe88c7e37501007','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.06_20110308.xml','2015-06-11 14:18:25',2,'EXECUTED','3:aa7427ca1b29b87ea94d0f36fcdfbcbb','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.07_20110308.xml','2015-06-11 14:18:25',3,'EXECUTED','3:db48d204c4119697ad3149a258e08267','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.08_20110315.xml','2015-06-11 14:18:25',4,'EXECUTED','3:4df623114c3fc40fc0e2c92e6ccc97aa','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.09_20110322.xml','2015-06-11 14:18:25',5,'EXECUTED','3:8814ce4c9a828e73639897b5703f95ff','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.10_20110414.xml','2015-06-11 14:18:25',6,'EXECUTED','3:f7918819f1e7b3c2f110d146e293caeb','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.11_20110426.xml','2015-06-11 14:18:25',7,'EXECUTED','3:17b7cb50c4bd1a2e30f37a341490ec54','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.12_20110513.xml','2015-06-11 14:18:25',8,'EXECUTED','3:6e87d921c12c3485dfa1840289abae8a','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.13_20110503.xml','2015-06-11 14:18:25',9,'EXECUTED','3:05b86029c7554dc683c697d528fd103d','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.14_20110621.xml','2015-06-11 14:18:25',10,'EXECUTED','3:29077851c1516702acea548853b7e83e','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.15_20110624.xml','2015-06-11 14:18:25',11,'EXECUTED','3:aad73700b1c0cb28ada93d5cae10d180','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.16_20110628.xml','2015-06-11 14:18:25',12,'EXECUTED','3:603a3122b0f8fcf452c8a7727b2be43b','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.17_20110701.xml','2015-06-11 14:18:26',13,'EXECUTED','3:ad4e572061a467449ffc766c0063469c','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.18_20110803.xml','2015-06-11 14:18:26',14,'EXECUTED','3:47bcaca1876d526f7e319fcf5495f4e2','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.19_20110805.xml','2015-06-11 14:18:26',15,'EXECUTED','3:4c87814637953fd9ee6c21fef966e299','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.20_20110802.xml','2015-06-11 14:18:26',16,'EXECUTED','3:8caa10527dd54b458f0aec6c7a4e834d','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.21_20110816.xml','2015-06-11 14:18:26',17,'EXECUTED','3:f1f1e073a45ad6803c0435df3fe61a7b','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.22_20110817.xml','2015-06-11 14:18:26',18,'EXECUTED','3:4332583f7296af6cc7d22e8ea17158f0','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.23_20110818.xml','2015-06-11 14:18:26',19,'EXECUTED','3:545274fcf95081bbee3a0b03bd373404','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.24_20110819.xml','2015-06-11 14:18:26',20,'EXECUTED','3:047069609780ffe2eca9ed1cf1e13731','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.25_20110819.xml','2015-06-11 14:18:26',21,'EXECUTED','3:c8147521d88c6ec052299d25fe7b6b21','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.26_20110825.xml','2015-06-11 14:18:26',22,'EXECUTED','3:587b4022014ad8a5a00f032bd373ab9b','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.27_20110826.xml','2015-06-11 14:18:26',23,'EXECUTED','3:8c0f0f50f4e3db62cf4ae7c920f5aa47','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.28_20110831.xml','2015-06-11 14:18:26',24,'EXECUTED','3:70d5034e5b121201cc000dc2ac90b3ec','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.29_20110831.xml','2015-06-11 14:18:26',25,'EXECUTED','3:a2c0136415f43c40b84290e8d6937105','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.30_20110831.xml','2015-06-11 14:18:26',26,'EXECUTED','3:aca2f8010670bce9d278c64cfe395887','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.31_20110831.xml','2015-06-11 14:18:26',27,'EXECUTED','3:b41005b5b4a5807144459bbca027c80f','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.32_20110831.xml','2015-06-11 14:18:26',30,'EXECUTED','3:d70f67d8963f4bf2218bea2bc58a62aa','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.33_20110905.xml','2015-06-11 14:18:26',32,'EXECUTED','3:8eb55fe952c78e8e2e5fc62137888342','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.34_20110906.xml','2015-06-11 14:18:26',28,'EXECUTED','3:a2cb2d372434e0174616d637ac967e4d','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.35_20110906.xml','2015-06-11 14:18:26',31,'EXECUTED','3:a617e028a7991b056b34d466e50247d7','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.36_20110908.xml','2015-06-11 14:18:26',29,'EXECUTED','3:9f0b08ab28b09c3cd5559ccf05efce51','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.37_20110909.xml','2015-06-11 14:18:26',33,'EXECUTED','3:8ea4e548c688777daf5a010686a69abb','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.38_20110909.xml','2015-06-11 14:18:26',34,'EXECUTED','3:dbd08fd7af11637f3ec18c4e0cdaaa08','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.39_20110910.xml','2015-06-11 14:18:26',35,'EXECUTED','3:e75a847cd7e41a2aa984911985824603','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.40_20110914.xml','2015-06-11 14:18:26',36,'EXECUTED','3:020d2e669d42a85da2be6d418e656cac','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.41_20110914.xml','2015-06-11 14:18:26',37,'EXECUTED','3:21f51548b2b12b33232e720e5284130c','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.42_20110928.xml','2015-06-11 14:18:26',38,'EXECUTED','3:f8a9f75a42a6a35e83e6e765204bf94b','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.43_20111002.xml','2015-06-11 14:18:26',39,'EXECUTED','3:ecf092992cd7e7f5b93a610f65448a79','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.44_20111031.xml','2015-06-11 14:18:26',40,'EXECUTED','3:f800a41884a55c6d5c6eabff3e0ae22a','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.45_20111031.xml','2015-06-11 14:18:26',41,'EXECUTED','3:b248a10f716a62db98233ac316fff112','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.46_20111101.xml','2015-06-11 14:18:26',42,'EXECUTED','3:79936ac9d9b6c400963e7f7293406817','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.47_20111103.xml','2015-06-11 14:18:26',43,'EXECUTED','3:85ecbd2592182c46da9c0b122b11ec3a','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.48_20111109.xml','2015-06-11 14:18:27',44,'EXECUTED','3:821f5113dfbb7d740eb0d8f1fdd8c274','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.49_20111129.xml','2015-06-11 14:18:27',45,'EXECUTED','3:0a58d7a42ccf234054b4bbe124368825','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.50_20111201.xml','2015-06-11 14:18:27',46,'EXECUTED','3:6abda6237ca8c1540dc54c18cbec078e','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.51_20111202.xml','2015-06-11 14:18:27',47,'EXECUTED','3:a7e0b21ec76aec853ed94886d7cbeca9','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.52_20111202.xml','2015-06-11 14:18:27',48,'EXECUTED','3:564060c5de71b8800bed3fe496aa06f7','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.53_20111207.xml','2015-06-11 14:18:27',49,'EXECUTED','3:8863e444d6293e02f19e80de8bebe4f1','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.54_20111213.xml','2015-06-11 14:18:27',50,'EXECUTED','3:33ed6d08eba87ebb2c5275938f2151f3','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.55_20111213.xml','2015-06-11 14:18:27',51,'EXECUTED','3:63b129b8b8165180b809d5844ea4672e','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.56_20111214.xml','2015-06-11 14:18:27',52,'EXECUTED','3:8c2f92dfd9ef741596b832321ec9209e','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.57_20111214.xml','2015-06-11 14:18:27',53,'EXECUTED','3:e35e8b1ad2d58956adc13085423ef403','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.58_20111216.xml','2015-06-11 14:18:27',54,'EXECUTED','3:94b3e62c3c68b2826b07e665923056c4','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.59_20111216.xml','2015-06-11 14:18:27',55,'EXECUTED','3:aba863df433fdd6bfbd70920739417d7','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.60_20111220.xml','2015-06-11 14:18:27',56,'EXECUTED','3:3f25eb9a59be2fc384d497126a6da093','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.61_20111223.xml','2015-06-11 14:18:27',57,'EXECUTED','3:91e48e654accdb672a5457d59c0c0b89','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.65_20120124.xml','2015-06-11 14:18:27',58,'EXECUTED','3:6d5b1c91d5fcb178d2483be2b432bf4e','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.66_20120125.xml','2015-06-11 14:18:27',59,'EXECUTED','3:3d9557dfad9307d3ba15147c6982b756','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.67_20120126.xml','2015-06-11 14:18:27',60,'EXECUTED','3:39f8d9be221294846cbdcdcd062fc5fd','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.68_20120130.xml','2015-06-11 14:18:27',61,'EXECUTED','3:bde6b189200c878e2dc9e18b6ebe35ce','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.00.69_20120130.xml','2015-06-11 14:18:27',62,'EXECUTED','3:59754ed0155f616fef8203514c496b1a','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.02.01_Sprint-20_US4.xml','2015-06-11 14:18:27',63,'EXECUTED','3:9d07468e305512fe51ae2fb14d8f27b6','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.02.02_Sprint-20_US6.xml','2015-06-11 14:18:27',64,'EXECUTED','3:8e1fd900901f3bea530f407d2909ade5','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.02.03_Sprint-20_US6.xml','2015-06-11 14:18:27',65,'EXECUTED','3:11e283f64b41b8a59b9ed8652eb8768c','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.02.04_Sprint-20_US6.xml','2015-06-11 14:18:27',66,'EXECUTED','3:dc347d9024dfdf82703f72a50d0ca9ff','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.02.05_Sprint-20_US141.xml','2015-06-11 14:18:27',67,'EXECUTED','3:41c9c34915d3cf6701accbd4523f246c','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.02.06_Sprint-20_US5.xml','2015-06-11 14:18:27',68,'EXECUTED','3:90bac7c69ce216d5a40c9682742d2b1d','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.02.07_Sprint-20_US5.xml','2015-06-11 14:18:27',69,'EXECUTED','3:1fe411e376e8f66ccf4b4b8dc66d1c07','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.02.08_Sprint-20_US5.xml','2015-06-11 14:18:27',70,'EXECUTED','3:460fcc71a226c6ed155acf0b5286e59e','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.02.09_Sprint-20_US5.xml','2015-06-11 14:18:27',71,'EXECUTED','3:48f429d09fbbe954cc3c98229c04e661','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_01.02.10_Sprint-21_US137.xml','2015-06-11 14:18:27',72,'EXECUTED','3:c5e4a42f73ba0179b46803bae3bfcc84','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-21_US138_US139.xml','2015-06-11 14:18:27',76,'EXECUTED','3:224d6776564995297474369f6f8f246c','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-21_US144.xml','2015-06-11 14:18:27',77,'EXECUTED','3:bae7676a15265f141a37f204b79a7c36','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-21_US147.xml','2015-06-11 14:18:27',73,'EXECUTED','3:754e36a649936619d250312f8602f9b1','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-21_US148.xml','2015-06-11 14:18:27',74,'EXECUTED','3:bee957e1a34dab8ac4f333ff3d2d06b0','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-21_US151.xml','2015-06-11 14:18:27',75,'EXECUTED','3:644448821f33cce94b3f262414f9d3bf','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-21_US154.xml','2015-06-11 14:18:27',78,'EXECUTED','3:987c8f568e7f5a0291b6702714912cd1','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-22_US156.xml','2015-06-11 14:18:27',79,'EXECUTED','3:d357503e4124f55c78243a17cdcaa96d','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-22_US161.xml','2015-06-11 14:18:27',81,'EXECUTED','3:26d234f1cbc46ebd28be91d22a20f970','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-22_US171.xml','2015-06-11 14:18:27',80,'EXECUTED','3:eacdf7154c33df6ab70cdea0f40d067f','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-23_US182.xml','2015-06-11 14:18:27',83,'EXECUTED','3:7955d3c2912253162349688aea47c339','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-23_US185.xml','2015-06-11 14:18:27',82,'EXECUTED','3:fa14e842a668358d06bcfedb19160030','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-23_US185_b.xml','2015-06-11 14:18:27',84,'EXECUTED','3:d0d06c6ee7108743095ac6d42bf4d29d','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-23_US185_c.xml','2015-06-11 14:18:27',87,'EXECUTED','3:b1f221bac6e65c9bd8164776e0bde1bf','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-23_US203.xml','2015-06-11 14:18:27',85,'EXECUTED','3:ff56ccb8654929e8f12fa1870526bd11','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-23_US203_b.xml','2015-06-11 14:18:27',86,'EXECUTED','3:ce30c1c2800aeb30c8d0b4759e30a5d1','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-23_US203_c.xml','2015-06-11 14:18:28',88,'EXECUTED','3:d1ce3f0f8c5486a90950f2d5beeb8621','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-23_US204.xml','2015-06-11 14:18:28',90,'EXECUTED','3:3579e2cd433d3b1f035a2d2d8036c7d9','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-23_US214.xml','2015-06-11 14:18:28',89,'EXECUTED','3:9f4a436b239bfdad46bd16cc3fd67ea6','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-24_US2551.xml','2015-06-11 14:18:28',114,'EXECUTED','3:d38dfff4f8296be290e128aeeff5581d','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-27_US321.xml','2015-06-11 14:18:28',115,'EXECUTED','3:4b6f4cbf9e96abe31694827024fb66b2','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-29_US2895.xml','2015-06-11 14:18:28',116,'EXECUTED','3:6a38e235b819cb21340b147aeecc69fa','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-30_US2980.xml','2015-06-11 14:18:28',117,'EXECUTED','3:353cecee9c1f3ee1dceb0c67eb54d3e7','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-31_US_3096.xml','2015-06-11 14:18:28',118,'EXECUTED','3:c2065930beca1bfdca409628f0b0edd4','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-33_US_3187_3197.xml','2015-06-11 14:18:28',119,'EXECUTED','3:bcc0f38d037efa3fddcbe7a9ed74ce9a','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-34_US_3304.xml','2015-06-11 14:18:28',120,'EXECUTED','3:ce251a3c284c87c8c61c4d8247f14c21','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-35_add_other_attribs.xml','2015-06-11 14:18:28',123,'EXECUTED','3:20ee825f38dd2d74f2e9f8e895de4dd3','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-35_anatomical_approach_site_attrib.xml','2015-06-11 14:18:28',122,'EXECUTED','3:53c4c3d4bb4dd90bf0cc83b06fd1b2d8','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-35_anatomical_location_site_attrib.xml','2015-06-11 14:18:28',121,'EXECUTED','3:6f616c2999df3af36f809a4004c43b6a','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-35_delete_anatomical_structure_attrib.xml','2015-06-11 14:18:28',124,'EXECUTED','3:55cf09fdcfbe60af9a9d81ddeff08683','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-35_delete_data_types_and_assoc_attribs.xml','2015-06-11 14:18:28',125,'EXECUTED','3:fe790609f946d488be768e5b58208c73','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-36_add_new_attribs.xml','2015-06-11 14:18:28',126,'EXECUTED','3:f3376832229ef8689f140979341cf9cf','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-36_delete_Procedure_Result_datatype.xml','2015-06-11 14:18:28',127,'EXECUTED','3:dace96f5abf554287fd3e6aa7abf531f','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-37_add_new_timing_relationsships.xml','2015-06-11 14:18:28',129,'EXECUTED','3:91386f2a2786e092ab662b9f4bd3ee94','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-37_US3755_US3760_AddRemove_Functions.xml','2015-06-11 14:18:28',128,'EXECUTED','3:09adb147f3febeb729b62ed0df90a416','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-39_US_3872_Add AGE AT Function.xml','2015-06-11 14:18:28',130,'EXECUTED','3:a9aaa50aedfc520ad827cfe7b9cce273','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-40_US3962_edit_Slightly_Alter_Timing_Names.xml','2015-06-11 14:18:29',133,'EXECUTED','3:2b8d544035c5c5378782a3f71b8190ca','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-40_US3962_Slightly_Alter_Timing_Names.xml','2015-06-11 14:18:28',132,'EXECUTED','3:36fdabd51d29f23b1f848e680cac80e2','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-40_US3982_Add_Aditional_Timing_Operators.xml','2015-06-11 14:18:28',131,'EXECUTED','3:aa22e8efd89eff19c315265f6583e211','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-41_US3957_Add_SATISFIES_ALL_SATISFIES_ANY_ Functions.xml','2015-06-11 14:18:29',136,'EXECUTED','3:4a93f46105e42d370d47ccce3adede1e','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-41_US4053_Add_Two_Attributes_To_Medication_Order.xml','2015-06-11 14:18:29',134,'EXECUTED','3:812bb08162fb084387825da4d6677815','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-41_US4057_Add_TargetOutcome_Attribute_To_CareGoal.xml','2015-06-11 14:18:29',135,'EXECUTED','3:b1e8136a024c4cc9fc1c7122a3f66754','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-41_US4117_Rename_Reason_Attribute_To_Cause_For_Patient_Characteristic_Expired.xml','2015-06-11 14:18:29',139,'EXECUTED','3:109ea16518056b9e79835042a4317331','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-41_US4122_Remove_SystemCharacteristic_From_DataType.xml','2015-06-11 14:18:29',137,'EXECUTED','3:b167ff3ef1323de8f00112c8c11af4dd','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-41_US4127_US4132_US4137_Remove_Status_Date_Time_Attributes.xml','2015-06-11 14:18:29',138,'EXECUTED','3:6c2b93747e94cc99edd6ee1cacd4a8b6','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-42_delete_attributes_add_fulfills_relation.xml','2015-06-11 14:18:29',140,'EXECUTED','3:915c9cee5ece46e1cbee6c784ca50bc9','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-42_US4237_US4242_US4247_delete_attributes.xml','2015-06-11 14:18:29',141,'EXECUTED','3:7eee2b4529dfd5ce3ad041b1bc4d8583','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-43_US4301_Rename_4_Timing_Relationships.xml','2015-06-11 14:18:29',142,'EXECUTED','3:b1d86f40a35e296e38baa2639b443526','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-43_US4371_Adding_Birthdate_and_Expired.xml','2015-06-11 14:18:29',143,'EXECUTED','3:bc0c53da843937ae30a04a9d772d3ff5','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-44_US4558_New.xml','2015-06-11 14:18:29',144,'EXECUTED','3:42e8c3385f4a927816d602b2ee84cf75','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-44_US4573.xml','2015-06-11 14:18:29',145,'EXECUTED','3:f385665d42f2229c5784487895caf0f4','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_sprint-46_US4697_US4752_US4757.xml','2015-06-11 14:18:29',146,'EXECUTED','3:7bcfbc12602da24429c66932cd517f8c','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-50_delete_anatomical_approach_site_attr_Physical_Exams_dataType.xml','2015-06-11 14:18:29',147,'EXECUTED','3:4e5d261ac7b2cfcf45bea0850500a372','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-50_delete_method_attr_Prodecure_Intolerance_dataType.xml','2015-06-11 14:18:29',148,'EXECUTED','3:050c4162cbd33deee8ea42ec67143c9d','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-54_US5194_20141124.xml','2015-06-11 14:18:29',149,'EXECUTED','3:202ae947d641f3434c27f772f496a830','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-58_rename_ECWSO_SCWEO.xml','2015-06-11 14:18:29',151,'EXECUTED','3:1439d14ae8151dcddb711867052426d7','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-63_US-5568_AlterCaseOfSetOpsAndFuncOps.xml','2015-06-11 14:18:29',153,'EXECUTED','3:e253e404686eeeea8296bb33218fad84','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint-65_USMAT-5666.xml','2015-06-11 14:18:29',154,'EXECUTED','3:d5c24c6f61f699685c398bccc55154c2','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint16_US381.xml','2015-06-11 14:18:28',105,'EXECUTED','3:331ef604c683421e3e8220659a4a34e2','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_SprintOandM_US230.xml','2015-06-11 14:18:28',91,'EXECUTED','3:1c6bb16d2138562a2e395a06b43eb28a','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_SprintOandM_US231.xml','2015-06-11 14:18:28',92,'EXECUTED','3:9b65a4ca428b9e1d0bda6459a343ef06','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_SprintOandM_US233.xml','2015-06-11 14:18:28',93,'EXECUTED','3:129a88e43c90fd425d517e0f32e8d2b6','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_SprintOandM_US236_US237.xml','2015-06-11 14:18:28',94,'EXECUTED','3:e0cb4ffd8995dfc95a5ecfaab3924fb4','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_03_US_MAT110.xml','2015-06-11 14:18:28',95,'EXECUTED','3:8216b98d70100fd3266e3daf7b5363f0','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_04_Task_MAT630.xml','2015-06-11 14:18:28',96,'EXECUTED','3:72caf4d34f64711a14199c823bd99737','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_05_Task_MAT286.xml','2015-06-11 14:18:28',98,'EXECUTED','3:c28375165fcbcd2692376790b81c7808','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_06_US_MAT786.xml','2015-06-11 14:18:28',97,'EXECUTED','3:9bb785c143840f48fe6b2b6e2b36cd03','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_08_Task_MAT996.xml','2015-06-11 14:18:28',99,'EXECUTED','3:8bb80bf0012e7718e7368599970d4b74','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_09_US_MAT1155.xml','2015-06-11 14:18:28',100,'EXECUTED','3:f1cedfe5e2629e92a1125979f59e46c7','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_09_US_MAT1155_UPDATE.xml','2015-06-11 14:18:28',101,'EXECUTED','3:7645b3796d2dc57aa18d8c0e791542ff','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_11_US_MAT1053.xml','2015-06-11 14:18:28',102,'EXECUTED','3:b14125eb62e1cad9c9ac65577fc9eaca','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_12_Task_MAT1427.xml','2015-06-11 14:18:28',103,'EXECUTED','3:177b6126acd85748d6276f41eeb5251e','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_14_Task_MAT1804.xml','2015-06-11 14:18:28',104,'EXECUTED','3:3094c9a1e81f2219feb6dfc0ee43787f','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_17_US_MAT1641.xml','2015-06-11 14:18:28',106,'EXECUTED','3:d1c995cf014eacd61985fade819fa0d4','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_18_Task_MAT2074.xml','2015-06-11 14:18:28',107,'EXECUTED','3:28717777bbbd31ee21c456d7f588f8f8','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_18_US2080.xml','2015-06-11 14:18:28',110,'EXECUTED','3:51f42771017c355aaa42493df84e3385','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_18_US_MAT2123.xml','2015-06-11 14:18:28',108,'EXECUTED','3:a0f487d4c83a3d44414967bb34831a0a','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_18_US_MAT2123_1.xml','2015-06-11 14:18:28',109,'EXECUTED','3:e09b23916ba413879f0776894602a3bc','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_20_US2136.xml','2015-06-11 14:18:28',111,'EXECUTED','3:4747603246104ce00b6acf3c4f23b02a','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_20_US_MAT_1337.xml','2015-06-11 14:18:28',112,'EXECUTED','3:4fecd4836ce2f1a48ca1bd6a69b9aed9','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_20_US_MAT_2270_Modified.xml','2015-06-11 14:18:28',113,'EXECUTED','3:d624fd9d02240bc21af875b19b03c250','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_55_Change_Timing_ShortNames.xml','2015-06-11 14:18:29',150,'EXECUTED','3:a2996ba755fc0b37ce4536644edcf915','Custom SQL','',NULL,'2.0.1'),('1','mat_dev_user','classpath:/liquibase/deploy_Sprint_59_Revoked_User_Org_Change.xml','2015-06-11 14:18:29',152,'EXECUTED','3:f1fd37957b28488d82639b54386004d2','Custom SQL','',NULL,'2.0.1');
 /*!40000 ALTER TABLE `DATABASECHANGELOG` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -340,7 +723,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `DATABASECHANGELOGLOCK`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `DATABASECHANGELOGLOCK` (
   `ID` int(11) NOT NULL,
   `LOCKED` tinyint(1) NOT NULL,
@@ -356,7 +739,6 @@ CREATE TABLE `DATABASECHANGELOGLOCK` (
 
 LOCK TABLES `DATABASECHANGELOGLOCK` WRITE;
 /*!40000 ALTER TABLE `DATABASECHANGELOGLOCK` DISABLE KEYS */;
-INSERT INTO `DATABASECHANGELOGLOCK` VALUES (1,0,NULL,NULL);
 /*!40000 ALTER TABLE `DATABASECHANGELOGLOCK` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -366,7 +748,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `DATA_TYPE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `DATA_TYPE` (
   `DATA_TYPE_ID` varchar(32) NOT NULL,
   `DESCRIPTION` varchar(50) NOT NULL,
@@ -383,8 +765,32 @@ CREATE TABLE `DATA_TYPE` (
 
 LOCK TABLES `DATA_TYPE` WRITE;
 /*!40000 ALTER TABLE `DATA_TYPE` DISABLE KEYS */;
-INSERT INTO `DATA_TYPE` VALUES ('1','Patient Care Experience','1'),('10','Diagnosis, Resolved','4'),('100','Patient Characteristic Payer','9'),('101','Patient Characteristic Sex','9'),('102','Patient Characteristic Ethnicity','9'),('103','Patient Characteristic Race','9'),('104','Medication, Discharge','12'),('11','Device, Adverse Event','5'),('12','Device, Allergy','5'),('13','Device, Applied','5'),('14','Device, Intolerance','5'),('15','Device, Order','5'),('16','Diagnostic Study, Adverse Event','6'),('17','Diagnostic Study, Intolerance','6'),('18','Diagnostic Study, Order','6'),('19','Diagnostic Study, Performed','6'),('2','Provider Care Experience','1'),('21','Encounter, Order','7'),('22','Encounter, Performed','7'),('23','Functional Status, Order','8'),('24','Functional Status, Performed','8'),('26','Patient Characteristic','9'),('27','Provider Characteristic','9'),('28','Intervention, Adverse Event','10'),('29','Intervention, Intolerance','10'),('3','Care Goal','2'),('30','Intervention, Order','10'),('31','Intervention, Performed','10'),('33','Laboratory Test, Adverse Event','11'),('34','Laboratory Test, Intolerance','11'),('35','Laboratory Test, Order','11'),('36','Laboratory Test, Performed','11'),('38','Medication, Active','12'),('39','Medication, Administered','12'),('4','Communication: From Provider to Provider','3'),('40','Medication, Adverse Effects','12'),('41','Medication, Allergy','12'),('42','Medication, Dispensed','12'),('43','Medication, Intolerance','12'),('44','Medication, Order','12'),('5','Communication: From Patient to Provider','3'),('56','Physical Exam, Order','14'),('57','Physical Exam, Performed','14'),('6','Communication: From Provider to Patient','3'),('60','Procedure, Adverse Event','16'),('61','Procedure, Intolerance','16'),('62','Procedure, Order','16'),('63','Procedure, Performed','16'),('65','Risk Category Assessment','17'),('66','Substance, Administered','18'),('67','Substance, Adverse Event','18'),('68','Substance, Allergy','18'),('69','Substance, Intolerance','18'),('7','Diagnosis, Active','4'),('70','Substance, Order','18'),('71','Symptom, Active','19'),('72','Symptom, Assessed','19'),('73','Symptom, Inactive','19'),('74','Symptom, Resolved','19'),('76','Transfer From','21'),('77','Transfer To','21'),('78','Device, Recommended','5'),('79','Encounter, Recommended','7'),('8','Diagnosis, Family History','4'),('80','Functional Status, Recommended','8'),('81','Intervention, Recommended','10'),('82','Laboratory Test, Recommended','11'),('87','Physical Exam, Recommended','14'),('88','Procedure, Recommended','16'),('89','Substance, Recommended','18'),('9','Diagnosis, Inactive','4'),('90','Diagnostic Study, Recommended','6'),('92','attribute','23'),('95','Encounter, Active','7'),('96','Timing Element','22'),('97','Patient Characteristic Birthdate','9'),('98','Patient Characteristic Expired','9'),('99','Patient Characteristic Clinical Trial Participant','9');
+INSERT INTO `DATA_TYPE` VALUES ('1','Patient Care Experience','1'),('100','Patient Characteristic Payer','9'),('101','Patient Characteristic Sex','9'),('102','Patient Characteristic Ethnicity','9'),('103','Patient Characteristic Race','9'),('104','Medication, Discharge','12'),('105','Family History','4'),('106','Symptom','19'),('107','Immunization, Administered','24'),('108','Immunization, Order','24'),('111','Diagnosis','4'),('112','Assessment, Recommended','25'),('113','Assessment, Performed','25'),('114','Adverse Event','26'),('115','Allergy/Intolerance','27'),('116','Assessment, Not Performed','25'),('117','Assessment, Not Recommended','25'),('121','Device, Not Applied','5'),('122','Device, Not Ordered','5'),('123','Device, Not Recommended','5'),('124','Diagnostic Study, Not Ordered','6'),('125','Diagnostic Study, Not Performed','6'),('126','Diagnostic Study, Not Recommended','6'),('127','Encounter, Not Ordered','7'),('128','Encounter, Not Performed','7'),('129','Encounter, Not Recommended','7'),('13','Device, Applied','5'),('130','Immunization, Not Administered','24'),('131','Immunization, Not Ordered','24'),('132','Intervention, Not Ordered','10'),('133','Intervention, Not Performed','10'),('134','Intervention, Not Recommended','10'),('135','Laboratory Test, Not Ordered','11'),('136','Laboratory Test, Not Performed','11'),('137','Laboratory Test, Not Recommended','11'),('138','Medication, Not Administered','12'),('139','Medication, Not Discharged','12'),('140','Medication, Not Dispensed','12'),('141','Medication, Not Ordered','12'),('142','Physical Exam, Not Ordered','14'),('143','Physical Exam, Not Performed','14'),('144','Physical Exam, Not Recommended','14'),('145','Procedure, Not Ordered','16'),('146','Procedure, Not Performed','16'),('147','Procedure, Not Recommended','16'),('148','Substance, Not Administered','18'),('149','Substance, Not Ordered','18'),('15','Device, Order','5'),('150','Substance, Not Recommended','18'),('151','Participation','28'),('152','Assessment, Order','25'),('153','Assessment, Not Ordered','25'),('154','Communication, Performed','3'),('155','Communication, Not Performed','3'),('156','Related Person','29'),('18','Diagnostic Study, Order','6'),('19','Diagnostic Study, Performed','6'),('2','Provider Care Experience','1'),('21','Encounter, Order','7'),('22','Encounter, Performed','7'),('26','Patient Characteristic','9'),('3','Care Goal','2'),('30','Intervention, Order','10'),('31','Intervention, Performed','10'),('35','Laboratory Test, Order','11'),('36','Laboratory Test, Performed','11'),('38','Medication, Active','12'),('39','Medication, Administered','12'),('42','Medication, Dispensed','12'),('44','Medication, Order','12'),('56','Physical Exam, Order','14'),('57','Physical Exam, Performed','14'),('62','Procedure, Order','16'),('63','Procedure, Performed','16'),('66','Substance, Administered','18'),('70','Substance, Order','18'),('78','Device, Recommended','5'),('79','Encounter, Recommended','7'),('81','Intervention, Recommended','10'),('82','Laboratory Test, Recommended','11'),('87','Physical Exam, Recommended','14'),('88','Procedure, Recommended','16'),('89','Substance, Recommended','18'),('90','Diagnostic Study, Recommended','6'),('92','attribute','23'),('96','Timing Element','22'),('97','Patient Characteristic Birthdate','9'),('98','Patient Characteristic Expired','9'),('99','Patient Characteristic Clinical Trial Participant','9');
 /*!40000 ALTER TABLE `DATA_TYPE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `DATA_TYPE_BACKUP_AUG2015`
+--
+
+DROP TABLE IF EXISTS `DATA_TYPE_BACKUP_AUG2015`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `DATA_TYPE_BACKUP_AUG2015` (
+  `DATA_TYPE_ID` varchar(32) NOT NULL,
+  `DESCRIPTION` varchar(50) NOT NULL,
+  `CATEGORY_ID` varchar(32) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `DATA_TYPE_BACKUP_AUG2015`
+--
+
+LOCK TABLES `DATA_TYPE_BACKUP_AUG2015` WRITE;
+/*!40000 ALTER TABLE `DATA_TYPE_BACKUP_AUG2015` DISABLE KEYS */;
+INSERT INTO `DATA_TYPE_BACKUP_AUG2015` VALUES ('1','Patient Care Experience','1'),('10','Diagnosis, Resolved','4'),('100','Patient Characteristic Payer','9'),('101','Patient Characteristic Sex','9'),('102','Patient Characteristic Ethnicity','9'),('103','Patient Characteristic Race','9'),('104','Medication, Discharge','12'),('11','Device, Adverse Event','5'),('12','Device, Allergy','5'),('13','Device, Applied','5'),('14','Device, Intolerance','5'),('15','Device, Order','5'),('16','Diagnostic Study, Adverse Event','6'),('17','Diagnostic Study, Intolerance','6'),('18','Diagnostic Study, Order','6'),('19','Diagnostic Study, Performed','6'),('2','Provider Care Experience','1'),('21','Encounter, Order','7'),('22','Encounter, Performed','7'),('23','Functional Status, Order','8'),('24','Functional Status, Performed','8'),('26','Patient Characteristic','9'),('27','Provider Characteristic','9'),('28','Intervention, Adverse Event','10'),('29','Intervention, Intolerance','10'),('3','Care Goal','2'),('30','Intervention, Order','10'),('31','Intervention, Performed','10'),('33','Laboratory Test, Adverse Event','11'),('34','Laboratory Test, Intolerance','11'),('35','Laboratory Test, Order','11'),('36','Laboratory Test, Performed','11'),('38','Medication, Active','12'),('39','Medication, Administered','12'),('4','Communication: From Provider to Provider','3'),('40','Medication, Adverse Effects','12'),('41','Medication, Allergy','12'),('42','Medication, Dispensed','12'),('43','Medication, Intolerance','12'),('44','Medication, Order','12'),('5','Communication: From Patient to Provider','3'),('56','Physical Exam, Order','14'),('57','Physical Exam, Performed','14'),('6','Communication: From Provider to Patient','3'),('60','Procedure, Adverse Event','16'),('61','Procedure, Intolerance','16'),('62','Procedure, Order','16'),('63','Procedure, Performed','16'),('65','Risk Category Assessment','17'),('66','Substance, Administered','18'),('67','Substance, Adverse Event','18'),('68','Substance, Allergy','18'),('69','Substance, Intolerance','18'),('7','Diagnosis, Active','4'),('70','Substance, Order','18'),('71','Symptom, Active','19'),('72','Symptom, Assessed','19'),('73','Symptom, Inactive','19'),('74','Symptom, Resolved','19'),('76','Transfer From','21'),('77','Transfer To','21'),('78','Device, Recommended','5'),('79','Encounter, Recommended','7'),('8','Diagnosis, Family History','4'),('80','Functional Status, Recommended','8'),('81','Intervention, Recommended','10'),('82','Laboratory Test, Recommended','11'),('87','Physical Exam, Recommended','14'),('88','Procedure, Recommended','16'),('89','Substance, Recommended','18'),('9','Diagnosis, Inactive','4'),('90','Diagnostic Study, Recommended','6'),('92','attribute','23'),('95','Encounter, Active','7'),('96','Timing Element','22'),('97','Patient Characteristic Birthdate','9'),('98','Patient Characteristic Expired','9'),('99','Patient Characteristic Clinical Trial Participant','9');
+/*!40000 ALTER TABLE `DATA_TYPE_BACKUP_AUG2015` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -393,7 +799,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `DECISION`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `DECISION` (
   `ID` varchar(64) NOT NULL,
   `OPERATOR` varchar(45) NOT NULL,
@@ -419,12 +825,37 @@ LOCK TABLES `DECISION` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `EMAIL_AUDIT_LOG`
+--
+
+DROP TABLE IF EXISTS `EMAIL_AUDIT_LOG`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `EMAIL_AUDIT_LOG` (
+  `ID` varchar(32) NOT NULL,
+  `LOGIN_ID` varchar(40) NOT NULL,
+  `TIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ACTIVITY_TYPE` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `EMAIL_AUDIT_LOG`
+--
+
+LOCK TABLES `EMAIL_AUDIT_LOG` WRITE;
+/*!40000 ALTER TABLE `EMAIL_AUDIT_LOG` DISABLE KEYS */;
+/*!40000 ALTER TABLE `EMAIL_AUDIT_LOG` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `GROUPED_CODE_LISTS`
 --
 
 DROP TABLE IF EXISTS `GROUPED_CODE_LISTS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `GROUPED_CODE_LISTS` (
   `GROUPED_CODE_LISTS_ID` varchar(32) NOT NULL,
   `GROUP_LIST_ID` varchar(32) NOT NULL,
@@ -453,7 +884,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `LIST_OBJECT`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `LIST_OBJECT` (
   `LIST_OBJECT_ID` varchar(32) NOT NULL,
   `NAME` varchar(255) NOT NULL,
@@ -491,7 +922,7 @@ CREATE TABLE `LIST_OBJECT` (
 
 LOCK TABLES `LIST_OBJECT` WRITE;
 /*!40000 ALTER TABLE `LIST_OBJECT` DISABLE KEYS */;
-INSERT INTO `LIST_OBJECT` VALUES ('8a4d8c81309da15201309e46121d00d4','Measurement Period','80','2.16.840.1.113883.3.67.1.101.1.53','N/A',NULL,NULL,'22','1','60',NULL,NULL,NULL,'Default Measurement CodeList','1970-01-01 06:00:00',0),('8a4d8c81309da15201309e46124800e4','Measurement Start Date','80','2.16.840.1.113883.3.67.1.101.1.54','N/A',NULL,NULL,'22','1','60',NULL,NULL,NULL,'Default Measurement CodeList','1970-01-01 06:00:00',0),('8a4d8c81309da15201309e4612567F35','Expired','85','419099009','N/A',NULL,NULL,'9','2015','69',NULL,NULL,NULL,NULL,'2015-06-11 19:18:29',0),('8a4d8c81309da15201309e46126d00f4','Measurement End Date','80','2.16.840.1.113883.3.67.1.101.1.55','N/A',NULL,NULL,'22','1','60',NULL,NULL,NULL,'Default Measurement CodeList','1970-01-01 06:00:00',0),('8a4d8c81309da15201309e46126DA2E0','Birthdate','85','21112-8','N/A',NULL,NULL,'9','2015','69',NULL,NULL,NULL,NULL,'2015-06-11 19:18:29',0),('8ae452962e3a223a012e3a254b808889','Male','80','2.16.840.1.113883.3.560.100.1','N/A',NULL,NULL,'9','HL7 v2.5','132',NULL,NULL,'National Quality Forum','Default Gender CodeList','2011-07-27 15:47:00',0),('8ae452962e3a223a012e3a254b808890','Female','80','2.16.840.1.113883.3.560.100.2','N/A',NULL,NULL,'9','HL7 v2.5','132',NULL,NULL,'National Quality Forum','Default Gender CodeList','2011-07-27 15:47:00',0),('8ae452962e3a223a012e3a254b808891','Unknown Sex','80','2.16.840.1.113883.3.560.100.3','N/A',NULL,NULL,'9','HL7 v2.5','132',NULL,NULL,'National Quality Forum','Default Gender CodeList','2011-07-27 15:47:00',0),('8ae452962e3a223a012e3a254b808892','birth date','80','2.16.840.1.113883.3.560.100.4','N/A',NULL,NULL,'9','2.36','130',NULL,NULL,'National Quality Forum','Default Gender CodeList','2011-09-20 05:00:00',0),('bae50f18267111e1a17a78acc0b65c43','ONC Administrative Sex','86','2.16.840.1.113762.1.4.1','N/A',NULL,NULL,'9','HL7 v2.5','132',NULL,NULL,'National Library of Medicine','Supplimental CodeList','2011-07-27 15:47:00',1),('bae85d87267111e1a17a78acc0b65c43','Race','87','2.16.840.1.114222.4.11.836','N/A',NULL,NULL,'9','1.0','133',NULL,NULL,'CDC NCHS','Supplimental CodeList','2007-03-30 05:00:00',1),('bae86046267111e1a17a78acc0b65c43','Ethnicity','87','2.16.840.1.114222.4.11.837','N/A',NULL,NULL,'9','1.0','133',NULL,NULL,'CDC NCHS','Supplimental CodeList','2007-03-30 05:00:00',1),('bae86261267111e1a17a78acc0b65c43','Payer','88','2.16.840.1.114222.4.11.3591','N/A',NULL,NULL,'9','4.0','134',NULL,NULL,'PHDSC','Supplimental CodeList','2011-10-01 05:00:00',1);
+INSERT INTO `LIST_OBJECT` VALUES ('8a4d8c81309da15201309e46121d00d4','Measurement Period','80','2.16.840.1.113883.3.67.1.101.1.53','N/A',NULL,NULL,'22','1','60',NULL,NULL,NULL,'Default Measurement CodeList','1970-01-01 06:00:00',0),('8a4d8c81309da15201309e46124800e4','Measurement Start Date','80','2.16.840.1.113883.3.67.1.101.1.54','N/A',NULL,NULL,'22','1','60',NULL,NULL,NULL,'Default Measurement CodeList','1970-01-01 06:00:00',0),('8a4d8c81309da15201309e4612567F35','Dead','85','419099009','N/A',NULL,NULL,'9','2015','69',NULL,NULL,NULL,NULL,'2015-06-11 19:18:29',0),('8a4d8c81309da15201309e46126d00f4','Measurement End Date','80','2.16.840.1.113883.3.67.1.101.1.55','N/A',NULL,NULL,'22','1','60',NULL,NULL,NULL,'Default Measurement CodeList','1970-01-01 06:00:00',0),('8a4d8c81309da15201309e46126DA2E0','Birthdate','85','21112-8','N/A',NULL,NULL,'9','2015','69',NULL,NULL,NULL,NULL,'2015-06-11 19:18:29',0),('8ae452962e3a223a012e3a254b808889','Male','80','2.16.840.1.113883.3.560.100.1','N/A',NULL,NULL,'9','HL7 v2.5','132',NULL,NULL,'National Quality Forum','Default Gender CodeList','2011-07-27 15:47:00',0),('8ae452962e3a223a012e3a254b808890','Female','80','2.16.840.1.113883.3.560.100.2','N/A',NULL,NULL,'9','HL7 v2.5','132',NULL,NULL,'National Quality Forum','Default Gender CodeList','2011-07-27 15:47:00',0),('8ae452962e3a223a012e3a254b808891','Unknown Sex','80','2.16.840.1.113883.3.560.100.3','N/A',NULL,NULL,'9','HL7 v2.5','132',NULL,NULL,'National Quality Forum','Default Gender CodeList','2011-07-27 15:47:00',0),('8ae452962e3a223a012e3a254b808892','birth date','80','2.16.840.1.113883.3.560.100.4','N/A',NULL,NULL,'9','2.36','130',NULL,NULL,'National Quality Forum','Default Gender CodeList','2011-09-20 05:00:00',0),('bae50f18267111e1a17a78acc0b65c43','ONC Administrative Sex','86','2.16.840.1.113762.1.4.1','N/A',NULL,NULL,'9','HL7 v2.5','132',NULL,NULL,'National Library of Medicine','Supplimental CodeList','2011-07-27 15:47:00',1),('bae85d87267111e1a17a78acc0b65c43','Race','87','2.16.840.1.114222.4.11.836','N/A',NULL,NULL,'9','1.0','133',NULL,NULL,'CDC NCHS','Supplimental CodeList','2007-03-30 05:00:00',1),('bae86046267111e1a17a78acc0b65c43','Ethnicity','87','2.16.840.1.114222.4.11.837','N/A',NULL,NULL,'9','1.0','133',NULL,NULL,'CDC NCHS','Supplimental CodeList','2007-03-30 05:00:00',1),('bae86261267111e1a17a78acc0b65c43','Payer','88','2.16.840.1.114222.4.11.3591','N/A',NULL,NULL,'9','4.0','134',NULL,NULL,'PHDSC','Supplimental CodeList','2011-10-01 05:00:00',1);
 /*!40000 ALTER TABLE `LIST_OBJECT` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -501,7 +932,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `MAT_FLAG`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MAT_FLAG` (
   `ID` varchar(32) NOT NULL DEFAULT '1',
   `FLAG` varchar(1) NOT NULL DEFAULT '1'
@@ -524,7 +955,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `MEASURE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MEASURE` (
   `ID` varchar(64) NOT NULL,
   `MEASURE_OWNER_ID` varchar(40) NOT NULL,
@@ -544,13 +975,30 @@ CREATE TABLE `MEASURE` (
   `PRIVATE` tinyint(1) NOT NULL DEFAULT '0',
   `DELETED` varchar(20) DEFAULT NULL,
   `REVISION_NUMBER` int(3) unsigned zerofill DEFAULT '000',
+  `RELEASE_VERSION` varchar(50) DEFAULT NULL,
+  `LAST_MODIFIED_ON` timestamp NULL DEFAULT NULL,
+  `LAST_MODIFIED_BY` varchar(64) DEFAULT NULL,
+  `PATIENT_BASED` tinyint(1) DEFAULT NULL,
+  `QDM_VERSION` varchar(45) DEFAULT NULL,
+  `IS_COMPOSITE_MEASURE` tinyint(1) NOT NULL DEFAULT '0',
+  `COMPOSITE_SCORING` varchar(200) DEFAULT NULL,
+  `MEASURE_STEWARD_ID` int(11) DEFAULT NULL,
+  `NQF_NUMBER` text,
+  `MEASUREMENT_PERIOD_FROM` timestamp NULL DEFAULT NULL,
+  `MEASUREMENT_PERIOD_TO` timestamp NULL DEFAULT NULL,
+  `CQL_NAME` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `MEASURE_OWNER_FK` (`MEASURE_OWNER_ID`),
   KEY `MEASURE_LOCK_USER_FK` (`LOCKED_USER_ID`),
   KEY `MEASURE_SET_FK` (`MEASURE_SET_ID`),
+  KEY `LAST_MODIFIED_BY` (`LAST_MODIFIED_BY`),
+  KEY `MEASURE_STEWARD_ID` (`MEASURE_STEWARD_ID`),
+  KEY `idx_measure_cql_name` (`CQL_NAME`),
   CONSTRAINT `MEASURE_LOCK_USER_FK` FOREIGN KEY (`LOCKED_USER_ID`) REFERENCES `USER` (`USER_ID`),
   CONSTRAINT `MEASURE_OWNER_FK` FOREIGN KEY (`MEASURE_OWNER_ID`) REFERENCES `USER` (`USER_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `MEASURE_SET_FK` FOREIGN KEY (`MEASURE_SET_ID`) REFERENCES `MEASURE_SET` (`ID`)
+  CONSTRAINT `MEASURE_SET_FK` FOREIGN KEY (`MEASURE_SET_ID`) REFERENCES `MEASURE_SET` (`ID`),
+  CONSTRAINT `measure_ibfk_1` FOREIGN KEY (`LAST_MODIFIED_BY`) REFERENCES `USER` (`USER_ID`),
+  CONSTRAINT `measure_ibfk_2` FOREIGN KEY (`MEASURE_STEWARD_ID`) REFERENCES `ORGANIZATION` (`ORG_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -569,7 +1017,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `MEASUREMENT_TERM`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MEASUREMENT_TERM` (
   `ID` varchar(64) NOT NULL,
   `UNIT` varchar(45) DEFAULT NULL,
@@ -596,7 +1044,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `MEASURE_AUDIT_LOG`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MEASURE_AUDIT_LOG` (
   `ID` varchar(32) NOT NULL,
   `MEASURE_ID` varchar(32) NOT NULL,
@@ -624,7 +1072,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `MEASURE_AUDIT_LOG_BACKUP`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MEASURE_AUDIT_LOG_BACKUP` (
   `ID` varchar(32) NOT NULL,
   `MEASURE_ID` varchar(32) NOT NULL,
@@ -645,17 +1093,163 @@ LOCK TABLES `MEASURE_AUDIT_LOG_BACKUP` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `MEASURE_BACKUP_OCT2015`
+--
+
+DROP TABLE IF EXISTS `MEASURE_BACKUP_OCT2015`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `MEASURE_BACKUP_OCT2015` (
+  `ID` varchar(64) NOT NULL,
+  `MEASURE_OWNER_ID` varchar(40) NOT NULL,
+  `ABBR_NAME` varchar(45) DEFAULT NULL,
+  `DESCRIPTION` varchar(2000) DEFAULT NULL,
+  `MEASURE_STATUS` varchar(32) DEFAULT NULL,
+  `EXPORT_TS` timestamp NULL DEFAULT NULL,
+  `LOCKED_OUT_DATE` timestamp NULL DEFAULT NULL,
+  `LOCKED_USER_ID` varchar(40) DEFAULT NULL,
+  `SCORING` varchar(200) NOT NULL,
+  `MEASURE_SET_ID` varchar(36) NOT NULL,
+  `FINALIZED_DATE` timestamp NULL DEFAULT NULL,
+  `DRAFT` tinyint(1) NOT NULL DEFAULT '1',
+  `VERSION` decimal(6,3) NOT NULL DEFAULT '0.000',
+  `VALUE_SET_DATE` timestamp NULL DEFAULT NULL,
+  `EMEASURE_ID` int(6) DEFAULT '0',
+  `PRIVATE` tinyint(1) NOT NULL DEFAULT '0',
+  `DELETED` varchar(20) DEFAULT NULL,
+  `REVISION_NUMBER` int(3) unsigned zerofill DEFAULT '000'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `MEASURE_BACKUP_OCT2015`
+--
+
+LOCK TABLES `MEASURE_BACKUP_OCT2015` WRITE;
+/*!40000 ALTER TABLE `MEASURE_BACKUP_OCT2015` DISABLE KEYS */;
+/*!40000 ALTER TABLE `MEASURE_BACKUP_OCT2015` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MEASURE_DETAILS`
+--
+
+DROP TABLE IF EXISTS `MEASURE_DETAILS`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `MEASURE_DETAILS` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `MEASURE_ID` varchar(64) NOT NULL,
+  `DESCRIPTION` longtext,
+  `COPYRIGHT` longtext,
+  `DISCLAIMER` longtext,
+  `STRATIFICATION` longtext,
+  `RISK_ADJUSTMENT` longtext,
+  `RATE_AGGREGATION` longtext,
+  `RATIONALE` longtext,
+  `CLINICAL_RECOMMENDATION` longtext,
+  `IMPROVEMENT_NOTATION` longtext,
+  `DEFINITION` longtext,
+  `GUIDANCE` longtext,
+  `TRANSMISSION_FORMAT` longtext,
+  `INITIAL_POPULATION` longtext,
+  `DENOMINATOR` longtext,
+  `DENOMINATOR_EXCLUSIONS` longtext,
+  `NUMERATOR` longtext,
+  `NUMERATOR_EXCLUSIONS` longtext,
+  `MEASURE_OBSERVATIONS` longtext,
+  `MEASURE_POPULATION` longtext,
+  `MEASURE_POPULATION_EXCLUSIONS` longtext,
+  `DENOMINATOR_EXCEPTIONS` longtext,
+  `SUPPLEMENTAL_DATA_ELEMENTS` longtext,
+  `MEASURE_SET` longtext,
+  PRIMARY KEY (`ID`),
+  KEY `MEASURE_DETAILS_MEASURE_ID_FK` (`MEASURE_ID`),
+  CONSTRAINT `MEASURE_DETAILS_MEASURE_ID_FK` FOREIGN KEY (`MEASURE_ID`) REFERENCES `MEASURE` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `MEASURE_DETAILS`
+--
+
+LOCK TABLES `MEASURE_DETAILS` WRITE;
+/*!40000 ALTER TABLE `MEASURE_DETAILS` DISABLE KEYS */;
+/*!40000 ALTER TABLE `MEASURE_DETAILS` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MEASURE_DETAILS_REFERENCE`
+--
+
+DROP TABLE IF EXISTS `MEASURE_DETAILS_REFERENCE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `MEASURE_DETAILS_REFERENCE` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `MEASURE_DETAILS_ID` int(11) NOT NULL,
+  `REFERENCE` longtext,
+  `REFERENCE_NUMBER` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `MEASURE_DETAILS_REFERENCE_MEASURE_DETAILS_ID_FK` (`MEASURE_DETAILS_ID`),
+  CONSTRAINT `MEASURE_DETAILS_REFERENCE_MEASURE_DETAILS_ID_FK` FOREIGN KEY (`MEASURE_DETAILS_ID`) REFERENCES `MEASURE_DETAILS` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `MEASURE_DETAILS_REFERENCE`
+--
+
+LOCK TABLES `MEASURE_DETAILS_REFERENCE` WRITE;
+/*!40000 ALTER TABLE `MEASURE_DETAILS_REFERENCE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `MEASURE_DETAILS_REFERENCE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MEASURE_DEVELOPER_ASSOCIATION`
+--
+
+DROP TABLE IF EXISTS `MEASURE_DEVELOPER_ASSOCIATION`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `MEASURE_DEVELOPER_ASSOCIATION` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `MEASURE_ID` varchar(64) NOT NULL,
+  `MEASURE_DEVELOPER_ID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `MEASURE_DEVELOPER_UNIQUE_CONSTRAINT` (`MEASURE_ID`,`MEASURE_DEVELOPER_ID`),
+  KEY `MEASURE_DEVELOPER_ID_FK` (`MEASURE_DEVELOPER_ID`),
+  CONSTRAINT `MEASURE_DEVELOPER_ID_FK` FOREIGN KEY (`MEASURE_DEVELOPER_ID`) REFERENCES `ORGANIZATION` (`ORG_ID`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `MEASURE_MEASURE_DEVELOPER_MEASURE_ID_FK` FOREIGN KEY (`MEASURE_ID`) REFERENCES `MEASURE` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `MEASURE_DEVELOPER_ASSOCIATION`
+--
+
+LOCK TABLES `MEASURE_DEVELOPER_ASSOCIATION` WRITE;
+/*!40000 ALTER TABLE `MEASURE_DEVELOPER_ASSOCIATION` DISABLE KEYS */;
+/*!40000 ALTER TABLE `MEASURE_DEVELOPER_ASSOCIATION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `MEASURE_EXPORT`
 --
 
 DROP TABLE IF EXISTS `MEASURE_EXPORT`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MEASURE_EXPORT` (
   `MEASURE_EXPORT_ID` varchar(64) NOT NULL,
   `MEASURE_ID` varchar(64) NOT NULL,
   `SIMPLE_XML` longtext NOT NULL,
   `CODE_LIST` longblob,
+  `HUMAN_READABLE` longtext,
+  `HQMF` longtext,
+  `CQL` longtext,
+  `ELM` longtext,
+  `JSON` longtext,
   PRIMARY KEY (`MEASURE_EXPORT_ID`),
   KEY `MEASURE_EXPORT_ID_MEASURE_FK` (`MEASURE_ID`),
   CONSTRAINT `MEASURE_EXPORT_ID_MEASURE_FK` FOREIGN KEY (`MEASURE_ID`) REFERENCES `MEASURE` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -672,46 +1266,12 @@ LOCK TABLES `MEASURE_EXPORT` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `MEASURE_NOTES`
---
-
-DROP TABLE IF EXISTS `MEASURE_NOTES`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `MEASURE_NOTES` (
-  `ID` varchar(32) NOT NULL,
-  `MEASURE_ID` varchar(32) NOT NULL,
-  `TITLE` varchar(200) NOT NULL,
-  `DESCRIPTION` varchar(3000) DEFAULT NULL,
-  `CREATE_USER_ID` varchar(40) NOT NULL,
-  `MODIFY_USER_ID` varchar(40) DEFAULT NULL,
-  `LAST_MODIFIED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`),
-  KEY `MEASURE_MEASURE_ID_FK` (`MEASURE_ID`),
-  KEY `USER_CREATE_USER_ID_FK` (`CREATE_USER_ID`),
-  KEY `USER_MODIFY_USER_ID_FK` (`MODIFY_USER_ID`),
-  CONSTRAINT `MEASURE_NOTES_ibfk_1` FOREIGN KEY (`MEASURE_ID`) REFERENCES `MEASURE` (`ID`) ON DELETE CASCADE,
-  CONSTRAINT `MEASURE_NOTES_ibfk_2` FOREIGN KEY (`CREATE_USER_ID`) REFERENCES `USER` (`USER_ID`) ON DELETE CASCADE,
-  CONSTRAINT `MEASURE_NOTES_ibfk_3` FOREIGN KEY (`MODIFY_USER_ID`) REFERENCES `USER` (`USER_ID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `MEASURE_NOTES`
---
-
-LOCK TABLES `MEASURE_NOTES` WRITE;
-/*!40000 ALTER TABLE `MEASURE_NOTES` DISABLE KEYS */;
-/*!40000 ALTER TABLE `MEASURE_NOTES` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `MEASURE_NOTES_BACKUP`
 --
 
 DROP TABLE IF EXISTS `MEASURE_NOTES_BACKUP`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MEASURE_NOTES_BACKUP` (
   `ID` varchar(32) NOT NULL,
   `MEASURE_ID` varchar(32) NOT NULL,
@@ -733,12 +1293,39 @@ LOCK TABLES `MEASURE_NOTES_BACKUP` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `MEASURE_NOTES_BACKUP_SEP2017`
+--
+
+DROP TABLE IF EXISTS `MEASURE_NOTES_BACKUP_SEP2017`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `MEASURE_NOTES_BACKUP_SEP2017` (
+  `ID` varchar(32) NOT NULL,
+  `MEASURE_ID` varchar(32) NOT NULL,
+  `TITLE` varchar(200) NOT NULL,
+  `DESCRIPTION` varchar(3000) DEFAULT NULL,
+  `CREATE_USER_ID` varchar(40) NOT NULL,
+  `MODIFY_USER_ID` varchar(40) DEFAULT NULL,
+  `LAST_MODIFIED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `MEASURE_NOTES_BACKUP_SEP2017`
+--
+
+LOCK TABLES `MEASURE_NOTES_BACKUP_SEP2017` WRITE;
+/*!40000 ALTER TABLE `MEASURE_NOTES_BACKUP_SEP2017` DISABLE KEYS */;
+/*!40000 ALTER TABLE `MEASURE_NOTES_BACKUP_SEP2017` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `MEASURE_SCORE`
 --
 
 DROP TABLE IF EXISTS `MEASURE_SCORE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MEASURE_SCORE` (
   `ID` varchar(32) NOT NULL,
   `SCORE` varchar(200) NOT NULL,
@@ -762,7 +1349,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `MEASURE_SET`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MEASURE_SET` (
   `ID` varchar(36) NOT NULL,
   `NAME` varchar(200) DEFAULT NULL,
@@ -785,7 +1372,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `MEASURE_SHARE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MEASURE_SHARE` (
   `MEASURE_SHARE_ID` varchar(32) NOT NULL,
   `MEASURE_ID` varchar(32) NOT NULL,
@@ -819,10 +1406,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `MEASURE_TYPES`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MEASURE_TYPES` (
   `ID` varchar(32) NOT NULL,
   `NAME` varchar(50) NOT NULL,
+  `ABBR_NAME` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -833,8 +1421,36 @@ CREATE TABLE `MEASURE_TYPES` (
 
 LOCK TABLES `MEASURE_TYPES` WRITE;
 /*!40000 ALTER TABLE `MEASURE_TYPES` DISABLE KEYS */;
-INSERT INTO `MEASURE_TYPES` VALUES ('1','Composite'),('2','Cost/Resource Use'),('3','Efficiency'),('4','Outcome'),('5','Patient Engagement/Experience'),('6','Process'),('7','Structure');
+INSERT INTO `MEASURE_TYPES` VALUES ('1','Composite','COMPOSITE'),('10','Appropriate Use Process','APPROPRIATE'),('2','Cost/Resource Use','RESOURCE'),('3','Efficiency','EFFICIENCY'),('4','Outcome','OUTCOME'),('5','Patient Engagement/Experience','EXPERIENCE'),('6','Process','PROCESS'),('7','Structure','STRUCTURE'),('8','Patient Reported Outcome Performance','PRO-PM'),('9','Intermediate Clinical Outcome','INTERM-OM');
 /*!40000 ALTER TABLE `MEASURE_TYPES` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MEASURE_TYPE_ASSOCIATION`
+--
+
+DROP TABLE IF EXISTS `MEASURE_TYPE_ASSOCIATION`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `MEASURE_TYPE_ASSOCIATION` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `MEASURE_ID` varchar(64) NOT NULL,
+  `MEASURE_TYPE_ID` varchar(32) NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `MEASURE_TYPE_UNIQUE_CONSTRAINT` (`MEASURE_ID`,`MEASURE_TYPE_ID`),
+  KEY `MEASURE_TYPE_ID_FK` (`MEASURE_TYPE_ID`),
+  CONSTRAINT `MEASURE_MEASURE_TYPE_MEASURE_ID_FK` FOREIGN KEY (`MEASURE_ID`) REFERENCES `MEASURE` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `MEASURE_TYPE_ID_FK` FOREIGN KEY (`MEASURE_TYPE_ID`) REFERENCES `MEASURE_TYPES` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `MEASURE_TYPE_ASSOCIATION`
+--
+
+LOCK TABLES `MEASURE_TYPE_ASSOCIATION` WRITE;
+/*!40000 ALTER TABLE `MEASURE_TYPE_ASSOCIATION` DISABLE KEYS */;
+/*!40000 ALTER TABLE `MEASURE_TYPE_ASSOCIATION` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -843,7 +1459,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `MEASURE_VALIDATION_LOG`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MEASURE_VALIDATION_LOG` (
   `ID` varchar(32) NOT NULL,
   `MEASURE_ID` varchar(32) NOT NULL,
@@ -871,7 +1487,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `MEASURE_XML`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MEASURE_XML` (
   `ID` varchar(64) NOT NULL,
   `MEASURE_ID` varchar(64) NOT NULL,
@@ -897,7 +1513,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `METADATA`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `METADATA` (
   `METADATA_ID` varchar(64) NOT NULL,
   `NAME` varchar(100) NOT NULL,
@@ -919,12 +1535,36 @@ LOCK TABLES `METADATA` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `MODES`
+--
+
+DROP TABLE IF EXISTS `MODES`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `MODES` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `MODE_NAME` varchar(50) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `MODES`
+--
+
+LOCK TABLES `MODES` WRITE;
+/*!40000 ALTER TABLE `MODES` DISABLE KEYS */;
+INSERT INTO `MODES` VALUES (1,'Comparison'),(2,'Computative'),(3,'Nullable'),(4,'Value Sets');
+/*!40000 ALTER TABLE `MODES` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `OBJECT_STATUS`
 --
 
 DROP TABLE IF EXISTS `OBJECT_STATUS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `OBJECT_STATUS` (
   `OBJECT_STATUS_ID` varchar(32) NOT NULL,
   `DESCRIPTION` varchar(50) NOT NULL,
@@ -948,7 +1588,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `OPERATOR`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `OPERATOR` (
   `ID` varchar(32) NOT NULL,
   `LONG_NAME` varchar(45) DEFAULT NULL,
@@ -976,7 +1616,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `OPERATOR_BACKUP`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `OPERATOR_BACKUP` (
   `ID` varchar(32) NOT NULL,
   `LONG_NAME` varchar(45) DEFAULT NULL,
@@ -1001,7 +1641,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `OPERATOR_TYPE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `OPERATOR_TYPE` (
   `ID` varchar(32) NOT NULL,
   `NAME` varchar(45) DEFAULT NULL,
@@ -1025,7 +1665,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `ORGANIZATION`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ORGANIZATION` (
   `ORG_ID` int(11) NOT NULL AUTO_INCREMENT,
   `ORG_NAME` varchar(150) DEFAULT NULL,
@@ -1051,7 +1691,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `PACKAGER`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `PACKAGER` (
   `PACKAGER_ID` varchar(32) NOT NULL,
   `MEASURE_ID` varchar(32) NOT NULL,
@@ -1080,14 +1720,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `QDM_ATTRIBUTES`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QDM_ATTRIBUTES` (
-  `ID` varchar(64) NOT NULL,
-  `NAME` varchar(100) DEFAULT NULL,
-  `DATA_TYPE_ID` varchar(32) DEFAULT NULL,
-  `QDM_ATTRIBUTE_TYPE` varchar(32) DEFAULT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(32) NOT NULL,
+  `DATA_TYPE_ID` varchar(32) NOT NULL,
+  `QDM_ATTRIBUTE_TYPE` varchar(32) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=852 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1096,7 +1736,7 @@ CREATE TABLE `QDM_ATTRIBUTES` (
 
 LOCK TABLES `QDM_ATTRIBUTES` WRITE;
 /*!40000 ALTER TABLE `QDM_ATTRIBUTES` DISABLE KEYS */;
-INSERT INTO `QDM_ATTRIBUTES` VALUES ('10','provider preference','1','Data Type'),('1001','facility location','19','Data Type'),('101','negation rationale','14','Data Type'),('1010','start datetime','97','Data Type'),('1011','stop datetime','97','Data Type'),('1012','date','98','Data Type'),('1013','time','98','Data Type'),('1014','cause','98','Data Type'),('1015','start datetime','99','Data Type'),('1016','stop datetime','99','Data Type'),('1017','reason','99','Data Type'),('1018','start datetime','100','Data Type'),('1019','stop datetime','100','Data Type'),('102','patient preference','14','Data Type'),('1020','start datetime','101','Data Type'),('1021','stop datetime','101','Data Type'),('1023','dose','104','Data Type'),('1024','frequency','104','Data Type'),('1026','refills','104','Data Type'),('1027','route','104','Data Type'),('1028','start datetime','104','Data Type'),('1029','stop datetime','104','Data Type'),('103','provider preference','14','Data Type'),('1030','negation rationale','104','Data Type'),('1031','anatomical location site','7','Data Type'),('1032','anatomical location site','10','Data Type'),('1033','anatomical location site','9','Data Type'),('1034','anatomical location site','13','Data Type'),('1038','anatomical location site','56','Data Type'),('1039','anatomical location site','57','Data Type'),('104','reaction','14','Data Type'),('1040','anatomical location site','87','Data Type'),('1041','anatomical location site','62','Data Type'),('1042','anatomical location site','63','Data Type'),('1043','anatomical approach site','13','Data Type'),('105','start datetime','14','Data Type'),('1050','anatomical approach site','63','Data Type'),('1051','anatomical approach site','62','Data Type'),('1052','result','19','Data Type'),('1053','result','36','Data Type'),('1054','result','57','Data Type'),('1055','result','24','Data Type'),('1056','result','31','Data Type'),('1057','status','19','Data Type'),('1058','status','31','Data Type'),('1059','status','36','Data Type'),('106','stop datetime','14','Data Type'),('1060','patient preference','104','Data Type'),('1061','provider preference','104','Data Type'),('1062','cumulative medication duration','39','Data Type'),('1064','ordinality','61','Data Type'),('1065','radiation duration','62','Data Type'),('1066','status','63','Data Type'),('1067','radiation duration','63','Data Type'),('1068','radiation dosage','63','Data Type'),('1069','anatomical approach site','88','Data Type'),('1070','anatomical location site','88','Data Type'),('1071','active datetime','44','Data Type'),('1072','signed datetime','44','Data Type'),('1073','target outcome','3','Data Type'),('108','negation rationale','15','Data Type'),('109','patient preference','15','Data Type'),('11','start datetime','1','Data Type'),('110','provider preference','15','Data Type'),('111','reason','15','Data Type'),('112','start datetime','15','Data Type'),('113','stop datetime','15','Data Type'),('115','negation rationale','78','Data Type'),('116','patient preference','78','Data Type'),('117','provider preference','78','Data Type'),('118','reason','78','Data Type'),('119','start datetime','78','Data Type'),('12','stop datetime','1','Data Type'),('120','stop datetime','78','Data Type'),('122','negation rationale','16','Data Type'),('123','patient preference','16','Data Type'),('124','provider preference','16','Data Type'),('125','radiation dosage','16','Data Type'),('126','radiation duration','16','Data Type'),('127','reaction','16','Data Type'),('128','start datetime','16','Data Type'),('129','stop datetime','16','Data Type'),('131','negation rationale','17','Data Type'),('132','patient preference','17','Data Type'),('133','provider preference','17','Data Type'),('134','radiation dosage','17','Data Type'),('135','radiation duration','17','Data Type'),('136','reaction','17','Data Type'),('137','start datetime','17','Data Type'),('138','stop datetime','17','Data Type'),('14','negation rationale','2','Data Type'),('140','method','18','Data Type'),('141','negation rationale','18','Data Type'),('142','patient preference','18','Data Type'),('143','provider preference','18','Data Type'),('144','radiation dosage','18','Data Type'),('145','radiation duration','18','Data Type'),('146','reason','18','Data Type'),('147','start datetime','18','Data Type'),('148','stop datetime','18','Data Type'),('15','patient preference','2','Data Type'),('150','method','19','Data Type'),('151','negation rationale','19','Data Type'),('152','patient preference','19','Data Type'),('153','provider preference','19','Data Type'),('154','radiation dosage','19','Data Type'),('155','radiation duration','19','Data Type'),('156','reason','19','Data Type'),('157','start datetime','19','Data Type'),('158','stop datetime','19','Data Type'),('16','provider preference','2','Data Type'),('160','method','90','Data Type'),('161','negation rationale','90','Data Type'),('162','patient preference','90','Data Type'),('163','provider preference','90','Data Type'),('164','radiation dosage','90','Data Type'),('165','radiation duration','90','Data Type'),('166','start datetime','90','Data Type'),('167','stop datetime','90','Data Type'),('17','start datetime','2','Data Type'),('179','length of stay','95','Data Type'),('18','stop datetime','2','Data Type'),('181','facility location','95','Data Type'),('182','negation rationale','95','Data Type'),('183','patient preference','95','Data Type'),('184','provider preference','95','Data Type'),('185','reason','95','Data Type'),('186','admission datetime','95','Data Type'),('187','discharge datetime','95','Data Type'),('198','facility location','21','Data Type'),('199','negation rationale','21','Data Type'),('20','negation rationale','3','Data Type'),('200','patient preference','21','Data Type'),('201','provider preference','21','Data Type'),('202','reason','21','Data Type'),('203','start datetime','21','Data Type'),('204','stop datetime','21','Data Type'),('205','length of stay','22','Data Type'),('207','facility location','22','Data Type'),('208','negation rationale','22','Data Type'),('209','patient preference','22','Data Type'),('21','patient preference','3','Data Type'),('210','provider preference','22','Data Type'),('211','reason','22','Data Type'),('212','admission datetime','22','Data Type'),('213','discharge datetime','22','Data Type'),('215','facility location','79','Data Type'),('216','negation rationale','79','Data Type'),('217','patient preference','79','Data Type'),('218','provider preference','79','Data Type'),('219','reason','79','Data Type'),('22','provider preference','3','Data Type'),('220','start datetime','79','Data Type'),('221','stop datetime','79','Data Type'),('223','method','23','Data Type'),('224','negation rationale','23','Data Type'),('225','patient preference','23','Data Type'),('226','provider preference','23','Data Type'),('227','reason','23','Data Type'),('228','start datetime','23','Data Type'),('229','stop datetime','23','Data Type'),('23','start datetime','3','Data Type'),('231','method','24','Data Type'),('232','negation rationale','24','Data Type'),('233','patient preference','24','Data Type'),('234','provider preference','24','Data Type'),('235','reason','24','Data Type'),('236','start datetime','24','Data Type'),('237','stop datetime','24','Data Type'),('239','method','80','Data Type'),('24','stop datetime','3','Data Type'),('240','negation rationale','80','Data Type'),('241','patient preference','80','Data Type'),('242','provider preference','80','Data Type'),('243','reason','80','Data Type'),('244','start datetime','80','Data Type'),('245','stop datetime','80','Data Type'),('256','start datetime','26','Data Type'),('257','stop datetime','26','Data Type'),('259','negation rationale','27','Data Type'),('26','negation rationale','5','Data Type'),('260','start datetime','27','Data Type'),('261','stop datetime','27','Data Type'),('263','negation rationale','28','Data Type'),('264','patient preference','28','Data Type'),('265','provider preference','28','Data Type'),('266','reaction','28','Data Type'),('267','start datetime','28','Data Type'),('268','stop datetime','28','Data Type'),('27','patient preference','5','Data Type'),('270','negation rationale','29','Data Type'),('271','patient preference','29','Data Type'),('272','provider preference','29','Data Type'),('273','reaction','29','Data Type'),('274','start datetime','29','Data Type'),('275','stop datetime','29','Data Type'),('278','negation rationale','30','Data Type'),('279','patient preference','30','Data Type'),('28','provider preference','5','Data Type'),('280','provider preference','30','Data Type'),('281','reason','30','Data Type'),('282','start datetime','30','Data Type'),('283','stop datetime','30','Data Type'),('286','negation rationale','31','Data Type'),('287','patient preference','31','Data Type'),('288','provider preference','31','Data Type'),('289','reason','31','Data Type'),('29','start datetime','5','Data Type'),('290','start datetime','31','Data Type'),('291','stop datetime','31','Data Type'),('294','negation rationale','81','Data Type'),('295','patient preference','81','Data Type'),('296','provider preference','81','Data Type'),('297','reason','81','Data Type'),('298','start datetime','81','Data Type'),('299','stop datetime','81','Data Type'),('30','stop datetime','5','Data Type'),('310','negation rationale','33','Data Type'),('311','patient preference','33','Data Type'),('312','provider preference','33','Data Type'),('313','reaction','33','Data Type'),('314','start datetime','33','Data Type'),('315','stop datetime','33','Data Type'),('317','negation rationale','34','Data Type'),('318','patient preference','34','Data Type'),('319','provider preference','34','Data Type'),('32','negation rationale','6','Data Type'),('320','reaction','34','Data Type'),('321','start datetime','34','Data Type'),('322','stop datetime','34','Data Type'),('324','method','35','Data Type'),('325','negation rationale','35','Data Type'),('326','patient preference','35','Data Type'),('327','provider preference','35','Data Type'),('328','reason','35','Data Type'),('329','start datetime','35','Data Type'),('33','patient preference','6','Data Type'),('330','stop datetime','35','Data Type'),('332','method','36','Data Type'),('333','negation rationale','36','Data Type'),('334','patient preference','36','Data Type'),('335','provider preference','36','Data Type'),('336','reason','36','Data Type'),('337','start datetime','36','Data Type'),('338','stop datetime','36','Data Type'),('34','provider preference','6','Data Type'),('340','method','82','Data Type'),('341','negation rationale','82','Data Type'),('342','patient preference','82','Data Type'),('343','provider preference','82','Data Type'),('344','reason','82','Data Type'),('345','start datetime','82','Data Type'),('346','stop datetime','82','Data Type'),('35','start datetime','6','Data Type'),('356','cumulative medication duration','38','Data Type'),('357','dose','38','Data Type'),('358','frequency','38','Data Type'),('36','stop datetime','6','Data Type'),('360','negation rationale','38','Data Type'),('362','patient preference','38','Data Type'),('363','provider preference','38','Data Type'),('365','route','38','Data Type'),('366','start datetime','38','Data Type'),('367','stop datetime','38','Data Type'),('368','dose','39','Data Type'),('369','frequency','39','Data Type'),('371','negation rationale','39','Data Type'),('373','patient preference','39','Data Type'),('374','provider preference','39','Data Type'),('376','route','39','Data Type'),('377','start datetime','39','Data Type'),('378','stop datetime','39','Data Type'),('38','negation rationale','4','Data Type'),('382','negation rationale','40','Data Type'),('384','patient preference','40','Data Type'),('385','provider preference','40','Data Type'),('386','reaction','40','Data Type'),('389','start datetime','40','Data Type'),('39','patient preference','4','Data Type'),('390','stop datetime','40','Data Type'),('394','negation rationale','41','Data Type'),('396','patient preference','41','Data Type'),('397','provider preference','41','Data Type'),('398','reaction','41','Data Type'),('40','provider preference','4','Data Type'),('401','start datetime','41','Data Type'),('402','stop datetime','41','Data Type'),('403','cumulative medication duration','42','Data Type'),('404','dose','42','Data Type'),('405','frequency','42','Data Type'),('407','negation rationale','42','Data Type'),('409','patient preference','42','Data Type'),('41','start datetime','4','Data Type'),('410','provider preference','42','Data Type'),('411','refills','42','Data Type'),('412','route','42','Data Type'),('413','start datetime','42','Data Type'),('414','stop datetime','42','Data Type'),('418','negation rationale','43','Data Type'),('42','stop datetime','4','Data Type'),('420','patient preference','43','Data Type'),('421','provider preference','43','Data Type'),('422','reaction','43','Data Type'),('425','start datetime','43','Data Type'),('426','stop datetime','43','Data Type'),('427','cumulative medication duration','44','Data Type'),('428','dose','44','Data Type'),('429','frequency','44','Data Type'),('431','method','44','Data Type'),('432','negation rationale','44','Data Type'),('434','patient preference','44','Data Type'),('435','provider preference','44','Data Type'),('436','reason','44','Data Type'),('437','refills','44','Data Type'),('438','route','44','Data Type'),('439','start datetime','44','Data Type'),('44','negation rationale','7','Data Type'),('440','stop datetime','44','Data Type'),('45','ordinality','7','Data Type'),('453','method','56','Data Type'),('454','negation rationale','56','Data Type'),('455','patient preference','56','Data Type'),('456','provider preference','56','Data Type'),('457','reason','56','Data Type'),('458','start datetime','56','Data Type'),('459','stop datetime','56','Data Type'),('46','patient preference','7','Data Type'),('462','method','57','Data Type'),('463','negation rationale','57','Data Type'),('464','patient preference','57','Data Type'),('465','provider preference','57','Data Type'),('466','reason','57','Data Type'),('467','start datetime','57','Data Type'),('468','stop datetime','57','Data Type'),('47','provider preference','7','Data Type'),('471','method','87','Data Type'),('472','negation rationale','87','Data Type'),('473','patient preference','87','Data Type'),('474','provider preference','87','Data Type'),('475','reason','87','Data Type'),('476','start datetime','87','Data Type'),('477','stop datetime','87','Data Type'),('479','negation rationale','60','Data Type'),('48','severity','7','Data Type'),('480','patient preference','60','Data Type'),('481','provider preference','60','Data Type'),('482','reaction','60','Data Type'),('483','start datetime','60','Data Type'),('484','stop datetime','60','Data Type'),('486','negation rationale','61','Data Type'),('487','patient preference','61','Data Type'),('488','provider preference','61','Data Type'),('489','reaction','61','Data Type'),('49','start datetime','7','Data Type'),('490','start datetime','61','Data Type'),('491','stop datetime','61','Data Type'),('493','method','62','Data Type'),('494','negation rationale','62','Data Type'),('495','patient preference','62','Data Type'),('496','provider preference','62','Data Type'),('497','reason','62','Data Type'),('498','start datetime','62','Data Type'),('499','stop datetime','62','Data Type'),('501','method','63','Data Type'),('502','negation rationale','63','Data Type'),('503','patient preference','63','Data Type'),('504','provider preference','63','Data Type'),('505','reason','63','Data Type'),('506','start datetime','63','Data Type'),('507','stop datetime','63','Data Type'),('509','method','88','Data Type'),('510','negation rationale','88','Data Type'),('511','patient preference','88','Data Type'),('512','provider preference','88','Data Type'),('513','reason','88','Data Type'),('514','start datetime','88','Data Type'),('515','stop datetime','88','Data Type'),('52','stop datetime','7','Data Type'),('526','negation rationale','65','Data Type'),('527','patient preference','65','Data Type'),('528','provider preference','65','Data Type'),('529','start datetime','65','Data Type'),('530','stop datetime','65','Data Type'),('531','dose','66','Data Type'),('533','frequency','66','Data Type'),('534','negation rationale','66','Data Type'),('536','patient preference','66','Data Type'),('537','provider preference','66','Data Type'),('539','route','66','Data Type'),('54','negation rationale','8','Data Type'),('540','start datetime','66','Data Type'),('541','stop datetime','66','Data Type'),('545','negation rationale','67','Data Type'),('547','patient preference','67','Data Type'),('548','provider preference','67','Data Type'),('549','reaction','67','Data Type'),('55','ordinality','8','Data Type'),('552','start datetime','67','Data Type'),('553','stop datetime','67','Data Type'),('557','negation rationale','68','Data Type'),('559','patient preference','68','Data Type'),('56','patient preference','8','Data Type'),('560','provider preference','68','Data Type'),('561','reaction','68','Data Type'),('564','start datetime','68','Data Type'),('565','stop datetime','68','Data Type'),('569','negation rationale','69','Data Type'),('57','provider preference','8','Data Type'),('571','patient preference','69','Data Type'),('572','provider preference','69','Data Type'),('573','reaction','69','Data Type'),('576','start datetime','69','Data Type'),('577','stop datetime','69','Data Type'),('578','dose','70','Data Type'),('58','severity','8','Data Type'),('580','frequency','70','Data Type'),('581','method','70','Data Type'),('582','negation rationale','70','Data Type'),('584','patient preference','70','Data Type'),('585','provider preference','70','Data Type'),('586','reason','70','Data Type'),('587','refills','70','Data Type'),('588','route','70','Data Type'),('589','start datetime','70','Data Type'),('59','start datetime','8','Data Type'),('590','stop datetime','70','Data Type'),('591','dose','89','Data Type'),('593','frequency','89','Data Type'),('594','method','89','Data Type'),('595','negation rationale','89','Data Type'),('597','patient preference','89','Data Type'),('598','provider preference','89','Data Type'),('599','reason','89','Data Type'),('60','status','8','Data Type'),('600','refills','89','Data Type'),('601','route','89','Data Type'),('602','start datetime','89','Data Type'),('603','stop datetime','89','Data Type'),('605','negation rationale','71','Data Type'),('606','ordinality','71','Data Type'),('607','patient preference','71','Data Type'),('608','provider preference','71','Data Type'),('609','severity','71','Data Type'),('61','stop datetime','8','Data Type'),('610','start datetime','71','Data Type'),('612','stop datetime','71','Data Type'),('614','negation rationale','72','Data Type'),('615','ordinality','72','Data Type'),('616','patient preference','72','Data Type'),('617','provider preference','72','Data Type'),('618','severity','72','Data Type'),('619','start datetime','72','Data Type'),('621','stop datetime','72','Data Type'),('623','negation rationale','73','Data Type'),('624','ordinality','73','Data Type'),('625','patient preference','73','Data Type'),('626','provider preference','73','Data Type'),('627','severity','73','Data Type'),('628','start datetime','73','Data Type'),('63','negation rationale','9','Data Type'),('630','stop datetime','73','Data Type'),('632','negation rationale','74','Data Type'),('633','ordinality','74','Data Type'),('634','patient preference','74','Data Type'),('635','provider preference','74','Data Type'),('636','severity','74','Data Type'),('637','start datetime','74','Data Type'),('639','stop datetime','74','Data Type'),('64','ordinality','9','Data Type'),('641','negation rationale','75','Data Type'),('642','start datetime','75','Data Type'),('643','stop datetime','75','Data Type'),('645','negation rationale','76','Data Type'),('646','patient preference','76','Data Type'),('647','provider preference','76','Data Type'),('648','start datetime','76','Data Type'),('649','stop datetime','76','Data Type'),('65','patient preference','9','Data Type'),('651','negation rationale','77','Data Type'),('652','patient preference','77','Data Type'),('653','provider preference','77','Data Type'),('654','start datetime','77','Data Type'),('655','stop datetime','77','Data Type'),('66','provider preference','9','Data Type'),('662','Health Record Field','','Data Flow'),('663','laterality','7','Data Type'),('664','reason','13','Data Type'),('665','discharge status','22','Data Type'),('669','facility location arrival datetime','95','Data Type'),('67','severity','9','Data Type'),('670','facility location departure datetime','95','Data Type'),('671','facility location arrival datetime','22','Data Type'),('672','facility location departure datetime','22','Data Type'),('673','reason','39','Data Type'),('676','ordinality','62','Data Type'),('677','ordinality','63','Data Type'),('678','result','63','Data Type'),('679','incision datetime','63','Data Type'),('68','start datetime','9','Data Type'),('680','ordinality','88','Data Type'),('685','result','65','Data Type'),('689','related to','3','Data Type'),('70','stop datetime','9','Data Type'),('701','Source','','Data Flow'),('702','Recorder','','Data Flow'),('72','negation rationale','10','Data Type'),('73','ordinality','10','Data Type'),('74','patient preference','10','Data Type'),('75','provider preference','10','Data Type'),('76','severity','10','Data Type'),('77','start datetime','10','Data Type'),('79','stop datetime','10','Data Type'),('8','negation rationale','1','Data Type'),('81','negation rationale','11','Data Type'),('82','patient preference','11','Data Type'),('83','provider preference','11','Data Type'),('84','reaction','11','Data Type'),('85','start datetime','11','Data Type'),('86','stop datetime','11','Data Type'),('88','negation rationale','12','Data Type'),('89','patient preference','12','Data Type'),('9','patient preference','1','Data Type'),('90','provider preference','12','Data Type'),('91','reaction','12','Data Type'),('92','start datetime','12','Data Type'),('93','stop datetime','12','Data Type'),('95','negation rationale','13','Data Type'),('96','patient preference','13','Data Type'),('97','provider preference','13','Data Type'),('98','start datetime','13','Data Type'),('99','removal datetime','13','Data Type');
+INSERT INTO `QDM_ATTRIBUTES` VALUES (1,'code','114','Data Type'),(3,'type','114','Data Type'),(4,'severity','114','Data Type'),(5,'facilityLocation','114','Data Type'),(6,'id','114','Data Type'),(7,'recorder','114','Data Type'),(9,'code','115','Data Type'),(10,'prevalencePeriod','115','Data Type'),(11,'type','115','Data Type'),(12,'severity','115','Data Type'),(13,'id','115','Data Type'),(14,'recorder','115','Data Type'),(16,'code','116','Data Type'),(17,'negationRationale','116','Data Type'),(18,'id','116','Data Type'),(21,'code','117','Data Type'),(22,'negationRationale','117','Data Type'),(23,'id','117','Data Type'),(26,'code','113','Data Type'),(27,'authorDatetime','113','Data Type'),(28,'method','113','Data Type'),(29,'reason','113','Data Type'),(30,'result','113','Data Type'),(31,'id','113','Data Type'),(34,'authorDatetime','112','Data Type'),(35,'code','112','Data Type'),(37,'reason','112','Data Type'),(38,'id','112','Data Type'),(41,'code','3','Data Type'),(42,'relatedTo','3','Data Type'),(43,'relevantPeriod','3','Data Type'),(44,'targetOutcome','3','Data Type'),(45,'id','3','Data Type'),(79,'anatomicalLocationSite','13','Data Type'),(80,'code','13','Data Type'),(81,'reason','13','Data Type'),(82,'relevantPeriod','13','Data Type'),(83,'id','13','Data Type'),(86,'code','121','Data Type'),(87,'negationRationale','121','Data Type'),(88,'id','121','Data Type'),(91,'code','122','Data Type'),(92,'negationRationale','122','Data Type'),(93,'id','122','Data Type'),(96,'code','123','Data Type'),(97,'negationRationale','123','Data Type'),(98,'id','123','Data Type'),(101,'authorDatetime','15','Data Type'),(102,'code','15','Data Type'),(103,'reason','15','Data Type'),(104,'id','15','Data Type'),(107,'authorDatetime','78','Data Type'),(108,'code','78','Data Type'),(109,'reason','78','Data Type'),(110,'id','78','Data Type'),(113,'anatomicalLocationSite','111','Data Type'),(114,'code','111','Data Type'),(115,'prevalencePeriod','111','Data Type'),(116,'severity','111','Data Type'),(117,'id','111','Data Type'),(118,'recorder','111','Data Type'),(120,'code','124','Data Type'),(121,'negationRationale','124','Data Type'),(122,'id','124','Data Type'),(125,'code','125','Data Type'),(126,'negationRationale','125','Data Type'),(127,'id','125','Data Type'),(130,'code','126','Data Type'),(131,'negationRationale','126','Data Type'),(132,'id','126','Data Type'),(135,'authorDatetime','18','Data Type'),(136,'code','18','Data Type'),(140,'reason','18','Data Type'),(141,'id','18','Data Type'),(144,'code','19','Data Type'),(145,'facilityLocation','19','Data Type'),(146,'method','19','Data Type'),(149,'reason','19','Data Type'),(150,'relevantPeriod','19','Data Type'),(151,'result','19','Data Type'),(152,'resultDatetime','19','Data Type'),(153,'status','19','Data Type'),(154,'id','19','Data Type'),(157,'code','90','Data Type'),(161,'authorDatetime','90','Data Type'),(162,'id','90','Data Type'),(174,'code','127','Data Type'),(175,'negationRationale','127','Data Type'),(176,'id','127','Data Type'),(179,'code','128','Data Type'),(180,'negationRationale','128','Data Type'),(181,'id','128','Data Type'),(184,'code','129','Data Type'),(185,'negationRationale','129','Data Type'),(186,'id','129','Data Type'),(189,'authorDatetime','21','Data Type'),(190,'code','21','Data Type'),(191,'facilityLocation','21','Data Type'),(192,'reason','21','Data Type'),(193,'id','21','Data Type'),(196,'admissionSource','22','Data Type'),(197,'code','22','Data Type'),(198,'diagnoses','22','Data Type'),(199,'dischargeDisposition','22','Data Type'),(201,'lengthOfStay','22','Data Type'),(205,'relevantPeriod','22','Data Type'),(206,'id','22','Data Type'),(209,'authorDatetime','79','Data Type'),(210,'code','79','Data Type'),(211,'facilityLocation','79','Data Type'),(212,'reason','79','Data Type'),(213,'id','79','Data Type'),(216,'authorDatetime','105','Data Type'),(217,'code','105','Data Type'),(218,'relationship','105','Data Type'),(219,'id','105','Data Type'),(220,'recorder','105','Data Type'),(222,'authorDatetime','107','Data Type'),(223,'code','107','Data Type'),(224,'dosage','107','Data Type'),(226,'reason','107','Data Type'),(227,'route','107','Data Type'),(228,'id','107','Data Type'),(231,'code','130','Data Type'),(232,'negationRationale','130','Data Type'),(233,'id','130','Data Type'),(236,'code','131','Data Type'),(237,'negationRationale','131','Data Type'),(238,'id','131','Data Type'),(241,'activeDatetime','108','Data Type'),(242,'authorDatetime','108','Data Type'),(243,'code','108','Data Type'),(244,'supply','108','Data Type'),(245,'reason','108','Data Type'),(246,'route','108','Data Type'),(247,'dosage','108','Data Type'),(248,'id','108','Data Type'),(251,'code','132','Data Type'),(252,'negationRationale','132','Data Type'),(253,'id','132','Data Type'),(256,'code','133','Data Type'),(257,'negationRationale','133','Data Type'),(258,'id','133','Data Type'),(261,'code','134','Data Type'),(262,'negationRationale','134','Data Type'),(263,'id','134','Data Type'),(266,'authorDatetime','30','Data Type'),(267,'code','30','Data Type'),(268,'reason','30','Data Type'),(269,'id','30','Data Type'),(272,'code','31','Data Type'),(273,'reason','31','Data Type'),(274,'relevantPeriod','31','Data Type'),(275,'result','31','Data Type'),(276,'status','31','Data Type'),(277,'id','31','Data Type'),(280,'authorDatetime','81','Data Type'),(281,'code','81','Data Type'),(282,'reason','81','Data Type'),(283,'id','81','Data Type'),(286,'code','135','Data Type'),(287,'negationRationale','135','Data Type'),(288,'id','135','Data Type'),(291,'code','136','Data Type'),(292,'negationRationale','136','Data Type'),(293,'id','136','Data Type'),(296,'code','137','Data Type'),(297,'negationRationale','137','Data Type'),(298,'id','137','Data Type'),(301,'authorDatetime','35','Data Type'),(302,'code','35','Data Type'),(304,'reason','35','Data Type'),(305,'id','35','Data Type'),(308,'code','36','Data Type'),(309,'method','36','Data Type'),(310,'referenceRange','36','Data Type'),(311,'relevantPeriod','36','Data Type'),(312,'result','36','Data Type'),(313,'resultDatetime','36','Data Type'),(314,'status','36','Data Type'),(315,'reason','36','Data Type'),(316,'id','36','Data Type'),(319,'authorDatetime','82','Data Type'),(320,'code','82','Data Type'),(322,'reason','82','Data Type'),(323,'id','82','Data Type'),(326,'code','38','Data Type'),(327,'dosage','38','Data Type'),(329,'frequency','38','Data Type'),(330,'relevantPeriod','38','Data Type'),(331,'route','38','Data Type'),(332,'id','38','Data Type'),(333,'recorder','38','Data Type'),(335,'code','39','Data Type'),(336,'dosage','39','Data Type'),(338,'frequency','39','Data Type'),(339,'relevantPeriod','39','Data Type'),(340,'route','39','Data Type'),(341,'reason','39','Data Type'),(342,'id','39','Data Type'),(345,'authorDatetime','104','Data Type'),(346,'code','104','Data Type'),(347,'dosage','104','Data Type'),(348,'supply','104','Data Type'),(349,'frequency','104','Data Type'),(350,'refills','104','Data Type'),(351,'route','104','Data Type'),(352,'id','104','Data Type'),(353,'recorder','104','Data Type'),(355,'authorDatetime','42','Data Type'),(356,'code','42','Data Type'),(357,'dosage','42','Data Type'),(358,'supply','42','Data Type'),(359,'frequency','42','Data Type'),(360,'refills','42','Data Type'),(361,'route','42','Data Type'),(362,'id','42','Data Type'),(365,'code','138','Data Type'),(366,'negationRationale','138','Data Type'),(367,'id','138','Data Type'),(370,'code','139','Data Type'),(371,'negationRationale','139','Data Type'),(372,'id','139','Data Type'),(375,'code','140','Data Type'),(376,'negationRationale','140','Data Type'),(377,'id','140','Data Type'),(380,'code','141','Data Type'),(381,'negationRationale','141','Data Type'),(382,'id','141','Data Type'),(386,'authorDatetime','44','Data Type'),(387,'code','44','Data Type'),(388,'dosage','44','Data Type'),(389,'supply','44','Data Type'),(390,'frequency','44','Data Type'),(392,'reason','44','Data Type'),(393,'refills','44','Data Type'),(394,'route','44','Data Type'),(395,'id','44','Data Type'),(398,'authorDatetime','1','Data Type'),(399,'code','1','Data Type'),(400,'id','1','Data Type'),(401,'recorder','1','Data Type'),(403,'authorDatetime','26','Data Type'),(404,'code','26','Data Type'),(405,'id','26','Data Type'),(408,'code','97','Data Type'),(409,'birthDatetime','97','Data Type'),(410,'id','97','Data Type'),(413,'code','99','Data Type'),(414,'reason','99','Data Type'),(415,'relevantPeriod','99','Data Type'),(416,'id','99','Data Type'),(419,'code','102','Data Type'),(420,'id','102','Data Type'),(423,'cause','98','Data Type'),(424,'code','98','Data Type'),(425,'expiredDatetime','98','Data Type'),(426,'id','98','Data Type'),(429,'code','100','Data Type'),(430,'relevantPeriod','100','Data Type'),(431,'id','100','Data Type'),(434,'code','103','Data Type'),(435,'id','103','Data Type'),(438,'code','101','Data Type'),(439,'id','101','Data Type'),(442,'code','142','Data Type'),(443,'negationRationale','142','Data Type'),(444,'id','142','Data Type'),(447,'code','143','Data Type'),(448,'negationRationale','143','Data Type'),(449,'id','143','Data Type'),(452,'code','144','Data Type'),(453,'negationRationale','144','Data Type'),(454,'id','144','Data Type'),(457,'anatomicalLocationSite','56','Data Type'),(458,'authorDatetime','56','Data Type'),(459,'code','56','Data Type'),(461,'reason','56','Data Type'),(462,'id','56','Data Type'),(465,'anatomicalLocationSite','57','Data Type'),(466,'code','57','Data Type'),(467,'method','57','Data Type'),(468,'reason','57','Data Type'),(469,'relevantPeriod','57','Data Type'),(470,'result','57','Data Type'),(471,'id','57','Data Type'),(474,'anatomicalLocationSite','87','Data Type'),(475,'authorDatetime','87','Data Type'),(476,'code','87','Data Type'),(478,'reason','87','Data Type'),(479,'id','87','Data Type'),(482,'code','145','Data Type'),(483,'negationRationale','145','Data Type'),(484,'id','145','Data Type'),(487,'negationRationale','146','Data Type'),(488,'code','146','Data Type'),(489,'id','146','Data Type'),(492,'code','147','Data Type'),(493,'negationRationale','147','Data Type'),(494,'id','147','Data Type'),(498,'anatomicalLocationSite','62','Data Type'),(499,'authorDatetime','62','Data Type'),(500,'code','62','Data Type'),(504,'reason','62','Data Type'),(505,'id','62','Data Type'),(509,'anatomicalLocationSite','63','Data Type'),(510,'code','63','Data Type'),(511,'incisionDatetime','63','Data Type'),(512,'method','63','Data Type'),(516,'reason','63','Data Type'),(517,'relevantPeriod','63','Data Type'),(518,'result','63','Data Type'),(519,'status','63','Data Type'),(520,'id','63','Data Type'),(524,'anatomicalLocationSite','88','Data Type'),(525,'authorDatetime','88','Data Type'),(526,'code','88','Data Type'),(529,'reason','88','Data Type'),(530,'id','88','Data Type'),(533,'authorDatetime','2','Data Type'),(534,'code','2','Data Type'),(535,'id','2','Data Type'),(536,'recorder','2','Data Type'),(543,'code','66','Data Type'),(544,'dosage','66','Data Type'),(545,'frequency','66','Data Type'),(546,'relevantPeriod','66','Data Type'),(547,'route','66','Data Type'),(548,'id','66','Data Type'),(551,'code','148','Data Type'),(552,'negationRationale','148','Data Type'),(553,'id','148','Data Type'),(556,'code','149','Data Type'),(557,'negationRationale','149','Data Type'),(558,'id','149','Data Type'),(561,'code','150','Data Type'),(562,'negationRationale','150','Data Type'),(563,'id','150','Data Type'),(566,'authorDatetime','70','Data Type'),(567,'code','70','Data Type'),(568,'dosage','70','Data Type'),(569,'frequency','70','Data Type'),(571,'reason','70','Data Type'),(572,'refills','70','Data Type'),(573,'route','70','Data Type'),(574,'supply','70','Data Type'),(575,'id','70','Data Type'),(578,'authorDatetime ','89','Data Type'),(579,'code','89','Data Type'),(580,'dosage','89','Data Type'),(581,'frequency','89','Data Type'),(583,'reason','89','Data Type'),(584,'refills','89','Data Type'),(585,'route','89','Data Type'),(586,'id','89','Data Type'),(589,'code','106','Data Type'),(590,'prevalencePeriod','106','Data Type'),(591,'severity','106','Data Type'),(592,'id','106','Data Type'),(593,'recorder','106','Data Type'),(595,'authorDatetime','36','Data Type'),(596,'authorDatetime','142','Data Type'),(597,'authorDatetime','116','Data Type'),(598,'authorDatetime','117','Data Type'),(602,'authorDatetime','13','Data Type'),(603,'authorDatetime','121','Data Type'),(604,'authorDatetime','122','Data Type'),(605,'authorDatetime','123','Data Type'),(606,'authorDatetime','124','Data Type'),(607,'authorDatetime','125','Data Type'),(608,'authorDatetime','126','Data Type'),(609,'authorDatetime','19','Data Type'),(610,'authorDatetime','127','Data Type'),(611,'authorDatetime','128','Data Type'),(612,'authorDatetime','129','Data Type'),(613,'authorDatetime','22','Data Type'),(614,'authorDatetime','130','Data Type'),(615,'authorDatetime','131','Data Type'),(616,'authorDatetime','132','Data Type'),(617,'authorDatetime','133','Data Type'),(618,'authorDatetime','134','Data Type'),(619,'authorDatetime','31','Data Type'),(620,'authorDatetime','135','Data Type'),(621,'authorDatetime','136','Data Type'),(622,'authorDatetime','137','Data Type'),(623,'authorDatetime','39','Data Type'),(624,'authorDatetime','138','Data Type'),(625,'authorDatetime','139','Data Type'),(626,'authorDatetime','140','Data Type'),(627,'authorDatetime','141','Data Type'),(628,'authorDatetime','143','Data Type'),(629,'authorDatetime','144','Data Type'),(630,'authorDatetime','57','Data Type'),(631,'authorDatetime','145','Data Type'),(632,'authorDatetime','146','Data Type'),(633,'authorDatetime','147','Data Type'),(634,'authorDatetime','63','Data Type'),(635,'authorDatetime','66','Data Type'),(636,'authorDatetime','148','Data Type'),(637,'authorDatetime','149','Data Type'),(638,'authorDatetime','150','Data Type'),(639,'components','113','Data Type'),(640,'components','19','Data Type'),(641,'components','36','Data Type'),(642,'components','57','Data Type'),(643,'components','63','Data Type'),(644,'authorDatetime','111','Data Type'),(645,'authorDatetime','114','Data Type'),(646,'authorDatetime','115','Data Type'),(647,'code','151','Data Type'),(648,'id','151','Data Type'),(649,'participationPeriod','151','Data Type'),(651,'recorder','151','Data Type'),(652,'facilityLocations','22','Data Type'),(656,'relatedTo','113','Data Type'),(659,'relevantPeriod','44','Data Type'),(660,'relevantPeriod','42','Data Type'),(661,'authorDatetime','152','Data Type'),(662,'reason','152','Data Type'),(663,'code','152','Data Type'),(664,'id','152','Data Type'),(667,'authorDatetime','153','Data Type'),(668,'negationRationale','153','Data Type'),(669,'code','153','Data Type'),(670,'id','153','Data Type'),(673,'setting','44','Data Type'),(674,'authorDatetime','154','Data Type'),(675,'category','154','Data Type'),(676,'medium','154','Data Type'),(677,'code','154','Data Type'),(678,'sender','154','Data Type'),(679,'recipient','154','Data Type'),(681,'relatedTo','154','Data Type'),(682,'id','154','Data Type'),(685,'authorDatetime','155','Data Type'),(686,'category','155','Data Type'),(687,'negationRationale','155','Data Type'),(688,'code','155','Data Type'),(689,'sender','155','Data Type'),(690,'recipient','155','Data Type'),(691,'id','155','Data Type'),(694,'daysSupplied','44','Data Type'),(695,'daysSupplied','104','Data Type'),(696,'daysSupplied','42','Data Type'),(700,'id','156','Data Type'),(702,'sentDatetime','154','Data Type'),(703,'receivedDatetime','154','Data Type'),(704,'relevantDatetime','114','Data Type'),(705,'relevantDatetime','113','Data Type'),(706,'relevantDatetime','13','Data Type'),(707,'relevantDatetime','19','Data Type'),(708,'relevantDatetime','107','Data Type'),(709,'relevantDatetime','31','Data Type'),(710,'relevantDatetime','36','Data Type'),(711,'relevantDatetime','38','Data Type'),(712,'relevantDatetime','39','Data Type'),(713,'relevantDatetime','42','Data Type'),(714,'relevantDatetime','57','Data Type'),(715,'relevantDatetime','63','Data Type'),(716,'relevantDatetime','66','Data Type'),(717,'priority','21','Data Type'),(718,'priority','22','Data Type'),(719,'priority','62','Data Type'),(720,'priority','63','Data Type'),(721,'performer','113','Data Type'),(722,'performer','3','Data Type'),(723,'performer','13','Data Type'),(724,'performer','19','Data Type'),(725,'performer','107','Data Type'),(726,'performer','31','Data Type'),(727,'performer','36','Data Type'),(728,'performer','39','Data Type'),(729,'performer','57','Data Type'),(730,'performer','63','Data Type'),(731,'performer','66','Data Type'),(732,'requester','152','Data Type'),(733,'requester','112','Data Type'),(734,'requester','15','Data Type'),(735,'requester','78','Data Type'),(736,'requester','18','Data Type'),(737,'requester','90','Data Type'),(738,'requester','21','Data Type'),(739,'requester','79','Data Type'),(740,'requester','108','Data Type'),(741,'requester','30','Data Type'),(742,'requester','81','Data Type'),(743,'requester','35','Data Type'),(744,'requester','82','Data Type'),(745,'requester','56','Data Type'),(746,'requester','87','Data Type'),(747,'requester','62','Data Type'),(748,'requester','88','Data Type'),(749,'requester','70','Data Type'),(750,'requester','89','Data Type'),(751,'relevantPeriod','70','Data Type'),(752,'statusDate','3','Data Type'),(753,'prescriber','104','Data Type'),(754,'prescriber','42','Data Type'),(755,'prescriber','44','Data Type'),(756,'relevantPeriod','113','Data Type'),(757,'participant','22','Data Type'),(758,'dispenser','42','Data Type'),(759,'patientId','114','Data Type'),(760,'patientId','115','Data Type'),(761,'patientId','153','Data Type'),(762,'patientId','116','Data Type'),(763,'patientId','117','Data Type'),(764,'patientId','152','Data Type'),(765,'patientId','113','Data Type'),(766,'patientId','112','Data Type'),(767,'patientId','3','Data Type'),(768,'patientId','154','Data Type'),(769,'patientId','155','Data Type'),(770,'patientId','13','Data Type'),(771,'patientId','121','Data Type'),(772,'patientId','122','Data Type'),(773,'patientId','123','Data Type'),(774,'patientId','78','Data Type'),(775,'patientId','15','Data Type'),(776,'patientId','111','Data Type'),(777,'patientId','124','Data Type'),(778,'patientId','125','Data Type'),(779,'patientId','126','Data Type'),(780,'patientId','18','Data Type'),(781,'patientId','19','Data Type'),(782,'patientId','90','Data Type'),(783,'patientId','127','Data Type'),(784,'patientId','128','Data Type'),(785,'patientId','129','Data Type'),(786,'patientId','21','Data Type'),(787,'patientId','22','Data Type'),(788,'patientId','79','Data Type'),(789,'patientId','105','Data Type'),(790,'patientId','107','Data Type'),(791,'patientId','130','Data Type'),(792,'patientId','131','Data Type'),(793,'patientId','108','Data Type'),(794,'patientId','132','Data Type'),(795,'patientId','133','Data Type'),(796,'patientId','134','Data Type'),(797,'patientId','30','Data Type'),(798,'patientId','31','Data Type'),(799,'patientId','81','Data Type'),(800,'patientId','135','Data Type'),(801,'patientId','136','Data Type'),(802,'patientId','137','Data Type'),(803,'patientId','35','Data Type'),(804,'patientId','36','Data Type'),(805,'patientId','82','Data Type'),(806,'patientId','38','Data Type'),(807,'patientId','39','Data Type'),(808,'patientId','104','Data Type'),(809,'patientId','42','Data Type'),(810,'patientId','138','Data Type'),(811,'patientId','139','Data Type'),(812,'patientId','140','Data Type'),(813,'patientId','141','Data Type'),(814,'patientId','44','Data Type'),(815,'patientId','151','Data Type'),(816,'patientId','1','Data Type'),(817,'patientId','26','Data Type'),(818,'patientId','97','Data Type'),(819,'patientId','99','Data Type'),(820,'patientId','102','Data Type'),(821,'patientId','98','Data Type'),(822,'patientId','100','Data Type'),(823,'patientId','103','Data Type'),(824,'patientId','101','Data Type'),(825,'patientId','142','Data Type'),(826,'patientId','143','Data Type'),(827,'patientId','144','Data Type'),(828,'patientId','56','Data Type'),(829,'patientId','57','Data Type'),(830,'patientId','87','Data Type'),(831,'patientId','145','Data Type'),(832,'patientId','146','Data Type'),(833,'patientId','147','Data Type'),(834,'patientId','62','Data Type'),(835,'patientId','63','Data Type'),(836,'patientId','88','Data Type'),(837,'patientId','2','Data Type'),(838,'patientId','156','Data Type'),(839,'patientId','66','Data Type'),(840,'patientId','148','Data Type'),(841,'patientId','149','Data Type'),(842,'patientId','150','Data Type'),(843,'patientId','70','Data Type'),(844,'patientId','89','Data Type'),(845,'patientId','106','Data Type'),(846,'rank','62','Data Type'),(847,'rank','63','Data Type'),(848,'rank','88','Data Type'),(849,'identifier','156','Data Type'),(850,'linkedPatientId','156','Data Type'),(851,'code','156','Data Type');
 /*!40000 ALTER TABLE `QDM_ATTRIBUTES` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1106,7 +1746,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `QDM_ATTRIBUTES_BACKUP`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QDM_ATTRIBUTES_BACKUP` (
   `ID` varchar(64) NOT NULL,
   `NAME` varchar(100) DEFAULT NULL,
@@ -1126,12 +1766,62 @@ INSERT INTO `QDM_ATTRIBUTES_BACKUP` VALUES ('10','provider preference','1','Data
 UNLOCK TABLES;
 
 --
+-- Table structure for table `QDM_ATTRIBUTES_BACKUP_AUG2015`
+--
+
+DROP TABLE IF EXISTS `QDM_ATTRIBUTES_BACKUP_AUG2015`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `QDM_ATTRIBUTES_BACKUP_AUG2015` (
+  `ID` varchar(64) NOT NULL,
+  `NAME` varchar(100) DEFAULT NULL,
+  `DATA_TYPE_ID` varchar(32) DEFAULT NULL,
+  `QDM_ATTRIBUTE_TYPE` varchar(32) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `QDM_ATTRIBUTES_BACKUP_AUG2015`
+--
+
+LOCK TABLES `QDM_ATTRIBUTES_BACKUP_AUG2015` WRITE;
+/*!40000 ALTER TABLE `QDM_ATTRIBUTES_BACKUP_AUG2015` DISABLE KEYS */;
+INSERT INTO `QDM_ATTRIBUTES_BACKUP_AUG2015` VALUES ('10','provider preference','1','Data Type'),('1001','facility location','19','Data Type'),('101','negation rationale','14','Data Type'),('1010','start datetime','97','Data Type'),('1011','stop datetime','97','Data Type'),('1012','date','98','Data Type'),('1013','time','98','Data Type'),('1014','cause','98','Data Type'),('1015','start datetime','99','Data Type'),('1016','stop datetime','99','Data Type'),('1017','reason','99','Data Type'),('1018','start datetime','100','Data Type'),('1019','stop datetime','100','Data Type'),('102','patient preference','14','Data Type'),('1020','start datetime','101','Data Type'),('1021','stop datetime','101','Data Type'),('1023','dose','104','Data Type'),('1024','frequency','104','Data Type'),('1026','refills','104','Data Type'),('1027','route','104','Data Type'),('1028','start datetime','104','Data Type'),('1029','stop datetime','104','Data Type'),('103','provider preference','14','Data Type'),('1030','negation rationale','104','Data Type'),('1031','anatomical location site','7','Data Type'),('1032','anatomical location site','10','Data Type'),('1033','anatomical location site','9','Data Type'),('1034','anatomical location site','13','Data Type'),('1038','anatomical location site','56','Data Type'),('1039','anatomical location site','57','Data Type'),('104','reaction','14','Data Type'),('1040','anatomical location site','87','Data Type'),('1041','anatomical location site','62','Data Type'),('1042','anatomical location site','63','Data Type'),('1043','anatomical approach site','13','Data Type'),('105','start datetime','14','Data Type'),('1050','anatomical approach site','63','Data Type'),('1051','anatomical approach site','62','Data Type'),('1052','result','19','Data Type'),('1053','result','36','Data Type'),('1054','result','57','Data Type'),('1055','result','24','Data Type'),('1056','result','31','Data Type'),('1057','status','19','Data Type'),('1058','status','31','Data Type'),('1059','status','36','Data Type'),('106','stop datetime','14','Data Type'),('1060','patient preference','104','Data Type'),('1061','provider preference','104','Data Type'),('1062','cumulative medication duration','39','Data Type'),('1064','ordinality','61','Data Type'),('1065','radiation duration','62','Data Type'),('1066','status','63','Data Type'),('1067','radiation duration','63','Data Type'),('1068','radiation dosage','63','Data Type'),('1069','anatomical approach site','88','Data Type'),('1070','anatomical location site','88','Data Type'),('1071','active datetime','44','Data Type'),('1072','signed datetime','44','Data Type'),('1073','target outcome','3','Data Type'),('108','negation rationale','15','Data Type'),('109','patient preference','15','Data Type'),('11','start datetime','1','Data Type'),('110','provider preference','15','Data Type'),('111','reason','15','Data Type'),('112','start datetime','15','Data Type'),('113','stop datetime','15','Data Type'),('115','negation rationale','78','Data Type'),('116','patient preference','78','Data Type'),('117','provider preference','78','Data Type'),('118','reason','78','Data Type'),('119','start datetime','78','Data Type'),('12','stop datetime','1','Data Type'),('120','stop datetime','78','Data Type'),('122','negation rationale','16','Data Type'),('123','patient preference','16','Data Type'),('124','provider preference','16','Data Type'),('125','radiation dosage','16','Data Type'),('126','radiation duration','16','Data Type'),('127','reaction','16','Data Type'),('128','start datetime','16','Data Type'),('129','stop datetime','16','Data Type'),('131','negation rationale','17','Data Type'),('132','patient preference','17','Data Type'),('133','provider preference','17','Data Type'),('134','radiation dosage','17','Data Type'),('135','radiation duration','17','Data Type'),('136','reaction','17','Data Type'),('137','start datetime','17','Data Type'),('138','stop datetime','17','Data Type'),('14','negation rationale','2','Data Type'),('140','method','18','Data Type'),('141','negation rationale','18','Data Type'),('142','patient preference','18','Data Type'),('143','provider preference','18','Data Type'),('144','radiation dosage','18','Data Type'),('145','radiation duration','18','Data Type'),('146','reason','18','Data Type'),('147','start datetime','18','Data Type'),('148','stop datetime','18','Data Type'),('15','patient preference','2','Data Type'),('150','method','19','Data Type'),('151','negation rationale','19','Data Type'),('152','patient preference','19','Data Type'),('153','provider preference','19','Data Type'),('154','radiation dosage','19','Data Type'),('155','radiation duration','19','Data Type'),('156','reason','19','Data Type'),('157','start datetime','19','Data Type'),('158','stop datetime','19','Data Type'),('16','provider preference','2','Data Type'),('160','method','90','Data Type'),('161','negation rationale','90','Data Type'),('162','patient preference','90','Data Type'),('163','provider preference','90','Data Type'),('164','radiation dosage','90','Data Type'),('165','radiation duration','90','Data Type'),('166','start datetime','90','Data Type'),('167','stop datetime','90','Data Type'),('17','start datetime','2','Data Type'),('179','length of stay','95','Data Type'),('18','stop datetime','2','Data Type'),('181','facility location','95','Data Type'),('182','negation rationale','95','Data Type'),('183','patient preference','95','Data Type'),('184','provider preference','95','Data Type'),('185','reason','95','Data Type'),('186','admission datetime','95','Data Type'),('187','discharge datetime','95','Data Type'),('198','facility location','21','Data Type'),('199','negation rationale','21','Data Type'),('20','negation rationale','3','Data Type'),('200','patient preference','21','Data Type'),('201','provider preference','21','Data Type'),('202','reason','21','Data Type'),('203','start datetime','21','Data Type'),('204','stop datetime','21','Data Type'),('205','length of stay','22','Data Type'),('207','facility location','22','Data Type'),('208','negation rationale','22','Data Type'),('209','patient preference','22','Data Type'),('21','patient preference','3','Data Type'),('210','provider preference','22','Data Type'),('211','reason','22','Data Type'),('212','admission datetime','22','Data Type'),('213','discharge datetime','22','Data Type'),('215','facility location','79','Data Type'),('216','negation rationale','79','Data Type'),('217','patient preference','79','Data Type'),('218','provider preference','79','Data Type'),('219','reason','79','Data Type'),('22','provider preference','3','Data Type'),('220','start datetime','79','Data Type'),('221','stop datetime','79','Data Type'),('223','method','23','Data Type'),('224','negation rationale','23','Data Type'),('225','patient preference','23','Data Type'),('226','provider preference','23','Data Type'),('227','reason','23','Data Type'),('228','start datetime','23','Data Type'),('229','stop datetime','23','Data Type'),('23','start datetime','3','Data Type'),('231','method','24','Data Type'),('232','negation rationale','24','Data Type'),('233','patient preference','24','Data Type'),('234','provider preference','24','Data Type'),('235','reason','24','Data Type'),('236','start datetime','24','Data Type'),('237','stop datetime','24','Data Type'),('239','method','80','Data Type'),('24','stop datetime','3','Data Type'),('240','negation rationale','80','Data Type'),('241','patient preference','80','Data Type'),('242','provider preference','80','Data Type'),('243','reason','80','Data Type'),('244','start datetime','80','Data Type'),('245','stop datetime','80','Data Type'),('256','start datetime','26','Data Type'),('257','stop datetime','26','Data Type'),('259','negation rationale','27','Data Type'),('26','negation rationale','5','Data Type'),('260','start datetime','27','Data Type'),('261','stop datetime','27','Data Type'),('263','negation rationale','28','Data Type'),('264','patient preference','28','Data Type'),('265','provider preference','28','Data Type'),('266','reaction','28','Data Type'),('267','start datetime','28','Data Type'),('268','stop datetime','28','Data Type'),('27','patient preference','5','Data Type'),('270','negation rationale','29','Data Type'),('271','patient preference','29','Data Type'),('272','provider preference','29','Data Type'),('273','reaction','29','Data Type'),('274','start datetime','29','Data Type'),('275','stop datetime','29','Data Type'),('278','negation rationale','30','Data Type'),('279','patient preference','30','Data Type'),('28','provider preference','5','Data Type'),('280','provider preference','30','Data Type'),('281','reason','30','Data Type'),('282','start datetime','30','Data Type'),('283','stop datetime','30','Data Type'),('286','negation rationale','31','Data Type'),('287','patient preference','31','Data Type'),('288','provider preference','31','Data Type'),('289','reason','31','Data Type'),('29','start datetime','5','Data Type'),('290','start datetime','31','Data Type'),('291','stop datetime','31','Data Type'),('294','negation rationale','81','Data Type'),('295','patient preference','81','Data Type'),('296','provider preference','81','Data Type'),('297','reason','81','Data Type'),('298','start datetime','81','Data Type'),('299','stop datetime','81','Data Type'),('30','stop datetime','5','Data Type'),('310','negation rationale','33','Data Type'),('311','patient preference','33','Data Type'),('312','provider preference','33','Data Type'),('313','reaction','33','Data Type'),('314','start datetime','33','Data Type'),('315','stop datetime','33','Data Type'),('317','negation rationale','34','Data Type'),('318','patient preference','34','Data Type'),('319','provider preference','34','Data Type'),('32','negation rationale','6','Data Type'),('320','reaction','34','Data Type'),('321','start datetime','34','Data Type'),('322','stop datetime','34','Data Type'),('324','method','35','Data Type'),('325','negation rationale','35','Data Type'),('326','patient preference','35','Data Type'),('327','provider preference','35','Data Type'),('328','reason','35','Data Type'),('329','start datetime','35','Data Type'),('33','patient preference','6','Data Type'),('330','stop datetime','35','Data Type'),('332','method','36','Data Type'),('333','negation rationale','36','Data Type'),('334','patient preference','36','Data Type'),('335','provider preference','36','Data Type'),('336','reason','36','Data Type'),('337','start datetime','36','Data Type'),('338','stop datetime','36','Data Type'),('34','provider preference','6','Data Type'),('340','method','82','Data Type'),('341','negation rationale','82','Data Type'),('342','patient preference','82','Data Type'),('343','provider preference','82','Data Type'),('344','reason','82','Data Type'),('345','start datetime','82','Data Type'),('346','stop datetime','82','Data Type'),('35','start datetime','6','Data Type'),('356','cumulative medication duration','38','Data Type'),('357','dose','38','Data Type'),('358','frequency','38','Data Type'),('36','stop datetime','6','Data Type'),('360','negation rationale','38','Data Type'),('362','patient preference','38','Data Type'),('363','provider preference','38','Data Type'),('365','route','38','Data Type'),('366','start datetime','38','Data Type'),('367','stop datetime','38','Data Type'),('368','dose','39','Data Type'),('369','frequency','39','Data Type'),('371','negation rationale','39','Data Type'),('373','patient preference','39','Data Type'),('374','provider preference','39','Data Type'),('376','route','39','Data Type'),('377','start datetime','39','Data Type'),('378','stop datetime','39','Data Type'),('38','negation rationale','4','Data Type'),('382','negation rationale','40','Data Type'),('384','patient preference','40','Data Type'),('385','provider preference','40','Data Type'),('386','reaction','40','Data Type'),('389','start datetime','40','Data Type'),('39','patient preference','4','Data Type'),('390','stop datetime','40','Data Type'),('394','negation rationale','41','Data Type'),('396','patient preference','41','Data Type'),('397','provider preference','41','Data Type'),('398','reaction','41','Data Type'),('40','provider preference','4','Data Type'),('401','start datetime','41','Data Type'),('402','stop datetime','41','Data Type'),('403','cumulative medication duration','42','Data Type'),('404','dose','42','Data Type'),('405','frequency','42','Data Type'),('407','negation rationale','42','Data Type'),('409','patient preference','42','Data Type'),('41','start datetime','4','Data Type'),('410','provider preference','42','Data Type'),('411','refills','42','Data Type'),('412','route','42','Data Type'),('413','start datetime','42','Data Type'),('414','stop datetime','42','Data Type'),('418','negation rationale','43','Data Type'),('42','stop datetime','4','Data Type'),('420','patient preference','43','Data Type'),('421','provider preference','43','Data Type'),('422','reaction','43','Data Type'),('425','start datetime','43','Data Type'),('426','stop datetime','43','Data Type'),('427','cumulative medication duration','44','Data Type'),('428','dose','44','Data Type'),('429','frequency','44','Data Type'),('431','method','44','Data Type'),('432','negation rationale','44','Data Type'),('434','patient preference','44','Data Type'),('435','provider preference','44','Data Type'),('436','reason','44','Data Type'),('437','refills','44','Data Type'),('438','route','44','Data Type'),('439','start datetime','44','Data Type'),('44','negation rationale','7','Data Type'),('440','stop datetime','44','Data Type'),('45','ordinality','7','Data Type'),('453','method','56','Data Type'),('454','negation rationale','56','Data Type'),('455','patient preference','56','Data Type'),('456','provider preference','56','Data Type'),('457','reason','56','Data Type'),('458','start datetime','56','Data Type'),('459','stop datetime','56','Data Type'),('46','patient preference','7','Data Type'),('462','method','57','Data Type'),('463','negation rationale','57','Data Type'),('464','patient preference','57','Data Type'),('465','provider preference','57','Data Type'),('466','reason','57','Data Type'),('467','start datetime','57','Data Type'),('468','stop datetime','57','Data Type'),('47','provider preference','7','Data Type'),('471','method','87','Data Type'),('472','negation rationale','87','Data Type'),('473','patient preference','87','Data Type'),('474','provider preference','87','Data Type'),('475','reason','87','Data Type'),('476','start datetime','87','Data Type'),('477','stop datetime','87','Data Type'),('479','negation rationale','60','Data Type'),('48','severity','7','Data Type'),('480','patient preference','60','Data Type'),('481','provider preference','60','Data Type'),('482','reaction','60','Data Type'),('483','start datetime','60','Data Type'),('484','stop datetime','60','Data Type'),('486','negation rationale','61','Data Type'),('487','patient preference','61','Data Type'),('488','provider preference','61','Data Type'),('489','reaction','61','Data Type'),('49','start datetime','7','Data Type'),('490','start datetime','61','Data Type'),('491','stop datetime','61','Data Type'),('493','method','62','Data Type'),('494','negation rationale','62','Data Type'),('495','patient preference','62','Data Type'),('496','provider preference','62','Data Type'),('497','reason','62','Data Type'),('498','start datetime','62','Data Type'),('499','stop datetime','62','Data Type'),('501','method','63','Data Type'),('502','negation rationale','63','Data Type'),('503','patient preference','63','Data Type'),('504','provider preference','63','Data Type'),('505','reason','63','Data Type'),('506','start datetime','63','Data Type'),('507','stop datetime','63','Data Type'),('509','method','88','Data Type'),('510','negation rationale','88','Data Type'),('511','patient preference','88','Data Type'),('512','provider preference','88','Data Type'),('513','reason','88','Data Type'),('514','start datetime','88','Data Type'),('515','stop datetime','88','Data Type'),('52','stop datetime','7','Data Type'),('526','negation rationale','65','Data Type'),('527','patient preference','65','Data Type'),('528','provider preference','65','Data Type'),('529','start datetime','65','Data Type'),('530','stop datetime','65','Data Type'),('531','dose','66','Data Type'),('533','frequency','66','Data Type'),('534','negation rationale','66','Data Type'),('536','patient preference','66','Data Type'),('537','provider preference','66','Data Type'),('539','route','66','Data Type'),('54','negation rationale','8','Data Type'),('540','start datetime','66','Data Type'),('541','stop datetime','66','Data Type'),('545','negation rationale','67','Data Type'),('547','patient preference','67','Data Type'),('548','provider preference','67','Data Type'),('549','reaction','67','Data Type'),('55','ordinality','8','Data Type'),('552','start datetime','67','Data Type'),('553','stop datetime','67','Data Type'),('557','negation rationale','68','Data Type'),('559','patient preference','68','Data Type'),('56','patient preference','8','Data Type'),('560','provider preference','68','Data Type'),('561','reaction','68','Data Type'),('564','start datetime','68','Data Type'),('565','stop datetime','68','Data Type'),('569','negation rationale','69','Data Type'),('57','provider preference','8','Data Type'),('571','patient preference','69','Data Type'),('572','provider preference','69','Data Type'),('573','reaction','69','Data Type'),('576','start datetime','69','Data Type'),('577','stop datetime','69','Data Type'),('578','dose','70','Data Type'),('58','severity','8','Data Type'),('580','frequency','70','Data Type'),('581','method','70','Data Type'),('582','negation rationale','70','Data Type'),('584','patient preference','70','Data Type'),('585','provider preference','70','Data Type'),('586','reason','70','Data Type'),('587','refills','70','Data Type'),('588','route','70','Data Type'),('589','start datetime','70','Data Type'),('59','start datetime','8','Data Type'),('590','stop datetime','70','Data Type'),('591','dose','89','Data Type'),('593','frequency','89','Data Type'),('594','method','89','Data Type'),('595','negation rationale','89','Data Type'),('597','patient preference','89','Data Type'),('598','provider preference','89','Data Type'),('599','reason','89','Data Type'),('60','status','8','Data Type'),('600','refills','89','Data Type'),('601','route','89','Data Type'),('602','start datetime','89','Data Type'),('603','stop datetime','89','Data Type'),('605','negation rationale','71','Data Type'),('606','ordinality','71','Data Type'),('607','patient preference','71','Data Type'),('608','provider preference','71','Data Type'),('609','severity','71','Data Type'),('61','stop datetime','8','Data Type'),('610','start datetime','71','Data Type'),('612','stop datetime','71','Data Type'),('614','negation rationale','72','Data Type'),('615','ordinality','72','Data Type'),('616','patient preference','72','Data Type'),('617','provider preference','72','Data Type'),('618','severity','72','Data Type'),('619','start datetime','72','Data Type'),('621','stop datetime','72','Data Type'),('623','negation rationale','73','Data Type'),('624','ordinality','73','Data Type'),('625','patient preference','73','Data Type'),('626','provider preference','73','Data Type'),('627','severity','73','Data Type'),('628','start datetime','73','Data Type'),('63','negation rationale','9','Data Type'),('630','stop datetime','73','Data Type'),('632','negation rationale','74','Data Type'),('633','ordinality','74','Data Type'),('634','patient preference','74','Data Type'),('635','provider preference','74','Data Type'),('636','severity','74','Data Type'),('637','start datetime','74','Data Type'),('639','stop datetime','74','Data Type'),('64','ordinality','9','Data Type'),('641','negation rationale','75','Data Type'),('642','start datetime','75','Data Type'),('643','stop datetime','75','Data Type'),('645','negation rationale','76','Data Type'),('646','patient preference','76','Data Type'),('647','provider preference','76','Data Type'),('648','start datetime','76','Data Type'),('649','stop datetime','76','Data Type'),('65','patient preference','9','Data Type'),('651','negation rationale','77','Data Type'),('652','patient preference','77','Data Type'),('653','provider preference','77','Data Type'),('654','start datetime','77','Data Type'),('655','stop datetime','77','Data Type'),('66','provider preference','9','Data Type'),('662','Health Record Field','','Data Flow'),('663','laterality','7','Data Type'),('664','reason','13','Data Type'),('665','discharge status','22','Data Type'),('669','facility location arrival datetime','95','Data Type'),('67','severity','9','Data Type'),('670','facility location departure datetime','95','Data Type'),('671','facility location arrival datetime','22','Data Type'),('672','facility location departure datetime','22','Data Type'),('673','reason','39','Data Type'),('676','ordinality','62','Data Type'),('677','ordinality','63','Data Type'),('678','result','63','Data Type'),('679','incision datetime','63','Data Type'),('68','start datetime','9','Data Type'),('680','ordinality','88','Data Type'),('685','result','65','Data Type'),('689','related to','3','Data Type'),('70','stop datetime','9','Data Type'),('701','Source','','Data Flow'),('702','Recorder','','Data Flow'),('72','negation rationale','10','Data Type'),('73','ordinality','10','Data Type'),('74','patient preference','10','Data Type'),('75','provider preference','10','Data Type'),('76','severity','10','Data Type'),('77','start datetime','10','Data Type'),('79','stop datetime','10','Data Type'),('8','negation rationale','1','Data Type'),('81','negation rationale','11','Data Type'),('82','patient preference','11','Data Type'),('83','provider preference','11','Data Type'),('84','reaction','11','Data Type'),('85','start datetime','11','Data Type'),('86','stop datetime','11','Data Type'),('88','negation rationale','12','Data Type'),('89','patient preference','12','Data Type'),('9','patient preference','1','Data Type'),('90','provider preference','12','Data Type'),('91','reaction','12','Data Type'),('92','start datetime','12','Data Type'),('93','stop datetime','12','Data Type'),('95','negation rationale','13','Data Type'),('96','patient preference','13','Data Type'),('97','provider preference','13','Data Type'),('98','start datetime','13','Data Type'),('99','removal datetime','13','Data Type');
+/*!40000 ALTER TABLE `QDM_ATTRIBUTES_BACKUP_AUG2015` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `QDM_ATTRIBUTES_BACKUP_SEP2015`
+--
+
+DROP TABLE IF EXISTS `QDM_ATTRIBUTES_BACKUP_SEP2015`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `QDM_ATTRIBUTES_BACKUP_SEP2015` (
+  `ID` varchar(64) NOT NULL,
+  `NAME` varchar(100) DEFAULT NULL,
+  `DATA_TYPE_ID` varchar(32) DEFAULT NULL,
+  `QDM_ATTRIBUTE_TYPE` varchar(32) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `QDM_ATTRIBUTES_BACKUP_SEP2015`
+--
+
+LOCK TABLES `QDM_ATTRIBUTES_BACKUP_SEP2015` WRITE;
+/*!40000 ALTER TABLE `QDM_ATTRIBUTES_BACKUP_SEP2015` DISABLE KEYS */;
+INSERT INTO `QDM_ATTRIBUTES_BACKUP_SEP2015` VALUES ('1001','facility location','19','Data Type'),('1010','start datetime','97','Data Type'),('1011','stop datetime','97','Data Type'),('1012','date','98','Data Type'),('1013','time','98','Data Type'),('1014','cause','98','Data Type'),('1015','start datetime','99','Data Type'),('1016','stop datetime','99','Data Type'),('1017','reason','99','Data Type'),('1018','start datetime','100','Data Type'),('1019','stop datetime','100','Data Type'),('1020','start datetime','101','Data Type'),('1021','stop datetime','101','Data Type'),('1023','dose','104','Data Type'),('1024','frequency','104','Data Type'),('1026','refills','104','Data Type'),('1027','route','104','Data Type'),('1028','start datetime','104','Data Type'),('1029','stop datetime','104','Data Type'),('1030','negation rationale','104','Data Type'),('1031','anatomical location site','7','Data Type'),('1032','anatomical location site','10','Data Type'),('1033','anatomical location site','9','Data Type'),('1034','anatomical location site','13','Data Type'),('1038','anatomical location site','56','Data Type'),('1039','anatomical location site','57','Data Type'),('104','reaction','14','Data Type'),('1040','anatomical location site','87','Data Type'),('1041','anatomical location site','62','Data Type'),('1042','anatomical location site','63','Data Type'),('1043','anatomical approach site','13','Data Type'),('105','start datetime','14','Data Type'),('1050','anatomical approach site','63','Data Type'),('1051','anatomical approach site','62','Data Type'),('1052','result','19','Data Type'),('1053','result','36','Data Type'),('1054','result','57','Data Type'),('1055','result','24','Data Type'),('1056','result','31','Data Type'),('1057','status','19','Data Type'),('1058','status','31','Data Type'),('1059','status','36','Data Type'),('106','stop datetime','14','Data Type'),('1062','cumulative medication duration','39','Data Type'),('1064','ordinality','61','Data Type'),('1065','radiation duration','62','Data Type'),('1066','status','63','Data Type'),('1067','radiation duration','63','Data Type'),('1068','radiation dosage','63','Data Type'),('1069','anatomical approach site','88','Data Type'),('1070','anatomical location site','88','Data Type'),('1071','active datetime','44','Data Type'),('1072','signed datetime','44','Data Type'),('1073','target outcome','3','Data Type'),('1074','relationship','105','Data Type'),('1075','onset age','105','Data Type'),('1076','recorded datetime','105','Data Type'),('1077','severity','106','Data Type'),('1078','onset datetime','106','Data Type'),('1079','abatement datetime','106','Data Type'),('108','negation rationale','15','Data Type'),('1080','reference range low','36','Data Type'),('1081','reference range high','36','Data Type'),('1083','dose','107','Data Type'),('1084','start datetime','107','Data Type'),('1085','route','107','Data Type'),('1086','reason','107','Data Type'),('1087','stop datetime','107','Data Type'),('1088','negation rationale','107','Data Type'),('1089','route','108','Data Type'),('1090','dose','108','Data Type'),('1091','start datetime','108','Data Type'),('1092','stop datetime','108','Data Type'),('1093','active datetime','108','Data Type'),('1094','signed datetime','108','Data Type'),('1095','negation rationale','108','Data Type'),('1096','reason','108','Data Type'),('1097','reaction','109','Data Type'),('1098','start datetime','109','Data Type'),('1099','stop datetime','109','Data Type'),('11','start datetime','1','Data Type'),('1100','reaction','110','Data Type'),('1101','start datetime','110','Data Type'),('1102','stop datetime','110','Data Type'),('1103','diagnosis','22','Data Type'),('1104','principal diagnosis','22','Data Type'),('1105','onset datetime','111','Data Type'),('1106','abatement datetime','111','Data Type'),('1107','anatomical location site','111','Data Type'),('1108','severity','111','Data Type'),('111','reason','15','Data Type'),('112','start datetime','15','Data Type'),('113','stop datetime','15','Data Type'),('115','negation rationale','78','Data Type'),('118','reason','78','Data Type'),('119','start datetime','78','Data Type'),('12','stop datetime','1','Data Type'),('120','stop datetime','78','Data Type'),('125','radiation dosage','16','Data Type'),('126','radiation duration','16','Data Type'),('127','reaction','16','Data Type'),('128','start datetime','16','Data Type'),('129','stop datetime','16','Data Type'),('134','radiation dosage','17','Data Type'),('135','radiation duration','17','Data Type'),('136','reaction','17','Data Type'),('137','start datetime','17','Data Type'),('138','stop datetime','17','Data Type'),('140','method','18','Data Type'),('141','negation rationale','18','Data Type'),('144','radiation dosage','18','Data Type'),('145','radiation duration','18','Data Type'),('146','reason','18','Data Type'),('147','start datetime','18','Data Type'),('148','stop datetime','18','Data Type'),('150','method','19','Data Type'),('151','negation rationale','19','Data Type'),('154','radiation dosage','19','Data Type'),('155','radiation duration','19','Data Type'),('156','reason','19','Data Type'),('157','start datetime','19','Data Type'),('158','stop datetime','19','Data Type'),('160','method','90','Data Type'),('161','negation rationale','90','Data Type'),('164','radiation dosage','90','Data Type'),('165','radiation duration','90','Data Type'),('166','start datetime','90','Data Type'),('167','stop datetime','90','Data Type'),('17','start datetime','2','Data Type'),('179','length of stay','95','Data Type'),('18','stop datetime','2','Data Type'),('181','facility location','95','Data Type'),('185','reason','95','Data Type'),('186','admission datetime','95','Data Type'),('187','discharge datetime','95','Data Type'),('198','facility location','21','Data Type'),('199','negation rationale','21','Data Type'),('202','reason','21','Data Type'),('203','start datetime','21','Data Type'),('204','stop datetime','21','Data Type'),('205','length of stay','22','Data Type'),('207','facility location','22','Data Type'),('208','negation rationale','22','Data Type'),('211','reason','22','Data Type'),('212','admission datetime','22','Data Type'),('213','discharge datetime','22','Data Type'),('215','facility location','79','Data Type'),('216','negation rationale','79','Data Type'),('219','reason','79','Data Type'),('220','start datetime','79','Data Type'),('221','stop datetime','79','Data Type'),('223','method','23','Data Type'),('224','negation rationale','23','Data Type'),('227','reason','23','Data Type'),('228','start datetime','23','Data Type'),('229','stop datetime','23','Data Type'),('23','start datetime','3','Data Type'),('231','method','24','Data Type'),('232','negation rationale','24','Data Type'),('235','reason','24','Data Type'),('236','start datetime','24','Data Type'),('237','stop datetime','24','Data Type'),('239','method','80','Data Type'),('24','stop datetime','3','Data Type'),('240','negation rationale','80','Data Type'),('243','reason','80','Data Type'),('244','start datetime','80','Data Type'),('245','stop datetime','80','Data Type'),('256','start datetime','26','Data Type'),('257','stop datetime','26','Data Type'),('26','negation rationale','5','Data Type'),('260','start datetime','27','Data Type'),('261','stop datetime','27','Data Type'),('266','reaction','28','Data Type'),('267','start datetime','28','Data Type'),('268','stop datetime','28','Data Type'),('273','reaction','29','Data Type'),('274','start datetime','29','Data Type'),('275','stop datetime','29','Data Type'),('278','negation rationale','30','Data Type'),('281','reason','30','Data Type'),('282','start datetime','30','Data Type'),('283','stop datetime','30','Data Type'),('286','negation rationale','31','Data Type'),('289','reason','31','Data Type'),('29','start datetime','5','Data Type'),('290','start datetime','31','Data Type'),('291','stop datetime','31','Data Type'),('294','negation rationale','81','Data Type'),('297','reason','81','Data Type'),('298','start datetime','81','Data Type'),('299','stop datetime','81','Data Type'),('30','stop datetime','5','Data Type'),('313','reaction','33','Data Type'),('314','start datetime','33','Data Type'),('315','stop datetime','33','Data Type'),('32','negation rationale','6','Data Type'),('320','reaction','34','Data Type'),('321','start datetime','34','Data Type'),('322','stop datetime','34','Data Type'),('324','method','35','Data Type'),('325','negation rationale','35','Data Type'),('328','reason','35','Data Type'),('329','start datetime','35','Data Type'),('330','stop datetime','35','Data Type'),('332','method','36','Data Type'),('333','negation rationale','36','Data Type'),('336','reason','36','Data Type'),('337','start datetime','36','Data Type'),('338','stop datetime','36','Data Type'),('340','method','82','Data Type'),('341','negation rationale','82','Data Type'),('344','reason','82','Data Type'),('345','start datetime','82','Data Type'),('346','stop datetime','82','Data Type'),('35','start datetime','6','Data Type'),('356','cumulative medication duration','38','Data Type'),('357','dose','38','Data Type'),('358','frequency','38','Data Type'),('36','stop datetime','6','Data Type'),('365','route','38','Data Type'),('366','start datetime','38','Data Type'),('367','stop datetime','38','Data Type'),('368','dose','39','Data Type'),('369','frequency','39','Data Type'),('371','negation rationale','39','Data Type'),('376','route','39','Data Type'),('377','start datetime','39','Data Type'),('378','stop datetime','39','Data Type'),('38','negation rationale','4','Data Type'),('386','reaction','40','Data Type'),('389','start datetime','40','Data Type'),('390','stop datetime','40','Data Type'),('398','reaction','41','Data Type'),('401','start datetime','41','Data Type'),('402','stop datetime','41','Data Type'),('403','cumulative medication duration','42','Data Type'),('404','dose','42','Data Type'),('405','frequency','42','Data Type'),('407','negation rationale','42','Data Type'),('41','start datetime','4','Data Type'),('411','refills','42','Data Type'),('412','route','42','Data Type'),('413','start datetime','42','Data Type'),('414','stop datetime','42','Data Type'),('42','stop datetime','4','Data Type'),('422','reaction','43','Data Type'),('425','start datetime','43','Data Type'),('426','stop datetime','43','Data Type'),('427','cumulative medication duration','44','Data Type'),('428','dose','44','Data Type'),('429','frequency','44','Data Type'),('431','method','44','Data Type'),('432','negation rationale','44','Data Type'),('436','reason','44','Data Type'),('437','refills','44','Data Type'),('438','route','44','Data Type'),('439','start datetime','44','Data Type'),('440','stop datetime','44','Data Type'),('45','ordinality','7','Data Type'),('453','method','56','Data Type'),('454','negation rationale','56','Data Type'),('457','reason','56','Data Type'),('458','start datetime','56','Data Type'),('459','stop datetime','56','Data Type'),('462','method','57','Data Type'),('463','negation rationale','57','Data Type'),('466','reason','57','Data Type'),('467','start datetime','57','Data Type'),('468','stop datetime','57','Data Type'),('471','method','87','Data Type'),('472','negation rationale','87','Data Type'),('475','reason','87','Data Type'),('476','start datetime','87','Data Type'),('477','stop datetime','87','Data Type'),('48','severity','7','Data Type'),('482','reaction','60','Data Type'),('483','start datetime','60','Data Type'),('484','stop datetime','60','Data Type'),('489','reaction','61','Data Type'),('49','start datetime','7','Data Type'),('490','start datetime','61','Data Type'),('491','stop datetime','61','Data Type'),('493','method','62','Data Type'),('494','negation rationale','62','Data Type'),('497','reason','62','Data Type'),('498','start datetime','62','Data Type'),('499','stop datetime','62','Data Type'),('501','method','63','Data Type'),('502','negation rationale','63','Data Type'),('505','reason','63','Data Type'),('506','start datetime','63','Data Type'),('507','stop datetime','63','Data Type'),('509','method','88','Data Type'),('510','negation rationale','88','Data Type'),('513','reason','88','Data Type'),('514','start datetime','88','Data Type'),('515','stop datetime','88','Data Type'),('52','stop datetime','7','Data Type'),('526','negation rationale','65','Data Type'),('529','start datetime','65','Data Type'),('530','stop datetime','65','Data Type'),('531','dose','66','Data Type'),('533','frequency','66','Data Type'),('534','negation rationale','66','Data Type'),('539','route','66','Data Type'),('540','start datetime','66','Data Type'),('541','stop datetime','66','Data Type'),('549','reaction','67','Data Type'),('552','start datetime','67','Data Type'),('553','stop datetime','67','Data Type'),('561','reaction','68','Data Type'),('564','start datetime','68','Data Type'),('565','stop datetime','68','Data Type'),('573','reaction','69','Data Type'),('576','start datetime','69','Data Type'),('577','stop datetime','69','Data Type'),('578','dose','70','Data Type'),('580','frequency','70','Data Type'),('581','method','70','Data Type'),('582','negation rationale','70','Data Type'),('586','reason','70','Data Type'),('587','refills','70','Data Type'),('588','route','70','Data Type'),('589','start datetime','70','Data Type'),('590','stop datetime','70','Data Type'),('591','dose','89','Data Type'),('593','frequency','89','Data Type'),('594','method','89','Data Type'),('595','negation rationale','89','Data Type'),('599','reason','89','Data Type'),('600','refills','89','Data Type'),('601','route','89','Data Type'),('602','start datetime','89','Data Type'),('603','stop datetime','89','Data Type'),('64','ordinality','9','Data Type'),('641','negation rationale','75','Data Type'),('642','start datetime','75','Data Type'),('643','stop datetime','75','Data Type'),('645','negation rationale','76','Data Type'),('648','start datetime','76','Data Type'),('649','stop datetime','76','Data Type'),('651','negation rationale','77','Data Type'),('654','start datetime','77','Data Type'),('655','stop datetime','77','Data Type'),('662','Health Record Field','','Data Flow'),('663','laterality','7','Data Type'),('664','reason','13','Data Type'),('665','discharge status','22','Data Type'),('669','facility location arrival datetime','95','Data Type'),('67','severity','9','Data Type'),('670','facility location departure datetime','95','Data Type'),('671','facility location arrival datetime','22','Data Type'),('672','facility location departure datetime','22','Data Type'),('673','reason','39','Data Type'),('676','ordinality','62','Data Type'),('677','ordinality','63','Data Type'),('678','result','63','Data Type'),('679','incision datetime','63','Data Type'),('68','start datetime','9','Data Type'),('680','ordinality','88','Data Type'),('685','result','65','Data Type'),('689','related to','3','Data Type'),('70','stop datetime','9','Data Type'),('701','Source','','Data Flow'),('702','Recorder','','Data Flow'),('73','ordinality','10','Data Type'),('76','severity','10','Data Type'),('77','start datetime','10','Data Type'),('79','stop datetime','10','Data Type'),('84','reaction','11','Data Type'),('85','start datetime','11','Data Type'),('86','stop datetime','11','Data Type'),('91','reaction','12','Data Type'),('92','start datetime','12','Data Type'),('93','stop datetime','12','Data Type'),('95','negation rationale','13','Data Type'),('98','start datetime','13','Data Type'),('99','removal datetime','13','Data Type');
+/*!40000 ALTER TABLE `QDM_ATTRIBUTES_BACKUP_SEP2015` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `QDM_TERM`
 --
 
 DROP TABLE IF EXISTS `QDM_TERM`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QDM_TERM` (
   `ID` varchar(64) NOT NULL,
   `QDM_ELEMENT_ID` varchar(64) NOT NULL,
@@ -1157,14 +1847,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `QUALITY_DATA_MODEL`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QUALITY_DATA_MODEL` (
   `QUALITY_DATA_MODEL_ID` varchar(36) NOT NULL,
   `DATA_TYPE_ID` varchar(32) NOT NULL,
   `LIST_OBJECT_ID` varchar(32) NOT NULL,
   `MEASURE_ID` varchar(32) NOT NULL,
   `VERSION` varchar(32) NOT NULL,
-  `OID` varchar(255) NOT NULL,
+  `OID` varchar(255) DEFAULT NULL,
   `OCCURRENCE` varchar(200) DEFAULT NULL,
   `IS_SUPP_DATA_ELEMENT` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`QUALITY_DATA_MODEL_ID`),
@@ -1192,7 +1882,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `QUALITY_DATA_MODEL_OID_GEN`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `QUALITY_DATA_MODEL_OID_GEN` (
   `OID_GEN_ID` bigint(20) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`OID_GEN_ID`)
@@ -1209,12 +1899,41 @@ LOCK TABLES `QUALITY_DATA_MODEL_OID_GEN` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `RECENT_CQL_ACTIVITY_LOG`
+--
+
+DROP TABLE IF EXISTS `RECENT_CQL_ACTIVITY_LOG`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `RECENT_CQL_ACTIVITY_LOG` (
+  `ID` varchar(32) NOT NULL,
+  `CQL_ID` varchar(32) NOT NULL,
+  `USER_ID` varchar(40) NOT NULL,
+  `TIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID`),
+  KEY `CQL_ID_FK` (`CQL_ID`),
+  KEY `USER_ID_FK` (`USER_ID`),
+  CONSTRAINT `RECENT_CQL_ACTIVITY_LOG_ibfk_1` FOREIGN KEY (`CQL_ID`) REFERENCES `CQL_LIBRARY` (`ID`) ON DELETE CASCADE,
+  CONSTRAINT `RECENT_CQL_ACTIVITY_LOG_ibfk_2` FOREIGN KEY (`USER_ID`) REFERENCES `USER` (`USER_ID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `RECENT_CQL_ACTIVITY_LOG`
+--
+
+LOCK TABLES `RECENT_CQL_ACTIVITY_LOG` WRITE;
+/*!40000 ALTER TABLE `RECENT_CQL_ACTIVITY_LOG` DISABLE KEYS */;
+/*!40000 ALTER TABLE `RECENT_CQL_ACTIVITY_LOG` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `RECENT_MSR_ACTIVITY_LOG`
 --
 
 DROP TABLE IF EXISTS `RECENT_MSR_ACTIVITY_LOG`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `RECENT_MSR_ACTIVITY_LOG` (
   `ID` varchar(32) NOT NULL,
   `MEASURE_ID` varchar(32) NOT NULL,
@@ -1243,7 +1962,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `SECURITY_QUESTIONS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `SECURITY_QUESTIONS` (
   `QUESTION_ID` int(2) NOT NULL,
   `QUESTION` varchar(100) NOT NULL,
@@ -1267,7 +1986,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `SECURITY_ROLE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `SECURITY_ROLE` (
   `SECURITY_ROLE_ID` varchar(32) NOT NULL,
   `DESCRIPTION` varchar(50) NOT NULL,
@@ -1291,7 +2010,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `SHARE_LEVEL`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `SHARE_LEVEL` (
   `SHARE_LEVEL_ID` varchar(32) NOT NULL,
   `DESCRIPTION` varchar(50) DEFAULT NULL,
@@ -1315,7 +2034,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `STATUS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `STATUS` (
   `STATUS_ID` varchar(32) NOT NULL,
   `DESCRIPTION` varchar(50) NOT NULL,
@@ -1339,7 +2058,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `STEWARD_ORG`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `STEWARD_ORG` (
   `ID` varchar(32) NOT NULL,
   `ORG_NAME` varchar(200) NOT NULL,
@@ -1364,7 +2083,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `TRANSACTION_AUDIT_LOG`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `TRANSACTION_AUDIT_LOG` (
   `ID` varchar(32) NOT NULL,
   `PRIMARY_ID` varchar(40) DEFAULT NULL,
@@ -1393,11 +2112,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `UNIT`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `UNIT` (
   `ID` varchar(32) NOT NULL,
   `NAME` varchar(45) DEFAULT NULL,
   `SORT_ORDER` int(4) NOT NULL DEFAULT '0',
+  `CQL_UNIT` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1408,7 +2128,7 @@ CREATE TABLE `UNIT` (
 
 LOCK TABLES `UNIT` WRITE;
 /*!40000 ALTER TABLE `UNIT` DISABLE KEYS */;
-INSERT INTO `UNIT` VALUES ('1','seconds',1),('10','bpm',10),('11','cm',11),('12','dL',13),('13','eq',14),('14','g',15),('15','kg',16),('16','L',17),('17','mEq',18),('18','mg',19),('19','mg/dL',20),('2','minutes',2),('20','mL',21),('21','mm',22),('22','mmHg',23),('23','mmol/L',24),('24','ng/dL',25),('25','kg/m2',27),('26','RAD',29),('27','per mm3',28),('28','copies/mL',12),('29','ng/mL',26),('3','hours',3),('4','days',4),('5','weeks',5),('6','months',6),('7','years',7),('8','%',8),('9','celsius',9);
+INSERT INTO `UNIT` VALUES ('1','seconds',4,'seconds'),('10','bpm',19,'{beats}/min'),('11','cm',20,'cm'),('12','dL',22,'dL'),('13','eq',23,'eq'),('14','g',24,'g'),('15','kg',25,'kg'),('16','Liter',26,'L'),('17','mEq',27,'meq'),('18','mg',28,'mg'),('19','mg/dL',29,'mg/dL'),('2','minutes',6,'minutes'),('20','mL',30,'mL'),('21','mm',31,'mm'),('22','mmHg',32,'mm[Hg]'),('23','mmol/L',33,'mmol/L'),('24','ng/dL',34,'ng/dL'),('25','kg/m2',36,'kg/m2'),('26','RAD',38,'RAD'),('27','per mm3',37,'/mm3'),('28','copies/mL',21,'{copies}/mL'),('29','ng/mL',35,'ng/mL'),('3','hours',8,'hours'),('30','IU',39,'[iU]'),('31','IU/L',40,'[iU]/L'),('32','U/L',41,'U/L'),('33','AU',42,'[AU]'),('34','BAU',43,'[BAU]'),('35','millisecond',1,'millisecond'),('36','milliseconds',2,'milliseconds'),('37','second',3,'second'),('38','minute',5,'minute'),('39','hour',7,'hour'),('4','days',10,'days'),('40','day',9,'day'),('41','week',11,'week'),('42','month',13,'month'),('43','year',15,'year'),('5','weeks',12,'weeks'),('6','months',14,'months'),('7','years',16,'years'),('8','%',17,'%'),('9','celsius',18,'Cel');
 /*!40000 ALTER TABLE `UNIT` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1418,7 +2138,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `UNIT_TYPE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `UNIT_TYPE` (
   `ID` varchar(32) NOT NULL,
   `NAME` varchar(45) DEFAULT NULL,
@@ -1442,7 +2162,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `UNIT_TYPE_MATRIX`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `UNIT_TYPE_MATRIX` (
   `ID` varchar(32) NOT NULL,
   `FK_UNIT_ID` varchar(32) NOT NULL,
@@ -1461,7 +2181,7 @@ CREATE TABLE `UNIT_TYPE_MATRIX` (
 
 LOCK TABLES `UNIT_TYPE_MATRIX` WRITE;
 /*!40000 ALTER TABLE `UNIT_TYPE_MATRIX` DISABLE KEYS */;
-INSERT INTO `UNIT_TYPE_MATRIX` VALUES ('1','1','1'),('10','10','1'),('11','11','1'),('12','12','1'),('13','13','1'),('14','14','1'),('15','15','1'),('16','16','1'),('17','17','1'),('18','18','1'),('19','19','1'),('2','2','1'),('20','20','1'),('21','21','1'),('22','22','1'),('23','23','1'),('24','24','1'),('25','1','2'),('26','2','2'),('27','3','2'),('28','4','2'),('29','5','2'),('3','3','1'),('30','6','2'),('31','7','2'),('32','1','3'),('33','2','3'),('34','3','3'),('35','4','3'),('36','5','3'),('37','6','3'),('38','7','3'),('39','1','4'),('4','4','1'),('40','2','4'),('41','3','4'),('42','4','4'),('43','5','4'),('44','6','4'),('45','7','4'),('46','8','4'),('47','9','4'),('48','10','4'),('49','11','4'),('5','5','1'),('50','12','4'),('51','13','4'),('52','14','4'),('53','15','4'),('54','16','4'),('55','17','4'),('56','18','4'),('57','19','4'),('58','20','4'),('59','21','4'),('6','6','1'),('60','22','4'),('61','23','4'),('62','24','4'),('63','25','1'),('64','26','1'),('65','25','4'),('66','26','4'),('67','27','1'),('68','27','4'),('69','28','1'),('7','7','1'),('70','28','4'),('71','29','1'),('72','29','4'),('8','8','1'),('9','9','1');
+INSERT INTO `UNIT_TYPE_MATRIX` VALUES ('1','1','1'),('10','10','1'),('11','11','1'),('12','12','1'),('13','13','1'),('14','14','1'),('15','15','1'),('16','16','1'),('17','17','1'),('18','18','1'),('19','19','1'),('2','2','1'),('20','20','1'),('21','21','1'),('22','22','1'),('23','23','1'),('24','24','1'),('25','1','2'),('26','2','2'),('27','3','2'),('28','4','2'),('29','5','2'),('3','3','1'),('30','6','2'),('31','7','2'),('32','1','3'),('33','2','3'),('34','3','3'),('35','4','3'),('36','5','3'),('37','6','3'),('38','7','3'),('39','1','4'),('4','4','1'),('40','2','4'),('41','3','4'),('42','4','4'),('43','5','4'),('44','6','4'),('45','7','4'),('46','8','4'),('47','9','4'),('48','10','4'),('49','11','4'),('5','5','1'),('50','12','4'),('51','13','4'),('52','14','4'),('53','15','4'),('54','16','4'),('55','17','4'),('56','18','4'),('57','19','4'),('58','20','4'),('59','21','4'),('6','6','1'),('60','22','4'),('61','23','4'),('62','24','4'),('63','25','1'),('64','26','1'),('65','25','4'),('66','26','4'),('67','27','1'),('68','27','4'),('69','28','1'),('7','7','1'),('70','28','4'),('71','29','1'),('72','29','4'),('73','30','1'),('74','30','4'),('75','31','1'),('76','31','4'),('77','32','1'),('78','32','4'),('79','33','1'),('8','8','1'),('80','33','4'),('81','34','1'),('82','34','4'),('83','35','1'),('84','36','1'),('85','37','1'),('86','38','1'),('87','39','1'),('88','40','1'),('89','41','1'),('9','9','1'),('90','42','1'),('91','43','1');
 /*!40000 ALTER TABLE `UNIT_TYPE_MATRIX` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1471,7 +2191,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `USER`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `USER` (
   `USER_ID` varchar(40) NOT NULL,
   `FIRST_NAME` varchar(100) NOT NULL,
@@ -1490,6 +2210,7 @@ CREATE TABLE `USER` (
   `SECURITY_ROLE_ID` varchar(32) NOT NULL,
   `LOGIN_ID` varchar(45) DEFAULT NULL,
   `ORG_ID` int(11) NOT NULL,
+  `SESSION_ID` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`USER_ID`),
   UNIQUE KEY `LOGIN_ID_UNIQUE` (`LOGIN_ID`),
   KEY `USER_SECURITY_ROLE_FK` (`SECURITY_ROLE_ID`),
@@ -1509,8 +2230,38 @@ CREATE TABLE `USER` (
 
 LOCK TABLES `USER` WRITE;
 /*!40000 ALTER TABLE `USER` DISABLE KEYS */;
-INSERT INTO `USER` VALUES ('Admin','Admin',NULL,'user','Admin','999-999-9999',NULL,NULL,'2015-06-11','2015-06-11 19:20:54','2015-06-11 19:20:56',NULL,'1','1','1','Aduser0001',1);
+INSERT INTO `USER` VALUES ('Admin','Admin',NULL,'user','Admin','999-999-9999',NULL,NULL,'2015-06-11','2015-06-11 19:20:54','2015-06-11 19:20:56',NULL,'1','1','1','Aduser0001',1,NULL);
 /*!40000 ALTER TABLE `USER` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `USER_AUDIT_LOG`
+--
+
+DROP TABLE IF EXISTS `USER_AUDIT_LOG`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `USER_AUDIT_LOG` (
+  `ID` varchar(32) NOT NULL,
+  `USER_ID` varchar(32) NOT NULL,
+  `ACTION_TYPE` varchar(32) NOT NULL,
+  `ACTIVITY_TYPE` varchar(40) NOT NULL,
+  `USER_EMAIL` varchar(40) NOT NULL,
+  `TIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ADDL_INFO` varchar(2000) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `AUDIT_USER_FK` (`USER_ID`),
+  CONSTRAINT `AUDIT_USER_FK` FOREIGN KEY (`USER_ID`) REFERENCES `USER` (`USER_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `USER_AUDIT_LOG`
+--
+
+LOCK TABLES `USER_AUDIT_LOG` WRITE;
+/*!40000 ALTER TABLE `USER_AUDIT_LOG` DISABLE KEYS */;
+/*!40000 ALTER TABLE `USER_AUDIT_LOG` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1519,7 +2270,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `USER_BACKUP`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `USER_BACKUP` (
   `USER_ID` varchar(40) NOT NULL,
   `FIRST_NAME` varchar(100) NOT NULL,
@@ -1558,7 +2309,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `USER_BACKUP_FOR_ORGANIZATION`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `USER_BACKUP_FOR_ORGANIZATION` (
   `USER_ID` varchar(40) NOT NULL,
   `FIRST_NAME` varchar(100) NOT NULL,
@@ -1597,7 +2348,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `USER_BACKUP_FOR_ROOTID`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `USER_BACKUP_FOR_ROOTID` (
   `USER_ID` varchar(40) NOT NULL,
   `FIRST_NAME` varchar(100) NOT NULL,
@@ -1632,12 +2383,39 @@ INSERT INTO `USER_BACKUP_FOR_ROOTID` VALUES ('Admin','Admin',NULL,'user','Admin'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `USER_BONNIE_ACCESS_INFO`
+--
+
+DROP TABLE IF EXISTS `USER_BONNIE_ACCESS_INFO`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `USER_BONNIE_ACCESS_INFO` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `USER_ID` varchar(40) NOT NULL,
+  `REFRESH_TOKEN` varchar(250) NOT NULL,
+  `ACCESS_TOKEN` varchar(250) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `USER_ID` (`USER_ID`),
+  CONSTRAINT `user_bonnie_access_info_ibfk_1` FOREIGN KEY (`USER_ID`) REFERENCES `USER` (`USER_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `USER_BONNIE_ACCESS_INFO`
+--
+
+LOCK TABLES `USER_BONNIE_ACCESS_INFO` WRITE;
+/*!40000 ALTER TABLE `USER_BONNIE_ACCESS_INFO` DISABLE KEYS */;
+/*!40000 ALTER TABLE `USER_BONNIE_ACCESS_INFO` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `USER_PASSWORD`
 --
 
 DROP TABLE IF EXISTS `USER_PASSWORD`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `USER_PASSWORD` (
   `USER_PASSWORD_ID` varchar(32) NOT NULL,
   `USER_ID` varchar(40) NOT NULL,
@@ -1662,8 +2440,36 @@ CREATE TABLE `USER_PASSWORD` (
 
 LOCK TABLES `USER_PASSWORD` WRITE;
 /*!40000 ALTER TABLE `USER_PASSWORD` DISABLE KEYS */;
-INSERT INTO `USER_PASSWORD` VALUES ('1','Admin',0,0,'8a06ddf2a3da6e7d558c91951fb48d3f5787906904724b25d23ff161f92b1e70','d0dccfba-9178-4466-9a1a-981023b721a9',1,sysdate(),NULL,0);
+INSERT INTO `USER_PASSWORD` VALUES ('1','Admin',0,0,'8a06ddf2a3da6e7d558c91951fb48d3f5787906904724b25d23ff161f92b1e70','d0dccfba-9178-4466-9a1a-981023b721a9',1,'2019-10-18',NULL,0);
 /*!40000 ALTER TABLE `USER_PASSWORD` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `USER_PASSWORD_HISTORY`
+--
+
+DROP TABLE IF EXISTS `USER_PASSWORD_HISTORY`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `USER_PASSWORD_HISTORY` (
+  `USER_PASSWORD_HISTORY_ID` varchar(32) NOT NULL,
+  `USER_ID` varchar(40) NOT NULL,
+  `PASSWORD` varchar(100) NOT NULL,
+  `SALT` varchar(100) NOT NULL,
+  `CREATE_DATE` date NOT NULL,
+  PRIMARY KEY (`USER_PASSWORD_HISTORY_ID`),
+  KEY `PASSWORD_HISTORY_USER_FK` (`USER_ID`),
+  CONSTRAINT `PASSWORD_HISTORY_USER_FK` FOREIGN KEY (`USER_ID`) REFERENCES `USER` (`USER_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `USER_PASSWORD_HISTORY`
+--
+
+LOCK TABLES `USER_PASSWORD_HISTORY` WRITE;
+/*!40000 ALTER TABLE `USER_PASSWORD_HISTORY` DISABLE KEYS */;
+/*!40000 ALTER TABLE `USER_PASSWORD_HISTORY` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1672,7 +2478,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `USER_PASSWORD_TEMP`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `USER_PASSWORD_TEMP` (
   `USER_PASSWORD_ID` varchar(32) NOT NULL,
   `USER_ID` varchar(40) NOT NULL,
@@ -1698,12 +2504,38 @@ INSERT INTO `USER_PASSWORD_TEMP` VALUES ('1','Admin',0,0,'c5190eed6feded32643bd0
 UNLOCK TABLES;
 
 --
+-- Table structure for table `USER_PREFERENCE`
+--
+
+DROP TABLE IF EXISTS `USER_PREFERENCE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `USER_PREFERENCE` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `USER_ID` varchar(40) NOT NULL,
+  `FREE_TEXT_EDITOR_ENABLED` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `USER_PREFERENCE_USER_ID_FK` (`USER_ID`),
+  CONSTRAINT `USER_PREFERENCE_USER_ID_FK` FOREIGN KEY (`USER_ID`) REFERENCES `USER` (`USER_ID`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `USER_PREFERENCE`
+--
+
+LOCK TABLES `USER_PREFERENCE` WRITE;
+/*!40000 ALTER TABLE `USER_PREFERENCE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `USER_PREFERENCE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `USER_REVOKE_ORG_CHANGE_BKP`
 --
 
 DROP TABLE IF EXISTS `USER_REVOKE_ORG_CHANGE_BKP`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `USER_REVOKE_ORG_CHANGE_BKP` (
   `USER_ID` varchar(40) NOT NULL,
   `FIRST_NAME` varchar(100) NOT NULL,
@@ -1741,18 +2573,20 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `USER_SECURITY_QUESTIONS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `USER_SECURITY_QUESTIONS` (
+  `USER_SECURITY_QUESTIONS_ID` int(5) NOT NULL AUTO_INCREMENT,
   `USER_ID` varchar(40) NOT NULL,
   `ROW_ID` int(11) NOT NULL,
   `ANSWER` varchar(100) DEFAULT NULL,
   `QUESTION_ID` int(2) DEFAULT NULL,
-  PRIMARY KEY (`USER_ID`,`ROW_ID`),
+  `SALT` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`USER_SECURITY_QUESTIONS_ID`),
   KEY `SECURITY_QUES_USER_FK` (`USER_ID`),
   KEY `FK_SECURITY_QUESTIONS` (`QUESTION_ID`),
   CONSTRAINT `FK_SECURITY_QUESTIONS` FOREIGN KEY (`QUESTION_ID`) REFERENCES `SECURITY_QUESTIONS` (`QUESTION_ID`),
   CONSTRAINT `SECURITY_QUES_USER_FK` FOREIGN KEY (`USER_ID`) REFERENCES `USER` (`USER_ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1761,8 +2595,33 @@ CREATE TABLE `USER_SECURITY_QUESTIONS` (
 
 LOCK TABLES `USER_SECURITY_QUESTIONS` WRITE;
 /*!40000 ALTER TABLE `USER_SECURITY_QUESTIONS` DISABLE KEYS */;
-INSERT INTO `USER_SECURITY_QUESTIONS` VALUES ('Admin',0,'child',1),('Admin',1,'genre',2),('Admin',2,'friend',3);
+INSERT INTO `USER_SECURITY_QUESTIONS` VALUES (1,'Admin',0,'child',1,NULL),(2,'Admin',1,'genre',2,NULL),(3,'Admin',2,'friend',3,NULL);
 /*!40000 ALTER TABLE `USER_SECURITY_QUESTIONS` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `USER_SECURITY_QUESTIONS_BACKUP_SEPT2015`
+--
+
+DROP TABLE IF EXISTS `USER_SECURITY_QUESTIONS_BACKUP_SEPT2015`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `USER_SECURITY_QUESTIONS_BACKUP_SEPT2015` (
+  `USER_ID` varchar(40) NOT NULL,
+  `ROW_ID` int(11) NOT NULL,
+  `ANSWER` varchar(100) DEFAULT NULL,
+  `QUESTION_ID` int(2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `USER_SECURITY_QUESTIONS_BACKUP_SEPT2015`
+--
+
+LOCK TABLES `USER_SECURITY_QUESTIONS_BACKUP_SEPT2015` WRITE;
+/*!40000 ALTER TABLE `USER_SECURITY_QUESTIONS_BACKUP_SEPT2015` DISABLE KEYS */;
+INSERT INTO `USER_SECURITY_QUESTIONS_BACKUP_SEPT2015` VALUES ('Admin',0,'child',1),('Admin',1,'genre',2),('Admin',2,'friend',3);
+/*!40000 ALTER TABLE `USER_SECURITY_QUESTIONS_BACKUP_SEPT2015` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1771,7 +2630,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `USER_SECURITY_QUESTIONS_BCKUP`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `USER_SECURITY_QUESTIONS_BCKUP` (
   `USER_ID` varchar(40) NOT NULL,
   `ROW_ID` int(11) NOT NULL,
@@ -1795,7 +2654,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `USER_SECURITY_QUESTIONS_TEMP`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `USER_SECURITY_QUESTIONS_TEMP` (
   `USER_ID` varchar(40) NOT NULL,
   `ROW_ID` int(11) NOT NULL,
@@ -1822,4 +2681,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-
+-- Dump completed on 2019-10-18 16:17:20

@@ -21,7 +21,7 @@ should point to the Java SDK 1.8.x folder and `PATH` should point to the Java 1.
 1. Install and Configure Maven (3.6.X): https://maven.apache.org/install.html
 
 ### Installing Local Maven Dependencies
-Two dependencies that need to be installed locally for the Measure Authoring Tool project to work. You
+Three dependencies that need to be installed locally for the Measure Authoring Tool project to work. You
 can use the following commands to install them. For more information on this command, check out this
 [documentation](https://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html).
 

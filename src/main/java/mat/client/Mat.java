@@ -61,6 +61,7 @@ import mat.client.myAccount.SecurityQuestionsPresenter;
 import mat.client.myAccount.SecurityQuestionsView;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
+import mat.client.shared.MessageDelegate;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.ui.MATTabPanel;
 import mat.client.umls.ManageUmlsPresenter;
@@ -279,7 +280,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		MatContext.get().getFeatureFlagService().findFeatureFlag("MAT_ON_FHIR", new AsyncCallback<FeatureFlag>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert(caught.getMessage());
+				Window.alert(MessageDelegate.GENERIC_ERROR_MESSAGE);
 			}
 			
 			@Override

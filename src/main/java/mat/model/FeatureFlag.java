@@ -26,7 +26,7 @@ public class FeatureFlag implements java.io.Serializable {
     	this.flagOn = flagOn;
     }
 
-	@Id
+    @Id
     @Column(name = "ID", unique = true, nullable = false)
     public int getId() {
         return id;

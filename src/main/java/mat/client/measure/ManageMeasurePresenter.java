@@ -859,6 +859,12 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	public void displaySearch() {
 		searchDisplay.getCellTablePanel().clear();
 		String heading = "Measure Library";
+		
+		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
+			heading = "MAT on FHIR - Measure Library";
+		} else {
+			heading = "MAT on QDM - Measure Library";
+		}
 		int filter;
 		panel.setHeading(heading, MEASURE_LIBRARY);
 		setSubSkipEmbeddedLink("measureserachView_mainPanel");

@@ -68,6 +68,10 @@
   <servlet>
     <servlet-name>measureLibraryServlet</servlet-name>
     <servlet-class>mat.server.MeasureServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>featureFlagServlet</servlet-name>
+    <servlet-class>mat.server.FeatureFlagServiceImpl</servlet-class>
   </servlet> 
   <servlet>
     <servlet-name>CQLLibraryServiceImpl</servlet-name>
@@ -84,6 +88,10 @@
   <servlet>
    <servlet-name>loginServiceImpl</servlet-name>
    <servlet-class>mat.server.LoginServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+   <servlet-name>featureFlagServiceImpl</servlet-name>
+   <servlet-class>mat.server.FeatureFlagServiceImpl</servlet-class>
   </servlet>
   <servlet>
    <servlet-name>logoutServiceImpl</servlet-name>
@@ -153,6 +161,10 @@
   <servlet-mapping>
     <servlet-name>measureLibraryServlet</servlet-name>
     <url-pattern>/mat/measureLibrary</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>featureFlagServlet</servlet-name>
+    <url-pattern>/mat/featureFlag</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>myAccountServlet</servlet-name>

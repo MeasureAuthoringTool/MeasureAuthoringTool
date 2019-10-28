@@ -12,6 +12,7 @@ import mat.dao.CodeListDAO;
 import mat.dao.CodeSystemDAO;
 import mat.dao.DataTypeDAO;
 import mat.dao.EmailAuditLogDAO;
+import mat.dao.FeatureFlagDAO;
 import mat.dao.ListObjectDAO;
 import mat.dao.MatFlagDAO;
 import mat.dao.MeasureAuditLogDAO;
@@ -65,6 +66,8 @@ public class DAOService {
 	private CodeSystemDAO codeSystemDAO;
 	@Autowired
 	private DataTypeDAO dataTypeDAO;
+	@Autowired
+	private FeatureFlagDAO featureFlagDAO;
 	@Autowired
 	private ListObjectDAO listObjectDAO;
 	@Autowired
@@ -164,6 +167,10 @@ public class DAOService {
 	
 	public DataTypeDAO getDataTypeDAO() {
 		return dataTypeDAO;
+	}
+	
+	public FeatureFlagDAO getFeatureFlagsDAO() {
+		return featureFlagDAO;
 	}
 	
 	public ListObjectDAO getListObjectDAO() {
@@ -292,6 +299,10 @@ public class DAOService {
 	
 	public void setDataTypeDAO(DataTypeDAO dataTypeDAO) {
 		this.dataTypeDAO = dataTypeDAO;
+	}
+	
+	public void setFeatureFlagsDAO(FeatureFlagDAO featureFlagsDAO) {
+		this.featureFlagDAO = featureFlagsDAO;
 	}
 	
 	public void setListObjectDAO(ListObjectDAO listObjectDAO) {

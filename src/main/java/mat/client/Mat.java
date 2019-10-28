@@ -61,12 +61,14 @@ import mat.client.myAccount.SecurityQuestionsPresenter;
 import mat.client.myAccount.SecurityQuestionsView;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
+import mat.client.shared.MessageDelegate;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.ui.MATTabPanel;
 import mat.client.umls.ManageUmlsPresenter;
 import mat.client.umls.UmlsLoginDialogBox;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.client.util.ClientConstants;
+import mat.model.FeatureFlag;
 import mat.shared.ConstantMessages;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
 
@@ -274,6 +276,20 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	@Override
 	protected void initEntryPoint() {
 		MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
+		
+		MatContext.get().getFeatureFlagService().findFeatureFlag("MAT_ON_FHIR", new AsyncCallback<FeatureFlag>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MessageDelegate.GENERIC_ERROR_MESSAGE);
+			}
+			
+			@Override
+			public void onSuccess(FeatureFlag result) {
+				MatContext.get().setMatOnFHIR(result);
+			}
+			
+		});
+		
 		showLoadingMessage();
 		MatContext.get().setListBoxCodeProvider(listBoxCodeProvider);
 		MatContext.get().getCurrentUserRole(userRoleCallback);

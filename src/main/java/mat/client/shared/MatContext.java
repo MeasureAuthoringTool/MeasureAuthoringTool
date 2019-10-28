@@ -51,6 +51,8 @@ import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
+import mat.client.featureFlag.service.FeatureFlagService;
+import mat.client.featureFlag.service.FeatureFlagServiceAsync;
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
@@ -73,6 +75,7 @@ import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
+import mat.model.FeatureFlag;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MeasureType;
 import mat.model.cql.CQLModel;
@@ -111,6 +114,8 @@ public class MatContext implements IsSerializable {
 	private LoginServiceAsync loginService;
 
 	private MeasureServiceAsync measureService;
+	
+	private FeatureFlagServiceAsync featureFlagService;
 
 	private CQLConstantServiceAsync cqlConstantService; 
 
@@ -228,6 +233,8 @@ public class MatContext implements IsSerializable {
 	private List<MeasureType> measureTypeList = new ArrayList<>(); 
 	
 	private Map<String, String> expressionToReturnTypeMap = new HashMap<>();
+
+	private FeatureFlag matOnFHIR;
 	
 	public void clearDVIMessages(){
 		if(qdsView !=null){
@@ -390,6 +397,13 @@ public class MatContext implements IsSerializable {
 			measureService = (MeasureServiceAsync) GWT.create(MeasureService.class);
 		}
 		return measureService;
+	}
+	
+	public FeatureFlagServiceAsync getFeatureFlagService() {
+		if(featureFlagService == null) {
+			featureFlagService = (FeatureFlagServiceAsync) GWT.create(FeatureFlagService.class);
+		}
+		return featureFlagService;
 	}
 
 	public CQLLibraryServiceAsync getCQLLibraryService(){
@@ -1520,6 +1534,14 @@ public class MatContext implements IsSerializable {
 				MatContext.get().setMeasureTypeList(result);
 			}
 		});
+	}
+
+	public void setMatOnFHIR(FeatureFlag matOnFHIR){
+		this.matOnFHIR = matOnFHIR;
+	}
+
+	public FeatureFlag getMatOnFHIR(){
+		return this.matOnFHIR;
 	}
 	
 	public List<MeasureType> getMeasureTypeList() {

@@ -171,3 +171,19 @@ Look at the LOGIN_ID column, the value there is your UserID. The password defaul
 2.	Navigate to the MAT log in page GUI and use the UserID and password from the previous step and log in to MAT.
 3.	Once logged in, navigate to the [Mat Account] tab and enter the Admin user details under the [Personal Information] tab and the [Security Questions] tab to setup user’s security questions.
 4.	To change the password to something new, use the [Password] tab.
+
+### Important Security Setup With Git Secrets (https://github.com/awslabs/git-secrets)
+
+1. Use brew to install git secrets
+    - `brew install git-secrets`
+2. Clone this repository (you can skip this if you've already cloned it from previous steps)
+    - Note: You may have to reinitialize these hooks each time you clone a new copy of the repo
+3. Follow the instructions for setting up the pre-commit hooks (from https://github.com/awslabs/git-secrets):
+
+```
+cd /path/to/bonnie
+git secrets --install
+git secrets --register-aws
+```
+
+4. Done! Now each commit should be automatically scanned for accidental AWS secret leaks.

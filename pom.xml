@@ -15,8 +15,8 @@
         <java.version>1.8</java.version>
         <gwtVersion>2.8.2</gwtVersion>
         <googleGin>2.1.2</googleGin>
-        <org.springframework>5.0.6.RELEASE</org.springframework>
-        <org.springframework.security>5.0.6.RELEASE</org.springframework.security>
+        <org.springframework>5.0.15.RELEASE</org.springframework>
+        <org.springframework.security>5.0.13.RELEASE</org.springframework.security>
     </properties>
     <repositories>
         <repository>
@@ -133,12 +133,12 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>5.0.6.RELEASE</version>
+            <version>${org.springframework.security}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>5.0.6.RELEASE</version>
+            <version>${org.springframework.security}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -153,12 +153,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.0.7.RELEASE</version>
+            <version>${org.springframework}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
-            <version>5.0.7.RELEASE</version>
+            <version>${org.springframework}</version>
         </dependency>
         <dependency>
             <groupId>org.jasypt</groupId>

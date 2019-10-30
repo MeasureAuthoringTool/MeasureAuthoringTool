@@ -2,7 +2,6 @@ package mat.client.measure;
 
 import java.util.List;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.FieldSet;
@@ -24,7 +23,6 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MeasureNameLabel;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.TextAreaWithMaxLength;
 import mat.client.shared.WarningConfirmationMessageAlert;
 
 public class AbstractNewMeasureView implements DetailDisplay {

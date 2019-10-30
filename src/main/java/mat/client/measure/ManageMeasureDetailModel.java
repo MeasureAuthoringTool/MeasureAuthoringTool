@@ -16,6 +16,7 @@ import mat.shared.model.util.MeasureDetailsUtil;
 public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	private String id;
 	private String measureName;
+	private String measureModel;
 	private String cqlLibraryName;
 	private String shortName;
 	private String versionNumber = "0.0";
@@ -293,6 +294,14 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	
 	public String getMeasureName() {
 		return measureName;
+	}
+
+	public void setMeasureModel(String measureModel) {
+		this.measureModel = measureModel;
+	}
+
+	public String getMeasureModel() {
+		return measureModel;
 	}
 	
 	public void setMeasureName(String name) {

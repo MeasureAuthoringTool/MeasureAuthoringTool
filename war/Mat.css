@@ -2944,3 +2944,7 @@ body {
 	width: 50%;
 	padding-left: 5px;
 }
+
+.gwt-RadioButton label {
+    margin-left: 5px;
+}

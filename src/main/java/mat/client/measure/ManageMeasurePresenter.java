@@ -2056,6 +2056,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	private void updateDetailsFromView() {
 		currentDetails.setMeasureName(detailDisplay.getMeasureNameTextBox().getValue().trim());
 		currentDetails.setShortName(detailDisplay.getECQMAbbreviatedTitleTextBox().getValue().trim());
+		currentDetails.setMeasureModel(detailDisplay.getMeasureModelType());
 		currentDetails.setCQLLibraryName(detailDisplay.getCQLLibraryNameTextBox().getValue().trim());
 		String measureScoring = detailDisplay.getMeasureScoringValue();
 

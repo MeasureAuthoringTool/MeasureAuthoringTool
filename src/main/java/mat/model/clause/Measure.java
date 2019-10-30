@@ -36,6 +36,8 @@ public class Measure {
 
 	private String description;
 
+	private String measureModel;
+
 	private String version;
 	
 	private String revisionNumber;
@@ -164,6 +166,15 @@ public class Measure {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Column(name = "MEASURE_MODEL")
+	public String getMeasureModel() {
+		return measureModel;
+	}
+
+	public void setMeasureModel(String measureModel) {
+		this.measureModel = measureModel;
 	}
 
 	@Transient

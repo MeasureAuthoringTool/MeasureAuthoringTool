@@ -2,6 +2,9 @@ package mat.client.measure;
 
 import java.util.List;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.*;
+import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -11,13 +14,6 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.codelist.HasListBox;
@@ -36,6 +32,8 @@ public class AbstractNewMeasureView implements DetailDisplay {
 	protected MeasureNameLabel measureNameLabel = new MeasureNameLabel();
 	protected TextArea measureNameTextBox = new TextArea();
 	protected TextArea cqlLibraryNameTextBox = new TextArea();
+	protected RadioButton fhirModel = new RadioButton("measureModel", "FHIR");
+	protected RadioButton qdmModel = new RadioButton("measureModel", "QDM");
 	protected TextBox eCQMAbbreviatedTitleTextBox = new TextBox();
 	protected MessageAlert errorMessages = new ErrorMessageAlert();
 	protected WarningConfirmationMessageAlert warningMessageAlert = new WarningConfirmationMessageAlert();
@@ -45,6 +43,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
 	protected HelpBlock helpBlock = new HelpBlock();
 	protected FormGroup messageFormGrp = new FormGroup();
     protected FormGroup measureNameGroup = new FormGroup();	
+    protected FormGroup measureModelGroup = new FormGroup();
     protected FormGroup cqlLibraryNameGroup = new FormGroup();
     protected FormGroup shortNameGroup = new FormGroup();
     protected FormGroup scoringGroup = new FormGroup();
@@ -106,6 +105,11 @@ public class AbstractNewMeasureView implements DetailDisplay {
 	@Override
 	public String getMeasureScoringValue() {
 		return measureScoringListBox.getItemText(measureScoringListBox.getSelectedIndex());
+	}
+
+	@Override
+	public String getMeasureModelType() {
+		return fhirModel.getValue()? MeasureDetailsUtil.FHIR : MeasureDetailsUtil.QDM;
 	}
 
 	@Override
@@ -212,7 +216,46 @@ public class AbstractNewMeasureView implements DetailDisplay {
 		measureNameLabel.setId("MeasureNameTextArea_Id");
 		return measureNameLabel;
 	}
-	
+
+	/**
+	 * Create a label for measure model radio buttons
+	 * @return modelLabel -> Model label Widget
+	 */
+	protected FormLabel buildModelTypeLabel() {
+		FormLabel modelLabel = new FormLabel();
+		modelLabel.setText("Model");
+		modelLabel.setTitle("Model");
+		modelLabel.setFor("measureModel");
+		modelLabel.setShowRequiredIndicator(true);
+		modelLabel.setId("measureModel_Id");
+		return modelLabel;
+	}
+
+	/**
+	 * Builds a vertical panel with model types wrapped in
+	 * @return measureModelPanel
+	 */
+	protected VerticalPanel buildModelTypePanel() {
+		VerticalPanel measureModelPanel = new VerticalPanel();
+		measureModelGroup.add(buildModelTypeLabel());
+		//new model creation defaulted to FHIR
+		fhirModel.setValue(true);
+		qdmModel.setEnabled(false);
+		measureModelPanel.add(fhirModel);
+		measureModelPanel.add(qdmModel);
+		return measureModelPanel;
+	}
+
+	/**
+	 * Add measure model type radios to create measure view iff 'MAT_ON_FHIR' flag is on
+	 */
+	protected void addMeasureModelType() {
+		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
+			VerticalPanel modelTypePanel = buildModelTypePanel();
+			measureModelGroup.add(modelTypePanel);
+		}
+	}
+
 	protected void buildMeasureNameTextArea() {
 		measureNameTextBox.setId("MeasureNameTextArea");
 		measureNameTextBox.setTitle("Enter Measure Name Required.");
@@ -325,6 +368,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
 		buttonFormGroup.add(buttonBar);
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(measureNameGroup);
+		formFieldSet.add(measureModelGroup);
 		formFieldSet.add(cqlLibraryNameGroup);
 		formFieldSet.add(shortNameGroup);
 		formFieldSet.add(scoringGroup);

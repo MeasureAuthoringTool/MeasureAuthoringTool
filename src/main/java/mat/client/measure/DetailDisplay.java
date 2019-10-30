@@ -22,6 +22,8 @@ public interface DetailDisplay extends BaseDisplay {
 
 	public String getMeasureScoringValue();
 
+	public String getMeasureModelType();
+
 	public HasValue<String> getMeasureVersion();
 
 	public HasValue<String> getMeasureNameTextBox();

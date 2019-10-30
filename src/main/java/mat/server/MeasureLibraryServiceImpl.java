@@ -30,6 +30,10 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.client.shared.MessageDelegate;
+import mat.dao.*;
+import mat.model.*;
+import mat.shared.model.util.MeasureDetailsUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -74,11 +78,6 @@ import mat.client.shared.GenericResult;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
-import mat.dao.DataTypeDAO;
-import mat.dao.MeasureTypeDAO;
-import mat.dao.OrganizationDAO;
-import mat.dao.RecentMSRActivityLogDAO;
-import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.clause.MeasureDAO;
@@ -88,22 +87,6 @@ import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributesDAO;
-import mat.model.Author;
-import mat.model.CQLValueSetTransferObject;
-import mat.model.ComponentMeasureTabObject;
-import mat.model.DataType;
-import mat.model.LockedUserInfo;
-import mat.model.MatCodeTransferObject;
-import mat.model.MatValueSet;
-import mat.model.MeasureOwnerReportDTO;
-import mat.model.MeasureSteward;
-import mat.model.MeasureType;
-import mat.model.Organization;
-import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSetDTO;
-import mat.model.RecentMSRActivityLog;
-import mat.model.SecurityRole;
-import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
@@ -286,7 +269,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	@Autowired
 	private CQLHumanReadableGenerator humanReadableGenerator;
-	
+
+	@Autowired
+	FeatureFlagDAO featureFlagDAO;
+
 	@Override
 	public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
 		String result = "";
@@ -1757,6 +1743,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
 		List<String> message = manageMeasureModelValidator.validateMeasure(model);
+		message.addAll(validateMeasureModel(model));
 		String existingMeasureScoringType = "";
 		if (message.isEmpty()) {
 			Measure pkg = null;
@@ -2541,6 +2528,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private void setValueFromModel(final ManageMeasureDetailModel model, final Measure measure) {
 		measure.setDescription(model.getMeasureName());
+		measure.setMeasureModel(model.getMeasureModel());
 		measure.setCqlLibraryName(model.getCQLLibraryName());
 		measure.setaBBRName(model.getShortName());
 		// US 421. Scoring choice is not part of core measure.
@@ -6140,5 +6128,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public boolean libraryNameExists(String libraryName, String setId) {
 		return getCqlService().checkIfLibraryNameExists(libraryName, setId);
+	}
+
+	/**
+	 * Validate if new measure is created with QDM model. If it is, then raise an error
+	 * This validation is applicable iff 'MAT_ON_FHIR' flag is on
+	 * @param model
+	 * @return messages -> error message if any
+	 */
+	public List<String> validateMeasureModel(ManageMeasureDetailModel model) {
+		List<String> messages = new ArrayList<String>();
+		FeatureFlag featureFlag = featureFlagDAO.findFlagByName(MeasureDetailsUtil.MAT_ON_FHIR);
+		if(featureFlag.getFlagOn()) {
+			if(model.getId() == null && model.getMeasureModel().equals(MeasureDetailsUtil.QDM)) {
+				messages.add(MessageDelegate.NEW_MEASURE_QDM_MODEL_ERROR);
+			}
+		}
+		return messages;
 	}
 }

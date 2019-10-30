@@ -8,6 +8,7 @@ import mat.shared.StringUtility;
 
 public class GeneralInformationModel implements MeasureDetailsComponentModel, IsSerializable {
 	private String measureName;
+	private String measureModel;
 	private String finalizedDate;
 	private boolean patientBased;
 	private String guid;
@@ -118,6 +119,14 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	
 	public void setMeasureName(String measureName) {
 		this.measureName = measureName;
+	}
+
+	public String getMeasureModel() {
+		return measureModel;
+	}
+
+	public void setMeasureModel(String measureModel) {
+		this.measureModel = measureModel;
 	}
 		
 	public String getScoringMethod() {

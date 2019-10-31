@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import java.util.List;
 
+import com.google.gwt.user.client.ui.VerticalPanel;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -52,6 +53,9 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 		buildMeasureNameTextArea();
 		measureNameGroup.add(measureNameLabel);
 		measureNameGroup.add(measureNameTextBox);
+
+		//Measure mode type radios
+		addMeasureModelType();
 		
 		HorizontalPanel cqlLibraryNamePanel = buildCQLLibraryNamePanel();
 		cqlLibraryNameGroup.add(cqlLibraryNamePanel);
@@ -136,6 +140,7 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 		buttonFormGroup.add(buttonBar);
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(measureNameGroup);
+		formFieldSet.add(measureModelGroup);
 		formFieldSet.add(cqlLibraryNameGroup);
 		formFieldSet.add(shortNameGroup);
 		formFieldSet.add(compositeScoringGroup);

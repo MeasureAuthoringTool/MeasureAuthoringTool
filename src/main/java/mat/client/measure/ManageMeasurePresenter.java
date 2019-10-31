@@ -776,7 +776,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	private void displayCloneMeasureWidget() {
 		warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationMessageAlert();
 		panel.setHeading("My Measures > Clone Measure", COMPOSITE_MEASURE);	
-		detailDisplay.setMeasureName(currentDetails.getMeasureName());		
+		detailDisplay.setMeasureName(currentDetails.getMeasureName());
+		detailDisplay.setMeasureModelType(currentDetails.getMeasureModel());
 		Mat.focusSkipLists(MEASURE_LIBRARY);
 		detailDisplay.showMeasureName(true);
 		detailDisplay.showCautionMsg(true);
@@ -793,6 +794,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 		warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationMessageAlert();
 		panel.setHeading("My Measures > Draft Measure", MEASURE_LIBRARY);
 		detailDisplay.setMeasureName(currentDetails.getMeasureName());
+		detailDisplay.setMeasureModelType(currentDetails.getMeasureModel());
 		Mat.focusSkipLists(MEASURE_LIBRARY);
 		detailDisplay.showCautionMsg(true);
 		detailDisplay.showMeasureName(true);
@@ -817,6 +819,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 		displayCommonDetailForAdd(compositeDetailDisplay);	
 		panel.setHeading("My Measures > Draft Composite Measure", COMPOSITE_MEASURE);
 		compositeDetailDisplay.setMeasureName(currentCompositeMeasureDetails.getMeasureName());
+		compositeDetailDisplay.setMeasureModelType(currentCompositeMeasureDetails.getMeasureModel());
 		compositeDetailDisplay.showCautionMsg(true);
 		compositeDetailDisplay.showMeasureName(true);
 		setCompositeDetailsToView();
@@ -2056,6 +2059,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 	private void updateDetailsFromView() {
 		currentDetails.setMeasureName(detailDisplay.getMeasureNameTextBox().getValue().trim());
 		currentDetails.setShortName(detailDisplay.getECQMAbbreviatedTitleTextBox().getValue().trim());
+		currentDetails.setMeasureModel(detailDisplay.getMeasureModelType());
 		currentDetails.setCQLLibraryName(detailDisplay.getCQLLibraryNameTextBox().getValue().trim());
 		String measureScoring = detailDisplay.getMeasureScoringValue();
 

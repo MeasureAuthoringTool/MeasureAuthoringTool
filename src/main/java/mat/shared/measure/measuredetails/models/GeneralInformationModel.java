@@ -8,6 +8,7 @@ import mat.shared.StringUtility;
 
 public class GeneralInformationModel implements MeasureDetailsComponentModel, IsSerializable {
 	private String measureName;
+	private String measureModel;
 	private String finalizedDate;
 	private boolean patientBased;
 	private String guid;
@@ -27,6 +28,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	
 	public GeneralInformationModel(GeneralInformationModel model) {
 		this.measureName = model.getMeasureName();
+		this.measureModel = model.getMeasureModel();
 		this.finalizedDate = model.getFinalizedDate();
 		this.patientBased = model.isPatientBased();
 		this.guid = model.getGuid();
@@ -88,6 +90,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	public boolean equals(MeasureDetailsComponentModel model) {
 		GeneralInformationModel originalModel = (GeneralInformationModel) model;
 		return (modelValuesAreEqual(originalModel.getMeasureName(), getMeasureName()) &&
+				modelValuesAreEqual(originalModel.getMeasureModel(), getMeasureModel()) &&
 				modelValuesAreEqual(originalModel.getFinalizedDate(), getFinalizedDate()) && 
 				modelValuesAreEqual(originalModel.isPatientBased(), isPatientBased()) &&
 				modelValuesAreEqual(originalModel.getGuid(), getGuid()) &&
@@ -119,6 +122,14 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	public void setMeasureName(String measureName) {
 		this.measureName = measureName;
 	}
+
+	public String getMeasureModel() {
+		return measureModel;
+	}
+
+	public void setMeasureModel(String measureModel) {
+		this.measureModel = measureModel;
+	}
 		
 	public String getScoringMethod() {
 		return scoringMethod;
@@ -146,6 +157,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("measureName: " + measureName);
+		sb.append("measureModel: " + measureModel);
 		sb.append(", finalizedDate: " + finalizedDate);
 		sb.append(", patientBased: " + patientBased);
 		sb.append(", guid: " + guid);

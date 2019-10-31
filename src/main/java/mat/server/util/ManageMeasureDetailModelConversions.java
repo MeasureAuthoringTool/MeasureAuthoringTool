@@ -148,6 +148,7 @@ public class ManageMeasureDetailModelConversions {
 			MeasureTypeDAO measureTypeDao, ManageMeasureDetailModel measureDetailModel) {
 		measureDetailModel.setId(measure.getId());
 		measureDetailModel.setMeasureName(measure.getDescription());
+		measureDetailModel.setMeasureModel(measure.getMeasureModel());
 		measureDetailModel.setCQLLibraryName(measure.getCqlLibraryName());
 		measureDetailModel.setShortName(measure.getaBBRName());
 		measureDetailModel.setVersionNumber(measure.getVersion());

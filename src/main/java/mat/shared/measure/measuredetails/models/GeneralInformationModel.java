@@ -28,6 +28,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	
 	public GeneralInformationModel(GeneralInformationModel model) {
 		this.measureName = model.getMeasureName();
+		this.measureModel = model.getMeasureModel();
 		this.finalizedDate = model.getFinalizedDate();
 		this.patientBased = model.isPatientBased();
 		this.guid = model.getGuid();
@@ -89,6 +90,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	public boolean equals(MeasureDetailsComponentModel model) {
 		GeneralInformationModel originalModel = (GeneralInformationModel) model;
 		return (modelValuesAreEqual(originalModel.getMeasureName(), getMeasureName()) &&
+				modelValuesAreEqual(originalModel.getMeasureModel(), getMeasureModel()) &&
 				modelValuesAreEqual(originalModel.getFinalizedDate(), getFinalizedDate()) && 
 				modelValuesAreEqual(originalModel.isPatientBased(), isPatientBased()) &&
 				modelValuesAreEqual(originalModel.getGuid(), getGuid()) &&
@@ -155,6 +157,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("measureName: " + measureName);
+		sb.append("measureModel: " + measureModel);
 		sb.append(", finalizedDate: " + finalizedDate);
 		sb.append(", patientBased: " + patientBased);
 		sb.append(", guid: " + guid);

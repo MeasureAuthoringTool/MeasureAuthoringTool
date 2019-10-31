@@ -111,6 +111,25 @@ public class AbstractNewMeasureView implements DetailDisplay {
 	}
 
 	@Override
+	public void setMeasureModelType(String type) {
+		if(type == MeasureDetailsUtil.FHIR) {
+			//set FHIR model
+			fhirModel.setEnabled(true);
+			fhirModel.setValue(true);
+			//set QDM model off
+			qdmModel.setValue(false);
+			qdmModel.setEnabled(false);
+		} else {
+			//set QDM model
+			qdmModel.setEnabled(true);
+			qdmModel.setValue(true);
+			//set FHIR model off
+			fhirModel.setValue(false);
+			fhirModel.setEnabled(false);
+		}
+	}
+
+	@Override
 	public HasValue<String> getMeasureVersion() {
 		return null;
 	}

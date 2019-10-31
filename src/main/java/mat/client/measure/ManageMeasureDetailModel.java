@@ -1007,6 +1007,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	@Override
 	public String toString() {
 		return "ManageMeasureDetailModel [id=" + id + ", name=" + measureName
+				+", measureModel=" + measureModel
 				+ ", shortName=" + shortName + ", versionNumber="
 				+ versionNumber + ", revisionNumber=" + revisionNumber
 				+ ", measureId=" + measureId + ", groupName=" + groupName

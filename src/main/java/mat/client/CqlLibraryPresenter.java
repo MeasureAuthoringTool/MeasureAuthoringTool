@@ -718,7 +718,6 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
 	protected void draftCQLLibrary(CQLLibraryDataSetObject selectedLibrary) {
 		selectedLibrary.setCqlName(detailDisplay.getNameField().getValue().trim());
-		Window.alert("test " + detailDisplay.getLibraryModelType());
 		selectedLibrary.setLibraryModelType(detailDisplay.getLibraryModelType());
 		cqlLibraryView.resetMessageDisplay();
 		

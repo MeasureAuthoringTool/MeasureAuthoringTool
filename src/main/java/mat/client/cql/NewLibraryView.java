@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -19,9 +20,11 @@ import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.AbstractNewMeasureView;
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.shared.model.util.MeasureDetailsUtil;
 
 public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 	
@@ -34,6 +37,10 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 	protected HTML instructions = new HTML("Enter a CQL Library name. Then continue to the CQL Composer.");
 	private SimplePanel mainDetailViewVP = new SimplePanel();
 	private EditConfirmationDialogBox createNewConfirmationDialogBox = new EditConfirmationDialogBox();
+	private RadioButton fhirModel = new RadioButton("measureModel", "FHIR");
+	private RadioButton qdmModel = new RadioButton("measureModel", "QDM");
+	FormLabel modelLabel = new FormLabel();
+	private FormGroup libraryModelGroup = new FormGroup();
 	
 	SaveContinueCancelButtonBar buttonToolBar = new SaveContinueCancelButtonBar("cqlDetail");
 	
@@ -64,12 +71,15 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 		FormGroup nameGroup = new FormGroup();
 		nameGroup.add(nameLabel);
 		nameGroup.add(buildCQLLibraryNamePanel());
+		
+		addLibraryModelType();
 
 		FormGroup buttonGroup = new FormGroup();
 		buttonGroup.add(buttonToolBar);
 		
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(nameGroup);
+		formFieldSet.add(libraryModelGroup);
 		formFieldSet.add(buttonGroup);
 		
 		Form detailForm = new Form();
@@ -100,6 +110,44 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 		return horizontalPanel;
 	}
 	
+	/**
+	 * Create a label for library model radio buttons
+	 * @return modelLabel -> Model label Widget
+	 */
+	private FormLabel buildModelTypeLabel() {
+		modelLabel.setText("Model");
+		modelLabel.setTitle("Model");
+		modelLabel.setFor("libraryModel");
+		modelLabel.setShowRequiredIndicator(true);
+		modelLabel.setId("libraryModel_Id");
+		return modelLabel;
+	}
+
+	/**
+	 * Builds a vertical panel with model types wrapped in
+	 * @return mlibraryModelPanel
+	 */
+	private VerticalPanel buildModelTypePanel() {
+		VerticalPanel libraryModelPanel = new VerticalPanel();
+		libraryModelGroup.add(buildModelTypeLabel());
+		//new model creation defaulted to FHIR
+		fhirModel.setValue(true);
+		qdmModel.setEnabled(false);
+		libraryModelPanel.add(fhirModel);
+		libraryModelPanel.add(qdmModel);
+		return libraryModelPanel;
+	}
+
+	/**
+	 * Add measure model type radios to create measure view iff 'MAT_ON_FHIR' flag is on
+	 */
+	private void addLibraryModelType() {
+		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
+			VerticalPanel modelTypePanel = buildModelTypePanel();
+			libraryModelGroup.add(modelTypePanel);
+		}
+	}
+	
 	@Override
 	public Widget asWidget(){
 		buildView();
@@ -109,6 +157,38 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay{
 	@Override
 	public HasValue<String> getName() {
 		return nameField;
+	}
+	
+	@Override
+	public String getLibraryModelType() {
+		return fhirModel.getValue()? MeasureDetailsUtil.FHIR : MeasureDetailsUtil.QDM;
+	}
+	
+	@Override
+	public void setLibraryModelType(String type, boolean isDraft) {
+		if(type == MeasureDetailsUtil.FHIR) {
+			//set FHIR model
+			fhirModel.setEnabled(true);
+			fhirModel.setValue(true);
+			//set QDM model off
+			qdmModel.setValue(false);
+			if(isDraft) {
+				qdmModel.setEnabled(false);
+			} else {
+				qdmModel.setEnabled(true);
+			}
+		} else {
+			//set QDM model
+			qdmModel.setEnabled(true);
+			qdmModel.setValue(true);
+			//set FHIR model off
+			fhirModel.setValue(false);
+			if(isDraft) {
+				fhirModel.setEnabled(false);
+			} else {
+				fhirModel.setEnabled(true);
+			}
+		}
 	}
 
 	@Override

@@ -65,7 +65,7 @@ public class CQLLibraryShareDTO implements IsSerializable {
 	
 	private boolean isVersionable;
 
-	
+	private String libraryModelType;
 	/**
 	 * Gets the user id.
 	 * 
@@ -369,6 +369,14 @@ public class CQLLibraryShareDTO implements IsSerializable {
 
 	public void setCqlLibrarySetId(String cqlLibrarySetId) {
 		this.cqlLibrarySetId = cqlLibrarySetId;
+	}
+
+	public String getLibraryModelType() {
+		return libraryModelType;
+	}
+
+	public void setLibraryModelType(String libraryModelType) {
+		this.libraryModelType = libraryModelType;
 	}
 	
 	

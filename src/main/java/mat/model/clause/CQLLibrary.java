@@ -68,6 +68,8 @@ public class CQLLibrary {
 
 	private Blob cqlXML;
 	
+	private String libraryModalType;
+
 	private List<CQLLibraryHistory> cqlLibraryHistory;
 
 	@Id
@@ -298,6 +300,15 @@ public class CQLLibrary {
 
 	public void setLastModifiedOn(LocalDateTime lastModifiedOn) {
 		this.lastModifiedOn = lastModifiedOn;
+	}
+	
+	@Column(name="LIBRARY_MODEL", length = 10)
+	public String getLibraryModalType() {
+		return libraryModalType;
+	}
+
+	public void setLibraryModalType(String libraryModalType) {
+		this.libraryModalType = libraryModalType;
 	}
 
 	@ManyToOne(fetch=FetchType.LAZY)

@@ -17,7 +17,6 @@ public class MessageDelegate {
 	public static final String VERSION_LIBRARY_NAME_ERROR_MESSAGE = "The MAT is unable to version the measure. The CQL Library name associated with this measure is not unique. Please edit the CQL Library name before versioning.";
 	public static final String VERSION_STANDALONE_LIBRARY_NAME_ERROR_MESSAGE = "The MAT is unable to version the Library. The CQL Library name is not unique. Please edit the CQL Library name before versioning.";
 	public static final String VSAC_UNAUTHORIZED_ERROR = "Unable to retrieve information from VSAC. Please log in to UMLS again to re-establish a connection.";
-	public static final String NEW_MEASURE_QDM_MODEL_ERROR = "New measure should not be created with QDM model";
 
 	private static final String WELCOME_MESSAGE = "You have successfully logged into the MAT.";
 	private static final String ALERT_LOADING_MESSAGE = "Please wait until loading is complete.";

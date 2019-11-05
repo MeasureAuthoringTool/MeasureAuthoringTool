@@ -257,7 +257,6 @@ public class AbstractNewMeasureView implements DetailDisplay {
 		measureModelGroup.add(buildModelTypeLabel());
 		//new model creation defaulted to FHIR
 		fhirModel.setValue(true);
-		qdmModel.setEnabled(false);
 		measureModelPanel.add(fhirModel);
 		measureModelPanel.add(qdmModel);
 		return measureModelPanel;

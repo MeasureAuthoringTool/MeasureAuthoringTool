@@ -174,8 +174,7 @@ left:50px;
 }
 
 #div2{
-    float:left; 
-    width:220px; 
+    float:left;
     margin-right:0;
 }
 
@@ -297,8 +296,8 @@ left:50px;
     background: url("images/application_cascade.png");
     background-position:center;
 	background-repeat:no-repeat;
-	height: 25px;
-    width: 30px;
+	height: 16px;
+    width: 25px;
     border: 0px;
     font-size: 0;
   	cursor: pointer;
@@ -2947,4 +2946,8 @@ body {
 
 .gwt-RadioButton label {
     margin-left: 5px;
+}
+
+.width-14x {
+    width: 14px;
 }

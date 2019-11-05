@@ -231,15 +231,18 @@ public class MeasureLibraryResultTable {
 	private SafeHtml getMeasureNameColumnToolTip(ManageMeasureSearchModel.Result object){
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String cssClass = "customCascadeButton";
+		String editState = MatContext.get().getMatOnFHIR().getFlagOn() ? getEditStateOfMeasure(object) : "";
 		if (object.isMeasureFamily()) {
 			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
-					+ "style=\"text-decoration:none\" tabindex=\"-1\">"
-					+ "<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
+					+ "style=\"text-decoration:none\" tabindex=\"-1\">");
+			sb.appendHtmlConstant(editState);
+			sb.appendHtmlConstant("<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
 			sb.appendHtmlConstant("<span id='div2' title=\" Click to open " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
 			sb.appendHtmlConstant("</a></div>");
 		} else {
 			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
 					+ "style=\"text-decoration:none\" tabindex=\"-1\" >");
+			sb.appendHtmlConstant(editState);
 			sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\""
 					+ object.getName() + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
 			sb.appendHtmlConstant("<span id='div2' title=\" Click to open " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
@@ -292,6 +295,31 @@ public class MeasureLibraryResultTable {
 		}
 		
 		return sb.toSafeHtml();
+	}
+
+	/**
+	 * This method creates icons relevant to the edit state of Measure Library
+	 * @param result Result
+	 * @return a string containing edit state icon
+	 */
+	private String getEditStateOfMeasure(Result result) {
+		String title;
+		String iconCss;
+		if (result.isEditable()) {
+			if (result.isMeasureLocked()) {
+				String emailAddress = result.getLockedUserInfo().getEmailAddress();
+				title = "Measure in use by " + emailAddress;
+				iconCss = "fa fa-lock fa-lg";
+			} else {
+				title = "Edit";
+				iconCss = "fa fa-pencil fa-lg width-14x";
+
+			}
+		} else {
+			title = "Read-Only";
+			iconCss = "fa fa-eye fa-lg width-14x";
+		}
+		return "<i class=\"pull-left " + iconCss + "\" title=\""+title+"\"></i>";
 	}
 	
 	/**

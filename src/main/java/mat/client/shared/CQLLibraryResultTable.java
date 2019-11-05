@@ -257,16 +257,19 @@ public class CQLLibraryResultTable {
 	private SafeHtml getCQLLibraryNameColumnToolTip(CQLLibraryDataSetObject object) {
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String cssClass = "customCascadeButton";
+		String editState =  MatContext.get().getMatOnFHIR().getFlagOn() ? getEditStateOfLibrary(object) : "";
 		if (object.isFamily()) {
 			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
-					+ "style=\"text-decoration:none\" tabindex=\"-1\">"
-					+ "<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
+					+ "style=\"text-decoration:none\" tabindex=\"-1\">");
+			sb.appendHtmlConstant(editState);
+			sb.appendHtmlConstant("<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
 			sb.appendHtmlConstant("<span id='div2' title=\" Click to open " + object.getCqlName() + "\" tabindex=\"0\">"
 					+ object.getCqlName() + "</span>");
 			sb.appendHtmlConstant("</a></div>");
 		} else {
 			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
 					+ "style=\"text-decoration:none\" tabindex=\"-1\" >");
+			sb.appendHtmlConstant(editState);
 			sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\"" + object.getCqlName()
 					+ "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
 			sb.appendHtmlConstant("<span id='div2' title=\" Click to open " + object.getCqlName() + "\" tabindex=\"0\">"
@@ -274,6 +277,30 @@ public class CQLLibraryResultTable {
 			sb.appendHtmlConstant("</a></div>");
 		}
 		return sb.toSafeHtml();
+	}
+
+	/**
+	 * This method creates icons relevant to the edit state of CQL Library
+	 * @param object CQLLibraryDataSetObject
+	 * @return string containing edit state icon
+	 */
+	private String getEditStateOfLibrary(CQLLibraryDataSetObject object) {
+		String title;
+		String iconCss;
+		if (object.isEditable()) {
+			if (object.isLocked()) {
+				String emailAddress = object.getLockedUserInfo().getEmailAddress();
+				title = "Library in use by " + emailAddress;
+				iconCss = "fa fa-lock fa-lg";
+			} else {
+				title = "Edit";
+				iconCss = "fa fa-pencil fa-lg width-14x";
+			}
+		} else {
+			title = "Read-Only";
+			iconCss = "fa fa-eye fa-lg width-14x";
+		}
+		return "<i class=\"pull-left " + iconCss + "\" title=\""+title+"\"></i>";
 	}
 	
 	public Observer getObserver() {

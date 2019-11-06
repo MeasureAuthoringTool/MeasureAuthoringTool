@@ -1743,7 +1743,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
 		List<String> message = manageMeasureModelValidator.validateMeasure(model);
-		message.addAll(validateMeasureModel(model));
 		String existingMeasureScoringType = "";
 		if (message.isEmpty()) {
 			Measure pkg = null;
@@ -6128,22 +6127,5 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public boolean libraryNameExists(String libraryName, String setId) {
 		return getCqlService().checkIfLibraryNameExists(libraryName, setId);
-	}
-
-	/**
-	 * Validate if new measure is created with QDM model. If it is, then raise an error
-	 * This validation is applicable iff 'MAT_ON_FHIR' flag is on
-	 * @param model
-	 * @return messages -> error message if any
-	 */
-	public List<String> validateMeasureModel(ManageMeasureDetailModel model) {
-		List<String> messages = new ArrayList<String>();
-		FeatureFlag featureFlag = featureFlagDAO.findFlagByName(MeasureDetailsUtil.MAT_ON_FHIR);
-		if(featureFlag.getFlagOn()) {
-			if(model.getId() == null && model.getMeasureModel().equals(MeasureDetailsUtil.QDM)) {
-				messages.add(MessageDelegate.NEW_MEASURE_QDM_MODEL_ERROR);
-			}
-		}
-		return messages;
 	}
 }

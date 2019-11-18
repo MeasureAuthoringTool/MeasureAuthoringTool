@@ -83,6 +83,18 @@ public class MeasureLibraryResultTable {
 		};
 		table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
 
+		// Measure Model Column
+		Column<ManageMeasureSearchModel.Result, SafeHtml> model = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+				new MatSafeHTMLCell()) {
+			@Override
+			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+				return CellTableUtility.getColumnToolTip(object.getMeasureModel());
+			}
+		};
+		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
+			table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Model" + "</span>"));
+		}
+
 		ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
 		Column<ManageMeasureSearchModel.Result, String> draftOrVersionCol = new Column<ManageMeasureSearchModel.Result, String>(
 				buttonCell) {
@@ -437,7 +449,7 @@ public class MeasureLibraryResultTable {
 		return sb.toSafeHtml();
 	}
 
-	
+
 	
 	/**
 	 * Gets the bulk export button cell.

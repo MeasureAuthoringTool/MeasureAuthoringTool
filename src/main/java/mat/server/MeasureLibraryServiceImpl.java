@@ -938,6 +938,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Measure measure = measureDAO.find(dto.getMeasureId());
 		detail.setName(dto.getMeasureName());
 		detail.setShortName(dto.getShortName());
+		detail.setMeasureModel(dto.getMeasureModel());
 		detail.setCqlLibraryName(StringUtils.defaultString(measure.getCqlLibraryName()));
 		detail.setScoringType(dto.getScoringType());
 		detail.setStatus(dto.getStatus());
@@ -1099,6 +1100,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		List<Measure> measuresInSet = measureDAO.getAllMeasuresInSet(measureList);
 		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
 		detail.setName(measure.getDescription());
+		detail.setMeasureModel(measure.getMeasureModel()); //me
 		detail.setShortName(measure.getaBBRName());
 		detail.setCqlLibraryName(StringUtils.defaultString(measure.getCqlLibraryName()));
 		detail.setId(measure.getId());
@@ -2415,6 +2417,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
 				detail.setName(dto.getMeasureName());
 				detail.setId(dto.getMeasureId());
+				detail.setMeasureModel(dto.getMeasureModel());  //me
 				detail.seteMeasureId(dto.geteMeasureId());
 				detail.setDraft(dto.isDraft());
 				String formattedVersion = MeasureUtility.getVersionText(dto.getVersion(), dto.isDraft());

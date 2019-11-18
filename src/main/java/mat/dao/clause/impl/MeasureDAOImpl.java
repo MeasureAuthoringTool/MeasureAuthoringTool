@@ -163,7 +163,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		dto.setShortName(measure.getaBBRName());
 		dto.setPackaged(measure.getExportedDate() != null);
 		dto.setOwnerUserId(measure.getOwner().getId());
-
+		dto.setMeasureModel(measure.getMeasureModel());
 		dto.setDraft(measure.isDraft());
 		dto.setVersion(measure.getVersion());
 		dto.setFinalizedDate(measure.getFinalizedDate());

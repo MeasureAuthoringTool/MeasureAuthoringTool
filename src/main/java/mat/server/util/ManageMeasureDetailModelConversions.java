@@ -114,7 +114,7 @@ public class ManageMeasureDetailModelConversions {
 		Measure measure = componentMeasure.getComponentMeasure();
 		result.setId(String.valueOf(measure.getId()));
 		result.setName(measure.getDescription());
-		result.setMeasureModel(measure.getMeasureModel());  //me
+		result.setMeasureModel(measure.getMeasureModel());
 		result.setScoringType(measure.getMeasureScoring());
 		result.setShortName(measure.getaBBRName());
 		result.setVersion(MeasureUtility.formatVersionText("000", measure.getVersion()));

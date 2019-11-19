@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 
@@ -88,7 +89,10 @@ public class MeasureLibraryResultTable {
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-				return CellTableUtility.getColumnToolTip(object.getMeasureModel());
+			    if(object.getMeasureModel() != null && !object.getMeasureModel().isEmpty())
+				    return CellTableUtility.getColumnToolTip(object.getMeasureModel());
+			    else
+                    return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.PRE_CQL);
 			}
 		};
 		if(MatContext.get().getMatOnFHIR().getFlagOn()) {

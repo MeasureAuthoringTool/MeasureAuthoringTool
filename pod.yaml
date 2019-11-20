@@ -8,10 +8,10 @@ spec:
       imagePullPolicy: Always 
       resources:  
         requests:
-          memory: "4Gi"
+          memory: "3Gi"
           cpu: "500m"
         limits:
-          memory: "4Gi"
+          memory: "3Gi"
     - name: docker
       image: docker:18.06.1
       command: ["tail", "-f", "/dev/null"]

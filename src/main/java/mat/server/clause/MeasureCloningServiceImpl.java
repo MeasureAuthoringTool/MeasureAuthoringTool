@@ -227,6 +227,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			clonedDoc = originalDoc;
 			clonedMeasure.setaBBRName(currentDetails.getShortName());
 			clonedMeasure.setDescription(currentDetails.getMeasureName());
+			clonedMeasure.setMeasureModel(currentDetails.getMeasureModel());
 			clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName());
 			clonedMeasure.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 			clonedMeasure.setReleaseVersion(measure.getReleaseVersion());			

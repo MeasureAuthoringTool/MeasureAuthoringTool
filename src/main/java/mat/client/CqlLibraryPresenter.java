@@ -75,6 +75,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.error.AuthenticationException;
+import mat.shared.model.util.MeasureDetailsUtil;
 
 
 /**
@@ -319,6 +320,10 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		 * @return the name
 		 */
 		public HasValue<String> getName();
+		
+		public String getLibraryModelType();
+		
+		public void setLibraryModelType(String name, boolean isDraft);
 
 		/**
 		 * Gets the save button.
@@ -713,6 +718,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
 	protected void draftCQLLibrary(CQLLibraryDataSetObject selectedLibrary) {
 		selectedLibrary.setCqlName(detailDisplay.getNameField().getValue().trim());
+		selectedLibrary.setLibraryModelType(detailDisplay.getLibraryModelType());
 		cqlLibraryView.resetMessageDisplay();
 		
 		if(isLibraryNameValid()) {
@@ -1076,6 +1082,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		CQLLibraryDataSetObject libraryDataSetObject = new CQLLibraryDataSetObject();
 		detailDisplay.getNameField().setText(detailDisplay.getNameField().getText().trim());
 		libraryDataSetObject.setCqlName(detailDisplay.getNameField().getText());
+		libraryDataSetObject.setLibraryModelType(detailDisplay.getLibraryModelType());
 
 		if(isLibraryNameValid()) {
 			MatContext.get().getCQLLibraryService().saveCQLLibrary(libraryDataSetObject, new AsyncCallback<SaveCQLLibraryResult>() {
@@ -1275,6 +1282,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		panel.getButtonPanel().clear();
 		panel.setHeading("My CQL Library > Create New CQL Library", CQL_LIBRARY);
 		panel.setContent(detailDisplay.asWidget());
+		detailDisplay.setLibraryModelType(MeasureDetailsUtil.FHIR, false);
 		updateSaveButtonHandler(event -> createCQLLibrary());
 		Mat.focusSkipLists(CQL_LIBRARY);
 	}
@@ -1287,6 +1295,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		panel.setHeading("My CQL Library > Draft CQL Library", CQL_LIBRARY);
 		panel.setContent(detailDisplay.asWidget());
 		detailDisplay.getNameField().setText(selectedLibrary.getCqlName());
+		detailDisplay.setLibraryModelType(selectedLibrary.getLibraryModelType(), true);
 		updateSaveButtonHandler(event -> draftCQLLibrary(selectedLibrary));
 		Mat.focusSkipLists(CQL_LIBRARY);
 	}

@@ -265,6 +265,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		GeneralInformationModel generalInformationModel = new GeneralInformationModel();
 		generalInformationModel.seteMeasureId(manageMeasureDetailModel.geteMeasureId());
 		generalInformationModel.setMeasureName(manageMeasureDetailModel.getMeasureName());
+		generalInformationModel.setMeasureModel(manageMeasureDetailModel.getMeasureModel());
 		generalInformationModel.seteCQMAbbreviatedTitle(manageMeasureDetailModel.getShortName());
 		generalInformationModel.setFinalizedDate(manageMeasureDetailModel.getFinalizedDate());
 		generalInformationModel.setPatientBased(manageMeasureDetailModel.isPatientBased());
@@ -310,6 +311,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		manageMeasureDetailModel.setIsPatientBased(getPatientBased());
 		manageMeasureDetailModel.setMeasScoring(getScoringMethod());
 		manageMeasureDetailModel.setMeasureName(getMeasureName());
+		manageMeasureDetailModel.setMeasureModel(getMeasureModel());
 		manageMeasureDetailModel.setFinalizedDate(getFinalizedDate());
 		manageMeasureDetailModel.setVersionNumber(getversionNumber());
 		manageMeasureDetailModel.setShortName(getShortName());
@@ -442,6 +444,18 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 	private String getMeasureName() {
 		if(measureDetailsModel.getGeneralInformationModel() != null) {
 			return measureDetailsModel.getGeneralInformationModel().getMeasureName();
+		}
+		return null;
+	}
+
+	/**
+	 * Get Measure model from MeasureDetailsModel
+	 * @return measureModel
+	 */
+	private String getMeasureModel() {
+		GeneralInformationModel generalInformationModel = measureDetailsModel.getGeneralInformationModel();
+		if(generalInformationModel != null) {
+			return generalInformationModel.getMeasureModel();
 		}
 		return null;
 	}

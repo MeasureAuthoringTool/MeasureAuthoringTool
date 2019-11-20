@@ -248,6 +248,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		boolean isOwner = currentUserId.equals(user.getId());
 		dataSetObject.setSharable(isOwner || isSuperUser);
 		dataSetObject.setDeletable(isOwner && cqlLibrary.isDraft());
+		dataSetObject.setLibraryModelType(cqlLibrary.getLibraryModalType());
 		
 		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(cqlLibrary.getVersion(), 
 				cqlLibrary.getRevisionNumber(), cqlLibrary.isDraft());
@@ -593,6 +594,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			library.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 			library.setRevisionNumber("000");
 			library.setVersion("0.0");
+			library.setLibraryModalType(cqlLibraryDataSetObject.getLibraryModelType());
 			if (LoggedInUserUtil.getLoggedInUser() != null) {
 				User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 				library.setOwnerId(currentUser);
@@ -1431,6 +1433,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				cqlLibraryDAO, dto.getCqlLibraryId()));
 		dataObject.setDraftable(dto.isDraftable());
 		dataObject.setVersionable(dto.isVersionable());
+		dataObject.setLibraryModelType(dto.getLibraryModelType());
 		return dataObject;
 	}
 

@@ -1,0 +1,8 @@
+.git
+.settings
+docs
+scripts
+src
+war
+target/*
+!target/MeasureAuthoringTool.war

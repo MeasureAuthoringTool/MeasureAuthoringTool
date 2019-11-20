@@ -44,5 +44,5 @@ public class AbstractNewMeasureViewTest {
 		assertEquals("", measureNameTextBox.getText());
 		assertEquals(ValidationState.NONE, messageFormGrp.getValidationState());
 	}
-	
+
 }

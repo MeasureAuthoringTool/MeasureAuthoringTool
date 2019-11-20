@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet author="mat_dev_user" id="1" context="prod">
+        <sql>
+            ALTER TABLE MEASURE ADD COLUMN MEASURE_MODEL VARCHAR(10) NULL;
+            <!-- all the mat v5.x measures are supposed to be QDM type. Old measures(mat < v5.x) will have null value -->
+            UPDATE MEASURE SET MEASURE_MODEL = "QDM" WHERE LOWER(RELEASE_VERSION) LIKE "v5%";
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -18,6 +18,9 @@ public class MeasureDetailsUtil {
 	private static final String RATIO_ABBREVIATION = "RATIO";
 	private static final String CONTINUOUS_VARIABLE_ABBREVIATION = "CONTVAR";
 	private static final String PROPORTION_ABBREVIATION = "PROPOR";
+	public static final String FHIR = "FHIR";
+	public static final String QDM = "QDM";
+	public static final String MAT_ON_FHIR = "MAT_ON_FHIR";
 
 	/**
 	 * Gets the scoring abbr.

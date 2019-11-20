@@ -38,6 +38,7 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	private boolean isDraftable;
 	private boolean isVersionable;
 	private boolean isDeletable;
+	private String libraryModelType;
 	
 	/** The cql errors. */
 	private List<CQLError> cqlErrors = new ArrayList<CQLError>();
@@ -241,5 +242,11 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	}
 	public void setDeletable(boolean isDeletable) {
 		this.isDeletable = isDeletable;
+	}
+	public String getLibraryModelType() {
+		return libraryModelType;
+	}
+	public void setLibraryModelType(String libraryModelType) {
+		this.libraryModelType = libraryModelType;
 	}
 }

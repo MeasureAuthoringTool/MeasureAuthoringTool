@@ -13,6 +13,9 @@
 		<field name="measureName" type="java.lang.String">
 			<bind-xml name="title" node="element" />
 		</field>
+		<field name="measureModel" type="java.lang.String">
+			<bind-xml name="title" node="element" />
+		</field>
 
 		<field name="shortName" type="java.lang.String">
 			<bind-xml name="shortTitle" node="element" />

@@ -30,6 +30,10 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.client.shared.MessageDelegate;
+import mat.dao.*;
+import mat.model.*;
+import mat.shared.model.util.MeasureDetailsUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -74,11 +78,6 @@ import mat.client.shared.GenericResult;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
-import mat.dao.DataTypeDAO;
-import mat.dao.MeasureTypeDAO;
-import mat.dao.OrganizationDAO;
-import mat.dao.RecentMSRActivityLogDAO;
-import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.clause.MeasureDAO;
@@ -88,22 +87,6 @@ import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributesDAO;
-import mat.model.Author;
-import mat.model.CQLValueSetTransferObject;
-import mat.model.ComponentMeasureTabObject;
-import mat.model.DataType;
-import mat.model.LockedUserInfo;
-import mat.model.MatCodeTransferObject;
-import mat.model.MatValueSet;
-import mat.model.MeasureOwnerReportDTO;
-import mat.model.MeasureSteward;
-import mat.model.MeasureType;
-import mat.model.Organization;
-import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSetDTO;
-import mat.model.RecentMSRActivityLog;
-import mat.model.SecurityRole;
-import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
@@ -286,7 +269,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	@Autowired
 	private CQLHumanReadableGenerator humanReadableGenerator;
-	
+
+	@Autowired
+	FeatureFlagDAO featureFlagDAO;
+
 	@Override
 	public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
 		String result = "";
@@ -2541,6 +2527,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private void setValueFromModel(final ManageMeasureDetailModel model, final Measure measure) {
 		measure.setDescription(model.getMeasureName());
+		measure.setMeasureModel(model.getMeasureModel());
 		measure.setCqlLibraryName(model.getCQLLibraryName());
 		measure.setaBBRName(model.getShortName());
 		// US 421. Scoring choice is not part of core measure.

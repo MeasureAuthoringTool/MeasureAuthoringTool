@@ -16,7 +16,9 @@ public class MeasureShareDTO implements IsSerializable {
 	private String measureId;
 	
 	private String measureName;
-	
+
+	private String measureModel;
+
 	private String scoringType;
 	
 	private String firstName;
@@ -183,7 +185,26 @@ public class MeasureShareDTO implements IsSerializable {
 	public void setShareLevel(String shareLevel) {
 		this.shareLevel = shareLevel;
 	}
-	
+
+	/**
+	 * Gets the Measure Model.
+	 *
+	 * @return the Measure Model
+	 */
+	public String getMeasureModel() {
+		return measureModel;
+	}
+
+	/**
+	 * Sets the Measure Model.
+	 *
+	 * @param measureModel
+	 *            the new Measure Model
+	 */
+	public void setMeasureModel(String measureModel) {
+		this.measureModel = measureModel;
+	}
+
 	/**
 	 * Gets the measure name.
 	 * 

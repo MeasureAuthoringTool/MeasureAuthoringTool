@@ -22,10 +22,10 @@ pipeline {
       steps {
         container('docker') {  
             script {
-                docker.build('mat-dev')
+                def dockerImage = docker.build("mat-dev:${env.BUILD_ID}")
                 docker.withRegistry('https://498284886784.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:sb-bmat-jenkins') {
-                    docker.image('mat-dev').push('latest')
-                    docker.image('mat-dev').push('${env.BUILD_NUMBER}')
+                    dockerImage.push()
+                    dockerImage.push('latest')
                 }
             }   
         }

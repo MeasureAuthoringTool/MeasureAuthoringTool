@@ -1,5 +1,6 @@
 package mat.client.shared;
 
+import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 
@@ -64,6 +65,20 @@ public class CQLLibraryResultTable {
 			}
 		};
 		table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
+
+		//Library Model Type
+		Column<CQLLibraryDataSetObject, SafeHtml> model = new Column<CQLLibraryDataSetObject, SafeHtml>(
+				new MatSafeHTMLCell()) {
+			@Override
+			public SafeHtml getValue(CQLLibraryDataSetObject object) {
+				if(object.getLibraryModelType() != null && !object.getLibraryModelType().isEmpty())
+					return CellTableUtility.getColumnToolTip(object.getLibraryModelType());
+				else
+					return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.PRE_CQL);
+			}
+		};
+		if(MatContext.get().getMatOnFHIR().getFlagOn())
+			table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Model" + "</span>"));
 
 		ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
 		Column<CQLLibraryDataSetObject,String> draftOrVersionCol = new Column<CQLLibraryDataSetObject, String>(buttonCell) {

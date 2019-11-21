@@ -25,6 +25,7 @@ pipeline {
                 docker.build('mat-dev')
                 docker.withRegistry('https://498284886784.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:sb-bmat-jenkins') {
                     docker.image('mat-dev').push('latest')
+                    docker.image('mat-dev').push('${env.BUILD_NUMBER}')
                 }
             }   
         }

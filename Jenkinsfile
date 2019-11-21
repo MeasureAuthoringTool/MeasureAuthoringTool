@@ -22,9 +22,10 @@ pipeline {
       steps {
         container('docker') {  
             script {
-                def dockerImage = docker.build("mat-dev:${env.BUILD_ID}")
+                def dockerImage = docker.build("Measure-Authoring-Tool:${env.BUILD_ID}")
                 docker.withRegistry('https://498284886784.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:sb-bmat-jenkins') {
                     dockerImage.push()
+                    dockerImage.push('{env.BRANCH_NAME}')
                     dockerImage.push('latest')
                 }
             }   

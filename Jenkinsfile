@@ -8,7 +8,7 @@ pipeline {
     }
   }
   stages {
-    stage('Build Mvn Project') {
+    stage('Build MAT Image') {
       steps {  
         container('maven') {
             sh "mvn install:install-file -Dfile=./lib/CQLtoELM-1.4.6.54.jar -DgroupId=mat -DartifactId=CQLtoELM -Dversion=1.4.6.54 -Dpackaging=jar"
@@ -18,7 +18,7 @@ pipeline {
         }
       }
     }
-    stage('Build Docker Image and push') {
+    stage('Build MAT Image and Push to ECR') {
       steps {
         container('docker') {  
             script {

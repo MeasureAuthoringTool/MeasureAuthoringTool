@@ -21,8 +21,9 @@ pipeline {
     stage('Build MAT Image and Push to ECR') {
       steps {
         container('docker') {  
+            sh "export branch_name=$(echo ${env.BRANCH_NAME} | sed -e 's/\//-/g' | sed -e 's/origin-//')"
             script {
-                def dockerImage = docker.build("measure-authoring-tool:${env.GIT_LOCAL_BRANCH}-${env.BUILD_ID}")
+                def dockerImage = docker.build("measure-authoring-tool:${branch_name}-${env.BUILD_ID}")
                 docker.withRegistry('https://498284886784.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:sb-bmat-jenkins') {
                     dockerImage.push()
                 }

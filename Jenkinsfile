@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    branch_name=\$(echo ${env.GIT_BRANCH} | sed -e 's/\\//-/g' | sed -e 's/origin-//')
+    branch_name=$(echo ${env.GIT_BRANCH} | sed -e 's/\//-/g' | sed -e 's/origin-//')
   }
   agent {
     kubernetes {

@@ -22,7 +22,7 @@ pipeline {
       steps {
         container('docker') {  
             script {
-                def dockerImage = docker.build("measure-authoring-tool:${env.GIT_LOCAL_BRANCH}-${env.BUILD_ID}")
+                def dockerImage = docker.build("measure-authoring-tool:${env.GIT_LOCAL_BRANCH}:${env.BUILD_ID}")
                 docker.withRegistry('https://498284886784.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:sb-bmat-jenkins') {
                     dockerImage.push()
                 }

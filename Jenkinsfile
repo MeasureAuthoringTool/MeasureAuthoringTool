@@ -1,7 +1,4 @@
 pipeline {
-  environment {
-    branch_name=$(echo ${env.GIT_BRANCH} | sed -e 's/\//-/g' | sed -e 's/origin-//')
-  }
   agent {
     kubernetes {
       label 'mat'  
@@ -26,6 +23,7 @@ pipeline {
       steps {
         container('docker') {  
             script {
+                def branch_name=$(echo ${env.GIT_BRANCH} | sed -e 's/\//-/g' | sed -e 's/origin-//')
                 def dockerImage = docker.build("measure-authoring-tool:${env.branch_name}-${env.BUILD_ID}")
                 docker.withRegistry('https://498284886784.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:sb-bmat-jenkins') {
                     dockerImage.push()

@@ -20,6 +20,7 @@ public class MeasureDetailsUtil {
 	private static final String PROPORTION_ABBREVIATION = "PROPOR";
 	public static final String FHIR = "FHIR";
 	public static final String QDM = "QDM";
+	public static final String PRE_CQL = "Pre-CQL";
 	public static final String MAT_ON_FHIR = "MAT_ON_FHIR";
 
 	/**

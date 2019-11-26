@@ -600,6 +600,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		dto.setOwnerUserId(cqlLibrary.getOwnerId().getId());
 		dto.setDraft(cqlLibrary.isDraft());
 		dto.setVersion(cqlLibrary.getVersion());
+		dto.setLibraryModelType(cqlLibrary.getLibraryModalType());
 		dto.setFinalizedDate(cqlLibrary.getFinalizedDate());
 		dto.setCqlLibrarySetId(cqlLibrary.getSetId());
 		dto.setRevisionNumber(cqlLibrary.getRevisionNumber());

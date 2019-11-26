@@ -26,7 +26,10 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		
 		/** The name. */
 		private String name;
-		
+
+		/** The name. */
+		private String measureModel;
+
 		/** The status. */
 		private String status;
 		
@@ -139,6 +142,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 			this.qdmVersion = result.getQdmVersion();
 			this.isComposite = result.getIsComposite();
 			this.cqlLibraryName = result.getCqlLibraryName();
+			this.measureModel = result.getMeasureModel();
 		}
 		
 
@@ -147,7 +151,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		public int hashCode() {
 			return Objects.hash(draft, eMeasureId, finalizedDate, hqmfReleaseVersion, id, isClonable, isComposite,
 					isDeleted, isDraftable, isEditable, isExportable, isHistorical, isMeasureFamily, isMeasureLocked,
-					isPatientBased, isSharable, isTransferable, isVersionable, lockedUserInfo, measureSetId, name,
+					isPatientBased, isSharable, isTransferable, isVersionable, lockedUserInfo, measureSetId, name, measureModel,
 					ownerEmailAddress, ownerLastName, ownerfirstName, qdmVersion, scoringType, shortName, status,
 					version);
 		}
@@ -174,7 +178,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 					&& isMeasureLocked == other.isMeasureLocked && Objects.equals(isPatientBased, other.isPatientBased)
 					&& isSharable == other.isSharable && isTransferable == other.isTransferable
 					&& isVersionable == other.isVersionable && Objects.equals(lockedUserInfo, other.lockedUserInfo)
-					&& Objects.equals(measureSetId, other.measureSetId) && Objects.equals(name, other.name)
+					&& Objects.equals(measureSetId, other.measureSetId) && Objects.equals(name, other.name) && Objects.equals(measureModel, other.measureModel)
 					&& Objects.equals(ownerEmailAddress, other.ownerEmailAddress)
 					&& Objects.equals(ownerLastName, other.ownerLastName)
 					&& Objects.equals(ownerfirstName, other.ownerfirstName)
@@ -257,7 +261,24 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		public void setName(String name) {
 			this.name = name;
 		}
-		
+
+		/**
+		 * Gets the Measure Model.
+		 * @return the Measure Model
+		 */
+		public String getMeasureModel() {
+			return measureModel;
+		}
+
+		/**
+		 * Sets the Measure Model.
+		 * @param measureModel
+		 *            the new Measure Model
+		 */
+		public void setMeasureModel(String measureModel) {
+			this.measureModel = measureModel;
+		}
+
 		/**
 		 * Gets the scoring type.
 		 * 

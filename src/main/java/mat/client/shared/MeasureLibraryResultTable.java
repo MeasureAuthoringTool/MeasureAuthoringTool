@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 
@@ -82,6 +83,21 @@ public class MeasureLibraryResultTable {
 			}
 		};
 		table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
+
+		// Measure Model Column
+		Column<ManageMeasureSearchModel.Result, SafeHtml> model = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+				new MatSafeHTMLCell()) {
+			@Override
+			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+			    if(object.getMeasureModel() != null && !object.getMeasureModel().isEmpty())
+				    return CellTableUtility.getColumnToolTip(object.getMeasureModel());
+			    else
+                    return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.PRE_CQL);
+			}
+		};
+		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
+			table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Model" + "</span>"));
+		}
 
 		ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
 		Column<ManageMeasureSearchModel.Result, String> draftOrVersionCol = new Column<ManageMeasureSearchModel.Result, String>(
@@ -437,7 +453,7 @@ public class MeasureLibraryResultTable {
 		return sb.toSafeHtml();
 	}
 
-	
+
 	
 	/**
 	 * Gets the bulk export button cell.

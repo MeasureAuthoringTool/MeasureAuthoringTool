@@ -6,3 +6,4 @@ src
 war
 target/*
 !target/MeasureAuthoringTool.war
+!target/MeasureAuthoringTool/WEB-INF/lib/mysql-connector-java-5.1.6.jar

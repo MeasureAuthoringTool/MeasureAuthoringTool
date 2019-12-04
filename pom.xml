@@ -15,8 +15,13 @@
         <java.version>1.8</java.version>
         <gwtVersion>2.8.2</gwtVersion>
         <googleGin>2.1.2</googleGin>
-        <org.springframework>5.0.15.RELEASE</org.springframework>
-        <org.springframework.security>5.0.13.RELEASE</org.springframework.security>
+        <springframework.version>5.0.15.RELEASE</springframework.version>
+        <springframework.security.version>5.0.13.RELEASE</springframework.security.version>
+        <hibernate.version>5.2.17.Final</hibernate.version>
+        <cqframework.version>1.4.6</cqframework.version>
+        <axis.version>1.7.7</axis.version>
+        <castor.version>1.4.1</castor.version>
+        <slf4j.version>1.7.25</slf4j.version>
     </properties>
     <repositories>
         <repository>
@@ -48,37 +53,37 @@
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>cql</artifactId>
-            <version>1.4.6</version>
+            <version>${cqframework.version}</version>
         </dependency>
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>model</artifactId>
-            <version>1.4.6</version>
+            <version>${cqframework.version}</version>
         </dependency>
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>elm</artifactId>
-            <version>1.4.6</version>
+            <version>${cqframework.version}</version>
         </dependency>
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>cql-to-elm</artifactId>
-            <version>1.4.6</version>
+            <version>${cqframework.version}</version>
         </dependency>
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>quick</artifactId>
-            <version>1.4.6</version>
+            <version>${cqframework.version}</version>
         </dependency>
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>qdm</artifactId>
-            <version>1.4.6</version>
+            <version>${cqframework.version}</version>
         </dependency>
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>cql-formatter</artifactId>
-            <version>1.4.6</version>
+            <version>${cqframework.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -113,12 +118,12 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.2.17.Final</version>
+            <version>${hibernate.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
-            <version>5.2.17.Final</version>
+            <version>${hibernate.version}</version>
         </dependency>
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
@@ -128,37 +133,37 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-            <version>${org.springframework}</version>
+            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>${org.springframework.security}</version>
+            <version>${springframework.security.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>${org.springframework.security}</version>
+            <version>${springframework.security.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>${org.springframework}</version>
+            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>${org.springframework}</version>
+            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${org.springframework}</version>
+            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
-            <version>${org.springframework}</version>
+            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jasypt</groupId>
@@ -168,7 +173,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-            <version>${org.springframework}</version>
+            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sf.jtidy</groupId>
@@ -201,11 +206,6 @@
             <version>3.17</version>
         </dependency>
         <dependency>
-            <groupId>backport-util-concurrent</groupId>
-            <artifactId>backport-util-concurrent</artifactId>
-            <version>3.1</version>
-        </dependency>
-        <dependency>
             <groupId>net.sourceforge.saxon</groupId>
             <artifactId>saxon</artifactId>
             <version>9.1.0.8</version>
@@ -219,42 +219,37 @@
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-kernel</artifactId>
-            <version>1.7.7</version>
+            <version>${axis.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-adb</artifactId>
-            <version>1.7.7</version>
+            <version>${axis.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-transport-http</artifactId>
-            <version>1.7.7</version>
+            <version>${axis.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-transport-local</artifactId>
-            <version>1.7.7</version>
+            <version>${axis.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.castor</groupId>
             <artifactId>castor-xml</artifactId>
-            <version>1.4.1</version>
+            <version>${castor.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.castor</groupId>
             <artifactId>castor-core</artifactId>
-            <version>1.4.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.castor</groupId>
-            <artifactId>castor-jdo</artifactId>
-            <version>1.3.3-rc1</version>
+            <version>${castor.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.castor</groupId>
             <artifactId>castor-xml-schema</artifactId>
-            <version>1.4.1</version>
+            <version>${castor.version}</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -269,12 +264,12 @@
         <dependency>
             <groupId>org.codehaus.castor</groupId>
             <artifactId>castor-anttasks</artifactId>
-            <version>1.4.1</version>
+            <version>${castor.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.castor</groupId>
             <artifactId>castor-codegen</artifactId>
-            <version>1.4.1</version>
+            <version>${castor.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.castor</groupId>
@@ -349,17 +344,17 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -370,12 +365,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${org.springframework}</version>
+            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>${org.springframework.security}</version>
+            <version>${springframework.security.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
@@ -438,7 +433,7 @@
             <plugin>
                 <groupId>net.ltgt.gwt.maven</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>1.0-rc-10</version>
+                <version>1.0.0</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>

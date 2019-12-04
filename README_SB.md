@@ -82,6 +82,10 @@ configuration.
          url="jdbc:mysql://localhost:3306/MAT_APP_BLANK"/>
 ```
 
+Copy mysql jdbc to tomcat lib directory.
+```
+cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar /apache-tomcat-9.X.X/lib
+```
 #### Build project with maven
 
  `mvn clean install` you should see BUILD SUCCESS

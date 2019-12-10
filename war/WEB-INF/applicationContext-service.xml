@@ -13,11 +13,12 @@
        http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
        http://www.springframework.org/schema/context
 	   http://www.springframework.org/schema/context/spring-context-4.3.xsd">
-       
+
     <bean class="mat.server.Application"/>
     
     <context:annotation-config />
     
+
     <tx:annotation-driven transaction-manager="txManager"/>
     
 	<bean id="loginService" class="mat.server.service.impl.LoginCredentialServiceImpl">	    
@@ -85,14 +86,14 @@
     <bean id="cqlLibraryService" class="mat.server.CQLLibraryService">
     </bean>
     
-    <bean id="cqlConstantService" class="mat.server.CQLConstantServiceImpl"></bean>
+    <bean id="cqlConstantService" class="mat.server.CQLConstantServiceImpl">
+    </bean>
    
     <bean id="vsacapi" class="mat.server.VSACApiServImpl">
     	<property name="defaultExpId" value="${mat.qdm.default.expansion.id}"/>
     </bean>
     
-    <bean id="matOtpValidator" class="${2FA_AUTH_CLASS}"/>
-    
+
     <bean id="matOtpValidatorService" class="mat.server.twofactorauth.TwoFactorValidationService">
         <property name="otpValidatorInterfaceForUser" ref="matOtpValidator"/>
     </bean>

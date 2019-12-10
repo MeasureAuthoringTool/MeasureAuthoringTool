@@ -69,7 +69,7 @@
  	<!-- bean for scheduling password change warning email for 45 day limit -->
  	<bean id="sendPasswordChangeEmailTaskDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
  		<property name="targetObject" ref="sendPasswordChangeEmailTask" />
-		<property name="targetMethod" value="CheckUserPasswordLimitDays" />
+		<property name="targetMethod" value="checkUserPasswordLimitDays" />
  	</bean>
 	
 	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">

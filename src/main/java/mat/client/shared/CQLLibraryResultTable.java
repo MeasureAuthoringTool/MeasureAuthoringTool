@@ -43,11 +43,10 @@ public class CQLLibraryResultTable {
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cqlLibrarySearchHeader.getElement());
 
-
 		MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
         table.setSelectionModel(selectionModel);
 
-        CheckboxCell selectedCell = new CheckboxCell(true, false);
+        CheckboxCell selectedCell = new CheckboxCell(false, false);
         Column<CQLLibraryDataSetObject,Boolean> selectedCol = new Column<CQLLibraryDataSetObject, Boolean>(selectedCell){
             @Override
             public Boolean getValue(CQLLibraryDataSetObject object) {
@@ -55,28 +54,6 @@ public class CQLLibraryResultTable {
                 return selectionModel.isSelected(object);
             }
         };
-//		selectedCol.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, Boolean>() {
-//			public void update(int index, CQLLibraryDataSetObject object, Boolean value) {
-//				selectionModel.setSelected(object, value);
-//			}
-//		});
-		//Single Click Event to Enable/Disable checkbox.
-//		table.addDomHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				event.preventDefault();
-//				Boolean value = true;
-//				for (CQLLibraryDataSetObject object : selectionModel.getSelectedSet()) {
-//					if(object.isCheckboxSelected()){
-//						selectionModel.setSelected(object,false);
-//						object.setCheckboxSelected(false);
-//					}else{
-//						selectionModel.setSelected(object,true);
-//						object.setCheckboxSelected(true);
-//					}
-//				}
-//			}
-//		}, ClickEvent.getType());
 		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
 			table.addColumn(selectedCol);
 		}
@@ -90,14 +67,14 @@ public class CQLLibraryResultTable {
 			}
 		};
 //		Double Click event on Grid row to navigate to Composer Tab.
-//		table.addDomHandler(new DoubleClickHandler() {
-//			@Override
-//			public void onDoubleClick(DoubleClickEvent event) {
-//				for (CQLLibraryDataSetObject object : selectionModel.getSelectedSet()) {
-//					SelectionEvent.fire(fireEvent, object);
-//				}
-//			}
-//		}, DoubleClickEvent.getType());
+		table.addDomHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				for (CQLLibraryDataSetObject object : selectionModel.getSelectedSet()) {
+					SelectionEvent.fire(fireEvent, object);
+				}
+			}
+		}, DoubleClickEvent.getType());
 		table.addColumn(cqlLibraryName,
 				SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>" + "CQL Library Name" + "</span>"));
 

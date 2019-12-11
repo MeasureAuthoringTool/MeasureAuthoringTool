@@ -1,0 +1,8 @@
+extraction:
+  java:
+    index:
+      build_command:
+      - "./install-deps.sh"
+      - "mvn clean package -f \"pom.xml\" -B -V -e -Dfindbugs.skip -Dcheckstyle.skip\
+        \ -Dpmd.skip=true -Denforcer.skip -Dmaven.javadoc.skip -DskipTests -Dmaven.test.skip.exec\
+        \ -Dlicense.skip=true"

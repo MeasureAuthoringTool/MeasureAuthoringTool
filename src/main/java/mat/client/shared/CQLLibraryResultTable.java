@@ -1,18 +1,20 @@
 package mat.client.shared;
 
+import com.google.gwt.cell.client.*;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.view.client.MultiSelectionModel;
 import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -26,9 +28,9 @@ import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ClickableSafeHtmlCell;
 
 public class CQLLibraryResultTable {
-	
+
 	private Observer observer;
-	
+
 	public CellTable<CQLLibraryDataSetObject> addColumnToTable(String Label, CellTable<CQLLibraryDataSetObject> table, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
 		Label cqlLibrarySearchHeader = new Label(Label);
 		cqlLibrarySearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
@@ -38,6 +40,20 @@ public class CQLLibraryResultTable {
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cqlLibrarySearchHeader.getElement());
 
+		MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        table.setSelectionModel(selectionModel);
+
+        CheckboxCell selectedCell = new CheckboxCell(true, false);
+        Column<CQLLibraryDataSetObject,Boolean> selectedCol = new Column<CQLLibraryDataSetObject, Boolean>(selectedCell){
+            @Override
+            public Boolean getValue(CQLLibraryDataSetObject object) {
+                //Todo Imlemented during MAT - 63/68
+                return selectionModel.isSelected(object);
+            }
+        };
+		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
+			table.addColumn(selectedCol);
+		}
 
 		// CQL Library Name Column
 		Column<CQLLibraryDataSetObject, SafeHtml> cqlLibraryName = new Column<CQLLibraryDataSetObject, SafeHtml>(
@@ -47,12 +63,17 @@ public class CQLLibraryResultTable {
 				return getCQLLibraryNameColumnToolTip(object);
 			}
 		};
-		cqlLibraryName.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, SafeHtml>() {
-			@Override
-			public void update(int index, CQLLibraryDataSetObject object, SafeHtml value) {
-				SelectionEvent.fire(fireEvent, object);
-			}
-		});
+//		Double Click event on Grid row to navigate to Composer Tab.
+		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
+			table.addDomHandler(new DoubleClickHandler() {
+				@Override
+				public void onDoubleClick(DoubleClickEvent event) {
+					for (CQLLibraryDataSetObject object : selectionModel.getSelectedSet()) {
+						SelectionEvent.fire(fireEvent, object);
+					}
+				}
+			}, DoubleClickEvent.getType());
+		}
 		table.addColumn(cqlLibraryName,
 				SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>" + "CQL Library Name" + "</span>"));
 
@@ -87,7 +108,7 @@ public class CQLLibraryResultTable {
 			public String getValue(CQLLibraryDataSetObject object) {
 				return object.getCqlName();
 			}
-			
+
 			@Override
 			public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
 				if (object.isDraftable()) {
@@ -101,7 +122,7 @@ public class CQLLibraryResultTable {
 					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Version</span>");
 					sb.appendHtmlConstant("</button>");
 				}
-				
+
 			}
 			@Override
 			public void onBrowserEvent(Context context, Element elem, CQLLibraryDataSetObject object,
@@ -119,15 +140,15 @@ public class CQLLibraryResultTable {
 						event.preventDefault();
 					}
 				}
-				
+
 			}
-			
+
 		};
-		
+
 		table.addColumn(draftOrVersionCol,
 				SafeHtmlUtils.fromSafeConstant("<span title='Create Version/Draft'>" + "Create Version/Draft" + "</span>"));
-				
-		
+
+
 		// History
 		Cell<String> historyButton = new MatButtonCell("Click to view history", "btn btn-link", "fa fa-clock-o fa-lg" , "History");
 		Column<CQLLibraryDataSetObject, String> historyColumn = new Column<CQLLibraryDataSetObject, String>(
@@ -145,7 +166,7 @@ public class CQLLibraryResultTable {
 		});
 		table.addColumn(historyColumn,
 				SafeHtmlUtils.fromSafeConstant("<span title='History'>" + "History" + "</span>"));
-		
+
 		//Edit
 		Column<CQLLibraryDataSetObject, SafeHtml> editColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
@@ -181,7 +202,7 @@ public class CQLLibraryResultTable {
 			}
 		});
 		table.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Share'>" + "Share" + "</span>"));
-		
+
 		//Delete Column
 				ButtonCell deleteButtonCell = new ButtonCell(ButtonType.LINK);
 				Column<CQLLibraryDataSetObject,String> deleteColumn = new Column<CQLLibraryDataSetObject, String>(deleteButtonCell) {
@@ -190,7 +211,7 @@ public class CQLLibraryResultTable {
 					public String getValue(CQLLibraryDataSetObject object) {
 						return object.getCqlName();
 					}
-					
+
 					@Override
 					public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
 						if (object.isDeletable()) {
@@ -216,29 +237,29 @@ public class CQLLibraryResultTable {
 							}
 						}
 					}
-					
+
 				};
-				
+
 				table.addColumn(deleteColumn,
 						SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete" + "</span>"));
 
 		return table;
 	}
-	
+
 	private SafeHtml getShareColumnToolTip(CQLLibraryDataSetObject object) {
 
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String title = "Shareable";
 		String cssClass = "btn btn-link";
 		String iconCss = "fa fa-share-square fa-lg";
-		if (object.isSharable()) {			
+		if (object.isSharable()) {
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkseagreen;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Shareable</span></button>");
-		} else {			
+		} else {
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: gray;\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Shareable</span></button>");
 		}
-		
+
 		return sb.toSafeHtml();
 	}
 
@@ -255,7 +276,7 @@ public class CQLLibraryResultTable {
 			} else {
 				title = "Edit";
 				iconCss = "fa fa-pencil fa-lg";
-				
+
 			}
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
@@ -265,10 +286,10 @@ public class CQLLibraryResultTable {
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
 		}
-		
+
 		return sb.toSafeHtml();
 	}
-	
+
 	private SafeHtml getCQLLibraryNameColumnToolTip(CQLLibraryDataSetObject object) {
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String cssClass = "customCascadeButton";

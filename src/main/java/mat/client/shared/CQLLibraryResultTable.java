@@ -1,12 +1,9 @@
 package mat.client.shared;
 
 import com.google.gwt.cell.client.*;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.view.client.MultiSelectionModel;
 import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -46,7 +43,7 @@ public class CQLLibraryResultTable {
 		MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
         table.setSelectionModel(selectionModel);
 
-        CheckboxCell selectedCell = new CheckboxCell(false, false);
+        CheckboxCell selectedCell = new CheckboxCell(true, false);
         Column<CQLLibraryDataSetObject,Boolean> selectedCol = new Column<CQLLibraryDataSetObject, Boolean>(selectedCell){
             @Override
             public Boolean getValue(CQLLibraryDataSetObject object) {
@@ -67,14 +64,16 @@ public class CQLLibraryResultTable {
 			}
 		};
 //		Double Click event on Grid row to navigate to Composer Tab.
-		table.addDomHandler(new DoubleClickHandler() {
-			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
-				for (CQLLibraryDataSetObject object : selectionModel.getSelectedSet()) {
-					SelectionEvent.fire(fireEvent, object);
+		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
+			table.addDomHandler(new DoubleClickHandler() {
+				@Override
+				public void onDoubleClick(DoubleClickEvent event) {
+					for (CQLLibraryDataSetObject object : selectionModel.getSelectedSet()) {
+						SelectionEvent.fire(fireEvent, object);
+					}
 				}
-			}
-		}, DoubleClickEvent.getType());
+			}, DoubleClickEvent.getType());
+		}
 		table.addColumn(cqlLibraryName,
 				SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>" + "CQL Library Name" + "</span>"));
 

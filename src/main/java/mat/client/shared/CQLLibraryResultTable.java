@@ -1,7 +1,5 @@
 package mat.client.shared;
 
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -30,7 +28,7 @@ public class CQLLibraryResultTable {
 
         selectionModel.addSelectionChangeHandler(event -> {
             CQLLibraryDataSetObject selectedItem = selectionModel.getSelectedSet().isEmpty() ? null : selectionModel.getSelectedSet().iterator().next();
-            updateToolbarOnSelectionChanged(selectedItem, gridToolbar);
+            gridToolbar.updateOnSelectionChanged(selectedItem);
         });
         addToolbarHandlers(gridToolbar, selectionModel);
 
@@ -46,7 +44,7 @@ public class CQLLibraryResultTable {
         });
         if (MatContext.get().getMatOnFHIR().getFlagOn()) {
             table.addColumn(selectedCol);
-            table.setColumnWidth(0, 1.0, Style.Unit.PC);
+            table.setColumnWidth(0, 0.3, Style.Unit.PC);
         }
 
         // CQL Library Name Column
@@ -151,92 +149,6 @@ public class CQLLibraryResultTable {
         return sb.toSafeHtml();
     }
 
-    private void updateToolbarOnSelectionChanged(CQLLibraryDataSetObject selectedItem, CQLibraryGridToolbar gridToolbar) {
-
-        Button versionButton = gridToolbar.getVersionButton();
-        Button historyButton = gridToolbar.getHistoryButton();
-        Button editButton = gridToolbar.getEditButton();
-        Button shareButton = gridToolbar.getShareButton();
-        Button deleteButton = gridToolbar.getDeleteButton();
-
-
-        if (null == selectedItem) {
-            versionButton.setText("Create Version/Draft");
-            versionButton.setEnabled(false);
-            versionButton.setStyleName("btn btn-default disabled fa fa-star fa-lg");
-            versionButton.setTitle("Click to create version or draft");
-
-            historyButton.setText("History");
-            historyButton.setEnabled(false);
-            historyButton.setStyleName("btn btn-default disabled fa fa-clock-o fa-lg");
-            historyButton.setTitle("Click to view history");
-
-            editButton.setText("Edit");
-            editButton.setEnabled(false);
-            editButton.setStyleName("btn btn-default disabled fa fa-pencil fa-lg");
-            editButton.setTitle("Click to edit");
-
-            shareButton.setText("Share");
-            shareButton.setEnabled(false);
-            shareButton.setStyleName("btn btn-default disabled fa fa-share-square fa-lg");
-            shareButton.setTitle("Click to share");
-
-            deleteButton.setText("Delete");
-            deleteButton.setEnabled(false);
-            deleteButton.setStyleName("btn btn-default disabled fa fa-trash fa-lg");
-            deleteButton.setTitle("Click to delete");
-
-        } else {
-            versionButton.setEnabled(true);
-            if (selectedItem.isDraftable()) {
-                versionButton.setText("Create Draft");
-                versionButton.setStyleName("btn btn-default fa fa-pencil-square-o fa-lg");
-                versionButton.setTitle("Click to create draft");
-            } else {
-                versionButton.setText("Create Version");
-                versionButton.setStyleName("btn btn-default fa fa-star fa-lg");
-                versionButton.setTitle("Click to create version");
-            }
-
-            historyButton.setEnabled(true);
-            historyButton.setText("History");
-            historyButton.setStyleName("btn btn-default fa fa-clock-o fa-lg");
-            historyButton.setTitle("History");
-
-            if (selectedItem.isEditable()) {
-                if (selectedItem.isLocked()) {
-                    editButton.setText("Edit");
-                    editButton.setEnabled(false);
-                    editButton.setStyleName("btn btn-default disabled fa fa-lock fa-lg");
-                    editButton.setTitle("Library in use by " + selectedItem.getLockedUserInfo().getEmailAddress());
-                } else {
-                    editButton.setText("Edit");
-                    editButton.setEnabled(true);
-                    editButton.setStyleName("btn btn-default fa fa-pencil fa-lg");
-                    editButton.setTitle("Click to edit");
-                }
-            } else {
-                editButton.setText("Edit");
-                editButton.setEnabled(false);
-                editButton.setStyleName("btn btn-default disabled fa fa-newspaper-o fa-lg");
-                editButton.setTitle("Read-Only");
-            }
-
-            shareButton.setText("Share");
-            shareButton.setEnabled(true);
-            shareButton.setEnabled(selectedItem.isSharable());
-            shareButton.setStyleName("btn btn-default fa fa-share-square fa-lg");
-            shareButton.setTitle("Click to share");
-
-
-            deleteButton.setText("Delete");
-            deleteButton.setEnabled(true);
-            deleteButton.setStyleName("btn btn-default fa fa-trash fa-lg");
-            deleteButton.setTitle("Click to delete library");
-
-        }
-    }
-
     /**
      * This method creates icons relevant to the edit state of CQL Library
      *
@@ -269,4 +181,5 @@ public class CQLLibraryResultTable {
     public void setObserver(Observer observer) {
         this.observer = observer;
     }
+
 }

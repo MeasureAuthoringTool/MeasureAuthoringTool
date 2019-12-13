@@ -44,7 +44,7 @@ public class CQLLibraryResultTable {
         });
         if (MatContext.get().getMatOnFHIR().getFlagOn()) {
             table.addColumn(selectedCol);
-            table.setColumnWidth(0, 0.3, Style.Unit.PC);
+            table.setColumnWidth(0, "45px");
         }
 
         // CQL Library Name Column

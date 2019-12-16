@@ -1,10 +1,8 @@
 package mat.client.shared;
 
 import com.google.gwt.cell.client.*;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.SingleSelectionModel;
 import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
@@ -30,6 +28,7 @@ import mat.shared.ClickableSafeHtmlCell;
 public class CQLLibraryResultTable {
 
 	private Observer observer;
+	long lastClick = 0;
 
 	public CellTable<CQLLibraryDataSetObject> addColumnToTable(String Label, CellTable<CQLLibraryDataSetObject> table, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
 		Label cqlLibrarySearchHeader = new Label(Label);
@@ -40,14 +39,17 @@ public class CQLLibraryResultTable {
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cqlLibrarySearchHeader.getElement());
 
-		MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+
+		//Checkboxes to select specific row
+		SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         table.setSelectionModel(selectionModel);
+
+		//Todo Imlemented during MAT - 63/68
 
         CheckboxCell selectedCell = new CheckboxCell(true, false);
         Column<CQLLibraryDataSetObject,Boolean> selectedCol = new Column<CQLLibraryDataSetObject, Boolean>(selectedCell){
             @Override
             public Boolean getValue(CQLLibraryDataSetObject object) {
-                //Todo Imlemented during MAT - 63/68
                 return selectionModel.isSelected(object);
             }
         };
@@ -62,40 +64,74 @@ public class CQLLibraryResultTable {
 			public SafeHtml getValue(CQLLibraryDataSetObject object) {
 				return getCQLLibraryNameColumnToolTip(object);
 			}
-		};
-//		Double Click event on Grid row to navigate to Composer Tab.
-		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
-			table.addDomHandler(new DoubleClickHandler() {
-				@Override
-				public void onDoubleClick(DoubleClickEvent event) {
-					for (CQLLibraryDataSetObject object : selectionModel.getSelectedSet()) {
-						SelectionEvent.fire(fireEvent, object);
-					}
+			/*
+				Single Click to select row and enable checkbox
+				Double Click to navigate to CQL Composer tab
+			*/
+			@Override
+			public void onBrowserEvent(Cell.Context context, Element elem, CQLLibraryDataSetObject object, NativeEvent event) {
+				if (lastClick < System.currentTimeMillis() - 500)
+				{
+					object.setSelected(!object.isSelected());
+					selectionModel.setSelected(object, object.isSelected());
+				}else{
+					SelectionEvent.fire(fireEvent, object);
 				}
-			}, DoubleClickEvent.getType());
-		}
+				lastClick = System.currentTimeMillis();
+			}
+		};
 		table.addColumn(cqlLibraryName,
 				SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>" + "CQL Library Name" + "</span>"));
 
 		// Version Column
 		Column<CQLLibraryDataSetObject, SafeHtml> version = new Column<CQLLibraryDataSetObject, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(CQLLibraryDataSetObject object) {
 				return CellTableUtility.getColumnToolTip(object.getVersion());
+			}
+			/*
+				Single Click to select row and enable checkbox
+				Double Click to navigate to CQL Composer tab
+			*/
+			@Override
+			public void onBrowserEvent(Cell.Context context, Element elem, CQLLibraryDataSetObject object, NativeEvent event) {
+				if (lastClick < System.currentTimeMillis() - 500)
+				{
+					object.setSelected(!object.isSelected());
+					selectionModel.setSelected(object, object.isSelected());
+				}else{
+					SelectionEvent.fire(fireEvent, object);
+				}
+				lastClick = System.currentTimeMillis();
 			}
 		};
 		table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
 
 		//Library Model Type
 		Column<CQLLibraryDataSetObject, SafeHtml> model = new Column<CQLLibraryDataSetObject, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(CQLLibraryDataSetObject object) {
 				if(object.getLibraryModelType() != null && !object.getLibraryModelType().isEmpty())
 					return CellTableUtility.getColumnToolTip(object.getLibraryModelType());
 				else
 					return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.PRE_CQL);
+			}
+			/*
+				Single Click to select row and enable checkbox
+				Double Click to navigate to CQL Composer tab
+			*/
+			@Override
+			public void onBrowserEvent(Cell.Context context, Element elem, CQLLibraryDataSetObject object, NativeEvent event) {
+				if (lastClick < System.currentTimeMillis() - 500)
+				{
+					object.setSelected(!object.isSelected());
+					selectionModel.setSelected(object, object.isSelected());
+				}else{
+					SelectionEvent.fire(fireEvent, object);
+				}
+				lastClick = System.currentTimeMillis();
 			}
 		};
 		if(MatContext.get().getMatOnFHIR().getFlagOn())

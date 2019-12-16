@@ -144,13 +144,21 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
         shareButton.setText(SHARE_TEXT);
         shareButton.setEnabled(selectedItem.isSharable());
-        shareButton.setStyleName("btn btn-default fa fa-share-square fa-lg");
+        if (selectedItem.isSharable()) {
+            shareButton.setStyleName("btn btn-default fa fa-share-square fa-lg");
+        } else {
+            shareButton.setStyleName("btn btn-default disabled fa fa-share-square fa-lg");
+        }
         shareButton.setTitle(CLICK_TO_SHARE_TITLE);
 
 
         deleteButton.setText(DELETE_TEXT);
-        deleteButton.setEnabled(true);
-        deleteButton.setStyleName("btn btn-default fa fa-trash fa-lg");
+        deleteButton.setEnabled(selectedItem.isDeletable());
+        if (selectedItem.isDeletable()) {
+            deleteButton.setStyleName("btn btn-default fa fa-trash fa-lg");
+        } else {
+            deleteButton.setStyleName("btn btn-default disabled fa fa-trash fa-lg");
+        }
         deleteButton.setTitle(CLICK_TO_DELETE_LIBRARY_TITLE);
     }
 

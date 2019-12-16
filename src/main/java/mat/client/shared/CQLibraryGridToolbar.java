@@ -7,12 +7,11 @@ import mat.model.cql.CQLLibraryDataSetObject;
 public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
     public static final String CLICK_TO_CREATE_VERSION_DRAFT_TITLE = "Click to create Version/Draft";
-    public static final String CREATE_VERSION_DRAFT_TEXT = "Create Version/Draft";
-
-    public static final String HISTORY_TEXT = "History";
-    public static final String EDIT_TEXT = "Edit";
-    public static final String SHARE_TEXT = "Share";
-    public static final String DELETE_TEXT = "Delete";
+    public static final String CREATE_VERSION_DRAFT_TEXT = " Create Version/Draft";
+    public static final String HISTORY_TEXT = " History";
+    public static final String EDIT_TEXT = " Edit";
+    public static final String SHARE_TEXT = " Share";
+    public static final String DELETE_TEXT = " Delete";
 
     public static final String CLICK_TO_VIEW_HISTORY_TITLE = "Click to view history";
     public static final String CLICK_TO_EDIT_TITLE = "Click to edit";
@@ -109,11 +108,11 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
         versionButton.setEnabled(true);
         if (selectedItem.isDraftable()) {
-            versionButton.setText("Create Draft");
+            versionButton.setText(" Create Draft");
             versionButton.setStyleName("btn btn-default fa fa-pencil-square-o fa-lg");
             versionButton.setTitle("Click to create draft");
         } else {
-            versionButton.setText("Create Version");
+            versionButton.setText(" Create Version");
             versionButton.setStyleName("btn btn-default fa fa-star fa-lg");
             versionButton.setTitle("Click to create version");
         }

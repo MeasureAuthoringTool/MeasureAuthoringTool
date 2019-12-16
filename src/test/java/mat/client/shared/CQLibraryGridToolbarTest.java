@@ -32,7 +32,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.applyDefault();
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default disabled fa fa-star fa-lg"));
-        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq("Create Version/Draft"));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq(" Create Version/Draft"));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to create Version/Draft"));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setWidth(Mockito.eq("135px"));
     }
@@ -42,7 +42,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.applyDefault();
         Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default disabled fa fa-clock-o fa-lg"));
-        Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setText(Mockito.eq("History"));
+        Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setText(Mockito.eq(" History"));
         Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to view history"));
         Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setWidth(Mockito.eq("69px"));
     }
@@ -52,7 +52,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.applyDefault();
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default disabled fa fa-trash fa-lg"));
-        Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setText(Mockito.eq("Delete"));
+        Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setText(Mockito.eq(" Delete"));
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to delete library"));
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setWidth(Mockito.eq("63px"));
     }
@@ -62,7 +62,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.applyDefault();
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default disabled fa fa-pencil fa-lg"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
+        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq(" Edit"));
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to edit"));
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setWidth(Mockito.eq("53px"));
     }
@@ -72,7 +72,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.applyDefault();
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default disabled fa fa-share-square fa-lg"));
-        Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setText(Mockito.eq("Share"));
+        Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setText(Mockito.eq(" Share"));
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to share"));
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setWidth(Mockito.eq("60px"));
     }
@@ -84,7 +84,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default fa fa-star fa-lg"));
-        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq("Create Version"));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq(" Create Version"));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to create version"));
     }
 
@@ -96,7 +96,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default fa fa-pencil-square-o fa-lg"));
-        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq("Create Draft"));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq(" Create Draft"));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to create draft"));
     }
 
@@ -108,7 +108,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default fa fa-clock-o fa-lg"));
-        Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setText(Mockito.eq("History"));
+        Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setText(Mockito.eq(" History"));
         Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to view history"));
     }
 
@@ -119,7 +119,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default disabled fa fa-share-square fa-lg"));
-        Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setText(Mockito.eq("Share"));
+        Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setText(Mockito.eq(" Share"));
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to share"));
     }
 
@@ -131,7 +131,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default fa fa-share-square fa-lg"));
-        Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setText(Mockito.eq("Share"));
+        Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setText(Mockito.eq(" Share"));
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to share"));
     }
 
@@ -142,7 +142,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default disabled fa fa-trash fa-lg"));
-        Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setText(Mockito.eq("Delete"));
+        Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setText(Mockito.eq(" Delete"));
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to delete library"));
     }
 
@@ -154,7 +154,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default fa fa-trash fa-lg"));
-        Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setText(Mockito.eq("Delete"));
+        Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setText(Mockito.eq(" Delete"));
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to delete library"));
     }
 
@@ -165,7 +165,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default disabled fa fa-newspaper-o fa-lg"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
+        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq(" Edit"));
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setTitle(Mockito.eq("Read-Only"));
     }
 
@@ -181,7 +181,7 @@ public class CQLibraryGridToolbarTest {
 
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default disabled fa fa-lock fa-lg"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
+        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq(" Edit"));
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setTitle(Mockito.eq("Library in use by lockerby@gmail.com"));
     }
 
@@ -193,7 +193,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setStyleName(Mockito.eq("btn btn-default fa fa-pencil fa-lg"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
+        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq(" Edit"));
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to edit"));
     }
 

@@ -8,6 +8,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -92,34 +93,60 @@ public class CQLLibraryResultTable {
         return table;
     }
 
+    @VisibleForTesting
     void addToolbarHandlers(CQLibraryGridToolbar gridToolbar, MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
         gridToolbar.getVersionButton().addClickHandler(event -> {
-            selectionModel.getSelectedSet().stream()
-                    .filter(cqlLib -> cqlLib.isDraftable() || cqlLib.isVersionable())
-                    .forEach(observer::onDraftOrVersionClick);
+            onDraftOrVersion(selectionModel);
         });
 
         gridToolbar.getHistoryButton().addClickHandler(event -> {
-            selectionModel.getSelectedSet().forEach(observer::onHistoryClicked);
+            onHistory(selectionModel);
         });
 
         gridToolbar.getEditButton().addClickHandler(event -> {
-            selectionModel.getSelectedSet().stream()
-                    .filter(cqlLib -> cqlLib.isEditable() && !cqlLib.isLocked())
-                    .forEach(observer::onEditClicked);
+            onEdit(selectionModel);
         });
 
         gridToolbar.getShareButton().addClickHandler(event -> {
-            selectionModel.getSelectedSet().stream()
-                    .filter(cqlLib -> cqlLib.isSharable())
-                    .forEach(observer::onShareClicked);
+            onShare(selectionModel);
         });
 
         gridToolbar.getDeleteButton().addClickHandler(event -> {
-            selectionModel.getSelectedSet().stream()
-                    .filter(cqlLib -> cqlLib.isDeletable())
-                    .forEach(observer::onDeleteClicked);
+            onDelete(selectionModel);
         });
+    }
+
+    @VisibleForTesting
+    void onDelete(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+        selectionModel.getSelectedSet().stream()
+                .filter(cqlLib -> cqlLib.isDeletable())
+                .forEach(observer::onDeleteClicked);
+    }
+
+    @VisibleForTesting
+    void onShare(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+        selectionModel.getSelectedSet().stream()
+                .filter(cqlLib -> cqlLib.isSharable())
+                .forEach(observer::onShareClicked);
+    }
+
+    @VisibleForTesting
+    void onEdit(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+        selectionModel.getSelectedSet().stream()
+                .filter(cqlLib -> cqlLib.isEditable() && !cqlLib.isLocked())
+                .forEach(observer::onEditClicked);
+    }
+
+    @VisibleForTesting
+    void onHistory(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+        selectionModel.getSelectedSet().forEach(observer::onHistoryClicked);
+    }
+
+    @VisibleForTesting
+    void onDraftOrVersion(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+        selectionModel.getSelectedSet().stream()
+                .filter(cqlLib -> cqlLib.isDraftable() || cqlLib.isVersionable())
+                .forEach(observer::onDraftOrVersionClick);
     }
 
     private SafeHtml getCQLLibraryNameColumnToolTip(CQLLibraryDataSetObject object) {

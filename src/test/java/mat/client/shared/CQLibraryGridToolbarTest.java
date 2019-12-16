@@ -1,4 +1,4 @@
-package mat.shared;
+package mat.client.shared;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,7 +8,6 @@ import org.mockito.Mockito;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import mat.client.shared.CQLibraryGridToolbar;
 import mat.model.LockedUserInfo;
 import mat.model.cql.CQLLibraryDataSetObject;
 
@@ -25,10 +24,8 @@ public class CQLibraryGridToolbarTest {
     private Button shareButton;
     @Mock(name = "deleteButton")
     private Button deleteButton;
-
     @InjectMocks
     private CQLibraryGridToolbar toolbar;
-
 
     @Test
     public void testApplyDefaultVersionButton() {
@@ -199,5 +196,6 @@ public class CQLibraryGridToolbarTest {
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
         Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to edit"));
     }
+
 
 }

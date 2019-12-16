@@ -1,7 +1,6 @@
 package mat.client.shared;
 
 import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -42,10 +41,9 @@ public class CQLLibraryResultTable {
         selectedCol.setFieldUpdater((int index, CQLLibraryDataSetObject object, Boolean value) -> {
             object.setSelected(value);
         });
-        if (MatContext.get().getMatOnFHIR().getFlagOn()) {
-            table.addColumn(selectedCol);
-            table.setColumnWidth(0, "45px");
-        }
+
+        table.addColumn(selectedCol);
+        table.setColumnWidth(0, "45px");
 
         // CQL Library Name Column
         Column<CQLLibraryDataSetObject, SafeHtml> cqlLibraryName = new Column<CQLLibraryDataSetObject, SafeHtml>(
@@ -77,7 +75,7 @@ public class CQLLibraryResultTable {
         };
         table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
 
-        //Library Model Type
+        // Library Model Type
         Column<CQLLibraryDataSetObject, SafeHtml> model = new Column<CQLLibraryDataSetObject, SafeHtml>(
                 new MatSafeHTMLCell()) {
             @Override
@@ -94,7 +92,7 @@ public class CQLLibraryResultTable {
         return table;
     }
 
-    private void addToolbarHandlers(CQLibraryGridToolbar gridToolbar, MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+    void addToolbarHandlers(CQLibraryGridToolbar gridToolbar, MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
         gridToolbar.getVersionButton().addClickHandler(event -> {
             selectionModel.getSelectedSet().stream()
                     .filter(cqlLib -> cqlLib.isDraftable() || cqlLib.isVersionable())

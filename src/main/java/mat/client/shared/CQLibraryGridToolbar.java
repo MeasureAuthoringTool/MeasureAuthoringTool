@@ -1,12 +1,29 @@
 package mat.client.shared;
 
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonGroup;
-import org.gwtbootstrap3.client.ui.constants.ButtonGroupSize;
 
+import com.google.gwt.user.client.ui.Button;
 import mat.model.cql.CQLLibraryDataSetObject;
 
-public class CQLibraryGridToolbar extends ButtonGroup {
+public class CQLibraryGridToolbar extends HorizontalFlowPanel {
+
+    public static final String CLICK_TO_CREATE_VERSION_DRAFT_TITLE = "Click to create Version/Draft";
+    public static final String CREATE_VERSION_DRAFT_TEXT = "Create Version/Draft";
+
+    public static final String HISTORY_TEXT = "History";
+    public static final String EDIT_TEXT = "Edit";
+    public static final String SHARE_TEXT = "Share";
+    public static final String DELETE_TEXT = "Delete";
+
+    public static final String CLICK_TO_VIEW_HISTORY_TITLE = "Click to view history";
+    public static final String CLICK_TO_EDIT_TITLE = "Click to edit";
+    public static final String CLICK_TO_SHARE_TITLE = "Click to share";
+    public static final String CLICK_TO_DELETE_LIBRARY_TITLE = "Click to delete library";
+
+    public static final String VERSION_STYLE_DISABLED = "btn btn-default disabled fa fa-star fa-lg";
+    public static final String HISTORY_STYLE_DISABLED = "btn btn-default disabled fa fa-clock-o fa-lg";
+    public static final String EDIT_STYLE_DISABLED = "btn btn-default disabled fa fa-pencil fa-lg";
+    public static final String SHARE_STYLE_DISABLED = "btn btn-default disabled fa fa-share-square fa-lg";
+    public static final String DELETE_STYLE_DISABLED = "btn btn-default disabled fa fa-trash fa-lg";
 
     private Button versionButton;
     private Button historyButton;
@@ -20,44 +37,47 @@ public class CQLibraryGridToolbar extends ButtonGroup {
         editButton = new Button();
         shareButton = new Button();
         deleteButton = new Button();
-        setSize(ButtonGroupSize.SMALL);
+        addStyleName("btn-group");
+        addStyleName("btn-group-sm");
         add(versionButton);
         add(historyButton);
         add(editButton);
         add(shareButton);
         add(deleteButton);
 
-
         applyDefault();
     }
 
     public void applyDefault() {
-        versionButton.setText("Create Version/Draft");
+        versionButton.setText(CREATE_VERSION_DRAFT_TEXT);
         versionButton.setEnabled(false);
-        versionButton.setStyleName("btn btn-default disabled fa fa-star fa-lg");
-        versionButton.setTitle("Click to create Version");
+        versionButton.setStyleName(VERSION_STYLE_DISABLED);
+        versionButton.setTitle(CLICK_TO_CREATE_VERSION_DRAFT_TITLE);
         versionButton.setWidth("135px");
 
-        historyButton.setText("History");
+        historyButton.setText(HISTORY_TEXT);
         historyButton.setEnabled(false);
-        historyButton.setStyleName("btn btn-default disabled fa fa-clock-o fa-lg");
-        historyButton.setTitle("Click to view history");
+        historyButton.setStyleName(HISTORY_STYLE_DISABLED);
+        historyButton.setTitle(CLICK_TO_VIEW_HISTORY_TITLE);
         historyButton.setWidth("69px");
 
-        editButton.setText("Edit");
+        editButton.setText(EDIT_TEXT);
         editButton.setEnabled(false);
-        editButton.setStyleName("btn btn-default disabled fa fa-pencil fa-lg");
+        editButton.setStyleName(EDIT_STYLE_DISABLED);
         editButton.setWidth("53px");
+        editButton.setTitle(CLICK_TO_EDIT_TITLE);
 
-        shareButton.setText("Share");
+        shareButton.setText(SHARE_TEXT);
         shareButton.setEnabled(false);
-        shareButton.setStyleName("btn btn-default disabled fa fa-share-square fa-lg");
+        shareButton.setStyleName(SHARE_STYLE_DISABLED);
         shareButton.setWidth("60px");
+        shareButton.setTitle(CLICK_TO_SHARE_TITLE);
 
-        deleteButton.setText("Delete");
+        deleteButton.setText(DELETE_TEXT);
         deleteButton.setEnabled(false);
-        deleteButton.setStyleName("btn btn-default disabled fa fa-trash fa-lg");
+        deleteButton.setStyleName(DELETE_STYLE_DISABLED);
         deleteButton.setWidth("63px");
+        deleteButton.setTitle(CLICK_TO_DELETE_LIBRARY_TITLE);
     }
 
     public Button getDeleteButton() {
@@ -99,40 +119,39 @@ public class CQLibraryGridToolbar extends ButtonGroup {
         }
 
         historyButton.setEnabled(true);
-        historyButton.setText("History");
+        historyButton.setText(HISTORY_TEXT);
         historyButton.setStyleName("btn btn-default fa fa-clock-o fa-lg");
-        historyButton.setTitle("History");
+        historyButton.setTitle(CLICK_TO_VIEW_HISTORY_TITLE);
 
         if (selectedItem.isEditable()) {
             if (selectedItem.isLocked()) {
-                editButton.setText("Edit");
+                editButton.setText(EDIT_TEXT);
                 editButton.setEnabled(false);
                 editButton.setStyleName("btn btn-default disabled fa fa-lock fa-lg");
                 editButton.setTitle("Library in use by " + selectedItem.getLockedUserInfo().getEmailAddress());
             } else {
-                editButton.setText("Edit");
+                editButton.setText(EDIT_TEXT);
                 editButton.setEnabled(true);
                 editButton.setStyleName("btn btn-default fa fa-pencil fa-lg");
-                editButton.setTitle("Click to edit");
+                editButton.setTitle(CLICK_TO_EDIT_TITLE);
             }
         } else {
-            editButton.setText("Edit");
+            editButton.setText(EDIT_TEXT);
             editButton.setEnabled(false);
             editButton.setStyleName("btn btn-default disabled fa fa-newspaper-o fa-lg");
             editButton.setTitle("Read-Only");
         }
 
-        shareButton.setText("Share");
-        shareButton.setEnabled(true);
+        shareButton.setText(SHARE_TEXT);
         shareButton.setEnabled(selectedItem.isSharable());
         shareButton.setStyleName("btn btn-default fa fa-share-square fa-lg");
-        shareButton.setTitle("Click to share");
+        shareButton.setTitle(CLICK_TO_SHARE_TITLE);
 
 
-        deleteButton.setText("Delete");
+        deleteButton.setText(DELETE_TEXT);
         deleteButton.setEnabled(true);
         deleteButton.setStyleName("btn btn-default fa fa-trash fa-lg");
-        deleteButton.setTitle("Click to delete library");
+        deleteButton.setTitle(CLICK_TO_DELETE_LIBRARY_TITLE);
     }
 
 }

@@ -62,10 +62,10 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
         sortProvider.addDataDisplay(cellTable);
         Label invisibleLabel = (Label) LabelBuilder
                 .buildInvisibleLabel(
-                        "recentActivitySummary", "In the following Recent Activity table, CQL Library Name is given in first column,"
-                                + " Version in second column, Create Version or Draft in third column,"
-                                + "History in fourth column, Share in fifth column");
-        cellTable.getElement().setAttribute("id", "MostRecentActivityCellTable");
+                        "recentActivitySummary", "In the following Recent Activity table, Measure selection is given in the first column,"
+                                + "CQL Library Name is given in second column,"
+                                + " Version in third column, "
+                                + "Model in fourth column");
         cellTable.getElement().setAttribute("aria-describedby", "recentActivitySummary");
         searchPanel.add(invisibleLabel);
 

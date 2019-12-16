@@ -39,9 +39,18 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	private boolean isVersionable;
 	private boolean isDeletable;
 	private String libraryModelType;
+	private long lastClick;
 
 	/** The cql errors. */
 	private List<CQLError> cqlErrors = new ArrayList<CQLError>();
+
+	public long getLastClick() {
+		return lastClick;
+	}
+
+	public void setLastClick(long lastClick) {
+		this.lastClick = lastClick;
+	}
 	
 	public boolean isLocked() {
 		return isLocked;

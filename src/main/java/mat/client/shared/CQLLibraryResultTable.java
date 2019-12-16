@@ -28,7 +28,7 @@ import mat.shared.ClickableSafeHtmlCell;
 public class CQLLibraryResultTable {
 
 	private Observer observer;
-	long lastClick = 0;
+	private final int DELAY_TIME = 500;
 
 	public CellTable<CQLLibraryDataSetObject> addColumnToTable(String Label, CellTable<CQLLibraryDataSetObject> table, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
 		Label cqlLibrarySearchHeader = new Label(Label);
@@ -68,16 +68,16 @@ public class CQLLibraryResultTable {
 				Single Click to select row and enable checkbox
 				Double Click to navigate to CQL Composer tab
 			*/
-			@Override
+            @Override
 			public void onBrowserEvent(Cell.Context context, Element elem, CQLLibraryDataSetObject object, NativeEvent event) {
-				if (lastClick < System.currentTimeMillis() - 500)
+				if (object.getLastClick() < System.currentTimeMillis() - DELAY_TIME)
 				{
 					object.setSelected(!object.isSelected());
 					selectionModel.setSelected(object, object.isSelected());
 				}else{
 					SelectionEvent.fire(fireEvent, object);
 				}
-				lastClick = System.currentTimeMillis();
+				object.setLastClick(System.currentTimeMillis());
 			}
 		};
 		table.addColumn(cqlLibraryName,
@@ -94,17 +94,17 @@ public class CQLLibraryResultTable {
 				Single Click to select row and enable checkbox
 				Double Click to navigate to CQL Composer tab
 			*/
-			@Override
-			public void onBrowserEvent(Cell.Context context, Element elem, CQLLibraryDataSetObject object, NativeEvent event) {
-				if (lastClick < System.currentTimeMillis() - 500)
-				{
-					object.setSelected(!object.isSelected());
-					selectionModel.setSelected(object, object.isSelected());
-				}else{
-					SelectionEvent.fire(fireEvent, object);
-				}
-				lastClick = System.currentTimeMillis();
-			}
+            @Override
+            public void onBrowserEvent(Cell.Context context, Element elem, CQLLibraryDataSetObject object, NativeEvent event) {
+                if (object.getLastClick() < System.currentTimeMillis() - DELAY_TIME)
+                {
+                    object.setSelected(!object.isSelected());
+                    selectionModel.setSelected(object, object.isSelected());
+                }else{
+                    SelectionEvent.fire(fireEvent, object);
+                }
+                object.setLastClick(System.currentTimeMillis());
+            }
 		};
 		table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
 
@@ -122,17 +122,17 @@ public class CQLLibraryResultTable {
 				Single Click to select row and enable checkbox
 				Double Click to navigate to CQL Composer tab
 			*/
-			@Override
-			public void onBrowserEvent(Cell.Context context, Element elem, CQLLibraryDataSetObject object, NativeEvent event) {
-				if (lastClick < System.currentTimeMillis() - 500)
-				{
-					object.setSelected(!object.isSelected());
-					selectionModel.setSelected(object, object.isSelected());
-				}else{
-					SelectionEvent.fire(fireEvent, object);
-				}
-				lastClick = System.currentTimeMillis();
-			}
+            @Override
+            public void onBrowserEvent(Cell.Context context, Element elem, CQLLibraryDataSetObject object, NativeEvent event) {
+                if (object.getLastClick() < System.currentTimeMillis() - DELAY_TIME)
+                {
+                    object.setSelected(!object.isSelected());
+                    selectionModel.setSelected(object, object.isSelected());
+                }else{
+                    SelectionEvent.fire(fireEvent, object);
+                }
+                object.setLastClick(System.currentTimeMillis());
+            }
 		};
 		if(MatContext.get().getMatOnFHIR().getFlagOn())
 			table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Model" + "</span>"));

@@ -590,7 +590,7 @@
                         </goals>
                     </execution>
 
-                    <!-- Check coverage rage for a release. Enable when we are ready-->
+                    <!-- Check coverage for a release. Enable when we are ready-->
                     <!--
                     <execution>
                         <id>jacoco-check</id>

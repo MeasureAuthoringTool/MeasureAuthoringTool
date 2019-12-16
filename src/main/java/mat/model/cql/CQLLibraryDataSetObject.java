@@ -39,18 +39,6 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	private boolean isVersionable;
 	private boolean isDeletable;
 	private String libraryModelType;
-	private boolean isCheckboxSelected = false;
-
-
-	public boolean isCheckboxSelected() {
-		return isCheckboxSelected;
-	}
-
-	public void setCheckboxSelected(boolean checkboxSelected) {
-		isCheckboxSelected = checkboxSelected;
-	}
-
-
 	/** The cql errors. */
 	private List<CQLError> cqlErrors = new ArrayList<CQLError>();
 	

@@ -1,22 +1,12 @@
 package mat.client.shared;
 
 import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.cell.client.*;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
 import mat.shared.model.util.MeasureDetailsUtil;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
-
-import com.google.gwt.cell.client.Cell.Context;
-import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -28,7 +18,6 @@ import mat.client.cql.CQLLibrarySearchView.Observer;
 import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ClickableSafeHtmlCell;
-import mat.shared.model.util.MeasureDetailsUtil;
 
 public class CQLLibraryResultTable {
 

@@ -1,12 +1,10 @@
 package mat.client;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -27,21 +25,7 @@ import mat.shared.model.util.MeasureDetailsUtil;
 
 public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserver {
 
-    class EnterKeyDownHandler implements KeyDownHandler {
-
-        private int i = 0;
-
-        public EnterKeyDownHandler(int index) {
-            i = index;
-        }
-
-        @Override
-        public void onKeyDown(KeyDownEvent event) {
-            if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                cqlComposerTabLayout.selectTab(i);
-            }
-        }
-    }
+    private static ContentWithHeadingWidget cqlComposerContent = new ContentWithHeadingWidget();
 
     MatTabLayoutPanel targetTabLayout;
     MatPresenter targetPresenter;
@@ -67,18 +51,10 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
         subSkipContentHolder.setFocus(true);
     }
 
-    /** The button bar. */
-    //private PreviousContinueButtonBar buttonBar = new PreviousContinueButtonBar();
-
     /**
      * The empty widget.
      */
     private SimplePanel emptyWidget = new SimplePanel();
-
-    /**
-     * The measure composer content.
-     */
-    private static ContentWithHeadingWidget cqlComposerContent = new ContentWithHeadingWidget();
 
     /**
      * The cql composer tab.
@@ -197,10 +173,13 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
         Mat.focusSkipLists("CqlComposer");
     }
 
-    /**
-     *
-     */
     public static void setContentHeading() {
+        String heading = buildHeading();
+        cqlComposerContent.setHeading(heading, "CqlComposer");
+    }
+
+    @VisibleForTesting
+    static String buildHeading() {
         String heading = MatContext.get().getCurrentCQLLibraryeName() + " ";
         String version = MatContext.get().getCurrentCQLLibraryVersion();
         // when a library is initialy created we need to explicitly create the heading
@@ -209,7 +188,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
         }
         String model = getHeadingLibraryModel();
         heading = heading + version + model;
-        cqlComposerContent.setHeading(heading, "CqlComposer");
+        return heading;
     }
 
     private static String getHeadingLibraryModel() {

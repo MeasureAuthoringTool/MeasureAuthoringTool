@@ -96,6 +96,7 @@ public class CQLLibrarySelectedEvent extends GwtEvent<CQLLibrarySelectedEvent.Ha
         this.cqlLibraryVersion = cqlLibraryVersion;
     }
 
+
     /**
      * Checks if is editable.
      *
@@ -177,6 +178,10 @@ public class CQLLibrarySelectedEvent extends GwtEvent<CQLLibrarySelectedEvent.Ha
 
     public String getLibraryModelType() {
         return libraryModelType;
+    }
+
+    public void setLibraryModelType(String libraryModelType) {
+        this.libraryModelType = libraryModelType;
     }
 
     public static class Builder {

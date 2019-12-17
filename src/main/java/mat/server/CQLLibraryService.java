@@ -253,7 +253,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(cqlLibrary.getVersion(),
                 cqlLibrary.getRevisionNumber(), cqlLibrary.isDraft());
         dataSetObject.setVersion(formattedVersion);
-        dataSetObject.setLibraryModelType(cqlLibrary.getLibraryModelType());
         dataSetObject.setEditable(MatContextServiceUtil.get()
                 .isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibrary.getId()));
 

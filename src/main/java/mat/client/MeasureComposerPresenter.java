@@ -13,6 +13,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -262,7 +263,8 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
         buttonBar.setPageNamesOnState();
     }
 
-    private String buildMeasureHeading(String currentMeasureId) {
+    @VisibleForTesting
+    static String buildMeasureHeading(String currentMeasureId) {
         String heading = "";
         if ((currentMeasureId != null) && !"".equals(currentMeasureId)) {
             heading = MatContext.get().getCurrentMeasureName() + " ";
@@ -280,7 +282,7 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
         return heading;
     }
 
-    private String getHeadingMeasureModel() {
+    private static String getHeadingMeasureModel() {
         String model = "";
         if (MatContext.get().getMatOnFHIR().getFlagOn()) {
             model = " (" + MeasureDetailsUtil.defaultTypeIfBlank(MatContext.get().getCurrentMeasureInfo().getMeasureModel()) + ")";

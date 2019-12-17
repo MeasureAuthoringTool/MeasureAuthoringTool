@@ -81,10 +81,7 @@ public class CQLLibraryResultTable {
                 new MatSafeHTMLCell()) {
             @Override
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
-                if (object.getLibraryModelType() != null && !object.getLibraryModelType().isEmpty())
-                    return CellTableUtility.getColumnToolTip(object.getLibraryModelType());
-                else
-                    return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.PRE_CQL);
+                return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.defaultTypeIfBlank(object.getLibraryModelType()));
             }
         };
         if (MatContext.get().getMatOnFHIR().getFlagOn())

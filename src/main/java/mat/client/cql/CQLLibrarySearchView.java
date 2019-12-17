@@ -248,7 +248,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 								+ "History in fourth column, Transfer Check box in fifth column");
 				table.getElement().setAttribute("id", "CQLLibrarySearchCellTable");
 				table.getElement().setAttribute("aria-describedby", "CQLLibraryTransferOwnershipSummary");
-				table.setColumnWidth(0, 50.0, Unit.PCT);
+				table.setColumnWidth(0, 6.0, Unit.PCT);
 				table.setColumnWidth(1, 15.0, Unit.PCT);
 				table.setColumnWidth(2, 15.0, Unit.PCT);
 				table.setColumnWidth(3, 5.0, Unit.PCT);
@@ -264,7 +264,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 								+ "History in fourth column, Share in fifth column");
 				table.getElement().setAttribute("id", "CQLLibrarySearchCellTable");
 				table.getElement().setAttribute("aria-describedby", "CQLLibrarySearchSummary");
-				table.setColumnWidth(0, 50.0, Unit.PCT);
+				table.setColumnWidth(0, 6.0, Unit.PCT);
 				table.setColumnWidth(1, 15.0, Unit.PCT);
 				table.setColumnWidth(2, 15.0, Unit.PCT);
 				table.setColumnWidth(3, 5.0, Unit.PCT);

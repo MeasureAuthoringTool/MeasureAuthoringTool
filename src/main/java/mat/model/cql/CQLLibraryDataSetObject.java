@@ -51,7 +51,7 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	public void setLastClick(long lastClick) {
 		this.lastClick = lastClick;
 	}
-	
+
 	public boolean isLocked() {
 		return isLocked;
 	}

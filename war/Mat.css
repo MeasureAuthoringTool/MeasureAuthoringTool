@@ -2951,3 +2951,7 @@ body {
 .width-14x {
     width: 14px;
 }
+
+.edit-state {
+    color: #6B97B8;
+}

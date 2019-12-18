@@ -50,7 +50,6 @@ body#main select, body#main input, body#main textarea {
 	padding:3px;
 	font-size:1.0em;
 	font-weight:bold;
-	
 }
 
 .userStatus {
@@ -79,7 +78,7 @@ body#main select, body#main input, body#main textarea {
 
 .marginTop{
 	margin-top: 10px;
-}	
+}
 .decorator{
 	border: 1px solid #C0C0C0;
 	}
@@ -139,14 +138,14 @@ left:50px;
 }
 
 .textEmptySpaces{
-	background-color: transparent; 
+	background-color: transparent;
 	border-color: transparent;
 	width:30px;
 	cursor: hand;
 }
 
-#container{ 
-    width: 250px; 
+#container{
+    width: 250px;
 }
 
 #measureNameContainer{
@@ -169,7 +168,7 @@ left:50px;
 
 #div1{
     float: left;
-    width:30px; 
+    width:30px;
     margin-left: 0;
 }
 
@@ -179,18 +178,18 @@ left:50px;
 }
 
 #div3{
-    float:left; 
-    width:490px; 
+    float:left;
+    width:490px;
     margin-right:0;
 }
 
 
 .textAlign{
- text-align: justify;	
+ text-align: justify;
 }
 
 .transButtonWidth{
-	background-color: transparent; 
+	background-color: transparent;
 	border-color: transparent;
 	width:48px;
 }
@@ -201,7 +200,7 @@ left:50px;
 .textCssStyle{
 	font-size:70%;
     color:blue;
-    text-decoration:underline;	
+    text-decoration:underline;
     cursor: hand;
 }
 
@@ -243,7 +242,7 @@ left:50px;
 
 .secondLabel{
 	margin-left: 14px;
-	margin-right: 14px;	
+	margin-right: 14px;
 }
 
 .greySecondaryButton {
@@ -367,7 +366,7 @@ left:50px;
     background: url("images/addRight.png");
     background-position:center;
     background-repeat:no-repeat;
-    background-color:#D3D3D3; 
+    background-color:#D3D3D3;
     height: 25px;
     width: 30px;
     cursor: hand;
@@ -434,7 +433,7 @@ left:50px;
     border: 0px;
     font-size: 0;
     cursor: cursor;
-}  
+}
 .customCompositeEmptyCell{
 	cursor: text;
 }
@@ -498,21 +497,21 @@ left:50px;
     background-repeat: repeat-x;
     font-weight: normal;
     margin-left: 14px;
-}	
+}
 
 .primaryMetaDataButton{
 	background: url("images/bg_btnGrey-secondary.png");
     background-repeat: repeat-x;
     font-weight: normal;
     margin-top: 10px;
-}	
+}
 
 .secondaryButton {
     background: url("images/bg_btnGrey-secondary.png");
     background-repeat:repeat-x;
     font-weight: normal;
     margin-left: 14px;
- 
+
 }
 
 .AddCodeButton{
@@ -550,19 +549,19 @@ left:50px;
 	padding-right:2px;
 }
 .topBanner {
-	overflow: visible; 	 
+	overflow: visible;
 	background-image: url('images/hpgradient_small.jpg');
 	/* background-size: only supported by IE 9 and +*/
 	background-size: 100% 100%;
-	background-repeat: repeat-x;		
-	background-position: left top;	
+	background-repeat: repeat-x;
+	background-position: left top;
     padding-left:25px;
     padding-right:5px;
-    -moz-box-sizing: border-box; 
-    margin-top: 2px; 
-    margin-right: 2px; 
-    margin-bottom: 10px; 
-    width:100%;   
+    -moz-box-sizing: border-box;
+    margin-top: 2px;
+    margin-right: 2px;
+    margin-bottom: 10px;
+    width:100%;
 }
 
 .versionBanner{
@@ -601,12 +600,12 @@ left:50px;
 	clear: both;
     margin: auto;
     width: 100%;
-    
+
 }
 .footerLogo{
 	background: none repeat scroll left center #A8B0B3;
     padding:40px 40px 10px;
-	
+
 }
 .footerLogo-Right {
     float: right;
@@ -614,8 +613,8 @@ left:50px;
     top:-12px ;
     left:110px;
     padding-right: 15%;
-    padding-left: 25px; 
-    
+    padding-left: 25px;
+
 }
 .footer-address-text {
 	font: 0.8em/1.5em Arial;
@@ -624,7 +623,7 @@ left:50px;
     margin-left: 20px;
     margin-top: -2px;
     padding-left: 5px;
-    
+
 }
 .footer-nav {
 	background: url('images/hpgradient.jpg') repeat scroll 0 0 #FFFFFF;
@@ -640,9 +639,9 @@ left:50px;
     color: #000044;
     font: bold 1em Arial,Helvetica,sans-serif;
     margin: 0;
-    padding-top: 1px; 
+    padding-top: 1px;
     padding-left:10px;
-    padding-bottom: 5px; 
+    padding-bottom: 5px;
 }
 
 .footer-nav a:link,a:active {
@@ -651,9 +650,9 @@ left:50px;
     color:#002280;
     padding-left: 10px;
     padding-top: 5px;
-    padding-bottom: 5px; 
+    padding-bottom: 5px;
     text-decoration: none;
-    
+
 }
 /* .footer-nav a:hover,.footer-nav a:focus {
    color: #C00000;
@@ -663,14 +662,14 @@ left:50px;
 .footer-nav a:hover {
    color: #C00000;
    text-decoration: underline;
-} 
+}
 .footer-nav a:visited{
     font:  0.85em sans-serif;
     /* color: #105191; */
     color:#002280;
     padding-left: 10px;
     padding-top: 5px;
-    padding-bottom: 5px; 
+    padding-bottom: 5px;
     text-decoration: none;
 }
 
@@ -724,9 +723,9 @@ left:50px;
       text-align: left;
       margin-left:14px;
       margin-right:14px;
-      
+
  }
- 
+
  .measurePackagerSupplementalDatascrollable {
       height: 200px;
       width: 200px;
@@ -735,7 +734,7 @@ left:50px;
       margin-right:14px;
       margin-top:3px;
  }
- 
+
   .measurePackageCellListscrollable {
       height: 200px;
       width: 220px;
@@ -745,7 +744,7 @@ left:50px;
       margin-right:14px;
       margin-top:3px;
  }
- 
+
  .qdmCellList{
  	margin-top:-12px;
  	margin-left:10px;
@@ -762,7 +761,7 @@ left:50px;
     font-size: small;
     margin: 0;
     padding-bottom: 4px;
-} 
+}
 
 .custom-footer-nav ul {
     margin: 0;
@@ -806,7 +805,7 @@ left:50px;
     margin-left: 15px;
     padding: 3px 5px;
     text-decoration: none;
-	
+
 }
 .alertMessage {
 	position:relative;
@@ -830,8 +829,6 @@ left:50px;
     margin: 2px auto 14px;
     padding-left: 5px;
     text-align: left;
-	
-	
 }
 .gwt-PopupPanelGlass {
   background-color: #000;
@@ -842,7 +839,6 @@ left:50px;
 /* .gwt-DialogBox{
 	width:950px;
 	height:950px;
-	
 } */
 .gwt-DialogBox .Caption {
   font-weight: bold;
@@ -873,9 +869,9 @@ left:50px;
     border: 1px solid #ACDFA7;
     display: block;
     font-weight: bold;
-    margin: 2px auto -5px;    
-    padding: 6px 6px 0 6px; 
-    text-align: left;    
+    margin: 2px auto -5px;
+    padding: 6px 6px 0 6px;
+    text-align: left;
 }
 .successMessageCommentPanel {
     /*color: green;
@@ -952,7 +948,7 @@ left:50px;
 .centered {
 	margin-top: 5%;
     margin-bottom: 10%;
-	margin-left:auto; 
+	margin-left:auto;
 	margin-right:auto;
 }
 .footerInfo {
@@ -974,7 +970,7 @@ left:50px;
     background-image: url("images/bg_box_header.png");
     color:#FFFFFF;
    /* width:300px;
-     margin-left:auto; 
+     margin-left:auto;
     margin-right:auto;
     font-weight: bold; */
     padding: 8px 15px;
@@ -984,7 +980,7 @@ left:50px;
     background-image: url("images/bg_box_header.png");
     color:#FFFFFF;
     width:300px;
-    margin-left:auto; 
+    margin-left:auto;
     margin-right:auto;
     font-weight: bold;
 }
@@ -995,12 +991,12 @@ left:50px;
 
 .loginContentPanel {
     /*
-    position: absolute; 
-    left: 349px; 
-    top: 124px; 
-    overflow: auto; 
-    width: 275px; 
-    height: 25px; 
+    position: absolute;
+    left: 349px;
+    top: 124px;
+    overflow: auto;
+    width: 275px;
+    height: 25px;
     */
     border: 1px solid #0964A2;
     -moz-box-sizing: border-box;
@@ -1011,7 +1007,7 @@ left:50px;
     width:300px;
     padding: 10px;
     font-size:.8em;
-    margin-left:auto; 
+    margin-left:auto;
     margin-right:auto;
 }
 
@@ -1025,7 +1021,7 @@ left:50px;
     width:700px;
     padding: 10px;
     font-size:.8em;
-    margin-left:auto; 
+    margin-left:auto;
     margin-right:auto;
 }
 
@@ -1039,7 +1035,7 @@ left:50px;
     width:250px;
     padding: 10px;
     font-size:.8em;
-    margin-left:auto; 
+    margin-left:auto;
     margin-right:auto;
     margin-top:10px;
 }
@@ -1121,7 +1117,7 @@ left:50px;
     border-style: solid;
     margin-left: 3px;
     font-weight: normal;
-} 
+}
 
 #matMainTabPanel .gwt-TabBarItem-selected {
     background-repeat: no-repeat;
@@ -1187,7 +1183,6 @@ left:50px;
 
 #matMainTabPanel #measureComposerTabLayout .contentPanel {
     border-top-width: 0px;
-   
 }
 #matMainTabPanel #measureComposerTabLayout  .gwt-TabBarFirst-wrapper {
 	display:none;
@@ -1207,7 +1202,7 @@ left:50px;
     margin-right: 2px;
     margin-left: 0px;
     font-weight: normal;
-} 
+}
 #matMainTabPanel #myAccountTabLayout .gwt-TabBarItem-selected {
 	background-image: none;
 	background-repeat:repeat-x;
@@ -1215,11 +1210,11 @@ left:50px;
     background-color: #0964A2;
     color: #ffffff;
     border: none;
-    font-weight: bold; 
-} 
+    font-weight: bold;
+}
  #matMainTabPanel #myAccountTabLayout .gwt-TabPanelBottom {
     border:none;
-} 
+}
 /****************************************
 * clause and measure library tabs
 *****************************************/
@@ -1243,7 +1238,7 @@ left:50px;
 	border:1px solid #C0C0C0;
     border-collapse:collapse;
     text-align: left;
-} 
+}
 
 .searchResultsTable td {
 	border:1px solid #C0C0C0;
@@ -1303,14 +1298,14 @@ left:50px;
 	font-weight: bold;
 }
 .standAloneLockedLabel {
-	color: #0964A2; 
-	font-size: small; 
+	color: #0964A2;
+	font-size: small;
 	margin-left: 2px;
 }
 .standAloneLockedWidget{
 	/* right: 230px; */
-	margin-left:520px; 
-	overflow: scroll; 
+	margin-left:520px;
+	overflow: scroll;
 	/* margin-top: -12px;  */
 	position: absolute;
 }
@@ -1338,7 +1333,7 @@ padding: 2px;
 }
 .searchResultsPageSelector div.spacer {
     width: 5px;
-}   
+}
 
 .logoutPanel{
 	float: right;
@@ -1367,7 +1362,7 @@ padding: 2px;
 	padding: 7px 0 0 4px;
 	position: relative;
 	text-align:left;
-	font-size:small;	
+	font-size:small;
 }
 .logoutAndUMLSPanel{
 	float: right;
@@ -1379,7 +1374,7 @@ padding: 2px;
   width: 150px;
   height: 50px;
   padding: 5px;
-  position: absolute; 
+  position: absolute;
   left:50%;
   top:50%;
 }
@@ -1403,7 +1398,7 @@ padding: 2px;
   border: 1px solid #000000;
   padding: 3px;
   margin: 3px;
-  font-weight: normal;  
+  font-weight: normal;
 }
 
 
@@ -1428,25 +1423,25 @@ padding: 2px;
 	 float: right;
 	}
 .elementSummary{
-      padding: 4px;	
+      padding: 4px;
 	}
 
 .codeListMenuPanel {
     color:#FFFFFF;
-    margin-left:auto; 
+    margin-left:auto;
     margin-right:auto;
     font-weight: bold;
-    
+
      border-bottom:1px solid #C0C0C0;
     border-left:1px solid #C0C0C0;
     border-right:1px solid #C0C0C0;
     -moz-box-sizing:border-box;
-    
+
     margin: 5px;
 }
 
 .codeListStyle{
-     margin-left: 30%	
+     margin-left: 30%
 }
 .codeListLink{
 	  padding-right: 10%;
@@ -1536,7 +1531,7 @@ padding: 2px;
      position: relative;
      width: 590px;
      padding-bottom: 10px;
-    
+
 }
 .contentWithHeadingHeader h1 {
 	font-size:1.2em;
@@ -1622,8 +1617,8 @@ padding: 2px;
 	width: 90%;
 }
 .qdsScroll{
-	overflow-x: hidden; 
-	overflow-y: auto; 
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 .block {
@@ -1665,7 +1660,6 @@ padding: 2px;
 }
 
 .tabPanel {
-    
     overflow:visible;
     padding-top:5px;
     padding-bottom:5px;
@@ -1797,12 +1791,12 @@ padding: 2px;
 .div-wrapper{
 	width: 920px;
 	position: relative;
-	overflow: hidden; 
+	overflow: hidden;
 }
 
 .div-first{
-	width: 600px; 
-	overflow:hidden; 
+	width: 600px;
+	overflow:hidden;
 	float: left;
 }
 
@@ -1816,7 +1810,7 @@ padding: 2px;
     background-repeat:repeat-x;
 	overflow:hidden;
   	margin-top: 5px;
-  	padding: 2px 5px 5px 5px;	
+  	padding: 2px 5px 5px 5px;
 }
 
 .div-second-comment-box{
@@ -1840,7 +1834,7 @@ padding: 2px;
     margin-bottom:-10px;
 }
 .expandAllButton {
-   background-color:white; 
+   background-color:white;
    background: url("images/expandall.png") no-repeat;
    height:30px;
    width:20px ;
@@ -1856,7 +1850,6 @@ padding: 2px;
     margin-top: 10px;
     outline-color: white;
     width: 20px;
-   
 }
 
 .clauseLibraryLabel{
@@ -1864,7 +1857,7 @@ padding: 2px;
 }
 .popupMenuBar{
 	background: #888888;
-	box-shadow: 2px 2px 4px #888888; 
+	box-shadow: 2px 2px 4px #888888;
 	font-weight: normal;
 	font-size: 0.75em;
 	padding: 2px;
@@ -1876,9 +1869,9 @@ padding: 2px;
   border-width: 1px 3px 3px 1px;
   border-style: solid solid solid solid;
 }
- 
+
 .gwt-MenuBar {
-  cursor: default !important;  
+  cursor: default !important;
 }
 .gwt-MenuBar .gwt-MenuItem {
   cursor: default !important;
@@ -1918,7 +1911,7 @@ padding: 2px;
 
 .buttonPadding {
 	padding-left: 10px;
-	padding-bottom: 5px	
+	padding-bottom: 5px
 }
 
 .searchWidgetMeasureLibrary{
@@ -1945,7 +1938,7 @@ padding: 2px;
     padding-top: 8px;
     padding-bottom: 8px;
     font-size:.8em;
-    margin-left:650px; 
+    margin-left:650px;
     margin-right:auto;
     margin-top:8px;
 }
@@ -2022,12 +2015,12 @@ padding: 2px;
 }
 
 .recentSearchHeader{
-    background-color: #DCE9F5; 
+    background-color: #DCE9F5;
     font-weight: bold;
     padding: 5px;
     text-align:left;
-    color:#777; 
-   /*  background-color: #6B97B8; 
+    color:#777;
+   /*  background-color: #6B97B8;
 	font-size: small;
     font-weight: bold;
     color: white;
@@ -2035,13 +2028,13 @@ padding: 2px;
     text-align: left;*/
 }
 .filterDisclosurePanel{
-    margin-left:345px; 
+    margin-left:345px;
     margin-right:auto;
     margin-top:0.5px;
 }
 
 .measureLibraryFilterDisclosurePanel{
-    margin-left:80px; 
+    margin-left:80px;
     margin-right:auto;
     margin-top:0.5px;
 }
@@ -2056,7 +2049,7 @@ padding: 2px;
     padding-right: 10px;
     padding-top: 8px;
     font-size:.8em;
-    margin-left:85px; 
+    margin-left:85px;
     margin-right:auto;
     margin-top:8px;
 }
@@ -2145,7 +2138,7 @@ padding: 2px;
     padding-bottom: 8px;
     padding-top: 8px;
     font-size:.8em;
-    margin-left:85px; 
+    margin-left:85px;
     margin-right:auto;
     margin-top:8px;
 }
@@ -2180,7 +2173,7 @@ padding: 2px;
   /* background: url("images/hborder.png") repeat-x 0px -27px; */
   border: 0px outset #ccc;
   margin-left: 12px;
-  margin-right: 12px;	
+  margin-right: 12px;
   background-color: rgba(0, 0, 0, 0);
   background:transparent;
 }
@@ -2195,7 +2188,7 @@ padding: 2px;
   border-color: #9cf #69e #69e #7af;
 }
 .invisibleButtonText[disabled] {
-   cursor: default; 
+   cursor: default;
   color: #888;
 }
 .invisibleButtonText[disabled]:hover {
@@ -2208,7 +2201,7 @@ padding: 2px;
 	/* font-style:Italic; */
 }
 .imageMiddleAlign{
-	vertical-align:middle;	
+	vertical-align:middle;
 }
 
 .clauseWorkSpaceInvalidNode{
@@ -2263,11 +2256,11 @@ padding: 2px;
 }
 
 .bottom_border_inset{
-	border-bottom: 2px inset #B0B0B0;	
+	border-bottom: 2px inset #B0B0B0;
 }
 
 .top_border_outset{
-	border-top: 2px inset #B0B0B0;	
+	border-top: 2px inset #B0B0B0;
 }
 
 .right_left_border_outset{
@@ -2304,11 +2297,11 @@ padding: 2px;
 
 .notes_table_background{
 	background-color:white;
-    border-bottom: 2px inset #B0B0B0;	
+    border-bottom: 2px inset #B0B0B0;
 }
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________
-.skiplist {margin: 0 0 0 5px; padding: 0} 
+.skiplist {margin: 0 0 0 5px; padding: 0}
 .skip {display: none; font-family: verdana, sans-serif; text-align: center; margin: 0; padding: 0; position: absolute} /*All incl Opera*/
 /* * html */ .skip {display: block} /*Seen by IE*/
 :root .skip {display: block} /*Seen by Moz, FF and Safari*/
@@ -2408,7 +2401,7 @@ padding: 2px;
    /*  padding-left: 2px;
     padding-top: 2px; */
 }
- 
+
 .textInput-watermark {
    /* background-image: url('images/overlay.gif');
    background-repeat: no-repeat;
@@ -2416,7 +2409,7 @@ padding: 2px;
    vertical-align: middle; */
    border: 1px solid #C9C7BA;
     font-family:Tahoma, Verdana, Arial, Helvetica, sans-serif;
-   /*  font-size: 11px; 
+   /*  font-size: 11px;
    font-style: italic;*/
    color: darkgray;
 }
@@ -2492,7 +2485,7 @@ padding: 2px;
 }
 
 .measureDetailLabelStyle{
-    background-color: #DCE9F5; 
+    background-color: #DCE9F5;
     font-weight: bold;
     padding: 5px;
     width: 650px;
@@ -2501,7 +2494,7 @@ padding: 2px;
 }
 
 .measureDetailTableHeader{
-    background-color: #DCE9F5; 
+    background-color: #DCE9F5;
     font-weight: bold;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -2550,11 +2543,11 @@ padding: 2px;
 .cqlCrapDesign{
 	padding-top:20px;
 	padding-left:30px;
-	
+
 }
 .topping{
 	margin-top:15px;
-	
+
 }
 .cqlSubNavContainer {
     background-color: #FFFFFF;
@@ -2604,7 +2597,7 @@ padding: 2px;
     overflow:hidden;
     margin-top: 15px;
     margin-left:150px;
-    padding: 12px 15px 15px;   
+    padding: 12px 15px 15px;
 }
 .cqlCollapsable{
 	background-color:#F0F0F0;
@@ -2643,7 +2636,7 @@ padding: 2px;
     overflow:hidden;
     margin-top: 15px;
     margin-left:150px;
-    padding: 12px 15px 15px;   
+    padding: 12px 15px 15px;
 }
 .customBootStrapInputElement{
 	margin-left:5px;
@@ -2668,13 +2661,13 @@ padding: 2px;
 	background: yellow;
 	opacity:0.1;
 }
-.underline 
+.underline
 {
 	position:absolute;
 	color: blue;
 	border-bottom: 1px solid red;
-    text-decoration: underline; 
-    text-decoration-style: wavy; 
+    text-decoration: underline;
+    text-decoration-style: wavy;
 }
 .underline_squiggly {
 	position:absolute;
@@ -2704,8 +2697,8 @@ padding: 2px;
     padding: 5px 20px !important;
     text-decoration: none !important;
     width: 90px;
-    background: gray;!important 
-    -webkit-filter: grayscale(100%); 
+    background: gray;!important
+    -webkit-filter: grayscale(100%);
     filter: grayscale(100%);
 }
 
@@ -2954,4 +2947,12 @@ body {
 
 .edit-state {
     color: #6B97B8;
+}
+
+table#MostRecentActivityCellTable {
+    width: 100%;
+}
+
+.table td {
+    vertical-align: middle;
 }

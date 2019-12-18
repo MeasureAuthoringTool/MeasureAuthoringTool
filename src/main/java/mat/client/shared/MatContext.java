@@ -1442,7 +1442,7 @@ public class MatContext implements IsSerializable {
     }
 
     public void buildBonnieLink() {
-        BonnieServiceAsync bonnie = GWT.create(BonnieService.class);
+        BonnieServiceAsync bonnie = (BonnieServiceAsync) GWT.create(BonnieService.class);
 
         bonnie.getBonnieAccessLink(new AsyncCallback<String>() {
 

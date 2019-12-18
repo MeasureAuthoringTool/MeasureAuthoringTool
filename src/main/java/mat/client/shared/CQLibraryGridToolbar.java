@@ -1,28 +1,26 @@
 package mat.client.shared;
 
 
-import com.google.gwt.user.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+
+import com.google.gwt.core.client.GWT;
 import mat.model.cql.CQLLibraryDataSetObject;
 
 public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
     public static final String CLICK_TO_CREATE_VERSION_DRAFT_TITLE = "Click to create Version/Draft";
-    public static final String CREATE_VERSION_DRAFT_TEXT = " Create Version/Draft";
-    public static final String HISTORY_TEXT = " History";
-    public static final String EDIT_TEXT = " Edit";
-    public static final String SHARE_TEXT = " Share";
-    public static final String DELETE_TEXT = " Delete";
+    public static final String CREATE_VERSION_DRAFT_TEXT = "Create Version/Draft";
+    public static final String HISTORY_TEXT = "History";
+    public static final String EDIT_TEXT = "Edit";
+    public static final String SHARE_TEXT = "Share";
+    public static final String DELETE_TEXT = "Delete";
 
     public static final String CLICK_TO_VIEW_HISTORY_TITLE = "Click to view history";
     public static final String CLICK_TO_EDIT_TITLE = "Click to edit";
     public static final String CLICK_TO_SHARE_TITLE = "Click to share";
     public static final String CLICK_TO_DELETE_LIBRARY_TITLE = "Click to delete library";
-
-    public static final String VERSION_STYLE_DISABLED = "btn btn-default disabled fa fa-star fa-lg";
-    public static final String HISTORY_STYLE_DISABLED = "btn btn-default disabled fa fa-clock-o fa-lg";
-    public static final String EDIT_STYLE_DISABLED = "btn btn-default disabled fa fa-pencil fa-lg";
-    public static final String SHARE_STYLE_DISABLED = "btn btn-default disabled fa fa-share-square fa-lg";
-    public static final String DELETE_STYLE_DISABLED = "btn btn-default disabled fa fa-trash fa-lg";
 
     private Button versionButton;
     private Button historyButton;
@@ -31,11 +29,11 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
     private Button deleteButton;
 
     public CQLibraryGridToolbar() {
-        versionButton = new Button();
-        historyButton = new Button();
-        editButton = new Button();
-        shareButton = new Button();
-        deleteButton = new Button();
+        versionButton = GWT.create(Button.class);
+        historyButton = GWT.create(Button.class);
+        editButton = GWT.create(Button.class);
+        shareButton = GWT.create(Button.class);
+        deleteButton = GWT.create(Button.class);
         addStyleName("btn-group");
         addStyleName("btn-group-sm");
         add(versionButton);
@@ -49,33 +47,39 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
     public void applyDefault() {
         versionButton.setText(CREATE_VERSION_DRAFT_TEXT);
+        versionButton.setType(ButtonType.DEFAULT);
         versionButton.setEnabled(false);
-        versionButton.setStyleName(VERSION_STYLE_DISABLED);
+//        versionButton.setStyleName(VERSION_STYLE_DISABLED);
+        versionButton.setIcon(IconType.STAR);
         versionButton.setTitle(CLICK_TO_CREATE_VERSION_DRAFT_TITLE);
-        versionButton.setWidth("135px");
+        versionButton.setWidth("146px");
 
         historyButton.setText(HISTORY_TEXT);
+        historyButton.setType(ButtonType.DEFAULT);
         historyButton.setEnabled(false);
-        historyButton.setStyleName(HISTORY_STYLE_DISABLED);
+        historyButton.setIcon(IconType.CLOCK_O);
         historyButton.setTitle(CLICK_TO_VIEW_HISTORY_TITLE);
-        historyButton.setWidth("69px");
+        historyButton.setWidth("73px");
 
         editButton.setText(EDIT_TEXT);
+        editButton.setType(ButtonType.DEFAULT);
         editButton.setEnabled(false);
-        editButton.setStyleName(EDIT_STYLE_DISABLED);
-        editButton.setWidth("53px");
+        editButton.setIcon(IconType.PENCIL);
+        editButton.setWidth("57px");
         editButton.setTitle(CLICK_TO_EDIT_TITLE);
 
         shareButton.setText(SHARE_TEXT);
+        shareButton.setType(ButtonType.DEFAULT);
         shareButton.setEnabled(false);
-        shareButton.setStyleName(SHARE_STYLE_DISABLED);
-        shareButton.setWidth("60px");
+        shareButton.setIcon(IconType.SHARE_SQUARE);
+        shareButton.setWidth("68px");
         shareButton.setTitle(CLICK_TO_SHARE_TITLE);
 
         deleteButton.setText(DELETE_TEXT);
+        deleteButton.setType(ButtonType.DEFAULT);
         deleteButton.setEnabled(false);
-        deleteButton.setStyleName(DELETE_STYLE_DISABLED);
-        deleteButton.setWidth("63px");
+        deleteButton.setIcon(IconType.TRASH);
+        deleteButton.setWidth("70px");
         deleteButton.setTitle(CLICK_TO_DELETE_LIBRARY_TITLE);
     }
 
@@ -108,56 +112,48 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
         versionButton.setEnabled(true);
         if (selectedItem.isDraftable()) {
-            versionButton.setText(" Create Draft");
-            versionButton.setStyleName("btn btn-default fa fa-pencil-square-o fa-lg");
+            versionButton.setText("Create Draft");
+            versionButton.setIcon(IconType.PENCIL_SQUARE_O);
             versionButton.setTitle("Click to create draft");
         } else {
-            versionButton.setText(" Create Version");
-            versionButton.setStyleName("btn btn-default fa fa-star fa-lg");
+            versionButton.setText("Create Version");
+            versionButton.setIcon(IconType.STAR);
             versionButton.setTitle("Click to create version");
         }
 
         historyButton.setEnabled(true);
         historyButton.setText(HISTORY_TEXT);
-        historyButton.setStyleName("btn btn-default fa fa-clock-o fa-lg");
+        historyButton.setIcon(IconType.CLOCK_O);
         historyButton.setTitle(CLICK_TO_VIEW_HISTORY_TITLE);
 
         if (selectedItem.isEditable()) {
             if (selectedItem.isLocked()) {
                 editButton.setText(EDIT_TEXT);
                 editButton.setEnabled(false);
-                editButton.setStyleName("btn btn-default disabled fa fa-lock fa-lg");
+                editButton.setIcon(IconType.LOCK);
                 editButton.setTitle("Library in use by " + selectedItem.getLockedUserInfo().getEmailAddress());
             } else {
                 editButton.setText(EDIT_TEXT);
                 editButton.setEnabled(true);
-                editButton.setStyleName("btn btn-default fa fa-pencil fa-lg");
+                editButton.setIcon(IconType.PENCIL);
                 editButton.setTitle(CLICK_TO_EDIT_TITLE);
             }
         } else {
             editButton.setText(EDIT_TEXT);
             editButton.setEnabled(false);
-            editButton.setStyleName("btn btn-default disabled fa fa-newspaper-o fa-lg");
+            editButton.setIcon(IconType.NEWSPAPER_O);
             editButton.setTitle("Read-Only");
         }
 
         shareButton.setText(SHARE_TEXT);
         shareButton.setEnabled(selectedItem.isSharable());
-        if (selectedItem.isSharable()) {
-            shareButton.setStyleName("btn btn-default fa fa-share-square fa-lg");
-        } else {
-            shareButton.setStyleName("btn btn-default disabled fa fa-share-square fa-lg");
-        }
+        shareButton.setIcon(IconType.SHARE_SQUARE);
         shareButton.setTitle(CLICK_TO_SHARE_TITLE);
 
 
         deleteButton.setText(DELETE_TEXT);
         deleteButton.setEnabled(selectedItem.isDeletable());
-        if (selectedItem.isDeletable()) {
-            deleteButton.setStyleName("btn btn-default fa fa-trash fa-lg");
-        } else {
-            deleteButton.setStyleName("btn btn-default disabled fa fa-trash fa-lg");
-        }
+        deleteButton.setIcon(IconType.TRASH);
         deleteButton.setTitle(CLICK_TO_DELETE_LIBRARY_TITLE);
     }
 

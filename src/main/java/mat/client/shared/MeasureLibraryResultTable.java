@@ -215,7 +215,7 @@ public class MeasureLibraryResultTable {
 				public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
 					if (object.isClonable())
 						Mat.showLoadingMessage();
-						observer.onCloneClicked(object);
+                    observer.onCloneClicked(object);
 				}
 			});
 			table.addColumn(cloneColumn, SafeHtmlUtils.fromSafeConstant("<span title='Clone'>" + "Clone" + "</span>"));

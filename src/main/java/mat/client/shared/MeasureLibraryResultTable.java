@@ -28,7 +28,6 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.MultiSelectionModel;
-
 import mat.client.Mat;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -94,11 +93,8 @@ public class MeasureLibraryResultTable {
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-			    if(object.getMeasureModel() != null && !object.getMeasureModel().isEmpty())
-				    return CellTableUtility.getColumnToolTip(object.getMeasureModel());
-			    else
-                    return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.PRE_CQL);
-			}
+				return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.defaultTypeIfBlank(object.getMeasureModel()));
+			};
 		};
 		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
 			table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Model" + "</span>"));
@@ -129,8 +125,7 @@ public class MeasureLibraryResultTable {
 					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Version</span>");
 					sb.appendHtmlConstant("</button>");
 				}
-
-				}
+			}
 
 			@Override
 			public void onBrowserEvent(Context context, Element elem, ManageMeasureSearchModel.Result object,

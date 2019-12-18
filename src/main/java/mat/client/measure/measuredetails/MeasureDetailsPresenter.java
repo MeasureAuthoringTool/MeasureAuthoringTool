@@ -285,12 +285,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	private void addEventHandlers() {
 		HandlerManager eventBus = MatContext.get().getEventBus();
-		eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {
-			@Override
-			public void onMeasureSelected(MeasureSelectedEvent event) {
-				MatContext.get().fireMeasureEditEvent();
-			}
-		});
+		eventBus.addHandler(MeasureSelectedEvent.TYPE, event -> MatContext.get().fireMeasureEditEvent());
 		measureDetailsView.getDeleteMeasureButton().addClickHandler(event -> handleDeleteMeasureButtonClick());
 		measureDetailsView.getSaveButton().addClickHandler(event -> handleSaveButtonClick());
 		measureDetailsView.getCancelButton().addClickHandler(event -> handleCancelButtonClick());

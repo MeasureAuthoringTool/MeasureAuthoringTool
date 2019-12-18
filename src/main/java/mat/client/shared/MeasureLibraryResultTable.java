@@ -41,7 +41,7 @@ public class MeasureLibraryResultTable {
 	private static final int CHECKBOX_COLUMN_WIDTH = 4;
 	private static final int VERSION_COLUMN_WIDTH = 8;
 	private static final int MODEL_COLUMN_WIDTH = 10;
-	private final int MOUSE_CLICK_DELAY = 300;
+	private static final int MOUSE_CLICK_DELAY = 300;
 	private Timer singleClickTimer;
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
 	private CellTable<ManageMeasureSearchModel.Result> table;

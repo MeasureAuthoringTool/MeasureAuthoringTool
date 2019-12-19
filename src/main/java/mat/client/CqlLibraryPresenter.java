@@ -17,8 +17,6 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -723,8 +721,20 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                 setIsPageDirty(false);
                 showSearchingBusy(false);
                 resultToFireEvent = result;
-                fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), result.isEditable(), false,
-                        null, "", "", true); //true because the library is being saved so it is a draft
+
+                CQLLibrarySelectedEvent event = CQLLibrarySelectedEvent.Builder.newBuilder()
+                        .withCqlLibraryId(result.getId())
+                        .withCqlLibraryVersion(result.getVersionStr())
+                        .withLibraryName(result.getCqlLibraryName())
+                        .withEditable(result.isEditable())
+                        .withLocked(false)
+                        .withLockedUserId(null)
+                        .withLockedUserEmail("")
+                        .withLockedUserName("")
+                        .withDraft(true) //true because the library is being saved so it is a draft
+                        .withLibraryType(result.getLibraryModelType())
+                        .build();
+                fireCQLLibrarySelectedEvent(event);
                 fireCqlLibraryEditEvent();
                 MatContext.get().getAuditService().recordCQLLibraryEvent(resultToFireEvent.getId(), "Draft Created", "Draft created based on Version " + resultToFireEvent.getVersionStr(), false, new AsyncCallback<Boolean>() {
 
@@ -830,8 +840,21 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         String email = selectedItem.getLockedUserEmail(selectedItem.getLockedUserInfo());
         String userName = selectedItem.getLockedUserName(selectedItem.getLockedUserInfo());
         boolean isDraft = selectedItem.isDraft();
-        fireCQLLibrarySelectedEvent(selectedItem.getId(), selectedItem.getVersion(), selectedItem.getCqlName(), selectedItem.isEditable(), selectedItem.isLocked(),
-                userId, email, userName, isDraft);
+
+        CQLLibrarySelectedEvent event = CQLLibrarySelectedEvent.Builder.newBuilder()
+                .withCqlLibraryId(selectedItem.getId())
+                .withCqlLibraryVersion(selectedItem.getVersion())
+                .withLibraryName(selectedItem.getCqlName())
+                .withEditable(selectedItem.isEditable())
+                .withLocked(selectedItem.isLocked())
+                .withLockedUserId(userId)
+                .withLockedUserEmail(email)
+                .withLockedUserName(userName)
+                .withDraft(isDraft)
+                .withLibraryType(selectedItem.getLibraryModelType())
+                .build();
+
+        fireCQLLibrarySelectedEvent(event);
         fireCqlLibraryEditEvent();
     }
 
@@ -1076,8 +1099,21 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                     resultToFireEvent = result;
                     if (result.isSuccess()) {
                         setIsPageDirty(false);
-                        fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), result.isEditable(), false,
-                                null, "", "", true); //true because the library is being saved so it is a draft
+
+                        CQLLibrarySelectedEvent event = CQLLibrarySelectedEvent.Builder.newBuilder()
+                                .withCqlLibraryId(result.getId())
+                                .withCqlLibraryVersion(result.getVersionStr())
+                                .withLibraryName(result.getCqlLibraryName())
+                                .withEditable(result.isEditable())
+                                .withLocked(false)
+                                .withLockedUserId(null)
+                                .withLockedUserEmail("")
+                                .withLockedUserName("")
+                                .withDraft(true) //true because the library is being saved so it is a draft
+                                .withLibraryType(result.getLibraryModelType())
+                                .build();
+
+                        fireCQLLibrarySelectedEvent(event);
                         fireCqlLibraryEditEvent();
                         showDialogBox(MatContext.get().getMessageDelegate().getCreateNewLibrarySuccessfulMessage(detailDisplay.getName().getValue()));
                     } else {
@@ -1094,9 +1130,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         }
     }
 
-    private void fireCQLLibrarySelectedEvent(String id, String version,
-                                             String name, boolean isEditable, boolean isLocked, String lockedUserId, String lockedUserEmail, String lockedUserName, boolean isDraft) {
-        CQLLibrarySelectedEvent evt = new CQLLibrarySelectedEvent(id, version, name, isEditable, isLocked, lockedUserId, lockedUserEmail, lockedUserName, isDraft);
+    private void fireCQLLibrarySelectedEvent(CQLLibrarySelectedEvent evt) {
         cqlLibraryView.resetMessageDisplay();
         detailDisplay.getErrorMessage().clearAlert();
         MatContext.get().getEventBus().fireEvent(evt);
@@ -1111,25 +1145,13 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     }
 
     private void addCQLLibraryViewHandlers() {
-        cqlLibraryView.getCreateNewLibraryButton().addClickHandler(new ClickHandler() {
+        cqlLibraryView.getCreateNewLibraryButton().addClickHandler(event -> displayNewCQLLibraryWidget());
 
-            @Override
-            public void onClick(ClickEvent event) {
-                displayNewCQLLibraryWidget();
-            }
-
-        });
-
-        cqlLibraryView.getSearchFilterWidget().getSearchInput().addKeyUpHandler(new KeyUpHandler() {
-
-            @Override
-            public void onKeyUp(KeyUpEvent event) {
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                    cqlLibraryView.getSearchFilterWidget().getSearchButton().click();
-                }
+        cqlLibraryView.getSearchFilterWidget().getSearchInput().addKeyUpHandler(event -> {
+            if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                cqlLibraryView.getSearchFilterWidget().getSearchButton().click();
             }
         });
-
 
         cqlLibraryView.getSearchButton().addClickHandler(event -> onSearchButtonClick());
     }
@@ -1182,8 +1204,21 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     }
 
     private void displayEdit(CQLLibraryDataSetObject result) {
-        fireCQLLibrarySelectedEvent(result.getId(), result.getVersion(), result.getCqlName(), result.isEditable(), false,
-                null, "", "", result.isDraft());
+
+        CQLLibrarySelectedEvent event = CQLLibrarySelectedEvent.Builder.newBuilder()
+                .withCqlLibraryId(result.getId())
+                .withCqlLibraryVersion(result.getVersion())
+                .withLibraryName(result.getCqlName())
+                .withEditable(result.isEditable())
+                .withLocked(false)
+                .withLockedUserId(null)
+                .withLockedUserEmail("")
+                .withLockedUserName("")
+                .withDraft(result.isDraft())
+                .withLibraryType(result.getLibraryModelType())
+                .build();
+
+        fireCQLLibrarySelectedEvent(event);
         fireCqlLibraryEditEvent();
     }
 

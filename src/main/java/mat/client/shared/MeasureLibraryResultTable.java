@@ -47,18 +47,16 @@ public class MeasureLibraryResultTable {
     private static final int CHECKBOX_COLUMN_WIDTH = 4;
     private static final int VERSION_COLUMN_WIDTH = 8;
     private static final int MODEL_COLUMN_WIDTH = 10;
-    private final int MOUSE_CLICK_DELAY = 300;
+    private static final int MOUSE_CLICK_DELAY = 300;
     private Timer singleClickTimer;
     private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
     private CellTable<ManageMeasureSearchModel.Result> table;
-    private List<ManageMeasureSearchModel.Result> selectedList;
+    List<ManageMeasureSearchModel.Result> selectedList;
     private Observer observer;
 
     public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(String measureListLabel, CellTable<ManageMeasureSearchModel.Result> table, List<ManageMeasureSearchModel.Result> selectedList, boolean displayBulkExport, HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
         this.table = table;
         this.selectedList = selectedList;
-        final MeasureLibraryGridToolbar buttonBar = new MeasureLibraryGridToolbar();
-
         Label measureSearchHeader = new Label(measureListLabel);
         measureSearchHeader.getElement().setId("measureSearchHeader_Label");
         measureSearchHeader.setStyleName("recentSearchHeader");
@@ -69,10 +67,6 @@ public class MeasureLibraryResultTable {
 
         selectionModel = new MultiSelectionModel<>();
         table.setSelectionModel(selectionModel);
-
-        selectionModel.addSelectionChangeHandler(event -> {
-            buttonBar.updateOnSelectionChanged(selectionModel.getSelectedSet());
-        });
 
         Column<ManageMeasureSearchModel.Result, Boolean> checkColumn = getSelectionModelColumn();
         table.addColumn(checkColumn);
@@ -106,18 +100,16 @@ public class MeasureLibraryResultTable {
                 new MatSafeHTMLCell()) {
             @Override
             public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-                if (object.getMeasureModel() != null && !object.getMeasureModel().isEmpty())
-                    return CellTableUtility.getColumnToolTip(object.getMeasureModel());
-                else
-                    return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.PRE_CQL);
+                return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.defaultTypeIfBlank(object.getMeasureModel()));
             }
+
+            ;
         };
         if (MatContext.get().getMatOnFHIR().getFlagOn()) {
             table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Model" + "</span>"));
             table.setColumnWidth(model, MODEL_COLUMN_WIDTH, Style.Unit.PCT);
-
-            caption.appendChild(buttonBar.getElement());
         } else {
+            // TODO: else block will be removed in MAT-51 & MAT-56
             ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
             Column<ManageMeasureSearchModel.Result, String> draftOrVersionCol = new Column<ManageMeasureSearchModel.Result, String>(
                     buttonCell) {
@@ -142,7 +134,6 @@ public class MeasureLibraryResultTable {
                         sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Version</span>");
                         sb.appendHtmlConstant("</button>");
                     }
-
                 }
 
                 @Override
@@ -327,7 +318,7 @@ public class MeasureLibraryResultTable {
      * Clear bulk export check boxes.
      */
     public void clearBulkExportCheckBoxes() {
-        List<Result> displayedItems = new ArrayList<>();
+        List<Result> displayedItems = new ArrayList<Result>();
         displayedItems.addAll(selectedList);
         selectedList.clear();
         for (ManageMeasureSearchModel.Result msg : displayedItems) {
@@ -662,6 +653,4 @@ public class MeasureLibraryResultTable {
     public void setObserver(Observer observer) {
         this.observer = observer;
     }
-
-
 }

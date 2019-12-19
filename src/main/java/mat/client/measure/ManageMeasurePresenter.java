@@ -50,6 +50,7 @@ import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureCloningService;
 import mat.client.measure.service.MeasureCloningServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
@@ -363,7 +364,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     public void fireMeasureSelected(ManageMeasureSearchModel.Result result) {
         fireMeasureSelectedEvent(result.getId(), result.getVersion(), result.getName(),
                 result.getShortName(), result.getScoringType(), result.isEditable(),
-                result.isMeasureLocked(), result.getLockedUserId(result.getLockedUserInfo()), result.isDraft(), calculatePatientBased(result.isPatientBased(), result.getScoringType()));
+                result.isMeasureLocked(), result.getLockedUserId(result.getLockedUserInfo()), result.isDraft(), calculatePatientBased(result.isPatientBased(), result.getScoringType()), result.getMeasureModel());
         setSearchingBusy(false);
         isClone = false;
     }
@@ -715,8 +716,9 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         final String version = currentDetails.getVersionNumber() + "." + currentDetails.getRevisionNumber();
         final boolean isDraft = currentDetails.isDraft();
         final boolean isPatientBased = calculatePatientBased(currentDetails.isPatientBased(), scoringType);
+        final String measureModel = currentDetails.getMeasureModel();
 
-        postSaveMeasureEvents(true, measureId, detailDisplay, name, shortName, scoringType, version, isDraft, isPatientBased);
+        postSaveMeasureEvents(true, measureId, detailDisplay, name, shortName, scoringType, version, isDraft, isPatientBased, measureModel);
     }
 
     private void displaySuccessAndRedirectToComposite(String measureId) {
@@ -727,8 +729,9 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         final String version = currentCompositeMeasureDetails.getVersionNumber() + "." + currentCompositeMeasureDetails.getRevisionNumber();
         final boolean isDraft = currentCompositeMeasureDetails.isDraft();
         final boolean isPatientBased = calculatePatientBased(currentCompositeMeasureDetails.isPatientBased(), scoringType);
+        final String measureModel = currentCompositeMeasureDetails.getMeasureModel();
 
-        postSaveMeasureEvents(isInsert, measureId, compositeDetailDisplay, name, shortName, scoringType, version, isDraft, isPatientBased);
+        postSaveMeasureEvents(isInsert, measureId, compositeDetailDisplay, name, shortName, scoringType, version, isDraft, isPatientBased, measureModel);
     }
 
     private String displayErrorMessage(SaveMeasureResult result) {
@@ -986,9 +989,9 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void fireMeasureSelectedEvent(String id, String version, String name, String shortName, String scoringType,
-                                          boolean isEditable, boolean isLocked, String lockedUserId, boolean isDraft, boolean isPatientBased) {
+                                          boolean isEditable, boolean isLocked, String lockedUserId, boolean isDraft, boolean isPatientBased, String measureModel) {
         MeasureSelectedEvent evt = new MeasureSelectedEvent(id, version, name, shortName, scoringType, isEditable,
-                isLocked, lockedUserId, isDraft, isPatientBased);
+                isLocked, lockedUserId, isDraft, isPatientBased, measureModel);
         searchDisplay.resetMessageDisplay();
         MatContext.get().getEventBus().fireEvent(evt);
     }
@@ -1440,6 +1443,25 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
 
             @Override
+            public void onExportSelectedClicked(CustomCheckBox checkBox) {
+                resetMeasureFlags();
+                searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+                if (checkBox.getValue()) {
+                    if (manageMeasureSearchModel.getSelectedExportIds().size() > 89) {
+                        searchDisplay.getErrorMessageDisplayForBulkExport()
+                                .createAlert("Export file has a limit of 90 measures");
+                        searchDisplay.getExportSelectedButton().setFocus(true);
+                        checkBox.setValue(false);
+                    } else {
+                        manageMeasureSearchModel.getSelectedExportIds()
+                                .add(checkBox.getFormValue());
+                    }
+                } else {
+                    manageMeasureSearchModel.getSelectedExportIds().remove(checkBox.getFormValue());
+                }
+            }
+
+            @Override
             public void onHistoryClicked(ManageMeasureSearchModel.Result result) {
                 resetMeasureFlags();
                 historyDisplay.setReturnToLinkText("<< Return to Measure Library");
@@ -1577,6 +1599,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     final boolean isDraft = result.isDraft();
                     final String userId = result.getLockedUserId(result.getLockedUserInfo());
                     final boolean isPatientBased = calculatePatientBased(result.isPatientBased(), scoringType);
+                    final String measureModel = result.getMeasureModel();
 
                     MatContext.get().getMeasureLockService().isMeasureLocked(mid);
                     Command waitForLockCheck = new Command() {
@@ -1586,13 +1609,13 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                             if (!synchDel.isCheckingLock()) {
                                 if (!synchDel.measureIsLocked()) {
                                     fireMeasureSelectedEvent(mid, version, name, shortName, scoringType,
-                                            isEditable, isMeasureLocked, userId, isDraft, isPatientBased);
+                                            isEditable, isMeasureLocked, userId, isDraft, isPatientBased, measureModel);
                                     if (isEditable) {
                                         MatContext.get().getMeasureLockService().setMeasureLock();
                                     }
                                 } else {
                                     fireMeasureSelectedEvent(mid, version, name, shortName, scoringType, false,
-                                            isMeasureLocked, userId, isDraft, isPatientBased);
+                                            isMeasureLocked, userId, isDraft, isPatientBased, measureModel);
                                     if (isEditable) {
                                         MatContext.get().getMeasureLockService().setMeasureLock();
                                     }
@@ -1627,6 +1650,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     final boolean isDraft = result.isDraft();
                     final String userId = result.getLockedUserId(result.getLockedUserInfo());
                     final boolean isPatientBased = calculatePatientBased(result.isPatientBased(), scoringType);
+                    final String measureModel = result.getMeasureModel();
                     MatContext.get().getMeasureLockService().isMeasureLocked(mid);
                     Command waitForLockCheck = new Command() {
                         @Override
@@ -1635,13 +1659,13 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                             if (!synchDel.isCheckingLock()) {
                                 if (!synchDel.measureIsLocked()) {
                                     fireMeasureSelectedEvent(mid, version, name, shortName, scoringType,
-                                            isEditable, isMeasureLocked, userId, isDraft, isPatientBased);
+                                            isEditable, isMeasureLocked, userId, isDraft, isPatientBased, measureModel);
                                     if (isEditable) {
                                         MatContext.get().getMeasureLockService().setMeasureLock();
                                     }
                                 } else {
                                     fireMeasureSelectedEvent(mid, version, name, shortName, scoringType, false,
-                                            isMeasureLocked, userId, isDraft, isPatientBased);
+                                            isMeasureLocked, userId, isDraft, isPatientBased, measureModel);
                                     if (isEditable) {
                                         MatContext.get().getMeasureLockService().setMeasureLock();
                                     }
@@ -2088,12 +2112,12 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void postSaveMeasureEvents(boolean isInsert, String measureId, DetailDisplay detailDisplay,
-                                       String name, String shortName, String scoringType, String version, boolean isDraft, boolean isPatientBased) {
+                                       String name, String shortName, String scoringType, String version, boolean isDraft, boolean isPatientBased, String measureModel) {
 
 
         setIsPageDirty(false);
         if (isInsert) {
-            fireMeasureSelectedEvent(measureId, version, name, shortName, scoringType, true, false, null, isDraft, isPatientBased);
+            fireMeasureSelectedEvent(measureId, version, name, shortName, scoringType, true, false, null, isDraft, isPatientBased, measureModel);
             fireMeasureEditEvent();
             showConfirmationDialog(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
         } else {

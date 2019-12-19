@@ -56,7 +56,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 	private List<ManageMeasureSearchModel.Result> selectedMeasureList;
 	private HandlerManager handlerManager = new HandlerManager(this);
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
-	
+
 	private AdminObserver adminObserver;
 	private CellTable<ManageMeasureSearchModel.Result> table;
 	private Boolean even;
@@ -66,7 +66,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 	private int index;
 	private String measureListLabel;
 	private MeasureLibraryResultTable measureLibraryResultTable = new MeasureLibraryResultTable();
-	
+
 	List<ManageMeasureSearchModel.Result> selectedList;
 	/**
 	 * An asynchronous update interface for receiving notifications
@@ -76,7 +76,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 		void onHistoryClicked(ManageMeasureSearchModel.Result result);
 		void onTransferSelectedClicked(ManageMeasureSearchModel.Result result);
 	}
-	
+
 	public static interface Observer {
 		void onCloneClicked(ManageMeasureSearchModel.Result result);
 		void onShareClicked(ManageMeasureSearchModel.Result result);
@@ -109,7 +109,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 	 *
 	 * @param results the results
 	 * @param filter the filter
-	 * @param MeasureSearchModel 
+	 * @param MeasureSearchModel
 	 * 		which represents the model of the selections the user selected to do an advance search
 	 */
 	public void buildCellTable(ManageMeasureSearchModel results,final int filter, MeasureSearchModel model) {
@@ -140,25 +140,25 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 		          }
 		          @Override
 		          public void onSuccess(ManageMeasureSearchModel result) {
-		        	  List<ManageMeasureSearchModel.Result> manageMeasureSearchList = 
-		        			  new ArrayList<ManageMeasureSearchModel.Result>();		        	  
+		        	  List<ManageMeasureSearchModel.Result> manageMeasureSearchList =
+		        			  new ArrayList<ManageMeasureSearchModel.Result>();
 		        	  manageMeasureSearchList.addAll(result.getData());
 		        	  selectedMeasureList = manageMeasureSearchList;
 		        	  buildCellTableCssStyle();
 		            updateRowData(start, manageMeasureSearchList);
 		          }
 		        };
-		        
+
 		        model.setStartIndex(start + 1);
 		        model.setPageSize(start + PAGE_SIZE);
 
 		        model.setIsMyMeasureSearch(filter);
-		        
+
 		        MatContext.get().getMeasureService().search(model, callback);
 		      }
 		    };
-		   
-			
+
+
 			provider.addDataDisplay(table);
 			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
 			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"measureLib");
@@ -187,30 +187,20 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 									+ "Clone in seventh column and Export in eight column.");
 					table.getElement().setAttribute("id", "MeasureSearchCellTable");
 					table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
-					
+
 					MatSimplePager topSPager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,
 							"measureLibTopSpager");
 					topSPager.setPageStart(0);
 					topSPager.setDisplay(table);
 					topSPager.setPageSize(PAGE_SIZE);
-					
+
 					cellTablePanel.add(new SpacerWidget());
 					cellTablePanel.add(topSPager);
 					cellTablePanel.add(new SpacerWidget());
-		
+
 					cellTablePanel.add(invisibleLabel);
 			    }
-			
-			table.setColumnWidth(0, 25.0, Unit.PCT);
-			table.setColumnWidth(1, 20.0, Unit.PCT);
-			table.setColumnWidth(2, 23.0, Unit.PCT);
-			table.setColumnWidth(3, 2.0, Unit.PCT);
-			table.setColumnWidth(4, 2.0, Unit.PCT);
-			table.setColumnWidth(5, 2.0, Unit.PCT);
-			table.setColumnWidth(6, 2.0, Unit.PCT);
-			table.setColumnWidth(7, 22.0, Unit.PCT);
-			    
-			
+
 			cellTablePanel.add(table);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(spager);
@@ -223,11 +213,11 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 			cellTablePanel.add(measureSearchHeader);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);
-			
+
 		}
 	}
-	
-	
+
+
 	/**
 	 * Adds the column to admin table.
 	 *
@@ -323,8 +313,8 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 			};
 			table.addColumn(eMeasureID, SafeHtmlUtils.fromSafeConstant("<span title=\"eMeasure Id\">"
 					+ "eMeasure Id" + "</span>"));
-			//MAT-9000. Changes to Measure Library Ownership table to use bootstrap history column icon. 
-			Cell<String> historyButton = new MatButtonCell("Click to view history", "btn btn-link", "fa fa-clock-o fa-lg" , "History");			
+			//MAT-9000. Changes to Measure Library Ownership table to use bootstrap history column icon.
+			Cell<String> historyButton = new MatButtonCell("Click to view history", "btn btn-link", "fa fa-clock-o fa-lg" , "History");
 			Column<Result, String> historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton) {
 				@Override
 				public String getValue(ManageMeasureSearchModel.Result object) {
@@ -338,7 +328,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 				}
 			});
 			table.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"History\">" + "History" + "</span>"));
-			
+
 			Cell<Boolean> transferCB = new MatCheckBoxCell();
 			Column<Result, Boolean> transferColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(transferCB) {
 				@Override
@@ -386,7 +376,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		}
 		return table;
-	
+
 	}
 
 	private void buildCellTableCssStyle() {
@@ -491,7 +481,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 	public String getMeasureListLabel() {
 		return measureListLabel;
 	}
-	
+
 	/**
 	 * Set measureListLabel.
 	 *
@@ -500,8 +490,8 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 	public void setMeasureListLabel(String measureListLabel) {
 		this.measureListLabel = measureListLabel;
 	}
-	
-	
+
+
 	/**
 	 * Sets the admin observer.
 	 *
@@ -510,7 +500,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 	public void setAdminObserver(AdminObserver adminObserver) {
 		this.adminObserver = adminObserver;
 	}
-	
+
 	/**
 	 * Gets the selected list.
 	 *
@@ -520,7 +510,8 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 		return selectedList;
 	}
 
-	public void clearTransferCheckBoxes() {	
+
+	public void clearTransferCheckBoxes() {
 		for (ManageMeasureSearchModel.Result result : getSelectedList()) {
 			result.setTransferable(false);
 		}
@@ -528,15 +519,15 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 		getData().setData(selectedMeasureList);
 		table.redraw();
 	}
-	
+
 	public VerticalPanel getCellTablePanel() {
 		return cellTablePanel;
 	}
-	
+
 	public void setObserver(Observer observer) {
 		measureLibraryResultTable.setObserver(observer);
 	}
-	
+
 	public void clearBulkExportCheckBoxes() {
 		measureLibraryResultTable.clearBulkExportCheckBoxes();
 	}

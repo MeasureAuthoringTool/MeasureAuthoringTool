@@ -51,12 +51,14 @@ public class MeasureLibraryResultTable {
     private Timer singleClickTimer;
     private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
     private CellTable<ManageMeasureSearchModel.Result> table;
-    List<ManageMeasureSearchModel.Result> selectedList;
+    private List<ManageMeasureSearchModel.Result> selectedList;
     private Observer observer;
 
     public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(String measureListLabel, CellTable<ManageMeasureSearchModel.Result> table, List<ManageMeasureSearchModel.Result> selectedList, boolean displayBulkExport, HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
         this.table = table;
         this.selectedList = selectedList;
+        final MeasureLibraryGridToolbar buttonBar = new MeasureLibraryGridToolbar();
+
         Label measureSearchHeader = new Label(measureListLabel);
         measureSearchHeader.getElement().setId("measureSearchHeader_Label");
         measureSearchHeader.setStyleName("recentSearchHeader");
@@ -67,6 +69,10 @@ public class MeasureLibraryResultTable {
 
         selectionModel = new MultiSelectionModel<>();
         table.setSelectionModel(selectionModel);
+
+        selectionModel.addSelectionChangeHandler(event -> {
+            buttonBar.updateOnSelectionChanged(selectionModel.getSelectedSet());
+        });
 
         Column<ManageMeasureSearchModel.Result, Boolean> checkColumn = getSelectionModelColumn();
         table.addColumn(checkColumn);
@@ -108,6 +114,8 @@ public class MeasureLibraryResultTable {
         if (MatContext.get().getMatOnFHIR().getFlagOn()) {
             table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Model" + "</span>"));
             table.setColumnWidth(model, MODEL_COLUMN_WIDTH, Style.Unit.PCT);
+
+            caption.appendChild(buttonBar.getElement());
         } else {
             // TODO: else block will be removed in MAT-51 & MAT-56
             ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
@@ -318,7 +326,7 @@ public class MeasureLibraryResultTable {
      * Clear bulk export check boxes.
      */
     public void clearBulkExportCheckBoxes() {
-        List<Result> displayedItems = new ArrayList<Result>();
+        List<Result> displayedItems = new ArrayList<>();
         displayedItems.addAll(selectedList);
         selectedList.clear();
         for (ManageMeasureSearchModel.Result msg : displayedItems) {

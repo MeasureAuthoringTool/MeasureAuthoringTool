@@ -50,7 +50,6 @@ import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
-import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureCloningService;
 import mat.client.measure.service.MeasureCloningServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
@@ -1440,25 +1439,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
                 updateExportedIDs(result, manageMeasureSearchModel, isCBChecked);
 
-            }
-
-            @Override
-            public void onExportSelectedClicked(CustomCheckBox checkBox) {
-                resetMeasureFlags();
-                searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-                if (checkBox.getValue()) {
-                    if (manageMeasureSearchModel.getSelectedExportIds().size() > 89) {
-                        searchDisplay.getErrorMessageDisplayForBulkExport()
-                                .createAlert("Export file has a limit of 90 measures");
-                        searchDisplay.getExportSelectedButton().setFocus(true);
-                        checkBox.setValue(false);
-                    } else {
-                        manageMeasureSearchModel.getSelectedExportIds()
-                                .add(checkBox.getFormValue());
-                    }
-                } else {
-                    manageMeasureSearchModel.getSelectedExportIds().remove(checkBox.getFormValue());
-                }
             }
 
             @Override

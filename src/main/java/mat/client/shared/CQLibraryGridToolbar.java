@@ -10,13 +10,13 @@ import mat.model.cql.CQLLibraryDataSetObject;
 
 public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
-    public static final String CLICK_TO_CREATE_VERSION_DRAFT_TITLE = "Click to create Version/Draft";
     public static final String CREATE_VERSION_DRAFT_TEXT = "Create Version/Draft";
     public static final String HISTORY_TEXT = "History";
     public static final String EDIT_TEXT = "Edit";
     public static final String SHARE_TEXT = "Share";
     public static final String DELETE_TEXT = "Delete";
 
+    public static final String CLICK_TO_CREATE_VERSION_DRAFT_TITLE = "Click to create version or draft";
     public static final String CLICK_TO_VIEW_HISTORY_TITLE = "Click to view history";
     public static final String CLICK_TO_EDIT_TITLE = "Click to edit";
     public static final String CLICK_TO_SHARE_TITLE = "Click to share";
@@ -29,13 +29,16 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
     private Button deleteButton;
 
     public CQLibraryGridToolbar() {
+        setStyleName("action-button-bar");
+        addStyleName("btn-group");
+        addStyleName("btn-group-sm");
+
         versionButton = GWT.create(Button.class);
         historyButton = GWT.create(Button.class);
         editButton = GWT.create(Button.class);
         shareButton = GWT.create(Button.class);
         deleteButton = GWT.create(Button.class);
-        addStyleName("btn-group");
-        addStyleName("btn-group-sm");
+
         add(versionButton);
         add(historyButton);
         add(editButton);
@@ -49,7 +52,6 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         versionButton.setText(CREATE_VERSION_DRAFT_TEXT);
         versionButton.setType(ButtonType.DEFAULT);
         versionButton.setEnabled(false);
-//        versionButton.setStyleName(VERSION_STYLE_DISABLED);
         versionButton.setIcon(IconType.STAR);
         versionButton.setTitle(CLICK_TO_CREATE_VERSION_DRAFT_TITLE);
         versionButton.setWidth("146px");

@@ -82,7 +82,6 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 		void onShareClicked(ManageMeasureSearchModel.Result result);
 		void onExportClicked(ManageMeasureSearchModel.Result result);
 		void onHistoryClicked(ManageMeasureSearchModel.Result result);
-		void onExportSelectedClicked(CustomCheckBox checkBox);
 		void onExportSelectedClicked(ManageMeasureSearchModel.Result result, boolean  isCBChecked);
 		void onClearAllBulkExportClicked();
 		void onDraftOrVersionClick(ManageMeasureSearchModel.Result object);
@@ -520,7 +519,6 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 	public List<ManageMeasureSearchModel.Result> getSelectedList() {
 		return selectedList;
 	}
-	
 
 	public void clearTransferCheckBoxes() {	
 		for (ManageMeasureSearchModel.Result result : getSelectedList()) {

@@ -1676,42 +1676,36 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
         });
 
-        searchDisplay.getBulkExportButton().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-                isMeasureDeleted = false;
-                measureDeletion = false;
-                isMeasureVersioned = false;
-                searchDisplay.resetMessageDisplay();
-                versionDisplay.getMessagePanel().clearAlerts();
+        searchDisplay.getBulkExportButton().addClickHandler(event -> {
+            searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+            isMeasureDeleted = false;
+            measureDeletion = false;
+            isMeasureVersioned = false;
+            searchDisplay.resetMessageDisplay();
+            versionDisplay.getMessagePanel().clearAlerts();
 
-                detailDisplay.getErrorMessageDisplay().clearAlert();
-                historyDisplay.getErrorMessageDisplay().clearAlert();
-                shareDisplay.getErrorMessageDisplay().clearAlert();
-                if (manageMeasureSearchModel.getSelectedExportIds().isEmpty()) {
-                    searchDisplay.getErrorMessageDisplayForBulkExport()
-                            .createAlert(MatContext.get().getMessageDelegate().getMeasureSelectionError());
-                } else {
-                    bulkExport(manageMeasureSearchModel.getSelectedExportIds());
-                    searchDisplay.getMeasureSearchView().clearBulkExportCheckBoxes();
+            detailDisplay.getErrorMessageDisplay().clearAlert();
+            historyDisplay.getErrorMessageDisplay().clearAlert();
+            shareDisplay.getErrorMessageDisplay().clearAlert();
+            if (manageMeasureSearchModel.getSelectedExportIds().isEmpty()) {
+                searchDisplay.getErrorMessageDisplayForBulkExport()
+                        .createAlert(MatContext.get().getMessageDelegate().getMeasureSelectionError());
+            } else {
+                bulkExport(manageMeasureSearchModel.getSelectedExportIds());
+                searchDisplay.getMeasureSearchView().clearBulkExportCheckBoxes();
 
-                }
             }
         });
         FormPanel form = searchDisplay.getForm();
-        form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
-            @Override
-            public void onSubmitComplete(SubmitCompleteEvent event) {
-                String errorMsg = event.getResults();
-                if ((null != errorMsg) && errorMsg.contains("Exceeded Limit")) {
-                    List<String> err = new ArrayList<>();
-                    err.add("Export file size is " + errorMsg);
-                    err.add("File size limit is 100 MB");
-                    searchDisplay.getErrorMessageDisplayForBulkExport().createAlert(err);
-                } else {
-                    Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                }
+        form.addSubmitCompleteHandler(event -> {
+            String errorMsg = event.getResults();
+            if ((null != errorMsg) && errorMsg.contains("Exceeded Limit")) {
+                List<String> err = new ArrayList<>();
+                err.add("Export file size is " + errorMsg);
+                err.add("File size limit is 100 MB");
+                searchDisplay.getErrorMessageDisplayForBulkExport().createAlert(err);
+            } else {
+                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             }
         });
 
@@ -2144,7 +2138,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     model.getSelectedTransferResults().remove(i);
                 }
             }
-
         }
     }
 

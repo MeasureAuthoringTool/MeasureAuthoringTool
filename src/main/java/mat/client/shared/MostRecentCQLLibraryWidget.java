@@ -43,7 +43,7 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
         Label gridPanelHeader = new Label(gridCaption);
         gridPanelHeader.getElement().setId("cqlLibrarySearchHeader_Label");
         gridPanelHeader.setStyleName("recentSearchHeader");
-        gridPanelHeader.getElement().setAttribute("tabIndex", "0");
+        gridPanelHeader.getElement().setTabIndex(0);
 
         searchPanel.add(gridPanelHeader);
 
@@ -62,9 +62,9 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
         sortProvider.addDataDisplay(cellTable);
         Label invisibleLabel = (Label) LabelBuilder
                 .buildInvisibleLabel(
-                        "recentActivitySummary", "In the following Recent Activity table, Measure selection is given in the first column,"
-                                + "CQL Library Name is given in second column,"
-                                + " Version in third column, "
+                        "recentActivitySummary", "In the following Recent Activity table, Measure selection is given in the first column, "
+                                + "CQL Library Name is given in second column, "
+                                + "Version in third column, "
                                 + "Model in fourth column");
         cellTable.getElement().setAttribute("aria-describedby", "recentActivitySummary");
         searchPanel.add(invisibleLabel);

@@ -21,17 +21,16 @@ import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.MultiSelectionModel;
 import mat.client.Mat;
@@ -54,25 +53,17 @@ public class MeasureLibraryResultTable {
     private List<ManageMeasureSearchModel.Result> selectedList;
     private Observer observer;
 
-    public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(String measureListLabel, CellTable<ManageMeasureSearchModel.Result> table, List<ManageMeasureSearchModel.Result> selectedList, boolean displayBulkExport, HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
+    public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(MeasureLibraryGridToolbar gridToolbar, CellTable<ManageMeasureSearchModel.Result> table, List<ManageMeasureSearchModel.Result> selectedList, boolean displayBulkExport, HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
         this.table = table;
         this.selectedList = selectedList;
-        final MeasureLibraryGridToolbar buttonBar = new MeasureLibraryGridToolbar();
-
-        Label measureSearchHeader = new Label(measureListLabel);
-        measureSearchHeader.getElement().setId("measureSearchHeader_Label");
-        measureSearchHeader.setStyleName("recentSearchHeader");
-        com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
-        measureSearchHeader.getElement().setAttribute("tabIndex", "0");
-        TableCaptionElement caption = elem.createCaption();
-        caption.appendChild(measureSearchHeader.getElement());
 
         selectionModel = new MultiSelectionModel<>();
         table.setSelectionModel(selectionModel);
 
         selectionModel.addSelectionChangeHandler(event -> {
-            buttonBar.updateOnSelectionChanged(selectionModel.getSelectedSet());
+            gridToolbar.updateOnSelectionChanged(selectionModel.getSelectedSet());
         });
+        addToolbarHandlers(gridToolbar, selectionModel, fireEvent);
 
         Column<ManageMeasureSearchModel.Result, Boolean> checkColumn = getSelectionModelColumn();
         table.addColumn(checkColumn);
@@ -115,7 +106,6 @@ public class MeasureLibraryResultTable {
             table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Model" + "</span>"));
             table.setColumnWidth(model, MODEL_COLUMN_WIDTH, Style.Unit.PCT);
 
-            caption.appendChild(buttonBar.getElement());
         } else {
             // TODO: else block will be removed in MAT-51 & MAT-56
             ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
@@ -227,13 +217,10 @@ public class MeasureLibraryResultTable {
                     return getCloneColumnHTML(object);
                 }
             };
-            cloneColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
-                @Override
-                public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
-                    if (object.isClonable())
-                        Mat.showLoadingMessage();
-                    observer.onCloneClicked(object);
-                }
+            cloneColumn.setFieldUpdater((index, object, value) -> {
+                if (object.isClonable())
+                    Mat.showLoadingMessage();
+                observer.onCloneClicked(object);
             });
             table.addColumn(cloneColumn, SafeHtmlUtils.fromSafeConstant("<span title='Clone'>" + "Clone" + "</span>"));
 
@@ -292,6 +279,50 @@ public class MeasureLibraryResultTable {
         });
         table.addStyleName("table");
         return table;
+    }
+
+    @VisibleForTesting
+    void addToolbarHandlers(MeasureLibraryGridToolbar gridToolbar, MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel, HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
+        gridToolbar.getVersionButton().addClickHandler(event -> {
+            selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+                if (object.isDraftable() || object.isVersionable()) {
+                    observer.onDraftOrVersionClick(object);
+                }
+            });
+        });
+
+        gridToolbar.getHistoryButton().addClickHandler(event -> {
+            selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+                observer.onHistoryClicked(object);
+            });
+        });
+
+        gridToolbar.getEditButton().addClickHandler(event -> {
+            selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+                SelectionEvent.fire(fireEvent, object);
+            });
+        });
+
+        gridToolbar.getShareButton().addClickHandler(event -> {
+            selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+                if (object.isSharable()) {
+                    observer.onShareClicked(object);
+                }
+            });
+        });
+
+        gridToolbar.getCloneButton().addClickHandler(event -> {
+            selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+                if (object.isClonable()) {
+                    Mat.showLoadingMessage();
+                    observer.onCloneClicked(object);
+                }
+            });
+        });
+
+        gridToolbar.getExportButton().addClickHandler(event -> {
+            clearBulkExportCheckBoxes();
+        });
     }
 
     /**
@@ -585,11 +616,6 @@ public class MeasureLibraryResultTable {
         return hasCell;
     }
 
-    /**
-     * Gets the check box cell.
-     *
-     * @return the check box cell
-     */
     private HasCell<Result, Boolean> getCheckBoxCell() {
         HasCell<Result, Boolean> hasCell = new HasCell<ManageMeasureSearchModel.Result, Boolean>() {
 
@@ -621,44 +647,31 @@ public class MeasureLibraryResultTable {
 
             @Override
             public FieldUpdater<Result, Boolean> getFieldUpdater() {
-                return new FieldUpdater<Result, Boolean>() {
-                    @Override
-                    public void update(int index, Result object,
-                                       Boolean isCBChecked) {
-                        if (isCBChecked)
-                            selectedList.add(object);
-                        else {
-                            for (int i = 0; i < selectedList.size(); i++) {
-                                if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-                                    selectedList.remove(i);
-                                    break;
-                                }
+                return (index, object, isCBChecked) -> {
+                    if (isCBChecked)
+                        selectedList.add(object);
+                    else {
+                        for (int i = 0; i < selectedList.size(); i++) {
+                            if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+                                selectedList.remove(i);
+                                break;
                             }
                         }
-                        selectionModel.setSelected(object, isCBChecked);
-                        observer.onExportSelectedClicked(object, isCBChecked);
                     }
+                    selectionModel.setSelected(object, isCBChecked);
+                    observer.onExportSelectedClicked(object, isCBChecked);
                 };
             }
         };
         return hasCell;
     }
 
-    /**
-     * Gets the observer.
-     *
-     * @return the observer
-     */
     public Observer getObserver() {
         return observer;
     }
 
-    /**
-     * Sets the observer.
-     *
-     * @param observer the new observer
-     */
     public void setObserver(Observer observer) {
         this.observer = observer;
     }
+
 }

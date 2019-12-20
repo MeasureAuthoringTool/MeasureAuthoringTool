@@ -1,7 +1,15 @@
 package mat.client.shared;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.gwtbootstrap3.client.ui.Button;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.TableElement;
@@ -14,13 +22,10 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.model.FeatureFlag;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class MeasureLibraryResultTableTest {
@@ -33,6 +38,27 @@ public class MeasureLibraryResultTableTest {
 
     @Mock
     private CellTable<ManageMeasureSearchModel.Result> cellTable;
+
+    @Mock(name = "versionButton")
+    private Button versionButton;
+
+    @Mock(name = "historyButton")
+    private Button historyButton;
+
+    @Mock(name = "editButton")
+    private Button editButton;
+
+    @Mock(name = "shareButton")
+    private Button shareButton;
+
+    @Mock(name = "cloneButton")
+    private Button cloneButton;
+
+    @Mock(name = "exportButton")
+    private Button exportButton;
+
+    @InjectMocks
+    private MeasureLibraryGridToolbar gridToolbar;
 
     private List<ManageMeasureSearchModel.Result> results;
     private ClickHandler clickHandler;
@@ -66,7 +92,7 @@ public class MeasureLibraryResultTableTest {
 
         MatContext.get().setMatOnFHIR(featureFlag);
 
-        cellTable = measureLibraryResultTable.addColumnToTable("Recent Activity", cellTable, results, false, fireEvent);
+        cellTable = measureLibraryResultTable.addColumnToTable(gridToolbar, cellTable, results, false, fireEvent);
         assertNotNull(cellTable);
         verify(cellTable).addStyleName("table");
         verify(cellTable).setSelectionModel(ArgumentMatchers.any(MultiSelectionModel.class));

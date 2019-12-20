@@ -34,7 +34,7 @@ public class CQLibraryGridToolbarTest {
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.STAR));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq("Create Version/Draft"));
-        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to create Version/Draft"));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to create version or draft"));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setWidth(Mockito.eq("146px"));
     }
 

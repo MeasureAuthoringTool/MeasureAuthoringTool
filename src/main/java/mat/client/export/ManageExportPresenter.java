@@ -1,8 +1,6 @@
 package mat.client.export;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.MatPresenter;
 import mat.client.export.bonnie.BonnieExportPresenter;
 import mat.client.export.bonnie.BonnieExportView;

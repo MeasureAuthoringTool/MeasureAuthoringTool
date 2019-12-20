@@ -136,4 +136,28 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         exportButton.setEnabled(true);
     }
 
+    public Button getVersionButton() {
+        return versionButton;
+    }
+
+    public Button getHistoryButton() {
+        return historyButton;
+    }
+
+    public Button getEditButton() {
+        return editButton;
+    }
+
+    public Button getShareButton() {
+        return shareButton;
+    }
+
+    public Button getCloneButton() {
+        return cloneButton;
+    }
+
+    public Button getExportButton() {
+        return exportButton;
+    }
+
 }

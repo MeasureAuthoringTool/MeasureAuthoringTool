@@ -1,25 +1,14 @@
 package mat.client.shared;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
-
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.cell.client.CompositeCell;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.HasCell;
-import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -29,7 +18,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -38,7 +26,6 @@ import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.util.CellTableUtility;
-import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 public class MeasureLibraryResultTable {
@@ -50,12 +37,10 @@ public class MeasureLibraryResultTable {
     private Timer singleClickTimer;
     private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
     private CellTable<ManageMeasureSearchModel.Result> table;
-    private List<ManageMeasureSearchModel.Result> selectedList;
     private Observer observer;
 
-    public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(MeasureLibraryGridToolbar gridToolbar, CellTable<ManageMeasureSearchModel.Result> table, List<ManageMeasureSearchModel.Result> selectedList, boolean displayBulkExport, HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
+    public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(MeasureLibraryGridToolbar gridToolbar, CellTable<ManageMeasureSearchModel.Result> table, HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
         this.table = table;
-        this.selectedList = selectedList;
 
         selectionModel = new MultiSelectionModel<>();
         table.setSelectionModel(selectionModel);
@@ -99,146 +84,11 @@ public class MeasureLibraryResultTable {
             public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
                 return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.defaultTypeIfBlank(object.getMeasureModel()));
             }
-
-            ;
         };
         if (MatContext.get().getMatOnFHIR().getFlagOn()) {
             table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Model" + "</span>"));
             table.setColumnWidth(model, MODEL_COLUMN_WIDTH, Style.Unit.PCT);
 
-        } else {
-            // TODO: else block will be removed in MAT-51 & MAT-56
-            ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
-            Column<ManageMeasureSearchModel.Result, String> draftOrVersionCol = new Column<ManageMeasureSearchModel.Result, String>(
-                    buttonCell) {
-
-                @Override
-                public String getValue(ManageMeasureSearchModel.Result object) {
-                    return object.getShortName();
-                }
-
-                @Override
-                public void render(Context context, ManageMeasureSearchModel.Result object, SafeHtmlBuilder sb) {
-                    if (object.isDraftable()) {
-                        sb.appendHtmlConstant(
-                                "<button class=\"btn btn-link\" type=\"button\" title =\"Click to create draft\" tabindex=\"0\">");
-                        sb.appendHtmlConstant("<i class=\"fa fa-pencil-square-o fa-lg\" style=\"margin-left: 15px;\"></i>");
-                        sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Draft</span>");
-                        sb.appendHtmlConstant("</button>");
-                    } else if (object.isVersionable()) {
-                        sb.appendHtmlConstant(
-                                "<button class=\"btn btn-link\" type=\"button\" tabindex=\"0\" title =\"Click to create version\" style=\"color: goldenrod;\" >");
-                        sb.appendHtmlConstant("<i class=\"fa fa-star fa-lg\" style=\"margin-left: 15px;\"></i>");
-                        sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Version</span>");
-                        sb.appendHtmlConstant("</button>");
-                    }
-                }
-
-                @Override
-                public void onBrowserEvent(Context context, Element elem, ManageMeasureSearchModel.Result object,
-                                           NativeEvent event) {
-
-                    String type = event.getType();
-                    if (type.equalsIgnoreCase(BrowserEvents.CLICK)) {
-                        if (!object.isDraftable() && !object.isVersionable()) {
-                            event.preventDefault();
-                        } else {
-                            observer.onDraftOrVersionClick(object);
-                        }
-                    } else {
-                        if (!object.isDraftable() && !object.isVersionable()) {
-                            event.preventDefault();
-                        }
-                    }
-
-                }
-
-            };
-
-            table.addColumn(draftOrVersionCol, SafeHtmlUtils
-                    .fromSafeConstant("<span title='Create Version/Draft'>" + "Create Version/Draft" + "</span>"));
-
-            // History
-            Cell<String> historyButton = new MatButtonCell("Click to view history", "btn btn-link", "fa fa-clock-o fa-lg",
-                    "History");
-            Column<Result, String> historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton) {
-                @Override
-                public String getValue(ManageMeasureSearchModel.Result object) {
-                    return "";
-                }
-            };
-            historyColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
-                @Override
-                public void update(int index, ManageMeasureSearchModel.Result object, String value) {
-                    observer.onHistoryClicked(object);
-                }
-            });
-            table.addColumn(historyColumn,
-                    SafeHtmlUtils.fromSafeConstant("<span title='History'>" + "History" + "</span>"));
-
-            // Edit
-            Column<ManageMeasureSearchModel.Result, SafeHtml> editColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-                    new ClickableSafeHtmlCell()) {
-                @Override
-                public SafeHtml getValue(Result object) {
-                    return getEditColumnToolTip(object);
-                }
-            };
-            editColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
-                @Override
-                public void update(int index, Result object, SafeHtml value) {
-                    SelectionEvent.fire(fireEvent, object);
-                }
-            });
-            table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
-
-            // Share
-            Column<ManageMeasureSearchModel.Result, SafeHtml> shareColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-                    new ClickableSafeHtmlCell()) {
-                @Override
-                public SafeHtml getValue(Result object) {
-                    return getShareColumnToolTip(object);
-                }
-            };
-            shareColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
-                @Override
-                public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
-                    if (object.isSharable())
-                        observer.onShareClicked(object);
-                }
-            });
-            table.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Share'>" + "Share" + "</span>"));
-
-            // Clone
-            Column<ManageMeasureSearchModel.Result, SafeHtml> cloneColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-                    new ClickableSafeHtmlCell()) {
-                @Override
-                public SafeHtml getValue(Result object) {
-                    return getCloneColumnHTML(object);
-                }
-            };
-            cloneColumn.setFieldUpdater((index, object, value) -> {
-                if (object.isClonable())
-                    Mat.showLoadingMessage();
-                observer.onCloneClicked(object);
-            });
-            table.addColumn(cloneColumn, SafeHtmlUtils.fromSafeConstant("<span title='Clone'>" + "Clone" + "</span>"));
-
-            // Export Column header
-            Header<SafeHtml> bulkExportColumnHeader = getBulkExportColumnHeader(displayBulkExport);
-            bulkExportColumnHeader.setUpdater(new ValueUpdater<SafeHtml>() {
-                @Override
-                public void update(SafeHtml value) {
-                    clearBulkExportCheckBoxes();
-                }
-            });
-
-            table.addColumn(new Column<Result, Result>(getCompositeCellForBulkExport(displayBulkExport)) {
-                @Override
-                public Result getValue(Result object) {
-                    return object;
-                }
-            }, bulkExportColumnHeader);
         }
         // Add event handler for table
         table.addCellPreviewHandler(event -> {
@@ -321,8 +171,15 @@ public class MeasureLibraryResultTable {
         });
 
         gridToolbar.getExportButton().addClickHandler(event -> {
-            clearBulkExportCheckBoxes();
+            List<ManageMeasureSearchModel.Result> exportList = selectionModel.getSelectedSet()
+                    .stream().filter(result -> result.isExportable()).collect(Collectors.toList());
+            if (exportList.size() == 1) {
+                observer.onExport(exportList.iterator().next());
+            } else {
+                observer.onBulkExport(exportList);
+            }
         });
+
     }
 
     /**
@@ -357,53 +214,13 @@ public class MeasureLibraryResultTable {
      * Clear bulk export check boxes.
      */
     public void clearBulkExportCheckBoxes() {
-        List<Result> displayedItems = new ArrayList<>();
-        displayedItems.addAll(selectedList);
-        selectedList.clear();
-        for (ManageMeasureSearchModel.Result msg : displayedItems) {
-            selectionModel.setSelected(msg, false);
-        }
+        selectionModel.getSelectedSet().forEach(selected -> {
+            selectionModel.setSelected(selected, false);
+        });
         table.redraw();
-        observer.onClearAllBulkExportClicked();
     }
 
-    /**
-     * Gets the history column tool tip.
-     *
-     * @param object the object
-     * @return the history column tool tip
-     */
-    private SafeHtml getEditColumnToolTip(Result object) {
-        SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        String title;
-        String cssClass = "btn btn-link";
-        String iconCss;
-        if (object.isEditable()) {
-            if (object.isMeasureLocked()) {
-                String emailAddress = object.getLockedUserInfo().getEmailAddress();
-                title = "Measure in use by " + emailAddress;
-                iconCss = "fa fa-lock fa-lg";
-            } else {
-                title = "Edit";
-                iconCss = "fa fa-pencil fa-lg";
-            }
-            sb.appendHtmlConstant("<button type=\"button\" title='"
-                    + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
-        } else {
-            title = "Read-Only";
-            iconCss = "fa fa-newspaper-o fa-lg";
-            sb.appendHtmlConstant("<button type=\"button\" title='"
-                    + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: black;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
-        }
 
-        return sb.toSafeHtml();
-    }
-
-    /**
-     * Create a column with selection model
-     *
-     * @return a column with checkbox
-     */
     private Column<ManageMeasureSearchModel.Result, Boolean> getSelectionModelColumn() {
         // Add a selection model so we can select cells.
         MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
@@ -444,234 +261,16 @@ public class MeasureLibraryResultTable {
         return "<i class=\"pull-left edit-state " + iconCss + "\" title=\"" + title + "\"></i>";
     }
 
-    /**
-     * Gets the history column tool tip.
-     *
-     * @param object the object
-     * @return the history column tool tip
-     */
-    private SafeHtml getCloneColumnHTML(Result object) {
-        SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        String title = "Cloneable";
-        String disabled = "";
-
-        if (!object.isClonable()) {
-            title = object.getIsComposite() ? "Composite measure not cloneable" : "Measure not cloneable";
-            disabled = " disabled style=\"color: gray;\"";
-        }
-
-        sb.appendHtmlConstant("<button type=\"button\" title='");
-        sb.appendHtmlConstant(title);
-        sb.appendHtmlConstant("' tabindex=\"0\" class=\"btn btn-link\"");
-        sb.appendHtmlConstant(disabled);
-        sb.appendHtmlConstant("><i class=\"fa fa-clone fa-lg\"></i><span style=\"font-size:0;\">");
-        sb.appendHtmlConstant(title);
-        sb.appendHtmlConstant("</span></button>");
-
-        return sb.toSafeHtml();
-    }
-
-    /**
-     * Gets the bulk export column header.
-     *
-     * @return the bulk export column header
-     */
-    private Header<SafeHtml> getBulkExportColumnHeader(Boolean bulkExport) {
-        Header<SafeHtml> bulkExportColumnHeader = new Header<SafeHtml>(new ClickableSafeHtmlCell()) {
-            private String cssClass = "transButtonWidth";
-            private String title = "Click to Clear All";
-
-            @Override
-            public SafeHtml getValue() {
-                SafeHtmlBuilder sb = new SafeHtmlBuilder();
-                sb.appendHtmlConstant("<span>Export</span>");
-                if (bulkExport) {
-                    sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\">");
-                    sb.appendHtmlConstant("<span class='textCssStyle'>(Clear)</span></button>");
-                }
-                return sb.toSafeHtml();
-            }
-        };
-        return bulkExportColumnHeader;
-    }
-
-    /**
-     * Gets the composite cell for bulk export.
-     *
-     * @return the composite cell for bulk export
-     */
-    private CompositeCell<Result> getCompositeCellForBulkExport(boolean displayBulkExport) {
-        final List<HasCell<Result, ?>> cells = new LinkedList<HasCell<Result, ?>>();
-        cells.add(getBulkExportButtonCell());
-        if (displayBulkExport) {
-            cells.add(getCheckBoxCell());
-        }
-        CompositeCell<Result> cell = new CompositeCell<Result>(cells) {
-            @Override
-            public void render(Context context, Result object, SafeHtmlBuilder sb) {
-                sb.appendHtmlConstant("<table><tbody><tr>");
-                for (HasCell<Result, ?> hasCell : cells) {
-                    render(context, object, sb, hasCell);
-                }
-                sb.appendHtmlConstant("</tr></tbody></table>");
-            }
-
-            @Override
-            protected <X> void render(Context context, Result object,
-                                      SafeHtmlBuilder sb, HasCell<Result, X> hasCell) {
-                Cell<X> cell = hasCell.getCell();
-                sb.appendHtmlConstant("<td class='emptySpaces'>");
-                if ((object != null) && object.isExportable()) {
-                    cell.render(context, hasCell.getValue(object), sb);
-                } else {
-                    sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
-                }
-                sb.appendHtmlConstant("</td>");
-            }
-
-            @Override
-            protected Element getContainerElement(Element parent) {
-                return parent.getFirstChildElement().getFirstChildElement()
-                        .getFirstChildElement();
-            }
-        };
-        return cell;
-    }
-
-
-    /**
-     * Gets the history column tool tip.
-     *
-     * @param object the object
-     * @return the history column tool tip
-     */
-    private SafeHtml getShareColumnToolTip(Result object) {
-        SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        String title = "Shareable";
-        String cssClass = "btn btn-link";
-        String iconCss = "fa fa-share-square fa-lg";
-        if (object.isSharable()) {
-            sb.appendHtmlConstant("<button type=\"button\" title='"
-                    + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkseagreen;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Shareable</span></button>");
-        } else {
-            sb.appendHtmlConstant("<button type=\"button\" title='"
-                    + title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: gray;\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Shareable</span></button>");
-        }
-
-        return sb.toSafeHtml();
-    }
-
-
-    /**
-     * Gets the bulk export button cell.
-     *
-     * @return the bulk export button cell
-     */
-    private HasCell<Result, SafeHtml> getBulkExportButtonCell() {
-
-        HasCell<Result, SafeHtml> hasCell = new HasCell<ManageMeasureSearchModel.Result, SafeHtml>() {
-
-            ClickableSafeHtmlCell exportButonCell = new ClickableSafeHtmlCell();
-
-            @Override
-            public Cell<SafeHtml> getCell() {
-                return exportButonCell;
-            }
-
-            @Override
-            public FieldUpdater<Result, SafeHtml> getFieldUpdater() {
-
-                return new FieldUpdater<Result, SafeHtml>() {
-                    @Override
-                    public void update(int index, Result object, SafeHtml value) {
-                        if ((object != null) && object.isExportable()) {
-                            observer.onExportClicked(object);
-                        }
-                    }
-                };
-            }
-
-            @Override
-            public SafeHtml getValue(Result object) {
-                SafeHtmlBuilder sb = new SafeHtmlBuilder();
-                String title = "";
-                String cssClass = "btn btn-link";
-                String iconClass = "fa fa-download fa-lg";
-                if ((object != null) && (object.getHqmfReleaseVersion() != null)) {
-                    if (object.getHqmfReleaseVersion().equalsIgnoreCase("v3")) {
-                        title = "Click to Export MAT v3";
-                        sb.appendHtmlConstant("<button type=\"button\" title='" + title
-                                + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: gray;\"/> <i class=\" " + iconClass + "\"></i><span style=\"font-size:0;\">Export MAT v3 </span></button>");
-                    } else {
-                        title = "Click to Export MAT " + object.getHqmfReleaseVersion();
-                        sb.appendHtmlConstant("<button  type=\"button\" title='" + title
-                                + "' tabindex=\"0\" class=\" " + cssClass + "\" ><i class=\" " + iconClass + "\"></i><span style=\"font-size:0;\">" + "Export MAT " + object.getHqmfReleaseVersion() + "</span></button>");
-                    }
-                }
-                return sb.toSafeHtml();
-            }
-        };
-
-        return hasCell;
-    }
-
-    private HasCell<Result, Boolean> getCheckBoxCell() {
-        HasCell<Result, Boolean> hasCell = new HasCell<ManageMeasureSearchModel.Result, Boolean>() {
-
-            private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
-
-            @Override
-            public Cell<Boolean> getCell() {
-                return cell;
-            }
-
-            @Override
-            public Boolean getValue(Result object) {
-                cell.setTitle("Click to include " + object.getName() + " in a bulk export");
-                boolean isSelected = false;
-                if (selectedList.size() > 0) {
-                    for (int i = 0; i < selectedList.size(); i++) {
-                        if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-                            isSelected = true;
-                            selectionModel.setSelected(object, isSelected);
-                            break;
-                        }
-                    }
-                } else {
-                    isSelected = false;
-                    selectionModel.setSelected(object, isSelected);
-                }
-                return isSelected;
-            }
-
-            @Override
-            public FieldUpdater<Result, Boolean> getFieldUpdater() {
-                return (index, object, isCBChecked) -> {
-                    if (isCBChecked)
-                        selectedList.add(object);
-                    else {
-                        for (int i = 0; i < selectedList.size(); i++) {
-                            if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-                                selectedList.remove(i);
-                                break;
-                            }
-                        }
-                    }
-                    selectionModel.setSelected(object, isCBChecked);
-                    observer.onExportSelectedClicked(object, isCBChecked);
-                };
-            }
-        };
-        return hasCell;
-    }
-
     public Observer getObserver() {
         return observer;
     }
 
     public void setObserver(Observer observer) {
         this.observer = observer;
+    }
+
+    public MultiSelectionModel<Result> getSelectionModel() {
+        return selectionModel;
     }
 
 }

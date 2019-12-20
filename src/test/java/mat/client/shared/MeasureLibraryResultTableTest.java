@@ -1,8 +1,5 @@
 package mat.client.shared;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.gwtbootstrap3.client.ui.Button;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +10,6 @@ import org.mockito.Mock;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.TableElement;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.DOM;
@@ -60,25 +56,8 @@ public class MeasureLibraryResultTableTest {
     @InjectMocks
     private MeasureLibraryGridToolbar gridToolbar;
 
-    private List<ManageMeasureSearchModel.Result> results;
-    private ClickHandler clickHandler;
-
     @Before
     public void setUp() {
-        ManageMeasureSearchModel.Result measure1 = new ManageMeasureSearchModel.Result();
-        measure1.setId("MSR001");
-        measure1.setName("TestMSR1");
-        measure1.setMeasureModel("QDM");
-        measure1.setVersion("QDM");
-        measure1.setVersion("1.0");
-        ManageMeasureSearchModel.Result measure2 = new ManageMeasureSearchModel.Result();
-        measure2.setId("MSR002");
-        measure2.setName("TestMSR2");
-        measure2.setMeasureModel("FHIR");
-        measure2.setVersion("1.0.1");
-        results = new ArrayList<>();
-        results.add(measure1);
-        results.add(measure2);
     }
 
     @Test
@@ -92,10 +71,11 @@ public class MeasureLibraryResultTableTest {
 
         MatContext.get().setMatOnFHIR(featureFlag);
 
-        cellTable = measureLibraryResultTable.addColumnToTable(gridToolbar, cellTable, results, false, fireEvent);
+        cellTable = measureLibraryResultTable.addColumnToTable(gridToolbar, cellTable, fireEvent);
         assertNotNull(cellTable);
         verify(cellTable).addStyleName("table");
         verify(cellTable).setSelectionModel(ArgumentMatchers.any(MultiSelectionModel.class));
         verify(cellTable).addCellPreviewHandler(ArgumentMatchers.any(CellPreviewEvent.Handler.class));
     }
+
 }

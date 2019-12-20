@@ -91,8 +91,8 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         if (selectedItems.isEmpty()) {
             return;
         }
+        exportButton.setEnabled(selectedItems.stream().anyMatch(result -> result.isExportable()));
         if (selectedItems.size() > 1) {
-            exportButton.setEnabled(true);
             return;
         }
         ManageMeasureSearchModel.Result selectedItem = selectedItems.iterator().next();
@@ -132,8 +132,6 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         } else {
             cloneButton.setEnabled(true);
         }
-
-        exportButton.setEnabled(true);
     }
 
     public Button getVersionButton() {

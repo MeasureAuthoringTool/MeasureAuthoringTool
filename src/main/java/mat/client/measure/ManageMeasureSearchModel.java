@@ -794,11 +794,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
     private int pageCount;
 
     /**
-     * The selected export ids.
-     */
-    private List<String> selectedExportIds;
-
-    /**
      * The selected transfer ids.
      */
     private List<String> selectedTransferIds;
@@ -807,12 +802,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
      * The selected transfer results.
      */
     private ArrayList<Result> selectedTransferResults;
-
-    /**
-     * The selected export results.
-     */
-    private ArrayList<Result> selectedExportResults;
-
 
     /**
      * Sets the data.
@@ -839,9 +828,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
         return data != null ? data.size() : 0;
     }
 
-    /* (non-Javadoc)
-     * @see mat.client.shared.search.SearchResults#getStartIndex()
-     */
+
     public int getStartIndex() {
         return startIndex;
     }
@@ -855,9 +842,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
         this.startIndex = startIndex;
     }
 
-    /* (non-Javadoc)
-     * @see mat.client.shared.search.SearchResults#getResultsTotal()
-     */
     public int getResultsTotal() {
         return resultsTotal;
     }
@@ -871,16 +855,10 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
         this.resultsTotal = resultsTotal;
     }
 
-    /* (non-Javadoc)
-     * @see mat.client.shared.search.SearchResults#getKey(int)
-     */
     public String getKey(int row) {
         return data.get(row).getId();
     }
 
-    /* (non-Javadoc)
-     * @see mat.client.shared.search.SearchResults#get(int)
-     */
     public Result get(int row) {
         return data.get(row);
     }
@@ -904,139 +882,59 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
         this.pageCount = pageCount;
     }
 
-    /* (non-Javadoc)
-     * @see mat.client.shared.search.SearchResults#getNumberOfColumns()
-     */
+
     @Override
     public int getNumberOfColumns() {
         return 0;
     }
 
-
-    /* (non-Javadoc)
-     * @see mat.client.shared.search.SearchResults#getColumnHeader(int)
-     */
     @Override
     public String getColumnHeader(int columnIndex) {
         return null;
     }
 
 
-    /* (non-Javadoc)
-     * @see mat.client.shared.search.SearchResults#isColumnSortable(int)
-     */
     @Override
     public boolean isColumnSortable(int columnIndex) {
         return false;
     }
 
 
-    /* (non-Javadoc)
-     * @see mat.client.shared.search.SearchResults#isColumnSelectAll(int)
-     */
     @Override
     public boolean isColumnSelectAll(int columnIndex) {
         return false;
     }
 
 
-    /* (non-Javadoc)
-     * @see mat.client.shared.search.SearchResults#isColumnFiresSelection(int)
-     */
     @Override
     public boolean isColumnFiresSelection(int columnIndex) {
         return false;
     }
 
-
-    /* (non-Javadoc)
-     * @see mat.client.shared.search.SearchResults#getColumnWidth(int)
-     */
     @Override
     public String getColumnWidth(int columnIndex) {
         return null;
     }
 
-
-    /* (non-Javadoc)
-     * @see mat.client.shared.search.SearchResults#getValue(int, int)
-     */
     @Override
     public Widget getValue(int row, int column) {
         return null;
     }
 
-    /**
-     * Gets the selected export ids.
-     *
-     * @return the selectedExportIds
-     */
-    public List<String> getSelectedExportIds() {
-        return selectedExportIds;
-    }
-
-    /**
-     * Sets the selected export ids.
-     *
-     * @param selectedExportIds the selectedExportIds to set
-     */
-    public void setSelectedExportIds(List<String> selectedExportIds) {
-        this.selectedExportIds = selectedExportIds;
-    }
-
-    /**
-     * Sets the selected transfer ids.
-     *
-     * @param selectedTranferIds the selectedTranferIds to set
-     */
     public void setSelectedTransferIds(List<String> selectedTranferIds) {
         this.selectedTransferIds = selectedTranferIds;
     }
 
-    /**
-     * Gets the selected transfer ids.
-     *
-     * @return the selectedTranferIds
-     */
     public List<String> getSelectedTransferIds() {
         return selectedTransferIds;
     }
 
-    /**
-     * Sets the selected transfer results.
-     *
-     * @param selectedTransferResults the selectedTransferResults to set
-     */
     public void setSelectedTransferResults(ArrayList<Result> selectedTransferResults) {
         this.selectedTransferResults = selectedTransferResults;
     }
 
-    /**
-     * Sets the selected export results.
-     *
-     * @param selectedExportResults the new selected export results
-     */
-    public void setSelectedExportResults(ArrayList<Result> selectedExportResults) {
-        this.selectedExportResults = selectedExportResults;
-    }
-
-    /**
-     * Gets the selected transfer results.
-     *
-     * @return the selectedTransferResults
-     */
     public List<Result> getSelectedTransferResults() {
         return selectedTransferResults;
     }
-
-    /**
-     * Gets the selected export results.
-     *
-     * @return the selected export results
-     */
-    public List<Result> getSelectedExportResults() {
-        return selectedExportResults;
-    }
-
 
 }

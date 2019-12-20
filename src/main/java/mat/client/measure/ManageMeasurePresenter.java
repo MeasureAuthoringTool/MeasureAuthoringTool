@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
@@ -30,7 +31,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -147,8 +147,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private static FocusableWidget subSkipContentHolder;
 
     boolean isLoading = false;
-
-    List<ManageMeasureSearchModel.Result> listofMeasures = new ArrayList<>();
 
     private ManageMeasureSearchModel manageMeasureSearchModel;
 
@@ -327,7 +325,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
 
     private void bulkExport(List<String> selectedMeasureIds) {
-        String measureId = "";
+        StringBuilder measureId = new StringBuilder("");
 
         MatContext.get().getAuditService().recordMeasureEvent(selectedMeasureIds, "Measure Package Exported", null,
                 true, new AsyncCallback<Void>() {
@@ -342,12 +340,12 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 });
 
         for (String id : selectedMeasureIds) {
-            measureId += id + "&id=";
+            if (measureId.length() > 0) {
+                measureId.append("&id=");
+            }
+            measureId.append(id);
         }
-        measureId = measureId.substring(0, measureId.lastIndexOf('&'));
-        String url = GWT.getModuleBaseURL() + "bulkExport?id=" + measureId;
-        url += "&type=open";
-        manageMeasureSearchModel.getSelectedExportIds().clear();
+        String url = GWT.getModuleBaseURL() + "bulkExport?id=" + measureId + "&type=open";
         FormPanel form = searchDisplay.getForm();
         form.setAction(url);
         form.setEncoding(FormPanel.ENCODING_URLENCODED);
@@ -1355,11 +1353,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                         String measureListLabel = (measureSearchModel.getIsMyMeasureSearch() != 0) ? "All Measures" : "My Measures";
                         searchDisplay.getMeasureSearchView().setMeasureListLabel(measureListLabel);
 
-                        boolean isExportSelectedButtonVisible = (!result.getData().isEmpty());
-                        searchDisplay.getExportSelectedButton().setVisible(isExportSelectedButtonVisible);
                         searchDisplay.getMeasureSearchView().setObserver(createMeasureTableObserver());
-                        result.setSelectedExportIds(new ArrayList<String>());
-                        result.setSelectedExportResults(new ArrayList<Result>());
                         manageMeasureSearchModel = result;
                         MatContext.get().setManageMeasureSearchModel(manageMeasureSearchModel);
 
@@ -1428,17 +1422,32 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
 
             @Override
-            public void onExportClicked(ManageMeasureSearchModel.Result result) {
+            public void onExport(ManageMeasureSearchModel.Result result) {
                 resetMeasureFlags();
                 export(result);
             }
 
             @Override
-            public void onExportSelectedClicked(Result result, boolean isCBChecked) {
-                resetMeasureFlags();
+            public void onBulkExport(List<Result> exportable) {
                 searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-                updateExportedIDs(result, manageMeasureSearchModel, isCBChecked);
+                isMeasureDeleted = false;
+                measureDeletion = false;
+                isMeasureVersioned = false;
+                searchDisplay.resetMessageDisplay();
+                versionDisplay.getMessagePanel().clearAlerts();
 
+                detailDisplay.getErrorMessageDisplay().clearAlert();
+                historyDisplay.getErrorMessageDisplay().clearAlert();
+                shareDisplay.getErrorMessageDisplay().clearAlert();
+
+
+                if (exportable.isEmpty()) {
+                    searchDisplay.getErrorMessageDisplayForBulkExport()
+                            .createAlert(MatContext.get().getMessageDelegate().getMeasureSelectionError());
+                } else {
+                    bulkExport(exportable.stream().map(i -> i.getId()).collect(Collectors.toList()));
+                    searchDisplay.getMeasureSearchView().clearBulkExportCheckBoxes();
+                }
             }
 
             @Override
@@ -1452,12 +1461,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             public void onShareClicked(ManageMeasureSearchModel.Result result) {
                 resetMeasureFlags();
                 displayShare(null, result.getId(), result.getName());
-            }
-
-            @Override
-            public void onClearAllBulkExportClicked() {
-                manageMeasureSearchModel.getSelectedExportResults().clear();
-                manageMeasureSearchModel.getSelectedExportIds().clear();
             }
 
             @Override
@@ -1503,6 +1506,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     createVersion();
                 }
             }
+
         };
     }
 
@@ -1676,26 +1680,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
         });
 
-        searchDisplay.getBulkExportButton().addClickHandler(event -> {
-            searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-            isMeasureDeleted = false;
-            measureDeletion = false;
-            isMeasureVersioned = false;
-            searchDisplay.resetMessageDisplay();
-            versionDisplay.getMessagePanel().clearAlerts();
-
-            detailDisplay.getErrorMessageDisplay().clearAlert();
-            historyDisplay.getErrorMessageDisplay().clearAlert();
-            shareDisplay.getErrorMessageDisplay().clearAlert();
-            if (manageMeasureSearchModel.getSelectedExportIds().isEmpty()) {
-                searchDisplay.getErrorMessageDisplayForBulkExport()
-                        .createAlert(MatContext.get().getMessageDelegate().getMeasureSelectionError());
-            } else {
-                bulkExport(manageMeasureSearchModel.getSelectedExportIds());
-                searchDisplay.getMeasureSearchView().clearBulkExportCheckBoxes();
-
-            }
-        });
         FormPanel form = searchDisplay.getForm();
         form.addSubmitCompleteHandler(event -> {
             String errorMsg = event.getResults();
@@ -1720,24 +1704,17 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         });
 
         MatTextBox searchWidget = (MatTextBox) searchDisplay.getAdminSearchString();
-        searchWidget.addKeyUpHandler(new KeyUpHandler() {
-
-            @Override
-            public void onKeyUp(KeyUpEvent event) {
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                    ((Button) searchDisplay.getAdminSearchButton()).click();
-                }
+        searchWidget.addKeyUpHandler(event -> {
+            if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                ((Button) searchDisplay.getAdminSearchButton()).click();
             }
         });
 
-        searchDisplay.getAdminSearchButton().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                int startIndex = 1;
-                searchDisplay.getErrorMessageDisplay().clearAlert();
-                int filter = 1;
-                search(searchDisplay.getAdminSearchString().getValue(), startIndex, Integer.MAX_VALUE, filter, false);
-            }
+        searchDisplay.getAdminSearchButton().addClickHandler(event -> {
+            int startIndex = 1;
+            searchDisplay.getErrorMessageDisplay().clearAlert();
+            int filter = 1;
+            search(searchDisplay.getAdminSearchString().getValue(), startIndex, Integer.MAX_VALUE, filter, false);
         });
 
         searchDisplay.getTransferButton().addClickHandler(event -> displayActiveMATUsersToTransferMeasureOwnership());
@@ -1947,7 +1924,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private void setSearchingBusy(boolean busy) {
         toggleLoadingMessage(busy);
         ((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
-        ((Button) searchDisplay.getBulkExportButton()).setEnabled(!busy);
         ((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
         ((Button) versionDisplay.getSaveButton()).setEnabled(!busy);
         ((Button) versionDisplay.getCancelButton()).setEnabled(!busy);
@@ -2141,26 +2117,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         }
     }
 
-
-    private void updateExportedIDs(Result result, ManageMeasureSearchModel model, boolean isCBChecked) {
-        List<String> selectedIdList = model.getSelectedExportIds();
-
-        if (isCBChecked) {
-            if (!selectedIdList.contains(result.getId())) {
-                model.getSelectedExportResults().add(result);
-                selectedIdList.add(result.getId());
-            }
-        } else {
-            for (int i = 0; i < model.getSelectedExportIds().size(); i++) {
-                if (result.getId().equals(model.getSelectedExportResults().get(i).getId())) {
-                    model.getSelectedExportIds().remove(i);
-                    model.getSelectedExportResults().remove(i);
-                }
-            }
-
-        }
-    }
-
     private void versionDisplayHandlers(final VersionDisplay versionDisplay) {
 
         MatContext.get().getEventBus().addHandler(MeasureVersionEvent.TYPE, new MeasureVersionEvent.Handler() {
@@ -2175,7 +2131,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     isMeasureVersioned = true;
                     measureVerMessage = event.getMessage();
                 } else {
-
                     measureDeletion = false;
                     isMeasureDeleted = false;
                     isMeasureVersioned = false;
@@ -2207,7 +2162,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_LIBRARY_VERSION());
             }
         }
-
     }
 
     private void resetMeasureFlags() {

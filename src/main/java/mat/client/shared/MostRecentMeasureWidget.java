@@ -20,11 +20,10 @@ import mat.client.measure.ManageMeasureSearchModel.Result;
 
 public class MostRecentMeasureWidget extends Composite implements HasSelectionHandlers<ManageMeasureSearchModel.Result> {
 
-    public static interface Observer {
+    public interface Observer {
         void onExportClicked(ManageMeasureSearchModel.Result result);
     }
 
-    private static final int MAX_TABLE_COLUMN_SIZE = 4;
     private CellTable<ManageMeasureSearchModel.Result> cellTable;
     private HandlerManager handlerManager = new HandlerManager(this);
     private ManageMeasureSearchModel measureSearchModel;
@@ -50,7 +49,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
         cellTable.redraw();
         sortProvider.refresh();
         sortProvider.getList().addAll(measureSearchModel.getData());
-        cellTable = measureLibraryResultTable.addColumnToTable(gridToolbar, cellTable, selectedMeasureList, false, MostRecentMeasureWidget.this);
+        cellTable = measureLibraryResultTable.addColumnToTable(gridToolbar, cellTable, MostRecentMeasureWidget.this);
         sortProvider.addDataDisplay(cellTable);
         Label invisibleLabel = (Label) LabelBuilder
                 .buildInvisibleLabel(
@@ -118,4 +117,5 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
     public void setTableObserver(mat.client.measure.MeasureSearchView.Observer observer) {
         measureLibraryResultTable.setObserver(observer);
     }
+
 }

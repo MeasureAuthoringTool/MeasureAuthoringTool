@@ -72,24 +72,22 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
      * An asynchronous update interface for receiving notifications
      * about Admin information as the Admin is constructed.
      */
-    public static interface AdminObserver {
+    public interface AdminObserver {
         void onHistoryClicked(ManageMeasureSearchModel.Result result);
 
         void onTransferSelectedClicked(ManageMeasureSearchModel.Result result);
     }
 
-    public static interface Observer {
+    public interface Observer {
         void onCloneClicked(ManageMeasureSearchModel.Result result);
 
         void onShareClicked(ManageMeasureSearchModel.Result result);
 
-        void onExportClicked(ManageMeasureSearchModel.Result result);
+        void onExport(ManageMeasureSearchModel.Result result);
+
+        void onBulkExport(List<ManageMeasureSearchModel.Result> exportable);
 
         void onHistoryClicked(ManageMeasureSearchModel.Result result);
-
-        void onExportSelectedClicked(ManageMeasureSearchModel.Result result, boolean isCBChecked);
-
-        void onClearAllBulkExportClicked();
 
         void onDraftOrVersionClick(ManageMeasureSearchModel.Result object);
     }
@@ -176,7 +174,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 
                 MeasureLibraryGridToolbar gridToolbar = new MeasureLibraryGridToolbar();
 
-                table = measureLibraryResultTable.addColumnToTable(gridToolbar, table, selectedList, true, MeasureSearchView.this);
+                table = measureLibraryResultTable.addColumnToTable(gridToolbar, table, MeasureSearchView.this);
                 Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
                         "In the following Measure List table, Measure selection is given in the first column, "
                                 + "Measure Name is given in second column, "

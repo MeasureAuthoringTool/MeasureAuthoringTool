@@ -3,6 +3,7 @@ package mat.client.measure;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.*;
+import mat.client.util.FeatureFlagConstant;
 import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -266,7 +267,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
 	 * Add measure model type radios to create measure view iff 'MAT_ON_FHIR' flag is on
 	 */
 	protected void addMeasureModelType() {
-		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
+		if(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
 			VerticalPanel modelTypePanel = buildModelTypePanel();
 			measureModelGroup.add(modelTypePanel);
 		}

@@ -277,15 +277,15 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	protected void initEntryPoint() {
 		MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
 		
-		MatContext.get().getFeatureFlagService().findFeatureFlag("MAT_ON_FHIR", new AsyncCallback<FeatureFlag>() {
+		MatContext.get().getFeatureFlagService().findFeatureFlag(new AsyncCallback<List<FeatureFlag>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert(MessageDelegate.GENERIC_ERROR_MESSAGE);
 			}
-			
+
 			@Override
-			public void onSuccess(FeatureFlag result) {
-				MatContext.get().setMatOnFHIR(result);
+			public void onSuccess(List<FeatureFlag> result) {
+				MatContext.get().setFeatureFlags(result);
 			}
 			
 		});

@@ -5,9 +5,10 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import mat.model.FeatureFlag;
 
+import java.util.List;
+
 @RemoteServiceRelativePath("featureFlag")
 public interface FeatureFlagService extends RemoteService {
 
-	
-	FeatureFlag findFeatureFlag(String flagName);
+	List<FeatureFlag> findFeatureFlag();
 }

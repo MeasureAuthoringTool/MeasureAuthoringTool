@@ -8,6 +8,8 @@ import mat.client.featureFlag.service.FeatureFlagService;
 import mat.dao.FeatureFlagDAO;
 import mat.model.FeatureFlag;
 
+import java.util.List;
+
 @Service
 public class FeatureFlagServiceImpl extends SpringRemoteServiceServlet implements FeatureFlagService {
 
@@ -15,10 +17,10 @@ public class FeatureFlagServiceImpl extends SpringRemoteServiceServlet implement
 
 	@Autowired
 	FeatureFlagDAO featureFlagDAO;
-	
+
 	@Override
-	public FeatureFlag findFeatureFlag(String flagName) {
-		return featureFlagDAO.findFlagByName(flagName);
+	public List<FeatureFlag> findFeatureFlag() {
+		return featureFlagDAO.findAllFeatureFlags();
 	}
 
 }

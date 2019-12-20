@@ -9,6 +9,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.*;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
+import mat.client.util.FeatureFlagConstant;
 import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
@@ -96,7 +97,7 @@ public class MeasureLibraryResultTable {
 				return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.defaultTypeIfBlank(object.getMeasureModel()));
 			};
 		};
-		if(MatContext.get().getMatOnFHIR().getFlagOn()) {
+		if(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
 			table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Model" + "</span>"));
 			table.setColumnWidth(model, MODEL_COLUMN_WIDTH, Style.Unit.PCT);
 		} else {
@@ -286,7 +287,7 @@ public class MeasureLibraryResultTable {
 	private SafeHtml getMeasureNameColumnToolTip(ManageMeasureSearchModel.Result object){
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String cssClass = "customCascadeButton";
-		String editState = MatContext.get().getMatOnFHIR().getFlagOn() ? getEditStateOfMeasure(object) : "";
+		String editState = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR) ? getEditStateOfMeasure(object) : "";
 		if (object.isMeasureFamily()) {
 			sb.appendHtmlConstant("<div class=\"pull-left\">")
 					.appendHtmlConstant(editState)

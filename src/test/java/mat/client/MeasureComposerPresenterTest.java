@@ -10,20 +10,23 @@ import mat.client.event.MeasureSelectedEvent;
 import mat.client.shared.MatContext;
 import mat.model.FeatureFlag;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RunWith(GwtMockitoTestRunner.class)
 public class MeasureComposerPresenterTest {
 
-    private FeatureFlag featureFlag;
+    private List<FeatureFlag> featureFlaglist = new ArrayList<>();
 
     @Before
     public void setup() {
-        featureFlag = new FeatureFlag();
-        MatContext.get().setMatOnFHIR(featureFlag);
+        featureFlaglist.add(new FeatureFlag(1, "MAT_ON_FHIR", false));
+        MatContext.get().setFeatureFlags(featureFlaglist);
     }
 
     @Test
     public void testHeadingFlagOn() {
-        featureFlag.setFlagOn(true);
+        featureFlaglist.get(0).setFlagOn(true);
         MeasureSelectedEvent evt = new MeasureSelectedEvent("measureId", "v1", "measure1", "name1", "sctyp1", true,
                 true, "", true, false, "TYPE1");
         MatContext.get().setCurrentMeasureInfo(evt);
@@ -33,7 +36,7 @@ public class MeasureComposerPresenterTest {
 
     @Test
     public void testHeadingFlagOff() {
-        featureFlag.setFlagOn(false);
+        featureFlaglist.get(0).setFlagOn(false);
         MeasureSelectedEvent evt = new MeasureSelectedEvent("measureId", "v1", "measure1", "name1", "sctyp1", true,
                 true, "", true, false, "TYPE1");
         MatContext.get().setCurrentMeasureInfo(evt);

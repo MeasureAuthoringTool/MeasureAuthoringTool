@@ -233,9 +233,9 @@ public class MatContext implements IsSerializable {
 
     private Map<String, String> expressionToReturnTypeMap = new HashMap<>();
 
-    private FeatureFlag matOnFHIR;
+	private List<FeatureFlag> featureFlagList;
 
-    public void clearDVIMessages() {
+	public void clearDVIMessages() {
         if (qdsView != null) {
             qdsView.getSuccessMessageDisplay().clear();
             qdsView.getErrorMessageDisplay().clear();
@@ -1522,13 +1522,18 @@ public class MatContext implements IsSerializable {
         });
     }
 
-    public void setMatOnFHIR(FeatureFlag matOnFHIR) {
-        this.matOnFHIR = matOnFHIR;
-    }
+	public void setFeatureFlags(List<FeatureFlag> featureFlagList){
+		this.featureFlagList = featureFlagList;
+	}
 
-    public FeatureFlag getMatOnFHIR() {
-        return this.matOnFHIR;
-    }
+	//returns if specific feature flag is on/off
+	public boolean getFeatureFlagStatus(String flag){
+		FeatureFlag featureFlag = this.featureFlagList.stream()
+				.filter(f -> flag.equals(f.getFlagName()))
+				.findAny()
+				.orElse(null);
+		return featureFlag.getFlagOn();
+	}
 
     public List<MeasureType> getMeasureTypeList() {
         return measureTypeList;

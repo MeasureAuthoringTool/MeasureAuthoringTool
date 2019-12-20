@@ -16,18 +16,22 @@ import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.MatContext;
 import mat.model.FeatureFlag;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RunWith(GwtMockitoTestRunner.class)
 public class CqlComposerPresenterTest {
 
-    private FeatureFlag featureFlag;
+    private List<FeatureFlag> featureFlaglist = new ArrayList<>();
     private ContentWithHeadingWidget cqlComposerContent;
     @Mock
     private HTML heading;
 
     @Before
     public void setup() {
-        featureFlag = new FeatureFlag();
-        MatContext.get().setMatOnFHIR(featureFlag);
+        featureFlaglist.add(new FeatureFlag(1, "MAT_ON_FHIR", false));
+        MatContext.get().setFeatureFlags(featureFlaglist);
+
         cqlComposerContent = Whitebox.getInternalState(CqlComposerPresenter.class, "cqlComposerContent");
         Assert.assertNotNull(cqlComposerContent);
         Whitebox.setInternalState(cqlComposerContent, "heading", heading);
@@ -35,7 +39,8 @@ public class CqlComposerPresenterTest {
 
     @Test
     public void testHeadingFlagOn() {
-        featureFlag.setFlagOn(true);
+        featureFlaglist.get(0).setFlagOn(true);
+
         CQLLibrarySelectedEvent selectedEvent = CQLLibrarySelectedEvent.Builder.newBuilder()
                 .withLibraryName("library1")
                 .withCqlLibraryVersion("v1")
@@ -49,7 +54,8 @@ public class CqlComposerPresenterTest {
 
     @Test
     public void testHeadingFlagOff() {
-        featureFlag.setFlagOn(false);
+        featureFlaglist.get(0).setFlagOn(false);
+
         CQLLibrarySelectedEvent selectedEvent = CQLLibrarySelectedEvent.Builder.newBuilder()
                 .withLibraryName("library1")
                 .withCqlLibraryVersion("v1")

@@ -2959,14 +2959,10 @@ table#MostRecentActivityCellTable {
     vertical-align: middle;
 }
 
+.action-button-bar {
+}
 
-/*.action-button-bar {*/
-/*    background-color: #F0F0F0;*/
-/*    margin-top: 5px;*/
-/*    width: 100%;*/
-/*}*/
-
-/*.action-button-bar button {*/
-/*    padding: 5px 12px;*/
-/*    margin: 2px;*/
-/*}*/
+.action-button-bar button {
+    padding: 5px 12px;
+    margin: 2px;
+}

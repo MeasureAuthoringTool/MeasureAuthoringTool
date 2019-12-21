@@ -19,7 +19,7 @@ public class FeatureFlagServiceImpl extends SpringRemoteServiceServlet implement
 	FeatureFlagDAO featureFlagDAO;
 
 	@Override
-	public List<FeatureFlag> findFeatureFlag() {
+	public List<FeatureFlag> findFeatureFlags() {
 		return featureFlagDAO.findAllFeatureFlags();
 	}
 

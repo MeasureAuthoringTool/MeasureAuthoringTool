@@ -10,5 +10,5 @@ import java.util.List;
 @RemoteServiceRelativePath("featureFlag")
 public interface FeatureFlagService extends RemoteService {
 
-	List<FeatureFlag> findFeatureFlag();
+	List<FeatureFlag> findFeatureFlags();
 }

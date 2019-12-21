@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface FeatureFlagServiceAsync extends AsynchronousService{
 
-	void findFeatureFlag(AsyncCallback<List<FeatureFlag>> callback);
+	void findFeatureFlags(AsyncCallback<List<FeatureFlag>> callback);
 }

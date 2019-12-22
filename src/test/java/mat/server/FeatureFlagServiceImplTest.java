@@ -26,11 +26,6 @@ class FeatureFlagServiceImplTest {
     @InjectMocks
     FeatureFlagServiceImpl featureFlagServiceImpl;
 
-    @Before
-    public void init() {
-        MockitoAnnotations.initMocks(this);
-    }
-
     @Test
     void findFeatureFlagTest() {
         List<FeatureFlag> featureFlaglist = new ArrayList<>();
@@ -39,7 +34,7 @@ class FeatureFlagServiceImplTest {
         featureFlaglist.add(new FeatureFlag(3, "FHIR_DELETE", false));
 
         Mockito.when(featureFlagDAO.findAllFeatureFlags()).thenReturn(featureFlaglist);
-        List<FeatureFlag> flagList = featureFlagServiceImpl.findFeatureFlag();
+        List<FeatureFlag> flagList = featureFlagServiceImpl.findFeatureFlags();
         assertEquals(3,flagList.size());
         Mockito.verify(featureFlagDAO, times(1)).findAllFeatureFlags();
     }

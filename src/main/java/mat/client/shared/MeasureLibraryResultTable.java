@@ -22,6 +22,7 @@ import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.util.CellTableUtility;
+import mat.client.util.FeatureFlagConstant;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 public class MeasureLibraryResultTable {
@@ -82,7 +83,7 @@ public class MeasureLibraryResultTable {
                 return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.defaultTypeIfBlank(object.getMeasureModel()));
             }
         };
-        if (MatContext.get().getMatOnFHIR().getFlagOn()) {
+        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
             table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Model" + "</span>"));
             table.setColumnWidth(model, MODEL_COLUMN_WIDTH, Style.Unit.PCT);
         }
@@ -205,7 +206,7 @@ public class MeasureLibraryResultTable {
     private SafeHtml getMeasureNameColumnToolTip(ManageMeasureSearchModel.Result object) {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         String cssClass = "customCascadeButton";
-        String editState = MatContext.get().getMatOnFHIR().getFlagOn() ? getEditStateOfMeasure(object) : "";
+        String editState = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR) ? getEditStateOfMeasure(object) : "";
         if (object.isMeasureFamily()) {
             sb.appendHtmlConstant("<div class=\"pull-left\">")
                     .appendHtmlConstant(editState)

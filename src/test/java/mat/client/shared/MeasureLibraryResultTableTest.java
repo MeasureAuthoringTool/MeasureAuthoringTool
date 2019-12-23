@@ -56,8 +56,6 @@ public class MeasureLibraryResultTableTest {
         featureFlagMap.put("MAT_ON_FHIR", false);
         MatContext.get().setFeatureFlags(featureFlagMap);
 
-        MatContext.get().setMatOnFHIR(featureFlag);
-
         cellTable = measureLibraryResultTable.addColumnToTable(gridToolbar, cellTable, fireEvent);
         assertNotNull(cellTable);
         verify(cellTable).addStyleName("table");

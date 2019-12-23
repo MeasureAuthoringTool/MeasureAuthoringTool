@@ -4,11 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BrowserEvents;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
-import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -19,7 +16,6 @@ import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.MultiSelectionModel;
 import mat.client.Mat;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -93,27 +89,16 @@ public class MeasureLibraryResultTable {
         table.addCellPreviewHandler(event -> {
             String eventType = event.getNativeEvent().getType();
             EventTarget target = event.getNativeEvent().getCurrentEventTarget();
-            Element element = Element.as(target);
             Result obj = event.getValue();
             event.getNativeEvent().preventDefault();
             if (BrowserEvents.CLICK.equalsIgnoreCase(eventType)) {
-                Element input = element
-                        .getElementsByTagName("tbody")
-                        .getItem(0)
-                        .getElementsByTagName("tr")
-                        .getItem(event.getIndex())
-                        .getElementsByTagName("input")
-                        .getItem(0);
                 obj.incrementClickCount();
                 if (obj.getClickCount() == 1) {
                     singleClickTimer = new Timer() {
                         @Override
                         public void run() {
                             obj.setClickCount(0);
-                            InputElement checkbox = input.cast();
-                            checkbox.click();
-                            selectionModel.setSelected(obj, checkbox.isChecked());
-                            GWT.log("Selected? " + selectionModel.isSelected(obj));
+                            selectionModel.setSelected(obj, !selectionModel.isSelected(obj));
                         }
                     };
                     singleClickTimer.schedule(MOUSE_CLICK_DELAY);
@@ -220,10 +205,8 @@ public class MeasureLibraryResultTable {
 
     private Column<ManageMeasureSearchModel.Result, Boolean> getSelectionModelColumn() {
         // Add a selection model so we can select cells.
-        MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
-        table.setSelectionModel(selectionModel, DefaultSelectionEventManager.createCheckboxManager());
         Column<ManageMeasureSearchModel.Result, Boolean> checkColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(
-                new CheckboxCell(true, false)) {
+                new CheckboxCell(true, true)) {
             @Override
             public Boolean getValue(ManageMeasureSearchModel.Result object) {
                 return selectionModel.isSelected(object);

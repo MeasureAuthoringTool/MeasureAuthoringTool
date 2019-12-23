@@ -241,6 +241,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
                 gridPanelHeader.getElement().setTabIndex(0);
 
                 CQLibraryGridToolbar gridToolbar = new CQLibraryGridToolbar();
+                gridToolbar.getElement().setAttribute("id", "cqlLibrarySearchCellTable_gridToolbar");
 
                 table = cqlLibraryResultTable.addColumnToTable(gridToolbar, table, CQLLibrarySearchView.this);
                 Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("CQLLibrarySearchSummary",
@@ -492,13 +493,6 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
         this.cqlLibraryListLabel = cqlLibraryListLabel;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.
-     * shared.GwtEvent)
-     */
     @Override
     public void fireEvent(GwtEvent<?> event) {
         handlerManager.fireEvent(event);

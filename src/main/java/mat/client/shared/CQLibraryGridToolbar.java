@@ -108,19 +108,25 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
     public void updateOnSelectionChanged(CQLLibraryDataSetObject selectedItem) {
 
         if (null == selectedItem) {
-            applyDefault();
             return;
         }
 
-        versionButton.setEnabled(true);
         if (selectedItem.isDraftable()) {
             versionButton.setText("Create Draft");
             versionButton.setIcon(IconType.PENCIL_SQUARE_O);
             versionButton.setTitle("Click to create draft");
-        } else {
+            versionButton.setEnabled(true);
+        } else if (selectedItem.isVersionable()) {
             versionButton.setText("Create Version");
             versionButton.setIcon(IconType.STAR);
             versionButton.setTitle("Click to create version");
+            versionButton.setEnabled(true);
+        } else {
+            versionButton.setText(CREATE_VERSION_DRAFT_TEXT);
+            versionButton.setType(ButtonType.DEFAULT);
+            versionButton.setEnabled(false);
+            versionButton.setIcon(IconType.STAR);
+            versionButton.setTitle(CLICK_TO_CREATE_VERSION_DRAFT_TITLE);
         }
 
         historyButton.setEnabled(true);

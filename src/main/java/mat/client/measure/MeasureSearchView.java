@@ -173,6 +173,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
             } else {
 
                 MeasureLibraryGridToolbar gridToolbar = new MeasureLibraryGridToolbar();
+                gridToolbar.getElement().setAttribute("id", "MeasureSearchCellTable_gridToolbar");
 
                 table = measureLibraryResultTable.addColumnToTable(gridToolbar, table, MeasureSearchView.this);
                 Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",

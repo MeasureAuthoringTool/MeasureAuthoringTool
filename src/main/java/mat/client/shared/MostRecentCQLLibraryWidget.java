@@ -49,6 +49,7 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
 
 
         CQLibraryGridToolbar gridToolbar = new CQLibraryGridToolbar();
+        gridToolbar.getElement().setAttribute("id", "recentActivitySummary_gridToolbar");
 
         cellTable.setWidth("100%");
         cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);

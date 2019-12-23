@@ -8,6 +8,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import mat.client.measure.ManageMeasureSearchModel;
 
 public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
@@ -42,12 +43,13 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         applyDefault();
     }
 
-    private void applyDefault() {
+    @VisibleForTesting
+    void applyDefault() {
         applyDefaultAllButExport();
 
         exportButton.setText("Export");
         exportButton.setTitle("Click to export");
-        historyButton.setWidth("72px");
+        exportButton.setWidth("72px");
         buildActionButton(exportButton, IconType.DOWNLOAD);
     }
 
@@ -74,7 +76,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
         cloneButton.setText("Clone");
         cloneButton.setTitle("Click to clone");
-        editButton.setWidth("69px");
+        cloneButton.setWidth("69px");
         buildActionButton(cloneButton, IconType.CLONE);
     }
 

@@ -88,7 +88,6 @@ public class MeasureLibraryResultTable {
         if (MatContext.get().getMatOnFHIR().getFlagOn()) {
             table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Model" + "</span>"));
             table.setColumnWidth(model, MODEL_COLUMN_WIDTH, Style.Unit.PCT);
-
         }
         // Add event handler for table
         table.addCellPreviewHandler(event -> {
@@ -214,9 +213,7 @@ public class MeasureLibraryResultTable {
      * Clear bulk export check boxes.
      */
     public void clearBulkExportCheckBoxes() {
-        selectionModel.getSelectedSet().forEach(selected -> {
-            selectionModel.setSelected(selected, false);
-        });
+        ((MultiSelectionModel) table.getSelectionModel()).clear();
         table.redraw();
     }
 

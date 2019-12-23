@@ -8,4 +8,5 @@
     <include file="classpath:/liquibase/featureFlagDataBaseChanges.xml"/>
     <include file="classpath:/liquibase/addMeasureModelColumn.xml"/>
     <include file="classpath:/liquibase/addLibraryModelColumn.xml"/>
+    <include file="classpath:/liquibase/addMVPFeatureFlags.xml"/>
 </databaseChangeLog>

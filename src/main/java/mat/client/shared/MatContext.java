@@ -74,7 +74,6 @@ import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
-import mat.model.FeatureFlag;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MeasureType;
 import mat.model.cql.CQLModel;
@@ -233,9 +232,9 @@ public class MatContext implements IsSerializable {
 
     private Map<String, String> expressionToReturnTypeMap = new HashMap<>();
 
-    private FeatureFlag matOnFHIR;
+	private Map<String, Boolean> featureFlagMap;
 
-    public void clearDVIMessages() {
+	public void clearDVIMessages() {
         if (qdsView != null) {
             qdsView.getSuccessMessageDisplay().clear();
             qdsView.getErrorMessageDisplay().clear();
@@ -1524,13 +1523,14 @@ public class MatContext implements IsSerializable {
         });
     }
 
-    public void setMatOnFHIR(FeatureFlag matOnFHIR) {
-        this.matOnFHIR = matOnFHIR;
-    }
+	public void setFeatureFlags(Map<String, Boolean> featureFlagMap){
+		this.featureFlagMap = featureFlagMap;
+	}
 
-    public FeatureFlag getMatOnFHIR() {
-        return this.matOnFHIR;
-    }
+	//returns if specific feature flag is on/off
+	public boolean getFeatureFlagStatus(String flag){
+		return featureFlagMap.getOrDefault(flag,false);
+	}
 
     public List<MeasureType> getMeasureTypeList() {
         return measureTypeList;

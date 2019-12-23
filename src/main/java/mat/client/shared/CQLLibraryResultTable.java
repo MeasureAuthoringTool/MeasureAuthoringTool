@@ -3,6 +3,7 @@ package mat.client.shared;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.*;
 import com.google.gwt.event.logical.shared.SelectionEvent;
+import mat.client.util.FeatureFlagConstant;
 import mat.shared.model.util.MeasureDetailsUtil;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -122,7 +123,7 @@ public class CQLLibraryResultTable {
                 object.setLastClick(System.currentTimeMillis());
             }
         };
-        if (MatContext.get().getMatOnFHIR().getFlagOn())
+        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR))
             table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Model" + "</span>"));
 
         table.addStyleName("table");
@@ -189,7 +190,7 @@ public class CQLLibraryResultTable {
     private SafeHtml getCQLLibraryNameColumnToolTip(CQLLibraryDataSetObject object) {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         String cssClass = "customCascadeButton";
-        String editState = MatContext.get().getMatOnFHIR().getFlagOn() ? getEditStateOfLibrary(object) : "";
+        String editState = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR) ? getEditStateOfLibrary(object) : "";
         if (object.isFamily()) {
             sb.appendHtmlConstant("<div tabindex=\"-1\">");
             sb.appendHtmlConstant(editState);

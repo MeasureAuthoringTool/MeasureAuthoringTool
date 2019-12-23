@@ -1,5 +1,8 @@
 package mat.client.shared;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -41,6 +44,8 @@ public class MeasureLibraryResultTableTest {
     @InjectMocks
     private MeasureLibraryGridToolbar gridToolbar;
 
+    private Map<String, Boolean> featureFlagMap = new HashMap<>();
+
 
     @Test
     public void testAddColumnToTable() {
@@ -48,8 +53,8 @@ public class MeasureLibraryResultTableTest {
         when(cellTable.getElement()).thenReturn(tbl);
         when(tbl.cast()).thenReturn(GWT.create(TableElement.class));
 
-        FeatureFlag featureFlag = new FeatureFlag();
-        featureFlag.setFlagOn(true);
+        featureFlagMap.put("MAT_ON_FHIR", false);
+        MatContext.get().setFeatureFlags(featureFlagMap);
 
         MatContext.get().setMatOnFHIR(featureFlag);
 
@@ -117,20 +122,6 @@ public class MeasureLibraryResultTableTest {
         Mockito.verify(observer, Mockito.never()).onCloneClicked(Mockito.eq(selected));
     }
 
-    //    @Test
-    public void testCloneClick() {
-        ManageMeasureSearchModel.Result selected = new ManageMeasureSearchModel.Result();
-        selected.setClonable(true);
-
-        // Mat.showLoadingMessage()
-//        Mockito.doNothing().when(Mat.class).showLoadingMessage();
-
-        MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
-        selectionModel.setSelected(selected, true);
-
-        measureLibraryResultTable.onCloneButtonClicked(selectionModel);
-        Mockito.verify(observer, Mockito.times(1)).onCloneClicked(Mockito.eq(selected));
-    }
 
     @Test
     public void testOnShareSharable() {

@@ -19,6 +19,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.util.FeatureFlagConstant;
 import mat.shared.ConstantMessages;
 import mat.shared.model.util.MeasureDetailsUtil;
 
@@ -193,7 +194,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 
     private static String getHeadingLibraryModel() {
         String model = "";
-        if (MatContext.get().getMatOnFHIR().getFlagOn()) {
+        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
             model = " (" + MeasureDetailsUtil.defaultTypeIfBlank(MatContext.get().getCurrentLibraryInfo().getLibraryModelType()) + ")";
         }
         return model;

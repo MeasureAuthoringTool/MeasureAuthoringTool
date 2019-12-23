@@ -1,5 +1,6 @@
 package mat.client.cql;
 
+import mat.client.util.FeatureFlagConstant;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -143,7 +144,7 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
      * Add measure model type radios to create measure view iff 'MAT_ON_FHIR' flag is on
      */
     private void addLibraryModelType() {
-        if (MatContext.get().getMatOnFHIR().getFlagOn()) {
+        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
             VerticalPanel modelTypePanel = buildModelTypePanel();
             libraryModelGroup.add(modelTypePanel);
         }

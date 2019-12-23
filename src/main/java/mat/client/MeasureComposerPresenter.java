@@ -3,6 +3,7 @@ package mat.client;
 import java.util.LinkedList;
 import java.util.List;
 
+import mat.client.util.FeatureFlagConstant;
 import org.gwtbootstrap3.client.ui.Button;
 
 import com.google.gwt.core.client.Scheduler;
@@ -284,7 +285,7 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
 
     private static String getHeadingMeasureModel() {
         String model = "";
-        if (MatContext.get().getMatOnFHIR().getFlagOn()) {
+        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
             model = " (" + MeasureDetailsUtil.defaultTypeIfBlank(MatContext.get().getCurrentMeasureInfo().getMeasureModel()) + ")";
         }
         return model;

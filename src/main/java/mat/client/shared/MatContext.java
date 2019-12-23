@@ -1527,7 +1527,7 @@ public class MatContext implements IsSerializable {
 
 	//returns if specific feature flag is on/off
 	public boolean getFeatureFlagStatus(String flag){
-		return featureFlagMap.get(flag);
+		return featureFlagMap.getOrDefault(flag,false);
 	}
 
     public List<MeasureType> getMeasureTypeList() {

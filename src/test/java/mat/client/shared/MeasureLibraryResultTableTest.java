@@ -64,7 +64,6 @@ public class MeasureLibraryResultTableTest {
         when(tbl.cast()).thenReturn(GWT.create(TableElement.class));
 
         featureFlagMap.put("MAT_ON_FHIR", false);
-        featureFlagMap.put("FHIR_EDIt", true);
         MatContext.get().setFeatureFlags(featureFlagMap);
 
         cellTable = measureLibraryResultTable.addColumnToTable("Recent Activity", cellTable, results, false, fireEvent);

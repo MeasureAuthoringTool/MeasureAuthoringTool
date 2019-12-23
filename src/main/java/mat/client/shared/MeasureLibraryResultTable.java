@@ -32,19 +32,20 @@ public class MeasureLibraryResultTable {
     private static final int MOUSE_CLICK_DELAY = 300;
     private Timer singleClickTimer;
     private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
+    private MeasureLibraryGridToolbar gridToolbar;
     private CellTable<ManageMeasureSearchModel.Result> table;
     private Observer observer;
 
     public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(MeasureLibraryGridToolbar gridToolbar, CellTable<ManageMeasureSearchModel.Result> table, HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
         this.table = table;
-
+        this.gridToolbar = gridToolbar;
         selectionModel = new MultiSelectionModel<>();
         table.setSelectionModel(selectionModel);
 
         selectionModel.addSelectionChangeHandler(event -> {
             gridToolbar.updateOnSelectionChanged(selectionModel.getSelectedSet());
         });
-        addToolbarHandlers(gridToolbar, selectionModel, fireEvent);
+        addToolbarHandlers(fireEvent);
 
         Column<ManageMeasureSearchModel.Result, Boolean> checkColumn = getSelectionModelColumn();
         table.addColumn(checkColumn);
@@ -116,54 +117,83 @@ public class MeasureLibraryResultTable {
     }
 
     @VisibleForTesting
-    void addToolbarHandlers(MeasureLibraryGridToolbar gridToolbar, MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel, HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
+    void addToolbarHandlers(HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
         gridToolbar.getVersionButton().addClickHandler(event -> {
-            selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
-                if (object.isDraftable() || object.isVersionable()) {
-                    observer.onDraftOrVersionClick(object);
-                }
-            });
+            onVersionButtonClicked(selectionModel);
         });
 
         gridToolbar.getHistoryButton().addClickHandler(event -> {
-            selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
-                observer.onHistoryClicked(object);
-            });
+            onHistoryButtonClicked(selectionModel);
         });
 
         gridToolbar.getEditButton().addClickHandler(event -> {
-            selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
-                SelectionEvent.fire(fireEvent, object);
-            });
+            onEditButtonClicked(selectionModel, fireEvent);
         });
 
         gridToolbar.getShareButton().addClickHandler(event -> {
-            selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
-                if (object.isSharable()) {
-                    observer.onShareClicked(object);
-                }
-            });
+            onShareButtonClicked(selectionModel);
         });
 
         gridToolbar.getCloneButton().addClickHandler(event -> {
-            selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
-                if (object.isClonable()) {
-                    Mat.showLoadingMessage();
-                    observer.onCloneClicked(object);
-                }
-            });
+            onCloneButtonClicked(selectionModel);
         });
 
         gridToolbar.getExportButton().addClickHandler(event -> {
-            List<ManageMeasureSearchModel.Result> exportList = selectionModel.getSelectedSet()
-                    .stream().filter(result -> result.isExportable()).collect(Collectors.toList());
-            if (exportList.size() == 1) {
-                observer.onExport(exportList.iterator().next());
-            } else {
-                observer.onBulkExport(exportList);
+            onExportButtonClicked(selectionModel);
+        });
+    }
+
+    @VisibleForTesting
+    void onExportButtonClicked(MultiSelectionModel<Result> selectionModel) {
+        List<Result> exportList = selectionModel.getSelectedSet()
+                .stream().filter(result -> result.isExportable()).collect(Collectors.toList());
+        if (exportList.size() == 1) {
+            observer.onExport(exportList.iterator().next());
+        } else {
+            observer.onBulkExport(exportList);
+        }
+    }
+
+    @VisibleForTesting
+    void onCloneButtonClicked(MultiSelectionModel<Result> selectionModel) {
+        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+            if (object.isClonable()) {
+                Mat.showLoadingMessage();
+                observer.onCloneClicked(object);
             }
         });
+    }
 
+    @VisibleForTesting
+    void onShareButtonClicked(MultiSelectionModel<Result> selectionModel) {
+        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+            if (object.isSharable()) {
+                observer.onShareClicked(object);
+            }
+        });
+    }
+
+    @VisibleForTesting
+    void onEditButtonClicked(MultiSelectionModel<Result> selectionModel, HasSelectionHandlers<Result> fireEvent) {
+        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+            SelectionEvent.fire(fireEvent, object);
+        });
+    }
+
+    @VisibleForTesting
+    void onHistoryButtonClicked(MultiSelectionModel<Result> selectionModel) {
+        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+            observer.onHistoryClicked(object);
+        });
+    }
+
+    @VisibleForTesting
+    void onVersionButtonClicked(MultiSelectionModel<Result> selectionModel) {
+        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+            if (object.isDraftable() || object.isVersionable()) {
+                observer.onDraftOrVersionClick(object);
+            }
+        });
     }
 
     /**
@@ -198,7 +228,7 @@ public class MeasureLibraryResultTable {
      * Clear bulk export check boxes.
      */
     public void clearBulkExportCheckBoxes() {
-        ((MultiSelectionModel) table.getSelectionModel()).clear();
+        selectionModel.clear();
         table.redraw();
     }
 

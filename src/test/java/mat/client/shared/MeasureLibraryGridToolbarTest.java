@@ -306,4 +306,42 @@ public class MeasureLibraryGridToolbarTest {
         Mockito.verify(toolbar.getCloneButton(), Mockito.atLeastOnce()).setTitle(Mockito.eq("Composite measure not cloneable"));
     }
 
+    @Test
+    public void testAllDisabledMultipleSelectedNotExportable() {
+        ManageMeasureSearchModel.Result item0 = new ManageMeasureSearchModel.Result();
+        item0.setIsComposite(true);
+
+        ManageMeasureSearchModel.Result item1 = new ManageMeasureSearchModel.Result();
+        item1.setIsComposite(true);
+
+        toolbar.updateOnSelectionChanged(Arrays.asList(item0, item1));
+
+        Mockito.verify(toolbar.getShareButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getEditButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getHistoryButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getCloneButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getExportButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+    }
+
+    @Test
+    public void testExportEnabledOndMultipleSelectedExportable() {
+        ManageMeasureSearchModel.Result item0 = new ManageMeasureSearchModel.Result();
+        item0.setExportable(true);
+        item0.setIsComposite(true);
+
+        ManageMeasureSearchModel.Result item1 = new ManageMeasureSearchModel.Result();
+        item1.setExportable(true);
+        item1.setIsComposite(true);
+
+        toolbar.updateOnSelectionChanged(Arrays.asList(item0, item1));
+
+        Mockito.verify(toolbar.getShareButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getEditButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getHistoryButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getCloneButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getExportButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
+    }
+
 }

@@ -2,6 +2,8 @@ package mat.dao;
 
 import mat.model.FeatureFlag;
 
+import java.util.List;
+
 public interface FeatureFlagDAO extends IDAO<FeatureFlag, String>  {
-    public FeatureFlag findFlagByName(String flagName);
+    List<FeatureFlag> findAllFeatureFlags();
 }

@@ -3,6 +3,7 @@ package mat.client.measure;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.client.util.FeatureFlagConstant;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -867,7 +868,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         searchDisplay.getCellTablePanel().clear();
         String heading = "Measure Library";
 
-        if (MatContext.get().getMatOnFHIR().getFlagOn()) {
+        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
             heading = "MAT on FHIR - Measure Library";
         } else {
             heading = "MAT on QDM - Measure Library";

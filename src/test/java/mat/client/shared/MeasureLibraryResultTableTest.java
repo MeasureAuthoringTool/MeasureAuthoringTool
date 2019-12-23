@@ -13,14 +13,15 @@ import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.measure.ManageMeasureSearchModel;
-import mat.model.FeatureFlag;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class MeasureLibraryResultTableTest {
@@ -36,6 +37,7 @@ public class MeasureLibraryResultTableTest {
 
     private List<ManageMeasureSearchModel.Result> results;
     private ClickHandler clickHandler;
+    private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
     @Before
     public void setUp() {
@@ -61,10 +63,8 @@ public class MeasureLibraryResultTableTest {
         when(cellTable.getElement()).thenReturn(tbl);
         when(tbl.cast()).thenReturn(GWT.create(TableElement.class));
 
-        FeatureFlag featureFlag = new FeatureFlag();
-        featureFlag.setFlagOn(true);
-
-        MatContext.get().setMatOnFHIR(featureFlag);
+        featureFlagMap.put("MAT_ON_FHIR", false);
+        MatContext.get().setFeatureFlags(featureFlagMap);
 
         cellTable = measureLibraryResultTable.addColumnToTable("Recent Activity", cellTable, results, false, fireEvent);
         assertNotNull(cellTable);

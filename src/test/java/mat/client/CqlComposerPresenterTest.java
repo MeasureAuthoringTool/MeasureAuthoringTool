@@ -14,24 +14,19 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.MatContext;
-import mat.model.FeatureFlag;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class CqlComposerPresenterTest {
 
-    private List<FeatureFlag> featureFlaglist = new ArrayList<>();
+    private Map<String, Boolean> featureFlagMap = new HashMap<>();
     private ContentWithHeadingWidget cqlComposerContent;
     @Mock
     private HTML heading;
 
     @Before
     public void setup() {
-        featureFlaglist.add(new FeatureFlag(1, "MAT_ON_FHIR", false));
-        MatContext.get().setFeatureFlags(featureFlaglist);
-
         cqlComposerContent = Whitebox.getInternalState(CqlComposerPresenter.class, "cqlComposerContent");
         Assert.assertNotNull(cqlComposerContent);
         Whitebox.setInternalState(cqlComposerContent, "heading", heading);
@@ -39,7 +34,8 @@ public class CqlComposerPresenterTest {
 
     @Test
     public void testHeadingFlagOn() {
-        featureFlaglist.get(0).setFlagOn(true);
+        featureFlagMap.put("MAT_ON_FHIR",true);
+        MatContext.get().setFeatureFlags(featureFlagMap);
 
         CQLLibrarySelectedEvent selectedEvent = CQLLibrarySelectedEvent.Builder.newBuilder()
                 .withLibraryName("library1")
@@ -54,7 +50,8 @@ public class CqlComposerPresenterTest {
 
     @Test
     public void testHeadingFlagOff() {
-        featureFlaglist.get(0).setFlagOn(false);
+        featureFlagMap.put("MAT_ON_FHIR",false);
+        MatContext.get().setFeatureFlags(featureFlagMap);
 
         CQLLibrarySelectedEvent selectedEvent = CQLLibrarySelectedEvent.Builder.newBuilder()
                 .withLibraryName("library1")

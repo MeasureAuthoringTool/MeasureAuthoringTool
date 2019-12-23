@@ -3,11 +3,9 @@ package mat.client.featureFlag.service;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import mat.client.login.service.AsynchronousService;
-import mat.model.FeatureFlag;
-
-import java.util.List;
+import java.util.Map;
 
 public interface FeatureFlagServiceAsync extends AsynchronousService{
 
-	void findFeatureFlags(AsyncCallback<List<FeatureFlag>> callback);
+	void findFeatureFlags(AsyncCallback<Map<String, Boolean>> callback);
 }

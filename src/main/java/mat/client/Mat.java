@@ -3,6 +3,7 @@ package mat.client;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -68,7 +69,6 @@ import mat.client.umls.ManageUmlsPresenter;
 import mat.client.umls.UmlsLoginDialogBox;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.client.util.ClientConstants;
-import mat.model.FeatureFlag;
 import mat.shared.ConstantMessages;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
 
@@ -277,17 +277,16 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	protected void initEntryPoint() {
 		MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
 		
-		MatContext.get().getFeatureFlagService().findFeatureFlags(new AsyncCallback<List<FeatureFlag>>() {
+		MatContext.get().getFeatureFlagService().findFeatureFlags(new AsyncCallback<Map<String, Boolean>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert(MessageDelegate.GENERIC_ERROR_MESSAGE);
 			}
 
 			@Override
-			public void onSuccess(List<FeatureFlag> result) {
+			public void onSuccess(Map<String, Boolean> result) {
 				MatContext.get().setFeatureFlags(result);
 			}
-			
 		});
 		
 		showLoadingMessage();

@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Repository("FeatureFlagDAO")
@@ -22,6 +23,6 @@ public class FeatureFlagDAOImpl extends GenericDAO<FeatureFlag, String> implemen
     @Override
     public List<FeatureFlag> findAllFeatureFlags() {
         final List<FeatureFlag> dataTypeList = find();
-        return CollectionUtils.isNotEmpty(dataTypeList) ? dataTypeList : null;
+        return CollectionUtils.isNotEmpty(dataTypeList) ? dataTypeList : Collections.EMPTY_LIST;
     }
 }

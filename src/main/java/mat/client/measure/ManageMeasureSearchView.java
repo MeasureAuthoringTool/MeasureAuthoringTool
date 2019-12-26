@@ -52,8 +52,6 @@ public class ManageMeasureSearchView implements SearchDisplay {
 
     private final FormPanel form = new FormPanel();
 
-//    public VerticalPanel measureVpanel = new VerticalPaGrid508nel();
-
     private final FlowPanel mainPanel = new FlowPanel();
 
     private SearchWidgetWithFilter measureSearchFilterWidget = new SearchWidgetWithFilter("searchFilter", "measureLibraryFilterDisclosurePanel", "forMeasure");

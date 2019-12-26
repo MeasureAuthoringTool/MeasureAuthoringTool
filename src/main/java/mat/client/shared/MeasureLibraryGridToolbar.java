@@ -46,46 +46,25 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
     @VisibleForTesting
     void applyDefault() {
         applyDefaultAllButExport();
-
-        exportButton.setText("Export");
-        exportButton.setTitle("Click to export");
-        exportButton.setWidth("72px");
-        buildActionButton(exportButton, IconType.DOWNLOAD);
+        buildButton(exportButton, IconType.DOWNLOAD, "Export", "Click to export", "72px");
     }
 
     private void applyDefaultAllButExport() {
-        versionButton.setText("Create Version/Draft");
-        versionButton.setTitle("Click to create version or draft");
-        versionButton.setWidth("146px");
-        buildActionButton(versionButton, IconType.STAR);
-
-        historyButton.setText("History");
-        historyButton.setTitle("Click to view history");
-        historyButton.setWidth("73px");
-        buildActionButton(historyButton, IconType.CLOCK_O);
-
-        editButton.setText("Edit");
-        editButton.setTitle("Click to edit");
-        editButton.setWidth("57px");
-        buildActionButton(editButton, IconType.EDIT);
-
-        shareButton.setText("Share");
-        shareButton.setTitle("Click to share");
-        shareButton.setWidth("68px");
-        buildActionButton(shareButton, IconType.SHARE_SQUARE);
-
-        cloneButton.setText("Clone");
-        cloneButton.setTitle("Click to clone");
-        cloneButton.setWidth("69px");
-        buildActionButton(cloneButton, IconType.CLONE);
+        buildButton(versionButton, IconType.STAR, "Create Version/Draft", "Click to create version or draft", "146px");
+        buildButton(historyButton, IconType.CLOCK_O, "History", "Click to view history", "73px");
+        buildButton(editButton, IconType.EDIT, "Edit", "Click to edit", "57px");
+        buildButton(shareButton, IconType.SHARE_SQUARE, "Share", "Click to share", "68px");
+        buildButton(cloneButton, IconType.CLONE, "Clone", "Click to clone", "69px");
     }
 
-    private Button buildActionButton(Button actionButton, IconType icon) {
+    private void buildButton(Button actionButton, IconType icon, String text, String title, String width) {
+        actionButton.setText(text);
+        actionButton.setTitle(title);
+        actionButton.setWidth(width);
         actionButton.setType(ButtonType.DEFAULT);
         actionButton.setSize(ButtonSize.SMALL);
         actionButton.setIcon(icon);
         actionButton.setEnabled(false);
-        return actionButton;
     }
 
     public void updateOnSelectionChanged(Collection<ManageMeasureSearchModel.Result> selectedItems) {

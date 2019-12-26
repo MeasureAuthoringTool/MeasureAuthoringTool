@@ -30,7 +30,12 @@
         <jacoco.version>0.8.5</jacoco.version>
         <jaxb.version>2.3.0</jaxb.version>
         <!-- JDK version -->
+        <!-- Only GWT HEAD supports sourceLevel 10 & 11. The latest released GWT supports only 1.8 sourceLevel -->
+        <gwt.sourceLevel>1.8</gwt.sourceLevel>
+        <java.version>11</java.version>
         <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
     <repositories>
@@ -534,7 +539,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.2.2</version>
                 <configuration>
-                    <packagingExcludes> WEB-INF/**/*.java,WEB-INF/**/*.pdf,WEB-INF/**/*.docx </packagingExcludes>
+                    <packagingExcludes>WEB-INF/**/*.java,WEB-INF/**/*.pdf,WEB-INF/**/*.docx</packagingExcludes>
                     <webResources>
                         <resource>
                             <!-- this is relative to the pom.xml directory -->
@@ -580,6 +585,9 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <sourceLevel>${gwt.sourceLevel}</sourceLevel>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

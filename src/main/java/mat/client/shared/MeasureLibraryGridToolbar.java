@@ -50,7 +50,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
     }
 
     private void applyDefaultAllButExport() {
-        buildButton(versionButton, IconType.STAR, "Create Version/Draft", "Click to create version or draft", "146px");
+        buildButton(versionButton, IconType.STAR, "Create Version or Draft", "Click to create version or draft", "160px");
         buildButton(historyButton, IconType.CLOCK_O, "History", "Click to view history", "73px");
         buildButton(editButton, IconType.EDIT, "Edit", "Click to edit", "57px");
         buildButton(shareButton, IconType.SHARE_SQUARE, "Share", "Click to share", "68px");

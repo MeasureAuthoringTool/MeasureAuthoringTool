@@ -39,9 +39,9 @@ public class MeasureLibraryGridToolbarTest {
         toolbar.applyDefault();
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.STAR));
-        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq("Create Version/Draft"));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq("Create Version or Draft"));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to create version or draft"));
-        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setWidth(Mockito.eq("146px"));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setWidth(Mockito.eq("160px"));
     }
 
     @Test
@@ -174,7 +174,7 @@ public class MeasureLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(Arrays.asList(item));
 
         Mockito.verify(toolbar.getVersionButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(false));
-        Mockito.verify(toolbar.getVersionButton(), Mockito.atLeastOnce()).setText(Mockito.eq("Create Version/Draft"));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.atLeastOnce()).setText(Mockito.eq("Create Version or Draft"));
         Mockito.verify(toolbar.getVersionButton(), Mockito.atLeastOnce()).setTitle(Mockito.eq("Click to create version or draft"));
     }
 

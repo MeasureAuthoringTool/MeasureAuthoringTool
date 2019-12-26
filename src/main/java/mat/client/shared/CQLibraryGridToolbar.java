@@ -10,7 +10,7 @@ import mat.model.cql.CQLLibraryDataSetObject;
 
 public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
-    public static final String CREATE_VERSION_DRAFT_TEXT = "Create Version/Draft";
+    public static final String CREATE_VERSION_DRAFT_TEXT = "Create Version or Draft";
     public static final String HISTORY_TEXT = "History";
     public static final String EDIT_TEXT = "Edit";
     public static final String SHARE_TEXT = "Share";
@@ -54,7 +54,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         versionButton.setEnabled(false);
         versionButton.setIcon(IconType.STAR);
         versionButton.setTitle(CLICK_TO_CREATE_VERSION_DRAFT_TITLE);
-        versionButton.setWidth("146px");
+        versionButton.setWidth("160px");
 
         historyButton.setText(HISTORY_TEXT);
         historyButton.setType(ButtonType.DEFAULT);

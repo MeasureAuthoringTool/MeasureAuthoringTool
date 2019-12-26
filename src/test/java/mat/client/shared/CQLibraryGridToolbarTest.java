@@ -33,9 +33,9 @@ public class CQLibraryGridToolbarTest {
         toolbar.applyDefault();
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.STAR));
-        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq("Create Version/Draft"));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq("Create Version or Draft"));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to create version or draft"));
-        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setWidth(Mockito.eq("146px"));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setWidth(Mockito.eq("160px"));
     }
 
     @Test
@@ -126,7 +126,7 @@ public class CQLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.STAR));
-        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq("Create Version/Draft"));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq("Create Version or Draft"));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to create version or draft"));
     }
 

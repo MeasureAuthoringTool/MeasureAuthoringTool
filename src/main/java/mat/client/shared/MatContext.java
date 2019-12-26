@@ -298,7 +298,12 @@ public class MatContext implements IsSerializable {
         });
         eventBus = new HandlerManager(null);
 
-        eventBus.addHandler(MeasureSelectedEvent.TYPE, event -> currentMeasureInfo = event);
+        eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {
+            @Override
+            public void onMeasureSelected(MeasureSelectedEvent event) {
+                currentMeasureInfo = event;
+            }
+        });
 
         eventBus.addHandler(CQLLibrarySelectedEvent.TYPE, new CQLLibrarySelectedEvent.Handler() {
 
@@ -309,7 +314,7 @@ public class MatContext implements IsSerializable {
             }
         });
 
-        //US 439. Start the timeout timer when the user clicked the forgotten password link
+        // US 439. Start the timeout timer when the user clicked the forgotten password link
         eventBus.addHandler(ForgottenPasswordEvent.TYPE, new ForgottenPasswordEvent.Handler() {
             @Override
             public void onForgottenPassword(ForgottenPasswordEvent event) {
@@ -943,17 +948,14 @@ public class MatContext implements IsSerializable {
         this.manageMeasureSearchView = manageMeasureSearchView;
     }
 
-
     public ManageMeasureSearchModel getManageMeasureSearchModel() {
         return manageMeasureSearchModel;
     }
-
 
     public void setManageMeasureSearchModel(
             ManageMeasureSearchModel manageMeasureSearchModel) {
         this.manageMeasureSearchModel = manageMeasureSearchModel;
     }
-
 
     public boolean isErrorTab() {
         return isErrorTab;
@@ -1562,4 +1564,5 @@ public class MatContext implements IsSerializable {
     public void setUserPreference(UserPreferenceDTO userPreference) {
         this.userPreference = userPreference;
     }
+
 }

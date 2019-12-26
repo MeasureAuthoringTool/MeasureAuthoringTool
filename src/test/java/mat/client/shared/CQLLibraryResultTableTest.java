@@ -6,7 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.cql.CQLLibrarySearchView;
@@ -17,9 +16,6 @@ public class CQLLibraryResultTableTest {
 
     @Mock
     private CQLLibrarySearchView.Observer observer;
-
-    @Mock
-    private HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent;
 
     @InjectMocks
     private CQLLibraryResultTable resultTable;

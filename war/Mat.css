@@ -366,7 +366,7 @@ left:50px;
     background: url("images/addRight.png");
     background-position:center;
     background-repeat:no-repeat;
-    background-color:#D3D3D3;
+    background-color:#D3D3D3; 
     height: 25px;
     width: 30px;
     cursor: hand;
@@ -433,7 +433,7 @@ left:50px;
     border: 0px;
     font-size: 0;
     cursor: cursor;
-}
+}  
 .customCompositeEmptyCell{
 	cursor: text;
 }
@@ -497,21 +497,21 @@ left:50px;
     background-repeat: repeat-x;
     font-weight: normal;
     margin-left: 14px;
-}
+}	
 
 .primaryMetaDataButton{
 	background: url("images/bg_btnGrey-secondary.png");
     background-repeat: repeat-x;
     font-weight: normal;
     margin-top: 10px;
-}
+}	
 
 .secondaryButton {
     background: url("images/bg_btnGrey-secondary.png");
     background-repeat:repeat-x;
     font-weight: normal;
     margin-left: 14px;
-
+ 
 }
 
 .AddCodeButton{
@@ -549,19 +549,19 @@ left:50px;
 	padding-right:2px;
 }
 .topBanner {
-	overflow: visible;
+	overflow: visible; 	 
 	background-image: url('images/hpgradient_small.jpg');
 	/* background-size: only supported by IE 9 and +*/
 	background-size: 100% 100%;
-	background-repeat: repeat-x;
-	background-position: left top;
+	background-repeat: repeat-x;		
+	background-position: left top;	
     padding-left:25px;
     padding-right:5px;
-    -moz-box-sizing: border-box;
-    margin-top: 2px;
-    margin-right: 2px;
-    margin-bottom: 10px;
-    width:100%;
+    -moz-box-sizing: border-box; 
+    margin-top: 2px; 
+    margin-right: 2px; 
+    margin-bottom: 10px; 
+    width:100%;   
 }
 
 .versionBanner{
@@ -600,12 +600,12 @@ left:50px;
 	clear: both;
     margin: auto;
     width: 100%;
-
+    
 }
 .footerLogo{
 	background: none repeat scroll left center #A8B0B3;
     padding:40px 40px 10px;
-
+	
 }
 .footerLogo-Right {
     float: right;
@@ -613,8 +613,8 @@ left:50px;
     top:-12px ;
     left:110px;
     padding-right: 15%;
-    padding-left: 25px;
-
+    padding-left: 25px; 
+    
 }
 .footer-address-text {
 	font: 0.8em/1.5em Arial;
@@ -623,7 +623,7 @@ left:50px;
     margin-left: 20px;
     margin-top: -2px;
     padding-left: 5px;
-
+    
 }
 .footer-nav {
 	background: url('images/hpgradient.jpg') repeat scroll 0 0 #FFFFFF;
@@ -639,9 +639,9 @@ left:50px;
     color: #000044;
     font: bold 1em Arial,Helvetica,sans-serif;
     margin: 0;
-    padding-top: 1px;
+    padding-top: 1px; 
     padding-left:10px;
-    padding-bottom: 5px;
+    padding-bottom: 5px; 
 }
 
 .footer-nav a:link,a:active {
@@ -650,9 +650,9 @@ left:50px;
     color:#002280;
     padding-left: 10px;
     padding-top: 5px;
-    padding-bottom: 5px;
+    padding-bottom: 5px; 
     text-decoration: none;
-
+    
 }
 /* .footer-nav a:hover,.footer-nav a:focus {
    color: #C00000;
@@ -662,14 +662,14 @@ left:50px;
 .footer-nav a:hover {
    color: #C00000;
    text-decoration: underline;
-}
+} 
 .footer-nav a:visited{
     font:  0.85em sans-serif;
     /* color: #105191; */
     color:#002280;
     padding-left: 10px;
     padding-top: 5px;
-    padding-bottom: 5px;
+    padding-bottom: 5px; 
     text-decoration: none;
 }
 
@@ -723,9 +723,9 @@ left:50px;
       text-align: left;
       margin-left:14px;
       margin-right:14px;
-
+      
  }
-
+ 
  .measurePackagerSupplementalDatascrollable {
       height: 200px;
       width: 200px;
@@ -734,7 +734,7 @@ left:50px;
       margin-right:14px;
       margin-top:3px;
  }
-
+ 
   .measurePackageCellListscrollable {
       height: 200px;
       width: 220px;
@@ -744,7 +744,7 @@ left:50px;
       margin-right:14px;
       margin-top:3px;
  }
-
+ 
  .qdmCellList{
  	margin-top:-12px;
  	margin-left:10px;
@@ -761,7 +761,7 @@ left:50px;
     font-size: small;
     margin: 0;
     padding-bottom: 4px;
-}
+} 
 
 .custom-footer-nav ul {
     margin: 0;
@@ -805,7 +805,7 @@ left:50px;
     margin-left: 15px;
     padding: 3px 5px;
     text-decoration: none;
-
+	
 }
 .alertMessage {
 	position:relative;
@@ -829,6 +829,8 @@ left:50px;
     margin: 2px auto 14px;
     padding-left: 5px;
     text-align: left;
+	
+	
 }
 .gwt-PopupPanelGlass {
   background-color: #000;
@@ -839,6 +841,7 @@ left:50px;
 /* .gwt-DialogBox{
 	width:950px;
 	height:950px;
+	
 } */
 .gwt-DialogBox .Caption {
   font-weight: bold;
@@ -869,9 +872,9 @@ left:50px;
     border: 1px solid #ACDFA7;
     display: block;
     font-weight: bold;
-    margin: 2px auto -5px;
-    padding: 6px 6px 0 6px;
-    text-align: left;
+    margin: 2px auto -5px;    
+    padding: 6px 6px 0 6px; 
+    text-align: left;    
 }
 .successMessageCommentPanel {
     /*color: green;
@@ -948,7 +951,7 @@ left:50px;
 .centered {
 	margin-top: 5%;
     margin-bottom: 10%;
-	margin-left:auto;
+	margin-left:auto; 
 	margin-right:auto;
 }
 .footerInfo {
@@ -970,7 +973,7 @@ left:50px;
     background-image: url("images/bg_box_header.png");
     color:#FFFFFF;
    /* width:300px;
-     margin-left:auto;
+     margin-left:auto; 
     margin-right:auto;
     font-weight: bold; */
     padding: 8px 15px;
@@ -980,7 +983,7 @@ left:50px;
     background-image: url("images/bg_box_header.png");
     color:#FFFFFF;
     width:300px;
-    margin-left:auto;
+    margin-left:auto; 
     margin-right:auto;
     font-weight: bold;
 }
@@ -991,12 +994,12 @@ left:50px;
 
 .loginContentPanel {
     /*
-    position: absolute;
-    left: 349px;
-    top: 124px;
-    overflow: auto;
-    width: 275px;
-    height: 25px;
+    position: absolute; 
+    left: 349px; 
+    top: 124px; 
+    overflow: auto; 
+    width: 275px; 
+    height: 25px; 
     */
     border: 1px solid #0964A2;
     -moz-box-sizing: border-box;
@@ -1007,7 +1010,7 @@ left:50px;
     width:300px;
     padding: 10px;
     font-size:.8em;
-    margin-left:auto;
+    margin-left:auto; 
     margin-right:auto;
 }
 
@@ -1021,7 +1024,7 @@ left:50px;
     width:700px;
     padding: 10px;
     font-size:.8em;
-    margin-left:auto;
+    margin-left:auto; 
     margin-right:auto;
 }
 
@@ -1035,7 +1038,7 @@ left:50px;
     width:250px;
     padding: 10px;
     font-size:.8em;
-    margin-left:auto;
+    margin-left:auto; 
     margin-right:auto;
     margin-top:10px;
 }
@@ -1117,7 +1120,7 @@ left:50px;
     border-style: solid;
     margin-left: 3px;
     font-weight: normal;
-}
+} 
 
 #matMainTabPanel .gwt-TabBarItem-selected {
     background-repeat: no-repeat;
@@ -1183,6 +1186,7 @@ left:50px;
 
 #matMainTabPanel #measureComposerTabLayout .contentPanel {
     border-top-width: 0px;
+   
 }
 #matMainTabPanel #measureComposerTabLayout  .gwt-TabBarFirst-wrapper {
 	display:none;
@@ -1202,7 +1206,7 @@ left:50px;
     margin-right: 2px;
     margin-left: 0px;
     font-weight: normal;
-}
+} 
 #matMainTabPanel #myAccountTabLayout .gwt-TabBarItem-selected {
 	background-image: none;
 	background-repeat:repeat-x;
@@ -1210,11 +1214,11 @@ left:50px;
     background-color: #0964A2;
     color: #ffffff;
     border: none;
-    font-weight: bold;
-}
+    font-weight: bold; 
+} 
  #matMainTabPanel #myAccountTabLayout .gwt-TabPanelBottom {
     border:none;
-}
+} 
 /****************************************
 * clause and measure library tabs
 *****************************************/
@@ -1238,7 +1242,7 @@ left:50px;
 	border:1px solid #C0C0C0;
     border-collapse:collapse;
     text-align: left;
-}
+} 
 
 .searchResultsTable td {
 	border:1px solid #C0C0C0;
@@ -2543,11 +2547,9 @@ padding: 2px;
 .cqlCrapDesign{
 	padding-top:20px;
 	padding-left:30px;
-
 }
 .topping{
 	margin-top:15px;
-
 }
 .cqlSubNavContainer {
     background-color: #FFFFFF;
@@ -2955,4 +2957,12 @@ table#MostRecentActivityCellTable {
 
 .table td {
     vertical-align: middle;
+}
+
+.action-button-bar {
+}
+
+.action-button-bar button {
+    padding: 5px 12px;
+    margin: 2px;
 }

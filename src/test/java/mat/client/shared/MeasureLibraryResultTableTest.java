@@ -1,11 +1,17 @@
 package mat.client.shared;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.TableElement;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.DOM;
@@ -13,15 +19,12 @@ import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.measure.ManageMeasureSearchModel;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.*;
+import mat.client.measure.MeasureSearchView;
+import mat.model.FeatureFlag;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class MeasureLibraryResultTableTest {
@@ -35,27 +38,14 @@ public class MeasureLibraryResultTableTest {
     @Mock
     private CellTable<ManageMeasureSearchModel.Result> cellTable;
 
-    private List<ManageMeasureSearchModel.Result> results;
-    private ClickHandler clickHandler;
+    @Mock
+    private MeasureSearchView.Observer observer;
+
+    @InjectMocks
+    private MeasureLibraryGridToolbar gridToolbar;
+
     private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
-    @Before
-    public void setUp() {
-        ManageMeasureSearchModel.Result measure1 = new ManageMeasureSearchModel.Result();
-        measure1.setId("MSR001");
-        measure1.setName("TestMSR1");
-        measure1.setMeasureModel("QDM");
-        measure1.setVersion("QDM");
-        measure1.setVersion("1.0");
-        ManageMeasureSearchModel.Result measure2 = new ManageMeasureSearchModel.Result();
-        measure2.setId("MSR002");
-        measure2.setName("TestMSR2");
-        measure2.setMeasureModel("FHIR");
-        measure2.setVersion("1.0.1");
-        results = new ArrayList<>();
-        results.add(measure1);
-        results.add(measure2);
-    }
 
     @Test
     public void testAddColumnToTable() {
@@ -66,10 +56,93 @@ public class MeasureLibraryResultTableTest {
         featureFlagMap.put("MAT_ON_FHIR", false);
         MatContext.get().setFeatureFlags(featureFlagMap);
 
-        cellTable = measureLibraryResultTable.addColumnToTable("Recent Activity", cellTable, results, false, fireEvent);
+        cellTable = measureLibraryResultTable.addColumnToTable(gridToolbar, cellTable, fireEvent);
         assertNotNull(cellTable);
         verify(cellTable).addStyleName("table");
         verify(cellTable).setSelectionModel(ArgumentMatchers.any(MultiSelectionModel.class));
         verify(cellTable).addCellPreviewHandler(ArgumentMatchers.any(CellPreviewEvent.Handler.class));
     }
+
+    @Test
+    public void testVersionClickNoInteraction() {
+        ManageMeasureSearchModel.Result selected = new ManageMeasureSearchModel.Result();
+
+        MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
+        selectionModel.setSelected(selected, true);
+
+        measureLibraryResultTable.onVersionButtonClicked(selectionModel);
+        Mockito.verify(observer, Mockito.never()).onDraftOrVersionClick(Mockito.eq(selected));
+    }
+
+    @Test
+    public void testVersionClickIsDraftable() {
+        ManageMeasureSearchModel.Result selected = new ManageMeasureSearchModel.Result();
+        selected.setDraftable(true);
+
+        MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
+        selectionModel.setSelected(selected, true);
+
+        measureLibraryResultTable.onVersionButtonClicked(selectionModel);
+        Mockito.verify(observer, Mockito.times(1)).onDraftOrVersionClick(Mockito.eq(selected));
+    }
+
+    @Test
+    public void testVersionClickIsVersionable() {
+        ManageMeasureSearchModel.Result selected = new ManageMeasureSearchModel.Result();
+        selected.setVersionable(true);
+
+        MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
+        selectionModel.setSelected(selected, true);
+
+        measureLibraryResultTable.onVersionButtonClicked(selectionModel);
+        Mockito.verify(observer, Mockito.times(1)).onDraftOrVersionClick(Mockito.eq(selected));
+    }
+
+    @Test
+    public void testHistoryClick() {
+        ManageMeasureSearchModel.Result selected = new ManageMeasureSearchModel.Result();
+
+        MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
+        selectionModel.setSelected(selected, true);
+
+        measureLibraryResultTable.onHistoryButtonClicked(selectionModel);
+        Mockito.verify(observer, Mockito.times(1)).onHistoryClicked(Mockito.eq(selected));
+    }
+
+    @Test
+    public void testCloneClickNoInteraction() {
+        ManageMeasureSearchModel.Result selected = new ManageMeasureSearchModel.Result();
+
+        MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
+        selectionModel.setSelected(selected, true);
+
+        measureLibraryResultTable.onCloneButtonClicked(selectionModel);
+        Mockito.verify(observer, Mockito.never()).onCloneClicked(Mockito.eq(selected));
+    }
+
+
+    @Test
+    public void testOnShareSharable() {
+        ManageMeasureSearchModel.Result selected = new ManageMeasureSearchModel.Result();
+        selected.setSharable(true);
+
+        MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
+        selectionModel.setSelected(selected, true);
+
+        measureLibraryResultTable.onShareButtonClicked(selectionModel);
+        Mockito.verify(observer, Mockito.times(1)).onShareClicked(Mockito.eq(selected));
+    }
+
+    @Test
+    public void testOnShareClickedButNotSharable() {
+        ManageMeasureSearchModel.Result selected = new ManageMeasureSearchModel.Result();
+        selected.setSharable(false);
+
+        MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
+        selectionModel.setSelected(selected, true);
+
+        measureLibraryResultTable.onShareButtonClicked(selectionModel);
+        Mockito.verify(observer, Mockito.never()).onShareClicked(Mockito.eq(selected));
+    }
+
 }

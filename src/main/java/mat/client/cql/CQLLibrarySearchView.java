@@ -238,15 +238,17 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
                 Label gridPanelHeader = new Label(getCQLlibraryListLabel());
                 gridPanelHeader.getElement().setId("cqlLibrarySearchHeader_Label");
                 gridPanelHeader.setStyleName("recentSearchHeader");
-                gridPanelHeader.getElement().setAttribute("tabIndex", "0");
+                gridPanelHeader.getElement().setTabIndex(0);
 
                 CQLibraryGridToolbar gridToolbar = new CQLibraryGridToolbar();
+                gridToolbar.getElement().setAttribute("id", "cqlLibrarySearchCellTable_gridToolbar");
 
                 table = cqlLibraryResultTable.addColumnToTable(gridToolbar, table, CQLLibrarySearchView.this);
                 Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("CQLLibrarySearchSummary",
-                        "In the following CQL Library Cell table, CQL Library Name is given in first column,"
-                                + " Version in second column, Create Version or Draft in third column,"
-                                + "History in fourth column, Share in fifth column");
+                        "In the following CQL Library Cell table, Measure selection is given in the first column, "
+                                + "CQL Library Name is given in second column, "
+                                + "Version in second third, "
+                                + "Model in fourth column");
                 table.getElement().setAttribute("id", "CQLLibrarySearchCellTable");
                 table.getElement().setAttribute("aria-describedby", "CQLLibrarySearchSummary");
                 MatSimplePager topSPager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,
@@ -491,24 +493,11 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
         this.cqlLibraryListLabel = cqlLibraryListLabel;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.
-     * shared.GwtEvent)
-     */
     @Override
     public void fireEvent(GwtEvent<?> event) {
         handlerManager.fireEvent(event);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.google.gwt.event.logical.shared.HasSelectionHandlers#
-     * addSelectionHandler(com.google.gwt.event.logical.shared.SelectionHandler)
-     */
     @Override
     public HandlerRegistration addSelectionHandler(SelectionHandler<CQLLibraryDataSetObject> handler) {
         return handlerManager.addHandler(SelectionEvent.getType(), handler);

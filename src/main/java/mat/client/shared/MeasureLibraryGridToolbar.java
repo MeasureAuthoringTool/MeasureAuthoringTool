@@ -97,6 +97,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
         historyButton.setEnabled(true);
 
+        //Run FHIR validation Button
         RegExp regExp = RegExp.compile("[0-9]+\\.[0-9]+");
         MatchResult matcher = regExp.exec(selectedItem.getVersion());
         boolean matchFound = matcher != null;
@@ -104,13 +105,14 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
             version = Float.parseFloat(matcher.getGroup(0));
         }
 
-        if( (selectedItem.isDraft() && selectedItem.getMeasureModel().equals("FHIR")) ||
-                (selectedItem.isDraftable() && selectedItem.getMeasureModel().equals("QDM") && version > RUN_FHIR_VALIDATION_VERSION) ){
+        String modelType = selectedItem.getMeasureModel();
+
+        if(modelType != null && ((selectedItem.isDraft() && modelType.equals("FHIR")) ||
+            (selectedItem.isDraftable() && modelType.equals("QDM") && version > RUN_FHIR_VALIDATION_VERSION)) ){
             fhirValidationButton.setEnabled(true);
         }else{
             fhirValidationButton.setEnabled(false);
         }
-
 
         if (selectedItem.isEditable()) {
             if (selectedItem.isMeasureLocked()) {

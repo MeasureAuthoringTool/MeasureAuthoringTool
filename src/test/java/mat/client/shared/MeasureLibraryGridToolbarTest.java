@@ -369,6 +369,19 @@ public class MeasureLibraryGridToolbarTest {
     }
 
     @Test
+    public void testRunValidationButtonForModelTypeNull() {
+        ManageMeasureSearchModel.Result item = new ManageMeasureSearchModel.Result();
+        item.setClonable(true);
+        item.setMeasureModel(null);
+        item.setVersion("v5.9.00");
+
+        toolbar.updateOnSelectionChanged(Arrays.asList(item));
+
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(false));
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+    }
+
+    @Test
     public void testAllDisabledMultipleSelectedNotExportable() {
         ManageMeasureSearchModel.Result item0 = new ManageMeasureSearchModel.Result();
         item0.setIsComposite(true);

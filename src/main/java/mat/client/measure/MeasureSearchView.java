@@ -90,6 +90,8 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
         void onHistoryClicked(ManageMeasureSearchModel.Result result);
 
         void onDraftOrVersionClick(ManageMeasureSearchModel.Result object);
+
+        void onFhirValidationClicked(ManageMeasureSearchModel.Result object);
     }
 
     public MeasureSearchView(String view) {

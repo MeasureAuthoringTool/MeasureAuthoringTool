@@ -30,6 +30,8 @@ public class MeasureLibraryGridToolbarTest {
     private Button cloneButton;
     @Mock(name = "exportButton")
     private Button exportButton;
+    @Mock(name = "fhirValidationButton")
+    private Button fhirValidationButton;
 
     @InjectMocks
     private MeasureLibraryGridToolbar toolbar;
@@ -86,7 +88,6 @@ public class MeasureLibraryGridToolbarTest {
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setWidth(Mockito.eq("68px"));
     }
 
-
     @Test
     public void testApplyDefaultExportButton() {
         toolbar.applyDefault();
@@ -107,6 +108,15 @@ public class MeasureLibraryGridToolbarTest {
         Mockito.verify(toolbar.getExportButton(), Mockito.times(1)).setText(Mockito.eq("Export"));
         Mockito.verify(toolbar.getExportButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to export"));
         Mockito.verify(toolbar.getExportButton(), Mockito.times(1)).setWidth(Mockito.eq("72px"));
+    }
+
+    public void testApplyDefaultFhirValidationButton() {
+        toolbar.applyDefault();
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.FILE_TEXT_O));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq("Run FHIR Validation"));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to Run FHIR Validation"));
+        Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setWidth(Mockito.eq("146px"));
     }
 
     @Test
@@ -307,6 +317,58 @@ public class MeasureLibraryGridToolbarTest {
     }
 
     @Test
+    public void testRunValidationButtonForDraftFhir() {
+        ManageMeasureSearchModel.Result item = new ManageMeasureSearchModel.Result();
+        item.setClonable(true);
+        item.setDraft(true);
+        item.setMeasureModel("FHIR");
+
+        toolbar.updateOnSelectionChanged(Arrays.asList(item));
+
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
+    }
+
+    @Test
+    public void testRunValidationButtonForNotDraftFhir() {
+        ManageMeasureSearchModel.Result item = new ManageMeasureSearchModel.Result();
+        item.setClonable(true);
+        item.setDraft(false);
+        item.setMeasureModel("FHIR");
+
+        toolbar.updateOnSelectionChanged(Arrays.asList(item));
+
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(false));
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+    }
+
+    @Test
+    public void testRunValidationButtonForVersionedQdm() {
+        ManageMeasureSearchModel.Result item = new ManageMeasureSearchModel.Result();
+        item.setClonable(true);
+        item.setDraftable(true);
+        item.setMeasureModel("QDM");
+        item.setVersion("v5.9.00");
+
+        toolbar.updateOnSelectionChanged(Arrays.asList(item));
+
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
+    }
+
+    @Test
+    public void testRunValidationButtonForNotVersionedQdm() {
+        ManageMeasureSearchModel.Result item = new ManageMeasureSearchModel.Result();
+        item.setClonable(true);
+        item.setDraftable(false);
+        item.setMeasureModel("QDM");
+        item.setVersion("v5.9.00");
+
+        toolbar.updateOnSelectionChanged(Arrays.asList(item));
+
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(false));
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+    }
+
+    @Test
     public void testAllDisabledMultipleSelectedNotExportable() {
         ManageMeasureSearchModel.Result item0 = new ManageMeasureSearchModel.Result();
         item0.setIsComposite(true);
@@ -322,6 +384,8 @@ public class MeasureLibraryGridToolbarTest {
         Mockito.verify(toolbar.getHistoryButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getCloneButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getExportButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+
     }
 
     @Test
@@ -342,6 +406,8 @@ public class MeasureLibraryGridToolbarTest {
         Mockito.verify(toolbar.getHistoryButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getCloneButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getExportButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
+
     }
 
 }

@@ -1,7 +1,8 @@
 package mat.client.shared;
 
 import java.util.Collection;
-
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -19,6 +20,10 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
     private Button shareButton;
     private Button cloneButton;
     private Button exportButton;
+    private Button fhirValidationButton;
+    private float version;
+
+    private static final float RUN_FHIR_VALIDATION_VERSION = 5.8F;
 
     public MeasureLibraryGridToolbar() {
         setStyleName("action-button-bar");
@@ -31,6 +36,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         shareButton = GWT.create(Button.class);
         cloneButton = GWT.create(Button.class);
         exportButton = GWT.create(Button.class);
+        fhirValidationButton = GWT.create(Button.class);
 
         add(versionButton);
         add(historyButton);
@@ -38,7 +44,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         add(shareButton);
         add(cloneButton);
         add(exportButton);
-
+        add(fhirValidationButton);
 
         applyDefault();
     }
@@ -55,6 +61,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         buildButton(editButton, IconType.EDIT, "Edit", "Click to edit", "57px");
         buildButton(shareButton, IconType.SHARE_SQUARE, "Share", "Click to share", "68px");
         buildButton(cloneButton, IconType.CLONE, "Clone", "Click to clone", "69px");
+        buildButton(fhirValidationButton, IconType.FILE_TEXT_O, "Run FHIR Validation", "Click to Run FHIR Validation", "146px");
     }
 
     private void buildButton(Button actionButton, IconType icon, String text, String title, String width) {
@@ -89,6 +96,21 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         }
 
         historyButton.setEnabled(true);
+
+        RegExp regExp = RegExp.compile("[0-9]+\\.[0-9]+");
+        MatchResult matcher = regExp.exec(selectedItem.getVersion());
+        boolean matchFound = matcher != null;
+        if (matchFound) {
+            version = Float.parseFloat(matcher.getGroup(0));
+        }
+
+        if( (selectedItem.isDraft() && selectedItem.getMeasureModel().equals("FHIR")) ||
+                (selectedItem.isDraftable() && selectedItem.getMeasureModel().equals("QDM") && version > RUN_FHIR_VALIDATION_VERSION) ){
+            fhirValidationButton.setEnabled(true);
+        }else{
+            fhirValidationButton.setEnabled(false);
+        }
+
 
         if (selectedItem.isEditable()) {
             if (selectedItem.isMeasureLocked()) {
@@ -137,6 +159,10 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
     public Button getExportButton() {
         return exportButton;
+    }
+
+    public Button getFhirValidationButton(){
+        return fhirValidationButton;
     }
 
 }

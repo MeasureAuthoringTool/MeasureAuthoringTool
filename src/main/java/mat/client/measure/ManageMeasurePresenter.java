@@ -1459,6 +1459,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
 
             @Override
+            public void onFhirValidationClicked(ManageMeasureSearchModel.Result result) {
+                //TODO Calling MAT-354 service
+            }
+
+            @Override
             public void onShareClicked(ManageMeasureSearchModel.Result result) {
                 resetMeasureFlags();
                 displayShare(null, result.getId(), result.getName());

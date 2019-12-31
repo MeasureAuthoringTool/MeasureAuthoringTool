@@ -958,8 +958,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setClonable(isClonable);
 
         detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, dto.getMeasureId()));
-
         detail.setExportable(dto.isPackaged());
+        detail.setFhirConvertible(MatContextServiceUtil.get().isMeasureConvertible(measure));
         detail.setHqmfReleaseVersion(measure.getReleaseVersion());
         detail.setSharable(isOwner || isSuperUser);
         detail.setMeasureLocked(dto.isLocked());
@@ -1103,6 +1103,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setIsComposite(measure.getIsCompositeMeasure());
         detail.setQdmVersion(measure.getQdmVersion());
         detail.setExportable(measure.getExportedDate() != null); // to show export icon.
+        detail.setFhirConvertible(MatContextServiceUtil.get().isMeasureConvertible(measure));
         detail.setHqmfReleaseVersion(measure.getReleaseVersion());
         String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(),
                 measure.getRevisionNumber(), measure.isDraft());
@@ -6035,4 +6036,5 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     public boolean libraryNameExists(String libraryName, String setId) {
         return getCqlService().checkIfLibraryNameExists(libraryName, setId);
     }
+
 }

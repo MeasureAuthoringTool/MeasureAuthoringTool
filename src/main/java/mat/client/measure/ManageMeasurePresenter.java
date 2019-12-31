@@ -1508,6 +1508,32 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 }
             }
 
+            @Override
+            public void onConvert(Result object) {
+                ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox("Are you sure you want to convert this measure again? The existing FHIR measure will be overwritten.", "Yes", "No", null, false);
+                confirmationDialogBox.getNoButton().setVisible(false);
+                confirmationDialogBox.setObserver(new ConfirmationObserver() {
+
+                    @Override
+                    public void onYesButtonClicked() {
+                        Window.alert("Please wait. Conversion is in progress..");
+                        displaySearch();
+                    }
+
+                    @Override
+                    public void onNoButtonClicked() {
+                        // Just skip any conversion
+                    }
+
+                    @Override
+                    public void onClose() {
+                        // Just skip any conversion
+                    }
+                });
+
+                confirmationDialogBox.show();
+            }
+
         };
     }
 

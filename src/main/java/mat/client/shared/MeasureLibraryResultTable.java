@@ -142,6 +142,17 @@ public class MeasureLibraryResultTable {
         gridToolbar.getExportButton().addClickHandler(event -> {
             onExportButtonClicked(selectionModel);
         });
+        
+        gridToolbar.getConvertButton().addClickHandler(event -> {
+           onConvertClicked(selectionModel); 
+        });
+    }
+
+    @VisibleForTesting
+    void onConvertClicked(MultiSelectionModel<Result> selectionModel) {
+        selectionModel.getSelectedSet().stream().filter(Result::isFhirConvertible).findFirst().ifPresent(object -> {
+            observer.onConvert(object);
+        });
     }
 
     @VisibleForTesting

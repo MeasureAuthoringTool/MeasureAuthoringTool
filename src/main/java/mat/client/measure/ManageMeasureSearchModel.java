@@ -70,6 +70,8 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
          */
         private boolean isExportable;
 
+        private boolean isFhirConvertible;
+
         /**
          * The short name.
          */
@@ -170,6 +172,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
             this.isEditable = result.isEditable();
             this.isClonable = result.isClonable();
             this.isExportable = result.isExportable();
+            this.isFhirConvertible = result.isFhirConvertible();
             this.shortName = result.getShortName();
             this.isMeasureLocked = result.isMeasureLocked();
             this.lockedUserInfo = result.getLockedUserInfo();
@@ -198,7 +201,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
         @Override
         public int hashCode() {
             return Objects.hash(draft, eMeasureId, finalizedDate, hqmfReleaseVersion, id, isClonable, isComposite,
-                    isDeleted, isDraftable, isEditable, isExportable, isHistorical, isMeasureFamily, isMeasureLocked,
+                    isDeleted, isDraftable, isEditable, isExportable, isFhirConvertible, isHistorical, isMeasureFamily, isMeasureLocked,
                     isPatientBased, isSharable, isTransferable, isVersionable, lockedUserInfo, measureSetId, name, measureModel,
                     ownerEmailAddress, ownerLastName, ownerfirstName, qdmVersion, scoringType, shortName, status,
                     version);
@@ -221,7 +224,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
                     && Objects.equals(hqmfReleaseVersion, other.hqmfReleaseVersion) && Objects.equals(id, other.id)
                     && isClonable == other.isClonable && Objects.equals(isComposite, other.isComposite)
                     && isDeleted == other.isDeleted && isDraftable == other.isDraftable
-                    && isEditable == other.isEditable && isExportable == other.isExportable
+                    && isEditable == other.isEditable && isExportable == other.isExportable && isFhirConvertible == other.isFhirConvertible
                     && isHistorical == other.isHistorical && isMeasureFamily == other.isMeasureFamily
                     && isMeasureLocked == other.isMeasureLocked && Objects.equals(isPatientBased, other.isPatientBased)
                     && isSharable == other.isSharable && isTransferable == other.isTransferable
@@ -467,6 +470,14 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
          */
         public void setExportable(boolean isExportable) {
             this.isExportable = isExportable;
+        }
+
+        public boolean isFhirConvertible() {
+            return isFhirConvertible;
+        }
+
+        public void setFhirConvertible(boolean fhirConvertible) {
+            isFhirConvertible = fhirConvertible;
         }
 
         /**

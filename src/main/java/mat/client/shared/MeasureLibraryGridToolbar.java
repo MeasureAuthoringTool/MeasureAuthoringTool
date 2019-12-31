@@ -19,6 +19,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
     private Button shareButton;
     private Button cloneButton;
     private Button exportButton;
+    private Button convertButton;
 
     public MeasureLibraryGridToolbar() {
         setStyleName("action-button-bar");
@@ -31,6 +32,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         shareButton = GWT.create(Button.class);
         cloneButton = GWT.create(Button.class);
         exportButton = GWT.create(Button.class);
+        convertButton = GWT.create(Button.class);
 
         add(versionButton);
         add(historyButton);
@@ -38,7 +40,11 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         add(shareButton);
         add(cloneButton);
         add(exportButton);
+        add(convertButton);
 
+//        if (!MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1)) {
+//            convertButton.setVisible(false);
+//        }
 
         applyDefault();
     }
@@ -55,6 +61,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         buildButton(editButton, IconType.EDIT, "Edit", "Click to edit", "57px");
         buildButton(shareButton, IconType.SHARE_SQUARE, "Share", "Click to share", "68px");
         buildButton(cloneButton, IconType.CLONE, "Clone", "Click to clone", "69px");
+        buildButton(convertButton, IconType.RANDOM, "Convert to FHIR", "Click to convert", "124px");
     }
 
     private void buildButton(Button actionButton, IconType icon, String text, String title, String width) {
@@ -113,6 +120,8 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         } else {
             cloneButton.setEnabled(true);
         }
+
+        convertButton.setEnabled(selectedItem.isFhirConvertible());
     }
 
     public Button getVersionButton() {
@@ -139,4 +148,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         return exportButton;
     }
 
+    public Button getConvertButton() {
+        return convertButton;
+    }
 }

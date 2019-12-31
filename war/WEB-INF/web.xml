@@ -123,6 +123,10 @@
         <servlet-class>mat.server.BulkExportServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>fhirValidationReportServlet</servlet-name>
+        <servlet-class>mat.server.fhirvalidation.FhirValidationReportServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>auditServiceImpl</servlet-name>
         <servlet-class>mat.server.AuditServiceImpl</servlet-class>
     </servlet>
@@ -149,6 +153,10 @@
     <servlet-mapping>
         <servlet-name>bulkExportServlet</servlet-name>
         <url-pattern>/mat/bulkExport</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>fhirValidationReportServlet</servlet-name>
+        <url-pattern>/mat/validationReport</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>adminServlet</servlet-name>
@@ -244,6 +252,5 @@
     </session-config>
 
 </web-app>
- 
 
- 
+

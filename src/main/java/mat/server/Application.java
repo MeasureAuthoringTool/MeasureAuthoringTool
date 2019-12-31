@@ -15,6 +15,13 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import liquibase.integration.spring.SpringLiquibase;
@@ -26,7 +33,8 @@ import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 @ComponentScan({"mat.model", "mat.dao", "mat.dao.impl", "mat.model.clause", "mat.server", "mat.hibernate"})
 @PropertySource("classpath:MAT.properties")
 @EnableTransactionManagement
-public class Application {
+@EnableWebSecurity
+public class Application extends WebSecurityConfigurerAdapter {
 
     @Value("${ALGORITHM:}")
     private String algorithm;
@@ -117,4 +125,41 @@ public class Application {
         return service;
     }
 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable();
+        http
+            .authorizeRequests()
+                .antMatchers("/", "/Login.html").permitAll()
+                .antMatchers("/Mat.html").authenticated()
+                .antMatchers("/Bonnie.html").authenticated()
+                .antMatchers("/mat/**").authenticated()
+                .and()
+            .formLogin()
+                .loginPage("/Login.html")
+                .defaultSuccessUrl("/Mat.html")
+                .and()
+            .formLogin()
+                .loginPage("/Login.html")
+                .defaultSuccessUrl("/Bonnie.html")
+                .and()
+            .logout()
+                .permitAll()
+                .and()
+            .sessionManagement()
+                .invalidSessionUrl("/Login.html")
+                .maximumSessions(1);
+    }
+
+    @Override
+    protected UserDetailsService userDetailsService() {
+        UserDetails user =
+                User.withDefaultPasswordEncoder()
+                        .username("dude")
+                        .password("blahblah")
+                        .roles("SUPERVISOR", "USER", "TELLER")
+                        .build();
+
+        return new InMemoryUserDetailsManager(user);
+    }
 }

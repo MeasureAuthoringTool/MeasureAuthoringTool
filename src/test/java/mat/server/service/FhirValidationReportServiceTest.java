@@ -74,7 +74,7 @@ class FhirValidationReportServiceTest {
         String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId);
         assertTrue(report.startsWith("<html>\n    <head>\n        <title>MAT | FHIR Conversion Report</title>"));
         assertTrue(report.contains("<div class=\"report-header\">\n                Measure Authoring Tool v6.0\n            </div>"));
-        assertTrue(report.contains("<div class=\"error-msg\">Sorry! Measure with the measure id doesn't exist</div>"));
+        assertTrue(report.contains("<div class=\"error-msg\">The measure with that measure id does not exist.</div>"));
         assertTrue(report.endsWith("</body>\n</html>\n"));
     }
 }

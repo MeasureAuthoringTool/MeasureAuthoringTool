@@ -28,8 +28,10 @@ import java.util.Map;
 @Service("fhirValidationService")
 public class FhirValidationReportService {
 
-    private static final String dateFormat = "dd-MMM-YYYY";
-    private static final String timeFormat = "hh:mm aa";
+    private static final String DATE_FORMAT = "dd-MMM-YYYY";
+    private static final String TIME_FORMAT = "hh:mm aa";
+    private static final String NO_MEASURE_FOUND_ERROR = "An error occurred while validating the FHIR conversion. Please try again later.";
+    private static final String CONVERSION_SERVICE_ERROR = "An error occurred while validating the FHIR conversion. Please try again later.";
     private static final Log logger = LogFactory.getLog(FhirValidationReportService.class);
 
     private Configuration freemarkerConfiguration;
@@ -114,8 +116,8 @@ public class FhirValidationReportService {
                     getValueSetFhirValidationErrors();
 
             Instant instant = Instant.parse(conversionResultDto.getModified());
-            paramsMap.put("runDate", DateUtility.formatInstant(instant, dateFormat));
-            paramsMap.put("runTime", DateUtility.formatInstant(instant, timeFormat));
+            paramsMap.put("runDate", DateUtility.formatInstant(instant, DATE_FORMAT));
+            paramsMap.put("runTime", DateUtility.formatInstant(instant, TIME_FORMAT));
             paramsMap.put("measureName", measure.getDescription());
             paramsMap.put("measureVersion", measure.getVersion());
             paramsMap.put("modelType", measure.getMeasureModel());
@@ -125,9 +127,9 @@ public class FhirValidationReportService {
             paramsMap.put("cqlConversionErrors", cqlConversionErrors);
             paramsMap.put("valueSetFhirValidationErrors", valueSetFhirValidationErrors);
         } else if (measure == null) {
-            paramsMap.put("noMeasureFoundError", "Sorry! Measure with the measure id doesn't exist");
+            paramsMap.put("noMeasureFoundError", NO_MEASURE_FOUND_ERROR);
         } else {
-            paramsMap.put("conversionServiceError", "Error occurred while validating the FHIR conversion, please try after some time");
+            paramsMap.put("conversionServiceError", CONVERSION_SERVICE_ERROR);
         }
 
         return FreeMarkerTemplateUtils.processTemplateIntoString(

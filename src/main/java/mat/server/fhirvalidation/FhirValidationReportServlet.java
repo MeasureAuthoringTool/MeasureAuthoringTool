@@ -1,6 +1,5 @@
 package mat.server.fhirvalidation;
 
-import freemarker.template.TemplateException;
 import mat.server.service.FhirValidationReportService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +21,7 @@ public class FhirValidationReportServlet extends HttpServlet {
     private ApplicationContext applicationContext;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
         String id = req.getParameter(ID_PARAM);
         logger.info("Generating validation report for measure id: " + id);
@@ -30,13 +29,14 @@ public class FhirValidationReportServlet extends HttpServlet {
         String validationReport = "";
         try {
             validationReport = fhirValidationReportService.getFhirConversionReportForMeasure(id);
-        } catch (TemplateException e) {
+        } catch (Exception e) {
             logger.error("Exception occurred while generation FHIR conversion report:", e);
-            validationReport = "Error occurred while validating the FHIR conversion, please try after some time";
+            validationReport = "An error occurred while validating the FHIR conversion. Please try again later.";
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
-        resp.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
-        resp.getOutputStream().write(validationReport.getBytes());
+        response.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
+        response.getOutputStream().write(validationReport.getBytes());
     }
 
     /**

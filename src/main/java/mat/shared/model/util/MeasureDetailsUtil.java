@@ -1,8 +1,11 @@
 package mat.shared.model.util;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
 
@@ -22,6 +25,8 @@ public class MeasureDetailsUtil {
     public static final String QDM = "QDM";
     public static final String PRE_CQL = "Pre-CQL";
     public static final String MAT_ON_FHIR = "MAT_ON_FHIR";
+
+    public static final BigDecimal RUN_FHIR_VALIDATION_VERSION = new BigDecimal("5.8");
 
     /**
      * Gets the scoring abbr.
@@ -94,4 +99,18 @@ public class MeasureDetailsUtil {
         return type == null || type.isEmpty() ? PRE_CQL : type;
     }
 
+    public static Boolean isValidatable(String releaseVersion, boolean draft, boolean draftable, String modelType){
+        BigDecimal version = null;
+        RegExp regExp = RegExp.compile("[0-9]+\\.[0-9]+");
+        MatchResult matcher = regExp.exec(releaseVersion);
+        if (matcher != null) {
+            version = new BigDecimal(matcher.getGroup(0));
+        }
+        if (modelType != null && ((draft && modelType.equals(FHIR)) ||
+                (draftable && modelType.equals(QDM) && RUN_FHIR_VALIDATION_VERSION.compareTo(version) == -1 )) ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

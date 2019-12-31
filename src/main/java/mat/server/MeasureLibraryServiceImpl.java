@@ -972,6 +972,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(dto.getVersion(),
                 dto.getRevisionNumber(), dto.isDraft());
         detail.setVersion(formattedVersion);
+        detail.setValidatable(MeasureDetailsUtil.isValidatable(dto.getReleaseVersion(), dto.isDraft(), dto.isDraftable(), dto.getMeasureModel()));
         detail.setFinalizedDate(dto.getFinalizedDate());
         detail.setMeasureSetId(dto.getMeasureSetId());
         detail.setDraftable(dto.isDraftable());
@@ -1138,7 +1139,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             lockedUserInfo.setLastName(measure.getLockedUser().getLastName());
             detail.setLockedUserInfo(lockedUserInfo);
         }
-
+        detail.setValidatable(MeasureDetailsUtil.isValidatable(measure.getReleaseVersion(), measure.isDraft(), detail.isDraftable(), measure.getMeasureModel()));
         return detail;
 
     }

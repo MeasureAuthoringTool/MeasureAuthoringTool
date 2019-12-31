@@ -48,6 +48,8 @@ public class MeasureShareDTO implements IsSerializable {
 	private Timestamp finalizedDate;
 	
 	private String version;
+
+	private String releaseVersion;
 	
 	private String revisionNumber;
 	
@@ -394,6 +396,27 @@ public class MeasureShareDTO implements IsSerializable {
 	 */
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+
+
+	/**
+	 * Gets the releaseVersion.
+	 *
+	 * @return the releaseVersion
+	 */
+	public String getReleaseVersion() {
+		return releaseVersion;
+	}
+
+	/**
+	 * Sets the releaseVersion.
+	 *
+	 * @param releaseVersion
+	 *            the new releaseVersion
+	 */
+	public void setReleaseVersion(String releaseVersion) {
+		this.releaseVersion = releaseVersion;
 	}
 	
 	/**

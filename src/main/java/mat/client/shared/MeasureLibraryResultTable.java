@@ -202,7 +202,7 @@ public class MeasureLibraryResultTable {
     }
 
     @VisibleForTesting
-    void onFhirValidationButtonClicked (MultiSelectionModel < Result > selectionModel) {
+    void onFhirValidationButtonClicked(MultiSelectionModel<Result> selectionModel) {
         selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
             observer.onFhirValidationClicked(object);
         });

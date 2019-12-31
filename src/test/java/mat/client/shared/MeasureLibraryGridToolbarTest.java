@@ -110,6 +110,7 @@ public class MeasureLibraryGridToolbarTest {
         Mockito.verify(toolbar.getExportButton(), Mockito.times(1)).setWidth(Mockito.eq("72px"));
     }
 
+    @Test
     public void testApplyDefaultFhirValidationButton() {
         toolbar.applyDefault();
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));

@@ -55,7 +55,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         buildButton(exportButton, IconType.DOWNLOAD, "Export", "Click to export", "72px");
     }
 
-    public void addFhirValidationButton(){
+    public void addFhirValidationButton() {
         if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1)) {
             add(fhirValidationButton);
             buildButton(fhirValidationButton, IconType.FILE_TEXT_O, "Run FHIR Validation", "Click to Run FHIR Validation", "146px");
@@ -82,6 +82,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
     public void updateOnSelectionChanged(Collection<ManageMeasureSearchModel.Result> selectedItems) {
         applyDefault();
+        addFhirValidationButton();
         if (selectedItems.isEmpty()) {
             return;
         }
@@ -103,22 +104,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
         historyButton.setEnabled(true);
 
-        //Run FHIR validation Button
-        RegExp regExp = RegExp.compile("[0-9]+\\.[0-9]+");
-        MatchResult matcher = regExp.exec(selectedItem.getVersion());
-        boolean matchFound = matcher != null;
-        if (matchFound) {
-            version = Float.parseFloat(matcher.getGroup(0));
-        }
-
-        String modelType = selectedItem.getMeasureModel();
-
-        if(modelType != null && ((selectedItem.isDraft() && modelType.equals("FHIR")) ||
-            (selectedItem.isDraftable() && modelType.equals("QDM") && version > RUN_FHIR_VALIDATION_VERSION)) ){
-            fhirValidationButton.setEnabled(true);
-        }else{
-            fhirValidationButton.setEnabled(false);
-        }
+        fhirValidationButton.setEnabled(selectedItem.isValidatable());
 
         if (selectedItem.isEditable()) {
             if (selectedItem.isMeasureLocked()) {

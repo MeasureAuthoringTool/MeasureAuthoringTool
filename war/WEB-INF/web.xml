@@ -5,10 +5,12 @@
          version="4.0">
 
     <!-- Default page to serve -->
+
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
             /WEB-INF/applicationContext-service.xml
+            /WEB-INF/applicationContext-security.xml
             /WEB-INF/applicationContext-mail.xml
             /WEB-INF/applicationContext-task.xml
         </param-value>

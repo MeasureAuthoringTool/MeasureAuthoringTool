@@ -20,7 +20,6 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.MeasureSearchView;
-import mat.model.FeatureFlag;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
@@ -143,6 +142,29 @@ public class MeasureLibraryResultTableTest {
 
         measureLibraryResultTable.onShareButtonClicked(selectionModel);
         Mockito.verify(observer, Mockito.never()).onShareClicked(Mockito.eq(selected));
+    }
+
+    @Test
+    public void testOnConvert() {
+        ManageMeasureSearchModel.Result selected = new ManageMeasureSearchModel.Result();
+        selected.setFhirConvertible(true);
+
+        MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
+        selectionModel.setSelected(selected, true);
+
+        measureLibraryResultTable.onConvertClicked(selectionModel);
+        Mockito.verify(observer, Mockito.times(1)).onConvert(Mockito.eq(selected));
+    }
+
+    @Test
+    public void testOnConvertButNotConvertible() {
+        ManageMeasureSearchModel.Result selected = new ManageMeasureSearchModel.Result();
+
+        MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
+        selectionModel.setSelected(selected, true);
+
+        measureLibraryResultTable.onConvertClicked(selectionModel);
+        Mockito.verify(observer, Mockito.never()).onConvert(Mockito.eq(selected));
     }
 
 }

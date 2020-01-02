@@ -33,5 +33,7 @@ public class MeasureDetailsUtilTest {
         assertEquals(false, measureDetailsUtil.isValidatable("v5.8", "5.4", false, true, "QDM"));
         assertEquals(false, measureDetailsUtil.isValidatable("v5.8", "5.5", false, false, "QDM"));
         assertEquals(false, measureDetailsUtil.isValidatable("v5.8", "5.5", false, true, null));
+        assertEquals(false, measureDetailsUtil.isValidatable("v5.8", null, false, true, "QDM"));
+        assertEquals(false, measureDetailsUtil.isValidatable(null, "5.5", false, true, "QDM"));
     }
 }

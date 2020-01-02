@@ -50,7 +50,9 @@ public class MeasureShareDTO implements IsSerializable {
 	private String version;
 
 	private String releaseVersion;
-	
+
+	private String qdmVersion;
+
 	private String revisionNumber;
 	
 	private String measureSetId;
@@ -417,6 +419,25 @@ public class MeasureShareDTO implements IsSerializable {
 	 */
 	public void setReleaseVersion(String releaseVersion) {
 		this.releaseVersion = releaseVersion;
+	}
+
+	/**
+	 * Gets the qdmVersion.
+	 *
+	 * @return the qdmVersion
+	 */
+	public String getQdmVersion() {
+		return qdmVersion;
+	}
+
+	/**
+	 * Sets the qdmVersion.
+	 *
+	 * @param qdmVersion
+	 *            the new qdmVersion
+	 */
+	public void setQdmVersion(String qdmVersion) {
+		this.qdmVersion = qdmVersion;
 	}
 	
 	/**

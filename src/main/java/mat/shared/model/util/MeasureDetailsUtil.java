@@ -26,7 +26,8 @@ public class MeasureDetailsUtil {
     public static final String PRE_CQL = "Pre-CQL";
     public static final String MAT_ON_FHIR = "MAT_ON_FHIR";
 
-    public static final BigDecimal RUN_FHIR_VALIDATION_VERSION = new BigDecimal("5.8");
+    public static final BigDecimal RUN_FHIR_VALIDATION_VERSION = new BigDecimal("5.7");
+    public static final BigDecimal RUN_FHIR_VALIDATION_QDM_VERSION = new BigDecimal("5.4");
 
     /**
      * Gets the scoring abbr.
@@ -99,18 +100,21 @@ public class MeasureDetailsUtil {
         return type == null || type.isEmpty() ? PRE_CQL : type;
     }
 
-    public static Boolean isValidatable(String releaseVersion, boolean draft, boolean draftable, String modelType){
-        BigDecimal version = null;
+    public static boolean isValidatable(String releaseVersion, String qdmVersion, boolean draft, boolean draftable, String modelType){
+        BigDecimal matVersion = null;
+        BigDecimal measureVersion = null;
+
+        if (qdmVersion != null) {
+            measureVersion = new BigDecimal(qdmVersion);
+        }
+
         RegExp regExp = RegExp.compile("[0-9]+\\.[0-9]+");
         MatchResult matcher = regExp.exec(releaseVersion);
         if (matcher != null) {
-            version = new BigDecimal(matcher.getGroup(0));
+            matVersion = new BigDecimal(matcher.getGroup(0));
         }
-        if (modelType != null && ((draft && modelType.equals(FHIR)) ||
-                (draftable && modelType.equals(QDM) && RUN_FHIR_VALIDATION_VERSION.compareTo(version) == -1 )) ) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return modelType != null && ((draft && modelType.equals(FHIR)) ||
+                (draftable && modelType.equals(QDM) && RUN_FHIR_VALIDATION_VERSION.compareTo(matVersion) == -1 && RUN_FHIR_VALIDATION_QDM_VERSION.compareTo(measureVersion) == -1)) ;
     }
 }

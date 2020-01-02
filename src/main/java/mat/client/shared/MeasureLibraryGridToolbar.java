@@ -10,8 +10,11 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.util.FeatureFlagConstant;
 
 public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
+
+    private Options options;
 
     private Button versionButton;
     private Button historyButton;
@@ -26,13 +29,15 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         addStyleName("btn-group");
         addStyleName("btn-group-sm");
 
-        versionButton = GWT.create(Button.class);
-        historyButton = GWT.create(Button.class);
-        editButton = GWT.create(Button.class);
-        shareButton = GWT.create(Button.class);
-        cloneButton = GWT.create(Button.class);
-        exportButton = GWT.create(Button.class);
-        convertButton = GWT.create(Button.class);
+        this.options = new Options();
+
+        this.versionButton = GWT.create(Button.class);
+        this.historyButton = GWT.create(Button.class);
+        this.editButton = GWT.create(Button.class);
+        this.shareButton = GWT.create(Button.class);
+        this.cloneButton = GWT.create(Button.class);
+        this.exportButton = GWT.create(Button.class);
+        this.convertButton = GWT.create(Button.class);
 
         add(versionButton);
         add(historyButton);
@@ -42,17 +47,20 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         add(exportButton);
         add(convertButton);
 
-//        if (!MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1)) {
-//            convertButton.setVisible(false);
-//        }
-
         applyDefault();
     }
+
 
     @VisibleForTesting
     void applyDefault() {
         applyDefaultAllButExport();
         buildButton(exportButton, IconType.DOWNLOAD, "Export", "Click to export", "72px");
+        applyOptions();
+    }
+
+    @VisibleForTesting
+    void applyOptions() {
+        convertButton.setVisible(options.isConvertButtonVisible);
     }
 
     private void applyDefaultAllButExport() {
@@ -115,7 +123,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         shareButton.setEnabled(selectedItem.isSharable());
 
         if (!selectedItem.isClonable()) {
-            cloneButton.setTitle(selectedItem.getIsComposite() ? "Composite measure not cloneable" : "Measure not cloneable");
+            cloneButton.setTitle(Boolean.TRUE.equals(selectedItem.getIsComposite()) ? "Composite measure not cloneable" : "Measure not cloneable");
             cloneButton.setEnabled(false);
         } else {
             cloneButton.setEnabled(true);
@@ -150,5 +158,43 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
     public Button getConvertButton() {
         return convertButton;
+    }
+
+    public void setOptions(Options options) {
+        this.options = options;
+    }
+
+    public static MeasureLibraryGridToolbar withOptionsFromFlags() {
+        return withOptions(Options.fromFeatureFlags());
+    }
+
+    @VisibleForTesting
+    static MeasureLibraryGridToolbar withOptions(Options options) {
+        MeasureLibraryGridToolbar toolbar = new MeasureLibraryGridToolbar();
+        toolbar.setOptions(options);
+        toolbar.applyOptions();
+        return toolbar;
+    }
+
+    public static class Options {
+
+        private boolean isConvertButtonVisible;
+
+        public Options() {
+        }
+
+        public boolean isConvertButtonVisible() {
+            return isConvertButtonVisible;
+        }
+
+        public void setConvertButtonVisible(boolean convertButtonVisible) {
+            isConvertButtonVisible = convertButtonVisible;
+        }
+
+        public static Options fromFeatureFlags() {
+            Options options = new Options();
+            options.setConvertButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1));
+            return options;
+        }
     }
 }

@@ -99,6 +99,9 @@ public class MeasureDetailsUtil {
     }
 
     public static boolean isValidatable(Measure measure) {
+        if(measure.getMeasureModel() == null || measure.getQdmVersion() == null || measure.getReleaseVersion() == null) {
+            return false;
+        }
         BigDecimal matVersion = asDecimalVersion(measure.getReleaseVersion());
         BigDecimal qdmVersion = asDecimalVersion(measure.getQdmVersion());
 

@@ -145,6 +145,17 @@ public class MeasureLibraryResultTableTest {
     }
 
     @Test
+    public void testOnFhirValidationButtonClicked() {
+        ManageMeasureSearchModel.Result selected = new ManageMeasureSearchModel.Result();
+
+        MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<>();
+        selectionModel.setSelected(selected, true);
+
+        measureLibraryResultTable.onFhirValidationButtonClicked(selectionModel);
+        Mockito.verify(observer, Mockito.times(1)).onFhirValidationClicked(Mockito.eq(selected));
+    }
+
+    @Test
     public void testOnConvert() {
         ManageMeasureSearchModel.Result selected = new ManageMeasureSearchModel.Result();
         selected.setFhirConvertible(true);

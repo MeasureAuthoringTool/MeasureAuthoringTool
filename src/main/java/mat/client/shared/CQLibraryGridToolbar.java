@@ -13,6 +13,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
     public static final String CREATE_VERSION_DRAFT_TEXT = "Create Version or Draft";
     public static final String HISTORY_TEXT = "History";
     public static final String EDIT_TEXT = "Edit";
+    public static final String VIEW_TEXT = "View";
     public static final String SHARE_TEXT = "Share";
     public static final String DELETE_TEXT = "Delete";
 
@@ -24,7 +25,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
     private Button versionButton;
     private Button historyButton;
-    private Button editButton;
+    private Button editOrViewButton;
     private Button shareButton;
     private Button deleteButton;
 
@@ -35,13 +36,13 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
         versionButton = GWT.create(Button.class);
         historyButton = GWT.create(Button.class);
-        editButton = GWT.create(Button.class);
+        editOrViewButton = GWT.create(Button.class);
         shareButton = GWT.create(Button.class);
         deleteButton = GWT.create(Button.class);
 
         add(versionButton);
         add(historyButton);
-        add(editButton);
+        add(editOrViewButton);
         add(shareButton);
         add(deleteButton);
 
@@ -63,12 +64,12 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         historyButton.setTitle(CLICK_TO_VIEW_HISTORY_TITLE);
         historyButton.setWidth("73px");
 
-        editButton.setText(EDIT_TEXT);
-        editButton.setType(ButtonType.DEFAULT);
-        editButton.setEnabled(false);
-        editButton.setIcon(IconType.PENCIL);
-        editButton.setWidth("57px");
-        editButton.setTitle(CLICK_TO_EDIT_TITLE);
+        editOrViewButton.setText(EDIT_TEXT);
+        editOrViewButton.setType(ButtonType.DEFAULT);
+        editOrViewButton.setEnabled(false);
+        editOrViewButton.setIcon(IconType.PENCIL);
+        editOrViewButton.setWidth("64px");
+        editOrViewButton.setTitle(CLICK_TO_EDIT_TITLE);
 
         shareButton.setText(SHARE_TEXT);
         shareButton.setType(ButtonType.DEFAULT);
@@ -89,8 +90,8 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         return deleteButton;
     }
 
-    public Button getEditButton() {
-        return editButton;
+    public Button getEditOrViewButton() {
+        return editOrViewButton;
     }
 
     public Button getHistoryButton() {
@@ -136,21 +137,21 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
         if (selectedItem.isEditable()) {
             if (selectedItem.isLocked()) {
-                editButton.setText(EDIT_TEXT);
-                editButton.setEnabled(false);
-                editButton.setIcon(IconType.LOCK);
-                editButton.setTitle("Library in use by " + selectedItem.getLockedUserInfo().getEmailAddress());
+                editOrViewButton.setText(EDIT_TEXT);
+                editOrViewButton.setEnabled(false);
+                editOrViewButton.setIcon(IconType.LOCK);
+                editOrViewButton.setTitle("Library in use by " + selectedItem.getLockedUserInfo().getEmailAddress());
             } else {
-                editButton.setText(EDIT_TEXT);
-                editButton.setEnabled(true);
-                editButton.setIcon(IconType.PENCIL);
-                editButton.setTitle(CLICK_TO_EDIT_TITLE);
+                editOrViewButton.setText(EDIT_TEXT);
+                editOrViewButton.setEnabled(true);
+                editOrViewButton.setIcon(IconType.PENCIL);
+                editOrViewButton.setTitle(CLICK_TO_EDIT_TITLE);
             }
         } else {
-            editButton.setText(EDIT_TEXT);
-            editButton.setEnabled(false);
-            editButton.setIcon(IconType.NEWSPAPER_O);
-            editButton.setTitle("Read-Only");
+            editOrViewButton.setText(VIEW_TEXT);
+            editOrViewButton.setEnabled(true);
+            editOrViewButton.setIcon(IconType.EYE);
+            editOrViewButton.setTitle("Read-Only");
         }
 
         shareButton.setText(SHARE_TEXT);

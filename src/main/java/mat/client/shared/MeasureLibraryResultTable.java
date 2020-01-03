@@ -127,8 +127,8 @@ public class MeasureLibraryResultTable {
             onHistoryButtonClicked(selectionModel);
         });
 
-        gridToolbar.getEditButton().addClickHandler(event -> {
-            onEditButtonClicked(selectionModel, fireEvent);
+        gridToolbar.getEditOrViewButton().addClickHandler(event -> {
+            onEditViewButtonClicked(selectionModel, fireEvent);
         });
 
         gridToolbar.getShareButton().addClickHandler(event -> {
@@ -142,9 +142,13 @@ public class MeasureLibraryResultTable {
         gridToolbar.getExportButton().addClickHandler(event -> {
             onExportButtonClicked(selectionModel);
         });
-        
+
+        gridToolbar.getFhirValidationButton().addClickHandler(event -> {
+            onFhirValidationButtonClicked(selectionModel);
+        });
+
         gridToolbar.getConvertButton().addClickHandler(event -> {
-           onConvertClicked(selectionModel); 
+            onConvertClicked(selectionModel);
         });
     }
 
@@ -186,7 +190,7 @@ public class MeasureLibraryResultTable {
     }
 
     @VisibleForTesting
-    void onEditButtonClicked(MultiSelectionModel<Result> selectionModel, HasSelectionHandlers<Result> fireEvent) {
+    void onEditViewButtonClicked(MultiSelectionModel<Result> selectionModel, HasSelectionHandlers<Result> fireEvent) {
         selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
             SelectionEvent.fire(fireEvent, object);
         });
@@ -205,6 +209,13 @@ public class MeasureLibraryResultTable {
             if (object.isDraftable() || object.isVersionable()) {
                 observer.onDraftOrVersionClick(object);
             }
+        });
+    }
+
+    @VisibleForTesting
+    void onFhirValidationButtonClicked(MultiSelectionModel<Result> selectionModel) {
+        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+            observer.onFhirValidationClicked(object);
         });
     }
 

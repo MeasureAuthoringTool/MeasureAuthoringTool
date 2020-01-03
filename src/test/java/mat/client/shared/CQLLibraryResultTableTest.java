@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.cql.CQLLibrarySearchView;
@@ -115,7 +116,7 @@ public class CQLLibraryResultTableTest {
         MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
-        resultTable.onEdit(selectionModel);
+        resultTable.onEditOrViewClicked(selectionModel, Mockito.mock(HasSelectionHandlers.class));
 
         Mockito.verify(observer, Mockito.never()).onEditClicked(Mockito.eq(selected));
     }
@@ -129,7 +130,7 @@ public class CQLLibraryResultTableTest {
         MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
-        resultTable.onEdit(selectionModel);
+        resultTable.onEditOrViewClicked(selectionModel, Mockito.mock(HasSelectionHandlers.class));
 
         Mockito.verify(observer, Mockito.never()).onEditClicked(Mockito.eq(selected));
     }
@@ -142,7 +143,7 @@ public class CQLLibraryResultTableTest {
         MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
-        resultTable.onEdit(selectionModel);
+        resultTable.onEditOrViewClicked(selectionModel, Mockito.mock(HasSelectionHandlers.class));
 
         Mockito.verify(observer, Mockito.times(1)).onEditClicked(Mockito.eq(selected));
     }

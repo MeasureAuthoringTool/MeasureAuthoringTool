@@ -69,11 +69,11 @@ public class MeasureLibraryGridToolbarTest {
     public void testApplyDefaultEditButton() {
         toolbar.applyDefault();
 
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.EDIT));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to edit"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setWidth(Mockito.eq("57px"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.EDIT));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to edit"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setWidth(Mockito.eq("64px"));
     }
 
     @Test
@@ -201,15 +201,14 @@ public class MeasureLibraryGridToolbarTest {
     }
 
     @Test
-    public void testEditOnSelectedNotEditable() {
+    public void testViewOnSelectedNotEditable() {
         ManageMeasureSearchModel.Result item = new ManageMeasureSearchModel.Result();
         item.setIsComposite(true);
         toolbar.updateOnSelectionChanged(Arrays.asList(item));
-        Mockito.verify(toolbar.getEditButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(false));
-        Mockito.verify(toolbar.getEditButton(), Mockito.never()).setEnabled(Mockito.eq(true));
-        Mockito.verify(toolbar.getEditButton(), Mockito.atLeastOnce()).setIcon(Mockito.eq(IconType.NEWSPAPER_O));
-        Mockito.verify(toolbar.getEditButton(), Mockito.atLeastOnce()).setText(Mockito.eq("Edit"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.atLeastOnce()).setTitle(Mockito.eq("Read-Only"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setIcon(Mockito.eq(IconType.EYE));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setText(Mockito.eq("View"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setTitle(Mockito.eq("Read-Only"));
     }
 
     @Test
@@ -222,11 +221,11 @@ public class MeasureLibraryGridToolbarTest {
         item.setIsComposite(true);
 
         toolbar.updateOnSelectionChanged(Arrays.asList(item));
-        Mockito.verify(toolbar.getEditButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(false));
-        Mockito.verify(toolbar.getEditButton(), Mockito.never()).setEnabled(Mockito.eq(true));
-        Mockito.verify(toolbar.getEditButton(), Mockito.atLeastOnce()).setIcon(Mockito.eq(IconType.LOCK));
-        Mockito.verify(toolbar.getEditButton(), Mockito.atLeastOnce()).setText(Mockito.eq("Edit"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.atLeastOnce()).setTitle(Mockito.eq("Measure in use by fake@gmail.com"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(false));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setIcon(Mockito.eq(IconType.LOCK));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setText(Mockito.eq("Edit"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setTitle(Mockito.eq("Measure in use by fake@gmail.com"));
     }
 
     @Test
@@ -239,10 +238,10 @@ public class MeasureLibraryGridToolbarTest {
         item.setIsComposite(true);
 
         toolbar.updateOnSelectionChanged(Arrays.asList(item));
-        Mockito.verify(toolbar.getEditButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
-        Mockito.verify(toolbar.getEditButton(), Mockito.atLeastOnce()).setIcon(Mockito.eq(IconType.EDIT));
-        Mockito.verify(toolbar.getEditButton(), Mockito.atLeastOnce()).setText(Mockito.eq("Edit"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.atLeastOnce()).setTitle(Mockito.eq("Click to edit"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setIcon(Mockito.eq(IconType.EDIT));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setText(Mockito.eq("Edit"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setTitle(Mockito.eq("Click to edit"));
     }
 
     @Test
@@ -279,7 +278,6 @@ public class MeasureLibraryGridToolbarTest {
         Mockito.verify(toolbar.getCloneButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
     }
 
-    // cloneButton.setTitle(selectedItem.getIsComposite() ? "Composite measure not cloneable" : "Measure not cloneable");
     @Test
     public void testCloneOnNotClonableNotComposite() {
         ManageMeasureSearchModel.Result item = new ManageMeasureSearchModel.Result();
@@ -317,7 +315,7 @@ public class MeasureLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(Arrays.asList(item0, item1));
 
         Mockito.verify(toolbar.getShareButton(), Mockito.never()).setEnabled(Mockito.eq(true));
-        Mockito.verify(toolbar.getEditButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getVersionButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getHistoryButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getCloneButton(), Mockito.never()).setEnabled(Mockito.eq(true));
@@ -337,7 +335,7 @@ public class MeasureLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(Arrays.asList(item0, item1));
 
         Mockito.verify(toolbar.getShareButton(), Mockito.never()).setEnabled(Mockito.eq(true));
-        Mockito.verify(toolbar.getEditButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getVersionButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getHistoryButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getCloneButton(), Mockito.never()).setEnabled(Mockito.eq(true));

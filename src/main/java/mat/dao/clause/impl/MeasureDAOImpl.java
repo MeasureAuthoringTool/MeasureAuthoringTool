@@ -166,6 +166,8 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		dto.setMeasureModel(measure.getMeasureModel());
 		dto.setDraft(measure.isDraft());
 		dto.setVersion(measure.getVersion());
+		dto.setReleaseVersion(measure.getReleaseVersion());
+		dto.setQdmVersion(measure.getQdmVersion());
 		dto.setFinalizedDate(measure.getFinalizedDate());
 		dto.setMeasureSetId(measure.getMeasureSet().getId());
 		dto.seteMeasureId(measure.geteMeasureId());

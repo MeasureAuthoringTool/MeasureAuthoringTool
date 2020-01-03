@@ -154,6 +154,8 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 
         private String cqlLibraryName;
 
+        private boolean isValidatable;
+
         private int clickCount = 0;
 
         public Result() {
@@ -521,6 +523,24 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
          */
         public void setVersion(String version) {
             this.version = version;
+        }
+
+        /**
+         * Gets the isValidatable.
+         *
+         * @return the isValidatable
+         */
+        public boolean isValidatable() {
+            return this.isValidatable;
+        }
+
+        /**
+         * Sets the isValidatable.
+         *
+         * @param isValidatable the new isValidatable
+         */
+        public void setValidatable(boolean isValidatable) {
+            this.isValidatable = isValidatable;
         }
 
         /**

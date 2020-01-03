@@ -1,8 +1,9 @@
 package mat.shared.model.util;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
+import mat.model.clause.Measure;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
 
@@ -22,6 +23,9 @@ public class MeasureDetailsUtil {
     public static final String QDM = "QDM";
     public static final String PRE_CQL = "Pre-CQL";
     public static final String MAT_ON_FHIR = "MAT_ON_FHIR";
+
+    public static final BigDecimal RUN_FHIR_VALIDATION_VERSION = new BigDecimal("5.8");
+    public static final BigDecimal RUN_FHIR_VALIDATION_QDM_VERSION = new BigDecimal("5.5");
 
     /**
      * Gets the scoring abbr.
@@ -94,4 +98,27 @@ public class MeasureDetailsUtil {
         return type == null || type.isEmpty() ? PRE_CQL : type;
     }
 
+    public static boolean isValidatable(Measure measure) {
+        if(measure.getMeasureModel() == null || measure.getQdmVersion() == null || measure.getReleaseVersion() == null) {
+            return false;
+        }
+        BigDecimal matVersion = asDecimalVersion(measure.getReleaseVersion());
+        BigDecimal qdmVersion = asDecimalVersion(measure.getQdmVersion());
+
+        return (measure.isDraft() && measure.getMeasureModel().equals(FHIR))
+                || (!measure.isDraft() && measure.getMeasureModel().equals(QDM)
+                && RUN_FHIR_VALIDATION_VERSION.compareTo(matVersion) <= 0
+                && RUN_FHIR_VALIDATION_QDM_VERSION.compareTo(qdmVersion) <= 0);
+    }
+
+    private static BigDecimal asDecimalVersion(String version) {
+        if (version == null || version.trim().isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        try {
+            return new BigDecimal(version.trim().replaceAll("v", ""));
+        } catch (NullPointerException | IllegalArgumentException e) {
+            return BigDecimal.ZERO;
+        }
+    }
 }

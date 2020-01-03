@@ -171,7 +171,6 @@ public class ManageMeasureSearchView implements SearchDisplay {
     public void buildMostRecentWidget() {
         mostRecentVerticalPanel.clear();
         mostRecentVerticalPanel.add(mostRecentMeasureWidget.buildMostRecentWidget());
-
     }
 
     @Override

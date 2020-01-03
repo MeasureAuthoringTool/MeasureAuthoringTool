@@ -1,13 +1,11 @@
 package mat.client.shared;
 
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.cell.client.*;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import mat.client.util.FeatureFlagConstant;
-import mat.shared.model.util.MeasureDetailsUtil;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -17,8 +15,10 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.view.client.MultiSelectionModel;
 import mat.client.cql.CQLLibrarySearchView.Observer;
 import mat.client.util.CellTableUtility;
+import mat.client.util.FeatureFlagConstant;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.model.util.MeasureDetailsUtil;
 
 public class CQLLibraryResultTable {
 
@@ -33,7 +33,7 @@ public class CQLLibraryResultTable {
             CQLLibraryDataSetObject selectedItem = selectionModel.getSelectedSet().isEmpty() ? null : selectionModel.getSelectedSet().iterator().next();
             gridToolbar.updateOnSelectionChanged(selectedItem);
         });
-        addToolbarHandlers(gridToolbar, selectionModel);
+        addToolbarHandlers(gridToolbar, selectionModel, fireEvent);
 
         CheckboxCell selectedCell = new CheckboxCell(true, false);
         Column<CQLLibraryDataSetObject, Boolean> selectedCol = new Column<CQLLibraryDataSetObject, Boolean>(selectedCell) {
@@ -132,7 +132,7 @@ public class CQLLibraryResultTable {
     }
 
     @VisibleForTesting
-    void addToolbarHandlers(CQLibraryGridToolbar gridToolbar, MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+    void addToolbarHandlers(CQLibraryGridToolbar gridToolbar, MultiSelectionModel<CQLLibraryDataSetObject> selectionModel, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
         gridToolbar.getVersionButton().addClickHandler(event -> {
             onDraftOrVersion(selectionModel);
         });
@@ -141,8 +141,8 @@ public class CQLLibraryResultTable {
             onHistory(selectionModel);
         });
 
-        gridToolbar.getEditButton().addClickHandler(event -> {
-            onEdit(selectionModel);
+        gridToolbar.getEditOrViewButton().addClickHandler(event -> {
+            onEditOrViewClicked(selectionModel, fireEvent);
         });
 
         gridToolbar.getShareButton().addClickHandler(event -> {
@@ -169,10 +169,14 @@ public class CQLLibraryResultTable {
     }
 
     @VisibleForTesting
-    void onEdit(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
-        selectionModel.getSelectedSet().stream()
-                .filter(cqlLib -> cqlLib.isEditable() && !cqlLib.isLocked())
-                .forEach(observer::onEditClicked);
+    void onEditOrViewClicked(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
+        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+            if (!object.isEditable()) {
+                SelectionEvent.fire(fireEvent, object);
+            } else if (!object.isLocked()) {
+                observer.onEditClicked(object);
+            }
+        });
     }
 
     @VisibleForTesting

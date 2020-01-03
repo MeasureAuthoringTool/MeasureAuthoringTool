@@ -13,9 +13,11 @@ import mat.client.measure.ManageMeasureSearchModel;
 
 public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
+    public static final String VIEW_TEXT = "View";
+
     private Button versionButton;
     private Button historyButton;
-    private Button editButton;
+    private Button editOrViewButton;
     private Button shareButton;
     private Button cloneButton;
     private Button exportButton;
@@ -28,7 +30,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
         versionButton = GWT.create(Button.class);
         historyButton = GWT.create(Button.class);
-        editButton = GWT.create(Button.class);
+        editOrViewButton = GWT.create(Button.class);
         shareButton = GWT.create(Button.class);
         cloneButton = GWT.create(Button.class);
         exportButton = GWT.create(Button.class);
@@ -36,7 +38,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
         add(versionButton);
         add(historyButton);
-        add(editButton);
+        add(editOrViewButton);
         add(shareButton);
         add(cloneButton);
         add(exportButton);
@@ -59,7 +61,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
     private void applyDefaultAllButExport() {
         buildButton(versionButton, IconType.STAR, "Create Version or Draft", "Click to create version or draft", "160px");
         buildButton(historyButton, IconType.CLOCK_O, "History", "Click to view history", "73px");
-        buildButton(editButton, IconType.EDIT, "Edit", "Click to edit", "57px");
+        buildButton(editOrViewButton, IconType.EDIT, "Edit", "Click to edit", "64px");
         buildButton(shareButton, IconType.SHARE_SQUARE, "Share", "Click to share", "68px");
         buildButton(cloneButton, IconType.CLONE, "Clone", "Click to clone", "69px");
         buildButton(fhirValidationButton, IconType.FILE_TEXT_O, "Run FHIR Validation", "Click to Run FHIR Validation", "146px");
@@ -103,16 +105,18 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         if (selectedItem.isEditable()) {
             if (selectedItem.isMeasureLocked()) {
                 String emailAddress = selectedItem.getLockedUserInfo().getEmailAddress();
-                editButton.setTitle("Measure in use by " + emailAddress);
-                editButton.setIcon(IconType.LOCK);
+                editOrViewButton.setTitle("Measure in use by " + emailAddress);
+                editOrViewButton.setIcon(IconType.LOCK);
             } else {
-                editButton.setTitle("Click to edit");
-                editButton.setIcon(IconType.PENCIL);
-                editButton.setEnabled(true);
+                editOrViewButton.setTitle("Click to edit");
+                editOrViewButton.setIcon(IconType.PENCIL);
+                editOrViewButton.setEnabled(true);
             }
         } else {
-            editButton.setTitle("Read-Only");
-            editButton.setIcon(IconType.NEWSPAPER_O);
+            editOrViewButton.setText(VIEW_TEXT);
+            editOrViewButton.setEnabled(true);
+            editOrViewButton.setTitle("Read-Only");
+            editOrViewButton.setIcon(IconType.EYE);
         }
 
         shareButton.setEnabled(selectedItem.isSharable());
@@ -133,8 +137,8 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         return historyButton;
     }
 
-    public Button getEditButton() {
-        return editButton;
+    public Button getEditOrViewButton() {
+        return editOrViewButton;
     }
 
     public Button getShareButton() {

@@ -61,11 +61,11 @@ public class CQLibraryGridToolbarTest {
     @Test
     public void testApplyDefaultEditButton() {
         toolbar.applyDefault();
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.PENCIL));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to edit"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setWidth(Mockito.eq("57px"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.PENCIL));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to edit"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setWidth(Mockito.eq("64px"));
     }
 
     @Test
@@ -189,14 +189,14 @@ public class CQLibraryGridToolbarTest {
     }
 
     @Test
-    public void testEditNotEditable() {
+    public void testViewNotEditable() {
         CQLLibraryDataSetObject selectedItem = new CQLLibraryDataSetObject();
 
         toolbar.updateOnSelectionChanged(selectedItem);
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.NEWSPAPER_O));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setTitle(Mockito.eq("Read-Only"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.EYE));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setText(Mockito.eq("View"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setTitle(Mockito.eq("Read-Only"));
     }
 
     @Test
@@ -209,10 +209,10 @@ public class CQLibraryGridToolbarTest {
 
         toolbar.updateOnSelectionChanged(selectedItem);
 
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.LOCK));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setTitle(Mockito.eq("Library in use by lockerby@gmail.com"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.LOCK));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setTitle(Mockito.eq("Library in use by lockerby@gmail.com"));
     }
 
     @Test
@@ -221,10 +221,10 @@ public class CQLibraryGridToolbarTest {
         selectedItem.setEditable(true);
 
         toolbar.updateOnSelectionChanged(selectedItem);
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.PENCIL));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
-        Mockito.verify(toolbar.getEditButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to edit"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.PENCIL));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to edit"));
     }
 
 }

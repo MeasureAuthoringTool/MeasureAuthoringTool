@@ -95,7 +95,19 @@ public class MeasureDetailsUtil {
     }
 
     public static String defaultTypeIfBlank(String type) {
-        return type == null || type.isEmpty() ? PRE_CQL : type;
+        return type == null || type.trim().isEmpty() ? PRE_CQL : type;
+    }
+
+    public static boolean isPreQL(String type) {
+        return PRE_CQL.equalsIgnoreCase(defaultTypeIfBlank(type));
+    }
+
+    public static boolean isFhir(String type) {
+        return FHIR.equalsIgnoreCase(defaultTypeIfBlank(type));
+    }
+
+    public static boolean isQdm(String type) {
+        return QDM.equalsIgnoreCase(defaultTypeIfBlank(type));
     }
 
     public static boolean isValidatable(Measure measure) {

@@ -1,7 +1,7 @@
 package mat.client.shared;
 
 import java.util.Collection;
-import mat.client.util.FeatureFlagConstant;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -10,10 +10,13 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.util.FeatureFlagConstant;
 
 public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
-    public static final String VIEW_TEXT = "View";
+    private static final String VIEW_TEXT = "View";
+
+    private Options options;
 
     private Button versionButton;
     private Button historyButton;
@@ -22,11 +25,14 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
     private Button cloneButton;
     private Button exportButton;
     private Button fhirValidationButton;
+    private Button convertButton;
 
     public MeasureLibraryGridToolbar() {
         setStyleName("action-button-bar");
         addStyleName("btn-group");
         addStyleName("btn-group-sm");
+
+        options = new Options();
 
         versionButton = GWT.create(Button.class);
         historyButton = GWT.create(Button.class);
@@ -35,6 +41,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         cloneButton = GWT.create(Button.class);
         exportButton = GWT.create(Button.class);
         fhirValidationButton = GWT.create(Button.class);
+        convertButton = GWT.create(Button.class);
 
         add(versionButton);
         add(historyButton);
@@ -42,6 +49,8 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         add(shareButton);
         add(cloneButton);
         add(exportButton);
+        add(fhirValidationButton);
+        add(convertButton);
 
         applyDefault();
     }
@@ -50,12 +59,13 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
     void applyDefault() {
         applyDefaultAllButExport();
         buildButton(exportButton, IconType.DOWNLOAD, "Export", "Click to export", "72px");
+        applyOptions();
     }
 
-    public void addFhirValidationButton() {
-        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1)) {
-            add(fhirValidationButton);
-        }
+    @VisibleForTesting
+    void applyOptions() {
+        convertButton.setVisible(options.isConvertButtonVisible());
+        fhirValidationButton.setVisible(options.isFhirValidationButtonVisible());
     }
 
     private void applyDefaultAllButExport() {
@@ -65,6 +75,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         buildButton(shareButton, IconType.SHARE_SQUARE, "Share", "Click to share", "68px");
         buildButton(cloneButton, IconType.CLONE, "Clone", "Click to clone", "69px");
         buildButton(fhirValidationButton, IconType.FILE_TEXT_O, "Run FHIR Validation", "Click to Run FHIR Validation", "146px");
+        buildButton(convertButton, IconType.RANDOM, "Convert to FHIR", "Click to convert", "124px");
     }
 
     private void buildButton(Button actionButton, IconType icon, String text, String title, String width) {
@@ -122,11 +133,13 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         shareButton.setEnabled(selectedItem.isSharable());
 
         if (!selectedItem.isClonable()) {
-            cloneButton.setTitle(selectedItem.getIsComposite() ? "Composite measure not cloneable" : "Measure not cloneable");
+            cloneButton.setTitle(Boolean.TRUE.equals(selectedItem.getIsComposite()) ? "Composite measure not cloneable" : "Measure not cloneable");
             cloneButton.setEnabled(false);
         } else {
             cloneButton.setEnabled(true);
         }
+
+        convertButton.setEnabled(selectedItem.isFhirConvertible());
     }
 
     public Button getVersionButton() {
@@ -153,8 +166,60 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         return exportButton;
     }
 
-    public Button getFhirValidationButton(){
+    public Button getFhirValidationButton() {
         return fhirValidationButton;
+    }
+
+    public Button getConvertButton() {
+        return convertButton;
+    }
+
+    public void setOptions(Options options) {
+        this.options = options;
+    }
+
+    public static MeasureLibraryGridToolbar withOptionsFromFlags() {
+        return withOptions(Options.fromFeatureFlags());
+    }
+
+    @VisibleForTesting
+    static MeasureLibraryGridToolbar withOptions(Options options) {
+        MeasureLibraryGridToolbar toolbar = new MeasureLibraryGridToolbar();
+        toolbar.setOptions(options);
+        toolbar.applyOptions();
+        return toolbar;
+    }
+
+    public static class Options {
+
+        private boolean isConvertButtonVisible;
+        private boolean isFhirValidationButtonVisible;
+
+        public Options() {
+        }
+
+        public boolean isConvertButtonVisible() {
+            return isConvertButtonVisible;
+        }
+
+        public void setConvertButtonVisible(boolean convertButtonVisible) {
+            isConvertButtonVisible = convertButtonVisible;
+        }
+
+        public boolean isFhirValidationButtonVisible() {
+            return isFhirValidationButtonVisible;
+        }
+
+        public void setFhirValidationButtonVisible(boolean isFhirValidationButtonVisible) {
+            this.isFhirValidationButtonVisible = isFhirValidationButtonVisible;
+        }
+
+        public static Options fromFeatureFlags() {
+            Options options = new Options();
+            options.setConvertButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1));
+            options.setFhirValidationButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1));
+            return options;
+        }
     }
 
 }

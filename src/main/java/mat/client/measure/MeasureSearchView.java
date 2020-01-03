@@ -91,6 +91,8 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 
         void onDraftOrVersionClick(ManageMeasureSearchModel.Result object);
 
+        void onConvert(Result object);
+
         void onFhirValidationClicked(ManageMeasureSearchModel.Result object);
     }
 
@@ -174,9 +176,8 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
                 cellTablePanel.add(invisibleLabel);
             } else {
 
-                MeasureLibraryGridToolbar gridToolbar = new MeasureLibraryGridToolbar();
+                MeasureLibraryGridToolbar gridToolbar = MeasureLibraryGridToolbar.withOptionsFromFlags();
                 gridToolbar.getElement().setAttribute("id", "MeasureSearchCellTable_gridToolbar");
-                gridToolbar.addFhirValidationButton();
 
                 table = measureLibraryResultTable.addColumnToTable(gridToolbar, table, MeasureSearchView.this);
                 Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",

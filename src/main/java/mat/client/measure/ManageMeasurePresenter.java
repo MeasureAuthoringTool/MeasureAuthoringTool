@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import mat.client.util.FeatureFlagConstant;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -69,6 +68,7 @@ import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
+import mat.client.util.FeatureFlagConstant;
 import mat.client.util.MatTextBox;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
@@ -1513,7 +1513,41 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 }
             }
 
+            @Override
+            public void onConvert(Result object) {
+                ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox("Are you sure you want to convert this measure again? The existing FHIR measure will be overwritten.", "Yes", "No", null, false);
+                confirmationDialogBox.getNoButton().setVisible(false);
+                confirmationDialogBox.setObserver(new ConfirmationObserver() {
+
+                    @Override
+                    public void onYesButtonClicked() {
+                        executeConversion(object);
+                    }
+
+                    @Override
+                    public void onNoButtonClicked() {
+                        // Just skip any conversion
+                    }
+
+                    @Override
+                    public void onClose() {
+                        // Just skip any conversion
+                    }
+                });
+
+                confirmationDialogBox.show();
+            }
+
         };
+    }
+
+    private void executeConversion(Result object) {
+        Window.alert("Please wait. Conversion is in progress..");
+
+        String url = GWT.getModuleBaseURL() + "validationReport?id=" + object.getId();
+        Window.open(url, "_blank", "");
+
+        displaySearch();
     }
 
     private void resetSearchFields(MeasureSearchModel measureSearchModel) {

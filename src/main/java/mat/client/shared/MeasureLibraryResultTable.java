@@ -146,6 +146,17 @@ public class MeasureLibraryResultTable {
         gridToolbar.getFhirValidationButton().addClickHandler(event -> {
             onFhirValidationButtonClicked(selectionModel);
         });
+
+        gridToolbar.getConvertButton().addClickHandler(event -> {
+            onConvertClicked(selectionModel);
+        });
+    }
+
+    @VisibleForTesting
+    void onConvertClicked(MultiSelectionModel<Result> selectionModel) {
+        selectionModel.getSelectedSet().stream().filter(Result::isFhirConvertible).findFirst().ifPresent(object -> {
+            observer.onConvert(object);
+        });
     }
 
     @VisibleForTesting
@@ -207,8 +218,6 @@ public class MeasureLibraryResultTable {
             observer.onFhirValidationClicked(object);
         });
     }
-
-
 
     /**
      * Gets the measure name column tool tip.

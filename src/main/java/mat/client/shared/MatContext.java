@@ -34,9 +34,7 @@ import mat.client.audit.service.AuditService;
 import mat.client.audit.service.AuditServiceAsync;
 import mat.client.bonnie.BonnieService;
 import mat.client.bonnie.BonnieServiceAsync;
-import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.QDMAvailableValueSetWidget;
-import mat.client.clause.QDSAppliedListView;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.QDSCodeListSearchView;
@@ -232,9 +230,9 @@ public class MatContext implements IsSerializable {
 
     private Map<String, String> expressionToReturnTypeMap = new HashMap<>();
 
-	private Map<String, Boolean> featureFlagMap;
+    private Map<String, Boolean> featureFlagMap;
 
-	public void clearDVIMessages() {
+    public void clearDVIMessages() {
         if (qdsView != null) {
             qdsView.getSuccessMessageDisplay().clear();
             qdsView.getErrorMessageDisplay().clear();
@@ -252,22 +250,6 @@ public class MatContext implements IsSerializable {
 
     public void setQDSView(QDSCodeListSearchView view) {
         qdsView = view;
-    }
-
-    /**
-     * Sets the VSAC profile view.
-     *
-     * @param view the new VSAC profile view
-     */
-    public void setQDMAppliedSelectionView(QDMAppliedSelectionView view) {
-    }
-
-
-    public void setQdsAppliedListView(QDSAppliedListView qdsAppliedListView) {
-    }
-
-
-    public void setErrorMessage1(ErrorMessageDisplay msg) {
     }
 
     public ListBoxCodeProvider getListBoxCodeProvider() {
@@ -1523,14 +1505,14 @@ public class MatContext implements IsSerializable {
         });
     }
 
-	public void setFeatureFlags(Map<String, Boolean> featureFlagMap){
-		this.featureFlagMap = featureFlagMap;
-	}
+    public void setFeatureFlags(Map<String, Boolean> featureFlagMap) {
+        this.featureFlagMap = featureFlagMap;
+    }
 
-	//returns if specific feature flag is on/off
-	public boolean getFeatureFlagStatus(String flag){
-		return featureFlagMap.getOrDefault(flag,false);
-	}
+    // returns if specific feature flag is on/off
+    public boolean getFeatureFlagStatus(String flag) {
+        return featureFlagMap.getOrDefault(flag, false);
+    }
 
     public List<MeasureType> getMeasureTypeList() {
         return measureTypeList;
@@ -1555,14 +1537,6 @@ public class MatContext implements IsSerializable {
 
     public void setExpressionToReturnTypeMap(Map<String, String> expressionToReturnTypeMap) {
         this.expressionToReturnTypeMap = expressionToReturnTypeMap;
-    }
-
-    public UserPreferenceDTO getUserPreference() {
-        return userPreference;
-    }
-
-    public void setUserPreference(UserPreferenceDTO userPreference) {
-        this.userPreference = userPreference;
     }
 
 }

@@ -3,11 +3,10 @@ package mat.client.shared;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,6 +15,7 @@ import org.mockito.Mockito;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.util.FeatureFlagConstant;
 import mat.model.LockedUserInfo;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -25,7 +25,7 @@ public class MeasureLibraryGridToolbarTest {
     private Button versionButton;
     @Mock(name = "historyButton")
     private Button historyButton;
-    @Mock(name = "editButton")
+    @Mock(name = "editOrViewButton")
     private Button editButton;
     @Mock(name = "shareButton")
     private Button shareButton;
@@ -35,15 +35,8 @@ public class MeasureLibraryGridToolbarTest {
     private Button exportButton;
     @Mock(name = "fhirValidationButton")
     private Button fhirValidationButton;
-
-    private Map<String, Boolean> featureFlagMap = new HashMap<>();
-
-    @Before
-    public void setup(){
-        featureFlagMap.put("FHIR", true);
-        MatContext.get().setFeatureFlags(featureFlagMap);
-    }
-
+    @Mock(name = "options")
+    private MeasureLibraryGridToolbar.Options options;
     @InjectMocks
     private MeasureLibraryGridToolbar toolbar;
 
@@ -83,8 +76,9 @@ public class MeasureLibraryGridToolbarTest {
         toolbar.applyDefault();
 
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
-        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.EDIT));
-        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setIcon(Mockito.eq(IconType.EDIT));
+        Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setText(Mockito.eq("Edit"));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to edit"));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setWidth(Mockito.eq("64px"));
     }
@@ -367,7 +361,7 @@ public class MeasureLibraryGridToolbarTest {
         Mockito.verify(toolbar.getCloneButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getExportButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getFhirValidationButton(), Mockito.never()).setEnabled(Mockito.eq(true));
-
+        Mockito.verify(toolbar.getConvertButton(), Mockito.never()).setEnabled(Mockito.eq(true));
     }
 
     @Test
@@ -388,8 +382,93 @@ public class MeasureLibraryGridToolbarTest {
         Mockito.verify(toolbar.getHistoryButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getCloneButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getFhirValidationButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getConvertButton(), Mockito.never()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getExportButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
+    }
 
+    @Test
+    public void testCovertNotEnabled() {
+        ManageMeasureSearchModel.Result item0 = new ManageMeasureSearchModel.Result();
+        toolbar.updateOnSelectionChanged(Collections.singleton(item0));
+        Mockito.verify(toolbar.getConvertButton(), Mockito.never()).setEnabled(Mockito.eq(true));
+        Mockito.verify(toolbar.getConvertButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(false));
+    }
+
+    @Test
+    public void testCovertEnabled() {
+        ManageMeasureSearchModel.Result item0 = new ManageMeasureSearchModel.Result();
+        item0.setFhirConvertible(true);
+        toolbar.updateOnSelectionChanged(Collections.singleton(item0));
+        Mockito.verify(toolbar.getConvertButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
+    }
+
+    @Test
+    public void testConvertibleButtonNotVisible() {
+        Mockito.reset(toolbar.getConvertButton());
+        Mockito.when(options.isConvertButtonVisible()).thenReturn(false);
+        toolbar.applyOptions();
+        Mockito.verify(toolbar.getConvertButton(), Mockito.times(1)).setVisible(Mockito.eq(false));
+        Mockito.verify(toolbar.getConvertButton(), Mockito.never()).setVisible(Mockito.eq(true));
+    }
+
+    @Test
+    public void testConvertibleButtonVisible() {
+        Mockito.reset(toolbar.getConvertButton());
+        Mockito.when(options.isConvertButtonVisible()).thenReturn(true);
+        toolbar.applyOptions();
+        Mockito.verify(toolbar.getConvertButton(), Mockito.atLeastOnce()).setVisible(Mockito.eq(true));
+        Mockito.verify(toolbar.getConvertButton(), Mockito.never()).setVisible(Mockito.eq(false));
+    }
+
+    @Test
+    public void testFhirValidationButtonNotVisible() {
+        Mockito.reset(toolbar.getFhirValidationButton());
+        Mockito.when(options.isFhirValidationButtonVisible()).thenReturn(false);
+        toolbar.applyOptions();
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.times(1)).setVisible(Mockito.eq(false));
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.never()).setVisible(Mockito.eq(true));
+    }
+
+    @Test
+    public void testFhirValidationButtonVisible() {
+        Mockito.reset(toolbar.getFhirValidationButton());
+        Mockito.when(options.isFhirValidationButtonVisible()).thenReturn(true);
+        toolbar.applyOptions();
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.atLeastOnce()).setVisible(Mockito.eq(true));
+        Mockito.verify(toolbar.getFhirValidationButton(), Mockito.never()).setVisible(Mockito.eq(false));
+    }
+
+    @Test
+    public void testWithOptionsInstanceCreated() {
+        MeasureLibraryGridToolbar toolbar = MeasureLibraryGridToolbar.withOptions(new MeasureLibraryGridToolbar.Options());
+        Assert.assertNotNull(toolbar);
+    }
+
+    @Test
+    public void testFromFeatureFlagsConvertButtonNotVisible() {
+        HashMap<String, Boolean> flags = new HashMap<>();
+        MatContext.get().setFeatureFlags(flags);
+        MeasureLibraryGridToolbar.Options otherOptions = MeasureLibraryGridToolbar.Options.fromFeatureFlags();
+        Assert.assertFalse(otherOptions.isConvertButtonVisible());
+    }
+
+    @Test
+    public void testFromFeatureFlagsConvertButtonVisible() {
+        HashMap<String, Boolean> flags = new HashMap<>();
+        flags.put(FeatureFlagConstant.FHIR_CONV_V1, true);
+        MatContext.get().setFeatureFlags(flags);
+        MeasureLibraryGridToolbar.Options otherOptions = MeasureLibraryGridToolbar.Options.fromFeatureFlags();
+        Assert.assertTrue(otherOptions.isConvertButtonVisible());
+    }
+
+    @Test
+    public void testWithOptionsFromFlags() {
+        HashMap<String, Boolean> flags = new HashMap<>();
+        flags.put(FeatureFlagConstant.FHIR_CONV_V1, true);
+        MatContext.get().setFeatureFlags(flags);
+
+        MeasureLibraryGridToolbar otherTooblar = MeasureLibraryGridToolbar.withOptionsFromFlags();
+        Assert.assertNotNull(otherTooblar);
     }
 
 }

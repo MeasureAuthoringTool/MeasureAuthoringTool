@@ -7,8 +7,11 @@ import java.util.Objects;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResults;
+import mat.client.util.FeatureFlagConstant;
 import mat.model.LockedUserInfo;
+import mat.shared.model.util.MeasureDetailsUtil;
 
 /**
  * The Class ManageMeasureSearchModel.
@@ -353,6 +356,9 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
             this.isEditable = isEditable;
         }
 
+        public boolean isFhirEditableFeatureFlag() {
+            return MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_EDIT) || (this.draft && MeasureDetailsUtil.QDM.equals(this.measureModel));
+        }
         /**
          * Checks if is clonable.
          *

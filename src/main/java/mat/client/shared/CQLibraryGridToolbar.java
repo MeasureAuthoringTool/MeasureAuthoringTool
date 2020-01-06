@@ -135,7 +135,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         historyButton.setIcon(IconType.CLOCK_O);
         historyButton.setTitle(CLICK_TO_VIEW_HISTORY_TITLE);
 
-        if (selectedItem.isEditable()) {
+        if (selectedItem.isEditable() && selectedItem.isFhirEditableFeatureFlag()) {
             if (selectedItem.isLocked()) {
                 editOrViewButton.setText(EDIT_TEXT);
                 editOrViewButton.setEnabled(false);

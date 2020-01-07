@@ -1,6 +1,18 @@
 package mat.server.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
@@ -11,19 +23,6 @@ import gov.cms.mat.fhir.rest.dto.ValueSetValidationResult;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
 import mat.shared.DateUtility;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service("fhirValidationService")
 public class FhirValidationReportService {
@@ -35,15 +34,16 @@ public class FhirValidationReportService {
     private static final Log logger = LogFactory.getLog(FhirValidationReportService.class);
 
     private Configuration freemarkerConfiguration;
-
     private MeasureDAO measureDAO;
+    private FhirConvertServerSideService fhirConvertServerSideService;
 
     @Value("${mat.measure.current.release.version}")
     private String currentMatVersion;
 
-    public FhirValidationReportService(Configuration freemarkerConfiguration, MeasureDAO measureDAO) {
+    public FhirValidationReportService(Configuration freemarkerConfiguration, MeasureDAO measureDAO, FhirConvertServerSideService fhirConvertServerSideService) {
         this.freemarkerConfiguration = freemarkerConfiguration;
         this.measureDAO = measureDAO;
+        this.fhirConvertServerSideService = fhirConvertServerSideService;
     }
 
     /**
@@ -74,14 +74,8 @@ public class FhirValidationReportService {
         if (measureId == null) {
             return null;
         }
-
-        URL path = FhirValidationReportService.class.getResource("report.json");
-        logger.info("Calling FHIR conversion validation service for measure: "+ measureId);
-        //TODO: Replace following line with actual call to FHIR conversion service once it is available on AWS
-        // and delete report.json mock data
-        return new ObjectMapper()
-                .readValue(new File(path.getFile()),
-                        ConversionResultDto.class);
+        logger.info("Calling FHIR conversion validation service for measure: " + measureId);
+        return fhirConvertServerSideService.validate(measureId);
     }
 
     /**
@@ -107,6 +101,7 @@ public class FhirValidationReportService {
 
             //CQL conversion errors
             List<CqlConversionError> cqlConversionErrors = libraryConversionResults.
+                    getCqlConversionResult() == null ? Collections.emptyList() : libraryConversionResults.
                     getCqlConversionResult().
                     getCqlConversionErrors();
 

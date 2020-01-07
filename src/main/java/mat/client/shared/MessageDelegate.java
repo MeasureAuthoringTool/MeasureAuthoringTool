@@ -900,7 +900,11 @@ public class MessageDelegate {
 	public String getCloneMeasureSuccessfulMessage(String measureName) {
 		return "You have successfully cloned measure " + StringUtility.trimTextToSixtyChars(measureName)+". Please click continue to navigate to the Measure Details page.";
 	}
-	
+
+	public String getConvertMeasureSuccessfulMessage(String measureName) {
+		return "You have successfully converted measure " + StringUtility.trimTextToSixtyChars(measureName);
+	}
+
 	public String getCreateNewLibrarySuccessfulMessage(String libraryName){
 		return "You have created a new library " + StringUtility.trimTextToSixtyChars(libraryName)+". Please click continue to navigate to the CQL Composer.";
 	}

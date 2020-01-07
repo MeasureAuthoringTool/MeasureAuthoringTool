@@ -110,7 +110,11 @@
     </servlet>
     <servlet>
         <servlet-name>measureCloningServiceImpl</servlet-name>
-        <servlet-class>mat.server.clause.MeasureCloningServiceImpl</servlet-class>
+        <servlet-class>mat.server.clause.MeasureCloningRemoteServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>fhirMeasureRemoteServiceImpl</servlet-name>
+        <servlet-class>mat.server.clause.FhirMeasureRemoteServiceImpl</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>exportServlet</servlet-name>
@@ -211,6 +215,10 @@
     <servlet-mapping>
         <servlet-name>measureCloningServiceImpl</servlet-name>
         <url-pattern>/mat/measureCloning</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>fhirMeasureRemoteServiceImpl</servlet-name>
+        <url-pattern>/mat/fhirMeasureService</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CQLLibraryServiceImpl</servlet-name>

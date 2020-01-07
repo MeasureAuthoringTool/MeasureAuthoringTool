@@ -1,10 +1,9 @@
 package mat.server.service;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import mat.dao.clause.MeasureDAO;
-import mat.model.clause.Measure;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,7 +12,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
+import mat.dao.clause.MeasureDAO;
+import mat.model.clause.Measure;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,6 +33,9 @@ class FhirValidationReportServiceTest {
 
     @Mock
     private MeasureDAO measureDAO;
+
+    @Mock
+    private FhirConvertServerSideService fhirConvertServerSideService;
 
     @InjectMocks
     private FhirValidationReportService fhirValidationReportService;
@@ -47,7 +55,16 @@ class FhirValidationReportServiceTest {
         Template template = configuration.getTemplate(templateName);
         Mockito.when(freemarkerConfiguration.getTemplate(templateName)).thenReturn(template);
 
+        Mockito.when(fhirConvertServerSideService.validate(Mockito.anyString())).thenAnswer(invocation -> {
+                    URL path = FhirValidationReportService.class.getResource("report.json");
+        return new ObjectMapper()
+                .readValue(new File(path.getFile()),
+                        ConversionResultDto.class);
+        });
+
         ReflectionTestUtils.setField(fhirValidationReportService, "currentMatVersion", "v6.0");
+
+
 
         String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId);
         assertTrue(report.startsWith("<html>\n    <head>\n        <title>MAT | FHIR Conversion Report</title>"));

@@ -50,8 +50,10 @@ import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
-import mat.client.measure.service.MeasureCloningService;
-import mat.client.measure.service.MeasureCloningServiceAsync;
+import mat.client.measure.service.FhirMeasureRemoteService;
+import mat.client.measure.service.FhirMeasureRemoteServiceAsync;
+import mat.client.measure.service.MeasureCloningRemoteService;
+import mat.client.measure.service.MeasureCloningRemoteServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ConfirmationObserver;
@@ -580,6 +582,34 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         panel.setContent(detailDisplay.asWidget());
     }
 
+    private void convertMeasureFhir(Result object) {
+        GWT.log("Please wait. Conversion is in progress ...");
+
+        if (!MatContext.get().getLoadingQueue().isEmpty()) {
+            return;
+        }
+
+        FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
+        fhirMeasureService.convert(object, new AsyncCallback<Result>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
+                MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+            }
+
+            @Override
+            public void onSuccess(Result result) {
+                setIsPageDirty(false);
+                displaySuccessAndFireSelectedEvent(result, MatContext.get().getMessageDelegate().getConvertMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
+                String url = GWT.getModuleBaseURL() + "validationReport?id=" + object.getId();
+                Window.open(url, "_blank", "");
+                displaySearch();
+            }
+        });
+
+    }
+
+
     private void cloneMeasure() {
         if (!MatContext.get().getLoadingQueue().isEmpty()) {
             return;
@@ -588,7 +618,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         updateDetailsFromView();
 
         searchDisplay.resetMessageDisplay();
-        MeasureCloningServiceAsync measureCloningService = GWT.create(MeasureCloningService.class);
+        MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
 
         if (isValid(currentDetails, false)) {
             measureCloningService.cloneExistingMeasure(currentDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
@@ -620,7 +650,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         updateCompositeDetailsFromComponentMeasureDisplay();
 
         searchDisplay.resetMessageDisplay();
-        MeasureCloningServiceAsync measureCloningService = GWT.create(MeasureCloningService.class);
+        MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
         if (isValidCompositeMeasure(currentCompositeMeasureDetails)) {
             measureCloningService.draftExistingMeasure(currentCompositeMeasureDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
                 @Override
@@ -658,7 +688,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         updateDetailsFromView();
 
         searchDisplay.resetMessageDisplay();
-        MeasureCloningServiceAsync measureCloningService = GWT.create(MeasureCloningService.class);
+        MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
         if (isValid(currentDetails, true)) {
             measureCloningService.draftExistingMeasure(currentDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
                 @Override
@@ -1521,7 +1551,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
                     @Override
                     public void onYesButtonClicked() {
-                        executeConversion(object);
+                        convertMeasureFhir(object);
                     }
 
                     @Override
@@ -1539,15 +1569,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
 
         };
-    }
-
-    private void executeConversion(Result object) {
-        Window.alert("Please wait. Conversion is in progress..");
-
-        String url = GWT.getModuleBaseURL() + "validationReport?id=" + object.getId();
-        Window.open(url, "_blank", "");
-
-        displaySearch();
     }
 
     private void resetSearchFields(MeasureSearchModel measureSearchModel) {

@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
 
 import liquibase.integration.spring.SpringLiquibase;
 import mat.dao.impl.AuditEventListener;
@@ -129,24 +130,24 @@ public class Application extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http
-            .authorizeRequests()
+                .authorizeRequests()
                 .antMatchers("/", "/Login.html").permitAll()
                 .antMatchers("/Mat.html").authenticated()
                 .antMatchers("/Bonnie.html").authenticated()
                 .antMatchers("/mat/**").authenticated()
                 .and()
-            .formLogin()
+                .formLogin()
                 .loginPage("/Login.html")
                 .defaultSuccessUrl("/Mat.html")
                 .and()
-            .formLogin()
+                .formLogin()
                 .loginPage("/Login.html")
                 .defaultSuccessUrl("/Bonnie.html")
                 .and()
-            .logout()
+                .logout()
                 .permitAll()
                 .and()
-            .sessionManagement()
+                .sessionManagement()
                 .invalidSessionUrl("/Login.html")
                 .maximumSessions(1);
     }
@@ -162,4 +163,10 @@ public class Application extends WebSecurityConfigurerAdapter {
 
         return new InMemoryUserDetailsManager(user);
     }
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
 }

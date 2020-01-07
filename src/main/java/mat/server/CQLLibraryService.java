@@ -138,10 +138,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     @Override
-    public SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText) {
+    public SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText, String modelType) {
         SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult();
         List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
-        List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(setId, libraryName, searchText);
+        List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(setId, libraryName, searchText, modelType);
         saveCQLLibraryResult.setResultsTotal(list.size());
         for (CQLLibrary cqlLibrary : list) {
             CQLLibraryDataSetObject object = extractCQLLibraryDataObject(cqlLibrary);
@@ -1005,7 +1005,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 if (associationCount < CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
                     String cqlXml = getCQLLibraryXml(cqlLibrary);
                     if (cqlXml != null) {
-                        result = cqlService.saveAndModifyIncludeLibrayInCQLLookUp(cqlXml, toBeModifiedObj, currentObj, incLibraryList);
+                        result = cqlService.saveAndModifyIncludeLibrayInCQLLookUp(cqlXml, toBeModifiedObj, currentObj,
+                                incLibraryList, cqlLibrary.getLibraryModelType());
                         if (result != null && result.isSuccess()) {
                             cqlLibrary.setCQLByteArray(result.getXml().getBytes());
                             cqlLibraryDAO.save(cqlLibrary);

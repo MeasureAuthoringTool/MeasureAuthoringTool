@@ -27,9 +27,9 @@ import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 
 public interface CQLLibraryServiceInterface {
-	
+
 	SaveCQLLibraryResult search(LibrarySearchModel librarySearchModel);
-	
+
 	void save(CQLLibrary cqlLibrary);
 
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
@@ -38,7 +38,7 @@ public interface CQLLibraryServiceInterface {
 	String createCQLLookUpTag(String libraryName,String version);
 
 	XmlProcessor loadCQLXmlTemplateFile();
-	
+
 	public SaveUpdateCQLResult getCQLData(String id);
 
 	public boolean isLibraryLocked(String id);
@@ -46,7 +46,7 @@ public interface CQLLibraryServiceInterface {
 	public SaveCQLLibraryResult resetLockedDate(String currentLibraryId, String userId);
 
 	public SaveCQLLibraryResult updateLockedDate(String currentLibraryId, String userId);
-	
+
 	SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId);
 
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
@@ -64,7 +64,7 @@ public interface CQLLibraryServiceInterface {
 
 	SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
 
-	SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText);
+	SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText, String modelType);
 
 	void updateUsersShare(SaveCQLLibraryResult result);
 
@@ -75,9 +75,9 @@ public interface CQLLibraryServiceInterface {
 	GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId);
 
 	int countNumberOfAssociation(String id);
-	
+
 	SaveUpdateCQLResult saveCQLFile(String libraryId, String cql);
-	
+
 	SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable);
 
@@ -107,7 +107,7 @@ public interface CQLLibraryServiceInterface {
 	List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner();
 
 	SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject);
-	
+
 	SaveUpdateCQLResult saveCQLCodeListToCQLLibrary(List<CQLCode> codeList, String libraryId);
 
 	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
@@ -122,6 +122,6 @@ public interface CQLLibraryServiceInterface {
 
 	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
-	
+
 	public void saveCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML);
 }

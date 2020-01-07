@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service
+@Service("featureFlagService")
 public class FeatureFlagServiceImpl extends SpringRemoteServiceServlet implements FeatureFlagService {
 
 	private static final long serialVersionUID = 1L;
@@ -27,7 +27,7 @@ public class FeatureFlagServiceImpl extends SpringRemoteServiceServlet implement
 	public Map<String, Boolean> findFeatureFlags() {
 		List<FeatureFlag> featureFlagList = featureFlagDAO.findAllFeatureFlags();
 		featureFlagMap  = featureFlagList.stream()
-				.collect(Collectors.toMap(f -> f.getFlagName(), v -> v.getFlagOn()));
+				.collect(Collectors.toMap(f -> f.getFlagName(), v -> v.isFlagOn()));
 		return featureFlagMap;
 	}
 

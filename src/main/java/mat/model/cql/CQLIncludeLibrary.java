@@ -18,17 +18,19 @@ public class CQLIncludeLibrary implements IsSerializable {
 
 	/** The version. */
 	private String version;
-	
+
 	private String cqlLibraryName;
-	
+
 	private String qdmVersion;
-	
-	private String setId; 
-	
-	private String isComponent; 
-	
+
+	private String setId;
+
+	private String isComponent;
+
 	private String measureId;
-	
+
+	private String libraryModelType;
+
 	public String getSetId() {
 		return setId;
 	}
@@ -36,15 +38,16 @@ public class CQLIncludeLibrary implements IsSerializable {
 	public void setSetId(String setId) {
 		this.setId = setId;
 	}
-	
+
 	public CQLIncludeLibrary(CQLLibraryDataSetObject dto){
 		this.cqlLibraryId = dto.getId();
 		this.version =dto.getVersion().replace("v", "") + "."+ dto.getRevisionNumber();
 		this.cqlLibraryName = dto.getCqlName();
 		this.qdmVersion = dto.getQdmVersion();
 		this.setId = dto.getCqlSetId();
+		this.libraryModelType = dto.getLibraryModelType();
 	}
-	
+
 	public CQLIncludeLibrary(CQLIncludeLibrary includeLibrary){
 		this.aliasName = includeLibrary.getAliasName();
 		this.id = includeLibrary.getId();
@@ -53,10 +56,11 @@ public class CQLIncludeLibrary implements IsSerializable {
 		this.cqlLibraryName = includeLibrary.getCqlLibraryName();
 		this.qdmVersion = includeLibrary.getQdmVersion();
 		this.setId = includeLibrary.getSetId();
+		this.libraryModelType = includeLibrary.getLibraryModelType();
 	}
-	
+
 	public CQLIncludeLibrary(){
-		
+
 	}
 
 	/**
@@ -142,7 +146,7 @@ public class CQLIncludeLibrary implements IsSerializable {
 	public void setCqlLibraryName(String cqlLibraryName) {
 		this.cqlLibraryName = cqlLibraryName;
 	}
-	
+
 	public String getQdmVersion() {
 		return qdmVersion;
 	}
@@ -151,24 +155,32 @@ public class CQLIncludeLibrary implements IsSerializable {
 		this.qdmVersion = qdmVersion;
 	}
 
+	public String getLibraryModelType() {
+		return libraryModelType;
+	}
+
+	public void setLibraryModelType(String libraryModelType) {
+		this.libraryModelType = libraryModelType;
+	}
+
 	@Override
 	public boolean equals(Object arg0) {
 		CQLIncludeLibrary cqlIncludeLibrary = (CQLIncludeLibrary)arg0;
-		
+
 		if(cqlIncludeLibrary == null){
 			return false;
 		}
-		
-		if(cqlIncludeLibrary.cqlLibraryId.equals(cqlLibraryId) && 
-			cqlIncludeLibrary.aliasName.equals(aliasName) && 
-			cqlIncludeLibrary.cqlLibraryName.equals(cqlLibraryName) && 
+
+		if(cqlIncludeLibrary.cqlLibraryId.equals(cqlLibraryId) &&
+			cqlIncludeLibrary.aliasName.equals(aliasName) &&
+			cqlIncludeLibrary.cqlLibraryName.equals(cqlLibraryName) &&
 			cqlIncludeLibrary.version.equals(version)){
 			return true;
 		}
 		return false;
 	}
-	
-		
+
+
 	/**
 	 * The Class Comparator.
 	 */
@@ -176,7 +188,7 @@ public class CQLIncludeLibrary implements IsSerializable {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
 		@Override
@@ -185,9 +197,9 @@ public class CQLIncludeLibrary implements IsSerializable {
 		}
 
 	}
-	
+
 	public String toString(){
-		return this.id + "|" + this.cqlLibraryId + "|" + this.cqlLibraryName + "|" + this.aliasName + "|" + this.version; 
+		return this.id + "|" + this.cqlLibraryId + "|" + this.cqlLibraryName + "|" + this.aliasName + "|" + this.version;
 	}
 
 	public String getIsComponent() {

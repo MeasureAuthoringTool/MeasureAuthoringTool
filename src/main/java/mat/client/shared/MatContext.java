@@ -484,6 +484,14 @@ public class MatContext implements IsSerializable {
         }
     }
 
+    public String getCurrentMeasureModel() {
+        if (currentMeasureInfo != null) {
+            return currentMeasureInfo.getMeasureModel();
+        } else {
+            return "";
+        }
+    }
+
 
     public String getCurrentMeasureVersion() {
         if (currentMeasureInfo != null) {
@@ -1181,6 +1189,14 @@ public class MatContext implements IsSerializable {
     public String getCurrentCQLLibraryeName() {
         if (currentLibraryInfo != null) {
             return currentLibraryInfo.getLibraryName();
+        } else {
+            return "";
+        }
+    }
+
+    public String getCurrentCQLLibraryModelType() {
+        if (currentLibraryInfo != null) {
+            return currentLibraryInfo.getLibraryModelType();
         } else {
             return "";
         }

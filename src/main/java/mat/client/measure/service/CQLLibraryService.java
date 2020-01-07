@@ -34,7 +34,7 @@ public interface CQLLibraryService extends RemoteService {
 	SaveUpdateCQLResult getCQLData(String id);
 
 	SaveUpdateCQLResult getCQLDataForLoad(String id);
-	
+
 	boolean isLibraryLocked(String id);
 
 	SaveCQLLibraryResult resetLockedDate(String currentLibraryId, String userId);
@@ -45,23 +45,23 @@ public interface CQLLibraryService extends RemoteService {
 
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
 
-	
+
 	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
-	
+
 	SaveCQLLibraryResult saveDraftFromVersion(String libraryId, String libraryName) throws MatException;
-	
+
 	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment);
 
 	SaveUpdateCQLResult saveCQLFile(String libraryid, String cql);
-	
+
 	SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
 
-	SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText);
-	
+	SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText, String modelType);
+
 	SaveCQLLibraryResult searchForReplaceLibraries(String setId);
-		
+
 	void updateUsersShare(SaveCQLLibraryResult result);
 
 	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
@@ -72,34 +72,34 @@ public interface CQLLibraryService extends RemoteService {
 	GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId);
 
 	int countNumberOfAssociation(String Id);
-	
+
 	SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject);
 
 	SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId);
 
 	SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable);
-	
+
 	SaveUpdateCQLResult saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList, boolean isFormatable);
-	
+
 	SaveUpdateCQLResult saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList, boolean isFormatable);
-	
+
 	SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj);
-	
+
 	SaveUpdateCQLResult deleteFunction(String libraryId, CQLFunctions toBeDeletedObj);
-	
+
 	SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj);
-				
+
 	VsacApiResult updateCQLVSACValueSets(String currentCQLLibraryId, String expansionId);
 	 CQLKeywords getCQLKeywordsLists();
 	 void transferLibraryOwnerShipToUser(List<String> list, String toEmail);
 
 	SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject);
-	
+
 	SaveUpdateCQLResult saveCQLCodeListToCQLLibrary(List<CQLCode> codeList, String libraryId);
-		
+
 	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
 
 	void deleteCQLLibrary(String cqllibId, String loginUserId, String password) throws AuthenticationException;

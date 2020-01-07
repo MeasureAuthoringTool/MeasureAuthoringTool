@@ -23,23 +23,23 @@ import mat.shared.SaveUpdateCQLResult;
 public interface CQLLibraryServiceAsync {
 
 	void search(LibrarySearchModel librarySearchModel, AsyncCallback<SaveCQLLibraryResult> callback);
-	
+
 	void findCQLLibraryByID(String cqlLibraryID, AsyncCallback<CQLLibraryDataSetObject> callback);
 
 	void saveCQLLibrary(CQLLibraryDataSetObject cqlModel, AsyncCallback<SaveCQLLibraryResult> callback);
 
 
 	void getCQLData(String id, AsyncCallback<SaveUpdateCQLResult> callback);
-	
+
 	void getCQLDataForLoad(String id, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void isLibraryLocked(String id, AsyncCallback<Boolean> isLocked);
-	
+
 	void resetLockedDate(String measureId,String userId, AsyncCallback<SaveCQLLibraryResult> callback);
 
 	void updateLockedDate(String currentLibraryId, String loggedinUserId,AsyncCallback<SaveCQLLibraryResult> asyncCallback);
 
-	
+
 	void getAllRecentCQLLibrariesForUser(String userId, AsyncCallback<SaveCQLLibraryResult> callback);
 
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId, AsyncCallback<Void> callback);
@@ -50,21 +50,21 @@ public interface CQLLibraryServiceAsync {
 
 
 	void saveDraftFromVersion(String libraryId, String libraryName, AsyncCallback<SaveCQLLibraryResult> callback);
-	
+
 	void getLibraryCQLFileData(String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
-	
+
 	void getCQLLibraryFileData(String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment,
 			AsyncCallback<SaveUpdateCQLResult> callback);
-	
+
 	void saveCQLFile(String libraryId, String cql, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getUserShareInfo(String cqlId, String searchText,
 			AsyncCallback<SaveCQLLibraryResult> callback);
 
-	void searchForIncludes(String referringID, String libraryName, String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
-	
+	void searchForIncludes(String referringID, String libraryName, String searchText, String modelType, AsyncCallback<SaveCQLLibraryResult> callback);
+
 	void searchForReplaceLibraries(String setId, AsyncCallback<SaveCQLLibraryResult> callback);
 
 
@@ -93,9 +93,9 @@ public interface CQLLibraryServiceAsync {
 	void deleteFunction(String libraryId, CQLFunctions toBeDeletedObj, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void deleteParameter(String libraryId, CQLParameter toBeDeletedObj, AsyncCallback<SaveUpdateCQLResult> callback);
-	
+
 	void saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject, AsyncCallback<SaveUpdateCQLResult> asyncCallback);
-	
+
 	void deleteValueSet(String toBeDeletedValueSetId, String currentMeasureId,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 
@@ -109,7 +109,7 @@ public interface CQLLibraryServiceAsync {
 	void saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void saveCQLCodeListToCQLLibrary(List<CQLCode> codeList, String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
-	
+
 	void deleteCode(String toBeDeletedId, String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void deleteCQLLibrary(String cqllibId, String loginUserId, String password, AsyncCallback<Void> callback);

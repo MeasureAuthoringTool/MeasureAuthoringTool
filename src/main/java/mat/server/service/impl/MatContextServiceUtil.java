@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import mat.client.featureFlag.service.FeatureFlagService;
 import mat.client.util.FeatureFlagConstant;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
@@ -14,7 +15,6 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShareDTO;
-import mat.server.FeatureFlagServiceImpl;
 import mat.server.LoggedInUserUtil;
 import mat.shared.model.util.MeasureDetailsUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -32,7 +32,7 @@ public class MatContextServiceUtil implements InitializingBean {
     private static MatContextServiceUtil instance;
 
     @Autowired
-    FeatureFlagServiceImpl featureFlag;
+    FeatureFlagService featureFlag;
 
     @Override
     public void afterPropertiesSet() {
@@ -235,11 +235,11 @@ public class MatContextServiceUtil implements InitializingBean {
 
     public boolean isMeasureEditable(Measure measure) {
         featureFlagMap = featureFlag.findFeatureFlags();
-        return featureFlagMap.get(FeatureFlagConstant.FHIR_EDIT) || MeasureDetailsUtil.QDM.equals(measure.getMeasureModel());
+        return featureFlagMap.getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || MeasureDetailsUtil.QDM.equals(measure.getMeasureModel());
     }
 
     public boolean isCqlLibraryEditable(CQLLibrary cqlLibrary) {
         featureFlagMap = featureFlag.findFeatureFlags();
-        return featureFlagMap.get(FeatureFlagConstant.FHIR_EDIT) || MeasureDetailsUtil.QDM.equals(cqlLibrary.getLibraryModelType());
+        return featureFlagMap.getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || MeasureDetailsUtil.QDM.equals(cqlLibrary.getLibraryModelType());
     }
 }

@@ -2,6 +2,7 @@ package mat.server;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import mat.client.featureFlag.service.FeatureFlagService;
@@ -24,6 +25,7 @@ public class FeatureFlagServiceImpl extends SpringRemoteServiceServlet implement
 	FeatureFlagDAO featureFlagDAO;
 
 	@Override
+	@Cacheable("featureFlags")
 	public Map<String, Boolean> findFeatureFlags() {
 		List<FeatureFlag> featureFlagList = featureFlagDAO.findAllFeatureFlags();
 		featureFlagMap  = featureFlagList.stream()

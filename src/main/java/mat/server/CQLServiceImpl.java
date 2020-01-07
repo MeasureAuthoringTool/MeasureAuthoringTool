@@ -742,9 +742,9 @@ public class CQLServiceImpl implements CQLService {
 			CQLIncludeLibraryValidator libraryValidator = new CQLIncludeLibraryValidator();
 			libraryValidator.validate(includedLibraryWithEdits, cqlModel);
 
-			boolean isMatOnFhir = featureFlagService.findFeatureFlags().get(FeatureFlagConstant.FHIR_EDIT);
-			if (isMatOnFhir) {
-				libraryValidator.isModelTypeMatching(includedLibraryWithEdits.getLibraryModelType(), modelType);
+			boolean isFhirEditOn = featureFlagService.findFeatureFlags().get(FeatureFlagConstant.FHIR_EDIT);
+			if (isFhirEditOn) {
+				libraryValidator.validateModelTypes(includedLibraryWithEdits.getLibraryModelType(), modelType);
 			}
 
 			if (!libraryValidator.isValid()) {

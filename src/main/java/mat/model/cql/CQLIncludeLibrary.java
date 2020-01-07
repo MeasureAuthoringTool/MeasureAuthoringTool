@@ -172,9 +172,10 @@ public class CQLIncludeLibrary implements IsSerializable {
 		}
 
 		if(cqlIncludeLibrary.cqlLibraryId.equals(cqlLibraryId) &&
-			cqlIncludeLibrary.aliasName.equals(aliasName) &&
-			cqlIncludeLibrary.cqlLibraryName.equals(cqlLibraryName) &&
-			cqlIncludeLibrary.version.equals(version)){
+				cqlIncludeLibrary.aliasName.equals(aliasName) &&
+				cqlIncludeLibrary.cqlLibraryName.equals(cqlLibraryName) &&
+				cqlIncludeLibrary.version.equals(version) &&
+				cqlIncludeLibrary.libraryModelType.equals(libraryModelType)){
 			return true;
 		}
 		return false;
@@ -199,7 +200,8 @@ public class CQLIncludeLibrary implements IsSerializable {
 	}
 
 	public String toString(){
-		return this.id + "|" + this.cqlLibraryId + "|" + this.cqlLibraryName + "|" + this.aliasName + "|" + this.version;
+		return this.id + "|" + this.cqlLibraryId + "|" + this.cqlLibraryName + "|" + this.aliasName + "|"
+				+ this.version + "|" + this.libraryModelType;
 	}
 
 	public String getIsComponent() {

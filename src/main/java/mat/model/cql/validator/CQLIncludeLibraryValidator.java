@@ -71,7 +71,7 @@ public class CQLIncludeLibraryValidator extends Validator {
 	 * @param includedModelType -> included library model type
 	 * @param includingModelType -> including library or measure model type
 	 */
-	public void isModelTypeMatching( String includedModelType, String includingModelType) {
+	public void validateModelTypes( String includedModelType, String includingModelType) {
 		if(!includedModelType.equals(includingModelType)) {
 			if(MeasureDetailsUtil.QDM.equals(includingModelType)) {
 				handleValidationFail(QDM_ITEMS_INCLUDE_ERROR);

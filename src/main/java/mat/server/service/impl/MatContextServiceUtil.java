@@ -1,9 +1,6 @@
 package mat.server.service.impl;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-
 import mat.client.featureFlag.service.FeatureFlagService;
 import mat.client.util.FeatureFlagConstant;
 import mat.dao.UserDAO;
@@ -38,8 +35,6 @@ public class MatContextServiceUtil implements InitializingBean {
     public void afterPropertiesSet() {
         instance = this;
     }
-
-    private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
     /**
      * Gets the.
@@ -234,12 +229,10 @@ public class MatContextServiceUtil implements InitializingBean {
     }
 
     public boolean isMeasureEditable(Measure measure) {
-        featureFlagMap = featureFlag.findFeatureFlags();
-        return featureFlagMap.getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || MeasureDetailsUtil.QDM.equals(measure.getMeasureModel());
+        return featureFlag.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || MeasureDetailsUtil.QDM.equals(measure.getMeasureModel());
     }
 
     public boolean isCqlLibraryEditable(CQLLibrary cqlLibrary) {
-        featureFlagMap = featureFlag.findFeatureFlags();
-        return featureFlagMap.getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || MeasureDetailsUtil.QDM.equals(cqlLibrary.getLibraryModelType());
+        return featureFlag.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || MeasureDetailsUtil.QDM.equals(cqlLibrary.getLibraryModelType());
     }
 }

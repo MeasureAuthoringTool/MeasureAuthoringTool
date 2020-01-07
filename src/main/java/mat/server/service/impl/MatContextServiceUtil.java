@@ -29,7 +29,7 @@ public class MatContextServiceUtil implements InitializingBean {
     private static MatContextServiceUtil instance;
 
     @Autowired
-    FeatureFlagService featureFlag;
+    private FeatureFlagService featureFlag;
 
     @Override
     public void afterPropertiesSet() {
@@ -81,7 +81,7 @@ public class MatContextServiceUtil implements InitializingBean {
         if (shareLevel != null) {
             isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
         }
-        if(isMeasureEditable(measure)) {
+        if(isMeasureModelEditable(measure)) {
             isEditable = (isOwner || isSuperUser || isSharedToEdit);
         }
 
@@ -154,7 +154,7 @@ public class MatContextServiceUtil implements InitializingBean {
             isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
         }
 
-        if(isCqlLibraryEditable(cqlLibrary)) {
+        if(isCqlLibraryModelEditable(cqlLibrary)) {
             isEditable = (isOwner || isSuperUser || isSharedToEdit);
         }
 
@@ -228,11 +228,11 @@ public class MatContextServiceUtil implements InitializingBean {
         }
     }
 
-    public boolean isMeasureEditable(Measure measure) {
+    public boolean isMeasureModelEditable(Measure measure) {
         return featureFlag.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || MeasureDetailsUtil.QDM.equals(measure.getMeasureModel());
     }
 
-    public boolean isCqlLibraryEditable(CQLLibrary cqlLibrary) {
+    public boolean isCqlLibraryModelEditable(CQLLibrary cqlLibrary) {
         return featureFlag.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || MeasureDetailsUtil.QDM.equals(cqlLibrary.getLibraryModelType());
     }
 }

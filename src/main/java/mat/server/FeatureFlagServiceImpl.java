@@ -22,7 +22,7 @@ public class FeatureFlagServiceImpl extends SpringRemoteServiceServlet implement
 	Map<String, Boolean> featureFlagMap = new HashMap<>();
 
 	@Autowired
-	FeatureFlagDAO featureFlagDAO;
+	private FeatureFlagDAO featureFlagDAO;
 
 	@Override
 	@Cacheable("featureFlags")

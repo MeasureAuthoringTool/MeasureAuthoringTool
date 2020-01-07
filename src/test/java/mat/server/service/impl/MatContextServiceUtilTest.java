@@ -1,6 +1,7 @@
 package mat.server.service.impl;
 
 import mat.client.featureFlag.service.FeatureFlagService;
+import mat.model.clause.CQLLibrary;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +22,7 @@ public class MatContextServiceUtilTest {
 
     private MatContextServiceUtil util = new MatContextServiceUtil();
     private Measure measure = new Measure();
+    private CQLLibrary cqlLibrary = new CQLLibrary();
     private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
     @Mock
@@ -81,7 +83,7 @@ public class MatContextServiceUtilTest {
 
         measure.setMeasureModel("QDM");
 
-        assertEquals(true, matContextServiceUtil.isMeasureEditable(measure));
+        assertEquals(true, matContextServiceUtil.isMeasureModelEditable(measure));
     }
 
     @Test
@@ -91,7 +93,7 @@ public class MatContextServiceUtilTest {
 
         measure.setMeasureModel("FHIR");
 
-        assertEquals(false, matContextServiceUtil.isMeasureEditable(measure));
+        assertEquals(false, matContextServiceUtil.isMeasureModelEditable(measure));
     }
 
     @Test
@@ -99,9 +101,9 @@ public class MatContextServiceUtilTest {
         featureFlagMap.put("FhirEdit", true);
         Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
 
-        measure.setMeasureModel("QDM");
+        cqlLibrary.setLibraryModelType("QDM");
 
-        assertEquals(true, matContextServiceUtil.isMeasureEditable(measure));
+        assertEquals(true, matContextServiceUtil.isCqlLibraryModelEditable(cqlLibrary));
     }
 
     @Test
@@ -109,8 +111,8 @@ public class MatContextServiceUtilTest {
         featureFlagMap.put("FhirEdit", false);
         Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
 
-        measure.setMeasureModel("FHIR");
+        cqlLibrary.setLibraryModelType("FHIR");
 
-        assertEquals(false, matContextServiceUtil.isMeasureEditable(measure));
+        assertEquals(false, matContextServiceUtil.isCqlLibraryModelEditable(cqlLibrary));
     }
 }

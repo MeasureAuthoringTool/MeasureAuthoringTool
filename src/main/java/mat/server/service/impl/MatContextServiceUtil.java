@@ -1,7 +1,10 @@
 package mat.server.service.impl;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
+import mat.client.util.FeatureFlagConstant;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
@@ -11,17 +14,32 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShareDTO;
+import mat.server.FeatureFlagServiceImpl;
 import mat.server.LoggedInUserUtil;
 import mat.shared.model.util.MeasureDetailsUtil;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class MatContextServiceUtil {
+@Service
+public class MatContextServiceUtil implements InitializingBean {
 
     private static BigDecimal QDM_VER_BEFORE_CONVERSION = new BigDecimal("5.5");
     private static BigDecimal MAT_VER_BEFORE_CONVERSION = new BigDecimal("5.8");
 
     private boolean isMeasure;
 
-    private static MatContextServiceUtil instance = new MatContextServiceUtil();
+    private static MatContextServiceUtil instance;
+
+    @Autowired
+    FeatureFlagServiceImpl featureFlag;
+
+    @Override
+    public void afterPropertiesSet() {
+        instance = this;
+    }
+
+    private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
     /**
      * Gets the.
@@ -55,6 +73,8 @@ public class MatContextServiceUtil {
     public boolean isCurrentMeasureEditable(MeasureDAO measureDAO, String measureId, boolean checkForDraft) {
 
         Measure measure = measureDAO.find(measureId);
+        boolean isEditable = false;
+
         String currentUserId = LoggedInUserUtil.getLoggedInUser();
         String userRole = LoggedInUserUtil.getLoggedInUserRole();
         boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
@@ -66,7 +86,9 @@ public class MatContextServiceUtil {
         if (shareLevel != null) {
             isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
         }
-        boolean isEditable = (isOwner || isSuperUser || isSharedToEdit);
+        if(isMeasureEditable(measure)) {
+            isEditable = (isOwner || isSuperUser || isSharedToEdit);
+        }
 
         if (checkForDraft) {
             isEditable = isEditable && dto.isDraft();
@@ -123,6 +145,8 @@ public class MatContextServiceUtil {
                                                String libraryId, boolean checkForDraft) {
 
         CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+        boolean isEditable = false;
+
         String currentUserId = LoggedInUserUtil.getLoggedInUser();
         String userRole = LoggedInUserUtil.getLoggedInUserRole();
         boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
@@ -134,7 +158,10 @@ public class MatContextServiceUtil {
         if (shareLevel != null) {
             isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
         }
-        boolean isEditable = (isOwner || isSuperUser || isSharedToEdit);
+
+        if(isCqlLibraryEditable(cqlLibrary)) {
+            isEditable = (isOwner || isSuperUser || isSharedToEdit);
+        }
 
         if (checkForDraft) {
             isEditable = isEditable && dto.isDraft();
@@ -206,4 +233,13 @@ public class MatContextServiceUtil {
         }
     }
 
+    public boolean isMeasureEditable(Measure measure) {
+        featureFlagMap = featureFlag.findFeatureFlags();
+        return featureFlagMap.get(FeatureFlagConstant.FHIR_EDIT) || MeasureDetailsUtil.QDM.equals(measure.getMeasureModel());
+    }
+
+    public boolean isCqlLibraryEditable(CQLLibrary cqlLibrary) {
+        featureFlagMap = featureFlag.findFeatureFlags();
+        return featureFlagMap.get(FeatureFlagConstant.FHIR_EDIT) || MeasureDetailsUtil.QDM.equals(cqlLibrary.getLibraryModelType());
+    }
 }

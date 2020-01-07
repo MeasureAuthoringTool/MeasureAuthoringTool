@@ -66,7 +66,7 @@ public class CQLLibraryResultTable {
                 if (object.getLastClick() < System.currentTimeMillis() - DELAY_TIME) {
                     object.setSelected(!object.isSelected());
                     selectionModel.setSelected(object, object.isSelected());
-                } else if (object.isFhirEditableFeatureFlag()) {
+                } else if (object.isEditable()) {
                     SelectionEvent.fire(fireEvent, object);
                 }
                 object.setLastClick(System.currentTimeMillis());
@@ -92,7 +92,7 @@ public class CQLLibraryResultTable {
                 if (object.getLastClick() < System.currentTimeMillis() - DELAY_TIME) {
                     object.setSelected(!object.isSelected());
                     selectionModel.setSelected(object, object.isSelected());
-                } else if (object.isFhirEditableFeatureFlag()) {
+                } else if (object.isEditable()) {
                     SelectionEvent.fire(fireEvent, object);
                 }
                 object.setLastClick(System.currentTimeMillis());
@@ -117,7 +117,7 @@ public class CQLLibraryResultTable {
                 if (object.getLastClick() < System.currentTimeMillis() - DELAY_TIME) {
                     object.setSelected(!object.isSelected());
                     selectionModel.setSelected(object, object.isSelected());
-                } else if (object.isFhirEditableFeatureFlag()) {
+                } else if (object.isEditable()) {
                     SelectionEvent.fire(fireEvent, object);
                 }
                 object.setLastClick(System.currentTimeMillis());

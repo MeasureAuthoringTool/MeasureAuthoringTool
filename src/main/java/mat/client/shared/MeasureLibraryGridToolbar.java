@@ -113,7 +113,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
         fhirValidationButton.setEnabled(selectedItem.isValidatable());
 
-        if (selectedItem.isEditable() && selectedItem.isFhirEditableFeatureFlag()) {
+        if (selectedItem.isEditable()) {
             if (selectedItem.isMeasureLocked()) {
                 String emailAddress = selectedItem.getLockedUserInfo().getEmailAddress();
                 editOrViewButton.setTitle("Measure in use by " + emailAddress);

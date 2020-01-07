@@ -5,12 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import mat.client.shared.MatContext;
-import mat.client.util.FeatureFlagConstant;
 import mat.model.BaseModel;
 import mat.model.LockedUserInfo;
 import mat.shared.CQLError;
-import mat.shared.model.util.MeasureDetailsUtil;
 
 public class CQLLibraryDataSetObject implements IsSerializable, BaseModel {
     private String id;
@@ -316,10 +313,6 @@ public class CQLLibraryDataSetObject implements IsSerializable, BaseModel {
 
     public void setLibraryModelType(String libraryModelType) {
         this.libraryModelType = libraryModelType;
-    }
-
-    public boolean isFhirEditableFeatureFlag() {
-        return MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_EDIT) || (this.isDraft && MeasureDetailsUtil.QDM.equals(this.libraryModelType));
     }
 
 }

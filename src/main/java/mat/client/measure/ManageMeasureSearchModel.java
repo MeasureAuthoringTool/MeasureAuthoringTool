@@ -356,9 +356,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
             this.isEditable = isEditable;
         }
 
-        public boolean isFhirEditableFeatureFlag() {
-            return MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_EDIT) || (this.draft && MeasureDetailsUtil.QDM.equals(this.measureModel));
-        }
         /**
          * Checks if is clonable.
          *

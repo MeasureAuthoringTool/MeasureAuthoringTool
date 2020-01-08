@@ -97,6 +97,16 @@ public class MatContextServiceUtilTest {
     }
 
     @Test
+    public  void testIsMeasureEditableNullCheck() {
+        featureFlagMap.put("FhirEdit", false);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+
+        measure.setMeasureModel("");
+
+        assertEquals(false, matContextServiceUtil.isMeasureModelEditable(measure));
+    }
+
+    @Test
     public  void testIsCqlLibraryEditable() {
         featureFlagMap.put("FhirEdit", true);
         Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
@@ -112,6 +122,16 @@ public class MatContextServiceUtilTest {
         Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         cqlLibrary.setLibraryModelType("FHIR");
+
+        assertEquals(false, matContextServiceUtil.isCqlLibraryModelEditable(cqlLibrary));
+    }
+
+    @Test
+    public  void testIsCqlLibraryEditableNullCheck() {
+        featureFlagMap.put("FhirEdit", false);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+
+        cqlLibrary.setLibraryModelType("");
 
         assertEquals(false, matContextServiceUtil.isCqlLibraryModelEditable(cqlLibrary));
     }

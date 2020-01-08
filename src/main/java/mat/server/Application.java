@@ -20,6 +20,8 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -40,6 +42,7 @@ import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 @EnableTransactionManagement
 @EnableWebSecurity
 @EnableCaching
+@EnableScheduling
 public class Application extends WebSecurityConfigurerAdapter {
 
     @Value("${ALGORITHM:}")
@@ -174,5 +177,10 @@ public class Application extends WebSecurityConfigurerAdapter {
         final SimpleCacheManager cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("featureFlags")));
         return cacheManager;
+    }
+
+    @Scheduled(fixedRateString = "${mat.cache.expiry.time}")          // At every 5th min
+    public void clearCacheSchedule(){
+        cacheManager().getCache("featureFlags").clear();
     }
 }

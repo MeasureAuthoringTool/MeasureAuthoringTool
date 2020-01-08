@@ -35,15 +35,15 @@ public class FhirValidationReportService {
 
     private Configuration freemarkerConfiguration;
     private MeasureDAO measureDAO;
-    private FhirConvertServerSideService fhirConvertServerSideService;
+    private FhirOrchestrationGatewayService fhirOrchestrationGatewayService;
 
     @Value("${mat.measure.current.release.version}")
     private String currentMatVersion;
 
-    public FhirValidationReportService(Configuration freemarkerConfiguration, MeasureDAO measureDAO, FhirConvertServerSideService fhirConvertServerSideService) {
+    public FhirValidationReportService(Configuration freemarkerConfiguration, MeasureDAO measureDAO, FhirOrchestrationGatewayService fhirOrchestrationGatewayService) {
         this.freemarkerConfiguration = freemarkerConfiguration;
         this.measureDAO = measureDAO;
-        this.fhirConvertServerSideService = fhirConvertServerSideService;
+        this.fhirOrchestrationGatewayService = fhirOrchestrationGatewayService;
     }
 
     /**
@@ -75,7 +75,7 @@ public class FhirValidationReportService {
             return null;
         }
         logger.info("Calling FHIR conversion validation service for measure: " + measureId);
-        return fhirConvertServerSideService.validate(measureId);
+        return fhirOrchestrationGatewayService.validate(measureId);
     }
 
     /**

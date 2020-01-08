@@ -589,20 +589,22 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             return;
         }
 
+        setSearchingBusy(true);
         FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
         fhirMeasureService.convert(object, new AsyncCallback<Result>() {
             @Override
             public void onFailure(Throwable caught) {
+                setSearchingBusy(false);
                 detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
                 MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
             }
 
             @Override
             public void onSuccess(Result result) {
-                setIsPageDirty(false);
-                displaySuccessAndFireSelectedEvent(result, MatContext.get().getMessageDelegate().getConvertMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
+                setSearchingBusy(false);
                 String url = GWT.getModuleBaseURL() + "validationReport?id=" + object.getId();
                 Window.open(url, "_blank", "");
+                showConfirmationDialog(MatContext.get().getMessageDelegate().getConvertMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
                 displaySearch();
             }
         });

@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import mat.client.measure.service.FhirMeasureRemoteService;
 import mat.client.shared.MatException;
+import mat.client.shared.MatRuntimeException;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.impl.AuthorDAOImpl;
 import mat.server.SpringRemoteServiceServlet;
-import mat.server.service.FhirConvertServerSideService;
+import mat.server.service.FhirOrchestrationGatewayService;
 
 import static mat.client.measure.ManageMeasureSearchModel.Result;
 
@@ -19,23 +20,37 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
     private static final Log logger = LogFactory.getLog(AuthorDAOImpl.class);
 
     @Autowired
-    private FhirConvertServerSideService fhirConvertServerSideService;
+    private FhirOrchestrationGatewayService fhirOrchestrationGatewayService;
     @Autowired
     private MeasureDAO measureDAO;
 
     @Override
     public Result convert(Result currentMeasure) throws MatException {
-        ConversionResultDto convertResult = fhirConvertServerSideService.convert(currentMeasure.getId());
-        boolean hasValueSetErrors = convertResult.getValueSetConversionResults().getValueSetResults().stream().anyMatch(valueSetResult -> !Boolean.TRUE.equals(valueSetResult.getSuccess()));
-        boolean hasLibraryErrors = !convertResult.getLibraryConversionResults().getLibraryFhirValidationErrors().isEmpty();
-        boolean hasMeasureErrors = !convertResult.getMeasureConversionResults().getMeasureFhirValidationErrors().isEmpty();
-        logger.info(convertResult);
-        if (hasValueSetErrors || hasLibraryErrors || hasMeasureErrors) {
-            MatException e = new MatException("FHIR conversion has errors");
+        if (!currentMeasure.isFhirConvertible()) {
+            throw new MatException("Measure cannot be converted to FHIR");
+        }
+        ConversionResultDto convertResult;
+        try {
+            convertResult = fhirOrchestrationGatewayService.convert(currentMeasure.getId());
+            logger.info(convertResult);
+        } catch (MatRuntimeException e) {
+            logger.error(e);
+            throw new MatException(e);
+        }
+        if (hasErrors(convertResult)) {
+            MatException e = new MatException("Error while converting measure to FHIR");
             logger.error(e);
             throw e;
         }
         return currentMeasure;
+    }
+
+    private boolean hasErrors(ConversionResultDto convertResult) {
+        boolean hasValueSetErrors = convertResult.getValueSetConversionResults().getValueSetResults().stream()
+                .anyMatch(valueSetResult -> !Boolean.TRUE.equals(valueSetResult.getSuccess()));
+        boolean hasLibraryErrors = !convertResult.getLibraryConversionResults().getLibraryFhirValidationErrors().isEmpty();
+        boolean hasMeasureErrors = !convertResult.getMeasureConversionResults().getMeasureFhirValidationErrors().isEmpty();
+        return hasValueSetErrors || hasLibraryErrors || hasMeasureErrors;
     }
 
 }

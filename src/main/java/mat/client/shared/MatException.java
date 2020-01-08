@@ -11,4 +11,8 @@ public class MatException extends Exception {
     public MatException(String msg) {
         super(msg);
     }
+
+    public MatException(Throwable cause) {
+        super(cause);
+    }
 }

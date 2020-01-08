@@ -35,7 +35,7 @@ class FhirValidationReportServiceTest {
     private MeasureDAO measureDAO;
 
     @Mock
-    private FhirConvertServerSideService fhirConvertServerSideService;
+    private FhirOrchestrationGatewayService fhirOrchestrationGatewayService;
 
     @InjectMocks
     private FhirValidationReportService fhirValidationReportService;
@@ -55,7 +55,7 @@ class FhirValidationReportServiceTest {
         Template template = configuration.getTemplate(templateName);
         Mockito.when(freemarkerConfiguration.getTemplate(templateName)).thenReturn(template);
 
-        Mockito.when(fhirConvertServerSideService.validate(Mockito.anyString())).thenAnswer(invocation -> {
+        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.anyString())).thenAnswer(invocation -> {
                     URL path = FhirValidationReportService.class.getResource("report.json");
         return new ObjectMapper()
                 .readValue(new File(path.getFile()),

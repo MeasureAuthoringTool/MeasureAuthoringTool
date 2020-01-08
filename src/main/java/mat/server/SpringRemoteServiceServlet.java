@@ -23,7 +23,7 @@ public class SpringRemoteServiceServlet extends RemoteServiceServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        logger.info("SpringRemoteServiceServlet init()");
+        logger.info(getClass().getSimpleName() + " init()");
         super.init(config);
         if (this.context == null) {
             this.context = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
@@ -33,7 +33,6 @@ public class SpringRemoteServiceServlet extends RemoteServiceServlet {
 
     @Override
     protected SerializationPolicy doGetSerializationPolicy(HttpServletRequest request, String moduleBaseURL, String strongName) {
-
         try {
             return super.doGetSerializationPolicy(request, moduleBaseURL, strongName);
         } catch (Exception exc) {
@@ -51,6 +50,5 @@ public class SpringRemoteServiceServlet extends RemoteServiceServlet {
     public void setContext(ApplicationContext context) {
         this.context = context;
     }
-
 
 }

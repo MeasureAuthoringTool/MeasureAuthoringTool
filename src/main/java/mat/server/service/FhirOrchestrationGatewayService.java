@@ -15,14 +15,15 @@ import gov.cms.mat.fhir.rest.dto.ConversionType;
 import mat.client.shared.MatRuntimeException;
 
 @Service
-public class FhirConvertServerSideService {
+public class FhirOrchestrationGatewayService {
 
     private static final String FHIR_ORCH_MEASURE_SRVC_PARAMS = "?id={id}&&conversionType={conversionType}&xmlSource={xmlSource}";
+    private static final String SIMPLE_XML_SOURCE = "SIMPLE";
     @Value("${FHIR_ORCH_MEASURE_SRVC_URL:http://localhost:9080/orchestration/measure}")
-    private String fhirOrchestration;
+    private String fhirOrchestrationUrl;
     private RestTemplate restTemplate;
 
-    public FhirConvertServerSideService(RestTemplate restTemplate) {
+    public FhirOrchestrationGatewayService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
@@ -35,15 +36,15 @@ public class FhirConvertServerSideService {
     }
 
     private ConversionResultDto callRemoteService(String measureId, ConversionType conversionType) {
-        String executeQuery = fhirOrchestration + FHIR_ORCH_MEASURE_SRVC_PARAMS;
+        String executeQuery = fhirOrchestrationUrl + FHIR_ORCH_MEASURE_SRVC_PARAMS;
         Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("id", measureId);
         uriVariables.put("conversionType", conversionType.name());
-        uriVariables.put("xmlSource", "SIMPLE");
+        uriVariables.put("xmlSource", SIMPLE_XML_SOURCE);
         ResponseEntity<ConversionResultDto> response
                 = restTemplate.exchange(executeQuery, HttpMethod.PUT, null, ConversionResultDto.class, uriVariables);
         if (!HttpStatus.OK.equals(response.getStatusCode())) {
-            throw new MatRuntimeException("FHIR conversion service returned error code " + response.getStatusCode());
+            throw new MatRuntimeException("FHIR's conversion service returned error code " + response.getStatusCode());
         }
         return response.getBody();
     }

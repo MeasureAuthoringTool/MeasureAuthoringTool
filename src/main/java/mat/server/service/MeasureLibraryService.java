@@ -113,14 +113,7 @@ public interface MeasureLibraryService {
 	 */
 	int getMaxEMeasureId();
 	
-	/**
-	 * Gets the measure.
-	 * 
-	 * @param key
-	 *            the key
-	 * @return the measure
-	 */
-	ManageMeasureDetailModel getMeasure(String key);
+	ManageMeasureDetailModel getMeasure(String measureId);
 	
 	ManageCompositeMeasureDetailModel getCompositeMeasure(String key);
 	

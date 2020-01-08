@@ -1061,18 +1061,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         return panel;
     }
 
-    public Widget getWidgetWithHeading(Widget widget, String heading) {
-        FlowPanel vPanel = new FlowPanel();
-        Label h = new Label(heading);
-        h.addStyleName("myAccountHeader");
-        h.addStyleName("leftAligned");
-        vPanel.add(h);
-        vPanel.add(widget);
-        vPanel.addStyleName("myAccountPanel");
-        widget.addStyleName("myAccountPanelContent");
-        return vPanel;
-    }
-
     private void historyDisplayHandlers(final HistoryDisplay historyDisplay) {
 
         historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {

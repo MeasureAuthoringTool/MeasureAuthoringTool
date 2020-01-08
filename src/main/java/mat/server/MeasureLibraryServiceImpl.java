@@ -1297,18 +1297,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     @Override
-    public final ManageMeasureDetailModel getMeasure(final String key) {
+    public final ManageMeasureDetailModel getMeasure(final String measureId) {
         logger.info("In MeasureLibraryServiceImpl.getMeasure() method..");
-        logger.info("Loading Measure for MeasueId: " + key);
-        Measure measure = measurePackageService.getById(key);
+        logger.info("Loading Measure for MeasureId: " + measureId);
+        Measure measure = measurePackageService.getById(measureId);
         if (!measure.getIsCompositeMeasure()) {
-            MeasureXmlModel xmlModel = getMeasureXmlForMeasure(key);
+            MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
             String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 
-            ManageMeasureDetailModel manageMeasureDetailModel = new ManageMeasureDetailModel();
-            MeasureDetailResult measureDetailResult = new MeasureDetailResult();
+            ManageMeasureDetailModel manageMeasureDetailModel;
+            MeasureDetailResult measureDetailResult;
             if (xmlString == null || measure.getMeasureDetails() != null) {
-                manageMeasureDetailModel = setManageMeasureDetailModelFromDatabaseData(measure, measureDetailResult);
+                manageMeasureDetailModel = setManageMeasureDetailModelFromDatabaseData(measure);
                 measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
             } else {
                 manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
@@ -1322,7 +1322,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             return manageMeasureDetailModel;
         } else {
-            return getCompositeMeasure(key);
+            return getCompositeMeasure(measureId);
         }
     }
 
@@ -1340,7 +1340,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
     }
 
-    private ManageMeasureDetailModel setManageMeasureDetailModelFromDatabaseData(Measure measure, MeasureDetailResult measureDetailResult) {
+    private ManageMeasureDetailModel setManageMeasureDetailModelFromDatabaseData(Measure measure) {
         ManageMeasureDetailModelConversions converter = new ManageMeasureDetailModelConversions();
         if (BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
             return converter.createManageCompositeMeasureDetailModel(measure, organizationDAO, measureTypeDAO);
@@ -1358,7 +1358,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = new ManageCompositeMeasureDetailModel();
         if (xmlString == null || measure.getMeasureDetails() != null) {
-            manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) setManageMeasureDetailModelFromDatabaseData(measure, measureDetailResult);
+            manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) setManageMeasureDetailModelFromDatabaseData(measure);
             measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
         } else {
             manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXMLToModel(xmlString, measure);

@@ -5,13 +5,15 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
+import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.service.FhirMeasureRemoteService;
+import mat.client.measure.service.MeasureCloningRemoteService;
 import mat.client.shared.MatException;
 import mat.client.shared.MatRuntimeException;
-import mat.dao.clause.MeasureDAO;
 import mat.dao.impl.AuthorDAOImpl;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.service.FhirOrchestrationGatewayService;
+import mat.server.service.MeasureLibraryService;
 
 import static mat.client.measure.ManageMeasureSearchModel.Result;
 
@@ -22,16 +24,23 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
     @Autowired
     private FhirOrchestrationGatewayService fhirOrchestrationGatewayService;
     @Autowired
-    private MeasureDAO measureDAO;
+    private MeasureLibraryService measureLibraryService;
+
+    @Autowired
+    private MeasureCloningRemoteService measureCloningRemoteService;
 
     @Override
     public Result convert(Result currentMeasure) throws MatException {
         if (!currentMeasure.isFhirConvertible()) {
             throw new MatException("Measure cannot be converted to FHIR");
         }
+
+        ManageMeasureDetailModel currentDetails = measureLibraryService.getMeasure(currentMeasure.getId());
+        Result result = measureCloningRemoteService.cloneExistingMeasure(currentDetails);
+
         ConversionResultDto convertResult;
         try {
-            convertResult = fhirOrchestrationGatewayService.convert(currentMeasure.getId());
+            convertResult = fhirOrchestrationGatewayService.convert(result.getId());
             logger.info(convertResult);
         } catch (MatRuntimeException e) {
             logger.error(e);

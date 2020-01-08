@@ -145,12 +145,8 @@ public class MeasureCloningRemoteServiceImpl extends SpringRemoteServiceServlet 
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
     private CQLService cqlService;
-
-
-//    private Document clonedDoc;
-
-//    Measure clonedMeasure;
 
     @Override
     public ManageMeasureSearchModel.Result cloneExistingMeasure(ManageMeasureDetailModel currentDetails) throws MatException {
@@ -185,13 +181,6 @@ public class MeasureCloningRemoteServiceImpl extends SpringRemoteServiceServlet 
 
     private ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails, boolean creatingDraft) throws MatException {
         logger.info("In MeasureCloningServiceImpl.clone() method..");
-        measureDAO = (MeasureDAO) context.getBean("measureDAO");
-        measureXmlDAO = (MeasureXMLDAO) context.getBean("measureXMLDAO");
-        measureSetDAO = (MeasureSetDAO) context.getBean("measureSetDAO");
-        userDAO = (UserDAO) context.getBean("userDAO");
-        cqlService = (CQLService) context.getBean("cqlService");
-
-        cqlLibraryService = (CQLLibraryService) context.getBean("cqlLibraryService");
 
         ManageMeasureModelValidator validator = new ManageMeasureModelValidator();
         List<String> messages = validator.validateMeasure(currentDetails);
@@ -250,10 +239,8 @@ public class MeasureCloningRemoteServiceImpl extends SpringRemoteServiceServlet 
             }
 
             // when creating a draft of a shared version  Measure then the Measure Owner should not change
-            boolean isNonCQLtoCQLDraft = false;
             if (creatingDraft) {
-                isNonCQLtoCQLDraft = createDraftAndDetermineIfNonCQL(clonedMeasure, currentDetails, measure);
-
+                createDraftAndDetermineIfNonCQL(clonedMeasure, currentDetails, measure);
             } else {
                 cloneMeasure(clonedMeasure, clonedDoc);
             }

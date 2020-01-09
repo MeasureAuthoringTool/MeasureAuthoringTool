@@ -1,11 +1,8 @@
 package mat.dao.clause.impl;
 
 import mat.client.measure.MeasureSearchFilterPanel;
-import mat.client.util.FeatureFlagConstant;
-import mat.dao.FeatureFlagDAO;
 import mat.dao.UserDAO;
 import mat.dao.search.GenericDAO;
-import mat.model.FeatureFlag;
 import mat.model.LockedUserInfo;
 import mat.model.SecurityRole;
 import mat.model.User;
@@ -72,9 +69,6 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
     @Autowired
     private UserDAO userDAO;
 
-    @Autowired
-    private FeatureFlagDAO featureFlagDAO;
-
     public CQLLibraryDAOImpl(@Autowired SessionFactory sessionFactory) {
         setSessionFactory(sessionFactory);
     }
@@ -138,10 +132,11 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
                 cb.notEqual(root.get(SET_ID), setId)
         ));
 
-        //FHIR flag specific criteria
-        FeatureFlag featureFlag = featureFlagDAO.findFeatureFlagByName(FeatureFlagConstant.FHIR_EDIT);
-        if (featureFlag !=null && featureFlag.isFlagOn() && StringUtils.isNotBlank(modelType)) {
+        //model type criteria
+        if (StringUtils.isNotBlank(modelType)) {
             predicates.add(cb.equal(root.get(LIBRARY_MODEL_TYPE), modelType));
+        } else {
+            predicates.add(cb.isNull(root.get(LIBRARY_MODEL_TYPE)));
         }
 
         final Predicate p1 = cb.and(predicates.toArray(new Predicate[0]));

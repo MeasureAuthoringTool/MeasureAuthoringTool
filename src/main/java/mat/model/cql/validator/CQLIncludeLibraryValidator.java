@@ -7,6 +7,7 @@ import mat.server.Validator;
 import mat.server.util.CQLValidationUtil;
 import mat.shared.CQLModelValidator;
 import mat.shared.model.util.MeasureDetailsUtil;
+import org.apache.commons.lang3.StringUtils;
 
 public class CQLIncludeLibraryValidator extends Validator {
 
@@ -16,13 +17,14 @@ public class CQLIncludeLibraryValidator extends Validator {
 	private static final String FHIR_ITEMS_INCLUDE_ERROR = "Only FHIR library items may be added to FHIR measures.";
 	private CQLModelValidator validator = new CQLModelValidator();
 
-	public void validate(CQLIncludeLibrary includedLibrary, CQLModel model) {
+	public void validate(CQLIncludeLibrary includedLibrary, CQLModel model, String modelType) {
 		this.setValid(true);
 		doesAliasNameHaveSpecialCharacter(includedLibrary.getAliasName());
 		doesAliasNameFollowCQLAliasNamingConvention(includedLibrary.getAliasName());
 		isDuplicateIdentifierName(includedLibrary.getAliasName(), model);
 		isDuplicateCQLLibraryName(includedLibrary.getAliasName(), model);
 		isCQLReservedKeyword(includedLibrary.getAliasName());
+		validateModelTypes(includedLibrary.getLibraryModelType(), modelType);
 	}
 
 	private void doesAliasNameHaveSpecialCharacter(String libraryName) {
@@ -66,13 +68,13 @@ public class CQLIncludeLibraryValidator extends Validator {
 	}
 
 	/**
-	 * Validate if if including and included model types are same
+	 * Validate if including and included model types are same
 	 *
 	 * @param includedModelType -> included library model type
 	 * @param includingModelType -> including library or measure model type
 	 */
-	public void validateModelTypes( String includedModelType, String includingModelType) {
-		if(!includedModelType.equals(includingModelType)) {
+	private void validateModelTypes( String includedModelType, String includingModelType) {
+		if(!StringUtils.equals(includedModelType, includingModelType)) {
 			if(MeasureDetailsUtil.QDM.equals(includingModelType)) {
 				handleValidationFail(QDM_ITEMS_INCLUDE_ERROR);
 			} else {

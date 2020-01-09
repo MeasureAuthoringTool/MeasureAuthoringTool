@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service("featureFlagService")
+@Service
 public class FeatureFlagServiceImpl extends SpringRemoteServiceServlet implements FeatureFlagService {
 
 	private static final long serialVersionUID = 1L;

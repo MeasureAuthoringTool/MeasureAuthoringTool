@@ -38,7 +38,8 @@ public class CQLIncludeLibraryValidatorTest {
 		CQLIncludeLibraryValidator validator = new CQLIncludeLibraryValidator();
 		CQLModel model = new CQLModel();
 		includedLibrary.setAliasName(name);
-		validator.validate(includedLibrary, model);
+		includedLibrary.setLibraryModelType(MeasureDetailsUtil.QDM);
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
 		assertEquals(true, validator.isValid());
 	}
 
@@ -47,7 +48,7 @@ public class CQLIncludeLibraryValidatorTest {
 		CQLIncludeLibraryValidator validator = new CQLIncludeLibraryValidator();
 		CQLModel model = new CQLModel();
 		includedLibrary.setAliasName(name);
-		validator.validate(includedLibrary, model);
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
 		assertEquals(false, validator.isValid());
 		assertEquals(true, validator.getMessages().contains(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION));
 	}
@@ -65,7 +66,7 @@ public class CQLIncludeLibraryValidatorTest {
 		CQLIncludeLibraryValidator validator = new CQLIncludeLibraryValidator();
 		CQLModel model = new CQLModel();
 		includedLibrary.setAliasName(name);
-		validator.validate(includedLibrary, model);
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
 		assertEquals(false, validator.isValid());
 		assertEquals(true, validator.getMessages().contains(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION));
 	}
@@ -75,7 +76,8 @@ public class CQLIncludeLibraryValidatorTest {
 		CQLIncludeLibraryValidator validator = new CQLIncludeLibraryValidator();
 		CQLModel model = new CQLModel();
 		includedLibrary.setAliasName(name);
-		validator.validate(includedLibrary, model);
+		includedLibrary.setLibraryModelType(MeasureDetailsUtil.QDM);
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
 		assertEquals(true, validator.isValid());
 	}
 
@@ -96,7 +98,7 @@ public class CQLIncludeLibraryValidatorTest {
 		definition.setName("duplicate");
 		model.getDefinitionList().add(definition);
 		includedLibrary.setAliasName("duplicate");
-		validator.validate(includedLibrary, model);
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
 		assertEquals(false, validator.isValid());
 		assertEquals(true, validator.getMessages().contains(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION));
 	}
@@ -109,7 +111,7 @@ public class CQLIncludeLibraryValidatorTest {
 		function.setName("duplicate");
 		model.getCqlFunctions().add(function);
 		includedLibrary.setAliasName("duplicate");
-		validator.validate(includedLibrary, model);
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
 		assertEquals(false, validator.isValid());
 		assertEquals(true, validator.getMessages().contains(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION));
 	}
@@ -122,7 +124,7 @@ public class CQLIncludeLibraryValidatorTest {
 		parameter.setName("duplicate");
 		model.getCqlParameters().add(parameter);
 		includedLibrary.setAliasName("duplicate");
-		validator.validate(includedLibrary, model);
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
 		assertEquals(false, validator.isValid());
 		assertEquals(true, validator.getMessages().contains(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION));
 	}
@@ -135,7 +137,7 @@ public class CQLIncludeLibraryValidatorTest {
 		valueset.setName("duplicate");
 		model.getValueSetList().add(valueset);
 		includedLibrary.setAliasName("duplicate");
-		validator.validate(includedLibrary, model);
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
 		assertEquals(false, validator.isValid());
 		assertEquals(true, validator.getMessages().contains(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION));
 	}
@@ -148,7 +150,7 @@ public class CQLIncludeLibraryValidatorTest {
 		code.setDisplayName("duplicate");
 		model.getCodeList().add(code);
 		includedLibrary.setAliasName("duplicate");
-		validator.validate(includedLibrary, model);
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
 		assertEquals(false, validator.isValid());
 		assertEquals(true, validator.getMessages().contains(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION));
 	}
@@ -160,7 +162,7 @@ public class CQLIncludeLibraryValidatorTest {
 		CQLModel model = new CQLModel();
 		model.setLibraryName("duplicate");
 		includedLibrary.setAliasName("duplicate");
-		validator.validate(includedLibrary, model);
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
 		assertEquals(false, validator.isValid());
 		assertEquals(true, validator.getMessages().contains(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION));
 	}
@@ -178,28 +180,41 @@ public class CQLIncludeLibraryValidatorTest {
 		CQLIncludeLibraryValidator validator = new CQLIncludeLibraryValidator();
 		CQLModel model = new CQLModel();
 		includedLibrary.setAliasName(name);
-		validator.validate(includedLibrary, model);
-		assertEquals(false, validator.isValid());
-		assertEquals(true, validator.getMessages().contains(DUPLICATE_CQL_KEYWORD));
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
+		assertFalse(validator.isValid());
+		assertTrue(validator.getMessages().contains(DUPLICATE_CQL_KEYWORD));
 	}
 
-	public void testValidateModelTypes(String name) {
+	@Test
+	public void testValidateModelTypes() {
+		CQLIncludeLibrary includedLibrary = new CQLIncludeLibrary();
 		CQLIncludeLibraryValidator validator = new CQLIncludeLibraryValidator();
-		//Both QDM
-		validator.validateModelTypes(MeasureDetailsUtil.QDM, "QDM");
-		assertTrue(validator.isValid());
+		CQLModel model = new CQLModel();
+		includedLibrary.setAliasName("test");
+		includedLibrary.setLibraryModelType(MeasureDetailsUtil.QDM);
 
-		//QDM FHIR mismatch
-		validator.validateModelTypes(MeasureDetailsUtil.QDM, "FHIR");
+		//both model types same, no error
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
+		assertTrue(validator.isValid());
+		assertEquals(validator.getMessages().size(), 0);
+
+		//models don't match, should give error
+		validator = new CQLIncludeLibraryValidator();
+		includedLibrary.setLibraryModelType(MeasureDetailsUtil.QDM);
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.FHIR);
+		assertFalse(validator.isValid());
+		assertTrue(validator.getMessages().contains("Only FHIR library items may be added to FHIR measures."));
+
+		validator = new CQLIncludeLibraryValidator();
+		includedLibrary.setLibraryModelType(MeasureDetailsUtil.FHIR);
+		validator.validate(includedLibrary, model, MeasureDetailsUtil.QDM);
 		assertFalse(validator.isValid());
 		assertTrue(validator.getMessages().contains("Only QDM library items may be added to QDM measures."));
 
-		validator.validateModelTypes(MeasureDetailsUtil.FHIR, "FHIR");
+		//for pre-cql, null model types
+		validator = new CQLIncludeLibraryValidator();
+		includedLibrary.setLibraryModelType(null);
+		validator.validate(includedLibrary, model, null);
 		assertTrue(validator.isValid());
-
-		//FHIR QDM mismatch
-		validator.validateModelTypes(MeasureDetailsUtil.FHIR, "QDM");
-		assertFalse(validator.isValid());
-		assertTrue(validator.getMessages().contains("Only FHIR library items may be added to FHIR measures."));
 	}
 }

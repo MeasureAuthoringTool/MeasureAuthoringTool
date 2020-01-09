@@ -238,12 +238,12 @@ public class MeasureLibraryResultTable {
             sb.appendHtmlConstant("<div class=\"pull-left\">")
                     .appendHtmlConstant(editState)
                     .appendHtmlConstant("<button id='div1' type=\"button\" title=\""
-                            + object.getName() + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>")
+                            + SafeHtmlUtils.htmlEscape(object.getName()) + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>")
                     .appendHtmlConstant("</div>");
 
         }
         sb.appendHtmlConstant("<div class=\"pull-left\" title=\" Click to open "
-                + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</div>");
+                + SafeHtmlUtils.htmlEscape(object.getName()) + "\" tabindex=\"0\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</div>");
         return sb.toSafeHtml();
     }
 

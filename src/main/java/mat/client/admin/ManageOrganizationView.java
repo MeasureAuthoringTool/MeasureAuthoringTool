@@ -116,7 +116,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
 				safeHtmlBuilder.appendHtmlConstant("<a href=\"javascript:void(0);\" "
 						+ " style=\"text-decoration:none\" "
-						+ "title=\"Organization: " + object.getOrgName() + "\" >");
+						+ "title=\"Organization: " + SafeHtmlUtils.htmlEscape(object.getOrgName()) + "\" >");
 				safeHtmlBuilder.appendEscaped(object.getOrgName());
 				safeHtmlBuilder.appendHtmlConstant("</a>");
 				return safeHtmlBuilder.toSafeHtml();

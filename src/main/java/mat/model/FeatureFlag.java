@@ -46,7 +46,7 @@ public class FeatureFlag implements java.io.Serializable {
     }
 
     @Column(name = "FLAG_ON")
-    public boolean getFlagOn() {
+    public boolean isFlagOn() {
         return flagOn;
     }
 

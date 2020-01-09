@@ -1,15 +1,12 @@
 package mat.server;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-
 import mat.client.featureFlag.service.FeatureFlagService;
 import mat.dao.FeatureFlagDAO;
 import mat.model.FeatureFlag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,18 +16,14 @@ public class FeatureFlagServiceImpl extends SpringRemoteServiceServlet implement
 
 	private static final long serialVersionUID = 1L;
 
-	Map<String, Boolean> featureFlagMap = new HashMap<>();
-
 	@Autowired
 	private FeatureFlagDAO featureFlagDAO;
 
 	@Override
-	@Cacheable("featureFlags")
 	public Map<String, Boolean> findFeatureFlags() {
 		List<FeatureFlag> featureFlagList = featureFlagDAO.findAllFeatureFlags();
-		featureFlagMap  = featureFlagList.stream()
-				.collect(Collectors.toMap(f -> f.getFlagName(), v -> v.getFlagOn()));
-		return featureFlagMap;
+		return featureFlagList.stream()
+				.collect(Collectors.toMap(FeatureFlag::getFlagName, FeatureFlag::isFlagOn));
 	}
 
 }

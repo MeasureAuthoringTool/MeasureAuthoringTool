@@ -1,5 +1,8 @@
 package mat.client.shared;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import mat.model.LockedUserInfo;
+import mat.model.cql.CQLLibraryDataSetObject;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.junit.Test;
@@ -7,10 +10,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import mat.model.LockedUserInfo;
-import mat.model.cql.CQLLibraryDataSetObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -194,7 +193,7 @@ public class CQLibraryGridToolbarTest {
     @Test
     public void testViewNotEditable() {
         CQLLibraryDataSetObject selectedItem = new CQLLibraryDataSetObject();
-
+        selectedItem.setFhirEditOrViewable(true);
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.EYE));
@@ -213,6 +212,7 @@ public class CQLibraryGridToolbarTest {
         selectedItem.setLockedUserInfo(new LockedUserInfo());
         selectedItem.getLockedUserInfo().setEmailAddress("lockerby@gmail.com");
         selectedItem.setLocked(true);
+        selectedItem.setFhirEditOrViewable(true);
         MatContext.get().setFeatureFlags(featureFlagMap);
 
         toolbar.updateOnSelectionChanged(selectedItem);
@@ -232,6 +232,7 @@ public class CQLibraryGridToolbarTest {
 
         MatContext.get().setFeatureFlags(featureFlagMap);
         selectedItem.setEditable(true);
+        selectedItem.setFhirEditOrViewable(true);
 
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));

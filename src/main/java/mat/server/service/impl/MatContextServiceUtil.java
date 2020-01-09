@@ -29,7 +29,7 @@ public class MatContextServiceUtil implements InitializingBean {
     private static MatContextServiceUtil instance;
 
     @Autowired
-    private FeatureFlagService featureFlag;
+    private FeatureFlagService featureFlagService;
 
     @Override
     public void afterPropertiesSet() {
@@ -81,9 +81,7 @@ public class MatContextServiceUtil implements InitializingBean {
         if (shareLevel != null) {
             isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
         }
-        if(isMeasureModelEditable(measure)) {
-            isEditable = (isOwner || isSuperUser || isSharedToEdit);
-        }
+        isEditable = (isOwner || isSuperUser || isSharedToEdit);
 
         if (checkForDraft) {
             isEditable = isEditable && dto.isDraft();
@@ -153,10 +151,7 @@ public class MatContextServiceUtil implements InitializingBean {
         if (shareLevel != null) {
             isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
         }
-
-        if(isCqlLibraryModelEditable(cqlLibrary)) {
-            isEditable = (isOwner || isSuperUser || isSharedToEdit);
-        }
+        isEditable = (isOwner || isSuperUser || isSharedToEdit);
 
         if (checkForDraft) {
             isEditable = isEditable && dto.isDraft();
@@ -228,11 +223,11 @@ public class MatContextServiceUtil implements InitializingBean {
         }
     }
 
-    public boolean isMeasureModelEditable(Measure measure) {
-        return featureFlag.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || MeasureDetailsUtil.QDM.equals(measure.getMeasureModel());
+    public boolean isMeasureModelEditable(String modelType) {
+        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || !MeasureDetailsUtil.FHIR.equals(modelType);
     }
 
-    public boolean isCqlLibraryModelEditable(CQLLibrary cqlLibrary) {
-        return featureFlag.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || MeasureDetailsUtil.QDM.equals(cqlLibrary.getLibraryModelType());
+    public boolean isCqlLibraryModelEditable(String modelType) {
+        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || !MeasureDetailsUtil.FHIR.equals(modelType);
     }
 }

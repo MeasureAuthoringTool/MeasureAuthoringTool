@@ -179,7 +179,7 @@ public class Application extends WebSecurityConfigurerAdapter {
         return cacheManager;
     }
 
-    @Scheduled(fixedRateString = "${mat.cache.expiry.time}")          // At every 5th min
+    @Scheduled(fixedRateString = "${mat.cache.expiry.time}")
     public void clearCacheSchedule(){
         cacheManager().getCache("featureFlags").clear();
     }

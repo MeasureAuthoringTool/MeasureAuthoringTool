@@ -1,5 +1,6 @@
 package mat.server;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -7,6 +8,10 @@ import javax.sql.DataSource;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +20,8 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -34,6 +41,8 @@ import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 @PropertySource("classpath:MAT.properties")
 @EnableTransactionManagement
 @EnableWebSecurity
+@EnableCaching
+@EnableScheduling
 public class Application extends WebSecurityConfigurerAdapter {
 
     @Value("${ALGORITHM:}")
@@ -161,5 +170,17 @@ public class Application extends WebSecurityConfigurerAdapter {
                         .build();
 
         return new InMemoryUserDetailsManager(user);
+    }
+
+    @Bean
+    public CacheManager cacheManager() {
+        final SimpleCacheManager cacheManager = new SimpleCacheManager();
+        cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("featureFlags")));
+        return cacheManager;
+    }
+
+    @Scheduled(fixedRateString = "${mat.cache.expiry.time}")
+    public void clearCacheSchedule(){
+        cacheManager().getCache("featureFlags").clear();
     }
 }

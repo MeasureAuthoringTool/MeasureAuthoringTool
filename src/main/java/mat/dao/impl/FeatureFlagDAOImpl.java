@@ -6,6 +6,7 @@ import mat.model.FeatureFlag;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
@@ -19,6 +20,7 @@ public class FeatureFlagDAOImpl extends GenericDAO<FeatureFlag, String> implemen
     }
 
     @Override
+    @Cacheable("featureFlags")
     public List<FeatureFlag> findAllFeatureFlags() {
         final List<FeatureFlag> dataTypeList = find();
         return CollectionUtils.isNotEmpty(dataTypeList) ? dataTypeList : Collections.EMPTY_LIST;

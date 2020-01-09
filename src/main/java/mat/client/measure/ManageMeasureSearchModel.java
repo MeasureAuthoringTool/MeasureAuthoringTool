@@ -7,8 +7,11 @@ import java.util.Objects;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResults;
+import mat.client.util.FeatureFlagConstant;
 import mat.model.LockedUserInfo;
+import mat.shared.model.util.MeasureDetailsUtil;
 
 /**
  * The Class ManageMeasureSearchModel.
@@ -73,6 +76,8 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
         private boolean isValidatable;
 
         private int clickCount = 0;
+
+        private boolean isFhirEditorViewable;
 
         public Result() {
         }
@@ -717,6 +722,15 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
         public void incrementClickCount() {
             this.clickCount++;
         }
+
+        public void setFhirEditOrViewable(boolean isFhirEditorViewable) {
+            this.isFhirEditorViewable = isFhirEditorViewable;
+        }
+
+        public boolean isFhirEditOrViewable() {
+            return this.isFhirEditorViewable;
+        }
+
     }
 
     /**

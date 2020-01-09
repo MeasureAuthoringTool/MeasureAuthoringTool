@@ -24,9 +24,6 @@
 	<bean id="loginService" class="mat.server.service.impl.LoginCredentialServiceImpl">	    
 	</bean>
 	
-	<bean id="featureFlag" class="mat.server.FeatureFlagServiceImpl">	    
-	</bean>
-	
     <bean id="userService" class="mat.server.service.impl.UserServiceImpl">
         <property name="accessibilityUrl" value="${mat.accessibilitypolicy.url}"/>
 	    <property name="termsOfUseUrl" value="${mat.termsofuse.url}"/>

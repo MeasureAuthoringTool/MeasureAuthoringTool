@@ -113,7 +113,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
         fhirValidationButton.setEnabled(selectedItem.isValidatable());
 
-        if (selectedItem.isEditable()) {
+        if (selectedItem.isEditable() && selectedItem.isFhirEditOrViewable()) {
             if (selectedItem.isMeasureLocked()) {
                 String emailAddress = selectedItem.getLockedUserInfo().getEmailAddress();
                 editOrViewButton.setTitle("Measure in use by " + emailAddress);
@@ -123,11 +123,13 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
                 editOrViewButton.setIcon(IconType.PENCIL);
                 editOrViewButton.setEnabled(true);
             }
-        } else {
+        } else if (!selectedItem.isEditable() && selectedItem.isFhirEditOrViewable()) {
             editOrViewButton.setText(VIEW_TEXT);
             editOrViewButton.setEnabled(true);
             editOrViewButton.setTitle("Read-Only");
             editOrViewButton.setIcon(IconType.EYE);
+        } else {
+            editOrViewButton.setEnabled(false);
         }
 
         shareButton.setEnabled(selectedItem.isSharable());

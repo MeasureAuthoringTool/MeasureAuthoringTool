@@ -230,7 +230,7 @@ public class MatContext implements IsSerializable {
 
     private Map<String, String> expressionToReturnTypeMap = new HashMap<>();
 
-    private Map<String, Boolean> featureFlagMap;
+	private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
     public void clearDVIMessages() {
         if (qdsView != null) {

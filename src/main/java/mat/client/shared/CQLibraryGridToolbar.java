@@ -1,6 +1,5 @@
 package mat.client.shared;
 
-
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -135,7 +134,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         historyButton.setIcon(IconType.CLOCK_O);
         historyButton.setTitle(CLICK_TO_VIEW_HISTORY_TITLE);
 
-        if (selectedItem.isEditable()) {
+        if (selectedItem.isEditable() && selectedItem.isFhirEditOrViewable()) {
             if (selectedItem.isLocked()) {
                 editOrViewButton.setText(EDIT_TEXT);
                 editOrViewButton.setEnabled(false);
@@ -147,11 +146,13 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
                 editOrViewButton.setIcon(IconType.PENCIL);
                 editOrViewButton.setTitle(CLICK_TO_EDIT_TITLE);
             }
-        } else {
+        } else if (!selectedItem.isEditable() && selectedItem.isFhirEditOrViewable()) {
             editOrViewButton.setText(VIEW_TEXT);
             editOrViewButton.setEnabled(true);
             editOrViewButton.setIcon(IconType.EYE);
             editOrViewButton.setTitle("Read-Only");
+        } else {
+            editOrViewButton.setEnabled(false);
         }
 
         shareButton.setText(SHARE_TEXT);

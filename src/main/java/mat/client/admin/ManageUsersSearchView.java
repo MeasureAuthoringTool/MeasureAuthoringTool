@@ -121,7 +121,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
 				safeHtmlBuilder.appendHtmlConstant("<a href=\"javascript:void(0);\" "
 						+ "style=\"text-decoration:none\" "
-						+ "title=\"Name: " + object.getFirstName() + " " + object.getLastName() + "\" >");
+						+ "title=\"Name: " + SafeHtmlUtils.htmlEscape(object.getFirstName() + " " + object.getLastName()) + "\" >");
 				safeHtmlBuilder.appendEscaped(object.getFirstName() + " " + object.getLastName());
 				safeHtmlBuilder.appendHtmlConstant("</a>");
 				return safeHtmlBuilder.toSafeHtml();

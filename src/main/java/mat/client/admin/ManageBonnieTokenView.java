@@ -125,7 +125,8 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		Column<Result, SafeHtml> nameColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
-				return CellTableUtility.getColumnToolTip(object.getFirstName() + " " + object.getLastName(), "Name: " + object.getFirstName() + " " + object.getLastName());
+				return CellTableUtility.getColumnToolTip(SafeHtmlUtils.htmlEscape(object.getFirstName() + " " + object.getLastName()),
+						"Name: " + SafeHtmlUtils.htmlEscape(object.getFirstName() + " " + object.getLastName()));
 			}
 		};
 		cellTable.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));			

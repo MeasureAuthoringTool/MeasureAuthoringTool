@@ -29,7 +29,7 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = DaoTestConfig.class)
-public class CQLLibraryDAOImplTest {
+public class CQLLibraryDAOTest {
 
     @Autowired
     private CQLLibraryDAO cqlLibraryDAO;

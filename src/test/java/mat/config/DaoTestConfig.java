@@ -16,21 +16,21 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@ComponentScan({"mat.dao", "mat.dao.impl", "mat.dao.clause", "mat.dao.clause.impl"})
+@ComponentScan({"mat.dao"})
 @PropertySource("classpath:mat-test.properties")
 @EnableTransactionManagement
 public class DaoTestConfig {
 
-    @Value("${spring.datasource.driver-class-name}")
+    @Value("${datasource.driver-class-name}")
     private String driverClass;
 
-    @Value("${spring.datasource.url}")
+    @Value("${datasource.url}")
     private String dbUrl;
 
-    @Value("${spring.datasource.username}")
+    @Value("${datasource.username}")
     private String dbUser;
 
-    @Value("${spring.datasource.password}")
+    @Value("${datasource.password}")
     private String dbPassword;
 
     @Bean

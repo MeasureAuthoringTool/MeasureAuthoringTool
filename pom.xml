@@ -605,6 +605,10 @@
                     <argLine>
                         --illegal-access=permit
                     </argLine>
+                    <excludes>
+                        <!--run DAO tests manually -->
+                        <exclude>**/*DAOTest.java</exclude>
+                    </excludes>
                 </configuration>
                 <dependencies>
                     <dependency>

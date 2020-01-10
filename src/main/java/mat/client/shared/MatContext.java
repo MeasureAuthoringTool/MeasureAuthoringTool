@@ -230,7 +230,7 @@ public class MatContext implements IsSerializable {
 
     private Map<String, String> expressionToReturnTypeMap = new HashMap<>();
 
-    private Map<String, Boolean> featureFlagMap;
+	private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
     public void clearDVIMessages() {
         if (qdsView != null) {
@@ -479,6 +479,14 @@ public class MatContext implements IsSerializable {
     public String getCurrentMeasureName() {
         if (currentMeasureInfo != null) {
             return currentMeasureInfo.getMeasureName();
+        } else {
+            return "";
+        }
+    }
+
+    public String getCurrentMeasureModel() {
+        if (currentMeasureInfo != null) {
+            return currentMeasureInfo.getMeasureModel();
         } else {
             return "";
         }
@@ -1181,6 +1189,14 @@ public class MatContext implements IsSerializable {
     public String getCurrentCQLLibraryeName() {
         if (currentLibraryInfo != null) {
             return currentLibraryInfo.getLibraryName();
+        } else {
+            return "";
+        }
+    }
+
+    public String getCurrentCQLLibraryModelType() {
+        if (currentLibraryInfo != null) {
+            return currentLibraryInfo.getLibraryModelType();
         } else {
             return "";
         }

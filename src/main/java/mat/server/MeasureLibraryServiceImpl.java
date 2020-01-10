@@ -958,6 +958,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setClonable(isClonable);
 
         detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, dto.getMeasureId()));
+        detail.setFhirEditOrViewable(MatContextServiceUtil.get().isMeasureModelEditable(dto.getMeasureModel()));
         detail.setExportable(dto.isPackaged());
         detail.setFhirConvertible(MatContextServiceUtil.get().isMeasureConvertible(measure));
         detail.setHqmfReleaseVersion(measure.getReleaseVersion());
@@ -1122,6 +1123,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setMeasureLocked(isLocked);
         boolean isEditable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId());
         detail.setEditable(isEditable);
+        detail.setFhirEditOrViewable(MatContextServiceUtil.get().isMeasureModelEditable(measure.getMeasureModel()));
         detail.setPatientBased(measure.getPatientBased());
         boolean isOwner = measure.getOwner().getId().equals(LoggedInUserUtil.getLoggedInUser());
         String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
@@ -5476,16 +5478,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     @Override
     public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
-                                                            CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException {
+        CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException {
 
         SaveUpdateCQLResult result = null;
+        Measure measure = measureDAO.find(measureId);
         if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 
             MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
             if (xmlModel != null) {
                 int numberOfAssociations = cqlService.countNumberOfAssociation(measureId);
                 if (numberOfAssociations < 10) {
-                    result = getCqlService().saveAndModifyIncludeLibrayInCQLLookUp(xmlModel.getXml(), toBeModifiedObj, currentObj, incLibraryList);
+                    result = getCqlService().saveAndModifyIncludeLibrayInCQLLookUp(xmlModel.getXml(),
+                            toBeModifiedObj, currentObj, incLibraryList, measure.getMeasureModel());
 
                     if (result.isSuccess()) {
                         XmlProcessor processor = new XmlProcessor(xmlModel.getXml());

@@ -502,6 +502,10 @@
             <version>0.8.13</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -604,6 +608,10 @@
                     <argLine>
                         --illegal-access=permit
                     </argLine>
+                    <excludes>
+                        <!--run DAO tests manually -->
+                        <exclude>**/*DAOTest.java</exclude>
+                    </excludes>
                 </configuration>
                 <dependencies>
                     <dependency>

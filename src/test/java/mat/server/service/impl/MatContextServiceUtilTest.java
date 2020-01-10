@@ -1,14 +1,35 @@
 package mat.server.service.impl;
 
+import mat.client.featureFlag.service.FeatureFlagService;
+import mat.model.clause.CQLLibrary;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import mat.model.clause.Measure;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+
+@ExtendWith(MockitoExtension.class)
 public class MatContextServiceUtilTest {
 
     private MatContextServiceUtil util = new MatContextServiceUtil();
     private Measure measure = new Measure();
+    private CQLLibrary cqlLibrary = new CQLLibrary();
+    private Map<String, Boolean> featureFlagMap = new HashMap<>();
+
+    @Mock
+    FeatureFlagService featureFlagService;
+
+    @InjectMocks
+    MatContextServiceUtil matContextServiceUtil;
 
     @Test
     public void testDefaultMeasureNotConvertible() {
@@ -55,4 +76,63 @@ public class MatContextServiceUtilTest {
         Assertions.assertFalse(util.isMeasureConvertible(measure));
     }
 
+    @Test
+    public  void testIsMeasureEditable() {
+        featureFlagMap.put("FhirEdit", true);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+
+        measure.setMeasureModel("QDM");
+
+        assertEquals(true, matContextServiceUtil.isMeasureModelEditable(measure.getMeasureModel()));
+    }
+
+    @Test
+    public  void testIsMeasureEditableFail() {
+        featureFlagMap.put("FhirEdit", false);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+
+        measure.setMeasureModel("QDM");
+
+        assertEquals(true, matContextServiceUtil.isMeasureModelEditable(measure.getMeasureModel()));
+    }
+
+    @Test
+    public  void testIsMeasureEditableNullCheck() {
+        featureFlagMap.put("FhirEdit", false);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+
+        measure.setMeasureModel("");
+
+        assertEquals(true, matContextServiceUtil.isMeasureModelEditable(measure.getMeasureModel()));
+    }
+
+    @Test
+    public  void testIsCqlLibraryEditable() {
+        featureFlagMap.put("FhirEdit", true);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+
+        cqlLibrary.setLibraryModelType("QDM");
+
+        assertEquals(true, matContextServiceUtil.isCqlLibraryModelEditable(cqlLibrary.getLibraryModelType()));
+    }
+
+    @Test
+    public  void testIsCqlLibraryEditableFail() {
+        featureFlagMap.put("FhirEdit", false);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+
+        cqlLibrary.setLibraryModelType("QDM");
+
+        assertEquals(true, matContextServiceUtil.isCqlLibraryModelEditable(cqlLibrary.getLibraryModelType()));
+    }
+
+    @Test
+    public  void testIsCqlLibraryEditableNullCheck() {
+        featureFlagMap.put("FhirEdit", false);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+
+        cqlLibrary.setLibraryModelType("");
+
+        assertEquals(true, matContextServiceUtil.isCqlLibraryModelEditable(cqlLibrary.getLibraryModelType()));
+    }
 }

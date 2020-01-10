@@ -197,13 +197,13 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().getComponentsListBox().addKeyPressHandler(event -> listBoxKeyPress(cqlWorkspaceView.getCQLLeftNavBarPanelView().getComponentsListBox(), event));
 	}
 
-	private void addGeneralInfoEventHandlers() {		
+	private void addGeneralInfoEventHandlers() {
 		cqlWorkspaceView.getCqlGeneralInformationView().getSaveButton().addClickHandler(event -> saveCQLGeneralInformation());
 		cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().addKeyUpHandler(event -> resetMessagesAndSetPageDirty(true));
 		cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().addKeyUpHandler(event -> keyUpEvent());
 		cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().addBlurHandler(event -> generalCommentBlurEvent());
 	}
-	
+
 	private void saveCQLGeneralInformation() {
 		if(hasEditPermissions()) {
 			cqlWorkspaceView.resetMessageDisplay();
@@ -212,7 +212,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			boolean isvalid = CQLGeneralInformationUtility.validateGeneralInformationSection(cqlWorkspaceView.getCqlGeneralInformationView(), messagePanel, libraryName, comments);
 			if(isvalid) {
 				saveCQLGeneralInformationAsync(libraryName, comments);
-			}		
+			}
 		}
 	}
 
@@ -233,9 +233,9 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						cqlLibraryComment = result.getCqlModel().getLibraryComment();
 						cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setText(cqlLibraryComment);
 						cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setCursorPos(0);
-						
+
 						displayMsgAndResetDirtyPostSave(MatContext.get().getCurrentMeasureName());
-						
+
 					} else {
 						if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
 							isLibraryNameExists = true;
@@ -300,6 +300,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
 			incLibrary.setQdmVersion(cqlLibraryDataSetObject.getQdmVersion());
 			incLibrary.setSetId(cqlLibraryDataSetObject.getCqlSetId());
+			incLibrary.setLibraryModelType(cqlLibraryDataSetObject.getLibraryModelType());
+
 			if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId() == null) {
 				showSearchingBusy(true);
 				MatContext.get().getMeasureService().saveIncludeLibrayInCQLLookUp(
@@ -323,7 +325,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 									if (result.isSuccess()) {
 										cqlWorkspaceView.resetMessageDisplay();
 										setIsPageDirty(false);
-										
+
 										List<CQLIncludeLibrary> includedLibrariesForViewing = result.getCqlModel().getCqlIncludeLibrarys();
 										includedLibrariesForViewing.removeIf(l -> l.getCqlLibraryId() == null || l.getCqlLibraryId().isEmpty());
 										cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewIncludeLibrarys(filterComponentMeasuresFromIncludedLibraries(includedLibrariesForViewing));
@@ -425,7 +427,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());	
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 
 			@Override
@@ -539,7 +541,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						showSearchingBusy(false);
 						if (!result.getCqlErrors().isEmpty()) {
 							cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
-						} 
+						}
 					}
 				});
 			}
@@ -632,17 +634,17 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setText(parameterName.trim());
 		}
 	}
-	
+
 	@Override
 	protected void saveCQLFile() {
-		
+
 		if(hasEditPermissions()) {
-			
-			String currentCQL = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().getText();		
+
+			String currentCQL = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().getText();
 			MatContext.get().getMeasureService().saveCQLFile(MatContext.get().getCurrentMeasureId(), currentCQL, new AsyncCallback<SaveUpdateCQLResult>() {
-	
+
 				@Override
-				public void onFailure(Throwable caught) {				
+				public void onFailure(Throwable caught) {
 				}
 				@Override
 				public void onSuccess(SaveUpdateCQLResult result) {
@@ -742,7 +744,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 								cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().setAnnotations();
 								cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().redisplay();
 							} else {
-								if (result.getFailureReason() == SaveUpdateCQLResult.NAME_NOT_UNIQUE) { 
+								if (result.getFailureReason() == SaveUpdateCQLResult.NAME_NOT_UNIQUE) {
 									displayErrorMessage(ERROR_DUPLICATE_IDENTIFIER_NAME, definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
 								} else if (result.getFailureReason() == SaveUpdateCQLResult.NODE_NOT_FOUND) {
 									displayErrorMessage(UNABLE_TO_FIND_NODE_TO_MODIFY, definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
@@ -753,11 +755,11 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 								}
 							}
 						}
-						
+
 						showSearchingBusy(false);
 						if (!result.getCqlErrors().isEmpty()) {
 							cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
-						} 
+						}
 					}
 				});
 			}
@@ -829,7 +831,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	private void getAllIncludeLibraryList(final String searchText) {
 		messagePanel.clearAlerts();
 		showSearchingBusy(true);
-		MatContext.get().getCQLLibraryService().searchForIncludes(setId, cqlLibraryName, searchText,
+		String modelType = MatContext.get().getCurrentMeasureModel();
+		MatContext.get().getCQLLibraryService().searchForIncludes(setId, cqlLibraryName, searchText, modelType,
 				new AsyncCallback<SaveCQLLibraryResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -877,7 +880,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				handleCQLData(result);
 				showSearchingBusy(false);
 			}
-		});		
+		});
 	}
 
 	private void getComponentMeasureData() {
@@ -914,7 +917,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						result.getCqlModel().getQdmVersion(), "QDM", cqlLibraryComment);
 			}
 
-			List<CQLQualityDataSetDTO> appliedValueSetAndCodeList = result.getCqlModel().getAllValueSetAndCodeList();			
+			List<CQLQualityDataSetDTO> appliedValueSetAndCodeList = result.getCqlModel().getAllValueSetAndCodeList();
 			MatContext.get().setValuesets(appliedValueSetAndCodeList);
 			MatContext.get().setCQLModel(result.getCqlModel());
 			appliedValueSetTableList.clear();
@@ -925,41 +928,41 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 					continue;
 				appliedValueSetTableList.add(dto);
 			}
-			
+
 			if (result.getCqlModel().getCodeList() != null) {
 				List<CQLCode> codesToView = result.getCqlModel().getCodeList();
 				codesToView = codesToView.stream().filter(c -> c.getCodeIdentifier() != null && !c.getCodeIdentifier().isEmpty()).collect(Collectors.toList());
 				appliedCodeTableList.addAll(codesToView);
 			}
-			
+
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().setAppliedQdmTableList(appliedValueSetTableList);
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().setAppliedCodeTableList(appliedCodeTableList);
-			
+
 			if (result.getCqlModel().getDefinitionList() != null) {
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().updateDefineMap();
 				MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
-			} 
-			
+			}
+
 			if (result.getCqlModel().getCqlParameters() != null) {
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewParameterList(result.getCqlModel().getCqlParameters());
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().updateParamMap();
 				MatContext.get().setParameters(getParameterList(result.getCqlModel().getCqlParameters()));
 			}
-			
+
 			if (result.getCqlModel().getCqlFunctions() != null) {
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewFunctions(result.getCqlModel().getCqlFunctions());
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().updateFunctionMap();
 				MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
-			} 
-			
+			}
+
 			MatContext.get().setExpressionToReturnTypeMap(result.getUsedCQLArtifacts().getExpressionToReturnTypeMap());
-			
+
 			List<CQLIncludeLibrary> includedLibrariesForViewing = result.getCqlModel().getCqlIncludeLibrarys();
 			if (includedLibrariesForViewing != null) {
 				includedLibrariesForViewing.removeIf(l -> l.getCqlLibraryId() == null || l.getCqlLibraryId().isEmpty());
@@ -968,9 +971,9 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().udpateIncludeLibraryMap();
 				MatContext.get().setIncludedValues(result);
 			}
-			
+
 			buildOrClearErrorPanel();
-			
+
 		} else {
 			Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 		}
@@ -1157,7 +1160,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 							if (result.getFunction() != null) {
 								cqlWorkspaceView.getCQLFunctionsView().createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>(), hasEditPermissions());
 							}
-						} else if (result.getFailureReason() == SaveUpdateCQLResult.NODE_NOT_FOUND) { 
+						} else if (result.getFailureReason() == SaveUpdateCQLResult.NODE_NOT_FOUND) {
 							displayErrorMessage(UNABLE_TO_FIND_NODE_TO_MODIFY, functionName, cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea());
 						} else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
 							displayErrorMessage(UNAUTHORIZED_DELETE_OPERATION, functionName, cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea());
@@ -1339,7 +1342,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				if (result.isSuccess()) {
 					messagePanel.getSuccessMessageAlert().createAlert(buildRemovedSuccessfullyMessage(CODE, result.getCqlCode().getCodeOID()));
 					cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
-					appliedCodeTableList.clear();				
+					appliedCodeTableList.clear();
 					List<CQLCode> codesToView = result.getCqlCodeList();
 					codesToView = codesToView.stream().filter(c -> c.getCodeIdentifier() != null && !c.getCodeIdentifier().isEmpty()).collect(Collectors.toList());
 					appliedCodeTableList.addAll(codesToView);
@@ -1426,7 +1429,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				showSearchingBusy(false);
 				messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFULLY_VALUESET_PASTE);
 			}
-			
+
 			cqlWorkspaceView.getValueSetView().clearSelectedCheckBoxes();
 			MatContext.get().getGlobalCopyPaste().getCopiedValueSetList().clear();
 		} else {
@@ -1536,7 +1539,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				showSearchingBusy(false);
 				messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFULLY_PASTED_CODES_IN_MEASURE);
 			}
-			
+
 			cqlWorkspaceView.getCodesView().clearSelectedCheckBoxes();
 			MatContext.get().getGlobalCopyPaste().getCopiedCodeList().clear();
 		} else {
@@ -1570,7 +1573,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFUL_MODIFY_APPLIED_CODE);
 						cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
 						appliedCodeTableList.clear();
-						List<CQLCode> codesToView = result.getCqlModel().getCodeList();				
+						List<CQLCode> codesToView = result.getCqlModel().getCodeList();
 						codesToView = codesToView.stream().filter(c -> c.getCodeIdentifier() != null && !c.getCodeIdentifier().isEmpty()).collect(Collectors.toList());
 						appliedCodeTableList.addAll(codesToView);
 						cqlWorkspaceView.getCodesView().buildCodesCellTable(appliedCodeTableList, hasEditPermissions());
@@ -1609,7 +1612,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						messagePanel.getSuccessMessageAlert().createAlert(getCodeSuccessMessage(cqlWorkspaceView.getCodesView().getCodeInput().getText()));
 						cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
 						appliedCodeTableList.clear();
-						List<CQLCode> codesToView = result.getCqlModel().getCodeList();				
+						List<CQLCode> codesToView = result.getCqlModel().getCodeList();
 						codesToView = codesToView.stream().filter(c -> c.getCodeIdentifier() != null && !c.getCodeIdentifier().isEmpty()).collect(Collectors.toList());
 						appliedCodeTableList.addAll(codesToView);
 						cqlWorkspaceView.getCQLLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
@@ -1636,7 +1639,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 					showSearchingBusy(false);
 				}
 			});
-		} 
+		}
 	}
 
 	@Override
@@ -1717,7 +1720,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			@Override
 			public void onFailure(final Throwable caught) {
 				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
-				messagePanel.getErrorMessageAlert().setVisible(true);				
+				messagePanel.getErrorMessageAlert().setVisible(true);
 				showSearchingBusy(false);
 			}
 
@@ -1726,8 +1729,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				if (result.isSuccess()) {
 					String valueSetName = EMPTY_STRING;
 
-					List<MatValueSet> matValueSets = result.getVsacResponse();					
-					if (matValueSets != null) {						
+					List<MatValueSet> matValueSets = result.getVsacResponse();
+					if (matValueSets != null) {
 						currentMatValueSet = matValueSets.get(0);
 						valueSetName = currentMatValueSet.getDisplayName();
 					}
@@ -1735,8 +1738,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 					cqlWorkspaceView.getValueSetView().getOIDInput().setTitle(oid);
 					cqlWorkspaceView.getValueSetView().getUserDefinedInput().setValue(valueSetName);
 					cqlWorkspaceView.getValueSetView().getUserDefinedInput().setTitle(valueSetName);
-					cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(true);					
-					boolean isVersionEnabled = isListValueNotSelected(cqlWorkspaceView.getValueSetView().getProgramListBox().getSelectedValue()) 
+					cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(true);
+					boolean isVersionEnabled = isListValueNotSelected(cqlWorkspaceView.getValueSetView().getProgramListBox().getSelectedValue())
 							&& isListValueNotSelected(cqlWorkspaceView.getValueSetView().getReleaseListBox().getSelectedValue());
 					cqlWorkspaceView.getValueSetView().getHelpBlock().setColor("transparent");
 					cqlWorkspaceView.getValueSetView().getHelpBlock().setText("Version selection is ".concat(Boolean.TRUE.equals(isVersionEnabled) ? "enabled" : "disabled"));
@@ -1792,7 +1795,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 							messagePanel.getSuccessMessageAlert().createAlert(message);
 							previousIsProgramReleaseBoxEnabled = isProgramReleaseBoxEnabled;
 							isProgramReleaseBoxEnabled = true;
-							loadProgramsAndReleases(); 
+							loadProgramsAndReleases();
 							getAppliedValuesetAndCodeList();
 						} else {
 							if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
@@ -1892,7 +1895,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				public void onSuccess(CQLQualityDataModelWrapper result) {
 					List<CQLQualityDataSetDTO> valuesets = result.getQualityDataDTO().stream().filter(v -> (
 							(v.getOriginalCodeListName() != null &&
-							!v.getOriginalCodeListName().isEmpty()) 
+							!v.getOriginalCodeListName().isEmpty())
 							|| (v.getCodeIdentifier() != null && !v.getCodeIdentifier().isEmpty()))
 					).collect(Collectors.toList());
 					setAppliedValueSetListInTable(valuesets);
@@ -1911,7 +1914,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		matValueSetTransferObject.setCqlQualityDataSetDTO(new CQLQualityDataSetDTO());
 		matValueSetTransferObject.getCqlQualityDataSetDTO().setOriginalCodeListName(originalCodeListName);
 		matValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentMatValueSet.getID());
-		
+
 		if (!cqlWorkspaceView.getValueSetView().getSuffixInput().getValue().isEmpty()) {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(cqlWorkspaceView.getValueSetView().getSuffixInput().getValue());
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setName(
@@ -1921,7 +1924,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		}
 
 		matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(EMPTY_STRING);
-		String releaseValue = cqlWorkspaceView.getValueSetView().getReleaseListBox().getSelectedValue(); 
+		String releaseValue = cqlWorkspaceView.getValueSetView().getReleaseListBox().getSelectedValue();
 		if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(releaseValue);
 		}
@@ -1953,7 +1956,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						aceEditor.clearAnnotations();
 						aceEditor.redisplay();
 						SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameErrorsMap().get(formattedName), SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor);
-						SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameWarningsMap().get(formattedName), SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor);								
+						SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameWarningsMap().get(formattedName), SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor);
 						aceEditor.setText(result.getCqlString());
 						aceEditor.setAnnotations();
 						aceEditor.gotoLine(1);
@@ -1981,9 +1984,9 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 	private void setAppliedValueSetListInTable(List<CQLQualityDataSetDTO> valueSetList) {
 		appliedValueSetTableList.clear();
-		
-		
-		
+
+
+
 		List<CQLQualityDataSetDTO> allValuesets = new ArrayList<>();
 		for (CQLQualityDataSetDTO dto : valueSetList) {
 			allValuesets.add(dto);
@@ -2044,7 +2047,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				if (selectedIndex != -1) {
 					final String selectedComponentObjectId = cqlWorkspaceView.getCQLLeftNavBarPanelView().getComponentsListBox().getValue(selectedIndex);
 					ComponentMeasureTabObject componentMeasureTabObject = cqlWorkspaceView.getCQLLeftNavBarPanelView().getComponentMap().get(selectedComponentObjectId);	;
-					if (componentMeasureTabObject != null) {	
+					if (componentMeasureTabObject != null) {
 
 						if(hasEditPermissions()) {
 							MatContext.get().getMeasureService().getUsedCQLArtifacts(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
@@ -2054,7 +2057,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 								}
 
 								@Override
-								public void onSuccess(GetUsedCQLArtifactsResult result) {		
+								public void onSuccess(GetUsedCQLArtifactsResult result) {
 									AceEditor editor = ((CQLMeasureWorkSpaceView) cqlWorkspaceView).getComponentView().getCQLAceEditor();
 									editor.clearAnnotations();
 									editor.removeAllMarkers();
@@ -2138,7 +2141,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		if (hasEditPermissions()) {
 			cqlWorkspaceView.getCQLParametersView().setWidgetReadOnly(true);
 		}
-		
+
 		SharedCQLWorkspaceUtility.setCQLWorkspaceExceptionAnnotations(currentParameter.getName(), result.getCqlErrorsPerExpression(), result.getCqlWarningsPerExpression(), curAceEditor);
 	}
 
@@ -2286,7 +2289,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		if (hasEditPermissions()) {
 			cqlWorkspaceView.getCQLFunctionsView().setWidgetReadOnly(true);
 		}
-		
+
 		SharedCQLWorkspaceUtility.setCQLWorkspaceExceptionAnnotations(currentFunction.getName(), result.getCqlErrorsPerExpression(), result.getCqlWarningsPerExpression(), curAceEditor);
 		if (result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null) {
 			cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap().get(currentFunction.getName()));
@@ -2342,7 +2345,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 												displayCQLInformation(selectedLibrary, result);
 												String formattedName = selectedLibrary.getCqlLibraryName() + "-" + selectedLibrary.getVersion();
 												List<CQLError> errorsForLibrary = usedArtifactResult.getLibraryNameErrorsMap().get(formattedName);
-												List<CQLError> warningsForLibrary = usedArtifactResult.getLibraryNameWarningsMap().get(formattedName);											
+												List<CQLError> warningsForLibrary = usedArtifactResult.getLibraryNameWarningsMap().get(formattedName);
 												SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(errorsForLibrary, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, cqlWorkspaceView.getIncludeView().getViewCQLEditor());
 												SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(warningsForLibrary, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, cqlWorkspaceView.getIncludeView().getViewCQLEditor());
 												cqlWorkspaceView.getIncludeView().getViewCQLEditor().setAnnotations();
@@ -2425,7 +2428,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			editIncludedLibraryDialogBox.getErrorMessageAlert().createAlert(NO_LIBRARY_TO_REPLACE);
 		}
 	}
-	
+
 	private void includeViewSaveModifyClicked() {
 		setIsPageDirty(false);
 		messagePanel.getErrorMessageAlert().clearAlert();
@@ -2459,14 +2462,14 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		}
 	}
 
-	private void valueSetViewCancelQDMClicked() { 
+	private void valueSetViewCancelQDMClicked() {
 		cqlWorkspaceView.resetMessageDisplay();
 		isModified = false;
 		cqlWorkspaceView.getValueSetView().resetCQLValuesetearchPanel();
 		cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
 		previousIsProgramReleaseBoxEnabled = isProgramReleaseBoxEnabled;
-		isProgramReleaseBoxEnabled = true; 
-		loadProgramsAndReleases(); 
+		isProgramReleaseBoxEnabled = true;
+		loadProgramsAndReleases();
 		alert508StateChanges();
 	}
 
@@ -2474,7 +2477,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		List<String> list = new ArrayList<>();
 		list.add("You have selected to delete function " + (functionName.length()>60 ? functionName.substring(0, 59) : functionName) + ".");
 		list.add(" ");
-		list.add("Note: Removing an expression that is currently connected to a population will cause that expression to be removed from the Population Workspace and may reset your measure grouping. Please confirm that you want to remove this function.");	
+		list.add("Note: Removing an expression that is currently connected to a population will cause that expression to be removed from the Population Workspace and may reset your measure grouping. Please confirm that you want to remove this function.");
 		return list;
 	}
 

@@ -58,7 +58,7 @@ public interface CQLService {
 	 */
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(
 			String currentMeasureId, String context, String libraryComment);
-	
+
 	/**
 	 * Save and modify functions.
 	 *
@@ -71,7 +71,7 @@ public interface CQLService {
 	 */
 	SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList, boolean isFormatable);
-	
+
 	/**
 	 * Save and modify parameters.
 	 *
@@ -85,7 +85,7 @@ public interface CQLService {
 	 */
 	SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList, boolean isFormatable);
-	
+
 	/**
 	 * Save and modify definitions.
 	 *
@@ -98,41 +98,41 @@ public interface CQLService {
 	 */
 	SaveUpdateCQLResult saveAndModifyDefinitions(String xml, CQLDefinition toBeModifiedObj, CQLDefinition currentObj,
 			List<CQLDefinition> definitionList, boolean isFormatable);
-	
+
 	/**
 	 * Delete definition
-	 * 
+	 *
 	 * @param measureId the measure id
 	 * @param toBeDeletedObj the to be deleted obj
 	 * @return the save and update result
 	 */
 	SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj);
-	
+
 	/**
 	 * Delete functions
-	 * 
+	 *
 	 * @param measureId the measure id
 	 * @param toBeDeltedObj the to be deleted obj
 	 * @return the save and update result
 	 */
 	SaveUpdateCQLResult deleteFunction(String measureId, CQLFunctions toBeDeltedObj);
-	
+
 	/**
 	 * Delete parameter
-	 * 
+	 *
 	 * @param measureId the measure id
 	 * @param toBeDeletedObj the to be deleted obj
 	 * @return the save and update result
 	 */
 	SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj);
-	
+
 	/**
 	 * Gets the CQL data type list.
 	 *
 	 * @return the CQL data type list
 	 */
 	CQLKeywords getCQLKeyWords();
-	
+
 	/**
 	 * Gets the CQL file data.
 	 *
@@ -160,8 +160,9 @@ public interface CQLService {
 	CQLQualityDataModelWrapper getCQLValusets(String measureID, CQLQualityDataModelWrapper cqlQualityDataModelWrapper);
 
 	SaveUpdateCQLResult saveCQLValueset(String xml, CQLValueSetTransferObject valueSetTransferObject);
-	
-	SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
+
+	SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String xml, CQLIncludeLibrary toBeModifiedObj,
+			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList,  String modelType) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult deleteInclude(String currentMeasureId, CQLIncludeLibrary toBeModifiedIncludeObj);
 
@@ -191,12 +192,12 @@ public interface CQLService {
 	SaveUpdateCQLResult getCQLLibraryData(String xmlString);
 
 	SaveUpdateCQLResult getCQLDataForLoad(String xmlString);
-	
+
 	String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) throws MarshalException, ValidationException, IOException, MappingException;
 
 	SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config);
-	
+
 	List<CQLLibraryHistory> createCQLLibraryHistory(List<CQLLibraryHistory> exsistingLibraryHistory, String CQLLibraryString, CQLLibrary cqlLibrary, Measure measure);
-	
+
 	boolean checkIfLibraryNameExists(String libraryName, String setId);
 }

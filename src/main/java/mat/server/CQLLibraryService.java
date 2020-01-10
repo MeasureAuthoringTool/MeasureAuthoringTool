@@ -138,10 +138,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     @Override
-    public SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText) {
+    public SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText, String modelType) {
         SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult();
         List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
-        List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(setId, libraryName, searchText);
+        List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(setId, libraryName, searchText, modelType);
         saveCQLLibraryResult.setResultsTotal(list.size());
         for (CQLLibrary cqlLibrary : list) {
             CQLLibraryDataSetObject object = extractCQLLibraryDataObject(cqlLibrary);
@@ -255,13 +255,12 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         dataSetObject.setVersion(formattedVersion);
         dataSetObject.setEditable(MatContextServiceUtil.get()
                 .isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibrary.getId()));
-
+        dataSetObject.setFhirEditOrViewable(MatContextServiceUtil.get().isCqlLibraryModelEditable(cqlLibrary.getLibraryModelType()));
 
         List<CQLLibrary> libraryList = new ArrayList<>();
         libraryList.add(cqlLibrary);
         List<CQLLibrary> cqlLibraryFamily = cqlLibraryDAO.getAllLibrariesInSet(libraryList);
         Boolean isEditableForVersion = MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibrary.getId(), false);
-
         if (!dataSetObject.isLocked() && isEditableForVersion) {
             caclulateVersionAndDraft(dataSetObject, cqlLibraryFamily);
         }
@@ -1005,7 +1004,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 if (associationCount < CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
                     String cqlXml = getCQLLibraryXml(cqlLibrary);
                     if (cqlXml != null) {
-                        result = cqlService.saveAndModifyIncludeLibrayInCQLLookUp(cqlXml, toBeModifiedObj, currentObj, incLibraryList);
+                        result = cqlService.saveAndModifyIncludeLibrayInCQLLookUp(cqlXml, toBeModifiedObj, currentObj,
+                                incLibraryList, cqlLibrary.getLibraryModelType());
                         if (result != null && result.isSuccess()) {
                             cqlLibrary.setCQLByteArray(result.getXml().getBytes());
                             cqlLibraryDAO.save(cqlLibrary);
@@ -1411,7 +1411,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
         boolean isOwner = user.getId().equals(dto.getOwnerUserId());
         boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(user.getSecurityRole().getDescription());
-
         CQLLibraryDataSetObject dataObject = new CQLLibraryDataSetObject();
         String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(dto.getVersion(),
                 dto.getRevisionNumber(), dto.isDraft());
@@ -1419,7 +1418,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         dataObject.setId(dto.getCqlLibraryId());
         dataObject.setCqlName(dto.getCqlLibraryName());
         dataObject.setVersion(formattedVersion);
-        dataObject.setLibraryModelType(dto.getLibraryModelType());
         dataObject.setDraft(dto.isDraft());
         dataObject.setFinalizedDate(dto.getFinalizedDate());
         dataObject.setLocked(dto.isLocked());
@@ -1432,6 +1430,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         dataObject.setCqlSetId(dto.getCqlLibrarySetId());
         dataObject.setEditable(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(
                 cqlLibraryDAO, dto.getCqlLibraryId()));
+        dataObject.setFhirEditOrViewable(MatContextServiceUtil.get().isCqlLibraryModelEditable(dto.getLibraryModelType()));
         dataObject.setDraftable(dto.isDraftable());
         dataObject.setVersionable(dto.isVersionable());
         dataObject.setLibraryModelType(dto.getLibraryModelType());

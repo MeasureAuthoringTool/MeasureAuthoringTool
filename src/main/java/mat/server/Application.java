@@ -1,5 +1,6 @@
 package mat.server;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -9,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +22,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -39,6 +45,8 @@ import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 @EnableTransactionManagement
 @EnableConfigurationProperties
 @EnableWebSecurity
+@EnableCaching
+@EnableScheduling
 @EnableJpaRepositories
 public class Application extends WebSecurityConfigurerAdapter {
 
@@ -125,24 +133,24 @@ public class Application extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http
-                .authorizeRequests()
+            .authorizeRequests()
                 .antMatchers("/", "/Login.html").permitAll()
                 .antMatchers("/Mat.html").authenticated()
                 .antMatchers("/Bonnie.html").authenticated()
                 .antMatchers("/mat/**").authenticated()
                 .and()
-                .formLogin()
+            .formLogin()
                 .loginPage("/Login.html")
                 .defaultSuccessUrl("/Mat.html")
                 .and()
-                .formLogin()
+            .formLogin()
                 .loginPage("/Login.html")
                 .defaultSuccessUrl("/Bonnie.html")
                 .and()
-                .logout()
+            .logout()
                 .permitAll()
                 .and()
-                .sessionManagement()
+            .sessionManagement()
                 .invalidSessionUrl("/Login.html")
                 .maximumSessions(1);
     }
@@ -164,4 +172,16 @@ public class Application extends WebSecurityConfigurerAdapter {
         return new RestTemplate();
     }
 
+
+    @Bean
+    public CacheManager cacheManager() {
+        final SimpleCacheManager cacheManager = new SimpleCacheManager();
+        cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("featureFlags")));
+        return cacheManager;
+    }
+
+    @Scheduled(fixedRateString = "${mat.cache.expiry.time}")
+    public void clearCacheSchedule(){
+        cacheManager().getCache("featureFlags").clear();
+    }
 }

@@ -26,6 +26,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -49,6 +50,7 @@ import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
+import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirMeasureRemoteService;
 import mat.client.measure.service.FhirMeasureRemoteServiceAsync;
 import mat.client.measure.service.MeasureCloningRemoteService;
@@ -614,31 +616,42 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         setSearchingBusy(true);
         FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
-        fhirMeasureService.convert(object, new AsyncCallback<Result>() {
+        fhirMeasureService.convert(object, new AsyncCallback<FhirConvertResultResponse>() {
             @Override
             public void onFailure(Throwable caught) {
                 GWT.log("Error while converting the measure", caught);
                 setSearchingBusy(false);
-                showFhirConvertError();
+                showConversionError(MatContext.get().getMessageDelegate().getConvertMeasureFailureMessage(detailDisplay.getMeasureNameTextBox().getValue(), caught.getLocalizedMessage()));
                 MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
             }
 
             @Override
-            public void onSuccess(Result result) {
-                GWT.log("Measure was successfully converted");
+            public void onSuccess(FhirConvertResultResponse response) {
+                GWT.log("Measure conversion has completed.");
                 setSearchingBusy(false);
-                Window.alert("Success");
-                String url = GWT.getModuleBaseURL() + "validationReport?id=" + object.getId();
-                Window.open(url, "_blank", "");
-                showConfirmationDialog(MatContext.get().getMessageDelegate().getConvertMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
+
+                if (!response.getValidationStatus().isValidationPassed()) {
+                    GWT.log("Measure validation has failed.");
+                    showConversionError(MatContext.get().getMessageDelegate().getConvertMeasureValidatinoFailedMessage(detailDisplay.getMeasureNameTextBox().getValue()));
+                    showFhirValidationReport(response.getSourceMeasure().getId());
+                } else {
+                    GWT.log("Measure conversion was successful.");
+                    showConfirmationDialog(MatContext.get().getMessageDelegate().getConvertMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
+                    showFhirValidationReport(response.getFhirMeasure().getId());
+                }
                 displaySearch();
             }
         });
 
     }
 
-    private void showFhirConvertError() {
-        ConfirmationDialogBox errorAlert = new ConfirmationDialogBox(MatContext.get().getMessageDelegate().getConvertMeasureFailureMessage(detailDisplay.getMeasureNameTextBox().getValue()), "Return to Measure Library", "Cancel", null, true);
+    private void showFhirValidationReport(String measureId) {
+        String url = GWT.getModuleBaseURL() + "validationReport?id=" + SafeHtmlUtils.htmlEscape(measureId);
+        Window.open(url, "_blank", "");
+    }
+
+    private void showConversionError(final String errorMessage) {
+        ConfirmationDialogBox errorAlert = new ConfirmationDialogBox(errorMessage, "Return to Measure Library", "Cancel", null, true);
         errorAlert.getNoButton().setVisible(false);
         errorAlert.setObserver(new ConfirmationObserver() {
 

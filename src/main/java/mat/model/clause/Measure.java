@@ -100,6 +100,8 @@ public class Measure {
 
     private String fhirMeasureId;
 
+    private String sourceMeasureId;
+
     @Column(name = "VALUE_SET_DATE", length = 19)
     public Timestamp getValueSetDate() {
         return valueSetDate;
@@ -486,4 +488,12 @@ public class Measure {
         this.fhirMeasureId = fhirMeasureId;
     }
 
+    @Column(name = "SOURCE_MEASURE_ID")
+    public String getSourceMeasureId() {
+        return sourceMeasureId;
+    }
+
+    public void setSourceMeasureId(String convertedFromMeasureId) {
+        this.sourceMeasureId = convertedFromMeasureId;
+    }
 }

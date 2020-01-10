@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirMeasureRemoteService;
 import mat.client.shared.MatException;
 import mat.server.SpringRemoteServiceServlet;
@@ -21,10 +22,10 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
     private FhirMeasureService fhirMeasureService;
 
     @Override
-    public Result convert(Result currentMeasure) throws MatException {
-        logger.info("Converting  measureId: " + currentMeasure.getId());
+    public FhirConvertResultResponse convert(Result sourceMeasure) throws MatException {
+        logger.info("Converting  measureId: " + sourceMeasure.getId());
         try {
-            return fhirMeasureService.convert(currentMeasure);
+            return fhirMeasureService.convert(sourceMeasure);
         } catch (MatException e) {
             logger.error(e);
             throw e;

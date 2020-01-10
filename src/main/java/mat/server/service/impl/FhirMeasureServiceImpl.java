@@ -9,6 +9,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.service.FhirConvertResultResponse;
+import mat.client.measure.service.FhirValidationStatus;
 import mat.client.shared.MatException;
 import mat.client.shared.MatRuntimeException;
 import mat.dao.clause.MeasureDAO;
@@ -41,42 +43,76 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
     }
 
     @Override
-    public ManageMeasureSearchModel.Result convert(ManageMeasureSearchModel.Result currentMeasure) throws MatException {
-        if (!currentMeasure.isFhirConvertible()) {
+    public FhirConvertResultResponse convert(ManageMeasureSearchModel.Result sourceMeasure) throws MatException {
+        if (!sourceMeasure.isFhirConvertible()) {
             throw new MatException("Measure cannot be converted to FHIR");
         }
-        ConversionResultDto convertResult;
-        ManageMeasureDetailModel currentDetails = measureLibraryService.getMeasure(currentMeasure.getId());
-        if (currentDetails.getFhirMeasureId() != null && !currentDetails.getFhirMeasureId().isEmpty()) {
-            logger.debug("Removing existing fhir measure " + currentDetails.getFhirMeasureId());
-            transactionTemplate.execute(status -> {
-                Measure fhirMeasure = measureDAO.find(currentDetails.getFhirMeasureId());
-                measureDAO.delete(fhirMeasure);
-                return null;
-            });
+        FhirConvertResultResponse fhirConvertResultResponse = new FhirConvertResultResponse();
+        fhirConvertResultResponse.setSourceMeasure(sourceMeasure);
+
+        FhirValidationStatus sourceValidationStatus = validateSourceMeasureForFhirConversion(sourceMeasure);
+
+        if (!sourceValidationStatus.isValidationPassed()) {
+            fhirConvertResultResponse.setValidationStatus(sourceValidationStatus);
+        } else {
+            ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
+            dropFhirMeasureIfExists(sourceMeasureDetails);
+            ManageMeasureSearchModel.Result fhirMeasure = cloneSourceToFhir(sourceMeasureDetails);
+            fhirConvertResultResponse.setFhirMeasure(fhirMeasure);
+
+            // We convert source measure instead of fhir measure, because we want to convert a versioned measure under the original measure id (SOURCE_MEASURE_ID)
+            // If we use a fhir measure id, then it will be abandoned on FHIR server end, when re-converted
+            ConversionResultDto fhirConvertResult = fhirOrchestrationGatewayService.convert(sourceMeasure.getId(), sourceMeasure.isDraft());
+            fhirConvertResultResponse.setValidationStatus(createValidationStatus(fhirConvertResult));
         }
-        ManageMeasureSearchModel.Result result = transactionTemplate.execute(status -> {
+
+        return fhirConvertResultResponse;
+    }
+
+    private FhirValidationStatus validateSourceMeasureForFhirConversion(ManageMeasureSearchModel.Result sourceMeasure) {
+        ConversionResultDto sourceValidationResult = fhirOrchestrationGatewayService.validate(sourceMeasure.getId(), sourceMeasure.isDraft());
+        return createValidationStatus(sourceValidationResult);
+    }
+
+    private ManageMeasureDetailModel loadMeasureAsDetailsForCloning(ManageMeasureSearchModel.Result sourceMeasure) {
+        return measureLibraryService.getMeasure(sourceMeasure.getId());
+    }
+
+    private FhirValidationStatus createValidationStatus(ConversionResultDto convertResult) {
+        FhirValidationStatus validationSummary = new FhirValidationStatus();
+
+        boolean hasLibraryFhirValidationErrors = !convertResult.getLibraryConversionResults().stream().allMatch(i -> Boolean.TRUE.equals(i.getSuccess()));
+        validationSummary.setHasLibraryFhirValidationErrors(hasLibraryFhirValidationErrors);
+
+        boolean hasValueSetResultsErrors = !convertResult.getValueSetConversionResults().stream().allMatch(i -> Boolean.TRUE.equals(i.getSuccess()));
+        validationSummary.setHasValueSetResultsErrors(hasValueSetResultsErrors);
+
+        boolean hasMeasureFhirValidationErrors = !convertResult.getMeasureConversionResults().getMeasureResults().isEmpty();
+        validationSummary.setHasMeasureFhirValidationErrors(hasMeasureFhirValidationErrors);
+
+        validationSummary.setValidationPassed(!hasLibraryFhirValidationErrors && !hasValueSetResultsErrors && !hasMeasureFhirValidationErrors);
+        return validationSummary;
+    }
+
+    private ManageMeasureSearchModel.Result cloneSourceToFhir(ManageMeasureDetailModel currentDetails) {
+        return transactionTemplate.execute(status -> {
             try {
                 return measureCloningService.cloneForFhir(currentDetails);
             } catch (MatException e) {
                 throw new MatRuntimeException(e);
             }
         });
-        convertResult = fhirOrchestrationGatewayService.convert(result.getId());
-        logger.info(convertResult);
-
-        if (hasErrors(convertResult)) {
-            throw new MatException("Error while converting measure to FHIR. Measure has validation errors.");
-        }
-        return currentMeasure;
     }
 
-    private boolean hasErrors(ConversionResultDto convertResult) {
-        boolean hasValueSetErrors = convertResult.getValueSetConversionResults().getValueSetResults().stream()
-                .anyMatch(valueSetResult -> !Boolean.TRUE.equals(valueSetResult.getSuccess()));
-        boolean hasLibraryErrors = !convertResult.getLibraryConversionResults().getLibraryFhirValidationErrors().isEmpty();
-        boolean hasMeasureErrors = !convertResult.getMeasureConversionResults().getMeasureFhirValidationErrors().isEmpty();
-        return hasValueSetErrors || hasLibraryErrors || hasMeasureErrors;
+    private void dropFhirMeasureIfExists(ManageMeasureDetailModel currentDetails) {
+        if (currentDetails.getFhirMeasureId() != null && !currentDetails.getFhirMeasureId().isEmpty()) {
+            logger.debug("Removing existing fhir measure " + currentDetails.getFhirMeasureId());
+            transactionTemplate.execute(status -> {
+                Measure existingFhirMeasure = measureDAO.find(currentDetails.getFhirMeasureId());
+                measureDAO.delete(existingFhirMeasure);
+                return null;
+            });
+        }
     }
 
 }

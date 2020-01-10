@@ -40,8 +40,8 @@ public class FhirOrchestrationGatewayService {
      * @return validation report object
      * @throws mat.client.shared.MatRuntimeException
      */
-    public ConversionResultDto convert(String measureId) {
-        return callRemoteService(measureId, ConversionType.CONVERSION, true);
+    public ConversionResultDto convert(String measureId, boolean isDraft) {
+        return callRemoteService(measureId, ConversionType.CONVERSION, isDraft);
     }
 
     /**
@@ -51,8 +51,8 @@ public class FhirOrchestrationGatewayService {
      * @return validation report object
      * @throws mat.client.shared.MatRuntimeException
      */
-    public ConversionResultDto validate(String measureId) {
-        return callRemoteService(measureId, ConversionType.VALIDATION, false);
+    public ConversionResultDto validate(String measureId, boolean isDraft) {
+        return callRemoteService(measureId, ConversionType.VALIDATION, isDraft);
     }
 
     private ConversionResultDto callRemoteService(String measureId, ConversionType conversionType, boolean draft) {

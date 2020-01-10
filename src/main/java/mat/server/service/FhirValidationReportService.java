@@ -2,10 +2,10 @@ package mat.server.service;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,7 +19,6 @@ import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import gov.cms.mat.fhir.rest.dto.CqlConversionError;
 import gov.cms.mat.fhir.rest.dto.FhirValidationResult;
 import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
-import gov.cms.mat.fhir.rest.dto.ValueSetValidationResult;
 import mat.client.shared.MatRuntimeException;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
@@ -61,7 +60,7 @@ public class FhirValidationReportService {
         ConversionResultDto conversionResult = null;
         Measure measure = measureDAO.find(measureId);
         if (measure != null) {
-            conversionResult = validateFhirConversion(measureId);
+            conversionResult = validateFhirConversion(measureId, measure.isDraft());
         }
         return generateValidationReport(conversionResult, measure);
     }
@@ -72,13 +71,13 @@ public class FhirValidationReportService {
      * @return an instance of FHIR ConversionResultDto
      * @throws IOException
      */
-    private ConversionResultDto validateFhirConversion(String measureId) throws IOException {
+    private ConversionResultDto validateFhirConversion(String measureId, boolean isDraft) throws IOException {
         if (measureId == null) {
             return null;
         }
         logger.info("Calling FHIR conversion validation service for measure: " + measureId);
         try {
-            return fhirOrchestrationGatewayService.validate(measureId);
+            return fhirOrchestrationGatewayService.validate(measureId, isDraft);
         } catch (MatRuntimeException e) {
             throw new IOException(e);
         }
@@ -98,23 +97,17 @@ public class FhirValidationReportService {
         if (conversionResultDto != null && measure != null) {
             //Measure FHIR validation errors
             List<FhirValidationResult> measureFhirValidationErrors = conversionResultDto.
-                    getMeasureConversionResults().
-                    getMeasureFhirValidationErrors();
+                    getMeasureConversionResults().getMeasureFhirValidationResults();
 
-            //Library FHIR validation errors
-            LibraryConversionResults libraryConversionResults = conversionResultDto.getLibraryConversionResults();
-            List<FhirValidationResult> libraryFhirValidationErrors = libraryConversionResults.getLibraryFhirValidationErrors();
+            // Library FHIR validation errors
+            List<LibraryConversionResults> libraryConversionResults = conversionResultDto.getLibraryConversionResults();
+            List<FhirValidationResult> libraryFhirValidationErrors = libraryConversionResults.stream().flatMap(i -> i.getLibraryFhirValidationResults().stream()).collect(Collectors.toList());
 
-            //CQL conversion errors
-            List<CqlConversionError> cqlConversionErrors = libraryConversionResults.
-                    getCqlConversionResult() == null ? Collections.emptyList() : libraryConversionResults.
-                    getCqlConversionResult().
-                    getCqlConversionErrors();
+            // CQL conversion errors
+            List<CqlConversionError> cqlConversionErrors = libraryConversionResults.stream().map(i -> i.getCqlConversionResult()).flatMap(i -> i.getCqlConversionErrors().stream()).collect(Collectors.toList());
 
-            //ValueSet FHIR validation errors
-            List<ValueSetValidationResult> valueSetFhirValidationErrors = conversionResultDto.
-                    getValueSetConversionResults().
-                    getValueSetFhirValidationErrors();
+            // ValueSet FHIR validation errors
+            List<FhirValidationResult> valueSetFhirValidationErrors = conversionResultDto.getValueSetConversionResults().stream().flatMap(i -> i.getValueSetFhirValidationResults().stream()).collect(Collectors.toList());
 
             Instant instant = Instant.parse(conversionResultDto.getModified());
             paramsMap.put("runDate", DateUtility.formatInstant(instant, DATE_FORMAT));

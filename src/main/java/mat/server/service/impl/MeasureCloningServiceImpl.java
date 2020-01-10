@@ -271,6 +271,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
             if (creatingFhir) {
                 measure.setFhirMeasureId(clonedMeasure.getId());
+                clonedMeasure.setSourceMeasureId(measure.getId());
             }
 
             result.setId(clonedMeasure.getId());

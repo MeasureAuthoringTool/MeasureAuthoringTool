@@ -1,5 +1,37 @@
 package mat.dao.clause.impl;
 
+import mat.client.measure.MeasureSearchFilterPanel;
+import mat.dao.UserDAO;
+import mat.dao.search.GenericDAO;
+import mat.model.LockedUserInfo;
+import mat.model.SecurityRole;
+import mat.model.User;
+import mat.model.clause.CQLLibrary;
+import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLLibraryShare;
+import mat.model.cql.CQLLibraryShareDTO;
+import mat.server.LoggedInUserUtil;
+import mat.server.util.MATPropertiesService;
+import mat.shared.LibrarySearchModel;
+import mat.shared.SearchModel.VersionType;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.NativeQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -16,40 +48,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.persistence.NoResultException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.NativeQuery;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import mat.client.measure.MeasureSearchFilterPanel;
-import mat.dao.UserDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.LockedUserInfo;
-import mat.model.SecurityRole;
-import mat.model.User;
-import mat.model.clause.CQLLibrary;
-import mat.model.clause.ShareLevel;
-import mat.model.cql.CQLLibraryShare;
-import mat.model.cql.CQLLibraryShareDTO;
-import mat.server.LoggedInUserUtil;
-import mat.server.util.MATPropertiesService;
-import mat.shared.LibrarySearchModel;
-import mat.shared.SearchModel.VersionType;
-
 @Repository("cqlLibraryDAO")
 public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements mat.dao.clause.CQLLibraryDAO {
 
@@ -65,6 +63,8 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
     private static final String MEASURE_ID = "measureId";
     private static final String CQL_LIBRARY = "cqlLibrary";
     private static final String LIBRARY_NAME = "name";
+    private static final String LIBRARY_MODEL_TYPE = "libraryModelType";
+    private static final String QDM_VERSION = "qdmVersion";
 
     @Autowired
     private UserDAO userDAO;
@@ -107,14 +107,14 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
     private static final long LOCK_THRESHOLD = TimeUnit.MINUTES.toMillis(3); // 3 minutes
 
     @Override
-    public List<CQLLibrary> searchForIncludes(String setId, String libraryName, String searchText) {
+    public List<CQLLibrary> searchForIncludes(String setId, String libraryName, String searchText, String modelType) {
 
         final Session session = getSessionFactory().getCurrentSession();
         final CriteriaBuilder cb = session.getCriteriaBuilder();
         final CriteriaQuery<CQLLibrary> query = cb.createQuery(CQLLibrary.class);
         final Root<CQLLibrary> root = query.from(CQLLibrary.class);
 
-        final Predicate predicate = buildPredicateForSearchingLibraries(setId, libraryName, searchText, cb, root);
+        final Predicate predicate = buildPredicateForSearchingLibraries(setId, libraryName, searchText, cb, root, modelType);
 
         query.select(root).where(predicate);
 
@@ -124,12 +124,22 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
     }
 
     private Predicate buildPredicateForSearchingLibraries(String setId, String libraryName, String searchText,
-                                                          CriteriaBuilder cb, Root<CQLLibrary> root) {
-
-        final Predicate p1 = cb.and(cb.equal(root.get("qdmVersion"), MATPropertiesService.get().getQmdVersion()),
+                                                          CriteriaBuilder cb, Root<CQLLibrary> root, String modelType) {
+        //common criteria
+        List<Predicate> predicates = new ArrayList<>(List.of(
+                cb.equal(root.get(QDM_VERSION), MATPropertiesService.get().getQmdVersion()),
                 cb.equal(root.get(DRAFT), false), cb.notEqual(root.get(LIBRARY_NAME), libraryName),
-                cb.notEqual(root.get(SET_ID), setId));
+                cb.notEqual(root.get(SET_ID), setId)
+        ));
 
+        //model type criteria
+        if (StringUtils.isNotBlank(modelType)) {
+            predicates.add(cb.equal(root.get(LIBRARY_MODEL_TYPE), modelType));
+        } else {
+            predicates.add(cb.isNull(root.get(LIBRARY_MODEL_TYPE)));
+        }
+
+        final Predicate p1 = cb.and(predicates.toArray(new Predicate[0]));
         final Predicate p2 = getSearchByLibraryNameOrOwnerNamePredicate(searchText, cb, root);
 
         return (p2 != null) ? cb.and(p1, p2) : p1;

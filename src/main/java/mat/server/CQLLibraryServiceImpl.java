@@ -33,54 +33,53 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 		return this.getCQLLibraryService().search(librarySearchModel);
 	}
 	@Override
-	public SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText){
-		return this.getCQLLibraryService().searchForIncludes(setId, libraryName, searchText);
+	public SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText, String modelType) {
+		return this.getCQLLibraryService().searchForIncludes(setId, libraryName, searchText, modelType);
 	}
-	
+
 	@Override
 	public SaveCQLLibraryResult searchForReplaceLibraries(String setId) {
 		return this.getCQLLibraryService().searchForReplaceLibraries(setId);
-
 	}
-	
+
 	@Override
 	public CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryID){
 		return this.getCQLLibraryService().findCQLLibraryByID(cqlLibraryID);
 	}
-	
+
 	@Override
 	public SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries){
 		return this.getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version, ignoreUnusedLibraries);
 	}
 	/**
 	 * Gets the measure library service.
-	 * 
+	 *
 	 * @return the measure library service
 	 */
 	public CQLLibraryServiceInterface getCQLLibraryService(){
 		return (CQLLibraryServiceInterface) context.getBean("cqlLibraryService");
 	}
-	
-	
+
+
 	public SaveCQLLibraryResult saveCQLLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject) {
 		return this.getCQLLibraryService().saveLibrary(cqlLibraryDataSetObject);
 	}
-	
+
 	public String createCQLLookUpTag(String libraryName,String version) {
 		return this.getCQLLibraryService().createCQLLookUpTag(libraryName, version);
 	}
-	
+
 	public XmlProcessor loadCQLXmlTemplateFile() {
 		return this.getCQLLibraryService().loadCQLXmlTemplateFile();
 	}
 	public SaveUpdateCQLResult getCQLData(String id) {
 		return this.getCQLLibraryService().getCQLData(id);
 	}
-	
+
 	public SaveUpdateCQLResult getCQLDataForLoad(String id) {
 		return this.getCQLLibraryService().getCQLDataForLoad(id);
 	}
-	
+
 	@Override
 	public boolean isLibraryLocked(String id) {
 		return this.getCQLLibraryService().isLibraryLocked(id);
@@ -100,22 +99,22 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	public SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId) {
 		return this.getCQLLibraryService().getAllRecentCQLLibrariesForUser(userId);
 	}
-	
+
 	@Override
 	public void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId){
 		this.getCQLLibraryService().isLibraryAvailableAndLogRecentActivity(libraryid, userId);
 	}
-	
+
 	@Override
 	public SaveUpdateCQLResult getLibraryCQLFileData(String libraryId){
 	   return this.getCQLLibraryService().getLibraryCQLFileData(libraryId);
 	}
-	
+
 	@Override
 	public SaveUpdateCQLResult getCQLLibraryFileData(String libraryId) {
 		return this.getCQLLibraryService().getCQLLibraryFileData(libraryId);
 	}
-	
+
 	@Override
 	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment){
 		return this.getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryValue, libraryComment);
@@ -125,7 +124,7 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId, String libraryName) throws MatException {
 		return this.getCQLLibraryService().draftExistingCQLLibrary(libraryId, libraryName);
 	}
-	
+
 	@Override
 	public SaveCQLLibraryResult getUserShareInfo(String cqlId, final String searchText){
 		return this.getCQLLibraryService().getUserShareInfo(cqlId, searchText);
@@ -133,7 +132,7 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	@Override
 	public void updateUsersShare(SaveCQLLibraryResult result) {
 		this.getCQLLibraryService().updateUsersShare(result);
-	} 
+	}
 	@Override
 	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException {
@@ -159,17 +158,17 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	public SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId) {
 		return this.getCQLLibraryService().deleteValueSet(toBeDelValueSetId, libraryId);
 	}
-	
+
 	@Override
 	public SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId) {
 		return this.getCQLLibraryService().deleteCode(toBeDeletedId, libraryId);
 	}
-	
+
 	@Override
 	public SaveUpdateCQLResult saveCQLFile(String libraryId, String cql) {
 		return this.getCQLLibraryService().saveCQLFile(libraryId, cql);
 	}
-	
+
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable) {
@@ -209,22 +208,22 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 		return this.getCQLLibraryService().getCQLKeywordsLists();
 	}
 	@Override
-	public 
+	public
 	void transferLibraryOwnerShipToUser(List<String> list, String toEmail){
 		this.getCQLLibraryService().transferLibraryOwnerShipToUser(list, toEmail);
 	}
-	
+
 	@Override
 	public SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject){
 		return this.getCQLLibraryService().saveCQLCodestoCQLLibrary(transferObject);
 	}
-	
+
 	@Override
 	public SaveUpdateCQLResult saveCQLCodeListToCQLLibrary(
 			List<CQLCode> codeList, String libraryId) {
 		return this.getCQLLibraryService().saveCQLCodeListToCQLLibrary(codeList, libraryId);
 	}
-		
+
 	@Override
 	public final void deleteCQLLibrary(final String cqllibId, String loginUserId, String password) throws AuthenticationException {
 		 this.getCQLLibraryService().deleteCQLLibrary(cqllibId, loginUserId, password);

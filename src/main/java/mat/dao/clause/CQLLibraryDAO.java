@@ -13,7 +13,7 @@ import mat.shared.LibrarySearchModel;
 public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 
 	List<CQLLibraryShareDTO> search(LibrarySearchModel librarySearchModel, int pageSize, User user);
-	
+
 	boolean isLibraryLocked(String id);
 
 	void updateLockedOutDate(CQLLibrary existingLibrary);
@@ -28,7 +28,7 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 
 	CQLLibraryShareDTO extractDTOFromCQLLibrary(CQLLibrary cqlLibrary);
 
-	List<CQLLibrary> searchForIncludes(String setId, String libraryName, String searchText);
+	List<CQLLibrary> searchForIncludes(String setId, String libraryName, String searchText, String modelType);
 
 	List<CQLLibrary> getLibraryListForLibraryOwner(User user);
 
@@ -41,7 +41,7 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 	CQLLibrary getLibraryByMeasureId(String measureId);
 
 	List<CQLLibrary> searchForReplaceLibraries(String setId);
-	
+
 	boolean isLibraryNameExists(String name, String setId);
 
 	String getLibraryNameIfDraftAlreadyExists(String setId);

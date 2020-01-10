@@ -15,8 +15,6 @@ import java.util.List;
 @Repository("FeatureFlagDAO")
 public class FeatureFlagDAOImpl extends GenericDAO<FeatureFlag, String> implements FeatureFlagDAO {
 
-    private static final String FLAG_NAME = "flagName";
-
     public FeatureFlagDAOImpl(@Autowired SessionFactory sessionFactory) {
         setSessionFactory(sessionFactory);
     }

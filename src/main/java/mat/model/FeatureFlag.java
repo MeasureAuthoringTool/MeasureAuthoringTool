@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Table(name = "FEATURE_FLAGS")
 public class FeatureFlag implements java.io.Serializable {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2614498951651483110L;
 

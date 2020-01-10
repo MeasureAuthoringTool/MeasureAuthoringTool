@@ -150,6 +150,7 @@ public class ManageMeasureDetailModelConversions {
 		measureDetailModel.setId(measure.getId());
 		measureDetailModel.setMeasureName(measure.getDescription());
 		measureDetailModel.setMeasureModel(measure.getMeasureModel());
+		measureDetailModel.setFhirMeasureId(measure.getFhirMeasureId());
 		measureDetailModel.setCQLLibraryName(measure.getCqlLibraryName());
 		measureDetailModel.setShortName(measure.getaBBRName());
 		measureDetailModel.setVersionNumber(measure.getVersion());
@@ -264,12 +265,10 @@ public class ManageMeasureDetailModelConversions {
 	private List<Author> getAuthorsSelectedList(List<MeasureDeveloperAssociation> measureDevelopers, OrganizationDAO organizationDAO) {
 		return measureDevelopers.stream().map(developerAssociation -> getAuthor(developerAssociation.getOrganization().getId(), organizationDAO)).collect(Collectors.toList());
 	}
-	
-	
+
 	private Author getAuthor(Long orgId, OrganizationDAO organizationDAO) {
 		Organization org = organizationDAO.find(orgId);
 		return new Author(org.getOrganizationOID(), org.getOrganizationName(), org.getOrganizationOID());
-				
 	}
 
 }

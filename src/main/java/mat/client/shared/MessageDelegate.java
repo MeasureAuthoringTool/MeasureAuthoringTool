@@ -905,6 +905,10 @@ public class MessageDelegate {
 		return "You have successfully converted measure " + StringUtility.trimTextToSixtyChars(measureName);
 	}
 
+	public String getConvertMeasureFailureMessage(String measureName) {
+		return "We could not convert measure " + StringUtility.trimTextToSixtyChars(measureName);
+	}
+
 	public String getCreateNewLibrarySuccessfulMessage(String libraryName){
 		return "You have created a new library " + StringUtility.trimTextToSixtyChars(libraryName)+". Please click continue to navigate to the CQL Composer.";
 	}

@@ -977,6 +977,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setMeasureSetId(dto.getMeasureSetId());
         detail.setDraftable(dto.isDraftable());
         detail.setVersionable(dto.isVersionable());
+        detail.setConvertedToFhir(dto.getFhirMeasureId() != null && !dto.getFhirMeasureId().isEmpty());
         return detail;
     }
 
@@ -1116,6 +1117,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
         detail.setMeasureSetId(measure.getMeasureSet().getId());
         detail.setScoringType(measure.getMeasureScoring());
+        detail.setConvertedToFhir(measure.getFhirMeasureId() != null && !measure.getFhirMeasureId().isEmpty());
         boolean isLocked = measureDAO.isMeasureLocked(measure.getId());
         detail.setMeasureLocked(isLocked);
         boolean isEditable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId());
@@ -2413,6 +2415,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 detail.setOwnerEmailAddress(user.getEmailAddress());
                 detail.setMeasureSetId(dto.getMeasureSetId());
                 detail.setPatientBased(dto.isPatientBased());
+                detail.setConvertedToFhir(dto.getFhirMeasureId() != null && !dto.getFhirMeasureId().isEmpty());
                 detailModelList.add(detail);
             }
         } else {
@@ -4753,50 +4756,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         return message;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see mat.server.service.MeasureLibraryService#getCurrentReleaseVersion()
-     */
     @Override
     public String getCurrentReleaseVersion() {
         return currentReleaseVersion;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see mat.server.service.MeasureLibraryService#setCurrentReleaseVersion(java.
-     * lang.String)
-     */
     @Override
     public void setCurrentReleaseVersion(String releaseVersion) {
         currentReleaseVersion = releaseVersion;
     }
 
-    /**
-     * Gets the cql service.
-     *
-     * @return the cql service
-     */
     public CQLService getCqlService() {
         return cqlService;
     }
 
-    /**
-     * Sets the cql service.
-     *
-     * @param cqlService the new cql service
-     */
     public void setCqlService(CQLService cqlService) {
         this.cqlService = cqlService;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see mat.server.service.MeasureLibraryService#parseCQL(java.lang.String)
-     */
     @Override
     public CQLModel parseCQL(String cqlBuilder) {
         return getCqlService().parseCQL(cqlBuilder);

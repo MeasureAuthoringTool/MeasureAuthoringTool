@@ -19,6 +19,7 @@ import freemarker.template.TemplateException;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
+import mat.server.service.impl.FhirOrchestrationGatewayService;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -41,7 +42,7 @@ class FhirValidationReportServiceTest {
     private FhirValidationReportService fhirValidationReportService;
 
     @Test
-    void testGetFhirConversionReportForMeasure() throws IOException, TemplateException {
+    void testGetFhirConversionReportForMeasure() throws Exception {
         String measureId = "402804382649c54c230164d76256dd11dc";
         Measure measure = new Measure();
         measure.setId(measureId);
@@ -56,14 +57,13 @@ class FhirValidationReportServiceTest {
         Mockito.when(freemarkerConfiguration.getTemplate(templateName)).thenReturn(template);
 
         Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.anyString())).thenAnswer(invocation -> {
-                    URL path = FhirValidationReportService.class.getResource("report.json");
-        return new ObjectMapper()
-                .readValue(new File(path.getFile()),
-                        ConversionResultDto.class);
+            URL path = FhirValidationReportService.class.getResource("report.json");
+            return new ObjectMapper()
+                    .readValue(new File(path.getFile()),
+                            ConversionResultDto.class);
         });
 
         ReflectionTestUtils.setField(fhirValidationReportService, "currentMatVersion", "v6.0");
-
 
 
         String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId);

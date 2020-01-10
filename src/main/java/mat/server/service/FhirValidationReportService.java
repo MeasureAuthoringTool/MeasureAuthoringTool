@@ -20,8 +20,10 @@ import gov.cms.mat.fhir.rest.dto.CqlConversionError;
 import gov.cms.mat.fhir.rest.dto.FhirValidationResult;
 import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
 import gov.cms.mat.fhir.rest.dto.ValueSetValidationResult;
+import mat.client.shared.MatRuntimeException;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
+import mat.server.service.impl.FhirOrchestrationGatewayService;
 import mat.shared.DateUtility;
 
 @Service("fhirValidationService")
@@ -75,7 +77,11 @@ public class FhirValidationReportService {
             return null;
         }
         logger.info("Calling FHIR conversion validation service for measure: " + measureId);
-        return fhirOrchestrationGatewayService.validate(measureId);
+        try {
+            return fhirOrchestrationGatewayService.validate(measureId);
+        } catch (MatRuntimeException e) {
+            throw new IOException(e);
+        }
     }
 
     /**

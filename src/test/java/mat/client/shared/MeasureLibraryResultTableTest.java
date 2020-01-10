@@ -164,7 +164,7 @@ public class MeasureLibraryResultTableTest {
         selectionModel.setSelected(selected, true);
 
         measureLibraryResultTable.onConvertClicked(selectionModel);
-        Mockito.verify(observer, Mockito.times(1)).onConvert(Mockito.eq(selected));
+        Mockito.verify(observer, Mockito.times(1)).onConvertMeasureFhir(Mockito.eq(selected));
     }
 
     @Test
@@ -175,7 +175,7 @@ public class MeasureLibraryResultTableTest {
         selectionModel.setSelected(selected, true);
 
         measureLibraryResultTable.onConvertClicked(selectionModel);
-        Mockito.verify(observer, Mockito.never()).onConvert(Mockito.eq(selected));
+        Mockito.verify(observer, Mockito.never()).onConvertMeasureFhir(Mockito.eq(selected));
     }
 
 }

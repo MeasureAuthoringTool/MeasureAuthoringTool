@@ -172,19 +172,11 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	/**
 	 * Gets the MeasureShareDTO.
 	 *
-	 * @param measureId the measure id
+	 * @param measure the measure
 	 * @return the MeasureShareDTO.
 	 */
 	MeasureShareDTO extractDTOFromMeasure(Measure measure);
 
-	/**
-	 * Find share level for user.
-	 *
-	 * @param measureId the measure id
-	 * @param userID the user id
-	 * @param string 
-	 * @return the share level
-	 */
 	ShareLevel findShareLevelForUser(String measureId, String userID, String measureSetId);
 
 	List<MeasureShareDTO> getComponentMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel, User user);

@@ -1,6 +1,7 @@
 package mat.server.service.impl;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,7 +208,7 @@ public class MatContextServiceUtil implements InitializingBean {
         String currentUserId = LoggedInUserUtil.getLoggedInUser();
         String userRole = LoggedInUserUtil.getLoggedInUserRole();
         boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
-        boolean isOwner = measure.getOwner() != null && currentUserId.equals(measure.getOwner().getId());
+        boolean isOwner = measure.getOwner() != null && Objects.equals(currentUserId, measure.getOwner().getId());
 
         return isModelTypeEligibleForConversion(measure) && !measure.isDraft() && isVersionEligibleForConversion(qdmVersion, matVersion) && (isOwner || isSuperUser);
     }

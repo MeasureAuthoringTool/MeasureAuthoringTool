@@ -616,7 +616,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         setSearchingBusy(true);
         FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
-        fhirMeasureService.convert(object, MatContext.get().getLoggedinUserId(), new AsyncCallback<FhirConvertResultResponse>() {
+        fhirMeasureService.convert(object, new AsyncCallback<FhirConvertResultResponse>() {
             @Override
             public void onFailure(Throwable caught) {
                 GWT.log("Error while converting the measure", caught);

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirMeasureRemoteService;
 import mat.client.shared.MatException;
+import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.service.FhirMeasureService;
 
@@ -22,10 +23,10 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
     private FhirMeasureService fhirMeasureService;
 
     @Override
-    public FhirConvertResultResponse convert(Result sourceMeasure, String loggedinUserId) throws MatException {
+    public FhirConvertResultResponse convert(Result sourceMeasure) throws MatException {
         logger.info("Converting  measureId: " + sourceMeasure.getId());
         try {
-            return fhirMeasureService.convert(sourceMeasure, loggedinUserId);
+            return fhirMeasureService.convert(sourceMeasure, LoggedInUserUtil.getLoggedInUser());
         } catch (MatException e) {
             logger.error(e);
             throw e;

@@ -909,7 +909,7 @@ public class MessageDelegate {
     }
 
     public String getConvertMeasureValidationFailedMessage() {
-        return "Your measure has FHIR validation errors.";
+        return "Your measure cannot be converted due to FHIR validation errors.";
     }
 
     public String getConvertMeasureFailureMessage() {

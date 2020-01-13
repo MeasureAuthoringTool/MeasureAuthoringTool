@@ -32,7 +32,7 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
             throw e;
         } catch (Exception e) {
             logger.error(e);
-            throw new MatException(e);
+            throw new MatException(e.getMessage(), e);
         }
     }
 

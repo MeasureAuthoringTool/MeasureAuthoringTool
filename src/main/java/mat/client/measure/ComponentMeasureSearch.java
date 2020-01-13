@@ -303,7 +303,8 @@ public class ComponentMeasureSearch implements BaseDisplay{
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				sb.appendHtmlConstant("<div id='appliedComponentContainer' tabindex=\"-1\">");
-				sb.appendHtmlConstant("<span id='appliedComponentDiv' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
+				sb.appendHtmlConstant("<span id='appliedComponentDiv' title=\" " + SafeHtmlUtils.htmlEscape(object.getName()) +
+						"\" tabindex=\"0\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</span>");
 				sb.appendHtmlConstant("</div>");
 				return sb.toSafeHtml();
 			}
@@ -380,7 +381,8 @@ public class ComponentMeasureSearch implements BaseDisplay{
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {				
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				sb.appendHtmlConstant("<div id='container' tabindex=\"-1\">");
-				sb.appendHtmlConstant("<span id='div2' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
+				sb.appendHtmlConstant("<span id='div2' title=\" " + SafeHtmlUtils.htmlEscape(object.getName()) +
+						"\" tabindex=\"0\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</span>");
 				sb.appendHtmlConstant("</div>");
 				return sb.toSafeHtml();
 			}
@@ -442,12 +444,12 @@ public class ComponentMeasureSearch implements BaseDisplay{
 			@Override
 			public Boolean getValue(Result object) {
 				if(appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList()).size() > 0) {
-					chbxCell.setTitle("Click to remove " + object.getName() + " as a component measure");
+					chbxCell.setTitle("Click to remove " + SafeHtmlUtils.htmlEscape(object.getName()) + " as a component measure");
 					selectionModel.setSelected(object, true);
 					return true;
 				}
 				
-				chbxCell.setTitle("Click to add " + object.getName() + " as a component measure");
+				chbxCell.setTitle("Click to add " + SafeHtmlUtils.htmlEscape(object.getName()) + " as a component measure");
 				return false;
 			}
 		};
@@ -465,10 +467,12 @@ public class ComponentMeasureSearch implements BaseDisplay{
 								appliedComponentMeasuresList.add(object);
 							}
 							helpBlock.setColor("transparent");
-							helpBlock.setText(object.getName() + " has been selected and added to the applied component measures list");
+							helpBlock.setText(SafeHtmlUtils.htmlEscape(object.getName()) +
+									" has been selected and added to the applied component measures list");
 						} else {
 							helpBlock.setColor("transparent");
-							helpBlock.setText(object.getName() + " has been deselected and removed from the applied component measures list");
+							helpBlock.setText(SafeHtmlUtils.htmlEscape(object.getName()) +
+									" has been deselected and removed from the applied component measures list");
 							List<Result> matchingList = appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList());
 							for(Result matchingResult: matchingList) {
 								appliedComponentMeasuresList.remove(matchingResult);

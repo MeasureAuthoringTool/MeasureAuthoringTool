@@ -616,12 +616,12 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         setSearchingBusy(true);
         FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
-        fhirMeasureService.convert(object, new AsyncCallback<FhirConvertResultResponse>() {
+        fhirMeasureService.convert(object, MatContext.get().getLoggedinUserId(), new AsyncCallback<FhirConvertResultResponse>() {
             @Override
             public void onFailure(Throwable caught) {
                 GWT.log("Error while converting the measure", caught);
                 setSearchingBusy(false);
-                showConversionError(MatContext.get().getMessageDelegate().getConvertMeasureFailureMessage(detailDisplay.getMeasureNameTextBox().getValue(), caught.getLocalizedMessage()));
+                showFhirConversionError(MatContext.get().getMessageDelegate().getConvertMeasureFailureMessage());
                 MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
             }
 
@@ -632,7 +632,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
                 if (!response.getValidationStatus().isValidationPassed()) {
                     GWT.log("Measure validation has failed.");
-                    showConversionError(MatContext.get().getMessageDelegate().getConvertMeasureValidatinoFailedMessage(detailDisplay.getMeasureNameTextBox().getValue()));
+                    showFhirConversionError(MatContext.get().getMessageDelegate().getConvertMeasureValidationFailedMessage());
                     showFhirValidationReport(response.getSourceMeasure().getId());
                 } else {
                     GWT.log("Measure conversion was successful.");
@@ -650,7 +650,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         Window.open(url, "_blank", "");
     }
 
-    private void showConversionError(final String errorMessage) {
+    private void showFhirConversionError(final String errorMessage) {
         ConfirmationDialogBox errorAlert = new ConfirmationDialogBox(errorMessage, "Return to Measure Library", "Cancel", null, true);
         errorAlert.getNoButton().setVisible(false);
         errorAlert.setObserver(new ConfirmationObserver() {
@@ -1540,7 +1540,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onFhirValidationClicked(ManageMeasureSearchModel.Result result) {
-                //TODO Calling MAT-354 service
+                showFhirValidationReport(result.getId());
             }
 
             @Override

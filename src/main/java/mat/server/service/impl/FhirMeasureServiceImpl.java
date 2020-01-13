@@ -43,12 +43,13 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
     }
 
     @Override
-    public FhirConvertResultResponse convert(ManageMeasureSearchModel.Result sourceMeasure) throws MatException {
+    public FhirConvertResultResponse convert(ManageMeasureSearchModel.Result sourceMeasure, String loggedinUserId) throws MatException {
         if (!sourceMeasure.isFhirConvertible()) {
             throw new MatException("Measure cannot be converted to FHIR");
         }
         FhirConvertResultResponse fhirConvertResultResponse = new FhirConvertResultResponse();
         fhirConvertResultResponse.setSourceMeasure(sourceMeasure);
+        measureLibraryService.recordRecentMeasureActivity(sourceMeasure.getId(), loggedinUserId);
 
         FhirValidationStatus sourceValidationStatus = validateSourceMeasureForFhirConversion(sourceMeasure);
 
@@ -64,6 +65,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
             // If we use a fhir measure id, then it will be abandoned on FHIR server end, when re-converted
             ConversionResultDto fhirConvertResult = fhirOrchestrationGatewayService.convert(sourceMeasure.getId(), sourceMeasure.isDraft());
             fhirConvertResultResponse.setValidationStatus(createValidationStatus(fhirConvertResult));
+            measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
         }
 
         return fhirConvertResultResponse;

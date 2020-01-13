@@ -8,6 +8,6 @@ import static mat.client.measure.ManageMeasureSearchModel.Result;
 @RemoteServiceRelativePath("fhirMeasure")
 public interface FhirMeasureRemoteServiceAsync {
 
-    void convert(Result sourceMeasure, AsyncCallback<FhirConvertResultResponse> callback);
+    void convert(Result sourceMeasure, String loggedinUserId, AsyncCallback<FhirConvertResultResponse> callback);
 
 }

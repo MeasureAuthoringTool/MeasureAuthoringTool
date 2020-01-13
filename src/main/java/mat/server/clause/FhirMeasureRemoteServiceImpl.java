@@ -22,10 +22,10 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
     private FhirMeasureService fhirMeasureService;
 
     @Override
-    public FhirConvertResultResponse convert(Result sourceMeasure) throws MatException {
+    public FhirConvertResultResponse convert(Result sourceMeasure, String loggedinUserId) throws MatException {
         logger.info("Converting  measureId: " + sourceMeasure.getId());
         try {
-            return fhirMeasureService.convert(sourceMeasure);
+            return fhirMeasureService.convert(sourceMeasure, loggedinUserId);
         } catch (MatException e) {
             logger.error(e);
             throw e;

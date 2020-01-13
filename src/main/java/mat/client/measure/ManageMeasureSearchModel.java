@@ -409,6 +409,14 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
             isFhirConvertible = fhirConvertible;
         }
 
+        public boolean isFhirEditorViewable() {
+            return isFhirEditorViewable;
+        }
+
+        public void setFhirEditorViewable(boolean fhirEditorViewable) {
+            isFhirEditorViewable = fhirEditorViewable;
+        }
+
         /**
          * Checks if is measure locked.
          *

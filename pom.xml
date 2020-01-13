@@ -34,7 +34,7 @@
         <gwt.sourceLevel>1.8</gwt.sourceLevel>
         <java.version>11</java.version>
         <!-- Disable temporarily maven.compiler.release due to LGTM build/extract issues. -->
-<!--        <maven.compiler.release>11</maven.compiler.release>-->
+        <maven.compiler.release>11</maven.compiler.release>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>

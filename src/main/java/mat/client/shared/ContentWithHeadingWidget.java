@@ -1,5 +1,6 @@
 package mat.client.shared;
 
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -161,7 +162,7 @@ public class ContentWithHeadingWidget extends Composite{
 	 */
 	public void setHeading(String text,String linkName) {
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
-		heading.setHTML(linkStr +"<h1>" + text + "</h1>");
+		heading.setHTML(linkStr +"<h1>" + SafeHtmlUtils.htmlEscape(text) + "</h1>");
 	}
 	
 }

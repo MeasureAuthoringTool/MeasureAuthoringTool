@@ -166,6 +166,12 @@ left:50px;
 	margin-left: 0;
 }
 
+.applied-component-div{
+    float: left;
+    width: 100px;
+    margin-left: 0;
+}
+
 #div1{
     float: left;
     width:30px;
@@ -173,6 +179,11 @@ left:50px;
 }
 
 #div2{
+    float:left;
+    margin-right:0;
+}
+
+.measure-column{
     float:left;
     margin-right:0;
 }

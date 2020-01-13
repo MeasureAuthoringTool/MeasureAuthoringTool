@@ -583,7 +583,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         panel.setContent(detailDisplay.asWidget());
     }
 
-    private void confrmAndConvertFhir(Result object) {
+    private void confirmAndConvertFhir(Result object) {
         ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox("Are you sure you want to convert this measure again? The existing FHIR measure will be overwritten.", "Yes", "No", null, false);
         confirmationDialogBox.getNoButton().setVisible(true);
         confirmationDialogBox.setObserver(new ConfirmationObserver() {
@@ -608,7 +608,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void convertMeasureFhir(Result object) {
-        GWT.log("Please wait. Conversion is in progress ...");
+        GWT.log("Please wait. Conversion is in progress...");
 
         if (!MatContext.get().getLoadingQueue().isEmpty()) {
             return;
@@ -1596,7 +1596,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             @Override
             public void onConvertMeasureFhir(Result object) {
                 if (object.isConvertedToFhir()) {
-                    confrmAndConvertFhir(object);
+                    confirmAndConvertFhir(object);
                 } else {
                     convertMeasureFhir(object);
                 }

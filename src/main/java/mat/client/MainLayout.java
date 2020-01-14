@@ -2,6 +2,8 @@ package mat.client;
 
 import java.util.List;
 
+import mat.client.util.FeatureFlagConstant;
+import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.AnchorButton;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
@@ -329,8 +331,14 @@ public abstract class MainLayout {
 	}
 	
 	public void setHeader(String version, NavbarLink link) {
-		setLinkTextAndTitle(HEADING + " v" + version, link);
-		link.setTitle(HEADING + " version " + version);
+		if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
+			setLinkTextAndTitle(HEADING + " v" + version + " (" + MeasureDetailsUtil.FHIR + ")", link);
+			link.setTitle(HEADING + " version " + version + " (" + MeasureDetailsUtil.FHIR + ")");
+		} else {
+			setLinkTextAndTitle(HEADING + " v" + version, link);
+			link.setTitle(HEADING + " version " + version);
+		}
+
 		link.getElement().setAttribute("role", "alert");
 		link.getElement().setAttribute("aria-label", "Clicking this link will navigate you to Measure Library page.");
 	}

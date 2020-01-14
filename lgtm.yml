@@ -1,9 +1,7 @@
 extraction:
   java:
-    before_index:
-      - ./install-deps.sh
-      - export MAVEN_OPTS="-Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Denforcer.skip -Dmaven.javadoc.skip -Dlicense.skip=true"
     index:
-      java_version: 11
-      maven:
-        version: 3.6.3
+      build_command:
+        - "./install-deps.sh"
+        - "mvn clean package -f \"pom.xml\" -B -V -e -Dfindbugs.skip -Dcheckstyle.skip\
+        \ -Dpmd.skip=true -Denforcer.skip -Dmaven.javadoc.skip -Dlicense.skip=true"

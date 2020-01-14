@@ -33,7 +33,6 @@
         <!-- Only GWT HEAD supports sourceLevel 10 & 11. The latest released GWT supports only 1.8 sourceLevel -->
         <gwt.sourceLevel>1.8</gwt.sourceLevel>
         <java.version>11</java.version>
-        <!-- Disable temporarily maven.compiler.release due to LGTM build/extract issues. -->
         <maven.compiler.release>11</maven.compiler.release>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -705,6 +704,69 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <id>install-CQLtoELM</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.basedir}/lib/CQLtoELM-1.4.6.54.jar</file>
+                            <groupId>mat</groupId>
+                            <artifactId>CQLtoELM</artifactId>
+                            <version>1.4.6.54</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>initialize</phase>
+                        <id>install-mat-rest-commons</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.basedir}/lib/mat-rest-commons-1.0.jar</file>
+                            <groupId>gov.cms.mat</groupId>
+                            <artifactId>mat-rest-commons</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>initialize</phase>
+                        <id>install-vipuserservices-test-client</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.basedir}/lib/vipuserservices-test-client-1.0.jar</file>
+                            <groupId>mat</groupId>
+                            <artifactId>vipuserservices</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>initialize</phase>
+                        <id>install-vsac</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.basedir}/lib/vsac-1.0.jar</file>
+                            <groupId>mat</groupId>
+                            <artifactId>vsac</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
         </plugins>
 

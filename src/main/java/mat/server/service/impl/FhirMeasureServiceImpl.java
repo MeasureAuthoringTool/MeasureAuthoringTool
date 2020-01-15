@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -82,17 +83,9 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
     private FhirValidationStatus createValidationStatus(ConversionResultDto convertResult) {
         FhirValidationStatus validationSummary = new FhirValidationStatus();
-
-        boolean hasLibraryFhirValidationErrors = !convertResult.getLibraryConversionResults().stream().allMatch(i -> Boolean.TRUE.equals(i.getSuccess()));
-        validationSummary.setHasLibraryFhirValidationErrors(hasLibraryFhirValidationErrors);
-
-        boolean hasValueSetResultsErrors = !convertResult.getValueSetConversionResults().stream().allMatch(i -> Boolean.TRUE.equals(i.getSuccess()));
-        validationSummary.setHasValueSetResultsErrors(hasValueSetResultsErrors);
-
-        boolean hasMeasureFhirValidationErrors = !convertResult.getMeasureConversionResults().getMeasureResults().isEmpty();
-        validationSummary.setHasMeasureFhirValidationErrors(hasMeasureFhirValidationErrors);
-
-        validationSummary.setValidationPassed(!hasLibraryFhirValidationErrors && !hasValueSetResultsErrors && !hasMeasureFhirValidationErrors);
+        validationSummary.setErrorReason(convertResult.getErrorReason());
+        validationSummary.setOutcome(convertResult.getOutcome() != null ? convertResult.getOutcome().toString() : null);
+        validationSummary.setValidationPassed(ConversionOutcome.SUCCESS.equals(convertResult.getOutcome()));
         return validationSummary;
     }
 

@@ -4,10 +4,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class FhirValidationStatus implements IsSerializable {
 
-    boolean validationPassed;
-    boolean hasValueSetResultsErrors;
-    boolean hasLibraryFhirValidationErrors;
-    boolean hasMeasureFhirValidationErrors;
+    private boolean validationPassed;
+    private String errorReason;
+    private String outcome;
 
     public boolean isValidationPassed() {
         return validationPassed;
@@ -17,27 +16,20 @@ public class FhirValidationStatus implements IsSerializable {
         this.validationPassed = validationPassed;
     }
 
-    public boolean isHasValueSetResultsErrors() {
-        return hasValueSetResultsErrors;
+    public String getErrorReason() {
+        return errorReason;
     }
 
-    public void setHasValueSetResultsErrors(boolean hasValueSetResultsErrors) {
-        this.hasValueSetResultsErrors = hasValueSetResultsErrors;
+    public void setErrorReason(String errorReason) {
+        this.errorReason = errorReason;
     }
 
-    public boolean isHasLibraryFhirValidationErrors() {
-        return hasLibraryFhirValidationErrors;
+    public String getOutcome() {
+        return outcome;
     }
 
-    public void setHasLibraryFhirValidationErrors(boolean hasLibraryFhirValidationErrors) {
-        this.hasLibraryFhirValidationErrors = hasLibraryFhirValidationErrors;
+    public void setOutcome(String outcome) {
+        this.outcome = outcome;
     }
 
-    public boolean isHasMeasureFhirValidationErrors() {
-        return hasMeasureFhirValidationErrors;
-    }
-
-    public void setHasMeasureFhirValidationErrors(boolean hasMeasureFhirValidationErrors) {
-        this.hasMeasureFhirValidationErrors = hasMeasureFhirValidationErrors;
-    }
 }

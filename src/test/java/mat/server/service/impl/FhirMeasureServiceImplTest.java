@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import gov.cms.mat.fhir.rest.dto.MeasureConversionResults;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -62,6 +63,7 @@ public class FhirMeasureServiceImplTest {
         String loggedinUserId = "someCurrentUser";
 
         ConversionResultDto preValidationResult = new ConversionResultDto();
+        preValidationResult.setOutcome(ConversionOutcome.SUCCESS);
         preValidationResult.setMeasureId(sourceMeasure.getId());
         preValidationResult.setMeasureConversionResults(new MeasureConversionResults());
         preValidationResult.setLibraryConversionResults(Collections.emptyList());
@@ -97,6 +99,7 @@ public class FhirMeasureServiceImplTest {
         String loggedinUserId = "someCurrentUser";
 
         ConversionResultDto preValidationResult = new ConversionResultDto();
+        preValidationResult.setOutcome(ConversionOutcome.SUCCESS);
         preValidationResult.setMeasureId(sourceMeasure.getId());
         preValidationResult.setMeasureConversionResults(new MeasureConversionResults());
         preValidationResult.setLibraryConversionResults(Collections.emptyList());

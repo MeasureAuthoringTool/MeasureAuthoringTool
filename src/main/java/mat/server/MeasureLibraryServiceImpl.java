@@ -978,6 +978,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setMeasureSetId(dto.getMeasureSetId());
         detail.setDraftable(dto.isDraftable());
         detail.setVersionable(dto.isVersionable());
+        detail.setConvertedToFhir(dto.getFhirMeasureId() != null && !dto.getFhirMeasureId().isEmpty());
         return detail;
     }
 
@@ -1117,6 +1118,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
         detail.setMeasureSetId(measure.getMeasureSet().getId());
         detail.setScoringType(measure.getMeasureScoring());
+        detail.setConvertedToFhir(measure.getFhirMeasureId() != null && !measure.getFhirMeasureId().isEmpty());
         boolean isLocked = measureDAO.isMeasureLocked(measure.getId());
         detail.setMeasureLocked(isLocked);
         boolean isEditable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId());
@@ -1299,18 +1301,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     @Override
-    public final ManageMeasureDetailModel getMeasure(final String key) {
+    public final ManageMeasureDetailModel getMeasure(final String measureId) {
         logger.info("In MeasureLibraryServiceImpl.getMeasure() method..");
-        logger.info("Loading Measure for MeasueId: " + key);
-        Measure measure = measurePackageService.getById(key);
+        logger.info("Loading Measure for MeasureId: " + measureId);
+        Measure measure = measurePackageService.getById(measureId);
         if (!measure.getIsCompositeMeasure()) {
-            MeasureXmlModel xmlModel = getMeasureXmlForMeasure(key);
+            MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
             String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 
-            ManageMeasureDetailModel manageMeasureDetailModel = new ManageMeasureDetailModel();
-            MeasureDetailResult measureDetailResult = new MeasureDetailResult();
+            ManageMeasureDetailModel manageMeasureDetailModel;
+            MeasureDetailResult measureDetailResult;
             if (xmlString == null || measure.getMeasureDetails() != null) {
-                manageMeasureDetailModel = setManageMeasureDetailModelFromDatabaseData(measure, measureDetailResult);
+                manageMeasureDetailModel = setManageMeasureDetailModelFromDatabaseData(measure);
                 measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
             } else {
                 manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
@@ -1324,7 +1326,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             return manageMeasureDetailModel;
         } else {
-            return getCompositeMeasure(key);
+            return getCompositeMeasure(measureId);
         }
     }
 
@@ -1342,7 +1344,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
     }
 
-    private ManageMeasureDetailModel setManageMeasureDetailModelFromDatabaseData(Measure measure, MeasureDetailResult measureDetailResult) {
+    private ManageMeasureDetailModel setManageMeasureDetailModelFromDatabaseData(Measure measure) {
         ManageMeasureDetailModelConversions converter = new ManageMeasureDetailModelConversions();
         if (BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
             return converter.createManageCompositeMeasureDetailModel(measure, organizationDAO, measureTypeDAO);
@@ -1360,7 +1362,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = new ManageCompositeMeasureDetailModel();
         if (xmlString == null || measure.getMeasureDetails() != null) {
-            manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) setManageMeasureDetailModelFromDatabaseData(measure, measureDetailResult);
+            manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) setManageMeasureDetailModelFromDatabaseData(measure);
             measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
         } else {
             manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXMLToModel(xmlString, measure);
@@ -2415,6 +2417,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 detail.setOwnerEmailAddress(user.getEmailAddress());
                 detail.setMeasureSetId(dto.getMeasureSetId());
                 detail.setPatientBased(dto.isPatientBased());
+                detail.setConvertedToFhir(dto.getFhirMeasureId() != null && !dto.getFhirMeasureId().isEmpty());
                 detailModelList.add(detail);
             }
         } else {
@@ -4755,50 +4758,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         return message;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see mat.server.service.MeasureLibraryService#getCurrentReleaseVersion()
-     */
     @Override
     public String getCurrentReleaseVersion() {
         return currentReleaseVersion;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see mat.server.service.MeasureLibraryService#setCurrentReleaseVersion(java.
-     * lang.String)
-     */
     @Override
     public void setCurrentReleaseVersion(String releaseVersion) {
         currentReleaseVersion = releaseVersion;
     }
 
-    /**
-     * Gets the cql service.
-     *
-     * @return the cql service
-     */
     public CQLService getCqlService() {
         return cqlService;
     }
 
-    /**
-     * Sets the cql service.
-     *
-     * @param cqlService the new cql service
-     */
     public void setCqlService(CQLService cqlService) {
         this.cqlService = cqlService;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see mat.server.service.MeasureLibraryService#parseCQL(java.lang.String)
-     */
     @Override
     public CQLModel parseCQL(String cqlBuilder) {
         return getCqlService().parseCQL(cqlBuilder);

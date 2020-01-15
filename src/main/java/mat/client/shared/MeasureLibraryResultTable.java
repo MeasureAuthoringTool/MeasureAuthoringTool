@@ -155,7 +155,7 @@ public class MeasureLibraryResultTable {
     @VisibleForTesting
     void onConvertClicked(MultiSelectionModel<Result> selectionModel) {
         selectionModel.getSelectedSet().stream().filter(Result::isFhirConvertible).findFirst().ifPresent(object -> {
-            observer.onConvert(object);
+            observer.onConvertMeasureFhir(object);
         });
     }
 

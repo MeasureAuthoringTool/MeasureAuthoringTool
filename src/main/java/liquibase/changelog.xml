@@ -9,4 +9,6 @@
     <include file="classpath:/liquibase/addMeasureModelColumn.xml"/>
     <include file="classpath:/liquibase/addLibraryModelColumn.xml"/>
     <include file="classpath:/liquibase/addMVPFeatureFlags.xml"/>
+    <include file="classpath:/liquibase/addConvertedFhirMeasureColumn.xml"/>
+    <include file="classpath:/liquibase/addConvertedFromMeasureColumn.xml"/>
 </databaseChangeLog>

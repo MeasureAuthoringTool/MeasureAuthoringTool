@@ -1,29 +1,29 @@
 package mat.server.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
-import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
-import gov.cms.mat.fhir.rest.dto.CqlConversionError;
-import gov.cms.mat.fhir.rest.dto.FhirValidationResult;
-import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
-import gov.cms.mat.fhir.rest.dto.ValueSetValidationResult;
-import mat.dao.clause.MeasureDAO;
-import mat.model.clause.Measure;
-import mat.shared.DateUtility;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
+import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
+import gov.cms.mat.fhir.rest.dto.CqlConversionError;
+import gov.cms.mat.fhir.rest.dto.FhirValidationResult;
+import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
+import mat.client.shared.MatRuntimeException;
+import mat.dao.clause.MeasureDAO;
+import mat.model.clause.Measure;
+import mat.server.service.impl.FhirOrchestrationGatewayService;
+import mat.shared.DateUtility;
 
 @Service("fhirValidationService")
 public class FhirValidationReportService {
@@ -35,15 +35,16 @@ public class FhirValidationReportService {
     private static final Log logger = LogFactory.getLog(FhirValidationReportService.class);
 
     private Configuration freemarkerConfiguration;
-
     private MeasureDAO measureDAO;
+    private FhirOrchestrationGatewayService fhirOrchestrationGatewayService;
 
     @Value("${mat.measure.current.release.version}")
     private String currentMatVersion;
 
-    public FhirValidationReportService(Configuration freemarkerConfiguration, MeasureDAO measureDAO) {
+    public FhirValidationReportService(Configuration freemarkerConfiguration, MeasureDAO measureDAO, FhirOrchestrationGatewayService fhirOrchestrationGatewayService) {
         this.freemarkerConfiguration = freemarkerConfiguration;
         this.measureDAO = measureDAO;
+        this.fhirOrchestrationGatewayService = fhirOrchestrationGatewayService;
     }
 
     /**
@@ -59,7 +60,7 @@ public class FhirValidationReportService {
         ConversionResultDto conversionResult = null;
         Measure measure = measureDAO.find(measureId);
         if (measure != null) {
-            conversionResult = validateFhirConversion(measureId);
+            conversionResult = validateFhirConversion(measureId, measure.isDraft());
         }
         return generateValidationReport(conversionResult, measure);
     }
@@ -70,18 +71,16 @@ public class FhirValidationReportService {
      * @return an instance of FHIR ConversionResultDto
      * @throws IOException
      */
-    private ConversionResultDto validateFhirConversion(String measureId) throws IOException {
+    private ConversionResultDto validateFhirConversion(String measureId, boolean isDraft) throws IOException {
         if (measureId == null) {
             return null;
         }
-
-        URL path = FhirValidationReportService.class.getResource("report.json");
-        logger.info("Calling FHIR conversion validation service for measure: "+ measureId);
-        //TODO: Replace following line with actual call to FHIR conversion service once it is available on AWS
-        // and delete report.json mock data
-        return new ObjectMapper()
-                .readValue(new File(path.getFile()),
-                        ConversionResultDto.class);
+        logger.info("Calling FHIR conversion validation service for measure: " + measureId);
+        try {
+            return fhirOrchestrationGatewayService.validate(measureId, isDraft);
+        } catch (MatRuntimeException e) {
+            throw new IOException(e);
+        }
     }
 
     /**
@@ -98,22 +97,17 @@ public class FhirValidationReportService {
         if (conversionResultDto != null && measure != null) {
             //Measure FHIR validation errors
             List<FhirValidationResult> measureFhirValidationErrors = conversionResultDto.
-                    getMeasureConversionResults().
-                    getMeasureFhirValidationErrors();
+                    getMeasureConversionResults().getMeasureFhirValidationResults();
 
-            //Library FHIR validation errors
-            LibraryConversionResults libraryConversionResults = conversionResultDto.getLibraryConversionResults();
-            List<FhirValidationResult> libraryFhirValidationErrors = libraryConversionResults.getLibraryFhirValidationErrors();
+            // Library FHIR validation errors
+            List<LibraryConversionResults> libraryConversionResults = conversionResultDto.getLibraryConversionResults();
+            List<FhirValidationResult> libraryFhirValidationErrors = libraryConversionResults.stream().flatMap(i -> i.getLibraryFhirValidationResults().stream()).collect(Collectors.toList());
 
-            //CQL conversion errors
-            List<CqlConversionError> cqlConversionErrors = libraryConversionResults.
-                    getCqlConversionResult().
-                    getCqlConversionErrors();
+            // CQL conversion errors
+            List<CqlConversionError> cqlConversionErrors = libraryConversionResults.stream().map(i -> i.getCqlConversionResult()).flatMap(i -> i.getCqlConversionErrors().stream()).collect(Collectors.toList());
 
-            //ValueSet FHIR validation errors
-            List<ValueSetValidationResult> valueSetFhirValidationErrors = conversionResultDto.
-                    getValueSetConversionResults().
-                    getValueSetFhirValidationErrors();
+            // ValueSet FHIR validation errors
+            List<FhirValidationResult> valueSetFhirValidationErrors = conversionResultDto.getValueSetConversionResults().stream().flatMap(i -> i.getValueSetFhirValidationResults().stream()).collect(Collectors.toList());
 
             Instant instant = Instant.parse(conversionResultDto.getModified());
             paramsMap.put("runDate", DateUtility.formatInstant(instant, DATE_FORMAT));

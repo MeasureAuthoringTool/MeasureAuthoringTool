@@ -26,12 +26,12 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import mat.DTO.CompositeMeasureScoreDTO;
@@ -50,8 +50,11 @@ import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
-import mat.client.measure.service.MeasureCloningService;
-import mat.client.measure.service.MeasureCloningServiceAsync;
+import mat.client.measure.service.FhirConvertResultResponse;
+import mat.client.measure.service.FhirMeasureRemoteService;
+import mat.client.measure.service.FhirMeasureRemoteServiceAsync;
+import mat.client.measure.service.MeasureCloningRemoteService;
+import mat.client.measure.service.MeasureCloningRemoteServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ConfirmationObserver;
@@ -580,6 +583,95 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         panel.setContent(detailDisplay.asWidget());
     }
 
+    private void confirmAndConvertFhir(Result object) {
+        ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox("Are you sure you want to convert this measure again? The existing FHIR measure will be overwritten.", "Yes", "No", null, false);
+        confirmationDialogBox.getNoButton().setVisible(true);
+        confirmationDialogBox.setObserver(new ConfirmationObserver() {
+
+            @Override
+            public void onYesButtonClicked() {
+                convertMeasureFhir(object);
+            }
+
+            @Override
+            public void onNoButtonClicked() {
+                // Just skip any conversion
+            }
+
+            @Override
+            public void onClose() {
+                // Just skip any conversion
+            }
+        });
+
+        confirmationDialogBox.show();
+    }
+
+    private void convertMeasureFhir(Result object) {
+        GWT.log("Please wait. Conversion is in progress...");
+
+        if (!MatContext.get().getLoadingQueue().isEmpty()) {
+            return;
+        }
+
+        setSearchingBusy(true);
+        FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
+        fhirMeasureService.convert(object, new AsyncCallback<FhirConvertResultResponse>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                GWT.log("Error while converting the measure", caught);
+                setSearchingBusy(false);
+                showFhirConversionError(MatContext.get().getMessageDelegate().getConvertMeasureFailureMessage());
+                MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+            }
+
+            @Override
+            public void onSuccess(FhirConvertResultResponse response) {
+                GWT.log("Measure conversion has completed.");
+                setSearchingBusy(false);
+
+                if (!response.getValidationStatus().isValidationPassed()) {
+                    GWT.log("Measure validation has failed.");
+                    showFhirConversionError(MatContext.get().getMessageDelegate().getConvertMeasureValidationFailedMessage());
+                    showFhirValidationReport(response.getSourceMeasure().getId());
+                } else {
+                    GWT.log("Measure conversion was successful.");
+                    showConfirmationDialog(MatContext.get().getMessageDelegate().getConvertMeasureSuccessfulMessage(detailDisplay.getMeasureNameTextBox().getValue()));
+                    showFhirValidationReport(response.getFhirMeasure().getId());
+                }
+                displaySearch();
+            }
+        });
+
+    }
+
+    private void showFhirValidationReport(String measureId) {
+        String url = GWT.getModuleBaseURL() + "validationReport?id=" + SafeHtmlUtils.htmlEscape(measureId);
+        Window.open(url, "_blank", "");
+    }
+
+    private void showFhirConversionError(final String errorMessage) {
+        ConfirmationDialogBox errorAlert = new ConfirmationDialogBox(errorMessage, "Return to Measure Library", "Cancel", null, true);
+        errorAlert.getNoButton().setVisible(false);
+        errorAlert.setObserver(new ConfirmationObserver() {
+
+            @Override
+            public void onYesButtonClicked() {
+                displaySearch();
+            }
+
+            @Override
+            public void onNoButtonClicked() {
+            }
+
+            @Override
+            public void onClose() {
+            }
+        });
+        errorAlert.show();
+    }
+
+
     private void cloneMeasure() {
         if (!MatContext.get().getLoadingQueue().isEmpty()) {
             return;
@@ -588,7 +680,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         updateDetailsFromView();
 
         searchDisplay.resetMessageDisplay();
-        MeasureCloningServiceAsync measureCloningService = GWT.create(MeasureCloningService.class);
+        MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
 
         if (isValid(currentDetails, false)) {
             measureCloningService.cloneExistingMeasure(currentDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
@@ -620,7 +712,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         updateCompositeDetailsFromComponentMeasureDisplay();
 
         searchDisplay.resetMessageDisplay();
-        MeasureCloningServiceAsync measureCloningService = GWT.create(MeasureCloningService.class);
+        MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
         if (isValidCompositeMeasure(currentCompositeMeasureDetails)) {
             measureCloningService.draftExistingMeasure(currentCompositeMeasureDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
                 @Override
@@ -658,7 +750,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         updateDetailsFromView();
 
         searchDisplay.resetMessageDisplay();
-        MeasureCloningServiceAsync measureCloningService = GWT.create(MeasureCloningService.class);
+        MeasureCloningRemoteServiceAsync measureCloningService = GWT.create(MeasureCloningRemoteService.class);
         if (isValid(currentDetails, true)) {
             measureCloningService.draftExistingMeasure(currentDetails, new AsyncCallback<ManageMeasureSearchModel.Result>() {
                 @Override
@@ -1027,18 +1119,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     @Override
     public Widget getWidget() {
         return panel;
-    }
-
-    public Widget getWidgetWithHeading(Widget widget, String heading) {
-        FlowPanel vPanel = new FlowPanel();
-        Label h = new Label(heading);
-        h.addStyleName("myAccountHeader");
-        h.addStyleName("leftAligned");
-        vPanel.add(h);
-        vPanel.add(widget);
-        vPanel.addStyleName("myAccountPanel");
-        widget.addStyleName("myAccountPanelContent");
-        return vPanel;
     }
 
     private void historyDisplayHandlers(final HistoryDisplay historyDisplay) {
@@ -1460,7 +1540,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onFhirValidationClicked(ManageMeasureSearchModel.Result result) {
-                //TODO Calling MAT-354 service
+                showFhirValidationReport(result.getId());
             }
 
             @Override
@@ -1514,40 +1594,15 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
 
             @Override
-            public void onConvert(Result object) {
-                ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox("Are you sure you want to convert this measure again? The existing FHIR measure will be overwritten.", "Yes", "No", null, false);
-                confirmationDialogBox.getNoButton().setVisible(false);
-                confirmationDialogBox.setObserver(new ConfirmationObserver() {
-
-                    @Override
-                    public void onYesButtonClicked() {
-                        executeConversion(object);
-                    }
-
-                    @Override
-                    public void onNoButtonClicked() {
-                        // Just skip any conversion
-                    }
-
-                    @Override
-                    public void onClose() {
-                        // Just skip any conversion
-                    }
-                });
-
-                confirmationDialogBox.show();
+            public void onConvertMeasureFhir(Result object) {
+                if (object.isConvertedToFhir()) {
+                    confirmAndConvertFhir(object);
+                } else {
+                    convertMeasureFhir(object);
+                }
             }
 
         };
-    }
-
-    private void executeConversion(Result object) {
-        Window.alert("Please wait. Conversion is in progress..");
-
-        String url = GWT.getModuleBaseURL() + "validationReport?id=" + object.getId();
-        Window.open(url, "_blank", "");
-
-        displaySearch();
     }
 
     private void resetSearchFields(MeasureSearchModel measureSearchModel) {

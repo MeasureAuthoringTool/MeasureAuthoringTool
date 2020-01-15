@@ -62,6 +62,8 @@ public class MeasureShareDTO implements IsSerializable {
 	
 	private Boolean isPatientBased;
 
+	private String fhirMeasureId;
+
 	public MeasureShareDTO(String measureId, String shareLevel, String ownerUserId) {
 		super();
 		this.measureId = measureId;
@@ -288,5 +290,12 @@ public class MeasureShareDTO implements IsSerializable {
 	public void setPatientBased(Boolean isPatientBased) {
 		this.isPatientBased = isPatientBased;
 	}
-	
+
+    public void setFhirMeasureId(String fhirMeasureId) {
+        this.fhirMeasureId = fhirMeasureId;
+    }
+
+    public String getFhirMeasureId() {
+        return fhirMeasureId;
+    }
 }

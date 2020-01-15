@@ -8,6 +8,8 @@ import javax.sql.DataSource;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -30,6 +33,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
 
 import liquibase.integration.spring.SpringLiquibase;
 import mat.dao.impl.AuditEventListener;
@@ -40,9 +44,11 @@ import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 @ComponentScan({"mat.model", "mat.dao", "mat.dao.impl", "mat.model.clause", "mat.server", "mat.hibernate"})
 @PropertySource("classpath:MAT.properties")
 @EnableTransactionManagement
+@EnableConfigurationProperties
 @EnableWebSecurity
 @EnableCaching
 @EnableScheduling
+@EnableJpaRepositories
 public class Application extends WebSecurityConfigurerAdapter {
 
     @Value("${ALGORITHM:}")
@@ -52,9 +58,9 @@ public class Application extends WebSecurityConfigurerAdapter {
     private String passwordKey;
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource(@Value("${spring.datasource.jndi-name}") String jndiDataSource) {
         final JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
-        return dataSourceLookup.getDataSource("java:/comp/env/jdbc/mat_app_tomcat");
+        return dataSourceLookup.getDataSource(jndiDataSource);
     }
 
     @Bean
@@ -82,20 +88,10 @@ public class Application extends WebSecurityConfigurerAdapter {
         return sessionFactory;
     }
 
-    private final Properties hibernateProperties() {
-        final Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
-        hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
-        hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
-        hibernateProperties.setProperty("hibernate.show_sql", "false");
-        hibernateProperties.setProperty("hibernate.default_batch_fetch_size", "20");
-        hibernateProperties.setProperty("hibernate.jdbc.batch_size", "50");
-        hibernateProperties.setProperty("hibernate.order_updates", "true");
-        hibernateProperties.setProperty("hibernate.connection.release_mode", "auto");
-        hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
-        hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
-        hibernateProperties.setProperty("entityInterceptor", "mat.dao.impl.AuditInterceptor");
-        return hibernateProperties;
+    @ConfigurationProperties(prefix = "spring.jpa.properties")
+    @Bean(name = "hibernateProperties")
+    public Properties hibernateProperties() {
+        return new Properties();
     }
 
     @Bean
@@ -171,6 +167,12 @@ public class Application extends WebSecurityConfigurerAdapter {
 
         return new InMemoryUserDetailsManager(user);
     }
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
 
     @Bean
     public CacheManager cacheManager() {

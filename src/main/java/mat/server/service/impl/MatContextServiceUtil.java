@@ -1,6 +1,12 @@
 package mat.server.service.impl;
 
 import java.math.BigDecimal;
+import java.util.Objects;
+
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import mat.client.featureFlag.service.FeatureFlagService;
 import mat.client.util.FeatureFlagConstant;
 import mat.dao.UserDAO;
@@ -14,9 +20,6 @@ import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
 import mat.shared.model.util.MeasureDetailsUtil;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class MatContextServiceUtil implements InitializingBean {
@@ -198,10 +201,16 @@ public class MatContextServiceUtil implements InitializingBean {
         // 1.1 Pre-CQL measures cannot be converted.
         // 1.2 The button is disabled for draft QDM-CQL measures and Fhir Measures
         // 1.3 Pre-QDM measures cannot be converted. The button is disabled if the QDM version is before 5.5 or the MAT version is before 5.8.
+        // Should be available for the owner or a super user
         BigDecimal qdmVersion = asDecimalVersion(measure.getQdmVersion());
         BigDecimal matVersion = asDecimalVersion(measure.getReleaseVersion());
 
-        return isModelTypeEligibleForConversion(measure) && !measure.isDraft() && isVersionEligibleForConversion(qdmVersion, matVersion);
+        String currentUserId = LoggedInUserUtil.getLoggedInUser();
+        String userRole = LoggedInUserUtil.getLoggedInUserRole();
+        boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
+        boolean isOwner = measure.getOwner() != null && Objects.equals(currentUserId, measure.getOwner().getId());
+
+        return isModelTypeEligibleForConversion(measure) && !measure.isDraft() && isVersionEligibleForConversion(qdmVersion, matVersion) && (isOwner || isSuperUser);
     }
 
     private boolean isVersionEligibleForConversion(BigDecimal qdmVersion, BigDecimal matVersion) {

@@ -7,11 +7,8 @@ import java.util.Objects;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
-import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResults;
-import mat.client.util.FeatureFlagConstant;
 import mat.model.LockedUserInfo;
-import mat.shared.model.util.MeasureDetailsUtil;
 
 /**
  * The Class ManageMeasureSearchModel.
@@ -75,6 +72,8 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 
         private boolean isValidatable;
 
+        private boolean convertedToFhir;
+
         private int clickCount = 0;
 
         private boolean isFhirEditorViewable;
@@ -116,48 +115,56 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
             this.isComposite = result.getIsComposite();
             this.cqlLibraryName = result.getCqlLibraryName();
             this.measureModel = result.getMeasureModel();
+            this.convertedToFhir = result.isConvertedToFhir();
+            this.isFhirEditorViewable = result.isFhirEditorViewable();
         }
 
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Result result = (Result) o;
+            return isHistorical() == result.isHistorical() &&
+                    isSharable() == result.isSharable() &&
+                    isEditable() == result.isEditable() &&
+                    isClonable() == result.isClonable() &&
+                    isExportable() == result.isExportable() &&
+                    isFhirConvertible() == result.isFhirConvertible() &&
+                    isMeasureLocked() == result.isMeasureLocked() &&
+                    isTransferable() == result.isTransferable() &&
+                    isDraft() == result.isDraft() &&
+                    isDeleted() == result.isDeleted() &&
+                    geteMeasureId() == result.geteMeasureId() &&
+                    isMeasureFamily() == result.isMeasureFamily() &&
+                    isDraftable() == result.isDraftable() &&
+                    isVersionable() == result.isVersionable() &&
+                    isValidatable() == result.isValidatable() &&
+                    isConvertedToFhir() == result.isConvertedToFhir() &&
+                    getClickCount() == result.getClickCount() &&
+                    Objects.equals(getId(), result.getId()) &&
+                    Objects.equals(getName(), result.getName()) &&
+                    Objects.equals(getMeasureModel(), result.getMeasureModel()) &&
+                    Objects.equals(getStatus(), result.getStatus()) &&
+                    Objects.equals(getScoringType(), result.getScoringType()) &&
+                    Objects.equals(getShortName(), result.getShortName()) &&
+                    Objects.equals(getLockedUserInfo(), result.getLockedUserInfo()) &&
+                    Objects.equals(getVersion(), result.getVersion()) &&
+                    Objects.equals(getFinalizedDate(), result.getFinalizedDate()) &&
+                    Objects.equals(getMeasureSetId(), result.getMeasureSetId()) &&
+                    Objects.equals(ownerfirstName, result.ownerfirstName) &&
+                    Objects.equals(getOwnerLastName(), result.getOwnerLastName()) &&
+                    Objects.equals(getOwnerEmailAddress(), result.getOwnerEmailAddress()) &&
+                    Objects.equals(getHqmfReleaseVersion(), result.getHqmfReleaseVersion()) &&
+                    Objects.equals(isPatientBased, result.isPatientBased) &&
+                    Objects.equals(getQdmVersion(), result.getQdmVersion()) &&
+                    Objects.equals(getIsComposite(), result.getIsComposite()) &&
+                    Objects.equals(getCqlLibraryName(), result.getCqlLibraryName());
+        }
 
         @Override
         public int hashCode() {
-            return Objects.hash(draft, eMeasureId, finalizedDate, hqmfReleaseVersion, id, isClonable, isComposite,
-                    isDeleted, isDraftable, isEditable, isExportable, isFhirConvertible, isValidatable, isHistorical, isMeasureFamily, isMeasureLocked,
-                    isPatientBased, isSharable, isTransferable, isVersionable, lockedUserInfo, measureSetId, name, measureModel,
-                    ownerEmailAddress, ownerLastName, ownerfirstName, qdmVersion, scoringType, shortName, status,
-                    version);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (!(obj instanceof Result)) {
-                return false;
-            }
-            Result other = (Result) obj;
-            return draft == other.draft && eMeasureId == other.eMeasureId
-                    && Objects.equals(finalizedDate, other.finalizedDate)
-                    && Objects.equals(hqmfReleaseVersion, other.hqmfReleaseVersion) && Objects.equals(id, other.id)
-                    && isClonable == other.isClonable && Objects.equals(isComposite, other.isComposite)
-                    && isDeleted == other.isDeleted && isDraftable == other.isDraftable
-                    && isEditable == other.isEditable && isExportable == other.isExportable
-                    && isFhirConvertible == other.isFhirConvertible && isValidatable == other.isValidatable
-                    && isHistorical == other.isHistorical && isMeasureFamily == other.isMeasureFamily
-                    && isMeasureLocked == other.isMeasureLocked && Objects.equals(isPatientBased, other.isPatientBased)
-                    && isSharable == other.isSharable && isTransferable == other.isTransferable
-                    && isVersionable == other.isVersionable && Objects.equals(lockedUserInfo, other.lockedUserInfo)
-                    && Objects.equals(measureSetId, other.measureSetId) && Objects.equals(name, other.name) && Objects.equals(measureModel, other.measureModel)
-                    && Objects.equals(ownerEmailAddress, other.ownerEmailAddress)
-                    && Objects.equals(ownerLastName, other.ownerLastName)
-                    && Objects.equals(ownerfirstName, other.ownerfirstName)
-                    && Objects.equals(qdmVersion, other.qdmVersion) && Objects.equals(scoringType, other.scoringType)
-                    && Objects.equals(shortName, other.shortName) && Objects.equals(status, other.status)
-                    && Objects.equals(version, other.version);
+            return Objects.hash(getId(), getName(), getMeasureModel(), getStatus(), getScoringType(), isHistorical(), isSharable(), isEditable(), isClonable(), isExportable(), isFhirConvertible(), getShortName(), isMeasureLocked(), getLockedUserInfo(), isTransferable(), getVersion(), getFinalizedDate(), isDraft(), getMeasureSetId(), isDeleted(), ownerfirstName, getOwnerLastName(), getOwnerEmailAddress(), geteMeasureId(), isMeasureFamily(), getHqmfReleaseVersion(), isDraftable(), isVersionable(), isPatientBased, getQdmVersion(), getIsComposite(), getCqlLibraryName(), isValidatable(), isConvertedToFhir(), getClickCount());
         }
 
         /**
@@ -402,6 +409,14 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
             isFhirConvertible = fhirConvertible;
         }
 
+        public boolean isFhirEditorViewable() {
+            return isFhirEditorViewable;
+        }
+
+        public void setFhirEditorViewable(boolean fhirEditorViewable) {
+            isFhirEditorViewable = fhirEditorViewable;
+        }
+
         /**
          * Checks if is measure locked.
          *
@@ -487,165 +502,74 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
             return version;
         }
 
-
-        /**
-         * Gets the finalized date.
-         *
-         * @return the finalized date
-         */
         public Timestamp getFinalizedDate() {
             return finalizedDate;
         }
 
-        /**
-         * Sets the finalized date.
-         *
-         * @param finalizedDate the new finalized date
-         */
         public void setFinalizedDate(Timestamp finalizedDate) {
             this.finalizedDate = finalizedDate;
         }
 
-        /**
-         * Checks if is draft.
-         *
-         * @return true, if is draft
-         */
         public boolean isDraft() {
             return draft;
         }
 
-        /**
-         * Sets the draft.
-         *
-         * @param draft the new draft
-         */
         public void setDraft(boolean draft) {
             this.draft = draft;
         }
 
-        /**
-         * Gets the measure set id.
-         *
-         * @return the measure set id
-         */
         public String getMeasureSetId() {
             return measureSetId;
         }
 
-        /**
-         * Sets the measure set id.
-         *
-         * @param measureSetId the new measure set id
-         */
         public void setMeasureSetId(String measureSetId) {
             this.measureSetId = measureSetId;
         }
 
-        /**
-         * Sets the transferable.
-         *
-         * @param isTransferable the isTransferable to set
-         */
         public void setTransferable(boolean isTransferable) {
             this.isTransferable = isTransferable;
         }
 
-        /**
-         * Checks if is transferable.
-         *
-         * @return the isTransferable
-         */
         public boolean isTransferable() {
             return isTransferable;
         }
 
-        /**
-         * Checks if is deleted.
-         *
-         * @return true, if is deleted
-         */
         public boolean isDeleted() {
             return isDeleted;
         }
 
-        /**
-         * Sets the deleted.
-         *
-         * @param isDeleted the new deleted
-         */
         public void setDeleted(boolean isDeleted) {
             this.isDeleted = isDeleted;
         }
 
-        /**
-         * Gets the ownerfirst name.
-         *
-         * @return the ownerfirst name
-         */
         public String getOwnerFirstName() {
             return ownerfirstName;
         }
 
-        /**
-         * Sets the ownerfirst name.
-         *
-         * @param ownerfirstName the new ownerfirst name
-         */
         public void setOwnerfirstName(String ownerfirstName) {
             this.ownerfirstName = ownerfirstName;
         }
 
-        /**
-         * Gets the owner last name.
-         *
-         * @return the owner last name
-         */
         public String getOwnerLastName() {
             return ownerLastName;
         }
 
-        /**
-         * Sets the owner last name.
-         *
-         * @param ownerLastName the new owner last name
-         */
         public void setOwnerLastName(String ownerLastName) {
             this.ownerLastName = ownerLastName;
         }
 
-        /**
-         * Gets the owner email address.
-         *
-         * @return the owner email address
-         */
         public String getOwnerEmailAddress() {
             return ownerEmailAddress;
         }
 
-        /**
-         * Sets the owner email address.
-         *
-         * @param ownerEmailAddress the new owner email address
-         */
         public void setOwnerEmailAddress(String ownerEmailAddress) {
             this.ownerEmailAddress = ownerEmailAddress;
         }
 
-        /**
-         * Gets the e measure id.
-         *
-         * @return the e measure id
-         */
         public int geteMeasureId() {
             return eMeasureId;
         }
 
-        /**
-         * Sets the e measure id.
-         *
-         * @param eMeasureId the new e measure id
-         */
         public void seteMeasureId(int eMeasureId) {
             this.eMeasureId = eMeasureId;
         }
@@ -721,6 +645,14 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 
         public void incrementClickCount() {
             this.clickCount++;
+        }
+
+        public boolean isConvertedToFhir() {
+            return convertedToFhir;
+        }
+
+        public void setConvertedToFhir(boolean convertedToFhir) {
+            this.convertedToFhir = convertedToFhir;
         }
 
         public void setFhirEditOrViewable(boolean isFhirEditorViewable) {

@@ -83,7 +83,8 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	private MeasureDetailResult measureDetailResult; 
 	private String qdmVersion;
 	private String formattedVersion;
-	
+	private String fhirMeasureId;
+
 	public ManageMeasureDetailModel() {
 		
 	}
@@ -1003,56 +1004,6 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	public void setEndorsementId(String endorsementId) {
 		this.endorsementId = endorsementId;
 	}
-
-	@Override
-	public String toString() {
-		return "ManageMeasureDetailModel [id=" + id + ", name=" + measureName
-				+", measureModel=" + measureModel
-				+ ", shortName=" + shortName + ", versionNumber="
-				+ versionNumber + ", revisionNumber=" + revisionNumber
-				+ ", measureId=" + measureId + ", groupName=" + groupName
-				+ ", groupId=" + groupId + ", finalizedDate=" + finalizedDate
-				+ ", measFromPeriod=" + measFromPeriod + ", measToPeriod="
-				+ measToPeriod +", isCalenderYear= "+ isCalenderYear
-				+ ", measScoring=" + measScoring
-				+ ", stewardValue=" + stewardValue + ", endorseByNQF="
-				+ endorseByNQF + ", nqfId=" + nqfId + ", description="
-				+ description + ", copyright=" + copyright
-				+ ", clinicalRecomms=" + clinicalRecomms + ", definitions="
-				+ definitions + ", guidance=" + guidance
-				+ ", transmissionFormat=" + transmissionFormat + ", rationale="
-				+ rationale + ", improvNotations=" + improvNotations
-				+ ", stratification=" + stratification + ", referencesList="
-				+ referencesList + ", authorSelectedList=" + authorSelectedList
-				+ ", stewardSelectedList=" + stewardSelectedList
-				+ ", measureTypeSelectedList=" + measureTypeSelectedList
-				+ ", qdsSelectedList=" + qdsSelectedList
-				+ ", componentMeasuresSelectedList="
-				+ componentMeasuresSelectedList + ", toCompareAuthor="
-				+ toCompareAuthor + ", toCompareMeasure=" + toCompareMeasure
-				+ ", toCompareComponentMeasures=" + toCompareComponentMeasures
-				+ ", draft=" + draft + ", measureSetId=" + measureSetId
-				+ ", valueSetDate=" + valueSetDate + ", supplementalData="
-				+ supplementalData + ", disclaimer=" + disclaimer
-				+ ", riskAdjustment=" + riskAdjustment + ", rateAggregation="
-				+ rateAggregation + ", initialPop=" + initialPop
-				+ ", denominator=" + denominator + ", denominatorExclusions="
-				+ denominatorExclusions + ", numerator=" + numerator
-				+ ", numeratorExclusions=" + numeratorExclusions
-				+ ", denominatorExceptions=" + denominatorExceptions
-				+ ", measurePopulation=" + measurePopulation
-				+ ", measureObservations=" + measureObservations
-				+ ", eMeasureId=" + eMeasureId + ", orgVersionNumber="
-				+ orgVersionNumber + ", qltyMeasureSetUuid="
-				+ qltyMeasureSetUuid + ", stewardId=" + stewardId
-				+ ", scoringAbbr=" + scoringAbbr + ", periodModel="
-				+ periodModel + ", endorsement=" + endorsement
-				+ ", endorsementId=" + endorsementId + ", nqfModel=" + nqfModel
-				+ ", isDeleted=" + isDeleted + ", measureOwnerId="
-				+ measureOwnerId + ", measurePopulationExclusions="
-				+ measurePopulationExclusions + ", isEditable=" + isEditable
-				+"]";
-	}
 	
 	public NqfModel getNqfModel() {
 		return nqfModel;
@@ -1186,5 +1137,88 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 
 	public void setFormattedVersion(String formattedVersion) {
 		this.formattedVersion = formattedVersion;
+	}
+
+	public void setFhirMeasureId(String fhirMeasureId) {
+		this.fhirMeasureId = fhirMeasureId;
+	}
+
+	public String getFhirMeasureId() {
+		return fhirMeasureId;
+	}
+
+	@Override
+	public String toString() {
+		return "ManageMeasureDetailModel{" +
+				"id='" + id + '\'' +
+				", measureName='" + measureName + '\'' +
+				", measureModel='" + measureModel + '\'' +
+				", cqlLibraryName='" + cqlLibraryName + '\'' +
+				", shortName='" + shortName + '\'' +
+				", versionNumber='" + versionNumber + '\'' +
+				", revisionNumber='" + revisionNumber + '\'' +
+				", measureId='" + measureId + '\'' +
+				", groupName='" + groupName + '\'' +
+				", groupId='" + groupId + '\'' +
+				", finalizedDate='" + finalizedDate + '\'' +
+				", measFromPeriod='" + measFromPeriod + '\'' +
+				", measToPeriod='" + measToPeriod + '\'' +
+				", measScoring='" + measScoring + '\'' +
+				", stewardValue='" + stewardValue + '\'' +
+				", endorseByNQF=" + endorseByNQF +
+				", nqfId='" + nqfId + '\'' +
+				", description='" + description + '\'' +
+				", copyright='" + copyright + '\'' +
+				", clinicalRecomms='" + clinicalRecomms + '\'' +
+				", definitions='" + definitions + '\'' +
+				", guidance='" + guidance + '\'' +
+				", transmissionFormat='" + transmissionFormat + '\'' +
+				", rationale='" + rationale + '\'' +
+				", improvNotations='" + improvNotations + '\'' +
+				", stratification='" + stratification + '\'' +
+				", referencesList=" + referencesList +
+				", authorSelectedList=" + authorSelectedList +
+				", stewardSelectedList=" + stewardSelectedList +
+				", measureTypeSelectedList=" + measureTypeSelectedList +
+				", qdsSelectedList=" + qdsSelectedList +
+				", componentMeasuresSelectedList=" + componentMeasuresSelectedList +
+				", toCompareAuthor=" + toCompareAuthor +
+				", toCompareMeasure=" + toCompareMeasure +
+				", toCompareComponentMeasures=" + toCompareComponentMeasures +
+				", draft=" + draft +
+				", measureSetId='" + measureSetId + '\'' +
+				", valueSetDate='" + valueSetDate + '\'' +
+				", supplementalData='" + supplementalData + '\'' +
+				", disclaimer='" + disclaimer + '\'' +
+				", riskAdjustment='" + riskAdjustment + '\'' +
+				", rateAggregation='" + rateAggregation + '\'' +
+				", initialPop='" + initialPop + '\'' +
+				", denominator='" + denominator + '\'' +
+				", denominatorExclusions='" + denominatorExclusions + '\'' +
+				", numerator='" + numerator + '\'' +
+				", numeratorExclusions='" + numeratorExclusions + '\'' +
+				", denominatorExceptions='" + denominatorExceptions + '\'' +
+				", measurePopulation='" + measurePopulation + '\'' +
+				", measureObservations='" + measureObservations + '\'' +
+				", eMeasureId=" + eMeasureId +
+				", orgVersionNumber='" + orgVersionNumber + '\'' +
+				", qltyMeasureSetUuid='" + qltyMeasureSetUuid + '\'' +
+				", stewardId='" + stewardId + '\'' +
+				", scoringAbbr='" + scoringAbbr + '\'' +
+				", periodModel=" + periodModel +
+				", endorsement='" + endorsement + '\'' +
+				", endorsementId='" + endorsementId + '\'' +
+				", nqfModel=" + nqfModel +
+				", isDeleted=" + isDeleted +
+				", measureOwnerId='" + measureOwnerId + '\'' +
+				", measurePopulationExclusions='" + measurePopulationExclusions + '\'' +
+				", isEditable=" + isEditable +
+				", isCalenderYear=" + isCalenderYear +
+				", isPatientBased=" + isPatientBased +
+				", measureDetailResult=" + measureDetailResult +
+				", qdmVersion='" + qdmVersion + '\'' +
+				", formattedVersion='" + formattedVersion + '\'' +
+				", fhirMeasureId='" + fhirMeasureId + '\'' +
+				'}';
 	}
 }

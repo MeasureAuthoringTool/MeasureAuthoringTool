@@ -145,24 +145,24 @@ public class Application extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http
-                .authorizeRequests()
+            .authorizeRequests()
                 .antMatchers("/", "/Login.html").permitAll()
                 .antMatchers("/Mat.html").authenticated()
                 .antMatchers("/Bonnie.html").authenticated()
                 .antMatchers("/mat/**").authenticated()
                 .and()
-                .formLogin()
+            .formLogin()
                 .loginPage("/Login.html")
                 .defaultSuccessUrl("/Mat.html")
                 .and()
-                .formLogin()
+            .formLogin()
                 .loginPage("/Login.html")
                 .defaultSuccessUrl("/Bonnie.html")
                 .and()
                 .logout()
-                .permitAll()
+            .permitAll()
                 .and()
-                .sessionManagement()
+            .sessionManagement()
                 .invalidSessionUrl("/Login.html")
                 .maximumSessions(1);
     }

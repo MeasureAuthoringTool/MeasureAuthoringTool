@@ -29,7 +29,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	
 	private static final String LIBRARY_SEARCH_TITLE = "Search by Library Name or Owner";
 
-	private static final String MEASURE_SEARCH_TITLE = "Search by Measure Name, Owner, Abbreviated title, or eCQM Identifier";
+	private static final String MEASURE_SEARCH_TITLE = "Search by Measure Name, Owner First Name OR Owner Last Name, Abbreviated title, or eCQM Identifier";
 	
 	/**
 	 * ALL measure filter value.

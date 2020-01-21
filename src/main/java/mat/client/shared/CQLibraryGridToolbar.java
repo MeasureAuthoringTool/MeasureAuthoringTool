@@ -106,8 +106,8 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
     }
 
     public void updateOnSelectionChanged(CQLLibraryDataSetObject selectedItem) {
-
         if (null == selectedItem) {
+            applyDefault();
             return;
         }
 

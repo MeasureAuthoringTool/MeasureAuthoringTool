@@ -142,6 +142,7 @@ VM arguments are used to pass environment specific parameters to the application
 -DBONNIE_URI=https://bonnieURL.org 
 -DALGORITHM=EncyptionAlgorithm 
 -DPASSWORDKEY=PasswordKey 
+-DFHIR_ORCH_MEASURE_SRVC_URL=http://localhost:9080/orchestration/measure
 -Dlog4j.configuration=PathToLog4jPropertiesFile
 ```
 

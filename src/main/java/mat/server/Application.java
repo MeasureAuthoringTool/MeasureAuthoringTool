@@ -1,10 +1,20 @@
 package mat.server;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Properties;
 
+import javax.net.ssl.SSLContext;
 import javax.sql.DataSource;
 
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +30,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -148,8 +159,8 @@ public class Application extends WebSecurityConfigurerAdapter {
                 .loginPage("/Login.html")
                 .defaultSuccessUrl("/Bonnie.html")
                 .and()
-            .logout()
-                .permitAll()
+                .logout()
+            .permitAll()
                 .and()
             .sessionManagement()
                 .invalidSessionUrl("/Login.html")
@@ -169,8 +180,25 @@ public class Application extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public RestTemplate getRestTemplate() {
-        return new RestTemplate();
+    public RestTemplate getRestTemplate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+        TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+
+        SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
+                .loadTrustMaterial(null, acceptingTrustStrategy)
+                .build();
+
+        SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+
+        CloseableHttpClient httpClient
+                = HttpClients.custom()
+                .setSSLHostnameVerifier(new NoopHostnameVerifier())
+                .setSSLSocketFactory(csf)
+                .build();
+        HttpComponentsClientHttpRequestFactory requestFactory
+                = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setHttpClient(httpClient);
+
+        return new RestTemplate(requestFactory);
     }
 
 
@@ -182,7 +210,7 @@ public class Application extends WebSecurityConfigurerAdapter {
     }
 
     @Scheduled(fixedRateString = "${mat.cache.expiry.time}")
-    public void clearCacheSchedule(){
+    public void clearCacheSchedule() {
         cacheManager().getCache("featureFlags").clear();
     }
 }

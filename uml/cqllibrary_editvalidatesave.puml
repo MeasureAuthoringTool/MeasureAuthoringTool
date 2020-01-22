@@ -1,0 +1,149 @@
+@startuml
+header as-is current state
+caption CQL Workspace/CQL Library Editor - Create New or Edit CQL library item
+title CQL Workspace - Open CQL Library
+
+actor User
+participant "MAT GWT"
+participant "MAT Server"
+
+
+User -> "MAT GWT": Open for edit selected or create a new measure
+note over "MAT GWT"
+    # The UI View will have edit or read-only mode based on user's edit edit permissions
+    # CQL free text is enabled when user has edit permissions and
+end note
+"MAT GWT" --> User: show Measure Composer / Measure Details
+
+User -> "MAT GWT": Navigate to Measure Composer / CQL Workspace
+"MAT GWT" --> User: show CQL Workspace
+
+
+newpage General information
+User -> "MAT GWT": User modifies "General Information" fields
+User -> "MAT GWT": save
+"MAT GWT" -> "MAT Server": CQLLibraryService()::saveAndModifyCQLGeneralInfo(\n\tString libraryId, \n\tString libraryValue, \n\tString libraryComment)
+
+newpage Includes
+opt Includes
+    note over "MAT GWT", "MAT Server"
+        TBD
+    end note
+end
+
+newpage Value Sets
+opt Value Sets
+    note over "MAT GWT", "MAT Server"
+        TBD
+    end note
+end
+
+newpage CQL Workspace - Codes
+opt Codes
+    note over "MAT GWT", "MAT Server"
+        TBD
+    end note
+end
+
+newpage Parameters
+opt Parameters
+    note over "MAT GWT", "MAT Server"
+        TBD
+    end note
+end
+
+newpage Definition
+opt Definition
+    note over "MAT GWT", "MAT Server"
+        TBD
+    end note
+end
+
+newpage Function
+opt Function
+    note over "MAT GWT", "MAT Server"
+        TBD
+    end note
+end
+
+newpage Edit or save CQL Library
+
+note over User,"MAT GWT"
+<b>Precondition:
+library is open for editing
+end note
+
+
+opt CQL Libary Editor
+    User -> "MAT GWT": click Save
+    "MAT GWT" -> "MAT GWT": saveCQLFile
+    "MAT GWT" -> "MAT Server": saveCQLFile(measureId, cql)
+    "MAT Server" -> "MAT Server": load previous measure's XML from DB by measureId
+    "MAT Server" -> "MAT Server": load previous measure from DB by measureId
+    "MAT Server" -> "MAT Server": previousModel = create CQLModel object from the previous measure's XML
+    "MAT Server" -> "MAT Server": create linter confg(\n\tprev. lib name,\n\tformatted(prev rev. number, prev. VERSION),\n\t'QDM',\n\tprev. QDM_VERSION, previousModel)
+    "MAT Server" -> "MAT Server": result:SaveUpdateCQLResult = cqlSevice::saveCQLFile (prev. measure's XML, cql, linter config)
+    group cqlSevice::saveCQLFile
+        opt if measure is not editable return
+            "MAT Server" --> "MAT GWT"
+            note over "MAT GWT", "MAT Server"
+                isEditable = (isOwner || isSuperUser || isSharedToEdit) && isDraft;
+            end note
+        end
+        "MAT Server" -> "MAT Server": parsedResult = parse cql
+        "MAT Server" -> "MAT Server": reverseEngineeredCQLLookup = marshallCQLModel
+        note left "MAT Server": re-create cql from the parsed model
+        "MAT Server" -> "MAT Server": check for syntax error
+        "MAT Server" -> "MAT Server": check parsed model for duplicated identifiers\n or identifier as a keyword
+        "MAT Server" -> "MAT Server": check parsed result has errors
+        alt parsed result has <b>NO</b> errors
+            note over "MAT Server"
+                #format cql
+                #re-construct model from formatted cql
+                #update parsedResult with xml marshalled from formatted cql model
+                #update parsedResult with cql re-constructed from formatted cql model
+            end note
+        else parsed result has errors
+            note over "MAT Server"
+                Update parsedResult with xml
+                Update parsedResult with cql
+            end note
+        end
+        "MAT Server" -> "MAT Server": linter = CQLUtil.lint(cql, linter config)
+        "MAT Server" -> "MAT Server": validateDatatypeCombinations (\n\tcql model,\n\tvalue set data type map,\n\tcode data type map)
+        "MAT Server" -> "MAT Server": create SaveUpdateCQLResult
+        note over "MAT Server"
+            SaveUpdateCQLResult is created from parsed xml, cql model and
+            all errors, warnings from parsing and linter and data types validation
+        end note
+        note over "MAT Server" #FFAAAA
+            <b>Remark!</b> cql / xml are parsed and marshaled back and forth multiple times.
+            It can be optimized for better performance.
+            Also, both ReverseEngineerListener and Linter use similar code and ANTLR parser.
+            There is a potential in code re-use and performance optimization.
+        end note
+    end
+    "MAT Server" -> "MAT Server": update xml cqlLookUp with measure
+    opt result.isSuccess()
+        "MAT Server" -> "MAT Server": clean definitions from population groups
+        note over "MAT Server"
+            need to clean definitions from populations and groupings.
+            go through all of the definitions in the previous model and check if they are in the new model
+            if the old definition is not in the new model, clean the groupings
+        end note
+        "MAT Server" -> "MAT Server": clean measure observation and groups
+        note over "MAT Server"
+            do the same thing for functions
+        end note
+    end
+    "MAT Server" -> "MAT Server": save measure xml
+    opt result.isSuccess()
+        "MAT Server" -> "MAT Server": add to cql library history
+        "MAT Server" -> "MAT Server": save measure
+    end
+    "MAT Server" --> "MAT GWT": return result of SaveUpdateCQLResult
+end
+
+footer actual on 01/22/2020
+
+@enduml

@@ -24,8 +24,6 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 
-import java.util.function.Supplier;
-
 public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 	HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 	private VerticalPanel mainPanel = new VerticalPanel();

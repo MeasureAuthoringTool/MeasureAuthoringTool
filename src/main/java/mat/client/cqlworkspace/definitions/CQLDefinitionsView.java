@@ -257,11 +257,7 @@ public class CQLDefinitionsView {
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
 		getDefineButtonBar().getTimingExpButton().setEnabled(isEditable);
 		getDefineButtonBar().getEraseButton().setEnabled(isEditable);
-		if (isSelectedObjectFhir()) {
-			getDefineButtonBar().getExpressionBuilderButton().setEnabled(false);
-		} else {
-			getDefineButtonBar().getExpressionBuilderButton().setEnabled(isEditable);
-		}
+		getDefineButtonBar().getExpressionBuilderButton().setEnabled(isEditable && !isSelectedObjectFhir.getAsBoolean());
 	}
 	
 	public void setIsEditable(boolean isEditable) {		
@@ -316,9 +312,5 @@ public class CQLDefinitionsView {
 
 	public InAppHelp getInAppHelp() {
 		return inAppHelp;
-	}
-
-	public boolean isSelectedObjectFhir() {
-		return isSelectedObjectFhir.getAsBoolean();
 	}
 }

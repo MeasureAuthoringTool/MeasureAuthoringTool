@@ -1,5 +1,6 @@
 package mat.client.cqlworkspace;
 
+import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
@@ -23,6 +24,8 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 
+import java.util.function.Supplier;
+
 public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 	HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 	private VerticalPanel mainPanel = new VerticalPanel();
@@ -44,11 +47,11 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 	private HelpBlock helpBlock = new HelpBlock();
 	MessagePanel messagePanel;
 
-	public CQLMeasureWorkSpaceView( ) {
+	public CQLMeasureWorkSpaceView() {
 		generalInformationView = new CQLGeneralInformationView();
 		componentPresenter = new CQLComponentLibraryPresenter();
 		cqlParametersView = new CQLParametersView();
-		cqlDefinitionsView = new CQLDefinitionsView();
+		cqlDefinitionsView = new CQLDefinitionsView(() -> MeasureDetailsUtil.FHIR.equalsIgnoreCase(MatContext.get().getCurrentMeasureModel()));
 		cqlFunctionsView = new CQLFunctionsView();
 		codesView = new CQLCodesView();
 		valueSetView = new CQLAppliedValueSetView();

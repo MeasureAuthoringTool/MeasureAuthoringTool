@@ -1,8 +1,8 @@
 package mat.client.shared;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import mat.model.LockedUserInfo;
-import mat.model.cql.CQLLibraryDataSetObject;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.junit.Test;
@@ -11,8 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import mat.model.LockedUserInfo;
+import mat.model.cql.CQLLibraryDataSetObject;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class CQLibraryGridToolbarTest {
@@ -33,6 +34,10 @@ public class CQLibraryGridToolbarTest {
     @Test
     public void testApplyDefaultVersionButton() {
         toolbar.applyDefault();
+        verifyDefaultVersionButton();
+    }
+
+    private void verifyDefaultVersionButton() {
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.STAR));
         Mockito.verify(toolbar.getVersionButton(), Mockito.times(1)).setText(Mockito.eq("Create Version or Draft"));
@@ -43,6 +48,10 @@ public class CQLibraryGridToolbarTest {
     @Test
     public void testApplyDefaultHistoryButton() {
         toolbar.applyDefault();
+        verifyDefaultHistoryButton();
+    }
+
+    private void verifyDefaultHistoryButton() {
         Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.CLOCK_O));
         Mockito.verify(toolbar.getHistoryButton(), Mockito.times(1)).setText(Mockito.eq("History"));
@@ -53,6 +62,10 @@ public class CQLibraryGridToolbarTest {
     @Test
     public void testApplyDefaultDeleteButton() {
         toolbar.applyDefault();
+        vetifyDefaultDeleteButton();
+    }
+
+    private void vetifyDefaultDeleteButton() {
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.TRASH));
         Mockito.verify(toolbar.getDeleteButton(), Mockito.times(1)).setText(Mockito.eq("Delete"));
@@ -63,6 +76,10 @@ public class CQLibraryGridToolbarTest {
     @Test
     public void testApplyDefaultEditButton() {
         toolbar.applyDefault();
+        verifyDefaultEditButton();
+    }
+
+    private void verifyDefaultEditButton() {
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.PENCIL));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
@@ -73,11 +90,24 @@ public class CQLibraryGridToolbarTest {
     @Test
     public void testApplyDefaultShareButton() {
         toolbar.applyDefault();
+        verifyDefaultShareButton();
+    }
+
+    private void verifyDefaultShareButton() {
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.SHARE_SQUARE));
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setText(Mockito.eq("Share"));
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to share"));
         Mockito.verify(toolbar.getShareButton(), Mockito.times(1)).setWidth(Mockito.eq("68px"));
+    }
+
+    @Test
+    public void testApplyDefaultOnNotSelected() {
+        toolbar.updateOnSelectionChanged(null);
+        verifyDefaultEditButton();
+        verifyDefaultHistoryButton();
+        verifyDefaultShareButton();
+        verifyDefaultVersionButton();
     }
 
     @Test

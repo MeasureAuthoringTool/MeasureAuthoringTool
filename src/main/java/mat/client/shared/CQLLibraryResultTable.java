@@ -1,9 +1,7 @@
 package mat.client.shared;
 
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -12,6 +10,8 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.MultiSelectionModel;
 import mat.client.cql.CQLLibrarySearchView.Observer;
 import mat.client.util.CellTableUtility;
@@ -23,7 +23,10 @@ import mat.shared.model.util.MeasureDetailsUtil;
 public class CQLLibraryResultTable {
 
     private Observer observer;
-    private final int DELAY_TIME = 500;
+    private static final int DELAY_TIME = 300;
+    private Timer singleClickTimer;
+    private CQLLibraryDataSetObject previousObj;
+    private CQLLibraryDataSetObject obj;
 
     public CellTable<CQLLibraryDataSetObject> addColumnToTable(CQLibraryGridToolbar gridToolbar, CellTable<CQLLibraryDataSetObject> table, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
         MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
@@ -42,10 +45,6 @@ public class CQLLibraryResultTable {
                 return selectionModel.isSelected(object);
             }
         };
-        selectedCol.setFieldUpdater((int index, CQLLibraryDataSetObject object, Boolean value) -> {
-            object.setSelected(value);
-        });
-
         table.addColumn(selectedCol);
         table.setColumnWidth(0, "45px");
 
@@ -55,21 +54,6 @@ public class CQLLibraryResultTable {
             @Override
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
                 return getCQLLibraryNameColumnToolTip(object);
-            }
-
-            /*
-                Single Click to select row and enable checkbox
-                Double Click to navigate to CQL Composer tab
-            */
-            @Override
-            public void onBrowserEvent(Cell.Context context, Element elem, CQLLibraryDataSetObject object, NativeEvent event) {
-                if (object.getLastClick() < System.currentTimeMillis() - DELAY_TIME) {
-                    object.setSelected(!object.isSelected());
-                    selectionModel.setSelected(object, object.isSelected());
-                } else if (object.isFhirEditOrViewable()) {
-                    SelectionEvent.fire(fireEvent, object);
-                }
-                object.setLastClick(System.currentTimeMillis());
             }
         };
         table.addColumn(cqlLibraryName,
@@ -82,21 +66,6 @@ public class CQLLibraryResultTable {
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
                 return CellTableUtility.getColumnToolTip(object.getVersion());
             }
-
-            /*
-                Single Click to select row and enable checkbox
-                Double Click to navigate to CQL Composer tab
-            */
-            @Override
-            public void onBrowserEvent(Cell.Context context, Element elem, CQLLibraryDataSetObject object, NativeEvent event) {
-                if (object.getLastClick() < System.currentTimeMillis() - DELAY_TIME) {
-                    object.setSelected(!object.isSelected());
-                    selectionModel.setSelected(object, object.isSelected());
-                } else if (object.isFhirEditOrViewable()) {
-                    SelectionEvent.fire(fireEvent, object);
-                }
-                object.setLastClick(System.currentTimeMillis());
-            }
         };
         table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
 
@@ -107,27 +76,27 @@ public class CQLLibraryResultTable {
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
                 return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.defaultTypeIfBlank(object.getLibraryModelType()));
             }
-
-            /*
-                Single Click to select row and enable checkbox
-                Double Click to navigate to CQL Composer tab
-            */
-            @Override
-            public void onBrowserEvent(Cell.Context context, Element elem, CQLLibraryDataSetObject object, NativeEvent event) {
-                if (object.getLastClick() < System.currentTimeMillis() - DELAY_TIME) {
-                    object.setSelected(!object.isSelected());
-                    selectionModel.setSelected(object, object.isSelected());
-                } else if (object.isFhirEditOrViewable()) {
-                    SelectionEvent.fire(fireEvent, object);
-                }
-                object.setLastClick(System.currentTimeMillis());
-            }
         };
         if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR))
             table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Model" + "</span>"));
 
+        table.addCellPreviewHandler(event -> {
+            String eventType = event.getNativeEvent().getType();
+            obj = event.getValue();
+            event.getNativeEvent().preventDefault();
+            if (BrowserEvents.CLICK.equalsIgnoreCase(eventType)) {
+                if(previousObj == null){
+                    clickEventsOnSelectedRows(event, selectionModel, obj, fireEvent);
+                } else if (obj.getId() == previousObj.getId()) {
+                    clickEventsOnSelectedRows(event, selectionModel, obj, fireEvent);
+                } else {
+                    previousObj.setSelected(false);
+                    clickEventsOnSelectedRows(event, selectionModel, obj, fireEvent);
+                }
+                previousObj = obj;
+            }
+        });
         table.addStyleName("table");
-
         return table;
     }
 
@@ -245,6 +214,27 @@ public class CQLLibraryResultTable {
 
     public void setObserver(Observer observer) {
         this.observer = observer;
+    }
+
+    private void clickEventsOnSelectedRows(CellPreviewEvent<CQLLibraryDataSetObject> event, MultiSelectionModel<CQLLibraryDataSetObject> selectionModel, CQLLibraryDataSetObject obj, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
+        obj.incrementClickCount();
+        if (obj.getClickCount() == 1) {
+            singleClickTimer = new Timer() {
+                @Override
+                public void run() {
+                    obj.setClickCount(0);
+                    obj.setSelected(!obj.isSelected());
+                    selectionModel.setSelected(obj, obj.isSelected());
+                }
+            };
+            singleClickTimer.schedule(DELAY_TIME);
+        } else if (obj.getClickCount() == 2  && obj.isFhirEditOrViewable()) {
+            singleClickTimer.cancel();
+            obj.setClickCount(0);
+            SelectionEvent.fire(fireEvent, obj);
+        } else {
+            event.setCanceled(true);
+        }
     }
 
 }

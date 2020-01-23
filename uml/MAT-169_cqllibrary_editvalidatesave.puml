@@ -161,7 +161,7 @@ group addAndModifyFunction
             srv -> srv: format function
         end
     end
-    srv -> srv: update xml with dunction display name
+    srv -> srv: update xml with function display name
     srv -> srv: update xml, replace cqlLookUp with measure
     srv -> srv: save measure xml to DB
     srv -> gwt: return result {success: true}

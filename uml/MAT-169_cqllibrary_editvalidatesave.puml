@@ -168,11 +168,12 @@ group addAndModifyFunction
 end
 
 '------------------------------------------------------
-newpage CQL Workspace - edit or save CQL Library
+newpage CQL Workspace - Edit or Save CQL Library
 
 note over User,gwt
 <b>Precondition:
-library is open for editing
+* A library is open for editing
+* User modified the library
 end note
 User -> gwt: click Save
 gwt -> gwt: saveCQLFile
@@ -209,6 +210,15 @@ group cqlSevice::saveCQLFile
         end note
     end
     srv -> srv: linter = CQLUtil.lint(cql, linter config)
+    note over srv
+        Linter parses CQL syntax tree and then checks for following items:
+        * check if there are comments in no-comment zone
+        * ls line comment in correct spots
+        * has extraneous codesystem
+        * has missing codesystem
+        * number of included libraries and number of valuesets and number of codes have not changed
+        * no entered library definitions or no entered using definitions
+    end note
     srv -> srv: validateDatatypeCombinations (\n\tcql model,\n\tvalue set data type map,\n\tcode data type map)
     srv -> srv: create SaveUpdateCQLResult
     note over srv
@@ -235,10 +245,10 @@ opt result.isSuccess()
         do the same thing for functions
     end note
 end
-srv -> srv: save measure xml
+srv -> srv: save measure xml (updating the record object)
 opt result.isSuccess()
     srv -> srv: add to cql library history
-    srv -> srv: save measure
+    srv -> srv: save measure to DB
 end
 srv --> gwt: return result of SaveUpdateCQLResult
 

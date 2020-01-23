@@ -24,6 +24,8 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
+import java.util.function.BooleanSupplier;
+
 public class CQLDefinitionsView {
 	private static final String DEFINITION = "definition";
 	
@@ -42,9 +44,10 @@ public class CQLDefinitionsView {
 	private InAppHelp inAppHelp = new InAppHelp("");
 	private CQLEditorPanel editorPanel= new CQLEditorPanel(DEFINITION, "CQL Expression Editor", false);
 	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("definitionViewCQL", "CQL Library Viewer", true);
+	private BooleanSupplier isSelectedObjectFhir;
 
-	
-	public CQLDefinitionsView() {
+	public CQLDefinitionsView(BooleanSupplier isSelectedObjectFhir) {
+		this.isSelectedObjectFhir = isSelectedObjectFhir;
 		mainDefineViewVerticalPanel.getElement().setId("mainDefViewVerticalPanel");
 		heading.addStyleName("leftAligned");
 	}
@@ -254,7 +257,7 @@ public class CQLDefinitionsView {
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
 		getDefineButtonBar().getTimingExpButton().setEnabled(isEditable);
 		getDefineButtonBar().getEraseButton().setEnabled(isEditable);
-		getDefineButtonBar().getExpressionBuilderButton().setEnabled(isEditable);
+		getDefineButtonBar().getExpressionBuilderButton().setEnabled(isEditable && !isSelectedObjectFhir.getAsBoolean());
 	}
 	
 	public void setIsEditable(boolean isEditable) {		

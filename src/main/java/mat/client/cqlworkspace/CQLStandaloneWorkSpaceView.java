@@ -3,6 +3,7 @@ package mat.client.cqlworkspace;
 import java.util.List;
 import java.util.Map;
 
+import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
@@ -55,7 +56,7 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 	public CQLStandaloneWorkSpaceView() {
 		generalInformationView = new CQLGeneralInformationView();
 		cqlParametersView = new CQLParametersView();
-		cqlDefinitionsView = new CQLDefinitionsView();
+		cqlDefinitionsView = new CQLDefinitionsView(() -> MeasureDetailsUtil.FHIR.equalsIgnoreCase(MatContext.get().getCurrentCQLLibraryModelType()));
 		cqlFunctionsView = new CQLFunctionsView();
 		codesView = new CQLCodesView();
 		valueSetView = new CQLAppliedValueSetView();

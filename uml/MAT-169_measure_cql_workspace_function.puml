@@ -1,0 +1,80 @@
+@startuml
+header as-is current state
+
+actor User order 10
+participant "MAT GWT" as gwt order 20
+participant "MAT Server" as srv order 30
+
+title CQL Workspace - Function - Add or Modify
+User -> gwt: add/modify function
+gwt --> User: done
+User -> gwt: save
+opt validation failed
+    note over gwt
+        #function name is a valid expression name, not empty, not a keyword, not Patient
+        #functionName has no special chars
+        #function comment < 250 chars
+        #function comment contains no invalid chars
+    end note
+    gwt -[#red]> User: show error
+    destroy gwt
+end
+gwt -> srv: MeasureService::saveAndModifyFunctions(measureId, param, function, functions, isFormattable: true)
+opt current measure not editable
+    srv --[#red]> gwt: result {success: false}
+end
+srv -> srv: load measure xml by measureId
+group CqlService::saveAndModifyFunctions (xml, modified function, current function, function list, isFormattable)
+    srv -> srv: create cqlModel from xml
+    note over srv
+        validate the new identifier, unless it was equal to the definition
+        # validate no special chars
+        # validate identifier name is not duplicated
+        # validate function argument list for alias to follow cql alias naming convention
+        # validate comment not too long or has no invalid chars
+    end note
+    srv -> srv: update cql with function definition in the model
+    srv -> srv: insert cql with function definition and then parse cql for errors
+    opt isFormattable
+        srv -> srv: format function
+    end
+end
+srv -> srv: update xml with function display name
+srv -> srv: update xml, replace cqlLookUp with measure
+srv -> srv: save measure xml to DB
+srv -> gwt: return result {success: true}
+
+'------------------------------------------------------
+newpage CQL Workspace - Function - Delete
+User -> gwt: Delete parameter, [confirmation == Yes]
+gwt -> srv: MeasureService::deleteFunction (\n\tmeasureId, \n\tto be deleted function)
+srv -> srv: MeasureLibraryService::deleteFunction (\n\tmeasureId, \n\tto be deleted function)
+alt measure is not editable
+    srv --[#red]> gwt:  result = SaveUpdateCQLResult(success = false)
+else measure is editable
+    srv -> srv: load measure xml by measureId from the DB
+    srv -> srv: result = CqlService::deleteFunction (xml, \n\tto be deleted function)
+    note over srv
+        CqlService::saveCQLCodes does xml processing,
+        # parses CQLModel from xml
+        # remove function by id
+        # update xml from CQLModel
+        # return result : SaveUpdateCQLResult (updated model, updated list of functions)
+    end note
+    srv -> srv: update xml value with cqlResult xml returned from CqlService
+    srv -> srv: <b><color #RED>update xml, clean measure observation and groups
+    srv -> srv: store xml to the DB MeasurePackageService::saveMeasureXml
+    srv --> gwt: result
+end
+alt result is success
+    gwt -> gwt: update the view with cql parameters from result::getCqlModel()::getCqlFunctions()
+    gwt --> User: show success message
+else result is not success
+    gwt --[#red]> User: show validation error
+else error
+    gwt --[#red]> User: Window.alert( error message )
+end
+
+footer actual on 01/22/2020
+
+@enduml

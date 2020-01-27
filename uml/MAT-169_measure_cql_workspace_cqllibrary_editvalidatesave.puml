@@ -71,14 +71,6 @@ opt Value Sets
 end
 
 '------------------------------------------------------
-newpage CQL Workspace - Codes
-opt Codes
-    note over gwt, srv
-        TBD
-    end note
-end
-
-'------------------------------------------------------
 newpage CQL Workspace - Parameters
 opt Parameters
     note over gwt, srv
@@ -252,6 +244,6 @@ opt result.isSuccess()
 end
 srv --> gwt: return result of SaveUpdateCQLResult
 
-footer actual on 01/22/2020
+footer actual on 01/27/2020
 
 @enduml

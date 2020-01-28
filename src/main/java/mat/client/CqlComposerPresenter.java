@@ -195,7 +195,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
     private static String getHeadingLibraryModel() {
         String model = "";
         if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
-            model = " (" + MeasureDetailsUtil.defaultTypeIfBlank(MatContext.get().getCurrentLibraryInfo().getLibraryModelType()) + ")";
+            model = " (" + MeasureDetailsUtil.getModelTypeDisplayName(MatContext.get().getCurrentLibraryInfo().getLibraryModelType()) + ")";
         }
         return model;
     }

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.core.client.GWT;
@@ -1248,7 +1249,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					if (libraryVersion.startsWith("v")) {
 						libraryVersion = libraryVersion.substring(1);
 					}
-					cqlWorkspaceView.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, libraryVersion, result.getCqlModel().getQdmVersion(), "QDM", cqlLibraryComment);
+					cqlWorkspaceView.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, libraryVersion, result.getCqlModel().getQdmVersion(),
+							MeasureDetailsUtil.getModelTypeDisplayName(MatContext.get().getCurrentCQLLibraryModelType()), cqlLibraryComment);
 				}
 
 				List<CQLQualityDataSetDTO> appliedValueSetAndCodeList =  result.getCqlModel().getAllValueSetAndCodeList();

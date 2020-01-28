@@ -63,15 +63,6 @@ opt Includes
 end
 
 '------------------------------------------------------
-newpage CQL Workspace - Value Sets
-opt Value Sets
-    note over gwt, srv
-        TBD
-    end note
-end
-
-
-'------------------------------------------------------
 newpage CQL Workspace - Edit or Save CQL Library
 
 note over User,gwt

@@ -27,7 +27,7 @@ public class MeasureComposerPresenterTest {
         MatContext.get().setCurrentMeasureInfo(evt);
 
         String headingValue = MeasureComposerPresenter.buildMeasureHeading("anyId");
-        Assert.assertEquals("measure1 v1 (TYPE1)", headingValue);
+        Assert.assertEquals("measure1 v1 (QDM / QDM)", headingValue);
     }
 
     @Test

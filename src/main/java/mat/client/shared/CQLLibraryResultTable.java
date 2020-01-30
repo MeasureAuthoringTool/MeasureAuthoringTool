@@ -74,11 +74,11 @@ public class CQLLibraryResultTable {
                 new ClickableSafeHtmlCell()) {
             @Override
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
-                return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.defaultTypeIfBlank(object.getLibraryModelType()));
+                return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.getModelTypeDisplayName(object.getLibraryModelType()));
             }
         };
         if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR))
-            table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Model" + "</span>"));
+            table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Models" + "</span>"));
 
         table.addCellPreviewHandler(event -> {
             String eventType = event.getNativeEvent().getType();

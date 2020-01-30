@@ -1,7 +1,34 @@
 @startuml
 
 package UI {
-    abstract class AbstractCQLWorkspacePresenter
+    abstract class AbstractCQLWorkspacePresenter {
+    	{abstract} boolean hasEditPermissions()
+    	{abstract} boolean isStandaloneCQLLibrary()
+    	{abstract} void exportErrorFile()
+    	{abstract} void setGeneralInformationViewEditable(boolean isEditable)
+    	{abstract} void addVSACCQLValueset()
+    	{abstract} void addUserDefinedValueSet()
+    	{abstract} void modifyCodes()
+    	{abstract} void addNewCodes()
+    	{abstract} void pasteCodes()
+    	{abstract} void deleteDefinition()
+    	{abstract} void deleteFunction()
+    	{abstract} void deleteFunctionArgument()
+    	{abstract} void deleteParameter()
+    	{abstract} void deleteInclude();
+    	{abstract} void checkAndDeleteValueSet()
+    	{abstract} void deleteCode()
+    	{abstract} void searchValueSetInVsac(String release, String expansionProfile)
+    	{abstract} void updateVSACValueSets()
+    	{abstract} void pasteValueSets()
+    	{abstract} void updateAppliedValueSetsList(MatValueSet matValueSet, CodeListSearchDTO codeListSearchDTO, CQLQualityDataSetDTO qualityDataSetDTO)
+    	{abstract} void addIncludeLibraryInCQLLookUp()
+    	{abstract} void showCompleteCQL(AceEditor aceEditor)
+    	{abstract} void addAndModifyParameters()
+    	{abstract} void addAndModifyFunction()
+    	{abstract} void addAndModifyDefintions()
+    	{abstract} void getAppliedValuesetAndCodeList()
+    }
     class CQLStandaloneWorkSpacePresenter
     class CQLMeasureWorkSpacePresenter
 }

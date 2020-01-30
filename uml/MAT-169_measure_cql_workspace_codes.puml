@@ -162,6 +162,6 @@ else error
     gwt --[#red]> User: Window.alert( error message )
 end
 
-footer actual on 01/22/2020
+footer actual on 01/27/2020
 
 @enduml

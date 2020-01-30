@@ -23,9 +23,9 @@ public class MeasureDetailsUtil {
     public static final String QDM = "QDM";
     public static final String PRE_CQL = "Pre-CQL";
     public static final String MAT_ON_FHIR = "MAT_ON_FHIR";
-    public static final String FHIR_CQL = "FHIR/CQL";
-    public static final String QDM_QDM = "QDM/QDM";
-    public static final String QDM_CQL = "QDM/CQL";
+    public static final String FHIR_CQL = "FHIR / CQL";
+    public static final String QDM_QDM = "QDM / QDM";
+    public static final String QDM_CQL = "QDM / CQL";
 
 
 

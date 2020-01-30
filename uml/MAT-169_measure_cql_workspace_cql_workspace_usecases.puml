@@ -1,0 +1,132 @@
+@startuml
+left to right direction
+skinparam dpi 600
+header as-is current state
+title Measure - CQL Workspace - Use Cases
+:User: as u
+
+
+(CQL Workspace) as w
+(CQL Measure Workspace) --|> w
+(Standalone CQL Workspace) --|> w
+
+u ---> (w)
+
+rectangle "General Information" {
+    (w) ..up.> (General Information)
+    (Modify General Information) .up.> (General Information): <<extends>>
+    (Modify General Information) .up.> (Save General Information): <<includes>>
+}
+
+rectangle Includes {
+    (w) ..left.> (Includes)
+    (Search Include Library) .up.> (Includes): <<extends>>
+    (Add Include Library) .up.> (Includes): <<extends>>
+    (Add Include Library) .up.> (Save Include Library In CQL LookUp): <<includes>>
+    (Delete Include Library) .up.> (Includes): <<extends>>
+    (Erase Include Library) <<UI only>>
+    (Erase Include Library) .up.> (Includes): <<extends>>
+    (Replace/Save Include Library) .up.> (Includes): <<extends>>
+    (Replace/Save Include Library) .up.> (Save Include Library In CQL LookUp): <<includes>>
+    (Update Alias) <<UI only>>
+    (Update Alias) .up.> (Includes): <<extends>>
+}
+
+rectangle "Value Sets" {
+    (w) ..left.> (Value Sets)
+    (Add VSAC CQL Value Set) .up.> (Value Sets): <<extends>>
+    (Add user defined Value Set) .up.> (Value Sets): <<extends>>
+    (Add user defined Value Set) .down.> (Save Value Set): <<include>>
+    (Add VSAC CQL Value Set) .up.> (Save Value Set): <<include>>
+    (Delete Value set) <.up. (Value Sets): <<extends>>
+    (Search Value Set In VSAC) .up.> (Value Sets): <<extends>>
+    (Paste Value Sets)  .up.> (Value Sets): <<extends>>
+    (Paste Value Sets) .up.> (Save Value Set List): <<include>>
+    (Update Value Set from VSAC) .up.> (Value Sets): <<extends>>
+}
+rectangle "Codes" {
+    'addCodeSearchPanelHandlers
+    (w) ...> (Codes)
+    (Copy Codes) <<UI only>>
+    (Copy Codes) .up.> (Codes) : <<extends>>
+    (Paste Codes) .up.> (Codes) : <<extends>>
+    (Paste Codes) .up.> (Save CQL Code List To Measure) : <<includes>>
+    (Select All Codes) <<UI only>>
+    (Select All Codes) .up.> (Codes) : <<extends>>
+    (Clear Codes) <<UI only>>
+    (Clear Codes) .up.> (Codes) : <<extends>>
+    (Codes - Retrieve From VSAC) .up.> (Codes) : <<extends>>
+    (Validate For Code Identifier) <<UI only>>
+    (Codes - Retrieve From VSAC) .up.> (Validate For Code Identifier): <<includes>>
+    (Codes - Retrieve From VSAC) .up.> (Vsacapi Service::getDirectReferenceCode): <<includes>>
+    (Codes - Apply) .up.> (Codes) : <<extends>>
+    (Codes - Apply) .up.> (Save CQL Codes To Measure) : <<includes>>
+    (Codes - Cancel) <<UI only>>
+    (Codes - Cancel) .up.> (Codes) : <<extends>>
+    (Codes - Delete) .up.> (Codes) : <<extends>>
+    (Codes - Modify) <<UI only>>
+    (Codes - Modify) .up.> (Codes) : <<extends>>
+}
+rectangle Parameters {
+    'addParameterSectionHandlers
+    (w) ...> (Parameter)
+    (Save Parameter) .up.> (Parameter) : <<extends>>
+    (Validate Parameter) <<UI only>>
+    (Save Parameter) ..> (Validate Parameter) : <<includes>>
+    (Save Parameter) ..> (Save And Modify Parameters) : <<includes>>
+    (Erase Parameter) <<UI only>>
+    (Erase Parameter) .up.> (Parameter) : <<extends>>
+    (Delete Parameter) .up.> (Parameter) : <<extends>>
+    (Add New Parameter) <<UI only>>
+    (Add New Parameter) .up.> (Parameter) : <<extends>>
+    (Update Parameter Comment) .up.> (Parameter) : <<extends>>
+    (Validate Parameter Comment) <<UI only>>
+    (Update Parameter Comment) ..> (Validate Parameter Comment) : <<includes>>
+}
+rectangle Definitions {
+    'addDefinitionSectionHandlers
+    (w) ...> (Definition)
+    (Save Definition) .up.> (Definition) : <<extends>>
+    (Save Definition) ..> (Save And Modify Definitions) : <<includes>>
+    (Definition - Validate Expression Name) <<UI only>>
+    (Save Definition) .up.> (Definition - Validate Expression Name)  : <<includes>>
+    (Insert Definition) <<UI only>>
+    (Insert Definition) .up.> (Definition) : <<extends>>
+    (Erase Definition) <<UI only>>
+    (Erase Definition) .up.> (Definition) : <<extends>>
+    (Delete Definition) .up.> (Definition) : <<extends>>
+    (Add New Definition) <<UI only>>
+    (Add New Definition) .up.> (Definition) : <<extends>>
+    (Update Definition Comment) .up.> (Definition) : <<extends>>
+    (Validate Definition Comment) <<UI only>>
+    (Update Definition Comment) ..> (Validate Definition Comment) :: <<includes>>
+    (Definition Expression Builder) <<Out of scope>>
+    (Definition Expression Builder) .up.> (Definition) : <<extends>>
+}
+rectangle "Functions" {
+    (w) ...> (Function)
+    (Save Function) .up.> (Function) : <<extends>>
+    (Save Function) ..> (Save and Modify Functions) : <<includes>>
+    (Erase Function) <<UI only>>
+    (Erase Function) .up.> (Function) : <<extends>>
+    (Insert Function) <<UI only>>
+    (Insert Function) .up.> (Function) : <<extends>>
+    (Delete Function) .up.> (Function) : <<extends>>
+    (Add New Argument Function) <<UI only>>
+    (Add New Argument Function) .up.> (Function) : <<extends>>
+    (Add New Function) <<UI only>>
+    (Add New Function) .up.> (Function) : <<extends>>
+    (Update Function Comment) <<UI only>>
+    (Update Function Comment) .up.> (Function) : <<extends>>
+    (Validate Function Comment) <<UI only>>
+    (Update Function Comment) ..> (Validate Function Comment) : <<includes>>
+}
+rectangle "CQL Library" {
+    (w) ...> (CQL Library Editor)
+    (View CQL Library) .up.> (CQL Library Editor) : <<extends>>
+    (Edit cql library) .up.> (CQL Library Editor) : <<extends>>
+}
+
+footer actual on 01/27/2020
+
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+(*) --> Convert click
+--> Validate and Produce Errors report
+--> Create FHIR Json object
+--> Store FHIR Measure in MAT measure xml
+--> On Package validate FHIR syntax and format
+--> Store FHIR Measure in hapi fhir server
+-->(*)
+@enduml

@@ -40,7 +40,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	private String rationale;
 	private String improvNotations;
 	private String stratification;
-	private List<String> referencesList;
+	private List<ReferenceTextAndType> referencesList;
 	private List<Author> authorSelectedList;
 	private List<MeasureSteward> stewardSelectedList;
 	private List<MeasureType> measureTypeSelectedList;
@@ -115,11 +115,11 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 		this.draft = draft;
 	}
 
-	public List<String> getReferencesList() {
+	public List<ReferenceTextAndType> getReferencesList() {
 		return referencesList;
 	}
 	
-	public void setReferencesList(List<String> referencesList) {
+	public void setReferencesList(List<ReferenceTextAndType> referencesList) {
 		this.referencesList = referencesList;
 	}
 	

@@ -1143,7 +1143,7 @@ public class CQLServiceImpl implements CQLService {
             }
 
         } catch (MarshalException | ValidationException | MappingException | IOException e) {
-            logger.error("Failed to load MeasureDetailsModelMapping.xml" + e.getMessage());
+            logger.error("Failed to load CQLDefinitionModelMapping.xml " + e.getMessage());
             e.printStackTrace();
         }
         return details;

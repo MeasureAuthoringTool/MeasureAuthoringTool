@@ -25,10 +25,10 @@ class CQLConstantServiceImplTest {
     @Value("${mat.fhirMatServices.url}")
     private String fhirMatServicesUrl;
 
-    private final String fhirMatServiceResouceForAttributes = "/find";
+    private final String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/find";
 
     @Mock
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
     final CQLConstantContainer cqlConstantContainer = new CQLConstantContainer();
 
@@ -38,7 +38,7 @@ class CQLConstantServiceImplTest {
     @Test
     void getFhirAttributeAndDataTypes() {
 
-        Mockito.when(restTemplate.getForObject(fhirMatServicesUrl + fhirMatServiceResouceForAttributes, String.class)).thenAnswer(invocation -> {
+        Mockito.when(restTemplate.getForObject(fhirMatServicesUrl + FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES, String.class)).thenAnswer(invocation -> {
             URL path = CQLConstantServiceImpl.class.getClassLoader().getResource("fhirAttributes&DataTypes.txt");
             return new ObjectMapper().readValue(new File(path.getFile()), String.class);
         });

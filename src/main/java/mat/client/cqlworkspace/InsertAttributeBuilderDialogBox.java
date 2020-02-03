@@ -76,7 +76,6 @@ public class InsertAttributeBuilderDialogBox {
 	private static final String VALUE_SETS = "Value Sets";
 	private static final String CODES = "Codes";
 	private static final String NULLABLE = "Nullable";
-	private static final String FHIR = "FHIR";
 
 	private static Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();
 

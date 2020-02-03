@@ -82,7 +82,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 	@Value("${mat.fhirMatServices.url}")
 	private String fhirMatServicesUrl;
 
-	private final String fhirMatServiceResouceForAttributes = "/find";
+	private final String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/find";
 
 	@Autowired
 	private CodeListService codeListService;
@@ -94,7 +94,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 	private MeasureLibraryService measureLibraryService;
 
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 	
 	@Override
 	public CQLConstantContainer getAllCQLConstants() {		
@@ -226,7 +226,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		List<String> fhirDataTypeList = new ArrayList<>();
 
 		try {
-			JSONArray fhirResponse = new JSONArray(restTemplate.getForObject(fhirMatServicesUrl + fhirMatServiceResouceForAttributes, String.class));
+			JSONArray fhirResponse = new JSONArray(restTemplate.getForObject(fhirMatServicesUrl + FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES, String.class));
 
 			for (int i = 0; i < fhirResponse.length(); i++) {
 

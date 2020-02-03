@@ -254,9 +254,9 @@ public abstract class AbstractCQLWorkspacePresenter {
 		return deleteConfirmationDialogBox.getNoButton();
 	}
 
-	protected void buildInsertPopUp() {
+	protected void buildInsertPopUp(String modelType) {
 		cqlWorkspaceView.resetMessageDisplay();
-		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(curAceEditor, this);
+		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(curAceEditor, this, modelType);
 	}
 
 	protected void buildCQLViewSuccess(SaveUpdateCQLResult result) {
@@ -494,7 +494,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 
 	protected void addCQLLibraryEditorViewHandlers() {
 		cqlWorkspaceView.getCQLLibraryEditorView().getExportErrorFile().addClickHandler(event -> exportErrorFile());
-		cqlWorkspaceView.getCQLLibraryEditorView().getInsertButton().addClickHandler(event -> buildInsertPopUp());
+		cqlWorkspaceView.getCQLLibraryEditorView().getInsertButton().addClickHandler(event -> buildInsertPopUp(MatContext.get().getCurrentMeasureModel()));
 		cqlWorkspaceView.getCQLLibraryEditorView().getSaveButton().addClickHandler(event -> saveCQLFile());
 	}
 

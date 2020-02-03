@@ -120,9 +120,9 @@ public class InsertAttributeBuilderDialogBox {
 	private static ClickHandler handler;
 	private static AceEditor curEditor;
 
-	public static void showAttributesDialogBox(final AceEditor editor) {
+	public static void showAttributesDialogBox(final AceEditor editor, String modelType) {
 
-		if(MeasureDetailsUtil.FHIR.equalsIgnoreCase(MatContext.get().getCurrentMeasureModel())) {
+		if(MeasureDetailsUtil.FHIR.equalsIgnoreCase(modelType)) {
 			allAttributes = MatContext.get().getCqlConstantContainer().getFhirCqlAttributeList();
 			allDataTypes = MatContext.get().getCqlConstantContainer().getFhirCqlDataTypeList();
 		} else {

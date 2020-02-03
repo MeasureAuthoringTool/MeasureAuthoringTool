@@ -236,7 +236,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().addDoubleClickHandler(event -> cqlLeftNavBarDefineNameListBoxDoubleClickEvent(event));
 		cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse().addShowHandler(event -> definitionShowEvent());
 		cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse().addHideHandler(event -> definitionHideEvent());
-		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getInsertButton().addClickHandler(event -> buildInsertPopUp());
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getInsertButton().addClickHandler(event -> buildInsertPopUp(MatContext.get().getCurrentCQLLibraryModelType()));
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getSaveButton().addClickHandler(event -> definitionSaveClicked());
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getEraseButton().addClickHandler(event -> definitionEraseClicked());
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().addClickHandler(event -> definitionDeleteButtonClicked());
@@ -2415,7 +2415,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 
 	private void functionsViewInsertButtonClicked() {
-		buildInsertPopUp();
+		buildInsertPopUp(MatContext.get().getCurrentCQLLibraryModelType());
 		cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().focus();
 	}
 

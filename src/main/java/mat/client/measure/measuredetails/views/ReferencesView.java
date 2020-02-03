@@ -66,7 +66,8 @@ public class ReferencesView implements MeasureDetailViewInterface {
         Column<ReferenceTextAndType, SafeHtml> descriptionColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ReferenceTextAndType ref) {
-                String reference = ref.getReferenceText().length() > MAX_TEXT_DISPLAY ? ref.getReferenceText().substring(0, MAX_TEXT_DISPLAY) + "..." : ref.getReferenceText();
+                String origRefText = ref.getReferenceText();
+                String reference = origRefText.length() > MAX_TEXT_DISPLAY ? origRefText.substring(0, MAX_TEXT_DISPLAY) + "..." : origRefText;
                 return CellTableUtility.getColumnToolTip(SafeHtmlUtils.htmlEscape(reference));
             }
         };

@@ -10,12 +10,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import mat.client.shared.*;
 import org.cqframework.cql.cql2elm.SystemModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.ClassInfoElement;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.TypeInfo;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -23,10 +26,6 @@ import com.google.gson.Gson;
 import mat.DTO.DataTypeDTO;
 import mat.DTO.UnitDTO;
 import mat.client.cqlconstant.service.CQLConstantService;
-import mat.client.shared.CQLConstantContainer;
-import mat.client.shared.CQLTypeContainer;
-import mat.client.shared.MatContext;
-import mat.client.shared.QDMContainer;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.model.cql.CQLKeywords;
 import mat.server.service.CodeListService;
@@ -34,7 +33,11 @@ import mat.server.service.MeasureLibraryService;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.QDMUtil;
 import mat.shared.cql.model.FunctionSignature;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.client.RestTemplate;
 
+@ContextConfiguration(classes = Application.class)
 @Service
 public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implements CQLConstantService {
 	private static final String TYPE = "type";
@@ -75,6 +78,12 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 
 	private static final long serialVersionUID = 1L;
 
+
+	@Value("${mat.fhirMatServices.url}")
+	private String fhirMatServicesUrl;
+
+	private final String fhirMatServiceResouceForAttributes = "/find";
+
 	@Autowired
 	private CodeListService codeListService;
 	
@@ -83,7 +92,9 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 	
 	@Autowired
 	private MeasureLibraryService measureLibraryService;
-	
+
+	@Autowired
+	RestTemplate restTemplate;
 	
 	@Override
 	public CQLConstantContainer getAllCQLConstants() {		
@@ -100,10 +111,14 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 			unitMap.put(unit.getUnit(), unit.getCqlunit());
 		}
 		cqlConstantContainer.setCqlUnitMap(unitMap);
-		
+
+		// get all fhir attribnutes and Datatypes
+		getFhirAttributeAndDataTypes(cqlConstantContainer);
+
+		// get all qdm attributes
 		final List<String> cqlAttributesList = qDSAttributesDAO.getAllAttributes();
 		cqlConstantContainer.setCqlAttributeList(cqlAttributesList);
-		
+
 		// get the datatypes
 		final List<DataTypeDTO> dataTypeListBoxList = codeListService.getAllDataTypes();
 		final List<String> datatypeList = new ArrayList<>();
@@ -204,5 +219,29 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 	
 	private QDMContainer getQDMInformation() {
 		return QDMUtil.getQDMContainer();
+	}
+
+	public void getFhirAttributeAndDataTypes(CQLConstantContainer cqlConstantContainer) {
+		List<String> fhirAttributeList = new ArrayList<>();
+		List<String> fhirDataTypeList = new ArrayList<>();
+
+		try {
+			JSONArray fhirResponse = new JSONArray(restTemplate.getForObject(fhirMatServicesUrl + fhirMatServiceResouceForAttributes, String.class));
+
+			for (int i = 0; i < fhirResponse.length(); i++) {
+
+				if(!fhirDataTypeList.contains(fhirResponse.getJSONObject(i).get("matDataTypeDescription").toString())) {
+					fhirDataTypeList.add(fhirResponse.getJSONObject(i).get("matDataTypeDescription").toString());
+				}
+				if(!fhirAttributeList.contains(fhirResponse.getJSONObject(i).get("matAttributeName").toString())) {
+					fhirAttributeList.add(fhirResponse.getJSONObject(i).get("matAttributeName").toString());
+				}
+			}
+		} catch (RestClientResponseException e) {
+			throw new MatRuntimeException(e);
+		}
+
+		cqlConstantContainer.setFhirCqlAttributeList(fhirAttributeList);
+		cqlConstantContainer.setFhirCqlDataTypeList(fhirDataTypeList);
 	}
 }

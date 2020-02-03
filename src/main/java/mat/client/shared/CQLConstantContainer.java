@@ -15,7 +15,9 @@ import mat.shared.cql.model.FunctionSignature;
 public class CQLConstantContainer implements IsSerializable {
 	private String currentQDMVersion;
 	private String currentReleaseVersion;
-	private List<String> cqlAttributeList; 
+	private List<String> fhirCqlAttributeList;
+	private List<String> fhirCqlDataTypeList;
+	private List<String> cqlAttributeList;
 	private List<String> cqlDatatypeList; 
 	private List<String> qdmDatatypeList; 
 	private List<UnitDTO> cqlUnitDTOList; 
@@ -25,6 +27,21 @@ public class CQLConstantContainer implements IsSerializable {
 	private QDMContainer qdmContainer = new QDMContainer();
 	private CQLTypeContainer cqlTypeContainer = new CQLTypeContainer();
 	private List<FunctionSignature> functionSignatures = new ArrayList<>();
+
+	public List<String> getFhirCqlAttributeList() {
+		return fhirCqlAttributeList;
+	}
+
+	public void setFhirCqlAttributeList(List<String> fhirCqlAttributeList) {
+		this.fhirCqlAttributeList = fhirCqlAttributeList;
+	}
+
+	public List<String> getFhirCqlDataTypeList() {
+		return fhirCqlDataTypeList;
+	}
+	public void setFhirCqlDataTypeList(List<String> fhirCqlDataTypeList) {
+		this.fhirCqlDataTypeList = fhirCqlDataTypeList;
+	}
 
 	public List<String> getCqlAttributeList() {
 		return cqlAttributeList;

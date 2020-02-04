@@ -41,7 +41,6 @@ public class ReferencesView implements MeasureDetailViewInterface {
     private ReferencesModel originalModel;
     private ReferencesModel referencesModel;
     private ReferencesObserver observer;
-    private Column<ReferenceTextAndType, SafeHtml> editColumn;
     private MessagePanel messagePanel;
     private int editingIndex = 0;
     private boolean isReadOnly = false;
@@ -82,7 +81,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         };
         referencesTable.addColumn(referenceTypeColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Reference Type\">" + "Reference Type" + "</span>"));
 
-        editColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
+        Column<ReferenceTextAndType, SafeHtml> editColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ReferenceTextAndType ref) {
                 return getEditColumnToolTip();

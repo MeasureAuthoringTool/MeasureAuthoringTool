@@ -9,6 +9,8 @@ import com.openpojo.validation.ValidatorBuilder;
 import com.openpojo.validation.test.impl.GetterTester;
 import com.openpojo.validation.test.impl.SetterTester;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class ReferenceTextAndTypeTest {
     @Test
     public void testSettersAndGetters() {
@@ -18,6 +20,8 @@ public class ReferenceTextAndTypeTest {
                 .with(new SetterTester())
                 .with(new GetterTester())
                 .build();
+        assertNotNull(validator);
+        // Codacity false positive issue
         validator.validate(pojoclass);
     }
 }

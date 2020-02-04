@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import mat.client.measure.ReferenceTextAndType;
@@ -75,16 +74,14 @@ public class MeasureDetailsUtilTest {
     @Test
     public void draftFhir() {
         createMeasure();
-
-        Assertions.assertTrue(measureDetailsUtil.isValidatable(measure));
+        assertTrue(measureDetailsUtil.isValidatable(measure));
     }
 
     @Test
     public void notDraftFhir() {
         createMeasure();
         measure.setDraft(false);
-
-        Assertions.assertFalse(measureDetailsUtil.isValidatable(measure));
+        assertFalse(measureDetailsUtil.isValidatable(measure));
     }
 
     @Test
@@ -92,16 +89,14 @@ public class MeasureDetailsUtilTest {
         createMeasure();
         measure.setDraft(false);
         measure.setMeasureModel("QDM");
-
-        Assertions.assertTrue(measureDetailsUtil.isValidatable(measure));
+        assertTrue(measureDetailsUtil.isValidatable(measure));
     }
 
     @Test
     public void notVersionedQdm() {
         createMeasure();
         measure.setMeasureModel("QDM");
-
-        Assertions.assertFalse(measureDetailsUtil.isValidatable(measure));
+        assertFalse(measureDetailsUtil.isValidatable(measure));
     }
 
     @Test
@@ -119,19 +114,19 @@ public class MeasureDetailsUtilTest {
 
     @Test
     public void testGetTrimmedListNull() {
-        Assertions.assertEquals(Collections.emptyList(), measureDetailsUtil.getTrimmedList(null));
+        assertEquals(Collections.emptyList(), measureDetailsUtil.getTrimmedList(null));
     }
 
     @Test
     public void testGetTrimmedListEmpty() {
-        Assertions.assertEquals(Collections.emptyList(), measureDetailsUtil.getTrimmedList(Collections.emptyList()));
+        assertEquals(Collections.emptyList(), measureDetailsUtil.getTrimmedList(Collections.emptyList()));
     }
 
     @Test
     public void testGetTrimmedSingleEntry() {
         List<ReferenceTextAndType> expectedList = Collections.singletonList(new ReferenceTextAndType("one", MeasureReferenceType.CITATION));
         List<ReferenceTextAndType> giveList = Collections.singletonList(new ReferenceTextAndType(" one ", MeasureReferenceType.CITATION));
-        Assertions.assertEquals(expectedList, measureDetailsUtil.getTrimmedList(giveList));
+        assertEquals(expectedList, measureDetailsUtil.getTrimmedList(giveList));
     }
 
 
@@ -147,7 +142,7 @@ public class MeasureDetailsUtilTest {
                 new ReferenceTextAndType("     two ", MeasureReferenceType.JUSTIFICATION),
                 new ReferenceTextAndType(" three ", MeasureReferenceType.DOCUMENTATION)
         );
-        Assertions.assertEquals(expectedList, measureDetailsUtil.getTrimmedList(giveList));
+        assertEquals(expectedList, measureDetailsUtil.getTrimmedList(giveList));
     }
 
 }

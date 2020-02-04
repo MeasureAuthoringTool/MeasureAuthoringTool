@@ -449,11 +449,6 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper 
         return null;
     }
 
-    /**
-     * Get Measure model from MeasureDetailsModel
-     *
-     * @return measureModel
-     */
     private String getMeasureModel() {
         GeneralInformationModel generalInformationModel = measureDetailsModel.getGeneralInformationModel();
         if (generalInformationModel != null) {

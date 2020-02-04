@@ -17,7 +17,7 @@ public class MeasureDetailsReferencesHandler extends GeneralizedFieldHandler {
         if (arg0 == null) {
             return null;
         }
-        return new ReferenceTextAndType(arg0.toString(), MeasureReferenceType.CITATION);
+        return new ReferenceTextAndType(arg0.toString(), MeasureReferenceType.UNKNOWN);
     }
 
     @SuppressWarnings("rawtypes")

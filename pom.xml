@@ -20,6 +20,7 @@
         <start-class>com.google.gwt.dev.DevMode</start-class>
         <gwtVersion>2.8.2</gwtVersion>
         <googleGin>2.1.2</googleGin>
+        <gwtbootstrap3.version>0.9.4</gwtbootstrap3.version>
         <cqframework.version>1.4.6</cqframework.version>
         <axis.version>1.7.7</axis.version>
         <castor.version>1.4.1</castor.version>
@@ -120,12 +121,12 @@
         <dependency>
             <groupId>org.gwtbootstrap3</groupId>
             <artifactId>gwtbootstrap3</artifactId>
-            <version>0.9.4</version>
+            <version>${gwtbootstrap3.version}</version>
         </dependency>
         <dependency>
             <groupId>org.gwtbootstrap3</groupId>
             <artifactId>gwtbootstrap3-extras</artifactId>
-            <version>0.9.4</version>
+            <version>${gwtbootstrap3.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.gwt.inject</groupId>
@@ -661,6 +662,10 @@
                 </executions>
                 <configuration>
                     <sourceLevel>${gwt.sourceLevel}</sourceLevel>
+                    <!-- Un-comment to speed up dev compilation -->
+<!--                    <draftCompile>true</draftCompile>-->
+<!--                    <localWorkers>10</localWorkers>-->
+<!--                    <optimize>0</optimize>-->
                 </configuration>
             </plugin>
             <plugin>

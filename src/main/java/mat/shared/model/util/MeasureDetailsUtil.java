@@ -3,6 +3,8 @@ package mat.shared.model.util;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import mat.client.measure.ReferenceTextAndType;
 import mat.model.clause.Measure;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
@@ -71,13 +73,13 @@ public class MeasureDetailsUtil {
      * @param listA the list a
      * @return the trimmed list
      */
-    public static List<String> getTrimmedList(List<String> listA) {
-        ArrayList<String> newAList = new ArrayList<String>();
+    public static List<ReferenceTextAndType> getTrimmedList(List<ReferenceTextAndType> listA) {
+        ArrayList<ReferenceTextAndType> newAList = new ArrayList<>();
         if ((listA != null) && (listA.size() > 0)) {
-            for (String aStr : listA) {
-                String val = trimToNull(aStr);
+            for (ReferenceTextAndType aRef : listA) {
+                String val = trimToNull(aRef.getReferenceText());
                 if (null != val) {
-                    newAList.add(val);
+                    newAList.add(new ReferenceTextAndType(val, aRef.getReferenceType()));
                 }
             }
         }
@@ -126,7 +128,7 @@ public class MeasureDetailsUtil {
     }
 
     public static boolean isValidatable(Measure measure) {
-        if(measure.getMeasureModel() == null || measure.getQdmVersion() == null || measure.getReleaseVersion() == null) {
+        if (measure.getMeasureModel() == null || measure.getQdmVersion() == null || measure.getReleaseVersion() == null) {
             return false;
         }
         BigDecimal matVersion = asDecimalVersion(measure.getReleaseVersion());

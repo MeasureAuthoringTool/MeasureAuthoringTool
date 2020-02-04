@@ -346,7 +346,7 @@ public class ExportSimpleXML {
             result = xmlMarshalUtil.convertObjectToXML(xmlMapping, object);
 
         } catch (MarshalException | ValidationException | MappingException | IOException e) {
-            logger.error("Failed to load MeasureDetailsModelMapping.xml" + e.getMessage());
+            logger.error("Failed to load " + xmlMapping + " " + e.getMessage());
             e.printStackTrace();
         }
         return result;

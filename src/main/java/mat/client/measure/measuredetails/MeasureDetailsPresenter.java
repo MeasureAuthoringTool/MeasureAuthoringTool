@@ -65,7 +65,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
     private static FocusableWidget subSkipContentHolder;
     private SimplePanel panel;
     private MeasureHeading measureHeading;
-    MeasureDetailsModel measureDetailsModel;
+    private MeasureDetailsModel measureDetailsModel;
 
     Boolean showCompositeEdit = false;
 

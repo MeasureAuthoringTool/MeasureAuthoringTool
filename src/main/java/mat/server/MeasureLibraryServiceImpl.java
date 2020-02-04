@@ -1263,31 +1263,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     }
 
-    /**
-     * Gets the attribute dao.
-     *
-     * @return the attribute dao
-     */
     private QDSAttributesDAO getAttributeDAO() {
         return ((QDSAttributesDAO) context.getBean("qDSAttributesDAO"));
 
     }
 
-    /**
-     * Gets the context.
-     *
-     * @return the context
-     */
     public ApplicationContext getContext() {
         return context;
     }
 
-    /**
-     * Gets the locked user.
-     *
-     * @param existingMeasure the existing measure
-     * @return the locked user
-     */
     private User getLockedUser(final Measure existingMeasure) {
         return existingMeasure.getLockedUser();
     }
@@ -1522,15 +1506,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         return model;
     }
 
-    /**
-     * Increment version number and save.
-     *
-     * @param maximumVersionNumber - {@link String}.
-     * @param incrementBy          - {@link String}.
-     * @param mDetail              - {@link ManageMeasureDetailModel}.
-     * @param measure              - {@link Measure}.O
-     * @return {@link SaveMeasureResult}. *
-     */
     private SaveMeasureResult incrementVersionNumberAndSave(final String maximumVersionNumber, final String incrementBy,
                                                             final Measure measure) {
         ManageMeasureDetailModel mDetail = getMeasure(measure.getId());

@@ -194,10 +194,11 @@
     
     <field name="referencesList"
            type="java.lang.String"
-           collection="arraylist">
+           collection="arraylist"
+           handler="mat.server.model.MeasureDetailsReferencesHandler">
       <bind-xml name="reference" node="element" location="references"/>
     </field>
-    
+
     <field name="definitions"
            type="java.lang.String">
       <bind-xml name="definitions" node="element"/>

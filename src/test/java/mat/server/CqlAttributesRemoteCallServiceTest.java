@@ -8,7 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -19,10 +18,9 @@ import java.net.URL;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class CqlAttributesRemoteCallTest {
+class CqlAttributesRemoteCallServiceTest {
 
-    @Value("https://localhost:9090")
-    private String fhirMatServicesUrl;
+    private String fhirMatServicesUrl = "https://localhost:9090";
 
     private final static String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/find";
 
@@ -32,10 +30,10 @@ class CqlAttributesRemoteCallTest {
     private CQLConstantContainer cqlConstantContainer = new CQLConstantContainer();
 
     @InjectMocks
-    CqlAttributesRemoteCallService cqlAttributesRemoteCallService;
+    private CqlAttributesRemoteCallService cqlAttributesRemoteCallService;
 
     @Test
-    void testGetFhirAttributeAndDataTypes() throws Exception {
+    public void testGetFhirAttributeAndDataTypes() throws Exception {
 
         URL path = CqlAttributesRemoteCallService.class.getClassLoader().getResource("fhirAttributes&DataTypes.txt");
         ConversionMapping[] conversionMappings = new ObjectMapper().readValue(new File(path.getFile()), ConversionMapping[].class);

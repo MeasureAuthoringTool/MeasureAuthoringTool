@@ -1906,6 +1906,11 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		}
 	}
 
+	@Override
+	protected String getCurrentModelType(){
+		return MatContext.get().getCurrentMeasureModel();
+	}
+
 	private CQLValueSetTransferObject createValueSetTransferObject(String measureID) {
 		if (currentMatValueSet == null) {
 			currentMatValueSet = new MatValueSet();

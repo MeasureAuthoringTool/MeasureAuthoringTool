@@ -175,6 +175,11 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		}
 	}
 
+	@Override
+	protected String getCurrentModelType() {
+		return MatContext.get().getCurrentCQLLibraryModelType();
+	}
+
 	private void addParameterEventHandlers() {
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().addKeyPressHandler(event -> listBoxKeyPress(event));
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().addDoubleClickHandler(event -> leftNavParameterNameListBoxDoubleClickEvent(event));

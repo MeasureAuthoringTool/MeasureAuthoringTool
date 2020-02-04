@@ -188,6 +188,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected abstract void addAndModifyFunction();
 	protected abstract void addAndModifyDefintions();
 	protected abstract void getAppliedValuesetAndCodeList();
+	protected abstract String getCurrentModelType();
 
 	protected HelpBlock buildHelpBlock() {
 		helpBlock = new HelpBlock();
@@ -494,7 +495,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 
 	protected void addCQLLibraryEditorViewHandlers() {
 		cqlWorkspaceView.getCQLLibraryEditorView().getExportErrorFile().addClickHandler(event -> exportErrorFile());
-		cqlWorkspaceView.getCQLLibraryEditorView().getInsertButton().addClickHandler(event -> buildInsertPopUp(MatContext.get().getCurrentMeasureModel()));
+		cqlWorkspaceView.getCQLLibraryEditorView().getInsertButton().addClickHandler(event -> buildInsertPopUp(getCurrentModelType()));
 		cqlWorkspaceView.getCQLLibraryEditorView().getSaveButton().addClickHandler(event -> saveCQLFile());
 	}
 

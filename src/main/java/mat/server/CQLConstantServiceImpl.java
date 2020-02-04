@@ -16,9 +16,7 @@ import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.ClassInfoElement;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.TypeInfo;
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -33,11 +31,7 @@ import mat.server.service.MeasureLibraryService;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.QDMUtil;
 import mat.shared.cql.model.FunctionSignature;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestTemplate;
 
-@ContextConfiguration(classes = Application.class)
 @Service
 public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implements CQLConstantService {
 	private static final String TYPE = "type";
@@ -78,12 +72,6 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 
 	private static final long serialVersionUID = 1L;
 
-
-	@Value("${mat.fhirMatServices.url}")
-	private String fhirMatServicesUrl;
-
-	private final String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/find";
-
 	@Autowired
 	private CodeListService codeListService;
 	
@@ -94,7 +82,8 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 	private MeasureLibraryService measureLibraryService;
 
 	@Autowired
-	private RestTemplate restTemplate;
+	private CqlAttributesRemoteCall cqlAttributesRemoteCall;
+
 	
 	@Override
 	public CQLConstantContainer getAllCQLConstants() {		
@@ -113,7 +102,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		cqlConstantContainer.setCqlUnitMap(unitMap);
 
 		// get all fhir attribnutes and Datatypes
-		getFhirAttributeAndDataTypes(cqlConstantContainer);
+		cqlAttributesRemoteCall.getFhirAttributeAndDataTypes(cqlConstantContainer);
 
 		// get all qdm attributes
 		final List<String> cqlAttributesList = qDSAttributesDAO.getAllAttributes();
@@ -219,29 +208,5 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 	
 	private QDMContainer getQDMInformation() {
 		return QDMUtil.getQDMContainer();
-	}
-
-	public void getFhirAttributeAndDataTypes(CQLConstantContainer cqlConstantContainer) {
-		List<String> fhirAttributeList = new ArrayList<>();
-		List<String> fhirDataTypeList = new ArrayList<>();
-
-		try {
-			JSONArray fhirResponse = new JSONArray(restTemplate.getForObject(fhirMatServicesUrl + FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES, String.class));
-
-			for (int i = 0; i < fhirResponse.length(); i++) {
-
-				if(!fhirDataTypeList.contains(fhirResponse.getJSONObject(i).get("matDataTypeDescription").toString())) {
-					fhirDataTypeList.add(fhirResponse.getJSONObject(i).get("matDataTypeDescription").toString());
-				}
-				if(!fhirAttributeList.contains(fhirResponse.getJSONObject(i).get("matAttributeName").toString())) {
-					fhirAttributeList.add(fhirResponse.getJSONObject(i).get("matAttributeName").toString());
-				}
-			}
-		} catch (RestClientResponseException e) {
-			throw new MatRuntimeException(e);
-		}
-
-		cqlConstantContainer.setFhirCqlAttributeList(fhirAttributeList);
-		cqlConstantContainer.setFhirCqlDataTypeList(fhirDataTypeList);
 	}
 }

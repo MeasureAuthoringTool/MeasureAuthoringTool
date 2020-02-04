@@ -4,7 +4,8 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.net.ssl.SSLContext;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -205,12 +207,16 @@ public class Application extends WebSecurityConfigurerAdapter {
     @Bean
     public CacheManager cacheManager() {
         final SimpleCacheManager cacheManager = new SimpleCacheManager();
-        cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("featureFlags")));
+        List<Cache> caches = new ArrayList<>();
+        caches.add(new ConcurrentMapCache("featureFlags"));
+        caches.add(new ConcurrentMapCache("fhirAttributesAndDataTypes"));
+        cacheManager.setCaches(caches);
         return cacheManager;
     }
 
     @Scheduled(fixedRateString = "${mat.cache.expiry.time}")
     public void clearCacheSchedule() {
         cacheManager().getCache("featureFlags").clear();
+        cacheManager().getCache("fhirAttributesAndDataTypes").clear();
     }
 }

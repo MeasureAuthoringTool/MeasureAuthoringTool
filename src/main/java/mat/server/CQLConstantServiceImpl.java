@@ -2,13 +2,7 @@ package mat.server;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import mat.client.shared.*;
 import org.cqframework.cql.cql2elm.SystemModelInfoProvider;
@@ -86,7 +80,11 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 
 	
 	@Override
-	public CQLConstantContainer getAllCQLConstants() {		
+	public CQLConstantContainer getAllCQLConstants() {
+
+		HashSet<String> fhirDataTypeSet=new HashSet();
+		HashSet<String> fhirAttributeSet=new HashSet();
+
 		final CQLConstantContainer cqlConstantContainer = new CQLConstantContainer(); 
 		
 		// get the unit dto list
@@ -102,7 +100,13 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		cqlConstantContainer.setCqlUnitMap(unitMap);
 
 		// get all fhir attribnutes and Datatypes
-		cqlAttributesRemoteCallService.getFhirAttributeAndDataTypes(cqlConstantContainer);
+		ConversionMapping[] conversionMappings = cqlAttributesRemoteCallService.getFhirAttributeAndDataTypes();
+		for (ConversionMapping conversionMapping : conversionMappings) {
+			fhirDataTypeSet.add(conversionMapping.getMatDataTypeDescription());
+			fhirAttributeSet.add(conversionMapping.getMatAttributeName());
+		}
+		cqlConstantContainer.setFhirCqlDataTypeList(new ArrayList<>(fhirDataTypeSet));
+		cqlConstantContainer.setFhirCqlAttributeList(new ArrayList<>(fhirAttributeSet));
 
 		// get all qdm attributes
 		final List<String> cqlAttributesList = qDSAttributesDAO.getAllAttributes();

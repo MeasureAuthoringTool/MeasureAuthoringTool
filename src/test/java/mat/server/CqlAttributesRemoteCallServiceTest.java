@@ -1,13 +1,13 @@
 package mat.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mat.client.shared.CQLConstantContainer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.powermock.reflect.Whitebox;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -27,22 +27,21 @@ class CqlAttributesRemoteCallServiceTest {
     @Mock
     private RestTemplate restTemplate;
 
-    private CQLConstantContainer cqlConstantContainer = new CQLConstantContainer();
-
     @InjectMocks
     private CqlAttributesRemoteCallService cqlAttributesRemoteCallService;
 
     @Test
     public void testGetFhirAttributeAndDataTypes() throws Exception {
 
-        URL path = CqlAttributesRemoteCallService.class.getClassLoader().getResource("fhirAttributes&DataTypes.txt");
-        ConversionMapping[] conversionMappings = new ObjectMapper().readValue(new File(path.getFile()), ConversionMapping[].class);
-        Mockito.when(restTemplate.getForEntity(fhirMatServicesUrl + FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES, ConversionMapping[].class))
-                .thenReturn(new ResponseEntity(conversionMappings, HttpStatus.OK));
+        Whitebox.setInternalState(cqlAttributesRemoteCallService, "fhirMatServicesUrl", fhirMatServicesUrl);
 
-        cqlAttributesRemoteCallService.getFhirAttributeAndDataTypes(cqlConstantContainer);
-        assertEquals(5,cqlConstantContainer.getFhirCqlAttributeList().size());
-        assertEquals(2,cqlConstantContainer.getFhirCqlDataTypeList().size());
+        URL path = CqlAttributesRemoteCallService.class.getClassLoader().getResource("fhirAttributes&DataTypes.txt");
+        ConversionMapping[] conversionMappingsTestData = new ObjectMapper().readValue(new File(path.getFile()), ConversionMapping[].class);
+        Mockito.when(restTemplate.getForEntity(fhirMatServicesUrl + FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES, ConversionMapping[].class))
+                .thenReturn(new ResponseEntity(conversionMappingsTestData, HttpStatus.OK));
+
+        ConversionMapping[] conversionMappings = cqlAttributesRemoteCallService.getFhirAttributeAndDataTypes();
+        assertEquals(conversionMappingsTestData, conversionMappings);
 
     }
 }

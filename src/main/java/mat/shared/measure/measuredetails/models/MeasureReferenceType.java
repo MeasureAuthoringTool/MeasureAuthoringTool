@@ -9,10 +9,7 @@ public enum MeasureReferenceType implements IsSerializable {
     JUSTIFICATION("Justification"),
     UNKNOWN("Unknown");
 
-    private String displayName;
-
-    MeasureReferenceType() {
-    }
+    private final String displayName;
 
     MeasureReferenceType(String displayName) {
         this.displayName = displayName;

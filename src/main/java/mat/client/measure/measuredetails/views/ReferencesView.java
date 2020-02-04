@@ -55,7 +55,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         buildDetailView();
     }
 
-    private CellTable<ReferenceTextAndType> addColumnToTable(CellTable<ReferenceTextAndType> referencesTable) {
+    private void addColumnToTable(CellTable<ReferenceTextAndType> referencesTable) {
         Label measureSearchHeader = new Label("References List");
         measureSearchHeader.getElement().setId("referencesHeader_Label");
         measureSearchHeader.setStyleName("invisibleTableCaption");
@@ -85,7 +85,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         editColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ReferenceTextAndType ref) {
-                return getEditColumnToolTip(ref.getReferenceText());
+                return getEditColumnToolTip();
             }
         };
 
@@ -109,7 +109,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         Column<ReferenceTextAndType, SafeHtml> deleteColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ReferenceTextAndType ref) {
-                return getDeleteColumnToolTip(ref.getReferenceText());
+                return getDeleteColumnToolTip();
             }
         };
         deleteColumn.setFieldUpdater(new FieldUpdater<ReferenceTextAndType, SafeHtml>() {
@@ -121,8 +121,6 @@ public class ReferencesView implements MeasureDetailViewInterface {
             }
         });
         referencesTable.addColumn(deleteColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Index\">" + "Delete" + "</span>"));
-
-        return referencesTable;
     }
 
     private void displayDeleteConfirmationDialog(int index, String object) {
@@ -146,7 +144,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         hideDirtyCheck();
     }
 
-    private SafeHtml getEditColumnToolTip(String object) {
+    private SafeHtml getEditColumnToolTip() {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         String title = isReadOnly ? "View" : "Edit";
         String cssColor = isReadOnly ? "black" : "darkgoldenrod";
@@ -157,7 +155,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         return sb.toSafeHtml();
     }
 
-    private SafeHtml getDeleteColumnToolTip(String object) {
+    private SafeHtml getDeleteColumnToolTip() {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         String title = "Delete";
         String cssClass = "btn btn-link";
@@ -195,7 +193,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         listDataProvider.getList().addAll(referencesModel.getReferences());
 
         if (referencesModel.getReferences() != null && referencesModel.getReferences().size() > 0) {
-            referencesTable = addColumnToTable(referencesTable);
+            addColumnToTable(referencesTable);
             listDataProvider.addDataDisplay(referencesTable);
             CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
             MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true, "manageReferences");

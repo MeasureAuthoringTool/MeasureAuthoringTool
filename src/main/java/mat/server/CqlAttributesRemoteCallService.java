@@ -10,10 +10,10 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 @Service
-public class CqlAttributesRemoteCall {
+public class CqlAttributesRemoteCallService {
 
     @Autowired
     private RestTemplate restTemplate;
@@ -23,10 +23,10 @@ public class CqlAttributesRemoteCall {
 
     private final static String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/find";
 
-    List<String> fhirDataTypeList = new ArrayList<>();
-    List<String> fhirAttributeList = new ArrayList<>();
-
     public void getFhirAttributeAndDataTypes(CQLConstantContainer cqlConstantContainer) {
+
+        HashSet<String> fhirDataTypeSet=new HashSet();
+        HashSet<String> fhirAttributeSet=new HashSet();
 
         ResponseEntity<ConversionMapping[]> fhirResponse;
         try {
@@ -37,16 +37,11 @@ public class CqlAttributesRemoteCall {
         ConversionMapping[] conversionMappings = fhirResponse.getBody();
 
         for (ConversionMapping conversionMapping : conversionMappings) {
-
-            if(!fhirDataTypeList.contains(conversionMapping.getMatDataTypeDescription())) {
-                fhirDataTypeList.add(conversionMapping.getMatDataTypeDescription());
-            }
-            if(!fhirAttributeList.contains(conversionMapping.getMatAttributeName())) {
-                fhirAttributeList.add(conversionMapping.getMatAttributeName());
-            }
+            fhirDataTypeSet.add(conversionMapping.getMatDataTypeDescription());
+            fhirAttributeSet.add(conversionMapping.getMatAttributeName());
         }
-        cqlConstantContainer.setFhirCqlDataTypeList(fhirDataTypeList);
-        cqlConstantContainer.setFhirCqlAttributeList(fhirAttributeList);
+        cqlConstantContainer.setFhirCqlDataTypeList(new ArrayList<>(fhirDataTypeSet));
+        cqlConstantContainer.setFhirCqlAttributeList(new ArrayList<>(fhirAttributeSet));
     }
 
 }

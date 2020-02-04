@@ -82,7 +82,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 	private MeasureLibraryService measureLibraryService;
 
 	@Autowired
-	private CqlAttributesRemoteCall cqlAttributesRemoteCall;
+	private CqlAttributesRemoteCallService cqlAttributesRemoteCallService;
 
 	
 	@Override
@@ -102,7 +102,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		cqlConstantContainer.setCqlUnitMap(unitMap);
 
 		// get all fhir attribnutes and Datatypes
-		cqlAttributesRemoteCall.getFhirAttributeAndDataTypes(cqlConstantContainer);
+		cqlAttributesRemoteCallService.getFhirAttributeAndDataTypes(cqlConstantContainer);
 
 		// get all qdm attributes
 		final List<String> cqlAttributesList = qDSAttributesDAO.getAllAttributes();

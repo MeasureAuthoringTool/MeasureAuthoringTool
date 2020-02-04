@@ -32,17 +32,17 @@ class CqlAttributesRemoteCallTest {
     private CQLConstantContainer cqlConstantContainer = new CQLConstantContainer();
 
     @InjectMocks
-    CqlAttributesRemoteCall cqlAttributesRemoteCall;
+    CqlAttributesRemoteCallService cqlAttributesRemoteCallService;
 
     @Test
-    void TestGetFhirAttributeAndDataTypes() throws Exception {
+    void testGetFhirAttributeAndDataTypes() throws Exception {
 
-        URL path = CqlAttributesRemoteCall.class.getClassLoader().getResource("fhirAttributes&DataTypes.txt");
+        URL path = CqlAttributesRemoteCallService.class.getClassLoader().getResource("fhirAttributes&DataTypes.txt");
         ConversionMapping[] conversionMappings = new ObjectMapper().readValue(new File(path.getFile()), ConversionMapping[].class);
         Mockito.when(restTemplate.getForEntity(fhirMatServicesUrl + FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES, ConversionMapping[].class))
                 .thenReturn(new ResponseEntity(conversionMappings, HttpStatus.OK));
 
-        cqlAttributesRemoteCall.getFhirAttributeAndDataTypes(cqlConstantContainer);
+        cqlAttributesRemoteCallService.getFhirAttributeAndDataTypes(cqlConstantContainer);
         assertEquals(5,cqlConstantContainer.getFhirCqlAttributeList().size());
         assertEquals(2,cqlConstantContainer.getFhirCqlDataTypeList().size());
 

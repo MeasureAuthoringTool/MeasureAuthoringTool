@@ -25,6 +25,11 @@ public class MeasureDetailsUtil {
     public static final String QDM = "QDM";
     public static final String PRE_CQL = "Pre-CQL";
     public static final String MAT_ON_FHIR = "MAT_ON_FHIR";
+    public static final String FHIR_CQL = "FHIR / CQL";
+    public static final String QDM_QDM = "QDM / QDM";
+    public static final String QDM_CQL = "QDM / CQL";
+
+
 
     public static final BigDecimal RUN_FHIR_VALIDATION_VERSION = new BigDecimal("5.8");
     public static final BigDecimal RUN_FHIR_VALIDATION_QDM_VERSION = new BigDecimal("5.5");
@@ -110,6 +115,16 @@ public class MeasureDetailsUtil {
 
     public static boolean isQdm(String type) {
         return QDM.equalsIgnoreCase(defaultTypeIfBlank(type));
+    }
+
+    public static String getModelTypeDisplayName(String type) {
+        if (FHIR.equalsIgnoreCase(type)) {
+            return FHIR_CQL;
+        } else if (QDM.equalsIgnoreCase(type)) {
+            return QDM_CQL;
+        } else {
+            return QDM_QDM;
+        }
     }
 
     public static boolean isValidatable(Measure measure) {

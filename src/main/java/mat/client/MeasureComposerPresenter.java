@@ -286,7 +286,7 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
     private static String getHeadingMeasureModel() {
         String model = "";
         if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
-            model = " (" + MeasureDetailsUtil.defaultTypeIfBlank(MatContext.get().getCurrentMeasureInfo().getMeasureModel()) + ")";
+            model = " (" + MeasureDetailsUtil.getModelTypeDisplayName(MatContext.get().getCurrentMeasureInfo().getMeasureModel()) + ")";
         }
         return model;
     }

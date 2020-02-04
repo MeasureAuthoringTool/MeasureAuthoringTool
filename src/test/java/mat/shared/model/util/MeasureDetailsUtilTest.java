@@ -111,6 +111,13 @@ public class MeasureDetailsUtilTest {
     }
 
     @Test
+    public void getModelTypeDisplayNameTest() {
+        assertEquals("QDM / QDM", MeasureDetailsUtil.getModelTypeDisplayName(null));
+        assertEquals("QDM / CQL", MeasureDetailsUtil.getModelTypeDisplayName("QDM"));
+        assertEquals("FHIR / CQL", MeasureDetailsUtil.getModelTypeDisplayName("FHIR"));
+    }
+
+    @Test
     public void testGetTrimmedListNull() {
         Assertions.assertEquals(Collections.emptyList(), measureDetailsUtil.getTrimmedList(null));
     }

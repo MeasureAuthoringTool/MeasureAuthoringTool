@@ -1,0 +1,80 @@
+@startuml
+header as-is current state
+
+actor User order 10
+participant "MAT GWT" as gwt order 20
+participant "MAT Server" as srv order 30
+
+title CQL Workspace - Definition  - Add or Modify Definition
+User -> gwt: add/modify definition
+gwt --> User: done
+User -> gwt: save
+opt validation failed
+    note over gwt
+        #definition name is a valid expression name, not empty, not a keyword, not Patient
+        #definition Name has no special chars
+        #definition comment < 250 chars
+        #definition comment contains no invalid chars
+    end note
+    gwt -[#red]> User: show error
+    destroy gwt
+end
+gwt -> srv: MeasureService::saveAndModifyDefinitions(\n\tmeasureId, \n\tmodified definition, \n\tcurrent definition, \n\tlist of defnitions,\n\t isFormattable: true)
+opt current measure not editable
+    srv --[#red]> gwt: result {success: false}
+    destroy srv
+end
+srv -> srv: load measure xml by measureId
+group CqlService::saveAndModifyDefinitions (xml, modified definition, current definition, definition list, isFormattable)
+    srv -> srv: create cqlModel from xml
+    note over srv
+        validate the new identifier, unless it was equal to the definition
+        # validate no special chars
+        # validate identifier name is not duplicated
+        # validate comment is not too long
+    end note
+    srv -> srv: update cql definition in the model
+    srv -> srv: insert cql definition and then parse cql for errors
+    opt isFormattable
+        srv -> srv: format definition
+    end
+end
+srv -> srv: update xml with risk adjustment variables
+srv -> srv: update xml, replace cqlLookUp with measure
+srv -> srv: save measure xml to DB
+srv -> gwt: return result {success: true}
+
+'------------------------------------------------------
+newpage CQL Workspace - Definition - Delete Definition
+User -> gwt: Delete definition, [confirmation == Yes]
+gwt -> srv: MeasureService::deleteDefinition (\n\tmeasureId, \n\tto be modified cql definition)
+srv -> srv: MeasureLibraryService::deleteDefinition (\n\tmeasureId, \n\tto be modified cql definition)
+alt measure is not editable
+    srv --[#red]> gwt:  result = SaveUpdateCQLResult(success = false)
+else measure is editable
+    srv -> srv: load measure xml by measureId from the DB
+    srv -> srv: result = CqlService::deleteDefinition (xml, \n\tto be modified cql definition))
+    note over srv
+        CqlService::saveCQLCodes does xml processing,
+        # parses CQLModel from xml
+        # remove definition by id
+        # update xml from CQLModel
+        # return result : SaveUpdateCQLResult (updated model, updated definition)
+    end note
+    srv -> srv: update xml value with cqlResult xml returned from CqlService
+    srv -> srv: <b><color #RED>update xml populations and groups
+    srv -> srv: store xml to the DB MeasurePackageService::saveMeasureXml
+    srv --> gwt: result
+end
+alt result is success
+    gwt -> gwt: update the view with cql parameters from result::getCqlModel()::getCqlParameters()
+    gwt --> User: show success message
+else result is not success
+    gwt --[#red]> User: show validation error
+else error
+    gwt --[#red]> User: Window.alert( error message )
+end
+
+footer actual on 01/22/2020
+
+@enduml

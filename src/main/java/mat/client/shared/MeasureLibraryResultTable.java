@@ -29,7 +29,7 @@ public class MeasureLibraryResultTable {
 
     private static final int CHECKBOX_COLUMN_WIDTH = 4;
     private static final int VERSION_COLUMN_WIDTH = 8;
-    private static final int MODEL_COLUMN_WIDTH = 10;
+    private static final int MODEL_COLUMN_WIDTH = 12;
     private static final int MOUSE_CLICK_DELAY = 300;
     private Timer singleClickTimer;
     private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
@@ -80,11 +80,11 @@ public class MeasureLibraryResultTable {
                 new MatSafeHTMLCell()) {
             @Override
             public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-                return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.defaultTypeIfBlank(object.getMeasureModel()));
+                return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.getModelTypeDisplayName(object.getMeasureModel()));
             }
         };
         if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
-            table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Model" + "</span>"));
+            table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Models" + "</span>"));
             table.setColumnWidth(model, MODEL_COLUMN_WIDTH, Style.Unit.PCT);
         }
         // Add event handler for table

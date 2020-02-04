@@ -1,0 +1,167 @@
+@startuml
+header as-is current state
+
+actor User order 10
+participant "MAT GWT" as gwt order 20
+participant "MAT Server" as srv order 30
+
+title CQL Workspace - Codes - Add New Codes
+User -> gwt: adds a new code
+gwt -> gwt: build a transfer object MatCodeTransferObject
+gwt -> srv: MeasureService::saveCQLCodestoMeasure (transfer object)
+srv -> srv: MeasureLibraryService::saveCQLCodestoMeasure (transfer object)
+note over gwt,srv
+    Server side logic is exactly the same for the modify logic.
+end note
+alt measure is not editable
+    srv --> gwt:  result = SaveUpdateCQLResult(success = false)
+else measure is editable
+    srv -> srv: load measure xml by measureId from the DB
+    srv -> srv: result = CqlService::saveCQLCodes (xml, codes transfer object)
+    note over srv
+        CqlService::saveCQLCodes does xml processing,
+        # parses CQLModel from xml
+        # updates code lists
+        # if there is a duplicated name then <b><color #RED> return success false
+    end note
+    srv -> srv: update xml value with cqlResult xml returned from CqlService
+    srv -> srv: CqlService::saveCQLCodeSystem
+    note over srv
+        # parses CQLModel from xml
+        # updates code systems
+        # if code systems has multiple entries with same code system name
+        and code system version then <b><color #RED> return success false
+    end note
+    srv -> srv: update xml value with cqlResult xml returned from CqlService
+    srv -> srv: store xml to the DB
+    srv -> srv: re-load xml and parse codes from xml into the result object
+    srv --> gwt: result
+end
+alt result is success
+    gwt -> gwt: update the view with cql codes from result::getCqlCodeList
+    gwt --> User: show success message
+else result is not success
+    gwt --[#red]> User: show failure reason: Duplicate \nor Birthdate or Date error
+else error
+    gwt --[#red]> User: Window.alert( error message )
+end
+
+'------------------------------------------------------
+newpage CQL Workspace - Codes - Paste Codes
+User -> gwt: codes are pasted
+opt clipboard doesn't contain codes
+    gwt --[#red]> User: show error <color #RED>CLIPBOARD DOES NOT CONTAIN CODES
+    destroy gwt
+end
+gwt -> gwt: prepare a list of cqlcodes to paste
+gwt -> srv: MeasureService::saveCQLCodeListToMeasure(list of cqlcodes to paste, measureId)
+srv -> srv: MeasureLibraryService::saveCQLCodestoMeasure (transfer object)
+alt measure is not editable
+    srv --> gwt:  result = SaveUpdateCQLResult(success = false)
+else measure is editable
+    srv -> srv: load measure xml by measureId from the DB
+    loop over cql codes to pate
+        srv -> srv: prepare transfer object from the current code
+        srv -> srv: CqlService::saveCQLCodes (xml, code)
+        srv -> srv: update xml with cqlLookUp
+        srv -> srv: create a code system object from the code
+        srv -> srv: CqlService::saveCQLCodeSystem (xml, code system)
+        srv -> srv: update xml with cqlLookUp
+        note over srv
+            This logic is quite similar to modify logic,
+            it's just running in a cycle over the list of the codes.
+        end note
+    end
+    srv -> srv: persist measure xml in the DB
+    srv -> srv: update result with CQLModel and CQL code list
+    srv --> gwt: result
+end
+alt result is success or not success
+    gwt -> gwt: update the view with cql codes from result::getCqlCodeList
+    gwt --> User: show message: SUCCESSFULLY PASTED CODES IN MEASURE
+else error
+    gwt --[#red]> User: Window.alert( error message )
+    destroy gwt
+end
+
+'------------------------------------------------------
+newpage CQL Workspace - Codes - Modify Codes
+User -> gwt: modifies a code
+gwt -> gwt: build a transfer object MatCodeTransferObject(object with id, cqlCode, codeList)
+gwt -> gwt: remove from the list of applied codes by id
+opt applied codes contain a code with same display name
+    gwt --[#red]> User: show error 'Duplicate - already exists. Please add a unique suffix'
+    destroy gwt
+end
+gwt -> srv: MeasureService::saveCQLCodestoMeasure (transfer object)
+srv -> srv: MeasureLibraryService::saveCQLCodestoMeasure (transfer object)
+alt measure is not editable
+    srv --> gwt:  result = SaveUpdateCQLResult(success = false)
+else measure is editable
+    srv -> srv: load measure xml by measureId from the DB
+    srv -> srv: result = CqlService::saveCQLCodes (xml, codes transfer object)
+    note over srv
+        CqlService::saveCQLCodes does xml processing,
+        # parses CQLModel from xml
+        # updates code lists
+        # if there is a duplicated name then <b><color #RED> return success false
+    end note
+    srv -> srv: update xml value with cqlResult xml returned from CqlService
+    srv -> srv: CqlService::saveCQLCodeSystem
+    note over srv
+        # parses CQLModel from xml
+        # updates code systems
+        # if code systems has multiple entries with same code system name
+        and code system version then <b><color #RED> return success false
+    end note
+    srv -> srv: update xml value with cqlResult xml returned from CqlService
+
+    srv -> srv: store xml to the DB
+    srv -> srv: re-load xml and parse codes from xml into the result object
+    srv --> gwt: result
+end
+alt result is success
+    gwt -> gwt: update the view with cql codes from result::getCqlCodeList
+    gwt --> User: show success message
+else error
+    gwt --[#red]> User: Window.alert( error message )
+end
+
+'------------------------------------------------------
+newpage CQL Workspace - Codes - Delete Codes
+User -> gwt: delete code / confirmed
+gwt -> srv: MeasureService::deleteCode (\n\tcurrent selected codes id, \n\tmeasureId)
+srv -> srv: MeasureLibraryService::deleteCode (\n\tcodeId, \n\tmeasureId)
+alt measure is not editable
+    srv --> gwt:  result = SaveUpdateCQLResult(success = false)
+else measure is editable
+    srv -> srv: load measure xml by measureId from the DB
+    srv -> srv: result = CqlService :: deleteCode (xml, codeId)
+    note over srv
+        CqlService :: deleteCode does xml processing,
+        # looks for a xml node which corresponds to the codeId with /cqlLookUp//code[@id=codeId xpath
+        # the xml node is parsed into codeOID, codeName, codeSysteOID, codeSystemVersion
+        # if code system is not used by another codes it's removed
+        # the xml node is removed
+        # <b>cql code, xml doc and code lists</b> are updated and stored in the <b>result
+    end note
+    srv -> srv: update xml value with cqlResult xml returned from CqlService
+    srv -> srv: store xml to the DB
+    srv -> srv: re-load xml and parse codes from xml into the result object
+    srv --> gwt: result
+    note over srv #FFAAAA
+            <b>Remark!</b> why do we need to re-load xml from the DB and re-load codes?
+    end note
+end
+alt result is success
+    gwt -> gwt: update the view with cql codes from result::getCqlCodeList
+    gwt --> User: show success message
+else result is not success
+    gwt --[#red]> User: show error "Unable to delete."
+else error
+    gwt --[#red]> User: Window.alert( error message )
+end
+
+footer actual on 01/27/2020
+
+@enduml

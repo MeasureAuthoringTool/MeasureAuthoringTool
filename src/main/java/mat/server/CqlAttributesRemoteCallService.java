@@ -15,7 +15,7 @@ public class CqlAttributesRemoteCallService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${mat.fhirMatServices.url}")
+    @Value("${qdm.qicore.mapping.services.url}")
     private String fhirMatServicesUrl;
 
     private final static String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/find";

@@ -14,8 +14,12 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import freemarker.template.Configuration;
@@ -31,286 +35,53 @@ import mat.shared.ConstantMessages;
 /**
  * The Class CheckUserPasswordLimit.
  */
+@Service
 public class CheckUserChangePasswordLimit {
 
-    /**
-     * The Constant logger.
-     */
     private static final Log logger = LogFactory.getLog(CheckUserChangePasswordLimit.class);
 
-    /**
-     * The user dao.
-     */
-    private UserDAO userDAO;
+    private static final String WARNING_EMAIL_FLAG = "WARNING";
+    private static final String EXPIRY_EMAIL_FLAG = "EXPIRED";
 
-    private EmailAuditLogDAO emailAuditLogDAO;
-
-    /**
-     * The mail sender.
-     */
-    private MailSender mailSender;
-
-    /**
-     * The simple mail message.
-     */
-    private SimpleMailMessage simpleMailMessage;
-
-    /**
-     * The warning day limit.
-     */
-    private int passwordwarningDayLimit;
-
-    /**
-     * The expiry day limit.
-     */
-    private int passwordexpiryDayLimit;
-
-    /**
-     * The warning mail template.
-     */
-    private String warningMailTemplate;
-
-    /**
-     * The warning mail subject.
-     */
-    private String warningMailSubject;
-
-    /**
-     * The expiry mail template.
-     */
-    private String expiryMailTemplate;
-
-    /**
-     * The expiry mail subject.
-     */
-    private String expiryMailSubject;
-
-    /**
-     * The Constant WARNING_EMAIL_FLAG.
-     */
-    private final static String WARNING_EMAIL_FLAG = "WARNING";
-
-    /**
-     * The Constant EXPIRY_EMAIL_FLAG.
-     */
-    private final static String EXPIRY_EMAIL_FLAG = "EXPIRED";
-
-    /**
-     * The user service.
-     */
+    @Autowired
     private UserService userService;
 
     @Autowired
     private Configuration freemarkerConfiguration;
 
-    /**
-     * Gets the expiry mail template.
-     *
-     * @return the expiry mail template
-     */
-    public String getExpiryMailTemplate() {
-        return expiryMailTemplate;
-    }
+    @Autowired
+    private UserDAO userDAO;
 
-    /**
-     * Sets the expiry mail template.
-     *
-     * @param expiryMailTemplate the new expiry mail template
-     */
-    public void setExpiryMailTemplate(String expiryMailTemplate) {
-        this.expiryMailTemplate = expiryMailTemplate;
-    }
+    @Autowired
+    private EmailAuditLogDAO emailAuditLogDAO;
 
-    /**
-     * Gets the expiry mail subject.
-     *
-     * @return the expiry mail subject
-     */
-    public String getExpiryMailSubject() {
-        return expiryMailSubject;
-    }
+    @Autowired
+    private MailSender mailSender;
 
-    /**
-     * Sets the expiry mail subject.
-     *
-     * @param expiryMailSubject the new expiry mail subject
-     */
-    public void setExpiryMailSubject(String expiryMailSubject) {
-        this.expiryMailSubject = expiryMailSubject;
-    }
+    @Qualifier("userLastLoginTemplateMessage")
+    @Autowired
+    private SimpleMailMessage simpleMailMessage;
 
+    @Value("${mat.password.warning.dayLimit}")
+    private int passwordwarningDayLimit;
 
-    /**
-     * Gets the user dao.
-     *
-     * @return the user dao
-     */
-    public UserDAO getUserDAO() {
-        return userDAO;
-    }
+    @Value("${mat.password.expiry.dayLimit}")
+    private int passwordexpiryDayLimit;
 
-    /**
-     * Sets the user dao.
-     *
-     * @param userDAO the new user dao
-     */
-    public void setUserDAO(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
+    @Value("${mat.password.warning.email.template}")
+    private String warningMailTemplate;
 
-    public EmailAuditLogDAO getEmailAuditLogDAO() {
-        return emailAuditLogDAO;
-    }
+    @Value("${mat.password.warning.email.subject}")
+    private String warningMailSubject;
 
-    public void setEmailAuditLogDAO(EmailAuditLogDAO emailAuditLogDAO) {
-        this.emailAuditLogDAO = emailAuditLogDAO;
-    }
+    @Value("${mat.password.expiry.email.template}")
+    private String expiryMailTemplate;
 
+    @Value("${mat.password.expiry.email.subject}")
+    private String expiryMailSubject;
+    @Value("${mat.support.emailAddress}")
+    private String supportEmailAddress;
 
-    /**
-     * Gets the mail sender.
-     *
-     * @return the mail sender
-     */
-    public MailSender getMailSender() {
-        return mailSender;
-    }
-
-    /**
-     * Sets the mail sender.
-     *
-     * @param mailSender the new mail sender
-     */
-    public void setMailSender(MailSender mailSender) {
-        this.mailSender = mailSender;
-    }
-
-    /**
-     * Gets the simple mail message.
-     *
-     * @return the simple mail message
-     */
-    public SimpleMailMessage getSimpleMailMessage() {
-        return simpleMailMessage;
-    }
-
-    /**
-     * Sets the simple mail message.
-     *
-     * @param simpleMailMessage the new simple mail message
-     */
-    public void setSimpleMailMessage(SimpleMailMessage simpleMailMessage) {
-        this.simpleMailMessage = simpleMailMessage;
-    }
-
-    /**
-     * Gets the passwordwarning day limit.
-     *
-     * @return the passwordwarning day limit
-     */
-    public int getPasswordwarningDayLimit() {
-        return passwordwarningDayLimit;
-    }
-
-    /**
-     * Sets the passwordwarning day limit.
-     *
-     * @param passwordwarningDayLimit the new passwordwarning day limit
-     */
-    public void setPasswordwarningDayLimit(int passwordwarningDayLimit) {
-        this.passwordwarningDayLimit = passwordwarningDayLimit;
-    }
-
-    /**
-     * Gets the passwordexpiry day limit.
-     *
-     * @return the passwordexpiry day limit
-     */
-    public int getPasswordexpiryDayLimit() {
-        return passwordexpiryDayLimit;
-    }
-
-    /**
-     * Sets the passwordexpiry day limit.
-     *
-     * @param passwordexpiryDayLimit the new passwordexpiry day limit
-     */
-    public void setPasswordexpiryDayLimit(int passwordexpiryDayLimit) {
-        this.passwordexpiryDayLimit = passwordexpiryDayLimit;
-    }
-
-    /**
-     * Gets the warning mail template.
-     *
-     * @return the warning mail template
-     */
-    public String getWarningMailTemplate() {
-        return warningMailTemplate;
-    }
-
-    /**
-     * Sets the warning mail template.
-     *
-     * @param warningMailTemplate the new warning mail template
-     */
-    public void setWarningMailTemplate(String warningMailTemplate) {
-        this.warningMailTemplate = warningMailTemplate;
-    }
-
-    /**
-     * Gets the warning mail subject.
-     *
-     * @return the warning mail subject
-     */
-    public String getWarningMailSubject() {
-        return warningMailSubject;
-    }
-
-    /**
-     * Sets the warning mail subject.
-     *
-     * @param warningMailSubject the new warning mail subject
-     */
-    public void setWarningMailSubject(String warningMailSubject) {
-        this.warningMailSubject = warningMailSubject;
-    }
-
-    /**
-     * Gets the user service.
-     *
-     * @return the user service
-     */
-    public UserService getUserService() {
-        return userService;
-    }
-
-    /**
-     * Sets the user service.
-     *
-     * @param userService the new user service
-     */
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    /**
-     * Gets the warning email flag.
-     *
-     * @return the warning email flag
-     */
-    public static String getWarningEmailFlag() {
-        return WARNING_EMAIL_FLAG;
-    }
-
-
-    /**
-     * Gets the expiry email flag.
-     *
-     * @return the expiry email flag
-     */
-    public static String getExpiryEmailFlag() {
-        return EXPIRY_EMAIL_FLAG;
-    }
 
     /**
      * Method to Send
@@ -319,15 +90,15 @@ public class CheckUserChangePasswordLimit {
      *
      * @return void
      */
+    @Scheduled(cron = "${mat.checkUserPasswordLimitDays.cron}")
     public void checkUserPasswordLimitDays() {
 
         logger.info(" :: CheckUserPasswordLimitDays Method START :: ");
 
-        CheckUserLoginPasswordDays(passwordwarningDayLimit, WARNING_EMAIL_FLAG);
-        CheckUserLoginPasswordDays(passwordexpiryDayLimit, EXPIRY_EMAIL_FLAG);
+        checkUserLoginPasswordDays(passwordwarningDayLimit, WARNING_EMAIL_FLAG);
+        checkUserLoginPasswordDays(passwordexpiryDayLimit, EXPIRY_EMAIL_FLAG);
 
         logger.info(" :: CheckUserPasswordLimitDays Method END :: ");
-
     }
 
     /**
@@ -336,26 +107,26 @@ public class CheckUserChangePasswordLimit {
      * @param noOfDaysPasswordLimit the no of days limit
      * @param emailType             the email type
      */
-    private void CheckUserLoginPasswordDays(final long noOfDaysPasswordLimit, final String emailType) {
+    private void checkUserLoginPasswordDays(final long noOfDaysPasswordLimit, final String emailType) {
 
         logger.info(" :: checkUserLoginDays Method START :: for Sending " + emailType + " Type Email");
-        //Get all the Users
+        // Get all the Users
         final List<User> users = userDAO.find();
         final List<User> emailUsers = checkUsersLastPassword(noOfDaysPasswordLimit, users);
-        final Map<String, Object> model = new HashMap<String, Object>();
-        final Map<String, String> content = new HashMap<String, String>();
+        final Map<String, Object> model = new HashMap<>();
+        final Map<String, String> content = new HashMap<>();
         final String envirUrl = ServerConstants.getEnvURL();
 
         for (User user : emailUsers) {
 
-            //Send 45 days password limit email for all the users in the list.
+            // Send 45 days password limit email for all the users in the list.
             logger.info("Sending email to " + user.getFirstName());
             simpleMailMessage.setTo(user.getEmailAddress());
 
-            //Creation of the model map can be its own method.
+            // Creation of the model map can be its own method.
             content.put("User", "Measure Authoring Tool User");
 
-            /**
+            /*
              * If the user is not a normal user then set the user role in the email
              */
             String userRole = "";
@@ -374,6 +145,7 @@ public class CheckUserChangePasswordLimit {
             }
 
             model.put("content", content);
+            model.put(ConstantMessages.SUPPORT_EMAIL, supportEmailAddress);
             String text = null;
             try {
                 if (WARNING_EMAIL_FLAG.equals(emailType)) {
@@ -395,7 +167,7 @@ public class CheckUserChangePasswordLimit {
                 model.clear();
                 logger.info("Email Sent to " + user.getFirstName());
             } catch (IOException | TemplateException e) {
-                e.printStackTrace();
+                logger.error(e);
             }
         }
 
@@ -445,7 +217,7 @@ public class CheckUserChangePasswordLimit {
                         || lastPasswordCreatedDate.equals(passwordDaysAgo)) {
                     logger.info("User:" + user.getEmailAddress() + " who's last password was more than " + passwordDayLimit + " days ago.");
                     returnUserList.add(user);
-                    //to maintain Password history
+                    // to maintain Password history
                     getUserService().addByUpdateUserPasswordHistory(user, true);
                     user.getPassword().setTemporaryPassword(true);
                     user.getPassword().setCreatedDate(DateUtils.truncate(new Date(), Calendar.DATE));
@@ -495,9 +267,9 @@ public class CheckUserChangePasswordLimit {
 
         Boolean isValidUser = true;
 
-        //final Date terminationDate = user.getTerminationDate();
+        // final Date terminationDate = user.getTerminationDate();
         final Date signInDate = user.getSignInDate();
-        System.out.println("signInDate :: " + signInDate);
+        logger.info("signInDate :: " + signInDate);
         if (signInDate == null || user.getStatus().getStatusId().equals("2")) {
             isValidUser = false;
         }
@@ -522,4 +294,101 @@ public class CheckUserChangePasswordLimit {
         String returnDateString = simpleDateFormat.format(calendar.getTime());
         return returnDateString;
     }
+
+    public String getExpiryMailTemplate() {
+        return expiryMailTemplate;
+    }
+
+    public void setExpiryMailTemplate(String expiryMailTemplate) {
+        this.expiryMailTemplate = expiryMailTemplate;
+    }
+
+    public String getExpiryMailSubject() {
+        return expiryMailSubject;
+    }
+
+    public void setExpiryMailSubject(String expiryMailSubject) {
+        this.expiryMailSubject = expiryMailSubject;
+    }
+
+    public UserDAO getUserDAO() {
+        return userDAO;
+    }
+
+    public void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+    public EmailAuditLogDAO getEmailAuditLogDAO() {
+        return emailAuditLogDAO;
+    }
+
+    public void setEmailAuditLogDAO(EmailAuditLogDAO emailAuditLogDAO) {
+        this.emailAuditLogDAO = emailAuditLogDAO;
+    }
+
+    public MailSender getMailSender() {
+        return mailSender;
+    }
+
+    public void setMailSender(MailSender mailSender) {
+        this.mailSender = mailSender;
+    }
+
+    public SimpleMailMessage getSimpleMailMessage() {
+        return simpleMailMessage;
+    }
+
+    public void setSimpleMailMessage(SimpleMailMessage simpleMailMessage) {
+        this.simpleMailMessage = simpleMailMessage;
+    }
+
+    public int getPasswordwarningDayLimit() {
+        return passwordwarningDayLimit;
+    }
+
+    public void setPasswordwarningDayLimit(int passwordwarningDayLimit) {
+        this.passwordwarningDayLimit = passwordwarningDayLimit;
+    }
+
+    public int getPasswordexpiryDayLimit() {
+        return passwordexpiryDayLimit;
+    }
+
+    public void setPasswordexpiryDayLimit(int passwordexpiryDayLimit) {
+        this.passwordexpiryDayLimit = passwordexpiryDayLimit;
+    }
+
+    public String getWarningMailTemplate() {
+        return warningMailTemplate;
+    }
+
+    public void setWarningMailTemplate(String warningMailTemplate) {
+        this.warningMailTemplate = warningMailTemplate;
+    }
+
+    public String getWarningMailSubject() {
+        return warningMailSubject;
+    }
+
+    public void setWarningMailSubject(String warningMailSubject) {
+        this.warningMailSubject = warningMailSubject;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public static String getWarningEmailFlag() {
+        return WARNING_EMAIL_FLAG;
+    }
+
+    public static String getExpiryEmailFlag() {
+        return EXPIRY_EMAIL_FLAG;
+    }
+
 }

@@ -155,7 +155,7 @@ public class CheckUserLastLoginTask {
                     simpleMailMessage.setText(text);
                     simpleMailMessage.setSubject(expiryMailSubject + ServerConstants.getEnvName());
 
-                    //Update Termination Date for User.
+                    // Update Termination Date for User.
                     updateUserTerminationDate(user);
                 }
             } catch (IOException | TemplateException e) {
@@ -234,11 +234,8 @@ public class CheckUserLastLoginTask {
      * @param user the user
      * @return void
      */
-
     private void updateUserTerminationDate(final User user) {
-
         logger.info(" :: updateUserTerminationDate Method START :: ");
-
         user.setTerminationDate(new Date());
         Status status = new Status();
         status.setStatusId("2");
@@ -246,7 +243,6 @@ public class CheckUserLastLoginTask {
         user.setStatus(status);
         userDAO.save(user);
         logger.info(" :: updateUserTerminationDate Method END :: ");
-
     }
 
     /**
@@ -288,164 +284,74 @@ public class CheckUserLastLoginTask {
         return numberOfDaysAgo;
     }
 
-    /**
-     * Gets the user dao.
-     *
-     * @return the user dao
-     */
     public UserDAO getUserDAO() {
         return userDAO;
     }
 
-    /**
-     * Sets the user dao.
-     *
-     * @param userDAO the new user dao
-     */
     public void setUserDAO(final UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
-    /**
-     * Sets the mail sender.
-     *
-     * @param mailSender the mailSender to set
-     */
     public void setMailSender(final MailSender mailSender) {
         this.mailSender = mailSender;
     }
 
-    /**
-     * Gets the mail sender.
-     *
-     * @return the mailSender
-     */
     public MailSender getMailSender() {
         return mailSender;
     }
 
-    /**
-     * Sets the simple mail message.
-     *
-     * @param simpleMailMessage the simpleMailMessage to set
-     */
     public void setSimpleMailMessage(final SimpleMailMessage simpleMailMessage) {
         this.simpleMailMessage = simpleMailMessage;
     }
 
-    /**
-     * Gets the simple mail message.
-     *
-     * @return the simpleMailMessage
-     */
     public SimpleMailMessage getSimpleMailMessage() {
         return simpleMailMessage;
     }
 
-    /**
-     * Gets the warning day limit.
-     *
-     * @return the warning day limit
-     */
     public int getWarningDayLimit() {
         return warningDayLimit;
     }
 
-    /**
-     * Sets the warning day limit.
-     *
-     * @param warningDayLimit the new warning day limit
-     */
     public void setWarningDayLimit(final int warningDayLimit) {
         this.warningDayLimit = warningDayLimit;
     }
 
-    /**
-     * Gets the expiry day limit.
-     *
-     * @return the expiry day limit
-     */
     public int getExpiryDayLimit() {
         return expiryDayLimit;
     }
 
-    /**
-     * Sets the expiry day limit.
-     *
-     * @param expiryDayLimit the new expiry day limit
-     */
     public void setExpiryDayLimit(final int expiryDayLimit) {
         this.expiryDayLimit = expiryDayLimit;
     }
 
-    /**
-     * Sets the warning mail template.
-     *
-     * @param warningMailTemplate the warningMailTemplate to set
-     */
     public void setWarningMailTemplate(final String warningMailTemplate) {
         this.warningMailTemplate = warningMailTemplate;
     }
 
-    /**
-     * Sets the warning mail subject.
-     *
-     * @param warningMailSubject the warningMailSubject to set
-     */
     public void setWarningMailSubject(final String warningMailSubject) {
         this.warningMailSubject = warningMailSubject;
     }
 
-    /**
-     * Gets the warning mail subject.
-     *
-     * @return the warningMailSubject
-     */
     public String getWarningMailSubject() {
         return warningMailSubject;
     }
 
-    /**
-     * Gets the warning mail template.
-     *
-     * @return the warningMailTemplate
-     */
     public String getWarningMailTemplate() {
         return warningMailTemplate;
     }
 
-    /**
-     * Sets the expiry mail template.
-     *
-     * @param expiryMailTemplate the expiryMailTemplate to set
-     */
     public void setExpiryMailTemplate(final String expiryMailTemplate) {
         this.expiryMailTemplate = expiryMailTemplate;
     }
 
-    /**
-     * Sets the expiry mail subject.
-     *
-     * @param expiryMailSubject the expiryMailSubject to set
-     */
     public void setExpiryMailSubject(final String expiryMailSubject) {
         this.expiryMailSubject = expiryMailSubject;
     }
 
-    /**
-     * Gets the expiry mail subject.
-     *
-     * @return the expiryMailSubject
-     */
     public String getExpiryMailSubject() {
         return expiryMailSubject;
     }
 
-    /**
-     * Gets the expiry mail template.
-     *
-     * @return the expiryMailTemplate
-     */
     public String getExpiryMailTemplate() {
         return expiryMailTemplate;
     }

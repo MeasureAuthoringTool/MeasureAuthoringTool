@@ -1,0 +1,56 @@
+[
+{
+"title": "Patient Care Experience",
+"matDataTypeDescription": "Patient Care Experience",
+"matAttributeName": "authorDatetime",
+"fhirR4QiCoreMapping": "Observation.issued",
+"fhirResource": "Observation",
+"fhirElement": "issued",
+"fhirType": "instant"
+},
+{
+"title": "Patient Care Experience",
+"matDataTypeDescription": "Patient Care Experience",
+"matAttributeName": "code",
+"fhirR4QiCoreMapping": "Observation.code",
+"fhirResource": "Observation",
+"fhirElement": "code",
+"fhirType": "CodeableConcept"
+},
+{
+"title": "Patient Care Experience",
+"matDataTypeDescription": "Patient Care Experience",
+"matAttributeName": "id",
+"fhirR4QiCoreMapping": "Observation.id",
+"fhirResource": "Observation",
+"fhirElement": "id",
+"fhirType": "id"
+},
+{
+"title": "Patient Care Experience",
+"matDataTypeDescription": "Patient Care Experience",
+"matAttributeName": "recorder",
+"fhirR4QiCoreMapping": "Observation.performer",
+"fhirResource": "Observation",
+"fhirElement": "performer",
+"fhirType": "reference"
+},
+{
+"title": "Patient Care Experience",
+"matDataTypeDescription": "Patient Care Experience",
+"matAttributeName": "patientId",
+"fhirR4QiCoreMapping": "Observation.subject.reference",
+"fhirResource": "Observation",
+"fhirElement": "subject",
+"fhirType": "string"
+},
+{
+"title": "Provider Care Experience",
+"matDataTypeDescription": "Provider Care Experience",
+"matAttributeName": "authorDatetime",
+"fhirR4QiCoreMapping": "Observation.issued",
+"fhirResource": "Observation",
+"fhirElement": "issued",
+"fhirType": "instant"
+}
+]

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -82,8 +83,8 @@ public class InsertAttributeBuilderDialogBox {
 
 	private static QDSAttributesServiceAsync attributeService = GWT.create(QDSAttributesService.class);
 
-	private static List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
-	private static List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
+	private static List<String> allDataTypes;
+	private static List<String> allAttributes;
 
 	private static final ListBoxMVP dtAttriblistBox = new ListBoxMVP();
 	private static final ListBoxMVP attriblistBox = new ListBoxMVP();
@@ -118,7 +119,16 @@ public class InsertAttributeBuilderDialogBox {
 	private static ClickHandler handler;
 	private static AceEditor curEditor;
 
-	public static void showAttributesDialogBox(final AceEditor editor) {
+	public static void showAttributesDialogBox(final AceEditor editor, String modelType) {
+
+		if(MeasureDetailsUtil.FHIR.equalsIgnoreCase(modelType)) {
+			allAttributes = MatContext.get().getCqlConstantContainer().getFhirCqlAttributeList();
+			allDataTypes = MatContext.get().getCqlConstantContainer().getFhirCqlDataTypeList();
+		} else {
+			allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
+			allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
+		}
+
 		dialogModal = new Modal();
 		dialogModal.getElement().setAttribute("role", "dialog");
 		
@@ -223,11 +233,12 @@ public class InsertAttributeBuilderDialogBox {
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
 
-		Collections.sort(allAttributes);
+		Collections.sort(allAttributes, String.CASE_INSENSITIVE_ORDER);
+		Collections.sort(allDataTypes, String.CASE_INSENSITIVE_ORDER);
 		addAvailableItems(dtAttriblistBox, allDataTypes);
 		addAvailableItems(attriblistBox, allAttributes);
 
-		dtAttriblistBox.addChangeHandler(event -> selectAttributesByDataType(messageFormgroup, helpBlock));
+		dtAttriblistBox.addChangeHandler(event -> selectAttributesByDataType(messageFormgroup, helpBlock, allAttributes));
 
 		attriblistBox.addChangeHandler(event -> selectAttributes(messageFormgroup, helpBlock));
 
@@ -427,7 +438,7 @@ public class InsertAttributeBuilderDialogBox {
 		clearAllBoxes();
 	}
 
-	private static void selectAttributesByDataType(final FormGroup messageFormgroup, final HelpBlock helpBlock) {
+	private static void selectAttributesByDataType(final FormGroup messageFormgroup, final HelpBlock helpBlock, List<String> allAttributes) {
 		helpBlock.setText("");
 		dtFormGroup.setValidationState(ValidationState.NONE);
 		modelistBox.clear();

@@ -2,14 +2,9 @@ package mat.server;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import mat.client.shared.*;
 import org.cqframework.cql.cql2elm.SystemModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.ClassInfoElement;
@@ -23,10 +18,6 @@ import com.google.gson.Gson;
 import mat.DTO.DataTypeDTO;
 import mat.DTO.UnitDTO;
 import mat.client.cqlconstant.service.CQLConstantService;
-import mat.client.shared.CQLConstantContainer;
-import mat.client.shared.CQLTypeContainer;
-import mat.client.shared.MatContext;
-import mat.client.shared.QDMContainer;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.model.cql.CQLKeywords;
 import mat.server.service.CodeListService;
@@ -83,10 +74,17 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 	
 	@Autowired
 	private MeasureLibraryService measureLibraryService;
-	
+
+	@Autowired
+	private CqlAttributesRemoteCallService cqlAttributesRemoteCallService;
+
 	
 	@Override
-	public CQLConstantContainer getAllCQLConstants() {		
+	public CQLConstantContainer getAllCQLConstants() {
+
+		HashSet<String> fhirDataTypeSet=new HashSet();
+		HashSet<String> fhirAttributeSet=new HashSet();
+
 		final CQLConstantContainer cqlConstantContainer = new CQLConstantContainer(); 
 		
 		// get the unit dto list
@@ -100,10 +98,20 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 			unitMap.put(unit.getUnit(), unit.getCqlunit());
 		}
 		cqlConstantContainer.setCqlUnitMap(unitMap);
-		
+
+		// get all fhir attribnutes and Datatypes
+		ConversionMapping[] conversionMappings = cqlAttributesRemoteCallService.getFhirAttributeAndDataTypes();
+		for (ConversionMapping conversionMapping : conversionMappings) {
+			fhirDataTypeSet.add(conversionMapping.getMatDataTypeDescription());
+			fhirAttributeSet.add(conversionMapping.getMatAttributeName());
+		}
+		cqlConstantContainer.setFhirCqlDataTypeList(new ArrayList<>(fhirDataTypeSet));
+		cqlConstantContainer.setFhirCqlAttributeList(new ArrayList<>(fhirAttributeSet));
+
+		// get all qdm attributes
 		final List<String> cqlAttributesList = qDSAttributesDAO.getAllAttributes();
 		cqlConstantContainer.setCqlAttributeList(cqlAttributesList);
-		
+
 		// get the datatypes
 		final List<DataTypeDTO> dataTypeListBoxList = codeListService.getAllDataTypes();
 		final List<String> datatypeList = new ArrayList<>();

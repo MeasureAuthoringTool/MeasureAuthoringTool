@@ -71,7 +71,7 @@ public class InsertIntoAceEditorDialogBox {
 	private static Modal dialogModal;
 	private static ClickHandler handler;
 	
-	public static void showListOfItemAvailableForInsertDialogBox(final AceEditor editor, AbstractCQLWorkspacePresenter cqlWorkspacePresenter) {
+	public static void showListOfItemAvailableForInsertDialogBox(final AceEditor editor, AbstractCQLWorkspacePresenter cqlWorkspacePresenter, String modelType) {
 		dialogModal = new Modal();
 		dialogModal.getElement().setAttribute("role", "dialog");
 		
@@ -203,7 +203,7 @@ public class InsertIntoAceEditorDialogBox {
 
 		addChangeHandlerIntoLists(dialogModal,availableItemToInsert, listAllItemNames,availableDatatypes,allQDMDatatypes,
 				availableAttributesToInsert, messageFormgroup, helpBlock, 
-				availableItemTypeFormGroup, selectItemListFormGroup,dataTypeListFormGroup);
+				availableItemTypeFormGroup, selectItemListFormGroup,dataTypeListFormGroup, modelType);
 
 		addButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -382,7 +382,7 @@ public class InsertIntoAceEditorDialogBox {
 	 * @param availableItemTypeFormGroup - FormGroup.
 	 * @param selectItemListFormGroup - FormGroup.
 	 */
-	private static void addChangeHandlerIntoLists(final Modal dialogModal, final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames,final ListBoxMVP availableDatatypes,final ListBoxMVP availableQDMDatatypes, final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup, final FormGroup dataTypeFormGroup) {
+	private static void addChangeHandlerIntoLists(final Modal dialogModal, final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames,final ListBoxMVP availableDatatypes,final ListBoxMVP availableQDMDatatypes, final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup, final FormGroup dataTypeFormGroup, String modelType) {
 		availableItemToInsert.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -519,7 +519,7 @@ public class InsertIntoAceEditorDialogBox {
 					} else if (itemTypeSelected.equalsIgnoreCase("Attributes")) {
 						dialogModal.clear();
 						dialogModal.hide();
-						InsertAttributeBuilderDialogBox.showAttributesDialogBox(curEditor);
+						InsertAttributeBuilderDialogBox.showAttributesDialogBox(curEditor, modelType);
 						listAllItemNames.setEnabled(false);
 						availableDatatypes.setEnabled(true);
 						availableAttributesToInsert.setEnabled(true);

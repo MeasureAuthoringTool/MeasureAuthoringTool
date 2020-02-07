@@ -44,7 +44,9 @@ in the VM options text box, add the following and edit for your configuration.
 -DBONNIE_CLIENT_SECRET=1234567890
 -DBONNIE_URI=https://bonnieURL.org 
 -DALGORITHM=EncyptionAlgorithm 
--DPASSWORDKEY=PasswordKey 
+-DPASSWORDKEY=PasswordKey
+-DFHIR_ORCH_MEASURE_SRVC_URL=http://localhost:9080/orchestration/measure
+-DQDM_QICORE_MAPPING_SERVICES_URL=https://matdev.semanticbits.com/qdm-qicore-mapping-services
 -Dlog4j.configuration=PathToLog4jPropertiesFile
 ```
 

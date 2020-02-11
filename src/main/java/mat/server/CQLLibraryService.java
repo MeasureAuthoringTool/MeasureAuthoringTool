@@ -129,6 +129,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     @Autowired
     private LoginServiceImpl loginService;
 
+    @Autowired
+    private UserService userService;
+
     javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 
     private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
@@ -235,7 +238,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         }
 
 
-        User user = getUserService().getById(cqlLibrary.getOwnerId().getId());
+        User user = userService.getById(cqlLibrary.getOwnerId().getId());
         dataSetObject.setOwnerFirstName(user.getFirstName());
         dataSetObject.setOwnerLastName(user.getLastName());
         dataSetObject.setOwnerEmailAddress(user.getEmailAddress());
@@ -290,10 +293,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         locked = timeDiff < lockThreshold;
 
         return locked;
-    }
-
-    private UserService getUserService() {
-        return (UserService) context.getBean("userService");
     }
 
     @Override
@@ -840,7 +839,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             cqlLib = cqlLibraryDAO.find(currentLibraryId);
             if (cqlLib != null) {
                 if (!cqlLibraryDAO.isLibraryLocked(cqlLib.getId())) {
-                    user = getUserService().getById(userId);
+                    user = userService.getById(userId);
                     cqlLib.setLockedUserId(user);
                     cqlLib.setLockedOutDate(new Timestamp(new Date().getTime()));
                     cqlLibraryDAO.updateLockedOutDate(cqlLib);
@@ -1585,7 +1584,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     @Override
     public List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner() {
         Map<User, List<CQLLibrary>> map = new HashMap<>();
-        List<User> nonAdminUserList = getUserService().getAllNonAdminActiveUsers();
+        List<User> nonAdminUserList = userService.getAllNonAdminActiveUsers();
         for (User user : nonAdminUserList) {
             List<CQLLibrary> libraryList = cqlLibraryDAO.getLibraryListForLibraryOwner(user);
             if ((libraryList != null && libraryList.size() > 0)) {

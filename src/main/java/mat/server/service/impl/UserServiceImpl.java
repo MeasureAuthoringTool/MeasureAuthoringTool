@@ -68,9 +68,7 @@ import mat.shared.ForgottenPasswordResult;
 import mat.shared.HashUtility;
 import mat.shared.PasswordVerifier;
 
-/**
- * The Class UserServiceImpl.
- */
+
 @Service
 public class UserServiceImpl implements UserService {
 

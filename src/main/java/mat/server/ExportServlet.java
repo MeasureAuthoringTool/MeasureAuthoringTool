@@ -761,22 +761,12 @@ public class ExportServlet extends HttpServlet {
 		return csvStringBuilder.toString();
 	}
 
-	/**
-	 * Gets the service.
-	 * 
-	 * @return the service
-	 */
 	private SimpleEMeasureService getService() {
 		return (SimpleEMeasureService) context.getBean("eMeasureService");
 	}
 
-	/**
-	 * Gets the user service.
-	 * 
-	 * @return the user service
-	 */
 	private UserService getUserService() {
-		return (UserService) context.getBean("userService");
+		return context.getBean(UserService.class);
 	}
 
 	/**

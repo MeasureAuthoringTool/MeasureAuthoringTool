@@ -23,13 +23,6 @@
     
 	<bean id="loginService" class="mat.server.service.impl.LoginCredentialServiceImpl">	    
 	</bean>
-	
-    <bean id="userService" class="mat.server.service.impl.UserServiceImpl">
-        <property name="accessibilityUrl" value="${mat.accessibilitypolicy.url}"/>
-	    <property name="termsOfUseUrl" value="${mat.termsofuse.url}"/>
-	    <property name="privacyPolicyUseUrl" value="${mat.privacypolicy.url}"/>	
-	    <property name="userGuideUrl" value="${mat.userguide.url}"/>
-	</bean>
 
     <bean id="securityQuestionsService" class="mat.server.service.impl.SecurityQuestionsServiceImpl">
     </bean>    
@@ -44,7 +37,7 @@
     	<property name="currentReleaseVersion" value="${mat.measure.current.release.version}"/>
     </bean>
     
-    <bean id="MeasureDetailsService" class="mat.server.service.impl.MeasureDetailsServiceImpl">
+    <bean id="measureDetailsService" class="mat.server.service.impl.MeasureDetailsServiceImpl">
     </bean>
          
     <bean id="packagerService" class="mat.server.service.impl.PackagerServiceImpl">
@@ -77,7 +70,6 @@
     <bean id="measureLibraryService" class="mat.server.MeasureLibraryServiceImpl">
     	<property name="currentReleaseVersion" value="${mat.measure.current.release.version}"/>
     	<property name="cqlService" ref="cqlService"/>
-    
     </bean>
     
     <bean id="cqlLibraryService" class="mat.server.CQLLibraryService">

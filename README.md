@@ -47,7 +47,7 @@ After running the two commands, right click on the Measure Authoring Tool projec
 (ensure force update is checked) -> Ok.
 
 ### Create MAT Database
-1.	Install MySQL (MAT currently uses MySQL Community Version 6.x) available from [MySQL](https://dev.mysql.com/downloads/installer/)
+1.	Install MySQL (MAT currently uses MySQL Community Version 5.7) available from [MySQL](https://dev.mysql.com/downloads/installer/)
 2.	Run the MySQL community server installer for your operating system and the MySQL workbench (which comes with the download).
 3.	Create a new MySQL Connection to the database.
 Note: Make sure to keep track of the username, password, url, and port you used as you will need this later.

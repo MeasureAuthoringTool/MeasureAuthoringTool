@@ -1,6 +1,5 @@
 package mat.server;
 
-import mat.client.shared.MatRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -9,8 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+import mat.client.shared.MatRuntimeException;
+
 @Service
 public class CqlAttributesRemoteCallService {
+
+    private static final String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/find";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -18,7 +21,6 @@ public class CqlAttributesRemoteCallService {
     @Value("${qdm.qicore.mapping.services.url}")
     private String fhirMatServicesUrl;
 
-    private final static String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/find";
 
     @Cacheable("fhirAttributesAndDataTypes")
     public ConversionMapping[] getFhirAttributeAndDataTypes() {

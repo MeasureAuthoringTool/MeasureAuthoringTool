@@ -42,7 +42,7 @@ After running the two commands, right click on the Measure Authoring Tool projec
 2.	Run the MySQL community server installer for your operating system and the MySQL workbench (which comes with the download).
 3.	Create a new MySQL Connection to the database.
 Note: Make sure to keep track of the username, password, url, and port you used as you will need this later.
-4.	From the MAT Code base, find the `mat_schema.sql` file and then execute the script in the database that was just created. <br>
+4.	From the MAT Code base, find the `Dump_MAT_APP_BLANK_V6.sql` file and then execute the script in the database that was just created. <br>
     **(Note this script is from a dump and drops and create a schema called  `MAT_APP_BLANK`)**
 
 ### Tomcat installation

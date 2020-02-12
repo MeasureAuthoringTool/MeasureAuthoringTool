@@ -18,7 +18,7 @@ public class CqlAttributesRemoteCallService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${qdm.qicore.mapping.services.url}")
+    @Value("${QDM_QICORE_MAPPING_SERVICES_URL:http://localhost:9090}")
     private String fhirMatServicesUrl;
 
 

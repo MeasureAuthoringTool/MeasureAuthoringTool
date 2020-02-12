@@ -6,6 +6,8 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Primary;
+import org.springframework.mail.SimpleMailMessage;
 
 import mat.server.service.jobs.CheckUserChangePasswordLimit;
 import mat.server.service.jobs.OnetimeUserNotificationTask;
@@ -25,16 +27,24 @@ import mat.server.service.jobs.OnetimeUserNotificationTask;
 public class MatTestConfig {
 
     @MockBean
-    DataSource dataSource;
+    private DataSource dataSource;
 
+    @Primary
     @Bean
     public CheckUserChangePasswordLimit checkUserChangePasswordLimit() {
         return new CheckUserChangePasswordLimit();
     }
 
+    @Primary
     @Bean
     public OnetimeUserNotificationTask onetimeUserNotificationTask() {
         return new OnetimeUserNotificationTask();
+    }
+
+    @Primary
+    @Bean
+    public SimpleMailMessage userLastLoginTemplateMessage() {
+        return new SimpleMailMessage();
     }
 
 }

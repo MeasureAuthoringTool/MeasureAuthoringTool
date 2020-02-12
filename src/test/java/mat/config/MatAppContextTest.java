@@ -24,8 +24,9 @@ import static org.junit.Assert.assertNotNull;
 @DirtiesContext
 @Import(MatTestConfig.class)
 public class MatAppContextTest {
+
     @Autowired
-    CheckUserChangePasswordLimit checkUserChangePasswordLimit;
+    private CheckUserChangePasswordLimit checkUserChangePasswordLimit;
 
     @BeforeAll
     public static void configInitialization() {
@@ -44,4 +45,5 @@ public class MatAppContextTest {
         // Successful Spring Initialization
         assertNotNull("CheckUserChangePasswordLimit bean created successfully", checkUserChangePasswordLimit);
     }
+
 }

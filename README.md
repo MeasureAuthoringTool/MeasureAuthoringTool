@@ -11,11 +11,9 @@ help documents, internet searches and knowledge of the local environment where t
 be checked if there are errors during the install.
 
 ### Configure Java (JDK)
-- The application has not been tested with version above Java 1.11; (OPEN JDK is fine) please ensure this version is in the environment.
-
-- Verify that `JAVA_HOME` and `PATH` system variables are pointing to the proper folder(s).
-
-- For example, in a Windows environment, the `JAVA_HOME` (Environment Variables under Advanced System Settings (should point to the Java SDK 1.8.x folder and `PATH` should point to the Java 1.11.x/bin).
+-  The application has not been tested with version above Java 1.11; (OPEN JDK is fine) please ensure this version is in the environment.
+-  Verify that `JAVA_HOME` and `PATH` system variables are pointing to the proper folder(s).
+-  For example, in a Windows environment, the `JAVA_HOME` (Environment Variables under Advanced System Settings (should point to the Java SDK 1.8.x folder and `PATH` should point to the Java 1.11.x/bin).
 
 ### Configure Maven
 #### Windows/linux

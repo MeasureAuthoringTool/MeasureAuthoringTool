@@ -31,14 +31,15 @@ After running the two commands, right click on the Measure Authoring Tool projec
 (ensure force update is checked) -> Ok.
 
 ### Create MAT Database
-- Install MySQL (MAT currently has been tested with MySQL Community Version 8.0+) available from [MySQL] (https://dev.mysql.com/downloads/mysql/)
-- Run the MySQL community server installer for your operating system and the MySQL workbench (which comes with the download).
-- For Mac:
-- go to System Preferences/ MY SQL after installing.
-- Click Initialize Database.
-- Enter a passowrd and click on Use Legacy Password Encryption. (Remember the username/pwd you will need these in future steps.)
-- Start the MYSQL Db.
-- In MeasureAuthoringTool/pom.xml I had to change the driver to match the community version I downloaded. I am always careful not to commit this change.
+  - Install MySQL (MAT currently has been tested with MySQL Community Version 8.0+) available from [MySQL] (https://dev.mysql.com/downloads/mysql/)
+  - Run the MySQL community server installer for your operating system and the MySQL workbench (which comes with the download).
+  - For Mac:
+  - Go to System Preferences/ MY SQL after installing.
+  - Click Initialize Database.
+  - Enter a passowrd and click on Use Legacy Password Encryption. (Remember the username/pwd you will need these in future steps.)
+  - Start the MYSQL Db.
+  - In MeasureAuthoringTool/pom.xml I had to change the driver to match the community version I downloaded. I am always careful not to commit this change.
+  
 ```
       <dependency>
           <groupId>mysql</groupId>
@@ -46,13 +47,13 @@ After running the two commands, right click on the Measure Authoring Tool projec
           <version>8.0.19</version>
       </dependency>
 ```      
-- Create a new MySQL Connection to the database. (I use jetbrains datagrip https://www.jetbrains.com/datagrip/)
-- From the MAT Code base, find the `scripts/Dump*.sql` file and then execute the script in the database that was just created. <br> **(Note this script is from a dump and drops and create a schema called  `MAT_APP_BLANK`)**
+  - Create a new MySQL Connection to the database. (I use jetbrains datagrip https://www.jetbrains.com/datagrip/)
+  - From the MAT Code base, find the `scripts/Dump*.sql` file and then execute the script in the database that was just created. <br> **(Note this script is from a dump and drops and create a schema called  `MAT_APP_BLANK`)**
 
 ### Tomcat installation
 
 [Download tomcat 9](https://tomcat.apache.org/download-90.cgi)
-- After installing in OSX i did a `sudo chmod -R 777` on the tomcat directory.
+  - After installing in OSX i did a `sudo chmod -R 777` on the tomcat directory.
 
 Add the Resource to the /apache-tomcat-9.X.X/conf/context.xml file. Match the userName and password to match your mysql 
 configuration.
@@ -132,31 +133,32 @@ cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.
  ### Run MAT on App Server
  Note: If MAT is to be run on an application server, the developer will need to run the build to create a .war file.
 
-- Run `mvn clean install`
-- After the build has run, the file is placed into a target folder under MAT as follows: `mat/target/MeasureAuthoringTool.war`
+  - Run `mvn clean install`
+  - After the build has run, the file is placed into a target folder under MAT as follows: `mat/target/MeasureAuthoringTool.war`
  
  ### Log in to MAT
  To login to MAT, open MySQL Workbench and run the following queries:
-- `SELECT * FROM USER where USER_ID='Admin'`
- Look at the LOGIN_ID column, the value there is your UserID. The password default is ‘gargleBlaster_10’. Enter any three digit code for security code.
-- Navigate to the MAT log in page GUI and use the UserID and password from the previous step and log in to MAT.
-- Once logged in, navigate to the [Mat Account]() tab and enter the Admin user details under the [Personal Information]() 
- tab and the [Security Questions]() tab to setup user’s security questions.
--	To change the password to something new, use the [Password]() tab.
-- To create users an email is sent and this must be configured to obtain user names and passwords.
+  - `SELECT * FROM USER where USER_ID='Admin'` 
+     - Look at the LOGIN_ID is your UserID. 
+     - The password default is ‘gargleBlaster_10’. 
+     - Enter any three digit code for security code.
+  - Navigate to the MAT log in page GUI and use the UserID and password from the previous step and log in to MAT.
+  - Once logged in, navigate to the [Mat Account]() tab and enter the Admin user details under the [Personal Information]() tab and the [Security Questions]() tab to setup user’s security questions.
+  -	To change the password to something new, use the [Password]() tab.
+  - To create users an email is sent and this must be configured to obtain user names and passwords.
  
  ### Important Security Setup With Git Secrets (https://github.com/awslabs/git-secrets)
  
-- Use brew to install git secrets
-  - `brew install git-secrets`
-- Clone this repository (you can skip this if you've already cloned it from previous steps)
-- Note: You may have to reinitialize these hooks each time you clone a new copy of the repo
-- Follow the instructions for setting up the pre-commit hooks (from https://github.com/awslabs/git-secrets):
+  - Use brew to install git secrets
+     - `brew install git-secrets`
+  - Clone this repository (you can skip this if you've already cloned it from previous steps)
+  - Note: You may have to reinitialize these hooks each time you clone a new copy of the repo
+  - Follow the instructions for setting up the pre-commit hooks (from https://github.com/awslabs/git-secrets):
  ```
  cd /path/to/bonnie
  git secrets --install
  git secrets --register-aws
  ```
-- Done! Now each commit should be automatically scanned for accidental AWS secret leaks.
+  - Done! Now each commit should be automatically scanned for accidental AWS secret leaks.
  
 

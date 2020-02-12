@@ -34,11 +34,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.buttons.CancelButton;
@@ -50,6 +47,7 @@ import mat.client.shared.SpacerWidget;
 public class InsertFhirAttributeBuilderDialogBox {
 
 
+    public static final String SCROLL_PANEL_HEIGHT_PX = "470px";
     private static InAppHelp inAppHelp;
     private static Modal dialogModal;
     private static ClickHandler handler;
@@ -132,8 +130,7 @@ public class InsertFhirAttributeBuilderDialogBox {
         PanelGroup attributesSelectLeftPanel = new PanelGroup();
         attributesSelectLeftPanel.setId(dialogModal.getId() + "_lb_leftpanel");
         attributesSelectLeftPanel.setWidth("100%");
-        attributesSelectLeftPanel.setHeight("100%");
-        attributesSelectLeftPanel.addStyleName("pre-scrollable");
+        attributesSelectLeftPanel.setHeight("480px");
 
         for (DataType dataType : DATA) {
             Panel dataTypeContainerPanel = new Panel(PanelType.DEFAULT);
@@ -162,44 +159,23 @@ public class InsertFhirAttributeBuilderDialogBox {
             attributesSelectLeftPanel.add(dataTypeContainerPanel);
         }
 
-//        Widget leftPanelLabel = new Label("Attributes:");
         PanelHeader leftPanelLabel = new PanelHeader();
         leftPanelLabel.setText("Attributes:");
         leftPanelLabel.setTitle("Attributes:");
 
         Panel panel = new Panel(PanelType.PRIMARY);
+        panel.setWidth("100%");
+        panel.setHeight("100%");
         panel.add(leftPanelLabel);
 
-//        VerticalPanel leftPanelContainer = new VerticalPanel();
-//        leftPanelContainer.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-//        leftPanelContainer.getElement().setId(dialogModal.getId() + "_lb_leftpanel_container");
-//        leftPanelContainer.setWidth("100%");
-//        leftPanelContainer.setHeight("100%");
+        ScrollPanel scroller = new ScrollPanel(attributesSelectLeftPanel);
+        scroller.setSize("100%", SCROLL_PANEL_HEIGHT_PX);
+        panel.add(scroller);
 
-//        leftPanelContainer.add(leftPanelLabel);
-//        leftPanelContainer.setCellHeight(leftPanelLabel, "30px");
-
-//        ScrollPanel scroller = new ScrollPanel(attributesSelectLeftPanel);
-//        scroller.setSize("100%", "100%");
-//
-//        leftPanelContainer.add(scroller);
-
-        panel.add(attributesSelectLeftPanel);
-//        pg.setHeight("150px");
-//        return leftPanelContainer;
-
-        PanelGroup pg = new PanelGroup();
-        pg.add(panel);
-        pg.setHeight("100%");
-        pg.setWidth("100%");
-
-        return pg;
+        return panel;
     }
 
     private static Widget createRightPanel() {
-//        attributesFormRightPanel.setHeight("100%");
-//        attributesFormRightPanel.setWidth("100%");
-//        attributesFormRightPanel.addStyleName("pre-scrollable");
         HTML html = new HTML(
                 "<div><h4>Adverse Event</h4>\n" +
                         "<div>\n" +
@@ -270,12 +246,11 @@ public class InsertFhirAttributeBuilderDialogBox {
                         "\n" +
                         "</div>"
         );
-//        html.addStyleName("pre-scrollable");
-//        html.setWidth("100%");
-//        html.setHeight("100%");
+        html.setWidth("100%");
+        html.setHeight("100%");
 
         ScrollPanel scroller = new ScrollPanel(html);
-        scroller.setSize("100%", "100%");
+        scroller.setSize("100%", SCROLL_PANEL_HEIGHT_PX);
 
         return scroller;
     }
@@ -287,7 +262,7 @@ public class InsertFhirAttributeBuilderDialogBox {
         heading.setHTML("<h4><b>Insert Attributes</b></h4>");
         heading.addStyleName("leftAligned");
 
-        inAppHelp = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_ATTRIBUTE_MODAL);
+        inAppHelp = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_ATTRIBUTE_MODAL_FHIR);
         dialogHeader.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 
         inAppHelp.getHelpModal().addHideHandler(event -> handleClose());

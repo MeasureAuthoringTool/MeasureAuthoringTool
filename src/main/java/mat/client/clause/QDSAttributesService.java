@@ -76,5 +76,7 @@ public interface QDSAttributesService extends RemoteService {
 	 * @return the all attributes
 	 */
 	List<String> getAllAttributes();
+
+	List<String> getAllAttributesByDataTypeForFhir(String dataTypeName);
 }
 

@@ -238,7 +238,7 @@ public class InsertAttributeBuilderDialogBox {
 		addAvailableItems(dtAttriblistBox, allDataTypes);
 		addAvailableItems(attriblistBox, allAttributes);
 
-		dtAttriblistBox.addChangeHandler(event -> selectAttributesByDataType(messageFormgroup, helpBlock, allAttributes));
+		dtAttriblistBox.addChangeHandler(event -> selectAttributesByDataType(messageFormgroup, helpBlock, allAttributes, modelType));
 
 		attriblistBox.addChangeHandler(event -> selectAttributes(messageFormgroup, helpBlock));
 
@@ -438,7 +438,7 @@ public class InsertAttributeBuilderDialogBox {
 		clearAllBoxes();
 	}
 
-	private static void selectAttributesByDataType(final FormGroup messageFormgroup, final HelpBlock helpBlock, List<String> allAttributes) {
+	private static void selectAttributesByDataType(final FormGroup messageFormgroup, final HelpBlock helpBlock, List<String> allAttributes, String modelType) {
 		helpBlock.setText("");
 		dtFormGroup.setValidationState(ValidationState.NONE);
 		modelistBox.clear();
@@ -449,7 +449,11 @@ public class InsertAttributeBuilderDialogBox {
 		final int selectedIndex = dtAttriblistBox.getSelectedIndex();
 		if (selectedIndex != 0) {
 			final String dataTypeSelected = dtAttriblistBox.getItemText(selectedIndex);
-			getAllAttributesByDataType(attriblistBox, dataTypeSelected);
+			if(MeasureDetailsUtil.FHIR.equalsIgnoreCase(modelType)) {
+				getAllAttributesByDataTypeForFhir(attriblistBox,dataTypeSelected);
+			} else {
+				getAllAttributesByDataType(attriblistBox, dataTypeSelected);
+			}
 		} else {
 			attriblistBox.clear();
 			unitslistBox.setSelectedIndex(0);
@@ -937,6 +941,20 @@ public class InsertAttributeBuilderDialogBox {
 
 			@Override
 			public void onFailure(final Throwable caught) {}
+		});
+	}
+
+	private static void getAllAttributesByDataTypeForFhir(final ListBoxMVP availableAttributesToInsert, final String dataType) {
+		attributeService.getAllAttributesByDataTypeForFhir(dataType, new AsyncCallback<List<String>>() {
+			@Override
+			public void onFailure(Throwable caught) {}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				Collections.sort(result);
+				availableAttributesToInsert.clear();
+				addAvailableItems(availableAttributesToInsert, result);
+			}
 		});
 	}
 }

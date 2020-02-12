@@ -11,21 +11,15 @@ import mat.client.shared.MatContext;
 public class PasswordVerifier {
 	
 	/** The Constant MIN_LENGTH. */
-	private static final int MIN_LENGTH = 8;
+	private static final int MIN_LENGTH = 15;
 	
 	/** The Constant MAX_LENGTH. */
-	private static final int MAX_LENGTH = 16;
+	private static final int MAX_LENGTH = 128;
 	
 	/** The Constant SPECIAL_CHARS. */
 	private static final char[] SPECIAL_CHARS = 
 		new char[] {'%', '#', '*', '+', '-', ',', ':', '=', '?', '_'};
-	
-	/** The not userid. */
-	private boolean notUserid;
-	
-	/** The no repeated char. */
-	private boolean noRepeatedChar;
-	
+
 	/** The contains upper. */
 	private boolean containsUpper;
 	
@@ -84,12 +78,6 @@ public class PasswordVerifier {
 		}
 		if(!containsSpecial) {
 			message.add(MatContext.get().getMessageDelegate().getMustContainSpecialMessage());
-		}
-		if(!notUserid) {
-			message.add(MatContext.get().getMessageDelegate().getMustNotContainLoginIdMessage());
-		}
-		if(!noRepeatedChar) {
-			message.add(MatContext.get().getMessageDelegate().getMustNotContainRunsMessage());
 		}
 	}
 	
@@ -154,8 +142,6 @@ public class PasswordVerifier {
 		confirmed = pwd.equals(confirm);
 		notTooLong = pwd.length() <= MAX_LENGTH;
 		notTooShort = pwd.length() >= MIN_LENGTH;
-		notUserid = pwd.toUpperCase().indexOf(userid.toUpperCase()) < 0;
-		noRepeatedChar = checkForRepeatedChar(pwd);
 		
 		containsUpper = false;
 		containsLower = false;
@@ -171,9 +157,8 @@ public class PasswordVerifier {
 			containsNumber |= Character.isDigit(c);
 		}
 		
-		return notTooLong && notTooShort && notUserid && containsUpper
-				&& containsLower && containsSpecial && containsNumber
-				&& noRepeatedChar && confirmed;
+		return notTooLong && notTooShort && containsUpper && containsLower && containsSpecial && containsNumber
+                && confirmed;
 		
 		}
 	
@@ -193,33 +178,6 @@ public class PasswordVerifier {
 		}
 		
 		return true;
-	}
-
-	/*boolean isNotUserid() {
-		return notUserid;
-	}
-
-	void setNotUserid(boolean notUserid) {
-		this.notUserid = notUserid;
-	}*/
-
-	/**
-	 * Checks if is no repeated char.
-	 * 
-	 * @return true, if is no repeated char
-	 */
-	boolean isNoRepeatedChar() {
-		return noRepeatedChar;
-	}
-
-	/**
-	 * Sets the no repeated char.
-	 * 
-	 * @param noRepeatedChar
-	 *            the new no repeated char
-	 */
-	void setNoRepeatedChar(boolean noRepeatedChar) {
-		this.noRepeatedChar = noRepeatedChar;
 	}
 
 	/**

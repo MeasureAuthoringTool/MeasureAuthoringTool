@@ -289,7 +289,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 			loginModel = loginCredentialService.changeTempPassword(email, changedpassword);
 		} else {
 			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 		}
 		
 		return loginModel;
@@ -380,7 +380,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		return resultMap;
 	}
 	
-	/* 
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override

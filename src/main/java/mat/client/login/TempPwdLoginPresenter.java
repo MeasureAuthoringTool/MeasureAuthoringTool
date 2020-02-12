@@ -200,10 +200,6 @@ public class TempPwdLoginPresenter {
 							case LoginResult.SERVER_SIDE_VALIDATION_PASSWORD:
 								display.getSecurityErrorMessageDisplay().createAlert(result.getMessages());
 								break;
-							case LoginResult.DICTIONARY_EXCEPTION:
-								display.getPasswordErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate()
-										.getMustNotContainDictionaryWordMessage());
-								break;
 							default:
 								display.getSecurityErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate()
 										.getUnknownErrorMessage(result.getFailureReason()));

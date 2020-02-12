@@ -22,7 +22,7 @@ class CqlAttributesRemoteCallServiceTest {
 
     private String fhirMatServicesUrl = "https://localhost:9090";
 
-    private final static String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/find";
+    private final static String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/filtered";
 
     @Mock
     private RestTemplate restTemplate;

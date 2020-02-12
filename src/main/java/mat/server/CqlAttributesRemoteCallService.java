@@ -18,7 +18,7 @@ public class CqlAttributesRemoteCallService {
     @Value("${QDM_QICORE_MAPPING_SERVICES_URL:http://localhost:9090}")
     private String fhirMatServicesUrl;
 
-    private final static String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/find";
+    private final static String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/filtered";
 
     @Cacheable("fhirAttributesAndDataTypes")
     public ConversionMapping[] getFhirAttributeAndDataTypes() {

@@ -11,17 +11,15 @@ help documents, internet searches and knowledge of the local environment where t
 be checked if there are errors during the install.
 
 ### Configure Java (JDK)
-1.	The application has not been tested with version above Java 1.8; (OPEN JDK is fine)  please ensure this version is 
-in the environment.
+1.	The application has not been tested with version above Java 1.8; (OPEN JDK is fine)  please ensure this version is in the environment.
 2.	Verify that `JAVA_HOME` and `PATH` system variables are pointing to the proper folder(s).
-3.	For example, in a Windows environment, the `JAVA_HOME` (Environment Variables under Advanced System Settings (
-should point to the Java SDK 1.8.x folder and `PATH` should point to the Java 1.8.x/bin.
+3.	For example, in a Windows environment, the `JAVA_HOME` (Environment Variables under Advanced System Settings (should point to the Java SDK 1.8.x folder and `PATH` should point to the Java 1.8.x/bin).
 
 ### Configure Maven
 #### Windows/linux
-1. Install and Configure Maven (3.6.3+): https://maven.apache.org/install.html
+1. [Install and Configure Maven (3.6.3+)](https://maven.apache.org/install.html)
 #### OSX 
-`brew install maven` 
+ `brew install maven` 
 or if already installed 
 `brew update maven`
 
@@ -33,13 +31,13 @@ After running the two commands, right click on the Measure Authoring Tool projec
 (ensure force update is checked) -> Ok.
 
 ### Create MAT Database
-1.	Install MySQL (MAT currently has been tested with MySQL Community Version 8.0+) available from [MySQL] (https://dev.mysql.com/downloads/mysql/)
-2.	Run the MySQL community server installer for your operating system and the MySQL workbench (which comes with the download).
-3.  For Mac:
-  -  go to System Preferences/ MY SQL after installing.
-  -  Click Initialize Database.
-  -  Enter a passowrd and click on Use Legacy Password Encryption. (Remember the username/pwd you will need these in future steps.)
-  -  Start the MYSQL Db.
+1. Install MySQL (MAT currently has been tested with MySQL Community Version 8.0+) available from [MySQL] (https://dev.mysql.com/downloads/mysql/)
+2. Run the MySQL community server installer for your operating system and the MySQL workbench (which comes with the download).
+3. For Mac:
+  - go to System Preferences/ MY SQL after installing.
+  - Click Initialize Database.
+  - Enter a passowrd and click on Use Legacy Password Encryption. (Remember the username/pwd you will need these in future steps.)
+  - Start the MYSQL Db.
   - In MeasureAuthoringTool/pom.xml I had to change the driver to match the community version I downloaded.
           <dependency>
               <groupId>mysql</groupId>
@@ -47,14 +45,13 @@ After running the two commands, right click on the Measure Authoring Tool projec
               <version>8.0.19</version>
           </dependency>
     I am always careful not to commit this change.  
-3.	Create a new MySQL Connection to the database. (I use jetbrains datagrip https://www.jetbrains.com/datagrip/)
-4.	From the MAT Code base, find the `scripts/Dump*.sql` file and then execute the script in the database that was just created. <br>
-    **(Note this script is from a dump and drops and create a schema called  `MAT_APP_BLANK`)**
+4. Create a new MySQL Connection to the database. (I use jetbrains datagrip https://www.jetbrains.com/datagrip/)
+5. From the MAT Code base, find the `scripts/Dump*.sql` file and then execute the script in the database that was just created. <br> **(Note this script is from a dump and drops and create a schema called  `MAT_APP_BLANK`)**
 
 ### Tomcat installation
 
-Download tomcat 9 - https://tomcat.apache.org/download-90.cgi
-- After installing in OSX i did a `sudo chmod -R 777` on the tomcat directory.
+[Download tomcat 9](https://tomcat.apache.org/download-90.cgi)
+  - After installing in OSX i did a `sudo chmod -R 777` on the tomcat directory.
 
 Add the Resource to the /apache-tomcat-9.X.X/conf/context.xml file. Match the userName and password to match your mysql 
 configuration.
@@ -101,7 +98,7 @@ cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.
  
  [Intellij](README_IDEA.md)
  
- [Eclipse] todo
+ [Eclipse](ComingSoon)
  
  ### Configuring VM Arguments
  
@@ -133,26 +130,26 @@ cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.
  
  ### Run MAT on App Server
  Note: If MAT is to be run on an application server, the developer will need to run the build to create a .war file.
- 
+
  1. Run `mvn clean install`
  2. After the build has run, the file is placed into a target folder under MAT as follows: `mat/target/MeasureAuthoringTool.war`
  
  ### Log in to MAT
  To login to MAT, open MySQL Workbench and run the following queries:
- 1.	 `SELECT * FROM USER where USER_ID='Admin'`
+ 1. `SELECT * FROM USER where USER_ID='Admin'`
  Look at the LOGIN_ID column, the value there is your UserID. The password default is ‘gargleBlaster_10’. Enter any three digit code for security code.
  2.	Navigate to the MAT log in page GUI and use the UserID and password from the previous step and log in to MAT.
- 3.	Once logged in, navigate to the [Mat Account] tab and enter the Admin user details under the [Personal Information] 
- tab and the [Security Questions] tab to setup user’s security questions.
- 4.	To change the password to something new, use the [Password] tab.
+ 3.	Once logged in, navigate to the [Mat Account]() tab and enter the Admin user details under the [Personal Information]() 
+ tab and the [Security Questions]() tab to setup user’s security questions.
+ 4.	To change the password to something new, use the [Password]() tab.
  5. To create users an email is sent and this must be configured to obtain user names and passwords.
  
  ### Important Security Setup With Git Secrets (https://github.com/awslabs/git-secrets)
  
  1. Use brew to install git secrets
-     - `brew install git-secrets`
+   - `brew install git-secrets`
  2. Clone this repository (you can skip this if you've already cloned it from previous steps)
-     - Note: You may have to reinitialize these hooks each time you clone a new copy of the repo
+   - Note: You may have to reinitialize these hooks each time you clone a new copy of the repo
  3. Follow the instructions for setting up the pre-commit hooks (from https://github.com/awslabs/git-secrets):
  
  ```

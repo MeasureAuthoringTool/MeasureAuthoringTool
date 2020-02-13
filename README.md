@@ -180,7 +180,7 @@ To login to MAT, open MySQL Workbench and run the following queries:
 4.  Follow these [instructions](https://github.com/awslabs/git-secrets) for setting up the pre-commit hooks:
 
     ```bash
-    cd /path/to/bonnie
+    cd /path/to/MeasureAuthoringTool
     git secrets --install
     git secrets --register-aws
     ```

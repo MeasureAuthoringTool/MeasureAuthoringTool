@@ -12,8 +12,7 @@ public class PasswordVerifierTest {
     private boolean isValid(String password) {
         String markupRegExp = "<[^>]+>";
         String noMarkupTextPwd = password.trim().replaceAll(markupRegExp, "");
-        password = noMarkupTextPwd;
-        PasswordVerifier v = new PasswordVerifier(password, password);
+        PasswordVerifier v = new PasswordVerifier(noMarkupTextPwd, noMarkupTextPwd);
         return v.isValid();
     }
 

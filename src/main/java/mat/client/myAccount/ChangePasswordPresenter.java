@@ -122,9 +122,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 	/** The display. */
 	private final Display display;
 	
-	/** The my account model. */
-	private MyAccountModel myAccountModel;
-	
 	/**
 	 * Instantiates a new change password presenter.
 	 * 
@@ -205,9 +202,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 					
 					}
 				});
-				
-				
-				myAccountModel = result;
 			}
 			
 			@Override

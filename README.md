@@ -46,17 +46,21 @@ Here are the instructions for installing it:
 
 *   For Mac:
     *   Go to System Preferences/ MY SQL after installing.
+    
     *   Click Initialize Database.
+    
     *   Start the MYSQL Db.
+    
 *   In MeasureAuthoringTool/pom.xml I had to change the driver to match the community version I downloaded. I am always careful not to commit this change.
-```xml
+   ```xml
       <dependency>
           <groupId>mysql</groupId>
           <artifactId>mysql-connector-java</artifactId>
           <version>8.0.19</version>
       </dependency>
-```      
-*   Create a new MySQL Connection to the database. I use jetbrains (datagrip)[https://www.jetbrains.com/datagrip/]
+   ```      
+
+*   Create a new MySQL Connection to the database. I use jetbrains [datagrip](https://www.jetbrains.com/datagrip/)
 
 *   From the MAT Code base, find the `scripts/Dump*.sql` file and then execute the script in the database that was just created. <br> **(Note this script is from a dump and drops and create a schema called  `MAT_APP_BLANK`)**
 
@@ -152,16 +156,20 @@ cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.
 To login to MAT, open MySQL Workbench and run the following queries:
 *   `SELECT * FROM USER where USER_ID='Admin'` 
     *   Look at the LOGIN_ID is your UserID. 
+    
     *   The password default is ‘gargleBlaster_10’. 
+    
     *   Enter any three digit code for security code.   
+    
 *   Navigate to the MAT log in page GUI and use the UserID and password from the previous step and log in to MAT.
+
 *   Once logged in, navigate to the [Mat Account]() tab and enter the Admin user details under the [Personal Information]() tab and the [Security Questions]() tab to setup user’s security questions.
 
 *   To change the password to something new, use the [Password]() tab.
 
 *   To create users an email is sent and this must be configured to obtain user names and passwords.
  
-###  Important Security Setup With [Git Secrets](https://github.com/awslabs/git-secrets)
+### Important Security Setup With [Git Secrets](https://github.com/awslabs/git-secrets)
 1.  Use brew to install git secrets `brew install git-secrets`
 
 2.  Clone this repository (you can skip this if you've already cloned it from previous steps)
@@ -174,4 +182,5 @@ To login to MAT, open MySQL Workbench and run the following queries:
     git secrets --install
     git secrets --register-aws
     ```
+    
 5.  Done! Now each commit should be automatically scanned for accidental AWS secret leaks.

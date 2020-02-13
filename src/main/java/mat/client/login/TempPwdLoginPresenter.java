@@ -68,7 +68,6 @@ public class TempPwdLoginPresenter {
 				String noMarkupTextConfirm = display.getConfirmPassword().getText().trim().replaceAll(markupRegExp, "");
 				display.getConfirmPassword().setText(noMarkupTextConfirm);
 				verifier = new PasswordVerifier(
-						MatContext.get().getLoggedinLoginId(),
 						display.getPassword().getText(),
 						display.getConfirmPassword().getText());
 				if(!verifier.isValid()) {

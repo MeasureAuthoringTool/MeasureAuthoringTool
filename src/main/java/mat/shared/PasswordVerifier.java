@@ -49,16 +49,14 @@ public class PasswordVerifier {
 	
 	/**
 	 * Instantiates a new password verifier.
-	 * 
-	 * @param userId
-	 *            the user id
+	 *
 	 * @param password
 	 *            the password
 	 * @param confirmPassword
 	 *            the confirm password
 	 */
-	public PasswordVerifier(String userId, String password, String confirmPassword) {
-		validPassword = isPasswordValid(userId,password, confirmPassword);
+	public PasswordVerifier(String password, String confirmPassword) {
+		validPassword = isPasswordValid(password, confirmPassword);
 	
 		message.add(MatContext.get().getMessageDelegate().getDoesntFollowRulesMessage());
 		if(!confirmed) {
@@ -128,16 +126,14 @@ public class PasswordVerifier {
 	
 	/**
 	 * Checks if is password valid.
-	 * 
-	 * @param userid
-	 *            the userid
+	 *
 	 * @param pwd
 	 *            the pwd
 	 * @param confirm
 	 *            the confirm
 	 * @return true, if is password valid
 	 */
-	private boolean isPasswordValid(String userid, String pwd, String confirm) {
+	private boolean isPasswordValid(String pwd, String confirm) {
 	//private boolean isPasswordValid(String pwd, String confirm) {
 		confirmed = pwd.equals(confirm);
 		notTooLong = pwd.length() <= MAX_LENGTH;
@@ -161,24 +157,6 @@ public class PasswordVerifier {
                 && confirmed;
 		
 		}
-	
-	/**
-	 * Check for repeated char.
-	 * 
-	 * @param pwd
-	 *            the pwd
-	 * @return true, if successful
-	 */
-	private boolean checkForRepeatedChar(String pwd) {
-		for(int i = 0; i < pwd.length() - 2; i++) {
-			if(pwd.charAt(i) == pwd.charAt(i+1) &&
-					pwd.charAt(i) == pwd.charAt(i + 2)) {
-				return false;
-			}
-		}
-		
-		return true;
-	}
 
 	/**
 	 * Checks if is contains upper.

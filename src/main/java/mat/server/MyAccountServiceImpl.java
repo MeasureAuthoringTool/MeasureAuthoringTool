@@ -258,8 +258,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements 
         String markupRegExp = "<[^>]+>";
         String noMarkupTextPwd = password.trim().replaceAll(markupRegExp, "");
         password = noMarkupTextPwd;
-        PasswordVerifier verifier = new PasswordVerifier(
-                LoggedInUserUtil.getLoggedInLoginId(), password, password);
+        PasswordVerifier verifier = new PasswordVerifier(password, password);
 
         if (!verifier.isValid()) {
             logger.info("Server Side Validation Failed in changePassword for User:" + LoggedInUserUtil.getLoggedInUser());

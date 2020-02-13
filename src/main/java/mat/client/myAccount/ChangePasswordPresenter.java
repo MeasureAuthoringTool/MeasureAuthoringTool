@@ -347,7 +347,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 		display.getConfirmPassword().setText(noMarkupTextConfirm);
 		
 		PasswordVerifier verifier = new PasswordVerifier(
-				myAccountModel.getLoginId(),
 				display.getPassword().getText(),
 				display.getConfirmPassword().getText());
 		

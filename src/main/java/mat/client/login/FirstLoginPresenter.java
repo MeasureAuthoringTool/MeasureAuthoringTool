@@ -62,7 +62,6 @@ public class FirstLoginPresenter {
 				display.getConfirmPassword().setText(noMarkupTextConfirm);
 				
 				verifier = new PasswordVerifier(
-						MatContext.get().getLoggedinLoginId(),
 						display.getPassword().getText(),
 						display.getConfirmPassword().getText());
 				if(!verifier.isValid()) {

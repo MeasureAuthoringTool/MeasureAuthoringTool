@@ -122,9 +122,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 	/** The display. */
 	private final Display display;
 	
-	/** The my account model. */
-	private MyAccountModel myAccountModel;
-	
 	/**
 	 * Instantiates a new change password presenter.
 	 * 
@@ -205,9 +202,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 					
 					}
 				});
-				
-				
-				myAccountModel = result;
 			}
 			
 			@Override
@@ -323,9 +317,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 						case SaveMyAccountResult.SERVER_SIDE_VALIDATION:
 							messages = result.getMessages();
 							break;
-						case SaveMyAccountResult.DICTIONARY_EXCEPTION:
-							messages.add(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
-							break;
 						default:
 							messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
 					}
@@ -350,7 +341,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 		display.getConfirmPassword().setText(noMarkupTextConfirm);
 		
 		PasswordVerifier verifier = new PasswordVerifier(
-				myAccountModel.getLoginId(),
 				display.getPassword().getText(),
 				display.getConfirmPassword().getText());
 		
@@ -389,12 +379,12 @@ public class ChangePasswordPresenter implements MatPresenter {
 						}
 					}
 				}
-				
+
 			});
-			
+
 		}
 	}
-	
+
 	/** for validating Password Creation with current date and restricting
 	 * user to change password on the same day of new password creation.
 	 * Validate password creation Dates.
@@ -403,13 +393,13 @@ public class ChangePasswordPresenter implements MatPresenter {
 	 */
 	public void ValidatePasswordCreation() throws IOException{
 		loginService.validatePasswordCreationDate(MatContext.get().getLoggedinLoginId(), new AsyncCallback<HashMap<String,String>>(){
-			
+
 			@Override
 			public void onFailure(Throwable caught) {
 				display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 			}
-			
+
 			/**
 			 * On success.
 			 *
@@ -417,7 +407,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 			 */
 			@Override
 			public void onSuccess(HashMap<String, String> resultMap) {
-				
+
 				String result = resultMap.get("result");
 				if(result.equals("SUCCESS")){
 					display.getSuccessMessageDisplay().clearAlert();
@@ -430,9 +420,9 @@ public class ChangePasswordPresenter implements MatPresenter {
 						e.printStackTrace();
 					}
 				}
-				
+
 			}
 		});
 	}
-	
+
 }

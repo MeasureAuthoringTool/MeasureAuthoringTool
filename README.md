@@ -33,14 +33,17 @@ After running the two commands, right click on the Measure Authoring Tool projec
 
 ### Create MAT Database
 Currently in production MAT uses MySQL Community Version 5.7.
-(Here)[https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21] are some instructions for installing it using brew.
+[Here](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21) are some instructions for installing it using brew.
 
 I prefer using MySQL Community Version 8.0+. The app works with this but I just use it locally. It also requires
 you to change a pom.xml dependency for the new driver. You have to be careful and not check this in with commits.
 Here are the instructions for installing it:
 *   Install MySQL (MAT currently has been tested with MySQL Community Version 8.0+) available from [MySQL] (https://dev.mysql.com/downloads/mysql/)
+
 *   Run the MySQL community server installer for your operating system and the MySQL workbench (which comes with the download).
+
 *   Enter a passowrd and click on Use Legacy Password Encryption. (Remember the username/pwd you will need these in future steps.)
+
 *   For Mac:
     *   Go to System Preferences/ MY SQL after installing.
     *   Click Initialize Database.
@@ -54,7 +57,9 @@ Here are the instructions for installing it:
       </dependency>
 ```      
 *   Create a new MySQL Connection to the database. I use jetbrains (datagrip)[https://www.jetbrains.com/datagrip/]
+
 *   From the MAT Code base, find the `scripts/Dump*.sql` file and then execute the script in the database that was just created. <br> **(Note this script is from a dump and drops and create a schema called  `MAT_APP_BLANK`)**
+
 *   There are other more recent dump files located [here](https://drive.google.com/drive/u/0/folders/1x0WhhIM9WIwCzXtmm46iF6wjXeVui5ct). 
 
 ### Tomcat installation
@@ -140,10 +145,10 @@ cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.
  ### Run MAT on App Server
  Note: If MAT is to be run on an application server, the developer will need to run the build to create a .war file.
 
-* Run `mvn clean install`
-* After the build has run, the file is placed into a target folder under MAT as follows: `mat/target/MeasureAuthoringTool.war`
+*   Run `mvn clean install`
+*   After the build has run, the file is placed into a target folder under MAT as follows: `mat/target/MeasureAuthoringTool.war`
  
- ### Log in to MAT
+### Log in to MAT
 To login to MAT, open MySQL Workbench and run the following queries:
 *   `SELECT * FROM USER where USER_ID='Admin'` 
     *   Look at the LOGIN_ID is your UserID. 
@@ -151,17 +156,22 @@ To login to MAT, open MySQL Workbench and run the following queries:
     *   Enter any three digit code for security code.   
 *   Navigate to the MAT log in page GUI and use the UserID and password from the previous step and log in to MAT.
 *   Once logged in, navigate to the [Mat Account]() tab and enter the Admin user details under the [Personal Information]() tab and the [Security Questions]() tab to setup user’s security questions.
+
 *   To change the password to something new, use the [Password]() tab.
+
 *   To create users an email is sent and this must be configured to obtain user names and passwords.
  
- ###  Important Security Setup With Git Secrets (https://github.com/awslabs/git-secrets)
-1. Use brew to install git secrets `brew install git-secrets`
-2. Clone this repository (you can skip this if you've already cloned it from previous steps)
-3. Note: You may have to reinitialize these hooks each time you clone a new copy of the repo
-4. Follow the instructions for setting up the pre-commit hooks (from https://github.com/awslabs/git-secrets):
+###  Important Security Setup With [Git Secrets](https://github.com/awslabs/git-secrets)
+1.  Use brew to install git secrets `brew install git-secrets`
+
+2.  Clone this repository (you can skip this if you've already cloned it from previous steps)
+
+3.  Note: You may have to reinitialize these hooks each time you clone a new copy of the repo
+
+4.  Follow the instructions for setting up the pre-commit hooks (from https://github.com/awslabs/git-secrets):
     ```bash
     cd /path/to/bonnie
     git secrets --install
     git secrets --register-aws
     ```
-5. Done! Now each commit should be automatically scanned for accidental AWS secret leaks.
+5.  Done! Now each commit should be automatically scanned for accidental AWS secret leaks.

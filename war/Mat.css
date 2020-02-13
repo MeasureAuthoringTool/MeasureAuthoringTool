@@ -3150,31 +3150,6 @@ table#MostRecentActivityCellTable {
     margin: 2px;
 }
 
-/* Insert fhir attributed to ace editor modal */
-#InsertFhirAttrToAceEditor_Modal {
-    width: 80%;
-    height: 100%;
-}
-
-#InsertFhirAttrToAceEditor_Modal_lb_leftpanel_container {
-    /*width: 150px;*/
-    /*height: 100%;*/
-}
-
-#InsertFhirAttrToAceEditor_Modal_lb_leftpanel_container > H3 {
-    color: #333;
-    background-color: #a7a7a7;
-    border-color: #ddd;
-}
-
-/*.lb-leftpanel {*/
-/*    width: 120px;*/
-/*}*/
-
-#InsertFhirAttrToAceEditor_Modal .modal-body {
-    padding: 5px;
-}
-
 #InsertFhirAttrToAceEditor_Modal .panel-heading > .panel-title {
     position: relative;
 }
@@ -3184,7 +3159,6 @@ table#MostRecentActivityCellTable {
     color: #333;
     top: 0px;
     right: 0px;
-    /*left: -12px;*/
     position: absolute;
     font-family: "FontAwesome"
 }

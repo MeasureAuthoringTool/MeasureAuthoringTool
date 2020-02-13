@@ -42,12 +42,12 @@ public class InsertFrhiAttributesDialogView implements InsertFrhiAttributesDialo
     public InsertFrhiAttributesDialogView(AceEditor editor, InsertFhirAttributesDialogModel model) {
         this.model = model;
         dialogModal = new Modal();
+        dialogModal.setId("InsertFhirAttrToAceEditor_Modal");
         dialogModal.getElement().setAttribute("role", "dialog");
         dialogModal.setClosable(true);
         dialogModal.setFade(true);
         dialogModal.setDataBackdrop(ModalBackdrop.STATIC);
         dialogModal.setDataKeyboard(true);
-        dialogModal.setId("InsertFhirAttrToAceEditor_Modal");
         dialogModal.setSize(ModalSize.MEDIUM);
         dialogModal.setWidth("80%");
         dialogModal.setRemoveOnHide(true);
@@ -115,6 +115,7 @@ public class InsertFrhiAttributesDialogView implements InsertFrhiAttributesDialo
 
         HorizontalPanel centralPanel = new HorizontalPanel();
         centralPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+        centralPanel.addStyleName("insert-fhir-central-panel");
         centralPanel.setHeight("500px");
         centralPanel.setWidth("100%");
         centralPanel.add(leftPanel);
@@ -156,7 +157,7 @@ public class InsertFrhiAttributesDialogView implements InsertFrhiAttributesDialo
     }
 
     private void clickInsertButton(AceEditor editor) {
-        editor.insertAtCursor("Some text");
+        editor.insertAtCursor("TODO: This should insert meaningful CQL code");
         editor.focus();
         dialogModal.hide();
     }

@@ -16,12 +16,13 @@ be checked if there are errors during the install.
 * For example, in a Windows environment, the `JAVA_HOME` (Environment Variables under Advanced System Settings (should point to the Java SDK 1.11.x folder and `PATH` should point to the Java 1.11.x/bin).
 
 ### Configure Maven
-#### Windows/linux
- [Install and Configure Maven (3.6.3+)](https://maven.apache.org/install.html)
-#### OSX 
- `brew install maven` 
-or if already installed 
-`brew update maven`
+You should install Maven 3.6.3+ locally.
+
+Windows:
+* [Install and Configure Maven (3.6.3+)](https://maven.apache.org/install.html)
+
+OSX: 
+* `brew install maven` or if already installed  `brew update maven`
 
 ### Installing Local Maven Dependencies
 Run `./install-deps.sh` to install dependencies not in a maven repo. This script copies dependencies from lib/ into
@@ -42,9 +43,9 @@ Here are the instructions for installing it:
 * Run the MySQL community server installer for your operating system and the MySQL workbench (which comes with the download).
 * Enter a passowrd and click on Use Legacy Password Encryption. (Remember the username/pwd you will need these in future steps.)
 * For Mac:
-   * Go to System Preferences/ MY SQL after installing.
-   * Click Initialize Database.
-   * Start the MYSQL Db.
+  * Go to System Preferences/ MY SQL after installing.
+  * Click Initialize Database.
+  * Start the MYSQL Db.
 * In MeasureAuthoringTool/pom.xml I had to change the driver to match the community version I downloaded. I am always careful not to commit this change.
 ```
       <dependency>
@@ -143,14 +144,14 @@ cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.
 * After the build has run, the file is placed into a target folder under MAT as follows: `mat/target/MeasureAuthoringTool.war`
  
  ### Log in to MAT
- To login to MAT, open MySQL Workbench and run the following queries:
+To login to MAT, open MySQL Workbench and run the following queries:
 * `SELECT * FROM USER where USER_ID='Admin'` 
-   * Look at the LOGIN_ID is your UserID. 
-   * The password default is ‘gargleBlaster_10’. 
-   * Enter any three digit code for security code.   
+  * Look at the LOGIN_ID is your UserID. 
+  * The password default is ‘gargleBlaster_10’. 
+  * Enter any three digit code for security code.   
 * Navigate to the MAT log in page GUI and use the UserID and password from the previous step and log in to MAT.
 * Once logged in, navigate to the [Mat Account]() tab and enter the Admin user details under the [Personal Information]() tab and the [Security Questions]() tab to setup user’s security questions.
-*	To change the password to something new, use the [Password]() tab.
+* To change the password to something new, use the [Password]() tab.
 * To create users an email is sent and this must be configured to obtain user names and passwords.
  
  ### Important Security Setup With Git Secrets (https://github.com/awslabs/git-secrets)

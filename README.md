@@ -56,6 +56,7 @@ Here are the instructions for installing it:
 ```      
 * Create a new MySQL Connection to the database. I use jetbrains (datagrip)[https://www.jetbrains.com/datagrip/]
 * From the MAT Code base, find the `scripts/Dump*.sql` file and then execute the script in the database that was just created. <br> **(Note this script is from a dump and drops and create a schema called  `MAT_APP_BLANK`)**
+* There are other more recent dump files located [here](https://drive.google.com/drive/u/0/folders/1x0WhhIM9WIwCzXtmm46iF6wjXeVui5ct). 
 
 ### Tomcat installation
 

@@ -2,6 +2,7 @@ package mat.shared;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
@@ -17,17 +18,17 @@ public class PasswordVerifierTest {
 
 	@Test
 	public void testMinPasswordLength() {
-		assertTrue(!isValid("userId","qQ5%"));
-		assertTrue(!isValid("userId","aqQ5%"));
-		assertTrue(!isValid("userId","aaaaqQ5%"));
-		assertTrue(!isValid("userId","qqqqqqqqqqqQ5%"));
+		assertFalse(isValid("userId","qQ5%"));
+		assertFalse(isValid("userId","aqQ5%"));
+		assertFalse(isValid("userId","aaaaqQ5%"));
+		assertFalse(isValid("userId","qqqqqqqqqqqQ5%"));
 		assertTrue(isValid("userId","qqqqqqqqqqqaQ5%"));
 	}
 
 	@Test
 	public void testMaxPasswordLength() {
 		assertTrue(isValid("userId","012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789qQ5%"));
-		assertTrue(!isValid("userId","01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678912345qQ5%"));
+		assertFalse(isValid("userId","01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678912345qQ5%"));
 	}
 
 	@Test
@@ -43,11 +44,11 @@ public class PasswordVerifierTest {
 	public void testIsPasswordValid() {
 		assertTrue(isValid("userid", "qqweerrabcdAa_1"));
 		assertTrue(isValid("userid", "abcdAa_1234567890"));
-		assertTrue(!isValid("userid", "qqqqqqqqqqaaa_1"));
-		assertTrue(!isValid("userid", "qqqqqqqabcdAa12"));
-		assertTrue(!isValid("userid", "abcdAbcdaqqqqqq"));
-		assertTrue(!isValid("userid", "abcdaa_1qqqqqqq"));
-		assertTrue(!isValid("userid", "ABCDABCA_1AAAAA"));
+		assertFalse(isValid("userid", "qqqqqqqqqqaaa_1"));
+		assertFalse(isValid("userid", "qqqqqqqabcdAa12"));
+		assertFalse(isValid("userid", "abcdAbcdaqqqqqq"));
+		assertFalse(isValid("userid", "abcdaa_1qqqqqqq"));
+		assertFalse(isValid("userid", "ABCDABCA_1AAAAA"));
 	}
 
 	@Test
@@ -65,7 +66,7 @@ public class PasswordVerifierTest {
 		PasswordVerifier v = new PasswordVerifier("test", password, password);
 		assertTrue(v.isContainsUpper());
 		for(String message : v.getMessages()) {
-			assertTrue(!message.contains("upper"));
+			assertFalse(message.contains("upper"));
 		}
 	}
 }

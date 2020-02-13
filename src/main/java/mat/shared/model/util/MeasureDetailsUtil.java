@@ -150,4 +150,8 @@ public class MeasureDetailsUtil {
             return BigDecimal.ZERO;
         }
     }
+
+    public static boolean isPackageable(String currentMeasureModel, boolean packageFeatureFlagStatus) {
+        return FHIR.equalsIgnoreCase(defaultTypeIfBlank(currentMeasureModel)) && !packageFeatureFlagStatus;
+    }
 }

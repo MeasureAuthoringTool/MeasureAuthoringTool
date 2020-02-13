@@ -174,7 +174,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
 
     private MeasureComposerPresenter buildMeasureComposer() {
-        return new MeasureComposerPresenter();
+        return MeasureComposerPresenter.getInstance();
     }
 
 

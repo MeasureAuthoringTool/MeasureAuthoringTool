@@ -63,6 +63,9 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
     private CQLMeasureWorkSpaceView cqlWorkspaceView;
     private CQLMeasureWorkSpacePresenter cqlWorkspacePresenter;
     private static String MEASURE_COMPOSER = "MeasureComposer";
+    private static String MEASURE_PACKAGER = "Measure Packager";
+    private static MeasureComposerPresenter instance = null;
+
 
     class EnterKeyDownHandler implements KeyDownHandler {
         private int i = 0;
@@ -88,6 +91,13 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
         subSkipContentHolder.clear();
         subSkipContentHolder.add(w);
         subSkipContentHolder.setFocus(true);
+    }
+
+    public static MeasureComposerPresenter getInstance() {
+        if(instance == null) {
+            instance = new MeasureComposerPresenter();
+        }
+        return instance;
     }
 
     @SuppressWarnings("unchecked")
@@ -192,6 +202,18 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
                 buttonBar.setPageNamesOnState();
             }
         });
+    }
+
+    public void disableMeasurePackageTabForFhirMeasures(String currentMeasureModel) {
+        for(int i = 0; i < measureComposerTabLayout.getTabBar().getTabCount(); i++) {
+            if(measureComposerTabLayout.getTabBar().getTabHTML(i).contains(MEASURE_PACKAGER)) {
+                if(MeasureDetailsUtil.isPackageable(currentMeasureModel, MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.PACKAGE_V1))) {
+                    measureComposerTabLayout.getTabBar().setTabEnabled(i, false);
+                } else {
+                    measureComposerTabLayout.getTabBar().setTabEnabled(i, true);
+                }
+            }
+        }
     }
 
     @Override

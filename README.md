@@ -47,7 +47,7 @@ Here are the instructions for installing it:
   * Click Initialize Database.
   * Start the MYSQL Db.
 * In MeasureAuthoringTool/pom.xml I had to change the driver to match the community version I downloaded. I am always careful not to commit this change.
-```
+```xml
       <dependency>
           <groupId>mysql</groupId>
           <artifactId>mysql-connector-java</artifactId>
@@ -65,7 +65,7 @@ Here are the instructions for installing it:
 Add the Resource to the /apache-tomcat-9.X.X/conf/context.xml file. Match the userName and password to match your mysql 
 configuration.
 
-```
+```text
 <Resource name="jdbc/mat_app_tomcat"
          cachingAllowed="true"
          cacheMaxSize="1000000"
@@ -114,7 +114,7 @@ cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.
  VM arguments are used to pass environment specific parameters to the application. These parameters include the VSAC URL; Bonnie Client ID, Client Secret, and Redirect URL; Encryption Algorithms; and logging settings.
  
  [Run] -> [Run Configurations] -> Select your MAT project on the Left Hand Side and on the [Arguments] tab -> add the following information below into the VM arguments box.
- ```
+ ```text
  -Xmx1G 
  -DVSAC_DRC_URL=https://vsac.nlm.nih.gov/vsac
  -DSERVER_TICKET_URL=https://vsac.nlm.nih.gov/vsac/ws/Ticket
@@ -156,13 +156,13 @@ To login to MAT, open MySQL Workbench and run the following queries:
  
  ### Important Security Setup With Git Secrets (https://github.com/awslabs/git-secrets)
  
-* Use brew to install git secrets `brew install git-secrets`
-* Clone this repository (you can skip this if you've already cloned it from previous steps)
-* Note: You may have to reinitialize these hooks each time you clone a new copy of the repo
-* Follow the instructions for setting up the pre-commit hooks (from https://github.com/awslabs/git-secrets):
- ```
- cd /path/to/bonnie
- git secrets --install
- git secrets --register-aws
- ```
-* Done! Now each commit should be automatically scanned for accidental AWS secret leaks.
+1. Use brew to install git secrets `brew install git-secrets`
+2. Clone this repository (you can skip this if you've already cloned it from previous steps)
+3. Note: You may have to reinitialize these hooks each time you clone a new copy of the repo
+4. Follow the instructions for setting up the pre-commit hooks (from https://github.com/awslabs/git-secrets):
+    ```bash
+    cd /path/to/bonnie
+    git secrets --install
+    git secrets --register-aws
+    ```
+5. Done! Now each commit should be automatically scanned for accidental AWS secret leaks.

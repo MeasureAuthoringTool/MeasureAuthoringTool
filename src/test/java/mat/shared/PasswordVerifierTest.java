@@ -2,9 +2,7 @@ package mat.shared;
 
 import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 
 public class PasswordVerifierTest {
@@ -19,17 +17,17 @@ public class PasswordVerifierTest {
 
 	@Test
 	public void testMinPasswordLength() {
-		assertFalse(isValid("userId","qQ5%"));
-		assertFalse(isValid("userId","aqQ5%"));
-		assertFalse(isValid("userId","aaaaqQ5%"));
-		assertFalse(isValid("userId","qqqqqqqqqqqQ5%"));
+		assertTrue(!isValid("userId","qQ5%"));
+		assertTrue(!isValid("userId","aqQ5%"));
+		assertTrue(!isValid("userId","aaaaqQ5%"));
+		assertTrue(!isValid("userId","qqqqqqqqqqqQ5%"));
 		assertTrue(isValid("userId","qqqqqqqqqqqaQ5%"));
 	}
 
 	@Test
 	public void testMaxPasswordLength() {
 		assertTrue(isValid("userId","012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789qQ5%"));
-		assertFalse(isValid("userId","01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678912345qQ5%"));
+		assertTrue(!isValid("userId","01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678912345qQ5%"));
 	}
 
 	@Test
@@ -44,19 +42,19 @@ public class PasswordVerifierTest {
 
 	public void testIsPasswordValid() {
 		assertTrue(isValid("userid", "qqweerrabcdAa_1"));
-		assertFalse(isValid("userid", "qqqqqqqqqqaaa_1"));
 		assertTrue(isValid("userid", "abcdAa_1234567890"));
-		assertFalse(isValid("userid", "qqqqqqqabcdAa12"));
-		assertFalse(isValid("userid", "abcdAbcdaqqqqqq"));
-		assertFalse(isValid("userid", "abcdaa_1qqqqqqq"));
-		assertFalse(isValid("userid", "ABCDABCA_1AAAAA"));
+		assertTrue(!isValid("userid", "qqqqqqqqqqaaa_1"));
+		assertTrue(!isValid("userid", "qqqqqqqabcdAa12"));
+		assertTrue(!isValid("userid", "abcdAbcdaqqqqqq"));
+		assertTrue(!isValid("userid", "abcdaa_1qqqqqqq"));
+		assertTrue(!isValid("userid", "ABCDABCA_1AAAAA"));
 	}
 
 	@Test
 	public void testIsPasswordValidSpecialChars() {
 		for(int i = 0; i < PasswordVerifier.getAllowedSpecialChars().length; i++) {
 			String test = "Abcabca1fifteen" + PasswordVerifier.getAllowedSpecialChars()[i];
-			assertEquals(true,isValid("userid", test));
+			assertTrue(isValid("userid", test));
 		}
 		
 	}
@@ -67,7 +65,7 @@ public class PasswordVerifierTest {
 		PasswordVerifier v = new PasswordVerifier("test", password, password);
 		assertTrue(v.isContainsUpper());
 		for(String message : v.getMessages()) {
-			assertFalse(message.contains("upper"));
+			assertTrue(!message.contains("upper"));
 		}
 	}
 }

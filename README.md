@@ -184,5 +184,5 @@ To login to MAT, open MySQL Workbench and run the following queries:
     git secrets --install
     git secrets --register-aws
     ```
-    
+
 5.  Done! Now each commit should be automatically scanned for accidental AWS secret leaks.

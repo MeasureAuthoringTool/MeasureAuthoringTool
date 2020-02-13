@@ -52,13 +52,13 @@ Here are the instructions for installing it:
     *   Start the MYSQL Db.
     
 *   In MeasureAuthoringTool/pom.xml I had to change the driver to match the community version I downloaded. I am always careful not to commit this change.
-   ```xml
+  ```xml
       <dependency>
           <groupId>mysql</groupId>
           <artifactId>mysql-connector-java</artifactId>
           <version>8.0.19</version>
       </dependency>
-   ```      
+  ```      
 
 *   Create a new MySQL Connection to the database. I use jetbrains [datagrip](https://www.jetbrains.com/datagrip/)
 
@@ -105,7 +105,7 @@ configuration.
 ```
 
 Copy mysql jdbc to tomcat lib directory.
-```
+```bash
 cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar /apache-tomcat-9.X.X/lib
 ```
 #### Build project with maven
@@ -176,11 +176,12 @@ To login to MAT, open MySQL Workbench and run the following queries:
 
 3.  Note: You may have to reinitialize these hooks each time you clone a new copy of the repo
 
-4.  Follow the instructions for setting up the pre-commit hooks (from https://github.com/awslabs/git-secrets):
-    ```bash
+4.  Follow the [instructions](from https://github.com/awslabs/git-secrets) for setting up the pre-commit hooks:
+  ```bash
     cd /path/to/bonnie
     git secrets --install
     git secrets --register-aws
-    ```
+  ```
     
 5.  Done! Now each commit should be automatically scanned for accidental AWS secret leaks.
+

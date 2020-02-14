@@ -91,8 +91,8 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
     @Override
     public CQLConstantContainer getAllCQLConstants() {
 
-        HashSet<String> fhirDataTypeSet = new HashSet<>();
-        HashSet<String> fhirAttributeSet = new HashSet<>();
+        HashSet<String> fhirDataTypeSet = new HashSet();
+        HashSet<String> fhirAttributeSet = new HashSet();
 
         final CQLConstantContainer cqlConstantContainer = new CQLConstantContainer();
 
@@ -111,8 +111,12 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         // get all fhir attribnutes and Datatypes
         ConversionMapping[] conversionMappings = cqlAttributesRemoteCallService.getFhirAttributeAndDataTypes();
         for (ConversionMapping conversionMapping : conversionMappings) {
-            fhirDataTypeSet.add(conversionMapping.getMatDataTypeDescription());
-            fhirAttributeSet.add(conversionMapping.getMatAttributeName());
+            if (conversionMapping.getFhirResource() != null && conversionMapping.getFhirResource().trim().length() != 0) {
+                fhirDataTypeSet.add(conversionMapping.getFhirResource());
+            }
+            if (conversionMapping.getFhirElement() != null && conversionMapping.getFhirElement().trim().length() != 0) {
+                fhirAttributeSet.add(conversionMapping.getFhirElement());
+            }
         }
         cqlConstantContainer.setFhirCqlDataTypeList(new ArrayList<>(fhirDataTypeSet));
         cqlConstantContainer.setFhirCqlAttributeList(new ArrayList<>(fhirAttributeSet));

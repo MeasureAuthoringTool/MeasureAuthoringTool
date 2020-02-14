@@ -42,8 +42,6 @@ public interface LoginServiceAsync extends AsynchronousService{
 	 *            the security question
 	 * @param securityAnswer
 	 *            the security answer
-	 * @param invalidUserCounter
-	 *            the invalid user counter
 	 * @param callback
 	 *            the callback
 	 */
@@ -172,8 +170,8 @@ public interface LoginServiceAsync extends AsynchronousService{
 	 */
 	void validatePassword(String userID, String newPassword,
 			AsyncCallback<HashMap<String,String>> callback);
-	
-	
+
+
 	/**
 	 * Validate password creation date.
 	 *

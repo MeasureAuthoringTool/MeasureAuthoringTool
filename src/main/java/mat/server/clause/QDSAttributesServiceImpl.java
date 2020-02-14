@@ -11,9 +11,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import mat.server.ConversionMapping;
+import mat.server.CqlAttributesRemoteCallService;
 import org.json.JSONObject;
 import org.json.XML;
 
@@ -69,6 +72,20 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         return attrs;
     }
 
+    @Override
+    public List<String> getAllAttributesByDataTypeForFhir(String dataTypeName) {
+        HashSet<String> fhirAttributeSet = new HashSet();
+
+        ConversionMapping[] conversionMappings = getCqlAttributesRemoteCallService().getFhirAttributeAndDataTypes();
+        for(ConversionMapping conversionMapping : conversionMappings) {
+            if(conversionMapping.getFhirResource().equalsIgnoreCase(dataTypeName)) {
+                fhirAttributeSet.add(conversionMapping.getFhirElement());
+            }
+        }
+        List<String> filterAttrByDataTypeList = new ArrayList<>(fhirAttributeSet);
+        return filterAttrByDataTypeList;
+    }
+
     /**
      * The attribute comparator.
      */
@@ -99,7 +116,9 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         return (QDSAttributesDAO) context.getBean("qDSAttributesDAO");
     }
 
-
+    public CqlAttributesRemoteCallService getCqlAttributesRemoteCallService() {
+        return (CqlAttributesRemoteCallService) context.getBean("cqlAttributesRemoteCallService");
+    }
     /**
      * Gets the modes dao.
      *

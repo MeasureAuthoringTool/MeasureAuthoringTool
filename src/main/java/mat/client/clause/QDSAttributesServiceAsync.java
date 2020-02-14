@@ -85,4 +85,6 @@ public interface QDSAttributesServiceAsync {
 	 * @return the all attributes
 	 */
 	void getAllAttributes(AsyncCallback<List<String>> callback);
+
+	void getAllAttributesByDataTypeForFhir(String dataTypeName, AsyncCallback<List<String>> async);
 }

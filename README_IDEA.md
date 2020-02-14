@@ -9,6 +9,8 @@ and select the mat directory from the base of the mat git repository and be sure
 
 After it is imported, do a **Build -> Rebuild Project** to ensure it is all set up correctly
 
+You also need to do a `mvn clean install` to generate the GWT javascript,css,etc.
+
 ### Tomcat set up
 
 From the menu select **Run-> New-> Edit Configurations** 
@@ -47,7 +49,6 @@ in the VM options text box, add the following and edit for your configuration.
 -DPASSWORDKEY=PasswordKey
 -DFHIR_ORCH_MEASURE_SRVC_URL=http://localhost:9080/orchestration/measure
 -DQDM_QICORE_MAPPING_SERVICES_URL=https://matdev.semanticbits.com/qdm-qicore-mapping-services
--Dlog4j.configuration=PathToLog4jPropertiesFile
 ```
 
 Now from the intellij menu, you should be able to run or debug the MAT application.
@@ -58,7 +59,6 @@ Now from the intellij menu, you should be able to run or debug the MAT applicati
 
 
  
-
 
 
 

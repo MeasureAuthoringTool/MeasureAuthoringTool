@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import java.util.List;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import mat.client.util.FeatureFlagConstant;
 import mat.shared.model.util.MeasureDetailsUtil;
@@ -257,7 +258,12 @@ public class AbstractNewMeasureView implements DetailDisplay {
 		VerticalPanel measureModelPanel = new VerticalPanel();
 		measureModelGroup.add(buildModelTypeLabel());
 		//new model creation defaulted to FHIR
-		fhirModel.setValue(true);
+		if(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_ADD)) {
+			fhirModel.setValue(true);
+		} else {
+			fhirModel.setEnabled(false);
+			qdmModel.setValue(true);
+		}
 		measureModelPanel.add(fhirModel);
 		measureModelPanel.add(qdmModel);
 		return measureModelPanel;

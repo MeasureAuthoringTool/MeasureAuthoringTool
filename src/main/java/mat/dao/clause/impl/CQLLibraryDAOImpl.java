@@ -14,6 +14,7 @@ import mat.server.LoggedInUserUtil;
 import mat.server.util.MATPropertiesService;
 import mat.shared.LibrarySearchModel;
 import mat.shared.SearchModel.VersionType;
+import mat.shared.SearchModel.ModelType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -297,6 +298,10 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 
         if (librarySearchModel.isDraft() != VersionType.ALL) {
             predicatesList.add(cb.equal(root.get(DRAFT), librarySearchModel.isDraft() == VersionType.DRAFT));
+        }
+
+        if (librarySearchModel.getModelType() != ModelType.ALL) {
+            predicatesList.add(cb.equal(root.get(LIBRARY_MODEL_TYPE), librarySearchModel.getModelType().name()));
         }
 
         if (librarySearchModel.getModifiedDate() > 0) {

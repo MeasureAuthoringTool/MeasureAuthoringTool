@@ -3,6 +3,9 @@ package mat.client.advancedsearch;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import mat.shared.SearchModel;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -20,6 +23,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.shared.ConstantMessages;
 import mat.shared.MeasureSearchModel.PatientBasedType;
 import mat.shared.SearchModel.VersionType;
+import mat.shared.SearchModel.ModelType;
 
 public class AdvancedSearchPanel {
 
@@ -47,6 +51,7 @@ public class AdvancedSearchPanel {
 	private ListBox searchStateListBox;
 	private ListBox patientIndicatorListBox;
 	private ListBox modifiedOnList;
+	private ListBox modelTypeListBox;
 	
 	private CheckBox proportionCheckbox;
 	private CheckBox ratioCheckbox;
@@ -66,16 +71,20 @@ public class AdvancedSearchPanel {
 	private Input ownedBy;
 	
 	public AdvancedSearchPanel(String forView) {
+		isMeasure = "forMeasure".equals(forView);
 		setUpAnchorElement(forView);
-		
 		setUpCollapsePanel(forView);
 	}
 
 
 	private void setUpAnchorElement(String forView) {
 		anchorPanel = new HorizontalPanel();
-		anchorPanel.setWidth("100%");
 		anchorPanel.setStyleName("advancedSearchAnchor");
+		anchorPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		if (!isMeasure) {
+			buildModelType();
+			anchorPanel.add(modelTypeListBox);
+		}
 		addAdvancedSearchLink(forView);
 		anchorPanel.add(advanceSearchAnchor);
 	}
@@ -101,8 +110,6 @@ public class AdvancedSearchPanel {
 	private void buildSearchContent(String forView) {
 		String type = "";
 		String pluralType = "";
-
-		isMeasure = "forMeasure".equals(forView);
 		
 		if (isMeasure) {
 			type = "Measure";
@@ -159,6 +166,21 @@ public class AdvancedSearchPanel {
 		advancedSearchRow.add(modifiedWithinGroup);
 		advancedSearchRow.add(modifiedByGroup);
 		advancedSearchRow.add(ownedByGroup);
+	}
+
+	private void buildModelType() {
+		if (!isMeasure) {
+			modelTypeListBox = new ListBox();
+			modelTypeListBox.getElement().setClassName("navPill");
+			modelTypeListBox.setWidth("200px");
+			modelTypeListBox.getElement().getStyle().setMarginRight(15, Style.Unit.PX);
+			modelTypeListBox.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
+			modelTypeListBox.setId("modelType");
+			modelTypeListBox.setHeight(HEIGHT_OF_BOXES);
+			modelTypeListBox.addItem("Model Type: All", SearchModel.ModelType.ALL.toString());
+			modelTypeListBox.addItem("Model Type: FHIR / CQL Only", SearchModel.ModelType.FHIR.toString());
+			modelTypeListBox.addItem("Model Type: QDM / CQL Only", SearchModel.ModelType.QDM.toString());
+		}
 	}
 	
 	private void buildStateSection(String type, String pluralType) {
@@ -346,6 +368,10 @@ public class AdvancedSearchPanel {
 	public PatientBasedType getPatientBasedValue() {
 		return PatientBasedType.valueOf(patientIndicatorListBox.getSelectedValue());
 	}
+
+	public ModelType getModelTypeValue() {
+		return ModelType.valueOf(modelTypeListBox.getSelectedValue());
+	}
 	
 	public List<String> getScoringTypeList(){
 		final List<String> scoringTypes = new ArrayList<>();
@@ -389,6 +415,7 @@ public class AdvancedSearchPanel {
 	public String getOwnedByValue() {
 		return ownedBy.getValue();
 	}
+
 
 	public void resetDisplay(boolean isMeasure) {
 		if(isMeasure) {

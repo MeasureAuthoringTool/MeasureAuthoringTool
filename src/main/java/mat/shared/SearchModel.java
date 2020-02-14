@@ -16,9 +16,13 @@ public abstract class SearchModel implements IsSerializable {
 	protected String modifiedOwner;
 	protected String owner;
 
+	protected ModelType modelType;
+
 	protected VersionType versionType;
 	
 	public enum VersionType {ALL, VERSION, DRAFT}
+
+	public enum ModelType {ALL, FHIR, QDM}
 
 	public int getStartIndex() {
 		return startIndex;
@@ -91,7 +95,15 @@ public abstract class SearchModel implements IsSerializable {
 	public void setIsDraft(VersionType version) {
 		this.versionType = version;
 	}
-	
+
+	public ModelType getModelType() {
+		return modelType;
+	}
+
+	public void setModelType(ModelType modelType) {
+		this.modelType = modelType;
+	}
+
 	public void reset() {
 		searchTerm = "";
 		versionType = VersionType.ALL;

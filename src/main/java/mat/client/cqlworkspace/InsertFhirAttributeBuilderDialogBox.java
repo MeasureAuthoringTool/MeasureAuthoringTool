@@ -13,11 +13,6 @@ import mat.client.cqlworkspace.attributes.InsertFrhiAttributesDialogView;
 
 public class InsertFhirAttributeBuilderDialogBox {
 
-    public static void showAttributesDialogBox(final AceEditor editor) {
-        InsertFrhiAttributesDialogDisplay dialogDisplay = new InsertFrhiAttributesDialogView(editor, new InsertFhirAttributesDialogModel(DATA));
-        dialogDisplay.show();
-    }
-
     private static final List<FhirDataType> DATA = Arrays.asList(
             new FhirDataType(DOM.createUniqueId(), "Adverse Event",
                     Arrays.asList(
@@ -169,5 +164,10 @@ public class InsertFhirAttributeBuilderDialogBox {
                             new FhirAttribute(DOM.createUniqueId(), "patientId")
                     ))
     );
+
+    public static void showAttributesDialogBox(final AceEditor editor) {
+        InsertFrhiAttributesDialogDisplay dialogDisplay = new InsertFrhiAttributesDialogView(editor, new InsertFhirAttributesDialogModel(DATA));
+        dialogDisplay.show();
+    }
 
 }

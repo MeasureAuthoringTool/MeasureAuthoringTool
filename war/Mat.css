@@ -2881,8 +2881,8 @@ body#main select, body#main input, body#main textarea {
     padding: 5px 20px !important;
     text-decoration: none !important;
     width: 90px;
-    background: gray;
-!important -webkit-filter: grayscale(100 %);
+    background: gray; !important
+    -webkit-filter: grayscale(100%);
     filter: grayscale(100%);
 }
 

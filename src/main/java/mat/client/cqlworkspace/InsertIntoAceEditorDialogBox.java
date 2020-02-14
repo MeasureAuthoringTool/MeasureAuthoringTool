@@ -30,6 +30,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
@@ -642,6 +643,8 @@ public class InsertIntoAceEditorDialogBox {
 
             @Override
             public void onFailure(Throwable caught) {
+                GWT.log("Failure", caught);
+                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             }
         });
     }

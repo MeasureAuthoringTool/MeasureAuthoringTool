@@ -2,7 +2,6 @@ package mat.client.measure;
 
 import java.util.List;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import mat.client.util.FeatureFlagConstant;
 import mat.shared.model.util.MeasureDetailsUtil;

@@ -1415,6 +1415,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
     private void buildAdvancedSearchModel(LibrarySearchModel searchModel) {
         searchModel.setIsDraft(cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getSearchStateValue());
+        searchModel.setModelType(cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getModelTypeValue());
         searchModel.setModifiedDate(Integer.parseInt(cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getModifiedWithinValue()));
         searchModel.setModifiedOwner(cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getModifiedByValue());
         searchModel.setOwner(cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getOwnedByValue());

@@ -29,7 +29,7 @@ import mat.client.inapphelp.message.InAppHelpMessages;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 
-public class InsertFrhiAttributesDialogView implements InsertFrhiAttributesDialogDisplay {
+public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialogDisplay {
 
     private static final String ROLE_ATTR = "role";
     private static final String SCROLL_PANEL_HEIGHT_PX = "470px";
@@ -39,7 +39,7 @@ public class InsertFrhiAttributesDialogView implements InsertFrhiAttributesDialo
     private Modal dialogModal;
     private InsertFhirAttributesDialogModel model;
 
-    public InsertFrhiAttributesDialogView(AceEditor editor, InsertFhirAttributesDialogModel model) {
+    public InsertFhirAttributesDialogView(AceEditor editor, InsertFhirAttributesDialogModel model) {
         this.model = model;
         dialogModal = new Modal();
         dialogModal.setId("InsertFhirAttrToAceEditor_Modal");

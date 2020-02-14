@@ -1,5 +1,5 @@
 package mat.client.cqlworkspace.attributes;
 
-public interface InsertFrhiAttributesDialogDisplay {
+public interface InsertFhirAttributesDialogDisplay {
     void show();
 }

@@ -8,8 +8,8 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.cqlworkspace.attributes.FhirAttribute;
 import mat.client.cqlworkspace.attributes.FhirDataType;
 import mat.client.cqlworkspace.attributes.InsertFhirAttributesDialogModel;
-import mat.client.cqlworkspace.attributes.InsertFrhiAttributesDialogDisplay;
-import mat.client.cqlworkspace.attributes.InsertFrhiAttributesDialogView;
+import mat.client.cqlworkspace.attributes.InsertFhirAttributesDialogDisplay;
+import mat.client.cqlworkspace.attributes.InsertFhirAttributesDialogView;
 
 public class InsertFhirAttributeBuilderDialogBox {
 
@@ -166,7 +166,7 @@ public class InsertFhirAttributeBuilderDialogBox {
     );
 
     public static void showAttributesDialogBox(final AceEditor editor) {
-        InsertFrhiAttributesDialogDisplay dialogDisplay = new InsertFrhiAttributesDialogView(editor, new InsertFhirAttributesDialogModel(DATA));
+        InsertFhirAttributesDialogDisplay dialogDisplay = new InsertFhirAttributesDialogView(editor, new InsertFhirAttributesDialogModel(DATA));
         dialogDisplay.show();
     }
 

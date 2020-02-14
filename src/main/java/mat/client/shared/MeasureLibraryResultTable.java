@@ -18,7 +18,6 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.view.client.MultiSelectionModel;
 import mat.client.Mat;
-import mat.client.MeasureComposerPresenter;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;

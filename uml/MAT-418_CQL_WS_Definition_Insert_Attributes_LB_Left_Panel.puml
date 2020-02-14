@@ -1,0 +1,60 @@
+@startuml
+
+class InsertFhirAttributeBuilderDialogBox {
+}
+
+interface InsertFhirAttributeDialogPresenter {
+    bind()
+    showDialog();
+}
+
+class InsertFhirAttributeDialogPresenterImpl {
+}
+
+interface InsertFhirAttributeDialogDisplay {
+}
+
+class InsertFhirAttributeDialogView {
+}
+
+InsertFhirAttributeBuilderDialogBox --> InsertFhirAttributeDialogPresenterImpl : create
+InsertFhirAttributeBuilderDialogBox *-- InsertFhirAttributeDialogPresenter
+InsertFhirAttributeDialogPresenter --|> InsertFhirAttributeDialogPresenterImpl
+InsertFhirAttributeDialogDisplay <|-- InsertFhirAttributeDialogView
+
+InsertFhirAttributeDialogView --* InsertFhirAttributeLbLeftPanelView
+InsertFhirAttributeDialogView --* InsertFhirAttributeLbRightPanelView
+
+class InsertFhirAttributeLeftPanelModel {
+}
+
+class InsertFhirAttributeRightPanelModel {
+}
+
+
+InsertFhirAttributeLbLeftPanelView --* InsertFhirAttributeLeftPanelModel
+InsertFhirAttributeLbRightPanelView --* InsertFhirAttributeRightPanelModel
+
+
+enum FhirAttributeType {
+    BOOLEAN
+    NUMBER
+    DATETIME
+    SEVERITY
+}
+
+class FhirAttribute {
+    String id;
+    String name;
+
+}
+
+class FhirDataType {
+    String id;
+    Sting name
+    List<FhirAttribute> attributes;
+}
+
+FhirDataType "1" o-- "*" FhirAttribute
+
+@enduml

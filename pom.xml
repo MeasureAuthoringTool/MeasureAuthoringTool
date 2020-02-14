@@ -20,7 +20,10 @@
         <start-class>com.google.gwt.dev.DevMode</start-class>
         <gwtVersion>2.8.2</gwtVersion>
         <googleGin>2.1.2</googleGin>
-        <gwtbootstrap3.version>0.9.4</gwtbootstrap3.version>
+        <gwtbootstrap3.version>1.0.1</gwtbootstrap3.version>
+        <gwtbootstrap3.extra.version>1.0.2</gwtbootstrap3.extra.version>
+        <elemental.version>1.0.0-RC1</elemental.version>
+        <gwt.elemento.version>0.9.6-gwt2</gwt.elemento.version>
         <cqframework.version>1.4.6</cqframework.version>
         <axis.version>1.7.7</axis.version>
         <castor.version>1.4.1</castor.version>
@@ -118,6 +121,7 @@
             <artifactId>gwt-user</artifactId>
             <version>${gwtVersion}</version>
         </dependency>
+
         <dependency>
             <groupId>org.gwtbootstrap3</groupId>
             <artifactId>gwtbootstrap3</artifactId>
@@ -126,13 +130,34 @@
         <dependency>
             <groupId>org.gwtbootstrap3</groupId>
             <artifactId>gwtbootstrap3-extras</artifactId>
-            <version>${gwtbootstrap3.version}</version>
+            <version>${gwtbootstrap3.extra.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.gwt.inject</groupId>
             <artifactId>gin</artifactId>
             <version>${googleGin}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.gwt.elemento</groupId>
+            <artifactId>elemento-core</artifactId>
+            <version>${gwt.elemento.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.elemental2</groupId>
+            <artifactId>elemental2-core</artifactId>
+            <version>${elemental.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.elemental2</groupId>
+            <artifactId>elemental2-dom</artifactId>
+            <version>${elemental.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.elemental2</groupId>
+            <artifactId>elemental2-webstorage</artifactId>
+            <version>${elemental.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -396,9 +421,7 @@
             <version>1.12.0</version>
         </dependency>
 
-
         <!-- Java 11 compatibility -->
-
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
@@ -636,7 +659,7 @@
                 <extensions>true</extensions>
                 <executions>
                     <execution>
-                        <id>compile-module1</id>
+                        <id>compile-gwt-login</id>
                         <goals>
                             <goal>compile</goal>
                         </goals>
@@ -646,7 +669,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>compile-module2</id>
+                        <id>compile-gwt-mat</id>
                         <goals>
                             <goal>compile</goal>
                         </goals>
@@ -656,7 +679,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>compile-module3</id>
+                        <id>compile-gwt-bonnie</id>
                         <goals>
                             <goal>compile</goal>
                         </goals>
@@ -668,10 +691,6 @@
                 </executions>
                 <configuration>
                     <sourceLevel>${gwt.sourceLevel}</sourceLevel>
-                    <!-- Un-comment to speed up dev compilation -->
-<!--                    <draftCompile>true</draftCompile>-->
-<!--                    <localWorkers>10</localWorkers>-->
-<!--                    <optimize>0</optimize>-->
                 </configuration>
             </plugin>
             <plugin>
@@ -778,6 +797,41 @@
             </plugin>
 
         </plugins>
-
     </build>
+
+    <profiles>
+        <profile>
+            <!-- Activate for faster local compilation by
+                1. setting env variable export ENVIRONMENT=DEV
+                2. or by explicitly activating the profile in your intellij
+            -->
+            <id>gwt-profile-compile-dev</id>
+            <activation>
+                <property>
+                    <name>env.ENVIRONMENT</name>
+                    <value>DEV</value>
+                </property>
+            </activation>
+            <properties>
+                <gwt.draftCompile>true</gwt.draftCompile>
+                <gwt.localWorkers>10</gwt.localWorkers>
+                <!-- Enable for detailed compilation traces. It doesn't affect compilation time. -->
+<!--                <gwt.logLevel>TRACE</gwt.logLevel>-->
+                <gwt.optimize>0</gwt.optimize>
+                <gwt.style>DETAILED</gwt.style>
+            </properties>
+            <dependencies>
+                <!-- Override dependencies to that you can locally run GWT code server with Jetty -->
+                <dependency>
+                    <groupId>com.google.gwt</groupId>
+                    <artifactId>gwt-dev</artifactId>
+                    <version>${gwtVersion}</version>
+                    <scope>compile</scope>
+                    <exclusions>
+                        <!-- Should be empty to be merged correctly -->
+                    </exclusions>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

@@ -12,4 +12,5 @@
     <include file="classpath:/liquibase/addConvertedFhirMeasureColumn.xml"/>
     <include file="classpath:/liquibase/addConvertedFromMeasureColumn.xml"/>
     <include file="classpath:/liquibase/addMeasureDetailsReferenceType.xml"/>
+    <include file="classpath:/liquibase/addFhirDTlFeatureFlags.xml"/>
 </databaseChangeLog>

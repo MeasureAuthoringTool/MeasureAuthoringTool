@@ -108,7 +108,6 @@ public class MeasureLibraryResultTable {
                 } else if (obj.getClickCount() == 2  && obj.isFhirEditOrViewable()) {
                     singleClickTimer.cancel();
                     obj.setClickCount(0);
-                    MeasureComposerPresenter.getInstance().disableMeasurePackageTabForFhirMeasures(obj.getMeasureModel());
                     SelectionEvent.fire(fireEvent, obj);
                 } else {
                     event.setCanceled(true);
@@ -194,7 +193,6 @@ public class MeasureLibraryResultTable {
     @VisibleForTesting
     void onEditViewButtonClicked(MultiSelectionModel<Result> selectionModel, HasSelectionHandlers<Result> fireEvent) {
         selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
-            MeasureComposerPresenter.getInstance().disableMeasurePackageTabForFhirMeasures(object.getMeasureModel());
             SelectionEvent.fire(fireEvent, object);
         });
     }

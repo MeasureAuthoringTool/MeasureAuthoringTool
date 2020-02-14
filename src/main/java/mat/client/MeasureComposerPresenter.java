@@ -3,6 +3,7 @@ package mat.client;
 import java.util.LinkedList;
 import java.util.List;
 
+import mat.client.event.MeasureEditEvent;
 import mat.client.util.FeatureFlagConstant;
 import org.gwtbootstrap3.client.ui.Button;
 
@@ -64,7 +65,6 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
     private CQLMeasureWorkSpacePresenter cqlWorkspacePresenter;
     private static String MEASURE_COMPOSER = "MeasureComposer";
     private static String MEASURE_PACKAGER = "Measure Packager";
-    private static MeasureComposerPresenter instance = null;
 
 
     class EnterKeyDownHandler implements KeyDownHandler {
@@ -91,13 +91,6 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
         subSkipContentHolder.clear();
         subSkipContentHolder.add(w);
         subSkipContentHolder.setFocus(true);
-    }
-
-    public static MeasureComposerPresenter getInstance() {
-        if(instance == null) {
-            instance = new MeasureComposerPresenter();
-        }
-        return instance;
     }
 
     @SuppressWarnings("unchecked")
@@ -202,6 +195,8 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
                 buttonBar.setPageNamesOnState();
             }
         });
+
+        MatContext.get().getEventBus().addHandler(MeasureEditEvent.TYPE, event -> disableMeasurePackageTabForFhirMeasures(MatContext.get().getCurrentMeasureModel()));
     }
 
     public void disableMeasurePackageTabForFhirMeasures(String currentMeasureModel) {

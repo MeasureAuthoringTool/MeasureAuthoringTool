@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.DTO.UnitDTO;
 import mat.model.cql.CQLKeywords;
 import mat.shared.cql.model.FunctionSignature;
@@ -27,6 +27,7 @@ public class CQLConstantContainer implements IsSerializable {
 	private QDMContainer qdmContainer = new QDMContainer();
 	private CQLTypeContainer cqlTypeContainer = new CQLTypeContainer();
 	private List<FunctionSignature> functionSignatures = new ArrayList<>();
+	private Map<String, FhirDataType> fhirDataTypes = new TreeMap<>();
 
 	public List<String> getFhirCqlAttributeList() {
 		return fhirCqlAttributeList;
@@ -149,7 +150,13 @@ public class CQLConstantContainer implements IsSerializable {
 
 	public void setFunctionSignatures(List<FunctionSignature> functionSignatures) {
 		this.functionSignatures = functionSignatures;
-	} 
-	
+	}
 
+	public Map<String, FhirDataType> getFhirDataTypes() {
+		return fhirDataTypes;
+	}
+
+	public void setFhirDataTypes(Map<String, FhirDataType> fhirDataTypes) {
+		this.fhirDataTypes = fhirDataTypes;
+	}
 }

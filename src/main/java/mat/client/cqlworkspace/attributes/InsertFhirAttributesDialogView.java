@@ -17,11 +17,11 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.buttons.CancelButton;
 import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.inapphelp.component.InAppHelp;
@@ -38,8 +38,12 @@ public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialo
     private InAppHelp inAppHelp;
     private Modal dialogModal;
     private InsertFhirAttributesDialogModel model;
+    private LightBoxLeftPanelDisplay leftPanel;
+    private LightBoxRightPanelDisplay rightPanel;
+    private Button insertButton;
+    private CancelButton closeButton;
 
-    public InsertFhirAttributesDialogView(AceEditor editor, InsertFhirAttributesDialogModel model) {
+    public InsertFhirAttributesDialogView(InsertFhirAttributesDialogModel model) {
         this.model = model;
         dialogModal = new Modal();
         dialogModal.setId("InsertFhirAttrToAceEditor_Modal");
@@ -63,7 +67,7 @@ public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialo
 
         final ModalBody modalBody = createModalBody();
 
-        final ModalFooter modalFooter = createModalFooter(editor);
+        final ModalFooter modalFooter = createModalFooter();
         dialogModal.add(modalBody);
         dialogModal.add(modalFooter);
     }
@@ -75,20 +79,24 @@ public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialo
         heading.setHTML("<h4><b>Insert Attributes</b></h4>");
         heading.addStyleName("leftAligned");
 
+        createInAppHelp(dialogHeader, heading);
+        return dialogHeader;
+    }
+
+    private void createInAppHelp(ModalHeader dialogHeader, HTML heading) {
         inAppHelp = new InAppHelp(InAppHelpMessages.CQL_LIBRARY_ATTRIBUTE_MODAL_FHIR);
         dialogHeader.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 
-        inAppHelp.getHelpModal().addHideHandler(event -> handleClose());
-        inAppHelp.getInAppHelpButton().addClickHandler(event -> showModal());
-        return dialogHeader;
+        inAppHelp.getHelpModal().addHideHandler(event -> closeHelpDialog());
+        inAppHelp.getInAppHelpButton().addClickHandler(event -> showHelpDialog());
     }
 
     private ModalBody createModalBody() {
         ModalBody modalBody = new ModalBody();
-        FormGroup messageFormgroup = new FormGroup();
+        FormGroup messageFormGroup = new FormGroup();
         HelpBlock helpBlock = new HelpBlock();
-        messageFormgroup.add(helpBlock);
-        messageFormgroup.getElement().setAttribute(ROLE_ATTR, ALERT);
+        messageFormGroup.add(helpBlock);
+        messageFormGroup.getElement().setAttribute(ROLE_ATTR, ALERT);
 
         FormGroup helpMessageFormGroup = new FormGroup();
         HelpBlock messageHelpBlock = new HelpBlock();
@@ -98,10 +106,9 @@ public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialo
         messageHelpBlock.setHeight("0px");
         helpMessageFormGroup.setHeight("0px");
 
-
         Widget leftAndRightPanelsContainer = createCentralPanel();
 
-        modalBody.add(messageFormgroup);
+        modalBody.add(messageFormGroup);
         modalBody.add(helpMessageFormGroup);
 
         modalBody.add(leftAndRightPanelsContainer);
@@ -110,65 +117,61 @@ public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialo
     }
 
     private Widget createCentralPanel() {
-        Widget leftPanel = createLeftPanel();
-        Widget rightPanel = createRightPanel();
+        Widget leftPanelWidget = createLeftPanel();
+        Widget rightPanelWidget = createRightPanel();
 
         HorizontalPanel centralPanel = new HorizontalPanel();
         centralPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
         centralPanel.addStyleName("insert-fhir-central-panel");
         centralPanel.setHeight("500px");
         centralPanel.setWidth("100%");
-        centralPanel.add(leftPanel);
-        centralPanel.setCellWidth(leftPanel, "320px");
+        centralPanel.add(leftPanelWidget);
+        centralPanel.setCellWidth(leftPanelWidget, "320px");
         SpacerWidget separator = new SpacerWidget();
         centralPanel.add(separator);
         centralPanel.setCellWidth(separator, "20px");
-        centralPanel.add(rightPanel);
+        centralPanel.add(rightPanelWidget);
         return centralPanel;
     }
 
     private Widget createLeftPanel() {
-        LightBoxLeftPanelView leftPanel = new LightBoxLeftPanelView(dialogModal.getId() + "_lb_leftpanel", model, "100%", SCROLL_PANEL_HEIGHT_PX);
+        leftPanel = new LightBoxLeftPanelView(dialogModal.getId() + "_lb_leftpanel", model, "100%", SCROLL_PANEL_HEIGHT_PX);
         return leftPanel.asWidget();
     }
 
     private Widget createRightPanel() {
-        return new LightBoxRightPanelView("100%", SCROLL_PANEL_HEIGHT_PX).asWidget();
+        rightPanel = new LightBoxRightPanelView("100%", SCROLL_PANEL_HEIGHT_PX);
+        return rightPanel.asWidget();
     }
 
-    private ModalFooter createModalFooter(AceEditor editor) {
+    private ModalFooter createModalFooter() {
         final ModalFooter modalFooter = new ModalFooter();
         final ButtonToolBar buttonToolBar = new ButtonToolBar();
-        final Button addButton = new Button();
-        addButton.setText("Insert");
-        addButton.setTitle("Insert");
-        addButton.setType(ButtonType.PRIMARY);
-        addButton.setSize(ButtonSize.SMALL);
-        addButton.setId("addButton_Button");
-        addButton.addClickHandler(event -> clickInsertButton(editor));
-        final Button closeButton = new CancelButton("InsertAttributeBox");
+
+        insertButton = new Button();
+        insertButton.setText("Insert");
+        insertButton.setTitle("Insert");
+        insertButton.setType(ButtonType.PRIMARY);
+        insertButton.setSize(ButtonSize.SMALL);
+        insertButton.setId("addButton_Button");
+
+        closeButton = new CancelButton("InsertAttributeBox");
         closeButton.setSize(ButtonSize.SMALL);
         closeButton.setDataDismiss(ButtonDismiss.MODAL);
         closeButton.setId("Cancel_button");
-        buttonToolBar.add(addButton);
+        buttonToolBar.add(insertButton);
         buttonToolBar.add(closeButton);
         modalFooter.add(buttonToolBar);
         return modalFooter;
     }
 
-    private void clickInsertButton(AceEditor editor) {
-        editor.insertAtCursor("TODO: This should insert meaningful CQL code");
-        editor.focus();
-        dialogModal.hide();
-    }
-
-    private void handleClose() {
+    private void closeHelpDialog() {
         inAppHelp.getHelpModal().removeFromParent();
         dialogModal.removeFromParent();
         dialogModal.show();
     }
 
-    private void showModal() {
+    private void showHelpDialog() {
         dialogModal.removeFromParent();
         inAppHelp.getHelpModal().show();
         inAppHelp.getHelpModal().getElement().setTabIndex(-1);
@@ -176,8 +179,35 @@ public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialo
     }
 
     @Override
+    public LightBoxLeftPanelDisplay getLeftPanel() {
+        return leftPanel;
+    }
+
+    @Override
+    public LightBoxRightPanelDisplay getRightPanel() {
+        return rightPanel;
+    }
+
+    @Override
     public void show() {
         dialogModal.show();
     }
+
+    @Override
+    public void hide() {
+        dialogModal.hide();
+    }
+
+
+    @Override
+    public HasClickHandlers getInsertButton() {
+        return insertButton;
+    }
+
+    @Override
+    public HasClickHandlers getCloseButton() {
+        return closeButton;
+    }
+
 
 }

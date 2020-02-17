@@ -1,25 +1,26 @@
 package mat.client.cqlworkspace.attributes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import mat.client.shared.FhirDataType;
 
 public class InsertFhirAttributesDialogModel {
 
-    private List<FhirDataType> dataTypes = new ArrayList<>();
-
+    private Map<String, FhirDataType> dataTypes = new TreeMap<>();
 
     public InsertFhirAttributesDialogModel() {
     }
 
-    public InsertFhirAttributesDialogModel(List<FhirDataType> dataTypes) {
+    public InsertFhirAttributesDialogModel(Map<String, FhirDataType> dataTypes) {
         this.dataTypes = dataTypes;
     }
 
-    public List<FhirDataType> getDataTypes() {
+    public Map<String, FhirDataType> getDataTypes() {
         return dataTypes;
     }
 
-    public void setDataTypes(List<FhirDataType> dataTypes) {
+    public void setDataTypes(Map<String, FhirDataType> dataTypes) {
         this.dataTypes = dataTypes;
     }
 

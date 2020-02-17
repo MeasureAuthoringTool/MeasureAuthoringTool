@@ -48,7 +48,7 @@ public class AddFunctionArgumentDialogBox {
 	private static ClickHandler handler;
 	
 	public static  void showArgumentDialogBox(final CQLFunctionArgument functionArg,
-			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final MessagePanel messagePanel, final boolean isEditable) {
+			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final MessagePanel messagePanel, final boolean isEditable, String currentModelType) {
 		List<String> allCqlDataType = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlDataTypeList();
 		final List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
 		final List<String> fhirDataTypes = MatContext.get().getCqlConstantContainer().getFhirCqlDataTypeList();
@@ -89,7 +89,7 @@ public class AddFunctionArgumentDialogBox {
 		listAllDataTypes.setWidth("290px");
 		listAllDataTypes.addItem(MatContext.PLEASE_SELECT);
 		for (int i = 0; i < allCqlDataType.size(); i++) {
-			if (MeasureDetailsUtil.FHIR.equalsIgnoreCase(MatContext.get().getCurrentMeasureModel()) && CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE.equalsIgnoreCase(allCqlDataType.get(i))) {
+			if (MeasureDetailsUtil.FHIR.equalsIgnoreCase(currentModelType) && CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE.equalsIgnoreCase(allCqlDataType.get(i))) {
 				listAllDataTypes.addItem(CQLWorkSpaceConstants.CQL_FHIR_DATA_TYPE);
 			} else {
 				listAllDataTypes.addItem(allCqlDataType.get(i));
@@ -138,7 +138,7 @@ public class AddFunctionArgumentDialogBox {
 
 		final FormGroup selectFormGroup = new FormGroup();
 		FormLabel selectFormLabel = new FormLabel();
-		if(MeasureDetailsUtil.FHIR.equalsIgnoreCase(MatContext.get().getCurrentMeasureModel())) {
+		if(MeasureDetailsUtil.FHIR.equalsIgnoreCase(currentModelType)) {
 			selectFormLabel.setText("Select FHIR Datatype Object");
 			selectFormLabel.setTitle("Select FHIR Datatype Object");
 		} else {

@@ -271,7 +271,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
 					getAttributesForDataType(result);
 				} else {
-					AddFunctionArgumentDialogBox.showArgumentDialogBox(result, true,cqlWorkspaceView.getCQLFunctionsView(), messagePanel, hasEditPermissions());
+					AddFunctionArgumentDialogBox.showArgumentDialogBox(result, true,cqlWorkspaceView.getCQLFunctionsView(), messagePanel, hasEditPermissions(), getCurrentModelType());
 				}
 			}
 
@@ -1969,7 +1969,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 			@Override
 			public void onSuccess(List<QDSAttributes> result) {
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setAvailableQDSAttributeList(result);
-				AddFunctionArgumentDialogBox.showArgumentDialogBox(functionArg, true,cqlWorkspaceView.getCQLFunctionsView(), messagePanel, hasEditPermissions());
+				AddFunctionArgumentDialogBox.showArgumentDialogBox(functionArg, true,cqlWorkspaceView.getCQLFunctionsView(), messagePanel, hasEditPermissions(), getCurrentModelType());
 			}
 		});
 	}

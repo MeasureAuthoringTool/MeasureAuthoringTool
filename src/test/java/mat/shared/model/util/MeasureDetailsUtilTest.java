@@ -145,4 +145,13 @@ public class MeasureDetailsUtilTest {
         assertEquals(expectedList, measureDetailsUtil.getTrimmedList(giveList));
     }
 
+    @Test
+    public void testIsPackageable() {
+        assertFalse(MeasureDetailsUtil.isPackageable("FHIR", true));
+        assertFalse(MeasureDetailsUtil.isPackageable("QDM", true));
+        assertTrue(MeasureDetailsUtil.isPackageable("FHIR", false));
+        assertFalse(MeasureDetailsUtil.isPackageable("QDM", false));
+        assertFalse(MeasureDetailsUtil.isPackageable("", false));
+    }
+
 }

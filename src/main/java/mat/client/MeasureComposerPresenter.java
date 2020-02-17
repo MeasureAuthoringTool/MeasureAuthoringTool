@@ -3,6 +3,7 @@ package mat.client;
 import java.util.LinkedList;
 import java.util.List;
 
+import mat.client.event.MeasureEditEvent;
 import mat.client.util.FeatureFlagConstant;
 import org.gwtbootstrap3.client.ui.Button;
 
@@ -63,6 +64,8 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
     private CQLMeasureWorkSpaceView cqlWorkspaceView;
     private CQLMeasureWorkSpacePresenter cqlWorkspacePresenter;
     private static String MEASURE_COMPOSER = "MeasureComposer";
+    private static String MEASURE_PACKAGER = "Measure Packager";
+
 
     class EnterKeyDownHandler implements KeyDownHandler {
         private int i = 0;
@@ -192,6 +195,20 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
                 buttonBar.setPageNamesOnState();
             }
         });
+
+        MatContext.get().getEventBus().addHandler(MeasureEditEvent.TYPE, event -> disableMeasurePackageTabForFhirMeasures(MatContext.get().getCurrentMeasureModel()));
+    }
+
+    public void disableMeasurePackageTabForFhirMeasures(String currentMeasureModel) {
+        for(int i = 0; i < measureComposerTabLayout.getTabBar().getTabCount(); i++) {
+            if(measureComposerTabLayout.getTabBar().getTabHTML(i).contains(MEASURE_PACKAGER)) {
+                if(MeasureDetailsUtil.isPackageable(currentMeasureModel, MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.PACKAGE_V1))) {
+                    measureComposerTabLayout.getTabBar().setTabEnabled(i, false);
+                } else {
+                    measureComposerTabLayout.getTabBar().setTabEnabled(i, true);
+                }
+            }
+        }
     }
 
     @Override

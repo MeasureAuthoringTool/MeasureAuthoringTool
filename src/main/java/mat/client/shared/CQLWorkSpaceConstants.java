@@ -20,6 +20,7 @@ public class CQLWorkSpaceConstants {
 			+ "cause any package groupings containing that population to be cleared on the Measure Packager.";
 	
 	public static String CQL_MODEL_DATA_TYPE ="QDM Datatype";
+	public static String CQL_FHIR_DATA_TYPE ="FHIR Datatype";
 	public static String CQL_OTHER_DATA_TYPE ="Others";
 	public static String CQL_TIMING_EXPRESSION ="Build CQL Timing Expression";
 	public static String CQL_PRIMARY_TIMING_WITHIN ="within";

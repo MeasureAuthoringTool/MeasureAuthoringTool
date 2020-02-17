@@ -7,6 +7,8 @@ import java.util.List;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.AnchorElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -24,6 +26,7 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -34,6 +37,7 @@ import com.google.gwt.view.client.HasData;
 import mat.client.CustomPager;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.resource.CellTableResource;
+import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatCheckBoxCell;
@@ -56,6 +60,8 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
     private HandlerManager handlerManager = new HandlerManager(this);
     private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
 
+    private Label selectedRowsLabel;
+    private Anchor clearSelectedRowsAnchor;
     private AdminObserver adminObserver;
     private CellTable<ManageMeasureSearchModel.Result> table;
     private Boolean even;
@@ -107,6 +113,21 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
         cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
         mainPanel.add(cellTablePanel);
         mainPanel.setStyleName("serachView_mainPanel");
+        buildHeaderControls();
+    }
+
+    private void buildHeaderControls() {
+        selectedRowsLabel = new Label("0 Items Selected");
+        clearSelectedRowsAnchor = new Anchor("Clear Item(s)");
+        clearSelectedRowsAnchor.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+        clearSelectedRowsAnchor.getElement().getStyle().setPosition(Style.Position.RELATIVE);
+        clearSelectedRowsAnchor.getElement().getStyle().setTop(-4,Unit.PX);
+        clearSelectedRowsAnchor.getElement().getStyle().setTextDecoration(Style.TextDecoration.UNDERLINE);
+
+        selectedRowsLabel.getElement().getStyle().setPosition(Style.Position.RELATIVE);
+        selectedRowsLabel.getElement().getStyle().setTop(-4,Unit.PX);
+        selectedRowsLabel.getElement().getStyle().setMarginLeft(30,Unit.PX);
+        selectedRowsLabel.getElement().getStyle().setMarginRight(10,Unit.PX);
     }
 
     public void buildCellTable(ManageMeasureSearchModel results, final int filter, MeasureSearchModel model) {
@@ -194,10 +215,14 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
                 topSPager.setDisplay(table);
                 topSPager.setPageSize(PAGE_SIZE);
 
-                cellTablePanel.add(new SpacerWidget());
-                cellTablePanel.add(topSPager);
-                cellTablePanel.add(new SpacerWidget());
+                HorizontalFlowPanel topSPagePanel = new HorizontalFlowPanel();
+                topSPagePanel.add(topSPager);
+                topSPagePanel.add(selectedRowsLabel);
+                topSPagePanel.add(clearSelectedRowsAnchor);
 
+                cellTablePanel.add(new SpacerWidget());
+                cellTablePanel.add(topSPagePanel);
+                cellTablePanel.add(new SpacerWidget());
                 cellTablePanel.add(invisibleLabel);
 
                 Label measureSearchHeader = new Label(getMeasureListLabel());
@@ -207,6 +232,8 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
 
                 cellTablePanel.add(measureSearchHeader);
                 cellTablePanel.add(gridToolbar);
+
+                measureLibraryResultTable.getSelectionModel().addSelectionChangeHandler(event -> onMeasureSearchResultsTableSelectionChange());
             }
 
             cellTablePanel.add(table);
@@ -223,6 +250,15 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
             cellTablePanel.add(desc);
 
         }
+    }
+
+    protected void onMeasureSearchResultsTableSelectionChange() {
+        int selectedRows = getNumSelectedMeasures();
+
+        selectedRowsLabel.setText(selectedRows + " Item" + (selectedRows == 1 ? "" : "s") + " Selected");
+        clearSelectedRowsAnchor.setText("Clear Item" + (selectedRows == 1 ? "" : "s"));
+        clearSelectedRowsAnchor.getElement().getStyle().setVisibility(
+                selectedRows == 0 ? Style.Visibility.HIDDEN : Style.Visibility.VISIBLE);
     }
 
 
@@ -530,6 +566,22 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
         getSelectedList().clear();
         getData().setData(selectedMeasureList);
         table.redraw();
+    }
+
+    public void clearSelectedMeasures() {
+        measureLibraryResultTable.getSelectionModel().clear();
+    }
+
+    public int getNumSelectedMeasures() {
+        return measureLibraryResultTable.getSelectionModel().getSelectedSet().size();
+    }
+
+    public Label getSelectedRowsLabel() {
+        return selectedRowsLabel;
+    }
+
+    public Anchor getClearSelectedRowsAnchor() {
+        return clearSelectedRowsAnchor;
     }
 
     public VerticalPanel getCellTablePanel() {

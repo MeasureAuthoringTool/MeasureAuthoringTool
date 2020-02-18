@@ -13,6 +13,9 @@ public class InsertFhirAttributesDialogModel {
     }
 
     public InsertFhirAttributesDialogModel(Map<String, FhirDataType> dataTypes) {
+        if (dataTypes == null) {
+            throw new IllegalArgumentException("Required data types map is null");
+        }
         this.dataTypes = dataTypes;
     }
 

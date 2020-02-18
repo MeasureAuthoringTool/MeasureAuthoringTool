@@ -14,6 +14,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -44,8 +45,11 @@ public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialo
     private CancelButton closeButton;
 
     public InsertFhirAttributesDialogView(InsertFhirAttributesDialogModel model) {
+        if (model == null) {
+            throw new IllegalArgumentException("Model must be provided");
+        }
         this.model = model;
-        dialogModal = new Modal();
+        dialogModal = GWT.create(Modal.class);
         dialogModal.setId("InsertFhirAttrToAceEditor_Modal");
         dialogModal.getElement().setAttribute("role", "dialog");
         dialogModal.setClosable(true);
@@ -73,9 +77,9 @@ public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialo
     }
 
     private ModalHeader createModalHeader() {
-        ModalHeader dialogHeader = new ModalHeader();
+        ModalHeader dialogHeader = GWT.create(ModalHeader.class);
         dialogHeader.setId(dialogModal.getId() + "_header");
-        HTML heading = new HTML();
+        HTML heading = GWT.create(HTML.class);
         heading.setHTML("<h4><b>Insert Attributes</b></h4>");
         heading.addStyleName("leftAligned");
 
@@ -92,14 +96,14 @@ public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialo
     }
 
     private ModalBody createModalBody() {
-        ModalBody modalBody = new ModalBody();
-        FormGroup messageFormGroup = new FormGroup();
-        HelpBlock helpBlock = new HelpBlock();
+        ModalBody modalBody = GWT.create(ModalBody.class);
+        FormGroup messageFormGroup = GWT.create(FormGroup.class);
+        HelpBlock helpBlock = GWT.create(HelpBlock.class);
         messageFormGroup.add(helpBlock);
         messageFormGroup.getElement().setAttribute(ROLE_ATTR, ALERT);
 
-        FormGroup helpMessageFormGroup = new FormGroup();
-        HelpBlock messageHelpBlock = new HelpBlock();
+        FormGroup helpMessageFormGroup = GWT.create(FormGroup.class);
+        HelpBlock messageHelpBlock = GWT.create(HelpBlock.class);
         helpMessageFormGroup.add(messageHelpBlock);
         helpMessageFormGroup.getElement().setAttribute(ROLE_ATTR, ALERT);
         messageHelpBlock.setColor("transparent");
@@ -120,14 +124,14 @@ public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialo
         Widget leftPanelWidget = createLeftPanel();
         Widget rightPanelWidget = createRightPanel();
 
-        HorizontalPanel centralPanel = new HorizontalPanel();
+        HorizontalPanel centralPanel = GWT.create(HorizontalPanel.class);
         centralPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
         centralPanel.addStyleName("insert-fhir-central-panel");
         centralPanel.setHeight("500px");
         centralPanel.setWidth("100%");
         centralPanel.add(leftPanelWidget);
         centralPanel.setCellWidth(leftPanelWidget, "320px");
-        SpacerWidget separator = new SpacerWidget();
+        SpacerWidget separator = GWT.create(SpacerWidget.class);
         centralPanel.add(separator);
         centralPanel.setCellWidth(separator, "20px");
         centralPanel.add(rightPanelWidget);
@@ -145,17 +149,18 @@ public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialo
     }
 
     private ModalFooter createModalFooter() {
-        final ModalFooter modalFooter = new ModalFooter();
-        final ButtonToolBar buttonToolBar = new ButtonToolBar();
+        final ModalFooter modalFooter = GWT.create(ModalFooter.class);
+        final ButtonToolBar buttonToolBar = GWT.create(ButtonToolBar.class);
 
-        insertButton = new Button();
+        insertButton = GWT.create(Button.class);
         insertButton.setText("Insert");
         insertButton.setTitle("Insert");
         insertButton.setType(ButtonType.PRIMARY);
         insertButton.setSize(ButtonSize.SMALL);
         insertButton.setId("addButton_Button");
 
-        closeButton = new CancelButton("InsertAttributeBox");
+        closeButton = GWT.create(CancelButton.class);
+        closeButton.setAsCancel("InsertAttributeBox");
         closeButton.setSize(ButtonSize.SMALL);
         closeButton.setDataDismiss(ButtonDismiss.MODAL);
         closeButton.setId("Cancel_button");

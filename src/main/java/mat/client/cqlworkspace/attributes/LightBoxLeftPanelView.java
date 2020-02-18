@@ -1,6 +1,7 @@
 package mat.client.cqlworkspace.attributes;
 
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.CheckBox;
@@ -14,6 +15,7 @@ import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -26,7 +28,7 @@ public class LightBoxLeftPanelView implements LightBoxLeftPanelDisplay {
 
     private final Panel rootLeftPanel;
     private final PanelGroup selectionPanelGroup;
-    private final Map<String, DataTypeSelectSectionDisplay> dataTypeSections = new HashMap<>();
+    private final Map<String, DataTypeSelectSectionDisplay> dataTypeSections = new LinkedHashMap<>();
     private final HandlerManager eventBus = new HandlerManager(this);
 
     public LightBoxLeftPanelView(String id, InsertFhirAttributesDialogModel model, String width, String height) {
@@ -41,16 +43,18 @@ public class LightBoxLeftPanelView implements LightBoxLeftPanelDisplay {
             selectionPanelGroup.add(dataTypeSection.asWidget());
         }
 
-        PanelHeader leftPanelLabel = new PanelHeader();
+        PanelHeader leftPanelLabel = GWT.create(PanelHeader.class);
         leftPanelLabel.setText("Attributes:");
         leftPanelLabel.setTitle("Attributes:");
 
-        rootLeftPanel = new Panel(PanelType.PRIMARY);
+        rootLeftPanel = GWT.create(Panel.class);
+        rootLeftPanel.setType(PanelType.PRIMARY);
         rootLeftPanel.setWidth(width);
         rootLeftPanel.setHeight("100%");
         rootLeftPanel.add(leftPanelLabel);
 
-        ScrollPanel scroller = new ScrollPanel(selectionPanelGroup);
+        ScrollPanel scroller = GWT.create(ScrollPanel.class);
+        scroller.setWidget(selectionPanelGroup);
         scroller.setSize("100%", height);
         rootLeftPanel.add(scroller);
     }
@@ -65,6 +69,11 @@ public class LightBoxLeftPanelView implements LightBoxLeftPanelDisplay {
         return eventBus.addHandler(FhirAttributeSelectionEvent.TYPE, handler);
     }
 
+    @Override
+    public Collection<DataTypeSelectSectionDisplay> getSections() {
+        return dataTypeSections.values();
+    }
+
     public static class DataTypeSelectSelectSectionView implements DataTypeSelectSectionDisplay {
 
         private final String id;
@@ -77,13 +86,14 @@ public class LightBoxLeftPanelView implements LightBoxLeftPanelDisplay {
             this.id = dataType.getId();
             this.name = dataType.getFhirResource();
             this.eventBus = eventBus;
-            dataTypeSectionPanel = new Panel(PanelType.DEFAULT);
+            dataTypeSectionPanel = GWT.create(Panel.class);
+            dataTypeSectionPanel.setType(PanelType.DEFAULT);
             dataTypeSectionPanel.setId("DataTypeSelectSelectSectionView_dataType_" + id);
 
-            PanelCollapse panelCollapse = new PanelCollapse();
+            PanelCollapse panelCollapse = GWT.create(PanelCollapse.class);
             panelCollapse.setId("DataTypeSelectSelectSectionView_collapse_" + id);
 
-            panelBody = new PanelBody();
+            panelBody = GWT.create(PanelBody.class);
             panelCollapse.add(panelBody);
 
             PanelHeader header = createDataTypeSectionHeader(dataType);
@@ -98,7 +108,7 @@ public class LightBoxLeftPanelView implements LightBoxLeftPanelDisplay {
         }
 
         private PanelHeader createDataTypeSectionHeader(FhirDataType dataType) {
-            PanelHeader panelHeader = new PanelHeader();
+            PanelHeader panelHeader = GWT.create(PanelHeader.class);
             Heading sectionHeading = new Heading(HeadingSize.H4, SafeHtmlUtils.htmlEscape(dataType.getFhirResource()));
             panelHeader.add(sectionHeading);
             return panelHeader;
@@ -106,8 +116,9 @@ public class LightBoxLeftPanelView implements LightBoxLeftPanelDisplay {
 
         private void addAttributes(FhirDataType dataType) {
             for (FhirAttribute attribute : dataType.getAttributes().values()) {
-                CheckBox checkBox = new CheckBox(SafeHtmlUtils.htmlEscape(attribute.getFhirElement()));
+                CheckBox checkBox = GWT.create(CheckBox.class);
                 checkBox.setId("DataTypeSelectSelectSectionView_checkBox_" + attribute.getId());
+                checkBox.setText(SafeHtmlUtils.htmlEscape(attribute.getFhirElement()));
                 checkBox.addValueChangeHandler(event -> {
                     FhirAttributeSelectionEvent fhirAttributeSelectionEvent = new FhirAttributeSelectionEvent();
                     fhirAttributeSelectionEvent.setSelected(event.getValue());

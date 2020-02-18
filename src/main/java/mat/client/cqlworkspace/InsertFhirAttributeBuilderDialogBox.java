@@ -11,12 +11,15 @@ import mat.client.shared.MatContext;
 
 public class InsertFhirAttributeBuilderDialogBox {
 
+    private InsertFhirAttributeBuilderDialogBox() {
+    }
+
     public static void showAttributesDialogBox(final AceEditor aceEditor) {
         EditorDisplay editor = (EditorDisplay) aceEditor;
         CQLConstantContainer cqlConstantContainer = MatContext.get().getCqlConstantContainer();
         InsertFhirAttributesDialogModel insertFhirAttributesDialogModel = new InsertFhirAttributesDialogModel(cqlConstantContainer.getFhirDataTypes());
         InsertFhirAttributesDialogDisplay dialogDisplay = new InsertFhirAttributesDialogView(insertFhirAttributesDialogModel);
-        InsertFhirAttributesDialogPresenter presenter = new InsertFhirAttributesDialogPresenter(editor, dialogDisplay, insertFhirAttributesDialogModel);
+        InsertFhirAttributesDialogPresenter presenter = new InsertFhirAttributesDialogPresenter(editor, dialogDisplay);
         presenter.show();
     }
 

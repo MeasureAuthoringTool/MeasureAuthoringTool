@@ -13,150 +13,151 @@ import mat.model.cql.CQLKeywords;
 import mat.shared.cql.model.FunctionSignature;
 
 public class CQLConstantContainer implements IsSerializable {
-	private String currentQDMVersion;
-	private String currentReleaseVersion;
-	private List<String> fhirCqlAttributeList;
-	private List<String> fhirCqlDataTypeList;
-	private List<String> cqlAttributeList;
-	private List<String> cqlDatatypeList; 
-	private List<String> qdmDatatypeList; 
-	private List<UnitDTO> cqlUnitDTOList; 
-	private List<String> cqlTimingList; 
-	private Map<String, String> cqlUnitMap;
-	private CQLKeywords cqlKeywordList; 
-	private QDMContainer qdmContainer = new QDMContainer();
-	private CQLTypeContainer cqlTypeContainer = new CQLTypeContainer();
-	private List<FunctionSignature> functionSignatures = new ArrayList<>();
-	private Map<String, FhirDataType> fhirDataTypes = new TreeMap<>();
+    private String currentQDMVersion;
+    private String currentReleaseVersion;
+    private List<String> fhirCqlAttributeList;
+    private List<String> fhirCqlDataTypeList;
+    private List<String> cqlAttributeList;
+    private List<String> cqlDatatypeList;
+    private List<String> qdmDatatypeList;
+    private List<UnitDTO> cqlUnitDTOList;
+    private List<String> cqlTimingList;
+    private Map<String, String> cqlUnitMap;
+    private CQLKeywords cqlKeywordList;
+    private QDMContainer qdmContainer = new QDMContainer();
+    private CQLTypeContainer cqlTypeContainer = new CQLTypeContainer();
+    private List<FunctionSignature> functionSignatures = new ArrayList<>();
+    private Map<String, FhirDataType> fhirDataTypes = new TreeMap<>();
 
-	public List<String> getFhirCqlAttributeList() {
-		return fhirCqlAttributeList;
-	}
+    public List<String> getFhirCqlAttributeList() {
+        return fhirCqlAttributeList;
+    }
 
-	public void setFhirCqlAttributeList(List<String> fhirCqlAttributeList) {
-		this.fhirCqlAttributeList = fhirCqlAttributeList;
-	}
+    public void setFhirCqlAttributeList(List<String> fhirCqlAttributeList) {
+        this.fhirCqlAttributeList = fhirCqlAttributeList;
+    }
 
-	public List<String> getFhirCqlDataTypeList() {
-		return fhirCqlDataTypeList;
-	}
-	public void setFhirCqlDataTypeList(List<String> fhirCqlDataTypeList) {
-		this.fhirCqlDataTypeList = fhirCqlDataTypeList;
-	}
+    public List<String> getFhirCqlDataTypeList() {
+        return fhirCqlDataTypeList;
+    }
 
-	public List<String> getCqlAttributeList() {
-		return cqlAttributeList;
-	}
+    public void setFhirCqlDataTypeList(List<String> fhirCqlDataTypeList) {
+        this.fhirCqlDataTypeList = fhirCqlDataTypeList;
+    }
 
-	public void setCqlAttributeList(List<String> cqlAttributeList) {
-		this.cqlAttributeList = cqlAttributeList;
-	}
+    public List<String> getCqlAttributeList() {
+        return cqlAttributeList;
+    }
 
-	public List<String> getCqlDatatypeList() {
-		return cqlDatatypeList;
-	}
+    public void setCqlAttributeList(List<String> cqlAttributeList) {
+        this.cqlAttributeList = cqlAttributeList;
+    }
 
-	public void setCqlDatatypeList(List<String> cqlDatatypeList) {
-		this.cqlDatatypeList = cqlDatatypeList;
-	}
+    public List<String> getCqlDatatypeList() {
+        return cqlDatatypeList;
+    }
 
-	public Map<String, String> getCqlUnitMap() {
-		return cqlUnitMap;
-	}
+    public void setCqlDatatypeList(List<String> cqlDatatypeList) {
+        this.cqlDatatypeList = cqlDatatypeList;
+    }
 
-	public void setCqlUnitMap(Map<String, String> cqlUnitMap) {
-		this.cqlUnitMap = cqlUnitMap;
-	}
+    public Map<String, String> getCqlUnitMap() {
+        return cqlUnitMap;
+    }
 
-	public List<UnitDTO> getCqlUnitDTOList() {
-		return cqlUnitDTOList;
-	}
+    public void setCqlUnitMap(Map<String, String> cqlUnitMap) {
+        this.cqlUnitMap = cqlUnitMap;
+    }
 
-	public void setCqlUnitDTOList(List<UnitDTO> cqlUnitDTOList) {
-		this.cqlUnitDTOList = cqlUnitDTOList;
-	}
+    public List<UnitDTO> getCqlUnitDTOList() {
+        return cqlUnitDTOList;
+    }
 
-	public List<String> getQdmDatatypeList() {
-		return qdmDatatypeList;
-	}
+    public void setCqlUnitDTOList(List<UnitDTO> cqlUnitDTOList) {
+        this.cqlUnitDTOList = cqlUnitDTOList;
+    }
 
-	public void setQdmDatatypeList(List<String> qdmDatatypeList) {
-		this.qdmDatatypeList = qdmDatatypeList;
-	}
+    public List<String> getQdmDatatypeList() {
+        return qdmDatatypeList;
+    }
 
-	public CQLKeywords getCqlKeywordList() {
-		return cqlKeywordList;
-	}
+    public void setQdmDatatypeList(List<String> qdmDatatypeList) {
+        this.qdmDatatypeList = qdmDatatypeList;
+    }
 
-	public void setCqlKeywordList(CQLKeywords keywordList) {
-		this.cqlKeywordList = keywordList;
-	}
+    public CQLKeywords getCqlKeywordList() {
+        return cqlKeywordList;
+    }
 
-	public List<String> getCqlTimingList() {
-		return cqlTimingList;
-	}
+    public void setCqlKeywordList(CQLKeywords keywordList) {
+        this.cqlKeywordList = keywordList;
+    }
 
-	public void setCqlTimingList(List<String> cqlTimingList) {
-		this.cqlTimingList = cqlTimingList;
-	}
+    public List<String> getCqlTimingList() {
+        return cqlTimingList;
+    }
 
-	public String getCurrentQDMVersion() {
-		return currentQDMVersion;
-	}
+    public void setCqlTimingList(List<String> cqlTimingList) {
+        this.cqlTimingList = cqlTimingList;
+    }
 
-	public void setCurrentQDMVersion(String currentQDMVersion) {
-		this.currentQDMVersion = currentQDMVersion;
-	}
+    public String getCurrentQDMVersion() {
+        return currentQDMVersion;
+    }
 
-	public String getCurrentReleaseVersion() {
-		return currentReleaseVersion;
-	}
+    public void setCurrentQDMVersion(String currentQDMVersion) {
+        this.currentQDMVersion = currentQDMVersion;
+    }
 
-	public void setCurrentReleaseVersion(String currentReleaseVersion) {
-		this.currentReleaseVersion = currentReleaseVersion;
-	}
+    public String getCurrentReleaseVersion() {
+        return currentReleaseVersion;
+    }
 
-	public QDMContainer getQdmContainer() {
-		return qdmContainer;
-	}
+    public void setCurrentReleaseVersion(String currentReleaseVersion) {
+        this.currentReleaseVersion = currentReleaseVersion;
+    }
 
-	public void setQdmContainer(QDMContainer qdmContainer) {
-		this.qdmContainer = qdmContainer;
-	}
+    public QDMContainer getQdmContainer() {
+        return qdmContainer;
+    }
 
-	public CQLTypeContainer getCqlTypeContainer() {
-		return cqlTypeContainer;
-	}
+    public void setQdmContainer(QDMContainer qdmContainer) {
+        this.qdmContainer = qdmContainer;
+    }
 
-	public void setCqlTypeContainer(CQLTypeContainer cqlTypeContainer) {
-		this.cqlTypeContainer = cqlTypeContainer;
-	}
+    public CQLTypeContainer getCqlTypeContainer() {
+        return cqlTypeContainer;
+    }
 
-	public List<FunctionSignature> getFunctionSignatures() {
-		return functionSignatures;
-	}
-	
-	public List<String> getFunctionNames() {
-		Set<String> nameSet = new HashSet<>();
-		
-		this.functionSignatures.forEach(f -> {
-			nameSet.add(f.getName());
-		});
-		
-		List<String> names = new ArrayList<>(nameSet);
-		names.sort((f1, f2) -> f1.compareTo(f2));
-		return names;
-	}
+    public void setCqlTypeContainer(CQLTypeContainer cqlTypeContainer) {
+        this.cqlTypeContainer = cqlTypeContainer;
+    }
 
-	public void setFunctionSignatures(List<FunctionSignature> functionSignatures) {
-		this.functionSignatures = functionSignatures;
-	}
+    public List<FunctionSignature> getFunctionSignatures() {
+        return functionSignatures;
+    }
 
-	public Map<String, FhirDataType> getFhirDataTypes() {
-		return fhirDataTypes;
-	}
+    public List<String> getFunctionNames() {
+        Set<String> nameSet = new HashSet<>();
 
-	public void setFhirDataTypes(Map<String, FhirDataType> fhirDataTypes) {
-		this.fhirDataTypes = fhirDataTypes;
-	}
+        this.functionSignatures.forEach(f -> {
+            nameSet.add(f.getName());
+        });
+
+        List<String> names = new ArrayList<>(nameSet);
+        names.sort((f1, f2) -> f1.compareTo(f2));
+        return names;
+    }
+
+    public void setFunctionSignatures(List<FunctionSignature> functionSignatures) {
+        this.functionSignatures = functionSignatures;
+    }
+
+    public Map<String, FhirDataType> getFhirDataTypes() {
+        return fhirDataTypes;
+    }
+
+    public void setFhirDataTypes(Map<String, FhirDataType> fhirDataTypes) {
+        this.fhirDataTypes = fhirDataTypes;
+    }
 }

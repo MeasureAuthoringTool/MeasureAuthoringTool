@@ -1541,7 +1541,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
 		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
 		CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
-		AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false,cqlWorkspaceView.getCQLFunctionsView(), messagePanel, hasEditPermissions());
+		AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false,cqlWorkspaceView.getCQLFunctionsView(), messagePanel, hasEditPermissions(), getCurrentModelType());
 		setIsPageDirty(true);
 		cqlWorkspaceView.getCQLFunctionsView().getAddNewArgument().setFocus(true);
 	}

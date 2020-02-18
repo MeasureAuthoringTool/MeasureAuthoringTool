@@ -1,6 +1,6 @@
 Dear ${(content.firstname)!} ${(content.lastname)!}${(content.rolename)!},
 
-Your account has been inactive for 180 days and therefore, has been disabled. 
+Your account has been inactive for 60 days and therefore, has been disabled.
 
 To inquire about re-activating your account, please, contact the Measure Authoring Tool support desk at ${(supportEmailAddress)!}.
 

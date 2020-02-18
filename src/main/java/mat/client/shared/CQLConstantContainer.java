@@ -27,6 +27,7 @@ public class CQLConstantContainer implements IsSerializable {
     private QDMContainer qdmContainer = new QDMContainer();
     private CQLTypeContainer cqlTypeContainer = new CQLTypeContainer();
     private List<FunctionSignature> functionSignatures = new ArrayList<>();
+    // Sorted by FHIR resource name
     private Map<String, FhirDataType> fhirDataTypes = new TreeMap<>();
 
     public List<String> getFhirCqlAttributeList() {

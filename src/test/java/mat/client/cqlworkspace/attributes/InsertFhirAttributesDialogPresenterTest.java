@@ -32,7 +32,6 @@ public class InsertFhirAttributesDialogPresenterTest {
         Mockito.when(dialog.getInsertButton()).thenReturn(insertButton);
         Mockito.when(dialog.getLeftPanel()).thenReturn(leftPanel);
         Mockito.when(insertButton.addClickHandler(Mockito.any())).thenReturn(insertClickRegistration);
-        InsertFhirAttributesDialogModel model = new InsertFhirAttributesDialogModel();
         InsertFhirAttributesDialogPresenter presenter = new InsertFhirAttributesDialogPresenter(editor, dialog);
         presenter.show();
         Mockito.verify(dialog, Mockito.times(1)).show();

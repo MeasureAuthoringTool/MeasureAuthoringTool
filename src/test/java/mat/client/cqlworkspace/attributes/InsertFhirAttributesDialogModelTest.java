@@ -7,6 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import mat.client.shared.FhirDataType;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class InsertFhirAttributesDialogModelTest {
 
     @Test
@@ -19,15 +23,15 @@ public class InsertFhirAttributesDialogModelTest {
     @Test
     public void testEmptyDataTypes() {
         InsertFhirAttributesDialogModel model = new InsertFhirAttributesDialogModel(Collections.emptyMap());
-        Assertions.assertTrue(model.getDataTypes().isEmpty());
+        assertTrue(model.getDataTypes().isEmpty());
     }
 
     @Test
     public void testDataTypes() {
         InsertFhirAttributesDialogModel model = new InsertFhirAttributesDialogModel(Collections.singletonMap("id1", new FhirDataType("id1", "res1")));
-        Assertions.assertFalse(model.getDataTypes().isEmpty());
-        Assertions.assertEquals(1, model.getDataTypes().size());
-        Assertions.assertTrue(model.getDataTypes().containsKey("id1"));
+        assertFalse(model.getDataTypes().isEmpty());
+        assertEquals(1, model.getDataTypes().size());
+        assertTrue(model.getDataTypes().containsKey("id1"));
     }
 
 }

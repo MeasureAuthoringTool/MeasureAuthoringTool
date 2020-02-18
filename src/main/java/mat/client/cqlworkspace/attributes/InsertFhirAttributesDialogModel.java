@@ -7,6 +7,7 @@ import mat.client.shared.FhirDataType;
 
 public class InsertFhirAttributesDialogModel {
 
+    // Sorted by resource name
     private Map<String, FhirDataType> dataTypes = new TreeMap<>();
 
     public InsertFhirAttributesDialogModel() {

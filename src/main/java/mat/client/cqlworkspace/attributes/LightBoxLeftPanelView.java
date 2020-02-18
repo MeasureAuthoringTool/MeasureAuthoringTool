@@ -27,12 +27,11 @@ import mat.client.shared.FhirDataType;
 public class LightBoxLeftPanelView implements LightBoxLeftPanelDisplay {
 
     private final Panel rootLeftPanel;
-    private final PanelGroup selectionPanelGroup;
     private final Map<String, DataTypeSelectSectionDisplay> dataTypeSections = new LinkedHashMap<>();
     private final HandlerManager eventBus = new HandlerManager(this);
 
     public LightBoxLeftPanelView(String id, InsertFhirAttributesDialogModel model, String width, String height) {
-        selectionPanelGroup = new PanelGroup();
+        PanelGroup selectionPanelGroup = new PanelGroup();
         selectionPanelGroup.setId(id);
         selectionPanelGroup.setWidth("100%");
         selectionPanelGroup.setHeight("480px");

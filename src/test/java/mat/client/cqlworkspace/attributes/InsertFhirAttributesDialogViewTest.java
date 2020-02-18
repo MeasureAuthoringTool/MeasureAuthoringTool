@@ -20,13 +20,12 @@ public class InsertFhirAttributesDialogViewTest {
     private com.google.gwt.user.client.Element element;
 
     @Before
-    public void setup() {
+    public void setUp() {
         Mockito.when(dialogModal.getElement()).thenReturn(element);
     }
 
     @Test
     public void testCreateWithSubComponents() {
-
         InsertFhirAttributesDialogModel model = new InsertFhirAttributesDialogModel();
         InsertFhirAttributesDialogView view = new InsertFhirAttributesDialogView(model);
         Assert.assertNotNull(view.getCloseButton());

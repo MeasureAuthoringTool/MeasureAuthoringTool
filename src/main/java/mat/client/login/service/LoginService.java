@@ -42,8 +42,6 @@ public interface LoginService extends RemoteService {
 	 *            the security question
 	 * @param securityAnswer
 	 *            the security answer
-	 * @param invalidUserCounter
-	 *            the invalid user counter
 	 * @return the forgotten password result
 	 */
 	ForgottenPasswordResult forgotPassword(String email,

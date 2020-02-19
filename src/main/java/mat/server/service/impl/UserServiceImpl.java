@@ -898,12 +898,13 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public String updateOnSignOut(String userId, String email, String activityType) {
+		Date signoutDate = new Date();
 		TransactionAuditLog auditLog = new TransactionAuditLog();
 		auditLog.setActivityType(activityType);
 		auditLog.setUserId(userId);
 		auditLog.setAdditionalInfo("["+email+"]");
+		auditLog.setTime(signoutDate);
 		
-		Date signoutDate = new Date();
 		User user = userDAO.find(userId);
 		user.setSignOutDate(signoutDate);
 		user.setSessionId(null);

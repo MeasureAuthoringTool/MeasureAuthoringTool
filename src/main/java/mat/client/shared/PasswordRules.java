@@ -22,10 +22,9 @@ public class PasswordRules extends Composite {
 		rules.getElement().setId("passwordRulesLabel");
 		rules.addStyleName("bold");
 		HTML desc = new HTML(
-				"Passwords must not consist of a single dictionary word with letters, numbers and symbols. <br><br>"
-						+ " Previous 6 passwords cannot be reused. <br><br>"
+				" Previous 6 passwords cannot be reused. <br><br>"
 						+ " A Password needs to be at least one day old before you can change it again. <br><br>"
-						+ " Passwords must be between 8 and 16 characters and contain at least one of each of  the following:");
+						+ " Passwords must be at least 15 characters long and must contain at least one of the following:");
 		desc.addStyleName("passwordRulesDescription");
 		desc.getElement().setId("descLabel");
 		HTML b1 = new HTML(

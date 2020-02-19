@@ -237,7 +237,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		String markupRegExp = "<[^>]+>";
 		String noMarkupTextPwd = loginModel.getPassword().trim().replaceAll(markupRegExp, "");
 		loginModel.setPassword(noMarkupTextPwd);
-		PasswordVerifier verifier = new PasswordVerifier(loginModel.getLoginId(), loginModel.getPassword(), loginModel.getPassword());
+		PasswordVerifier verifier = new PasswordVerifier(loginModel.getPassword(), loginModel.getPassword());
 		
 		if (verifier.isValid()) {
 			SecurityQuestionVerifier sverifier = new SecurityQuestionVerifier(
@@ -289,8 +289,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 			loginModel = loginCredentialService.changeTempPassword(email, changedpassword);
 		} else {
 			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
-		}
+			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());		}
 		
 		return loginModel;
 	}

@@ -1,45 +1,68 @@
 package mat.shared;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+public class PasswordVerifierTest {
 
-public class PasswordVerifierTest extends TestCase {
-	public void testIsPasswordValid() {
-		assertTrue(isValid("userid", "abcdAa_1"));
-		
-		assertFalse(isValid("userid", "aAa_1"));
-		assertFalse(isValid("userid", "abcdAa_1234567890"));
-		assertFalse(isValid("userid", "abcdAa12"));
-		assertFalse(isValid("userid", "abcdAbcda"));
-		assertFalse(isValid("userid", "abcdaa_1"));
-		assertFalse(isValid("userid", "ABCDABCA_1"));
-		assertFalse(isValid("userid", "aaaaAa_1"));
-		assertFalse(isValid("userid", "useridAa_1"));
-		assertFalse(isValid("UserId", "useridAa_1"));
-	}
-	
-	private boolean isValid(String userid, String password) {
+	private boolean isValid(String password) {
 		String markupRegExp = "<[^>]+>";
 		String noMarkupTextPwd = password.trim().replaceAll(markupRegExp, "");
-		password = noMarkupTextPwd;
-		
-		PasswordVerifier v = new PasswordVerifier(userid, password, password);
+		PasswordVerifier v = new PasswordVerifier(noMarkupTextPwd, noMarkupTextPwd);
 		return v.isValid();
 	}
-	
-	public void testIsPasswordValidSpecialChars() {
-		for(int i = 0; i < PasswordVerifier.getAllowedSpecialChars().length; i++) {
-			String test = "Abcabca1" + PasswordVerifier.getAllowedSpecialChars()[i];
-			assertTrue(test,isValid("userid", test));
-		}
-		
+
+	@Test
+	public void testMinPasswordLength() {
+		assertFalse(isValid("qQ5%"));
+		assertFalse(isValid("aqQ5%"));
+		assertFalse(isValid("aaaaqQ5%"));
+		assertFalse(isValid("qqqqqqqqqqqQ5%"));
+		assertTrue(isValid("qqqqqqqqqqqaQ5%"));
 	}
-	
+
+	@Test
+	public void testMaxPasswordLength() {
+		assertTrue(isValid("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789qQ5%"));
+		assertFalse(isValid("01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678912345qQ5%"));
+	}
+
+	@Test
+	public void testDictionaryWordsAllowed() {
+		assertTrue(isValid("password12345%P"));
+	}
+
+	@Test
+	public void testUserIdAllowed() {
+		assertTrue(isValid("userIdrd12345%P"));
+	}
+
+	public void testIsPasswordValid() {
+		assertTrue(isValid("qqweerrabcdAa_1"));
+		assertTrue(isValid("abcdAa_1234567890"));
+		assertFalse(isValid("qqqqqqqqqqaaa_1"));
+		assertFalse(isValid("qqqqqqqabcdAa12"));
+		assertFalse(isValid("abcdAbcdaqqqqqq"));
+		assertFalse(isValid("abcdaa_1qqqqqqq"));
+		assertFalse(isValid("ABCDABCA_1AAAAA"));
+	}
+
+	@Test
+	public void testIsPasswordValidSpecialChars() {
+		for (int i = 0; i < PasswordVerifier.getAllowedSpecialChars().length; i++) {
+			String test = "Abcabca1fifteen" + PasswordVerifier.getAllowedSpecialChars()[i];
+			assertTrue(isValid(test));
+		}
+
+	}
+
+	@Test
 	public void testTTP17() {
 		String password = "Passw0*";
-		PasswordVerifier v = new PasswordVerifier("test", password, password);
+		PasswordVerifier v = new PasswordVerifier(password, password);
 		assertTrue(v.isContainsUpper());
-		for(String message : v.getMessages()) {
+		for (String message : v.getMessages()) {
 			assertFalse(message.contains("upper"));
 		}
 	}

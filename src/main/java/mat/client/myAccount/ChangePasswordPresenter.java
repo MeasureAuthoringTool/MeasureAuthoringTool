@@ -122,9 +122,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 	/** The display. */
 	private final Display display;
 	
-	/** The my account model. */
-	private MyAccountModel myAccountModel;
-	
 	/**
 	 * Instantiates a new change password presenter.
 	 * 
@@ -205,9 +202,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 					
 					}
 				});
-				
-				
-				myAccountModel = result;
 			}
 			
 			@Override
@@ -323,9 +317,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 						case SaveMyAccountResult.SERVER_SIDE_VALIDATION:
 							messages = result.getMessages();
 							break;
-						case SaveMyAccountResult.DICTIONARY_EXCEPTION:
-							messages.add(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
-							break;
 						default:
 							messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
 					}
@@ -350,7 +341,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 		display.getConfirmPassword().setText(noMarkupTextConfirm);
 		
 		PasswordVerifier verifier = new PasswordVerifier(
-				myAccountModel.getLoginId(),
 				display.getPassword().getText(),
 				display.getConfirmPassword().getText());
 		

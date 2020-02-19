@@ -68,7 +68,6 @@ public class TempPwdLoginPresenter {
 				String noMarkupTextConfirm = display.getConfirmPassword().getText().trim().replaceAll(markupRegExp, "");
 				display.getConfirmPassword().setText(noMarkupTextConfirm);
 				verifier = new PasswordVerifier(
-						MatContext.get().getLoggedinLoginId(),
 						display.getPassword().getText(),
 						display.getConfirmPassword().getText());
 				if(!verifier.isValid()) {
@@ -199,10 +198,6 @@ public class TempPwdLoginPresenter {
 								break;
 							case LoginResult.SERVER_SIDE_VALIDATION_PASSWORD:
 								display.getSecurityErrorMessageDisplay().createAlert(result.getMessages());
-								break;
-							case LoginResult.DICTIONARY_EXCEPTION:
-								display.getPasswordErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate()
-										.getMustNotContainDictionaryWordMessage());
 								break;
 							default:
 								display.getSecurityErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate()

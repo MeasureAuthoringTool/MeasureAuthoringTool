@@ -42,8 +42,6 @@ public interface LoginServiceAsync extends AsynchronousService{
 	 *            the security question
 	 * @param securityAnswer
 	 *            the security answer
-	 * @param invalidUserCounter
-	 *            the invalid user counter
 	 * @param callback
 	 *            the callback
 	 */

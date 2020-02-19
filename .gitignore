@@ -32,3 +32,5 @@ war/WEB-INF/mat-persistence.xml
 /target/
 war/WEB-INF/jetty-env.xml
 /.idea/
+/MeasureAuthoringTool.iml
+

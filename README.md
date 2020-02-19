@@ -145,6 +145,7 @@ cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.
  -DALGORITHM=EncyptionAlgorithm 
  -DPASSWORDKEY=PasswordKey 
  -DFHIR_ORCH_MEASURE_SRVC_URL=http://localhost:9080/orchestration/measure
+ -DQDM_QICORE_MAPPING_SERVICES_URL=https://matdev.semanticbits.com/qdm-qicore-mapping-services
  ```
  
  ### Run MAT on App Server

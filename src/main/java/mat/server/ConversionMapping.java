@@ -1,12 +1,16 @@
 package mat.server;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConversionMapping {
+
     private String title;
 
     private String matDataTypeDescription;
@@ -20,5 +24,7 @@ public class ConversionMapping {
     private String fhirElement;
 
     private String fhirType;
+
+    private String hashValue;
 
 }

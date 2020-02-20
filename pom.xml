@@ -576,7 +576,7 @@
                 <version>3.0.0-M1</version>
                 <executions>
                     <execution>
-                        <phase>initialize</phase>
+                        <phase>validate</phase>
                         <id>install-CQLtoELM</id>
                         <goals>
                             <goal>install-file</goal>
@@ -590,7 +590,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>initialize</phase>
+                        <phase>validate</phase>
                         <id>install-mat-rest-commons</id>
                         <goals>
                             <goal>install-file</goal>
@@ -604,7 +604,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>initialize</phase>
+                        <phase>validate</phase>
                         <id>install-vipuserservices-test-client</id>
                         <goals>
                             <goal>install-file</goal>
@@ -618,7 +618,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>initialize</phase>
+                        <phase>validate</phase>
                         <id>install-vsac</id>
                         <goals>
                             <goal>install-file</goal>

@@ -1,7 +1,9 @@
 package mat.client.cqlworkspace;
 
-import java.util.List;
 
+import java.util.Collections;
+import java.util.List;
+import mat.shared.model.util.MeasureDetailsUtil;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FieldSet;
@@ -46,9 +48,11 @@ public class AddFunctionArgumentDialogBox {
 	private static ClickHandler handler;
 	
 	public static  void showArgumentDialogBox(final CQLFunctionArgument functionArg,
-			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final MessagePanel messagePanel, final boolean isEditable) {
+			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final MessagePanel messagePanel, final boolean isEditable, String currentModelType) {
 		List<String> allCqlDataType = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlDataTypeList();
 		final List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
+		final List<String> fhirDataTypes = MatContext.get().getCqlConstantContainer().getFhirCqlDataTypeList();
+		Collections.sort(fhirDataTypes, String.CASE_INSENSITIVE_ORDER);
 		
 		final TextArea otherTypeTextArea = new TextArea();
 		otherTypeTextArea.setEnabled(false);
@@ -85,7 +89,11 @@ public class AddFunctionArgumentDialogBox {
 		listAllDataTypes.setWidth("290px");
 		listAllDataTypes.addItem(MatContext.PLEASE_SELECT);
 		for (int i = 0; i < allCqlDataType.size(); i++) {
-			listAllDataTypes.addItem(allCqlDataType.get(i));
+			if (MeasureDetailsUtil.FHIR.equalsIgnoreCase(currentModelType) && CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE.equalsIgnoreCase(allCqlDataType.get(i))) {
+				listAllDataTypes.addItem(CQLWorkSpaceConstants.CQL_FHIR_DATA_TYPE);
+			} else {
+				listAllDataTypes.addItem(allCqlDataType.get(i));
+			}
 		}
 
 		Form bodyForm = new Form();
@@ -130,8 +138,13 @@ public class AddFunctionArgumentDialogBox {
 
 		final FormGroup selectFormGroup = new FormGroup();
 		FormLabel selectFormLabel = new FormLabel();
-		selectFormLabel.setText("Select QDM Datatype Object");
-		selectFormLabel.setTitle("Select QDM Datatype Object");
+		if(MeasureDetailsUtil.FHIR.equalsIgnoreCase(currentModelType)) {
+			selectFormLabel.setText("Select FHIR Datatype Object");
+			selectFormLabel.setTitle("Select FHIR Datatype Object");
+		} else {
+			selectFormLabel.setText("Select QDM Datatype Object");
+			selectFormLabel.setTitle("Select QDM Datatype Object");
+		}
 		selectFormLabel.setFor("listSelectItem");
 		selectFormLabel.setId("selectFormLabel");
 		final ListBoxMVP listSelectItem = new ListBoxMVP();
@@ -186,6 +199,17 @@ public class AddFunctionArgumentDialogBox {
 						break;
 					}
 				}
+			} else if (selectedDataType.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FHIR_DATA_TYPE)) {
+				otherTypeTextArea.setEnabled(false);
+				populateAllDataType(listSelectItem, fhirDataTypes);
+				listSelectItem.setEnabled(true);
+				for (int i = 0; i < listSelectItem.getItemCount(); i++) {
+					String itemValue = listSelectItem.getItemText(i);
+					if (itemValue.equalsIgnoreCase(functionArg.getQdmDataType())) {
+						listSelectItem.setSelectedIndex(i);
+						break;
+					}
+				}
 			} else if (selectedDataType.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
 				listSelectItem.clear();
 				listSelectItem.setEnabled(false);
@@ -211,6 +235,12 @@ public class AddFunctionArgumentDialogBox {
 					otherTypeTextArea.setEnabled(false);
 					otherTypeTextArea.clear();
 					populateAllDataType(listSelectItem, allDataTypes);
+					listSelectItem.setEnabled(true);
+					addButton.setEnabled(true);
+				} else if (listAllDataTypes.getValue().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FHIR_DATA_TYPE)) {
+					otherTypeTextArea.setEnabled(false);
+					otherTypeTextArea.clear();
+					populateAllDataType(listSelectItem, fhirDataTypes);
 					listSelectItem.setEnabled(true);
 					addButton.setEnabled(true);
 				} else if (listAllDataTypes.getValue().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {

@@ -1816,6 +1816,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         searchDisplay.getClearButton().addClickHandler(event -> clearAllMeasureOwnershipTransfers());
 
+        searchDisplay.getMeasureSearchView().getClearSelectedRowsAnchor().addClickHandler(event -> onClearSelectedMeasures());
+    }
+
+    protected void onClearSelectedMeasures() {
+        searchDisplay.getMeasureSearchView().clearSelectedMeasures();
     }
 
     protected boolean calculatePatientBased(Boolean patientBased, String scoringType) {

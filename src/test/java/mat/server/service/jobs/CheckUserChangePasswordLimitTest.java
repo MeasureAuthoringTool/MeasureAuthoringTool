@@ -31,11 +31,11 @@ import static org.mockito.Mockito.when;
 
 public class CheckUserChangePasswordLimitTest extends MatAppContextTest {
     @MockBean
+    UserService userService;
+    @MockBean
+    JavaMailSender mailSender;
+    @MockBean
     private UserDAO userDAO;
-    @MockBean
-    private UserService userService;
-    @MockBean
-    private JavaMailSender mailSender;
     @MockBean
     private EmailAuditLogDAO emailAuditLogDAO;
     @Autowired

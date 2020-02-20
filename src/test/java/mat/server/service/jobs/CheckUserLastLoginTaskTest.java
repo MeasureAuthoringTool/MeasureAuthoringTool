@@ -30,17 +30,17 @@ import static org.mockito.Mockito.when;
 
 public class CheckUserLastLoginTaskTest extends MatAppContextTest {
     @MockBean
-    UserDAO userDAO;
+    private UserDAO userDAO;
     @MockBean
-    UserService userService;
+    private UserService userService;
     @MockBean
-    JavaMailSender mailSender;
+    private JavaMailSender mailSender;
     @MockBean
-    EmailAuditLogDAO emailAuditLogDAO;
+    private EmailAuditLogDAO emailAuditLogDAO;
     @Autowired
-    SimpleMailMessage simpleMailMessage;
+    private SimpleMailMessage simpleMailMessage;
     @Autowired
-    CheckUserLastLoginTask checkUserLastLoginTask;
+    private CheckUserLastLoginTask checkUserLastLoginTask;
     @Value("${mat.warning.dayLimit}")
     private int warningDayLimit;
     @Value("${mat.expiry.dayLimit}")

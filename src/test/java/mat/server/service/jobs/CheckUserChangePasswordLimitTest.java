@@ -31,17 +31,17 @@ import static org.mockito.Mockito.when;
 
 public class CheckUserChangePasswordLimitTest extends MatAppContextTest {
     @MockBean
-    UserDAO userDAO;
+    private UserDAO userDAO;
     @MockBean
-    UserService userService;
+    private UserService userService;
     @MockBean
-    JavaMailSender mailSender;
+    private JavaMailSender mailSender;
     @MockBean
-    EmailAuditLogDAO emailAuditLogDAO;
+    private EmailAuditLogDAO emailAuditLogDAO;
     @Autowired
-    SimpleMailMessage simpleMailMessage;
+    private SimpleMailMessage simpleMailMessage;
     @Autowired
-    CheckUserChangePasswordLimit checkUserChangePasswordLimit;
+    private CheckUserChangePasswordLimit checkUserChangePasswordLimit;
     @Value("${mat.password.warning.dayLimit}")
     private int passwordWarningDayLimit;
     @Value("${mat.password.expiry.dayLimit}")

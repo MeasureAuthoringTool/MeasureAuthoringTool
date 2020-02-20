@@ -1,11 +1,11 @@
 package mat.client.shared;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.DTO.UnitDTO;
@@ -27,8 +27,7 @@ public class CQLConstantContainer implements IsSerializable {
     private QDMContainer qdmContainer = new QDMContainer();
     private CQLTypeContainer cqlTypeContainer = new CQLTypeContainer();
     private List<FunctionSignature> functionSignatures = new ArrayList<>();
-    // Sorted by FHIR resource name
-    private Map<String, FhirDataType> fhirDataTypes = new TreeMap<>();
+    private Map<String, FhirDataType> fhirDataTypesByResource = new HashMap<>();
 
     public List<String> getFhirCqlAttributeList() {
         return fhirCqlAttributeList;
@@ -154,11 +153,11 @@ public class CQLConstantContainer implements IsSerializable {
         this.functionSignatures = functionSignatures;
     }
 
-    public Map<String, FhirDataType> getFhirDataTypes() {
-        return fhirDataTypes;
+    public Map<String, FhirDataType> getFhirDataTypesByResource() {
+        return fhirDataTypesByResource;
     }
 
-    public void setFhirDataTypes(Map<String, FhirDataType> fhirDataTypes) {
-        this.fhirDataTypes = fhirDataTypes;
+    public void setFhirDataTypesByResource(Map<String, FhirDataType> fhirDataTypesByResource) {
+        this.fhirDataTypesByResource = fhirDataTypesByResource;
     }
 }

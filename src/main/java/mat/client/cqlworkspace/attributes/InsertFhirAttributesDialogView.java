@@ -144,7 +144,7 @@ public class InsertFhirAttributesDialogView implements InsertFhirAttributesDialo
     }
 
     private Widget createRightPanel() {
-        rightPanel = new LightBoxRightPanelView("100%", SCROLL_PANEL_HEIGHT_PX);
+        rightPanel = new LightBoxRightPanelView(model, "100%", SCROLL_PANEL_HEIGHT_PX);
         return rightPanel.asWidget();
     }
 

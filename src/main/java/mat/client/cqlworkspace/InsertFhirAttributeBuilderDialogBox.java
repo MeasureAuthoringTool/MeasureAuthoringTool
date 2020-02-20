@@ -1,6 +1,8 @@
 package mat.client.cqlworkspace;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.cqlworkspace.attributes.AttributesCQLBuilder;
+import mat.client.cqlworkspace.attributes.AttributesCQLBuilderImpl;
 import mat.client.cqlworkspace.attributes.InsertFhirAttributesDialogDisplay;
 import mat.client.cqlworkspace.attributes.InsertFhirAttributesDialogModel;
 import mat.client.cqlworkspace.attributes.InsertFhirAttributesDialogPresenter;
@@ -17,9 +19,10 @@ public class InsertFhirAttributeBuilderDialogBox {
     public static void showAttributesDialogBox(final AceEditor aceEditor) {
         EditorDisplay editor = (EditorDisplay) aceEditor;
         CQLConstantContainer cqlConstantContainer = MatContext.get().getCqlConstantContainer();
-        InsertFhirAttributesDialogModel insertFhirAttributesDialogModel = new InsertFhirAttributesDialogModel(cqlConstantContainer.getFhirDataTypes());
-        InsertFhirAttributesDialogDisplay dialogDisplay = new InsertFhirAttributesDialogView(insertFhirAttributesDialogModel);
-        InsertFhirAttributesDialogPresenter presenter = new InsertFhirAttributesDialogPresenter(editor, dialogDisplay);
+        InsertFhirAttributesDialogModel model = new InsertFhirAttributesDialogModel(cqlConstantContainer.getFhirDataTypesByResource());
+        InsertFhirAttributesDialogDisplay dialogDisplay = new InsertFhirAttributesDialogView(model);
+        AttributesCQLBuilder cqlBuilder = new AttributesCQLBuilderImpl();
+        InsertFhirAttributesDialogPresenter presenter = new InsertFhirAttributesDialogPresenter(model, editor, dialogDisplay, cqlBuilder);
         presenter.show();
     }
 

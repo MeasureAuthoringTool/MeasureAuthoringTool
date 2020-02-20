@@ -26,13 +26,17 @@ public class InsertFhirAttributesDialogPresenterTest {
     private LightBoxLeftPanelDisplay leftPanel;
     @Mock
     private HandlerRegistration insertClickRegistration;
+    @Mock
+    private AttributesCQLBuilder cqlBuilder;
 
     @Test
     public void testCreateAndShowAndInsertPresenter() {
         Mockito.when(dialog.getInsertButton()).thenReturn(insertButton);
         Mockito.when(dialog.getLeftPanel()).thenReturn(leftPanel);
         Mockito.when(insertButton.addClickHandler(Mockito.any())).thenReturn(insertClickRegistration);
-        InsertFhirAttributesDialogPresenter presenter = new InsertFhirAttributesDialogPresenter(editor, dialog);
+        Mockito.when(cqlBuilder.buildCQL(Mockito.any(InsertFhirAttributesDialogModel.class))).thenReturn("TODO: This should insert meaningful CQL code");
+        InsertFhirAttributesDialogModel model = new InsertFhirAttributesDialogModel();
+        InsertFhirAttributesDialogPresenter presenter = new InsertFhirAttributesDialogPresenter(model, editor, dialog, cqlBuilder);
         presenter.show();
         Mockito.verify(dialog, Mockito.times(1)).show();
 

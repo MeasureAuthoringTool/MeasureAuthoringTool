@@ -2,14 +2,18 @@ package mat.client.cqlworkspace.attributes;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import mat.client.shared.FhirAttribute;
 
 public class FhirAttributeSelectionEvent extends GwtEvent<FhirAttributeSelectionEvent.Handler> {
 
     public static final Type<Handler> TYPE = new Type<>();
 
-    private boolean selected;
-    private FhirAttribute attribute;
+    private final boolean selected;
+    private final String attributeId;
+
+    public FhirAttributeSelectionEvent(String attributeId, boolean selected) {
+        this.attributeId = attributeId;
+        this.selected = selected;
+    }
 
     @Override
     public Type<Handler> getAssociatedType() {
@@ -21,31 +25,24 @@ public class FhirAttributeSelectionEvent extends GwtEvent<FhirAttributeSelection
         handler.onAttributeSelectionChanged(this);
     }
 
-    public interface Handler extends EventHandler {
-        void onAttributeSelectionChanged(FhirAttributeSelectionEvent event);
-    }
-
     public boolean isSelected() {
         return selected;
     }
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-
-    public FhirAttribute getAttribute() {
-        return attribute;
-    }
-
-    public void setAttribute(FhirAttribute attribute) {
-        this.attribute = attribute;
+    public String getAttributeId() {
+        return attributeId;
     }
 
     @Override
     public String toString() {
         return "FhirAttributeSelectionEvent{" +
                 "selected=" + selected +
-                ", attribute=" + attribute +
+                ", attributeId='" + attributeId + '\'' +
                 '}';
     }
+
+    public interface Handler extends EventHandler {
+        void onAttributeSelectionChanged(FhirAttributeSelectionEvent event);
+    }
+
 }

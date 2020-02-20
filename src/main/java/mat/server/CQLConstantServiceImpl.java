@@ -127,11 +127,9 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             if (fhirElement.isEmpty() || fhirResource.isEmpty()) {
                 continue;
             }
-            String fhirResourceId = Hashing.sha256().hashString(fhirResource, StandardCharsets.UTF_8).toString();
-            String fhirElementId = Hashing.sha256().hashString(fhirResource + "--" + fhirElement, StandardCharsets.UTF_8).toString();
-            FhirDataType fhirDataType =
-                    cqlConstantContainer.getFhirDataTypes().computeIfAbsent(fhirResource, s -> new FhirDataType(fhirResourceId, fhirResource));
-            fhirDataType.getAttributes().computeIfAbsent(fhirElement, s -> new FhirAttribute(fhirElementId, fhirElement, StringUtils.trimToEmpty(conversionMapping.getFhirType())));
+            String fhirType = conversionMapping.getFhirType();
+
+            addFhirDataAttributeToCqlContainer(cqlConstantContainer, fhirResource, fhirElement, fhirType);
         }
         cqlConstantContainer.setFhirCqlDataTypeList(new ArrayList<>(fhirDataTypeSet));
         cqlConstantContainer.setFhirCqlAttributeList(new ArrayList<>(fhirAttributeSet));
@@ -173,6 +171,16 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         cqlConstantContainer.setFunctionSignatures(getFunctionSignatures());
 
         return cqlConstantContainer;
+    }
+
+    private void addFhirDataAttributeToCqlContainer(CQLConstantContainer cqlConstantContainer, String fhirResource, String fhirElement, String fhirType) {
+        String fhirResourceId = Hashing.sha256().hashString(fhirResource, StandardCharsets.UTF_8).toString();
+        String fhirElementId = Hashing.sha256().hashString(fhirResource + "--" + fhirElement, StandardCharsets.UTF_8).toString();
+        FhirDataType fhirDataType =
+                cqlConstantContainer.getFhirDataTypesByResource().computeIfAbsent(fhirResource, s -> new FhirDataType(fhirResourceId, fhirResource));
+        fhirDataType.getAttributes().computeIfAbsent(fhirElement, s ->
+                new FhirAttribute(fhirElementId, fhirElement, StringUtils.trimToEmpty(fhirType))
+        );
     }
 
     private List<FunctionSignature> getFunctionSignatures() {

@@ -23,15 +23,16 @@ public class InsertFhirAttributesDialogModelTest {
     @Test
     public void testEmptyDataTypes() {
         InsertFhirAttributesDialogModel model = new InsertFhirAttributesDialogModel(Collections.emptyMap());
-        assertTrue(model.getDataTypes().isEmpty());
+        assertTrue(model.getDataTypesByResource().isEmpty());
     }
 
     @Test
     public void testDataTypes() {
-        InsertFhirAttributesDialogModel model = new InsertFhirAttributesDialogModel(Collections.singletonMap("id1", new FhirDataType("id1", "res1")));
-        assertFalse(model.getDataTypes().isEmpty());
-        assertEquals(1, model.getDataTypes().size());
-        assertTrue(model.getDataTypes().containsKey("id1"));
+        FhirDataType dt1 = new FhirDataType("id1", "res1");
+        InsertFhirAttributesDialogModel model = new InsertFhirAttributesDialogModel(Collections.singletonMap("res1", dt1));
+        assertFalse(model.getDataTypesByResource().isEmpty());
+        assertEquals(1, model.getDataTypesByResource().size());
+        assertTrue(model.getDataTypesByResource().containsKey("res1"));
     }
 
 }

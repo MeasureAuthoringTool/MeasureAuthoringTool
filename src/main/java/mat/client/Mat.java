@@ -337,7 +337,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         MatContext.get().getEventBus().addHandler(MeasureEditEvent.TYPE, new MeasureEditEvent.Handler() {
             @Override
-            final public void onMeasureEdit(MeasureEditEvent event) {
+            public void onMeasureEdit(MeasureEditEvent event) {
                 mainTabLayout.selectTab(presenterList.indexOf(measureComposer));
                 focusSkipLists("MeasureComposer");
             }
@@ -345,7 +345,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         MatContext.get().getEventBus().addHandler(CQLLibraryEditEvent.TYPE, new CQLLibraryEditEvent.Handler() {
             @Override
-            final public void onCQLLibraryEdit(CQLLibraryEditEvent event) {
+            public void onCQLLibraryEdit(CQLLibraryEditEvent event) {
                 mainTabLayout.selectTab(presenterList.indexOf(cqlComposer));
                 focusSkipLists("CqlComposer");
             }

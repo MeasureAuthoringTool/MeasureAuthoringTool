@@ -112,9 +112,6 @@ public class MessageDelegate {
 	private static final String MUST_CONTAIN_NUMBER = "Must contain a number.";
 	private static final String MUST_CONTAIN_SPECIAL = "Must contain a special character.";
 	private static final String MUST_CONTAIN_UPPER = "Must contain an uppercase letter.";
-	private static final String MUST_NOT_CONTAIN_DICTIONAY_WORD = "Passwords must not consist of a single dictionary word with letters, numbers and symbols.";
-	private static final String MUST_NOT_CONTAIN_LOGIN_ID = "Passwords must not contain your User ID.";
-	private static final String MUST_NOT_CONTAIN_RUNS = "Passwords must not contain three consecutive identical characters.";
 	private static final String NOT_UNIQUE_QUESTIONS = "You cannot use the same security question more than once.";
 	private static final String OID_EXISTS = "OID already exists.";
 	private static final String PACKAGE_SUCCESS = "Measure packaged successfully. Please access the Measure Library to export the measure.";
@@ -126,7 +123,7 @@ public class MessageDelegate {
 	private static final String PASSWORD_MISMATCH_ERROR_MESSAGE = "Incorrect password supplied.Try again";
 	private static final String PASSWORD_REQUIRED = "Password is required.";
 	private static final String PASSWORD_REQUIRED_ERROR_MESSAGE = "Existing password is required to confirm changes.";
-	private static final String PASSWORD_WRONG_LENGTH = "Must be between 8 and 16 characters long.";
+	private static final String PASSWORD_WRONG_LENGTH = "Must be between 15 and 128 characters long.";
 	private static final String SECURITYCODE_REQUIRED = "Security Code is required.";
 	private static final String PHONE_10_DIGIT = "Phone Number is required to be 10 digits.";
 	private static final String PROPORTION_MAY_NOT_CONTAIN = "For a Proportion measure,a grouping may not contain a Numerator Exclusion,Measure Population,or Measure Observation.";
@@ -363,18 +360,6 @@ public class MessageDelegate {
 
 	public String getMustContainUpperMessage() {
 		return MUST_CONTAIN_UPPER;
-	}
-
-	public String getMustNotContainDictionaryWordMessage() {
-		return MUST_NOT_CONTAIN_DICTIONAY_WORD;
-	}
-	
-	public String getMustNotContainLoginIdMessage() {
-		return MUST_NOT_CONTAIN_LOGIN_ID;
-	}
-	
-	public String getMustNotContainRunsMessage() {
-		return MUST_NOT_CONTAIN_RUNS;
 	}
 	
 	public String getNoMeasuresMessage() {

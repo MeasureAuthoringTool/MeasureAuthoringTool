@@ -62,7 +62,6 @@ public class FirstLoginPresenter {
 				display.getConfirmPassword().setText(noMarkupTextConfirm);
 				
 				verifier = new PasswordVerifier(
-						MatContext.get().getLoggedinLoginId(),
 						display.getPassword().getText(),
 						display.getConfirmPassword().getText());
 				if(!verifier.isValid()) {
@@ -185,10 +184,6 @@ public class FirstLoginPresenter {
 								break;
 							case LoginResult.SERVER_SIDE_VALIDATION_PASSWORD:
 								display.getSecurityErrorMessageDisplay().createAlert(result.getMessages());
-								break;
-							case LoginResult.DICTIONARY_EXCEPTION:
-								display.getPasswordErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate()
-										.getMustNotContainDictionaryWordMessage());
 								break;
 							default:
 								display.getSecurityErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().

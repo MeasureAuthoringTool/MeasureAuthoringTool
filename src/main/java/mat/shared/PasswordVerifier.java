@@ -11,20 +11,14 @@ import mat.client.shared.MatContext;
 public class PasswordVerifier {
 	
 	/** The Constant MIN_LENGTH. */
-	private static final int MIN_LENGTH = 8;
+	private static final int MIN_LENGTH = 15;
 	
 	/** The Constant MAX_LENGTH. */
-	private static final int MAX_LENGTH = 16;
+	private static final int MAX_LENGTH = 128;
 	
 	/** The Constant SPECIAL_CHARS. */
 	private static final char[] SPECIAL_CHARS = 
 		new char[] {'%', '#', '*', '+', '-', ',', ':', '=', '?', '_'};
-	
-	/** The not userid. */
-	private boolean notUserid;
-	
-	/** The no repeated char. */
-	private boolean noRepeatedChar;
 	
 	/** The contains upper. */
 	private boolean containsUpper;
@@ -55,16 +49,14 @@ public class PasswordVerifier {
 	
 	/**
 	 * Instantiates a new password verifier.
-	 * 
-	 * @param userId
-	 *            the user id
+	 *
 	 * @param password
 	 *            the password
 	 * @param confirmPassword
 	 *            the confirm password
 	 */
-	public PasswordVerifier(String userId, String password, String confirmPassword) {
-		validPassword = isPasswordValid(userId,password, confirmPassword);
+	public PasswordVerifier(String password, String confirmPassword) {
+		validPassword = isPasswordValid(password, confirmPassword);
 	
 		message.add(MatContext.get().getMessageDelegate().getDoesntFollowRulesMessage());
 		if(!confirmed) {
@@ -84,12 +76,6 @@ public class PasswordVerifier {
 		}
 		if(!containsSpecial) {
 			message.add(MatContext.get().getMessageDelegate().getMustContainSpecialMessage());
-		}
-		if(!notUserid) {
-			message.add(MatContext.get().getMessageDelegate().getMustNotContainLoginIdMessage());
-		}
-		if(!noRepeatedChar) {
-			message.add(MatContext.get().getMessageDelegate().getMustNotContainRunsMessage());
 		}
 	}
 	
@@ -149,14 +135,12 @@ public class PasswordVerifier {
 	 *            the confirm
 	 * @return true, if is password valid
 	 */
-	private boolean isPasswordValid(String userid, String pwd, String confirm) {
+	private boolean isPasswordValid(String pwd, String confirm) {
 	//private boolean isPasswordValid(String pwd, String confirm) {
 		confirmed = pwd.equals(confirm);
 		notTooLong = pwd.length() <= MAX_LENGTH;
 		notTooShort = pwd.length() >= MIN_LENGTH;
-		notUserid = pwd.toUpperCase().indexOf(userid.toUpperCase()) < 0;
-		noRepeatedChar = checkForRepeatedChar(pwd);
-		
+
 		containsUpper = false;
 		containsLower = false;
 		containsSpecial = false;
@@ -171,56 +155,10 @@ public class PasswordVerifier {
 			containsNumber |= Character.isDigit(c);
 		}
 		
-		return notTooLong && notTooShort && notUserid && containsUpper
-				&& containsLower && containsSpecial && containsNumber
-				&& noRepeatedChar && confirmed;
+		return notTooLong && notTooShort  && containsUpper && containsLower && containsSpecial && containsNumber
+				&& confirmed;
 		
 		}
-	
-	/**
-	 * Check for repeated char.
-	 * 
-	 * @param pwd
-	 *            the pwd
-	 * @return true, if successful
-	 */
-	private boolean checkForRepeatedChar(String pwd) {
-		for(int i = 0; i < pwd.length() - 2; i++) {
-			if(pwd.charAt(i) == pwd.charAt(i+1) &&
-					pwd.charAt(i) == pwd.charAt(i + 2)) {
-				return false;
-			}
-		}
-		
-		return true;
-	}
-
-	/*boolean isNotUserid() {
-		return notUserid;
-	}
-
-	void setNotUserid(boolean notUserid) {
-		this.notUserid = notUserid;
-	}*/
-
-	/**
-	 * Checks if is no repeated char.
-	 * 
-	 * @return true, if is no repeated char
-	 */
-	boolean isNoRepeatedChar() {
-		return noRepeatedChar;
-	}
-
-	/**
-	 * Sets the no repeated char.
-	 * 
-	 * @param noRepeatedChar
-	 *            the new no repeated char
-	 */
-	void setNoRepeatedChar(boolean noRepeatedChar) {
-		this.noRepeatedChar = noRepeatedChar;
-	}
 
 	/**
 	 * Checks if is contains upper.

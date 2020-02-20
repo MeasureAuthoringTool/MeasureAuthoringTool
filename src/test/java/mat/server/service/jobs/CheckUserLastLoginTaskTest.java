@@ -20,8 +20,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class CheckUserLastLoginTaskTest extends MatAppContextTest {
     @MockBean
@@ -64,7 +69,7 @@ public class CheckUserLastLoginTaskTest extends MatAppContextTest {
     }
 
     @Test
-    public void testExpirationEmail_inactiveUser() {
+    public void testExpirationEmailInactiveUser() {
         String userId = "Inactivity Expiration Email User";
         User testUser = buildNormalUser();
         testUser.setLoginId(userId);
@@ -82,7 +87,7 @@ public class CheckUserLastLoginTaskTest extends MatAppContextTest {
     }
 
     @Test
-    public void testExpirationEmail_activeUser() {
+    public void testExpirationEmailActiveUser() {
         User testUser = buildNormalUser();
         testUser.setSignInDate(DateUtils.addDays(new Date(), expiryDayLimit / 4));
 

@@ -20,8 +20,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class CheckUserChangePasswordLimitTest extends MatAppContextTest {
     @MockBean
@@ -47,7 +53,7 @@ public class CheckUserChangePasswordLimitTest extends MatAppContextTest {
     }
 
     @Test
-    public void testWarningEmail_pastDayLimit() {
+    public void testWarningEmailPastDayLimit() {
         String userId = "Password Expiration Warning Email User";
         User testUser = buildNormalUser();
         testUser.setLoginId(userId);
@@ -64,7 +70,7 @@ public class CheckUserChangePasswordLimitTest extends MatAppContextTest {
     }
 
     @Test
-    public void testExpirationEmail_pastDayLimit() {
+    public void testExpirationEmailPastDayLimit() {
         String userId = "Password Expiration Email User";
         User testUser = buildNormalUser();
         testUser.setLoginId(userId);
@@ -83,7 +89,7 @@ public class CheckUserChangePasswordLimitTest extends MatAppContextTest {
     }
 
     @Test
-    public void testExpirationEmail_beforeDayLimit() {
+    public void testExpirationEmailBeforeDayLimit() {
         User testUser = buildNormalUser();
         testUser.getPassword().setCreatedDate(DateUtils.addDays(new Date(), passwordExpiryDayLimit / 2));
         Date prevCreateDate = testUser.getPassword().getCreatedDate();

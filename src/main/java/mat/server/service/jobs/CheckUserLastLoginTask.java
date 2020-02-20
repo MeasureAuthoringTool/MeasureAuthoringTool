@@ -1,14 +1,15 @@
 package mat.server.service.jobs;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
+import mat.dao.EmailAuditLogDAO;
+import mat.dao.UserDAO;
+import mat.model.EmailAuditLog;
+import mat.model.Status;
+import mat.model.User;
+import mat.server.util.ServerConstants;
+import mat.shared.ConstantMessages;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,15 +22,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
-import mat.dao.EmailAuditLogDAO;
-import mat.dao.UserDAO;
-import mat.model.EmailAuditLog;
-import mat.model.Status;
-import mat.model.User;
-import mat.server.util.ServerConstants;
-import mat.shared.ConstantMessages;
+import java.io.IOException;
+import java.util.*;
 
 
 /**
@@ -229,7 +223,7 @@ public class CheckUserLastLoginTask {
 
     /**
      * Method to Update Termination Date of User with no activity done in last
-     * 180 days.
+     * 60 days.
      *
      * @param user the user
      * @return void

@@ -23,7 +23,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class CheckUserChangePasswordLimitTest extends MatAppContextTest {
+public class CheckUserLastLoginTaskTest extends MatAppContextTest {
     @MockBean
     UserDAO userDAO;
     @MockBean
@@ -35,65 +35,63 @@ public class CheckUserChangePasswordLimitTest extends MatAppContextTest {
     @Autowired
     SimpleMailMessage simpleMailMessage;
     @Autowired
-    CheckUserChangePasswordLimit checkUserChangePasswordLimit;
-    @Value("${mat.password.warning.dayLimit}")
-    private int passwordWarningDayLimit;
-    @Value("${mat.password.expiry.dayLimit}")
-    private int passwordExpiryDayLimit;
+    CheckUserLastLoginTask checkUserLastLoginTask;
+    @Value("${mat.warning.dayLimit}")
+    private int warningDayLimit;
+    @Value("${mat.expiry.dayLimit}")
+    private int expiryDayLimit;
 
     @Test
     public void verifySpringInitialization() {
-        assertNotNull(checkUserChangePasswordLimit, "CheckUserChangePasswordLimit bean is not null");
+        assertNotNull(checkUserLastLoginTask, "checkUserLastLoginTask bean is not null");
     }
 
     @Test
-    public void testWarningEmail_pastDayLimit() {
-        String userId = "Password Expiration Warning Email User";
+    public void testWarningEmail() {
+        String userId = "Inactivity Warning Email User";
         User testUser = buildNormalUser();
+        testUser.setSignInDate(DateUtils.addDays(new Date(), warningDayLimit));
         testUser.setLoginId(userId);
-        testUser.getPassword().setCreatedDate(DateUtils.addDays(new Date(), passwordWarningDayLimit));
 
         when(userDAO.find()).thenReturn(List.of(testUser));
-        checkUserChangePasswordLimit.checkUserPasswordLimitDays();
+        checkUserLastLoginTask.checkUserLastLogin();
 
-        assertFalse(testUser.getPassword().isTemporaryPassword(), "Valid password was marked as temp.");
+        assertEquals("1", testUser.getStatus().getStatusId());
         assertNotNull(simpleMailMessage.getText());
-        assertTrue(simpleMailMessage.getText().contains("It is time to change your Measure Authoring Tool password."));
+        assertTrue(simpleMailMessage.getText().contains("You have not signed into the Measure Authoring Tool in 30 days."));
         assertTrue(simpleMailMessage.getText().contains(userId));
         verify(emailAuditLogDAO, times(1)).save(any());
     }
 
     @Test
-    public void testExpirationEmail_pastDayLimit() {
-        String userId = "Password Expiration Email User";
+    public void testExpirationEmail_inactiveUser() {
+        String userId = "Inactivity Expiration Email User";
         User testUser = buildNormalUser();
         testUser.setLoginId(userId);
-        testUser.getPassword().setCreatedDate(DateUtils.addDays(new Date(), passwordExpiryDayLimit));
-        Date prevCreateDate = testUser.getPassword().getCreatedDate();
+        testUser.setSignInDate(DateUtils.addDays(new Date(), expiryDayLimit));
 
         when(userDAO.find()).thenReturn(List.of(testUser));
-        checkUserChangePasswordLimit.checkUserPasswordLimitDays();
+        checkUserLastLoginTask.checkUserLastLogin();
 
-        assertTrue(testUser.getPassword().isTemporaryPassword(), "Expired password was not marked as temp.");
-        assertTrue(testUser.getPassword().getCreatedDate().after(prevCreateDate));
+        assertEquals("2", testUser.getStatus().getStatusId());
         assertNotNull(simpleMailMessage.getText());
-        assertTrue(simpleMailMessage.getText().contains("Your Measure Authoring Tool password is set to expire in 5 days."));
+        assertTrue(simpleMailMessage.getText().contains("Your account has been inactive for 60 days and therefore, has been disabled."));
         assertTrue(simpleMailMessage.getText().contains(userId));
         verify(emailAuditLogDAO, times(1)).save(any());
+        verify(userDAO, times(1)).save(any());
     }
 
     @Test
-    public void testExpirationEmail_beforeDayLimit() {
+    public void testExpirationEmail_activeUser() {
         User testUser = buildNormalUser();
-        testUser.getPassword().setCreatedDate(DateUtils.addDays(new Date(), passwordExpiryDayLimit / 2));
-        Date prevCreateDate = testUser.getPassword().getCreatedDate();
+        testUser.setSignInDate(DateUtils.addDays(new Date(), expiryDayLimit / 4));
 
         when(userDAO.find()).thenReturn(List.of(testUser));
-        checkUserChangePasswordLimit.checkUserPasswordLimitDays();
+        checkUserLastLoginTask.checkUserLastLogin();
 
-        assertFalse(testUser.getPassword().isTemporaryPassword(), "Valid password was marked as temp.");
-        assertEquals(testUser.getPassword().getCreatedDate(), prevCreateDate);
+        assertEquals("1", testUser.getStatus().getStatusId());
         verify(emailAuditLogDAO, times(0)).save(any());
+        verify(userDAO, times(0)).save(any());
     }
 
     private User buildNormalUser() {
@@ -102,12 +100,16 @@ public class CheckUserChangePasswordLimitTest extends MatAppContextTest {
         Status usrStatus = new Status();
         usrStatus.setStatusId("1"); //Active
 
+        UserPassword usrPass = new UserPassword();
+        usrPass.setCreatedDate(new Date());
+        usrPass.setTemporaryPassword(false);
+
         SecurityRole secRole = new SecurityRole();
         secRole.setId("3"); //Normal User
 
         usr.setSecurityRole(secRole);
         usr.setStatus(usrStatus);
-        usr.setPassword(new UserPassword());
+        usr.setPassword(usrPass);
         usr.setId(UUID.randomUUID().toString());
         usr.setSignInDate(new Date());
         usr.setFirstName("Mark");

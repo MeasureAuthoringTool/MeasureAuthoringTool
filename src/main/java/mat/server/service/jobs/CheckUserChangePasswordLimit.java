@@ -1,15 +1,14 @@
 package mat.server.service.jobs;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
+import mat.dao.EmailAuditLogDAO;
+import mat.dao.UserDAO;
+import mat.model.EmailAuditLog;
+import mat.model.User;
+import mat.server.service.UserService;
+import mat.server.util.ServerConstants;
+import mat.shared.ConstantMessages;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,15 +21,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
-import mat.dao.EmailAuditLogDAO;
-import mat.dao.UserDAO;
-import mat.model.EmailAuditLog;
-import mat.model.User;
-import mat.server.service.UserService;
-import mat.server.util.ServerConstants;
-import mat.shared.ConstantMessages;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * The Class CheckUserPasswordLimit.
@@ -79,6 +72,7 @@ public class CheckUserChangePasswordLimit {
 
     @Value("${mat.password.expiry.email.subject}")
     private String expiryMailSubject;
+
     @Value("${mat.support.emailAddress}")
     private String supportEmailAddress;
 
@@ -186,7 +180,7 @@ public class CheckUserChangePasswordLimit {
 
         logger.info(" :: checkUsersLastPassword Method Start :: ");
 
-        final List<User> returnUserList = new ArrayList<User>();
+        final List<User> returnUserList = new ArrayList<>();
         final Date passwordDaysAgo = getPasswordNumberOfDaysAgo((int) passwordDayLimit);
         logger.info(passwordDayLimit + "passwordDaysAgo:" + passwordDaysAgo);
 
@@ -210,7 +204,7 @@ public class CheckUserChangePasswordLimit {
                 }
             }
 
-            // for User Password Greater than 60days
+            // for User Password Greater than 60 days
             else if (passwordexpiryDayLimit == passwordDayLimit) {
 
                 if (lastPasswordCreatedDate.before((passwordDaysAgo))

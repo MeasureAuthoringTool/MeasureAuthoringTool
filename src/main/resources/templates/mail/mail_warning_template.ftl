@@ -1,6 +1,6 @@
 Dear ${(content.firstname)!} ${(content.lastname)!}${(content.rolename)!},
 
-You have not signed into the Measure Authoring Tool in 90 days. In order to keep your account active, please sign in within the next 90 days. Your account will be inactivated if another 90 days pass without a successful sign-in.  
+You have not signed into the Measure Authoring Tool in 30 days. In order to keep your account active, please sign in within the next 30 days. Your account will be inactivated if another 30 days pass without a successful sign-in.
  
 If you have any questions, please contact the Measure Authoring Tool support desk at sb-mat-help@semanticbits.com.
 

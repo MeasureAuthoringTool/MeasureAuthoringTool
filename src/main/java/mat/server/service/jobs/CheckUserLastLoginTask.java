@@ -76,8 +76,8 @@ public class CheckUserLastLoginTask {
 	
 	/**
 	 * Method to Send 
-	 * 1.Warning Email for Warning Day Limit -90 days.
-	 * 2.Account Expiration Email for day limit -180 days and 
+	 * 1.Warning Email for Warning Day Limit -30 days.
+	 * 2.Account Expiration Email for day limit -60 days and
 	 *  then marked user termination date to disable logging into the system. 
 	 * 
 	 * @return void

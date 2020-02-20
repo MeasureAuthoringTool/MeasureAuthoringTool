@@ -288,8 +288,8 @@ public class CheckUserChangePasswordLimit {
 
 	/**
 	 * Method to Send 
-	 * 1.Warning Email for Warning Day Limit 45 days.
-	 * 2.Password change screen for day limit >60 days
+	 * 1.Warning Email for Warning Day Limit 35 days.
+	 * 2.Password change screen for day limit >50 days
 	 *  
 	 * @return void
 	 */
@@ -401,7 +401,7 @@ public class CheckUserChangePasswordLimit {
 			
 			lastPasswordCreatedDate = DateUtils.truncate(lastPasswordCreatedDate, Calendar.DATE);
 			logger.info("User:"+user.getFirstName()+"  :::: last Created Password Date :::::   " + lastPasswordCreatedDate);
-			//for User password equals 45 days
+			//for User password equals 35 days
 			if(passwordwarningDayLimit==passwordDayLimit){
 				
 				if(lastPasswordCreatedDate.equals(passwordDaysAgo)) {

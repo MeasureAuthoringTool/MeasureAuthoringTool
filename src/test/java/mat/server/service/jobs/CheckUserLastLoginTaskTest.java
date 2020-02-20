@@ -24,15 +24,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CheckUserLastLoginTaskTest extends MatAppContextTest {
     @MockBean
-    UserService userService;
+    protected UserService userService;
     @MockBean
-    JavaMailSender mailSender;
+    protected JavaMailSender mailSender;
     @MockBean
     private UserDAO userDAO;
     @MockBean

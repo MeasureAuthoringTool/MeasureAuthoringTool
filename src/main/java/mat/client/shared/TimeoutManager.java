@@ -13,7 +13,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.ImageResources;
 import mat.client.Mat;
 import mat.client.event.TimedOutEvent;
@@ -23,44 +22,44 @@ import mat.shared.ConstantMessages;
  * The Class TimeoutManager.
  */
 class TimeoutManager {
-	
+
 	/** The Constant WARNING_TIME. */
-	private static final int WARNING_TIME = 25 * 60 * 1000;
-	
+	private static final int WARNING_TIME = 10 * 60 * 1000;
+
 	/** The Constant WARNING_INTERVAL. */
 	private static final int WARNING_INTERVAL = 5 * 60 * 1000;
-	
+
 	/** The Constant REPEATED_WARNING_INTERVAL. */
 	private static final int REPEATED_WARNING_INTERVAL = 1 * 60 * 1000;
-	
+
 	/** The Constant TIMEOUTTHRESHOLD_TIME. */
 	private static final int TIMEOUTTHRESHOLD_TIME = WARNING_TIME + WARNING_INTERVAL;
-	
+
 	/** The alert icon. */
 	private Image alertIcon = new Image(ImageResources.INSTANCE.msg_error());
-	
+
 	/** The Constant UMLS_TIME_OUT. */
 	private static final int UMLS_TIME_OUT = 8 * 60 * 60 * 1000;//5 *  60 * 1000;//
-	
+
 	/** The warning banner widget. */
 	private static HTML warningBannerWidget ;
-	
-	
+
+
 	/** The last activity time. */
 	private long lastActivityTime = 0;
-	
+
 	/** The last umls sign in. */
 	private long lastUMLSSignIn =0;
 	//US 439
 	/** The active module. */
 	private volatile String activeModule = null;
-	
+
 	/** The time out panel. */
 	private static Panel timeOutPanel;
 
 	/** The actual time out time. */
 	private  long actualTimeOutTime;
-	
+
 	/** The formatted time. */
 	private  String formattedTime;
 
@@ -90,15 +89,15 @@ class TimeoutManager {
 			@Override
 			public void run() {
 				Date today = new Date();
-				if((today.getTime() - lastUMLSSignIn) >= UMLS_TIME_OUT){ 
+				if((today.getTime() - lastUMLSSignIn) >= UMLS_TIME_OUT){
 					Mat.hideUMLSActive(true);
 					MatContext.get().setUMLSLoggedIn(false);
 					invalidateVSacSession();
 				}
 			}
-	    	
+
 	    };
-	  
+
 	    /**
 		 * Invalidate v sac session.
 		 */
@@ -107,34 +106,34 @@ class TimeoutManager {
 
 				@Override
 				public void onFailure(Throwable caught) {
-					
+
 				}
 
 				@Override
 				public void onSuccess(Void result) {
-					
+
 				}
 			});
-			
-		} 
-	    
+
+		}
+
 	/*
-	 * TimeoutWarning timer is scheduled to run at the 25th minute from the last activity Time. 
-	 * TimeOutWarning timer will show warning only if the 
+	 * TimeoutWarning timer is scheduled to run at the 25th minute from the last activity Time.
+	 * TimeOutWarning timer will show warning only if the
 	 * currentTime - lastActivityTime < 30 minutes. else, fires logOff event.
 	 */
 	//US 153
 	/** The timeout warning. */
 	private Timer timeoutWarning = new Timer() {
-		public void run() {			
+		public void run() {
 			    Date today = new Date();
-			    if((today.getTime() - lastActivityTime) < TIMEOUTTHRESHOLD_TIME){//show warning message only if the lastActivityTime is within 30 minutes.		
+			    if((today.getTime() - lastActivityTime) < TIMEOUTTHRESHOLD_TIME){//show warning message only if the lastActivityTime is within 30 minutes.
 		    		Date actualTimeOutDate = new Date(today.getTime()+WARNING_INTERVAL); //Timeout time = warningTime + 5 Minutes.
 				    actualTimeOutTime = actualTimeOutDate.getTime();
-				    formattedTime = DateTimeFormat.getMediumDateTimeFormat().format(actualTimeOutDate);		    
+				    formattedTime = DateTimeFormat.getMediumDateTimeFormat().format(actualTimeOutDate);
 					String msg ="Running TimeOutTimer, ActualTimeOut time is :-" + formattedTime;
 					MatContext.get().recordTransactionEvent(null, null, "TIMEOUT_WARNING_EVENT", msg, ConstantMessages.DB_LOG);
-					    
+
 				    //Make save operation , release Lock, and Forward to Measure Library while the warning is about to display.
 				    MatContext.get().getEventBus().fireEvent(new TimedOutEvent());
 				    showTimeOutWarning();
@@ -144,16 +143,16 @@ class TimeoutManager {
 			   }
 		}
 	};
-	
-	
-	
+
+
+
 	/*
 	 * This startActivityTimer will be called everytime the user interacts within the app.
-	 * 
+	 *
 	 */
 	/**
 	 * Start activity timers.
-	 * 
+	 *
 	 * @param module
 	 *            the module
 	 */
@@ -165,12 +164,12 @@ class TimeoutManager {
 		timeoutWarning.cancel();
 		repeatedWarning.cancel();
 		//US 439. Warning message only required for Mat module not Login module.
-		if(activeModule != null && activeModule.equalsIgnoreCase(ConstantMessages.MAT_MODULE)){	
+		if(activeModule != null && activeModule.equalsIgnoreCase(ConstantMessages.MAT_MODULE)){
 			if(timeoutWarning != null)
 				timeoutWarning.schedule(WARNING_TIME);
 		}
 	}
-	
+
 	/**
 	 * Start umls timer.
 	 */
@@ -180,12 +179,12 @@ class TimeoutManager {
 		umlsTicketTimeOut.cancel();
 		umlsTicketTimeOut.schedule(UMLS_TIME_OUT);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Builds the time out warning panel.
-	 * 
+	 *
 	 * @return the panel
 	 */
 	private Panel buildTimeOutWarningPanel(){
@@ -205,7 +204,7 @@ class TimeoutManager {
 		timeOutPanel.setStyleName("alertMessage");
 		return timeOutPanel;
 	}
-	
+
 	/**
 	 * Show time out warning.
 	 */
@@ -218,7 +217,7 @@ class TimeoutManager {
 		   RootPanel.get("timeOutWarning").getElement().focus();
 		   RootPanel.get("timeOutWarning").getElement().setTabIndex(0);
 	}
-	
+
 	/**
 	 * Clear time out warning.
 	 */
@@ -228,10 +227,10 @@ class TimeoutManager {
 			RootPanel.get("timeOutWarning").clear();
 		}
 	}
-	
+
 	/**
 	 * Sets the id.
-	 * 
+	 *
 	 * @param widget
 	 *            the widget
 	 * @param id
@@ -240,7 +239,7 @@ class TimeoutManager {
 	protected void setId(Widget widget, String id) {
 		DOM.setElementAttribute(widget.getElement(), "id", id);
 	}
-	
+
 	/**
 	 * Fire log off event.
 	 */

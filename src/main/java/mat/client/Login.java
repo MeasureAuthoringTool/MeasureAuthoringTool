@@ -18,6 +18,7 @@ import mat.client.login.ForgottenPasswordPresenter;
 import mat.client.login.ForgottenPasswordView;
 import mat.client.login.LoginPresenter;
 import mat.client.login.LoginView;
+import mat.client.login.SecurityBannerModal;
 import mat.client.login.TempPwdLoginPresenter;
 import mat.client.login.TempPwdView;
 import mat.client.shared.MatContext;
@@ -35,8 +36,7 @@ public class Login extends MainLayout implements EntryPoint {
 	
 	private ForgottenLoginIdPresenter forgottenLoginIdNewPresenter;
 	private ForgottenPasswordPresenter forgottenPwdPresenter;
-	
-	
+
 	private LoginPresenter loginNewPresenter;
 	
 	private FirstLoginPresenter securityQuestionsPresenter;
@@ -110,7 +110,16 @@ public class Login extends MainLayout implements EntryPoint {
 			
 			@Override
 			public void onSuccessfulLogin(final SuccessfulLoginEvent event) {
-				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
+				SecurityBannerModal securityBanner = new SecurityBannerModal();
+				securityBanner.show();
+				securityBanner.getAcceptButton().addClickHandler(e -> {
+					securityBanner.hide();
+					MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
+				});
+				securityBanner.getDeclineButton().addClickHandler(e -> {
+					securityBanner.hide();
+					callSignOut();
+				});
 			}
 		});
 		

@@ -118,9 +118,9 @@ class TimeoutManager {
 		}
 
 	/*
-	 * TimeoutWarning timer is scheduled to run at the 25th minute from the last activity Time.
+	 * TimeoutWarning timer is scheduled to run at the 10th minute from the last activity Time.
 	 * TimeOutWarning timer will show warning only if the
-	 * currentTime - lastActivityTime < 30 minutes. else, fires logOff event.
+	 * currentTime - lastActivityTime < 15 minutes. else, fires logOff event.
 	 */
 	//US 153
 	/** The timeout warning. */

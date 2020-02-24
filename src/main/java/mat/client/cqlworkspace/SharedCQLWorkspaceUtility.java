@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.google.gwt.user.client.Window;
 import org.gwtbootstrap3.client.ui.ListBox;
 
 import com.google.gwt.user.client.ui.HTML;
@@ -37,8 +38,11 @@ public class SharedCQLWorkspaceUtility {
 
 	public static void displayAnnotations(SaveUpdateCQLResult result, AceEditor aceEditor) {
 		aceEditor.clearAnnotations();
-		result.getCqlErrors().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor));
-		result.getCqlWarnings().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor));
+		if(!result.getCqlErrors().isEmpty()) {
+			result.getCqlErrors().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor));
+		} else if(!result.getCqlWarnings().isEmpty()) {
+			result.getCqlWarnings().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor));
+		}
 		aceEditor.setAnnotations();
 	}
 	

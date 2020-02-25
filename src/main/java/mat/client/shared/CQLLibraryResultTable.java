@@ -89,7 +89,7 @@ public class CQLLibraryResultTable {
 
             if (BrowserEvents.CLICK.equalsIgnoreCase(eventType)) {
                 long duration = System.currentTimeMillis() - lastClickTime.get();
-                if (isDoubleClick(obj,duration,selectionModel)) {
+                if (isDoubleClick(obj,duration)) {
                     SelectionEvent.fire(fireEvent, obj);
                 } else {
                     if (obj.isSelected()) {
@@ -115,7 +115,7 @@ public class CQLLibraryResultTable {
         model.setSelected(obj,isSelected);
     }
 
-    private boolean isDoubleClick(CQLLibraryDataSetObject obj,long clickDuration,MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+    private boolean isDoubleClick(CQLLibraryDataSetObject obj,long clickDuration) {
         return lastRowCLicked != null &&
                 lastRowCLicked.getId() != null &&
                 lastRowCLicked.getId().equals(obj.getId()) && //same row clicked twice.

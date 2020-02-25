@@ -1410,8 +1410,6 @@ public class CQLServiceImpl implements CQLService {
         JSONObject jsonObject;
         String parentLibraryName = cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed();
 
-
-
         JSONObject cqlValidationResponseJson = new JSONObject(cqlValidationResponse);
         if(cqlValidationResponseJson.has("errorExceptions")) {
             jsonArray = cqlValidationResponseJson.getJSONArray("errorExceptions");

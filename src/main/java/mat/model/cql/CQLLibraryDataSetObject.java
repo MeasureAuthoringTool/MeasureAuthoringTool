@@ -38,19 +38,9 @@ public class CQLLibraryDataSetObject implements IsSerializable, BaseModel {
     private boolean isVersionable;
     private boolean isDeletable;
     private String libraryModelType;
-    private long lastClick;
     private boolean isFhirEditorViewable;
-    private int clickCount = 0;
 
     private List<CQLError> cqlErrors = new ArrayList<>();
-
-    public long getLastClick() {
-        return lastClick;
-    }
-
-    public void setLastClick(long lastClick) {
-        this.lastClick = lastClick;
-    }
 
     public boolean isLocked() {
         return isLocked;
@@ -324,17 +314,4 @@ public class CQLLibraryDataSetObject implements IsSerializable, BaseModel {
     public boolean isFhirEditOrViewable() {
         return this.isFhirEditorViewable;
     }
-
-    public int getClickCount() {
-        return clickCount;
-    }
-
-    public int setClickCount(int val) {
-        return clickCount = val;
-    }
-
-    public void incrementClickCount() {
-        this.clickCount++;
-    }
-
 }

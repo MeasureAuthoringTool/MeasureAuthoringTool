@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.google.gwt.user.client.Window;
 import org.gwtbootstrap3.client.ui.ListBox;
 
 import com.google.gwt.user.client.ui.HTML;

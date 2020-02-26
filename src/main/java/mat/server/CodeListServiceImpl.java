@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import mat.DTO.OperatorDTO;
 import mat.DTO.UnitDTO;
@@ -18,14 +19,13 @@ import mat.model.QualityDataSetDTO;
 import mat.server.service.CodeListService;
 import mat.shared.ConstantMessages;
 
-/**
- * The Class CodeListServiceImpl.
- */
 @SuppressWarnings("serial")
 public class CodeListServiceImpl extends SpringRemoteServiceServlet
         implements mat.client.codelist.service.CodeListService {
 
     private static final Log logger = LogFactory.getLog(CodeListServiceImpl.class);
+    @Autowired
+    private CodeListService codeListService;
 
     @Override
     public List<? extends HasListBox> getAllDataTypes() {
@@ -39,7 +39,7 @@ public class CodeListServiceImpl extends SpringRemoteServiceServlet
     }
 
     public CodeListService getCodeListService() {
-        return (CodeListService) context.getBean("codeListService");
+        return codeListService;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class CodeListServiceImpl extends SpringRemoteServiceServlet
     public List<QualityDataSetDTO> getQDSElements(String measureId,
                                                   String version) {
         List<QualityDataSetDTO> qdsElements = getCodeListService().getQDSElements(measureId, version);
-        List<QualityDataSetDTO> filteredQDSElements = new ArrayList<QualityDataSetDTO>();
+        List<QualityDataSetDTO> filteredQDSElements = new ArrayList<>();
         for (QualityDataSetDTO dataSet : qdsElements) {
             if ((dataSet.getOid() != null) && !dataSet.getOid().equals(ConstantMessages.GENDER_OID)
                     && !dataSet.getOid().equals(ConstantMessages.RACE_OID) && !dataSet.getOid().equals(ConstantMessages.ETHNICITY_OID)
@@ -68,7 +68,7 @@ public class CodeListServiceImpl extends SpringRemoteServiceServlet
             }
 
         }
-        Collections.sort(filteredQDSElements, new Comparator<QualityDataSetDTO>() {
+        Collections.sort(filteredQDSElements, new Comparator<>() {
             @Override
             public int compare(QualityDataSetDTO o1, QualityDataSetDTO o2) {
                 return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());

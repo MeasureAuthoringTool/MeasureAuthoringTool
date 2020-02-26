@@ -47,7 +47,7 @@ in the VM options text box, add the following and edit for your configuration.
 -DBONNIE_URI=https://bonnieURL.org 
 -DALGORITHM=EncyptionAlgorithm 
 -DPASSWORDKEY=PasswordKey
--DFHIR_ORCH_MEASURE_SRVC_URL=http://localhost:9080/orchestration/measure
+-DFHIR_SRVC_URL=https://matdev.semanticbits.com/mat-fhir-services/
 -DQDM_QICORE_MAPPING_SERVICES_URL=https://matdev.semanticbits.com/qdm-qicore-mapping-services
 ```
 

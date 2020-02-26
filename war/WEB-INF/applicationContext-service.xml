@@ -26,9 +26,6 @@
     <bean id="securityQuestionsService" class="mat.server.service.impl.SecurityQuestionsServiceImpl">
     </bean>
 
-    <bean id="codeListService" class="mat.server.service.impl.ManageCodeListServiceImpl">
-    </bean>
-
     <bean id="hibernateuserService" class="mat.server.hibernate.HibernateUserDetailService">
     </bean>
 

@@ -25,8 +25,8 @@ public class FhirOrchestrationGatewayService {
     private static final String SIMPLE_XML_SOURCE = "SIMPLE";
     private static final String MEASURE_XML_SOURCE = "MEASURE";
 
-    @Value("${FHIR_ORCH_MEASURE_SRVC_URL:http://localhost:9080/orchestration/measure}")
-    private String fhirOrchestrationUrl;
+    @Value("${FHIR_SRVC_URL:http://localhost:9080/}orchestration/measure")
+    private String fhirMeasureOrchestrationUrl;
     private RestTemplate restTemplate;
 
     public FhirOrchestrationGatewayService(RestTemplate restTemplate) {
@@ -56,7 +56,7 @@ public class FhirOrchestrationGatewayService {
     }
 
     private ConversionResultDto callRemoteService(String measureId, ConversionType conversionType, boolean draft) {
-        String executeQuery = fhirOrchestrationUrl + FHIR_ORCH_MEASURE_SRVC_PARAMS;
+        String executeQuery = fhirMeasureOrchestrationUrl + FHIR_ORCH_MEASURE_SRVC_PARAMS;
         Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("id", measureId);
         uriVariables.put("conversionType", conversionType.name());

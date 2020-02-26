@@ -92,10 +92,6 @@ public class ExportServlet extends HttpServlet {
     private static final String CQL_NO_ERRORS_WARNINGS_MESSAGE = "You are viewing CQL with no errors or warnings.";
     private static final String MEASURE_EXPORTED = "Measure Exported";
 
-    public MeasureAuditService getAuditService() {
-        return (MeasureAuditService) context.getBean("measureAuditService");
-    }
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
@@ -749,32 +745,21 @@ public class ExportServlet extends HttpServlet {
             csvStringBuilder.append(cqlLibraryOwnerReport.getOrganization() + "" + "\"");
             csvStringBuilder.append("\r\n");
         }
-
         return csvStringBuilder.toString();
     }
 
     private SimpleEMeasureService getService() {
-        return (SimpleEMeasureService) context.getBean("eMeasureService");
+        return context.getBean(SimpleEMeasureService.class);
     }
 
     private UserService getUserService() {
         return context.getBean(UserService.class);
     }
 
-    /**
-     * Gets the measure package service.
-     *
-     * @return the measure package service
-     */
     private MeasurePackageService getMeasurePackageService() {
         return context.getBean(MeasurePackageService.class);
     }
 
-    /**
-     * Gets the measure library service.
-     *
-     * @return the measure library service
-     */
     private MeasureLibraryService getMeasureLibraryService() {
         return context.getBean(MeasureLibraryService.class);
     }
@@ -788,6 +773,11 @@ public class ExportServlet extends HttpServlet {
     }
 
     private MeasureDAO getMeasureDAO() {
-        return ((MeasureDAO) context.getBean("measureDAO"));
+        return context.getBean(MeasureDAO.class);
     }
+
+    public MeasureAuditService getAuditService() {
+        return context.getBean(MeasureAuditService.class);
+    }
+
 }

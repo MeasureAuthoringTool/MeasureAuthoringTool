@@ -16,7 +16,7 @@ import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
 
 import mat.DTO.CodeSystemDTO;
 import mat.DTO.DataTypeDTO;
@@ -51,6 +51,7 @@ import mat.server.service.MeasureLibraryService;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 
+@Service
 public class ManageCodeListServiceImpl implements CodeListService {
 
     private static final String QDM_TAG = "<qdm";
@@ -58,8 +59,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
     private static final String QUALITY_DATA_MODEL_MAPPING = "QualityDataModelMapping.xml";
     private static final String VALUESET_MAPPING = "ValueSetsMapping.xml";
 
-    @Autowired
-    private ApplicationContext context;
     private static final int ASCII_START = 65;
     private static final int ASCII_END = 90;
     private static final Log logger = LogFactory.getLog(ManageCodeListServiceImpl.class);
@@ -87,6 +86,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
     private UnitTypeDAO unitTypeDAO;
     @Autowired
     private UnitTypeMatrixDAO unitTypeMatrixDAO;
+    @Autowired
+    private MeasureLibraryService measureLibraryService;
 
     private String addAppliedQDMInMeasureXML(String mapping, String startTag, QualityDataModelWrapper qualityDataSetDTOWrapper) {
         logger.info("addAppliedQDMInMeasureXML Method Call Start.");
@@ -106,12 +107,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
         try {
             final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
             stream = xmlMarshalUtil.convertObjectToXML(mapping, qualityDataSetDTOWrapper);
-
         } catch (MarshalException | ValidationException | IOException | MappingException e) {
-            logger.info("Exception in converting XML to object: " + e.getMessage());
-            e.printStackTrace();
+            logger.info("Exception in converting XML to object: " + e.getMessage(), e);
         }
-
         logger.info("Exiting ManageCodeListServiceImpl.createXml()");
         return stream;
     }
@@ -499,7 +497,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
             }
             int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
                     matValueSet, qualityDataSetDTOs);
-            if (occurrenceCount < ASCII_END) { // Alphabet ASCII Integer Values.
+            if (occurrenceCount < ASCII_END) {
+                // Alphabet ASCII Integer Values.
                 char occTxt = (char) occurrenceCount;
                 qds.setOccurrenceText("Occurrence" + " " + occTxt);
                 wrapper.getQualityDataDTO().add(qds);
@@ -512,7 +511,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
                 result.setXmlString(qdmXMLString);
                 result.setnewXmlString(newqdmXMLString);
             }
-        } else { // Treat as regular QDM
+        } else {
+            // Treat as regular QDM
             if (!isDuplicate(valueSetTransferObject, true, false)) {
                 wrapper.getQualityDataDTO().add(qds);
                 result.setOccurrenceMessage(qds.getOccurrenceText());
@@ -871,7 +871,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
     }
 
     public final MeasureLibraryService getMeasureService() {
-        return context.getBean(MeasureLibraryService.class);
+        return measureLibraryService;
     }
 
     /**

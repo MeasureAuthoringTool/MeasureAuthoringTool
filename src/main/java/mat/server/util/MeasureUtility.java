@@ -4,6 +4,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Node;
 
+import mat.model.clause.ModelType;
 import mat.shared.StringUtility;
 
 public class MeasureUtility {
@@ -112,15 +113,25 @@ public class MeasureUtility {
     }
 
     /**
-     * Method to set latest QDM Version in Draft's or clones of CQL type measure or CQL Stand Alone Library.
+     * Method to set latest model version in Draft's or clones of CQL type measure or CQL Stand Alone Library.
      **/
-    public static void updateLatestQDMVersion(XmlProcessor processor) throws XPathExpressionException {
+    public static void updateModelVersion(XmlProcessor processor, boolean fhir) throws XPathExpressionException {
 
-        Node cqlLibraryQdmVersionNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/usingModelVersion");
+        String model = fhir ? ModelType.FHIR : ModelType.QDM;
+        String version = fhir ? MATPropertiesService.get().getFhirVersion() : MATPropertiesService.get().getQdmVersion();
 
-        if (cqlLibraryQdmVersionNode != null) {
-            cqlLibraryQdmVersionNode.setTextContent(MATPropertiesService.get().getQmdVersion());
+        Node cqlLibraryModelVersionNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/usingModelVersion");
+
+        if (cqlLibraryModelVersionNode != null) {
+            cqlLibraryModelVersionNode.setTextContent(version);
         }
+
+        Node cqlLibraryModelNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/usingModel");
+
+        if (cqlLibraryModelNode != null) {
+            cqlLibraryModelNode.setTextContent(model);
+        }
+
     }
 
 }

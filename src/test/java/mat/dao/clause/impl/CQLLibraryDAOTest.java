@@ -123,7 +123,7 @@ public class CQLLibraryDAOTest {
 
     @Test
     public void testSearchForIncludes() {
-        MATPropertiesService.get().setQmdVersion("5.5");
+        MATPropertiesService.get().setQdmVersion("5.5");
         List<CQLLibrary> cqlLibs = cqlLibraryDAO.searchForIncludes("aadsddwwd", "alzlib1",
                 "", "QDM");
         Assertions.assertNotNull(cqlLibs);
@@ -134,7 +134,7 @@ public class CQLLibraryDAOTest {
 
     @Test
     public void testSearchForIncludesWhenModelTypeNull() {
-        MATPropertiesService.get().setQmdVersion("5.5");
+        MATPropertiesService.get().setQdmVersion("5.5");
         List<CQLLibrary> cqlLibs = cqlLibraryDAO.searchForIncludes("wqqwdsddwwd", "testlib",
                 "", null);
         Assertions.assertNotNull(cqlLibs);

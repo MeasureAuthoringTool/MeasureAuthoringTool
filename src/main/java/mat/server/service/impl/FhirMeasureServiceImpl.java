@@ -19,6 +19,7 @@ import mat.model.clause.Measure;
 import mat.server.service.FhirMeasureService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
+import mat.shared.SaveUpdateCQLResult;
 
 @Service
 public class FhirMeasureServiceImpl implements FhirMeasureService {
@@ -52,29 +53,24 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         fhirConvertResultResponse.setSourceMeasure(sourceMeasure);
         measureLibraryService.recordRecentMeasureActivity(sourceMeasure.getId(), loggedinUserId);
 
-        FhirValidationStatus sourceValidationStatus = validateSourceMeasureForFhirConversion(sourceMeasure);
+        ConversionResultDto conversionResult = validateSourceMeasureForFhirConversion(sourceMeasure);
+        fhirConvertResultResponse.setValidationStatus(createValidationStatus(conversionResult));
 
-        if (!sourceValidationStatus.isValidationPassed()) {
-            fhirConvertResultResponse.setValidationStatus(sourceValidationStatus);
-        } else {
-            ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
-            dropFhirMeasureIfExists(sourceMeasureDetails);
-            ManageMeasureSearchModel.Result fhirMeasure = cloneSourceToFhir(sourceMeasureDetails);
-            fhirConvertResultResponse.setFhirMeasure(fhirMeasure);
+        ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
+        dropFhirMeasureIfExists(sourceMeasureDetails);
+        ManageMeasureSearchModel.Result fhirMeasure = cloneSourceToFhir(sourceMeasureDetails);
+        fhirConvertResultResponse.setFhirMeasure(fhirMeasure);
+        String fhirCql = conversionResult.getLibraryConversionResults().stream().findFirst().get().getCqlConversionResult().getFhirCql();
+        SaveUpdateCQLResult cqlResult = measureLibraryService.saveCQLFile(fhirMeasure.getId(), fhirCql);
+        fhirConvertResultResponse.setCqlSaved(cqlResult.isSuccess());
 
-            // We convert source measure instead of fhir measure, because we want to convert a versioned measure under the original measure id (SOURCE_MEASURE_ID)
-            // If we use a fhir measure id, then it will be abandoned on FHIR server end, when re-converted
-            ConversionResultDto fhirConvertResult = fhirOrchestrationGatewayService.convert(sourceMeasure.getId(), sourceMeasure.isDraft());
-            fhirConvertResultResponse.setValidationStatus(createValidationStatus(fhirConvertResult));
-            measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
-        }
+        measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
 
         return fhirConvertResultResponse;
     }
 
-    private FhirValidationStatus validateSourceMeasureForFhirConversion(ManageMeasureSearchModel.Result sourceMeasure) {
-        ConversionResultDto sourceValidationResult = fhirOrchestrationGatewayService.validate(sourceMeasure.getId(), sourceMeasure.isDraft());
-        return createValidationStatus(sourceValidationResult);
+    private ConversionResultDto validateSourceMeasureForFhirConversion(ManageMeasureSearchModel.Result sourceMeasure) {
+        return fhirOrchestrationGatewayService.validate(sourceMeasure.getId(), sourceMeasure.isDraft());
     }
 
     private ManageMeasureDetailModel loadMeasureAsDetailsForCloning(ManageMeasureSearchModel.Result sourceMeasure) {

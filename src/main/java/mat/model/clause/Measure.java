@@ -76,6 +76,8 @@ public class Measure {
 
     private String qdmVersion;
 
+    private String fhirVersion;
+
     private Boolean isCompositeMeasure = false;
 
     private List<ComponentMeasure> componentMeasures;
@@ -98,9 +100,9 @@ public class Measure {
 
     private String cqlLibraryName;
 
-    private String fhirMeasureId;
+    private Measure fhirMeasure;
 
-    private String sourceMeasureId;
+    private Measure sourceMeasure;
 
     @Column(name = "VALUE_SET_DATE", length = 19)
     public Timestamp getValueSetDate() {
@@ -179,6 +181,21 @@ public class Measure {
 
     public void setMeasureModel(String measureModel) {
         this.measureModel = measureModel;
+    }
+
+    @Transient
+    public boolean isQdmMeasure() {
+        return ModelType.isQdm(getMeasureModel());
+    }
+
+    @Transient
+    public boolean isFhirMeasure() {
+        return ModelType.isFhir(getMeasureModel());
+    }
+
+    @Transient
+    public String getModelVersion() {
+        return isFhirMeasure() ? getFhirVersion() : getQdmVersion();
     }
 
     @Transient
@@ -376,6 +393,15 @@ public class Measure {
         this.qdmVersion = qdmVersion;
     }
 
+    @Column(name = "FHIR_VERSION", length = 45)
+    public String getFhirVersion() {
+        return fhirVersion;
+    }
+
+    public void setFhirVersion(String fhirVersion) {
+        this.fhirVersion = fhirVersion;
+    }
+
     @Column(name = "IS_COMPOSITE_MEASURE")
     public Boolean getIsCompositeMeasure() {
         return isCompositeMeasure;
@@ -479,21 +505,38 @@ public class Measure {
         this.cqlLibraryName = cqlLibraryName;
     }
 
-    @Column(name = "FHIR_MEASURE_ID")
+
+    @Transient
     public String getFhirMeasureId() {
-        return fhirMeasureId;
+        return getFhirMeasure() == null ? null : getFhirMeasure().getId();
     }
 
-    public void setFhirMeasureId(String fhirMeasureId) {
-        this.fhirMeasureId = fhirMeasureId;
-    }
-
-    @Column(name = "SOURCE_MEASURE_ID")
+    @Transient
     public String getSourceMeasureId() {
-        return sourceMeasureId;
+        return getSourceMeasureId() == null ? null : getSourceMeasure().getId();
     }
 
-    public void setSourceMeasureId(String convertedFromMeasureId) {
-        this.sourceMeasureId = convertedFromMeasureId;
+    @OneToOne(
+            mappedBy = "sourceMeasure",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    public Measure getFhirMeasure() {
+        return fhirMeasure;
+    }
+
+    public void setFhirMeasure(Measure fhirMeasure) {
+        this.fhirMeasure = fhirMeasure;
+    }
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SOURCE_MEASURE_ID")
+    public Measure getSourceMeasure() {
+        return sourceMeasure;
+    }
+
+    public void setSourceMeasure(Measure sourceMeasure) {
+        this.sourceMeasure = sourceMeasure;
     }
 }

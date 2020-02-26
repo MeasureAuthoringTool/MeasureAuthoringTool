@@ -40,6 +40,7 @@ import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -115,6 +116,7 @@ import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureTypeAssociation;
 import mat.model.clause.MeasureXML;
+import mat.model.clause.ModelType;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
@@ -148,7 +150,6 @@ import mat.server.util.ExportSimpleXML;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.ManageMeasureDetailModelConversions;
 import mat.server.util.MeasureUtility;
-import mat.server.util.QDMUtil;
 import mat.server.util.XmlProcessor;
 import mat.server.validator.measure.CompositeMeasureValidator;
 import mat.shared.CQLValidationResult;
@@ -214,9 +215,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     private static final String QDM_MAPPING = "QualityDataModelMapping.xml";
 
+    @Value("${mat.measure.current.release.version}")
     private String currentReleaseVersion;
-
-    private boolean isMeasureCreated;
 
     private Comparator<QDSAttributes> attributeComparator = (arg0, arg1) -> arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
 
@@ -953,7 +953,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
 
         boolean isClonable = (isOwner || isSuperUser) && !measure.getIsCompositeMeasure() && !(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
-                || measureReleaseVersion.startsWith("v3")) && !MeasureDetailsUtil.FHIR.equals(measure.getMeasureModel());
+                || measureReleaseVersion.startsWith("v3")) && !measure.isFhirMeasure();
 
         detail.setClonable(isClonable);
 
@@ -1118,7 +1118,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
         detail.setMeasureSetId(measure.getMeasureSet().getId());
         detail.setScoringType(measure.getMeasureScoring());
-        detail.setConvertedToFhir(measure.getFhirMeasureId() != null && !measure.getFhirMeasureId().isEmpty());
+        detail.setConvertedToFhir(measure.getFhirMeasure() != null);
         boolean isLocked = measureDAO.isMeasureLocked(measure.getId());
         detail.setMeasureLocked(isLocked);
         boolean isEditable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId());
@@ -1129,7 +1129,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
 
         boolean isClonable = (isOwner || isSuperUser) && !measure.getIsCompositeMeasure() && !(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
-                || measureReleaseVersion.startsWith("v3")) && !MeasureDetailsUtil.FHIR.equals(measure.getMeasureModel());
+                || measureReleaseVersion.startsWith("v3")) && !ModelType.FHIR.equals(measure.getMeasureModel());
 
         detail.setClonable(isClonable);
         detail.setSharable(isOwner || isSuperUser);
@@ -1715,7 +1715,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             Measure pkg = null;
             MeasureSet measureSet = null;
             if (model.getId() != null) {
-                setMeasureCreated(true);
                 // editing an existing measure
                 pkg = measurePackageService.getById(model.getId());
                 model.setVersionNumber(pkg.getVersion());
@@ -1735,10 +1734,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 existingMeasureScoringType = pkg.getMeasureScoring();
             } else {
                 // creating a new measure.
-                setMeasureCreated(false);
                 pkg = new Measure();
                 pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
-                pkg.setQdmVersion(MATPropertiesService.get().getQmdVersion());
+                pkg.setQdmVersion(MATPropertiesService.get().getQdmVersion());
                 pkg.setCqlLibraryName(model.getCQLLibraryName());
                 model.setRevisionNumber("000");
                 measureSet = new MeasureSet();
@@ -1807,7 +1805,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
     }
 
-    private void removeUnusedLibraries(MeasureXmlModel measureXmlModel, SaveUpdateCQLResult cqlResult, Measure measure) {
+    private void removeUnusedLibraries(MeasureXmlModel measureXmlModel, SaveUpdateCQLResult cqlResult) {
         String measureXml = measureXmlModel.getXml();
         XmlProcessor processor = new XmlProcessor(measureXml);
         try {
@@ -1892,7 +1890,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             return saveMeasureResult;
         }
 
-
         if (shouldPackage) {
             SaveMeasureResult validatePackageResult = validateAndPackage(getMeasure(measureId), false);
             if (!validatePackageResult.isSuccess()) {
@@ -1900,7 +1897,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             }
         }
 
-        removeUnusedLibraries(measureXmlModel, cqlResult, m);
+        removeUnusedLibraries(measureXmlModel, cqlResult);
         removeUnusedComponents(measureXmlModel, m);
 
         return updateVersionAndExports(isMajor, version, m);
@@ -2081,8 +2078,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         String existingMeasureScoringType = "";
         if (message.isEmpty()) {
             if (model.getId() != null) {
-                setMeasureCreated(true);
-
                 existingMeasureScoringType = measure.getMeasureScoring();
 
                 measure.setDescription(model.getMeasureName());
@@ -2102,7 +2097,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 measure.seteMeasureId(model.geteMeasureId());
                 measure.setNqfNumber(model.getNqfId());
                 calculateCalendarYearForMeasure(model, measure);
-
 
                 measurePackageService.save(measure);
             }
@@ -2145,7 +2139,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measure.getId());
         XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 
-        xmlProcessor.checkForScoringType(MATPropertiesService.get().getQmdVersion(), model.getMeasScoring(), model.isPatientBased());
+        xmlProcessor.checkForScoringType(MATPropertiesService.get().getQdmVersion(), model.getMeasScoring(), model.isPatientBased());
         if (!existingMeasureScoringType.equalsIgnoreCase(model.getMeasScoring())) {
             deleteExistingGroupings(xmlProcessor);
             MatContext.get().setCurrentMeasureScoringType(model.getMeasScoring());
@@ -2256,7 +2250,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             XmlProcessor processor = new XmlProcessor("<measure> </measure>");
             processor.transform(processor.getOriginalDoc());
             try {
-
                 XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
                 String cqlLookUpTag = cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)),
                         version, cqlXmlProcessor, "//measure");
@@ -4589,24 +4582,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         return null;
     }
 
-    /**
-     * Checks if is measure created.
-     *
-     * @return true, if is measure created
-     */
-    public boolean isMeasureCreated() {
-        return isMeasureCreated;
-    }
-
-    /**
-     * Sets the measure created.
-     *
-     * @param isMeasureCreated the new measure created
-     */
-    public void setMeasureCreated(boolean isMeasureCreated) {
-        this.isMeasureCreated = isMeasureCreated;
-    }
-
     @Override
     public final QualityDataModelWrapper getDefaultSDEFromMeasureXml(final String measureId) {
         logger.info("Inside MeasureLibraryServiceImp :: getDefaultSDEFromMeasureXml :: Start");
@@ -4798,9 +4773,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     private void lintAndAddToResult(String measureId, SaveUpdateCQLResult result) {
         Measure measure = measureDAO.find(measureId);
         if (measure.isDraft()) {
+
+            // Linter model should be QDM by default
+            String model = StringUtils.defaultIfBlank(measure.getMeasureModel(), ModelType.QDM);
+            String modelVersion = measure.getModelVersion();
+
             CQLLinterConfig config = new CQLLinterConfig(result.getCqlModel().getLibraryName(),
                     MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
-                    QDMUtil.QDM_MODEL_IDENTIFIER, measure.getQdmVersion());
+                    model, modelVersion);
             config.setPreviousCQLModel(result.getCqlModel());
 
             CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
@@ -4831,14 +4811,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
             MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
-            MatContextServiceUtil.get().setMeasure(true);
             Measure measure = measureDAO.find(measureId);
 
             CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(measureXMLModel.getXml());
 
             CQLLinterConfig config = new CQLLinterConfig(previousModel.getLibraryName(),
                     MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
-                    QDMUtil.QDM_MODEL_IDENTIFIER, measure.getQdmVersion());
+                    ModelType.defaultTypeIfBlank(measure.getMeasureModel()), measure.isFhirMeasure() ? measure.getFhirVersion() : measure.getQdmVersion());
 
             config.setPreviousCQLModel(previousModel);
 
@@ -4888,7 +4867,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
             MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
             if (measureXMLModel != null) {
-                MatContextServiceUtil.get().setMeasure(true);
                 result = getCqlService().saveAndModifyDefinitions(measureXMLModel.getXml(), toBeModifiedObj, currentObj, definitionList, isFormatable);
                 XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
                 if (result.isSuccess()) {
@@ -4899,7 +4877,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 }
             }
         }
-        MatContextServiceUtil.get().setMeasure(false);
         return result;
     }
 
@@ -4949,7 +4926,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
             MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
             if (measureXMLModel != null) {
-                MatContextServiceUtil.get().setMeasure(true);
                 result = getCqlService().saveAndModifyFunctions(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
                         functionsList, isFormatable);
 
@@ -4962,7 +4938,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 }
             }
         }
-        MatContextServiceUtil.get().setMeasure(false);
         return result;
 
     }
@@ -5303,7 +5278,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(valueSetTransferObject.getMeasureId());
 
         if (measureXMLModel != null) {
-            MatContextServiceUtil.get().setMeasure(true);
             result = getCqlService().saveCQLValueset(measureXMLModel.getXml(), valueSetTransferObject);
             if (result.isSuccess()) {
                 XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
@@ -5453,7 +5427,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     @Override
     public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
-        CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException {
+                                                            CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException {
 
         SaveUpdateCQLResult result = null;
         Measure measure = measureDAO.find(measureId);
@@ -5734,10 +5708,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             MeasureSet measureSet = null;
             String existingMeasureScoringType = "";
+            final boolean existingMeasure;
+
             if (model.getId() != null) {
 
-                setMeasureCreated(true);
                 // editing an existing measure
+                existingMeasure = true;
 
                 existingMeasureScoringType = pkg.getMeasureScoring();
                 model.setVersionNumber(pkg.getVersion());
@@ -5757,10 +5733,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             } else {
                 // creating a new measure.
-                setMeasureCreated(false);
+                existingMeasure = false;
                 pkg = new Measure();
                 pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
-                pkg.setQdmVersion(MATPropertiesService.get().getQmdVersion());
+                pkg.setQdmVersion(MATPropertiesService.get().getQdmVersion());
                 pkg.setIsCompositeMeasure(Boolean.TRUE);
                 pkg.setCqlLibraryName(model.getCQLLibraryName());
                 List<MeasureTypeAssociation> measureTypes = new ArrayList<>(1);
@@ -5794,7 +5770,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 getAndValidateValueSetDate(model.getValueSetDate());
                 pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
                 measurePackageService.save(pkg);
-                if (isMeasureCreated()) {
+                if (existingMeasure) {
                     if (null != model.getAppliedComponentMeasures()) {
                         deleteAndSaveComponentMeasures(model);
                     }

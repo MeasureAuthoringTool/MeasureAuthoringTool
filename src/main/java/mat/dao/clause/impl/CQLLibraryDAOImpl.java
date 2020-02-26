@@ -128,7 +128,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
                                                           CriteriaBuilder cb, Root<CQLLibrary> root, String modelType) {
         //common criteria
         List<Predicate> predicates = new ArrayList<>(List.of(
-                cb.equal(root.get(QDM_VERSION), MATPropertiesService.get().getQmdVersion()),
+                cb.equal(root.get(QDM_VERSION), MATPropertiesService.get().getQdmVersion()),
                 cb.equal(root.get(DRAFT), false), cb.notEqual(root.get(LIBRARY_NAME), libraryName),
                 cb.notEqual(root.get(SET_ID), setId)
         ));
@@ -154,7 +154,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
         final CriteriaQuery<CQLLibrary> query = cb.createQuery(CQLLibrary.class);
         final Root<CQLLibrary> root = query.from(CQLLibrary.class);
 
-        query.where(cb.and(cb.equal(root.get("qdmVersion"), MATPropertiesService.get().getQmdVersion())),
+        query.where(cb.and(cb.equal(root.get("qdmVersion"), MATPropertiesService.get().getQdmVersion())),
                 cb.equal(root.get(DRAFT), false), cb.equal(root.get(SET_ID), setId));
 
         query.orderBy(cb.asc(root.get(LIBRARY_NAME)), cb.desc(root.get(VERSION))).distinct(true);
@@ -180,12 +180,6 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 
     }
 
-    /**
-     * @param searchText
-     * @param user
-     * @param filter
-     * @param orderedList
-     */
     public List<CQLLibraryShareDTO> searchForNonAdmin(LibrarySearchModel librarySearchModel, User user) {
 
         final List<CQLLibraryShareDTO> orderedList = new ArrayList<>();
@@ -500,15 +494,6 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 
     }
 
-    /**
-     * This method returns a List of CQLLibraryShareDTO objects which have
-     * userId,firstname,lastname and sharelevel for the given measureId.
-     *
-     * @param id         the measure id
-     * @param startIndex the start index
-     * @param pageSize   the page size
-     * @return the measure share info for measure
-     */
     @Override
     public List<CQLLibraryShareDTO> getLibraryShareInfoForLibrary(String cqlId, String searchText) {
         final int pageSize = Integer.MAX_VALUE;

@@ -43,13 +43,13 @@ import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.util.FeatureFlagConstant;
+import mat.model.clause.ModelType;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.ConstantMessages;
-import mat.shared.model.util.MeasureDetailsUtil;
 
 public class InsertIntoAceEditorDialogBox {
     private static final String INVALID_ITEM_AND_DATATYPE_COMBINATOIN_ERROR = "Invalid value set/code datatype combination.";
@@ -613,7 +613,7 @@ public class InsertIntoAceEditorDialogBox {
     }
 
     private static void showAttributesDialogBox(String modelType) {
-        if (MeasureDetailsUtil.FHIR.equals(modelType) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_DT)) {
+        if (ModelType.FHIR.equals(modelType) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_DT)) {
             InsertFhirAttributeBuilderDialogBox.showAttributesDialogBox(curEditor);
         } else {
             InsertAttributeBuilderDialogBox.showAttributesDialogBox(curEditor, modelType);

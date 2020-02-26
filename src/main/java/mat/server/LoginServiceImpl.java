@@ -59,7 +59,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	
 	private static final String SUCCESS = "SUCCESS";
 	private static final String FAILURE = "FAILURE";
-	static int AUDIT_LOG_USER_ID_LENGTH = 40;
+	private static final int AUDIT_LOG_USER_ID_LENGTH = 40;
 	
 	@Autowired private UserDAO userDAO;
 	@Autowired private UserPasswordHistoryDAO userPasswordHistoryDAO;

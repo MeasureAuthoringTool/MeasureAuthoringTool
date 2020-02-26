@@ -151,7 +151,7 @@ public class ManageMeasureDetailModelConversions {
         measureDetailModel.setId(measure.getId());
         measureDetailModel.setMeasureName(measure.getDescription());
         measureDetailModel.setMeasureModel(measure.getMeasureModel());
-        measureDetailModel.setFhirMeasureId(measure.getFhirMeasureId());
+        measureDetailModel.setFhirMeasureId(measure.getFhirMeasure() == null ? null : measure.getFhirMeasure().getId());
         measureDetailModel.setCQLLibraryName(measure.getCqlLibraryName());
         measureDetailModel.setShortName(measure.getaBBRName());
         measureDetailModel.setVersionNumber(measure.getVersion());

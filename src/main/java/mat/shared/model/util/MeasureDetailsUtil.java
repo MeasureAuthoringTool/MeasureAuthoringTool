@@ -9,6 +9,10 @@ import mat.model.clause.Measure;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
 
+import static mat.model.clause.ModelType.FHIR;
+import static mat.model.clause.ModelType.QDM;
+import static mat.model.clause.ModelType.defaultTypeIfBlank;
+
 /**
  * The Class MeasureDetailsUtil.
  */
@@ -21,14 +25,10 @@ public class MeasureDetailsUtil {
     private static final String RATIO_ABBREVIATION = "RATIO";
     private static final String CONTINUOUS_VARIABLE_ABBREVIATION = "CONTVAR";
     private static final String PROPORTION_ABBREVIATION = "PROPOR";
-    public static final String FHIR = "FHIR";
-    public static final String QDM = "QDM";
-    public static final String PRE_CQL = "Pre-CQL";
     public static final String MAT_ON_FHIR = "MAT_ON_FHIR";
     public static final String FHIR_CQL = "FHIR / CQL";
     public static final String QDM_QDM = "QDM / QDM";
     public static final String QDM_CQL = "QDM / CQL";
-
 
 
     public static final BigDecimal RUN_FHIR_VALIDATION_VERSION = new BigDecimal("5.8");
@@ -99,22 +99,6 @@ public class MeasureDetailsUtil {
 
         }
         return value;
-    }
-
-    public static String defaultTypeIfBlank(String type) {
-        return type == null || type.trim().isEmpty() ? PRE_CQL : type;
-    }
-
-    public static boolean isPreQL(String type) {
-        return PRE_CQL.equalsIgnoreCase(defaultTypeIfBlank(type));
-    }
-
-    public static boolean isFhir(String type) {
-        return FHIR.equalsIgnoreCase(defaultTypeIfBlank(type));
-    }
-
-    public static boolean isQdm(String type) {
-        return QDM.equalsIgnoreCase(defaultTypeIfBlank(type));
     }
 
     public static String getModelTypeDisplayName(String type) {

@@ -1018,7 +1018,7 @@ public class CQLServiceImpl implements CQLService {
         Iterator<CQLIncludeLibrary> libraryIter = cqlModel.getIncludedLibrarys().keySet().iterator();
         while (libraryIter.hasNext()) {
             CQLIncludeLibrary curLibrary = libraryIter.next();
-            if (!cqlModel.getQdmVersion().equals(curLibrary.getQdmVersion())) {
+            if (!cqlModel.getUsingModelVersion().equals(curLibrary.getQdmVersion())) {
                 result.setQDMVersionMatching(false);
             }
         }

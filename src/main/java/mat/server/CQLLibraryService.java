@@ -204,7 +204,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
     @Override
     public void save(CQLLibrary library) {
-        library.setQdmVersion(MATPropertiesService.get().getQmdVersion());
+        library.setQdmVersion(MATPropertiesService.get().getQdmVersion());
         this.cqlLibraryDAO.save(library);
     }
 
@@ -337,13 +337,14 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             newLibraryObject.setSetId(existingLibrary.getSetId());
             newLibraryObject.setOwnerId(existingLibrary.getOwnerId());
             newLibraryObject.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
-            newLibraryObject.setQdmVersion(MATPropertiesService.get().getQmdVersion());
+            newLibraryObject.setQdmVersion(MATPropertiesService.get().getQdmVersion());
+            newLibraryObject.setLibraryModelType(existingLibrary.getLibraryModelType());
             // Update QDM Version to latest QDM Version.
             String versionLibraryXml = getCQLLibraryXml(existingLibrary);
             if (versionLibraryXml != null) {
                 XmlProcessor processor = new XmlProcessor(getCQLLibraryXml(existingLibrary));
                 try {
-                    MeasureUtility.updateLatestQDMVersion(processor);
+                    MeasureUtility.updateModelVersion(processor, existingLibrary.isFhirMeasure());
                     SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(versionLibraryXml);
                     List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
                     processor.removeUnusedDefaultCodes(usedCodeList);
@@ -474,8 +475,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     public void saveCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML) {
-        CQLModel cqlModel = new CQLModel();
-        cqlModel = CQLUtilityClass.getCQLModelFromXML(cqlXML);
+        CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(cqlXML);
         HashMap<String, LibHolderObject> cqlLibNameMap = new HashMap<>();
         Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<CQLIncludeLibrary, CQLModel>();
         CQLUtil.getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
@@ -588,7 +588,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             library.setName(cqlLibraryDataSetObject.getCqlName());
             library.setSetId(UUID.randomUUID().toString());
             library.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
-            library.setQdmVersion(MATPropertiesService.get().getQmdVersion());
+            library.setQdmVersion(MATPropertiesService.get().getQdmVersion());
             library.setRevisionNumber("000");
             library.setVersion("0.0");
             library.setLibraryModelType(cqlLibraryDataSetObject.getLibraryModelType());
@@ -704,7 +704,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                             Node usingModelVersionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
                                     mainXPath + "//" + nodeTextToChange);
                             if (usingModelVersionNode != null) {
-                                usingModelVersionNode.setTextContent(MATPropertiesService.get().getQmdVersion());
+                                usingModelVersionNode.setTextContent(MATPropertiesService.get().getQdmVersion());
                             }
                         }
                     }

@@ -52,6 +52,7 @@ import liquibase.integration.spring.SpringLiquibase;
 import mat.dao.impl.AuditEventListener;
 import mat.dao.impl.AuditInterceptor;
 import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
+import mat.server.util.MATPropertiesService;
 
 @Configuration
 @ComponentScan({"mat.model", "mat.dao", "mat.dao.impl", "mat.model.clause", "mat.server", "mat.hibernate"})
@@ -212,6 +213,11 @@ public class Application extends WebSecurityConfigurerAdapter {
         caches.add(new ConcurrentMapCache("fhirAttributesAndDataTypes"));
         cacheManager.setCaches(caches);
         return cacheManager;
+    }
+
+    @Bean
+    public MATPropertiesService matPropertiesService() {
+        return MATPropertiesService.get();
     }
 
     @Scheduled(fixedRateString = "${mat.cache.expiry.time}")

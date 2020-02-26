@@ -14,10 +14,10 @@
 		<field name="libraryComment" type="java.lang.String">
 			<bind-xml name="libraryComment" node="element" />
 		</field>		
-		<field name="usingName" type="java.lang.String">
+		<field name="usingModel" type="java.lang.String">
 			<bind-xml name="usingModel" node="element" />
 		</field>
-		<field name="qdmVersion" type="java.lang.String">
+		<field name="usingModelVersion" type="java.lang.String">
 			<bind-xml name="usingModelVersion" node="element" />
 		</field>
 

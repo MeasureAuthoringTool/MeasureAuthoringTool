@@ -65,7 +65,7 @@ public class MeasureLibraryServiceImplTest {
         manageMeasureDetailModel.setIsPatientBased(false);
         manageMeasureDetailModel.setCQLLibraryName("Test Library");
         manageMeasureDetailModel.setMeasureSetId("testMeasureSetId1");
-        MATPropertiesService.get().setQmdVersion("5.3");
+        MATPropertiesService.get().setQdmVersion("5.3");
 
         Measure testMeasure = new Measure();
         MeasureSet testMeasureSet = new MeasureSet();

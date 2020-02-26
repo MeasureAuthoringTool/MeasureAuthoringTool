@@ -15,19 +15,17 @@ import mat.dao.clause.MeasureDAO;
 import mat.model.SecurityRole;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
+import mat.model.clause.ModelType;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
-import mat.shared.model.util.MeasureDetailsUtil;
 
 @Service
 public class MatContextServiceUtil implements InitializingBean {
 
     private static BigDecimal QDM_VER_BEFORE_CONVERSION = new BigDecimal("5.5");
     private static BigDecimal MAT_VER_BEFORE_CONVERSION = new BigDecimal("5.8");
-
-    private boolean isMeasure;
 
     private static MatContextServiceUtil instance;
 
@@ -187,16 +185,6 @@ public class MatContextServiceUtil implements InitializingBean {
         return isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId, false);
     }
 
-
-    public boolean isMeasure() {
-        return isMeasure;
-    }
-
-
-    public void setMeasure(boolean isMeasure) {
-        this.isMeasure = isMeasure;
-    }
-
     public boolean isMeasureConvertible(Measure measure) {
         // 1.1 Pre-CQL measures cannot be converted.
         // 1.2 The button is disabled for draft QDM-CQL measures and Fhir Measures
@@ -218,7 +206,7 @@ public class MatContextServiceUtil implements InitializingBean {
     }
 
     private boolean isModelTypeEligibleForConversion(Measure measure) {
-        return MeasureDetailsUtil.isQdm(measure.getMeasureModel());
+        return measure.isQdmMeasure();
     }
 
     private BigDecimal asDecimalVersion(String version) {
@@ -233,10 +221,10 @@ public class MatContextServiceUtil implements InitializingBean {
     }
 
     public boolean isMeasureModelEditable(String modelType) {
-        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || !MeasureDetailsUtil.FHIR.equals(modelType);
+        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || !ModelType.FHIR.equals(modelType);
     }
 
     public boolean isCqlLibraryModelEditable(String modelType) {
-        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || !MeasureDetailsUtil.FHIR.equals(modelType);
+        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || !ModelType.FHIR.equals(modelType);
     }
 }

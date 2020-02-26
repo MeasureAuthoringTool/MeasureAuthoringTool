@@ -24,7 +24,7 @@ public class FhirOrchestrationGatewayServiceTest {
     @Mock
     private RestTemplate restTemplate;
     @InjectMocks
-    private FhirOrchestrationGatewayService service;
+    private FhirOrchestrationGatewayServiceImpl service;
 
     @BeforeEach
     public void setUp() {

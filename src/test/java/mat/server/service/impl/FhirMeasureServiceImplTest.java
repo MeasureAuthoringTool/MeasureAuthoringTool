@@ -19,6 +19,7 @@ import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.shared.MatException;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
+import mat.server.service.FhirOrchestrationGatewayService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
 

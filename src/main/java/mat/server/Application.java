@@ -4,9 +4,10 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 import javax.sql.DataSource;
@@ -208,9 +209,11 @@ public class Application extends WebSecurityConfigurerAdapter {
     @Bean
     public CacheManager cacheManager() {
         final SimpleCacheManager cacheManager = new SimpleCacheManager();
-        List<Cache> caches = new ArrayList<>();
-        caches.add(new ConcurrentMapCache("featureFlags"));
-        caches.add(new ConcurrentMapCache("fhirAttributesAndDataTypes"));
+        List<Cache> caches = Arrays.asList(
+                "featureFlags",
+                "fhirAttributesAndDataTypes")
+                .stream().map(ConcurrentMapCache::new)
+                .collect(Collectors.toList());
         cacheManager.setCaches(caches);
         return cacheManager;
     }
@@ -222,7 +225,8 @@ public class Application extends WebSecurityConfigurerAdapter {
 
     @Scheduled(fixedRateString = "${mat.cache.expiry.time}")
     public void clearCacheSchedule() {
-        cacheManager().getCache("featureFlags").clear();
-        cacheManager().getCache("fhirAttributesAndDataTypes").clear();
+        cacheManager().getCacheNames().stream().forEach(cacheName ->
+                cacheManager().getCache(cacheName).clear()
+        );
     }
 }

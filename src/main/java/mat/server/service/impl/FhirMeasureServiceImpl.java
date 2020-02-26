@@ -19,6 +19,7 @@ import mat.client.shared.MatRuntimeException;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
 import mat.server.service.FhirMeasureService;
+import mat.server.service.FhirOrchestrationGatewayService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
 import mat.shared.SaveUpdateCQLResult;
@@ -110,8 +111,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                     logger.debug("Removing existing fhir measure " + fhirMeasure.getId())
             );
             // removeOrphan = true should remove the records
-            fhirMeasures.clear();
-            measureDAO.saveMeasure(currentSourceMeasure);
+            currentSourceMeasure.getFhirMeasures().clear();
             return null;
         });
     }

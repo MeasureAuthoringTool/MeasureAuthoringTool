@@ -312,7 +312,7 @@ public class Measure {
         this.lockedOutDate = lockedOutDate;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "LOCKED_USER_ID", referencedColumnName = "USER_ID", insertable = false)
     public User getLockedUser() {
         return lockedUser;

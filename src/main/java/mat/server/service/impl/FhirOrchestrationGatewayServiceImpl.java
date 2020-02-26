@@ -16,11 +16,12 @@ import org.springframework.web.client.RestTemplate;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import gov.cms.mat.fhir.rest.dto.ConversionType;
 import mat.client.shared.MatRuntimeException;
+import mat.server.service.FhirOrchestrationGatewayService;
 
 @Service
-public class FhirOrchestrationGatewayService {
+public class FhirOrchestrationGatewayServiceImpl implements FhirOrchestrationGatewayService {
 
-    private static final Log logger = LogFactory.getLog(FhirOrchestrationGatewayService.class);
+    private static final Log logger = LogFactory.getLog(FhirOrchestrationGatewayServiceImpl.class);
     private static final String FHIR_ORCH_MEASURE_SRVC_PARAMS = "?id={id}&&conversionType={conversionType}&xmlSource={xmlSource}";
     private static final String SIMPLE_XML_SOURCE = "SIMPLE";
     private static final String MEASURE_XML_SOURCE = "MEASURE";
@@ -29,28 +30,16 @@ public class FhirOrchestrationGatewayService {
     private String fhirMeasureOrchestrationUrl;
     private RestTemplate restTemplate;
 
-    public FhirOrchestrationGatewayService(RestTemplate restTemplate) {
+    public FhirOrchestrationGatewayServiceImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    /**
-     * Call fhir conversion
-     *
-     * @param measureId - required measure id
-     * @return validation report object
-     * @throws mat.client.shared.MatRuntimeException
-     */
+    @Override
     public ConversionResultDto convert(String measureId, boolean isDraft) {
         return callRemoteService(measureId, ConversionType.CONVERSION, isDraft);
     }
 
-    /**
-     * Call fhir validation.
-     *
-     * @param measureId - required measure id
-     * @return validation report object
-     * @throws mat.client.shared.MatRuntimeException
-     */
+    @Override
     public ConversionResultDto validate(String measureId, boolean isDraft) {
         return callRemoteService(measureId, ConversionType.VALIDATION, isDraft);
     }

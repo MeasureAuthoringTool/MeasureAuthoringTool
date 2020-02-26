@@ -978,7 +978,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setMeasureSetId(dto.getMeasureSetId());
         detail.setDraftable(dto.isDraftable());
         detail.setVersionable(dto.isVersionable());
-        detail.setConvertedToFhir(dto.getFhirMeasureId() != null && !dto.getFhirMeasureId().isEmpty());
+        detail.setConvertedToFhir(dto.isConvertedToFhir());
         return detail;
     }
 
@@ -1118,7 +1118,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
         detail.setMeasureSetId(measure.getMeasureSet().getId());
         detail.setScoringType(measure.getMeasureScoring());
-        detail.setConvertedToFhir(measure.getFhirMeasure() != null);
+        detail.setConvertedToFhir(measure.isConvertedToFhir());
         boolean isLocked = measureDAO.isMeasureLocked(measure.getId());
         detail.setMeasureLocked(isLocked);
         boolean isEditable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId());
@@ -2385,7 +2385,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 detail.setOwnerEmailAddress(user.getEmailAddress());
                 detail.setMeasureSetId(dto.getMeasureSetId());
                 detail.setPatientBased(dto.isPatientBased());
-                detail.setConvertedToFhir(dto.getFhirMeasureId() != null && !dto.getFhirMeasureId().isEmpty());
+                detail.setConvertedToFhir(dto.isConvertedToFhir());
                 detailModelList.add(detail);
             }
         } else {

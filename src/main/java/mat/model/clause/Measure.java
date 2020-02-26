@@ -100,9 +100,11 @@ public class Measure {
 
     private String cqlLibraryName;
 
-    private Measure fhirMeasure;
+    private List<Measure> fhirMeasures;
 
-    private Measure sourceMeasure;
+    // We don't map it as a Measure object, since it can be potentially invalid,
+    // if a source QDM measure is removed after conversion.
+    private String sourceMeasureId;
 
     @Column(name = "VALUE_SET_DATE", length = 19)
     public Timestamp getValueSetDate() {
@@ -507,36 +509,26 @@ public class Measure {
 
 
     @Transient
-    public String getFhirMeasureId() {
-        return getFhirMeasure() == null ? null : getFhirMeasure().getId();
+    public boolean isConvertedToFhir() {
+        return getFhirMeasures() != null && !getFhirMeasures().isEmpty();
     }
 
-    @Transient
-    public String getSourceMeasureId() {
-        return getSourceMeasureId() == null ? null : getSourceMeasure().getId();
-    }
-
-    @OneToOne(
-            mappedBy = "sourceMeasure",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY
-    )
-    public Measure getFhirMeasure() {
-        return fhirMeasure;
-    }
-
-    public void setFhirMeasure(Measure fhirMeasure) {
-        this.fhirMeasure = fhirMeasure;
-    }
-
-    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SOURCE_MEASURE_ID")
-    public Measure getSourceMeasure() {
-        return sourceMeasure;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Measure> getFhirMeasures() {
+        return fhirMeasures;
     }
 
-    public void setSourceMeasure(Measure sourceMeasure) {
-        this.sourceMeasure = sourceMeasure;
+    public void setFhirMeasures(List<Measure> fhirMeasures) {
+        this.fhirMeasures = fhirMeasures;
+    }
+
+    @Column(name = "SOURCE_MEASURE_ID")
+    public String getSourceMeasureId() {
+        return sourceMeasureId;
+    }
+
+    public void setSourceMeasureId(String sourceMeasureId) {
+        this.sourceMeasureId = sourceMeasureId;
     }
 }

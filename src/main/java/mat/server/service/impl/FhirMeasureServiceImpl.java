@@ -1,5 +1,7 @@
 package mat.server.service.impl;
 
+import java.util.Collection;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -53,14 +55,19 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         fhirConvertResultResponse.setSourceMeasure(sourceMeasure);
         measureLibraryService.recordRecentMeasureActivity(sourceMeasure.getId(), loggedinUserId);
 
+        ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
+        dropFhirMeasureIfExists(sourceMeasureDetails);
+
         ConversionResultDto conversionResult = validateSourceMeasureForFhirConversion(sourceMeasure);
         fhirConvertResultResponse.setValidationStatus(createValidationStatus(conversionResult));
 
-        ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
-        dropFhirMeasureIfExists(sourceMeasureDetails);
+        String fhirCql = conversionResult.getLibraryConversionResults().stream().findFirst()
+                .map(libRes -> libRes.getCqlConversionResult())
+                .filter(el -> el != null)
+                .map(el -> el.getFhirCql()).orElseThrow(() -> new MatException("No FHIR CQL returned"));
+
         ManageMeasureSearchModel.Result fhirMeasure = cloneSourceToFhir(sourceMeasureDetails);
         fhirConvertResultResponse.setFhirMeasure(fhirMeasure);
-        String fhirCql = conversionResult.getLibraryConversionResults().stream().findFirst().get().getCqlConversionResult().getFhirCql();
         SaveUpdateCQLResult cqlResult = measureLibraryService.saveCQLFile(fhirMeasure.getId(), fhirCql);
         fhirConvertResultResponse.setCqlSaved(cqlResult.isSuccess());
 
@@ -96,14 +103,17 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
     }
 
     private void dropFhirMeasureIfExists(ManageMeasureDetailModel currentDetails) {
-        if (currentDetails.getFhirMeasureId() != null && !currentDetails.getFhirMeasureId().isEmpty()) {
-            logger.debug("Removing existing fhir measure " + currentDetails.getFhirMeasureId());
-            transactionTemplate.execute(status -> {
-                Measure existingFhirMeasure = measureDAO.find(currentDetails.getFhirMeasureId());
-                measureDAO.delete(existingFhirMeasure);
-                return null;
-            });
-        }
+        transactionTemplate.execute(status -> {
+            Measure currentSourceMeasure = measureDAO.find(currentDetails.getId());
+            Collection<Measure> fhirMeasures = currentSourceMeasure.getFhirMeasures();
+            fhirMeasures.stream().forEach(fhirMeasure ->
+                    logger.debug("Removing existing fhir measure " + fhirMeasure.getId())
+            );
+            // removeOrphan = true should remove the records
+            fhirMeasures.clear();
+            measureDAO.saveMeasure(currentSourceMeasure);
+            return null;
+        });
     }
 
 }

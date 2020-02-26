@@ -108,7 +108,6 @@ public class FhirMeasureServiceImplTest {
         Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyBoolean())).thenReturn(preValidationResult);
 
         ManageMeasureDetailModel currentMeasureDetails = new ManageMeasureDetailModel();
-        currentMeasureDetails.setFhirMeasureId("existingMeasureId");
         Mockito.when(measureLibraryService.getMeasure(sourceMeasure.getId())).thenReturn(currentMeasureDetails);
 
         ConversionResultDto convertResult = new ConversionResultDto();

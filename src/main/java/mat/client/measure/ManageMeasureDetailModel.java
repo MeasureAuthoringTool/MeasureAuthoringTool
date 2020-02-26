@@ -83,7 +83,6 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	private MeasureDetailResult measureDetailResult; 
 	private String qdmVersion;
 	private String formattedVersion;
-	private String fhirMeasureId;
 
 	public ManageMeasureDetailModel() {
 		
@@ -1139,14 +1138,6 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 		this.formattedVersion = formattedVersion;
 	}
 
-	public void setFhirMeasureId(String fhirMeasureId) {
-		this.fhirMeasureId = fhirMeasureId;
-	}
-
-	public String getFhirMeasureId() {
-		return fhirMeasureId;
-	}
-
 	@Override
 	public String toString() {
 		return "ManageMeasureDetailModel{" +
@@ -1218,7 +1209,6 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 				", measureDetailResult=" + measureDetailResult +
 				", qdmVersion='" + qdmVersion + '\'' +
 				", formattedVersion='" + formattedVersion + '\'' +
-				", fhirMeasureId='" + fhirMeasureId + '\'' +
 				'}';
 	}
 }

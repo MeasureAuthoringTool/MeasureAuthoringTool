@@ -280,12 +280,11 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
             clonedXml.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
 
-            logger.info("Final XML after cloning/draft" + clonedXml.getMeasureXMLAsString());
+            logger.info("Final XML after cloning/draft " + clonedXml.getMeasureXMLAsString());
             measureXmlDAO.save(clonedXml);
 
-
             if (creatingFhir) {
-                clonedMeasure.setSourceMeasure(measure);
+                clonedMeasure.setSourceMeasureId(measure.getId());
             }
 
             result.setId(clonedMeasure.getId());

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,16 +36,20 @@ public class FhirOrchestrationGatewayServiceImpl implements FhirOrchestrationGat
     }
 
     @Override
-    public ConversionResultDto convert(String measureId, boolean isDraft) {
-        return callRemoteService(measureId, ConversionType.CONVERSION, isDraft);
+    public ConversionResultDto convert(String measureId, boolean draft) {
+        return callRemoteService(measureId, ConversionType.CONVERSION, draft);
     }
 
+    @Cacheable(value = "ConversionResultDto.validate", condition = "!#draft")
     @Override
-    public ConversionResultDto validate(String measureId, boolean isDraft) {
-        return callRemoteService(measureId, ConversionType.VALIDATION, isDraft);
+    public ConversionResultDto validate(String measureId, boolean draft) {
+        return callRemoteService(measureId, ConversionType.VALIDATION, draft);
     }
 
     private ConversionResultDto callRemoteService(String measureId, ConversionType conversionType, boolean draft) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("callRemoteService " + measureId + " " + conversionType + " draft: " + draft);
+        }
         String executeQuery = fhirMeasureOrchestrationUrl + FHIR_ORCH_MEASURE_SRVC_PARAMS;
         Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("id", measureId);

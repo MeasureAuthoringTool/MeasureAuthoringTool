@@ -65,7 +65,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         String fhirCql = conversionResult.getLibraryConversionResults().stream().findFirst()
                 .map(libRes -> libRes.getCqlConversionResult())
                 .filter(el -> el != null)
-                .map(el -> el.getFhirCql()).orElseThrow(() -> new MatException("No FHIR CQL returned"));
+                .map(el -> el.getFhirCql()).orElseThrow(() -> new MatException("Cannot clone QDM measure. No FHIR CQL returned."));
 
         ManageMeasureSearchModel.Result fhirMeasure = cloneSourceToFhir(sourceMeasureDetails);
         fhirConvertResultResponse.setFhirMeasure(fhirMeasure);

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -77,46 +78,24 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
     private static final Log logger = LogFactory.getLog(MeasureCloningRemoteServiceImpl.class);
 
-    /**
-     * Constant for QDM Expired Name String
-     **/
     private static final String QDM_EXPIRED_NON_DEFAULT = "expired";
-    /**
-     * Constant for QDM Birth date Name String
-     **/
     private static final String QDM_BIRTHDATE_NON_DEFAULT = "birthdate";
-
     private static final String MEASURE_DETAILS = "measureDetails";
-
     private static final String MEASURE_GROUPING = "measureGrouping";
-
     private static final String UU_ID = "uuid";
-
     private static final String OID = "oid";
-
     private static final String DATATYPE = "datatype";
-
     private static final String VERSION = "version";
-
     private static final String SUPPLEMENTAL_DATA_ELEMENTS = "supplementalDataElements";
-
     private static final String RISK_ADJUSTMENT_VARIABLES = "riskAdjustmentVariables";
-
     private static final String VERSION_ZERO = "0.0";
-
     private static final String PATIENT_CHARACTERISTIC_BIRTH_DATE_OID = "21112-8";
-
     private static final String PATIENT_CHARACTERISTIC_EXPIRED_OID = "419099009";
-
     private static final String PATIENT_CHARACTERISTIC_BIRTH_DATE = "Patient Characteristic Birthdate";
-
     private static final String PATIENT_CHARACTERISTIC_EXPIRED = "Patient Characteristic Expired";
-
     private static final String TIMING_ELEMENT = "Timing ELement";
-
     private static final String ORIGINAL_NAME = "originalName";
     private static final String NAME = "name";
-
     private static final String PROGRAM = "program";
     private static final String RELEASE = "release";
     private static final String TYPE = "type";
@@ -175,7 +154,6 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         validateMeasure(currentDetails);
 
         try {
-            ManageMeasureSearchModel.Result result = new ManageMeasureSearchModel.Result();
             Measure measure = measureDAO.find(currentDetails.getId());
 
             if (checkNonCQLCloningValidation(measure, creatingDraft)) {
@@ -184,20 +162,18 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
                 throw e;
             }
 
-            MeasureXML xml = measureXmlDAO.findForMeasure(currentDetails.getId());
+            MeasureXML originalMeasureXml = measureXmlDAO.findForMeasure(currentDetails.getId());
 
             Measure clonedMeasure = new Measure();
-            String originalXml = xml.getMeasureXMLAsString();
+            if (creatingFhir) {
+                clonedMeasure.setSourceMeasureId(measure.getId());
+            }
+            String originalXml = originalMeasureXml.getMeasureXMLAsString();
 
-            InputSource oldXmlstream = new InputSource(new StringReader(originalXml));
-            DocumentBuilderFactory documentBuilderFactory = XMLUtility.getInstance().buildDocumentBuilderFactory();
-            DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document originalDoc = docBuilder.parse(oldXmlstream);
-            Document clonedDoc = originalDoc;
             clonedMeasure.setaBBRName(currentDetails.getShortName());
             clonedMeasure.setDescription(currentDetails.getMeasureName());
-            String measureModel = creatingFhir ? ModelTypeHelper.FHIR : currentDetails.getMeasureModel();
-            clonedMeasure.setMeasureModel(measureModel);
+            String newMeasureModel = creatingFhir ? ModelTypeHelper.FHIR : currentDetails.getMeasureModel();
+            clonedMeasure.setMeasureModel(newMeasureModel);
             clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName());
             if (creatingFhir) {
                 clonedMeasure.setFhirVersion(propertiesService.getFhirVersion());
@@ -207,6 +183,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             clonedMeasure.setReleaseVersion(measure.getReleaseVersion());
             clonedMeasure.setDraft(Boolean.TRUE);
             clonedMeasure.setPatientBased(currentDetails.isPatientBased());
+            clonedMeasure.setReleaseVersion(propertiesService.getCurrentReleaseVersion());
 
             if (CollectionUtils.isNotEmpty(measure.getComponentMeasures()) && measure.getIsCompositeMeasure()) {
                 clonedMeasure.setIsCompositeMeasure(measure.getIsCompositeMeasure());
@@ -214,79 +191,21 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
                 clonedMeasure.setComponentMeasures(cloneAndSetComponentMeasures(measure.getComponentMeasures(), clonedMeasure));
             }
 
-            if (currentDetails.getMeasScoring() != null) {
-                clonedMeasure.setMeasureScoring(currentDetails.getMeasScoring());
-            } else {
-                clonedMeasure.setMeasureScoring(measure.getMeasureScoring());
-            }
+            clonedMeasure.setMeasureScoring(currentDetails.getMeasScoring() != null ? currentDetails.getMeasScoring() : measure.getMeasureScoring());
 
             // when creating a draft of a shared version Measure then the Measure Owner should not change
             if (creatingDraft) {
-                createDraftAndDetermineIfNonCQL(clonedMeasure, currentDetails, measure);
+                createDraftAndDetermineIfNonCQLAndPersist(clonedMeasure, currentDetails, measure);
             } else {
-                cloneMeasure(clonedMeasure, clonedDoc);
+                cloneMeasureAndPersist(clonedMeasure);
             }
 
-            String formattedVersion = MeasureUtility.formatVersionText(clonedMeasure.getRevisionNumber(), clonedMeasure.getVersion());
+            createMeasureXmlAndPersist(currentDetails, creatingDraft, creatingFhir, measure, clonedMeasure, originalXml);
 
             String formattedVersionWithText = MeasureUtility.getVersionTextWithRevisionNumber(clonedMeasure.getVersion(),
                     clonedMeasure.getRevisionNumber(), clonedMeasure.isDraft());
 
-            SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(originalXml);
-            List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
-
-            // Create the measureGrouping tag
-            clearChildNodes(clonedDoc, MEASURE_GROUPING);
-            clearChildNodes(clonedDoc, SUPPLEMENTAL_DATA_ELEMENTS);
-            clearChildNodes(clonedDoc, RISK_ADJUSTMENT_VARIABLES);
-
-            String clonedXMLString = convertDocumenttoString(clonedDoc);
-            MeasureXML clonedXml = new MeasureXML();
-            clonedXml.setMeasureXMLAsByteArray(clonedXMLString);
-            clonedXml.setMeasureId(clonedMeasure.getId());
-
-            XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
-            xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
-
-            removeMeasureDetailsNodes(xmlProcessor);
-
-            if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) || currentDetails.isPatientBased()) {
-
-                String scoringTypeId = clonedMeasure.getMeasureScoring();
-                xmlProcessor.removeNodesBasedOnScoring(scoringTypeId, currentDetails.isPatientBased());
-                xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId, propertiesService.getQdmVersion(), clonedMeasure.getPatientBased());
-                clonedXml.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
-            }
-
-            boolean isUpdatedForCQL = updateForCQLMeasure(xmlProcessor, clonedMeasure, creatingFhir);
-            xmlProcessor.clearValuesetVersionAttribute();
-
-            if (creatingDraft) {
-                updateCQLLookUpVersionOnDraft(xmlProcessor, formattedVersion);
-            } else {
-                resetVersionOnCloning(xmlProcessor);
-            }
-
-            // this means this is a CQL Measure to CQL Measure draft/clone.
-            if (!isUpdatedForCQL) {
-                //create the default 4 CMS supplemental definitions
-                appendSupplementalDefinitions(xmlProcessor, false);
-                // Always set latest model version.
-                MeasureUtility.updateModelVersion(xmlProcessor, creatingFhir);
-            }
-
-            // Update CQL Library Name from the UI field
-            xmlProcessor.updateCQLLibraryName(clonedMeasure.getCqlLibraryName());
-
-            clonedXml.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
-
-            logger.info("Final XML after cloning/draft " + clonedXml.getMeasureXMLAsString());
-            measureXmlDAO.save(clonedXml);
-
-            if (creatingFhir) {
-                clonedMeasure.setSourceMeasureId(measure.getId());
-            }
-
+            ManageMeasureSearchModel.Result result = new ManageMeasureSearchModel.Result();
             result.setId(clonedMeasure.getId());
             result.setName(currentDetails.getMeasureName());
             result.setShortName(currentDetails.getShortName());
@@ -302,6 +221,75 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             logger.error(e.getMessage(), e);
             throw new MatException(e.getMessage());
         }
+    }
+
+    private void createMeasureXmlAndPersist(ManageMeasureDetailModel currentDetails, boolean creatingDraft, boolean creatingFhir, Measure measure, Measure clonedMeasure, String originalXml) throws Exception {
+        Document originalDoc = parseOriginalDocument(originalXml);
+        Document clonedDoc = originalDoc;
+
+        if (!creatingDraft) {
+            clearChildNodes(clonedDoc, MEASURE_DETAILS);
+        }
+
+        String formattedVersion = MeasureUtility.formatVersionText(clonedMeasure.getRevisionNumber(), clonedMeasure.getVersion());
+
+        SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(originalXml);
+        List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
+
+        // Create the measureGrouping tag
+        clearChildNodes(clonedDoc, MEASURE_GROUPING);
+        clearChildNodes(clonedDoc, SUPPLEMENTAL_DATA_ELEMENTS);
+        clearChildNodes(clonedDoc, RISK_ADJUSTMENT_VARIABLES);
+
+        String clonedXMLString = convertDocumenttoString(clonedDoc);
+        MeasureXML clonedXml = new MeasureXML();
+        clonedXml.setMeasureXMLAsByteArray(clonedXMLString);
+        clonedXml.setMeasureId(clonedMeasure.getId());
+
+        XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
+        xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
+
+        removeMeasureDetailsNodes(xmlProcessor);
+
+        if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) || currentDetails.isPatientBased()) {
+
+            String scoringTypeId = clonedMeasure.getMeasureScoring();
+            xmlProcessor.removeNodesBasedOnScoring(scoringTypeId, currentDetails.isPatientBased());
+            xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId, propertiesService.getQdmVersion(), clonedMeasure.getPatientBased());
+            clonedXml.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+        }
+
+        boolean isUpdatedForCQL = updateForCQLMeasure(xmlProcessor, clonedMeasure, creatingFhir);
+        xmlProcessor.clearValuesetVersionAttribute();
+
+        if (creatingDraft) {
+            updateCQLLookUpVersionOnDraft(xmlProcessor, formattedVersion);
+        } else {
+            resetVersionOnCloning(xmlProcessor);
+        }
+
+        // this means this is a CQL Measure to CQL Measure draft/clone.
+        if (!isUpdatedForCQL) {
+            //create the default 4 CMS supplemental definitions
+            appendSupplementalDefinitions(xmlProcessor, false);
+            // Always set latest model version.
+            MeasureUtility.updateModelVersion(xmlProcessor, creatingFhir);
+        }
+
+        // Update CQL Library Name from the UI field
+        xmlProcessor.updateCQLLibraryName(clonedMeasure.getCqlLibraryName());
+
+        clonedXml.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+
+        logger.info("Final XML after cloning/draft " + clonedXml.getMeasureXMLAsString());
+        measureXmlDAO.save(clonedXml);
+    }
+
+    private Document parseOriginalDocument(String originalXml) throws ParserConfigurationException, SAXException, IOException {
+        InputSource oldXmlstream = new InputSource(new StringReader(originalXml));
+        DocumentBuilderFactory documentBuilderFactory = XMLUtility.getInstance().buildDocumentBuilderFactory();
+        DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
+        return docBuilder.parse(oldXmlstream);
     }
 
     private void validateMeasure(ManageMeasureDetailModel currentDetails) throws MatException {
@@ -323,13 +311,9 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
     public void removeMeasureDetailsNodes(XmlProcessor xmlProcessor) {
         try {
-            Node measureDetailNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/measureDetails");
-            if (measureDetailNode != null) {
-                Node parentNode = measureDetailNode.getParentNode();
-                parentNode.removeChild(measureDetailNode);
-            }
+            removeNodeByPath(xmlProcessor, "/measure/measureDetails");
         } catch (XPathExpressionException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -390,7 +374,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         return componentMeasures.stream().map(f -> new ComponentMeasure(clonedMeasure, f.getComponentMeasure(), f.getAlias())).collect(Collectors.toList());
     }
 
-    private boolean createDraftAndDetermineIfNonCQL(Measure clonedMeasure, ManageMeasureDetailModel currentDetails, Measure measure) {
+    private boolean createDraftAndDetermineIfNonCQLAndPersist(Measure clonedMeasure, ManageMeasureDetailModel currentDetails, Measure measure) {
 
         copyMeasureDetails(clonedMeasure, currentDetails);
 
@@ -430,14 +414,12 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         createMeasureDevelopers(clonedMeasure, currentDetails);
     }
 
-    private void cloneMeasure(Measure clonedMeasure, Document clonedDoc) {
-
+    private void cloneMeasureAndPersist(Measure clonedMeasure) {
         // Clear the measureDetails tag
         if (LoggedInUserUtil.getLoggedInUser() != null) {
             User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
             clonedMeasure.setOwner(currentUser);
         }
-        clearChildNodes(clonedDoc, MEASURE_DETAILS);
 
         MeasureSet measureSet = new MeasureSet();
         measureSet.setId(UUID.randomUUID().toString());
@@ -446,7 +428,6 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         clonedMeasure.setVersion(VERSION_ZERO);
         clonedMeasure.setRevisionNumber("000");
         measureDAO.saveMeasure(clonedMeasure);
-
     }
 
     private boolean updateForCQLMeasure(XmlProcessor xmlProcessor, Measure clonedMeasure, boolean creatingFhir)
@@ -456,12 +437,13 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
         if (cqlLookUpNode != null) {
 
-            // Update QDM Version in Measure XMl for Draft and CQL Measures
+            // Update Model Version in Measure XMl for Draft and CQL Measures
             Node modelVersionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/usingModelVersion");
             if (modelVersionNode != null) {
                 modelVersionNode.setTextContent(creatingFhir ? propertiesService.getFhirVersion() : propertiesService.getQdmVersion());
             }
 
+            // Update Model Type
             Node modelNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/usingModel");
             if (modelNode != null) {
                 modelNode.setTextContent(creatingFhir ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM);
@@ -470,25 +452,11 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             return false;
         }
 
-        clonedMeasure.setReleaseVersion(propertiesService.getCurrentReleaseVersion());
+        removeNodeByPath(xmlProcessor, "/measure/populations");
 
-        Node populationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/populations");
-        if (populationsNode != null) {
-            Node populationsParentNode = populationsNode.getParentNode();
-            populationsParentNode.removeChild(populationsNode);
-        }
+        removeNodeByPath(xmlProcessor, "/measure/measureObservations");
 
-        Node measureObservationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/measureObservations");
-        if (measureObservationsNode != null) {
-            Node measureObservationsParentNode = measureObservationsNode.getParentNode();
-            measureObservationsParentNode.removeChild(measureObservationsNode);
-        }
-
-        Node stratificationNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/strata");
-        if (stratificationNode != null) {
-            Node strataParentNode = stratificationNode.getParentNode();
-            strataParentNode.removeChild(stratificationNode);
-        }
+        removeNodeByPath(xmlProcessor, "/measure/strata");
 
         String scoringTypeId = clonedMeasure.getMeasureScoring();
 
@@ -506,7 +474,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             try {
                 xmlProcessor.appendNode(cqlLookUpTag, "cqlLookUp", "/measure");
             } catch (SAXException | IOException e) {
-                logger.debug("Measure lookup failed:" + e.getMessage());
+                logger.debug("Measure lookup failed:" + e.getMessage(), e);
             }
         }
         updateMeasureXmlWithQdm(xmlProcessor);
@@ -515,6 +483,14 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
 
         return true;
+    }
+
+    private void removeNodeByPath(XmlProcessor xmlProcessor, String xPath) throws XPathExpressionException {
+        Node node = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPath);
+        if (node != null) {
+            Node parentNode = node.getParentNode();
+            parentNode.removeChild(node);
+        }
     }
 
     private void updateMeasureXmlWithQdm(XmlProcessor xmlProcessor) throws XPathExpressionException {
@@ -705,7 +681,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
                     appendSupplementalDefinitions(xmlProcessor, true);
                 }
             } catch (XPathExpressionException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
             return;
         }
@@ -765,7 +741,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
                 String defaultDefinitionsXPath = "/measure/cqlLookUp/definitions/definition[@name ='SDE Ethnicity' or @name='SDE Payer' or @name='SDE Race' or @name='SDE Sex']";
                 returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultDefinitionsXPath);
             } catch (XPathExpressionException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
         return returnNodeList;
@@ -813,7 +789,6 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         if (parentNode != null) {
             while (parentNode.hasChildNodes()) {
                 parentNode.removeChild(parentNode.getFirstChild());
-
             }
         }
     }

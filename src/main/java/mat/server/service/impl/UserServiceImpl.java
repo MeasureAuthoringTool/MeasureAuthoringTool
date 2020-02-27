@@ -72,17 +72,17 @@ import mat.shared.PasswordVerifier;
  */
 @Service
 public class UserServiceImpl implements UserService {
-	
+
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(UserServiceImpl.class);
-	
+
 	private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 	private static final String NUMERIC = "1234567890";
 	private static final String EMAIL_PATTERN =
 			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 					+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	private static Random ID = new Random(System.currentTimeMillis());
-	
+
 	@Autowired private JavaMailSender mailSender;
 	@Autowired private SimpleMailMessage templateMessage;
 	@Autowired private UserDAO userDAO;
@@ -92,13 +92,13 @@ public class UserServiceImpl implements UserService {
 	@Autowired private OrganizationDAO organizationDAO;
 	@Autowired private UserPasswordHistoryDAO userPasswordHistoryDAO;
 	@Autowired private Configuration freemarkerConfiguration;
-	
+
 	private String accessibilityUrl;
 	private String termsOfUseUrl;
 	private String privacyPolicyUseUrl;
 	private String userGuideUrl;
 	private final int PASSWORD_HISTORY_SIZE = 5;
-	
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#generateRandomPassword()
 	 */
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
 		char[] specialArr = PasswordVerifier.getAllowedSpecialChars();
 		pwdBuilder.append(specialArr[r.nextInt(specialArr.length)]);
 		for(int i = pwdBuilder.length(); i < PasswordVerifier.getMinLength(); i++) {
-			
+
 			// need to guarantee no 3 consecutive characters
 			char pre1 = pwdBuilder.charAt(pwdBuilder.length()-1);
 			char pre2 = pwdBuilder.charAt(pwdBuilder.length()-2);
@@ -121,15 +121,15 @@ public class UserServiceImpl implements UserService {
 			while((c==pre1) || (c==pre2)){
 				c = ALPHABET.charAt(r.nextInt(ALPHABET.length()));
 			}
-			
+
 			pwdBuilder.append(c);
 		}
 		password = pwdBuilder.toString();
-		
+
 		return password;
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -141,7 +141,7 @@ public class UserServiceImpl implements UserService {
 			UserPassword pwd = new UserPassword();
 			user.setPassword(pwd);
 		}
-		
+
 		//to maintain user password History
 		if(user.getPassword()!=null) {
 			addByUpdateUserPasswordHistory(user,false);
@@ -150,10 +150,10 @@ public class UserServiceImpl implements UserService {
 		userDAO.save(user);
 		notifyUserOfTemporaryPassword(user, newPassword);
 	}
-	
+
 	/**
 	 * Notify user of temporary password.
-	 * 
+	 *
 	 * @param user
 	 *            the user
 	 * @param newPassword
@@ -164,15 +164,15 @@ public class UserServiceImpl implements UserService {
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
 		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT + ServerConstants.getEnvName());
 		msg.setTo(user.getEmailAddress());
-		
+
 		String expiryDateString = getFormattedExpiryDate(new Date(),5);
-		
+
 		//US 440. Re-factored to use template based framework
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 		paramsMap.put(ConstantMessages.PASSWORD, newPassword);
 		paramsMap.put(ConstantMessages.PASSWORD_EXPIRE_DATE, expiryDateString);
 		paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
-		
+
 		logger.info("Sending email to " + user.getEmailAddress());
 		try {
 			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/tempPasswordTemplate.ftl"), paramsMap);
@@ -181,12 +181,12 @@ public class UserServiceImpl implements UserService {
 		} catch(IOException | TemplateException exc) {
 			logger.error(exc);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Gets the formatted expiry date.
-	 * 
+	 *
 	 * @param startDate
 	 *            the start date
 	 * @param willExpireIn
@@ -197,12 +197,12 @@ public class UserServiceImpl implements UserService {
 		Calendar calendar = GregorianCalendar.getInstance();
 		calendar.setTime(startDate);
 		calendar.add(Calendar.DAY_OF_MONTH, willExpireIn);
-		
+
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEEE, MMMMM d, yyyy");
 		String returnDateString  = simpleDateFormat.format(calendar.getTime());
 		return returnDateString;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#setUserPassword(mat.model.User, java.lang.String, boolean)
 	 */
@@ -219,8 +219,8 @@ public class UserServiceImpl implements UserService {
 		user.getPassword().setForgotPwdlockCounter(0);
 		user.getPassword().setPasswordlockCounter(0);
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#requestForgottenPassword(java.lang.String, java.lang.String, java.lang.String, int)
 	 */
@@ -239,7 +239,7 @@ public class UserServiceImpl implements UserService {
 		catch(ObjectNotFoundException exc) {
 			exc.printStackTrace();
 		}
-		
+
 		if(user == null) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 		}
@@ -260,17 +260,17 @@ public class UserServiceImpl implements UserService {
 			userDAO.save(user);
 		}
 		else {
-			
+
 			Date lastSignIn = user.getSignInDate();
 			Date lastSignOut = user.getSignOutDate();
 			Date current = new Date();
-			
+
 			boolean isAlreadySignedIn = MatContext.get().isAlreadySignedIn(lastSignOut, lastSignIn, current);
-			
+
 			if(isAlreadySignedIn){
 				result.setFailureReason(ForgottenPasswordResult.USER_ALREADY_LOGGED_IN);
 			}else{
-				
+
 				//to maitain passwordHistory
 				addByUpdateUserPasswordHistory(user,false);
 				String newPassword = generateRandomPassword();
@@ -284,8 +284,8 @@ public class UserServiceImpl implements UserService {
 		}
 		return result;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#requestForgottenLoginID(java.lang.String)
 	 */
@@ -303,7 +303,7 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		catch(ObjectNotFoundException exc) { logger.info(" requestForgottenLoginID   Exception " + exc.getMessage());}
-		
+
 		if((user == null) && inValidEmail) {
 			result.setFailureReason(ForgottenLoginIDResult.EMAIL_NOT_FOUND_MSG);
 			logger.info(" requestForgottenLoginID   user not found for email ::" +email );
@@ -312,13 +312,13 @@ public class UserServiceImpl implements UserService {
 			logger.info(" requestForgottenLoginID   Invalid email ::" +email );
 		}
 		else {
-			
+
 			Date lastSignIn = user.getSignInDate();
 			Date lastSignOut = user.getSignOutDate();
 			Date current = new Date();
-			
+
 			boolean isAlreadySignedIn = MatContext.get().isAlreadySignedIn(lastSignOut, lastSignIn, current);
-			
+
 			if(isAlreadySignedIn){
 				result.setFailureReason(ForgottenLoginIDResult.USER_ALREADY_LOGGED_IN);
 			}else{
@@ -329,10 +329,10 @@ public class UserServiceImpl implements UserService {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Checks if is valid email.
-	 * 
+	 *
 	 * @param emailAddress
 	 *            the email address
 	 * @return true, if is valid email
@@ -343,12 +343,12 @@ public class UserServiceImpl implements UserService {
 		pattern = Pattern.compile(EMAIL_PATTERN);
 		matcher = pattern.matcher(emailAddress);
 		return matcher.matches();
-		
+
 	}
-	
+
 	/**
 	 * Security question match.
-	 * 
+	 *
 	 * @param user
 	 *            the user
 	 * @param securityQuestion
@@ -369,11 +369,11 @@ public class UserServiceImpl implements UserService {
 		}
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * Send reset password.
-	 * 
+	 *
 	 * @param email
 	 *            the email
 	 * @param newPassword
@@ -399,8 +399,8 @@ public class UserServiceImpl implements UserService {
 			logger.error(exc);
 		}
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#searchForUsersByName(java.lang.String)
 	 */
@@ -411,7 +411,7 @@ public class UserServiceImpl implements UserService {
 		}
 		return userDAO.searchForUsersByName(orgId);
 	}
-	
+
 	@Override
 	public List<User> searchForUsersWithActiveBonnie(String searchTerm){
 		List<User> resultList = new ArrayList<>();
@@ -420,14 +420,14 @@ public class UserServiceImpl implements UserService {
 		}
 		List<User> userList = userDAO.searchForUsersByName(searchTerm);
 		for(User user: userList) {
-			UserBonnieAccessInfo userBonnieAccessInfo = user.getUserBonnieAccessInfo(); 
+			UserBonnieAccessInfo userBonnieAccessInfo = user.getUserBonnieAccessInfo();
 			if(userBonnieAccessInfo != null) {
 				resultList.add(user);
 			}
 		}
 		return resultList;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#searchForUsedOrganizations()
 	 */
@@ -435,7 +435,7 @@ public class UserServiceImpl implements UserService {
 	public HashMap<String, Organization> searchForUsedOrganizations() {
 		return userDAO.searchAllUsedOrganizations();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#searchNonAdminUsers(java.lang.String, int, int)
 	 */
@@ -446,7 +446,7 @@ public class UserServiceImpl implements UserService {
 		}
 		return userDAO.searchNonAdminUsers(orgId, startIndex - 1, numResults);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#findByEmailID(java.lang.String)
 	 */
@@ -454,7 +454,7 @@ public class UserServiceImpl implements UserService {
 	public User findByEmailID(String emailId) {
 		return userDAO.findByEmail(emailId);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#getById(java.lang.String)
 	 */
@@ -462,8 +462,8 @@ public class UserServiceImpl implements UserService {
 	public User getById(String id) {
 		return userDAO.find(id);
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#saveNew(mat.model.User)
 	 */
@@ -474,16 +474,16 @@ public class UserServiceImpl implements UserService {
 			UserPassword pwd = new UserPassword();
 			user.setPassword(pwd);
 		}
-		
+
 		String newPassword = generateRandomPassword();
 		user.setActivationDate(new Date());
 		setUserPassword(user, newPassword, false);
 		user.getPassword().setInitial(true);
 		user.setStatus(statusDAO.find("1"));
-		
+
 		String newLoginId = generateUniqueLoginId(user.getFirstName(), user.getLastName());
 		boolean isUniqueLoginId = false;
-		
+
 		while(!isUniqueLoginId){
 			if(!userDAO.findUniqueLoginId(newLoginId)){
 				isUniqueLoginId = true;
@@ -497,10 +497,10 @@ public class UserServiceImpl implements UserService {
 		notifyUserOfNewAccount(user);
 		notifyUserOfTemporaryPassword(user, newPassword);
 	}
-	
+
 	/**
 	 * Notify user of new account.
-	 * 
+	 *
 	 * @param user
 	 *            the user
 	 */
@@ -520,17 +520,17 @@ public class UserServiceImpl implements UserService {
 			message.setFrom(new InternetAddress("sb-mat-noreply-help@semanticbits.com"));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmailAddress()));
 			message.setContent(multipart);
-			
+
 			mailSender.send(message);
 		} catch (MessagingException | IOException | TemplateException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	/**
 	 * Notify user of forgotten login id.
-	 * 
+	 *
 	 * @param user
 	 *            the user
 	 */
@@ -549,8 +549,8 @@ public class UserServiceImpl implements UserService {
 			logger.error(exc);
 		}
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -558,10 +558,10 @@ public class UserServiceImpl implements UserService {
 		String hashed = hash(salt + password);
 		return hashed;
 	}
-	
+
 	/**
 	 * Hash.
-	 * 
+	 *
 	 * @param s
 	 *            the s
 	 * @return the string
@@ -579,35 +579,35 @@ public class UserServiceImpl implements UserService {
 			throw new RuntimeException(exc);
 		}
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void saveExisting(User user) {
 		userDAO.save(user);
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean isAdminForUser(User admin, User user) {
 		boolean isAdmin = admin.getSecurityRole().getId().equals("1");
 		boolean isSelf = admin.getId().equals(user.getId());
-		
+
 		return isAdmin && !isSelf;
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void deleteUser(String userid) {
 		userDAO.delete(userid);
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -627,8 +627,8 @@ public class UserServiceImpl implements UserService {
 		}
 		return options;
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -648,8 +648,8 @@ public class UserServiceImpl implements UserService {
 		}
 		return options;
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -661,7 +661,7 @@ public class UserServiceImpl implements UserService {
 		} else {
 			user = new User();
 		}
-		
+
 		boolean reactivatingUser = false;
 		if(model.isActive() && (user.getStatus()!= null) && !user.getStatus().getStatusId().equals("1")) {
 			reactivatingUser = true;
@@ -677,17 +677,17 @@ public class UserServiceImpl implements UserService {
 					requestResetLockedPassword(user.getId());
 				}
 				saveExisting(user);
-				
+
 			} else {
 				saveNew(user);
 			}
 			result.setSuccess(true);
 		}
-		
+
 		return result;
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -699,10 +699,10 @@ public class UserServiceImpl implements UserService {
 		footerUrls.add(userGuideUrl);
 		return footerUrls;
 	}
-	
+
 	/**
 	 * Sets the model fields on user.
-	 * 
+	 *
 	 * @param model
 	 *            the model
 	 * @param user
@@ -717,7 +717,7 @@ public class UserServiceImpl implements UserService {
 		user.setPhoneNumber(model.getPhoneNumber());
 		user.setStatus(getStatusObject(model.isActive()));
 		user.setSecurityRole(getRole(model.getRole()));
-		
+
 		if(model.isActive()){
 			Organization organization = organizationDAO.find(Long.parseLong(model.getOrganizationId()));
 			user.setOrganization(organization);
@@ -725,7 +725,7 @@ public class UserServiceImpl implements UserService {
 			Organization organizationRevoked = organizationDAO.find(Long.parseLong("1"));// 1 org id in db has blank organization name and oid.
 			user.setOrganization(organizationRevoked);
 		}
-		
+
 		// if the user was activated, set term date to null and set the activation date
 		if(model.isBeingActivated()) {
 			user.setTerminationDate(null);
@@ -736,10 +736,10 @@ public class UserServiceImpl implements UserService {
 			user.setTerminationDate(new Date());
 		}
 	}
-	
+
 	/**
 	 * Gets the status object.
-	 * 
+	 *
 	 * @param isActive
 	 *            the is active
 	 * @return the status object
@@ -748,10 +748,10 @@ public class UserServiceImpl implements UserService {
 		String id = isActive ? "1" : "2";
 		return statusDAO.find(id);
 	}
-	
+
 	/**
 	 * Gets the role.
-	 * 
+	 *
 	 * @param value
 	 *            the value
 	 * @return the role
@@ -764,36 +764,36 @@ public class UserServiceImpl implements UserService {
 		}
 		return null;
 	}
-	
+
 	//US212
-	/* 
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void setUserSignInDate(String userid) {
 		userDAO.setUserSignInDate(userid);
 	}
-	
+
 	//US212
-	/* 
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void setUserSignOutDate(String userid) {
 		userDAO.setUserSignOutDate(userid);
 	}
-	
+
 	/*
-	 * 
+	 *
 	 * Algorithm to Generated Unique login ID for new User
 	 * First Name - 2 characters
 	 * Last Name - 6 characters
 	 * Four Digit - Random number
-	 * 
+	 *
 	 * */
 	/**
 	 * Generate unique login id.
-	 * 
+	 *
 	 * @param firstName
 	 *            the first name
 	 * @param lastName
@@ -812,88 +812,88 @@ public class UserServiceImpl implements UserService {
 		if(lastName.length()< 6){
 			lastNameLastIndex = lastName.length();
 		}
-		
+
 		generatedId = generatedId.append(firstName.substring(0,firstNameLastIndex)).append(lastName.substring(0, lastNameLastIndex)).append((ID.nextInt(9000) + 1000));
 		return generatedId.toString();
 	}
-	
+
 	/**
 	 * Sets the accessibility url.
-	 * 
+	 *
 	 * @param accessibilityUrl
 	 *            the new accessibility url
 	 */
 	public void setAccessibilityUrl(String accessibilityUrl) {
 		this.accessibilityUrl = accessibilityUrl;
 	}
-	
+
 	/**
 	 * Gets the accessibility url.
-	 * 
+	 *
 	 * @return the accessibility url
 	 */
 	public String getAccessibilityUrl() {
 		return accessibilityUrl;
 	}
-	
+
 	/**
 	 * Sets the terms of use url.
-	 * 
+	 *
 	 * @param termsOfUseUrl
 	 *            the new terms of use url
 	 */
 	public void setTermsOfUseUrl(String termsOfUseUrl) {
 		this.termsOfUseUrl = termsOfUseUrl;
 	}
-	
+
 	/**
 	 * Gets the terms of use url.
-	 * 
+	 *
 	 * @return the terms of use url
 	 */
 	public String getTermsOfUseUrl() {
 		return termsOfUseUrl;
 	}
-	
+
 	/**
 	 * Sets the privacy policy use url.
-	 * 
+	 *
 	 * @param privacyPolicyUseUrl
 	 *            the new privacy policy use url
 	 */
 	public void setPrivacyPolicyUseUrl(String privacyPolicyUseUrl) {
 		this.privacyPolicyUseUrl = privacyPolicyUseUrl;
 	}
-	
+
 	/**
 	 * Gets the privacy policy use url.
-	 * 
+	 *
 	 * @return the privacy policy use url
 	 */
 	public String getPrivacyPolicyUseUrl() {
 		return privacyPolicyUseUrl;
 	}
-	
+
 	/**
 	 * Sets the user guide url.
-	 * 
+	 *
 	 * @param userGuideUrl
 	 *            the new user guide url
 	 */
 	public void setUserGuideUrl(String userGuideUrl) {
 		this.userGuideUrl = userGuideUrl;
 	}
-	
+
 	/**
 	 * Gets the user guide url.
-	 * 
+	 *
 	 * @return the user guide url
 	 */
 	public String getUserGuideUrl() {
 		return userGuideUrl;
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -904,7 +904,7 @@ public class UserServiceImpl implements UserService {
 		auditLog.setUserId(userId);
 		auditLog.setAdditionalInfo("["+email+"]");
 		auditLog.setTime(signoutDate);
-		
+
 		User user = userDAO.find(userId);
 		user.setSignOutDate(signoutDate);
 		user.setSessionId(null);
@@ -918,31 +918,31 @@ public class UserServiceImpl implements UserService {
 			return e.getMessage();
 		}
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String getSecurityQuestion(String userLoginID) {
 		return userDAO.getRandomSecurityQuestion(userLoginID);
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
 	public List<User> getAllNonAdminActiveUsers(){
 		return userDAO.getAllNonAdminActiveUsers();
 	}
-	
+
 	@Override
 	public List<User> getAllUsers(){
 		return userDAO.getAllUsers();
 	}
-	
+
 	/**
 	 * Notify user of account locked.
-	 * 
+	 *
 	 * @param user
 	 *            the user
 	 */
@@ -959,8 +959,8 @@ public class UserServiceImpl implements UserService {
 			logger.error(exc);
 		}
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -971,16 +971,16 @@ public class UserServiceImpl implements UserService {
 		}
 		return false;
 	}
-	
-	/* 
+
+	/*
 	 * {@inheritDoc}
 	 */
 	@Override
 	public List<User> searchForNonTerminatedUsers() {
 		return userDAO.searchForNonTerminatedUser();
 	}
-	
-	
+
+
 	/**
 	 *  temporary and initial sign in password should not be stored in password History
 	 *  isValidPwd boolean is set for special case where current valid password becomes temporary
@@ -992,7 +992,6 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void addByUpdateUserPasswordHistory(User user, boolean isValidPwd){
-		List<UserPasswordHistory> pwdHistoryList = userPasswordHistoryDAO.getPasswordHistory(user.getId());
 		if(isValidPwd || !(user.getPassword().isInitial()
 				|| user.getPassword().isTemporaryPassword())) {
 			UserPasswordHistory passwordHistory = new UserPasswordHistory();
@@ -1000,13 +999,15 @@ public class UserServiceImpl implements UserService {
 			passwordHistory.setPassword(user.getPassword().getPassword());
 			passwordHistory.setSalt(user.getPassword().getSalt());
 			passwordHistory.setCreatedDate(user.getPassword().getCreatedDate());
+
+			List<UserPasswordHistory> pwdHistoryList = userPasswordHistoryDAO.getPasswordHistory(user.getId());
 			if(pwdHistoryList.size()<PASSWORD_HISTORY_SIZE){
-				user.getPasswordHistory().add(passwordHistory);
+				userPasswordHistoryDAO.save(passwordHistory);
 			} else {
 				userPasswordHistoryDAO.addByUpdateUserPasswordHistory(user);
 			}
 		}
-		
+
 	}
-	
+
 }

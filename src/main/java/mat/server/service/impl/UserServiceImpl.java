@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -845,7 +846,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addByUpdateUserPasswordHistory(User user, boolean isValidPwd) {
-        List<UserPasswordHistory> pwdHistoryList = userPasswordHistoryDAO.getPasswordHistory(user.getId());
         if (isValidPwd || !(user.getPassword().isInitial()
                 || user.getPassword().isTemporaryPassword())) {
             UserPasswordHistory passwordHistory = new UserPasswordHistory();
@@ -853,8 +853,10 @@ public class UserServiceImpl implements UserService {
             passwordHistory.setPassword(user.getPassword().getPassword());
             passwordHistory.setSalt(user.getPassword().getSalt());
             passwordHistory.setCreatedDate(user.getPassword().getCreatedDate());
+
+            List<UserPasswordHistory> pwdHistoryList = userPasswordHistoryDAO.getPasswordHistory(user.getId());
             if (pwdHistoryList.size() < PASSWORD_HISTORY_SIZE) {
-                user.getPasswordHistory().add(passwordHistory);
+                userPasswordHistoryDAO.save(passwordHistory);
             } else {
                 userPasswordHistoryDAO.addByUpdateUserPasswordHistory(user);
             }

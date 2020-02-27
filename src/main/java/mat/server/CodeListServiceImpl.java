@@ -3,7 +3,6 @@ package mat.server;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -29,8 +28,7 @@ public class CodeListServiceImpl extends SpringRemoteServiceServlet
 
     @Override
     public List<? extends HasListBox> getAllDataTypes() {
-        List<? extends HasListBox> ret = getCodeListService().getAllDataTypes();
-        return ret;
+        return getCodeListService().getAllDataTypes();
     }
 
     @Override
@@ -63,17 +61,10 @@ public class CodeListServiceImpl extends SpringRemoteServiceServlet
                     && !dataSet.getOid().equals(ConstantMessages.RACE_OID) && !dataSet.getOid().equals(ConstantMessages.ETHNICITY_OID)
                     && !dataSet.getOid().equals(ConstantMessages.PAYER_OID)) {
                 filteredQDSElements.add(dataSet);
-            } else {
-                System.out.println();
             }
 
         }
-        Collections.sort(filteredQDSElements, new Comparator<>() {
-            @Override
-            public int compare(QualityDataSetDTO o1, QualityDataSetDTO o2) {
-                return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
-            }
-        });
+        Collections.sort(filteredQDSElements, (o1, o2) -> o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName()));
         return filteredQDSElements;
     }
 
@@ -92,7 +83,6 @@ public class CodeListServiceImpl extends SpringRemoteServiceServlet
         matValueSetTransferObject.scrubForMarkUp();
         return getCodeListService().updateQDStoMeasure(matValueSetTransferObject);
     }
-
 
     @Override
     public List<UnitDTO> getAllCqlUnits() {

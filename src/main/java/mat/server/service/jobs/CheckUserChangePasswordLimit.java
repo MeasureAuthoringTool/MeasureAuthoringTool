@@ -23,7 +23,13 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Class CheckUserPasswordLimit.
@@ -79,8 +85,8 @@ public class CheckUserChangePasswordLimit {
 
     /**
      * Method to Send
-     * 1.Warning Email for Warning Day Limit 45 days.
-     * 2.Password change screen for day limit >60 days
+     * 1.Warning Email for Warning Day Limit 35 days.
+     * 2.Password change screen for day limit >45 days
      *
      * @return void
      */
@@ -193,7 +199,7 @@ public class CheckUserChangePasswordLimit {
 
             lastPasswordCreatedDate = DateUtils.truncate(lastPasswordCreatedDate, Calendar.DATE);
             logger.info("User:" + user.getFirstName() + "  :::: last Created Password Date :::::   " + lastPasswordCreatedDate);
-            //for User password equals 45 days
+            //for User password equals 35 days
             if (passwordwarningDayLimit == passwordDayLimit) {
 
                 if (lastPasswordCreatedDate.equals(passwordDaysAgo)) {
@@ -204,7 +210,7 @@ public class CheckUserChangePasswordLimit {
                 }
             }
 
-            // for User Password Greater than 60 days
+            // for User Password Greater than 45 days
             else if (passwordexpiryDayLimit == passwordDayLimit) {
 
                 if (lastPasswordCreatedDate.before((passwordDaysAgo))

@@ -887,7 +887,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             String cqlXml = getCQLLibraryXml(cqlLibrary);
 
             if (cqlXml != null) {
-                result = cqlService.saveAndModifyParameters(cqlXml, toBeModifiedObj, currentObj, parameterList, isFormatable);
+                result = cqlService.saveAndModifyParameters(cqlXml, toBeModifiedObj, currentObj, parameterList, isFormatable, cqlLibrary.getLibraryModelType());
                 if (result != null && result.isSuccess()) {
                     cqlLibrary.setCQLByteArray(result.getXml().getBytes());
                     cqlLibraryDAO.save(cqlLibrary);
@@ -936,7 +936,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
             if (cqlXml != null) {
 
-                result = cqlService.saveAndModifyDefinitions(cqlXml, toBeModifiedObj, currentObj, definitionList, isFormatable);
+                result = cqlService.saveAndModifyDefinitions(cqlXml, toBeModifiedObj, currentObj, definitionList, isFormatable, cqlLibrary.getLibraryModelType());
                 if (result != null && result.isSuccess()) {
                     cqlLibrary.setCQLByteArray(result.getXml().getBytes());
                     cqlLibraryDAO.save(cqlLibrary);
@@ -956,7 +956,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             String cqlXml = getCQLLibraryXml(cqlLibrary);
 
             if (cqlXml != null) {
-                result = cqlService.saveAndModifyFunctions(cqlXml, toBeModifiedObj, currentObj, functionsList, isFormatable);
+                result = cqlService.saveAndModifyFunctions(cqlXml, toBeModifiedObj, currentObj, functionsList, isFormatable, cqlLibrary.getLibraryModelType());
                 if (result != null && result.isSuccess()) {
                     cqlLibrary.setCQLByteArray(result.getXml().getBytes());
                     cqlLibraryDAO.save(cqlLibrary);

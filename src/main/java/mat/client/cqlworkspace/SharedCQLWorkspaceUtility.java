@@ -37,8 +37,11 @@ public class SharedCQLWorkspaceUtility {
 
 	public static void displayAnnotations(SaveUpdateCQLResult result, AceEditor aceEditor) {
 		aceEditor.clearAnnotations();
-		result.getCqlErrors().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor));
-		result.getCqlWarnings().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor));
+		if(!result.getCqlErrors().isEmpty()) {
+			result.getCqlErrors().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor));
+		} else if(!result.getCqlWarnings().isEmpty()) {
+			result.getCqlWarnings().forEach(error -> SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(error, SharedCQLWorkspaceUtility.WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor));
+		}
 		aceEditor.setAnnotations();
 	}
 	

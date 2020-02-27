@@ -4865,9 +4865,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         SaveUpdateCQLResult result = null;
         if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+            Measure measure = measureDAO.find(measureId);
             MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
             if (measureXMLModel != null) {
-                result = getCqlService().saveAndModifyDefinitions(measureXMLModel.getXml(), toBeModifiedObj, currentObj, definitionList, isFormatable);
+                result = getCqlService().saveAndModifyDefinitions(measureXMLModel.getXml(), toBeModifiedObj, currentObj, definitionList, isFormatable, measure.getMeasureModel());
                 XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
                 if (result.isSuccess()) {
                     updateRiskAdjustmentVariables(processor, toBeModifiedObj, currentObj);
@@ -4902,10 +4903,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         SaveUpdateCQLResult result = null;
         if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+            Measure measure = measureDAO.find(measureId);
             MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
             if (measureXMLModel != null) {
                 result = getCqlService().saveAndModifyParameters(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
-                        parameterList, isFormatable);
+                        parameterList, isFormatable, measure.getMeasureModel());
                 if (result.isSuccess()) {
                     XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
                     processor.replaceNode(result.getXml(), "cqlLookUp", "measure");
@@ -4924,10 +4926,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         SaveUpdateCQLResult result = null;
         if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+            Measure measure = measureDAO.find(measureId);
             MeasureXmlModel measureXMLModel = measurePackageService.getMeasureXmlForMeasure(measureId);
             if (measureXMLModel != null) {
                 result = getCqlService().saveAndModifyFunctions(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
-                        functionsList, isFormatable);
+                        functionsList, isFormatable, measure.getMeasureModel());
 
                 XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
                 if (result.isSuccess()) {

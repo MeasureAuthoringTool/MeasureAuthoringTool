@@ -70,7 +70,7 @@ public interface CQLService {
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
-			List<CQLFunctions> functionsList, boolean isFormatable);
+			List<CQLFunctions> functionsList, boolean isFormatable, String modelType);
 
 	/**
 	 * Save and modify parameters.
@@ -84,7 +84,7 @@ public interface CQLService {
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
-			List<CQLParameter> parameterList, boolean isFormatable);
+			List<CQLParameter> parameterList, boolean isFormatable, String modelType);
 
 	/**
 	 * Save and modify definitions.
@@ -97,7 +97,7 @@ public interface CQLService {
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyDefinitions(String xml, CQLDefinition toBeModifiedObj, CQLDefinition currentObj,
-			List<CQLDefinition> definitionList, boolean isFormatable);
+			List<CQLDefinition> definitionList, boolean isFormatable, String modelType);
 
 	/**
 	 * Delete definition

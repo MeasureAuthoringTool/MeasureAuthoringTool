@@ -329,12 +329,12 @@ public class CQLLibrary {
 
     @Transient
     public boolean isFhirMeasure() {
-        return ModelType.isFhir(getLibraryModelType());
+        return ModelTypeHelper.isFhir(getLibraryModelType());
     }
 
     @Transient
     public boolean isQdmMeasure() {
-        return ModelType.isQdm(getLibraryModelType());
+        return ModelTypeHelper.isQdm(getLibraryModelType());
     }
 
     @Column(name = "FHIR_VERSION", length = 45)

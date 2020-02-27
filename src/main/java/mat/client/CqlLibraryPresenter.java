@@ -65,7 +65,7 @@ import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.client.util.ClientConstants;
-import mat.model.clause.ModelType;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.shared.CQLModelValidator;
@@ -1297,7 +1297,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         panel.getButtonPanel().clear();
         panel.setHeading("My CQL Library > Create New CQL Library", CQL_LIBRARY);
         panel.setContent(detailDisplay.asWidget());
-        detailDisplay.setLibraryModelType(ModelType.FHIR, false);
+        detailDisplay.setLibraryModelType(ModelTypeHelper.FHIR, false);
         updateSaveButtonHandler(event -> createCQLLibrary());
         Mat.focusSkipLists(CQL_LIBRARY);
     }

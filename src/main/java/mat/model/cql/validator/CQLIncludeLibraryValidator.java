@@ -2,7 +2,7 @@ package mat.model.cql.validator;
 
 import org.apache.commons.lang3.StringUtils;
 
-import mat.model.clause.ModelType;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.server.Validator;
@@ -75,7 +75,7 @@ public class CQLIncludeLibraryValidator extends Validator {
      */
     private void validateModelTypes(String includedModelType, String includingModelType) {
         if (!StringUtils.equals(includedModelType, includingModelType)) {
-            if (ModelType.QDM.equals(includingModelType)) {
+            if (ModelTypeHelper.QDM.equals(includingModelType)) {
                 handleValidationFail(QDM_ITEMS_INCLUDE_ERROR);
             } else {
                 handleValidationFail(FHIR_ITEMS_INCLUDE_ERROR);

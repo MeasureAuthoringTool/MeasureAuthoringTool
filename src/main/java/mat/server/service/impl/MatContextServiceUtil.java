@@ -15,7 +15,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.model.SecurityRole;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
-import mat.model.clause.ModelType;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShareDTO;
@@ -221,10 +221,10 @@ public class MatContextServiceUtil implements InitializingBean {
     }
 
     public boolean isMeasureModelEditable(String modelType) {
-        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || !ModelType.FHIR.equals(modelType);
+        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || !ModelTypeHelper.FHIR.equals(modelType);
     }
 
     public boolean isCqlLibraryModelEditable(String modelType) {
-        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || !ModelType.FHIR.equals(modelType);
+        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || !ModelTypeHelper.FHIR.equals(modelType);
     }
 }

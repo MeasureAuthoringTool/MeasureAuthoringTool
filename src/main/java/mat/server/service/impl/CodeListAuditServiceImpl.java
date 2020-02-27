@@ -20,7 +20,7 @@ public class CodeListAuditServiceImpl implements CodeListAuditService {
 
     private CodeListAuditLogDAO codeListAuditLogDAO;
 
-    private CodeListAuditServiceImpl(ListObjectDAO listObjectDAO, CodeListAuditLogDAO codeListAuditLogDAO) {
+    public CodeListAuditServiceImpl(ListObjectDAO listObjectDAO, CodeListAuditLogDAO codeListAuditLogDAO) {
         this.listObjectDAO = listObjectDAO;
         this.codeListAuditLogDAO = codeListAuditLogDAO;
     }

@@ -56,7 +56,7 @@ import mat.model.clause.MeasureDeveloperAssociation;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureTypeAssociation;
 import mat.model.clause.MeasureXML;
-import mat.model.clause.ModelType;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLParameter;
 import mat.server.CQLLibraryService;
 import mat.server.LoggedInUserUtil;
@@ -196,7 +196,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             Document clonedDoc = originalDoc;
             clonedMeasure.setaBBRName(currentDetails.getShortName());
             clonedMeasure.setDescription(currentDetails.getMeasureName());
-            String measureModel = creatingFhir ? ModelType.FHIR : currentDetails.getMeasureModel();
+            String measureModel = creatingFhir ? ModelTypeHelper.FHIR : currentDetails.getMeasureModel();
             clonedMeasure.setMeasureModel(measureModel);
             clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName());
             if (creatingFhir) {
@@ -464,7 +464,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
             Node modelNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/usingModel");
             if (modelNode != null) {
-                modelNode.setTextContent(creatingFhir ? ModelType.FHIR : ModelType.QDM);
+                modelNode.setTextContent(creatingFhir ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM);
             }
 
             return false;

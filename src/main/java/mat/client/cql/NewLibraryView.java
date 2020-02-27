@@ -25,8 +25,8 @@ import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.util.FeatureFlagConstant;
 
-import static mat.model.clause.ModelType.FHIR;
-import static mat.model.clause.ModelType.QDM;
+import static mat.model.clause.ModelTypeHelper.FHIR;
+import static mat.model.clause.ModelTypeHelper.QDM;
 
 public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
 

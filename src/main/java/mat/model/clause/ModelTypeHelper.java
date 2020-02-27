@@ -1,6 +1,6 @@
 package mat.model.clause;
 
-public class ModelType {
+public class ModelTypeHelper {
 
     public static final String FHIR = "FHIR";
     public static final String QDM = "QDM";

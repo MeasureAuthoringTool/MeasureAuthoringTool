@@ -187,12 +187,12 @@ public class Measure {
 
     @Transient
     public boolean isQdmMeasure() {
-        return ModelType.isQdm(getMeasureModel());
+        return ModelTypeHelper.isQdm(getMeasureModel());
     }
 
     @Transient
     public boolean isFhirMeasure() {
-        return ModelType.isFhir(getMeasureModel());
+        return ModelTypeHelper.isFhir(getMeasureModel());
     }
 
     @Transient

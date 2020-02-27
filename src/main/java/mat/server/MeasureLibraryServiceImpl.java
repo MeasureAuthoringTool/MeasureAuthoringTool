@@ -116,7 +116,7 @@ import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureTypeAssociation;
 import mat.model.clause.MeasureXML;
-import mat.model.clause.ModelType;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
@@ -1129,7 +1129,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
 
         boolean isClonable = (isOwner || isSuperUser) && !measure.getIsCompositeMeasure() && !(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
-                || measureReleaseVersion.startsWith("v3")) && !ModelType.FHIR.equals(measure.getMeasureModel());
+                || measureReleaseVersion.startsWith("v3")) && !ModelTypeHelper.FHIR.equals(measure.getMeasureModel());
 
         detail.setClonable(isClonable);
         detail.setSharable(isOwner || isSuperUser);
@@ -4775,7 +4775,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         if (measure.isDraft()) {
 
             // Linter model should be QDM by default
-            String model = StringUtils.defaultIfBlank(measure.getMeasureModel(), ModelType.QDM);
+            String model = StringUtils.defaultIfBlank(measure.getMeasureModel(), ModelTypeHelper.QDM);
             String modelVersion = measure.getModelVersion();
 
             CQLLinterConfig config = new CQLLinterConfig(result.getCqlModel().getLibraryName(),
@@ -4817,7 +4817,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             CQLLinterConfig config = new CQLLinterConfig(previousModel.getLibraryName(),
                     MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()),
-                    ModelType.defaultTypeIfBlank(measure.getMeasureModel()), measure.isFhirMeasure() ? measure.getFhirVersion() : measure.getQdmVersion());
+                    ModelTypeHelper.defaultTypeIfBlank(measure.getMeasureModel()), measure.isFhirMeasure() ? measure.getFhirVersion() : measure.getQdmVersion());
 
             config.setPreviousCQLModel(previousModel);
 

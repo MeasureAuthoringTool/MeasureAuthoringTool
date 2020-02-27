@@ -31,7 +31,7 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.util.FeatureFlagConstant;
-import mat.model.clause.ModelType;
+import mat.model.clause.ModelTypeHelper;
 
 public class AbstractNewMeasureView implements DetailDisplay {
     protected SimplePanel mainPanel = new SimplePanel();
@@ -115,12 +115,12 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     @Override
     public String getMeasureModelType() {
-        return fhirModel.getValue() ? ModelType.FHIR : ModelType.QDM;
+        return fhirModel.getValue() ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM;
     }
 
     @Override
     public void setMeasureModelType(String type) {
-        if (ModelType.FHIR.equalsIgnoreCase(type)) {
+        if (ModelTypeHelper.FHIR.equalsIgnoreCase(type)) {
             // set FHIR model
             fhirModel.setEnabled(true);
             fhirModel.setValue(true);

@@ -16,7 +16,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -152,7 +151,6 @@ public class XmlProcessor {
         } catch (Exception e) {
             LOG.info("Exception thrown on XmlProcessor() costructor");
             caughtExceptions(e);
-            e.printStackTrace();
         }
 
     }
@@ -169,13 +167,12 @@ public class XmlProcessor {
             originalDoc = docBuilder.parse(file);
             LOG.info("Document Object created successfully for the XML String");
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            LOG.error("Exception thrown on XmlProcessor() constructor", e);
         } catch (SAXException e) {
-            e.printStackTrace();
+            LOG.error("Exception thrown on XmlProcessor() constructor", e);
         } catch (IOException e) {
-            LOG.info("Exception thrown on XmlProcessor() costructor");
+            LOG.info("Exception thrown on XmlProcessor() constructor", e);
             caughtExceptions(e);
-            e.printStackTrace();
         }
 
     }
@@ -218,7 +215,6 @@ public class XmlProcessor {
         } catch (XPathExpressionException e) {
             LOG.info("Exception thrown on appendNode method");
             caughtExceptions(e);
-            e.printStackTrace();
         }
         return transform(originalDoc);
     }
@@ -306,9 +302,8 @@ public class XmlProcessor {
             }
 
         } catch (Exception e) {
-            LOG.info("Exception thrown on replaceNode() method");
+            LOG.info("Exception thrown on replaceNode() method", e);
             caughtExceptions(e);
-            e.printStackTrace();
         }
         return originalXml; // not replaced returnig the original Xml;
     }
@@ -330,9 +325,8 @@ public class XmlProcessor {
             LOG.info("update NoedText");
             return transform(doc);
         } catch (Exception e) {
-            LOG.info("Exception thrown on updateNodeText() method");
+            LOG.error("Exception thrown on updateNodeText() method", e);
             caughtExceptions(e);
-            e.printStackTrace();
         }
         return null;
     }
@@ -420,7 +414,7 @@ public class XmlProcessor {
             removeNodesBasedOnScoring(scoringType, isPatientBased);
             createNewNodesBasedOnScoring(scoringType, releaseVersion, isPatientBased);
         } catch (XPathExpressionException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
         return transform(originalDoc);
     }
@@ -769,7 +763,7 @@ public class XmlProcessor {
                             supplementaDataElementsElement.getNextSibling());
         }
 
-        System.out.println("Original Doc: " + originalDoc.toString());
+        LOG.info("Original Doc: " + originalDoc.toString());
     }
 
     /**
@@ -1016,12 +1010,8 @@ public class XmlProcessor {
             tf.setOutputProperty(OutputKeys.STANDALONE, "yes");
             out = new StringWriter();
             tf.transform(new DOMSource(node), new StreamResult(out));
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
-        } catch (TransformerFactoryConfigurationError e) {
-            e.printStackTrace();
-        } catch (TransformerException e) {
-            e.printStackTrace();
+        } catch (TransformerFactoryConfigurationError | TransformerException e) {
+            LOG.error(e.getMessage(), e);
         }
         LOG.info("Document object to ByteArray transformation complete");
         return out.toString();
@@ -1133,7 +1123,7 @@ public class XmlProcessor {
                 }
 
             } catch (XPathExpressionException e) {
-                e.printStackTrace();
+                LOG.error(e.getMessage(), e);
             }
         }
         return missingDefaultParameterList;
@@ -1162,7 +1152,7 @@ public class XmlProcessor {
             }
             removeUnusedCodeSystems(codeSystemOIDsToRemove);
         } catch (XPathExpressionException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
     }
 
@@ -1180,7 +1170,7 @@ public class XmlProcessor {
                 valuesetNode.getAttributes().getNamedItem("version").setNodeValue("");
             }
         } catch (XPathExpressionException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
     }
 
@@ -1202,7 +1192,7 @@ public class XmlProcessor {
                 parentNode.removeChild(codeSystemNode);
             }
         } catch (Exception e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
     }
 }

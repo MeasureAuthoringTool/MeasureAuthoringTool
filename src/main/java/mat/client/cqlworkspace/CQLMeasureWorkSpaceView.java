@@ -21,7 +21,7 @@ import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
-import mat.model.clause.ModelType;
+import mat.model.clause.ModelTypeHelper;
 
 public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
     HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
@@ -48,7 +48,7 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
         generalInformationView = new CQLGeneralInformationView();
         componentPresenter = new CQLComponentLibraryPresenter();
         cqlParametersView = new CQLParametersView();
-        cqlDefinitionsView = new CQLDefinitionsView(() -> ModelType.FHIR.equalsIgnoreCase(MatContext.get().getCurrentMeasureModel()));
+        cqlDefinitionsView = new CQLDefinitionsView(() -> ModelTypeHelper.FHIR.equalsIgnoreCase(MatContext.get().getCurrentMeasureModel()));
         cqlFunctionsView = new CQLFunctionsView();
         codesView = new CQLCodesView();
         valueSetView = new CQLAppliedValueSetView();

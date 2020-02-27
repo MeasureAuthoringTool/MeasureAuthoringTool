@@ -29,7 +29,7 @@ import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
-import mat.model.clause.ModelType;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLFunctionArgument;
 
 public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
@@ -55,7 +55,7 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
     public CQLStandaloneWorkSpaceView() {
         generalInformationView = new CQLGeneralInformationView();
         cqlParametersView = new CQLParametersView();
-        cqlDefinitionsView = new CQLDefinitionsView(() -> ModelType.FHIR.equalsIgnoreCase(MatContext.get().getCurrentCQLLibraryModelType()));
+        cqlDefinitionsView = new CQLDefinitionsView(() -> ModelTypeHelper.FHIR.equalsIgnoreCase(MatContext.get().getCurrentCQLLibraryModelType()));
         cqlFunctionsView = new CQLFunctionsView();
         codesView = new CQLCodesView();
         valueSetView = new CQLAppliedValueSetView();

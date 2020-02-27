@@ -43,7 +43,7 @@ import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.util.FeatureFlagConstant;
-import mat.model.clause.ModelType;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLIncludeLibrary;
@@ -613,7 +613,7 @@ public class InsertIntoAceEditorDialogBox {
     }
 
     private static void showAttributesDialogBox(String modelType) {
-        if (ModelType.FHIR.equals(modelType) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_DT)) {
+        if (ModelTypeHelper.FHIR.equals(modelType) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_DT)) {
             InsertFhirAttributeBuilderDialogBox.showAttributesDialogBox(curEditor);
         } else {
             InsertAttributeBuilderDialogBox.showAttributesDialogBox(curEditor, modelType);

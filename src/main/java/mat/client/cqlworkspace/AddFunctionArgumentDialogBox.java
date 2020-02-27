@@ -34,7 +34,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.MessagePanel;
-import mat.model.clause.ModelType;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLFunctionArgument;
 import mat.shared.CQLModelValidator;
 import mat.shared.UUIDUtilClient;
@@ -89,7 +89,7 @@ public class AddFunctionArgumentDialogBox {
         listAllDataTypes.setWidth("290px");
         listAllDataTypes.addItem(MatContext.PLEASE_SELECT);
         for (int i = 0; i < allCqlDataType.size(); i++) {
-            if (ModelType.FHIR.equalsIgnoreCase(currentModelType) && CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE.equalsIgnoreCase(allCqlDataType.get(i))) {
+            if (ModelTypeHelper.FHIR.equalsIgnoreCase(currentModelType) && CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE.equalsIgnoreCase(allCqlDataType.get(i))) {
                 listAllDataTypes.addItem(CQLWorkSpaceConstants.CQL_FHIR_DATA_TYPE);
             } else {
                 listAllDataTypes.addItem(allCqlDataType.get(i));
@@ -138,7 +138,7 @@ public class AddFunctionArgumentDialogBox {
 
         final FormGroup selectFormGroup = new FormGroup();
         FormLabel selectFormLabel = new FormLabel();
-        if (ModelType.FHIR.equalsIgnoreCase(currentModelType)) {
+        if (ModelTypeHelper.FHIR.equalsIgnoreCase(currentModelType)) {
             selectFormLabel.setText("Select FHIR Datatype Object");
             selectFormLabel.setTitle("Select FHIR Datatype Object");
         } else {

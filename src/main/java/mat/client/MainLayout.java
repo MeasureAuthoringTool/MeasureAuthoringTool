@@ -41,7 +41,7 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.util.ClientConstants;
 import mat.client.util.FeatureFlagConstant;
 import mat.client.util.FooterPanelBuilderUtility;
-import mat.model.clause.ModelType;
+import mat.model.clause.ModelTypeHelper;
 
 public abstract class MainLayout {
 
@@ -333,8 +333,8 @@ public abstract class MainLayout {
         String headerText = HEADING + " v" + version;
         String headerTitle = HEADING + " version " + version;
         if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
-            headerText += " (" + ModelType.FHIR + ")";
-            headerTitle += " (" + ModelType.FHIR + ")";
+            headerText += " (" + ModelTypeHelper.FHIR + ")";
+            headerTitle += " (" + ModelTypeHelper.FHIR + ")";
         }
         setLinkTextAndTitle(headerText, link);
         link.setTitle(headerTitle);

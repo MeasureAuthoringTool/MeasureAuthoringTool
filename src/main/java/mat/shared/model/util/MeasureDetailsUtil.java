@@ -9,9 +9,9 @@ import mat.model.clause.Measure;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
 
-import static mat.model.clause.ModelType.FHIR;
-import static mat.model.clause.ModelType.QDM;
-import static mat.model.clause.ModelType.defaultTypeIfBlank;
+import static mat.model.clause.ModelTypeHelper.FHIR;
+import static mat.model.clause.ModelTypeHelper.QDM;
+import static mat.model.clause.ModelTypeHelper.defaultTypeIfBlank;
 
 /**
  * The Class MeasureDetailsUtil.

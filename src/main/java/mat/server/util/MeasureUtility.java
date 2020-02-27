@@ -4,7 +4,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Node;
 
-import mat.model.clause.ModelType;
+import mat.model.clause.ModelTypeHelper;
 import mat.shared.StringUtility;
 
 public class MeasureUtility {
@@ -117,7 +117,7 @@ public class MeasureUtility {
      **/
     public static void updateModelVersion(XmlProcessor processor, boolean fhir) throws XPathExpressionException {
 
-        String model = fhir ? ModelType.FHIR : ModelType.QDM;
+        String model = fhir ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM;
         String version = fhir ? MATPropertiesService.get().getFhirVersion() : MATPropertiesService.get().getQdmVersion();
 
         Node cqlLibraryModelVersionNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/usingModelVersion");

@@ -14,6 +14,8 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Node;
@@ -41,6 +43,8 @@ import mat.shared.CompositeMeasureValidationResult;
 
 @Component
 public class CompositeMeasureValidator {
+
+    private static final Log LOG = LogFactory.getLog(CompositeMeasureValidator.class);
 
     private static final String ERR_MORE_THAN_ONE_COMPONENT_MEASURE_REQUIRED = "A composite measure must have more than one component measure.";
     private static final String ERR_COMPONENT_MEASURE_DOES_NOT_CONTAIN_PACKAGE = " does not have a measure package and can not be used as a component measure.";
@@ -321,7 +325,6 @@ public class CompositeMeasureValidator {
                     break;
             }
         }
-        ;
         return messages;
     }
 
@@ -343,7 +346,7 @@ public class CompositeMeasureValidator {
             Node measureNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "measure");
             templateXml = xmlProcessor.transform(measureNode);
         } catch (XPathExpressionException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
         return templateXml;
     }

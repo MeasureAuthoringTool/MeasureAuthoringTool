@@ -6,51 +6,51 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ModelTypeTest {
+public class ModelTypeHelperTest {
 
     @Test
     public void testTypeNotBlank() {
-        assertEquals("NOT_EMPTY", ModelType.defaultTypeIfBlank("NOT_EMPTY"));
+        assertEquals("NOT_EMPTY", ModelTypeHelper.defaultTypeIfBlank("NOT_EMPTY"));
     }
 
     @Test
     public void testTypeBlank() {
-        assertEquals("Pre-CQL", ModelType.defaultTypeIfBlank(""));
+        assertEquals("Pre-CQL", ModelTypeHelper.defaultTypeIfBlank(""));
     }
 
     @Test
     public void testTypeNull() {
-        assertEquals("Pre-CQL", ModelType.defaultTypeIfBlank(null));
+        assertEquals("Pre-CQL", ModelTypeHelper.defaultTypeIfBlank(null));
     }
 
     @Test
     public void testFhir() {
-        assertTrue(ModelType.isFhir(ModelType.FHIR));
+        assertTrue(ModelTypeHelper.isFhir(ModelTypeHelper.FHIR));
     }
 
     @Test
     public void testNotFhir() {
-        assertFalse(ModelType.isFhir("NotFHIR"));
+        assertFalse(ModelTypeHelper.isFhir("NotFHIR"));
     }
 
     @Test
     public void testPreCql() {
-        assertTrue(ModelType.isPreQL(ModelType.PRE_CQL));
+        assertTrue(ModelTypeHelper.isPreQL(ModelTypeHelper.PRE_CQL));
     }
 
     @Test
     public void testNotPreCql() {
-        assertFalse(ModelType.isPreQL("NotPre-CQL"));
+        assertFalse(ModelTypeHelper.isPreQL("NotPre-CQL"));
     }
 
     @Test
     public void testQdm() {
-        assertTrue(ModelType.isQdm(ModelType.QDM));
+        assertTrue(ModelTypeHelper.isQdm(ModelTypeHelper.QDM));
     }
 
     @Test
     public void testNotQdm() {
-        assertFalse(ModelType.isQdm("Notqdm"));
+        assertFalse(ModelTypeHelper.isQdm("Notqdm"));
     }
 
 }

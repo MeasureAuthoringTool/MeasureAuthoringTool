@@ -1,6 +1,8 @@
 package mat.server.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
+import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
 import gov.cms.mat.fhir.rest.dto.MeasureConversionResults;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -22,6 +25,7 @@ import mat.model.clause.Measure;
 import mat.server.service.FhirOrchestrationGatewayService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
+import mat.shared.SaveUpdateCQLResult;
 
 @ExtendWith(MockitoExtension.class)
 public class FhirMeasureServiceImplTest {
@@ -58,77 +62,92 @@ public class FhirMeasureServiceImplTest {
 
     @Test
     public void testIsConvertible() throws MatException {
-        ManageMeasureSearchModel.Result sourceMeasure = new ManageMeasureSearchModel.Result();
-        sourceMeasure.setId("sourceMeasureId");
-        sourceMeasure.setFhirConvertible(true);
+        String sourceMeasureId = "sourceMeasureId";
+        ManageMeasureSearchModel.Result sourceMeasureResult = new ManageMeasureSearchModel.Result();
+        sourceMeasureResult.setId(sourceMeasureId);
+        sourceMeasureResult.setFhirConvertible(true);
         String loggedinUserId = "someCurrentUser";
 
-        ConversionResultDto preValidationResult = new ConversionResultDto();
-        preValidationResult.setOutcome(ConversionOutcome.SUCCESS);
-        preValidationResult.setMeasureId(sourceMeasure.getId());
-        preValidationResult.setMeasureConversionResults(new MeasureConversionResults());
-        preValidationResult.setLibraryConversionResults(Collections.emptyList());
-        preValidationResult.setValueSetConversionResults(Collections.emptyList());
+        LibraryConversionResults libraryConversionResults = new LibraryConversionResults();
+        libraryConversionResults.getCqlConversionResult().setFhirCql("some invalid fhir cql");
 
-        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyBoolean())).thenReturn(preValidationResult);
+        ConversionResultDto validateResult = new ConversionResultDto();
+        validateResult.setOutcome(ConversionOutcome.SUCCESS);
+        validateResult.setMeasureId(sourceMeasureResult.getId());
+        validateResult.setMeasureConversionResults(new MeasureConversionResults());
+        validateResult.setLibraryConversionResults(Collections.singletonList(libraryConversionResults));
+        validateResult.setValueSetConversionResults(Collections.emptyList());
 
-        Mockito.when(measureLibraryService.getMeasure(sourceMeasure.getId())).thenReturn(new ManageMeasureDetailModel());
+        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyBoolean())).thenReturn(validateResult);
 
-        ConversionResultDto convertResult = new ConversionResultDto();
-        convertResult.setMeasureId(sourceMeasure.getId());
-        convertResult.setMeasureConversionResults(new MeasureConversionResults());
-        convertResult.setLibraryConversionResults(Collections.emptyList());
-        convertResult.setValueSetConversionResults(Collections.emptyList());
+        ManageMeasureDetailModel sourceMeasureDetails = new ManageMeasureDetailModel();
+        sourceMeasureDetails.setId(sourceMeasureId);
+        Mockito.when(measureLibraryService.getMeasure(sourceMeasureResult.getId())).thenReturn(sourceMeasureDetails);
 
-        Mockito.when(fhirOrchestrationGatewayService.convert(Mockito.any(), Mockito.anyBoolean())).thenReturn(convertResult);
 
-        ManageMeasureSearchModel.Result fhirMeasure = new ManageMeasureSearchModel.Result();
-        fhirMeasure.setId("fhirMeasureId");
-        Mockito.when(measureCloningService.cloneForFhir(Mockito.any())).thenReturn(fhirMeasure);
+        String fhirMeasureId = "fhirMeasureId";
 
-        service.convert(sourceMeasure, loggedinUserId);
+        ManageMeasureSearchModel.Result fhirMeasureResult = new ManageMeasureSearchModel.Result();
+        fhirMeasureResult.setId(fhirMeasureId);
+        Mockito.when(measureCloningService.cloneForFhir(Mockito.any())).thenReturn(fhirMeasureResult);
+
+        sourceMeasureResult.setId(sourceMeasureId);
+
+        Measure sourceMeasure = new Measure();
+        sourceMeasure.setFhirMeasures(new ArrayList<>());
+        sourceMeasure.setId(sourceMeasureId);
+        Mockito.when(measureDAO.find(Mockito.anyString())).thenReturn(sourceMeasure);
+
+        SaveUpdateCQLResult saveUpdateCQLResult = new SaveUpdateCQLResult();
+
+        Mockito.when(measureLibraryService.saveCQLFile(Mockito.anyString(), Mockito.anyString())).thenReturn(saveUpdateCQLResult);
+
+        service.convert(sourceMeasureResult, loggedinUserId);
 
         Mockito.verify(measureDAO, Mockito.never()).delete(Mockito.any(Measure.class));
     }
 
     @Test
     public void testIsConvertibleWithAlreadyExitingFhir() throws MatException {
-        ManageMeasureSearchModel.Result sourceMeasure = new ManageMeasureSearchModel.Result();
-        sourceMeasure.setId("sourceMeasureId");
-        sourceMeasure.setFhirConvertible(true);
-        sourceMeasure.setConvertedToFhir(true);
+        String sourceMeasureId = "sourceMeasureId";
+        ManageMeasureSearchModel.Result sourceMeasureResult = new ManageMeasureSearchModel.Result();
+        sourceMeasureResult.setId(sourceMeasureId);
+        sourceMeasureResult.setFhirConvertible(true);
         String loggedinUserId = "someCurrentUser";
 
-        ConversionResultDto preValidationResult = new ConversionResultDto();
-        preValidationResult.setOutcome(ConversionOutcome.SUCCESS);
-        preValidationResult.setMeasureId(sourceMeasure.getId());
-        preValidationResult.setMeasureConversionResults(new MeasureConversionResults());
-        preValidationResult.setLibraryConversionResults(Collections.emptyList());
-        preValidationResult.setValueSetConversionResults(Collections.emptyList());
+        LibraryConversionResults libraryConversionResults = new LibraryConversionResults();
+        libraryConversionResults.getCqlConversionResult().setFhirCql("some invalid fhir cql");
 
-        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyBoolean())).thenReturn(preValidationResult);
+        ConversionResultDto validateResult = new ConversionResultDto();
+        validateResult.setOutcome(ConversionOutcome.SUCCESS);
+        validateResult.setMeasureId(sourceMeasureResult.getId());
+        validateResult.setMeasureConversionResults(new MeasureConversionResults());
+        validateResult.setLibraryConversionResults(Collections.singletonList(libraryConversionResults));
+        validateResult.setValueSetConversionResults(Collections.emptyList());
 
-        ManageMeasureDetailModel currentMeasureDetails = new ManageMeasureDetailModel();
-        Mockito.when(measureLibraryService.getMeasure(sourceMeasure.getId())).thenReturn(currentMeasureDetails);
+        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyBoolean())).thenReturn(validateResult);
 
-        ConversionResultDto convertResult = new ConversionResultDto();
-        convertResult.setMeasureId(sourceMeasure.getId());
-        convertResult.setMeasureConversionResults(new MeasureConversionResults());
-        convertResult.setLibraryConversionResults(Collections.emptyList());
-        convertResult.setValueSetConversionResults(Collections.emptyList());
+        ManageMeasureDetailModel sourceMeasureDetails = new ManageMeasureDetailModel();
+        sourceMeasureDetails.setId(sourceMeasureId);
+        Mockito.when(measureLibraryService.getMeasure(sourceMeasureResult.getId())).thenReturn(sourceMeasureDetails);
 
+        List<Measure> existingFhirMeasures = Mockito.mock(List.class);
 
-        Measure existingFhirMeasure = new Measure();
-        Mockito.when(measureDAO.find(Mockito.anyString())).thenReturn(existingFhirMeasure);
+        Measure sourceMeasure = new Measure();
+        sourceMeasure.setFhirMeasures(existingFhirMeasures);
+        sourceMeasure.setId(sourceMeasureId);
+        Mockito.when(measureDAO.find(Mockito.anyString())).thenReturn(sourceMeasure);
 
-        Mockito.when(fhirOrchestrationGatewayService.convert(Mockito.any(), Mockito.anyBoolean())).thenReturn(convertResult);
+        ManageMeasureSearchModel.Result fhirMeasureResult = new ManageMeasureSearchModel.Result();
+        fhirMeasureResult.setId("fhirMeasureId");
+        Mockito.when(measureCloningService.cloneForFhir(Mockito.any())).thenReturn(fhirMeasureResult);
 
-        ManageMeasureSearchModel.Result fhirMeasure = new ManageMeasureSearchModel.Result();
-        fhirMeasure.setId("fhirMeasureId");
-        Mockito.when(measureCloningService.cloneForFhir(Mockito.any())).thenReturn(fhirMeasure);
+        SaveUpdateCQLResult saveUpdateCQLResult = new SaveUpdateCQLResult();
 
-        service.convert(sourceMeasure, loggedinUserId);
+        Mockito.when(measureLibraryService.saveCQLFile(Mockito.anyString(), Mockito.anyString())).thenReturn(saveUpdateCQLResult);
 
-        Mockito.verify(measureDAO, Mockito.times(1)).delete(Mockito.any(Measure.class));
+        service.convert(sourceMeasureResult, loggedinUserId);
+
+        Mockito.verify(existingFhirMeasures, Mockito.times(1)).clear();
     }
 }

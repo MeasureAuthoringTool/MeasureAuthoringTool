@@ -187,35 +187,30 @@ public class CheckUserLastLoginTask {
         logger.info(dayLimit + "daysAgo:" + daysAgo);
 
         for (User user : users) {
-            Date lastSignInDate = user.getSignInDate();
-
             if (!checkValidUser(user)) {
                 continue;
             }
 
+            Date lastSignInDate = user.getSignInDate();
             // MAT-6582:  If a user has never signed in, look at activation date
             if (lastSignInDate == null) {
-                Date activationDate = user.getActivationDate();
-                activationDate = DateUtils.truncate(activationDate, Calendar.DATE);
+                Date activationDate = DateUtils.truncate(user.getActivationDate(), Calendar.DATE);
                 logger.info(USER_LOG_LABEL + user.getFirstName() + "  :::: activationDate :::::   " + activationDate);
-                if (emailType.equals(WARNING_EMAIL_FLAG) && activationDate.equals(daysAgo)
-                     || ( emailType.equals(EXPIRY_EMAIL_FLAG) && (activationDate.before(daysAgo) || activationDate.equals(daysAgo)) ) ) {
+                if (isUserPastLimit(emailType, activationDate, daysAgo)) {
                     logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who has never logged in and was activated over " + dayLimit + LOG_DAYS_AGO);
                     returnUserList.add(user);
                 } else {
                     logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who has never logged in and was activated " + dayLimit + LOG_DAYS_AGO);
                 }
-                continue;
-            }
-
-            lastSignInDate = DateUtils.truncate(lastSignInDate, Calendar.DATE);
-            logger.info(USER_LOG_LABEL + user.getFirstName() + "  :::: lastSignInDate :::::   " + lastSignInDate);
-            if (emailType.equals(WARNING_EMAIL_FLAG) && lastSignInDate.equals(daysAgo)
-                    || ( emailType.equals(EXPIRY_EMAIL_FLAG) && (lastSignInDate.before(daysAgo) || lastSignInDate.equals(daysAgo)) ) ) {
-                logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who last logged " + dayLimit + LOG_DAYS_AGO);
-                returnUserList.add(user);
             } else {
-                logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who was not last logged " + dayLimit + LOG_DAYS_AGO);
+                lastSignInDate = DateUtils.truncate(lastSignInDate, Calendar.DATE);
+                logger.info(USER_LOG_LABEL + user.getFirstName() + "  :::: lastSignInDate :::::   " + lastSignInDate);
+                if(isUserPastLimit(emailType, lastSignInDate, daysAgo)) {
+                    returnUserList.add(user);
+                    logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who last logged " + dayLimit + LOG_DAYS_AGO);
+                } else {
+                    logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who was not last logged " + dayLimit + LOG_DAYS_AGO);
+                }
             }
         }
         logger.info(" :: checkLastLogin Method END :: ");
@@ -238,6 +233,15 @@ public class CheckUserLastLoginTask {
         user.setStatus(status);
         userDAO.save(user);
         logger.info(" :: updateUserTerminationDate Method END :: ");
+    }
+
+    private boolean isUserPastLimit(String emailType, Date start, Date limit) {
+        if (emailType.equals(WARNING_EMAIL_FLAG)) {
+            return start.equals(limit);
+        } else if (emailType.equals(EXPIRY_EMAIL_FLAG)) {
+            return start.before(limit) || start.equals(limit);
+        }
+        return false;
     }
 
     /**

@@ -31,7 +31,7 @@ import mat.dao.IDAO;
 @Repository
 public abstract class GenericDAO<T, ID extends Serializable> implements IDAO<T, ID> {
 
-    private final Class<T> clazz;
+    protected final Class<T> clazz;
 
     private final Class<ID> clazzId;
 

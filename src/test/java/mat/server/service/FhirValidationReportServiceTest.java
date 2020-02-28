@@ -51,7 +51,7 @@ class FhirValidationReportServiceTest {
         measure.setVersion("v2.0.0");
         measure.setMeasureModel("QDM");
         measure.setDraft(true);
-        Mockito.when(measureDAO.find(measureId)).thenReturn(measure);
+        Mockito.when(measureDAO.getMeasureByMeasureId(measureId)).thenReturn(measure);
 
         Configuration configuration = new Configuration();
         configuration.setClassForTemplateLoading(getClass(), "/templates");
@@ -82,7 +82,7 @@ class FhirValidationReportServiceTest {
     @Test
     void testGetFhirConversionReportForInvalidMeasureId() throws IOException, TemplateException {
         String measureId = "notAvalidId";
-        Mockito.when(measureDAO.find(measureId)).thenReturn(null);
+        Mockito.when(measureDAO.getMeasureByMeasureId(measureId)).thenReturn(null);
 
         Configuration configuration = new Configuration();
         configuration.setClassForTemplateLoading(getClass(), "/templates");

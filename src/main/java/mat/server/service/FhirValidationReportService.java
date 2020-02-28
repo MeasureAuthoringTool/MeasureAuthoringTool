@@ -59,7 +59,7 @@ public class FhirValidationReportService {
      */
     public String getFhirConversionReportForMeasure(String measureId) throws IOException, TemplateException {
         ConversionResultDto conversionResult = null;
-        Measure measure = measureDAO.find(measureId);
+        Measure measure = measureDAO.getMeasureByMeasureId(measureId);
         if (measure != null) {
             conversionResult = validateFhirConversion(measureId, measure.isDraft());
         }

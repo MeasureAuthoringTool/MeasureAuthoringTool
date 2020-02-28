@@ -309,7 +309,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
                     predicatesList.add(cb.equal(root.get(LIBRARY_MODEL_TYPE), "QDM"));
                     break;
                 default:
-                    throw new RuntimeException("ModelType cant be QDM_QDM for libraries.");
+                    throw new IllegalStateException("ModelType cant be QDM_QDM for libraries.");
             }
         }
 

@@ -525,7 +525,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
                     predicatesList.add(cb.isNull(root.get(MEASURE_MODEL)));
                     break;
                 default:
-                    throw new RuntimeException("ModelType cant be ALL here.");
+                    throw new IllegalStateException("ModelType cant be ALL here.");
             }
         }
 

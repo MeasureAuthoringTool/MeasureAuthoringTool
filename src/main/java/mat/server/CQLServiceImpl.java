@@ -415,6 +415,7 @@ public class CQLServiceImpl implements CQLService {
             result.setSuccess(true);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            result.setSuccess(false);
         }
 
         return result;

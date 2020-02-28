@@ -1,10 +1,14 @@
 package mat.model.clause;
 
-public class ModelTypeHelper {
+public final class ModelTypeHelper {
 
     public static final String FHIR = "FHIR";
     public static final String QDM = "QDM";
     public static final String PRE_CQL = "Pre-CQL";
+
+    private ModelTypeHelper() {
+        // Not for instantiation.
+    }
 
     public static String defaultTypeIfBlank(String type) {
         return type == null || type.trim().isEmpty() ? PRE_CQL : type;

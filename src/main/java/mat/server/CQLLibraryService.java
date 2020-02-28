@@ -352,7 +352,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                     processor.updateCQLLibraryName(libraryName);
                     versionLibraryXml = processor.transform(processor.getOriginalDoc());
                 } catch (XPathExpressionException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
             }
 
@@ -657,8 +657,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         try {
             Node cqlTemplateNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/cqlTemplate");
             Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), mainXPath + "/cqlLookUp");
-            String xPath_ID = mainXPath + "/cqlLookUp/child::node()/*[@id]";
-            String xPath_UUID = mainXPath + "/cqlLookUp/child::node()/*[@uuid]";
+            String xPathId = mainXPath + "/cqlLookUp/child::node()/*[@id]";
+            String xPathUUID = mainXPath + "/cqlLookUp/child::node()/*[@uuid]";
             if (cqlTemplateNode != null) {
 
                 if (cqlTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
@@ -666,7 +666,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                             .getNodeValue().split(",");
                     for (String changeAttribute : attributeToBeModified) {
                         if (changeAttribute.equalsIgnoreCase("id")) {
-                            NodeList nodesForId = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPath_ID);
+                            NodeList nodesForId = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathId);
                             for (int i = 0; i < nodesForId.getLength(); i++) {
                                 Node node = nodesForId.item(i);
                                 node.getAttributes().getNamedItem("id")
@@ -674,7 +674,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                             }
                         } else if (changeAttribute.equalsIgnoreCase("uuid")) {
                             NodeList nodesForUUId = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(),
-                                    xPath_UUID);
+                                    xPathUUID);
                             for (int i = 0; i < nodesForUUId.getLength(); i++) {
                                 Node node = nodesForUUId.item(i);
                                 node.getAttributes().getNamedItem("uuid")
@@ -709,12 +709,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                         }
                     }
                 }
-
             }
-            System.out.println(xmlProcessor.transform(cqlLookUpNode));
+            logger.info(xmlProcessor.transform(cqlLookUpNode));
             cqlLookUp = xmlProcessor.transform(cqlLookUpNode);
         } catch (XPathExpressionException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
         return cqlLookUp;
@@ -728,7 +727,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         try {
             templateFile = new File(templateFileUrl.toURI());
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         XmlProcessor templateXMLProcessor = new XmlProcessor(templateFile);
         return templateXMLProcessor;
@@ -744,9 +743,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
             cqlModel = CQLUtilityClass.getCQLModelFromXML(data);
 
-            cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
+            cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return cqlFileString;
     }
@@ -792,7 +791,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             try {
                 xmlString = new String(library.getCqlXML().getBytes(1l, (int) library.getCqlXML().length()));
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e);
             }
         }
         return xmlString;
@@ -1398,10 +1397,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         String result = null;
         try {
             result = xmlProcessor.appendNode(newXml, nodeName, parentNodeName);
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (SAXException| IOException e) {
+            logger.error(e);
         }
         return result;
     }

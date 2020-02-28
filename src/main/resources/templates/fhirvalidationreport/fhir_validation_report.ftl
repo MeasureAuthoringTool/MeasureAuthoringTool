@@ -16,11 +16,12 @@
             <#else>
                 <div class="report-body">
                     <#include "validation_report_header.ftl" />
-                    <#include "fields_to_reconsile.ftl" />
+<#--                    <#include "fields_to_reconsile.ftl" />-->
                     <#include "valueset_fhir_validation_errors.ftl" />
                     <#include "library_fhir_validation_errors.ftl" />
                     <#include "measure_fhir_validation_errors.ftl" />
-                    <#include "cql_conversion_errors.ftl" />
+                    <#include "qdm_cql_conversion_errors.ftl" />
+                    <#include "fhir_cql_conversion_errors.ftl" />
                 </div>
             </#if>
         </div>

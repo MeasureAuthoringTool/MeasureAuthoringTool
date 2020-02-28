@@ -98,6 +98,10 @@ public class FhirValidationReportService {
         if (conversionResultDto != null && measure != null) {
             if (!("SUCCESS").equals(conversionResultDto.getOutcome().name())) {
 
+
+                if(!conversionResultDto.getErrorReason().isEmpty()) {
+                    paramsMap.put("ErrorReason", conversionResultDto.getErrorReason());
+                }
                 // ValueSet FHIR validation errors
                 List<FhirValidationResult> valueSetFhirValidationErrors = new ArrayList<>();
                 if (CollectionUtils.isNotEmpty(conversionResultDto.getValueSetConversionResults())) {
@@ -110,8 +114,8 @@ public class FhirValidationReportService {
 
                 // Library FHIR validation errors
                 List<FhirValidationResult> libraryFhirValidationErrors = new ArrayList<>();
-                Set<CqlConversionError> cqlConversionErrors = new HashSet<>();
-                Set<MatCqlConversionException> matCqlConversionErrors = null;
+                Set<CqlConversionError> qdmCqlConversionErrors = new HashSet<>();
+                Set<MatCqlConversionException> qdmMatCqlConversionErrors = null;
                 Set<CqlConversionError> fhirCqlConversionErrors = null;
                 Set<MatCqlConversionException> fhirMatCqlConversionErrors = null;
                 if (CollectionUtils.isNotEmpty(conversionResultDto.getLibraryConversionResults())) {
@@ -126,10 +130,10 @@ public class FhirValidationReportService {
                             // CQL conversion errors
                             if (results.getCqlConversionResult() != null) {
                                 if (CollectionUtils.isNotEmpty(results.getCqlConversionResult().getCqlConversionErrors())) {
-                                    cqlConversionErrors = results.getCqlConversionResult().getCqlConversionErrors();
+                                    qdmCqlConversionErrors = results.getCqlConversionResult().getCqlConversionErrors();
                                 }
                                 if (CollectionUtils.isNotEmpty(results.getCqlConversionResult().getMatCqlConversionErrors())) {
-                                    matCqlConversionErrors = results.getCqlConversionResult().getMatCqlConversionErrors();
+                                    qdmMatCqlConversionErrors = results.getCqlConversionResult().getMatCqlConversionErrors();
                                 }
                                 if (CollectionUtils.isNotEmpty(results.getCqlConversionResult().getFhirCqlConversionErrors())) {
                                     fhirCqlConversionErrors = results.getCqlConversionResult().getFhirCqlConversionErrors();
@@ -153,8 +157,8 @@ public class FhirValidationReportService {
                 paramsMap.put("valueSetFhirValidationErrors", valueSetFhirValidationErrors);
                 paramsMap.put("libraryFhirValidationErrors", libraryFhirValidationErrors);
                 paramsMap.put("measureFhirValidationErrors", measureFhirValidationErrors);
-                paramsMap.put("cqlConversionErrors", cqlConversionErrors);
-                paramsMap.put("matCqlConversionErrors", matCqlConversionErrors);
+                paramsMap.put("qdmCqlConversionErrors", qdmCqlConversionErrors);
+                paramsMap.put("qdmMatCqlConversionErrors", qdmMatCqlConversionErrors);
                 paramsMap.put("fhirCqlConversionErrors", fhirCqlConversionErrors);
                 paramsMap.put("fhirMatCqlConversionErrors", fhirMatCqlConversionErrors);
 

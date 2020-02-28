@@ -16,7 +16,7 @@ public abstract class SearchModel implements IsSerializable {
 	protected String modifiedOwner;
 	protected String owner;
 
-	protected ModelType modelType;
+	protected ModelType modelType = ModelType.ALL;
 
 	protected VersionType versionType;
 	

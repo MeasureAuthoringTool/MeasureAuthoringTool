@@ -81,10 +81,8 @@ public class AdvancedSearchPanel {
 		anchorPanel = new HorizontalPanel();
 		anchorPanel.setStyleName("advancedSearchAnchor");
 		anchorPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		if (!isMeasure) {
-			buildModelType();
-			anchorPanel.add(modelTypeListBox);
-		}
+		buildModelType();
+		anchorPanel.add(modelTypeListBox);
 		addAdvancedSearchLink(forView);
 		anchorPanel.add(advanceSearchAnchor);
 	}
@@ -169,18 +167,16 @@ public class AdvancedSearchPanel {
 	}
 
 	private void buildModelType() {
-		if (!isMeasure) {
-			modelTypeListBox = new ListBox();
-			modelTypeListBox.getElement().setClassName("navPill");
-			modelTypeListBox.setWidth("200px");
-			modelTypeListBox.getElement().getStyle().setMarginRight(15, Style.Unit.PX);
-			modelTypeListBox.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
-			modelTypeListBox.setId("modelType");
-			modelTypeListBox.setHeight(HEIGHT_OF_BOXES);
-			modelTypeListBox.addItem("Model Type: All", SearchModel.ModelType.ALL.toString());
-			modelTypeListBox.addItem("Model Type: FHIR / CQL Only", SearchModel.ModelType.FHIR.toString());
-			modelTypeListBox.addItem("Model Type: QDM / CQL Only", SearchModel.ModelType.QDM.toString());
-		}
+		modelTypeListBox = new ListBox();
+		modelTypeListBox.getElement().setClassName("navPill");
+		modelTypeListBox.setWidth("200px");
+		modelTypeListBox.getElement().getStyle().setMarginRight(15, Style.Unit.PX);
+		modelTypeListBox.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
+		modelTypeListBox.setId("modelType");
+		modelTypeListBox.setHeight(HEIGHT_OF_BOXES);
+		modelTypeListBox.addItem("Model Type: All", SearchModel.ModelType.ALL.toString());
+		modelTypeListBox.addItem("Model Type: FHIR / CQL Only", SearchModel.ModelType.FHIR.toString());
+		modelTypeListBox.addItem("Model Type: QDM / CQL Only", SearchModel.ModelType.QDM.toString());
 	}
 	
 	private void buildStateSection(String type, String pluralType) {

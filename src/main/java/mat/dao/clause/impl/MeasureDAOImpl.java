@@ -70,6 +70,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     private static final String PATIENT_BASED = "patientBased";
     private static final String MEASURE_SCORING_TYPE = "measureScoring";
     private static final String SECURITY_ROLE_USER = "3";
+    private static final String MEASURE_MODEL = "measureModel";
 
     @Autowired
     private UserDAO userDAO;
@@ -510,6 +511,10 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
         if (StringUtils.isNotBlank(measureSearchModel.getCqlLibraryName())) {
             predicatesList.add(cb.like(root.get("cqlLibraryName"), "%" + measureSearchModel.getCqlLibraryName() + "%"));
+        }
+
+        if (measureSearchModel.getModelType() != SearchModel.ModelType.ALL) {
+            predicatesList.add(cb.equal(root.get(MEASURE_MODEL), measureSearchModel.getModelType().name()));
         }
 
         if (measureSearchModel.isDraft() != VersionType.ALL) {

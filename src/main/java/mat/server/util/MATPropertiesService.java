@@ -1,63 +1,46 @@
 package mat.server.util;
 
-/**
- * The Class MATPropertiesService.
- */
+import org.springframework.beans.factory.annotation.Value;
+
 public class MATPropertiesService {
-	
-	
-	private static MATPropertiesService instance = new MATPropertiesService();
-	
-	/** The current release version. */
-	private  static String currentReleaseVersion;
-	
-	/** The qmd version. */
-	private  static String qmdVersion;
-	
-	
-	
-	public static MATPropertiesService get(){
-		return instance;
-	}
-	
-	
 
-	/**
-	 * Gets the current release version.
-	 *
-	 * @return the current release version
-	 */
-	public String getCurrentReleaseVersion() {
-		return currentReleaseVersion;
-	}
+    private static MATPropertiesService instance = new MATPropertiesService();
 
-	/**
-	 * Sets the current release version.
-	 *
-	 * @param currentReleaseVersion the new current release version
-	 */
-	public void setCurrentReleaseVersion(String releaseVersion) {
-		
-		currentReleaseVersion = releaseVersion;
-		System.out.println("**************************CurrentRelase Version:  "+currentReleaseVersion);
-	}
 
-	/**
-	 * Gets the qmd version.
-	 *
-	 * @return the qmd version
-	 */
-	public String getQmdVersion() {
-		return qmdVersion;
-	}
+    @Value("${mat.measure.current.release.version}")
+    private String currentReleaseVersion;
 
-	/**
-	 * Sets the qmd version.
-	 *
-	 * @param qmdVersion the new qmd version
-	 */
-	public void setQmdVersion(String qdm_version) {
-		qmdVersion = qdm_version;
-	}
-	
+    @Value("${mat.measure.current.qdm.version}")
+    private String qdmVersion;
+
+    @Value("${mat.measure.current.fhir.version}")
+    private String fhirVersion;
+
+    public static MATPropertiesService get() {
+        return instance;
+    }
+
+    public String getCurrentReleaseVersion() {
+        return currentReleaseVersion;
+    }
+
+    public void setCurrentReleaseVersion(String currentReleaseVersion) {
+        this.currentReleaseVersion = currentReleaseVersion;
+    }
+
+    public String getQdmVersion() {
+        return qdmVersion;
+    }
+
+    public void setQdmVersion(String qdmVersion) {
+        this.qdmVersion = qdmVersion;
+    }
+
+    public String getFhirVersion() {
+        return fhirVersion;
+    }
+
+    public void setFhirVersion(String fhirVersion) {
+        this.fhirVersion = fhirVersion;
+    }
 }

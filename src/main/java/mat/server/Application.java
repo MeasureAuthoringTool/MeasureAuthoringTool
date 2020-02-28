@@ -4,9 +4,10 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 import javax.sql.DataSource;
@@ -52,6 +53,7 @@ import liquibase.integration.spring.SpringLiquibase;
 import mat.dao.impl.AuditEventListener;
 import mat.dao.impl.AuditInterceptor;
 import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
+import mat.server.util.MATPropertiesService;
 
 @Configuration
 @ComponentScan({"mat.model", "mat.dao", "mat.dao.impl", "mat.model.clause", "mat.server", "mat.hibernate"})
@@ -147,24 +149,24 @@ public class Application extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http
-            .authorizeRequests()
+                .authorizeRequests()
                 .antMatchers("/", "/Login.html").permitAll()
                 .antMatchers("/Mat.html").authenticated()
                 .antMatchers("/Bonnie.html").authenticated()
                 .antMatchers("/mat/**").authenticated()
                 .and()
-            .formLogin()
+                .formLogin()
                 .loginPage("/Login.html")
                 .defaultSuccessUrl("/Mat.html")
                 .and()
-            .formLogin()
+                .formLogin()
                 .loginPage("/Login.html")
                 .defaultSuccessUrl("/Bonnie.html")
                 .and()
                 .logout()
-            .permitAll()
+                .permitAll()
                 .and()
-            .sessionManagement()
+                .sessionManagement()
                 .invalidSessionUrl("/Login.html")
                 .maximumSessions(1);
     }
@@ -207,16 +209,25 @@ public class Application extends WebSecurityConfigurerAdapter {
     @Bean
     public CacheManager cacheManager() {
         final SimpleCacheManager cacheManager = new SimpleCacheManager();
-        List<Cache> caches = new ArrayList<>();
-        caches.add(new ConcurrentMapCache("featureFlags"));
-        caches.add(new ConcurrentMapCache("fhirAttributesAndDataTypes"));
+        List<Cache> caches = Arrays.asList(
+                "ConversionResultDto.validate",
+                "featureFlags",
+                "fhirAttributesAndDataTypes")
+                .stream().map(ConcurrentMapCache::new)
+                .collect(Collectors.toList());
         cacheManager.setCaches(caches);
         return cacheManager;
     }
 
+    @Bean
+    public MATPropertiesService matPropertiesService() {
+        return MATPropertiesService.get();
+    }
+
     @Scheduled(fixedRateString = "${mat.cache.expiry.time}")
     public void clearCacheSchedule() {
-        cacheManager().getCache("featureFlags").clear();
-        cacheManager().getCache("fhirAttributesAndDataTypes").clear();
+        cacheManager().getCacheNames().stream().forEach(cacheName ->
+                cacheManager().getCache(cacheName).clear()
+        );
     }
 }

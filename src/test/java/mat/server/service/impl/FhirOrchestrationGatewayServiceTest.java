@@ -2,6 +2,7 @@ package mat.server.service.impl;
 
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,13 +22,17 @@ import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 public class FhirOrchestrationGatewayServiceTest {
 
     @Mock
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
     @InjectMocks
-    FhirOrchestrationGatewayService service;
+    private FhirOrchestrationGatewayServiceImpl service;
+
+    @BeforeEach
+    public void setUp() {
+        Whitebox.setInternalState(service, "fhirMeasureOrchestrationUrl", "http://localhost:9080/orchestration/measure");
+    }
 
     @Test
     public void testValidateDraft() {
-        Whitebox.setInternalState(service, "fhirOrchestrationUrl", "http://localhost:9080/orchestration/measure");
         ResponseEntity<ConversionResultDto> responseEntity = new ResponseEntity<>(new ConversionResultDto(), HttpStatus.OK);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.any(Map.class))).thenReturn(responseEntity);
         service.validate("measureId", true);
@@ -38,7 +43,6 @@ public class FhirOrchestrationGatewayServiceTest {
 
     @Test
     public void testValidate() {
-        Whitebox.setInternalState(service, "fhirOrchestrationUrl", "http://localhost:9080/orchestration/measure");
         ResponseEntity<ConversionResultDto> responseEntity = new ResponseEntity<>(new ConversionResultDto(), HttpStatus.OK);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.any(Map.class))).thenReturn(responseEntity);
         service.validate("measureId", false);
@@ -49,7 +53,6 @@ public class FhirOrchestrationGatewayServiceTest {
 
     @Test
     public void testConvertDraft() {
-        Whitebox.setInternalState(service, "fhirOrchestrationUrl", "http://localhost:9080/orchestration/measure");
         ResponseEntity<ConversionResultDto> responseEntity = new ResponseEntity<>(new ConversionResultDto(), HttpStatus.OK);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.any(Map.class))).thenReturn(responseEntity);
         service.convert("measureId", true);
@@ -60,7 +63,6 @@ public class FhirOrchestrationGatewayServiceTest {
 
     @Test
     public void testConvert() {
-        Whitebox.setInternalState(service, "fhirOrchestrationUrl", "http://localhost:9080/orchestration/measure");
         ResponseEntity<ConversionResultDto> responseEntity = new ResponseEntity<>(new ConversionResultDto(), HttpStatus.OK);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.any(Map.class))).thenReturn(responseEntity);
         service.convert("measureId", false);

@@ -1405,6 +1405,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void buildAdvancedSearchModel(MeasureSearchModel searchModel) {
+        searchModel.setModelType(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getModelTypeValue());
         searchModel.setCqlLibraryName(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getCqlLibraryNameByValue());
         searchModel.setIsDraft(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getSearchStateValue());
         searchModel.setPatientBased(searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getPatientBasedValue());

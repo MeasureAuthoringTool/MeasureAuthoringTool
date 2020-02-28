@@ -514,7 +514,17 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         }
 
         if (measureSearchModel.getModelType() != SearchModel.ModelType.ALL) {
-            predicatesList.add(cb.equal(root.get(MEASURE_MODEL), measureSearchModel.getModelType().name()));
+            switch (measureSearchModel.getModelType()) {
+                case FHIR:
+                    predicatesList.add(cb.equal(root.get(MEASURE_MODEL), measureSearchModel.getModelType().name()));
+                    break;
+                case QDM_CQL:
+                    predicatesList.add(cb.equal(root.get(MEASURE_MODEL), "QDM"));
+                    break;
+                case QDM_QDM:
+                    predicatesList.add(cb.isNull(root.get(MEASURE_MODEL)));
+                    break;
+            }
         }
 
         if (measureSearchModel.isDraft() != VersionType.ALL) {

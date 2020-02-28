@@ -301,7 +301,15 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
         }
 
         if (librarySearchModel.getModelType() != ModelType.ALL) {
-            predicatesList.add(cb.equal(root.get(LIBRARY_MODEL_TYPE), librarySearchModel.getModelType().name()));
+            switch (librarySearchModel.getModelType()) {
+                case FHIR:
+                    predicatesList.add(cb.equal(root.get(LIBRARY_MODEL_TYPE), librarySearchModel.getModelType().name()));
+                    break;
+                case QDM_CQL:
+                    predicatesList.add(cb.equal(root.get(LIBRARY_MODEL_TYPE), "QDM"));
+                    break;
+                //Can't be ModelType.QDM_QDM for model libraries, that is not in the GUI.
+            }
         }
 
         if (librarySearchModel.getModifiedDate() > 0) {

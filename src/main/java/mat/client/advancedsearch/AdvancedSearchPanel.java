@@ -176,7 +176,10 @@ public class AdvancedSearchPanel {
 		modelTypeListBox.setHeight(HEIGHT_OF_BOXES);
 		modelTypeListBox.addItem("Model Type: All", SearchModel.ModelType.ALL.toString());
 		modelTypeListBox.addItem("Model Type: FHIR / CQL Only", SearchModel.ModelType.FHIR.toString());
-		modelTypeListBox.addItem("Model Type: QDM / CQL Only", SearchModel.ModelType.QDM.toString());
+		modelTypeListBox.addItem("Model Type: QDM / CQL Only", SearchModel.ModelType.QDM_CQL.toString());
+		if (isMeasure) {
+			modelTypeListBox.addItem("Model Type: QDM / QDM Only", SearchModel.ModelType.QDM_QDM.toString());
+		}
 	}
 	
 	private void buildStateSection(String type, String pluralType) {

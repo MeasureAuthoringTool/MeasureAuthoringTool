@@ -3,6 +3,7 @@ package mat.server.service.impl;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -63,10 +64,13 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         ConversionResultDto conversionResult = validateSourceMeasureForFhirConversion(sourceMeasure);
         fhirConvertResultResponse.setValidationStatus(createValidationStatus(conversionResult));
 
-        Optional<String> fhirCqlOpt = conversionResult.getLibraryConversionResults().stream().findFirst()
-                .map(libRes -> libRes.getCqlConversionResult())
+        Optional<String> fhirCqlOpt = Optional.ofNullable(conversionResult.getLibraryConversionResults()).stream()
+                .flatMap(libConvRes -> libConvRes.stream())
+                .map(cqlLibRes -> cqlLibRes.getCqlConversionResult())
                 .filter(el -> el != null)
-                .map(el -> el.getFhirCql());
+                .map(el -> el.getFhirCql())
+                .filter(StringUtils::isNotBlank)
+                .findFirst();
 
         if (!fhirCqlOpt.isPresent()) {
             fhirConvertResultResponse.setSuccess(false);

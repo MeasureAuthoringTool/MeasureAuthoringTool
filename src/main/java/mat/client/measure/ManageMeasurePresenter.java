@@ -629,12 +629,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             public void onSuccess(FhirConvertResultResponse response) {
                 GWT.log("Measure conversion has completed.");
                 setSearchingBusy(false);
-                if (!response.getValidationStatus().isValidationPassed()) {
-                    GWT.log("FHIR measures has validation errors.");
-                } else if (!response.isCqlSaved()) {
-                    GWT.log("FHIR measures has CQL errors.");
+                if (!response.isSuccess()) {
+                    GWT.log("Measure cannot be converted due to FHIR validation errors.");
+                    showFhirConversionError(MatContext.get().getMessageDelegate().getCannotConvertMeasureValidationFailedMessage());
                 } else {
-                    GWT.log("FHIR conversion was successful.");
+                    GWT.log("Your measure was successfully converted to FHIR.");
                 }
                 showFhirValidationReport(response.getSourceMeasure().getId());
                 displaySearch();

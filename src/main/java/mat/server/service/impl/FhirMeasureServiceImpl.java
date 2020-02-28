@@ -1,6 +1,7 @@
 package mat.server.service.impl;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,17 +63,21 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         ConversionResultDto conversionResult = validateSourceMeasureForFhirConversion(sourceMeasure);
         fhirConvertResultResponse.setValidationStatus(createValidationStatus(conversionResult));
 
-        String fhirCql = conversionResult.getLibraryConversionResults().stream().findFirst()
+        Optional<String> fhirCqlOpt = conversionResult.getLibraryConversionResults().stream().findFirst()
                 .map(libRes -> libRes.getCqlConversionResult())
                 .filter(el -> el != null)
-                .map(el -> el.getFhirCql()).orElseThrow(() -> new MatException("Cannot clone QDM measure. No FHIR CQL returned."));
+                .map(el -> el.getFhirCql());
 
-        ManageMeasureSearchModel.Result fhirMeasure = cloneSourceToFhir(sourceMeasureDetails);
-        fhirConvertResultResponse.setFhirMeasure(fhirMeasure);
-        SaveUpdateCQLResult cqlResult = measureLibraryService.saveCQLFile(fhirMeasure.getId(), fhirCql);
-        fhirConvertResultResponse.setCqlSaved(cqlResult.isSuccess());
+        if (!fhirCqlOpt.isPresent()) {
+            fhirConvertResultResponse.setSuccess(false);
+        } else {
+            ManageMeasureSearchModel.Result fhirMeasure = cloneSourceToFhir(sourceMeasureDetails);
+            fhirConvertResultResponse.setFhirMeasure(fhirMeasure);
+            SaveUpdateCQLResult cqlResult = measureLibraryService.saveCQLFile(fhirMeasure.getId(), fhirCqlOpt.get());
+            fhirConvertResultResponse.setSuccess(cqlResult.isSuccess());
 
-        measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
+            measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
+        }
 
         return fhirConvertResultResponse;
     }

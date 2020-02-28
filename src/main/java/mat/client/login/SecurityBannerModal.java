@@ -68,7 +68,7 @@ public class SecurityBannerModal extends Modal {
         FlowPanel headerPanel = new FlowPanel();
 
         Anchor paperworkAnchor = new Anchor();
-        paperworkAnchor.setText("Paperwork Reudction Act");
+        paperworkAnchor.setText("Paperwork Reduction Act");
         paperworkAnchor.addClickHandler(e -> {
             this.hide();
             paperworkReductionActPopup.show();

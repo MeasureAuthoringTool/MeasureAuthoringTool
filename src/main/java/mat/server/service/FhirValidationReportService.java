@@ -163,18 +163,19 @@ public class FhirValidationReportService {
                 paramsMap.put("fhirMatCqlConversionErrors", fhirMatCqlConversionErrors);
 
             }
+
+            Instant instant = Instant.parse(conversionResultDto.getModified());
+            paramsMap.put("runDate", DateUtility.formatInstant(instant, DATE_FORMAT));
+            paramsMap.put("runTime", DateUtility.formatInstant(instant, TIME_FORMAT));
+            paramsMap.put("measureName", measure.getDescription());
+            paramsMap.put("measureVersion", measure.getVersion());
+            paramsMap.put("modelType", MeasureDetailsUtil.defaultTypeIfBlank(measure.getMeasureModel()));
+
         } else if (measure == null) {
             paramsMap.put("noMeasureFoundError", NO_MEASURE_FOUND_ERROR);
         } else {
             paramsMap.put("conversionServiceError", CONVERSION_SERVICE_ERROR);
         }
-
-        Instant instant = Instant.parse(conversionResultDto.getModified());
-        paramsMap.put("runDate", DateUtility.formatInstant(instant, DATE_FORMAT));
-        paramsMap.put("runTime", DateUtility.formatInstant(instant, TIME_FORMAT));
-        paramsMap.put("measureName", measure.getDescription());
-        paramsMap.put("measureVersion", measure.getVersion());
-        paramsMap.put("modelType", MeasureDetailsUtil.defaultTypeIfBlank(measure.getMeasureModel()));
 
         return FreeMarkerTemplateUtils.processTemplateIntoString(
                 freemarkerConfiguration.getTemplate("fhirvalidationreport/fhir_validation_report.ftl"),

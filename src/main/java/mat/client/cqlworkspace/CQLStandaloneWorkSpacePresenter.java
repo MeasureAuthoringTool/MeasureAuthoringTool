@@ -1254,7 +1254,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					if (libraryVersion.startsWith("v")) {
 						libraryVersion = libraryVersion.substring(1);
 					}
-					cqlWorkspaceView.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, libraryVersion, result.getCqlModel().getQdmVersion(),
+					cqlWorkspaceView.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, libraryVersion, result.getCqlModel().getUsingModelVersion(),
 							MeasureDetailsUtil.getModelTypeDisplayName(MatContext.get().getCurrentCQLLibraryModelType()), cqlLibraryComment);
 				}
 

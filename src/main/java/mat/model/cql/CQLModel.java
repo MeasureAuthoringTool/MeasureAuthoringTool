@@ -15,8 +15,8 @@ public class CQLModel implements IsSerializable{
 	private String libraryName;
 	private String versionUsed;
 	private String libraryComment;
-	private String qdmVersion;
-	private String usingName;
+	private String usingModelVersion;
+	private String usingModel;
 	private String context;
 
 	private List<CQLQualityDataSetDTO> valueSetList = new ArrayList<CQLQualityDataSetDTO>();
@@ -118,17 +118,17 @@ public class CQLModel implements IsSerializable{
 	public void setLibraryComment(String libraryComment) {
 		this.libraryComment = libraryComment;
 	}
-	public String getQdmVersion() {
-		return qdmVersion;
+	public String getUsingModelVersion() {
+		return usingModelVersion;
 	}
-	public void setQdmVersion(String qdmVersion) {
-		this.qdmVersion = qdmVersion;
+	public void setUsingModelVersion(String usingModelVersion) {
+		this.usingModelVersion = usingModelVersion;
 	}
-	public String getUsingName() {
-		return usingName;
+	public String getUsingModel() {
+		return usingModel;
 	}
-	public void setUsingName(String name) {
-		this.usingName = name;
+	public void setUsingModel(String name) {
+		this.usingModel = name;
 	}
 	
 	public Map<CQLIncludeLibrary, CQLModel> getIncludedLibrarys() {

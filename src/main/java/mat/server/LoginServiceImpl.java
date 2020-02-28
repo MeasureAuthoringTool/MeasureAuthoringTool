@@ -59,14 +59,20 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	
 	private static final String SUCCESS = "SUCCESS";
 	private static final String FAILURE = "FAILURE";
-	static int AUDIT_LOG_USER_ID_LENGTH = 40;
+	private static final int AUDIT_LOG_USER_ID_LENGTH = 40;
 	
-	@Autowired private UserDAO userDAO;
-	@Autowired private UserPasswordHistoryDAO userPasswordHistoryDAO;
-	@Autowired private UserService userService;	
-	@Autowired private LoginCredentialService loginCredentialService;
-	@Autowired private TransactionAuditService auditService;
-	@Autowired private SecurityQuestionsService securityQuestionsService;
+	@Autowired
+	private UserDAO userDAO;
+	@Autowired
+	private UserPasswordHistoryDAO userPasswordHistoryDAO;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private LoginCredentialService loginCredentialService;
+	@Autowired
+	private TransactionAuditService auditService;
+	@Autowired
+	private SecurityQuestionsService securityQuestionsService;
 	
 	/* 
 	 * {@inheritDoc}
@@ -192,8 +198,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	/**
 	 * Method to find IP address of Client *.
 	 * 
-	 * @param request
-	 *            the request
+	 * @param request the request
 	 * @return the client ip addr
 	 */
 	private String getClientIpAddr(HttpServletRequest request) {

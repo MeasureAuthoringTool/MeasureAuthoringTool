@@ -524,6 +524,8 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
                 case QDM_QDM:
                     predicatesList.add(cb.isNull(root.get(MEASURE_MODEL)));
                     break;
+                default:
+                    throw new RuntimeException("ModelType cant be ALL here.");
             }
         }
 

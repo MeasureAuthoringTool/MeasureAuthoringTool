@@ -308,7 +308,8 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
                 case QDM_CQL:
                     predicatesList.add(cb.equal(root.get(LIBRARY_MODEL_TYPE), "QDM"));
                     break;
-                //Can't be ModelType.QDM_QDM for model libraries, that is not in the GUI.
+                default:
+                    throw new RuntimeException("ModelType cant be QDM_QDM for libraries.");
             }
         }
 

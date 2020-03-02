@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import gov.cms.mat.fhir.rest.dto.CqlConversionError;
 import gov.cms.mat.fhir.rest.dto.FhirValidationResult;
@@ -101,8 +102,7 @@ public class FhirValidationReportService {
         paramsMap.put("matVersion", currentMatVersion);
 
         if (conversionResultDto != null && measure != null) {
-            if (!("SUCCESS").equals(conversionResultDto.getOutcome().name())) {
-
+            if (ConversionOutcome.SUCCESS != conversionResultDto.getOutcome()) {
 
                 if(!conversionResultDto.getErrorReason().isEmpty()) {
                     paramsMap.put("ErrorReason", conversionResultDto.getErrorReason());

@@ -9,7 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import gov.cms.mat.fhir.rest.dto.*;
+import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
+import gov.cms.mat.fhir.rest.dto.CqlConversionError;
+import gov.cms.mat.fhir.rest.dto.FhirValidationResult;
+import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
+import gov.cms.mat.fhir.rest.dto.MatCqlConversionException;
+import gov.cms.mat.fhir.rest.dto.ValueSetConversionResults;
 import mat.shared.model.util.MeasureDetailsUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
@@ -148,10 +153,8 @@ public class FhirValidationReportService {
 
                 //Measure FHIR validation errors
                 List<FhirValidationResult> measureFhirValidationErrors = new ArrayList<>();
-                if (conversionResultDto.getMeasureConversionResults() != null) {
-                    if (Boolean.FALSE.equals(conversionResultDto.getMeasureConversionResults().getSuccess())) {
-                        measureFhirValidationErrors = conversionResultDto.getMeasureConversionResults().getMeasureFhirValidationResults();
-                    }
+                if (conversionResultDto.getMeasureConversionResults() != null && Boolean.FALSE.equals(conversionResultDto.getMeasureConversionResults().getSuccess())) {
+                    measureFhirValidationErrors = conversionResultDto.getMeasureConversionResults().getMeasureFhirValidationResults();
                 }
 
                 paramsMap.put("valueSetFhirValidationErrors", valueSetFhirValidationErrors);

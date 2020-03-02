@@ -8,6 +8,7 @@ public class FhirConvertResultResponse implements IsSerializable {
     private FhirValidationStatus validationStatus = new FhirValidationStatus();
     private ManageMeasureSearchModel.Result sourceMeasure;
     private ManageMeasureSearchModel.Result fhirMeasure;
+    private boolean success = false;
 
     public FhirValidationStatus getValidationStatus() {
         return validationStatus;
@@ -31,6 +32,14 @@ public class FhirConvertResultResponse implements IsSerializable {
 
     public void setFhirMeasure(ManageMeasureSearchModel.Result fhirMeasure) {
         this.fhirMeasure = fhirMeasure;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
 }

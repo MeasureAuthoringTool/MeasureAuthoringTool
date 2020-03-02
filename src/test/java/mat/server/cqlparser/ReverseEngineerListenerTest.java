@@ -24,8 +24,8 @@ public class ReverseEngineerListenerTest {
         CQLModel previousModel = new CQLModel();
         previousModel.setLibraryName("test2");
         previousModel.setVersionUsed("0.0.2");
-        previousModel.setUsingName("QDM");
-        previousModel.setQdmVersion("5.4");
+        previousModel.setUsingModel("QDM");
+        previousModel.setUsingModelVersion("5.4");
         previousModel.setLibraryComment("a library comment");
 
         String cql = new String(Files.readAllBytes(file.toPath()));
@@ -36,8 +36,31 @@ public class ReverseEngineerListenerTest {
         assertEquals("a library comment", model.getLibraryComment());
         assertEquals("test2", model.getLibraryName());
         assertEquals("0.0.2", model.getVersionUsed());
-        assertEquals("QDM", model.getUsingName());
-        assertEquals("5.4", model.getQdmVersion());
+        assertEquals("QDM", model.getUsingModel());
+        assertEquals("5.4", model.getUsingModelVersion());
+    }
+
+    @Test
+    public void testFhirLibrary() throws IOException {
+        File file = new File(getClass().getClassLoader().getResource("test-cql/testlibrary_fhir.cql").getFile());
+
+        CQLModel previousModel = new CQLModel();
+        previousModel.setLibraryName("test2");
+        previousModel.setVersionUsed("0.0.2");
+        previousModel.setUsingModel("FHIR");
+        previousModel.setUsingModelVersion("4.0.0");
+        previousModel.setLibraryComment("a library comment");
+
+        String cql = new String(Files.readAllBytes(file.toPath()));
+        ReverseEngineerListener listener = new ReverseEngineerListener(cql, previousModel);
+
+        CQLModel model = listener.getCQLModel();
+
+        assertEquals("a library comment", model.getLibraryComment());
+        assertEquals("test2", model.getLibraryName());
+        assertEquals("0.0.2", model.getVersionUsed());
+        assertEquals("FHIR", model.getUsingModel());
+        assertEquals("4.0.0", model.getUsingModelVersion());
     }
 
     @Test

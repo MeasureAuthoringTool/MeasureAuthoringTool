@@ -1,6 +1,5 @@
 package mat.client.cql;
 
-import mat.client.util.FeatureFlagConstant;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -24,7 +23,10 @@ import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.shared.model.util.MeasureDetailsUtil;
+import mat.client.util.FeatureFlagConstant;
+
+import static mat.model.clause.ModelTypeHelper.FHIR;
+import static mat.model.clause.ModelTypeHelper.QDM;
 
 public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
 
@@ -163,12 +165,12 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
 
     @Override
     public String getLibraryModelType() {
-        return fhirModel.getValue() ? MeasureDetailsUtil.FHIR : MeasureDetailsUtil.QDM;
+        return fhirModel.getValue() ? FHIR : QDM;
     }
 
     @Override
     public void setLibraryModelType(String type, boolean isDraft) {
-        if (MeasureDetailsUtil.FHIR.equals(type)) {
+        if (FHIR.equals(type)) {
             //set FHIR model
             fhirModel.setEnabled(true);
             fhirModel.setValue(true);

@@ -1,5 +1,9 @@
 package mat.server.service.impl;
 
+import java.util.Collection;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -17,8 +21,10 @@ import mat.client.shared.MatRuntimeException;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
 import mat.server.service.FhirMeasureService;
+import mat.server.service.FhirOrchestrationGatewayService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
+import mat.shared.SaveUpdateCQLResult;
 
 @Service
 public class FhirMeasureServiceImpl implements FhirMeasureService {
@@ -52,29 +58,36 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         fhirConvertResultResponse.setSourceMeasure(sourceMeasure);
         measureLibraryService.recordRecentMeasureActivity(sourceMeasure.getId(), loggedinUserId);
 
-        FhirValidationStatus sourceValidationStatus = validateSourceMeasureForFhirConversion(sourceMeasure);
+        ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
+        dropFhirMeasureIfExists(sourceMeasureDetails);
 
-        if (!sourceValidationStatus.isValidationPassed()) {
-            fhirConvertResultResponse.setValidationStatus(sourceValidationStatus);
+        ConversionResultDto conversionResult = validateSourceMeasureForFhirConversion(sourceMeasure);
+        fhirConvertResultResponse.setValidationStatus(createValidationStatus(conversionResult));
+
+        Optional<String> fhirCqlOpt = Optional.ofNullable(conversionResult.getLibraryConversionResults()).stream()
+                .flatMap(libConvRes -> libConvRes.stream())
+                .map(cqlLibRes -> cqlLibRes.getCqlConversionResult())
+                .filter(el -> el != null)
+                .map(el -> el.getFhirCql())
+                .filter(StringUtils::isNotBlank)
+                .findFirst();
+
+        if (!fhirCqlOpt.isPresent()) {
+            fhirConvertResultResponse.setSuccess(false);
         } else {
-            ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
-            dropFhirMeasureIfExists(sourceMeasureDetails);
             ManageMeasureSearchModel.Result fhirMeasure = cloneSourceToFhir(sourceMeasureDetails);
             fhirConvertResultResponse.setFhirMeasure(fhirMeasure);
+            SaveUpdateCQLResult cqlResult = measureLibraryService.saveCQLFile(fhirMeasure.getId(), fhirCqlOpt.get());
+            fhirConvertResultResponse.setSuccess(cqlResult.isSuccess());
 
-            // We convert source measure instead of fhir measure, because we want to convert a versioned measure under the original measure id (SOURCE_MEASURE_ID)
-            // If we use a fhir measure id, then it will be abandoned on FHIR server end, when re-converted
-            ConversionResultDto fhirConvertResult = fhirOrchestrationGatewayService.convert(sourceMeasure.getId(), sourceMeasure.isDraft());
-            fhirConvertResultResponse.setValidationStatus(createValidationStatus(fhirConvertResult));
             measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
         }
 
         return fhirConvertResultResponse;
     }
 
-    private FhirValidationStatus validateSourceMeasureForFhirConversion(ManageMeasureSearchModel.Result sourceMeasure) {
-        ConversionResultDto sourceValidationResult = fhirOrchestrationGatewayService.validate(sourceMeasure.getId(), sourceMeasure.isDraft());
-        return createValidationStatus(sourceValidationResult);
+    private ConversionResultDto validateSourceMeasureForFhirConversion(ManageMeasureSearchModel.Result sourceMeasure) {
+        return fhirOrchestrationGatewayService.validate(sourceMeasure.getId(), sourceMeasure.isDraft());
     }
 
     private ManageMeasureDetailModel loadMeasureAsDetailsForCloning(ManageMeasureSearchModel.Result sourceMeasure) {
@@ -100,14 +113,16 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
     }
 
     private void dropFhirMeasureIfExists(ManageMeasureDetailModel currentDetails) {
-        if (currentDetails.getFhirMeasureId() != null && !currentDetails.getFhirMeasureId().isEmpty()) {
-            logger.debug("Removing existing fhir measure " + currentDetails.getFhirMeasureId());
-            transactionTemplate.execute(status -> {
-                Measure existingFhirMeasure = measureDAO.find(currentDetails.getFhirMeasureId());
-                measureDAO.delete(existingFhirMeasure);
-                return null;
-            });
-        }
+        transactionTemplate.execute(status -> {
+            Measure currentSourceMeasure = measureDAO.find(currentDetails.getId());
+            Collection<Measure> fhirMeasures = currentSourceMeasure.getFhirMeasures();
+            fhirMeasures.stream().forEach(fhirMeasure ->
+                    logger.debug("Removing existing fhir measure " + fhirMeasure.getId())
+            );
+            // removeOrphan = true should remove the records
+            currentSourceMeasure.getFhirMeasures().clear();
+            return null;
+        });
     }
 
 }

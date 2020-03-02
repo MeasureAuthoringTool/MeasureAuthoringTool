@@ -10,9 +10,8 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.SelectionModel;
 import mat.client.cql.CQLLibrarySearchView.Observer;
 import mat.client.util.CellTableUtility;
 import mat.client.util.FeatureFlagConstant;
@@ -20,13 +19,14 @@ import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.model.util.MeasureDetailsUtil;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class CQLLibraryResultTable {
 
     private Observer observer;
-    private static final int DELAY_TIME = 300;
-    private Timer singleClickTimer;
-    private CQLLibraryDataSetObject previousObj;
-    private CQLLibraryDataSetObject obj;
+    private static final long DELAY_TIME = 300;
+    private CQLLibraryDataSetObject lastRowCLicked;
+
 
     public CellTable<CQLLibraryDataSetObject> addColumnToTable(CQLibraryGridToolbar gridToolbar, CellTable<CQLLibraryDataSetObject> table, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
         MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
@@ -80,24 +80,47 @@ public class CQLLibraryResultTable {
         if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR))
             table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Models" + "</span>"));
 
+        AtomicLong lastClickTime = new AtomicLong(System.currentTimeMillis());
+
         table.addCellPreviewHandler(event -> {
             String eventType = event.getNativeEvent().getType();
-            obj = event.getValue();
+            CQLLibraryDataSetObject obj = event.getValue();
             event.getNativeEvent().preventDefault();
+
             if (BrowserEvents.CLICK.equalsIgnoreCase(eventType)) {
-                if(previousObj == null){
-                    clickEventsOnSelectedRows(event, selectionModel, obj, fireEvent);
-                } else if (obj.getId() == previousObj.getId()) {
-                    clickEventsOnSelectedRows(event, selectionModel, obj, fireEvent);
+                long duration = System.currentTimeMillis() - lastClickTime.get();
+                if (isDoubleClick(obj,duration)) {
+                    SelectionEvent.fire(fireEvent, obj);
                 } else {
-                    previousObj.setSelected(false);
-                    clickEventsOnSelectedRows(event, selectionModel, obj, fireEvent);
+                    if (obj.isSelected()) {
+                        setSelected(selectionModel,obj,false);
+                    } else {
+                        if (lastRowCLicked != null && lastRowCLicked.isSelected()) {
+                            setSelected(selectionModel,lastRowCLicked,false);
+                        }
+                        setSelected(selectionModel,obj,true);
+                    }
                 }
-                previousObj = obj;
+                lastRowCLicked = obj;
+                lastClickTime.set(System.currentTimeMillis());
             }
         });
+
         table.addStyleName("table");
         return table;
+    }
+
+    private void setSelected (SelectionModel model, CQLLibraryDataSetObject obj, boolean isSelected) {
+        obj.setSelected(isSelected);
+        model.setSelected(obj,isSelected);
+    }
+
+    private boolean isDoubleClick(CQLLibraryDataSetObject obj,long clickDuration) {
+        return lastRowCLicked != null &&
+                lastRowCLicked.getId() != null &&
+                lastRowCLicked.getId().equals(obj.getId()) && //same row clicked twice.
+                obj.isFhirEditOrViewable() && //is editable.
+                clickDuration <= DELAY_TIME; //was within delay time.
     }
 
     @VisibleForTesting
@@ -215,26 +238,4 @@ public class CQLLibraryResultTable {
     public void setObserver(Observer observer) {
         this.observer = observer;
     }
-
-    private void clickEventsOnSelectedRows(CellPreviewEvent<CQLLibraryDataSetObject> event, MultiSelectionModel<CQLLibraryDataSetObject> selectionModel, CQLLibraryDataSetObject obj, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
-        obj.incrementClickCount();
-        if (obj.getClickCount() == 1) {
-            singleClickTimer = new Timer() {
-                @Override
-                public void run() {
-                    obj.setClickCount(0);
-                    obj.setSelected(!obj.isSelected());
-                    selectionModel.setSelected(obj, obj.isSelected());
-                }
-            };
-            singleClickTimer.schedule(DELAY_TIME);
-        } else if (obj.getClickCount() == 2  && obj.isFhirEditOrViewable()) {
-            singleClickTimer.cancel();
-            obj.setClickCount(0);
-            SelectionEvent.fire(fireEvent, obj);
-        } else {
-            event.setCanceled(true);
-        }
-    }
-
 }

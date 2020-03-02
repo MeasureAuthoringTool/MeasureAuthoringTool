@@ -76,6 +76,8 @@ public class Measure {
 
     private String qdmVersion;
 
+    private String fhirVersion;
+
     private Boolean isCompositeMeasure = false;
 
     private List<ComponentMeasure> componentMeasures;
@@ -98,8 +100,10 @@ public class Measure {
 
     private String cqlLibraryName;
 
-    private String fhirMeasureId;
+    private List<Measure> fhirMeasures;
 
+    // We don't map it as a Measure object, since it can be potentially invalid,
+    // if a source QDM measure is removed after conversion.
     private String sourceMeasureId;
 
     @Column(name = "VALUE_SET_DATE", length = 19)
@@ -179,6 +183,21 @@ public class Measure {
 
     public void setMeasureModel(String measureModel) {
         this.measureModel = measureModel;
+    }
+
+    @Transient
+    public boolean isQdmMeasure() {
+        return ModelTypeHelper.isQdm(getMeasureModel());
+    }
+
+    @Transient
+    public boolean isFhirMeasure() {
+        return ModelTypeHelper.isFhir(getMeasureModel());
+    }
+
+    @Transient
+    public String getModelVersion() {
+        return isFhirMeasure() ? getFhirVersion() : getQdmVersion();
     }
 
     @Transient
@@ -293,7 +312,7 @@ public class Measure {
         this.lockedOutDate = lockedOutDate;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "LOCKED_USER_ID", referencedColumnName = "USER_ID", insertable = false)
     public User getLockedUser() {
         return lockedUser;
@@ -374,6 +393,15 @@ public class Measure {
 
     public void setQdmVersion(String qdmVersion) {
         this.qdmVersion = qdmVersion;
+    }
+
+    @Column(name = "FHIR_VERSION", length = 45)
+    public String getFhirVersion() {
+        return fhirVersion;
+    }
+
+    public void setFhirVersion(String fhirVersion) {
+        this.fhirVersion = fhirVersion;
     }
 
     @Column(name = "IS_COMPOSITE_MEASURE")
@@ -479,13 +507,20 @@ public class Measure {
         this.cqlLibraryName = cqlLibraryName;
     }
 
-    @Column(name = "FHIR_MEASURE_ID")
-    public String getFhirMeasureId() {
-        return fhirMeasureId;
+
+    @Transient
+    public boolean isConvertedToFhir() {
+        return getFhirMeasures() != null && !getFhirMeasures().isEmpty();
     }
 
-    public void setFhirMeasureId(String fhirMeasureId) {
-        this.fhirMeasureId = fhirMeasureId;
+    @JoinColumn(name = "SOURCE_MEASURE_ID")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Measure> getFhirMeasures() {
+        return fhirMeasures;
+    }
+
+    public void setFhirMeasures(List<Measure> fhirMeasures) {
+        this.fhirMeasures = fhirMeasures;
     }
 
     @Column(name = "SOURCE_MEASURE_ID")
@@ -493,7 +528,7 @@ public class Measure {
         return sourceMeasureId;
     }
 
-    public void setSourceMeasureId(String convertedFromMeasureId) {
-        this.sourceMeasureId = convertedFromMeasureId;
+    public void setSourceMeasureId(String sourceMeasureId) {
+        this.sourceMeasureId = sourceMeasureId;
     }
 }

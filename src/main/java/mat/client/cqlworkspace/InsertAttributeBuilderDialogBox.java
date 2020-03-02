@@ -27,6 +27,7 @@ import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -47,8 +48,8 @@ import mat.client.shared.NameValuePair;
 import mat.client.shared.datetime.DateTimeHelper;
 import mat.client.shared.datetime.DateTimeWidget;
 import mat.model.ModeDetailModel;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.QDSAttributes;
-import mat.shared.model.util.MeasureDetailsUtil;
 
 public class InsertAttributeBuilderDialogBox {
     private static final String ATTR_LABEL = "attr-Label";
@@ -120,7 +121,7 @@ public class InsertAttributeBuilderDialogBox {
 
     public static void showAttributesDialogBox(final AceEditor editor, String modelType) {
 
-        if (MeasureDetailsUtil.FHIR.equalsIgnoreCase(modelType)) {
+        if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
             allAttributes = MatContext.get().getCqlConstantContainer().getFhirCqlAttributeList();
             allDataTypes = MatContext.get().getCqlConstantContainer().getFhirCqlDataTypeList();
         } else {
@@ -448,7 +449,7 @@ public class InsertAttributeBuilderDialogBox {
         final int selectedIndex = dtAttriblistBox.getSelectedIndex();
         if (selectedIndex != 0) {
             final String dataTypeSelected = dtAttriblistBox.getItemText(selectedIndex);
-            if (MeasureDetailsUtil.FHIR.equalsIgnoreCase(modelType)) {
+            if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
                 getAllAttributesByDataTypeForFhir(attriblistBox, dataTypeSelected);
             } else {
                 getAllAttributesByDataType(attriblistBox, dataTypeSelected);
@@ -940,6 +941,8 @@ public class InsertAttributeBuilderDialogBox {
 
             @Override
             public void onFailure(final Throwable caught) {
+                GWT.log("onFailure", caught);
+                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             }
         });
     }
@@ -948,6 +951,8 @@ public class InsertAttributeBuilderDialogBox {
         attributeService.getAllAttributesByDataTypeForFhir(dataType, new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable caught) {
+                GWT.log("onFailure", caught);
+                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             }
 
             @Override

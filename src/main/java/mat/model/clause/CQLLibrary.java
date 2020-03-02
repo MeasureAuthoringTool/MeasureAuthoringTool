@@ -56,6 +56,8 @@ public class CQLLibrary {
 
     private String qdmVersion;
 
+    private String fhirVersion;
+
     private User lockedUserId;
 
     private Timestamp lockedOutDate;
@@ -121,7 +123,7 @@ public class CQLLibrary {
         this.version = version;
     }
 
-    @Column(name = "QDM_VERSION", nullable = false, length = 45)
+    @Column(name = "QDM_VERSION", nullable = true, length = 45)
     public String getQdmVersion() {
         return qdmVersion;
     }
@@ -323,6 +325,25 @@ public class CQLLibrary {
 
     public void setCqlLibraryHistory(List<CQLLibraryHistory> cqlLibraryHistory) {
         this.cqlLibraryHistory = cqlLibraryHistory;
+    }
+
+    @Transient
+    public boolean isFhirMeasure() {
+        return ModelTypeHelper.isFhir(getLibraryModelType());
+    }
+
+    @Transient
+    public boolean isQdmMeasure() {
+        return ModelTypeHelper.isQdm(getLibraryModelType());
+    }
+
+    @Column(name = "FHIR_VERSION", length = 45)
+    public String getFhirVersion() {
+        return fhirVersion;
+    }
+
+    public void setFhirVersion(String fhirVersion) {
+        this.fhirVersion = fhirVersion;
     }
 
 }

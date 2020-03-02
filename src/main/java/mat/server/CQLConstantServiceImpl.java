@@ -162,7 +162,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         Collections.sort(timings);
         cqlConstantContainer.setCqlTimingList(timings);
 
-        cqlConstantContainer.setCurrentQDMVersion(MATPropertiesService.get().getQmdVersion());
+        cqlConstantContainer.setCurrentQDMVersion(MATPropertiesService.get().getQdmVersion());
         cqlConstantContainer.setCurrentReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 
         cqlConstantContainer.setQdmContainer(getQDMInformation());
@@ -173,9 +173,13 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         return cqlConstantContainer;
     }
 
+    private String hashForId(String value) {
+        return Hashing.sha256().hashString(value, StandardCharsets.UTF_8).toString();
+    }
+
     private void addFhirDataAttributeToCqlContainer(CQLConstantContainer cqlConstantContainer, String fhirResource, String fhirElement, String fhirType) {
-        String fhirResourceId = Hashing.sha256().hashString(fhirResource, StandardCharsets.UTF_8).toString();
-        String fhirElementId = Hashing.sha256().hashString(fhirResource + "--" + fhirElement, StandardCharsets.UTF_8).toString();
+        String fhirResourceId = hashForId(fhirResource);
+        String fhirElementId = hashForId(fhirResource + "--" + fhirElement);
         FhirDataType fhirDataType =
                 cqlConstantContainer.getFhirDataTypesByResource().computeIfAbsent(fhirResource, s -> new FhirDataType(fhirResourceId, fhirResource));
         fhirDataType.getAttributes().computeIfAbsent(fhirElement, s ->

@@ -402,7 +402,4 @@ public class PopulationWorkSpaceConstants {
 		return POPULATION_NAME;
 	}
 	
-	/*public static Map<String, Node> getElementLookUps() {
-		return elementLookUps;
-	}*/
 }

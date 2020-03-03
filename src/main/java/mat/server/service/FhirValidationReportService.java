@@ -12,6 +12,7 @@ import java.util.Set;
 import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import gov.cms.mat.fhir.rest.dto.CqlConversionError;
+import gov.cms.mat.fhir.rest.dto.CqlConversionResult;
 import gov.cms.mat.fhir.rest.dto.FhirValidationResult;
 import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
 import gov.cms.mat.fhir.rest.dto.MatCqlConversionException;
@@ -123,6 +124,7 @@ public class FhirValidationReportService {
                 Set<MatCqlConversionException> qdmMatCqlConversionErrors = null;
                 Set<CqlConversionError> fhirCqlConversionErrors = null;
                 Set<MatCqlConversionException> fhirMatCqlConversionErrors = null;
+                CqlConversionResult cqlConversionResult;
                 if (CollectionUtils.isNotEmpty(conversionResultDto.getLibraryConversionResults())) {
                     for (LibraryConversionResults results : conversionResultDto.getLibraryConversionResults()) {
                         if(results.getReason().equalsIgnoreCase("Not Found in Hapi")) {
@@ -133,18 +135,19 @@ public class FhirValidationReportService {
                                 libraryFhirValidationErrors = results.getLibraryFhirValidationResults();
                             }
                             // CQL conversion errors
-                            if (results.getCqlConversionResult() != null) {
-                                if (CollectionUtils.isNotEmpty(results.getCqlConversionResult().getCqlConversionErrors())) {
-                                    qdmCqlConversionErrors = results.getCqlConversionResult().getCqlConversionErrors();
+                            cqlConversionResult = results.getCqlConversionResult();
+                            if (cqlConversionResult != null) {
+                                if (CollectionUtils.isNotEmpty(cqlConversionResult.getCqlConversionErrors())) {
+                                    qdmCqlConversionErrors = cqlConversionResult.getCqlConversionErrors();
                                 }
-                                if (CollectionUtils.isNotEmpty(results.getCqlConversionResult().getMatCqlConversionErrors())) {
-                                    qdmMatCqlConversionErrors = results.getCqlConversionResult().getMatCqlConversionErrors();
+                                if (CollectionUtils.isNotEmpty(cqlConversionResult.getMatCqlConversionErrors())) {
+                                    qdmMatCqlConversionErrors = cqlConversionResult.getMatCqlConversionErrors();
                                 }
-                                if (CollectionUtils.isNotEmpty(results.getCqlConversionResult().getFhirCqlConversionErrors())) {
-                                    fhirCqlConversionErrors = results.getCqlConversionResult().getFhirCqlConversionErrors();
+                                if (CollectionUtils.isNotEmpty(cqlConversionResult.getFhirCqlConversionErrors())) {
+                                    fhirCqlConversionErrors = cqlConversionResult.getFhirCqlConversionErrors();
                                 }
-                                if (CollectionUtils.isNotEmpty(results.getCqlConversionResult().getFhirMatCqlConversionErrors())) {
-                                    fhirMatCqlConversionErrors = results.getCqlConversionResult().getFhirMatCqlConversionErrors();
+                                if (CollectionUtils.isNotEmpty(cqlConversionResult.getFhirMatCqlConversionErrors())) {
+                                    fhirMatCqlConversionErrors = cqlConversionResult.getFhirMatCqlConversionErrors();
                                 }
                             }
                         }

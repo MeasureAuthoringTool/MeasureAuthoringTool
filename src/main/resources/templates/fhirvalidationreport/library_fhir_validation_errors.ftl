@@ -24,8 +24,6 @@
             </table>
         </div>
     <#else>
-        <div class="card-body card-no-errors">
-            <div class="container">No Errors Found</div>
-        </div>
+        <#include "no_conversion_errors.ftl" />
     </#if>
 </div>

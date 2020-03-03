@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import mat.client.util.FeatureFlagConstant;
+import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
@@ -737,12 +739,23 @@ public class MeasurePackagePresenter implements MatPresenter {
         return panel;
     }
 
+
     private void displayUploadToBonnieButton(boolean isEditable) {
-        if (model.getQdmVersion() != MatContext.get().getCurrentQDMVersion()) {
-            ((Button) view.getPackageMeasureAndUploadToBonnieButton()).setVisible(false);
+        // MAT-650: Disable Bonnie integration for FHIR measures until MAT-Bonnie interface is complete.
+        if (!MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_BONNIE) &&
+                ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel())) {
+            ((Button) view.getPackageMeasureAndUploadToBonnieButton()).setVisible(true);
+            ((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(false);
+            return;
         }
+
+        if (!model.getQdmVersion().equals(MatContext.get().getCurrentQDMVersion())) {
+            ((Button) view.getPackageMeasureAndUploadToBonnieButton()).setVisible(false);
+            return;
+        }
+
         //only check if logged into bonnie if the page is editable
-        else if (isEditable) {
+        if (isEditable) {
             ((Button) view.getPackageMeasureAndUploadToBonnieButton()).setVisible(true);
             String matUserId = MatContext.get().getLoggedinUserId();
             MatContext.get().getBonnieService().getBonnieUserInformationForUser(matUserId, new AsyncCallback<BonnieUserInformationResult>() {

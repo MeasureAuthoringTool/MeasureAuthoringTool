@@ -17,7 +17,7 @@ import gov.cms.mat.fhir.rest.dto.FhirValidationResult;
 import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
 import gov.cms.mat.fhir.rest.dto.MatCqlConversionException;
 import gov.cms.mat.fhir.rest.dto.ValueSetConversionResults;
-import mat.shared.model.util.MeasureDetailsUtil;
+import mat.model.clause.ModelTypeHelper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -174,7 +174,7 @@ public class FhirValidationReportService {
             paramsMap.put("runTime", DateUtility.formatInstant(instant, TIME_FORMAT));
             paramsMap.put("measureName", measure.getDescription());
             paramsMap.put("measureVersion", measure.getVersion());
-            paramsMap.put("modelType", MeasureDetailsUtil.defaultTypeIfBlank(measure.getMeasureModel()));
+            paramsMap.put("modelType", ModelTypeHelper.defaultTypeIfBlank(measure.getMeasureModel()));
 
         } else if (measure == null) {
             paramsMap.put("noMeasureFoundError", NO_MEASURE_FOUND_ERROR);

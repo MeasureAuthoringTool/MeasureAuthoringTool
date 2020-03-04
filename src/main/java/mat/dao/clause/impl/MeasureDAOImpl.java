@@ -234,6 +234,14 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     }
 
     @Override
+    public Measure getMeasureByMeasureId(String measureId) {
+        if (isEmpty(measureId)) {
+            return null;
+        }
+        return getSessionFactory().getCurrentSession().get(clazz, measureId);
+    }
+
+    @Override
     public String findMaxOfMinVersion(String measureSetId, String version) {
         logger.info("In MeasureDao.findMaxOfMinVersion()");
         String maxOfMinVersion = version;

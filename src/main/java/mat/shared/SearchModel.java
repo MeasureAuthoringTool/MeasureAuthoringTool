@@ -16,13 +16,13 @@ public abstract class SearchModel implements IsSerializable {
 	protected String modifiedOwner;
 	protected String owner;
 
-	protected ModelType modelType;
+	protected ModelType modelType = ModelType.ALL;
 
 	protected VersionType versionType;
 	
 	public enum VersionType {ALL, VERSION, DRAFT}
 
-	public enum ModelType {ALL, FHIR, QDM}
+	public enum ModelType {ALL, FHIR, QDM_CQL, QDM_QDM}
 
 	public int getStartIndex() {
 		return startIndex;

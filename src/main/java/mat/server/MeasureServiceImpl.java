@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
@@ -52,6 +54,9 @@ import mat.shared.measure.measuredetails.translate.MeasureDetailModelMapper;
 public class MeasureServiceImpl extends SpringRemoteServiceServlet implements MeasureService {
     private static final long serialVersionUID = 2280421300224680146L;
 
+    @Autowired
+    private MeasureLibraryService measureLibraryService;
+
     @Override
     public void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName) {
         this.getMeasureLibraryService().appendAndSaveNode(measureXmlModel, nodeName);
@@ -96,7 +101,7 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     }
 
     public MeasureLibraryService getMeasureLibraryService() {
-        return (MeasureLibraryService) context.getBean("measureLibraryService");
+        return measureLibraryService;
     }
 
     @Override
@@ -200,8 +205,6 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
         return this.getMeasureLibraryService().validateExports(measureId);
     }
 
-    ;
-
     @Override
     public ValidateMeasureResult createExports(String key, List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts)
             throws MatException {
@@ -253,7 +256,6 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 
     @Override
     public ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model) {
-
         return this.getMeasureLibraryService().validateForGroup(model);
     }
 
@@ -269,14 +271,12 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 
     @Override
     public List<Organization> getAllOrganizations() {
-
         return this.getMeasureLibraryService().getAllOrganizations();
     }
 
     @Override
     public SortedClauseMapResult saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID) {
         return this.getMeasureLibraryService().saveSubTreeOccurrence(measureXmlModel, nodeName, nodeUUID);
-
     }
 
     @Override
@@ -395,19 +395,16 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     @Override
     public GetUsedCQLArtifactsResult getUsedCQLArtifacts(String measureId) {
         return this.getMeasureLibraryService().getUsedCqlArtifacts(measureId);
-
     }
 
     @Override
     public SaveUpdateCQLResult deleteValueSet(String toBeDeletedValueSetId, String measureID) {
         return this.getMeasureLibraryService().deleteValueSet(toBeDeletedValueSetId, measureID);
-
     }
 
     @Override
     public SaveUpdateCQLResult deleteCode(String toBeDeletedId, String measureID) {
         return this.getMeasureLibraryService().deleteCode(toBeDeletedId, measureID);
-
     }
 
     @Override

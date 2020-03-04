@@ -11,19 +11,16 @@ import mat.server.service.MeasureLibraryService;
 import mat.server.service.UserService;
 
 
-/**
- * The Class SessionManagementServImpl.
- */
 public class SessionManagementServImpl extends SpringRemoteServiceServlet implements SessionManagementService {
 
 
-    /**
-     * The Constant serialVersionUID.
-     */
     private static final long serialVersionUID = 1L;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MeasureLibraryService measureLibraryService;
 
     @Override
     public SessionManagementService.Result getCurrentUserRole() {
@@ -59,6 +56,6 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet implem
     }
 
     private MeasureLibraryService getMeasureLibraryService() {
-        return (MeasureLibraryService) context.getBean("measureLibraryService");
+        return measureLibraryService;
     }
 }

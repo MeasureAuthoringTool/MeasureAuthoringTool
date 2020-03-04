@@ -19,7 +19,6 @@ import freemarker.template.TemplateException;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
-import mat.server.service.impl.FhirOrchestrationGatewayService;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

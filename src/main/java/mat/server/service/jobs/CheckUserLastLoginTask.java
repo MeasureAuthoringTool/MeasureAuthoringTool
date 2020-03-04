@@ -77,8 +77,8 @@ public class CheckUserLastLoginTask {
 
     /**
      * Method to Send
-     * 1.Warning Email for Warning Day Limit -90 days.
-     * 2.Account Expiration Email for day limit -180 days and
+     * 1.Warning Email for Warning Day Limit -30 days.
+     * 2.Account Expiration Email for day limit -60 days and
      * then marked user termination date to disable logging into the system.
      *
      * @return void
@@ -87,8 +87,8 @@ public class CheckUserLastLoginTask {
     public void checkUserLastLogin() {
         logger.info(" :: checkUserLastLogin Method START :: ");
 
-        checkUserLoginDays(warningDayLimit, WARNING_EMAIL_FLAG);
-        checkUserLoginDays(expiryDayLimit, EXPIRY_EMAIL_FLAG);
+        checkUserLoginDays(WARNING_EMAIL_FLAG);
+        checkUserLoginDays(EXPIRY_EMAIL_FLAG);
 
         logger.info(" :: checkUserLastLogin Method END :: ");
     }
@@ -97,17 +97,16 @@ public class CheckUserLastLoginTask {
     /**
      * Method Find List of Users with Sign_in_date = noOfDayLimit and send email based on emailType using velocityEngineUtils.
      *
-     * @param noOfDayLimit type integer.
      * @param emailType    type String.
      * @return void
      */
-    private void checkUserLoginDays(final long noOfDayLimit, final String emailType) {
+    private void checkUserLoginDays(final String emailType) {
 
         logger.info(" :: checkUserLoginDays Method START :: for Sending " + emailType + " Type Email");
 
         // Get all the Users
         final List<User> users = userDAO.find();
-        final List<User> emailUsers = checkLastLogin(noOfDayLimit, users);
+        final List<User> emailUsers = checkLastLogin(emailType, users);
 
         final Map<String, Object> model = new HashMap<>();
         final Map<String, String> content = new HashMap<>();
@@ -172,49 +171,46 @@ public class CheckUserLastLoginTask {
     }
 
     /**
-     * Method Find Sub List of Users from Users List with Sign_in_date =
-     * noOfDayLimit.
+     * Method Find Sub List of Users from Users List
+     * with Sign_in_date before or equal to noOfDayLimit.
      *
-     * @param dayLimit the day limit
-     * @param users    type List.
+     * @param emailType flag identifying email type.
+     * @param users    List of Users being audited for inactivity.
      * @return List.
      */
-    private List<User> checkLastLogin(final long dayLimit, final List<User> users) {
+    private List<User> checkLastLogin(final String emailType, final List<User> users) {
 
         logger.info(" :: checkLastLogin Method Start :: ");
-
+        final long dayLimit = emailType.equals(WARNING_EMAIL_FLAG) ? warningDayLimit : expiryDayLimit;
         final List<User> returnUserList = new ArrayList<>();
         final Date daysAgo = getNumberOfDaysAgo((int) dayLimit);
         logger.info(dayLimit + "daysAgo:" + daysAgo);
 
         for (User user : users) {
-            Date lastSignInDate = user.getSignInDate();
-
             if (!checkValidUser(user)) {
                 continue;
             }
 
+            Date lastSignInDate = user.getSignInDate();
             // MAT-6582:  If a user has never signed in, look at activation date
             if (lastSignInDate == null) {
-                Date activationDate = user.getActivationDate();
-                activationDate = DateUtils.truncate(activationDate, Calendar.DATE);
+                Date activationDate = DateUtils.truncate(user.getActivationDate(), Calendar.DATE);
                 logger.info(USER_LOG_LABEL + user.getFirstName() + "  :::: activationDate :::::   " + activationDate);
-                if (activationDate.equals(daysAgo)) {
+                if (isUserPastLimit(emailType, activationDate, daysAgo)) {
                     logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who has never logged in and was activated over " + dayLimit + LOG_DAYS_AGO);
                     returnUserList.add(user);
                 } else {
                     logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who has never logged in and was activated " + dayLimit + LOG_DAYS_AGO);
                 }
-                continue;
-            }
-
-            lastSignInDate = DateUtils.truncate(lastSignInDate, Calendar.DATE);
-            logger.info(USER_LOG_LABEL + user.getFirstName() + "  :::: lastSignInDate :::::   " + lastSignInDate);
-            if (lastSignInDate.equals(daysAgo)) {
-                logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who last logged " + dayLimit + LOG_DAYS_AGO);
-                returnUserList.add(user);
             } else {
-                logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who was not last logged " + dayLimit + LOG_DAYS_AGO);
+                lastSignInDate = DateUtils.truncate(lastSignInDate, Calendar.DATE);
+                logger.info(USER_LOG_LABEL + user.getFirstName() + "  :::: lastSignInDate :::::   " + lastSignInDate);
+                if(isUserPastLimit(emailType, lastSignInDate, daysAgo)) {
+                    returnUserList.add(user);
+                    logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who last logged " + dayLimit + LOG_DAYS_AGO);
+                } else {
+                    logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who was not last logged " + dayLimit + LOG_DAYS_AGO);
+                }
             }
         }
         logger.info(" :: checkLastLogin Method END :: ");
@@ -239,6 +235,15 @@ public class CheckUserLastLoginTask {
         logger.info(" :: updateUserTerminationDate Method END :: ");
     }
 
+    private boolean isUserPastLimit(String emailType, Date start, Date limit) {
+        if (emailType.equals(WARNING_EMAIL_FLAG)) {
+            return start.equals(limit);
+        } else if (emailType.equals(EXPIRY_EMAIL_FLAG)) {
+            return start.before(limit) || start.equals(limit);
+        }
+        return false;
+    }
+
     /**
      * Method to check if the User has valid ACTIVATION DATE, TERMINATION DATE.
      *
@@ -248,7 +253,7 @@ public class CheckUserLastLoginTask {
     private boolean checkValidUser(final User user) {
         logger.info(" :: checkValidUser Method START :: ");
 
-        Boolean isValidUser = true;
+        boolean isValidUser = true;
 
         if (user.getStatus().getStatusId().equals("2")) {
             isValidUser = false;

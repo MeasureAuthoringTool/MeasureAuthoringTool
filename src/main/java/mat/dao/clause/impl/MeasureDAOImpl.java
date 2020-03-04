@@ -70,6 +70,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     private static final String PATIENT_BASED = "patientBased";
     private static final String MEASURE_SCORING_TYPE = "measureScoring";
     private static final String SECURITY_ROLE_USER = "3";
+    private static final String MEASURE_MODEL = "measureModel";
 
     @Autowired
     private UserDAO userDAO;
@@ -156,7 +157,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         dto.setPackaged(measure.getExportedDate() != null);
         dto.setOwnerUserId(measure.getOwner().getId());
         dto.setMeasureModel(measure.getMeasureModel());
-        dto.setFhirMeasureId(measure.getFhirMeasureId());
+        dto.setConvertedToFhir(measure.isConvertedToFhir());
         dto.setDraft(measure.isDraft());
         dto.setVersion(measure.getVersion());
         dto.setReleaseVersion(measure.getReleaseVersion());
@@ -518,6 +519,22 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
         if (StringUtils.isNotBlank(measureSearchModel.getCqlLibraryName())) {
             predicatesList.add(cb.like(root.get("cqlLibraryName"), "%" + measureSearchModel.getCqlLibraryName() + "%"));
+        }
+
+        if (measureSearchModel.getModelType() != SearchModel.ModelType.ALL) {
+            switch (measureSearchModel.getModelType()) {
+                case FHIR:
+                    predicatesList.add(cb.equal(root.get(MEASURE_MODEL), measureSearchModel.getModelType().name()));
+                    break;
+                case QDM_CQL:
+                    predicatesList.add(cb.equal(root.get(MEASURE_MODEL), "QDM"));
+                    break;
+                case QDM_QDM:
+                    predicatesList.add(cb.isNull(root.get(MEASURE_MODEL)));
+                    break;
+                default:
+                    throw new IllegalStateException("ModelType cant be ALL here.");
+            }
         }
 
         if (measureSearchModel.isDraft() != VersionType.ALL) {

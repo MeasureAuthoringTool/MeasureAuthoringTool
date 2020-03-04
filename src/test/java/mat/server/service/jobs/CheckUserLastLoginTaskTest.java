@@ -69,11 +69,44 @@ public class CheckUserLastLoginTaskTest extends MatAppContextTest {
     }
 
     @Test
+    public void testDeDupWarningEmail() {
+        String userId = "Inactivity Warning Email User";
+        User testUser = buildNormalUser();
+        testUser.setSignInDate(DateUtils.addDays(new Date(), warningDayLimit - 5));
+        testUser.setLoginId(userId);
+
+        when(userDAO.find()).thenReturn(List.of(testUser));
+        checkUserLastLoginTask.checkUserLastLogin();
+
+        assertEquals("1", testUser.getStatus().getStatusId());
+        verify(mailSender,times(0)).send(any(SimpleMailMessage.class));
+        verify(emailAuditLogDAO, times(0)).save(any());
+    }
+
+    @Test
     public void testExpirationEmailInactiveUser() {
         String userId = "Inactivity Expiration Email User";
         User testUser = buildNormalUser();
         testUser.setLoginId(userId);
         testUser.setSignInDate(DateUtils.addDays(new Date(), expiryDayLimit));
+
+        when(userDAO.find()).thenReturn(List.of(testUser));
+        checkUserLastLoginTask.checkUserLastLogin();
+
+        assertEquals("2", testUser.getStatus().getStatusId());
+        assertNotNull(simpleMailMessage.getText());
+        assertTrue(simpleMailMessage.getText().contains("Your account has been inactive for 60 days and therefore, has been disabled."));
+        assertTrue(simpleMailMessage.getText().contains(userId));
+        verify(emailAuditLogDAO, times(1)).save(any());
+        verify(userDAO, times(1)).save(any());
+    }
+
+    @Test
+    public void testPastExpirationEmailInactiveUser() {
+        String userId = "Inactivity Expiration Email User";
+        User testUser = buildNormalUser();
+        testUser.setLoginId(userId);
+        testUser.setSignInDate(DateUtils.addDays(new Date(), expiryDayLimit - 5));
 
         when(userDAO.find()).thenReturn(List.of(testUser));
         checkUserLastLoginTask.checkUserLastLogin();
@@ -117,9 +150,9 @@ public class CheckUserLastLoginTaskTest extends MatAppContextTest {
         usr.setPassword(usrPass);
         usr.setId(UUID.randomUUID().toString());
         usr.setSignInDate(new Date());
-        usr.setFirstName("Mark");
-        usr.setLastName("Asread");
-        usr.setEmailAddress("Mark.Asread@nowhere.meh");
+        usr.setFirstName("Test");
+        usr.setLastName("User");
+        usr.setEmailAddress("test.user@nowhere.meh");
         usr.setLoginId(UUID.randomUUID().toString());
         return usr;
     }

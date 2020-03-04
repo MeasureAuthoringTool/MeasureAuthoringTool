@@ -127,8 +127,8 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             if (fhirElement.isEmpty() || fhirResource.isEmpty()) {
                 continue;
             }
-            String fhirResourceId = Hashing.sha256().hashString(fhirResource, StandardCharsets.UTF_8).toString();
-            String fhirElementId = Hashing.sha256().hashString(fhirResource + "--" + fhirElement, StandardCharsets.UTF_8).toString();
+            String fhirResourceId = hashForId(fhirResource);
+            String fhirElementId = hashForId(fhirResource + "--" + fhirElement);
             FhirDataType fhirDataType =
                     cqlConstantContainer.getFhirDataTypes().computeIfAbsent(fhirResource, s -> new FhirDataType(fhirResourceId, fhirResource));
             fhirDataType.getAttributes().computeIfAbsent(fhirElement, s -> new FhirAttribute(fhirElementId, fhirElement, StringUtils.trimToEmpty(conversionMapping.getFhirType())));
@@ -164,7 +164,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         Collections.sort(timings);
         cqlConstantContainer.setCqlTimingList(timings);
 
-        cqlConstantContainer.setCurrentQDMVersion(MATPropertiesService.get().getQmdVersion());
+        cqlConstantContainer.setCurrentQDMVersion(MATPropertiesService.get().getQdmVersion());
         cqlConstantContainer.setCurrentReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 
         cqlConstantContainer.setQdmContainer(getQDMInformation());
@@ -173,6 +173,10 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         cqlConstantContainer.setFunctionSignatures(getFunctionSignatures());
 
         return cqlConstantContainer;
+    }
+
+    private String hashForId(String value) {
+        return Hashing.sha256().hashString(value, StandardCharsets.UTF_8).toString();
     }
 
     private List<FunctionSignature> getFunctionSignatures() {

@@ -13,4 +13,5 @@ public interface FeatureFlagConstant {
     String FHIR_VIEW = "FhirView";
     String FHIR_DELETE = "FhirDelete";
     String FHIR_DT = "FhirDT";
+    String FHIR_BONNIE = "FhirBonnie";
 }

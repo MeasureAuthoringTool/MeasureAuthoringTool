@@ -9,6 +9,9 @@ import mat.client.export.measure.ManageMeasureExportView;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.shared.MatContext;
+import mat.client.util.FeatureFlagConstant;
+
+import static mat.model.clause.ModelTypeHelper.isFhir;
 
 public class ManageExportPresenter implements MatPresenter {
 	
@@ -51,7 +54,12 @@ public class ManageExportPresenter implements MatPresenter {
 			setBonnieExportVisible(true);
 		} else {
 			setBonnieExportVisible(false);
-		}				
+		}
+
+		if (!MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_BONNIE) &&
+				isFhir(result.getMeasureModel())) {
+			setBonnieExportVisible(false);
+		}
 	}
 	
 	private void setBonnieExportVisible(boolean isVisible) {

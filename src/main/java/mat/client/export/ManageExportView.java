@@ -7,12 +7,9 @@ import org.gwtbootstrap3.client.ui.TabContent;
 import org.gwtbootstrap3.client.ui.TabListItem;
 import org.gwtbootstrap3.client.ui.TabPane;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.BaseDisplay;
-import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 
 public class ManageExportView implements BaseDisplay {

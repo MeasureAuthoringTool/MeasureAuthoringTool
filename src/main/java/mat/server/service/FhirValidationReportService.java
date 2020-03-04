@@ -30,7 +30,6 @@ import freemarker.template.TemplateException;
 import mat.client.shared.MatRuntimeException;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
-import mat.server.service.impl.FhirOrchestrationGatewayService;
 import mat.shared.DateUtility;
 
 @Service("fhirValidationService")

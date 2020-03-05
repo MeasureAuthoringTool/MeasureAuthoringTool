@@ -100,9 +100,11 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         if (ModelTypeHelper.isQdm(selectedItem.getMeasureModel()) ||
                 ModelTypeHelper.isFhir(selectedItem.getMeasureModel()) && options.isFhirExportEnabled()) {
             exportButton.setEnabled(selectedItems.iterator().next().isExportable());
+            exportButton.setTitle("Click to Export MAT " + selectedItem.getHqmfReleaseVersion());
         }
 
         if (selectedItems.size() > 1) {
+            exportButton.setTitle("Click to Export");
             return;
         }
 

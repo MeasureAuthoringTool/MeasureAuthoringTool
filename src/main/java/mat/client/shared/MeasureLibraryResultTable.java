@@ -172,7 +172,7 @@ public class MeasureLibraryResultTable {
                 .filter(fhirExportFeatureFlag)
                 .collect(Collectors.toList());
         if (exportList.size() == 1) {
-            observer.onExport(exportList.iterator().next());
+            observer.onExport(exportList.get(0));
         } else {
             observer.onBulkExport(exportList);
         }

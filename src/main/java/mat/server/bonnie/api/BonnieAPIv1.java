@@ -478,8 +478,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 					token.getExpiresIn(), token.getBody());
 			return result;
 		} catch (Exception exn) {
-			logger.info("Error occurred while bonnie Auth results");
-			logger.error(exn.getMessage());
+			logger.error("Auth results Error: ", exn);
 			return null;
 		} finally {
 			if(urlConnection != null) {

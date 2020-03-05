@@ -86,8 +86,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			saveBonnieAccessInfo(LoggedInUserUtil.getLoggedInUser(),result);
 
 		} catch (Exception exn) {
-			logger.debug("Error occurred while authenticating bonnie API");
-			logger.error(exn.getMessage());
+			logger.error("Error occurred while authenticating bonnie API: ", exn);
 			return result;
 		}
 

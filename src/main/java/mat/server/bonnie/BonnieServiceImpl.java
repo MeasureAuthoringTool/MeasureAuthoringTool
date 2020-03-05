@@ -43,10 +43,10 @@ import mat.shared.bonnie.result.BonnieUserInformationResult;
 @Service
 public class BonnieServiceImpl extends SpringRemoteServiceServlet implements BonnieService {
 	private static final Log logger = LogFactory.getLog(EncryptDecryptToken.class);
-	
+
 	@Autowired
 	private BonnieAPIv1 bonnieApi;
-	
+
 	@Autowired
 	private EncryptDecryptToken encryptDecryptToken;
 
@@ -55,10 +55,10 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 
 	@Autowired
 	private UserBonnieAccessInfoDAO userBonnieAccessInfoDAO;
-	
+
 	@Autowired
 	private MeasureDAO measureDAO;
-	
+
 	@Autowired
 	@Qualifier("simpleEMeasureServiceImpl")
 	private SimpleEMeasureService simpleEMeasureService;
@@ -86,13 +86,14 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			saveBonnieAccessInfo(LoggedInUserUtil.getLoggedInUser(),result);
 
 		} catch (Exception exn) {
-			exn.printStackTrace();
+			logger.debug("Error occurred while authenticating bonnie API");
+			logger.error(exn.getStackTrace());
 			return result;
 		}
 
 		return result;
 	}
-	
+
 	private UserBonnieAccessInfo getUserBonnieAccessInfo(String userId) throws BonnieUnauthorizedException {
 		UserBonnieAccessInfo userInformation = null;
 		try {
@@ -103,13 +104,13 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		}
 		return userInformation;
 	}
-	
+
 	@Override
-	public Boolean updateOrUploadMeasureToBonnie(String measureId, String userId, VsacTicketInformation vsacTicket) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieDoesNotExistException, BonnieServerException, IOException, BonnieAlreadyExistsException, UMLSNotActiveException {		
+	public Boolean updateOrUploadMeasureToBonnie(String measureId, String userId, VsacTicketInformation vsacTicket) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieDoesNotExistException, BonnieServerException, IOException, BonnieAlreadyExistsException, UMLSNotActiveException {
 		Boolean isInitialBonnieUpload = null;
 		UserBonnieAccessInfo userInformation = getUserBonnieAccessInfo(userId);
 		String userAccessToken = userInformation.getAccessToken();
-		
+
 		Measure measure = measureDAO.find(measureId);
 		String measureSetId = measure.getMeasureSet().getId();
 		BonnieMeasureResult bonnieMeasureResults = null;
@@ -119,7 +120,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			deleteUserBonnieAccessInfo(userInformation);
 			throw e;
 		}
-		
+
 		Date exportDate = new Date();
 		ExportResult export = null;
 		try {
@@ -127,21 +128,21 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		} catch (Exception e1) {
 			throw new BonnieServerException();
 		}
-		
+
 		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
-		
+
 		byte[] zipFileContents = export.zipbarr;
 		String fileName = export.measureName + "_" + currentReleaseVersion + ".zip";
 		String calculationType = measure.getPatientBased() ? "patient" : "episode";
 		String vsacTicketGrantingTicket = vsacTicket.getTicket();
 		String vsacTicketExpiration = String.valueOf(vsacTicket.getTimeout().getTime());
 		String sessionId = getThreadLocalRequest().getSession().getId();
-		
+
 		if (!getVsacService().isCASTicketGrantingTicketValid(sessionId)) {
 			getVsacService().inValidateVsacUser(sessionId);
 			throw new UMLSNotActiveException();
 		}
-		
+
 		if(bonnieMeasureResults != null && bonnieMeasureResults.getMeasureExsists()) {
 			bonnieApi.updateMeasureInBonnie(userAccessToken, measureSetId, zipFileContents, fileName, null, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
 			isInitialBonnieUpload = false;
@@ -149,15 +150,15 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			bonnieApi.uploadMeasureToBonnie(userAccessToken, zipFileContents, fileName, null, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
 			isInitialBonnieUpload = true;
 		}
-		
+
 		return isInitialBonnieUpload;
-		
+
 	}
-	
+
 	private VSACApiServImpl getVsacService() {
 		return (VSACApiServImpl) context.getBean("vsacapi");
 	}
-	
+
 	public BonnieCalculatedResult getBonnieExportForMeasure(String userId, String measureId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, BonnieBadParameterException, BonnieDoesNotExistException{
 		UserBonnieAccessInfo userInformation = getUserBonnieAccessInfo(userId);
 		BonnieCalculatedResult caluclatedResult = null;
@@ -177,7 +178,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		}
 		return caluclatedResult;
 	}
-	
+
 	private BonnieOAuthResult refreshBonnieTokens(String userId) throws BonnieUnauthorizedException {
 		BonnieOAuthResult result = null;
 		User user = userDAO.find(userId);
@@ -188,7 +189,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			deleteUserBonnieAccessInfo(user.getUserBonnieAccessInfo());
 			throw e;
 		}
-		
+
 		saveBonnieAccessInfo(userId,result);
 
 		return result;
@@ -200,7 +201,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		if (userBonnieAccessInfo == null) {
 			userBonnieAccessInfo = new UserBonnieAccessInfo();
 			userBonnieAccessInfo.setUser(user);
-		} 
+		}
 		userBonnieAccessInfo.setAccessToken(encryptDecryptToken.encryptKey(result.getAccessToken()));
 		userBonnieAccessInfo.setRefreshToken( encryptDecryptToken.encryptKey(result.getRefreshToken()));
 		userBonnieAccessInfoDAO.save(userBonnieAccessInfo);
@@ -209,12 +210,12 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 
 	public BonnieUserInformationResult getBonnieUserInformationForUser(String userId)
 			throws BonnieUnauthorizedException, BonnieServerException, IOException, BonnieBadParameterException, BonnieDoesNotExistException {
-		
+
 		UserBonnieAccessInfo bonnieAccessInfo = validateOrRefreshBonnieTokensForUser(userId);
 		BonnieUserInformationResult bonnieInformationResult = bonnieApi.getUserInformationByToken(bonnieAccessInfo.getAccessToken());
 		return bonnieInformationResult;
 	}
-	
+
 	public void revokeBonnieAccessTokenForUser(String userId) throws BonnieServerException, Exception {
 		UserBonnieAccessInfo bonnieAccessInfo = validateOrRefreshBonnieTokensForUser(userId);
 		revokeBonnieAccessTokenForUser(bonnieAccessInfo);

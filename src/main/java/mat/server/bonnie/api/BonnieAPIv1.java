@@ -56,17 +56,17 @@ import mat.shared.bonnie.result.BonnieUserInformationResult;
 public class BonnieAPIv1 implements BonnieAPI {
 
 	private static final Log logger = LogFactory.getLog(BonnieAPIv1.class);
-	
+
 	private static final String UPDATE_MEASURE_URI = "/api_v1/measures";
-	
+
 	private static final String CALCULATE_MEASURE_RESULTS_URI = "/calculated_results";
-	
+
 	private static final String GET_USER_INFORMATION_URI = "/oauth/token/info";
-	
+
 	private static final String REVOKE_BONNIE_TOKEN_URI = "/oauth/revoke";
-	
+
 	private static final String BOUNDRY = "APIPIE_RECORDER_EXAMPLE_BOUNDARY";
-	
+
 	@Autowired
 	private EncryptDecryptToken encryptDecryptToken;
 	@Autowired
@@ -132,7 +132,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 				String response = getResponse(connection.getErrorStream());
 				logger.error(response);
 				measureResult.setMeasureExsists(false);
-			} 
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new IOException();
@@ -142,7 +142,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 				connection.disconnect();
 			}
 		}
-		
+
 		return measureResult;
 	}
 
@@ -151,14 +151,14 @@ public class BonnieAPIv1 implements BonnieAPI {
 			throws BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, IOException, BonnieBadParameterException, BonnieDoesNotExistException {
 		BonnieCalculatedResult calculatedResult = new BonnieCalculatedResult();
 		String uri = UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase() + CALCULATE_MEASURE_RESULTS_URI;
-		
+
 		HttpURLConnection connection = null;
 		try {
 			connection = getCalculationInformationConnection(encryptDecryptToken.decryptKey(bearerToken), uri);
 			logger.info("GET " + connection.getURL());
 			String code = Integer.toString(connection.getResponseCode());
 			handleResponseCode(code, "Get Calculations For Measure " + hqmfSetId, hqmfSetId);
-			
+
 			ByteArrayOutputStream calculatedResultByteArray = readFully(connection.getInputStream());
 			calculatedResult.setResult(calculatedResultByteArray.toByteArray());
 			calculatedResult.setName(getFileNameFromContentDisposition(connection.getHeaderField("Content-Disposition")));
@@ -171,19 +171,19 @@ public class BonnieAPIv1 implements BonnieAPI {
 				connection.disconnect();
 			}
 		}
-		
+
 		return calculatedResult;
 	}
-	
+
 	private String getFileNameFromContentDisposition(String contentDispositionValue) {
-		
+
 		contentDispositionValue = StringUtils.remove(contentDispositionValue, "attachment; filename=");
 		contentDispositionValue = StringUtils.remove(contentDispositionValue, "\"");
-		
+
 		return contentDispositionValue;
-		
+
 	}
-	
+
 	private ByteArrayOutputStream readFully(InputStream inputStream) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
@@ -199,7 +199,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			String measureType, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration)
 			throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieAlreadyExistsException,
 			BonnieServerException, IOException, BonnieDoesNotExistException {
-		
+
 		CloseableHttpClient httpClient = null;
 		CloseableHttpResponse postResponse = null;
 		try {
@@ -209,7 +209,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			setRequestConfigProxy(postRequest);
 			postResponse = httpClient.execute(postRequest);
 
-			
+
 			String code = String.valueOf(postResponse.getStatusLine().getStatusCode());
 			handleResponseCode(code, "Mesure Upload", null);
 		} catch (IOException e) {
@@ -219,7 +219,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			if (httpClient != null) {
 				logger.info("Disconnecting post /api_v1/measures httpClient");
 				httpClient.close();
-			} 
+			}
 			if (postResponse != null) {
 				logger.info("Disconnecting post /api_v1/measures postResponse");
 				postResponse.close();
@@ -240,7 +240,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			HttpPut putRequest = createHttpPutRequest(UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase(), encryptDecryptToken.decryptKey(bearerToken), calculationType, vsacTicketGrantingTicket, vsacTicketExpiration, fileObject);
 			setRequestConfigProxy(putRequest);
 			putResponse = httpClient.execute(putRequest);
-			
+
 			String code = Integer.toString(putResponse.getStatusLine().getStatusCode());
 			handleResponseCode(code, "Mesure Update", hqmfSetId);
 		} catch (IOException e) {
@@ -257,7 +257,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			}
 		}
 	}
-	
+
 	private void setRequestConfigProxy(HttpEntityEnclosingRequestBase request) {
 		if(!StringUtils.isEmpty(getProxyHost()) && !StringUtils.isEmpty(getProxyPort())) {
 			HttpHost proxy = new HttpHost(getProxyHost(), Integer.valueOf(getProxyPort()));
@@ -265,31 +265,31 @@ public class BonnieAPIv1 implements BonnieAPI {
 			request.setConfig(config);
 		}
 	}
-	
+
 	private HttpPut createHttpPutRequest(String uri, String token, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration, FileInfomationObject fileInfomation) {
 		String requestUri = getBonnieBaseURL() + uri;
-		
+
 		Map<String, String> headerMap = createHeader(token);
 		Map<String, String> textInputMap = createTextMap(calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
-		
+
 		Map<String, FileInfomationObject> binaryInputMap = createFileMap(fileInfomation);
 
-		
+
 		return apiConnectionUtillity.createPutConnection(requestUri, BOUNDRY, headerMap, textInputMap, binaryInputMap);
 	}
-	
+
 	private HttpPost createHttpPostRequest(String uri, String token, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration, FileInfomationObject fileInfomation) {
 		String requestUri = getBonnieBaseURL() + uri;
-		
+
 		Map<String, String> headerMap = createHeader(token);
 		Map<String, String> textInputMap = createTextMap(calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
-		
+
 		Map<String, FileInfomationObject> binaryInputMap = createFileMap(fileInfomation);
 
-		
+
 		return apiConnectionUtillity.createPostConnection(requestUri, BOUNDRY, headerMap, textInputMap, binaryInputMap);
 	}
-	
+
 	private Map<String, String> createHeader(String token){
 		String bearerTokenString = "Bearer " + token;
 		Map<String, String> headerMap = new HashMap<>();
@@ -299,7 +299,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		headerMap.put("'Content-Transfer'", "binary");
 		return headerMap;
 	}
-	
+
 	private Map<String, String> createTextMap(String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration){
 		Map<String, String> textInputMap = new HashMap<>();
 		textInputMap.put("calculation_type", calculationType);
@@ -307,7 +307,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		textInputMap.put("vsac_tgt_expires_at", vsacTicketExpiration);
 		return textInputMap;
 	}
-	
+
 	private Map<String, FileInfomationObject> createFileMap(FileInfomationObject fileInfomation){
 		Map<String, FileInfomationObject> binaryInputMap = new HashMap<>();
 		binaryInputMap.put("measure_file", fileInfomation);
@@ -326,7 +326,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 
 			String code = Integer.toString(connection.getResponseCode());
 			handleResponseCode(code, "Get User Information", null);
-			
+
 			String response = getResponse(connection.getInputStream());
 			JSONObject jsonObject = new JSONObject(response);
 			String email = jsonObject.getString("user_email");
@@ -343,7 +343,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 
 		return userInformationResult;
 	}
-	
+
 	@Override
 	public void revokeBonnieToken(String bearerToken, String refreshToken)
 			throws BonnieServerException, BonnieUnauthorizedException, Exception {
@@ -353,7 +353,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			logger.info("Connecting to refresh bonnie oauth");
 			String authString = getClientId() + ":" + getClientSecret();
 			String authStringEnc = DatatypeConverter.printBase64Binary(authString.getBytes());
-			
+
 			OAuthClientRequest request = OAuthClientRequest.tokenLocation(getBonnieBaseURL() + REVOKE_BONNIE_TOKEN_URI)
 					.setClientId(getClientId()).setClientSecret(getClientSecret())
 					.setRedirectURI(getRedirectURI())
@@ -363,14 +363,14 @@ public class BonnieAPIv1 implements BonnieAPI {
 			request.setHeader("Authorization", "Basic " + authStringEnc);
 			OAuthResourceResponse resp = client.resource(request, "POST", OAuthResourceResponse.class);
 	    	handleResponseCode(String.valueOf(resp.getResponseCode()), "Revoke Bonnie Token", null);
-	    				
+
 		} finally {
 			if(urlConnection != null) {
 				urlConnection.shutdown();
 				logger.info("Disconnected from refresh bonnie oauth");
 			}
 		}
-		
+
 	}
 
 	private String getResponse(InputStream stream) throws IOException {
@@ -388,19 +388,19 @@ public class BonnieAPIv1 implements BonnieAPI {
 			throw e;
 		}
 	}
-	
+
 	private HttpURLConnection getInformationConnection(String token, String uri) throws IOException {
 		String RequestUrl = getBonnieBaseURL() + uri;
 		Map<String, String> requestProperty = new HashMap<String, String>();
 		getBearerToken(requestProperty, token);
-		
+
 		return apiConnectionUtillity.createGETHTTPConnection(RequestUrl, requestProperty);
 	}
-	
+
 	private HttpPost getRevokeInromationConnection(String token, String uri, String refreshToken) throws IOException {
 		String requestUri = getBonnieBaseURL() + uri;
 		String bearerTokenString = "Bearer " + token;
-		
+
 		Map<String, String> headerMap = new HashMap<>();
 		headerMap.put("Authorization", bearerTokenString);
 		headerMap.put("boundary", BOUNDRY);
@@ -411,22 +411,22 @@ public class BonnieAPIv1 implements BonnieAPI {
 		textInputMap.put("client_id", getClientId());
 		textInputMap.put("client_secret", getClientSecret());
 		textInputMap.put("token", refreshToken);
-		
+
 		Map<String, FileInfomationObject> binaryInputMap = new HashMap<>();
-		
+
 		return apiConnectionUtillity.createPostConnection(requestUri, BOUNDRY, headerMap, textInputMap, binaryInputMap);
 	}
-	
+
 	private HttpURLConnection getCalculationInformationConnection(String token, String uri) throws IOException {
 		String RequestUrl = getBonnieBaseURL() + uri;
-		
+
 		Map<String, String> requestProperty = new HashMap<String, String>();
 		getBearerToken(requestProperty, token);
 		requestProperty.put("Accept", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-		
+
 		return apiConnectionUtillity.createGETHTTPConnection(RequestUrl, requestProperty);
 	}
-	
+
 	private void getBearerToken(Map<String, String> connectionMap, String token) {
 		String bearerToken =  "Bearer " + token;
 		connectionMap.put("Authorization", bearerToken);
@@ -478,7 +478,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 					token.getExpiresIn(), token.getBody());
 			return result;
 		} catch (Exception exn) {
-			exn.printStackTrace();
+			logger.info("Error occurred while bonnie Auth results");
+			logger.error(exn.getStackTrace());
 			return null;
 		} finally {
 			if(urlConnection != null) {
@@ -487,7 +488,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			}
 		}
 	}
-	
+
 	private void handleResponseCode(String code, String method, String hqmfSetId) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieDoesNotExistException, BonnieServerException{
 		if(code.startsWith("2")) {
 			logger.info(method + " successful");

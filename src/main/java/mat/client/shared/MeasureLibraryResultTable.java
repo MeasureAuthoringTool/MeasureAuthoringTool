@@ -242,7 +242,7 @@ public class MeasureLibraryResultTable {
                     .appendHtmlConstant("</div>");
 
         }
-        sb.appendHtmlConstant("<div class=\"pull-left\" title=\" Click to open "
+        sb.appendHtmlConstant("<div class=\"pull-left\" title=\" Double-Click to open "
                 + SafeHtmlUtils.htmlEscape(object.getName()) + "\" tabindex=\"0\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</div>");
         return sb.toSafeHtml();
     }

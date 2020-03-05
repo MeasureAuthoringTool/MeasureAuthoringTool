@@ -13,11 +13,8 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.xml.client.NamedNodeMap;
-import com.google.gwt.xml.client.NodeList;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.model.ModeDetailModel;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLIdentifierObject;
@@ -73,6 +70,7 @@ public class JSONAttributeModeUtility {
             jsonObjectMap.put(ATTRIBUTE, attributeJsonArray);
         }
     }
+
 
     private static void extractModeDetailsJSONObject(String jsonString) {
         JSONArray modeJsonArray = createJSONArrayFromStr(jsonString, "modedetails", MODE);

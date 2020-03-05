@@ -11,10 +11,12 @@ public class AttributesCQLBuilderImpl implements AttributesCQLBuilder {
                 if (!attribute.isSelected()) {
                     continue;
                 }
-                if (cql.length() != 0) {
-                    cql.append("\n");
+                for (Object value : attribute.getValues()) {
+                    if (cql.length() != 0) {
+                        cql.append("\n");
+                    }
+                    cql.append(dataType.getFhirResource()).append(".").append(attribute.getFhirElement()).append("==").append(value);
                 }
-                cql.append(dataType.getFhirResource()).append(".").append(attribute.getFhirElement());
             }
         }
         return cql.toString();

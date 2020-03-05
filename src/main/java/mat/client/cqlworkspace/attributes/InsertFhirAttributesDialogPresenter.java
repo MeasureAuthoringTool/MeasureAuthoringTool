@@ -1,9 +1,11 @@
 package mat.client.cqlworkspace.attributes;
 
-import com.google.gwt.core.client.GWT;
+import java.util.logging.Logger;
+
 import mat.client.cqlworkspace.shared.EditorDisplay;
 
 public class InsertFhirAttributesDialogPresenter {
+    private Logger logger = Logger.getLogger("");
     private final EditorDisplay editor;
     private final InsertFhirAttributesDialogDisplay dialog;
     private final InsertFhirAttributesDialogModel model;
@@ -28,14 +30,14 @@ public class InsertFhirAttributesDialogPresenter {
     }
 
     private void onSelected(FhirAttributeSelectionEvent event) {
-        GWT.log("InsertFhirAttributesDialogPresenter :: onSelected " + event.toString());
+        logger.info("InsertFhirAttributesDialogPresenter :: onSelected " + event.toString());
         FhirAttributeModel attr = model.getAllAttributesById().get(event.getAttributeId());
         if (null == attr) {
-            GWT.log("Cannot find attribute");
+            logger.info("Cannot find attribute");
         }
         updateSelectedAttribute(event, attr);
         updateSelectedDataType(attr.getDataType());
-        dialog.getRightPanel().update(attr.getDataType());
+        dialog.getRightPanel().updateDataTypeSelection(attr.getDataType());
     }
 
     private void updateSelectedDataType(FhirDataTypeModel dataType) {

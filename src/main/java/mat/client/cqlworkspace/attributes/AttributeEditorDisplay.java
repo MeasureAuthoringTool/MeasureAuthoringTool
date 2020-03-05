@@ -2,7 +2,8 @@ package mat.client.cqlworkspace.attributes;
 
 import com.google.gwt.user.client.ui.Widget;
 
-public interface LightBoxRightPanelDisplay {
+public interface AttributeEditorDisplay {
     Widget asWidget();
-    void updateDataTypeSelection(FhirDataTypeModel fhirDataTypeModel);
+    void setSelected(boolean selected);
+    boolean isSelected();
 }

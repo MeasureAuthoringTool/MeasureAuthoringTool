@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -76,6 +77,7 @@ import mat.shared.bonnie.result.BonnieUserInformationResult;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserver {
+    private Logger logger = Logger.getLogger("");
 
     class EnterKeyDownHandler implements KeyDownHandler {
 
@@ -370,7 +372,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
             @Override
             public void onUncaughtException(Throwable arg0) {
-                arg0.printStackTrace();
+                logger.severe(arg0.toString());
                 MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + arg0.getLocalizedMessage(), 0);
                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             }

@@ -40,7 +40,7 @@ public class FhirOrchestrationGatewayServiceImpl implements FhirOrchestrationGat
         return callRemoteService(measureId, ConversionType.CONVERSION, draft);
     }
 
-    @Cacheable(value = "ConversionResultDto.validate", condition = "!#draft")
+//    @Cacheable(value = "ConversionResultDto.validate", condition = "!#draft")
     @Override
     public ConversionResultDto validate(String measureId, boolean draft) {
         return callRemoteService(measureId, ConversionType.VALIDATION, draft);

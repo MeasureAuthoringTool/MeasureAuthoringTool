@@ -87,7 +87,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 
 		} catch (Exception exn) {
 			logger.debug("Error occurred while authenticating bonnie API");
-			logger.error(exn.getStackTrace());
+			logger.error(exn.getMessage());
 			return result;
 		}
 

@@ -479,7 +479,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			return result;
 		} catch (Exception exn) {
 			logger.info("Error occurred while bonnie Auth results");
-			logger.error(exn.getStackTrace());
+			logger.error(exn.getMessage());
 			return null;
 		} finally {
 			if(urlConnection != null) {

@@ -596,7 +596,7 @@
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
-                            <file>${project.basedir}/lib/mat-rest-commons-1.0.jar</file>
+                            <file>${project.basedir}/lib/mat-rest-commons-0.0.1-SNAPSHOT.jar</file>
                             <groupId>gov.cms.mat</groupId>
                             <artifactId>mat-rest-commons</artifactId>
                             <version>1.0</version>

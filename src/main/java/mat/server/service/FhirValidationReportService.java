@@ -2,11 +2,23 @@ package mat.server.service;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
+import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
+import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
+import gov.cms.mat.fhir.rest.dto.CqlConversionError;
+import gov.cms.mat.fhir.rest.dto.CqlConversionResult;
+import gov.cms.mat.fhir.rest.dto.FhirValidationResult;
+import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
+import gov.cms.mat.fhir.rest.dto.MatCqlConversionException;
+import gov.cms.mat.fhir.rest.dto.ValueSetConversionResults;
+import mat.model.clause.ModelTypeHelper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,10 +27,6 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
-import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
-import gov.cms.mat.fhir.rest.dto.CqlConversionError;
-import gov.cms.mat.fhir.rest.dto.FhirValidationResult;
-import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
 import mat.client.shared.MatRuntimeException;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
@@ -57,7 +65,7 @@ public class FhirValidationReportService {
      */
     public String getFhirConversionReportForMeasure(String measureId) throws IOException, TemplateException {
         ConversionResultDto conversionResult = null;
-        Measure measure = measureDAO.find(measureId);
+        Measure measure = measureDAO.getMeasureByMeasureId(measureId);
         if (measure != null) {
             conversionResult = validateFhirConversion(measureId, measure.isDraft());
         }
@@ -94,31 +102,80 @@ public class FhirValidationReportService {
         paramsMap.put("matVersion", currentMatVersion);
 
         if (conversionResultDto != null && measure != null) {
-            //Measure FHIR validation errors
-            List<FhirValidationResult> measureFhirValidationErrors = conversionResultDto.
-                    getMeasureConversionResults().getMeasureFhirValidationResults();
+            if (ConversionOutcome.SUCCESS != conversionResultDto.getOutcome()) {
 
-            // Library FHIR validation errors
-            List<LibraryConversionResults> libraryConversionResults = conversionResultDto.getLibraryConversionResults();
-            List<FhirValidationResult> libraryFhirValidationErrors = libraryConversionResults.stream().flatMap(i -> i.getLibraryFhirValidationResults().stream()).collect(Collectors.toList());
+                if(!conversionResultDto.getErrorReason().isEmpty()) {
+                    paramsMap.put("ErrorReason", conversionResultDto.getErrorReason());
+                }
+                // ValueSet FHIR validation errors
+                List<FhirValidationResult> valueSetFhirValidationErrors = new ArrayList<>();
+                if (CollectionUtils.isNotEmpty(conversionResultDto.getValueSetConversionResults())) {
+                    for (ValueSetConversionResults valueSetConversionResults : conversionResultDto.getValueSetConversionResults()) {
+                        if (Boolean.FALSE.equals(valueSetConversionResults.getSuccess())) {
+                            valueSetFhirValidationErrors = valueSetConversionResults.getValueSetFhirValidationResults();
+                        }
+                    }
+                }
 
-            // CQL conversion errors
-            List<CqlConversionError> cqlConversionErrors = libraryConversionResults.stream().map(i -> i.getCqlConversionResult()).flatMap(i -> i.getCqlConversionErrors().stream()).collect(Collectors.toList());
+                // Library FHIR validation errors
+                List<FhirValidationResult> libraryFhirValidationErrors = new ArrayList<>();
+                Set<CqlConversionError> qdmCqlConversionErrors = new HashSet<>();
+                Set<MatCqlConversionException> qdmMatCqlConversionErrors = null;
+                Set<CqlConversionError> fhirCqlConversionErrors = null;
+                Set<MatCqlConversionException> fhirMatCqlConversionErrors = null;
+                CqlConversionResult cqlConversionResult;
+                if (CollectionUtils.isNotEmpty(conversionResultDto.getLibraryConversionResults())) {
+                    for (LibraryConversionResults results : conversionResultDto.getLibraryConversionResults()) {
+                        if(results.getReason().equalsIgnoreCase("Not Found in Hapi")) {
+                            paramsMap.put("LibraryNotFoundInHapi", results.getReason());
+                        }
+                        if (Boolean.FALSE.equals(results.getSuccess())) {
+                            if (CollectionUtils.isNotEmpty(results.getLibraryFhirValidationResults())) {
+                                libraryFhirValidationErrors = results.getLibraryFhirValidationResults();
+                            }
+                            // CQL conversion errors
+                            cqlConversionResult = results.getCqlConversionResult();
+                            if (cqlConversionResult != null) {
+                                if (CollectionUtils.isNotEmpty(cqlConversionResult.getCqlConversionErrors())) {
+                                    qdmCqlConversionErrors = cqlConversionResult.getCqlConversionErrors();
+                                }
+                                if (CollectionUtils.isNotEmpty(cqlConversionResult.getMatCqlConversionErrors())) {
+                                    qdmMatCqlConversionErrors = cqlConversionResult.getMatCqlConversionErrors();
+                                }
+                                if (CollectionUtils.isNotEmpty(cqlConversionResult.getFhirCqlConversionErrors())) {
+                                    fhirCqlConversionErrors = cqlConversionResult.getFhirCqlConversionErrors();
+                                }
+                                if (CollectionUtils.isNotEmpty(cqlConversionResult.getFhirMatCqlConversionErrors())) {
+                                    fhirMatCqlConversionErrors = cqlConversionResult.getFhirMatCqlConversionErrors();
+                                }
+                            }
+                        }
+                    }
+                }
 
-            // ValueSet FHIR validation errors
-            List<FhirValidationResult> valueSetFhirValidationErrors = conversionResultDto.getValueSetConversionResults().stream().flatMap(i -> i.getValueSetFhirValidationResults().stream()).collect(Collectors.toList());
+                //Measure FHIR validation errors
+                List<FhirValidationResult> measureFhirValidationErrors = new ArrayList<>();
+                if (conversionResultDto.getMeasureConversionResults() != null && Boolean.FALSE.equals(conversionResultDto.getMeasureConversionResults().getSuccess())) {
+                    measureFhirValidationErrors = conversionResultDto.getMeasureConversionResults().getMeasureFhirValidationResults();
+                }
+
+                paramsMap.put("valueSetFhirValidationErrors", valueSetFhirValidationErrors);
+                paramsMap.put("libraryFhirValidationErrors", libraryFhirValidationErrors);
+                paramsMap.put("measureFhirValidationErrors", measureFhirValidationErrors);
+                paramsMap.put("qdmCqlConversionErrors", qdmCqlConversionErrors);
+                paramsMap.put("qdmMatCqlConversionErrors", qdmMatCqlConversionErrors);
+                paramsMap.put("fhirCqlConversionErrors", fhirCqlConversionErrors);
+                paramsMap.put("fhirMatCqlConversionErrors", fhirMatCqlConversionErrors);
+
+            }
 
             Instant instant = Instant.parse(conversionResultDto.getModified());
             paramsMap.put("runDate", DateUtility.formatInstant(instant, DATE_FORMAT));
             paramsMap.put("runTime", DateUtility.formatInstant(instant, TIME_FORMAT));
             paramsMap.put("measureName", measure.getDescription());
             paramsMap.put("measureVersion", measure.getVersion());
-            paramsMap.put("modelType", measure.getMeasureModel());
+            paramsMap.put("modelType", ModelTypeHelper.defaultTypeIfBlank(measure.getMeasureModel()));
 
-            paramsMap.put("measureFhirValidationErrors", measureFhirValidationErrors);
-            paramsMap.put("libraryFhirValidationErrors", libraryFhirValidationErrors);
-            paramsMap.put("cqlConversionErrors", cqlConversionErrors);
-            paramsMap.put("valueSetFhirValidationErrors", valueSetFhirValidationErrors);
         } else if (measure == null) {
             paramsMap.put("noMeasureFoundError", NO_MEASURE_FOUND_ERROR);
         } else {

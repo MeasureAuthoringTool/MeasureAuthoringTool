@@ -26,6 +26,8 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * @return the java.util. list
 	 */
 	java.util.List<Measure> findByOwnerId(String measureOwnerId);
+
+	Measure getMeasureByMeasureId(String measureId);
 	
 	/**
 	 * Find max of min version.

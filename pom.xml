@@ -40,6 +40,8 @@
         <maven.compiler.release>11</maven.compiler.release>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+
+        <project.local.repo.dir>${project.basedir}/lib</project.local.repo.dir>
     </properties>
 
     <repositories>
@@ -47,7 +49,12 @@
             <id>central</id>
             <url>http://maven.icm.edu.pl/artifactory/repo/</url>
         </repository>
+        <repository>
+            <id>project.local.repo.dir</id>
+            <url>file://${project.local.repo.dir}</url>
+        </repository>
     </repositories>
+
     <dependencies>
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -370,9 +377,18 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>gov.cms.mat</groupId>
+            <!--
+            Should have different groupId then the original
+            jar, so it doesn't interfere with micro-services.
+            -->
+            <groupId>mat</groupId>
             <artifactId>mat-rest-commons</artifactId>
-            <version>1.0</version>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.2-jre</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -587,6 +603,7 @@
                             <artifactId>CQLtoELM</artifactId>
                             <version>1.4.6.54</version>
                             <packaging>jar</packaging>
+                            <localRepositoryPath>${maven.project.repo.dir}</localRepositoryPath>
                         </configuration>
                     </execution>
                     <execution>
@@ -597,10 +614,16 @@
                         </goals>
                         <configuration>
                             <file>${project.basedir}/lib/mat-rest-commons-0.0.1-SNAPSHOT.jar</file>
-                            <groupId>gov.cms.mat</groupId>
-                            <artifactId>mat-rest-commons</artifactId>
-                            <version>1.0</version>
-                            <packaging>jar</packaging>
+                            <pomFile>${project.basedir}/lib/mat-rest-commons-0.0.1-SNAPSHOT.pom</pomFile>
+                            <!--
+                            Should have different groupId then the original
+                            jar, so it doesn't interfere with micro-services.
+                            -->
+<!--                            <groupId>mat</groupId>-->
+<!--                            <artifactId>mat-rest-commons</artifactId>-->
+<!--                            <packaging>jar</packaging>-->
+<!--                            <version>0.0.1-SNAPSHOT</version>-->
+                            <localRepositoryPath>${project.local.repo.dir}</localRepositoryPath>
                         </configuration>
                     </execution>
                     <execution>
@@ -615,6 +638,7 @@
                             <artifactId>vipuserservices</artifactId>
                             <version>1.0</version>
                             <packaging>jar</packaging>
+                            <localRepositoryPath>${project.local.repo.dir}</localRepositoryPath>
                         </configuration>
                     </execution>
                     <execution>
@@ -629,6 +653,7 @@
                             <artifactId>vsac</artifactId>
                             <version>1.0</version>
                             <packaging>jar</packaging>
+                            <localRepositoryPath>${project.local.repo.dir}</localRepositoryPath>
                         </configuration>
                     </execution>
                 </executions>

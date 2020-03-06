@@ -153,13 +153,6 @@ public class MeasureLibraryResultTable {
     }
 
     @VisibleForTesting
-    void onConvertClicked(MultiSelectionModel<Result> selectionModel) {
-        selectionModel.getSelectedSet().stream().filter(Result::isFhirConvertible).findFirst().ifPresent(object -> {
-            observer.onConvertMeasureFhir(object);
-        });
-    }
-
-    @VisibleForTesting
     void onExportButtonClicked(MultiSelectionModel<Result> selectionModel) {
         List<Result> exportList = selectionModel.getSelectedSet()
                 .stream().filter(result -> result.isExportable()).collect(Collectors.toList());
@@ -216,6 +209,13 @@ public class MeasureLibraryResultTable {
     void onFhirValidationButtonClicked(MultiSelectionModel<Result> selectionModel) {
         selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
             observer.onFhirValidationClicked(object);
+        });
+    }
+
+    @VisibleForTesting
+    void onConvertClicked(MultiSelectionModel<Result> selectionModel) {
+        selectionModel.getSelectedSet().stream().filter(Result::isFhirConvertible).findFirst().ifPresent(object -> {
+            observer.onConvertMeasureFhir(object);
         });
     }
 

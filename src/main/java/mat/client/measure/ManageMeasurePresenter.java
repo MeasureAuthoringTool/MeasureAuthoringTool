@@ -608,6 +608,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void convertMeasureFhir(Result object) {
+        if (showAlertAndReturnIfNotUMLSLoggedIn()) return;
+
         GWT.log("Please wait. Conversion is in progress...");
 
         if (!MatContext.get().getLoadingQueue().isEmpty()) {
@@ -643,8 +645,22 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void showFhirValidationReport(String measureId) {
+        if (showAlertAndReturnIfNotUMLSLoggedIn()) return;
+
         String url = GWT.getModuleBaseURL() + "validationReport?id=" + SafeHtmlUtils.htmlEscape(measureId);
         Window.open(url, "_blank", "");
+    }
+
+    private boolean showAlertAndReturnIfNotUMLSLoggedIn() {
+        if (!MatContext.get().isUMLSLoggedIn()) {
+            searchDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+            searchDisplay.getErrorMessageDisplay().setVisible(true);
+            setSearchingBusy(false);
+            return true;
+        } else {
+            searchDisplay.resetMessageDisplay();
+        }
+        return false;
     }
 
     private void showFhirConversionError(final String errorMessage) {
@@ -1537,11 +1553,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
 
             @Override
-            public void onFhirValidationClicked(ManageMeasureSearchModel.Result result) {
-                showFhirValidationReport(result.getId());
-            }
-
-            @Override
             public void onShareClicked(ManageMeasureSearchModel.Result result) {
                 resetMeasureFlags();
                 displayShare(null, result.getId(), result.getName());
@@ -1589,6 +1600,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     versionDisplay.setSelectedMeasure(selectedMeasure);
                     createVersion();
                 }
+            }
+
+            @Override
+            public void onFhirValidationClicked(ManageMeasureSearchModel.Result result) {
+                showFhirValidationReport(result.getId());
             }
 
             @Override

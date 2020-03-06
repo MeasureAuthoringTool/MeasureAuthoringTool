@@ -63,11 +63,11 @@ public class FhirValidationReportService {
      * @throws IOException
      * @throws TemplateException
      */
-    public String getFhirConversionReportForMeasure(String measureId) throws IOException, TemplateException {
+    public String getFhirConversionReportForMeasure(String measureId, String vsacGrantingTicket) throws IOException, TemplateException {
         ConversionResultDto conversionResult = null;
         Measure measure = measureDAO.getMeasureByMeasureId(measureId);
         if (measure != null) {
-            conversionResult = validateFhirConversion(measureId, measure.isDraft());
+            conversionResult = validateFhirConversion(measureId, vsacGrantingTicket, measure.isDraft());
         }
         return generateValidationReport(conversionResult, measure);
     }
@@ -78,13 +78,13 @@ public class FhirValidationReportService {
      * @return an instance of FHIR ConversionResultDto
      * @throws IOException
      */
-    private ConversionResultDto validateFhirConversion(String measureId, boolean isDraft) throws IOException {
+    private ConversionResultDto validateFhirConversion(String measureId, String vsacGrantingTicket, boolean isDraft) throws IOException {
         if (measureId == null) {
             return null;
         }
         logger.info("Calling FHIR conversion validation service for measure: " + measureId);
         try {
-            return fhirOrchestrationGatewayService.validate(measureId, isDraft);
+            return fhirOrchestrationGatewayService.validate(measureId, vsacGrantingTicket, isDraft);
         } catch (MatRuntimeException e) {
             throw new IOException(e);
         }

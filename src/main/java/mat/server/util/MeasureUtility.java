@@ -12,7 +12,7 @@ import mat.shared.StringUtility;
 
 public class MeasureUtility {
 
-    private static final Log logger = LogFactory.getLog(FhirValidationReportServlet.class);
+    private static final Log logger = LogFactory.getLog(MeasureUtility.class);
     /**
      * Gets the version text.
      *

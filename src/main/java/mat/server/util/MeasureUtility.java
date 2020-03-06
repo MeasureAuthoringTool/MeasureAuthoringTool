@@ -2,12 +2,17 @@ package mat.server.util;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.server.fhirvalidation.FhirValidationReportServlet;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
 
 import mat.model.clause.ModelTypeHelper;
 import mat.shared.StringUtility;
 
 public class MeasureUtility {
+
+    private static final Log logger = LogFactory.getLog(FhirValidationReportServlet.class);
     /**
      * Gets the version text.
      *
@@ -39,6 +44,7 @@ public class MeasureUtility {
         String minorVersion = su.trimLeadingZeros(versionArr[1]);
         if (versionArr.length > 2) {
             String revisionNumber = versionArr[2];
+            logger.debug("Revision Number if Present : " + revisionNumber);
             String modifiedVersion = majorVersion + "." + minorVersion + "." + revisionNumber;
             return modifiedVersion;
         } else {
@@ -62,7 +68,8 @@ public class MeasureUtility {
      */
     public static String getVersionTextWithRevisionNumber(String orgVersionNumber, String revisionNumber, boolean draft) {
         String mVersion = formatVersionText(orgVersionNumber);
-
+        logger.debug("getVersionTextWithRevisionNumber-RN : " +  revisionNumber);
+        logger.debug("getVersionTextWithRevisionNumber-mVersion : " +  mVersion);
         if (draft) {
             return "Draft v" + mVersion + "." + revisionNumber;
         } else {
@@ -83,6 +90,7 @@ public class MeasureUtility {
         String majorVersion = su.trimLeadingZeros(versionArr[0]);
         String minorVersion = su.trimLeadingZeros(versionArr[1]);
         String modifiedVersion = majorVersion + "." + minorVersion + "." + revisionNumber;
+        logger.debug("formatVersionText " + modifiedVersion);
         return modifiedVersion;
     }
 

@@ -40,7 +40,6 @@ import mat.server.service.SecurityQuestionsService;
 import mat.server.service.TransactionAuditService;
 import mat.server.service.UserService;
 import mat.server.util.UMLSSessionTicket;
-import mat.server.util.dictionary.CheckDictionaryWordInPassword;
 import mat.shared.ConstantMessages;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
@@ -251,15 +250,8 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 					loginModel.getQuestion3(), loginModel.getQuestion3Answer());
 			
 			if (sverifier.isValid()) {
-				String resultMessage = callCheckDictionaryWordInPassword(loginModel.getPassword());
-				if (resultMessage.equalsIgnoreCase("SUCCESS")) {
-					boolean isSuccessful = loginCredentialService.changePasswordSecurityAnswers(loginModel);
-					result.setSuccess(isSuccessful);
-				} else {
-					logger.info("Server Side Validation Failed in changePasswordSecurityAnswers for User:" + LoggedInUserUtil.getLoggedInUser());
-					result.setSuccess(false);
-					result.setFailureReason(LoginResult.DICTIONARY_EXCEPTION);
-				}
+				boolean isSuccessful = loginCredentialService.changePasswordSecurityAnswers(loginModel);
+				result.setSuccess(isSuccessful);
 			} else {
 				logger.info("Server Side Validation Failed in changePasswordSecurityAnswers for User:" + LoggedInUserUtil.getLoggedInUser());
 				result.setSuccess(false);
@@ -282,22 +274,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	 */
 	@Override
 	public LoginModel changeTempPassword(String email, String changedpassword) {
-		
-		LoginModel loginModel = new LoginModel();
-		
-		String resultMessage = callCheckDictionaryWordInPassword(changedpassword);
-		
-		if (resultMessage.equalsIgnoreCase("EXCEPTION")) {
-			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-		} else if (resultMessage.equalsIgnoreCase("SUCCESS")) {
-			loginModel = loginCredentialService.changeTempPassword(email, changedpassword);
-		} else {
-			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-		}
-		
-		return loginModel;
+		return loginCredentialService.changeTempPassword(email, changedpassword);
 	}
 	
 	/* (non-Javadoc)
@@ -419,28 +396,6 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		path += html;
 		urlBuilder.setPath(path);
 		Window.Location.replace(urlBuilder.buildString());
-	}
-	
-	/**
-	 * Call check dictionary word in password.
-	 * 
-	 * @param changedpassword
-	 *            the changedpassword
-	 * @return the string
-	 */
-	private String callCheckDictionaryWordInPassword(String changedpassword) {
-		String returnMessage = FAILURE;
-		try {
-			boolean result = CheckDictionaryWordInPassword.containsDictionaryWords(changedpassword);
-			if (result) {
-				returnMessage = SUCCESS;
-			}
-		} catch (IOException e) {
-			returnMessage = "EXCEPTION";
-			e.printStackTrace();
-		}
-		return returnMessage;
-		
 	}
 	
 	/* 

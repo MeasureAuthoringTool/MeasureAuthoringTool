@@ -1,7 +1,5 @@
 package mat.server;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +20,6 @@ import mat.model.UserPreference;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
-import mat.server.util.dictionary.CheckDictionaryWordInPassword;
 import mat.shared.HashUtility;
 import mat.shared.MyAccountModelValidator;
 import mat.shared.PasswordVerifier;
@@ -266,51 +263,14 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements 
             result.setMessages(verifier.getMessages());
             result.setFailureReason(SaveMyAccountResult.SERVER_SIDE_VALIDATION);
         } else {
-            String resultMessage = callCheckDictionaryWordInPassword(password);
-            if (resultMessage.equalsIgnoreCase("SUCCESS")) {
-                User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
-                //to maintain user password History
-                userService.addByUpdateUserPasswordHistory(user, false);
-                userService.setUserPassword(user, password, false);
-
-                userService.saveExisting(user);
-
-                result.setSuccess(true);
-            } else if (resultMessage.equalsIgnoreCase("FAILURE")) {
-                result.setSuccess(false);
-                result.setFailureReason(SaveMyAccountResult.DICTIONARY_EXCEPTION);
-            } else {
-                result.setSuccess(false);
-            }
+            User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
+            //to maintain user password History
+            userService.addByUpdateUserPasswordHistory(user, false);
+            userService.setUserPassword(user, password, false);
+            userService.saveExisting(user);
+            result.setSuccess(true);
         }
         return result;
-
-    }
-
-    /**
-     * Call check dictionary word in password.
-     *
-     * @param changedpassword
-     * @return the string
-     */
-    private String callCheckDictionaryWordInPassword(String changedpassword) {
-        String returnMessage = "FAILURE";
-        try {
-            boolean result = CheckDictionaryWordInPassword.containsDictionaryWords(changedpassword);
-            if (result) {
-                returnMessage = "SUCCESS";
-            }
-
-        } catch (FileNotFoundException e) {
-            returnMessage = "EXCEPTION";
-            e.printStackTrace();
-
-        } catch (IOException e) {
-            returnMessage = "EXCEPTION";
-            e.printStackTrace();
-        }
-        return returnMessage;
-
 
     }
 

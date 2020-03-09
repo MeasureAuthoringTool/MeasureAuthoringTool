@@ -278,6 +278,16 @@ public class AbstractNewMeasureView implements DetailDisplay {
         return measureModelPanel;
     }
 
+    protected VerticalPanel buildCompositeModelTypePanel() {
+        VerticalPanel measureModelPanel = new VerticalPanel();
+        measureModelGroup.add(buildModelTypeLabel());
+        fhirModel.setEnabled(false);
+        qdmModel.setValue(true);
+        measureModelPanel.add(fhirModel);
+        measureModelPanel.add(qdmModel);
+        return measureModelPanel;
+    }
+
     /**
      * Add measure model type radios to create measure view iff 'MAT_ON_FHIR' flag is on
      */
@@ -286,6 +296,11 @@ public class AbstractNewMeasureView implements DetailDisplay {
             VerticalPanel modelTypePanel = buildModelTypePanel();
             measureModelGroup.add(modelTypePanel);
         }
+    }
+
+    protected void addCompositeMeasureModelType() {
+        VerticalPanel modelTypePanel = buildCompositeModelTypePanel();
+        measureModelGroup.add(modelTypePanel);
     }
 
     protected void buildMeasureNameTextArea() {

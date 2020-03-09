@@ -55,7 +55,7 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 		measureNameGroup.add(measureNameTextBox);
 
 		//Measure mode type radios
-		addMeasureModelType();
+		addCompositeMeasureModelType();
 		
 		HorizontalPanel cqlLibraryNamePanel = buildCQLLibraryNamePanel();
 		cqlLibraryNameGroup.add(cqlLibraryNamePanel);

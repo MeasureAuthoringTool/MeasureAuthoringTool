@@ -133,7 +133,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 		boolean result = false;
 		try {
 			result = Double.parseDouble(version.substring(1,version.length())) >= 5.0;
-		} catch (RuntimeException re) {
+		} catch (NullPointerException|NumberFormatException re) {
 			//Just eat it.
 		}
 		return result;

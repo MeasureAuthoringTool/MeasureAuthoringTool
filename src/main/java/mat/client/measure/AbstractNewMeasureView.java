@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import java.util.List;
 
+import mat.client.shared.VerticalFlowPanel;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -18,7 +19,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.codelist.HasListBox;
@@ -263,8 +263,8 @@ public class AbstractNewMeasureView implements DetailDisplay {
      *
      * @return measureModelPanel
      */
-    protected VerticalPanel buildModelTypePanel() {
-        VerticalPanel measureModelPanel = new VerticalPanel();
+    protected VerticalFlowPanel buildModelTypePanel() {
+        VerticalFlowPanel measureModelPanel = new VerticalFlowPanel();
         measureModelGroup.add(buildModelTypeLabel());
         //new model creation defaulted to FHIR
         if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_ADD)) {
@@ -278,14 +278,27 @@ public class AbstractNewMeasureView implements DetailDisplay {
         return measureModelPanel;
     }
 
+    protected VerticalFlowPanel buildCompositeModelTypePanel() {
+        VerticalFlowPanel measureModelPanel = new VerticalFlowPanel();
+        measureModelGroup.add(buildModelTypeLabel());
+        fhirModel.setEnabled(false);
+        qdmModel.setValue(true);
+        measureModelPanel.add(fhirModel);
+        measureModelPanel.add(qdmModel);
+        return measureModelPanel;
+    }
+
     /**
      * Add measure model type radios to create measure view iff 'MAT_ON_FHIR' flag is on
      */
     protected void addMeasureModelType() {
         if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
-            VerticalPanel modelTypePanel = buildModelTypePanel();
-            measureModelGroup.add(modelTypePanel);
+            measureModelGroup.add(buildModelTypePanel());
         }
+    }
+
+    protected void addCompositeMeasureModelType() {
+        measureModelGroup.add(buildCompositeModelTypePanel());
     }
 
     protected void buildMeasureNameTextArea() {

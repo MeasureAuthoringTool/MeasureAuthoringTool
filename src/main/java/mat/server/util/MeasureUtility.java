@@ -2,12 +2,19 @@ package mat.server.util;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
 
 import mat.model.clause.ModelTypeHelper;
 import mat.shared.StringUtility;
 
+import java.text.DecimalFormat;
+
 public class MeasureUtility {
+
+    private static final Log logger = LogFactory.getLog(MeasureUtility.class);
+    private static DecimalFormat revisionFormat = new DecimalFormat("000");
     /**
      * Gets the version text.
      *
@@ -37,19 +44,7 @@ public class MeasureUtility {
         String[] versionArr = version.split("\\.");
         String majorVersion = su.trimLeadingZeros(versionArr[0]);
         String minorVersion = su.trimLeadingZeros(versionArr[1]);
-        if (versionArr.length > 2) {
-            String revisionNumber = versionArr[2];
-            String modifiedVersion = majorVersion + "." + minorVersion + "." + revisionNumber;
-            return modifiedVersion;
-        } else {
-            String modifiedVersion = majorVersion + "." + minorVersion;
-            return modifiedVersion;
-        }
-    }
-
-    public static String getVersionText(String orgVersionNumber, String revisionNumber, boolean isDraft) {
-        String mVersion = "v" + formatVersionText(orgVersionNumber);
-        return isDraft ? ("Draft " + mVersion + "." + revisionNumber) : mVersion;
+        return majorVersion + "." + minorVersion;
     }
 
     /**
@@ -61,13 +56,8 @@ public class MeasureUtility {
      * @return the version text with revision number
      */
     public static String getVersionTextWithRevisionNumber(String orgVersionNumber, String revisionNumber, boolean draft) {
-        String mVersion = formatVersionText(orgVersionNumber);
-
-        if (draft) {
-            return "Draft v" + mVersion + "." + revisionNumber;
-        } else {
-            return "v" + mVersion;
-        }
+        String mVersion = "v" + formatVersionText(orgVersionNumber);
+        return draft ? ("Draft " + mVersion + "." + revisionFormat.format(Integer.parseInt(revisionNumber))) : mVersion;
     }
 
     /**
@@ -78,12 +68,8 @@ public class MeasureUtility {
      * @return the string
      */
     public static String formatVersionText(String revisionNumber, String version) {
-        StringUtility su = new StringUtility();
-        String[] versionArr = version.split("\\.");
-        String majorVersion = su.trimLeadingZeros(versionArr[0]);
-        String minorVersion = su.trimLeadingZeros(versionArr[1]);
-        String modifiedVersion = majorVersion + "." + minorVersion + "." + revisionNumber;
-        return modifiedVersion;
+        String mVersion = "v" + formatVersionText(version);
+        return mVersion + "." + revisionFormat.format(Integer.parseInt(revisionNumber));
     }
 
     /**

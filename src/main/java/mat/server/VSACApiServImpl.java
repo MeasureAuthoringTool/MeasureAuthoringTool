@@ -20,6 +20,8 @@ import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.vsac.VSACGroovyClient;
 import org.vsac.VSACResponseResult;
 
@@ -39,6 +41,7 @@ import mat.server.util.UMLSSessionTicket;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 
+@Service
 public class VSACApiServImpl implements VSACApiService{
 
 	private static final Log LOGGER = LogFactory.getLog(VSACAPIServiceImpl.class);
@@ -53,6 +56,7 @@ public class VSACApiServImpl implements VSACApiService{
 	private String profileService;
 	private VSACGroovyClient vGroovyClient;
 	private String versionService;
+	@Value("${mat.qdm.default.expansion.id}")
 	private String defaultExpId;
 	private String vsacServerDRCUrl;
 	

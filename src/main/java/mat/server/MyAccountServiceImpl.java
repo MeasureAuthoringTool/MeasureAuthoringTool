@@ -92,7 +92,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements 
      * @return the security questions service
      */
     private SecurityQuestionsService getSecurityQuestionsService() {
-        return (SecurityQuestionsService) context.getBean("securityQuestionsService");
+        return context.getBean(SecurityQuestionsService.class);
     }
 
 
@@ -115,7 +115,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements 
         MyAccountModelValidator validator = new MyAccountModelValidator();
         model.scrubForMarkUp();
         List<String> messages = validator.validate(model);
-        UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+        UserDAO userDAO = context.getBean(UserDAO.class);
         if (messages.size() != 0) {
             logger.info("Server-Side Validation for saveMyAccount Failed for User :: " + LoggedInUserUtil.getLoggedInUser());
             result.setSuccess(false);

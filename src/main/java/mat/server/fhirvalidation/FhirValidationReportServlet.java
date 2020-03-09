@@ -44,6 +44,6 @@ public class FhirValidationReportServlet extends HttpServlet {
      * @return an instance of FhirValidationReportService
      */
     private FhirValidationReportService getValidationReportService() {
-     return (FhirValidationReportService) applicationContext.getBean("fhirValidationService");
+     return applicationContext.getBean(FhirValidationReportService.class);
     }
 }

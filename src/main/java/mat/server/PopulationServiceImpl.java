@@ -8,7 +8,9 @@ import mat.client.population.service.PopulationService;
 import mat.server.service.MeasurePackageService;
 import mat.server.util.XmlProcessor;
 import mat.shared.SaveUpdateCQLResult;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PopulationServiceImpl extends SpringRemoteServiceServlet implements PopulationService {
 
     private static final long serialVersionUID = 1L;

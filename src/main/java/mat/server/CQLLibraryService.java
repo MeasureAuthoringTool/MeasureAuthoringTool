@@ -137,7 +137,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 
     private VSACApiServImpl getVsacService() {
-        return (VSACApiServImpl) context.getBean("vsacapi");
+        return context.getBean(VSACApiServImpl.class);
     }
 
     @Override

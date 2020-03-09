@@ -60,7 +60,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	private MeasureDAO measureDAO;
 
 	@Autowired
-	@Qualifier("simpleEMeasureServiceImpl")
 	private SimpleEMeasureService simpleEMeasureService;
 
 	@Override
@@ -155,7 +154,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	}
 
 	private VSACApiServImpl getVsacService() {
-		return (VSACApiServImpl) context.getBean("vsacapi");
+		return context.getBean(VSACApiServImpl.class);
 	}
 
 	public BonnieCalculatedResult getBonnieExportForMeasure(String userId, String measureId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, BonnieBadParameterException, BonnieDoesNotExistException{

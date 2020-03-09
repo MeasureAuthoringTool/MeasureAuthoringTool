@@ -134,6 +134,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 		try {
 			result = Double.parseDouble(version.substring(1,version.length())) >= 5.0;
 		} catch (RuntimeException re) {
+			//Just eat it.
 		}
 		return result;
 	}

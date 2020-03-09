@@ -35,7 +35,6 @@ import org.springframework.stereotype.Service;
  * The Class QDSAttributesServiceImpl.
  */
 @SuppressWarnings("serial")
-@Service
 public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         implements QDSAttributesService {
 

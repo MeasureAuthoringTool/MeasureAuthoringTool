@@ -246,7 +246,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * @return Measure. *
 	 */
 	private mat.model.clause.Measure getMeasureName(final String measureId) {
-		MeasurePackageService measureService = (MeasurePackageService) context.getBean(MeasurePackageService.class);
+		MeasurePackageService measureService = context.getBean(MeasurePackageService.class);
 		mat.model.clause.Measure measure = measureService.getById(measureId);
 		return measure;
 	}

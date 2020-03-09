@@ -126,7 +126,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     private CompositeMeasurePackageValidator compositeMeasurePackageValidator;
 
     @Value("${mat.measure.current.release.version}")
-    private String currentReleaseVersion = "v6.0";
+    private String currentReleaseVersion;
 
     private ValidationUtility validator = new ValidationUtility();
 

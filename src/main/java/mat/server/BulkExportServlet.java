@@ -80,12 +80,12 @@ public class BulkExportServlet extends HttpServlet {
 	}
 	
 	private SimpleEMeasureService getService(){
-		SimpleEMeasureService service = (SimpleEMeasureService) context.getBean("eMeasureService");
+		SimpleEMeasureService service = context.getBean(SimpleEMeasureService.class);
 		return service;
 	}
 	
 	private MeasurePackageService getMeasurePackageService() {
-		return (MeasurePackageService) context.getBean("measurePackageService");
+		return context.getBean(MeasurePackageService.class);
 	}
 
 	private String humanReadableByteCount(long bytes) {

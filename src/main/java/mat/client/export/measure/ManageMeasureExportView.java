@@ -1,5 +1,6 @@
 package mat.client.export.measure;
 
+import org.apache.commons.lang3.StringUtils;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -118,7 +119,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 		
 		vp.add(humanReadableRadio);
 		vp.add(hqmfRadio);
-		if(releaseVersion.startsWith("v5")){
+		if(isV5OrGreater(releaseVersion)){
 			vp.add(cqlLibraryRadio);
 			vp.add(elmRadio);
 			vp.add(jsonRadio);
@@ -127,6 +128,17 @@ public class ManageMeasureExportView implements ExportDisplay {
 		vp.add(compositeMeasurePackageRadio);
 		resetRadioButtonValues(isCompositeMeasure);
 	}
+
+	private boolean isV5OrGreater(String version) {
+		boolean result = false;
+		try {
+			result = Double.parseDouble(version.substring(1,version.length())) >= 5.0;
+		} catch (RuntimeException re) {
+		}
+		return result;
+	}
+
+
 	
 	@Override
 	public void showCompositeMeasure(boolean isComposite) {

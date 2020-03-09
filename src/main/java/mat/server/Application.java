@@ -46,6 +46,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
@@ -56,7 +57,6 @@ import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 import mat.server.util.MATPropertiesService;
 
 @Configuration
-@ComponentScan({"mat.model", "mat.dao", "mat.dao.impl", "mat.model.clause", "mat.server", "mat.hibernate"})
 @PropertySource("classpath:MAT.properties")
 @EnableTransactionManagement
 @EnableConfigurationProperties
@@ -64,6 +64,7 @@ import mat.server.util.MATPropertiesService;
 @EnableCaching
 @EnableScheduling
 @EnableJpaRepositories
+@Service
 public class Application extends WebSecurityConfigurerAdapter {
 
     @Value("${ALGORITHM:}")

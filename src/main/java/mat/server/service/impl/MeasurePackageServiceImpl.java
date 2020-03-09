@@ -60,7 +60,10 @@ import mat.server.validator.measure.CompositeMeasurePackageValidator;
 import mat.shared.CompositeMeasurePackageValidationResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.ValidationUtility;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class MeasurePackageServiceImpl implements MeasurePackageService {
 
     private static final Log logger = LogFactory.getLog(MeasurePackageServiceImpl.class);
@@ -122,7 +125,8 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     @Autowired
     private CompositeMeasurePackageValidator compositeMeasurePackageValidator;
 
-    private String currentReleaseVersion;
+    @Value("${mat.measure.current.release.version}")
+    private String currentReleaseVersion = "v6.0";
 
     private ValidationUtility validator = new ValidationUtility();
 

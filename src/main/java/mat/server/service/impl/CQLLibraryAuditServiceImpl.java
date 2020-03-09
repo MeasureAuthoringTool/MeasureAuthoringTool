@@ -10,10 +10,12 @@ import mat.dao.CQLLibraryAuditLogDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
 import mat.server.service.CQLLibraryAuditService;
+import org.springframework.stereotype.Service;
 
 /**
  * Service implementation for Measure Audit Service.
  */
+@Service
 public class CQLLibraryAuditServiceImpl implements CQLLibraryAuditService{
 	
 	/** The measure dao. */

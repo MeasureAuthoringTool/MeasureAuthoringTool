@@ -2,11 +2,16 @@ package mat.server.service.impl;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 
+import mat.server.MeasureLibraryServiceImpl;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
 
@@ -22,6 +27,7 @@ import mat.shared.FileNameUtility;
  *
  */
 public class ZipPackager {
+	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 	
 	/**
 	 * Gets the zip barr.
@@ -191,7 +197,7 @@ public class ZipPackager {
 			addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 		    addBytesToZip(emeasureXMLPath,emeasureXMLStr.getBytes(),zip);
 		    
-		    if(measureReleaseVersion.startsWith("v5")){
+		    if(isV5OrGreater(measureReleaseVersion)){
 			    addFileToZip(cqlExportResult, parentPath, "cql", zip);
 			    addFileToZip(elmExportResult, parentPath, "xml", zip);
 			    addFileToZip(jsonExportResult, parentPath, "json", zip);
@@ -201,6 +207,16 @@ public class ZipPackager {
 			System.out.println(e.toString());
 			System.out.println(e.fillInStackTrace());
 		}
+	}
+
+	private boolean isV5OrGreater(String version) {
+		boolean result = false;
+		try {
+			result = Double.parseDouble(version.substring(1,version.length())) >= 5.0;
+		} catch (RuntimeException re) {
+			logger.error("Error formatting version " + version,re);
+		}
+		return result;
 	}
 
 	/**

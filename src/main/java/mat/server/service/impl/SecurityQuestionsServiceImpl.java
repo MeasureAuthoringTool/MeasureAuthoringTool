@@ -7,12 +7,13 @@ import mat.model.SecurityQuestions;
 import mat.server.service.SecurityQuestionsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.stereotype.Service;
 
 
 /**
  * The Class SecurityQuestionsServiceImpl.
  */
+@Service
 public class SecurityQuestionsServiceImpl implements SecurityQuestionsService {
 
 	/** The security questions dao. */

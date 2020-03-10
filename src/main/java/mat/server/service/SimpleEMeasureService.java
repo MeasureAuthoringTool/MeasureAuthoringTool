@@ -17,6 +17,8 @@ import mat.shared.bonnie.error.BonnieUnauthorizedException;
 
 public interface SimpleEMeasureService {	
 	ExportResult getSimpleXML(String measureId) throws Exception;
+
+	ExportResult getMatXml(final String measureId) throws Exception;
 	
 	ExportResult getEMeasureHTML(String measureId) throws Exception;
 	

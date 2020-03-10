@@ -64,6 +64,10 @@ public class FileNameUtility {
 	public static String getSimpleXMLName(String name) {
 		return name.replaceAll("\\W","") + "_SimpleXML.xml";
 	}
+
+	public static String getMatXMLName(String name) {
+		return name.replaceAll("\\W","") + "_MatXML.xml";
+	}
 	
 	/**
 	 * Gets the parent path.

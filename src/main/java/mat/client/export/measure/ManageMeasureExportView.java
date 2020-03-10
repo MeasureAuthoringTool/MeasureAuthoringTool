@@ -1,5 +1,6 @@
 package mat.client.export.measure;
 
+import mat.client.measure.ManageMeasureSearchModel;
 import org.apache.commons.lang3.StringUtils;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -31,6 +32,8 @@ public class ManageMeasureExportView implements ExportDisplay {
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	private RadioButton simpleXMLRadio = new RadioButton("format", "SimpleXML");
+
+	private RadioButton matXmlRadio = new RadioButton("format","XML");
 	
 	private RadioButton hqmfRadio = new RadioButton("format", "HQMF");
 	
@@ -109,8 +112,11 @@ public class ManageMeasureExportView implements ExportDisplay {
 	}
 	
 	@Override
-	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure) {
-		
+	public void setExportOptionsBasedOnVersion(ManageMeasureSearchModel.Result measure) {
+		String releaseVersion = measure.getHqmfReleaseVersion();
+		boolean isCompositeMeasure = measure.getIsComposite();
+		String measureModel = measure.getMeasureModel();
+
 		vp.clear();
 		
 		if(MatContext.get().getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
@@ -119,6 +125,9 @@ public class ManageMeasureExportView implements ExportDisplay {
 		
 		vp.add(humanReadableRadio);
 		vp.add(hqmfRadio);
+		if ("FHIR".equalsIgnoreCase(measureModel)) {
+			vp.add(matXmlRadio);
+		}
 		if(isV5OrGreater(releaseVersion)){
 			vp.add(cqlLibraryRadio);
 			vp.add(elmRadio);
@@ -144,6 +153,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 	@Override
 	public void showCompositeMeasure(boolean isComposite) {
 		simpleXMLRadio.setVisible(!isComposite);
+		matXmlRadio.setVisible(!isComposite);
 		hqmfRadio.setVisible(!isComposite);
 		humanReadableRadio.setVisible(!isComposite);
 		cqlLibraryRadio.setVisible(!isComposite);
@@ -155,6 +165,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 
 	private void resetRadioButtonValues(boolean isComposite) {
 		simpleXMLRadio.setValue(false);
+		matXmlRadio.setValue(false);
 		hqmfRadio.setValue(false);
 		humanReadableRadio.setValue(false);
 		cqlLibraryRadio.setValue(false);
@@ -222,5 +233,9 @@ public class ManageMeasureExportView implements ExportDisplay {
 	
 	public Button getMeasureNameLink() {
 		return measureNameLink;
+	}
+
+	public boolean isMatXML() {
+		return matXmlRadio.getValue();
 	}
 }

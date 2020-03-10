@@ -3,6 +3,7 @@ package mat.client.export.measure;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 
 import mat.client.measure.BaseDisplay;
+import mat.client.measure.ManageMeasureSearchModel;
 
 public interface ExportDisplay extends BaseDisplay {
 
@@ -26,7 +27,7 @@ public interface ExportDisplay extends BaseDisplay {
 
 	boolean isCQLLibrary();
 
-	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure);
+	public void setExportOptionsBasedOnVersion(ManageMeasureSearchModel.Result measure);
 
 	boolean isCompositeMeasurePackageRadio();
 

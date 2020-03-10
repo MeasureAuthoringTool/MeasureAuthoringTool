@@ -169,6 +169,7 @@ public class ExportServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
+            logger.error("Export Error:",e);
             throw new ServletException(e);
         } finally {
             if (resp != null && resp.getOutputStream() != null)

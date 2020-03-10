@@ -35,7 +35,7 @@ public class QDSAttributesDAOImpl extends GenericDAO<QDSAttributes, String> impl
 	public List<QDSAttributes> findByDataType(String qdmname, ApplicationContext context) {
 		
 		qdmname = MatContext.get().getTextSansOid(qdmname);
-		final DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
+		final DataTypeDAO dataTypeDAO = context.getBean(DataTypeDAO.class);
 		final DataType dataType = getDataTypeFromQDMName(qdmname, dataTypeDAO);
 
 		return (dataType == null) ? new ArrayList<>() : getQDSAttributesListByParameter(DATA_TYPE_ID, dataType.getId());
@@ -43,7 +43,7 @@ public class QDSAttributesDAOImpl extends GenericDAO<QDSAttributes, String> impl
 	
 	@Override
 	public List<QDSAttributes> findByDataTypeName(String dataTypeName, ApplicationContext context){
-		final DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
+		final DataTypeDAO dataTypeDAO = context.getBean(DataTypeDAO.class);
 		final DataType dataType = getDataTypeFromName(dataTypeName, dataTypeDAO);
 		
 		return (dataType == null) ? new ArrayList<>() : getQDSAttributesListByParameter(DATA_TYPE_ID, dataType.getId());

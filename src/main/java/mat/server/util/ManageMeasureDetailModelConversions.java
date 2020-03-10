@@ -155,7 +155,7 @@ public class ManageMeasureDetailModelConversions {
         measureDetailModel.setShortName(measure.getaBBRName());
         measureDetailModel.setVersionNumber(measure.getVersion());
         measureDetailModel.setRevisionNumber(measure.getRevisionNumber());
-        measureDetailModel.setFormattedVersion(MeasureUtility.getVersionText(measure.getVersion(), measure.getRevisionNumber(), measure.isDraft()));
+        measureDetailModel.setFormattedVersion(MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(), measure.getRevisionNumber(), measure.isDraft()));
         measureDetailModel.setGroupId(measure.getMeasureSet().getId());
         measureDetailModel.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
         measureDetailModel.setMeasScoring(measure.getMeasureScoring());

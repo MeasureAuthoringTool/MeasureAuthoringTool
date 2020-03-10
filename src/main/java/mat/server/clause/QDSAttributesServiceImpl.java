@@ -29,6 +29,7 @@ import mat.model.DataType;
 import mat.model.clause.QDSAttributes;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.util.ResourceLoader;
+import org.springframework.stereotype.Service;
 
 /**
  * The Class QDSAttributesServiceImpl.
@@ -113,11 +114,11 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
      * @return the dao
      */
     public QDSAttributesDAO getDAO() {
-        return (QDSAttributesDAO) context.getBean("qDSAttributesDAO");
+        return context.getBean(QDSAttributesDAO.class);
     }
 
     public CqlAttributesRemoteCallService getCqlAttributesRemoteCallService() {
-        return (CqlAttributesRemoteCallService) context.getBean("cqlAttributesRemoteCallService");
+        return context.getBean(CqlAttributesRemoteCallService.class);
     }
     /**
      * Gets the modes dao.
@@ -125,7 +126,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
      * @return the dao
      */
     public ModesDAO getModesDAO() {
-        return (ModesDAO) context.getBean("modesDAO");
+        return context.getBean(ModesDAO.class);
     }
 
     /**
@@ -134,7 +135,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
      * @return the dao
      */
     public ModesAttributesDAO getModeAttrDAO() {
-        return (ModesAttributesDAO) context.getBean("modesAttributesDAO");
+        return context.getBean(ModesAttributesDAO.class);
     }
 
     /*
@@ -147,7 +148,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
     @Override
     public boolean checkIfQDMDataTypeIsPresent(String dataTypeName) {
         boolean checkIfDataTypeIsPresent = false;
-        DataTypeDAO dataTypeDAO = (DataTypeDAO) context.getBean("dataTypeDAO");
+        DataTypeDAO dataTypeDAO = context.getBean(DataTypeDAO.class);
         DataType dataType = dataTypeDAO.findByDataTypeName(dataTypeName);
         if (dataType != null) {
             checkIfDataTypeIsPresent = true;
@@ -164,7 +165,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
     @Override
     public Map<String, List<String>> getDatatypeList(List<String> dataTypeList) {
 
-        DataTypeDAO dataTypeDAO = (DataTypeDAO) context.getBean("dataTypeDAO");
+        DataTypeDAO dataTypeDAO = context.getBean(DataTypeDAO.class);
         Map<String, List<String>> dataTypeListMap = new HashMap<String, List<String>>();
 
         for (String dataType : dataTypeList) {

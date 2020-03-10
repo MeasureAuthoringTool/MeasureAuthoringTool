@@ -17,10 +17,12 @@ import mat.model.User;
 import mat.model.clause.Measure;
 import mat.server.service.MeasureAuditService;
 import mat.server.service.UserService;
+import org.springframework.stereotype.Service;
 
 /**
  * Service implementation for Measure Audit Service.
  */
+@Service
 public class MeasureAuditServiceImpl implements MeasureAuditService{
 	
 	/** The measure dao. */

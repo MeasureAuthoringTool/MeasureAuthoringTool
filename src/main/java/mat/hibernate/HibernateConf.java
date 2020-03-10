@@ -19,7 +19,7 @@ public class HibernateConf{
 	private static SessionFactory buildSessionFactory() {
 		if (sessionFactory == null) {
 			try {				
-				sessionFactory = (SessionFactory) HibernateStatisticsFilter.getContext().getBean("sessionFactory");
+				sessionFactory = HibernateStatisticsFilter.getContext().getBean(SessionFactory.class);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

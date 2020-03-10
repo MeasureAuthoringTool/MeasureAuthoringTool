@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.util.FeatureFlagConstant;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.LockedUserInfo;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -146,6 +147,7 @@ public class MeasureLibraryGridToolbarTest {
         toolbar.updateOnSelectionChanged(Arrays.asList(
                 new ManageMeasureSearchModel.Result() {{
                     setExportable(true);
+                    setMeasureModel(ModelTypeHelper.QDM);
                 }},
                 new ManageMeasureSearchModel.Result()
         ));
@@ -383,10 +385,12 @@ public class MeasureLibraryGridToolbarTest {
         ManageMeasureSearchModel.Result item0 = new ManageMeasureSearchModel.Result();
         item0.setExportable(true);
         item0.setIsComposite(true);
+        item0.setMeasureModel(ModelTypeHelper.QDM);
 
         ManageMeasureSearchModel.Result item1 = new ManageMeasureSearchModel.Result();
         item1.setExportable(true);
         item1.setIsComposite(true);
+        item0.setMeasureModel(ModelTypeHelper.QDM);
 
         toolbar.updateOnSelectionChanged(Arrays.asList(item0, item1));
 

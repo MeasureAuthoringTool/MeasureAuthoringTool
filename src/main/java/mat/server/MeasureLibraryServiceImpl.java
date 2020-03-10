@@ -643,7 +643,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     ? manageMeasureDetailModel.getPeriodModel().getStopDate() : null);
         }
         manageMeasureDetailModel.setEndorseByNQF(StringUtils.isNotBlank(manageMeasureDetailModel.getEndorsement()));
-        manageMeasureDetailModel.setFormattedVersion(MeasureUtility.getVersionText(measure.getVersion(), measure.getRevisionNumber(), measure.isDraft()));
+        manageMeasureDetailModel.setFormattedVersion(MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(), measure.getRevisionNumber(), measure.isDraft()));
         manageMeasureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(), String.valueOf(measure.getVersionNumber())));
         manageMeasureDetailModel.setVersionNumber(MeasureUtility.getVersionText(manageMeasureDetailModel.getOrgVersionNumber(), measure.isDraft()));
         manageMeasureDetailModel.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
@@ -1059,7 +1059,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
      */
     public boolean checkIfQDMDataTypeIsPresent(String dataTypeName) {
         boolean checkIfDataTypeIsPresent = false;
-        DataTypeDAO dataTypeDAO = (DataTypeDAO) context.getBean("dataTypeDAO");
+        DataTypeDAO dataTypeDAO = context.getBean(DataTypeDAO.class);
         DataType dataType = dataTypeDAO.findByDataTypeName(dataTypeName);
         if (dataType != null) {
             checkIfDataTypeIsPresent = true;
@@ -1264,7 +1264,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     private QDSAttributesDAO getAttributeDAO() {
-        return ((QDSAttributesDAO) context.getBean("qDSAttributesDAO"));
+        return context.getBean(QDSAttributesDAO.class);
 
     }
 
@@ -1378,7 +1378,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
      * @return the measure xml dao
      */
     private MeasureXMLDAO getMeasureXMLDAO() {
-        return ((MeasureXMLDAO) context.getBean("measureXMLDAO"));
+        return context.getBean(MeasureXMLDAO.class);
     }
 
     @Override
@@ -1481,7 +1481,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
      * @return the service
      */
     private VSACApiServImpl getVsacService() {
-        return (VSACApiServImpl) context.getBean("vsacapi");
+        return context.getBean(VSACApiServImpl.class);
     }
 
     @Override

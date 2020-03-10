@@ -485,13 +485,19 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
         List<Measure> measureResultList = session.createQuery(query).getResultList();
 
-        boolean isAdvancedSearch = checkIfAdvancedSearchWasUsed(measureSearchModel);
-
-        if (!user.getSecurityRole().getId().equals("2") && !isAdvancedSearch) {
+        if (isMeasureSetSearch(user,measureSearchModel)) {
             measureResultList = getAllMeasuresInSet(measureResultList);
         }
+
         measureResultList = sortMeasureList(measureResultList);
         return measureResultList;
+    }
+
+    private boolean isMeasureSetSearch(User u,MeasureSearchModel m) {
+        boolean isAdvancedSearch = checkIfAdvancedSearchWasUsed(m);
+        return m.getModelType() == SearchModel.ModelType.ALL &&
+                !StringUtils.equals(u.getSecurityRole().getId(),"2") &&
+                !isAdvancedSearch;
     }
 
     private boolean checkIfAdvancedSearchWasUsed(MeasureSearchModel measureSearchModel) {

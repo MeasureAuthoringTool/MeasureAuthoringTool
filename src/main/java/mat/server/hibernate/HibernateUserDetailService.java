@@ -7,11 +7,13 @@ import mat.server.model.MatUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Service;
 
 
 /**
  * The Class HibernateUserDetailService.
  */
+@Service
 public class HibernateUserDetailService implements UserDetailsService {
 	
 	

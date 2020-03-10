@@ -76,7 +76,6 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
 import mat.dao.DataTypeDAO;
-import mat.dao.FeatureFlagDAO;
 import mat.dao.MeasureTypeDAO;
 import mat.dao.OrganizationDAO;
 import mat.dao.RecentMSRActivityLogDAO;
@@ -886,18 +885,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     /**
      * Creates the measure xml model.
      *
-     * @param manageMeasureDetailModel the manage measure detail model
-     * @param measure                  the measure
-     * @param parentNode               the parent node
+     * @param measure    the measure
+     * @param parentNode the parent node
      * @return the measure xml model
      */
-    private MeasureXmlModel createMeasureXmlModel(final ManageMeasureDetailModel manageMeasureDetailModel,
-                                                  final Measure measure, final String parentNode) {
+    private MeasureXmlModel createMeasureXmlModel(final Measure measure, final String parentNode) {
         MeasureXmlModel measureXmlModel = new MeasureXmlModel();
         measureXmlModel.setMeasureId(measure.getId());
         measureXmlModel.setParentNode(parentNode);
         measureXmlModel.setMeasureModel(measure.getMeasureModel());
-        // FIXME unused args
         return measureXmlModel;
     }
 
@@ -1771,7 +1767,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             result.setVersionStr(MeasureUtility.formatVersionText(pkg.getRevisionNumber(), pkg.getVersion()));
             result.setSuccess(true);
             result.setId(pkg.getId());
-            saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE), pkg.getId());
+            saveMeasureXml(createMeasureXmlModel(pkg, MEASURE), pkg.getId());
             // Adds population nodes to new measures
             updateMeasureXml(model, pkg, existingMeasureScoringType);
             return result;
@@ -5754,7 +5750,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 return result;
             }
 
-            saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE), pkg.getId());
+            saveMeasureXml(createMeasureXmlModel(pkg, MEASURE), pkg.getId());
 
             updateMeasureXml(model, pkg, existingMeasureScoringType);
 

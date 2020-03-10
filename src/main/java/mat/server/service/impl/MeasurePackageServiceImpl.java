@@ -183,6 +183,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         MeasureXmlModel xmlModel = new MeasureXmlModel();
         xmlModel.setMeasureId(measure.getId());
         xmlModel.setXml(updatedMeasureXMLString);
+        xmlModel.setMeasureModel(measure.getMeasureModel());
 
         saveMeasureXml(xmlModel);
         measureXML = measureXMLDAO.findForMeasure(measureId);
@@ -240,11 +241,13 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     @Override
     public MeasureXmlModel getMeasureXmlForMeasure(final String measureId) {
         final MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
+        final Measure measure = measureDAO.find(measureId);
         if (measureXML != null) {
             final MeasureXmlModel exportModal = new MeasureXmlModel();
             exportModal.setMeasureId(measureXML.getMeasureId());
             exportModal.setMeausreExportId(measureXML.getId());
             exportModal.setXml(measureXML.getMeasureXMLAsString());
+            exportModal.setMeasureModel(measure.getMeasureModel());
             return exportModal;
         }
         return null;

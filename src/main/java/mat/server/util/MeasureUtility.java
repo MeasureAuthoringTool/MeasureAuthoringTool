@@ -1,20 +1,18 @@
 package mat.server.util;
 
+import java.text.DecimalFormat;
+
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
 
 import mat.model.clause.ModelTypeHelper;
 import mat.shared.StringUtility;
 
-import java.text.DecimalFormat;
-
 public class MeasureUtility {
 
-    private static final Log logger = LogFactory.getLog(MeasureUtility.class);
     private static DecimalFormat revisionFormat = new DecimalFormat("000");
+
     /**
      * Gets the version text.
      *
@@ -99,23 +97,37 @@ public class MeasureUtility {
     }
 
     /**
+     * Update CQL version.
+     *
+     * @param processor the processor
+     * @param version
+     */
+    public static void updateCQLVersion(XmlProcessor processor, String version) throws XPathExpressionException {
+        Node versionNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/version");
+        if (versionNode != null) {
+            versionNode.setTextContent(version);
+        }
+    }
+
+
+    /**
      * Method to set latest model version in Draft's or clones of CQL type measure or CQL Stand Alone Library.
      **/
-    public static void updateModelVersion(XmlProcessor processor, boolean fhir) throws XPathExpressionException {
+    public static void updateModelVersion(XmlProcessor processor, boolean isFhirMeasure) throws XPathExpressionException {
 
-        String model = fhir ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM;
-        String version = fhir ? MATPropertiesService.get().getFhirVersion() : MATPropertiesService.get().getQdmVersion();
+        String modelType = isFhirMeasure ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM;
+        String modelVersion = isFhirMeasure ? MATPropertiesService.get().getFhirVersion() : MATPropertiesService.get().getQdmVersion();
 
         Node cqlLibraryModelVersionNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/usingModelVersion");
 
         if (cqlLibraryModelVersionNode != null) {
-            cqlLibraryModelVersionNode.setTextContent(version);
+            cqlLibraryModelVersionNode.setTextContent(modelVersion);
         }
 
         Node cqlLibraryModelNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/usingModel");
 
         if (cqlLibraryModelNode != null) {
-            cqlLibraryModelNode.setTextContent(model);
+            cqlLibraryModelNode.setTextContent(modelType);
         }
 
     }

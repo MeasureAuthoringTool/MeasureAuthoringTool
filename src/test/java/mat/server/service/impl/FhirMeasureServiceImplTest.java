@@ -54,7 +54,7 @@ public class FhirMeasureServiceImplTest {
         String loggedinUserId = "someCurrentUser";
 
         Exception ex = Assertions.assertThrows(MatException.class, () -> {
-            service.convert(sourceMeasure, loggedinUserId);
+            service.convert(sourceMeasure, loggedinUserId, "vsacGrantingTicket");
         });
 
         Assertions.assertEquals("Measure cannot be converted to FHIR", ex.getMessage());
@@ -78,7 +78,7 @@ public class FhirMeasureServiceImplTest {
         validateResult.setLibraryConversionResults(Collections.singletonList(libraryConversionResults));
         validateResult.setValueSetConversionResults(Collections.emptyList());
 
-        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyBoolean())).thenReturn(validateResult);
+        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
 
         ManageMeasureDetailModel sourceMeasureDetails = new ManageMeasureDetailModel();
         sourceMeasureDetails.setId(sourceMeasureId);
@@ -102,7 +102,7 @@ public class FhirMeasureServiceImplTest {
 
         Mockito.when(measureLibraryService.saveCQLFile(Mockito.anyString(), Mockito.anyString())).thenReturn(saveUpdateCQLResult);
 
-        service.convert(sourceMeasureResult, loggedinUserId);
+        service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);
 
         Mockito.verify(measureDAO, Mockito.never()).delete(Mockito.any(Measure.class));
     }
@@ -125,7 +125,7 @@ public class FhirMeasureServiceImplTest {
         validateResult.setLibraryConversionResults(Collections.singletonList(libraryConversionResults));
         validateResult.setValueSetConversionResults(Collections.emptyList());
 
-        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyBoolean())).thenReturn(validateResult);
+        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
 
         ManageMeasureDetailModel sourceMeasureDetails = new ManageMeasureDetailModel();
         sourceMeasureDetails.setId(sourceMeasureId);
@@ -146,7 +146,7 @@ public class FhirMeasureServiceImplTest {
 
         Mockito.when(measureLibraryService.saveCQLFile(Mockito.anyString(), Mockito.anyString())).thenReturn(saveUpdateCQLResult);
 
-        service.convert(sourceMeasureResult, loggedinUserId);
+        service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);
 
         Mockito.verify(existingFhirMeasures, Mockito.times(1)).clear();
     }

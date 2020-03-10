@@ -50,7 +50,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
     }
 
     @Override
-    public FhirConvertResultResponse convert(ManageMeasureSearchModel.Result sourceMeasure, String loggedinUserId) throws MatException {
+    public FhirConvertResultResponse convert(ManageMeasureSearchModel.Result sourceMeasure, String vsacGrantingTicket, String loggedinUserId) throws MatException {
         if (!sourceMeasure.isFhirConvertible()) {
             throw new MatException("Measure cannot be converted to FHIR");
         }
@@ -61,7 +61,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
         dropFhirMeasureIfExists(sourceMeasureDetails);
 
-        ConversionResultDto conversionResult = validateSourceMeasureForFhirConversion(sourceMeasure);
+        ConversionResultDto conversionResult = validateSourceMeasureForFhirConversion(sourceMeasure, vsacGrantingTicket);
         fhirConvertResultResponse.setValidationStatus(createValidationStatus(conversionResult));
 
         Optional<String> fhirCqlOpt = Optional.ofNullable(conversionResult.getLibraryConversionResults()).stream()
@@ -86,8 +86,8 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         return fhirConvertResultResponse;
     }
 
-    private ConversionResultDto validateSourceMeasureForFhirConversion(ManageMeasureSearchModel.Result sourceMeasure) {
-        return fhirOrchestrationGatewayService.validate(sourceMeasure.getId(), sourceMeasure.isDraft());
+    private ConversionResultDto validateSourceMeasureForFhirConversion(ManageMeasureSearchModel.Result sourceMeasure, String vsacGrantingTicket) {
+        return fhirOrchestrationGatewayService.validate(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
     }
 
     private ManageMeasureDetailModel loadMeasureAsDetailsForCloning(ManageMeasureSearchModel.Result sourceMeasure) {

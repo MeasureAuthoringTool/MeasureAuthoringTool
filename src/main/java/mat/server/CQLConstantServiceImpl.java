@@ -26,12 +26,14 @@ import com.google.gson.Gson;
 import mat.DTO.DataTypeDTO;
 import mat.DTO.UnitDTO;
 import mat.client.cqlconstant.service.CQLConstantService;
+import mat.client.featureFlag.service.FeatureFlagService;
 import mat.client.shared.CQLConstantContainer;
 import mat.client.shared.CQLTypeContainer;
 import mat.client.shared.FhirAttribute;
 import mat.client.shared.FhirDataType;
 import mat.client.shared.MatContext;
 import mat.client.shared.QDMContainer;
+import mat.client.util.FeatureFlagConstant;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.model.cql.CQLKeywords;
 import mat.server.service.CodeListService;
@@ -92,6 +94,9 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
     @Autowired
     private CqlAttributesRemoteCallService cqlAttributesRemoteCallService;
 
+    @Autowired
+    private FeatureFlagService featureFlagService;
+
 
     @Override
     public CQLConstantContainer getAllCQLConstants() {
@@ -113,28 +118,9 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         }
         cqlConstantContainer.setCqlUnitMap(unitMap);
 
-        // get all fhir attribnutes and Datatypes
-        ConversionMapping[] conversionMappings = cqlAttributesRemoteCallService.getFhirAttributeAndDataTypes();
-        for (ConversionMapping conversionMapping : conversionMappings) {
-            String fhirResource = StringUtils.trimToEmpty(conversionMapping.getFhirResource());
-            if (!fhirResource.isEmpty()) {
-                fhirDataTypeSet.add(fhirResource);
-            }
-            String fhirElement = StringUtils.trimToEmpty(conversionMapping.getFhirElement());
-            if (!fhirElement.isEmpty()) {
-                fhirAttributeSet.add(fhirElement);
-            }
-            if (fhirElement.isEmpty() || fhirResource.isEmpty()) {
-                continue;
-            }
-            String fhirResourceId = hashForId(fhirResource);
-            String fhirElementId = hashForId(fhirResource + "--" + fhirElement);
-            FhirDataType fhirDataType =
-                    cqlConstantContainer.getFhirDataTypes().computeIfAbsent(fhirResource, s -> new FhirDataType(fhirResourceId, fhirResource));
-            fhirDataType.getAttributes().computeIfAbsent(fhirElement, s -> new FhirAttribute(fhirElementId, fhirElement, StringUtils.trimToEmpty(conversionMapping.getFhirType())));
+        if (isFhirEditEnabled()) {
+            loadFhirAttributes(fhirDataTypeSet, fhirAttributeSet, cqlConstantContainer);
         }
-        cqlConstantContainer.setFhirCqlDataTypeList(new ArrayList<>(fhirDataTypeSet));
-        cqlConstantContainer.setFhirCqlAttributeList(new ArrayList<>(fhirAttributeSet));
 
         // get all qdm attributes
         final List<String> cqlAttributesList = qDSAttributesDAO.getAllAttributes();
@@ -173,6 +159,35 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         cqlConstantContainer.setFunctionSignatures(getFunctionSignatures());
 
         return cqlConstantContainer;
+    }
+
+    private boolean isFhirEditEnabled() {
+        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false);
+    }
+
+    private void loadFhirAttributes(HashSet<String> fhirDataTypeSet, HashSet<String> fhirAttributeSet, CQLConstantContainer cqlConstantContainer) {
+        // get all fhir attribnutes and Datatypes
+        ConversionMapping[] conversionMappings = cqlAttributesRemoteCallService.getFhirAttributeAndDataTypes();
+        for (ConversionMapping conversionMapping : conversionMappings) {
+            String fhirResource = StringUtils.trimToEmpty(conversionMapping.getFhirResource());
+            if (!fhirResource.isEmpty()) {
+                fhirDataTypeSet.add(fhirResource);
+            }
+            String fhirElement = StringUtils.trimToEmpty(conversionMapping.getFhirElement());
+            if (!fhirElement.isEmpty()) {
+                fhirAttributeSet.add(fhirElement);
+            }
+            if (fhirElement.isEmpty() || fhirResource.isEmpty()) {
+                continue;
+            }
+            String fhirResourceId = hashForId(fhirResource);
+            String fhirElementId = hashForId(fhirResource + "--" + fhirElement);
+            FhirDataType fhirDataType =
+                    cqlConstantContainer.getFhirDataTypes().computeIfAbsent(fhirResource, s -> new FhirDataType(fhirResourceId, fhirResource));
+            fhirDataType.getAttributes().computeIfAbsent(fhirElement, s -> new FhirAttribute(fhirElementId, fhirElement, StringUtils.trimToEmpty(conversionMapping.getFhirType())));
+        }
+        cqlConstantContainer.setFhirCqlDataTypeList(new ArrayList<>(fhirDataTypeSet));
+        cqlConstantContainer.setFhirCqlAttributeList(new ArrayList<>(fhirAttributeSet));
     }
 
     private String hashForId(String value) {

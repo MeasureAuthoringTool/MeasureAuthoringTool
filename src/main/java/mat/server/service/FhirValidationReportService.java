@@ -17,6 +17,7 @@ import gov.cms.mat.fhir.rest.dto.FhirValidationResult;
 import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
 import gov.cms.mat.fhir.rest.dto.MatCqlConversionException;
 import gov.cms.mat.fhir.rest.dto.ValueSetConversionResults;
+import liquibase.util.StringUtils;
 import mat.model.clause.ModelTypeHelper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
@@ -104,7 +105,7 @@ public class FhirValidationReportService {
         if (conversionResultDto != null && measure != null) {
             if (ConversionOutcome.SUCCESS != conversionResultDto.getOutcome()) {
 
-                if(!conversionResultDto.getErrorReason().isEmpty()) {
+                if(StringUtils.isNotEmpty(conversionResultDto.getErrorReason())) {
                     paramsMap.put("ErrorReason", conversionResultDto.getErrorReason());
                 }
                 // ValueSet FHIR validation errors
@@ -129,7 +130,7 @@ public class FhirValidationReportService {
                         if("Not Found in Hapi".equals(results.getReason())) {
                             paramsMap.put("LibraryNotFoundInHapi", results.getReason());
                         }
-                        if (Boolean.FALSE.equals(results.getSuccess())) {
+                        if (results.getSuccess() == null || !results.getSuccess()) {
                             if (CollectionUtils.isNotEmpty(results.getLibraryFhirValidationResults())) {
                                 libraryFhirValidationErrors = results.getLibraryFhirValidationResults();
                             }
@@ -155,7 +156,9 @@ public class FhirValidationReportService {
 
                 //Measure FHIR validation errors
                 List<FhirValidationResult> measureFhirValidationErrors = new ArrayList<>();
-                if (conversionResultDto.getMeasureConversionResults() != null && Boolean.FALSE.equals(conversionResultDto.getMeasureConversionResults().getSuccess())) {
+                if (conversionResultDto.getMeasureConversionResults() != null &&
+                        (conversionResultDto.getMeasureConversionResults().getSuccess() == null ||
+                                !conversionResultDto.getMeasureConversionResults().getSuccess())) {
                     measureFhirValidationErrors = conversionResultDto.getMeasureConversionResults().getMeasureFhirValidationResults();
                 }
 
@@ -166,12 +169,13 @@ public class FhirValidationReportService {
                 paramsMap.put("qdmMatCqlConversionErrors", qdmMatCqlConversionErrors);
                 paramsMap.put("fhirCqlConversionErrors", fhirCqlConversionErrors);
                 paramsMap.put("fhirMatCqlConversionErrors", fhirMatCqlConversionErrors);
-
             }
 
-            Instant instant = Instant.parse(conversionResultDto.getModified());
-            paramsMap.put("runDate", DateUtility.formatInstant(instant, DATE_FORMAT));
-            paramsMap.put("runTime", DateUtility.formatInstant(instant, TIME_FORMAT));
+            if (conversionResultDto.getModified() != null) {
+                Instant instant = Instant.parse(conversionResultDto.getModified());
+                paramsMap.put("runDate", DateUtility.formatInstant(instant, DATE_FORMAT));
+                paramsMap.put("runTime", DateUtility.formatInstant(instant, TIME_FORMAT));
+            }
             paramsMap.put("measureName", measure.getDescription());
             paramsMap.put("measureVersion", measure.getVersion());
             paramsMap.put("modelType", ModelTypeHelper.defaultTypeIfBlank(measure.getMeasureModel()));

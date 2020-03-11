@@ -56,14 +56,8 @@ public class ManageMeasureExportPresenter implements MatPresenter {
 		String url = GWT.getModuleBaseURL() + "export?id=" + result.getId() + "&format=";
 		System.out.println("URL: " + url);
 
-		url += (view.isHQMF() ? "hqmf" :
-				view.isHumanReadable() ? "humanreadable" :
-						view.isSimpleXML() ? "simplexml" :
-								view.isMatXML() ? "matxml" :
-										view.isCQLLibrary() ? "cqlLibrary" :
-												view.isELM() ? "elm" :
-														view.isJSON() ? "json" :
-																"zip");
+		url += (view.isHQMF() ? "hqmf" : view.isHumanReadable() ? "humanreadable" : view.isSimpleXML() ? "simplexml" : 
+			view.isCQLLibrary() ? "cqlLibrary" : view.isELM() ? "elm" : view.isJSON() ? "json" : "zip");
 		return url;
 	}
 

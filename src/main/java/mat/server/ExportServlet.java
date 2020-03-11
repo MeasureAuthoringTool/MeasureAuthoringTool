@@ -1,7 +1,6 @@
 package mat.server;
 
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -55,9 +54,6 @@ import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
 
 public class ExportServlet extends HttpServlet {
-    private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
-
-
     private static final String LIBRARY_ID = "libraryid";
     private static final String USER_ID = "userId";
     private static final String EXPORT_MEASURE_OWNER = "exportMeasureOwner";
@@ -80,12 +76,12 @@ public class ExportServlet extends HttpServlet {
     private static final String HQMF = "hqmf";
     private static final String HUMAN_READABLE = "humanreadable";
     private static final String SIMPLEXML = "simplexml";
-    private static final String MATXML = "matxml";
     private static final String CALCULATE_BONNIE_MEASURE_RESULT = "calculateBonnieMeasureResult";
     private static final String TYPE_PARAM = "type";
     private static final String XML_PARAM = "xml";
     private static final String FORMAT_PARAM = "format";
     private static final String ID_PARAM = "id";
+    private static final Log logger = LogFactory.getLog(ExportServlet.class);
     private static final long serialVersionUID = 4539514145289378238L;
     protected ApplicationContext context;
     private static final String CQL_LIBRARY = "cqlLibrary";
@@ -121,9 +117,6 @@ public class ExportServlet extends HttpServlet {
             switch (format) {
                 case SIMPLEXML:
                     exportSimpleXML(resp, id, type, measure);
-                    break;
-                case MATXML:
-                    exportMatXML(resp,id,type,measure);
                     break;
                 case HQMF:
                     exportHQMF(resp, id, type, measure);
@@ -559,18 +552,6 @@ public class ExportServlet extends HttpServlet {
             getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
             resp.getOutputStream().write(export.export.getBytes());
         }
-    }
-
-    private void exportMatXML(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
-        ExportResult export = getService().getMatXml(id);
-        if (SAVE.equals(type)) {
-            String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
-            resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-                    + FileNameUtility.getMatXMLName(export.measureName + "_" + currentReleaseVersion));
-        }
-        resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
-        getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
-        resp.getOutputStream().write(export.export.getBytes());
     }
 
     /**

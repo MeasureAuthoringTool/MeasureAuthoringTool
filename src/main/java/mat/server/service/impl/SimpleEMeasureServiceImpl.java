@@ -3,8 +3,6 @@ package mat.server.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.lang.invoke.MethodHandles;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -19,10 +17,6 @@ import java.util.zip.ZipException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -31,10 +25,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.thoughtworks.xstream.XStream;
-import mat.server.ExportServlet;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -93,12 +83,9 @@ import mat.shared.bonnie.error.BonnieDoesNotExistException;
 import mat.shared.bonnie.error.BonnieNotFoundException;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
-import org.xml.sax.SAXException;
 
 @Service
 public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
-	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
-
 
 	private static final String conversionFile1 = "xsl/New_HQMF.xsl";
 	
@@ -262,48 +249,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		MeasurePackageService measureService = context.getBean(MeasurePackageService.class);
 		mat.model.clause.Measure measure = measureService.getById(measureId);
 		return measure;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see mat.server.service.SimpleEMeasureService#getSimpleXML(java.lang.String)
-	 */
-	@Override
-	public final ExportResult getMatXml(final String measureId) throws Exception {
-		mat.model.clause.Measure measure = measureDAO.find(measureId);
-		MeasureXML measureExport = measureXMLDAO.findForMeasure(measureId);
-		String measureXML = formatXml(measureExport.getMeasureXMLAsString());
-
-		if (measureExport == null || measureXML == null) {
-			return null;
-		}
-
-		ExportResult result = new ExportResult();
-		result.measureName = measure.getaBBRName();
-		result.export = measureXML;
-		return result;
-	}
-
-	private static String formatXml(String xmlIn) {
-		String result = null;
-		try (var reader = new StringReader(xmlIn);
-			 var writer = new StringWriter()){
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document = builder.parse(new InputSource(reader));
-
-			Transformer transform = TransformerFactory.newInstance().newTransformer();
-			transform.setOutputProperty(OutputKeys.METHOD, "xml");
-			transform.setOutputProperty(OutputKeys.INDENT, "yes");
-			Source source = new DOMSource(document);
-			StreamResult streamResult = new StreamResult(writer);
-			transform.transform(source, streamResult);
-			result =  ((StringWriter) streamResult.getWriter()).getBuffer().toString();
-		} catch (IllegalArgumentException|SAXException|TransformerException|IOException| ParserConfigurationException e) {
-			logger.warn("Error occurred formatting xml. The xml will not be formatted.",e);
-		}
-		return result;
 	}
 
 	/*
@@ -948,6 +893,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 *            - String.
 	 * @param exportDate
 	 *            the export date
+	 * @param releaseDate
+	 *            the release date
 	 * @param me
 	 *            - MeasureExport.
 	 * @return byte[].
@@ -1165,6 +1112,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 *            - String.
 	 * @param exportDate
 	 *            the export date
+	 * @param releaseDate
+	 *            the release date
 	 * @param me
 	 *            - MeasureExport.
 	 * @param filesMap

@@ -6,33 +6,29 @@ import mat.client.measure.BaseDisplay;
 
 public interface ExportDisplay extends BaseDisplay {
 
-	HasClickHandlers getCancelButton();
+	public HasClickHandlers getCancelButton();
 
-	HasClickHandlers getOpenButton();
+	public HasClickHandlers getOpenButton();
 
-	HasClickHandlers getSaveButton();
+	public HasClickHandlers getSaveButton();
 
-	boolean isHQMF();
+	public boolean isHQMF();
 	
-	boolean isHumanReadable();
+	public boolean isHumanReadable();
 
-	boolean isELM();
+	public boolean isELM();
 
-	boolean isJSON();
+	public boolean isJSON();
 
 	boolean isEMeasurePackage();
 
-	boolean isSimpleXML();
+	public boolean isSimpleXML();
 
 	boolean isCQLLibrary();
 
-	void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure);
+	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure);
 
 	boolean isCompositeMeasurePackageRadio();
 
 	void showCompositeMeasure(boolean isComposite);
-
-	boolean isXml();
-
-	boolean isAll();
 }

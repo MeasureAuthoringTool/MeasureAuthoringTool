@@ -72,7 +72,7 @@ public class ManageExportPresenter implements MatPresenter {
 		this.view.getExportPane().setActive(true);
 		view.getExportPane().clear();
 		exportView = new ManageMeasureExportView(true);
-		ManageMeasureExportPresenter exportPresenter = new ManageMeasureExportPresenter(exportView, result, manageMeasurePresenter);
+		new ManageMeasureExportPresenter(exportView, result, manageMeasurePresenter);
 		exportView.setExportOptionsBasedOnVersion(result.getHqmfReleaseVersion(), result.getIsComposite());
 		this.view.getExportPane().add(exportView.asWidget());
 		exportView.showCompositeMeasure(result.getIsComposite());

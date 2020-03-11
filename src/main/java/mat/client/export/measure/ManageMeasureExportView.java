@@ -1,6 +1,7 @@
 package mat.client.export.measure;
 
-import org.apache.commons.lang3.StringUtils;
+import mat.client.util.FeatureFlagConstant;
+import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -31,7 +32,11 @@ public class ManageMeasureExportView implements ExportDisplay {
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	private RadioButton simpleXMLRadio = new RadioButton("format", "SimpleXML");
-	
+
+	private RadioButton xmlRadio = new RadioButton("format", "XML");
+
+	private RadioButton allRadio = new RadioButton("format", "All");
+
 	private RadioButton hqmfRadio = new RadioButton("format", "HQMF");
 	
 	private RadioButton humanReadableRadio = new RadioButton("format", "Human Readable");
@@ -116,16 +121,24 @@ public class ManageMeasureExportView implements ExportDisplay {
 		if(MatContext.get().getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
 			vp.add(simpleXMLRadio);
 		}
-		
-		vp.add(humanReadableRadio);
-		vp.add(hqmfRadio);
-		if(isV5OrGreater(releaseVersion)){
-			vp.add(cqlLibraryRadio);
-			vp.add(elmRadio);
+
+		if(ModelTypeHelper.FHIR.equalsIgnoreCase(MatContext.get().getCurrentMeasureModel()) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.EXPORT_V1)) {
+			vp.add(xmlRadio);
 			vp.add(jsonRadio);
-		}				
-		vp.add(eCQMPackageRadio);
-		vp.add(compositeMeasurePackageRadio);
+			vp.add(humanReadableRadio);
+			vp.add(allRadio);
+		} else {
+			vp.add(humanReadableRadio);
+			vp.add(hqmfRadio);
+			if(isV5OrGreater(releaseVersion)){
+				vp.add(cqlLibraryRadio);
+				vp.add(elmRadio);
+				vp.add(jsonRadio);
+			}
+			vp.add(eCQMPackageRadio);
+			vp.add(compositeMeasurePackageRadio);
+		}
+
 		resetRadioButtonValues(isCompositeMeasure);
 	}
 
@@ -140,7 +153,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 	}
 
 
-	
+
 	@Override
 	public void showCompositeMeasure(boolean isComposite) {
 		simpleXMLRadio.setVisible(!isComposite);
@@ -160,6 +173,8 @@ public class ManageMeasureExportView implements ExportDisplay {
 		cqlLibraryRadio.setValue(false);
 		elmRadio.setValue(false);
 		jsonRadio.setValue(false);
+		xmlRadio.setValue(false);
+		allRadio.setValue(false);
 		eCQMPackageRadio.setValue(!isComposite);
 		compositeMeasurePackageRadio.setValue(isComposite);
 	}
@@ -222,5 +237,15 @@ public class ManageMeasureExportView implements ExportDisplay {
 	
 	public Button getMeasureNameLink() {
 		return measureNameLink;
+	}
+
+	@Override
+	public boolean isXml() {
+		return xmlRadio.getValue();
+	}
+
+	@Override
+	public boolean isAll() {
+		return allRadio.getValue();
 	}
 }

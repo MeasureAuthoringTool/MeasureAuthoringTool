@@ -19,12 +19,12 @@
                         <#list qdmCqlConversionErrors as cqlError>
                             <tr>
                                 <td>${cqlError?counter}</td>
-                                <td>${cqlError.startLine}</td>
-                                <td>${cqlError.endLine}</td>
-                                <td>${cqlError.errorSeverity}</td>
-                                <td>${cqlError.message}</td>
-                                <td>${cqlError.startChar}</td>
-                                <td>${cqlError.endChar}</td>
+                                <td>${cqlError.startLine!""}</td>
+                                <td>${cqlError.endLine!""}</td>
+                                <td>${cqlError.errorSeverity!""}</td>
+                                <td>${cqlError.message!""}</td>
+                                <td>${cqlError.startChar!""}</td>
+                                <td>${cqlError.endChar!""}</td>
                             </tr>
                         </#list>
                     </#if>
@@ -32,12 +32,12 @@
                         <#list qdmMatCqlConversionErrors as cqlError>
                             <tr>
                                 <td>${cqlError?counter}</td>
-                                <td>${cqlError.startLine}</td>
-                                <td>${cqlError.endLine}</td>
-                                <td>${cqlError.errorSeverity}</td>
-                                <td>${cqlError.message}</td>
-                                <td>${cqlError.startChar}</td>
-                                <td>${cqlError.endChar}</td>
+                                <td>${cqlError.startLine!""}</td>
+                                <td>${cqlError.endLine!""}</td>
+                                <td>${cqlError.errorSeverity!""}</td>
+                                <td>${cqlError.message!""}</td>
+                                <td>${cqlError.startChar!""}</td>
+                                <td>${cqlError.endChar!""}</td>
                             </tr>
                         </#list>
                     </#if>

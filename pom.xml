@@ -578,78 +578,6 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>3.0.0-M1</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <id>install-CQLtoELM</id>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <file>${project.basedir}/lib/CQLtoELM-1.4.6.54.jar</file>
-                            <groupId>mat</groupId>
-                            <artifactId>CQLtoELM</artifactId>
-                            <version>1.4.6.54</version>
-                            <packaging>jar</packaging>
-                            <localRepositoryPath>${maven.project.repo.dir}</localRepositoryPath>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <phase>validate</phase>
-                        <id>install-mat-rest-commons</id>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <file>${project.basedir}/lib/mat-rest-commons-0.0.1-SNAPSHOT.jar</file>
-                            <pomFile>${project.basedir}/lib/mat-rest-commons-0.0.1-SNAPSHOT.pom</pomFile>
-                            <!--
-                            Should have different groupId then the original
-                            jar, so it doesn't interfere with micro-services.
-                            -->
-<!--                            <groupId>mat</groupId>-->
-<!--                            <artifactId>mat-rest-commons</artifactId>-->
-<!--                            <packaging>jar</packaging>-->
-<!--                            <version>0.0.1-SNAPSHOT</version>-->
-                            <localRepositoryPath>${project.local.repo.dir}</localRepositoryPath>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <phase>validate</phase>
-                        <id>install-vipuserservices-test-client</id>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <file>${project.basedir}/lib/vipuserservices-test-client-1.0.jar</file>
-                            <groupId>mat</groupId>
-                            <artifactId>vipuserservices</artifactId>
-                            <version>1.0</version>
-                            <packaging>jar</packaging>
-                            <localRepositoryPath>${project.local.repo.dir}</localRepositoryPath>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <phase>validate</phase>
-                        <id>install-vsac</id>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <file>${project.basedir}/lib/vsac-1.0.jar</file>
-                            <groupId>mat</groupId>
-                            <artifactId>vsac</artifactId>
-                            <version>1.0</version>
-                            <packaging>jar</packaging>
-                            <localRepositoryPath>${project.local.repo.dir}</localRepositoryPath>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
             </plugin>
@@ -847,6 +775,81 @@
                     </exclusions>
                 </dependency>
             </dependencies>
+        </profile>
+        <profile>
+            <id>install-libs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-install-plugin</artifactId>
+                        <version>3.0.0-M1</version>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <id>install-CQLtoELM</id>
+                                <goals>
+                                    <goal>install-file</goal>
+                                </goals>
+                                <configuration>
+                                    <file>${project.basedir}/lib/CQLtoELM-1.4.6.54.jar</file>
+                                    <groupId>mat</groupId>
+                                    <artifactId>CQLtoELM</artifactId>
+                                    <version>1.4.6.54</version>
+                                    <packaging>jar</packaging>
+                                    <localRepositoryPath>${maven.project.repo.dir}</localRepositoryPath>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <phase>validate</phase>
+                                <id>install-mat-rest-commons</id>
+                                <goals>
+                                    <goal>install-file</goal>
+                                </goals>
+                                <configuration>
+                                    <file>${project.basedir}/lib/mat-rest-commons-0.0.1-SNAPSHOT.jar</file>
+                                    <pomFile>${project.basedir}/lib/mat-rest-commons-0.0.1-SNAPSHOT.pom</pomFile>
+                                    <!--
+                                    Should have different groupId then the original
+                                    jar, so it doesn't interfere with micro-services.
+                                    -->
+                                    <localRepositoryPath>${project.local.repo.dir}</localRepositoryPath>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <phase>validate</phase>
+                                <id>install-vipuserservices-test-client</id>
+                                <goals>
+                                    <goal>install-file</goal>
+                                </goals>
+                                <configuration>
+                                    <file>${project.basedir}/lib/vipuserservices-test-client-1.0.jar</file>
+                                    <groupId>mat</groupId>
+                                    <artifactId>vipuserservices</artifactId>
+                                    <version>1.0</version>
+                                    <packaging>jar</packaging>
+                                    <localRepositoryPath>${project.local.repo.dir}</localRepositoryPath>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <phase>validate</phase>
+                                <id>install-vsac</id>
+                                <goals>
+                                    <goal>install-file</goal>
+                                </goals>
+                                <configuration>
+                                    <file>${project.basedir}/lib/vsac-1.0.jar</file>
+                                    <groupId>mat</groupId>
+                                    <artifactId>vsac</artifactId>
+                                    <version>1.0</version>
+                                    <packaging>jar</packaging>
+                                    <localRepositoryPath>${project.local.repo.dir}</localRepositoryPath>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

@@ -10,7 +10,7 @@ public interface FhirOrchestrationGatewayService {
      * @return validation report object
      * @throws mat.client.shared.MatRuntimeException
      */
-    ConversionResultDto convert(String measureId, boolean isDraft);
+    ConversionResultDto convert(String measureId, String vsacGrantingTicket, boolean isDraft);
 
     /**
      * Call fhir validation.
@@ -19,5 +19,5 @@ public interface FhirOrchestrationGatewayService {
      * @return validation report object
      * @throws mat.client.shared.MatRuntimeException
      */
-    ConversionResultDto validate(String measureId, boolean isDraft);
+    ConversionResultDto validate(String measureId, String vsacGrantingTicket, boolean isDraft);
 }

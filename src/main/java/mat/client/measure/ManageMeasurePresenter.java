@@ -2,6 +2,8 @@ package mat.client.measure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -91,6 +93,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private static final String COMPOSITE_MEASURE = "CompositeMeasure";
 
     private static final String UNHANDLED_EXCEPTION = "Unhandled Exception: ";
+
+    private final Logger logger = Logger.getLogger("MAT");
 
     private List<String> bulkExportMeasureIds;
 
@@ -608,6 +612,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void convertMeasureFhir(Result object) {
+        if (showAlertAndReturnIfNotUMLSLoggedIn()) return;
+
         GWT.log("Please wait. Conversion is in progress...");
 
         if (!MatContext.get().getLoadingQueue().isEmpty()) {
@@ -619,7 +625,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         fhirMeasureService.convert(object, new AsyncCallback<FhirConvertResultResponse>() {
             @Override
             public void onFailure(Throwable caught) {
-                GWT.log("Error while converting the measure", caught);
+                logger.log(Level.SEVERE, "Error while converting the measure id " + object.getId() + ". Error message: " + caught.getMessage(), caught);
                 setSearchingBusy(false);
                 showFhirConversionError(MatContext.get().getMessageDelegate().getConvertMeasureFailureMessage());
                 MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
@@ -627,13 +633,13 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onSuccess(FhirConvertResultResponse response) {
-                GWT.log("Measure conversion has completed.");
+                logger.log(Level.INFO, "Measure " + object.getId() + " conversion has completed.");
                 setSearchingBusy(false);
                 if (!response.isSuccess()) {
-                    GWT.log("Measure cannot be converted due to FHIR validation errors.");
+                    logger.log(Level.WARNING, "Measure cannot be converted due to FHIR validation errors.");
                     showFhirConversionError(MatContext.get().getMessageDelegate().getCannotConvertMeasureValidationFailedMessage());
                 } else {
-                    GWT.log("Your measure was successfully converted to FHIR.");
+                    logger.log(Level.INFO, "Your measure was successfully converted to FHIR.");
                 }
                 showFhirValidationReport(response.getSourceMeasure().getId());
                 displaySearch();
@@ -643,8 +649,22 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void showFhirValidationReport(String measureId) {
+        if (showAlertAndReturnIfNotUMLSLoggedIn()) return;
+
         String url = GWT.getModuleBaseURL() + "validationReport?id=" + SafeHtmlUtils.htmlEscape(measureId);
         Window.open(url, "_blank", "");
+    }
+
+    private boolean showAlertAndReturnIfNotUMLSLoggedIn() {
+        if (!MatContext.get().isUMLSLoggedIn()) {
+            searchDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+            searchDisplay.getErrorMessageDisplay().setVisible(true);
+            setSearchingBusy(false);
+            return true;
+        } else {
+            searchDisplay.resetMessageDisplay();
+        }
+        return false;
     }
 
     private void showFhirConversionError(final String errorMessage) {
@@ -1537,11 +1557,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
 
             @Override
-            public void onFhirValidationClicked(ManageMeasureSearchModel.Result result) {
-                showFhirValidationReport(result.getId());
-            }
-
-            @Override
             public void onShareClicked(ManageMeasureSearchModel.Result result) {
                 resetMeasureFlags();
                 displayShare(null, result.getId(), result.getName());
@@ -1589,6 +1604,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     versionDisplay.setSelectedMeasure(selectedMeasure);
                     createVersion();
                 }
+            }
+
+            @Override
+            public void onFhirValidationClicked(ManageMeasureSearchModel.Result result) {
+                showFhirValidationReport(result.getId());
             }
 
             @Override

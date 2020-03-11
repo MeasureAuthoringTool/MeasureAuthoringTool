@@ -1,7 +1,7 @@
 package mat.client.export.measure;
 
-import mat.client.measure.ManageMeasureSearchModel;
-import org.apache.commons.lang3.StringUtils;
+import mat.client.util.FeatureFlagConstant;
+import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -33,8 +33,10 @@ public class ManageMeasureExportView implements ExportDisplay {
 	
 	private RadioButton simpleXMLRadio = new RadioButton("format", "SimpleXML");
 
-	private RadioButton matXmlRadio = new RadioButton("format","XML");
-	
+	private RadioButton xmlRadio = new RadioButton("format", "XML");
+
+	private RadioButton allRadio = new RadioButton("format", "All");
+
 	private RadioButton hqmfRadio = new RadioButton("format", "HQMF");
 	
 	private RadioButton humanReadableRadio = new RadioButton("format", "Human Readable");
@@ -112,29 +114,31 @@ public class ManageMeasureExportView implements ExportDisplay {
 	}
 	
 	@Override
-	public void setExportOptionsBasedOnVersion(ManageMeasureSearchModel.Result measure) {
-		String releaseVersion = measure.getHqmfReleaseVersion();
-		boolean isCompositeMeasure = measure.getIsComposite();
-		String measureModel = measure.getMeasureModel();
-
+	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure) {
+		
 		vp.clear();
 		
 		if(MatContext.get().getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
 			vp.add(simpleXMLRadio);
 		}
-		
-		vp.add(humanReadableRadio);
-		vp.add(hqmfRadio);
-		if ("FHIR".equalsIgnoreCase(measureModel)) {
-			vp.add(matXmlRadio);
-		}
-		if(isV5OrGreater(releaseVersion)){
-			vp.add(cqlLibraryRadio);
-			vp.add(elmRadio);
+
+		if(ModelTypeHelper.FHIR.equalsIgnoreCase(MatContext.get().getCurrentMeasureModel()) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.EXPORT_V1)) {
+			vp.add(xmlRadio);
 			vp.add(jsonRadio);
-		}				
-		vp.add(eCQMPackageRadio);
-		vp.add(compositeMeasurePackageRadio);
+			vp.add(humanReadableRadio);
+			vp.add(allRadio);
+		} else {
+			vp.add(humanReadableRadio);
+			vp.add(hqmfRadio);
+			if(isV5OrGreater(releaseVersion)){
+				vp.add(cqlLibraryRadio);
+				vp.add(elmRadio);
+				vp.add(jsonRadio);
+			}
+			vp.add(eCQMPackageRadio);
+			vp.add(compositeMeasurePackageRadio);
+		}
+
 		resetRadioButtonValues(isCompositeMeasure);
 	}
 
@@ -149,11 +153,10 @@ public class ManageMeasureExportView implements ExportDisplay {
 	}
 
 
-	
+
 	@Override
 	public void showCompositeMeasure(boolean isComposite) {
 		simpleXMLRadio.setVisible(!isComposite);
-		matXmlRadio.setVisible(!isComposite);
 		hqmfRadio.setVisible(!isComposite);
 		humanReadableRadio.setVisible(!isComposite);
 		cqlLibraryRadio.setVisible(!isComposite);
@@ -165,12 +168,13 @@ public class ManageMeasureExportView implements ExportDisplay {
 
 	private void resetRadioButtonValues(boolean isComposite) {
 		simpleXMLRadio.setValue(false);
-		matXmlRadio.setValue(false);
 		hqmfRadio.setValue(false);
 		humanReadableRadio.setValue(false);
 		cqlLibraryRadio.setValue(false);
 		elmRadio.setValue(false);
 		jsonRadio.setValue(false);
+		xmlRadio.setValue(false);
+		allRadio.setValue(false);
 		eCQMPackageRadio.setValue(!isComposite);
 		compositeMeasurePackageRadio.setValue(isComposite);
 	}
@@ -235,7 +239,13 @@ public class ManageMeasureExportView implements ExportDisplay {
 		return measureNameLink;
 	}
 
-	public boolean isMatXML() {
-		return matXmlRadio.getValue();
+	@Override
+	public boolean isXml() {
+		return xmlRadio.getValue();
+	}
+
+	@Override
+	public boolean isAll() {
+		return allRadio.getValue();
 	}
 }

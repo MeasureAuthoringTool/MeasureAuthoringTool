@@ -633,10 +633,12 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onSuccess(FhirConvertResultResponse response) {
-                logger.log(Level.INFO, "Measure " + object.getId() + " conversion has completed.");
+                String outcome = response.getValidationStatus().getOutcome();
+                String errorReason = response.getValidationStatus().getErrorReason();
+                logger.log(Level.INFO, "Measure " + object.getId() + " conversion has completed. Outcome: " + outcome + " errorReason: " + errorReason);
                 setSearchingBusy(false);
                 if (!response.isSuccess()) {
-                    logger.log(Level.WARNING, "Measure cannot be converted due to FHIR validation errors.");
+                    logger.log(Level.SEVERE, "Measure id " + object.getId() + " cannot be converted due to FHIR validation errors. Outcome " + outcome + " errorReason: " + errorReason);
                     showFhirConversionError(MatContext.get().getMessageDelegate().getCannotConvertMeasureValidationFailedMessage());
                 } else {
                     logger.log(Level.INFO, "Your measure was successfully converted to FHIR.");

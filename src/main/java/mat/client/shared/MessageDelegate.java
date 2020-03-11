@@ -894,7 +894,7 @@ public class MessageDelegate {
     }
 
     public String getConvertMeasureFailureMessage() {
-        return "An error occurred while converting the measure. Please try again later.";
+        return "An error occurred while converting the measure. Please try again later. If this continues please contact the mat help desk.";
     }
 
     public String getCreateNewLibrarySuccessfulMessage(String libraryName) {

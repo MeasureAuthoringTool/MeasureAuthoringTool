@@ -15,9 +15,9 @@
                     <#list valueSetFhirValidationErrors as valueSetValidationError>
                         <tr>
                             <td>${valueSetValidationError?counter}</td>
-                            <td>${valueSetValidationError.locationField}</td>
-                            <td>${valueSetValidationError.severity}</td>
-                            <td>${valueSetValidationError.errorDescription}</td>
+                            <td>$!{valueSetValidationError.locationField}</td>
+                            <td>$!{valueSetValidationError.severity}</td>
+                            <td>$!{valueSetValidationError.errorDescription}</td>
                         </tr>
                     </#list>
                 </tbody>

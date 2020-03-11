@@ -15,9 +15,9 @@
                     <#list libraryFhirValidationErrors as libraryValidationError>
                         <tr>
                             <td>${libraryValidationError?counter}</td>
-                            <td>${libraryValidationError.locationField}</td>
-                            <td>${libraryValidationError.severity}</td>
-                            <td>${libraryValidationError.errorDescription}</td>
+                            <td>${libraryValidationError.locationField!""}</td>
+                            <td>${libraryValidationError.severity!""}</td>
+                            <td>${libraryValidationError.errorDescription!""}</td>
                         </tr>
                     </#list>
                 </tbody>

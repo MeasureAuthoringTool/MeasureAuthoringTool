@@ -2,6 +2,8 @@ package mat.client.measure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -91,6 +93,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private static final String COMPOSITE_MEASURE = "CompositeMeasure";
 
     private static final String UNHANDLED_EXCEPTION = "Unhandled Exception: ";
+
+    private final Logger logger = Logger.getLogger("MAT");
 
     private List<String> bulkExportMeasureIds;
 
@@ -619,7 +623,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         fhirMeasureService.convert(object, new AsyncCallback<FhirConvertResultResponse>() {
             @Override
             public void onFailure(Throwable caught) {
-                GWT.log("Error while converting the measure", caught);
+                logger.log(Level.SEVERE, "Error while converting the measure id " + object.getId() + ". Error message: " + caught.getMessage(), caught);
                 setSearchingBusy(false);
                 showFhirConversionError(MatContext.get().getMessageDelegate().getConvertMeasureFailureMessage());
                 MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
@@ -627,13 +631,13 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onSuccess(FhirConvertResultResponse response) {
-                GWT.log("Measure conversion has completed.");
+                logger.log(Level.INFO, "Measure " + object.getId() + " conversion has completed.");
                 setSearchingBusy(false);
                 if (!response.isSuccess()) {
-                    GWT.log("Measure cannot be converted due to FHIR validation errors.");
+                    logger.log(Level.WARNING, "Measure cannot be converted due to FHIR validation errors.");
                     showFhirConversionError(MatContext.get().getMessageDelegate().getCannotConvertMeasureValidationFailedMessage());
                 } else {
-                    GWT.log("Your measure was successfully converted to FHIR.");
+                    logger.log(Level.INFO, "Your measure was successfully converted to FHIR.");
                 }
                 showFhirValidationReport(response.getSourceMeasure().getId());
                 displaySearch();

@@ -19,7 +19,6 @@ import gov.cms.mat.fhir.rest.dto.MatCqlConversionException;
 import gov.cms.mat.fhir.rest.dto.ValueSetConversionResults;
 import mat.model.clause.ModelTypeHelper;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -105,15 +104,14 @@ public class FhirValidationReportService {
         if (conversionResultDto != null && measure != null) {
             if (ConversionOutcome.SUCCESS != conversionResultDto.getOutcome()) {
 
-                if(StringUtils.isNotBlank(conversionResultDto.getErrorReason())) {
+                if(!conversionResultDto.getErrorReason().isEmpty()) {
                     paramsMap.put("ErrorReason", conversionResultDto.getErrorReason());
                 }
                 // ValueSet FHIR validation errors
                 List<FhirValidationResult> valueSetFhirValidationErrors = new ArrayList<>();
                 if (CollectionUtils.isNotEmpty(conversionResultDto.getValueSetConversionResults())) {
                     for (ValueSetConversionResults valueSetConversionResults : conversionResultDto.getValueSetConversionResults()) {
-                        if (valueSetConversionResults.getSuccess() != null &&
-                                false == valueSetConversionResults.getSuccess()) {
+                        if (Boolean.FALSE.equals(valueSetConversionResults.getSuccess())) {
                             valueSetFhirValidationErrors = valueSetConversionResults.getValueSetFhirValidationResults();
                         }
                     }
@@ -128,11 +126,10 @@ public class FhirValidationReportService {
                 CqlConversionResult cqlConversionResult;
                 if (CollectionUtils.isNotEmpty(conversionResultDto.getLibraryConversionResults())) {
                     for (LibraryConversionResults results : conversionResultDto.getLibraryConversionResults()) {
-                        if(StringUtils.equalsIgnoreCase(results.getReason(),"Not Found in Hapi")) {
+                        if("Not Found in Hapi".equals(results.getReason())) {
                             paramsMap.put("LibraryNotFoundInHapi", results.getReason());
                         }
-
-                        if (results.getSuccess() == null || false == results.getSuccess()) {
+                        if (Boolean.FALSE.equals(results.getSuccess())) {
                             if (CollectionUtils.isNotEmpty(results.getLibraryFhirValidationResults())) {
                                 libraryFhirValidationErrors = results.getLibraryFhirValidationResults();
                             }
@@ -158,9 +155,7 @@ public class FhirValidationReportService {
 
                 //Measure FHIR validation errors
                 List<FhirValidationResult> measureFhirValidationErrors = new ArrayList<>();
-                if (conversionResultDto.getMeasureConversionResults() != null &&
-                        conversionResultDto.getMeasureConversionResults().getSuccess() != null &&
-                        false == conversionResultDto.getMeasureConversionResults().getSuccess()) {
+                if (conversionResultDto.getMeasureConversionResults() != null && Boolean.FALSE.equals(conversionResultDto.getMeasureConversionResults().getSuccess())) {
                     measureFhirValidationErrors = conversionResultDto.getMeasureConversionResults().getMeasureFhirValidationResults();
                 }
 
@@ -174,15 +169,9 @@ public class FhirValidationReportService {
 
             }
 
-            if (conversionResultDto.getModified() != null) {
-                Instant instant = Instant.parse(conversionResultDto.getModified());
-                paramsMap.put("runDate", DateUtility.formatInstant(instant, DATE_FORMAT));
-                paramsMap.put("runTime", DateUtility.formatInstant(instant, TIME_FORMAT));
-            } else {
-                paramsMap.put("runDate", "");
-                paramsMap.put("runTime", "");
-            }
-
+            Instant instant = Instant.parse(conversionResultDto.getModified());
+            paramsMap.put("runDate", DateUtility.formatInstant(instant, DATE_FORMAT));
+            paramsMap.put("runTime", DateUtility.formatInstant(instant, TIME_FORMAT));
             paramsMap.put("measureName", measure.getDescription());
             paramsMap.put("measureVersion", measure.getVersion());
             paramsMap.put("modelType", ModelTypeHelper.defaultTypeIfBlank(measure.getMeasureModel()));

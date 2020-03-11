@@ -126,7 +126,7 @@ public class FhirValidationReportService {
                 CqlConversionResult cqlConversionResult;
                 if (CollectionUtils.isNotEmpty(conversionResultDto.getLibraryConversionResults())) {
                     for (LibraryConversionResults results : conversionResultDto.getLibraryConversionResults()) {
-                        if(results.getReason().equalsIgnoreCase("Not Found in Hapi")) {
+                        if("Not Found in Hapi".equals(results.getReason())) {
                             paramsMap.put("LibraryNotFoundInHapi", results.getReason());
                         }
                         if (Boolean.FALSE.equals(results.getSuccess())) {

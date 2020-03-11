@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ public class FhirValidationReportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         String sessionId = req.getSession().getId();
         String id = req.getParameter(ID_PARAM);
+        boolean showStackTrace = Boolean.parseBoolean(req.getParameter("showStackTrace"));
         logger.info("Generating validation report for measure id: " + id);
         String validationReport = "";
         try {
@@ -39,6 +41,15 @@ public class FhirValidationReportServlet extends HttpServlet {
             logger.error("Exception occurred while generation FHIR conversion report:", e);
             validationReport = "An error occurred while validating the FHIR conversion. Please try again later. " +
                     "If this continues please contact the mat help desk.";
+            if (showStackTrace) {
+                StringBuilder debugInfo = new StringBuilder(validationReport);
+                debugInfo
+                        .append(" Error ")
+                        .append(System.lineSeparator())
+                        .append(e.getMessage())
+                        .append(ExceptionUtils.getStackTrace(e));
+                validationReport = debugInfo.toString();
+            }
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 

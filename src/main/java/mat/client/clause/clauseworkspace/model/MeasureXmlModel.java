@@ -3,121 +3,66 @@ package mat.client.clause.clauseworkspace.model;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class MeasureXmlModel.
- */
 public class MeasureXmlModel implements IsSerializable {
 
-	/** The meausre export id. */
-	private String meausreExportId;
+    private String meausreExportId;
 
-	/** The measure id. */
-	private String measureId;
+    private String measureId;
 
-	/** The xml. */
-	private String xml;
-	
+    private String xml;
 
-	/** The to replace node. */
-	private String toReplaceNode;
+    private String toReplaceNode;
 
-	/** The parent node. */
-	private String parentNode;
-	
-	/**
-	 * Gets the meausre export id.
-	 * 
-	 * @return the meausreExportId
-	 */
-	public String getMeausreExportId() {
-		return meausreExportId;
-	}
+    private String parentNode;
 
-	/**
-	 * Sets the meausre export id.
-	 * 
-	 * @param meausreExportId
-	 *            the meausreExportId to set
-	 */
-	public void setMeausreExportId(String meausreExportId) {
-		this.meausreExportId = meausreExportId;
-	}
+    private String measureModel;
 
-	/**
-	 * Gets the measure id.
-	 * 
-	 * @return the measureId
-	 */
-	public String getMeasureId() {
-		return measureId;
-	}
+    public String getMeausreExportId() {
+        return meausreExportId;
+    }
 
-	/**
-	 * Sets the measure id.
-	 * 
-	 * @param measureId
-	 *            the measureId to set
-	 */
-	public void setMeasureId(String measureId) {
-		this.measureId = measureId;
-	}
+    public void setMeausreExportId(String meausreExportId) {
+        this.meausreExportId = meausreExportId;
+    }
 
-	/**
-	 * Gets the xml.
-	 * 
-	 * @return the xml
-	 */
-	public String getXml() {
-		return xml;
-	}
+    public String getMeasureId() {
+        return measureId;
+    }
 
-	/**
-	 * Sets the xml.
-	 * 
-	 * @param xml
-	 *            the xml to set
-	 */
-	public void setXml(String xml) {
-		this.xml = xml;
-	}
+    public void setMeasureId(String measureId) {
+        this.measureId = measureId;
+    }
 
-	/**
-	 * Gets the to replace node.
-	 * 
-	 * @return the to replace node
-	 */
-	public String getToReplaceNode() {
-		return toReplaceNode;
-	}
+    public String getXml() {
+        return xml;
+    }
 
-	/**
-	 * Sets the to replace node.
-	 * 
-	 * @param toReplaceNode
-	 *            the new to replace node
-	 */
-	public void setToReplaceNode(String toReplaceNode) {
-		this.toReplaceNode = toReplaceNode;
-	}
+    public void setXml(String xml) {
+        this.xml = xml;
+    }
 
-	/**
-	 * Gets the parent node.
-	 * 
-	 * @return the parentNode
-	 */
-	public String getParentNode() {
-		return parentNode;
-	}
+    public String getToReplaceNode() {
+        return toReplaceNode;
+    }
 
-	/**
-	 * Sets the parent node.
-	 * 
-	 * @param parentNode
-	 *            the parentNode to set
-	 */
-	public void setParentNode(String parentNode) {
-		this.parentNode = parentNode;
-	}
+    public void setToReplaceNode(String toReplaceNode) {
+        this.toReplaceNode = toReplaceNode;
+    }
+
+    public String getParentNode() {
+        return parentNode;
+    }
+
+    public void setParentNode(String parentNode) {
+        this.parentNode = parentNode;
+    }
+
+    public String getMeasureModel() {
+        return measureModel;
+    }
+
+    public void setMeasureModel(String measureModel) {
+        this.measureModel = measureModel;
+    }
 
 }

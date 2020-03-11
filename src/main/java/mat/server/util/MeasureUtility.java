@@ -103,10 +103,7 @@ public class MeasureUtility {
      * @param version
      */
     public static void updateCQLVersion(XmlProcessor processor, String version) throws XPathExpressionException {
-        Node versionNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/version");
-        if (versionNode != null) {
-            versionNode.setTextContent(version);
-        }
+        findAndReplace(processor, version, "//cqlLookUp/version");
     }
 
 
@@ -118,18 +115,16 @@ public class MeasureUtility {
         String modelType = isFhirMeasure ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM;
         String modelVersion = isFhirMeasure ? MATPropertiesService.get().getFhirVersion() : MATPropertiesService.get().getQdmVersion();
 
-        Node cqlLibraryModelVersionNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/usingModelVersion");
+        findAndReplace(processor, modelVersion, "//cqlLookUp/usingModelVersion");
+        findAndReplace(processor, modelType, "//cqlLookUp/usingModel");
+    }
 
-        if (cqlLibraryModelVersionNode != null) {
-            cqlLibraryModelVersionNode.setTextContent(modelVersion);
-        }
-
-        Node cqlLibraryModelNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/usingModel");
+    private static void findAndReplace(XmlProcessor processor, String modelType, String s) throws XPathExpressionException {
+        Node cqlLibraryModelNode = processor.findNode(processor.getOriginalDoc(), s);
 
         if (cqlLibraryModelNode != null) {
             cqlLibraryModelNode.setTextContent(modelType);
         }
-
     }
 
 }

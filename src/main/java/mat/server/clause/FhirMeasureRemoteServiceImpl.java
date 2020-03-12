@@ -37,9 +37,12 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
         }
         try {
             return fhirMeasureService.convert(sourceMeasure, vsacTicketInformation.getTicket(), LoggedInUserUtil.getLoggedInUser());
-        } catch (RuntimeException|MatException e) {
+        } catch (MatException e) {
             logger.error("Error calling fhirMeasureService.convert",e);
             throw e;
+        } catch (Exception e) {
+            logger.error("Error calling fhirMeasureService.convert",e);
+            throw new MatException(e.getMessage(),e);
         }
     }
 

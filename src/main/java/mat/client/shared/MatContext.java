@@ -48,8 +48,8 @@ import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
-import mat.client.featureFlag.service.FeatureFlagService;
-import mat.client.featureFlag.service.FeatureFlagServiceAsync;
+import mat.client.featureFlag.service.FeatureFlagRemoteService;
+import mat.client.featureFlag.service.FeatureFlagRemoteServiceAsync;
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
@@ -111,7 +111,7 @@ public class MatContext implements IsSerializable {
 
     private MeasureServiceAsync measureService;
 
-    private FeatureFlagServiceAsync featureFlagService;
+    private FeatureFlagRemoteServiceAsync featureFlagService;
 
     private CQLConstantServiceAsync cqlConstantService;
 
@@ -230,7 +230,7 @@ public class MatContext implements IsSerializable {
 
     private Map<String, String> expressionToReturnTypeMap = new HashMap<>();
 
-	private Map<String, Boolean> featureFlagMap = new HashMap<>();
+    private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
     public void clearDVIMessages() {
         if (qdsView != null) {
@@ -378,9 +378,9 @@ public class MatContext implements IsSerializable {
         return measureService;
     }
 
-    public FeatureFlagServiceAsync getFeatureFlagService() {
+    public FeatureFlagRemoteServiceAsync getFeatureFlagService() {
         if (featureFlagService == null) {
-            featureFlagService = (FeatureFlagServiceAsync) GWT.create(FeatureFlagService.class);
+            featureFlagService = (FeatureFlagRemoteServiceAsync) GWT.create(FeatureFlagRemoteService.class);
         }
         return featureFlagService;
     }

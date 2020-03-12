@@ -85,10 +85,6 @@
         <servlet-class>mat.server.LoginServiceImpl</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>featureFlagServiceImpl</servlet-name>
-        <servlet-class>mat.server.FeatureFlagRemoteServiceImpl</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>logoutServiceImpl</servlet-name>
         <servlet-class>mat.server.LoginServiceImpl</servlet-class>
     </servlet>

@@ -15,18 +15,10 @@
         <java.version>1.8</java.version>
         <gwtVersion>2.8.2</gwtVersion>
         <googleGin>2.1.2</googleGin>
-        <org.springframework>5.0.6.RELEASE</org.springframework>
-        <org.springframework.security>5.0.6.RELEASE</org.springframework.security>
+        <org.springframework>5.0.15.RELEASE</org.springframework>
+        <org.springframework.security>5.0.13.RELEASE</org.springframework.security>
     </properties>
     <repositories>
-        <repository>
-            <id>mat_releases</id>
-            <url>https://nexus.telligen.com/nexus/content/repositories/mat_releases</url>
-        </repository>
-        <repository>
-            <id>public</id>
-            <url>https://nexus.telligen.com/nexus/content/repositories/public</url>
-        </repository>
         <repository>
             <id>central</id>
             <url>http://maven.icm.edu.pl/artifactory/repo/</url>
@@ -48,10 +40,45 @@
                     <artifactId>apache-jsp</artifactId>
                 </exclusion>
                 <exclusion>
-                	<groupId>org.eclipse.jetty</groupId>
-                	<artifactId>jetty-webapp</artifactId>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-webapp</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>info.cqframework</groupId>
+            <artifactId>cql</artifactId>
+            <version>1.4.6</version>
+        </dependency>
+        <dependency>
+            <groupId>info.cqframework</groupId>
+            <artifactId>model</artifactId>
+            <version>1.4.6</version>
+        </dependency>
+        <dependency>
+            <groupId>info.cqframework</groupId>
+            <artifactId>elm</artifactId>
+            <version>1.4.6</version>
+        </dependency>
+        <dependency>
+            <groupId>info.cqframework</groupId>
+            <artifactId>cql-to-elm</artifactId>
+            <version>1.4.6</version>
+        </dependency>
+        <dependency>
+            <groupId>info.cqframework</groupId>
+            <artifactId>quick</artifactId>
+            <version>1.4.6</version>
+        </dependency>
+        <dependency>
+            <groupId>info.cqframework</groupId>
+            <artifactId>qdm</artifactId>
+            <version>1.4.6</version>
+        </dependency>
+        <dependency>
+            <groupId>info.cqframework</groupId>
+            <artifactId>cql-formatter</artifactId>
+            <version>1.4.6</version>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -106,12 +133,12 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>5.0.6.RELEASE</version>
+            <version>${org.springframework.security}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>5.0.6.RELEASE</version>
+            <version>${org.springframework.security}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -126,12 +153,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.0.7.RELEASE</version>
+            <version>${org.springframework}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
-            <version>5.0.7.RELEASE</version>
+            <version>${org.springframework}</version>
         </dependency>
         <dependency>
             <groupId>org.jasypt</groupId>
@@ -257,7 +284,7 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.10</version>
+            <version>1.4.10-java7</version>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
@@ -274,14 +301,14 @@
             <artifactId>liquibase-core</artifactId>
             <version>3.6.1</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>ch.qos.logback</groupId>
-            		<artifactId>logback-core</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>ch.qos.logback</groupId>
-            		<artifactId>logback-classic</artifactId>
-            	</exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -290,8 +317,8 @@
             <version>2.3.0</version>
         </dependency>
         <dependency>
-            <groupId>com.telligen</groupId>
-            <artifactId>vipuserservices-test-client</artifactId>
+            <groupId>mat</groupId>
+            <artifactId>vipuserservices</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
@@ -320,9 +347,9 @@
             <version>1.7.25</version>
         </dependency>
         <dependency>
-    	 	<groupId>org.slf4j</groupId>
-        	<artifactId>slf4j-log4j12</artifactId>
-        	<version>1.7.25</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.25</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -351,11 +378,11 @@
             <artifactId>mockito-core</artifactId>
             <version>2.9.0</version>
         </dependency>
-         <dependency>
-		    <groupId>biz.paluch.logging</groupId>
-		    <artifactId>logstash-gelf</artifactId>
-		    <version>1.12.0</version>
-		</dependency>
+        <dependency>
+            <groupId>biz.paluch.logging</groupId>
+            <artifactId>logstash-gelf</artifactId>
+            <version>1.12.0</version>
+        </dependency>
     </dependencies>
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -371,7 +398,7 @@
                 </excludes>
             </resource>
             <resource>
-            	<directory>src/main/resources</directory>
+                <directory>src/main/resources</directory>
             </resource>
         </resources>
         <plugins>

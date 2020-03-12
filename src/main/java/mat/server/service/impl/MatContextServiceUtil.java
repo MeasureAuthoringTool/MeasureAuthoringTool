@@ -7,19 +7,18 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import mat.client.featureFlag.service.FeatureFlagService;
-import mat.client.util.FeatureFlagConstant;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.model.SecurityRole;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
-import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.MeasureShareDTO;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
+import mat.server.service.FeatureFlagService;
 
 @Service
 public class MatContextServiceUtil implements InitializingBean {
@@ -221,10 +220,10 @@ public class MatContextServiceUtil implements InitializingBean {
     }
 
     public boolean isMeasureModelEditable(String modelType) {
-        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || !ModelTypeHelper.FHIR.equals(modelType);
+        return featureFlagService.isFhirEditEnabled() || !ModelTypeHelper.FHIR.equals(modelType);
     }
 
     public boolean isCqlLibraryModelEditable(String modelType) {
-        return featureFlagService.findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false) || !ModelTypeHelper.FHIR.equals(modelType);
+        return featureFlagService.isFhirEditEnabled() || !ModelTypeHelper.FHIR.equals(modelType);
     }
 }

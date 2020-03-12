@@ -1,7 +1,9 @@
-package mat.server;
+package mat.server.service.impl;
 
-import mat.dao.impl.FeatureFlagDAOImpl;
-import mat.model.FeatureFlag;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,21 +11,20 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import mat.dao.impl.FeatureFlagDAOImpl;
+import mat.model.FeatureFlag;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class FeatureFlagServiceImplTest {
 
     @Mock
-    FeatureFlagDAOImpl featureFlagDAO;
+    private FeatureFlagDAOImpl featureFlagDAO;
 
     @InjectMocks
-    FeatureFlagServiceImpl featureFlagServiceImpl;
+    private FeatureFlagServiceImpl featureFlagServiceImpl;
 
     @Test
     void findFeatureFlagTest() {

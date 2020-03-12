@@ -66,7 +66,7 @@
     </servlet>
     <servlet>
         <servlet-name>featureFlagServlet</servlet-name>
-        <servlet-class>mat.server.FeatureFlagServiceImpl</servlet-class>
+        <servlet-class>mat.server.FeatureFlagRemoteServiceImpl</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>CQLLibraryServiceImpl</servlet-name>
@@ -86,7 +86,7 @@
     </servlet>
     <servlet>
         <servlet-name>featureFlagServiceImpl</servlet-name>
-        <servlet-class>mat.server.FeatureFlagServiceImpl</servlet-class>
+        <servlet-class>mat.server.FeatureFlagRemoteServiceImpl</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>logoutServiceImpl</servlet-name>

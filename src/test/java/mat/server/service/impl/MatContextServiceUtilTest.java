@@ -13,12 +13,12 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import mat.client.featureFlag.service.FeatureFlagService;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
 import mat.server.LoggedInUserUtil;
+import mat.server.service.FeatureFlagService;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -35,10 +35,10 @@ public class MatContextServiceUtilTest {
     private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
     @Mock
-    FeatureFlagService featureFlagService;
+    private FeatureFlagService featureFlagRemoteService;
 
     @InjectMocks
-    MatContextServiceUtil matContextServiceUtil;
+    private MatContextServiceUtil matContextServiceUtil;
 
     @Before
     public void setup() {
@@ -115,7 +115,7 @@ public class MatContextServiceUtilTest {
     @Test
     public void testIsMeasureEditable() {
         featureFlagMap.put("FhirEdit", true);
-        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+        Mockito.when(featureFlagRemoteService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         measure.setMeasureModel("QDM");
 
@@ -125,7 +125,7 @@ public class MatContextServiceUtilTest {
     @Test
     public void testIsMeasureEditableFail() {
         featureFlagMap.put("FhirEdit", false);
-        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+        Mockito.when(featureFlagRemoteService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         measure.setMeasureModel("QDM");
 
@@ -135,7 +135,7 @@ public class MatContextServiceUtilTest {
     @Test
     public void testIsMeasureEditableNullCheck() {
         featureFlagMap.put("FhirEdit", false);
-        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+        Mockito.when(featureFlagRemoteService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         measure.setMeasureModel("");
 
@@ -145,7 +145,7 @@ public class MatContextServiceUtilTest {
     @Test
     public void testIsCqlLibraryEditable() {
         featureFlagMap.put("FhirEdit", true);
-        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+        Mockito.when(featureFlagRemoteService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         cqlLibrary.setLibraryModelType("QDM");
 
@@ -155,7 +155,7 @@ public class MatContextServiceUtilTest {
     @Test
     public void testIsCqlLibraryEditableFail() {
         featureFlagMap.put("FhirEdit", false);
-        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+        Mockito.when(featureFlagRemoteService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         cqlLibrary.setLibraryModelType("QDM");
 
@@ -165,7 +165,7 @@ public class MatContextServiceUtilTest {
     @Test
     public void testIsCqlLibraryEditableNullCheck() {
         featureFlagMap.put("FhirEdit", false);
-        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
+        Mockito.when(featureFlagRemoteService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         cqlLibrary.setLibraryModelType("");
 

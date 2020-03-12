@@ -35,7 +35,7 @@ public class MatContextServiceUtilTest {
     private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
     @Mock
-    private FeatureFlagService featureFlagRemoteService;
+    private FeatureFlagService featureFlagService;
 
     @InjectMocks
     private MatContextServiceUtil matContextServiceUtil;
@@ -115,7 +115,7 @@ public class MatContextServiceUtilTest {
     @Test
     public void testIsMeasureEditable() {
         featureFlagMap.put("FhirEdit", true);
-        Mockito.when(featureFlagRemoteService.findFeatureFlags()).thenReturn(featureFlagMap);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         measure.setMeasureModel("QDM");
 
@@ -125,7 +125,7 @@ public class MatContextServiceUtilTest {
     @Test
     public void testIsMeasureEditableFail() {
         featureFlagMap.put("FhirEdit", false);
-        Mockito.when(featureFlagRemoteService.findFeatureFlags()).thenReturn(featureFlagMap);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         measure.setMeasureModel("QDM");
 
@@ -135,7 +135,7 @@ public class MatContextServiceUtilTest {
     @Test
     public void testIsMeasureEditableNullCheck() {
         featureFlagMap.put("FhirEdit", false);
-        Mockito.when(featureFlagRemoteService.findFeatureFlags()).thenReturn(featureFlagMap);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         measure.setMeasureModel("");
 
@@ -145,7 +145,7 @@ public class MatContextServiceUtilTest {
     @Test
     public void testIsCqlLibraryEditable() {
         featureFlagMap.put("FhirEdit", true);
-        Mockito.when(featureFlagRemoteService.findFeatureFlags()).thenReturn(featureFlagMap);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         cqlLibrary.setLibraryModelType("QDM");
 
@@ -155,7 +155,7 @@ public class MatContextServiceUtilTest {
     @Test
     public void testIsCqlLibraryEditableFail() {
         featureFlagMap.put("FhirEdit", false);
-        Mockito.when(featureFlagRemoteService.findFeatureFlags()).thenReturn(featureFlagMap);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         cqlLibrary.setLibraryModelType("QDM");
 
@@ -165,7 +165,7 @@ public class MatContextServiceUtilTest {
     @Test
     public void testIsCqlLibraryEditableNullCheck() {
         featureFlagMap.put("FhirEdit", false);
-        Mockito.when(featureFlagRemoteService.findFeatureFlags()).thenReturn(featureFlagMap);
+        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
 
         cqlLibrary.setLibraryModelType("");
 

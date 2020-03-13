@@ -66,8 +66,7 @@ public class MeasureUtility {
      * @return the string
      */
     public static String formatVersionText(String revisionNumber, String version) {
-        String mVersion = "v" + formatVersionText(version);
-        return mVersion + "." + revisionFormat.format(Integer.parseInt(revisionNumber));
+        return formatVersionText(version) + "." + revisionFormat.format(Integer.parseInt(revisionNumber));
     }
 
     /**

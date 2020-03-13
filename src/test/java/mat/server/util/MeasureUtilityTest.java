@@ -16,7 +16,7 @@ public class MeasureUtilityTest {
         boolean isDraft = true;
         assertEquals(MeasureUtility.getVersionText(version, isDraft), "Draft based on v4.2");
         assertEquals(MeasureUtility.getVersionTextWithRevisionNumber(version, revisionNumber, isDraft), "Draft v4.2.005");
-        assertEquals(MeasureUtility.formatVersionText(revisionNumber, version), "v4.2.005");
+        assertEquals(MeasureUtility.formatVersionText(revisionNumber, version), "4.2.005");
     }
 
     @Test

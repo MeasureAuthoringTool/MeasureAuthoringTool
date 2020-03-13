@@ -33,6 +33,14 @@ public class MeasureDetailsUtilTest {
     }
 
     @Test
+    public void draftFhirMeasureWithNoQdmVersion() {
+        createMeasure();
+        measure.setQdmVersion(null);
+        assertTrue(measureDetailsUtil.isValidatable(measure));
+    }
+
+
+    @Test
     public void notDraftFhir() {
         createMeasure();
         measure.setDraft(false);

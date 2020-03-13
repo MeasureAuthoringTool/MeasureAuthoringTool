@@ -112,16 +112,15 @@ public class MeasureDetailsUtil {
     }
 
     public static boolean isValidatable(Measure measure) {
-        if (measure.getMeasureModel() == null || measure.getQdmVersion() == null || measure.getReleaseVersion() == null) {
-            return false;
-        }
+        return (measure.isDraft() && measure.isFhirMeasure())
+                || (!measure.isDraft() && measure.isQdmMeasure() && canValidateQdmMeasureVersions(measure));
+    }
+
+    private static boolean canValidateQdmMeasureVersions(Measure measure) {
         BigDecimal matVersion = asDecimalVersion(measure.getReleaseVersion());
         BigDecimal qdmVersion = asDecimalVersion(measure.getQdmVersion());
-
-        return (measure.isDraft() && measure.getMeasureModel().equals(FHIR))
-                || (!measure.isDraft() && measure.getMeasureModel().equals(QDM)
-                && RUN_FHIR_VALIDATION_VERSION.compareTo(matVersion) <= 0
-                && RUN_FHIR_VALIDATION_QDM_VERSION.compareTo(qdmVersion) <= 0);
+        return RUN_FHIR_VALIDATION_VERSION.compareTo(matVersion) <= 0
+                && RUN_FHIR_VALIDATION_QDM_VERSION.compareTo(qdmVersion) <= 0;
     }
 
     private static BigDecimal asDecimalVersion(String version) {

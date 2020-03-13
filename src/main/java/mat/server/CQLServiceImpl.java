@@ -1016,7 +1016,7 @@ public class CQLServiceImpl implements CQLService {
         cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
 
         // get the strings for parsing
-        String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
+        String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "");
         List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
         SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
 

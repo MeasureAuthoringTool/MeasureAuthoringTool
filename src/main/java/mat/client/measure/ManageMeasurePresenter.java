@@ -685,6 +685,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onClose() {
+                displaySearch();
             }
         });
         errorAlert.show();

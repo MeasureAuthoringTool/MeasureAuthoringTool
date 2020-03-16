@@ -652,7 +652,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 } else {
                     logger.log(Level.INFO, "Your measure was successfully converted to FHIR.");
                 }
-                showFhirValidationReport(response.getSourceMeasure().getId());
+                //On conversion show the fhir measure validation errors.
+                showFhirValidationReport(response.getFhirMeasure().getId());
                 displaySearch();
             }
         });

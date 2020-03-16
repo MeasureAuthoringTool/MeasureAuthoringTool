@@ -72,10 +72,17 @@ public class MeasureUtility {
     public static String formatVersionTextForIncludeLibraries(String version) {
         StringUtility su = new StringUtility();
         String[] versionArr = version.split("\\.");
-        String majorVersion = su.trimLeadingZeros(versionArr[0]);
-        String minorVersion = su.trimLeadingZeros(versionArr[1]);
-        String revisionNumber = su.trimLeadingZeros(versionArr[2]);
-        return majorVersion + "." + minorVersion + "." + revisionFormat.format(Integer.parseInt(revisionNumber));
+        String majorVersion = "", minorVersion = "", revisionNumber = "";
+        for(int i = 0; i < versionArr.length; i++) {
+            if(i == 0) {
+                majorVersion = su.trimLeadingZeros(versionArr[0]);
+            } else if(i == 1) {
+                minorVersion = su.trimLeadingZeros(versionArr[1]);
+            } else {
+                revisionNumber = su.trimLeadingZeros(versionArr[2]);
+            }
+        }
+        return majorVersion + "." + minorVersion + "." + revisionFormat.format(Integer.parseInt(revisionNumber == "" ? "000" : revisionNumber));
     }
 
     /**

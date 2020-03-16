@@ -29,4 +29,10 @@ public class MeasureUtilityTest {
         assertEquals(MeasureUtility.getVersionTextWithRevisionNumber(version, revisionNumber, isDraft), "v4.2");
     }
 
+    @Test
+    public void testFormatVersionTextForIncludeLibraries() {
+        String version = "4.002";
+        assertEquals(MeasureUtility.formatVersionTextForIncludeLibraries(version), "4.2.000");
+    }
+
 }

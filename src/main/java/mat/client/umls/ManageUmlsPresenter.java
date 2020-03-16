@@ -1,5 +1,8 @@
 package mat.client.umls;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
@@ -30,6 +33,8 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.ClientConstants;
 
 public class ManageUmlsPresenter implements MatPresenter {
+
+    private final Logger logger = Logger.getLogger("MAT");
 
     private boolean showWelcomeMessage = false;
 
@@ -237,9 +242,9 @@ public class ManageUmlsPresenter implements MatPresenter {
                     display.getPasswordInput().getText(), new AsyncCallback<Boolean>() {
                         @Override
                         public void onFailure(final Throwable caught) {
+                            logger.log(Level.SEVERE, "VSACAPIServiceAsync#validateVsacUser onFailure: Error message: " + caught.getMessage(), caught);
                             display.getErrorMessageDisplay().setMessage(
                                     MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
-                            caught.printStackTrace();
                             Mat.hideUMLSActive(true);
                         }
 

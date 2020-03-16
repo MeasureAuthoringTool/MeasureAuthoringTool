@@ -48,6 +48,7 @@ import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.event.MeasureVersionEvent;
+import mat.client.event.UmlsActivatedEvent;
 import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -245,9 +246,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             componentMeasureDisplayHandlers();
         }
 
+        HandlerManager eventBus = MatContext.get().getEventBus();
+
         // This event will be called when measure is successfully deleted and
         // then MeasureLibrary is reloaded.
-        MatContext.get().getEventBus().addHandler(MeasureDeleteEvent.TYPE, new MeasureDeleteEvent.Handler() {
+        eventBus.addHandler(MeasureDeleteEvent.TYPE, new MeasureDeleteEvent.Handler() {
 
             @Override
             public void onDeletion(MeasureDeleteEvent event) {
@@ -271,7 +274,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
         });
 
-        HandlerManager eventBus = MatContext.get().getEventBus();
         eventBus.addHandler(OnChangeMeasureVersionOptionsEvent.TYPE, new OnChangeMeasureVersionOptionsEvent.Handler() {
             @Override
             public void onChangeOptions(OnChangeMeasureVersionOptionsEvent event) {
@@ -280,6 +282,13 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
         });
 
+        eventBus.addHandler(UmlsActivatedEvent.TYPE, new UmlsActivatedEvent.Handler() {
+
+            @Override
+            public void onSuccessfulLogin(UmlsActivatedEvent event) {
+                searchDisplay.resetMessageDisplay();
+            }
+        });
     }
 
     @Override
@@ -685,6 +694,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onClose() {
+                displaySearch();
             }
         });
         errorAlert.show();

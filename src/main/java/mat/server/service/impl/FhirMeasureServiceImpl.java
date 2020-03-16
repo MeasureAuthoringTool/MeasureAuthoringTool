@@ -64,26 +64,40 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         ConversionResultDto conversionResult = validateSourceMeasureForFhirConversion(sourceMeasure, vsacGrantingTicket);
         fhirConvertResultResponse.setValidationStatus(createValidationStatus(conversionResult));
 
-        Optional<String> fhirCqlOpt = Optional.ofNullable(conversionResult.getLibraryConversionResults()).stream()
+        Optional<String> fhirCqlOpt = getFhirCql(conversionResult);
+
+        if (!fhirCqlOpt.isPresent()) {
+            fhirConvertResultResponse.setSuccess(false);
+        } else {
+            persistFhirMeasure(loggedinUserId, fhirConvertResultResponse, sourceMeasureDetails, fhirCqlOpt);
+        }
+
+        return fhirConvertResultResponse;
+    }
+
+    private void persistFhirMeasure(String loggedinUserId, FhirConvertResultResponse fhirConvertResultResponse, ManageMeasureDetailModel sourceMeasureDetails, Optional<String> fhirCqlOpt) {
+        // Just to make sure the change is atomic and performed within the same single transaction.
+        transactionTemplate.executeWithoutResult(status -> {
+            try {
+                ManageMeasureSearchModel.Result fhirMeasure = measureCloningService.cloneForFhir(sourceMeasureDetails);
+                fhirConvertResultResponse.setFhirMeasure(fhirMeasure);
+                SaveUpdateCQLResult cqlResult = measureLibraryService.saveCQLFile(fhirMeasure.getId(), fhirCqlOpt.get());
+                fhirConvertResultResponse.setSuccess(cqlResult.isSuccess());
+                measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
+            } catch (MatException e) {
+                throw new MatRuntimeException(e);
+            }
+        });
+    }
+
+    private Optional<String> getFhirCql(ConversionResultDto conversionResult) {
+        return Optional.ofNullable(conversionResult.getLibraryConversionResults()).stream()
                 .flatMap(libConvRes -> libConvRes.stream())
                 .map(cqlLibRes -> cqlLibRes.getCqlConversionResult())
                 .filter(el -> el != null)
                 .map(el -> el.getFhirCql())
                 .filter(StringUtils::isNotBlank)
                 .findFirst();
-
-        if (!fhirCqlOpt.isPresent()) {
-            fhirConvertResultResponse.setSuccess(false);
-        } else {
-            ManageMeasureSearchModel.Result fhirMeasure = cloneSourceToFhir(sourceMeasureDetails);
-            fhirConvertResultResponse.setFhirMeasure(fhirMeasure);
-            SaveUpdateCQLResult cqlResult = measureLibraryService.saveCQLFile(fhirMeasure.getId(), fhirCqlOpt.get());
-            fhirConvertResultResponse.setSuccess(cqlResult.isSuccess());
-
-            measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
-        }
-
-        return fhirConvertResultResponse;
     }
 
     private ConversionResultDto validateSourceMeasureForFhirConversion(ManageMeasureSearchModel.Result sourceMeasure, String vsacGrantingTicket) {
@@ -100,16 +114,6 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         validationSummary.setOutcome(convertResult.getOutcome() != null ? convertResult.getOutcome().toString() : null);
         validationSummary.setValidationPassed(ConversionOutcome.SUCCESS.equals(convertResult.getOutcome()));
         return validationSummary;
-    }
-
-    private ManageMeasureSearchModel.Result cloneSourceToFhir(ManageMeasureDetailModel currentDetails) {
-        return transactionTemplate.execute(status -> {
-            try {
-                return measureCloningService.cloneForFhir(currentDetails);
-            } catch (MatException e) {
-                throw new MatRuntimeException(e);
-            }
-        });
     }
 
     private void dropFhirMeasureIfExists(ManageMeasureDetailModel currentDetails) {

@@ -69,6 +69,24 @@ public class MeasureUtility {
         return formatVersionText(version) + "." + revisionFormat.format(Integer.parseInt(revisionNumber));
     }
 
+    public static String formatVersionTextForIncludeLibraries(String version) {
+        StringUtility su = new StringUtility();
+        String[] versionArr = version.split("\\.");
+        String majorVersion = "";
+        String minorVersion = "";
+        String revisionNumber = "";
+        for(int i = 0; i < versionArr.length; i++) {
+            if(i == 0) {
+                majorVersion = su.trimLeadingZeros(versionArr[0]);
+            } else if(i == 1) {
+                minorVersion = su.trimLeadingZeros(versionArr[1]);
+            } else {
+                revisionNumber = su.trimLeadingZeros(versionArr[2]);
+            }
+        }
+        return majorVersion + "." + minorVersion + "." + revisionFormat.format(Integer.parseInt("".equals(revisionNumber) ? "000" : revisionNumber));
+    }
+
     /**
      * This method will take a String and remove all non-alphabet/non-numeric characters
      * except underscore ("_") characters.

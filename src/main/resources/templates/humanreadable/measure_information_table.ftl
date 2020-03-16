@@ -117,9 +117,9 @@
 					<table class="inner_table">
 						<tBody>
 					        <tr>
-						         <th scope='col' class="row-header"><span class="td_label">Measure Name</span></th>
-						         <th scope='col' class="row-header"><span class="td_label">Version Number</span></th>
-						         <th scope='col' class="row-header"><span class="td_label">GUID</span></th>
+						         <th scope="col" class="row-header"><span class="td_label">Measure Name</span></th>
+						         <th scope="col" class="row-header"><span class="td_label">Version Number</span></th>
+						         <th scope="col" class="row-header"><span class="td_label">GUID</span></th>
 					        </tr>
 							<#list model.measureInformation.componentMeasures as componentMeasure>
 								<tr>
@@ -135,7 +135,7 @@
 		</#if>
 		<#if model.measureInformation.measureScoring?lower_case != "ratio" || model.measureInformation.qdmVersion < 5.5 >
 			<tr>
-				<th scope='row' class="row-header"><span class="td_label">Stratification</span></th>
+				<th scope="row" class="row-header"><span class="td_label">Stratification</span></th>
 				<td style="width:80%" colspan="3">
 	      			<div style="width:660px;">
 	       				<pre>${model.measureInformation.stratification!""}</pre>
@@ -144,7 +144,7 @@
 			</tr>
 		</#if>
 		<tr>
-			<th scope='row' class="row-header"><span class="td_label">Risk Adjustment</span></th>
+			<th scope="row" class="row-header"><span class="td_label">Risk Adjustment</span></th>
 	     	<td style="width:80%" colspan="3">
       			<div style="width:660px;">
        				<pre>${model.measureInformation.riskAdjustment!""}</pre>
@@ -153,7 +153,7 @@
 		</tr>
 
 		<tr>
-			<th scope='row' class="row-header"><span class="td_label">Rate Aggregation</span></th>
+			<th scope="row" class="row-header"><span class="td_label">Rate Aggregation</span></th>
 		 	<td style="width:80%" colspan="3">
 		 		<div style="width:660px;">
        				<pre>${model.measureInformation.rateAggregation!""}</pre>
@@ -162,7 +162,7 @@
 		</tr>
 
 		<tr>
-			<th scope='row' class="row-header"><span class="td_label">Rationale</span></th>
+			<th scope="row" class="row-header"><span class="td_label">Rationale</span></th>
 	     	<td style="width:80%" colspan="3">
  				<div style="width:660px;">
        				<pre>${model.measureInformation.rationale!""}</pre>
@@ -171,7 +171,7 @@
 		</tr>
 
 		<tr>
-			<th scope='row' class="row-header"><span class="td_label">Clinical Recommendation Statement</span></th>
+			<th scope="row" class="row-header"><span class="td_label">Clinical Recommendation Statement</span></th>
     		<td style="width:80%" colspan="3">
       			<div style="width:660px;">
        				<pre>${model.measureInformation.clinicalRecommendationStatement!""}</pre>
@@ -180,7 +180,7 @@
 		</tr>
 
 		<tr>
-			<th scope='row' class="row-header"><span class="td_label">Improvement Notation</span></th>
+			<th scope="row" class="row-header"><span class="td_label">Improvement Notation</span></th>
 		    <td style="width:80%" colspan="3">
 	      		<div style="width:660px;">
 	       			<pre>${model.measureInformation.improvementNotation!""}</pre>
@@ -193,7 +193,7 @@
 		<#if model.measureInformation.references??>
 			<#list model.measureInformation.references as reference>
 				<tr>
-					<th scope='row' class="row-header"><span class="td_label">Reference</span></th>
+					<th scope="row" class="row-header"><span class="td_label">Reference</span></th>
 					<td style="width:80%" colspan="3">
 			      		<div style="width:660px;">
 			       			<pre>${reference!""}</pre>
@@ -204,13 +204,13 @@
 
 			<#else>
 				<tr>
-					<th scope='row' class="row-header"><span class="td_label">Reference</span></th>
+					<th scope="row" class="row-header"><span class="td_label">Reference</span></th>
 					<td style="width:80%" colspan="3">${""}</td>
 				</tr>
 		</#if>
 
 		<tr>
-			<th scope='row' class="row-header"><span class="td_label">Definition</span></th>
+			<th scope="row" class="row-header"><span class="td_label">Definition</span></th>
 			<td style="width:80%" colspan="3">
 	      		<div style="width:660px;">
 	       			<pre>${model.measureInformation.definition!""}</pre>
@@ -219,7 +219,7 @@
 		</tr>
 
 		<tr>
-			<th scope='row' class="row-header"><span class="td_label">Guidance</span></th>
+			<th scope="row" class="row-header"><span class="td_label">Guidance</span></th>
 	     	<td style="width:80%" colspan="3">
  				<div style="width:660px;">
        				<pre>${model.measureInformation.guidance!""}</pre>
@@ -228,7 +228,7 @@
 		</tr>
 
 		<tr>
-			<th scope='row' class="row-header"><span class="td_label">Transmission Format</span></th>
+			<th scope="row" class="row-header"><span class="td_label">Transmission Format</span></th>
 	     	<td style="width:80%" colspan="3">
  				<div style="width:660px;">
        				<pre>${model.measureInformation.transmissionFormat!""}</pre>
@@ -238,7 +238,7 @@
 
 		<#-- Initial Populations should show up for all measure types, thus we will not wrap this in a conditional -->
 		<tr>
-			<th scope='row' class="row-header"><span class="td_label">Initial Population</span></th>
+			<th scope="row" class="row-header"><span class="td_label">Initial Population</span></th>
 	     	<td style="width:80%" colspan="3">
  				<div style="width:660px;">
        				<pre>${model.measureInformation.initialPopulation!""}</pre>
@@ -248,7 +248,7 @@
 
 		<#if model.measureInformation.measureScoring?lower_case == "proportion" || model.measureInformation.measureScoring?lower_case == "ratio">
 			<tr>
-				<th scope='row' class="row-header"><span class="td_label">Denominator</span></th>
+				<th scope="row" class="row-header"><span class="td_label">Denominator</span></th>
 		     	<td style="width:80%" colspan="3">
 	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.denominator!""}</pre>
@@ -259,7 +259,7 @@
 
 		<#if model.measureInformation.measureScoring?lower_case == "proportion" || model.measureInformation.measureScoring?lower_case == "ratio">
 			<tr>
-				<th scope='row' class="row-header"><span class="td_label">Denominator Exclusions</span></th>
+				<th scope="row" class="row-header"><span class="td_label">Denominator Exclusions</span></th>
 		     	<td style="width:80%" colspan="3">
 	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.denominatorExclusions!""}</pre>
@@ -270,7 +270,7 @@
 
 		<#if model.measureInformation.measureScoring?lower_case == "continuous variable">
 			<tr>
-				<th scope='row' class="row-header"><span class="td_label">Measure Population</span></th>
+				<th scope="row" class="row-header"><span class="td_label">Measure Population</span></th>
 		     	<td style="width:80%" colspan="3">
 	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.measurePopulation!""}</pre>
@@ -281,7 +281,7 @@
 
 		<#if model.measureInformation.measureScoring?lower_case == "continuous variable">
 			<tr>
-				<th scope='row' class="row-header"><span class="td_label">Measure Population Exclusions</span></th>
+				<th scope="row" class="row-header"><span class="td_label">Measure Population Exclusions</span></th>
 		     	<td style="width:80%" colspan="3">
 	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.measurePopulationExclusions!""}</pre>
@@ -292,7 +292,7 @@
 
 		<#if model.measureInformation.measureScoring?lower_case == "continuous variable" || (model.measureInformation.measureScoring?lower_case == "ratio" && model.measureInformation.patientBased == false)>
 			<tr>
-				<th scope='row' class="row-header"><span class="td_label">Measure Observations</span></th>
+				<th scope="row" class="row-header"><span class="td_label">Measure Observations</span></th>
 		     	<td style="width:80%" colspan="3">
 	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.measureObservations!""}</pre>
@@ -303,7 +303,7 @@
 
 		<#if model.measureInformation.measureScoring?lower_case == "proportion" || model.measureInformation.measureScoring?lower_case == "ratio">
 			<tr>
-				<th scope='row' class="row-header"><span class="td_label">Numerator</span></th>
+				<th scope="row" class="row-header"><span class="td_label">Numerator</span></th>
 		     	<td style="width:80%" colspan="3">
 	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.numerator!""}</pre>
@@ -314,7 +314,7 @@
 
 		<#if model.measureInformation.measureScoring?lower_case == "proportion" || model.measureInformation.measureScoring?lower_case == "ratio">
 			<tr>
-				<th scope='row' class="row-header"><span class="td_label">Numerator Exclusions</span></th>
+				<th scope="row" class="row-header"><span class="td_label">Numerator Exclusions</span></th>
 		     	<td style="width:80%" colspan="3">
 	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.numeratorExclusions!""}</pre>
@@ -325,7 +325,7 @@
 
 		<#if model.measureInformation.measureScoring?lower_case == "proportion">
 			<tr>
-				<th scope='row' class="row-header"><span class="td_label">Denominator Exceptions</span></th>
+				<th scope="row" class="row-header"><span class="td_label">Denominator Exceptions</span></th>
 		     	<td style="width:80%" colspan="3">
 	 				<div style="width:660px;">
 	       				<pre>${model.measureInformation.denominatorExceptions!""}</pre>
@@ -335,7 +335,7 @@
 		</#if>
 
 		<tr>
-			<th scope='row' class="row-header"><span class="td_label">Supplemental Data Elements</span></th>
+			<th scope="row" class="row-header"><span class="td_label">Supplemental Data Elements</span></th>
 	     	<td style="width:80%" colspan="3">
  				<div style="width:660px;">
        				<pre>${model.measureInformation.supplementalDataElements!""}</pre>

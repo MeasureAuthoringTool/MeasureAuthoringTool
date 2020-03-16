@@ -17,7 +17,8 @@ public class MeasureUtilityTest {
         assertEquals(MeasureUtility.getVersionText(version, isDraft), "Draft based on v4.2");
         assertEquals(MeasureUtility.getVersionTextWithRevisionNumber(version, revisionNumber, isDraft), "Draft v4.2.005");
         assertEquals(MeasureUtility.formatVersionText(revisionNumber, version), "4.2.005");
-        assertEquals(MeasureUtility.formatVersionTextForIncludeLibraries(version + "." + revisionNumber), "4.2.005");
+        assertEquals(MeasureUtility.formatVersionText(version + "." + revisionNumber), "4.2.005");
+        assertEquals(MeasureUtility.formatVersionText(version), "4.2");
     }
 
     @Test
@@ -28,11 +29,4 @@ public class MeasureUtilityTest {
         assertEquals(MeasureUtility.getVersionText(version, isDraft), "v4.2");
         assertEquals(MeasureUtility.getVersionTextWithRevisionNumber(version, revisionNumber, isDraft), "v4.2");
     }
-
-    @Test
-    public void testFormatVersionTextForIncludeLibraries() {
-        String version = "4.002";
-        assertEquals(MeasureUtility.formatVersionTextForIncludeLibraries(version), "4.2.000");
-    }
-
 }

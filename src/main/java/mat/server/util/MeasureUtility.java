@@ -40,8 +40,19 @@ public class MeasureUtility {
     public static String formatVersionText(String version) {
         StringUtility su = new StringUtility();
         String[] versionArr = version.split("\\.");
-        String majorVersion = su.trimLeadingZeros(versionArr[0]);
-        String minorVersion = su.trimLeadingZeros(versionArr[1]);
+        String majorVersion = "";
+        String minorVersion = "";
+        String revisionNumber = "";
+        for(int i = 0; i < versionArr.length; i++) {
+            if(i == 0) {
+                majorVersion = su.trimLeadingZeros(versionArr[0]);
+            } else if(i == 1) {
+                minorVersion = su.trimLeadingZeros(versionArr[1]);
+            } else {
+                revisionNumber = su.trimLeadingZeros(versionArr[2]);
+                return majorVersion + "." + minorVersion + "." + revisionFormat.format(Integer.parseInt(revisionNumber));
+            }
+        }
         return majorVersion + "." + minorVersion;
     }
 
@@ -67,24 +78,6 @@ public class MeasureUtility {
      */
     public static String formatVersionText(String revisionNumber, String version) {
         return formatVersionText(version) + "." + revisionFormat.format(Integer.parseInt(revisionNumber));
-    }
-
-    public static String formatVersionTextForIncludeLibraries(String version) {
-        StringUtility su = new StringUtility();
-        String[] versionArr = version.split("\\.");
-        String majorVersion = "";
-        String minorVersion = "";
-        String revisionNumber = "";
-        for(int i = 0; i < versionArr.length; i++) {
-            if(i == 0) {
-                majorVersion = su.trimLeadingZeros(versionArr[0]);
-            } else if(i == 1) {
-                minorVersion = su.trimLeadingZeros(versionArr[1]);
-            } else {
-                revisionNumber = su.trimLeadingZeros(versionArr[2]);
-            }
-        }
-        return majorVersion + "." + minorVersion + "." + revisionFormat.format(Integer.parseInt("".equals(revisionNumber) ? "000" : revisionNumber));
     }
 
     /**

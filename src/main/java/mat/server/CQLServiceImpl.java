@@ -191,14 +191,22 @@ public class CQLServiceImpl implements CQLService {
         return result;
     }
 
-    public SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config) {
+    public SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config, String modelType) {
         XmlProcessor processor = new XmlProcessor(xml);
         try {
             ReverseEngineerListener listener = new ReverseEngineerListener(cql, config.getPreviousCQLModel());
             CQLModel reversedEngineeredCQLModel = listener.getCQLModel();
             String reverseEngineeredCQLLookup = marshallCQLModel(reversedEngineeredCQLModel);
             processor.replaceNode(reverseEngineeredCQLLookup, "cqlLookUp", "measure");
-            SaveUpdateCQLResult parsedResult = parseCQLLibraryForErrors(reversedEngineeredCQLModel);
+
+            SaveUpdateCQLResult parsedResult;
+            CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
+            if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
+                String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cql); //remote call
+                parsedResult = generateParsedCqlObject(cqlValidationResponse, cqlModel);
+            } else {
+                parsedResult = parseCQLLibraryForErrors(reversedEngineeredCQLModel);
+            }
 
             if (listener.hasSyntaxErrors()) {
                 parsedResult.setXml(xml); // retain the old xml if there are syntax errors (essentially not saving)
@@ -380,7 +388,7 @@ public class CQLServiceImpl implements CQLService {
                 String cqlExpressionName = "define function" + " \"" + functionWithOriginalContent.getName() + "\"";
                 parseCQLExpressionForErrors(result, xml, cqlExpressionName, functionWithOriginalContent.getLogic(),
                         functionWithOriginalContent.getName(), "Function", modelType);
-                if (result.getUsedCQLArtifacts().getUsedCQLFunctions().contains(functionWithOriginalContent.getName())) {
+                if (!ModelTypeHelper.FHIR.equalsIgnoreCase(modelType) && result.getUsedCQLArtifacts().getUsedCQLFunctions().contains(functionWithOriginalContent.getName())) {
                     functionWithEdits.setContext(functionWithOriginalContent.getContext());
                 }
             }
@@ -395,7 +403,7 @@ public class CQLServiceImpl implements CQLService {
                     functionWithEdits.getLogic(), functionWithEdits.getName(), "Definition", modelType);
 
             // do some processing if the are no errors in the CQL
-            if (result.getCqlErrors().isEmpty()) {
+            if (!ModelTypeHelper.FHIR.equalsIgnoreCase(modelType) && result.getCqlErrors().isEmpty()) {
                 Optional<CQLExpressionObject> expressionObject = findExpressionObject(functionWithEdits.getName(), result.getCqlObject().getCqlFunctionObjectList());
                 if (expressionObject.isPresent()) {
                     functionWithEdits.setReturnType(expressionObject.get().getReturnType());
@@ -640,7 +648,7 @@ public class CQLServiceImpl implements CQLService {
                     definitionWithEdits.getLogic(), definitionWithEdits.getName(), "Definition", modelType);
 
             // do some processing if the are no errors in the CQL
-            if (result.getCqlErrors().isEmpty()) {
+            if (!ModelTypeHelper.FHIR.equalsIgnoreCase(modelType) && result.getCqlErrors().isEmpty()) {
                 Optional<CQLExpressionObject> expressionObject = findExpressionObject(definitionWithEdits.getName(), result.getCqlObject().getCqlDefinitionObjectList());
                 if (expressionObject.isPresent()) {
                     definitionWithEdits.setReturnType(expressionObject.get().getReturnType());
@@ -1004,7 +1012,7 @@ public class CQLServiceImpl implements CQLService {
     }
 
     @Override
-    public SaveUpdateCQLResult getCQLLibraryData(String xmlString) {
+    public SaveUpdateCQLResult getCQLLibraryData(String xmlString, String modelType) {
         CQLModel cqlModel = new CQLModel();
         cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString);
 
@@ -1017,8 +1025,14 @@ public class CQLServiceImpl implements CQLService {
 
         // get the strings for parsing
         String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "");
-        List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
-        SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
+        SaveUpdateCQLResult result;
+        if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
+            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(parentCQLString); //remote call
+            result = generateParsedCqlObject(cqlValidationResponse, cqlModel);
+        } else {
+            List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
+            result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
+        }
 
         Iterator<CQLIncludeLibrary> libraryIter = cqlModel.getIncludedLibrarys().keySet().iterator();
         while (libraryIter.hasNext()) {
@@ -1398,34 +1412,27 @@ public class CQLServiceImpl implements CQLService {
         return result;
     }
 
-    private SaveUpdateCQLResult generateParsedCqlObject(String cqlValidationResponse, CQLModel cqlModel) {
+    @Override
+    public SaveUpdateCQLResult generateParsedCqlObject(String cqlValidationResponse, CQLModel cqlModel) {
 
         SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
         List<CQLError> errors = new ArrayList<>();
         Map<String, List<CQLError>> libraryNameErrorsMap = new HashMap<>();
         Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>();
         JSONArray jsonArray;
-        JSONObject jsonObject;
         String parentLibraryName = cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed();
-
         JSONObject cqlValidationResponseJson = new JSONObject(cqlValidationResponse);
         if (cqlValidationResponseJson.has("errorExceptions")) {
             jsonArray = cqlValidationResponseJson.getJSONArray("errorExceptions");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                CQLError error = new CQLError();
-                jsonObject = jsonArray.getJSONObject(i);
-                error.setStartErrorInLine(jsonObject.getInt("startLine"));
-                error.setErrorInLine(jsonObject.getInt("startLine"));
-                error.setErrorAtOffeset(jsonObject.getInt("startChar"));
-                error.setEndErrorInLine(jsonObject.getInt("endLine"));
-                error.setEndErrorAtOffset(jsonObject.getInt("endChar"));
-                error.setErrorMessage(jsonObject.getString("message"));
-                error.setSeverity(jsonObject.getString("errorSeverity"));
-                errors.add(error);
-                if (error.getSeverity().equalsIgnoreCase("Error")) {
-                    libraryNameErrorsMap.put(parentLibraryName, errors);
-                } else {
-                    libraryNameWarningsMap.put(parentLibraryName, errors);
+            if (jsonArray != null) {
+                buildCqlErrors(jsonArray, parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors);
+            }
+        } if (cqlValidationResponseJson.has("library")) {
+            JSONObject libraryObject = (JSONObject) cqlValidationResponseJson.get("library");
+            if (libraryObject.has("annotation")) {
+                jsonArray = libraryObject.getJSONArray("annotation");
+                if (jsonArray != null) {
+                    buildCqlErrors(jsonArray, parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors);
                 }
             }
         }
@@ -1434,6 +1441,27 @@ public class CQLServiceImpl implements CQLService {
         parsedCQL.setLibraryNameErrorsMap(libraryNameErrorsMap);
         parsedCQL.setLibraryNameWarningsMap(libraryNameWarningsMap);
         return parsedCQL;
+    }
+
+    private void buildCqlErrors(JSONArray jsonArray, String parentLibraryName, Map<String, List<CQLError>> libraryNameErrorsMap, Map<String, List<CQLError>> libraryNameWarningsMap, List<CQLError> errors) {
+        JSONObject jsonObject;
+        for (int i = 0; i < jsonArray.length(); i++) {
+            CQLError error = new CQLError();
+            jsonObject = jsonArray.getJSONObject(i);
+            error.setStartErrorInLine(jsonObject.getInt("startLine"));
+            error.setErrorInLine(jsonObject.getInt("startLine"));
+            error.setErrorAtOffeset(jsonObject.getInt("startChar"));
+            error.setEndErrorInLine(jsonObject.getInt("endLine"));
+            error.setEndErrorAtOffset(jsonObject.getInt("endChar"));
+            error.setErrorMessage(jsonObject.getString("message"));
+            error.setSeverity(jsonObject.getString("errorSeverity"));
+            errors.add(error);
+            if (error.getSeverity().equalsIgnoreCase("Error")) {
+                libraryNameErrorsMap.put(parentLibraryName, errors);
+            } else {
+                libraryNameWarningsMap.put(parentLibraryName, errors);
+            }
+        }
     }
 
     private List<CQLError> buildExpressionExceptionList(int startLine, int endLine, List<CQLError> cqlErrors,
@@ -1533,6 +1561,11 @@ public class CQLServiceImpl implements CQLService {
         }
 
         SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), exprList);
+        return generateUsedCqlArtifactsResult(cqlModel, xml, cqlResult);
+    }
+
+    @Override
+    public GetUsedCQLArtifactsResult generateUsedCqlArtifactsResult(CQLModel cqlModel, String xml, SaveUpdateCQLResult cqlResult) {
         String formattedName = cqlModel.getFormattedName();
         // if there are no errors in the cql library, get the used cql artifacts
         if (CollectionUtils.isEmpty(cqlResult.getCqlErrors())) {

@@ -291,6 +291,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     private MATPropertiesService propertiesService;
 
 
+    @Autowired
+    private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
+
     @Override
     public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
         String result = "";
@@ -4758,11 +4761,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public SaveUpdateCQLResult getMeasureCQLLibraryData(String measureId) {
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+        Measure measure = measureDAO.find(measureId);
         MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
 
         if (model != null && StringUtils.isNotBlank(model.getXml())) {
             String xmlString = model.getXml();
-            result = cqlService.getCQLLibraryData(xmlString);
+            result = cqlService.getCQLLibraryData(xmlString, measure.getMeasureModel());
             lintAndAddToResult(measureId, result);
 
             result.setSuccess(true);
@@ -4824,7 +4828,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             config.setPreviousCQLModel(previousModel);
 
-            result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config);
+            result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config, measure.getMeasureModel());
 
             XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
             processor.replaceNode(result.getXml(), CQL_LOOKUP, MEASURE);
@@ -5200,7 +5204,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public GetUsedCQLArtifactsResult getUsedCqlArtifacts(String measureId) {
         MeasureXmlModel measureXML = measurePackageService.getMeasureXmlForMeasure(measureId);
-        return getCqlService().getUsedCQlArtifacts(measureXML.getXml());
+        Measure measure = measureDAO.find(measureId);
+
+        if(ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
+            CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getXml());
+            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
+            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString); //remote call
+            SaveUpdateCQLResult cqlResult = getCqlService().generateParsedCqlObject(cqlValidationResponse, cqlModel);
+
+            return getCqlService().generateUsedCqlArtifactsResult(cqlModel, measureXML.getXml(), cqlResult);
+        } else {
+            return getCqlService().getUsedCQlArtifacts(measureXML.getXml());
+        }
     }
 
     @Override

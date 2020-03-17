@@ -14,10 +14,11 @@ public class MeasureUtilityTest {
         String version = "4.002";
         String revisionNumber = "005";
         boolean isDraft = true;
-        assertEquals(MeasureUtility.getVersionText(version, isDraft), "Draft based on v4.2");
-        assertEquals(MeasureUtility.getVersionTextWithRevisionNumber(version, revisionNumber, isDraft), "Draft v4.2.005");
-        assertEquals(MeasureUtility.formatVersionText(revisionNumber, version), "4.2.005");
-        assertEquals(MeasureUtility.formatVersionTextForIncludeLibraries(version + "." + revisionNumber), "4.2.005");
+        assertEquals("Draft based on v4.2", MeasureUtility.getVersionText(version, isDraft));
+        assertEquals( "Draft v4.2.005", MeasureUtility.getVersionTextWithRevisionNumber(version, revisionNumber, isDraft));
+        assertEquals("4.2.005", MeasureUtility.formatVersionText(revisionNumber, version));
+        assertEquals("4.2.005", MeasureUtility.formatVersionText(version + "." + revisionNumber));
+        assertEquals("4.2", MeasureUtility.formatVersionText(version));
     }
 
     @Test
@@ -25,14 +26,7 @@ public class MeasureUtilityTest {
         String version = "4.002";
         String revisionNumber = "005";
         boolean isDraft = false;
-        assertEquals(MeasureUtility.getVersionText(version, isDraft), "v4.2");
-        assertEquals(MeasureUtility.getVersionTextWithRevisionNumber(version, revisionNumber, isDraft), "v4.2");
+        assertEquals("v4.2", MeasureUtility.getVersionText(version, isDraft));
+        assertEquals("v4.2", MeasureUtility.getVersionTextWithRevisionNumber(version, revisionNumber, isDraft));
     }
-
-    @Test
-    public void testFormatVersionTextForIncludeLibraries() {
-        String version = "4.002";
-        assertEquals(MeasureUtility.formatVersionTextForIncludeLibraries(version), "4.2.000");
-    }
-
 }

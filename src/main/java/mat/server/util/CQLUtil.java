@@ -565,7 +565,7 @@ public class CQLUtil {
 		String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
 
 		CQLModel includeCqlModel = CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString);
-		cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + MeasureUtility.formatVersionTextForIncludeLibraries(cqlIncludeLibrary.getVersion()) + "|" + cqlIncludeLibrary.getAliasName(),
+		cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + MeasureUtility.formatVersionText(cqlIncludeLibrary.getVersion()) + "|" + cqlIncludeLibrary.getAliasName(),
 				new LibHolderObject(includeCqlXMLString, cqlIncludeLibrary));
 		cqlIncludeModelMap.put(cqlIncludeLibrary, includeCqlModel);
 		return includeCqlModel;

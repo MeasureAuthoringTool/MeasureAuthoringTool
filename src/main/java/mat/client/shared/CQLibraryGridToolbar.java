@@ -197,9 +197,6 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
         private boolean isConvertButtonVisible;
 
-        public Options() {
-        }
-
         public boolean isConvertButtonVisible() {
             return isConvertButtonVisible;
         }

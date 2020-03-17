@@ -259,7 +259,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         dataSetObject.setEditable(MatContextServiceUtil.get()
                 .isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibrary.getId()));
         dataSetObject.setFhirEditOrViewable(MatContextServiceUtil.get().isCqlLibraryModelEditable(cqlLibrary.getLibraryModelType()));
-
+        dataSetObject.setFhirConvertible(MatContextServiceUtil.get().isCqlLibraryConvertible(cqlLibrary));
         List<CQLLibrary> libraryList = new ArrayList<>();
         libraryList.add(cqlLibrary);
         List<CQLLibrary> cqlLibraryFamily = cqlLibraryDAO.getAllLibrariesInSet(libraryList);
@@ -1427,6 +1427,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         dataObject.setEditable(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(
                 cqlLibraryDAO, dto.getCqlLibraryId()));
         dataObject.setFhirEditOrViewable(MatContextServiceUtil.get().isCqlLibraryModelEditable(dto.getLibraryModelType()));
+        dataObject.setFhirConvertible(MatContextServiceUtil.get().isCqlLibraryConvertible(dto));
         dataObject.setDraftable(dto.isDraftable());
         dataObject.setVersionable(dto.isVersionable());
         dataObject.setLibraryModelType(dto.getLibraryModelType());

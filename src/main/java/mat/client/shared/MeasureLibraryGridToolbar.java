@@ -2,6 +2,7 @@ package mat.client.shared;
 
 import java.util.Collection;
 
+import com.google.common.annotations.VisibleForTesting;
 import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
@@ -9,7 +10,6 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.util.FeatureFlagConstant;
 
@@ -58,7 +58,6 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
     @VisibleForTesting
     void applyDefault() {
-
         applyDefaultAllButExport();
         buildButton(exportButton, IconType.DOWNLOAD, "Export", "Click to export", "72px");
         applyOptions();

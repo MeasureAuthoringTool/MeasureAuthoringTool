@@ -58,14 +58,16 @@ public class CQLLibraryShareDTO implements IsSerializable {
 	
 	/** The measure set id. */
 	private String cqlLibrarySetId;
-	
-	
+
 	private boolean isDraftable;
 	
 	
 	private boolean isVersionable;
 
 	private String libraryModelType;
+	private String releaseVersion;
+	private String qdmVersion;
+
 	/**
 	 * Gets the user id.
 	 * 
@@ -378,7 +380,21 @@ public class CQLLibraryShareDTO implements IsSerializable {
 	public void setLibraryModelType(String libraryModelType) {
 		this.libraryModelType = libraryModelType;
 	}
-	
-	
-	
+
+
+	public void setReleaseVersion(String releaseVersion) {
+		this.releaseVersion = releaseVersion;
+	}
+
+	public String getReleaseVersion() {
+		return releaseVersion;
+	}
+
+	public void setQdmVersion(String qdmVersion) {
+		this.qdmVersion = qdmVersion;
+	}
+
+	public String getQdmVersion() {
+		return qdmVersion;
+	}
 }

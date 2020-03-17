@@ -1,10 +1,13 @@
 package mat.client.shared;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gwt.core.client.GWT;
+import mat.client.util.FeatureFlagConstant;
 import mat.model.cql.CQLLibraryDataSetObject;
 
 public class CQLibraryGridToolbar extends HorizontalFlowPanel {
@@ -21,88 +24,65 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
     public static final String CLICK_TO_EDIT_TITLE = "Click to edit";
     public static final String CLICK_TO_SHARE_TITLE = "Click to share";
     public static final String CLICK_TO_DELETE_LIBRARY_TITLE = "Click to delete library";
+    public static final String CONVERT_TO_FHIR_TEXT = "Convert to FHIR";
+    public static final String CONVERT_TO_FHIR_TITLE = "Click to convert";
 
     private Button versionButton;
     private Button historyButton;
     private Button editOrViewButton;
     private Button shareButton;
     private Button deleteButton;
+    private Button convertButton;
+    private Options options;
 
     public CQLibraryGridToolbar() {
         setStyleName("action-button-bar");
         addStyleName("btn-group");
         addStyleName("btn-group-sm");
 
+        options = new Options();
+
         versionButton = GWT.create(Button.class);
         historyButton = GWT.create(Button.class);
         editOrViewButton = GWT.create(Button.class);
         shareButton = GWT.create(Button.class);
         deleteButton = GWT.create(Button.class);
+        convertButton = GWT.create(Button.class);
 
         add(versionButton);
         add(historyButton);
         add(editOrViewButton);
         add(shareButton);
         add(deleteButton);
+        add(convertButton);
 
         applyDefault();
     }
 
+    @VisibleForTesting
     public void applyDefault() {
-        versionButton.setText(CREATE_VERSION_DRAFT_TEXT);
-        versionButton.setType(ButtonType.DEFAULT);
-        versionButton.setEnabled(false);
-        versionButton.setIcon(IconType.STAR);
-        versionButton.setTitle(CLICK_TO_CREATE_VERSION_DRAFT_TITLE);
-        versionButton.setWidth("160px");
-
-        historyButton.setText(HISTORY_TEXT);
-        historyButton.setType(ButtonType.DEFAULT);
-        historyButton.setEnabled(false);
-        historyButton.setIcon(IconType.CLOCK_O);
-        historyButton.setTitle(CLICK_TO_VIEW_HISTORY_TITLE);
-        historyButton.setWidth("73px");
-
-        editOrViewButton.setText(EDIT_TEXT);
-        editOrViewButton.setType(ButtonType.DEFAULT);
-        editOrViewButton.setEnabled(false);
-        editOrViewButton.setIcon(IconType.PENCIL);
-        editOrViewButton.setWidth("64px");
-        editOrViewButton.setTitle(CLICK_TO_EDIT_TITLE);
-
-        shareButton.setText(SHARE_TEXT);
-        shareButton.setType(ButtonType.DEFAULT);
-        shareButton.setEnabled(false);
-        shareButton.setIcon(IconType.SHARE_SQUARE);
-        shareButton.setWidth("68px");
-        shareButton.setTitle(CLICK_TO_SHARE_TITLE);
-
-        deleteButton.setText(DELETE_TEXT);
-        deleteButton.setType(ButtonType.DEFAULT);
-        deleteButton.setEnabled(false);
-        deleteButton.setIcon(IconType.TRASH);
-        deleteButton.setWidth("70px");
-        deleteButton.setTitle(CLICK_TO_DELETE_LIBRARY_TITLE);
+        buildButton(versionButton, IconType.STAR, CREATE_VERSION_DRAFT_TEXT, CLICK_TO_CREATE_VERSION_DRAFT_TITLE, "160px");
+        buildButton(historyButton, IconType.CLOCK_O, HISTORY_TEXT, CLICK_TO_VIEW_HISTORY_TITLE, "73px");
+        buildButton(editOrViewButton, IconType.PENCIL, EDIT_TEXT, CLICK_TO_EDIT_TITLE, "64px");
+        buildButton(shareButton, IconType.SHARE_SQUARE, SHARE_TEXT, CLICK_TO_SHARE_TITLE, "68px");
+        buildButton(deleteButton, IconType.TRASH, DELETE_TEXT, CLICK_TO_DELETE_LIBRARY_TITLE, "70px");
+        buildButton(convertButton, IconType.RANDOM, CONVERT_TO_FHIR_TEXT, CONVERT_TO_FHIR_TITLE, "124px");
+        applyOptions();
     }
 
-    public Button getDeleteButton() {
-        return deleteButton;
+    @VisibleForTesting
+    public void applyOptions() {
+        convertButton.setVisible(options.isConvertButtonVisible());
     }
 
-    public Button getEditOrViewButton() {
-        return editOrViewButton;
-    }
-
-    public Button getHistoryButton() {
-        return historyButton;
-    }
-
-    public Button getShareButton() {
-        return shareButton;
-    }
-
-    public Button getVersionButton() {
-        return versionButton;
+    private void buildButton(Button actionButton, IconType icon, String text, String title, String width) {
+        actionButton.setText(text);
+        actionButton.setTitle(title);
+        actionButton.setWidth(width);
+        actionButton.setType(ButtonType.DEFAULT);
+        actionButton.setSize(ButtonSize.SMALL);
+        actionButton.setIcon(icon);
+        actionButton.setEnabled(false);
     }
 
     public void updateOnSelectionChanged(CQLLibraryDataSetObject selectedItem) {
@@ -165,6 +145,74 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         deleteButton.setEnabled(selectedItem.isDeletable());
         deleteButton.setIcon(IconType.TRASH);
         deleteButton.setTitle(CLICK_TO_DELETE_LIBRARY_TITLE);
+
+        convertButton.setEnabled(selectedItem.isFhirConvertible());
     }
 
+    public Button getDeleteButton() {
+        return deleteButton;
+    }
+
+    public Button getEditOrViewButton() {
+        return editOrViewButton;
+    }
+
+    public Button getHistoryButton() {
+        return historyButton;
+    }
+
+    public Button getShareButton() {
+        return shareButton;
+    }
+
+    public Button getVersionButton() {
+        return versionButton;
+    }
+
+    public Button getConvertButton() {
+        return convertButton;
+    }
+
+    public Options getOptions() {
+        return options;
+    }
+
+    public void setOptions(Options options) {
+        this.options = options;
+    }
+
+    public static CQLibraryGridToolbar withOptionsFromFlags() {
+        return withOptions(Options.fromFeatureFlags());
+    }
+
+    @VisibleForTesting
+    static CQLibraryGridToolbar withOptions(Options options) {
+        CQLibraryGridToolbar toolbar = new CQLibraryGridToolbar();
+        toolbar.setOptions(options);
+        toolbar.applyOptions();
+        return toolbar;
+    }
+
+    public static class Options {
+
+        private boolean isConvertButtonVisible;
+
+        public Options() {
+        }
+
+        public boolean isConvertButtonVisible() {
+            return isConvertButtonVisible;
+        }
+
+        public void setConvertButtonVisible(boolean convertButtonVisible) {
+            isConvertButtonVisible = convertButtonVisible;
+        }
+
+        public static Options fromFeatureFlags() {
+            Options options = new Options();
+            options.setConvertButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1));
+            return options;
+        }
+
+    }
 }

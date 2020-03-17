@@ -1424,14 +1424,16 @@ public class CQLServiceImpl implements CQLService {
         JSONObject cqlValidationResponseJson = new JSONObject(cqlValidationResponse);
         if (cqlValidationResponseJson.has("errorExceptions")) {
             jsonArray = cqlValidationResponseJson.getJSONArray("errorExceptions");
-            if(jsonArray != null && jsonArray.length() > 0) {
+            if (jsonArray != null) {
                 buildCqlErrors(jsonArray, parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors);
             }
         } if (cqlValidationResponseJson.has("library")) {
             JSONObject libraryObject = (JSONObject) cqlValidationResponseJson.get("library");
-            if(libraryObject.has("annotation")) {
+            if (libraryObject.has("annotation")) {
                 jsonArray = libraryObject.getJSONArray("annotation");
-                buildCqlErrors(jsonArray, parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors);
+                if (jsonArray != null) {
+                    buildCqlErrors(jsonArray, parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors);
+                }
             }
         }
         parsedCQL.setCqlModel(cqlModel);

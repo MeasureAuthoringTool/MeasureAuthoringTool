@@ -189,23 +189,29 @@ public class MatContextServiceUtil implements InitializingBean {
         // 1.2 The button is disabled for draft QDM-CQL measures and Fhir Measures
         // 1.3 Pre-QDM measures cannot be converted. The button is disabled if the QDM version is before 5.5 or the MAT version is before 5.8.
         // Should be available for the owner or a super user
-        BigDecimal qdmVersion = asDecimalVersion(measure.getQdmVersion());
-        BigDecimal matVersion = asDecimalVersion(measure.getReleaseVersion());
+        String ownerId = measure.getOwner() == null ? null : measure.getOwner().getId();
+        return isConvertible(measure.getMeasureModel(), measure.isDraft(), measure.getQdmVersion(), measure.getReleaseVersion(), ownerId);
+    }
 
+    public boolean isConvertible(String modelType, boolean isDraft, String qdmVersion, String releaseVersion, String ownerId) {
+        return isModelTypeEligibleForConversion(modelType) && !isDraft && isVersionEligibleForConversion(qdmVersion, releaseVersion) && canUserConvert(ownerId);
+    }
+
+    private boolean canUserConvert(String ownerId) {
         String currentUserId = LoggedInUserUtil.getLoggedInUser();
         String userRole = LoggedInUserUtil.getLoggedInUserRole();
         boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
-        boolean isOwner = measure.getOwner() != null && Objects.equals(currentUserId, measure.getOwner().getId());
-
-        return isModelTypeEligibleForConversion(measure) && !measure.isDraft() && isVersionEligibleForConversion(qdmVersion, matVersion) && (isOwner || isSuperUser);
+        boolean isOwner = ownerId != null && Objects.equals(currentUserId, ownerId);
+        return isOwner || isSuperUser;
     }
 
-    private boolean isVersionEligibleForConversion(BigDecimal qdmVersion, BigDecimal matVersion) {
-        return QDM_VER_BEFORE_CONVERSION.compareTo(qdmVersion) <= 0 && MAT_VER_BEFORE_CONVERSION.compareTo(matVersion) <= 0;
+    private boolean isVersionEligibleForConversion(String qdmVersion, String matVersion) {
+        return QDM_VER_BEFORE_CONVERSION.compareTo(asDecimalVersion(qdmVersion)) <= 0
+                && MAT_VER_BEFORE_CONVERSION.compareTo(asDecimalVersion(matVersion)) <= 0;
     }
 
-    private boolean isModelTypeEligibleForConversion(Measure measure) {
-        return measure.isQdmMeasure();
+    private boolean isModelTypeEligibleForConversion(String modelType) {
+        return ModelTypeHelper.isQdm(modelType);
     }
 
     private BigDecimal asDecimalVersion(String version) {
@@ -226,4 +232,14 @@ public class MatContextServiceUtil implements InitializingBean {
     public boolean isCqlLibraryModelEditable(String modelType) {
         return featureFlagService.isFhirEditEnabled() || !ModelTypeHelper.FHIR.equals(modelType);
     }
+
+    public boolean isCqlLibraryConvertible(CQLLibrary cqlLibrary) {
+        String ownerId = cqlLibrary.getOwnerId() == null ? null : cqlLibrary.getOwnerId().getId();
+        return isConvertible(cqlLibrary.getLibraryModelType(), cqlLibrary.isDraft(), cqlLibrary.getQdmVersion(), cqlLibrary.getReleaseVersion(), ownerId);
+    }
+
+    public boolean isCqlLibraryConvertible(CQLLibraryShareDTO cqlLibrary) {
+        return isConvertible(cqlLibrary.getLibraryModelType(), cqlLibrary.isDraft(), cqlLibrary.getQdmVersion(), cqlLibrary.getReleaseVersion(), cqlLibrary.getOwnerUserId());
+    }
+
 }

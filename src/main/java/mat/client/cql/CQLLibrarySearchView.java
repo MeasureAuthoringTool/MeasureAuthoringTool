@@ -240,7 +240,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
                 gridPanelHeader.setStyleName("recentSearchHeader");
                 gridPanelHeader.getElement().setTabIndex(0);
 
-                CQLibraryGridToolbar gridToolbar = new CQLibraryGridToolbar();
+                CQLibraryGridToolbar gridToolbar = CQLibraryGridToolbar.withOptionsFromFlags();
                 gridToolbar.getElement().setAttribute("id", "cqlLibrarySearchCellTable_gridToolbar");
 
                 table = cqlLibraryResultTable.addColumnToTable(gridToolbar, table, CQLLibrarySearchView.this);

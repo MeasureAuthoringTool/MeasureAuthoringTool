@@ -269,21 +269,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	 */
 	@Override
 	public LoginModel changeTempPassword(String email, String changedpassword) {
-		
-		LoginModel loginModel = new LoginModel();
-		
-		String resultMessage = callCheckDictionaryWordInPassword(changedpassword);
-		
-		if (resultMessage.equalsIgnoreCase("EXCEPTION")) {
-			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-		} else if (resultMessage.equalsIgnoreCase("SUCCESS")) {
-			loginModel = loginCredentialService.changeTempPassword(email, changedpassword);
-		} else {
-			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());		}
-		
-		return loginModel;
+		return loginCredentialService.changeTempPassword(email, changedpassword);
 	}
 	
 	/* (non-Javadoc)

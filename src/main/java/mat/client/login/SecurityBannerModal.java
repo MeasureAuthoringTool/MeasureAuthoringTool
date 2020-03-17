@@ -9,12 +9,20 @@ import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.gwtbootstrap3.client.ui.html.Div;
 import org.gwtbootstrap3.client.ui.html.Span;
 
 public class SecurityBannerModal extends Modal {
     private Button acceptButton = new Button("I Accept");
     private Button declineButton = new Button("Decline");
-    private String bodyHtml = "<br/><p>This warning banner provides privacy and security notices consistent with " +
+    private String scrollStyle = "width: 930px;" +
+            "height: 260px;" +
+            "font-size: small;" +
+            "padding-right: 10px;" +
+            "overflow-x: auto;" +
+            "overflow-x: auto;" +
+            "text-align: justify;";
+    private String bodyHtml = "<div style=\"" + scrollStyle + "\"><br/><p>This warning banner provides privacy and security notices consistent with " +
             "applicable federal laws, directives, and other federal guidance for accessing this Government system, " +
             "which includes (1) this computer network, (2) all computers connected to this network, and (3) all " +
             "devices and storage media attached to this network or to a computer on this network.</p><br/>" +
@@ -34,9 +42,9 @@ public class SecurityBannerModal extends Modal {
             "lawful Government purpose.</li>" +
             "</ul><br/>" +
             "<p style=\"color: #337AB7\">To continue, you must accept the terms and conditions. If you decline, your " +
-            "login will automatically be cancelled.</p>";
+            "login will automatically be cancelled.</p></div>";
 
-    private String paperworkReductionActHtml = "<p>According to the Paperwork Reduction Act of 1995, no persons are " +
+    private String paperworkReductionActHtml = "<div style=\"" + scrollStyle + "\"><p>According to the Paperwork Reduction Act of 1995, no persons are " +
             "required to respond to a collection of information unless it displays a valid OMB control number. The " +
             "valid OMB control number for this information collection is 0938-1236. The time required to complete " +
             "this information collection is estimated to average 20 minutes per response, including the time to " +
@@ -48,19 +56,22 @@ public class SecurityBannerModal extends Modal {
             "7500 Security Boulevard<br/>" +
             "Attn: PRA Reports Clearance Officer, Mail Stop C4-26-05<br />" +
             "Baltimore, Maryland 21244-1850" +
-            "</p>";
+            "</p></div>";
 
     private Modal paperworkReductionActPopup;
 
     public SecurityBannerModal() {
         builldPaperworkReductionActPopup();
-        setHeight("800px");
-        setWidth("1000px");
+        setHeight("442px");
+        setWidth("960px");
 
         ModalHeader modalHeader = new ModalHeader();
-        modalHeader.setTitle("System Use Notification");
+        Div headerDiv = new Div();
+        headerDiv.add(new HTML("System Use Notification"));
+        headerDiv.getElement().getStyle().setProperty("font-size","small");
         modalHeader.getElement().getStyle().setColor("white");
         modalHeader.getElement().getStyle().setBackgroundColor("blue");
+        modalHeader.add(headerDiv);
         modalHeader.setClosable(false);
 
         ModalBody modalBody = new ModalBody();
@@ -73,15 +84,20 @@ public class SecurityBannerModal extends Modal {
             paperworkReductionActPopup.show();
         });
 
-        headerPanel.add(new Span("OMB No 0938-1236 | Expiration Date: 04/30/2017 (OMB Re-Certification Pending) | "));
-        headerPanel.add(paperworkAnchor);
+        Div div = new Div();
+        div.add(new Span("OMB No 0938-1236 | Expiration Date: 04/30/2017 (OMB Re-Certification Pending) | "));
+        div.add(paperworkAnchor);
+        div.getElement().getStyle().setProperty("font-size","small");
+
         modalBody.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
         modalBody.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
-        modalBody.add(headerPanel);
+        modalBody.add(div);
         modalBody.add(new HTML(bodyHtml));
 
         ModalFooter modalFooter = new ModalFooter();
+        acceptButton.getElement().getStyle().setProperty("font-size","small");
+        declineButton.getElement().getStyle().setProperty("font-size","small");
         modalFooter.add(acceptButton);
         modalFooter.add(declineButton);
 
@@ -94,16 +110,18 @@ public class SecurityBannerModal extends Modal {
 
     private void builldPaperworkReductionActPopup() {
         paperworkReductionActPopup = new Modal();
-        paperworkReductionActPopup.setHeight("400px");
-        paperworkReductionActPopup.setWidth("1000px");
+        paperworkReductionActPopup.setHeight("442px");
+        paperworkReductionActPopup.setWidth("960px");
         paperworkReductionActPopup.addHideHandler(e -> this.show());
 
         ModalHeader modalHeader = new ModalHeader();
-        modalHeader.setTitle("Paperwork Reduction Act");
+        Div headerDiv = new Div();
+        headerDiv.add(new HTML("Paperwork Reduction Act"));
+        headerDiv.getElement().getStyle().setProperty("font-size","small");
+        modalHeader.add(headerDiv);
         modalHeader.getElement().getStyle().setColor("white");
         modalHeader.getElement().getStyle().setBackgroundColor("blue");
         modalHeader.setClosable(true);
-
 
         ModalBody modalBody = new ModalBody();
         modalBody.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
@@ -112,6 +130,7 @@ public class SecurityBannerModal extends Modal {
 
         ModalFooter modalFooter = new ModalFooter();
         Button ok = new Button("OK", e -> paperworkReductionActPopup.hide());
+        ok.getElement().getStyle().setProperty("font-size","small");
         modalFooter.add(ok);
         paperworkReductionActPopup.add(modalHeader);
         paperworkReductionActPopup.add(modalBody);

@@ -189,7 +189,8 @@ public class MatContextServiceUtil implements InitializingBean {
         // 1.2 The button is disabled for draft QDM-CQL measures and Fhir Measures
         // 1.3 Pre-QDM measures cannot be converted. The button is disabled if the QDM version is before 5.5 or the MAT version is before 5.8.
         // Should be available for the owner or a super user
-        return isConvertible(measure.getMeasureModel(), measure.isDraft(), measure.getQdmVersion(), measure.getReleaseVersion(), measure.getOwner() == null ? null : measure.getOwner().getId());
+        String ownerId = measure.getOwner() == null ? null : measure.getOwner().getId();
+        return isConvertible(measure.getMeasureModel(), measure.isDraft(), measure.getQdmVersion(), measure.getReleaseVersion(), ownerId);
     }
 
     public boolean isConvertible(String modelType, boolean isDraft, String qdmVersion, String releaseVersion, String ownerId) {

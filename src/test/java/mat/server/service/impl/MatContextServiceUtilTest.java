@@ -17,6 +17,7 @@ import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
+import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
 import mat.server.service.FeatureFlagService;
 
@@ -28,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 @PrepareForTest({LoggedInUserUtil.class})
 public class MatContextServiceUtilTest {
 
-    private static final String MEASURE_OWNER_USER_1 = "user1";
+    private static final String OWNER_USER_1 = "user1";
     private MatContextServiceUtil util = new MatContextServiceUtil();
     private Measure measure = new Measure();
     private CQLLibrary cqlLibrary = new CQLLibrary();
@@ -52,9 +53,8 @@ public class MatContextServiceUtilTest {
 
     @Test
     public void testMeasureConvertible() {
-        PowerMockito.when(LoggedInUserUtil.getLoggedInUser()).thenReturn(MEASURE_OWNER_USER_1);
-        PowerMockito.when(LoggedInUserUtil.getLoggedInUserRole()).thenReturn(SecurityRole.USER_ROLE);
-        createConvertible();
+        setUserAndRole();
+        createConvertibleMeasure();
         assertTrue(util.isMeasureConvertible(measure));
     }
 
@@ -62,7 +62,7 @@ public class MatContextServiceUtilTest {
     public void testMeasureCannotBeConvertedByOtherRegularUser() {
         PowerMockito.when(LoggedInUserUtil.getLoggedInUser()).thenReturn("OTHER_USER");
         PowerMockito.when(LoggedInUserUtil.getLoggedInUserRole()).thenReturn(SecurityRole.USER_ROLE);
-        createConvertible();
+        createConvertibleMeasure();
         assertFalse(util.isMeasureConvertible(measure));
     }
 
@@ -70,44 +70,44 @@ public class MatContextServiceUtilTest {
     public void testMeasureCannotBeConvertedByOtherSuperUser() {
         PowerMockito.when(LoggedInUserUtil.getLoggedInUser()).thenReturn("OTHER_USER");
         PowerMockito.when(LoggedInUserUtil.getLoggedInUserRole()).thenReturn(SecurityRole.SUPER_USER_ROLE);
-        createConvertible();
+        createConvertibleMeasure();
         assertTrue(util.isMeasureConvertible(measure));
     }
 
 
-    private void createConvertible() {
+    private void createConvertibleMeasure() {
         measure.setMeasureModel("QDM");
         measure.setReleaseVersion("v5.8");
         measure.setQdmVersion("5.5");
         User owner = new User();
-        owner.setId(MEASURE_OWNER_USER_1);
+        owner.setId(OWNER_USER_1);
         measure.setOwner(owner);
     }
 
     @Test
-    public void testFhir() {
-        createConvertible();
+    public void testFhirMeasureNotConvertible() {
+        createConvertibleMeasure();
         measure.setMeasureModel("FHIR");
         assertFalse(util.isMeasureConvertible(measure));
     }
 
     @Test
     public void testPreCQL() {
-        createConvertible();
+        createConvertibleMeasure();
         measure.setMeasureModel("Pre-CQL");
         assertFalse(util.isMeasureConvertible(measure));
     }
 
     @Test
     public void testVersionFail() {
-        createConvertible();
+        createConvertibleMeasure();
         measure.setReleaseVersion("v5.7");
         assertFalse(util.isMeasureConvertible(measure));
     }
 
     @Test
     public void testQdmVersionFail() {
-        createConvertible();
+        createConvertibleMeasure();
         measure.setQdmVersion("5.4");
         assertFalse(util.isMeasureConvertible(measure));
     }
@@ -171,4 +171,37 @@ public class MatContextServiceUtilTest {
 
         assertEquals(true, matContextServiceUtil.isCqlLibraryModelEditable(cqlLibrary.getLibraryModelType()));
     }
+
+    @Test
+    public void testCqlLibraryObjectConvertible() {
+        setUserAndRole();
+
+        CQLLibrary cqlLibrary = new CQLLibrary();
+        cqlLibrary.setLibraryModelType("QDM");
+        cqlLibrary.setQdmVersion("5.5");
+        cqlLibrary.setReleaseVersion("5.8");
+        cqlLibrary.setOwnerId(new User());
+        cqlLibrary.getOwnerId().setId(OWNER_USER_1);
+        cqlLibrary.setDraft(false);
+        assertTrue(matContextServiceUtil.isCqlLibraryConvertible(cqlLibrary));
+    }
+
+    @Test
+    public void testCqlLibraryDtoConvertible() {
+        setUserAndRole();
+
+        CQLLibraryShareDTO cqlLibrary = new CQLLibraryShareDTO();
+        cqlLibrary.setLibraryModelType("QDM");
+        cqlLibrary.setQdmVersion("5.5");
+        cqlLibrary.setReleaseVersion("5.8");
+        cqlLibrary.setOwnerUserId(OWNER_USER_1);
+        cqlLibrary.setDraft(false);
+        assertTrue(matContextServiceUtil.isCqlLibraryConvertible(cqlLibrary));
+    }
+
+    private void setUserAndRole() {
+        PowerMockito.when(LoggedInUserUtil.getLoggedInUser()).thenReturn(OWNER_USER_1);
+        PowerMockito.when(LoggedInUserUtil.getLoggedInUserRole()).thenReturn(SecurityRole.USER_ROLE);
+    }
+
 }

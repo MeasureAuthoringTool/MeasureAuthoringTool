@@ -15,9 +15,9 @@ import org.gwtbootstrap3.client.ui.html.Span;
 public class SecurityBannerModal extends Modal {
     private Button acceptButton = new Button("I Accept");
     private Button declineButton = new Button("Decline");
-    private String scrollStyle = "width: 600px;" +
-            "height: 250px;" +
-            "font-size: x-small;" +
+    private String scrollStyle = "width: 930px;" +
+            "height: 260px;" +
+            "font-size: small;" +
             "padding-right: 10px;" +
             "overflow-x: auto;" +
             "overflow-x: auto;" +
@@ -63,12 +63,12 @@ public class SecurityBannerModal extends Modal {
     public SecurityBannerModal() {
         builldPaperworkReductionActPopup();
         setHeight("442px");
-        setWidth("630px");
+        setWidth("960px");
 
         ModalHeader modalHeader = new ModalHeader();
         Div headerDiv = new Div();
         headerDiv.add(new HTML("System Use Notification"));
-        headerDiv.getElement().getStyle().setProperty("font-size","smaller");
+        headerDiv.getElement().getStyle().setProperty("font-size","small");
         modalHeader.getElement().getStyle().setColor("white");
         modalHeader.getElement().getStyle().setBackgroundColor("blue");
         modalHeader.add(headerDiv);
@@ -87,7 +87,7 @@ public class SecurityBannerModal extends Modal {
         Div div = new Div();
         div.add(new Span("OMB No 0938-1236 | Expiration Date: 04/30/2017 (OMB Re-Certification Pending) | "));
         div.add(paperworkAnchor);
-        div.getElement().getStyle().setProperty("font-size","x-small");
+        div.getElement().getStyle().setProperty("font-size","small");
 
         modalBody.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
         modalBody.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
@@ -96,8 +96,8 @@ public class SecurityBannerModal extends Modal {
         modalBody.add(new HTML(bodyHtml));
 
         ModalFooter modalFooter = new ModalFooter();
-        acceptButton.getElement().getStyle().setProperty("font-size","x-small");
-        declineButton.getElement().getStyle().setProperty("font-size","x-small");
+        acceptButton.getElement().getStyle().setProperty("font-size","small");
+        declineButton.getElement().getStyle().setProperty("font-size","small");
         modalFooter.add(acceptButton);
         modalFooter.add(declineButton);
 
@@ -111,13 +111,13 @@ public class SecurityBannerModal extends Modal {
     private void builldPaperworkReductionActPopup() {
         paperworkReductionActPopup = new Modal();
         paperworkReductionActPopup.setHeight("442px");
-        paperworkReductionActPopup.setWidth("630px");
+        paperworkReductionActPopup.setWidth("960px");
         paperworkReductionActPopup.addHideHandler(e -> this.show());
 
         ModalHeader modalHeader = new ModalHeader();
         Div headerDiv = new Div();
         headerDiv.add(new HTML("Paperwork Reduction Act"));
-        headerDiv.getElement().getStyle().setProperty("font-size","smaller");
+        headerDiv.getElement().getStyle().setProperty("font-size","small");
         modalHeader.add(headerDiv);
         modalHeader.getElement().getStyle().setColor("white");
         modalHeader.getElement().getStyle().setBackgroundColor("blue");
@@ -130,7 +130,7 @@ public class SecurityBannerModal extends Modal {
 
         ModalFooter modalFooter = new ModalFooter();
         Button ok = new Button("OK", e -> paperworkReductionActPopup.hide());
-        ok.getElement().getStyle().setProperty("font-size","x-small");
+        ok.getElement().getStyle().setProperty("font-size","small");
         modalFooter.add(ok);
         paperworkReductionActPopup.add(modalHeader);
         paperworkReductionActPopup.add(modalBody);

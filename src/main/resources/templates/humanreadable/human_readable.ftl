@@ -1,7 +1,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>${model.measureInformation.ecqmTitle}</title>
+	<title>${model.measureInformation.ecqmTitle} ${model.measureInformation.ecqmVersionNumber}</title>
 	<#include "human_readable_css.ftl" />
 </head>
 

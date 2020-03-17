@@ -153,7 +153,11 @@ public interface CQLService {
 
 	String getDefaultCodeSystems();
 
+	SaveUpdateCQLResult generateParsedCqlObject(String cqlValidationResponse, CQLModel cqlModel);
+
 	GetUsedCQLArtifactsResult getUsedCQlArtifacts(String measureId);
+
+	GetUsedCQLArtifactsResult generateUsedCqlArtifactsResult(CQLModel cqlModel, String xml, SaveUpdateCQLResult cqlResult);
 
 	SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
 
@@ -189,13 +193,13 @@ public interface CQLService {
 
 	SaveUpdateCQLResult saveCQLCodeSystem(String xml, CQLCodeSystem codeSystem);
 
-	SaveUpdateCQLResult getCQLLibraryData(String xmlString);
+	SaveUpdateCQLResult getCQLLibraryData(String xmlString, String modelType);
 
 	SaveUpdateCQLResult getCQLDataForLoad(String xmlString);
 
 	String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) throws MarshalException, ValidationException, IOException, MappingException;
 
-	SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config);
+	SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config, String modelType);
 
 	List<CQLLibraryHistory> createCQLLibraryHistory(List<CQLLibraryHistory> exsistingLibraryHistory, String CQLLibraryString, CQLLibrary cqlLibrary, Measure measure);
 

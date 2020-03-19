@@ -1,3 +1,6 @@
-FROM busybox:latest
-ADD target/MeasureAuthoringTool.war MeasureAuthoringTool.war
-CMD "sh" "cp /MeasureAuthoringTool.war /app"
+FROM tomcat:9
+
+COPY target/MeasureAuthoringTool.war /usr/local/tomcat/webapps/sbx#MeasureAuthoringTool.war
+COPY context.xml /usr/local/tomcat/conf/
+
+

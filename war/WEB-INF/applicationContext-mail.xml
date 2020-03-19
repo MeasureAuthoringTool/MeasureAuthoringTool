@@ -10,12 +10,12 @@
 >
 	
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="localhost"/>
+        <property name="host" value="172.23.20.122"/>
     </bean>
     
     <!-- this is a template message that we can pre-load with default state -->
     <bean id="templateMessage" class="org.springframework.mail.SimpleMailMessage">
-      <property name="from" value="sb-mat-noreply-help@semanticbits.com"/>
+      <property name="from" value="${mat.from.emailAddress}"/>
     </bean>
     
     <bean id="freemarkerConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">

@@ -65,7 +65,7 @@ class FhirValidationReportServiceTest {
         ReflectionTestUtils.setField(fhirValidationReportService, "currentMatVersion", "v6.0");
 
 
-        String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId, "vsacGrantingTicket");
+        String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId, "vsacGrantingTicket", false);
         assertTrue(report.startsWith("<html>\n    <head>\n        <title>MAT | FHIR Conversion Report</title>"));
         assertTrue(report.contains("<div class=\"report-header\">\n                Measure Authoring Tool v6.0\n            </div>"));
         assertTrue(report.contains("<div class=\"card-header\">Value Set</div>"));
@@ -88,7 +88,7 @@ class FhirValidationReportServiceTest {
 
         ReflectionTestUtils.setField(fhirValidationReportService, "currentMatVersion", "v6.0");
 
-        String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId, "vsacGrantingTicket");
+        String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId, "vsacGrantingTicket", false);
         assertTrue(report.startsWith("<html>\n    <head>\n        <title>MAT | FHIR Conversion Report</title>"));
         assertTrue(report.contains("<div class=\"report-header\">\n                Measure Authoring Tool v6.0\n            </div>"));
         assertTrue(report.contains("<div class=\"error-msg\">The measure with that measure id does not exist.</div>"));

@@ -6,9 +6,9 @@
                 <label>Conversion status message: </label>
                 <div class="value">${conversionStatusMessage}</div><br/>
             </#if>
-            <#if conversionOutcome?has_content>
-                <label>Conversion Outcome: </label>
-                <div class="value">${conversionOutcome}</div><br/>
+            <#if outcome?has_content>
+                <label>Outcome: </label>
+                <div class="value">${outcome}</div><br/>
             </#if>
             <#if errorReason?has_content>
                 <label>Error Reason: </label>

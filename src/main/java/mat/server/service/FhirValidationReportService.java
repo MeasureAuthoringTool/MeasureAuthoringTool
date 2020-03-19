@@ -120,7 +120,7 @@ public class FhirValidationReportService {
         }
 
         if (ConversionOutcome.SUCCESS != conversionResultDto.getOutcome()) {
-            paramsMap.put("conversionOutcome", conversionResultDto.getOutcome().toString());
+            paramsMap.put("outcome", String.valueOf(conversionResultDto.getOutcome()));
             paramsMap.put("errorReason", StringUtils.trimToNull(conversionResultDto.getErrorReason()));
 
             // ValueSet FHIR validation errors

@@ -196,7 +196,7 @@ public class MatContextServiceUtil implements InitializingBean {
                 !BooleanUtils.isTrue(measure.getIsCompositeMeasure());
     }
 
-    private static boolean isFhirMeasureValidatabe(Measure measure) {
+    private boolean isFhirMeasureValidatabe(Measure measure) {
         return measure.isDraft() && measure.isFhirMeasure();
     }
 

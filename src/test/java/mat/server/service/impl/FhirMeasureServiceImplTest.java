@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +26,9 @@ import mat.server.service.FhirOrchestrationGatewayService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
 import mat.shared.SaveUpdateCQLResult;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class FhirMeasureServiceImplTest {
@@ -54,11 +56,11 @@ public class FhirMeasureServiceImplTest {
         ManageMeasureSearchModel.Result sourceMeasure = new ManageMeasureSearchModel.Result();
         String loggedinUserId = "someCurrentUser";
 
-        Exception ex = Assertions.assertThrows(MatException.class, () -> {
+        Exception ex = assertThrows(MatException.class, () -> {
             service.convert(sourceMeasure, loggedinUserId, "vsacGrantingTicket");
         });
 
-        Assertions.assertEquals("Measure cannot be converted to FHIR", ex.getMessage());
+        assertEquals("Measure cannot be converted to FHIR", ex.getMessage());
     }
 
     @Test
@@ -139,7 +141,7 @@ public class FhirMeasureServiceImplTest {
         sourceMeasure.setId(sourceMeasureId);
         Mockito.when(measureDAO.find(Mockito.anyString())).thenReturn(sourceMeasure);
 
-        Assertions.assertThrows(MatException.class, () -> {
+        assertThrows(MatException.class, () -> {
             service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);
         });
 
@@ -189,7 +191,7 @@ public class FhirMeasureServiceImplTest {
 
         Mockito.when(measureLibraryService.saveCQLFile(Mockito.anyString(), Mockito.anyString())).thenReturn(saveUpdateCQLResult);
 
-        Assertions.assertThrows(MatRuntimeException.class, () -> {
+        assertThrows(MatRuntimeException.class, () -> {
             service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);
         });
 

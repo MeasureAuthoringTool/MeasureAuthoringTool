@@ -1427,7 +1427,8 @@ public class CQLServiceImpl implements CQLService {
             if (jsonArray != null) {
                 buildCqlErrors(jsonArray, parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors);
             }
-        } if (cqlValidationResponseJson.has("library")) {
+        }
+        if (cqlValidationResponseJson.has("library")) {
             JSONObject libraryObject = (JSONObject) cqlValidationResponseJson.get("library");
             if (libraryObject.has("annotation")) {
                 jsonArray = libraryObject.getJSONArray("annotation");
@@ -1453,8 +1454,8 @@ public class CQLServiceImpl implements CQLService {
             error.setErrorAtOffeset(jsonObject.getInt("startChar"));
             error.setEndErrorInLine(jsonObject.getInt("endLine"));
             error.setEndErrorAtOffset(jsonObject.getInt("endChar"));
-            error.setErrorMessage(jsonObject.getString("message"));
-            error.setSeverity(jsonObject.getString("errorSeverity"));
+            error.setErrorMessage(jsonObject.has("message") ? jsonObject.getString("message") : null);
+            error.setSeverity(jsonObject.has("errorSeverity") ? jsonObject.getString("errorSeverity") : "Error");
             errors.add(error);
             if (error.getSeverity().equalsIgnoreCase("Error")) {
                 libraryNameErrorsMap.put(parentLibraryName, errors);

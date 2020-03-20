@@ -39,9 +39,8 @@ public class MeasureDetailsUtilTest {
         assertTrue(measureDetailsUtil.isValidatable(measure));
     }
 
-
     @Test
-    public void notDraftFhir() {
+    public void notValidatableDraftFhir() {
         createMeasure();
         measure.setDraft(false);
         assertFalse(measureDetailsUtil.isValidatable(measure));
@@ -54,6 +53,16 @@ public class MeasureDetailsUtilTest {
         measure.setMeasureModel("QDM");
         assertTrue(measureDetailsUtil.isValidatable(measure));
     }
+
+    @Test
+    public void versionedQdmComposite() {
+        createMeasure();
+        measure.setDraft(false);
+        measure.setMeasureModel("QDM");
+        measure.setIsCompositeMeasure(true);
+        assertFalse(measureDetailsUtil.isValidatable(measure));
+    }
+
 
     @Test
     public void notVersionedQdm() {

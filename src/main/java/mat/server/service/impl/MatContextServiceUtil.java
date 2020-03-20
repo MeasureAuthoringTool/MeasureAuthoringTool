@@ -3,6 +3,7 @@ package mat.server.service.impl;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -190,7 +191,7 @@ public class MatContextServiceUtil implements InitializingBean {
         // 1.3 Pre-QDM measures cannot be converted. The button is disabled if the QDM version is before 5.5 or the MAT version is before 5.8.
         // Should be available for the owner or a super user
         String ownerId = measure.getOwner() == null ? null : measure.getOwner().getId();
-        return isConvertible(measure.getMeasureModel(), measure.isDraft(), measure.getQdmVersion(), measure.getReleaseVersion(), ownerId);
+        return isConvertible(measure.getMeasureModel(), measure.isDraft(), measure.getQdmVersion(), measure.getReleaseVersion(), ownerId) && !BooleanUtils.isTrue(measure.getIsCompositeMeasure());
     }
 
     public boolean isConvertible(String modelType, boolean isDraft, String qdmVersion, String releaseVersion, String ownerId) {

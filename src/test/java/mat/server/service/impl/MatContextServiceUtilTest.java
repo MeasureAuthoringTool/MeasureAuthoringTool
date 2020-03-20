@@ -92,6 +92,13 @@ public class MatContextServiceUtilTest {
     }
 
     @Test
+    public void testCompositeMeasureIsNotConvertible() {
+        createConvertibleMeasure();
+        measure.setIsCompositeMeasure(true);
+        assertFalse(util.isMeasureConvertible(measure));
+    }
+
+    @Test
     public void testPreCQL() {
         createConvertibleMeasure();
         measure.setMeasureModel("Pre-CQL");

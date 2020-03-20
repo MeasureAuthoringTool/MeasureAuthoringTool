@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import mat.client.measure.ReferenceTextAndType;
 import mat.model.clause.Measure;
 import mat.shared.CompositeMethodScoringConstant;
@@ -112,8 +114,18 @@ public class MeasureDetailsUtil {
     }
 
     public static boolean isValidatable(Measure measure) {
-        return (measure.isDraft() && measure.isFhirMeasure())
-                || (!measure.isDraft() && measure.isQdmMeasure() && canValidateQdmMeasureVersions(measure));
+        return isFhirMeasureValidatabe(measure) || isQdmMeasureValidatable(measure);
+    }
+
+    private static boolean isQdmMeasureValidatable(Measure measure) {
+        return !measure.isDraft() &&
+                measure.isQdmMeasure() &&
+                canValidateQdmMeasureVersions(measure) &&
+                !BooleanUtils.isTrue(measure.getIsCompositeMeasure());
+    }
+
+    private static boolean isFhirMeasureValidatabe(Measure measure) {
+        return measure.isDraft() && measure.isFhirMeasure();
     }
 
     private static boolean canValidateQdmMeasureVersions(Measure measure) {

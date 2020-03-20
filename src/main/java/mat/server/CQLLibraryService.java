@@ -21,7 +21,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import mat.model.clause.ModelTypeHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,6 +56,7 @@ import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibraryExport;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
@@ -606,7 +606,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             }
 
             String version = library.getVersion() + "." + library.getRevisionNumber();
-            String cqlLookUpString = createCQLLookUpTag(cqlLibraryDataSetObject.getCqlName(), version);
+            String cqlLookUpString = createCQLLookUpTag(cqlLibraryDataSetObject.getCqlName(), cqlLibraryDataSetObject.getLibraryModelType(), version);
             if (StringUtils.isNotBlank(cqlLookUpString)) {
                 byte[] cqlByteArray = cqlLookUpString.getBytes();
                 library.setCQLByteArray(cqlByteArray);
@@ -649,8 +649,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     @Override
-    public String createCQLLookUpTag(String libraryName, String version) {
-        XmlProcessor xmlProcessor = loadCQLXmlTemplateFile();
+    public String createCQLLookUpTag(String libraryName, String modelType, String version) {
+        XmlProcessor xmlProcessor = loadCQLXmlTemplateFile(modelType);
         String cqlLookUpString = getCQLLookUpXml(libraryName, version, xmlProcessor, "//standAlone");
         return cqlLookUpString;
     }
@@ -724,7 +724,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     @Override
-    public XmlProcessor loadCQLXmlTemplateFile() {
+    public XmlProcessor loadCQLXmlTemplateFile(String modelType) {
         String fileName = "CQLXmlTemplate.xml";
         URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);
         File templateFile = null;
@@ -1121,7 +1121,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         CQLLibrary library = cqlLibraryDAO.find(libraryId);
         String cqlXml = getCQLLibraryXml(library);
 
-        if(ModelTypeHelper.FHIR.equalsIgnoreCase(library.getLibraryModelType())) {
+        if (ModelTypeHelper.FHIR.equalsIgnoreCase(library.getLibraryModelType())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
             String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
             String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString); //remote call
@@ -1412,7 +1412,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         String result = null;
         try {
             result = xmlProcessor.appendNode(newXml, nodeName, parentNodeName);
-        } catch (SAXException| IOException e) {
+        } catch (SAXException | IOException e) {
             logger.error(e);
         }
         return result;

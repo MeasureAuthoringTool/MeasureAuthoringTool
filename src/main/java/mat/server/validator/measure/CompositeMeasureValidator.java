@@ -274,7 +274,7 @@ public class CompositeMeasureValidator {
 
     private List<String> validateAliasIsValidAndNotDuplicate(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
         List<String> messages = new ArrayList<>();
-        String templateXml = getTemplateXmlString();
+        String templateXml = getTemplateXmlString(manageCompositeMeasureDetailModel.getMeasureModel());
         CQLModel model = CQLUtilityClass.getCQLModelFromXML(templateXml);
         Map<String, String> aliasMapping = manageCompositeMeasureDetailModel.getAliasMapping();
 
@@ -339,10 +339,10 @@ public class CompositeMeasureValidator {
         return messages;
     }
 
-    private String getTemplateXmlString() {
+    private String getTemplateXmlString(String modelType) {
         String templateXml = "";
         try {
-            XmlProcessor xmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
+            XmlProcessor xmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile(modelType);
             Node measureNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "measure");
             templateXml = xmlProcessor.transform(measureNode);
         } catch (XPathExpressionException e) {

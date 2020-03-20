@@ -1216,13 +1216,6 @@ public class MatContext implements IsSerializable {
         }
     }
 
-    public CQLLibraryServiceAsync getLibraryService() {
-        if (cqlLibraryService == null) {
-            cqlLibraryService = (CQLLibraryServiceAsync) GWT.create(CQLLibraryService.class);
-        }
-        return cqlLibraryService;
-    }
-
     /**
      * Checks if is measure is CQL Measure depending
      * on Measure release version. If the releaseVersion is null, then it is not a CQL measure.

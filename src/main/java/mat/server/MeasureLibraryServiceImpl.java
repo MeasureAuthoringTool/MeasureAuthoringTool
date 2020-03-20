@@ -2256,7 +2256,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         XmlProcessor processor = new XmlProcessor("<measure> </measure>");
         processor.transform(processor.getOriginalDoc());
         try {
-            String cqlLookUpTag = createNewCqlLookupTag(libraryName, version);
+            String cqlLookUpTag = createNewCqlLookupTag(libraryName, measureXmlModel.getMeasureModel(), version);
             if (StringUtils.isNotBlank(cqlLookUpTag)) {
                 processor.appendNode(cqlLookUpTag, CQL_LOOKUP, "/measure");
 
@@ -2333,8 +2333,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
     }
 
-    private String createNewCqlLookupTag(String libraryName, String version) {
-        XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
+    private String createNewCqlLookupTag(String libraryName, String modelType, String version) {
+        XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile(modelType);
         return cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)),
                 version, cqlXmlProcessor, "//measure");
     }
@@ -5206,7 +5206,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         MeasureXmlModel measureXML = measurePackageService.getMeasureXmlForMeasure(measureId);
         Measure measure = measureDAO.find(measureId);
 
-        if(ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
+        if (ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getXml());
             String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
             String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString); //remote call

@@ -135,7 +135,7 @@ public class LibraryLockService {
 	 * @return the measure service
 	 */
 	private CQLLibraryServiceAsync getLibraryService(){
-		return MatContext.get().getLibraryService();
+		return MatContext.get().getCQLLibraryService();
 	}
 	
 	/**

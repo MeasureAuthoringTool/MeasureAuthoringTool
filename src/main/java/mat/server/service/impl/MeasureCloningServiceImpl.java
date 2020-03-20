@@ -147,7 +147,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         return clone(currentDetails, true, true);
     }
 
-    private ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails, boolean creatingDraft, boolean creatingFhir) throws MatException {
+    private ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails, boolean creatingDraft, boolean copyQdmToFhir) throws MatException {
         logger.info("In MeasureCloningServiceImpl.clone() method..");
 
         validateMeasure(currentDetails);
@@ -164,21 +164,24 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             MeasureXML originalMeasureXml = measureXmlDAO.findForMeasure(currentDetails.getId());
 
             Measure clonedMeasure = new Measure();
-            if (creatingFhir) {
+            if (copyQdmToFhir) {
                 clonedMeasure.setSourceMeasureId(measure.getId());
+                clonedMeasure.setMeasureModel(ModelTypeHelper.FHIR);
+            } else {
+                clonedMeasure.setMeasureModel(currentDetails.getMeasureModel());
+            }
+
+            if (clonedMeasure.isFhirMeasure()) {
+                clonedMeasure.setFhirVersion(propertiesService.getFhirVersion());
+            } else {
+                clonedMeasure.setQdmVersion(propertiesService.getQdmVersion());
             }
             String originalXml = originalMeasureXml.getMeasureXMLAsString();
 
             clonedMeasure.setaBBRName(currentDetails.getShortName());
             clonedMeasure.setDescription(currentDetails.getMeasureName());
-            String newMeasureModel = creatingFhir ? ModelTypeHelper.FHIR : currentDetails.getMeasureModel();
-            clonedMeasure.setMeasureModel(newMeasureModel);
+
             clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName());
-            if (creatingFhir) {
-                clonedMeasure.setFhirVersion(propertiesService.getFhirVersion());
-            } else {
-                clonedMeasure.setQdmVersion(propertiesService.getQdmVersion());
-            }
             clonedMeasure.setReleaseVersion(measure.getReleaseVersion());
             clonedMeasure.setDraft(Boolean.TRUE);
             clonedMeasure.setPatientBased(currentDetails.isPatientBased());
@@ -199,7 +202,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
                 cloneMeasureAndPersist(clonedMeasure);
             }
 
-            createMeasureXmlAndPersist(currentDetails, creatingDraft, creatingFhir, measure, clonedMeasure, originalXml);
+            createMeasureXmlAndPersist(currentDetails, creatingDraft, measure, clonedMeasure, originalXml);
 
             String formattedVersionWithText = MeasureUtility.getVersionTextWithRevisionNumber(clonedMeasure.getVersion(),
                     clonedMeasure.getRevisionNumber(), clonedMeasure.isDraft());
@@ -222,7 +225,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         }
     }
 
-    private void createMeasureXmlAndPersist(ManageMeasureDetailModel currentDetails, boolean creatingDraft, boolean creatingFhir, Measure measure, Measure clonedMeasure, String originalXml) throws MatException {
+    private void createMeasureXmlAndPersist(ManageMeasureDetailModel currentDetails, boolean creatingDraft, Measure measure, Measure clonedMeasure, String originalXml) throws MatException {
         Document originalDoc = parseOriginalDocument(originalXml);
         Document clonedDoc = originalDoc;
 
@@ -252,7 +255,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
         updateScoring(currentDetails, measure, clonedMeasure, xmlProcessor);
 
-        boolean isUpdatedForCQL = updateForCQLMeasure(xmlProcessor, clonedMeasure, creatingFhir);
+        boolean isUpdatedForCQL = updateForCQLMeasure(xmlProcessor, clonedMeasure);
         xmlProcessor.clearValuesetVersionAttribute();
 
         if (creatingDraft) {
@@ -263,7 +266,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
         // this means this is a CQL Measure to CQL Measure draft/clone.
         if (!isUpdatedForCQL) {
-            updateForCqlMeasureDraftOrClone(creatingFhir, xmlProcessor);
+            updateForCqlMeasureDraftOrClone(clonedMeasure.isFhirMeasure(), xmlProcessor);
         }
         updateCqlLibraryName(clonedMeasure, xmlProcessor);
 
@@ -285,12 +288,12 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         }
     }
 
-    private void updateForCqlMeasureDraftOrClone(boolean creatingFhir, XmlProcessor xmlProcessor) throws MatException {
+    private void updateForCqlMeasureDraftOrClone(boolean isFhirMeasure, XmlProcessor xmlProcessor) throws MatException {
         //create the default 4 CMS supplemental definitions
         appendSupplementalDefinitions(xmlProcessor, false);
         // Always set latest model version.
         try {
-            MeasureUtility.updateModelVersion(xmlProcessor, creatingFhir);
+            MeasureUtility.updateModelVersion(xmlProcessor, isFhirMeasure);
         } catch (XPathExpressionException e) {
             throw new MatException(e);
         }
@@ -450,7 +453,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         measureDAO.saveMeasure(clonedMeasure);
     }
 
-    private boolean updateForCQLMeasure(XmlProcessor xmlProcessor, Measure clonedMeasure, boolean creatingFhir)
+    private boolean updateForCQLMeasure(XmlProcessor xmlProcessor, Measure clonedMeasure)
             throws MatException {
 
         Node cqlLookUpNode = findNode(xmlProcessor, "/measure/cqlLookUp");
@@ -460,13 +463,13 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             // Update Model Version in Measure XMl for Draft and CQL Measures
             Node modelVersionNode = findNode(xmlProcessor, "/measure/cqlLookUp/usingModelVersion");
             if (modelVersionNode != null) {
-                modelVersionNode.setTextContent(creatingFhir ? propertiesService.getFhirVersion() : propertiesService.getQdmVersion());
+                modelVersionNode.setTextContent(clonedMeasure.isFhirMeasure() ? propertiesService.getFhirVersion() : propertiesService.getQdmVersion());
             }
 
             // Update Model Type
             Node modelNode = findNode(xmlProcessor, "/measure/cqlLookUp/usingModel");
             if (modelNode != null) {
-                modelNode.setTextContent(creatingFhir ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM);
+                modelNode.setTextContent(clonedMeasure.getMeasureModel());
             }
 
             return false;
@@ -495,7 +498,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
     private void generateCqlLookupTag(XmlProcessor xmlProcessor, Measure clonedMeasure) {
         // This section generates CQL Look Up tag from CQLXmlTemplate.xml
 
-        XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
+        XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile(clonedMeasure.getMeasureModel());
         String libraryName = clonedMeasure.getDescription();
         String version = clonedMeasure.getVersion();
 

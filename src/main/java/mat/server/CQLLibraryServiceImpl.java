@@ -20,7 +20,6 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.CQLLibraryServiceInterface;
-import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
@@ -65,14 +64,6 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 
     public SaveCQLLibraryResult saveCQLLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject) {
         return this.getCQLLibraryService().saveLibrary(cqlLibraryDataSetObject);
-    }
-
-    public String createCQLLookUpTag(String libraryName, String version) {
-        return this.getCQLLibraryService().createCQLLookUpTag(libraryName, version);
-    }
-
-    public XmlProcessor loadCQLXmlTemplateFile() {
-        return this.getCQLLibraryService().loadCQLXmlTemplateFile();
     }
 
     public SaveUpdateCQLResult getCQLData(String id) {

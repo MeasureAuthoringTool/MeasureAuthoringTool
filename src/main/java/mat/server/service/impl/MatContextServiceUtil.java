@@ -185,6 +185,21 @@ public class MatContextServiceUtil implements InitializingBean {
         return isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId, false);
     }
 
+    public boolean isValidatable(Measure measure) {
+        return isFhirMeasureValidatabe(measure) || isQdmMeasureValidatable(measure);
+    }
+
+    private boolean isQdmMeasureValidatable(Measure measure) {
+        return !measure.isDraft() &&
+                measure.isQdmMeasure() &&
+                isVersionEligibleForFhirValidation(measure.getQdmVersion(), measure.getReleaseVersion()) &&
+                !BooleanUtils.isTrue(measure.getIsCompositeMeasure());
+    }
+
+    private static boolean isFhirMeasureValidatabe(Measure measure) {
+        return measure.isDraft() && measure.isFhirMeasure();
+    }
+
     public boolean isMeasureConvertible(Measure measure) {
         // 1.1 Pre-CQL measures cannot be converted.
         // 1.2 The button is disabled for draft QDM-CQL measures and Fhir Measures
@@ -195,7 +210,7 @@ public class MatContextServiceUtil implements InitializingBean {
     }
 
     public boolean isConvertible(String modelType, boolean isDraft, String qdmVersion, String releaseVersion, String ownerId) {
-        return isModelTypeEligibleForConversion(modelType) && !isDraft && isVersionEligibleForConversion(qdmVersion, releaseVersion) && canUserConvert(ownerId);
+        return isModelTypeEligibleForConversion(modelType) && !isDraft && isVersionEligibleForFhirValidation(qdmVersion, releaseVersion) && canUserConvert(ownerId);
     }
 
     private boolean canUserConvert(String ownerId) {
@@ -206,7 +221,7 @@ public class MatContextServiceUtil implements InitializingBean {
         return isOwner || isSuperUser;
     }
 
-    private boolean isVersionEligibleForConversion(String qdmVersion, String matVersion) {
+    private boolean isVersionEligibleForFhirValidation(String qdmVersion, String matVersion) {
         return QDM_VER_BEFORE_CONVERSION.compareTo(asDecimalVersion(qdmVersion)) <= 0
                 && MAT_VER_BEFORE_CONVERSION.compareTo(asDecimalVersion(matVersion)) <= 0;
     }

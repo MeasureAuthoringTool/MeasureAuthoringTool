@@ -211,4 +211,63 @@ public class MatContextServiceUtilTest {
         PowerMockito.when(LoggedInUserUtil.getLoggedInUserRole()).thenReturn(SecurityRole.USER_ROLE);
     }
 
+    // Validation
+    public void createValidationMeasure() {
+        measure.setReleaseVersion("v5.8");
+        measure.setQdmVersion("5.5");
+        measure.setDraft(true);
+        measure.setMeasureModel("FHIR");
+    }
+
+    @Test
+    public void testValidationDraftFhir() {
+        createValidationMeasure();
+        assertTrue(matContextServiceUtil.isValidatable(measure));
+    }
+
+    @Test
+    public void testValidationDraftFhirMeasureWithNoQdmVersion() {
+        createValidationMeasure();
+        measure.setQdmVersion(null);
+        assertTrue(matContextServiceUtil.isValidatable(measure));
+    }
+
+    @Test
+    public void testValidationNotValidatableDraftFhir() {
+        createValidationMeasure();
+        measure.setDraft(false);
+        assertFalse(matContextServiceUtil.isValidatable(measure));
+    }
+
+    @Test
+    public void testValidationVersionedQdm() {
+        createValidationMeasure();
+        measure.setDraft(false);
+        measure.setMeasureModel("QDM");
+        assertTrue(matContextServiceUtil.isValidatable(measure));
+    }
+
+    @Test
+    public void testValidationVersionedQdmComposite() {
+        createValidationMeasure();
+        measure.setDraft(false);
+        measure.setMeasureModel("QDM");
+        measure.setIsCompositeMeasure(true);
+        assertFalse(matContextServiceUtil.isValidatable(measure));
+    }
+
+
+    @Test
+    public void testValidationNotVersionedQdm() {
+        createValidationMeasure();
+        measure.setMeasureModel("QDM");
+        assertFalse(matContextServiceUtil.isValidatable(measure));
+    }
+
+    @Test
+    public void testValidationNotReleaseVersion() {
+        createValidationMeasure();
+        measure.setDraft(false);
+    }
+
 }

@@ -163,7 +163,6 @@ import mat.shared.StringUtility;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
-import mat.shared.model.util.MeasureDetailsUtil;
 import mat.shared.validator.measure.ManageCompositeMeasureModelValidator;
 import mat.shared.validator.measure.ManageMeasureModelValidator;
 
@@ -978,7 +977,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(dto.getVersion(),
                 dto.getRevisionNumber(), dto.isDraft());
         detail.setVersion(formattedVersion);
-        detail.setValidatable(MeasureDetailsUtil.isValidatable(measure));
+        detail.setValidatable(MatContextServiceUtil.get().isValidatable(measure));
         detail.setFinalizedDate(dto.getFinalizedDate());
         detail.setMeasureSetId(dto.getMeasureSetId());
         detail.setDraftable(dto.isDraftable());
@@ -1116,7 +1115,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(),
                 measure.getRevisionNumber(), measure.isDraft());
         detail.setVersion(formattedVersion);
-        detail.setValidatable(MeasureDetailsUtil.isValidatable(measure));
+        detail.setValidatable(MatContextServiceUtil.get().isValidatable(measure));
         detail.setFinalizedDate(measure.getFinalizedDate());
         detail.setOwnerfirstName(measure.getOwner().getFirstName());
         detail.setOwnerLastName(measure.getOwner().getLastName());
@@ -5206,7 +5205,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         MeasureXmlModel measureXML = measurePackageService.getMeasureXmlForMeasure(measureId);
         Measure measure = measureDAO.find(measureId);
 
-        if(ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
+        if (ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getXml());
             String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
             String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString); //remote call

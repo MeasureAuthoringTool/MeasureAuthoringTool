@@ -1001,7 +1001,7 @@ public class UserServiceImpl implements UserService {
 			passwordHistory.setSalt(user.getPassword().getSalt());
 			passwordHistory.setCreatedDate(user.getPassword().getCreatedDate());
 			if(pwdHistoryList.size()<PASSWORD_HISTORY_SIZE){
-				user.getPasswordHistory().add(passwordHistory);
+				userPasswordHistoryDAO.save(passwordHistory);
 			} else {
 				userPasswordHistoryDAO.addByUpdateUserPasswordHistory(user);
 			}

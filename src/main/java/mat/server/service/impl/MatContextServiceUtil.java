@@ -186,18 +186,14 @@ public class MatContextServiceUtil implements InitializingBean {
     }
 
     public boolean isValidatable(Measure measure) {
-        return isFhirMeasureValidatabe(measure) || isQdmMeasureValidatable(measure);
+        return measure.isFhirMeasure() && measure.isDraft() || isQdmMeasureValidatable(measure);
     }
 
     private boolean isQdmMeasureValidatable(Measure measure) {
         return !measure.isDraft() &&
                 measure.isQdmMeasure() &&
                 isVersionEligibleForFhirValidation(measure.getQdmVersion(), measure.getReleaseVersion()) &&
-                !BooleanUtils.isTrue(measure.getIsCompositeMeasure());
-    }
-
-    private boolean isFhirMeasureValidatabe(Measure measure) {
-        return measure.isDraft() && measure.isFhirMeasure();
+                BooleanUtils.isNotTrue(measure.getIsCompositeMeasure());
     }
 
     public boolean isMeasureConvertible(Measure measure) {
@@ -206,7 +202,7 @@ public class MatContextServiceUtil implements InitializingBean {
         // 1.3 Pre-QDM measures cannot be converted. The button is disabled if the QDM version is before 5.5 or the MAT version is before 5.8.
         // Should be available for the owner or a super user
         String ownerId = measure.getOwner() == null ? null : measure.getOwner().getId();
-        return isConvertible(measure.getMeasureModel(), measure.isDraft(), measure.getQdmVersion(), measure.getReleaseVersion(), ownerId) && !BooleanUtils.isTrue(measure.getIsCompositeMeasure());
+        return isConvertible(measure.getMeasureModel(), measure.isDraft(), measure.getQdmVersion(), measure.getReleaseVersion(), ownerId) && BooleanUtils.isNotTrue(measure.getIsCompositeMeasure());
     }
 
     public boolean isConvertible(String modelType, boolean isDraft, String qdmVersion, String releaseVersion, String ownerId) {

@@ -61,11 +61,11 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
         dropFhirMeasureIfExists(sourceMeasureDetails);
 
-        ConversionResultDto conversionResult = validateSourceMeasureForFhirConversion(sourceMeasure, vsacGrantingTicket);
+        ConversionResultDto conversionResult = fhirOrchestrationGatewayService.convert(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
+        Optional<String> fhirCqlOpt = getFhirCql(conversionResult);
+
         FhirValidationStatus validationStatus = createValidationStatus(conversionResult);
         fhirConvertResultResponse.setValidationStatus(validationStatus);
-
-        Optional<String> fhirCqlOpt = getFhirCql(conversionResult);
 
         if (!fhirCqlOpt.isPresent()) {
             // If there is no FHIR CQL, then we don't persist the measure. FHIR measure cannot be created.
@@ -74,9 +74,10 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
             persistFhirMeasure(loggedinUserId, fhirConvertResultResponse, sourceMeasureDetails, fhirCqlOpt);
         }
 
-
         return fhirConvertResultResponse;
     }
+
+
 
     private void persistFhirMeasure(String loggedinUserId, FhirConvertResultResponse fhirConvertResultResponse, ManageMeasureDetailModel sourceMeasureDetails, Optional<String> fhirCqlOpt) {
         // Just to make sure the change is atomic and performed within the same single transaction.

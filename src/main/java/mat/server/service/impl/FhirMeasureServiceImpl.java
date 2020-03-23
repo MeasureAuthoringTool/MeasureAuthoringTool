@@ -61,19 +61,23 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
         dropFhirMeasureIfExists(sourceMeasureDetails);
 
-        ConversionResultDto conversionResult = validateSourceMeasureForFhirConversion(sourceMeasure, vsacGrantingTicket);
-        fhirConvertResultResponse.setValidationStatus(createValidationStatus(conversionResult));
-
+        ConversionResultDto conversionResult = fhirOrchestrationGatewayService.convert(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
         Optional<String> fhirCqlOpt = getFhirCql(conversionResult);
 
+        FhirValidationStatus validationStatus = createValidationStatus(conversionResult);
+        fhirConvertResultResponse.setValidationStatus(validationStatus);
+
         if (!fhirCqlOpt.isPresent()) {
-            fhirConvertResultResponse.setSuccess(false);
+            // If there is no FHIR CQL, then we don't persist the measure. FHIR measure cannot be created.
+            throw new MatException("Your measure cannot be converted to FHIR. Outcome: " + validationStatus.getOutcome() + " Error Reason: " + validationStatus.getErrorReason());
         } else {
             persistFhirMeasure(loggedinUserId, fhirConvertResultResponse, sourceMeasureDetails, fhirCqlOpt);
         }
 
         return fhirConvertResultResponse;
     }
+
+
 
     private void persistFhirMeasure(String loggedinUserId, FhirConvertResultResponse fhirConvertResultResponse, ManageMeasureDetailModel sourceMeasureDetails, Optional<String> fhirCqlOpt) {
         // Just to make sure the change is atomic and performed within the same single transaction.
@@ -82,7 +86,9 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                 ManageMeasureSearchModel.Result fhirMeasure = measureCloningService.cloneForFhir(sourceMeasureDetails);
                 fhirConvertResultResponse.setFhirMeasure(fhirMeasure);
                 SaveUpdateCQLResult cqlResult = measureLibraryService.saveCQLFile(fhirMeasure.getId(), fhirCqlOpt.get());
-                fhirConvertResultResponse.setSuccess(cqlResult.isSuccess());
+                if (!cqlResult.isSuccess()) {
+                    throw new MatRuntimeException("Mat cannot persist converted FHIR measure CQL file.");
+                }
                 measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
             } catch (MatException e) {
                 throw new MatRuntimeException(e);

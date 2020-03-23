@@ -889,10 +889,6 @@ public class MessageDelegate {
         return "You have successfully cloned measure " + StringUtility.trimTextToSixtyChars(measureName) + ". Please click continue to navigate to the Measure Details page.";
     }
 
-    public String getCannotConvertMeasureValidationFailedMessage() {
-        return "Your measure cannot be converted due to FHIR validation errors.";
-    }
-
     public String getConvertMeasureFailureMessage() {
         return "An error occurred while converting the measure. Please try again later. If this continues please contact the mat help desk.";
     }

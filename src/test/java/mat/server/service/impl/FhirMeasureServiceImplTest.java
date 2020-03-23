@@ -81,7 +81,7 @@ public class FhirMeasureServiceImplTest {
         validateResult.setLibraryConversionResults(Collections.singletonList(libraryConversionResults));
         validateResult.setValueSetConversionResults(Collections.emptyList());
 
-        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
+        Mockito.when(fhirOrchestrationGatewayService.convert(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
 
         ManageMeasureDetailModel sourceMeasureDetails = new ManageMeasureDetailModel();
         sourceMeasureDetails.setId(sourceMeasureId);
@@ -130,7 +130,7 @@ public class FhirMeasureServiceImplTest {
         validateResult.setLibraryConversionResults(Collections.singletonList(libraryConversionResults));
         validateResult.setValueSetConversionResults(Collections.emptyList());
 
-        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
+        Mockito.when(fhirOrchestrationGatewayService.convert(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
 
         ManageMeasureDetailModel sourceMeasureDetails = new ManageMeasureDetailModel();
         sourceMeasureDetails.setId(sourceMeasureId);
@@ -166,7 +166,7 @@ public class FhirMeasureServiceImplTest {
         validateResult.setLibraryConversionResults(Collections.singletonList(libraryConversionResults));
         validateResult.setValueSetConversionResults(Collections.emptyList());
 
-        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
+        Mockito.when(fhirOrchestrationGatewayService.convert(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
 
         ManageMeasureDetailModel sourceMeasureDetails = new ManageMeasureDetailModel();
         sourceMeasureDetails.setId(sourceMeasureId);
@@ -216,7 +216,7 @@ public class FhirMeasureServiceImplTest {
         validateResult.setLibraryConversionResults(Collections.singletonList(libraryConversionResults));
         validateResult.setValueSetConversionResults(Collections.emptyList());
 
-        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
+        Mockito.when(fhirOrchestrationGatewayService.convert(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
 
         ManageMeasureDetailModel sourceMeasureDetails = new ManageMeasureDetailModel();
         sourceMeasureDetails.setId(sourceMeasureId);

@@ -138,9 +138,6 @@ public class FhirValidationReportService {
     }
 
     private void addErrors(ConversionResultDto conversionResultDto, Map<String, Object> paramsMap) {
-        paramsMap.put("outcome", String.valueOf(conversionResultDto.getOutcome()));
-        paramsMap.put("errorReason", StringUtils.trimToNull(conversionResultDto.getErrorReason()));
-
         List<FhirValidationResult> valueSetFhirValidationErrors = getValueSetErrors(conversionResultDto);
 
         // Library FHIR validation errors
@@ -194,6 +191,8 @@ public class FhirValidationReportService {
                 "The FHIR measure was created successfully." :
                 "Warning: The FHIR measure was created successfully with errors.";
         paramsMap.put("conversionStatusMessage", conversionStatusMessage);
+        paramsMap.put("outcome", String.valueOf(conversionResultDto.getOutcome()));
+        paramsMap.put("errorReason", StringUtils.trimToNull(conversionResultDto.getErrorReason()));
     }
 
     private List<FhirValidationResult> getMeasureErrors(ConversionResultDto conversionResultDto) {

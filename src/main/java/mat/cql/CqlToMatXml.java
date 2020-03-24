@@ -68,13 +68,17 @@ public class CqlToMatXml {
     private static final String WHITESPACE = "\\s";
     private static final String QDM_VERSION = "5.5";
 
-    private interface RepeatingLineProducer<T> {
+    private String convertedCql;
+    private CQLModel sourceModel;
+    private CQLModel destinationModel = new CQLModel();
+
+    public interface RepeatingLineProducer<T> {
         T parse(String s);
     }
 
     @Getter
     @ToString
-    private static class ParseResult {
+    public static class ParseResult {
         String string;
         int endIndex;
 
@@ -83,10 +87,6 @@ public class CqlToMatXml {
             this.endIndex = endIndex;
         }
     }
-
-    private String convertedCql;
-    private CQLModel sourceModel;
-    private CQLModel destinationModel = new CQLModel();
 
     public CqlToMatXml(CQLModel sourceCqlModel, String convertedCql) {
         this.convertedCql = convertedCql;

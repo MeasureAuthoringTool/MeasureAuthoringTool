@@ -10,18 +10,20 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.junit.Assert.assertEquals;
+
 @Slf4j
 public class TestCqlToMatXml {
     private static final String CQL_TEST_RESOURCES_DIR="/test-cql/";
-    XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+    private XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
 
-    private String loadCqlResource(String cqlResource) throws IOException {
+    public  String loadCqlResource(String cqlResource) throws IOException {
         try (InputStream i = TestCqlToMatXml.class.getResourceAsStream(CQL_TEST_RESOURCES_DIR + cqlResource)) {
             return IOUtils.toString(i);
         }
     }
 
-    private CQLModel loadMatXml(String fileName) throws Exception {
+    public CQLModel loadMatXml(String fileName) throws Exception {
         String xml = loadCqlResource(fileName);
         XmlProcessor measureXMLProcessor = new XmlProcessor(xml);
         String cqlXmlFrag = measureXMLProcessor.getXmlByTagName("cqlLookUp");
@@ -33,7 +35,10 @@ public class TestCqlToMatXml {
         String cql = loadCqlResource("convert-1.cql");
         CQLModel existingModel = loadMatXml("convert-1-mat.xml");
         CqlToMatXml converter = new CqlToMatXml(existingModel, cql);
-        converter.convert();
+        CQLModel destination = converter.convert();
+        assertEquals("FHIR" , destination.getUsingModel());
+        assertEquals("4.0.0", destination.getUsingModelVersion());
+        //TO DO: add more asserts when I get time.
         log.debug(converter.toString());
     }
 }

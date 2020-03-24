@@ -5461,23 +5461,27 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     @Override
     public SaveUpdateCQLResult getMeasureCQLDataForLoad(String measureId) {
-        SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-        MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
-        Measure measure = measureDAO.find(measureId);
+        try {
+            SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+            MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
+            Measure measure = measureDAO.find(measureId);
 
-        if (model != null && StringUtils.isNotBlank(model.getXml())) {
-            String xmlString = model.getXml();
-            result = cqlService.getCQLDataForLoad(xmlString);
-            result.setSetId(measure.getMeasureSet().getId());
-            result.setSuccess(true);
-            if (measure.isDraft() && libraryNameExists(result.getCqlModel().getLibraryName(), measure.getMeasureSet().getId())) {
-                result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+            if (model != null && StringUtils.isNotBlank(model.getXml())) {
+                String xmlString = model.getXml();
+                result = cqlService.getCQLDataForLoad(xmlString);
+                result.setSetId(measure.getMeasureSet().getId());
+                result.setSuccess(true);
+                if (measure.isDraft() && libraryNameExists(result.getCqlModel().getLibraryName(), measure.getMeasureSet().getId())) {
+                    result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+                }
+            } else {
+                result.setSuccess(false);
             }
-        } else {
-            result.setSuccess(false);
+            return result;
+        } catch (RuntimeException re) {
+            logger.error("Error in getMeasureCQLDataForLoad",re);
+            throw re;
         }
-
-        return result;
     }
 
     @Override

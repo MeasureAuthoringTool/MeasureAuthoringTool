@@ -1,11 +1,21 @@
 package mat.server.service.impl;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 
+import mat.cql.CqlToMatXml;
+import mat.dao.clause.MeasureXMLDAO;
+import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLModel;
+import mat.server.CQLUtilityClass;
+import mat.server.util.XmlProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -28,7 +38,7 @@ import mat.shared.SaveUpdateCQLResult;
 
 @Service
 public class FhirMeasureServiceImpl implements FhirMeasureService {
-
+    public static boolean TEST_MODE = false;
     private static final Log logger = LogFactory.getLog(FhirMeasureServiceImpl.class);
 
     private final FhirOrchestrationGatewayService fhirOrchestrationGatewayService;
@@ -39,13 +49,18 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
     private final MeasureDAO measureDAO;
 
+    private final MeasureXMLDAO measureXMLDAO;
+
     private final TransactionTemplate transactionTemplate;
 
-    public FhirMeasureServiceImpl(FhirOrchestrationGatewayService fhirOrchestrationGatewayService, MeasureLibraryService measureLibraryService, MeasureCloningService measureCloningService, MeasureDAO measureDAO, PlatformTransactionManager txManager) {
+    private final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+
+    public FhirMeasureServiceImpl(FhirOrchestrationGatewayService fhirOrchestrationGatewayService, MeasureLibraryService measureLibraryService, MeasureCloningService measureCloningService, MeasureDAO measureDAO, MeasureXMLDAO measureXMLDAO, PlatformTransactionManager txManager) {
         this.fhirOrchestrationGatewayService = fhirOrchestrationGatewayService;
         this.measureLibraryService = measureLibraryService;
         this.measureCloningService = measureCloningService;
         this.measureDAO = measureDAO;
+        this.measureXMLDAO = measureXMLDAO;
         this.transactionTemplate = new TransactionTemplate(txManager);
     }
 
@@ -71,29 +86,65 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
             // If there is no FHIR CQL, then we don't persist the measure. FHIR measure cannot be created.
             throw new MatException("Your measure cannot be converted to FHIR. Outcome: " + validationStatus.getOutcome() + " Error Reason: " + validationStatus.getErrorReason());
         } else {
-            persistFhirMeasure(loggedinUserId, fhirConvertResultResponse, sourceMeasureDetails, fhirCqlOpt);
+            persistFhirMeasure(loggedinUserId, fhirConvertResultResponse, sourceMeasureDetails, fhirCqlOpt.get());
         }
 
         return fhirConvertResultResponse;
     }
 
+    /**
+     * The only purpose of this is to make it mockable.
+     * setMeasureXMLAsByteArray has Hibernate LOB crap in it that is difficult to mock away here.
+     */
+    public void saveMeasureXml(MeasureXML existingMeasureXml, String newXml) {
+        if (!TEST_MODE) {
+            existingMeasureXml.setMeasureXMLAsByteArray(newXml);
+            measureXMLDAO.save(existingMeasureXml);
+        }
+    }
 
 
-    private void persistFhirMeasure(String loggedinUserId, FhirConvertResultResponse fhirConvertResultResponse, ManageMeasureDetailModel sourceMeasureDetails, Optional<String> fhirCqlOpt) {
+    private void persistFhirMeasure(String loggedinUserId,
+                                    FhirConvertResultResponse fhirConvertResultResponse,
+                                    ManageMeasureDetailModel sourceMeasureDetails,
+                                    String convertedCql) {
         // Just to make sure the change is atomic and performed within the same single transaction.
         transactionTemplate.executeWithoutResult(status -> {
             try {
                 ManageMeasureSearchModel.Result fhirMeasure = measureCloningService.cloneForFhir(sourceMeasureDetails);
                 fhirConvertResultResponse.setFhirMeasure(fhirMeasure);
-                SaveUpdateCQLResult cqlResult = measureLibraryService.saveCQLFile(fhirMeasure.getId(), fhirCqlOpt.get());
-                if (!cqlResult.isSuccess()) {
-                    throw new MatRuntimeException("Mat cannot persist converted FHIR measure CQL file.");
-                }
+
+                //Update the MAT xml.
+                convertXml(fhirMeasure.getId(), convertedCql);
+
                 measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
-            } catch (MatException e) {
-                throw new MatRuntimeException(e);
+            } catch (MatException | MatRuntimeException e) {
+                logger.error("persistFhirMeasure error",e);
+                throw new MatRuntimeException("Mat cannot persist converted FHIR measure CQL file.");
             }
         });
+    }
+
+    private void convertXml(String measureId, String cql) throws MatException {
+        try {
+            MeasureXML measureXml = measureXMLDAO.findForMeasure(measureId);
+            String sourceMeasureXml = measureXml.getMeasureXMLAsString();
+
+            XmlProcessor processor = new XmlProcessor(sourceMeasureXml);
+            String cqlModelXmlFrag = processor.getXmlByTagName("cqlLookUp");
+            CQLModel sourceCqlModel = (CQLModel) xmlMarshalUtil.convertXMLToObject("CQLModelMapping.xml",
+                    cqlModelXmlFrag,
+                    CQLModel.class);
+
+            CqlToMatXml converter = new CqlToMatXml(sourceCqlModel, cql);
+            CQLModel destinationCqlModel = converter.convert();
+
+            String newCqlModelXmlFrag = CQLUtilityClass.getXMLFromCQLModel(destinationCqlModel);
+            String destinationMeasureXml = processor.replaceNode(newCqlModelXmlFrag, "cqlLookUp", "measure");
+            saveMeasureXml(measureXml, destinationMeasureXml);
+        } catch (IOException | MappingException | MarshalException | ValidationException e) {
+            throw new MatException("Error converting mat xml", e);
+        }
     }
 
     private Optional<String> getFhirCql(ConversionResultDto conversionResult) {

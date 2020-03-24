@@ -1,9 +1,16 @@
 package mat.server.service.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import mat.cql.TestCqlToMatXml;
+import mat.dao.clause.MeasureXMLDAO;
+import mat.model.clause.MeasureXML;
+import org.apache.commons.io.IOUtils;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +36,7 @@ import mat.shared.SaveUpdateCQLResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class FhirMeasureServiceImplTest {
@@ -44,6 +52,9 @@ public class FhirMeasureServiceImplTest {
 
     @Mock
     private MeasureDAO measureDAO;
+
+    @Mock
+    private MeasureXMLDAO measureXMLDAO;
 
     @Mock
     private PlatformTransactionManager platformTransactionManager;
@@ -72,7 +83,7 @@ public class FhirMeasureServiceImplTest {
         String loggedinUserId = "someCurrentUser";
 
         LibraryConversionResults libraryConversionResults = new LibraryConversionResults();
-        libraryConversionResults.getCqlConversionResult().setFhirCql("some invalid fhir cql");
+        libraryConversionResults.getCqlConversionResult().setFhirCql(resourceAsString("convert-1.cql"));
 
         ConversionResultDto validateResult = new ConversionResultDto();
         validateResult.setOutcome(ConversionOutcome.SUCCESS);
@@ -101,11 +112,19 @@ public class FhirMeasureServiceImplTest {
         sourceMeasure.setId(sourceMeasureId);
         Mockito.when(measureDAO.find(Mockito.anyString())).thenReturn(sourceMeasure);
 
+        MeasureXML measureXML = new MeasureXML() {
+            @Override
+            public String getMeasureXMLAsString() {
+                return resourceAsString("convert-1-mat.xml");
+            }
+        };
+
         SaveUpdateCQLResult saveUpdateCQLResult = new SaveUpdateCQLResult();
         saveUpdateCQLResult.setSuccess(true);
 
-        Mockito.when(measureLibraryService.saveCQLFile(Mockito.anyString(), Mockito.anyString())).thenReturn(saveUpdateCQLResult);
+        Mockito.when(measureXMLDAO.findForMeasure(Mockito.any())).thenReturn(measureXML);
 
+        service.TEST_MODE = true;
         service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);
 
         Mockito.verify(measureDAO, Mockito.never()).delete(Mockito.any(Measure.class));
@@ -166,30 +185,20 @@ public class FhirMeasureServiceImplTest {
         validateResult.setLibraryConversionResults(Collections.singletonList(libraryConversionResults));
         validateResult.setValueSetConversionResults(Collections.emptyList());
 
-        Mockito.when(fhirOrchestrationGatewayService.convert(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
-
-        ManageMeasureDetailModel sourceMeasureDetails = new ManageMeasureDetailModel();
-        sourceMeasureDetails.setId(sourceMeasureId);
-        Mockito.when(measureLibraryService.getMeasure(sourceMeasureResult.getId())).thenReturn(sourceMeasureDetails);
-
-
         String fhirMeasureId = "fhirMeasureId";
 
         ManageMeasureSearchModel.Result fhirMeasureResult = new ManageMeasureSearchModel.Result();
         fhirMeasureResult.setId(fhirMeasureId);
-        Mockito.when(measureCloningService.cloneForFhir(Mockito.any())).thenReturn(fhirMeasureResult);
-
         sourceMeasureResult.setId(sourceMeasureId);
 
         Measure sourceMeasure = new Measure();
         sourceMeasure.setFhirMeasures(new ArrayList<>());
         sourceMeasure.setId(sourceMeasureId);
-        Mockito.when(measureDAO.find(Mockito.anyString())).thenReturn(sourceMeasure);
 
         SaveUpdateCQLResult saveUpdateCQLResult = new SaveUpdateCQLResult();
         saveUpdateCQLResult.setSuccess(false);
 
-        Mockito.when(measureLibraryService.saveCQLFile(Mockito.anyString(), Mockito.anyString())).thenReturn(saveUpdateCQLResult);
+        doThrow(MatRuntimeException.class).when(measureLibraryService).recordRecentMeasureActivity(Mockito.any(),Mockito.any());
 
         assertThrows(MatRuntimeException.class, () -> {
             service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);
@@ -199,7 +208,7 @@ public class FhirMeasureServiceImplTest {
     }
 
     @Test
-    public void testIsConvertibleWithAlreadyExitingFhir() throws MatException {
+    public void testIsConvertibleWithAlreadyExitingFhir() throws MatException, IOException {
         String sourceMeasureId = "sourceMeasureId";
         ManageMeasureSearchModel.Result sourceMeasureResult = new ManageMeasureSearchModel.Result();
         sourceMeasureResult.setId(sourceMeasureId);
@@ -207,7 +216,7 @@ public class FhirMeasureServiceImplTest {
         String loggedinUserId = "someCurrentUser";
 
         LibraryConversionResults libraryConversionResults = new LibraryConversionResults();
-        libraryConversionResults.getCqlConversionResult().setFhirCql("some invalid fhir cql");
+        libraryConversionResults.getCqlConversionResult().setFhirCql(resourceAsString("convert-1.cql"));
 
         ConversionResultDto validateResult = new ConversionResultDto();
         validateResult.setOutcome(ConversionOutcome.SUCCESS);
@@ -229,6 +238,13 @@ public class FhirMeasureServiceImplTest {
         sourceMeasure.setId(sourceMeasureId);
         Mockito.when(measureDAO.find(Mockito.anyString())).thenReturn(sourceMeasure);
 
+        MeasureXML measureXML = new MeasureXML() {
+            @Override
+            public String getMeasureXMLAsString() {
+                return resourceAsString("convert-1-mat.xml");
+            }
+        };
+
         ManageMeasureSearchModel.Result fhirMeasureResult = new ManageMeasureSearchModel.Result();
         fhirMeasureResult.setId("fhirMeasureId");
         Mockito.when(measureCloningService.cloneForFhir(Mockito.any())).thenReturn(fhirMeasureResult);
@@ -236,10 +252,18 @@ public class FhirMeasureServiceImplTest {
         SaveUpdateCQLResult saveUpdateCQLResult = new SaveUpdateCQLResult();
         saveUpdateCQLResult.setSuccess(true);
 
-        Mockito.when(measureLibraryService.saveCQLFile(Mockito.anyString(), Mockito.anyString())).thenReturn(saveUpdateCQLResult);
-
+        Mockito.when(measureXMLDAO.findForMeasure(Mockito.any())).thenReturn(measureXML);
+        service.TEST_MODE = true;
         service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);
 
         Mockito.verify(existingFhirMeasures, Mockito.times(1)).clear();
+    }
+
+    public String resourceAsString(String resource) {
+        try (InputStream i = getClass().getResourceAsStream("/test-cql/" + resource)) {
+            return IOUtils.toString(i);
+        } catch (IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
     }
 }

@@ -190,8 +190,10 @@ public class CqlToMatXml {
                 //For now these should be identical to the sourceCqlModel versions.
                 //Just find the corresponding one by code system name and use that.
                 String sysName = systemName.getString();
+                String ver = trimUrn(version.getString());
+                log.info("sysName=" + sysName + " version=" + ver);
                 return findExisting(sourceModel.getCodeSystemList(),
-                        cs -> StringUtils.equals(trimUrn(systemName.getString()), cs.getCodeSystemName()),
+                        cs -> StringUtils.equals(systemName.getString(), cs.getCodeSystemName()),
                         "Could not find sourceCqlModel.codeSystemList for " + sysName);
             } else {
                 throw new IllegalArgumentException("Invalid include encountered: " + s);

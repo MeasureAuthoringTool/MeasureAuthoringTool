@@ -480,7 +480,7 @@ public class CqlToMatXml {
 
     /**
      * @param s The string to chomp.
-     * @return Removes 1 character from the front end end of the string.
+     * @return Removes 1 character from the front end and end of the string.
      */
     private String chomp1(String s) {
         return s.length() >= 2 ? s.substring(1, s.length() - 1) : s;

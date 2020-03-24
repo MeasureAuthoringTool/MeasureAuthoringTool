@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.measure.ReferenceTextAndType;
-import mat.model.clause.Measure;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
 
@@ -108,29 +107,6 @@ public class MeasureDetailsUtil {
             return QDM_CQL;
         } else {
             return QDM_QDM;
-        }
-    }
-
-    public static boolean isValidatable(Measure measure) {
-        return (measure.isDraft() && measure.isFhirMeasure())
-                || (!measure.isDraft() && measure.isQdmMeasure() && canValidateQdmMeasureVersions(measure));
-    }
-
-    private static boolean canValidateQdmMeasureVersions(Measure measure) {
-        BigDecimal matVersion = asDecimalVersion(measure.getReleaseVersion());
-        BigDecimal qdmVersion = asDecimalVersion(measure.getQdmVersion());
-        return RUN_FHIR_VALIDATION_VERSION.compareTo(matVersion) <= 0
-                && RUN_FHIR_VALIDATION_QDM_VERSION.compareTo(qdmVersion) <= 0;
-    }
-
-    private static BigDecimal asDecimalVersion(String version) {
-        if (version == null || version.trim().isEmpty()) {
-            return BigDecimal.ZERO;
-        }
-        try {
-            return new BigDecimal(version.trim().replaceAll("v", ""));
-        } catch (NullPointerException | IllegalArgumentException e) {
-            return BigDecimal.ZERO;
         }
     }
 

@@ -20,23 +20,26 @@ import mat.server.service.VSACApiService;
 
 public class FhirValidationReportServlet extends HttpServlet {
 
-    private static final String ID_PARAM = "id";
-    private static final String CONTENT_TYPE = "Content-Type";
     private static final Log logger = LogFactory.getLog(FhirValidationReportServlet.class);
+    private static final String ID_PARAM = "id";
+    private static final String CONVERTED_PARAM = "converted";
+    private static final String CONTENT_TYPE = "Content-Type";
+    private static final String SHOW_STACK_TRACE_PARAM = "showStackTrace";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         String sessionId = req.getSession().getId();
         String id = req.getParameter(ID_PARAM);
-        boolean showStackTrace = Boolean.parseBoolean(req.getParameter("showStackTrace"));
-        logger.info("Generating validation report for measure id: " + id);
+        boolean converted = isConverted(req);
+        logger.info("Generating validation report for measure id: " + id + " converted: " + converted);
+        boolean showStackTrace = isShowStackTrace(req);
         String validationReport = "";
         try {
             VsacTicketInformation vsacTicketInformation = getVascApiService().getTicketGrantingTicket(sessionId);
             if (vsacTicketInformation == null) {
                 throw new MatException("Cannot get a granting ticket");
             }
-            validationReport = getValidationReportService().getFhirConversionReportForMeasure(id, vsacTicketInformation.getTicket());
+            validationReport = getValidationReportService().getFhirConversionReportForMeasure(id, vsacTicketInformation.getTicket(), converted);
         } catch (Exception e) {
             logger.error("Exception occurred while generation FHIR conversion report:", e);
             validationReport = "An error occurred while validating the FHIR conversion. Please try again later. " +
@@ -55,6 +58,14 @@ public class FhirValidationReportServlet extends HttpServlet {
 
         response.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
         response.getOutputStream().write(validationReport.getBytes());
+    }
+
+    private boolean isShowStackTrace(HttpServletRequest req) {
+        return Boolean.parseBoolean(req.getParameter(SHOW_STACK_TRACE_PARAM));
+    }
+
+    private boolean isConverted(HttpServletRequest req) {
+        return Boolean.parseBoolean(req.getParameter(CONVERTED_PARAM));
     }
 
     private WebApplicationContext getApplicationContext() {

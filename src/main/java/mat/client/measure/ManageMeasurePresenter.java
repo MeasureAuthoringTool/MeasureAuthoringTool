@@ -622,8 +622,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private void convertMeasureFhir(Result object) {
         if (showAlertAndReturnIfNotUMLSLoggedIn()) return;
-
-        GWT.log("Please wait. Conversion is in progress...");
+        logger.log(Level.INFO, "Please wait. Conversion is in progress...");
 
         if (!MatContext.get().getLoadingQueue().isEmpty()) {
             return;
@@ -644,27 +643,24 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             public void onSuccess(FhirConvertResultResponse response) {
                 String outcome = response.getValidationStatus().getOutcome();
                 String errorReason = response.getValidationStatus().getErrorReason();
-                logger.log(Level.INFO, "Measure " + object.getId() + " conversion has completed. Outcome: " + outcome + " errorReason: " + errorReason);
+                logger.log(Level.WARNING, "Measure " + object.getId() + " conversion has completed. Outcome: " + outcome + " errorReason: " + errorReason);
                 setSearchingBusy(false);
-                if (!response.isSuccess()) {
-                    logger.log(Level.SEVERE, "Measure id " + object.getId() + " cannot be converted due to FHIR validation errors. Outcome " + outcome + " errorReason: " + errorReason);
-                    showFhirConversionError(MatContext.get().getMessageDelegate().getCannotConvertMeasureValidationFailedMessage());
-                } else {
-                    logger.log(Level.INFO, "Your measure was successfully converted to FHIR.");
-                }
-                //On conversion show the fhir measure validation errors.
-                showFhirValidationReport(response.getFhirMeasure().getId());
+                showFhirValidationReport(response.getFhirMeasure().getId(), true);
                 displaySearch();
             }
         });
 
     }
 
-    private void showFhirValidationReport(String measureId) {
+    private void showFhirValidationReport(String measureId, boolean converted) {
         if (showAlertAndReturnIfNotUMLSLoggedIn()) return;
 
-        String url = GWT.getModuleBaseURL() + "validationReport?id=" + SafeHtmlUtils.htmlEscape(measureId);
-        Window.open(url, "_blank", "");
+        StringBuilder url = new StringBuilder(GWT.getModuleBaseURL()).append("validationReport");
+        url.append("?id=").append(SafeHtmlUtils.htmlEscape(measureId));
+        if (converted) {
+            url.append("&converted=true");
+        }
+        Window.open(url.toString(), "_blank", "");
     }
 
     private boolean showAlertAndReturnIfNotUMLSLoggedIn() {
@@ -1621,7 +1617,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onFhirValidationClicked(ManageMeasureSearchModel.Result result) {
-                showFhirValidationReport(result.getId());
+                showFhirValidationReport(result.getId(), false);
             }
 
             @Override

@@ -159,7 +159,7 @@ public class CqlToMatXml {
                 throw new IllegalArgumentException("Invalid include encountered: " + s);
             }
             CQLIncludeLibrary result = new CQLIncludeLibrary();
-            result.setId(newGuid()); //TO DO: make sure these guids do nothing.
+            result.setId(newGuid());
             result.setCqlLibraryName(words[1]);
             result.setVersion(chomp1(words[3]));
             result.setAliasName(words[5]);

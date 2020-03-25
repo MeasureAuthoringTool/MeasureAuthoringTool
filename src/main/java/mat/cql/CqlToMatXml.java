@@ -79,8 +79,8 @@ public class CqlToMatXml {
     @Getter
     @ToString
     public static class ParseResult {
-        String string;
-        int endIndex;
+        private String string;
+        private int endIndex;
 
         public ParseResult(String string, int endIndex) {
             this.string = string;

@@ -260,7 +260,7 @@ public class FhirMeasureServiceImplTest {
         try (InputStream i = getClass().getResourceAsStream("/test-cql/" + resource)) {
             return IOUtils.toString(i);
         } catch (IOException ioe) {
-            throw new RuntimeException(ioe);
+            throw new MatRuntimeException(ioe);
         }
     }
 }

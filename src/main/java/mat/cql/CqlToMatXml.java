@@ -35,6 +35,7 @@ public class CqlToMatXml {
     static {
         //TO DO move this into properties config or a DB lookup eventually.
         nameToGlobalLibId.put("NCQA_Common", "NCQA-Common-FHIR4-5-1-000");
+        nameToGlobalLibId.put("NCQA_Common_FHIR4", "NCQA-Common-FHIR4-5-1-000");
         nameToGlobalLibId.put("MATGlobalCommonFunctions_FHIR4", "MATGlobalCommonFunctions-FHIR4-4-0-000");
         nameToGlobalLibId.put("AdultOutpatientEncounters_FHIR4", "AdultOutpatientEncounters-FHIR4-1-1-000");
         nameToGlobalLibId.put("AdvancedIllnessandFrailtyExclusion_FHIR4", "AdvancedIllnessandFrailtyExclusion-FHIR4-4-0-000");

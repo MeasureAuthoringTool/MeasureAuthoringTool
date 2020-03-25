@@ -18,5 +18,5 @@
     <include file="classpath:/liquibase/dropConvertedFhirMeasureColumn.xml"/>
     <include file="classpath:/liquibase/addLibraryFhirVersionColumn.xml"/>
     <include file="classpath:/liquibase/addLibraryQdmVersionColumnNotRequired.xml"/>
-<!--    <include file="classpath:/liquibase/addFhirGlobalLibraryRows.xml"/>-->
+    <include file="classpath:/liquibase/addFhirGlobalLibraryRows.v2.xml"/>
 </databaseChangeLog>

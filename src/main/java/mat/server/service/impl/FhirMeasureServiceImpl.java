@@ -94,7 +94,8 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
     /**
      * The only purpose of this is to make it mockable.
-     * setMeasureXMLAsByteArray has Hibernate LOB crap in it that is difficult to mock away here.
+     * setMeasureXMLAsByteArray has Hibernate LOB creation calls on the current session inside of it.
+     * This makes it difficult to mock away in tests.
      */
     public void saveMeasureXml(MeasureXML existingMeasureXml, String newXml) {
         if (!TEST_MODE) {

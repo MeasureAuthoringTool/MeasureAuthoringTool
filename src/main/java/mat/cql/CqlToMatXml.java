@@ -212,7 +212,7 @@ public class CqlToMatXml {
 
             if (areValidAscendingIndexes(type, version)) {
                 //For now these should be identical to the sourceCqlModel versions.
-                //Just find the corresponding one by code system name and use that.
+                //Just find the corresponding one by type and use that.
                 return findExisting(sourceModel.getValueSetList(),
                         vs -> StringUtils.equals(type.getString(), vs.getCodeListName()),
                         "Could not find sourceCqlModel.valueSetList for " + type.getString());
@@ -223,7 +223,7 @@ public class CqlToMatXml {
     }
 
     /**
-     * Parses all of the codes out of the cql..
+     * Parses all of the codes out of the cql.
      */
     private void processCodes() {
         destinationModel.setCodeList(parseRepeatingLine(CODE_TOKEN, s -> {
@@ -235,7 +235,7 @@ public class CqlToMatXml {
 
             if (areValidAscendingIndexes(name, code, codeSystem, displayName)) {
                 //For now these should be identical to the sourceCqlModel versions.
-                //Just find the corresponding one by code system name and use that.
+                //Just find the corresponding one by name and use that.
                 return findExisting(sourceModel.getCodeList(),
                         c -> StringUtils.equals(name.getString(), c.getName()),
                         "Could not find sourceCqlModel.code " + name.getString());
@@ -522,7 +522,7 @@ public class CqlToMatXml {
     }
 
     /**
-     * Invokes producer.parse on every line int he cql that starts with the specified token.
+     * Invokes producer.parse on every line in the cql that starts with the specified token.
      *
      * @param token    The token.
      * @param producer The producer.

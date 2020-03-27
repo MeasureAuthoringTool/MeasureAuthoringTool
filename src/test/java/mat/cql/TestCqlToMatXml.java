@@ -1,6 +1,7 @@
 package mat.cql;
 
 import lombok.extern.slf4j.Slf4j;
+import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.XmlProcessor;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -40,5 +42,30 @@ public class TestCqlToMatXml {
         assertEquals("4.0.0", destination.getUsingModelVersion());
         //TO DO: add more asserts when I get time.
         log.debug(converter.toString());
+
+
+        List<CQLFunctions> funs = destination.getCqlFunctions();
+        CQLFunctions test1 = funs.stream().filter(f -> f.getName().equals("test1")).findFirst().get();
+        assertEquals("test1",test1.getName());
+        assertEquals("RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))",test1.getLogic());
+        assertEquals(1,test1.getArgumentList().size());
+        assertEquals("Test_1",test1.getArgumentList().get(0).getArgumentName());
+        assertEquals("Test \\\" 1",test1.getArgumentList().get(0).getQdmDataType());
+
+        CQLFunctions test2 = funs.stream().filter(f -> f.getName().equals("test2")).findFirst().get();
+        assertEquals("test2",test2.getName());
+        assertEquals("RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))",test2.getLogic());
+        assertEquals(1,test2.getArgumentList().size());
+        assertEquals("Test_2",test2.getArgumentList().get(0).getArgumentName());
+        assertEquals("Test , 2",test2.getArgumentList().get(0).getQdmDataType());
+
+        CQLFunctions test3 = funs.stream().filter(f -> f.getName().equals("test3")).findFirst().get();
+        assertEquals("test3",test3.getName());
+        assertEquals("RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))",test3.getLogic());
+        assertEquals(2,test3.getArgumentList().size());
+        assertEquals("Test_3",test3.getArgumentList().get(0).getArgumentName());
+        assertEquals("Test ,\\\" 3",test3.getArgumentList().get(0).getQdmDataType());
+        assertEquals("Value",test3.getArgumentList().get(1).getArgumentName());
+        assertEquals("Integer",test3.getArgumentList().get(1).getQdmDataType());
     }
 }

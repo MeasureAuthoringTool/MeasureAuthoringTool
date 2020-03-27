@@ -9,7 +9,9 @@ import mat.model.clause.MeasureDetails;
 import mat.model.clause.MeasureDetailsReference;
 import mat.client.measure.ReferenceTextAndType;
 import mat.server.service.MeasureDetailsService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class MeasureDetailsServiceImpl implements MeasureDetailsService {
 
     @Override

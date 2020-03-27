@@ -6,9 +6,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
@@ -23,7 +21,7 @@ import mat.server.service.FhirOrchestrationGatewayService;
 public class FhirOrchestrationGatewayServiceImpl implements FhirOrchestrationGatewayService {
 
     private static final Log logger = LogFactory.getLog(FhirOrchestrationGatewayServiceImpl.class);
-    private static final String FHIR_ORCH_MEASURE_SRVC_PARAMS = "?id={id}&&conversionType={conversionType}&xmlSource={xmlSource}";
+    private static final String FHIR_ORCH_MEASURE_SRVC_PARAMS = "?id={id}&conversionType={conversionType}&xmlSource={xmlSource}&vsacGrantingTicket={vsacGrantingTicket}";
     private static final String SIMPLE_XML_SOURCE = "SIMPLE";
     private static final String MEASURE_XML_SOURCE = "MEASURE";
 
@@ -36,17 +34,16 @@ public class FhirOrchestrationGatewayServiceImpl implements FhirOrchestrationGat
     }
 
     @Override
-    public ConversionResultDto convert(String measureId, boolean draft) {
-        return callRemoteService(measureId, ConversionType.CONVERSION, draft);
+    public ConversionResultDto convert(String measureId, String vsacGrantingTicket, boolean draft) {
+        return callRemoteService(measureId, ConversionType.CONVERSION, vsacGrantingTicket, draft);
     }
 
-    @Cacheable(value = "ConversionResultDto.validate", condition = "!#draft")
     @Override
-    public ConversionResultDto validate(String measureId, boolean draft) {
-        return callRemoteService(measureId, ConversionType.VALIDATION, draft);
+    public ConversionResultDto validate(String measureId, String vsacGrantingTicket, boolean draft) {
+        return callRemoteService(measureId, ConversionType.VALIDATION, vsacGrantingTicket, draft);
     }
 
-    private ConversionResultDto callRemoteService(String measureId, ConversionType conversionType, boolean draft) {
+    private ConversionResultDto callRemoteService(String measureId, ConversionType conversionType, String vsacGrantingTicket, boolean draft) {
         if (logger.isDebugEnabled()) {
             logger.debug("callRemoteService " + measureId + " " + conversionType + " draft: " + draft);
         }
@@ -55,13 +52,14 @@ public class FhirOrchestrationGatewayServiceImpl implements FhirOrchestrationGat
         uriVariables.put("id", measureId);
         uriVariables.put("conversionType", conversionType.name());
         uriVariables.put("xmlSource", draft ? MEASURE_XML_SOURCE : SIMPLE_XML_SOURCE);
+        uriVariables.put("vsacGrantingTicket", vsacGrantingTicket);
         ResponseEntity<ConversionResultDto> response;
         try {
             response = restTemplate.exchange(executeQuery, HttpMethod.PUT, null, ConversionResultDto.class, uriVariables);
         } catch (RestClientResponseException e) {
             throw new MatRuntimeException(e);
         }
-        if (!HttpStatus.OK.equals(response.getStatusCode())) {
+        if (response.getStatusCode().isError()) {
             throw new MatRuntimeException("FHIR's conversion service returned error code " + response.getStatusCode());
         }
         return response.getBody();

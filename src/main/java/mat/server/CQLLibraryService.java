@@ -21,6 +21,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.model.clause.ModelTypeHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -132,12 +133,15 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
+
     javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 
     private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 
     private VSACApiServImpl getVsacService() {
-        return (VSACApiServImpl) context.getBean("vsacapi");
+        return context.getBean(VSACApiServImpl.class);
     }
 
     @Override
@@ -259,7 +263,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         dataSetObject.setEditable(MatContextServiceUtil.get()
                 .isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibrary.getId()));
         dataSetObject.setFhirEditOrViewable(MatContextServiceUtil.get().isCqlLibraryModelEditable(cqlLibrary.getLibraryModelType()));
-
+        dataSetObject.setFhirConvertible(MatContextServiceUtil.get().isCqlLibraryConvertible(cqlLibrary));
         List<CQLLibrary> libraryList = new ArrayList<>();
         libraryList.add(cqlLibrary);
         List<CQLLibrary> cqlLibraryFamily = cqlLibraryDAO.getAllLibrariesInSet(libraryList);
@@ -345,7 +349,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 XmlProcessor processor = new XmlProcessor(getCQLLibraryXml(existingLibrary));
                 try {
                     MeasureUtility.updateModelVersion(processor, existingLibrary.isFhirMeasure());
-                    SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(versionLibraryXml);
+                    SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(versionLibraryXml, existingLibrary.getLibraryModelType());
                     List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
                     processor.removeUnusedDefaultCodes(usedCodeList);
                     processor.clearValuesetVersionAttribute();
@@ -911,7 +915,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
             config.setPreviousCQLModel(previousModel);
 
-            result = cqlService.saveCQLFile(cqlXml, cql, config);
+            result = cqlService.saveCQLFile(cqlXml, cql, config, cqlLibrary.getLibraryModelType());
 
             if (result.isSuccess()) {
                 cqlLibrary.setCqlLibraryHistory(cqlService.createCQLLibraryHistory(cqlLibrary.getCqlLibraryHistory(), result.getCqlString(), cqlLibrary, null));
@@ -1116,7 +1120,18 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     public GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId) {
         CQLLibrary library = cqlLibraryDAO.find(libraryId);
         String cqlXml = getCQLLibraryXml(library);
-        return cqlService.getUsedCQlArtifacts(cqlXml);
+
+        if(ModelTypeHelper.FHIR.equalsIgnoreCase(library.getLibraryModelType())) {
+            CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
+            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
+            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString); //remote call
+            SaveUpdateCQLResult cqlResult = cqlService.generateParsedCqlObject(cqlValidationResponse, cqlModel);
+
+            return cqlService.generateUsedCqlArtifactsResult(cqlModel, cqlXml, cqlResult);
+        } else {
+            return cqlService.getUsedCQlArtifacts(cqlXml);
+        }
+
     }
 
     @Override
@@ -1144,7 +1159,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         String cqlXml = getCQLLibraryXml(cqlLibrary);
 
         if (cqlXml != null && !StringUtils.isEmpty(cqlXml)) {
-            result = cqlService.getCQLLibraryData(cqlXml);
+            result = cqlService.getCQLLibraryData(cqlXml, cqlLibrary.getLibraryModelType());
             lintAndAddToResult(result, cqlLibrary);
             result.setSuccess(true);
         } else {
@@ -1427,6 +1442,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         dataObject.setEditable(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(
                 cqlLibraryDAO, dto.getCqlLibraryId()));
         dataObject.setFhirEditOrViewable(MatContextServiceUtil.get().isCqlLibraryModelEditable(dto.getLibraryModelType()));
+        dataObject.setFhirConvertible(MatContextServiceUtil.get().isCqlLibraryConvertible(dto));
         dataObject.setDraftable(dto.isDraftable());
         dataObject.setVersionable(dto.isVersionable());
         dataObject.setLibraryModelType(dto.getLibraryModelType());

@@ -1,5 +1,7 @@
 package mat.server.util;
 
+import java.text.DecimalFormat;
+
 import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Node;
@@ -8,6 +10,9 @@ import mat.model.clause.ModelTypeHelper;
 import mat.shared.StringUtility;
 
 public class MeasureUtility {
+
+    private static DecimalFormat revisionFormat = new DecimalFormat("000");
+
     /**
      * Gets the version text.
      *
@@ -35,21 +40,20 @@ public class MeasureUtility {
     public static String formatVersionText(String version) {
         StringUtility su = new StringUtility();
         String[] versionArr = version.split("\\.");
-        String majorVersion = su.trimLeadingZeros(versionArr[0]);
-        String minorVersion = su.trimLeadingZeros(versionArr[1]);
-        if (versionArr.length > 2) {
-            String revisionNumber = versionArr[2];
-            String modifiedVersion = majorVersion + "." + minorVersion + "." + revisionNumber;
-            return modifiedVersion;
-        } else {
-            String modifiedVersion = majorVersion + "." + minorVersion;
-            return modifiedVersion;
+        String majorVersion = "";
+        String minorVersion = "";
+        String revisionNumber = "";
+        for(int i = 0; i < versionArr.length; i++) {
+            if(i == 0) {
+                majorVersion = su.trimLeadingZeros(versionArr[0]);
+            } else if(i == 1) {
+                minorVersion = su.trimLeadingZeros(versionArr[1]);
+            } else {
+                revisionNumber = su.trimLeadingZeros(versionArr[2]);
+                return majorVersion + "." + minorVersion + "." + revisionFormat.format(Integer.parseInt(revisionNumber));
+            }
         }
-    }
-
-    public static String getVersionText(String orgVersionNumber, String revisionNumber, boolean isDraft) {
-        String mVersion = "v" + formatVersionText(orgVersionNumber);
-        return isDraft ? ("Draft " + mVersion + "." + revisionNumber) : mVersion;
+        return majorVersion + "." + minorVersion;
     }
 
     /**
@@ -61,13 +65,8 @@ public class MeasureUtility {
      * @return the version text with revision number
      */
     public static String getVersionTextWithRevisionNumber(String orgVersionNumber, String revisionNumber, boolean draft) {
-        String mVersion = formatVersionText(orgVersionNumber);
-
-        if (draft) {
-            return "Draft v" + mVersion + "." + revisionNumber;
-        } else {
-            return "v" + mVersion;
-        }
+        String mVersion = "v" + formatVersionText(orgVersionNumber);
+        return draft ? ("Draft " + mVersion + "." + revisionFormat.format(Integer.parseInt(revisionNumber))) : mVersion;
     }
 
     /**
@@ -78,12 +77,7 @@ public class MeasureUtility {
      * @return the string
      */
     public static String formatVersionText(String revisionNumber, String version) {
-        StringUtility su = new StringUtility();
-        String[] versionArr = version.split("\\.");
-        String majorVersion = su.trimLeadingZeros(versionArr[0]);
-        String minorVersion = su.trimLeadingZeros(versionArr[1]);
-        String modifiedVersion = majorVersion + "." + minorVersion + "." + revisionNumber;
-        return modifiedVersion;
+        return formatVersionText(version) + "." + revisionFormat.format(Integer.parseInt(revisionNumber));
     }
 
     /**
@@ -113,25 +107,34 @@ public class MeasureUtility {
     }
 
     /**
+     * Update CQL version.
+     *
+     * @param processor the processor
+     * @param version
+     */
+    public static void updateCQLVersion(XmlProcessor processor, String version) throws XPathExpressionException {
+        findAndReplace(processor, version, "//cqlLookUp/version");
+    }
+
+
+    /**
      * Method to set latest model version in Draft's or clones of CQL type measure or CQL Stand Alone Library.
      **/
-    public static void updateModelVersion(XmlProcessor processor, boolean fhir) throws XPathExpressionException {
+    public static void updateModelVersion(XmlProcessor processor, boolean isFhirMeasure) throws XPathExpressionException {
 
-        String model = fhir ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM;
-        String version = fhir ? MATPropertiesService.get().getFhirVersion() : MATPropertiesService.get().getQdmVersion();
+        String modelType = isFhirMeasure ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM;
+        String modelVersion = isFhirMeasure ? MATPropertiesService.get().getFhirVersion() : MATPropertiesService.get().getQdmVersion();
 
-        Node cqlLibraryModelVersionNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/usingModelVersion");
+        findAndReplace(processor, modelVersion, "//cqlLookUp/usingModelVersion");
+        findAndReplace(processor, modelType, "//cqlLookUp/usingModel");
+    }
 
-        if (cqlLibraryModelVersionNode != null) {
-            cqlLibraryModelVersionNode.setTextContent(version);
-        }
-
-        Node cqlLibraryModelNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/usingModel");
+    private static void findAndReplace(XmlProcessor processor, String modelType, String s) throws XPathExpressionException {
+        Node cqlLibraryModelNode = processor.findNode(processor.getOriginalDoc(), s);
 
         if (cqlLibraryModelNode != null) {
-            cqlLibraryModelNode.setTextContent(model);
+            cqlLibraryModelNode.setTextContent(modelType);
         }
-
     }
 
 }

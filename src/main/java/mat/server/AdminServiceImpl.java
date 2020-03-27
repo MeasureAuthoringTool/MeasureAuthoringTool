@@ -171,7 +171,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	 * @return the user pwd creation msg
 	 */
 	private String getUserPwdCreationMsg(String userID){
-		UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+		UserDAO userDAO = context.getBean(UserDAO.class);
 		MatUserDetails userDetails = (MatUserDetails) userDAO.getUser(userID);
 		Date creationDate = userDetails.getUserPassword().getCreatedDate();
 		boolean tempPwd = userDetails.getUserPassword().isTemporaryPassword();
@@ -267,7 +267,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	 * @return the measure xml dao
 	 */
 	private OrganizationDAO getOrganizationDAO() {
-		return ((OrganizationDAO) context.getBean("organizationDAO"));
+		return context.getBean(OrganizationDAO.class);
 	}
 	/*
 	 * (non-Javadoc)

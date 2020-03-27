@@ -232,8 +232,8 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
         String formattedVersion = MeasureUtility.formatVersionText(clonedMeasure.getRevisionNumber(), clonedMeasure.getVersion());
 
-        SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(originalXml);
-        List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
+        SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(originalXml, measure.getMeasureModel());
+
 
         // Create the measureGrouping tag
         clearChildNodes(clonedDoc, MEASURE_GROUPING);
@@ -246,7 +246,12 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         clonedXml.setMeasureId(clonedMeasure.getId());
 
         XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
-        xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
+        if (!creatingFhir) {
+            // Don't do this for fhir. The converted CQL will still have these and they they can't be found when
+            // generating the new mat xml.
+            List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
+            xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
+        }
 
         removeMeasureDetailsNodes(xmlProcessor);
 

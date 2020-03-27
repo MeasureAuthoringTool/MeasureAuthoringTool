@@ -28,6 +28,9 @@ public class CQLibraryGridToolbarTest {
     private Button shareButton;
     @Mock(name = "deleteButton")
     private Button deleteButton;
+    @Mock(name = "convertButton")
+    private Button convertButton;
+
     @InjectMocks
     private CQLibraryGridToolbar toolbar;
 
@@ -108,6 +111,21 @@ public class CQLibraryGridToolbarTest {
         verifyDefaultHistoryButton();
         verifyDefaultShareButton();
         verifyDefaultVersionButton();
+    }
+
+    @Test
+    public void testApplyDefaultConvertButton() {
+        toolbar.applyDefault();
+        verifyDefaultConvertButton();
+    }
+
+    private void verifyDefaultConvertButton() {
+        Mockito.verify(toolbar.getConvertButton(), Mockito.times(1)).setEnabled(Mockito.eq(false));
+        Mockito.verify(toolbar.getConvertButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.RANDOM));
+        Mockito.verify(toolbar.getConvertButton(), Mockito.times(1)).setText(Mockito.eq("Convert to FHIR"));
+        Mockito.verify(toolbar.getConvertButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to convert"));
+        Mockito.verify(toolbar.getConvertButton(), Mockito.times(1)).setWidth(Mockito.eq("124px"));
+        Mockito.verify(toolbar.getConvertButton(), Mockito.times(1)).setVisible(false);
     }
 
     @Test
@@ -270,5 +288,37 @@ public class CQLibraryGridToolbarTest {
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setText(Mockito.eq("Edit"));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setTitle(Mockito.eq("Click to edit"));
     }
+
+    @Test
+    public void testApplyOptions() {
+        CQLibraryGridToolbar.Options opts = new CQLibraryGridToolbar.Options();
+        opts.setConvertButtonVisible(true);
+        toolbar.setOptions(opts);
+        toolbar.applyOptions();
+        Mockito.verify(toolbar.getConvertButton(), Mockito.times(1)).setVisible(true);
+    }
+
+    @Test
+    public void testConvertEnabledOnSelection() {
+        CQLLibraryDataSetObject selectedItem = new CQLLibraryDataSetObject();
+
+        selectedItem.setFhirConvertible(true);
+
+        toolbar.updateOnSelectionChanged(selectedItem);
+
+        Mockito.verify(toolbar.getConvertButton(), Mockito.times(1)).setEnabled(true);
+    }
+
+    @Test
+    public void testConvertDisabledOnSelection() {
+        CQLLibraryDataSetObject selectedItem = new CQLLibraryDataSetObject();
+
+        selectedItem.setFhirConvertible(false);
+
+        toolbar.updateOnSelectionChanged(selectedItem);
+
+        Mockito.verify(toolbar.getConvertButton(), Mockito.times(1)).setEnabled(false);
+    }
+
 
 }

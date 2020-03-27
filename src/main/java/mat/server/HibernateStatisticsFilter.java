@@ -49,7 +49,7 @@ public class HibernateStatisticsFilter implements Filter {
 		if(logger.isDebugEnabled()) {
 			if(!uri.endsWith(".png") && !uri.endsWith(".gif") && !uri.endsWith(".html") &&
 					!uri.endsWith(".css") && !uri.endsWith(".js")) {
-				SessionFactory sessionFactory = (SessionFactory)context.getBean("sessionFactory");
+				SessionFactory sessionFactory = context.getBean(SessionFactory.class);
 				
 				Statistics stats = sessionFactory.getStatistics();
 				logger.debug("Requesting " + httpRequest.getRequestURL());

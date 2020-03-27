@@ -60,7 +60,10 @@ import mat.server.validator.measure.CompositeMeasurePackageValidator;
 import mat.shared.CompositeMeasurePackageValidationResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.ValidationUtility;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class MeasurePackageServiceImpl implements MeasurePackageService {
 
     private static final Log logger = LogFactory.getLog(MeasurePackageServiceImpl.class);
@@ -122,6 +125,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     @Autowired
     private CompositeMeasurePackageValidator compositeMeasurePackageValidator;
 
+    @Value("${mat.measure.current.release.version}")
     private String currentReleaseVersion;
 
     private ValidationUtility validator = new ValidationUtility();
@@ -179,6 +183,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         MeasureXmlModel xmlModel = new MeasureXmlModel();
         xmlModel.setMeasureId(measure.getId());
         xmlModel.setXml(updatedMeasureXMLString);
+        xmlModel.setMeasureModel(measure.getMeasureModel());
 
         saveMeasureXml(xmlModel);
         measureXML = measureXMLDAO.findForMeasure(measureId);
@@ -236,11 +241,13 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     @Override
     public MeasureXmlModel getMeasureXmlForMeasure(final String measureId) {
         final MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
+        final Measure measure = measureDAO.find(measureId);
         if (measureXML != null) {
             final MeasureXmlModel exportModal = new MeasureXmlModel();
             exportModal.setMeasureId(measureXML.getMeasureId());
             exportModal.setMeausreExportId(measureXML.getId());
             exportModal.setXml(measureXML.getMeasureXMLAsString());
+            exportModal.setMeasureModel(measure.getMeasureModel());
             return exportModal;
         }
         return null;

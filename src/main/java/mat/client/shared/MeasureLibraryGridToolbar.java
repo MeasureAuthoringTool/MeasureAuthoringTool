@@ -2,13 +2,14 @@ package mat.client.shared;
 
 import java.util.Collection;
 
+import com.google.common.annotations.VisibleForTesting;
+import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.util.FeatureFlagConstant;
 
@@ -93,11 +94,18 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         if (selectedItems.isEmpty()) {
             return;
         }
-        exportButton.setEnabled(selectedItems.stream().anyMatch(result -> result.isExportable()));
+
+        ManageMeasureSearchModel.Result selectedItem = selectedItems.iterator().next();
+        if (ModelTypeHelper.isQdm(selectedItem.getMeasureModel()) ||
+                ModelTypeHelper.isFhir(selectedItem.getMeasureModel()) && options.isFhirExportEnabled()) {
+            exportButton.setEnabled(selectedItems.iterator().next().isExportable());
+            exportButton.setTitle("Click to Export MAT " + selectedItem.getHqmfReleaseVersion());
+        }
+
         if (selectedItems.size() > 1) {
+            exportButton.setTitle("Click to Export");
             return;
         }
-        ManageMeasureSearchModel.Result selectedItem = selectedItems.iterator().next();
 
         if (selectedItem.isDraftable()) {
             versionButton.setText("Create Draft");
@@ -196,6 +204,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
         private boolean isConvertButtonVisible;
         private boolean isFhirValidationButtonVisible;
+        private boolean isFhirExportEnabled;
 
         public Options() {
         }
@@ -216,10 +225,19 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
             this.isFhirValidationButtonVisible = isFhirValidationButtonVisible;
         }
 
+        public void setFhirExportEnabled(boolean fhirExportEnabled) {
+            isFhirExportEnabled = fhirExportEnabled;
+        }
+
+        public boolean isFhirExportEnabled() {
+            return isFhirExportEnabled;
+        }
+
         public static Options fromFeatureFlags() {
             Options options = new Options();
             options.setConvertButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1));
             options.setFhirValidationButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1));
+            options.setFhirExportEnabled(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.EXPORT_V1));
             return options;
         }
     }

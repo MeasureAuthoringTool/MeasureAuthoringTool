@@ -1,6 +1,7 @@
 package mat.client.shared;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.gwt.cell.client.CheckboxCell;
@@ -24,6 +25,9 @@ import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.util.CellTableUtility;
 import mat.client.util.FeatureFlagConstant;
 import mat.shared.model.util.MeasureDetailsUtil;
+
+import static mat.model.clause.ModelTypeHelper.isFhir;
+import static mat.model.clause.ModelTypeHelper.isQdm;
 
 public class MeasureLibraryResultTable {
 
@@ -153,18 +157,15 @@ public class MeasureLibraryResultTable {
     }
 
     @VisibleForTesting
-    void onConvertClicked(MultiSelectionModel<Result> selectionModel) {
-        selectionModel.getSelectedSet().stream().filter(Result::isFhirConvertible).findFirst().ifPresent(object -> {
-            observer.onConvertMeasureFhir(object);
-        });
-    }
-
-    @VisibleForTesting
     void onExportButtonClicked(MultiSelectionModel<Result> selectionModel) {
-        List<Result> exportList = selectionModel.getSelectedSet()
-                .stream().filter(result -> result.isExportable()).collect(Collectors.toList());
+        Predicate<Result> fhirExportFeatureFlag = result -> isQdm(result.getMeasureModel()) ||
+                (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.EXPORT_V1) && isFhir(result.getMeasureModel()));
+        List<Result> exportList = selectionModel.getSelectedSet().stream()
+                .filter(Result::isExportable)
+                .filter(fhirExportFeatureFlag)
+                .collect(Collectors.toList());
         if (exportList.size() == 1) {
-            observer.onExport(exportList.iterator().next());
+            observer.onExport(exportList.get(0));
         } else {
             observer.onBulkExport(exportList);
         }
@@ -219,6 +220,13 @@ public class MeasureLibraryResultTable {
         });
     }
 
+    @VisibleForTesting
+    void onConvertClicked(MultiSelectionModel<Result> selectionModel) {
+        selectionModel.getSelectedSet().stream().filter(Result::isFhirConvertible).findFirst().ifPresent(object -> {
+            observer.onConvertMeasureFhir(object);
+        });
+    }
+
     /**
      * Gets the measure name column tool tip.
      *
@@ -242,7 +250,7 @@ public class MeasureLibraryResultTable {
                     .appendHtmlConstant("</div>");
 
         }
-        sb.appendHtmlConstant("<div class=\"pull-left\" title=\" Click to open "
+        sb.appendHtmlConstant("<div class=\"pull-left\" title=\" Double-Click to open "
                 + SafeHtmlUtils.htmlEscape(object.getName()) + "\" tabindex=\"0\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</div>");
         return sb.toSafeHtml();
     }

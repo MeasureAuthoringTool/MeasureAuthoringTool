@@ -35,8 +35,10 @@ import mat.server.service.UserService;
 import mat.server.twofactorauth.TwoFactorValidationService;
 import mat.shared.HashUtility;
 import mat.shared.StringUtility;
+import org.springframework.stereotype.Service;
 
 /** The Class LoginCredentialServiceImpl. */
+@Service
 public class LoginCredentialServiceImpl implements LoginCredentialService {
 	
 	private static final Log logger = LogFactory.getLog(LoginCredentialServiceImpl.class);

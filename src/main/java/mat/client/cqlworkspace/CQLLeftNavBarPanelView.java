@@ -21,7 +21,6 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -847,7 +846,6 @@ public class CQLLeftNavBarPanelView {
 
 	}
 
-
 	public void updateDefineMap() {
 		getDefinitionMap().clear();
 		getDefineNameMap().clear();
@@ -1426,12 +1424,15 @@ public class CQLLeftNavBarPanelView {
 		if(includedLibraryList.size()==0){
 			isValid = true;
 		} else {
-			for(CQLIncludeLibrary cqlIncludeLibrary : includedLibraryList){
-				if(cqlIncludeLibrary.getQdmVersion()==null){
-					continue;
-				}else if(!cqlIncludeLibrary.getQdmVersion().equalsIgnoreCase(MatContext.get().getCurrentQDMVersion())){
-					isValid = false;
-					break;
+			if (MatContext.get().getCQLModel() != null &&
+					"QDM".equals(MatContext.get().getCQLModel().getUsingModel())) {
+				for (CQLIncludeLibrary cqlIncludeLibrary : includedLibraryList) {
+					if (cqlIncludeLibrary.getQdmVersion() == null) {
+						continue;
+					} else if (!cqlIncludeLibrary.getQdmVersion().equalsIgnoreCase(MatContext.get().getCurrentQDMVersion())) {
+						isValid = false;
+						break;
+					}
 				}
 			}
 		}

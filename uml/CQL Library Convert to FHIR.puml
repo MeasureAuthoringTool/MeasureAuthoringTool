@@ -1,0 +1,62 @@
+@startuml
+
+header CQL Library Convert to FHIR
+
+actor User
+participant "GWT" as gwt
+participant "MAT Server" as mat
+participant "Micro Services" as service
+
+User -> gwt : Convert to FHIR
+gwt ->  mat : CQLLibraryService :: isDraftLibraryExists(object)
+opt
+mat -> mat : Check if Draft version of library already exists in the family
+mat -> mat : if QDM draft is available
+mat -> User : Error: Cannot convert to Fhir library as draft version of QDM library is already available.
+else
+mat -> mat : if Fhir draft is available
+mat -> gwt : return draftFhirAvailable
+end
+
+opt if draftFhirAvailable is true
+gwt --> User : By clicking convert you are going ot override \n the existing converted Fhir library,\nAre you sure you want to continue? Yes/No
+end
+opt
+gwt -> User : If User selected No
+return back to library grid.
+end
+gwt -> gwt : If User selected Yes or if draftFhirAvailable is False
+gwt -> mat:CQLLibraryService :: Async(convertCqlLibrary(object))
+mat -> service:/library/convertstandalone
+note over mat,service
+    POST required parameters libraryName, libraryVersion,\nBody QDM-CQL as text/plain
+else failed to convert resource
+end note
+opt if Conversion is not success
+mat --> User: Error occured during convertion of QDM - FHIR
+end
+mat <- service: Converted CQL library
+note over mat,service
+    application/json
+end note
+opt buildConvertedFhirLibrary(libraryId, convertedFhirObject)
+mat -> mat : If draftFhirAvailable is True
+mat -> mat : load the existing draft Fhir cql library
+mat -> mat : update the existing Draft CqlLibrary.
+mat -> mat : Use existing version Number with "000" as Revision Number
+mat -> mat : Update CqlLibrary XML with converted Fhir response.
+mat -> mat : save the updated Object/library to DB
+else
+mat -> mat : if draftFhirAvailable is False
+mat -> mat : load the exisiing cql library using libraryId
+note over mat,service
+    1. If the same library Name with Draft exists throw and exception.
+end note
+mat -> mat : generate a new Draft CqlLibrary with exiting object.
+mat -> mat : Use existing version Number with "000" as Revision Number
+mat -> mat : Update CqlLibrary XML with converted Fhir response.
+mat -> mat : save the new Object generated to DB
+end
+gwt <- mat : return result: with new CqlLibrary object
+
+@enduml

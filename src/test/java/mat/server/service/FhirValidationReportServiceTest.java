@@ -41,43 +41,45 @@ class FhirValidationReportServiceTest {
 
     @Test
     void testGetFhirConversionReportForMeasure() throws Exception {
-        String measureId = "402804382649c54c230164d76256dd11dc";
+        String measureId = "402803826c7bec34016cba7ed1b60b77";
         Measure measure = new Measure();
         measure.setId(measureId);
         measure.setDescription("Appropriate Use of DXA Scans in Women Under 65 Years Who Do Not Meet the Risk Factor Profile for Osteoporotic Fracture v2.000");
         measure.setVersion("v2.0.0");
         measure.setMeasureModel("QDM");
-        Mockito.when(measureDAO.find(measureId)).thenReturn(measure);
+        measure.setDraft(true);
+        Mockito.when(measureDAO.getMeasureByMeasureId(measureId)).thenReturn(measure);
 
         Configuration configuration = new Configuration();
         configuration.setClassForTemplateLoading(getClass(), "/templates");
         Template template = configuration.getTemplate(templateName);
         Mockito.when(freemarkerConfiguration.getTemplate(templateName)).thenReturn(template);
 
-        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.anyString(), Mockito.anyBoolean())).thenAnswer(invocation -> {
-            URL path = FhirValidationReportService.class.getClassLoader().getResource("report.json");
-            return new ObjectMapper()
-                    .readValue(new File(path.getFile()),
-                            ConversionResultDto.class);
-        });
+
+        URL testResult = FhirValidationReportService.class.getClassLoader().getResource("report.json");
+        ConversionResultDto validationResults = new ObjectMapper().readValue(new File(testResult.getFile()), ConversionResultDto.class);
+
+
+        Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validationResults);
 
         ReflectionTestUtils.setField(fhirValidationReportService, "currentMatVersion", "v6.0");
 
 
-        String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId);
+        String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId, "vsacGrantingTicket", false);
         assertTrue(report.startsWith("<html>\n    <head>\n        <title>MAT | FHIR Conversion Report</title>"));
         assertTrue(report.contains("<div class=\"report-header\">\n                Measure Authoring Tool v6.0\n            </div>"));
-        // TODO: correct in MAT-432
-//        assertTrue(report.contains("<div class=\"font-smaller\">Library Validation Errors</div>"));
-//        assertTrue(report.contains("<div class=\"card-header\">CQL Conversion Errors</div>"));
-//        assertFalse(report.contains("<div class=\"card-header\">ValueSet Validation Errors</div>"));
+        assertTrue(report.contains("<div class=\"card-header\">Value Set</div>"));
+        assertTrue(report.contains("<div class=\"card-header\">Library</div>"));
+        assertTrue(report.contains("<div class=\"card-header\">Measure</div>"));
+        assertTrue(report.contains("<div class=\"card-header\">QDM CQL Conversion Errors</div>"));
+        assertTrue(report.contains("<div class=\"card-header\">FHIR CQL Conversion Errors</div>"));
         assertTrue(report.endsWith("</body>\n</html>\n"));
     }
 
     @Test
     void testGetFhirConversionReportForInvalidMeasureId() throws IOException, TemplateException {
         String measureId = "notAvalidId";
-        Mockito.when(measureDAO.find(measureId)).thenReturn(null);
+        Mockito.when(measureDAO.getMeasureByMeasureId(measureId)).thenReturn(null);
 
         Configuration configuration = new Configuration();
         configuration.setClassForTemplateLoading(getClass(), "/templates");
@@ -86,7 +88,7 @@ class FhirValidationReportServiceTest {
 
         ReflectionTestUtils.setField(fhirValidationReportService, "currentMatVersion", "v6.0");
 
-        String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId);
+        String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId, "vsacGrantingTicket", false);
         assertTrue(report.startsWith("<html>\n    <head>\n        <title>MAT | FHIR Conversion Report</title>"));
         assertTrue(report.contains("<div class=\"report-header\">\n                Measure Authoring Tool v6.0\n            </div>"));
         assertTrue(report.contains("<div class=\"error-msg\">The measure with that measure id does not exist.</div>"));

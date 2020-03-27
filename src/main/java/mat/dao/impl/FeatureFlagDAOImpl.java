@@ -23,6 +23,6 @@ public class FeatureFlagDAOImpl extends GenericDAO<FeatureFlag, String> implemen
     @Cacheable("featureFlags")
     public List<FeatureFlag> findAllFeatureFlags() {
         final List<FeatureFlag> dataTypeList = find();
-        return CollectionUtils.isNotEmpty(dataTypeList) ? dataTypeList : Collections.EMPTY_LIST;
+        return CollectionUtils.isNotEmpty(dataTypeList) ? dataTypeList : Collections.emptyList();
     }
 }

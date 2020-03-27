@@ -15,6 +15,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cqframework.cql.gen.cqlBaseListener;
@@ -102,9 +103,9 @@ public class ReverseEngineerListener extends cqlBaseListener {
 
     @Override
     public void enterParameterDefinition(ParameterDefinitionContext ctx) {
-        String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+        String identifier = CQLParserUtil.parseString(getFullText(ctx.identifier()));
         String comment = getExpressionComment(ctx).trim();
-        String logic = getParameterLogic(ctx, ctx.identifier().getText()).trim();
+        String logic = getParameterLogic(ctx, getFullText(ctx.identifier())).trim();
 
         Optional<CQLParameter> existingParameter = previousModel.getCqlParameters().stream().filter(d -> d.getParameterName().equals(identifier)).findFirst();
         CQLParameter parameter = new CQLParameter();
@@ -135,7 +136,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 
     @Override
     public void enterExpressionDefinition(ExpressionDefinitionContext ctx) {
-        String identifier = CQLParserUtil.parseString(ctx.identifier().getText());
+        String identifier = CQLParserUtil.parseString(getFullText(ctx.identifier()));
         String logic = getDefinitionAndFunctionLogic(ctx).trim();
         String comment = getExpressionComment(ctx).trim();
 
@@ -158,7 +159,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
 
     @Override
     public void enterFunctionDefinition(FunctionDefinitionContext ctx) {
-        String identifier = CQLParserUtil.parseString(ctx.identifierOrFunctionIdentifier().getText());
+        String identifier = CQLParserUtil.parseString(getFullText(ctx.identifierOrFunctionIdentifier()));
         String logic = getDefinitionAndFunctionLogic(ctx).trim();
         String comment = getExpressionComment(ctx).trim();
 
@@ -168,11 +169,11 @@ public class ReverseEngineerListener extends cqlBaseListener {
                 String name = "";
                 String type = "";
                 if (operand.referentialIdentifier() != null) {
-                    name = operand.referentialIdentifier().getText();
+                    name = getFullText(operand.referentialIdentifier());
                 }
 
                 if (operand.typeSpecifier() != null) {
-                    type = operand.typeSpecifier().getText();
+                    type = getFullText(operand.typeSpecifier());
                 }
 
                 CQLFunctionArgument functionArgument = new CQLFunctionArgument();
@@ -209,6 +210,12 @@ public class ReverseEngineerListener extends cqlBaseListener {
         function.setContext(currentContext);
 
         cqlModel.getCqlFunctions().add(function);
+    }
+
+    private String getFullText(ParserRuleContext context) {
+        if (context.start == null || context.stop == null || context.start.getStartIndex() < 0 || context.stop.getStopIndex() < 0)
+            return context.getText();
+        return context.start.getInputStream().getText(Interval.of(context.start.getStartIndex(), context.stop.getStopIndex()));
     }
 
     private String getExpressionComment(ParserRuleContext ctx) {

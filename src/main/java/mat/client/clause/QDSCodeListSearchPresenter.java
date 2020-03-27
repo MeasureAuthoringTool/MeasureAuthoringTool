@@ -577,11 +577,13 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
+		exportModal.setMeasureModel(MatContext.get().getCurrentMeasureModel());
 		exportModal.setParentNode("/measure/elementLookUp");
 		exportModal.setToReplaceNode("qdm");
 		
 		MeasureXmlModel newExportModal = new MeasureXmlModel();
 		newExportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
+		newExportModal.setMeasureModel(MatContext.get().getCurrentMeasureModel());
 		newExportModal.setParentNode("/measure/cqlLookUp/valuesets");
 		newExportModal.setToReplaceNode("valueset");
 		
@@ -625,7 +627,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			return;
 		}
 		
-		//Version and EffectiveDate validation
+		// Version and EffectiveDate validation
 		if ((searchDisplay.getVersion().getValue().equals(Boolean.TRUE)
 				&& ((version == null) || version.trim().isEmpty()))
 				|| (searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)
@@ -637,12 +639,12 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	}
 
 	private void setWidgetsReadOnly(final boolean editable) {
-		//Widgets in "Element with VSAC Value Set" panel.
+		// Widgets in "Element with VSAC Value Set" panel.
 		searchDisplay.getRetrieveButton().setEnabled(editable);
 		searchDisplay.getOIDInput().setEnabled(editable);
 		searchDisplay.getVersion().setEnabled(editable);
 		searchDisplay.getEffectiveDate().setEnabled(editable);
-		//Widgets in "Element without VSAC Value Set" panel.
+		// Widgets in "Element without VSAC Value Set" panel.
 		searchDisplay.getUserDefinedInput().setEnabled(editable);
 		searchDisplay.getAllDataTypeInput().setEnabled(editable);
 		searchDisplay.getPsuedoQDMToMeasure().setEnabled(editable);

@@ -48,7 +48,7 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
         searchPanel.add(gridPanelHeader);
 
 
-        CQLibraryGridToolbar gridToolbar = new CQLibraryGridToolbar();
+        CQLibraryGridToolbar gridToolbar = CQLibraryGridToolbar.withOptionsFromFlags();
         gridToolbar.getElement().setAttribute("id", "recentActivitySummary_gridToolbar");
 
         cellTable.setWidth("100%");

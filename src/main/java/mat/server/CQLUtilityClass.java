@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import mat.server.util.MeasureUtility;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -424,7 +425,7 @@ public final class CQLUtilityClass {
         if (!CollectionUtils.isEmpty(includeLibList)) {
             for (CQLIncludeLibrary includeLib : includeLibList) {
                 sb.append("include ").append(includeLib.getCqlLibraryName());
-                sb.append(VERSION).append("'").append(includeLib.getVersion()).append("' ");
+                sb.append(VERSION).append("'").append(MeasureUtility.formatVersionText(includeLib.getVersion())).append("' ");
                 sb.append("called ").append(includeLib.getAliasName());
                 sb.append("\n");
             }

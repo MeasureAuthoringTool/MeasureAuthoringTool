@@ -9,7 +9,9 @@ import mat.dao.UserAuditLogDAO;
 import mat.dao.UserDAO;
 import mat.model.User;
 import mat.server.service.UserAuditService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserAuditServiceImpl implements UserAuditService{
 
 	

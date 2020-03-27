@@ -15,7 +15,7 @@ public class Bonnie extends MainLayout implements EntryPoint {
 
 
 	private BonnieServiceAsync bonnie = (BonnieServiceAsync) GWT.create(BonnieService.class);
-	
+
 	@Override
 	protected void initEntryPoint() {
 		String code = com.google.gwt.user.client.Window.Location.getParameter("code");
@@ -35,12 +35,12 @@ public class Bonnie extends MainLayout implements EntryPoint {
 			public void onSuccess(BonnieOAuthResult result) {
 				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
 				getBonnieDisconnectButton().getElement().focus();
-				getBonnieDisconnectButton().getElement().setAttribute("role", "alert"); 
+				getBonnieDisconnectButton().getElement().setAttribute("role", "alert");
 				getBonnieDisconnectButton().getElement().setAttribute("aria-label", "Bonnie Active. Click the Disconnect from Bonnie link to sign out of Bonnie.");
 			}
 
 		});
-		
+
 	}
 
 }

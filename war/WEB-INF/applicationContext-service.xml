@@ -1,63 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
-       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
-
-
-       http://www.springframework.org/schema/tx 
-       http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
        http://www.springframework.org/schema/context
 	   http://www.springframework.org/schema/context/spring-context-4.3.xsd">
-
-    <bean class="mat.server.Application"/>
-
     <context:annotation-config/>
-
-
-    <tx:annotation-driven transaction-manager="txManager"/>
-
-    <bean id="loginService" class="mat.server.service.impl.LoginCredentialServiceImpl">
-    </bean>
-
-    <bean id="securityQuestionsService" class="mat.server.service.impl.SecurityQuestionsServiceImpl">
-    </bean>
-
-    <bean id="hibernateuserService" class="mat.server.hibernate.HibernateUserDetailService">
-    </bean>
-
-    <bean id="measurePackageService" class="mat.server.service.impl.MeasurePackageServiceImpl">
-        <property name="currentReleaseVersion" value="${mat.measure.current.release.version}"/>
-    </bean>
-
-    <bean id="measureDetailsService" class="mat.server.service.impl.MeasureDetailsServiceImpl">
-    </bean>
-
-    <bean id="packagerService" class="mat.server.service.impl.PackagerServiceImpl">
-    </bean>
-
-    <bean id="qDSAttributesService" class="mat.server.clause.QDSAttributesServiceImpl">
-    </bean>
-
-    <bean id="eMeasureService" class="mat.server.service.impl.SimpleEMeasureServiceImpl">
-    </bean>
-
-    <bean id="measureAuditService" class="mat.server.service.impl.MeasureAuditServiceImpl">
-    </bean>
-
-    <bean id="cqlLibraryAuditService" class="mat.server.service.impl.CQLLibraryAuditServiceImpl">
-    </bean>
-
-    <bean id="userAuditService" class="mat.server.service.impl.UserAuditServiceImpl">
-    </bean>
-
-    <bean id="vsacapi" class="mat.server.VSACApiServImpl">
-        <property name="defaultExpId" value="${mat.qdm.default.expansion.id}"/>
-    </bean>
-
-    <bean id="populationService" class="mat.server.PopulationServiceImpl">
-    </bean>
+    <context:component-scan base-package="mat"/>
 </beans>

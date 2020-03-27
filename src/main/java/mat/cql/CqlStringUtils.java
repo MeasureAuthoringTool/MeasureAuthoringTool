@@ -118,9 +118,9 @@ public class CqlStringUtils {
         char c = 0;
 
         for (int i = indexStart; i < source.length(); i++) {
-            index = i;
-            c = source.charAt(index);
+            c = source.charAt(i);
             if (!Character.isWhitespace(c)) {
+                index = i;
                 break;
             }
         }

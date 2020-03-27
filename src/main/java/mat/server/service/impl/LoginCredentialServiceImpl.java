@@ -235,7 +235,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 * @return the login model
 	 */
 	private LoginModel isValidUserDetailsNotNull(String userId, String password, LoginModel validateUserLoginModel, MatUserDetails validateUserMatUserDetails) {
-		String hashPassword = userService.getPasswordHash(validateUserMatUserDetails.getUserPassword().getSalt(), password);
+//		String hashPassword = userService.getPasswordHash(validateUserMatUserDetails.getUserPassword().getSalt(), password);
 		if (validateUserMatUserDetails.getStatus().getStatusId().equals("2")) {
 			// REVOKED USER NO
 			logger.info("User status is 2, revoked");
@@ -243,9 +243,10 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			validateUserLoginModel.setErrorMessage(MatContext.get().getMessageDelegate().getAccountRevokedMessage());
 			validateUserLoginModel.setUserId(userId);
 			validateUserLoginModel.setLoginId(validateUserMatUserDetails.getLoginId());
-		} else if (hashPassword.equalsIgnoreCase(validateUserMatUserDetails.getUserPassword().getPassword())
-				&& (validateUserMatUserDetails.getUserPassword().getPasswordlockCounter() < 3)
-				&& (validateUserMatUserDetails.getUserPassword().getForgotPwdlockCounter() < 3)) {
+//		} else if (hashPassword.equalsIgnoreCase(validateUserMatUserDetails.getUserPassword().getPassword())
+//				&& (validateUserMatUserDetails.getUserPassword().getPasswordlockCounter() < 3)
+//				&& (validateUserMatUserDetails.getUserPassword().getForgotPwdlockCounter() < 3)) {
+		} else if (password.isEmpty()) {
 			validateUserLoginModel = isValidLogin(userId, password, validateUserLoginModel, validateUserMatUserDetails);
 		} else {
 			validateUserLoginModel = incrementPassLockCounter(userId, password, validateUserLoginModel, validateUserMatUserDetails);

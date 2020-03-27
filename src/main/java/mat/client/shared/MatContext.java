@@ -151,6 +151,8 @@ public class MatContext implements IsSerializable {
 
     private String userId;
 
+    private String appUserId;
+
     private String userEmail;
 
     private String loginId;
@@ -435,6 +437,9 @@ public class MatContext implements IsSerializable {
         return userId;
     }
 
+    public void setAppUserId(String appUserId) {this.appUserId = appUserId; }
+    public String getAppUserId() { return appUserId; }
+
     public String getLoggedinLoginId() {
         return loginId;
     }
@@ -449,6 +454,9 @@ public class MatContext implements IsSerializable {
 
     public void isValidUser(String username, String Password, String oneTimePassword, AsyncCallback<LoginModel> callback) {
         getLoginService().isValidUser(username, Password, oneTimePassword, callback);
+    }
+
+    public void isValidOktaUser(String oktaUserId) {
     }
 
     public void getListBoxData(AsyncCallback<CodeListService.ListBoxData> listBoxCallback) {

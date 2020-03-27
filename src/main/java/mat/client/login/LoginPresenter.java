@@ -98,22 +98,12 @@ public class LoginPresenter {
 		view = loginView;
 		
 		loginModel = new LoginModel();
-		view.getSubmitButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				submit();
-			}
-			
-			
-		});
-		view.getForgotPassword().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				reset();
-				MatContext.get().getEventBus().fireEvent(new ForgottenPasswordEvent());
-			}
+
+		view.getSubmitButton().addClickHandler(event -> submit());
+
+		view.getForgotPassword().addClickHandler(event -> {
+			reset();
+			MatContext.get().getEventBus().fireEvent(new ForgottenPasswordEvent());
 		});
 		
 		view.getForgotLoginId().addClickHandler(new ClickHandler() {
@@ -148,6 +138,8 @@ public class LoginPresenter {
 		view.getAuthTokenGroup().setValidationState(ValidationState.NONE);
 	}
 
+	public static native void console(String message)/*-{ console.log(message); }-*/;
+
 	private void submit() {
 		view.getSuccessMessagePanel().setVisible(false);
 		view.getHelpBlock().setText("");
@@ -178,8 +170,10 @@ public class LoginPresenter {
 			view.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
 			view.getPasswordGroup().setValidationState(ValidationState.SUCCESS);
 			view.getAuthTokenGroup().setValidationState(ValidationState.SUCCESS);
-			MatContext.get().isValidUser(view.getUserIdText().getText(), view.getPasswordInput().getText(),
-					view.getSecurityCodeInput().getText(), contextcallback);
+
+			String appUserId = MatContext.get().getAppUserId();
+			console("LoginPresenter::appUserId::"+appUserId);
+			MatContext.get().isValidUser(appUserId, "","123", contextcallback);
 		}
 	}
 	private  final AsyncCallback<LoginModel> contextcallback = new AsyncCallback<LoginModel>(){

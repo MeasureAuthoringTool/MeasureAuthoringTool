@@ -175,7 +175,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             String fhirResourceId = hashForId(fhirResource);
             String fhirElementId = hashForId(fhirResource + "--" + fhirElement);
             FhirDataType fhirDataType =
-                    cqlConstantContainer.getFhirDataTypes().computeIfAbsent(fhirResource, s -> new FhirDataType(fhirResourceId, fhirResource));
+                    cqlConstantContainer.getFhirDataTypesByResource().computeIfAbsent(fhirResource, s -> new FhirDataType(fhirResourceId, fhirResource));
             fhirDataType.getAttributes().computeIfAbsent(fhirElement, s -> new FhirAttribute(fhirElementId, fhirElement, StringUtils.trimToEmpty(conversionMapping.getFhirType())));
         }
         cqlConstantContainer.setFhirCqlDataTypeList(new ArrayList<>(fhirDataTypeSet));

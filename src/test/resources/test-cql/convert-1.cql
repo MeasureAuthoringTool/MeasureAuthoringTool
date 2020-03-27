@@ -58,6 +58,29 @@ context Patient
 
 define "Denominator":
   "Initial Population"
+   /* Logic update 9.27.19
+    incorporated HEDIS "Acute Inpatient Discharge with Mental Behavioral or Neurodevelopmental Disorders" logic for both phases to align with HEDIS administrative measure update
+    Versioned measure to QDM 5.5 and updated logic to incorporate new timing and ranked diagnosis attributes
+
+    /*Quality Gate 1 LOGIC UPDATE 4.19.2019
+     minor change - updated timing in "Follow Up Encounters During Initiation Phase within 30 Days of IPSD" such that encounters are 1 day after IPSD
+
+    Quality Gate 1 LOGIC UPDATE 5.7.19 Updated timing and structure of numerator 2 encounters - ADT replaced with RP in timing. Renamed definitions for consistency and restested measure end to end
+
+    Post Quality Gate 1 LOGIC UPDATE 5.16.19.Developed expressions for Intake Period, updated timing on Narcolepsy Definition to eliminate pt birthdate and express timing more accurately. Added Intake period to initial populaton, ADHD coverage intervals and IPSD with Negative Medication History.Updated numerator 2 expression names to call out Telehealth. Replaced ADT with RP in Acute Inpatient Encounter for Mental Behavioral and Neurodevelopmental Disorders During Continuation and Maintenance Phase and Acute Inpatient Encounter for Mental Behavioral and Neurodevelopmental Disorders During Initiation Phase. Added timing to Follow Up Encounters or Assessments During Continuation and Maintenance Phase so it will calculate 2 enounters correctly and not count initiation encounters, added timing to•	Follow Up Encounters or Assessments During Initiation Phase so they don't get counted as C&M phase encounters.Unioned defs in Follow Up Encounters or Assessments During Initiation Phase within 30 Days of IPSD as opposed to ORs - these have to be linked indivdually with timing because one is a ADT and one is a RP - the assessment or encounter attribute requirement and aligned timing phrases to be more precise. updated the •	Follow Up Encounters or Assessments with Telehealth During Continuation and Maintenance Phase expression to eliminate duplicative encounters and "or" the two possibilities for telehealth locations.Renamed •	Index Prescription Event so its clear that all that is a timing definition used in continous enrollment.Updated  •	IPSD with Negative Medication History  with new aliases and the intake period. Updated alias in •	Previous ADHD Medication History.  Created LOG definition!!
+
+    5/31 updated Common library to 5.0.Added Parameter def.Updated Continuous Enrollment Defs.Updated stratification. Updated Hospice Def to call Common library
+
+    6/10
+    updated timing in •	Acute Inpatient Encounter for Mental Health Diagnosis or Chemical Dependency During Initiation Phase and •	Acute Inpatient Encounter for Mental Health Diagnosis or Chemical Dependency in Continuation and Maintenance Phase for encounters to relevant period from ADT.
+
+    6/14 developed new logic for medication coverage intervals calculation.replaced function for •	RolloutIntervals with Cumulative Medication Duration.  Updated Previous Medication History timing and added RP logic in intake period.  Developed def for Continuous Medication Treatment of 210 Days or More from CMD function to calculate 210 days supplied - also "or" Med dispensed for IP 2 Developed def for Active IPSD with Negative Medication History to get a 210 day relevant period and feed Continuous Medication Treatment of 210 Days or More both relevant period and days supplied. Added new not exists Previous Medication History to IPSD with Negative Medication History. Deleted •	ADHD Medication Coverage Intervals  and •	ADHD Medication Coverage Days since we are using CMD calculation.
+
+    FirstedIPSD with Negative Medication History ( First("IPSD with Negative Medication History")) to capture the first incident of meds when there is NOT a negative medication history.
+
+    Updated Index Prescription Event to "First IPSD with Negative Medication History" CurrentADHDMedication return CurrentADHDMedication.authorDatetime
+
+    6/15 added logic to Follow Up Encounters or Assessments in both initiation and C&M phasereturn "Assessment, Performed" { authorDatetime: start of Encounters.relevantPeriod }  ) ) AssessmentsEncounters - effectively puts the ADT for assessments in the encounters relevant period.*/
 
 define "Exclusions":
   exists Common."Hospice Intervention or Encounter"

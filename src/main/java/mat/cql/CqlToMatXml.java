@@ -83,8 +83,6 @@ public class CqlToMatXml {
         T parse(String s);
     }
 
-
-
     public CqlToMatXml(CQLModel sourceCqlModel, String convertedCql) {
         this.convertedCql = convertedCql;
         this.sourceModel = sourceCqlModel;
@@ -116,16 +114,25 @@ public class CqlToMatXml {
      */
     private void processLibraryTag() {
         //library CWP_HEDIS_2020_CARSON version '1.0.000'
-        String lib = parseSingletonLine(LIB_TOKEN);
-        String[] words = lib.split(" ");
+        int endFirstLine = indexOf(convertedCql,NEWLINE,0);
+        if (areValidAscendingIndexes(endFirstLine)) {
+            String firstLine = convertedCql.substring(0,endFirstLine);
+            if (!firstLine.startsWith(LIB_TOKEN)) {
+                throw new IllegalArgumentException("First line did not start with " + LIB_TOKEN);
+            } else {
+                String[] words = firstLine.split(" ");
 
-        if (words.length == 4) {
-            destinationModel.setLibraryName(words[1]);
-            destinationModel.setUsingModel(destinationModel.getUsingModel());
-            destinationModel.setVersionUsed(destinationModel.getVersionUsed());
-            destinationModel.setVersionUsed(chomp1(words[3]));
+                if (words.length == 4) {
+                    destinationModel.setLibraryName(words[1]);
+                    destinationModel.setUsingModel(destinationModel.getUsingModel());
+                    destinationModel.setVersionUsed(destinationModel.getVersionUsed());
+                    destinationModel.setVersionUsed(chomp1(words[3]));
+                } else {
+                    throw new IllegalArgumentException("Invalid library encountered: " + firstLine);
+                }
+            }
         } else {
-            throw new IllegalArgumentException("Invalid library encountered: " + lib);
+            throw new IllegalArgumentException("First line did not start with " + LIB_TOKEN);
         }
     }
 

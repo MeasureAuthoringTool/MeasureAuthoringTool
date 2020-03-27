@@ -17,8 +17,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Predicate;
+
+import static mat.cql.CqlStringUtils.areValidAscendingIndexes;
+import static mat.cql.CqlStringUtils.chomp1;
+import static mat.cql.CqlStringUtils.indexOf;
+import static mat.cql.CqlStringUtils.newGuid;
+import static mat.cql.CqlStringUtils.nextCharMatching;
+import static mat.cql.CqlStringUtils.nextNonWhitespace;
+import static mat.cql.CqlStringUtils.nextQuotedString;
+import static mat.cql.CqlStringUtils.nextTickedString;
+import static mat.cql.CqlStringUtils.trimUrn;
 
 /**
  * A parser that parses CQL and converts it into Mat XML.
@@ -28,10 +37,7 @@ import java.util.function.Predicate;
 @ToString
 @Slf4j
 public class CqlToMatXml {
-    private static final char NEWLINE = '\n';
-
     private static final Map<String, String> nameToGlobalLibId = new HashMap<>();
-
     static {
         //TO DO move this into properties config or a DB lookup eventually.
         nameToGlobalLibId.put("NCQA_Common", "NCQA-Common-FHIR4-5-1-000");
@@ -46,6 +52,14 @@ public class CqlToMatXml {
         nameToGlobalLibId.put("VTEICU_FHIR4", "VTEICU-FHIR4-3-1-000");
     }
 
+    private static final char NEWLINE = '\n';
+    private static final char COMMA = ',';
+    private static final char COLON = ':';
+    private static final char QUOTE = '"';
+    private static final char SPACE = ' ';
+    private static final char OPEN_PAREN = '(';
+    private static final char CLOSE_PAREN = ')';
+
     private static final String LIB_TOKEN = "library ";
     private static final String INCLUDE_TOKEN = NEWLINE + "include ";
     private static final String QDM_TOKEN = NEWLINE + "using FHIR ";
@@ -58,36 +72,19 @@ public class CqlToMatXml {
     private static final String FUNCTION_TOKEN = "function";
     private static final String DEFINE_FUNCTION_TOKEN = DEFINE_TOKEN + FUNCTION_TOKEN;
 
-    private static final char COLON = ':';
-    private static final char QUOTE = '"';
-    private static final char SPACE = ' ';
-    private static final char TICK = '\'';
-    private static final char OPEN_PAREN = '(';
-    private static final char CLOSE_PAREN = ')';
-    private static final char COMMA = ',';
-
     private static final String WHITESPACE = "\\s";
     private static final String QDM_VERSION = "5.5";
 
     private String convertedCql;
     private CQLModel sourceModel;
     private CQLModel destinationModel = new CQLModel();
+    private int index;
 
     public interface RepeatingLineProducer<T> {
         T parse(String s);
     }
 
-    @Getter
-    @ToString
-    public static class ParseResult {
-        private String string;
-        private int endIndex;
 
-        public ParseResult(String string, int endIndex) {
-            this.string = string;
-            this.endIndex = endIndex;
-        }
-    }
 
     public CqlToMatXml(CQLModel sourceCqlModel, String convertedCql) {
         this.convertedCql = convertedCql;
@@ -111,7 +108,7 @@ public class CqlToMatXml {
             processFunctions();
             return destinationModel;
         } catch (RuntimeException e) {
-            throw new MatException("Error converting mat xml.",e);
+            throw new MatException("Error converting mat xml.", e);
         }
     }
 
@@ -305,11 +302,11 @@ public class CqlToMatXml {
         while ((nextDefineStart = indexOf(convertedCql, DEFINE_TOKEN, parsed)) > 0) {
             if (!isDefineFunction(nextDefineStart)) {
                 ParseResult firstQuotedString = nextQuotedString(convertedCql, nextDefineStart);
-                int colon = indexOf(convertedCql, COLON, firstQuotedString.endIndex + 1);
+                int colon = indexOf(convertedCql, COLON, firstQuotedString.getEndIndex() + 1);
                 int logicStart = indexOf(convertedCql, NEWLINE, colon + 1);
                 int defineEnd = indexOf(convertedCql, "" + NEWLINE + NEWLINE, logicStart + 1);
 
-                if (areValidAscendingIndexes(firstQuotedString.endIndex, colon, logicStart)) {
+                if (areValidAscendingIndexes(firstQuotedString.getEndIndex(), colon, logicStart)) {
                     String title = firstQuotedString.getString();
                     String logic = defineEnd == -1 ?
                             convertedCql.substring(logicStart + 1) : //End of file.
@@ -347,13 +344,13 @@ public class CqlToMatXml {
         int parsed = 0;
         while ((nextFuncStart = indexOf(convertedCql, DEFINE_FUNCTION_TOKEN, parsed)) > 0) {
             ParseResult firstQuotedString = nextQuotedString(convertedCql, nextFuncStart + DEFINE_FUNCTION_TOKEN.length());
-            int parenStart = indexOf(convertedCql, OPEN_PAREN, firstQuotedString.endIndex + 1);
+            int parenStart = indexOf(convertedCql, OPEN_PAREN, firstQuotedString.getEndIndex() + 1);
             int parenEnd = indexOf(convertedCql, CLOSE_PAREN, parenStart + 1);
-            int colon = indexOf(convertedCql, COLON, firstQuotedString.endIndex + 1);
+            int colon = indexOf(convertedCql, COLON, firstQuotedString.getEndIndex() + 1);
             int logicStart = indexOf(convertedCql, NEWLINE, colon + 1);
             int defineEnd = indexOf(convertedCql, "" + NEWLINE + NEWLINE, logicStart + 1);
 
-            if (areValidAscendingIndexes(firstQuotedString.endIndex, parenStart, parenEnd, colon, logicStart)) {
+            if (areValidAscendingIndexes(firstQuotedString.getEndIndex(), parenStart, parenEnd, colon, logicStart)) {
                 String title = firstQuotedString.getString();
                 String logic = defineEnd == -1 ?
                         convertedCql.substring(logicStart + 1) : //End of file.
@@ -376,60 +373,47 @@ public class CqlToMatXml {
 
     private List<CQLFunctionArgument> parseArguments(String argumentString) {
         //Inpatient_Encounter "Encounter, Performed" , ARG_2 "ARG 2 NAME"
+        //x List<String> , y List<Integer>
         var result = new ArrayList<CQLFunctionArgument>();
 
         int parsed = 0;
+        int argStrLen = argumentString.length();
         while (parsed < argumentString.length()) {
             int firstSpace = indexOf(argumentString, ' ', parsed);
-            int commaIndex = argumentString.indexOf(COMMA);
-            if (areValidAscendingIndexes(firstSpace)) {
-                String qdmType = commaIndex == -1 ?
-                        argumentString.substring(firstSpace + 1).trim() :
-                        argumentString.substring(firstSpace + 1,commaIndex).trim();
+            ParseResult nextNonWS = nextNonWhitespace(argumentString, firstSpace + 1);
+            String argName = argumentString.substring(parsed, firstSpace);
+            String qdmType;
 
-                CQLFunctionArgument argument = new CQLFunctionArgument();
-                argument.setId(newGuid());
-                argument.setArgumentName(argumentString.substring(parsed, firstSpace));
-                argument.setQdmDataType(qdmType);
-                argument.setArgumentType("FHIR Datatype");
-                result.add(argument);
-
-                parsed = commaIndex == -1 ?
-                        argumentString.length() :
-                        commaIndex + 1;
+            if (nextNonWS.getEndIndex() == -1) {
+                throw new IllegalArgumentException("Invalid argument string encountered: " + argumentString);
+            } else if (StringUtils.equals(nextNonWS.getString(), "" + QUOTE)) {
+                //Case where type is a quoted string. e.g. Inpatient_Encounter "Encounter, Performed"
+                ParseResult nextQuoted = nextQuotedString(argumentString, firstSpace);
+                qdmType = nextQuoted.getString();
+                int nextArgStart = CqlStringUtils.nextCharNotMatching(argumentString,
+                        nextQuoted.getEndIndex() + 1,
+                        ' ',',').getEndIndex();
+               parsed = nextArgStart == -1 ? argumentString.length() : nextArgStart;
             } else {
-                throw new IllegalArgumentException("Invalid arguments encountered: " + argumentString);
+                //Case where type is not a quoted string. e.g. y List<Integer>
+                ParseResult endArgName = nextCharMatching(argumentString,
+                        nextNonWS.getEndIndex() + 1,
+                        COMMA,SPACE,NEWLINE);
+                qdmType = argumentString.substring(nextNonWS.getEndIndex(), endArgName.getEndIndex());
+                int nextArgStart = CqlStringUtils.nextCharNotMatching(argumentString,
+                        endArgName.getEndIndex() + 1,
+                        ' ',',').getEndIndex();
+                parsed = nextArgStart == -1 ? argumentString.length() : nextArgStart;
             }
+
+            CQLFunctionArgument argument = new CQLFunctionArgument();
+            argument.setId(newGuid());
+            argument.setArgumentName(argName);
+            argument.setQdmDataType(qdmType);
+            argument.setArgumentType("FHIR Datatype");
+            result.add(argument);
         }
         return result;
-    }
-
-    /**
-     * The same as string.indexOf(search,indexStart) but this method returns
-     * -1 instead of throwing an exception if indexStart is negative.
-     * It allows for cleaner parsing code without a bunch of branching ifs.
-     *
-     * @param source     The string to index.
-     * @param search     The search string.
-     * @param indexStart The index to start at.
-     * @return The result.
-     */
-    private int indexOf(String source, String search, int indexStart) {
-        return indexStart < 0 ? -1 : source.indexOf(search, indexStart);
-    }
-
-    /**
-     * The same as string.indexOf(search,indexStart) but this method returns
-     * -1 instead of throwing an exception if indexStart is negative.
-     * It allows for cleaner parsing code without a bunch of branching ifs.
-     *
-     * @param source     The string to index.
-     * @param search     The search string.
-     * @param indexStart The index to start at.
-     * @return The result.
-     */
-    private int indexOf(String source, char search, int indexStart) {
-        return indexStart < 0 ? -1 : source.indexOf(search, indexStart);
     }
 
     /**
@@ -445,81 +429,6 @@ public class CqlToMatXml {
         result.setSupplDataElement(false);
         result.setPopDefinition(false);
         return result;
-    }
-
-    /**
-     * Validates that all the specified indexes are non-negative and they are in ascending order.
-     * This is very useful when parsing because it eliminates a lot of if/else branching code.
-     *
-     * @param indexes The indexes to check.
-     * @return Returns true if all the indexes are in ascending order non negative.
-     */
-    private boolean areValidAscendingIndexes(int... indexes) {
-        boolean result = true;
-        int last = Integer.MAX_VALUE;
-        for (int i : indexes) {
-            if (i < 0 || (last != Integer.MAX_VALUE && i < last)) {
-                result = false;
-                break;
-            }
-            last = i;
-        }
-        return result;
-    }
-
-    /**
-     * Same as areValidAscendingIndexes(int... indexes) except this one uses ParsedResult.endIndex for the indexes.
-     *
-     * @param indexes The indexes to check.
-     * @return Returns true if all the indexes are in ascending order and non negative.
-     */
-    private boolean areValidAscendingIndexes(ParseResult... indexes) {
-        int[] intIndexes = new int[indexes.length];
-        for (int i = 0; i < indexes.length; i++) {
-            intIndexes[i] = indexes[i].getEndIndex();
-        }
-        return areValidAscendingIndexes(intIndexes);
-    }
-
-    /**
-     * @param s The string to chomp.
-     * @return Removes 1 character from the front end and end of the string.
-     */
-    private String chomp1(String s) {
-        return s.length() >= 2 ? s.substring(1, s.length() - 1) : s;
-    }
-
-    /**
-     * @param source     The source.
-     * @param startIndex The start index.
-     * @return nextCharBoundary with QUOTE for the boundary.
-     */
-    private ParseResult nextQuotedString(String source, int startIndex) {
-        return nextCharBoundary(source, "" + QUOTE, startIndex);
-    }
-
-    /**
-     * @param source     The source.
-     * @param startIndex The start index.
-     * @return nextCharBoundary with TICK for the boundary.
-     */
-    private ParseResult nextTickedString(String source, int startIndex) {
-        return nextCharBoundary(source, "" + TICK, startIndex);
-    }
-
-    /**
-     * @param source     The source.
-     * @param startIndex The start index.
-     * @return A ParseResult where the string is the contents of the next string encountered bounded by
-     * boundary and the endIndex is the endBoundary.If a quoted string can not be found then a ParseResult
-     * is returned with a null string and a -1 endIndex.
-     */
-    private ParseResult nextCharBoundary(String source, String boundary, int startIndex) {
-        int start = indexOf(source, boundary, startIndex);
-        int end = indexOf(source, boundary, start + 1);
-        return areValidAscendingIndexes(start, end) ?
-                new ParseResult(source.substring(start + 1, end), end) :
-                new ParseResult(null, -1);
     }
 
     /**
@@ -576,10 +485,6 @@ public class CqlToMatXml {
         return result;
     }
 
-    private String newGuid() {
-        return UUID.randomUUID().toString().toLowerCase();
-    }
-
     private <T> T findExisting(List<T> collection, Predicate<T> filter, String messageIfNotFound) {
         var vs = collection.stream().filter(filter).findFirst();
         if (vs.isPresent()) {
@@ -596,15 +501,6 @@ public class CqlToMatXml {
     private boolean isDefineFunction(int startIndex) {
         ParseResult firstQuotedString = nextQuotedString(convertedCql, startIndex);
         int functionIndex = indexOf(convertedCql, FUNCTION_TOKEN, startIndex);
-        return functionIndex > 0 && firstQuotedString.endIndex > functionIndex;
-    }
-
-    /**
-     * Removes the urn:oid: from the specified code system name.
-     * @param codeSystemName The code system name.
-     * @return codeSystemName with urn:oid: removed.
-     */
-    private String trimUrn(String codeSystemName) {
-        return StringUtils.removeStart(codeSystemName,"urn:oid:");
+        return functionIndex > 0 && firstQuotedString.getEndIndex() > functionIndex;
     }
 }

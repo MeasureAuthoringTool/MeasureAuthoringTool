@@ -292,6 +292,15 @@ define function "ToDays"(Value Integer ):
   if Value is not null then Quantity { value: Value, unit: 'd' } 
     else null
 
+define function "test1"(Test_1 "Test \" 1" ):
+  RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))
+
+define function "test2"(Test_2 "Test , 2" ):
+  RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))
+
+define function "test3"(Test_3 "Test ,\" 3" , Value Integer ):
+  RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))
+
 define function "RolloutIntervals"(Intervals List<Interval<DateTime>> ):
   RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))
 

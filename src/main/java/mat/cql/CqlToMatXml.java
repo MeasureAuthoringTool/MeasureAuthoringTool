@@ -379,7 +379,7 @@ public class CqlToMatXml {
         int parsed = 0;
         int argStrLen = argumentString.length();
         while (parsed < argumentString.length()) {
-            int firstSpace = indexOf(argumentString, ' ', parsed);
+            int firstSpace = indexOf(argumentString, SPACE, parsed);
             ParseResult nextNonWS = nextNonWhitespace(argumentString, firstSpace + 1);
             String argName = argumentString.substring(parsed, firstSpace);
             String qdmType;
@@ -392,7 +392,7 @@ public class CqlToMatXml {
                 qdmType = nextQuoted.getString();
                 int nextArgStart = CqlStringUtils.nextCharNotMatching(argumentString,
                         nextQuoted.getEndIndex() + 1,
-                        ' ',',').getEndIndex();
+                        SPACE,COMMA).getEndIndex();
                parsed = nextArgStart == -1 ? argumentString.length() : nextArgStart;
             } else {
                 //Case where type is not a quoted string. e.g. y List<Integer>
@@ -402,7 +402,7 @@ public class CqlToMatXml {
                 qdmType = argumentString.substring(nextNonWS.getEndIndex(), endArgName.getEndIndex());
                 int nextArgStart = CqlStringUtils.nextCharNotMatching(argumentString,
                         endArgName.getEndIndex() + 1,
-                        ' ',',').getEndIndex();
+                        SPACE,COMMA).getEndIndex();
                 parsed = nextArgStart == -1 ? argumentString.length() : nextArgStart;
             }
 

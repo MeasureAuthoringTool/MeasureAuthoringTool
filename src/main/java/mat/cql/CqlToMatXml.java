@@ -72,8 +72,7 @@ public class CqlToMatXml {
     private static final String FUNCTION_TOKEN = "function";
     private static final String DEFINE_FUNCTION_TOKEN = DEFINE_TOKEN + FUNCTION_TOKEN;
 
-    private static final String WHITESPACE = "\\s";
-    private static final String QDM_VERSION = "5.5";
+    private static final String WHITESPACE_REGEX = "\\s";
 
     private String convertedCql;
     private CQLModel sourceModel;
@@ -377,7 +376,6 @@ public class CqlToMatXml {
         var result = new ArrayList<CQLFunctionArgument>();
 
         int parsed = 0;
-        int argStrLen = argumentString.length();
         while (parsed < argumentString.length()) {
             int firstSpace = indexOf(argumentString, SPACE, parsed);
             ParseResult nextNonWS = nextNonWhitespace(argumentString, firstSpace + 1);

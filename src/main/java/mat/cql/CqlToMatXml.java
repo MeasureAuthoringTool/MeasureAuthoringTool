@@ -423,11 +423,7 @@ public class CqlToMatXml {
             switch (c){
                 case QUOTE:
                     ParseResult pr = nextQuotedString(arguments, i - 1);
-                    if (result.length() != 0) {
-                        result.append(QUOTE + pr.getString() + QUOTE);
-                    } else {
-                        result.append(pr.getString());
-                    }
+                    result.append(QUOTE + pr.getString() + QUOTE);
                     i = pr.getEndIndex();
                     break;
                 case SPACE:

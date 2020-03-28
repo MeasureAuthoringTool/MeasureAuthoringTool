@@ -23,13 +23,12 @@ import static mat.cql.CqlStringUtils.areValidAscendingIndexes;
 import static mat.cql.CqlStringUtils.chomp1;
 import static mat.cql.CqlStringUtils.indexOf;
 import static mat.cql.CqlStringUtils.newGuid;
-import static mat.cql.CqlStringUtils.nextCharMatching;
 import static mat.cql.CqlStringUtils.nextCharNotMatching;
 import static mat.cql.CqlStringUtils.nextNonWhitespace;
 import static mat.cql.CqlStringUtils.nextQuotedString;
 import static mat.cql.CqlStringUtils.nextTickedString;
 import static mat.cql.CqlStringUtils.removeCqlBlockComments;
-import static mat.cql.CqlStringUtils.removeLineComments;
+import static mat.cql.CqlStringUtils.removeCQLLineComments;
 import static mat.cql.CqlStringUtils.trimUrn;
 
 /**
@@ -96,7 +95,7 @@ public class CqlToMatXml {
         try {
             //Remove all comments.
             convertedCql = removeCqlBlockComments(convertedCql);
-            convertedCql = removeLineComments(convertedCql);
+            convertedCql = removeCQLLineComments(convertedCql);
 
             //Populate root object first:
             processLibraryTag();
@@ -432,6 +431,7 @@ public class CqlToMatXml {
                     i = pr.getEndIndex();
                     break;
                 case SPACE:
+                case COMMA:
                     endIndex = i;
                     break outer;
                 default:
@@ -532,17 +532,6 @@ public class CqlToMatXml {
 
     private String argumentTypeFromQdmType(String qdmType) {
         //TO DO: This needs some refinement once we figure out exactly that this is. Need stories for it.
-        switch (qdmType) {
-            case "Date":
-            case "DateTime":
-            case "Decimal":
-            case "Integer":
-            case "Ratio":
-            case "String":
-            case "Time":
-                return qdmType;
-            default:
-                return "FHIR Datatype";
-        }
+        return qdmType;
     }
 }

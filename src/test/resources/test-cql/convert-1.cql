@@ -311,6 +311,43 @@ define "Enrolled During Participation Period":
   Common."Is Enrolled" ( "Product Line", 
   end of "Measurement Period", "Measurement Period", 45 )
 
+define function "GetConversionFactor"(ingredientCode Code, dailyDose Quantity, doseFormCode Code ):
+  case ToInteger(ingredientCode.code)
+      when 1841 then 7
+      when 2670 then 0.15
+      when 3423 then 4
+      when 4337 then (
+        case
+          when ToInteger(doseFormCode.code)in { 970789, 317007, 316992 } then 0.13
+          when ToInteger(doseFormCode.code)= 346163 then 0.18
+          when ToInteger(doseFormCode.code)in { 126542, 346163 } then 0.16
+          when "IsTransdermalPatch"(doseFormCode)then 7.2
+          else 1000
+        end
+      )
+      when 5489 then 1
+      when 6378 then 11
+      when 6754 then 0.1
+      when 6813 then (
+        case
+          when dailyDose.value between 1 and 20 then 4
+          when dailyDose.value between 21 and 40 then 8
+          when dailyDose.value between 41 and 60 then 10
+          when dailyDose.value >= 61 then 12
+          else 1000
+        end
+      )
+      when 7052 then 1
+      when 7676 then 1
+      when 7804 then 1.5
+      when 7814 then 3
+      when 8001 then 0.37
+      when 10689 then 0.1
+      when 23088 then 0.25
+      when 787390 then 0.4
+      else 0
+    end
+
 define function "ToDays"(Value Integer ):
   if Value is not null then Quantity { value: Value, unit: 'd' } 
     else null
@@ -336,3 +373,5 @@ define function "RolloutIntervalsOnce"(Intervals List<Interval<DateTime>> ):
         where X during RollOutInterval
         return all duration in days of X
     ), unit: 'day' }]
+
+

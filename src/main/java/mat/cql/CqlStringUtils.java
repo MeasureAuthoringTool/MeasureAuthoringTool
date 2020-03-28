@@ -234,12 +234,17 @@ public class CqlStringUtils {
         return UUID.randomUUID().toString().toLowerCase();
     }
 
-    public static String removeLineComments(String s) {
+    /**
+     *
+     * @param cql The cql.
+     * @return Removes all line comments (e.g. //sdfsdfsd ) from the cql.
+     */
+    public static String removeCQLLineComments(String cql) {
         StringBuilder result = new StringBuilder();
         //If line is whitespace remove line.
         //else remove from comment onwards in line.
-        try (StringReader sr = new StringReader(s);) {
-            BufferedReader reader = new BufferedReader(new StringReader(s));
+        try (StringReader sr = new StringReader(cql);) {
+            BufferedReader reader = new BufferedReader(sr);
             String line;
             while ((line = reader.readLine()) != null) {
                 int commentStart = line.indexOf(LINE_COMMENT);
@@ -260,8 +265,12 @@ public class CqlStringUtils {
         return result.toString();
     }
 
-    public static String removeCqlBlockComments(String s) {
-        StringBuilder result = new StringBuilder(s);
+    /**
+     * @param cql the cql.
+     * @return cql with all cql block comments removed.
+     */
+    public static String removeCqlBlockComments(String cql) {
+        StringBuilder result = new StringBuilder(cql);
         int start;
 
         while ((start = result.indexOf(BLOCK_COMMENT_START, 0)) != -1) {

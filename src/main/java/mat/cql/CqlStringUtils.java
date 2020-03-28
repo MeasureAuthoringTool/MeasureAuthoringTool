@@ -1,6 +1,5 @@
 package mat.cql;
 
-import mat.client.shared.MatRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
@@ -18,8 +17,6 @@ public class CqlStringUtils {
     public static final String BLOCK_COMMENT_START = "/*";
     public static final String BLOCK_COMMENT_END = "*/";
     public static final String LINE_COMMENT = "//";
-    private StringBuilder append;
-
 
     /**
      * Validates that all the specified indexes are non-negative and they are in ascending order.

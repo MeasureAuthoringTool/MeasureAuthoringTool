@@ -418,7 +418,6 @@ public class CqlToMatXml {
         StringBuilder result = new StringBuilder();
         ParseResult nextNonSpace = nextNonWhitespace(arguments, startIndex);
 
-        boolean openQuote = false;
         int endIndex = -1;
         outer: for (int i = nextNonSpace.getEndIndex(); i < arguments.length(); i++) {
             char c = arguments.charAt(i);

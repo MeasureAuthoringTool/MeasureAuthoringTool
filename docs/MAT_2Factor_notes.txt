@@ -1,41 +1,12 @@
-1)Add new system properties on for VIP 2 factor communication.
-
--D2FA_VIP_COMMUNICATION_URL=https://userservices-auth.vip.symantec.com/vipuserservices/AuthenticationService_1_3
-
-2) Add the following property in MAT.properties
+1) Add the following property in MAT.properties
 
 #MAT 2 factor authentication properties.
-#2FA_AUTH_CLASS=mat.server.twofactorauth.DefaultOTPValidatorForUser
-2FA_AUTH_CLASS=mat.server.twofactorauth.vip.OTPValidatorForUser
+2FA_AUTH_CLASS=mat.server.twofactorauth.DefaultOTPValidatorForUser
 
-3) Make the following changes to the "applicationContext-service.xml" in "mat\war\WEB-INF\" folder.
+2) Make the following changes to the "applicationContext-service.xml" in "mat\war\WEB-INF\" folder.
 
 	<bean id="vsacapi" class="mat.server.VSACApiServImpl">
     	<property name="defaultExpId" value="${mat.qdm.default.expansion.id}"/>
     </bean>
 
 Update DPlan, Glassfish (need to test), and update MAT eclipse project.
-
-
-######################################################################################################################################################
-
-
-keytool -importkeystore -srckeystore vip_cert.p12 -srcstoretype PKCS12 -destkeystore keystore.jks
-keytool -list -v -keystore keystore.jks
-keytool -storepasswd -keystore keystore.jks
-keytool -keypasswd -alias s1as -keystore keystore.jks
-keytool -keypasswd -alias 'glassfish-instance' -keystore keystore.jks
-keytool -exportcert -keystore vip_cert.p12 -storepass HCIs0001 -storetype PKCS12 -alias 'cms mat initial test cert 1' -file public_vip_cert.cer
-keytool -storepasswd -new HCIs0001 -keystore cacerts.jks
-
-//Try '-trustcacerts' below
-keytool -importcert -keystore cacerts.jks -storepass changeit -alias 'cms mat initial test cert 1' -file public_vip_cert.cer
-
-------------------------------------------------------------------------------------------------------------------------------------
- <jvm-options>-Dcom.sun.enterprise.security.httpsOutboundKeyAlias=cms mat initial test cert 1</jvm-options>
- <jvm-options>-Djavax.net.ssl.keyStorePassword=HCIs0001</jvm-options>
- <jvm-options>-Djavax.net.ssl.trustStorePassword=HCIs0001</jvm-options>
------------------------------------------------------------------------------------------------------------------------------------- 
-
-
-######################################################################################################################################################

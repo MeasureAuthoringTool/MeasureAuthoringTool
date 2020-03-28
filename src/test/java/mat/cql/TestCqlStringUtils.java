@@ -129,4 +129,32 @@ public class TestCqlStringUtils {
         assertEquals(5,p.getEndIndex());
         assertEquals('\'',myString.charAt(p.getEndIndex()));
     }
+
+    @Test
+    public void restRemoveBlockComments() {
+        String s = "Simple\nBlock comment\nTest\n  FOO/*  sldjfksldkfjslkdfjsldkfjs\n\n\n\n\n\n\n\n slkdjrslkdfjsldkfj*/\n END";
+        String clean = CqlStringUtils.removeCqlBlockComments(s);
+        assertEquals("Simple\nBlock comment\nTest\n  FOO\n END",clean);
+    }
+
+    @Test
+    public void restRemoveBlockComments2() {
+        String s = "/*S*/imple\n/*Block comment*/\nTest\n  FOO/*  sldjfksldkfjslkdfjsldkfjs\n\n\n\n\n\n\n\n slkdjrslkdfjsldkfj*/\n EN/*D*/";
+        String clean = CqlStringUtils.removeCqlBlockComments(s);
+        assertEquals("imple\n\nTest\n  FOO\n EN",clean);
+    }
+
+    @Test
+    public void removeLineComments() {
+        String s = "This is a bunch \nof text spread\n out on a bunch\nof //NARF\n lines";
+        String clean = CqlStringUtils.removeLineComments(s);
+        assertEquals("This is a bunch \nof text spread\n out on a bunch\nof \n lines",clean);
+    }
+
+    @Test
+    public void removeLineComments2() {
+        String s = "This is a bunch \nof text spread\n out on a bunch\nof //NARF    //     asd\n lines";
+        String clean = CqlStringUtils.removeLineComments(s);
+        assertEquals("This is a bunch \nof text spread\n out on a bunch\nof \n lines",clean);
+    }
 }

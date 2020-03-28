@@ -51,7 +51,7 @@ public class TestCqlToMatXml {
         assertEquals(1,test1.getArgumentList().size());
         assertEquals("Test_1",test1.getArgumentList().get(0).getArgumentName());
         assertEquals("Test \\\" 1",test1.getArgumentList().get(0).getQdmDataType());
-        assertEquals("FHIR Datatype",test1.getArgumentList().get(0).getArgumentType());
+        assertEquals("Test \\\" 1",test1.getArgumentList().get(0).getArgumentType());
 
         CQLFunctions test2 = funs.stream().filter(f -> f.getName().equals("test2")).findFirst().get();
         assertEquals("test2",test2.getName());
@@ -59,7 +59,7 @@ public class TestCqlToMatXml {
         assertEquals(1,test2.getArgumentList().size());
         assertEquals("Test_2",test2.getArgumentList().get(0).getArgumentName());
         assertEquals("Test , 2",test2.getArgumentList().get(0).getQdmDataType());
-        assertEquals("FHIR Datatype",test2.getArgumentList().get(0).getArgumentType());
+        assertEquals("Test , 2",test2.getArgumentList().get(0).getArgumentType());
 
         CQLFunctions test3 = funs.stream().filter(f -> f.getName().equals("test3")).findFirst().get();
         assertEquals("test3",test3.getName());
@@ -67,7 +67,7 @@ public class TestCqlToMatXml {
         assertEquals(2,test3.getArgumentList().size());
         assertEquals("Test_3",test3.getArgumentList().get(0).getArgumentName());
         assertEquals("Test ,\\\" 3",test3.getArgumentList().get(0).getQdmDataType());
-        assertEquals("FHIR Datatype",test3.getArgumentList().get(0).getArgumentType());
+        assertEquals("Test ,\\\" 3",test3.getArgumentList().get(0).getArgumentType());
         assertEquals("Value",test3.getArgumentList().get(1).getArgumentName());
         assertEquals("Integer",test3.getArgumentList().get(1).getQdmDataType());
         assertEquals("Integer",test3.getArgumentList().get(1).getArgumentType());
@@ -78,13 +78,13 @@ public class TestCqlToMatXml {
         assertEquals(3,test4.getArgumentList().size());
         assertEquals("Test_4",test4.getArgumentList().get(0).getArgumentName());
         assertEquals("Test ,\\\" 4",test4.getArgumentList().get(0).getQdmDataType());
-        assertEquals("FHIR Datatype",test4.getArgumentList().get(0).getArgumentType());
+        assertEquals("Test ,\\\" 4",test4.getArgumentList().get(0).getArgumentType());
         assertEquals("b",test4.getArgumentList().get(1).getArgumentName());
         assertEquals("List<\"Medication, Order\">",test4.getArgumentList().get(1).getQdmDataType());
-        assertEquals("FHIR Datatype",test4.getArgumentList().get(1).getArgumentType());
+        assertEquals("List<\"Medication, Order\">",test4.getArgumentList().get(1).getArgumentType());
         assertEquals("c",test4.getArgumentList().get(2).getArgumentName());
         assertEquals("C",test4.getArgumentList().get(2).getQdmDataType());
-        assertEquals("FHIR Datatype",test4.getArgumentList().get(2).getArgumentType());
+        assertEquals("C",test4.getArgumentList().get(2).getArgumentType());
 
     }
 }

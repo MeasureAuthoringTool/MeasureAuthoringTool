@@ -56,6 +56,17 @@ parameter "Product Line" String
 
 context Patient
 
+define function "MedicationRelevantPeriod"(OpioidMed "Medication, Order" ):
+  Interval[start of OpioidMed.relevantPeriod,
+  case
+    when OpioidMed.daysSupplied is not null then start of OpioidMed.relevantPeriod + Quantity { value: OpioidMed.daysSupplied, unit: 'd' }
+    when OpioidMed.daysSupplied is null
+      and OpioidMed.frequency is not null
+      and OpioidMed.dosage is not null then start of OpioidMed.relevantPeriod + Quantity { value: OpioidMed.supply.value / ( "DosesPerDay"(OpioidMed.frequency)* ( OpioidMed.dosage.value / singleton from ( "GetDrugIngredients"(OpioidMed.code).strength.value ) ) ), unit: 'd' }
+    else
+  end of OpioidMed.relevantPeriod
+  end]
+
 define "Denominator":
   "Initial Population"
    /* Logic update 9.27.19

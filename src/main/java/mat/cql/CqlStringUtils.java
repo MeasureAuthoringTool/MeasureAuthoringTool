@@ -1,7 +1,11 @@
 package mat.cql;
 
+import mat.client.shared.MatRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.UUID;
 
 /**
@@ -10,6 +14,11 @@ import java.util.UUID;
 public class CqlStringUtils {
     public static final char TICK = '\'';
     public static final char QUOTE = '"';
+    public static final char NEW_LINE = '\n';
+    public static final String BLOCK_COMMENT_START = "/*";
+    public static final String BLOCK_COMMENT_END = "*/";
+    public static final String LINE_COMMENT = "//";
+    private StringBuilder append;
 
 
     /**
@@ -89,12 +98,12 @@ public class CqlStringUtils {
         int end;
         int parsed = start + 1;
 
-        while((end = indexOf(source, boundary, parsed)) != -1) {
+        while ((end = indexOf(source, boundary, parsed)) != -1) {
             if (escapeChar == null) {
                 break;
-            } else{
-                String candidateEscapeChar = source.substring(end - (escapeChar.length() -1),end + 1);
-                if (StringUtils.equals(candidateEscapeChar,escapeChar)) {
+            } else {
+                String candidateEscapeChar = source.substring(end - (escapeChar.length() - 1), end + 1);
+                if (StringUtils.equals(candidateEscapeChar, escapeChar)) {
                     parsed = end + 1; //Find next boundary.
                 } else {
                     break;
@@ -134,12 +143,12 @@ public class CqlStringUtils {
      */
     public static ParseResult nextCharMatching(String source,
                                                int indexStart,
-                                               char ... matchingChars) {
+                                               char... matchingChars) {
         int index = -1;
         char c = 0;
 
         for (int i = indexStart; i < source.length(); i++) {
-            if (contains(c = source.charAt(i),matchingChars)) {
+            if (contains(c = source.charAt(i), matchingChars)) {
                 index = i;
                 break;
             }
@@ -149,12 +158,12 @@ public class CqlStringUtils {
 
     public static ParseResult nextCharNotMatching(String source,
                                                   int indexStart,
-                                                  char ... notMatchingChars) {
+                                                  char... notMatchingChars) {
         int index = -1;
         char c = 0;
 
         for (int i = indexStart; i < source.length(); i++) {
-            if (!contains(c = source.charAt(i),notMatchingChars)) {
+            if (!contains(c = source.charAt(i), notMatchingChars)) {
                 index = i;
                 break;
             }
@@ -163,11 +172,11 @@ public class CqlStringUtils {
     }
 
     /**
-     * @param c The char.
+     * @param c     The char.
      * @param chars The chars to check.
      * @return Returns true if c is in chars, otherwise false.
      */
-    public static boolean contains(char c,char[] chars) {
+    public static boolean contains(char c, char[] chars) {
         boolean result = false;
         for (char cc : chars) {
             if (cc == c) {
@@ -226,5 +235,46 @@ public class CqlStringUtils {
      */
     public static String newGuid() {
         return UUID.randomUUID().toString().toLowerCase();
+    }
+
+    public static String removeLineComments(String s) {
+        StringBuilder result = new StringBuilder();
+        //If line is whitespace remove line.
+        //else remove from comment onwards in line.
+        try (StringReader sr = new StringReader(s);) {
+            BufferedReader reader = new BufferedReader(new StringReader(s));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                int commentStart = line.indexOf(LINE_COMMENT);
+                boolean ignore = false;
+                if (commentStart != -1) {
+                    line = line.substring(0, commentStart);
+                    if (StringUtils.isBlank(line)) {
+                        ignore = true;
+                    }
+                }
+                if (!ignore) {
+                    result.append((result.length() == 0 ? "" : NEW_LINE) + line);
+                }
+            }
+        } catch (IOException ioe) {
+            throw new IllegalStateException("IOException occurred in removeLineComments.");
+        }
+        return result.toString();
+    }
+
+    public static String removeCqlBlockComments(String s) {
+        StringBuilder result = new StringBuilder(s);
+        int start;
+
+        while ((start = result.indexOf(BLOCK_COMMENT_START, 0)) != -1) {
+            int end = result.indexOf(BLOCK_COMMENT_END, start + BLOCK_COMMENT_START.length());
+            if (areValidAscendingIndexes(end)) {
+                result.replace(start, end + BLOCK_COMMENT_END.length(), "");
+            } else {
+                throw new IllegalArgumentException("Could not find an ending block comment.");
+            }
+        }
+        return result.toString();
     }
 }

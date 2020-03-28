@@ -324,6 +324,9 @@ define function "test2"(Test_2 "Test , 2" ):
 define function "test3"(Test_3 "Test ,\" 3" , Value Integer ):
   RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))
 
+define function "test4"(Test_4 "Test ,\" 4" , b List<"Medication, Order"> ,c "C"):
+  RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))
+
 define function "RolloutIntervals"(Intervals List<Interval<DateTime>> ):
   RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))
 

@@ -24,9 +24,12 @@ import static mat.cql.CqlStringUtils.chomp1;
 import static mat.cql.CqlStringUtils.indexOf;
 import static mat.cql.CqlStringUtils.newGuid;
 import static mat.cql.CqlStringUtils.nextCharMatching;
+import static mat.cql.CqlStringUtils.nextCharNotMatching;
 import static mat.cql.CqlStringUtils.nextNonWhitespace;
 import static mat.cql.CqlStringUtils.nextQuotedString;
 import static mat.cql.CqlStringUtils.nextTickedString;
+import static mat.cql.CqlStringUtils.removeCqlBlockComments;
+import static mat.cql.CqlStringUtils.removeLineComments;
 import static mat.cql.CqlStringUtils.trimUrn;
 
 /**
@@ -38,6 +41,7 @@ import static mat.cql.CqlStringUtils.trimUrn;
 @Slf4j
 public class CqlToMatXml {
     private static final Map<String, String> nameToGlobalLibId = new HashMap<>();
+
     static {
         //TO DO move this into properties config or a DB lookup eventually.
         nameToGlobalLibId.put("NCQA_Common", "NCQA-Common-FHIR4-5-1-000");
@@ -90,6 +94,10 @@ public class CqlToMatXml {
 
     public CQLModel convert() throws MatException {
         try {
+            //Remove all comments.
+            convertedCql = removeCqlBlockComments(convertedCql);
+            convertedCql = removeLineComments(convertedCql);
+
             //Populate root object first:
             processLibraryTag();
             processContext();
@@ -114,9 +122,9 @@ public class CqlToMatXml {
      */
     private void processLibraryTag() {
         //library CWP_HEDIS_2020_CARSON version '1.0.000'
-        int endFirstLine = indexOf(convertedCql,NEWLINE,0);
+        int endFirstLine = indexOf(convertedCql, NEWLINE, 0);
         if (areValidAscendingIndexes(endFirstLine)) {
-            String firstLine = convertedCql.substring(0,endFirstLine);
+            String firstLine = convertedCql.substring(0, endFirstLine);
             if (!firstLine.startsWith(LIB_TOKEN)) {
                 throw new IllegalArgumentException("First line did not start with " + LIB_TOKEN);
             } else {
@@ -380,45 +388,59 @@ public class CqlToMatXml {
     private List<CQLFunctionArgument> parseArguments(String argumentString) {
         //Inpatient_Encounter "Encounter, Performed" , ARG_2 "ARG 2 NAME"
         //x List<String> , y List<Integer>
+        //define function "test3"(Test_4 "Test ,\" 4" , b List<“Medication, Order”> ,c "C"):
         var result = new ArrayList<CQLFunctionArgument>();
 
         int parsed = 0;
-        while (parsed < argumentString.length()) {
+        while (parsed != -1 &&
+                parsed < argumentString.length()) {
             int firstSpace = indexOf(argumentString, SPACE, parsed);
-            ParseResult nextNonWS = nextNonWhitespace(argumentString, firstSpace + 1);
             String argName = argumentString.substring(parsed, firstSpace);
-            String qdmType;
+            ParseResult qdmType = parseNextQdmType(argumentString, firstSpace + 1);
 
-            if (nextNonWS.getEndIndex() == -1) {
-                throw new IllegalArgumentException("Invalid argument string encountered: " + argumentString);
-            } else if (StringUtils.equals(nextNonWS.getString(), "" + QUOTE)) {
-                //Case where type is a quoted string. e.g. Inpatient_Encounter "Encounter, Performed"
-                ParseResult nextQuoted = nextQuotedString(argumentString, firstSpace);
-                qdmType = nextQuoted.getString();
-                int nextArgStart = CqlStringUtils.nextCharNotMatching(argumentString,
-                        nextQuoted.getEndIndex() + 1,
-                        SPACE,COMMA).getEndIndex();
-               parsed = nextArgStart == -1 ? argumentString.length() : nextArgStart;
+            if (areValidAscendingIndexes(firstSpace, qdmType.getEndIndex())) {
+                CQLFunctionArgument argument = new CQLFunctionArgument();
+                argument.setId(newGuid());
+                argument.setArgumentName(argName);
+                argument.setQdmDataType(qdmType.getString());
+                argument.setArgumentType(argumentTypeFromQdmType(argument.getQdmDataType()));
+                result.add(argument);
             } else {
-                //Case where type is not a quoted string. e.g. y List<Integer>
-                ParseResult endArgName = nextCharMatching(argumentString,
-                        nextNonWS.getEndIndex() + 1,
-                        COMMA,SPACE,NEWLINE);
-                qdmType = argumentString.substring(nextNonWS.getEndIndex(), endArgName.getEndIndex());
-                int nextArgStart = CqlStringUtils.nextCharNotMatching(argumentString,
-                        endArgName.getEndIndex() + 1,
-                        SPACE,COMMA).getEndIndex();
-                parsed = nextArgStart == -1 ? argumentString.length() : nextArgStart;
+                throw new IllegalArgumentException("Invalid argument encountered: " + argumentString);
             }
 
-            CQLFunctionArgument argument = new CQLFunctionArgument();
-            argument.setId(newGuid());
-            argument.setArgumentName(argName);
-            argument.setQdmDataType(qdmType);
-            argument.setArgumentType("FHIR Datatype");
-            result.add(argument);
+            parsed = nextCharNotMatching(argumentString,qdmType.getEndIndex(),COMMA,SPACE).getEndIndex();
         }
         return result;
+    }
+
+    private ParseResult parseNextQdmType(String arguments, int startIndex) {
+        StringBuilder result = new StringBuilder();
+        ParseResult nextNonSpace = nextNonWhitespace(arguments, startIndex);
+
+        boolean openQuote = false;
+        int endIndex = -1;
+        outer: for (int i = nextNonSpace.getEndIndex(); i < arguments.length(); i++) {
+            char c = arguments.charAt(i);
+            switch (c){
+                case QUOTE:
+                    ParseResult pr = nextQuotedString(arguments, i - 1);
+                    if (result.length() != 0) {
+                        result.append(QUOTE + pr.getString() + QUOTE);
+                    } else {
+                        result.append(pr.getString());
+                    }
+                    i = pr.getEndIndex();
+                    break;
+                case SPACE:
+                    endIndex = i;
+                    break outer;
+                default:
+                    result.append(c);
+                    break;
+            }
+        }
+        return new ParseResult(result.toString(), endIndex == -1 ? arguments.length() : endIndex);
     }
 
     /**
@@ -507,5 +529,21 @@ public class CqlToMatXml {
         ParseResult firstQuotedString = nextQuotedString(convertedCql, startIndex);
         int functionIndex = indexOf(convertedCql, FUNCTION_TOKEN, startIndex);
         return functionIndex > 0 && firstQuotedString.getEndIndex() > functionIndex;
+    }
+
+    private String argumentTypeFromQdmType(String qdmType) {
+        //TO DO: This needs some refinement once we figure out exactly that this is. Need stories for it.
+        switch (qdmType) {
+            case "Date":
+            case "DateTime":
+            case "Decimal":
+            case "Integer":
+            case "Ratio":
+            case "String":
+            case "Time":
+                return qdmType;
+            default:
+                return "FHIR Datatype";
+        }
     }
 }

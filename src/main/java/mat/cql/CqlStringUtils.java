@@ -72,6 +72,10 @@ public class CqlStringUtils {
         return nextCharBoundary(source, QUOTE, "\\" + QUOTE, startIndex);
     }
 
+    public static ParseResult nextCurlyBraceBlock(String source, int startIndex) {
+        return nextCharBoundary(source, QUOTE, "\\" + QUOTE, startIndex);
+    }
+
     /**
      * @param source     The source.
      * @param startIndex The start index.

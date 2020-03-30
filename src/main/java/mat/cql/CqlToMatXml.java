@@ -30,7 +30,6 @@ import static mat.cql.CqlStringUtils.nextTickedString;
 import static mat.cql.CqlStringUtils.removeCqlBlockComments;
 import static mat.cql.CqlStringUtils.removeCQLLineComments;
 import static mat.cql.CqlStringUtils.trimUrn;
-import static mat.cql.CqlStringUtils.nextBlock;
 
 /**
  * A parser that parses CQL and converts it into Mat XML.
@@ -63,8 +62,6 @@ public class CqlToMatXml {
     private static final char SPACE = ' ';
     private static final char OPEN_PAREN = '(';
     private static final char CLOSE_PAREN = ')';
-    private static final char OPEN_BRACE = '{';
-    private static final char CLOSE_BRACE = '}';
 
     private static final String LIB_TOKEN = "library ";
     private static final String INCLUDE_TOKEN = NEWLINE + "include ";
@@ -411,48 +408,25 @@ public class CqlToMatXml {
                 throw new IllegalArgumentException("Invalid argument encountered: " + argumentString);
             }
 
-            parsed = nextCharNotMatching(argumentString, qdmType.getEndIndex(), COMMA, SPACE).getEndIndex();
+            parsed = nextCharNotMatching(argumentString,qdmType.getEndIndex(),COMMA,SPACE).getEndIndex();
         }
         return result;
     }
 
     private ParseResult parseNextQdmType(String arguments, int startIndex) {
-        // Tuple case:
-        //        List<Tuple {
-        //            rxNormCode Code,
-        //            doseQuantity Quantity,
-        //            dosesPerDay Decimal
-        //        }>
-
         StringBuilder result = new StringBuilder();
         ParseResult nextNonSpace = nextNonWhitespace(arguments, startIndex);
 
         int endIndex = -1;
-        outer:
-        for (int i = nextNonSpace.getEndIndex(); i < arguments.length(); i++) {
+        outer: for (int i = nextNonSpace.getEndIndex(); i < arguments.length(); i++) {
             char c = arguments.charAt(i);
-            switch (c) {
+            switch (c){
                 case QUOTE:
                     ParseResult pr = nextQuotedString(arguments, i - 1);
                     result.append(QUOTE + pr.getString() + QUOTE);
                     i = pr.getEndIndex();
                     break;
                 case SPACE:
-                    //Handle tuples
-                    if (StringUtils.endsWith(result.toString(), "Tuple") &&
-                            arguments.indexOf("{", i) == i + 1) {
-                        ParseResult block = nextBlock(arguments, OPEN_BRACE, CLOSE_BRACE, i);
-                        if (block.getEndIndex() != -1) {
-                            result.append(" " + block.getString());
-                            i = block.getEndIndex();
-                        } else {
-                            throw new IllegalArgumentException("Invalid tuple encountered: " + arguments);
-                        }
-                    } else {
-                        endIndex = i;
-                        break outer;
-                    }
-                    break;
                 case COMMA:
                     endIndex = i;
                     break outer;

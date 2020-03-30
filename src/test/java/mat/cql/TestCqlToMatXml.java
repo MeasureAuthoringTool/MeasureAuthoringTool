@@ -85,23 +85,6 @@ public class TestCqlToMatXml {
         assertEquals("c",test4.getArgumentList().get(2).getArgumentName());
         assertEquals("\"C\"",test4.getArgumentList().get(2).getQdmDataType());
         assertEquals("\"C\"",test4.getArgumentList().get(2).getArgumentType());
-        assertEquals("c",test4.getArgumentList().get(2).getArgumentName());
-        assertEquals("\"C\"",test4.getArgumentList().get(2).getQdmDataType());
-        assertEquals("\"C\"",test4.getArgumentList().get(2).getArgumentType());
 
-        CQLFunctions test5 = funs.stream().filter(f -> f.getName().equals("CalculateMME")).findFirst().get();
-        assertEquals("CalculateMME",test5.getName());
-        assertEquals(1,test5.getArgumentList().size());
-        assertEquals("prescriptions",test5.getArgumentList().get(0).getArgumentName());
-        assertEquals("List<Tuple {\n" +
-                "  rxNormCode Code,\n" +
-                "  doseQuantity Quantity,\n" +
-                "  dosesPerDay Decimal\n" +
-                "}>",test5.getArgumentList().get(0).getQdmDataType());
-        assertEquals("List<Tuple {\n" +
-                "  rxNormCode Code,\n" +
-                "  doseQuantity Quantity,\n" +
-                "  dosesPerDay Decimal\n" +
-                "}>",test5.getArgumentList().get(0).getArgumentType());
     }
 }

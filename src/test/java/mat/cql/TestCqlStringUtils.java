@@ -157,4 +157,36 @@ public class TestCqlStringUtils {
         String clean = CqlStringUtils.removeCQLLineComments(s);
         assertEquals("This is a bunch \nof text spread\n out on a bunch\nof \n lines",clean);
     }
+
+    @Test
+    public void testNextBlock1() {
+        String s = "This is a bunch {of text spread} out on a bunch\nof //NARF    //     asd\n lines";
+        ParseResult result  = CqlStringUtils.nextBlock(s,'{','}',0);
+        assertEquals("{of text spread}",result.getString());
+        assertEquals(31,result.getEndIndex());
+    }
+
+    @Test
+    public void testNextBlock2() {
+        String s =  "This is a bunch {of text {NARF{NARF{NARF}NARF}NARF} s\ndf{g}dfg    \ndfgdfgdf{g}df   {\npread}} out on a bunch\nof //NARF    //     asd\n lines";
+        ParseResult result  = CqlStringUtils.nextBlock(s,'{','}',0);
+        assertEquals("{of text {NARF{NARF{NARF}NARF}NARF} s\ndf{g}dfg    \ndfgdfgdf{g}df   {\npread}}",result.getString());
+        assertEquals(91,result.getEndIndex());
+    }
+
+    @Test
+    public void testNextBlock3() {
+        String s =  "{}";
+        ParseResult result  = CqlStringUtils.nextBlock(s,'{','}',0);
+        assertEquals("{}",result.getString());
+        assertEquals(1,result.getEndIndex());
+    }
+
+    @Test
+    public void testNextBlock4() {
+        String s =  "        {asdasdasd}";
+        ParseResult result  = CqlStringUtils.nextBlock(s,'{','}',0);
+        assertEquals("{asdasdasd}",result.getString());
+        assertEquals(18,result.getEndIndex());
+    }
 }

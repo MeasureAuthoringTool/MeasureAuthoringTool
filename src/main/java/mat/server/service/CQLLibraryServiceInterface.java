@@ -35,9 +35,9 @@ public interface CQLLibraryServiceInterface {
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
 	public SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject);
 
-	String createCQLLookUpTag(String libraryName,String version);
+	String createCQLLookUpTag(String libraryName,String version,boolean isFhir);
 
-	XmlProcessor loadCQLXmlTemplateFile();
+	XmlProcessor loadCQLXmlTemplateFile(boolean isFhir);
 
 	public SaveUpdateCQLResult getCQLData(String id);
 
@@ -51,10 +51,9 @@ public interface CQLLibraryServiceInterface {
 
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
 
-	String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath);
+	String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath, boolean isFhir);
 
-
-	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
+    SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
 
 	SaveCQLLibraryResult draftExistingCQLLibrary(String libraryId, String libraryName) throws MatException;
 

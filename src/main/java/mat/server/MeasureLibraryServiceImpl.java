@@ -1769,7 +1769,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             result.setVersionStr(MeasureUtility.formatVersionText(pkg.getRevisionNumber(), pkg.getVersion()));
             result.setSuccess(true);
             result.setId(pkg.getId());
-            saveMeasureXml(createMeasureXmlModel(pkg, MEASURE), pkg.getId());
+            saveMeasureXml(createMeasureXmlModel(pkg, MEASURE), pkg.getId(), StringUtils.equals("FHIR",model.getMeasureModel()));
             // Adds population nodes to new measures
             updateMeasureXml(model, pkg, existingMeasureScoringType);
             return result;
@@ -2237,7 +2237,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     @Override
-    public final void saveMeasureXml(final MeasureXmlModel measureXmlModel, String measureId) {
+    public final void saveMeasureXml(final MeasureXmlModel measureXmlModel, String measureId, boolean isFhir) {
 
         Measure measure = measureDAO.find(measureId);
         String libraryName = measure.getCqlLibraryName();
@@ -2247,15 +2247,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
             saveExistingNonBlankMeasureXml(measureXmlModel, version, xmlModel);
         } else {
-            saveNewMeasureXml(measureXmlModel, libraryName, version);
+            saveNewMeasureXml(measureXmlModel, libraryName, version, isFhir);
         }
     }
 
-    private void saveNewMeasureXml(MeasureXmlModel measureXmlModel, String libraryName, String version) {
+    private void saveNewMeasureXml(MeasureXmlModel measureXmlModel, String libraryName, String version, boolean isFhir) {
         XmlProcessor processor = new XmlProcessor("<measure> </measure>");
         processor.transform(processor.getOriginalDoc());
         try {
-            String cqlLookUpTag = createNewCqlLookupTag(libraryName, version);
+            String cqlLookUpTag = createNewCqlLookupTag(libraryName, version, isFhir);
             if (StringUtils.isNotBlank(cqlLookUpTag)) {
                 processor.appendNode(cqlLookUpTag, CQL_LOOKUP, "/measure");
 
@@ -2332,10 +2332,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
     }
 
-    private String createNewCqlLookupTag(String libraryName, String version) {
-        XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
+    private String createNewCqlLookupTag(String libraryName, String version,boolean isFhir) {
+        XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile(isFhir);
         return cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)),
-                version, cqlXmlProcessor, "//measure");
+                version,
+                cqlXmlProcessor,
+                "//measure",
+                isFhir);
     }
 
     /**
@@ -5768,7 +5771,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 return result;
             }
 
-            saveMeasureXml(createMeasureXmlModel(pkg, MEASURE), pkg.getId());
+            saveMeasureXml(createMeasureXmlModel(pkg, MEASURE),
+                    pkg.getId(),
+                    StringUtils.equals("FHIR",model.getMeasureModel()));
 
             updateMeasureXml(model, pkg, existingMeasureScoringType);
 

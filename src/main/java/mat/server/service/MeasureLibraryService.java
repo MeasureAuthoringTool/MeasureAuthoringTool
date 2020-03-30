@@ -105,7 +105,7 @@ public interface MeasureLibraryService {
 	 */
 	QualityDataModelWrapper getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
-	
+
 	/**
 	 * Gets the max e measure id.
 	 * 
@@ -221,7 +221,7 @@ public interface MeasureLibraryService {
 	 * @param measureXmlModel
 	 *            the measure xml model
 	 */
-	void saveMeasureXml(MeasureXmlModel measureXmlModel, String measureId);
+	void saveMeasureXml(final MeasureXmlModel measureXmlModel, String measureId, boolean isFhir);
 	
 	/**
 	 * Search.

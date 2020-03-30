@@ -257,11 +257,11 @@ public class CQLGeneralInformationView {
 		return modelVersionGroup;
 	}
 
-	public void setGeneralInfoOfLibrary(String libraryName, String version, String qdmVersion , String modelUsed,
+	public void setGeneralInfoOfLibrary(String libraryName, String version, String versionOfModel , String modelUsed,
 			String comments) {
 		getLibraryVersionTextBox().setText(version);
 		getUsingModelTextBox().setText(modelUsed);
-		getModelVersionTextBox().setText(qdmVersion);
+		getModelVersionTextBox().setText(versionOfModel);
 		getLibraryNameTextBox().setText(libraryName);
 		getCommentsTextBox().setText(comments);
 		getCommentsTextBox().setCursorPos(0);

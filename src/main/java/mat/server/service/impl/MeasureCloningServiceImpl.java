@@ -487,7 +487,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
         createNewNodesBasedOnScoring(xmlProcessor, clonedMeasure, scoringTypeId);
 
-        generateCqlLookupTag(xmlProcessor, clonedMeasure);
+        generateCqlLookupTag(xmlProcessor, clonedMeasure, creatingFhir);
 
         updateMeasureXmlWithQdm(xmlProcessor);
 
@@ -497,15 +497,19 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         return true;
     }
 
-    private void generateCqlLookupTag(XmlProcessor xmlProcessor, Measure clonedMeasure) {
+    private void generateCqlLookupTag(XmlProcessor xmlProcessor, Measure clonedMeasure,boolean isFhir) {
         // This section generates CQL Look Up tag from CQLXmlTemplate.xml
 
-        XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
+        XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile(isFhir);
         String libraryName = clonedMeasure.getDescription();
         String version = clonedMeasure.getVersion();
 
+        String cqlLookUpTag = cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)),
+                version,
+                cqlXmlProcessor,
+                "//measure",
+                isFhir);
 
-        String cqlLookUpTag = cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)), version, cqlXmlProcessor, "//measure");
         if (cqlLookUpTag != null && StringUtils.isNotBlank(cqlLookUpTag)) {
             try {
                 xmlProcessor.appendNode(cqlLookUpTag, "cqlLookUp", "/measure");

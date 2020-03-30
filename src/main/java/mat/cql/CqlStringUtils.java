@@ -1,5 +1,6 @@
 package mat.cql;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
@@ -10,6 +11,7 @@ import java.util.UUID;
 /**
  * This class contains methods broken out of CqlToMatXml to make it easier to test.
  */
+@Slf4j
 public class CqlStringUtils {
     public static final char TICK = '\'';
     public static final char QUOTE = '"';
@@ -78,6 +80,30 @@ public class CqlStringUtils {
     public static ParseResult nextTickedString(String source,
                                                int startIndex) {
         return nextCharBoundary(source, TICK, "\\" + TICK, startIndex);
+    }
+
+    public static ParseResult nextBlock(String source, char startBlockChar, char endBlockChar, int startIndex) {
+        ParseResult result = new ParseResult(null, -1);
+        int firstStartBlock = indexOf(source, startBlockChar, startIndex);
+        int firstEndBlock = indexOf(source, endBlockChar, firstStartBlock + 1);
+        int nextStartBlock = firstStartBlock;
+        int nextEndBlock = firstEndBlock;
+
+        if (areValidAscendingIndexes(firstStartBlock, firstEndBlock)) {
+            do {
+                nextStartBlock = indexOf(source, startBlockChar, nextStartBlock + 1);
+                nextEndBlock = nextStartBlock != -1 ? indexOf(source, endBlockChar, nextStartBlock + 1) : nextEndBlock;
+            }
+            while (areValidAscendingIndexes(nextStartBlock, nextEndBlock));
+
+            if (nextEndBlock != firstEndBlock) {
+                firstEndBlock = indexOf(source, endBlockChar, nextEndBlock + 1);
+            }
+            if (areValidAscendingIndexes(firstEndBlock)) {
+                result = new ParseResult(source.substring(firstStartBlock, firstEndBlock + 1), firstEndBlock);
+            }
+        }
+        return result;
     }
 
     /**
@@ -235,7 +261,6 @@ public class CqlStringUtils {
     }
 
     /**
-     *
      * @param cql The cql.
      * @return Removes all line comments (e.g. //sdfsdfsd ) from the cql.
      */

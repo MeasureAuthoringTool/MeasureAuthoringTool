@@ -181,16 +181,12 @@ public class LoginView implements LoginPresenter.LoginViewDisplay  {
 		mainRow.add(mainCol);
 		loginFormContainer.add(mainRow);
 		mainPanel.add(loginFormContainer);
-		
 	}
-	
-	
+
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
-	
-	
 	
 	@Override
 	public Anchor getForgotLoginId() {

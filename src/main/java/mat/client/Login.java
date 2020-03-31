@@ -60,25 +60,37 @@ public class Login extends MainLayout implements EntryPoint {
 
 	public static native void console(String message) /*-{ console.log(message); }-*/;
 
-	private static native String getAppUserId() /*-{
-		$wnd.oktaSignIn.authClient.session.get().then(function (res) {
-			if (res.status === 'ACTIVE') {
-				console.log('res.login, ' + res.login);
-				$wnd.oktaSignIn.authClient.tokenManager.get('idToken').then(function (idToken) {
-					console.log('GWT token claims, ' + idToken.claims.name + ' ' + idToken.claims.email);
-					console.log('MAT User: ' + idToken.claims.preferred_username);
-					return idToken.claims.email;
-				});
-			}});
+	public static void setAppUser(String userName) {
+		console("GWT::setAppUser::" + userName);
+		MatContext.get().setAppUserId(userName);
+	}
+
+	// Not working. The method isn't saving the content.
+	public static native void saveUserName() /*-{
+    	$wnd.userName = $entry(@mat.client.Login::setAppUser(Ljava/lang/String;));
 	}-*/;
-	
+
+	/**
+	 * Retrieves the user token from a JS variable.
+	 * @return User email
+	 */
+	private static native String getUserToken() /*-{
+		alert('gwt '+$wnd.userToken.claims.email);
+		return $wnd.userToken.claims.preferred_username;
+	}-*/;
+
 	/* (non-Javadoc)
 	 * @see mat.client.MainLayout#initEntryPoint()
 	 */
 	@Override
 	protected void initEntryPoint() {
 		MatContext.get().setCurrentModule(ConstantMessages.LOGIN_MODULE);
-//		showLoadingMessage();
+		saveUserName();
+		console("GWT::saveUserName::" + MatContext.get().getAppUserId());
+		console("GWT::getUserToken::" + getUserToken());
+		MatContext.get().setAppUserId(getUserToken());
+
+		showLoadingMessage();
 		content = getContentPanel();
 		initPresenters();
 		loginNewPresenter.go(content);
@@ -141,9 +153,6 @@ public class Login extends MainLayout implements EntryPoint {
 	 * Inits the presenters.
 	 */
 	private void initPresenters() {
-		String appUserId = getAppUserId();
-		MatContext.get().setAppUserId(appUserId);
-		console(appUserId);
 
 		LoginView loginView = new LoginView();
 		loginNewPresenter = new LoginPresenter(loginView);

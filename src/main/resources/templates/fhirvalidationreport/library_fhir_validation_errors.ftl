@@ -16,7 +16,7 @@
                         <tr>
                             <td>${libraryValidationError?counter}</td>
                             <td>${libraryValidationError.locationField!""}</td>
-                            <td>${libraryValidationError.severity!""}</td>
+                            <td>${libraryValidationError.severity?lower_case?capitalize!""}</td>
                             <td>${libraryValidationError.errorDescription!""}</td>
                         </tr>
                     </#list>

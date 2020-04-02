@@ -231,7 +231,7 @@ public interface MeasureService extends RemoteService {
 	 * @param measureXmlModel
 	 *            the measure xml model
 	 */
-	void saveMeasureXml(MeasureXmlModel measureXmlModel, String measureId);
+	void saveMeasureXml(MeasureXmlModel measureXmlModel, String measureId, boolean isFhir);
 	
 	/**
 	 * Search.

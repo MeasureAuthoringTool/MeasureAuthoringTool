@@ -17,7 +17,7 @@
                         <tr>
                             <td>${measureValidationError?counter}</td>
                             <td>${measureValidationError.locationField!""}</td>
-                            <td>${measureValidationError.severity!""}</td>
+                            <td>${measureValidationError.severity?lower_case?capitalize!""}</td>
                             <td>${measureValidationError.errorDescription!""}</td>
                         </tr>
                     </#list>

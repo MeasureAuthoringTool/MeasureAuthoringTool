@@ -233,7 +233,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         String formattedVersion = MeasureUtility.formatVersionText(clonedMeasure.getRevisionNumber(), clonedMeasure.getVersion());
 
         SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(originalXml, measure.getMeasureModel());
-        List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
+
 
         // Create the measureGrouping tag
         clearChildNodes(clonedDoc, MEASURE_GROUPING);
@@ -246,7 +246,12 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         clonedXml.setMeasureId(clonedMeasure.getId());
 
         XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
-        xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
+        if (!creatingFhir) {
+            // Don't do this for fhir. The converted CQL will still have these and they they can't be found when
+            // generating the new mat xml.
+            List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
+            xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
+        }
 
         removeMeasureDetailsNodes(xmlProcessor);
 
@@ -482,7 +487,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
         createNewNodesBasedOnScoring(xmlProcessor, clonedMeasure, scoringTypeId);
 
-        generateCqlLookupTag(xmlProcessor, clonedMeasure);
+        generateCqlLookupTag(xmlProcessor, clonedMeasure, creatingFhir);
 
         updateMeasureXmlWithQdm(xmlProcessor);
 
@@ -492,15 +497,19 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         return true;
     }
 
-    private void generateCqlLookupTag(XmlProcessor xmlProcessor, Measure clonedMeasure) {
+    private void generateCqlLookupTag(XmlProcessor xmlProcessor, Measure clonedMeasure,boolean isFhir) {
         // This section generates CQL Look Up tag from CQLXmlTemplate.xml
 
-        XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
+        XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile(isFhir);
         String libraryName = clonedMeasure.getDescription();
         String version = clonedMeasure.getVersion();
 
+        String cqlLookUpTag = cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)),
+                version,
+                cqlXmlProcessor,
+                "//measure",
+                isFhir);
 
-        String cqlLookUpTag = cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)), version, cqlXmlProcessor, "//measure");
         if (cqlLookUpTag != null && StringUtils.isNotBlank(cqlLookUpTag)) {
             try {
                 xmlProcessor.appendNode(cqlLookUpTag, "cqlLookUp", "/measure");

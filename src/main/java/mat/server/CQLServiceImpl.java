@@ -1029,16 +1029,16 @@ public class CQLServiceImpl implements CQLService {
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
             String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(parentCQLString); //remote call
             result = generateParsedCqlObject(cqlValidationResponse, cqlModel);
-        } else {
+        } else { // QDM
             List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
             result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
-        }
 
-        Iterator<CQLIncludeLibrary> libraryIter = cqlModel.getIncludedLibrarys().keySet().iterator();
-        while (libraryIter.hasNext()) {
-            CQLIncludeLibrary curLibrary = libraryIter.next();
-            if (!cqlModel.getUsingModelVersion().equals(curLibrary.getQdmVersion())) {
-                result.setQDMVersionMatching(false);
+            Iterator<CQLIncludeLibrary> libraryIter = cqlModel.getIncludedLibrarys().keySet().iterator();
+            while (libraryIter.hasNext()) {
+                CQLIncludeLibrary curLibrary = libraryIter.next();
+                if (!cqlModel.getUsingModelVersion().equals(curLibrary.getQdmVersion())) {
+                    result.setQDMVersionMatching(false);
+                }
             }
         }
 

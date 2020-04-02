@@ -1,0 +1,37 @@
+@startuml
+(*)  --> "User selects a convertible measure"
+note right
+    No changes to the enable/disable rules.
+    Prior enable / disable rules for the Convert to FHIR
+    toolbar buttons still function as before.
+end note
+ --> "User clicks 'convert' button"
+--> "Search for draft measures in the measure set/family "
+If "Does draft exist" then
+    --> [Error] "Show generic error alert"
+    -left-> (*)
+else
+    [No error] If "" then
+        --> [draft not found] "convert to FHIR"
+        note right
+         the conversion process will remove
+         any existing FHIR draft measures
+         in the family
+        end note
+'        --> (*)
+    else
+        if "is FHIR draft?"
+            --> [FHIR draft] "Show confirmation \n'<b>Are you sure you want to convert this measure again?\n <b>The existing FHIR measure will be overwritten.'"
+            if "confirmation"
+                --> [Yes] "convert to FHIR"
+                --> (*)
+             else
+                -->[No] (*)
+             Endif
+        else
+            --> [QDM draft] "Show alert '<b>Only one draft per measure family should be allowed.'"
+            -->(*)
+        Endif
+    Endif
+Endif
+@enduml

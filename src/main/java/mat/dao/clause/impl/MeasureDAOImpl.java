@@ -12,11 +12,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Expression;
@@ -47,6 +49,7 @@ import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
 import mat.shared.MeasureSearchModel;
@@ -57,8 +60,9 @@ import mat.shared.SearchModel.VersionType;
 @Repository("measureDAO")
 public class MeasureDAOImpl extends GenericDAO<Measure, String> implements MeasureDAO {
 
+    private static final Log logger = LogFactory.getLog(MeasureDAOImpl.class);
+    private static final long LOCK_THRESHOLD = TimeUnit.MINUTES.toMillis(3); // 3 minutes
     private static final int MAX_PAGE_SIZE = Integer.MAX_VALUE;
-
     private static final String OWNER = "owner";
     private static final String DRAFT = "draft";
     private static final String VERSION = "version";
@@ -71,6 +75,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     private static final String MEASURE_SCORING_TYPE = "measureScoring";
     private static final String SECURITY_ROLE_USER = "3";
     private static final String MEASURE_MODEL = "measureModel";
+    private static final String ID = "id";
 
     @Autowired
     private UserDAO userDAO;
@@ -78,41 +83,6 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     public MeasureDAOImpl(@Autowired SessionFactory sessionFactory) {
         setSessionFactory(sessionFactory);
     }
-
-    class MeasureComparator implements Comparator<Measure> {
-
-        @Override
-        public int compare(Measure o1, Measure o2) {
-            // 1 if either isDraft
-            // 2 version
-            if (o1.isDraft()) {
-                return -1;
-            }
-            return o2.isDraft() ? 1 : compareDoubleStrings(o1.getVersion(), o2.getVersion());
-        }
-
-        private int compareDoubleStrings(String s1, String s2) {
-            final Double d1 = Double.parseDouble(s1);
-            final Double d2 = Double.parseDouble(s2);
-            return d2.compareTo(d1);
-        }
-    }
-
-    /*
-     * assumption: each measure in this list is part of the same measure set
-     */
-    class MeasureListComparator implements Comparator<List<Measure>> {
-        @Override
-        public int compare(List<Measure> o1, List<Measure> o2) {
-            final String v1 = o1.get(0).getDescription();
-            final String v2 = o2.get(0).getDescription();
-            return v1.compareToIgnoreCase(v2);
-        }
-    }
-
-    private static final Log logger = LogFactory.getLog(MeasureDAOImpl.class);
-
-    private static final long LOCK_THRESHOLD = TimeUnit.MINUTES.toMillis(3); // 3 minutes
 
     public MeasureDAOImpl() {
     }
@@ -124,7 +94,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
         final Root<Measure> root = query.from(Measure.class);
 
-        query.select(root).where(cb.equal(root.get(OWNER).get("id"), user.getId()));
+        query.select(root).where(cb.equal(root.get(OWNER).get(ID), user.getId()));
 
         final List<Measure> measureList = session.createQuery(query).getResultList();
 
@@ -138,8 +108,8 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
         final Root<User> root = countQuery.from(User.class);
 
-        countQuery = countQuery.select(cb.count(root)).where(cb.and(cb.equal(root.get("securityRole").get("id"), SECURITY_ROLE_USER),
-                cb.notEqual(root.get("id"), LoggedInUserUtil.getLoggedInUser())));
+        countQuery = countQuery.select(cb.count(root)).where(cb.and(cb.equal(root.get("securityRole").get(ID), SECURITY_ROLE_USER),
+                cb.notEqual(root.get(ID), LoggedInUserUtil.getLoggedInUser())));
 
         final Long count = session.createQuery(countQuery).getSingleResult();
 
@@ -157,7 +127,6 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         dto.setPackaged(measure.getExportedDate() != null);
         dto.setOwnerUserId(measure.getOwner().getId());
         dto.setMeasureModel(measure.getMeasureModel());
-        dto.setConvertedToFhir(measure.isConvertedToFhir());
         dto.setDraft(measure.isDraft());
         dto.setVersion(measure.getVersion());
         dto.setReleaseVersion(measure.getReleaseVersion());
@@ -228,7 +197,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
         final Root<Measure> root = query.from(Measure.class);
 
-        query.select(root).where(cb.equal(root.get(OWNER).get("id"), measureOwnerId));
+        query.select(root).where(cb.equal(root.get(OWNER).get(ID), measureOwnerId));
 
         return session.createQuery(query).getResultList();
     }
@@ -285,7 +254,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
         final Root<Measure> root = query.from(Measure.class);
         logger.info("Query Using Measure Set Id:" + measureSetId);
-        query.select(root).where(cb.and(cb.equal(root.get(MEASURE_SET).get("id"), measureSetId), cb.not(root.get(DRAFT))));
+        query.select(root).where(cb.and(cb.equal(root.get(MEASURE_SET).get(ID), measureSetId), cb.not(root.get(DRAFT))));
         query.orderBy(cb.asc(root.get(VERSION)));
 
         return session.createQuery(query).getResultList();
@@ -311,10 +280,10 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
     private Predicate buildPredicateForMaxVersion(String measureSetId, String ownerId, CriteriaBuilder cb, Root<Measure> root) {
         // add check to filter Draft's version number when finding max version number.
-        final Predicate p1 = cb.and(cb.equal(root.get(MEASURE_SET).get("id"), measureSetId), cb.not(root.get(DRAFT)));
+        final Predicate p1 = cb.and(cb.equal(root.get(MEASURE_SET).get(ID), measureSetId), cb.not(root.get(DRAFT)));
         Predicate p2 = null;
         if (StringUtils.isNotBlank(ownerId)) {
-            p2 = cb.equal(root.get(OWNER).get("id"), ownerId);
+            p2 = cb.equal(root.get(OWNER).get(ID), ownerId);
         }
 
         return (p2 != null) ? cb.and(p1, p2) : p1;
@@ -340,7 +309,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
             final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
             final Root<Measure> root = query.from(Measure.class);
 
-            query.select(root).where(root.get(MEASURE_SET).get("id").in(measureSetIds));
+            query.select(root).where(root.get(MEASURE_SET).get(ID).in(measureSetIds));
 
             ms = session.createQuery(query).getResultList();
         }
@@ -370,7 +339,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final CriteriaQuery<MeasureShare> query = cb.createQuery(MeasureShare.class);
         final Root<MeasureShare> root = query.from(MeasureShare.class);
 
-        query.select(root).where(cb.equal(root.get(MEASURE).get("id"), measureId));
+        query.select(root).where(cb.equal(root.get(MEASURE).get(ID), measureId));
 
         return session.createQuery(query).getResultList();
     }
@@ -422,9 +391,9 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     private Predicate getPredicateForShareList(String userId, String measureId, HashMap<String, MeasureShareDTO> userIdDTOMap,
                                                CriteriaBuilder cb, Root<MeasureShare> root) {
         if (StringUtils.isNotBlank(userId)) {
-            return cb.equal(root.get(SHARE_USER).get("id"), userId);
+            return cb.equal(root.get(SHARE_USER).get(ID), userId);
         }
-        return cb.and(root.get(SHARE_USER).get("id").in(userIdDTOMap.keySet()), cb.equal(root.get(MEASURE).get("id"), measureId));
+        return cb.and(root.get(SHARE_USER).get(ID).in(userIdDTOMap.keySet()), cb.equal(root.get(MEASURE).get(ID), measureId));
     }
 
     private List<MeasureShare> getShareList(String userId, String measureId, HashMap<String, MeasureShareDTO> userIdDTOMap) {
@@ -455,7 +424,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
             query.where(getSearchByMeasureOrOwnerNamePredicate(searchTextLC, cb, root));
         }
 
-        query.orderBy(cb.desc(root.get(MEASURE_SET).get("id")), cb.desc(root.get(DRAFT)), cb.desc(root.get(VERSION)));
+        query.orderBy(cb.desc(root.get(MEASURE_SET).get(ID)), cb.desc(root.get(DRAFT)), cb.desc(root.get(VERSION)));
 
         final ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<>();
         final List<Measure> measureResultList = session.createQuery(query).getResultList();
@@ -476,16 +445,17 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     private List<Measure> fetchMeasureResultListForCritera(User user, MeasureSearchModel measureSearchModel) {
         final Session session = getSessionFactory().getCurrentSession();
         final CriteriaBuilder cb = session.getCriteriaBuilder();
-        final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
-        final Root<Measure> root = query.from(Measure.class);
+        final CriteriaQuery<Measure> criteriaQuery = cb.createQuery(Measure.class);
+        final Root<Measure> root = criteriaQuery.from(Measure.class);
+        root.fetch("measureDetails", JoinType.LEFT);
 
-        final Predicate predicate = buildPredicateForMeasureSearch(user.getId(), cb, root, query, measureSearchModel);
+        final Predicate predicate = buildPredicateForMeasureSearch(user.getId(), cb, root, criteriaQuery, measureSearchModel);
 
-        query.select(root).where(predicate).distinct(true);
+        criteriaQuery.select(root).where(predicate).distinct(true);
 
-        List<Measure> measureResultList = session.createQuery(query).getResultList();
+        List<Measure> measureResultList = session.createQuery(criteriaQuery).getResultList();
 
-        if (isMeasureSetSearch(user,measureSearchModel)) {
+        if (isMeasureSetSearch(user, measureSearchModel)) {
             measureResultList = getAllMeasuresInSet(measureResultList);
         }
 
@@ -493,10 +463,10 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         return measureResultList;
     }
 
-    private boolean isMeasureSetSearch(User u,MeasureSearchModel m) {
+    private boolean isMeasureSetSearch(User u, MeasureSearchModel m) {
         boolean isAdvancedSearch = checkIfAdvancedSearchWasUsed(m);
         return m.getModelType() == SearchModel.ModelType.ALL &&
-                !StringUtils.equals(u.getSecurityRole().getId(),"2") &&
+                !StringUtils.equals(u.getSecurityRole().getId(), "2") &&
                 !isAdvancedSearch;
     }
 
@@ -562,12 +532,12 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
         if (StringUtils.isNotBlank(measureSearchModel.getModifiedOwner())) {
             final Subquery<String> subQuery = buildUserSubQuery(cb, query, measureSearchModel.getModifiedOwner().toLowerCase());
-            predicatesList.add(cb.in(root.get("lastModifiedBy").get("id")).value(subQuery));
+            predicatesList.add(cb.in(root.get("lastModifiedBy").get(ID)).value(subQuery));
         }
 
         if (StringUtils.isNotBlank(measureSearchModel.getOwner())) {
             final Subquery<String> subQuery = buildUserSubQuery(cb, query, measureSearchModel.getOwner().toLowerCase());
-            predicatesList.add(cb.in(root.get(OWNER).get("id")).value(subQuery));
+            predicatesList.add(cb.in(root.get(OWNER).get(ID)).value(subQuery));
         }
 
         return cb.and(predicatesList.toArray(new Predicate[predicatesList.size()]));
@@ -577,7 +547,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final Subquery<String> subQuery = query.subquery(String.class);
         final Root<User> subRoot = subQuery.from(User.class);
 
-        subQuery.select(subRoot.get("id")).where(cb.or(
+        subQuery.select(subRoot.get(ID)).where(cb.or(
                 cb.like(cb.lower(subRoot.get(FIRST_NAME)), "%" + userName + "%"),
                 cb.like(cb.lower(subRoot.get(LAST_NAME)), "%" + userName + "%")));
 
@@ -692,7 +662,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final CriteriaQuery<Timestamp> query = cb.createQuery(Timestamp.class);
         final Root<Measure> root = query.from(Measure.class);
 
-        query.select(root.get("lockedOutDate")).where(cb.equal(root.get("id"), measureId));
+        query.select(root.get("lockedOutDate")).where(cb.equal(root.get(ID), measureId));
 
         final Timestamp lockedOutDate = session.createQuery(query).getSingleResult();
 
@@ -716,7 +686,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
         update.set("lockedUser", null);
         update.set("lockedOutDate", null);
-        update.where(cb.equal(root.get("id"), m.getId()));
+        update.where(cb.equal(root.get(ID), m.getId()));
 
         final int rowCount = session.createQuery(update).executeUpdate();
         logger.info("Updated Private column" + rowCount);
@@ -845,12 +815,6 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         return retList;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see mat.dao.clause.MeasureDAO#updatePrivateColumnInMeasure(java.lang.String,
-     * boolean)
-     */
     @Override
     public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
         final Session session = getSessionFactory().getCurrentSession();
@@ -859,7 +823,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final Root<Measure> root = update.from(Measure.class);
 
         update.set("isPrivate", isPrivate);
-        update.where(cb.equal(root.get("id"), measureId));
+        update.where(cb.equal(root.get(ID), measureId));
 
         final int rowCount = session.createQuery(update).executeUpdate();
         logger.info("Updated Private column" + rowCount);
@@ -872,7 +836,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final CriteriaQuery<Long> query = cb.createQuery(Long.class);
         final Root<Measure> root = query.from(Measure.class);
 
-        query.select(cb.countDistinct(root)).where(cb.equal(root.get("id"), measureId));
+        query.select(cb.countDistinct(root)).where(cb.equal(root.get(ID), measureId));
 
         return (session.createQuery(query).getSingleResult() > 0);
     }
@@ -889,10 +853,10 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final Subquery<Measure> sq = query.subquery(Measure.class);
         final Root<Measure> lib = sq.from(Measure.class);
 
-        sq.select(lib.get("id")).where(cb.equal(lib.get(MEASURE_SET).get("id"), measureSetId));
+        sq.select(lib.get(ID)).where(cb.equal(lib.get(MEASURE_SET).get(ID), measureSetId));
 
-        query.select(root).where(cb.and(cb.equal(root.get(SHARE_USER).get("id"), userID)),
-                cb.in(root.get(MEASURE).get("id")).value(sq));
+        query.select(root).where(cb.and(cb.equal(root.get(SHARE_USER).get(ID), userID)),
+                cb.in(root.get(MEASURE).get(ID)).value(sq));
 
         final List<MeasureShare> shareList = session.createQuery(query).getResultList();
 
@@ -935,7 +899,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         }
 
         if (measureSearchModel.getMeasureSetId() != null) {
-            predicatesList.add(cb.equal(root.get(MEASURE_SET).get("id"), measureSearchModel.getMeasureSetId()));
+            predicatesList.add(cb.equal(root.get(MEASURE_SET).get(ID), measureSearchModel.getMeasureSetId()));
         }
 
         if (StringUtils.isNotBlank(measureSearchModel.getSearchTerm())) {
@@ -955,7 +919,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final CriteriaQuery<String> query = cb.createQuery(String.class);
         final Root<Measure> root = query.from(Measure.class);
 
-        query.select(root.get("description")).where(cb.and(cb.equal(root.get(MEASURE_SET).get("id"), measureSetId),
+        query.select(root.get("description")).where(cb.and(cb.equal(root.get(MEASURE_SET).get(ID), measureSetId),
                 cb.equal(root.get(DRAFT), true)));
 
         try {
@@ -965,4 +929,62 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         }
     }
 
+    @Override
+    public Optional<Measure> getDraftMeasureIfExists(String measureSetId) {
+        final Session session = getSessionFactory().getCurrentSession();
+        final CriteriaBuilder cb = session.getCriteriaBuilder();
+        final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
+        final Root<Measure> root = query.from(Measure.class);
+
+        query.select(root).where(cb.and(cb.equal(root.get(MEASURE_SET).get(ID), measureSetId),
+                cb.equal(root.get(DRAFT), true)));
+
+        // Measure set can have only 0 or 1 draft measures in it.
+        List<Measure> resultList = session.createQuery(query).setMaxResults(1).getResultList();
+        return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.get(0));
+    }
+
+    @Override
+    public int deleteFhirMeasuresBySetId(String measureSetId) {
+        final Session session = getSessionFactory().getCurrentSession();
+        final CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaDelete<Measure> deleteCriteria = cb.
+                createCriteriaDelete(Measure.class);
+        Root<Measure> root = deleteCriteria.from(Measure.class);
+
+        Predicate wherePredicate = cb.and(cb.equal(root.get(MEASURE_SET).get(ID), measureSetId), cb.equal(root.get(MEASURE_MODEL), ModelTypeHelper.FHIR));
+
+        return session.createQuery(deleteCriteria.where(wherePredicate)).executeUpdate();
+    }
+
+    class MeasureComparator implements Comparator<Measure> {
+
+        @Override
+        public int compare(Measure o1, Measure o2) {
+            // 1 if either isDraft
+            // 2 version
+            if (o1.isDraft()) {
+                return -1;
+            }
+            return o2.isDraft() ? 1 : compareDoubleStrings(o1.getVersion(), o2.getVersion());
+        }
+
+        private int compareDoubleStrings(String s1, String s2) {
+            final Double d1 = Double.parseDouble(s1);
+            final Double d2 = Double.parseDouble(s2);
+            return d2.compareTo(d1);
+        }
+    }
+
+    /*
+     * assumption: each measure in this list is part of the same measure set
+     */
+    class MeasureListComparator implements Comparator<List<Measure>> {
+        @Override
+        public int compare(List<Measure> o1, List<Measure> o2) {
+            final String v1 = o1.get(0).getDescription();
+            final String v2 = o2.get(0).getDescription();
+            return v1.compareToIgnoreCase(v2);
+        }
+    }
 }

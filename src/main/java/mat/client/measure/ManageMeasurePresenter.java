@@ -53,6 +53,7 @@ import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
+import mat.client.measure.service.DraftFhirMeasureSearchResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirMeasureRemoteService;
 import mat.client.measure.service.FhirMeasureRemoteServiceAsync;
@@ -76,6 +77,7 @@ import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
 import mat.client.util.FeatureFlagConstant;
 import mat.client.util.MatTextBox;
+import mat.model.clause.ModelTypeHelper;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
@@ -96,6 +98,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     private static final String UNHANDLED_EXCEPTION = "Unhandled Exception: ";
 
     private final Logger logger = Logger.getLogger("MAT");
+
+    private final String currentUserRole = MatContext.get().getLoggedInUserRole();
 
     private List<String> bulkExportMeasureIds;
 
@@ -135,8 +139,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private ManageMeasureShareModel currentShareDetails;
 
-    final String currentUserRole = MatContext.get().getLoggedInUserRole();
-
     private DetailDisplay detailDisplay;
 
     private DetailDisplay compositeDetailDisplay;
@@ -151,11 +153,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private boolean isMeasureVersioned = false;
 
-    boolean isMeasureSearchFilterVisible = true;
+    private boolean isMeasureSearchFilterVisible = true;
 
     private static FocusableWidget subSkipContentHolder;
 
-    boolean isLoading = false;
+    private boolean isLoading = false;
 
     private ManageMeasureSearchModel manageMeasureSearchModel;
 
@@ -621,7 +623,10 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void convertMeasureFhir(Result object) {
-        if (showAlertAndReturnIfNotUMLSLoggedIn()) return;
+        if (showAlertAndReturnIfNotUMLSLoggedIn()) {
+            logger.log(Level.WARNING, "User is not logged in UMSL");
+            return;
+        }
         logger.log(Level.INFO, "Please wait. Conversion is in progress...");
 
         if (!MatContext.get().getLoadingQueue().isEmpty()) {
@@ -635,7 +640,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             public void onFailure(Throwable caught) {
                 logger.log(Level.SEVERE, "Error while converting the measure id " + object.getId() + ". Error message: " + caught.getMessage(), caught);
                 setSearchingBusy(false);
-                showFhirConversionError(MatContext.get().getMessageDelegate().getConvertMeasureFailureMessage());
+                showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getConvertMeasureFailureMessage());
                 MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
             }
 
@@ -649,7 +654,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 displaySearch();
             }
         });
-
     }
 
     private void showFhirValidationReport(String measureId, boolean converted) {
@@ -675,7 +679,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         return false;
     }
 
-    private void showFhirConversionError(final String errorMessage) {
+    private void showErrorAlertDialogBox(final String errorMessage) {
         ConfirmationDialogBox errorAlert = new ConfirmationDialogBox(errorMessage, "Return to Measure Library", "Cancel", null, true);
         errorAlert.getNoButton().setVisible(false);
         errorAlert.setObserver(new ConfirmationObserver() {
@@ -1622,11 +1626,28 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onConvertMeasureFhir(Result object) {
-                if (object.isConvertedToFhir()) {
-                    confirmAndConvertFhir(object);
-                } else {
-                    convertMeasureFhir(object);
-                }
+                MatContext.get().getMeasureService().searchDraftMeasure(object.getMeasureSetId(), new AsyncCallback<DraftFhirMeasureSearchResult>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        logger.log(Level.SEVERE, "Error while checking a draft for the measure set " + object.getMeasureSetId() + ". Error message: " + caught.getMessage(), caught);
+                        setSearchingBusy(false);
+                        showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                        MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                    }
+
+                    @Override
+                    public void onSuccess(DraftFhirMeasureSearchResult result) {
+                        logger.log(Level.WARNING, "Draft search result is " + result);
+                        if (!result.isFound()) {
+                            convertMeasureFhir(object);
+                        } else if (ModelTypeHelper.isFhir(result.getMeasureModel())) {
+                            confirmAndConvertFhir(object);
+                        } else {
+                            showErrorAlertDialogBox("Only one draft per measure family should be allowed.");
+                        }
+                    }
+                });
             }
 
         };
@@ -2252,7 +2273,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             public void onVersioned(MeasureVersionEvent event) {
                 displaySearch();
                 if (event.isVersioned()) {
-
                     measureDeletion = false;
                     isMeasureDeleted = false;
                     isMeasureVersioned = true;

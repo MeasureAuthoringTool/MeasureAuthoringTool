@@ -15,6 +15,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferOwnerShipModel;
+import mat.client.measure.service.DraftFhirMeasureSearchResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.GenericResult;
@@ -222,20 +223,7 @@ public interface MeasureLibraryService {
 	 *            the measure xml model
 	 */
 	void saveMeasureXml(final MeasureXmlModel measureXmlModel, String measureId, boolean isFhir);
-	
-	/**
-	 * Search.
-	 * 
-	 * @param searchText
-	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param filter
-	 *            the filter
-	 * @return the manage measure search model
-	 */
+
 	ManageMeasureSearchModel search(MeasureSearchModel advancedSearchModel);
 	
 		
@@ -705,4 +693,6 @@ public interface MeasureLibraryService {
 	SaveUpdateCQLResult saveCQLFile(String measureId, String cql);
 	
 	boolean libraryNameExists(String libraryName, String setId);
+
+    DraftFhirMeasureSearchResult searchDraftMeasure(String measureSetId);
 }

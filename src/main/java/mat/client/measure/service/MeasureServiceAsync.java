@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
@@ -685,4 +684,6 @@ public interface MeasureServiceAsync {
 	void getHumanReadableForMeasureDetails(String currentMeasureId, AsyncCallback<String> asyncCallback);
 	
     void checkIfLibraryNameExists(String libraryName, String setId, AsyncCallback<Boolean> callback);
+
+    void searchDraftMeasure(String measureSetId, AsyncCallback<DraftFhirMeasureSearchResult> asyncCallback);
 }

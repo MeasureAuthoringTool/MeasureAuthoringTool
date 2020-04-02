@@ -985,7 +985,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setMeasureSetId(dto.getMeasureSetId());
         detail.setDraftable(dto.isDraftable());
         detail.setVersionable(dto.isVersionable());
-//        detail.setConvertedToFhir(dto.isConvertedToFhir());
         return detail;
     }
 

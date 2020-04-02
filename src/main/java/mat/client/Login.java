@@ -60,15 +60,15 @@ public class Login extends MainLayout implements EntryPoint {
 
 	public static native void console(String message) /*-{ console.log(message); }-*/;
 
-	public static void setAppUser(String userName) {
-		console("GWT::setAppUser::" + userName);
-		MatContext.get().setAppUserId(userName);
-	}
+//	public static void setAppUser(String userName) {
+//		console("GWT::setAppUser::" + userName);
+//		MatContext.get().setAppUserId(userName);
+//	}
 
-	// Not working. The method isn't saving the content.
-	public static native void saveUserName() /*-{
-    	$wnd.userName = $entry(@mat.client.Login::setAppUser(Ljava/lang/String;));
-	}-*/;
+	// Not working.
+//	public static native void saveUserName() /*-{
+//    	$wnd.userName = $entry(@mat.client.Login::setAppUser(Ljava/lang/String;));
+//	}-*/;
 
 	/**
 	 * Retrieves the user token from a JS variable.
@@ -85,10 +85,10 @@ public class Login extends MainLayout implements EntryPoint {
 	@Override
 	protected void initEntryPoint() {
 		MatContext.get().setCurrentModule(ConstantMessages.LOGIN_MODULE);
-		saveUserName();
-		console("GWT::saveUserName::" + MatContext.get().getAppUserId());
+//		saveUserName();
 		console("GWT::getUserToken::" + getUserToken());
 		MatContext.get().setAppUserId(getUserToken());
+		console("GWT::MatContext::" + MatContext.get().getAppUserId());
 
 		showLoadingMessage();
 		content = getContentPanel();

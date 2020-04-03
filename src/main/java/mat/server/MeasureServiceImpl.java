@@ -14,7 +14,6 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferOwnerShipModel;
-import mat.client.measure.service.DraftFhirMeasureSearchResult;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -542,11 +541,6 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     @Override
     public boolean checkIfLibraryNameExists(String libraryName, String setId) {
         return this.getMeasureLibraryService().libraryNameExists(libraryName, setId);
-    }
-
-    @Override
-    public DraftFhirMeasureSearchResult searchDraftMeasure(String measureSetId) {
-        return this.getMeasureLibraryService().searchDraftMeasure(measureSetId);
     }
 
 }

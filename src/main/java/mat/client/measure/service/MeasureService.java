@@ -616,5 +616,4 @@ public interface MeasureService extends RemoteService {
 
     boolean checkIfLibraryNameExists(String libraryName, String setId);
 
-    DraftFhirMeasureSearchResult searchDraftMeasure(String measureSetId);
 }

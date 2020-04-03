@@ -68,7 +68,7 @@ import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.CQLService;
-import mat.client.measure.service.DraftFhirMeasureSearchResult;
+import mat.client.measure.service.CheckMeasureForConversionResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
@@ -1770,7 +1770,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             result.setVersionStr(MeasureUtility.formatVersionText(pkg.getRevisionNumber(), pkg.getVersion()));
             result.setSuccess(true);
             result.setId(pkg.getId());
-            saveMeasureXml(createMeasureXmlModel(pkg, MEASURE), pkg.getId(), StringUtils.equals("FHIR",model.getMeasureModel()));
+            saveMeasureXml(createMeasureXmlModel(pkg, MEASURE), pkg.getId(), StringUtils.equals("FHIR", model.getMeasureModel()));
             // Adds population nodes to new measures
             updateMeasureXml(model, pkg, existingMeasureScoringType);
             return result;
@@ -2333,7 +2333,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
     }
 
-    private String createNewCqlLookupTag(String libraryName, String version,boolean isFhir) {
+    private String createNewCqlLookupTag(String libraryName, String version, boolean isFhir) {
         XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile(isFhir);
         return cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)),
                 version,
@@ -5778,7 +5778,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             saveMeasureXml(createMeasureXmlModel(pkg, MEASURE),
                     pkg.getId(),
-                    StringUtils.equals("FHIR",model.getMeasureModel()));
+                    StringUtils.equals("FHIR", model.getMeasureModel()));
 
             updateMeasureXml(model, pkg, existingMeasureScoringType);
 
@@ -5960,18 +5960,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public boolean libraryNameExists(String libraryName, String setId) {
         return getCqlService().checkIfLibraryNameExists(libraryName, setId);
-    }
-
-    @Override
-    public DraftFhirMeasureSearchResult searchDraftMeasure(String measureSetId) {
-        DraftFhirMeasureSearchResult result = new DraftFhirMeasureSearchResult();
-        Optional<Measure> draftMeasure = measureDAO.getDraftMeasureIfExists(measureSetId);
-        draftMeasure.ifPresent(measure -> {
-            result.setFound(true);
-            result.setId(measure.getId());
-            result.setMeasureModel(measure.getMeasureModel());
-        });
-        return result;
     }
 
 }

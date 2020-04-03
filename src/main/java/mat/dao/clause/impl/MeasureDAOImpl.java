@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -486,7 +485,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
         if (measureSearchModel.getIsMyMeasureSearch() == MeasureSearchFilterPanel.MY_MEASURES) {
             final Join<Measure, MeasureShare> childJoin = root.join("shares", JoinType.LEFT);
-            predicatesList.add(cb.or(cb.equal(root.get(OWNER).get("id"), userId), cb.equal(childJoin.get(SHARE_USER).get("id"), userId)));
+            predicatesList.add(cb.or(cb.equal(root.get(OWNER).get(ID), userId), cb.equal(childJoin.get(SHARE_USER).get(ID), userId)));
         }
 
         if (StringUtils.isNotBlank(measureSearchModel.getSearchTerm())) {
@@ -573,7 +572,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
             }
         }
 
-        final boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId().equals("3") && (measureSearchModel.getIsMyMeasureSearch() == SearchWidgetWithFilter.ALL);
+        final boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId().equals(SECURITY_ROLE_USER) && (measureSearchModel.getIsMyMeasureSearch() == SearchWidgetWithFilter.ALL);
 
         if (CollectionUtils.isNotEmpty(orderedDTOList)) {
             final List<MeasureShare> shareList = getShareList(user.getId(), null, null);
@@ -725,24 +724,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
     private List<Measure> sortMeasureList(List<Measure> measureResultList) {
         // generate sortable lists
-        final List<List<Measure>> measureLists = new ArrayList<>();
-        for (final Measure m : measureResultList) {
-            boolean hasList = false;
-            for (final List<Measure> mlist : measureLists) {
-                final String msetId = mlist.get(0).getMeasureSet().getId();
-                if (m.getMeasureSet().getId().equalsIgnoreCase(msetId)) {
-                    mlist.add(m);
-                    hasList = true;
-                    break;
-                }
-            }
-
-            if (!hasList) {
-                final List<Measure> mlist = new ArrayList<>();
-                mlist.add(m);
-                measureLists.add(mlist);
-            }
-        }
+        List<List<Measure>> measureLists = generateSortableMeasureList(measureResultList);
         // sort
         for (final List<Measure> mlist : measureLists) {
             Collections.sort(mlist, new MeasureComparator());
@@ -768,24 +750,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
      */
     public List<Measure> sortMeasureListForMeasureOwner(List<Measure> measureResultList) {
         // generate sortable lists
-        final List<List<Measure>> measureLists = new ArrayList<>();
-        for (final Measure m : measureResultList) {
-            boolean hasList = false;
-            for (final List<Measure> mlist : measureLists) {
-                final String msetId = mlist.get(0).getMeasureSet().getId();
-                if (m.getMeasureSet().getId().equalsIgnoreCase(msetId)) {
-                    mlist.add(m);
-                    hasList = true;
-                    break;
-                }
-            }
-
-            if (!hasList) {
-                final List<Measure> mlist = new ArrayList<>();
-                mlist.add(m);
-                measureLists.add(mlist);
-            }
-        }
+        List<List<Measure>> measureLists = generateSortableMeasureList(measureResultList);
         Collections.sort(measureLists, new MeasureListComparator());
         // compile list
         final List<Measure> retList = new ArrayList<>();
@@ -813,6 +778,28 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
             }
         }
         return retList;
+    }
+
+    private List<List<Measure>> generateSortableMeasureList(List<Measure> measureResultList) {
+        final List<List<Measure>> measureLists = new ArrayList<>();
+        for (final Measure m : measureResultList) {
+            boolean hasList = false;
+            for (final List<Measure> mlist : measureLists) {
+                final String msetId = mlist.get(0).getMeasureSet().getId();
+                if (m.getMeasureSet().getId().equalsIgnoreCase(msetId)) {
+                    mlist.add(m);
+                    hasList = true;
+                    break;
+                }
+            }
+
+            if (!hasList) {
+                final List<Measure> mlist = new ArrayList<>();
+                mlist.add(m);
+                measureLists.add(mlist);
+            }
+        }
+        return measureLists;
     }
 
     @Override
@@ -930,7 +917,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     }
 
     @Override
-    public Optional<Measure> getDraftMeasureIfExists(String measureSetId) {
+    public List<Measure> getDraftMeasuresBySet(String measureSetId) {
         final Session session = getSessionFactory().getCurrentSession();
         final CriteriaBuilder cb = session.getCriteriaBuilder();
         final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
@@ -939,9 +926,8 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         query.select(root).where(cb.and(cb.equal(root.get(MEASURE_SET).get(ID), measureSetId),
                 cb.equal(root.get(DRAFT), true)));
 
-        // Measure set can have only 0 or 1 draft measures in it.
-        List<Measure> resultList = session.createQuery(query).setMaxResults(1).getResultList();
-        return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.get(0));
+        // Ideally, a measure set can have only 0 or 1 draft measures in it. But due to data issues it can have multiple.
+        return session.createQuery(query).setMaxResults(1).getResultList();
     }
 
     @Override

@@ -684,6 +684,4 @@ public interface MeasureServiceAsync {
 	void getHumanReadableForMeasureDetails(String currentMeasureId, AsyncCallback<String> asyncCallback);
 	
     void checkIfLibraryNameExists(String libraryName, String setId, AsyncCallback<Boolean> callback);
-
-    void searchDraftMeasure(String measureSetId, AsyncCallback<DraftFhirMeasureSearchResult> asyncCallback);
 }

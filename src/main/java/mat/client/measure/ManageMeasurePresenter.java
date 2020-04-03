@@ -53,7 +53,7 @@ import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
-import mat.client.measure.service.DraftFhirMeasureSearchResult;
+import mat.client.measure.service.CheckMeasureForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirMeasureRemoteService;
 import mat.client.measure.service.FhirMeasureRemoteServiceAsync;
@@ -77,7 +77,6 @@ import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
 import mat.client.util.FeatureFlagConstant;
 import mat.client.util.MatTextBox;
-import mat.model.clause.ModelTypeHelper;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
@@ -1626,7 +1625,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onConvertMeasureFhir(Result object) {
-                MatContext.get().getMeasureService().searchDraftMeasure(object.getMeasureSetId(), new AsyncCallback<DraftFhirMeasureSearchResult>() {
+                FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
+                fhirMeasureService.checkMeasureForConversion(object, new AsyncCallback<CheckMeasureForConversionResult>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -1637,14 +1637,14 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     }
 
                     @Override
-                    public void onSuccess(DraftFhirMeasureSearchResult result) {
-                        logger.log(Level.WARNING, "Draft search result is " + result);
-                        if (!result.isFound()) {
+                    public void onSuccess(CheckMeasureForConversionResult result) {
+                        logger.log(Level.WARNING, "Result is " + result);
+                        if (result.isProceedImmediately()) {
                             convertMeasureFhir(object);
-                        } else if (ModelTypeHelper.isFhir(result.getMeasureModel())) {
+                        } else if (result.isConfirmBeforeProceed()) {
                             confirmAndConvertFhir(object);
                         } else {
-                            showErrorAlertDialogBox("Only one draft per measure family should be allowed.");
+                            showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getConversionBlockedWithDraftsErrorMessage());
                         }
                     }
                 });

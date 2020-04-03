@@ -958,4 +958,9 @@ public class MessageDelegate {
     public String getLibraryNameIsCqlKeywordError() {
         return LIBRARY_NAME_IS_CQL_KEYWORD_ERROR;
     }
+
+    public String getConversionBlockedWithDraftsErrorMessage() {
+        return "Only one draft per measure family should be allowed.";
+    }
+
 }

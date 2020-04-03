@@ -11,4 +11,6 @@ public interface FhirMeasureRemoteService extends RemoteService {
 
     FhirConvertResultResponse convert(Result sourceMeasure) throws MatException;
 
+    CheckMeasureForConversionResult checkMeasureForConversion(Result sourceMeasure);
+
 }

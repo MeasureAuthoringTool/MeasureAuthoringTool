@@ -15,7 +15,6 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferOwnerShipModel;
-import mat.client.measure.service.DraftFhirMeasureSearchResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.GenericResult;
@@ -694,5 +693,4 @@ public interface MeasureLibraryService {
 	
 	boolean libraryNameExists(String libraryName, String setId);
 
-    DraftFhirMeasureSearchResult searchDraftMeasure(String measureSetId);
 }

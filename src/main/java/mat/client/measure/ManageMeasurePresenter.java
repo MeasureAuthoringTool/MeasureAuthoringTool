@@ -678,14 +678,14 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         return false;
     }
 
-    private void showErrorAlertDialogBox(final String errorMessage) {
+    private void showErrorAlertDialogBox(final String errorMessage, final boolean shouldRefreshSearch) {
         ConfirmationDialogBox errorAlert = new ConfirmationDialogBox(errorMessage, "Return to Measure Library", "Cancel", null, true);
         errorAlert.getNoButton().setVisible(false);
         errorAlert.setObserver(new ConfirmationObserver() {
 
             @Override
             public void onYesButtonClicked() {
-                displaySearch();
+                refresh();
             }
 
             @Override
@@ -694,12 +694,21 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onClose() {
-                displaySearch();
+                refresh();
+            }
+
+            private void refresh() {
+                if (shouldRefreshSearch) {
+                    displaySearch();
+                }
             }
         });
         errorAlert.show();
     }
 
+    private void showErrorAlertDialogBox(final String errorMessage) {
+        showErrorAlertDialogBox(errorMessage, true);
+    }
 
     private void cloneMeasure() {
         if (!MatContext.get().getLoadingQueue().isEmpty()) {
@@ -1632,7 +1641,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     public void onFailure(Throwable caught) {
                         logger.log(Level.SEVERE, "Error while checking a draft for the measure set " + object.getMeasureSetId() + ". Error message: " + caught.getMessage(), caught);
                         setSearchingBusy(false);
-                        showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                        showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getGenericErrorMessage(), false);
                         MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
                     }
 
@@ -1644,7 +1653,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                         } else if (result.isConfirmBeforeProceed()) {
                             confirmAndConvertFhir(object);
                         } else {
-                            showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getConversionBlockedWithDraftsErrorMessage());
+                            showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getConversionBlockedWithDraftsErrorMessage(), false);
                         }
                     }
                 });

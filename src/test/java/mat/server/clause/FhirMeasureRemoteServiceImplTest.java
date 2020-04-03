@@ -83,9 +83,4 @@ public class FhirMeasureRemoteServiceImplTest {
         Mockito.verify(fhirMeasureService, Mockito.times(1)).convert(Mockito.any(ManageMeasureSearchModel.Result.class), Mockito.anyString(), Mockito.any());
     }
 
-    @Test
-    public void testCheck() {
-        ManageMeasureSearchModel.Result sourceMeasure = new ManageMeasureSearchModel.Result();
-        service.checkMeasureForConversion(sourceMeasure);
-    }
 }

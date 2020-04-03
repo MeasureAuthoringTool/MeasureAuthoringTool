@@ -56,6 +56,7 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
 
     @Override
     public CheckMeasureForConversionResult checkMeasureForConversion(Result sourceMeasure) {
+        logger.info("checkMeasureForConversion  measureId: " + sourceMeasure.getId() + " setId: " + sourceMeasure.getMeasureSetId());
         CheckMeasureForConversionResult result = new CheckMeasureForConversionResult();
         List<Measure> draftMeasures = measureDAO.getDraftMeasuresBySet(sourceMeasure.getMeasureSetId());
         if (draftMeasures.isEmpty()) {

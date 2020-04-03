@@ -35,7 +35,7 @@ import mat.server.util.XmlProcessor;
 
 @Service
 public class FhirMeasureServiceImpl implements FhirMeasureService {
-    static boolean TEST_MODE = false;
+    public static boolean TEST_MODE = false;
     private static final Log logger = LogFactory.getLog(FhirMeasureServiceImpl.class);
 
     private final FhirOrchestrationGatewayService fhirOrchestrationGatewayService;

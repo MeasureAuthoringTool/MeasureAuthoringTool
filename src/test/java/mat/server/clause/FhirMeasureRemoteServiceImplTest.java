@@ -18,7 +18,6 @@ import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacTicketInformation;
-import mat.dao.clause.MeasureDAO;
 import mat.server.service.FhirMeasureService;
 import mat.server.service.VSACApiService;
 
@@ -32,8 +31,6 @@ public class FhirMeasureRemoteServiceImplTest {
     private HttpSession httpSession;
     @Mock
     private VSACApiService vsacApiService;
-    @Mock
-    private MeasureDAO measureDAO;
     @InjectMocks
     private FhirMeasureRemoteServiceImpl service;
 

@@ -1,7 +1,6 @@
 package mat.dao.clause;
 
 import java.util.List;
-import java.util.Optional;
 
 import mat.dao.IDAO;
 import mat.model.User;

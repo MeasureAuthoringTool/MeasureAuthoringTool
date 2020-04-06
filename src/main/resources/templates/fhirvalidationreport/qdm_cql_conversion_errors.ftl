@@ -1,8 +1,9 @@
 <div class="custom-card">
-    <div class="card-header">QDM CQL Conversion Errors</div>
-    <#if qdmCqlConversionErrors?has_content || qdmMatCqlConversionErrors?has_content >
-        <div class="card-body">
-            <table class="table table-striped table-hover">
+    <#if qdmCqlConversionErrors?has_content>
+        <#list qdmCqlConversionErrors as key, value>
+            <div class="card-header">QDM CQL Conversion Errors For "${key}"</div>
+            <div class="card-body">
+                <table class="table table-striped table-hover">
                     <thead>
                     <tr>
                         <th scope="col">Error</th>
@@ -15,8 +16,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <#if qdmCqlConversionErrors?has_content>
-                        <#list qdmCqlConversionErrors as cqlError>
+                        <#list value as cqlError>
                             <tr>
                                 <td>${cqlError?counter}</td>
                                 <td>${cqlError.startLine!""}</td>
@@ -27,24 +27,12 @@
                                 <td>${cqlError.endChar!""}</td>
                             </tr>
                         </#list>
-                    </#if>
-                    <#if qdmMatCqlConversionErrors?has_content>
-                        <#list qdmMatCqlConversionErrors as cqlError>
-                            <tr>
-                                <td>${cqlError?counter}</td>
-                                <td>${cqlError.startLine!""}</td>
-                                <td>${cqlError.endLine!""}</td>
-                                <td>${cqlError.errorSeverity?lower_case?capitalize!""}</td>
-                                <td>${cqlError.message!""}</td>
-                                <td>${cqlError.startChar!""}</td>
-                                <td>${cqlError.endChar!""}</td>
-                            </tr>
-                        </#list>
-                    </#if>
                     </tbody>
-            </table>
-        </div>
+                </table>
+            </div>
+        </#list>
     <#else>
+        <div class="card-header">QDM CQL Conversion Errors</div>
         <#include "no_conversion_errors.ftl" />
     </#if>
 </div>

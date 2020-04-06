@@ -53,6 +53,7 @@ import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
+import mat.client.measure.service.CheckMeasureForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirMeasureRemoteService;
 import mat.client.measure.service.FhirMeasureRemoteServiceAsync;
@@ -97,6 +98,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private final Logger logger = Logger.getLogger("MAT");
 
+    private final String currentUserRole = MatContext.get().getLoggedInUserRole();
+
     private List<String> bulkExportMeasureIds;
 
     private WarningConfirmationMessageAlert warningConfirmationMessageAlert;
@@ -135,8 +138,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private ManageMeasureShareModel currentShareDetails;
 
-    final String currentUserRole = MatContext.get().getLoggedInUserRole();
-
     private DetailDisplay detailDisplay;
 
     private DetailDisplay compositeDetailDisplay;
@@ -151,11 +152,11 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private boolean isMeasureVersioned = false;
 
-    boolean isMeasureSearchFilterVisible = true;
+    private boolean isMeasureSearchFilterVisible = true;
 
     private static FocusableWidget subSkipContentHolder;
 
-    boolean isLoading = false;
+    private boolean isLoading = false;
 
     private ManageMeasureSearchModel manageMeasureSearchModel;
 
@@ -621,7 +622,10 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void convertMeasureFhir(Result object) {
-        if (showAlertAndReturnIfNotUMLSLoggedIn()) return;
+        if (showAlertAndReturnIfNotUMLSLoggedIn()) {
+            logger.log(Level.WARNING, "User is not logged in UMSL");
+            return;
+        }
         logger.log(Level.INFO, "Please wait. Conversion is in progress...");
 
         if (!MatContext.get().getLoadingQueue().isEmpty()) {
@@ -635,7 +639,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             public void onFailure(Throwable caught) {
                 logger.log(Level.SEVERE, "Error while converting the measure id " + object.getId() + ". Error message: " + caught.getMessage(), caught);
                 setSearchingBusy(false);
-                showFhirConversionError(MatContext.get().getMessageDelegate().getConvertMeasureFailureMessage());
+                showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getConvertMeasureFailureMessage());
                 MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
             }
 
@@ -649,7 +653,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 displaySearch();
             }
         });
-
     }
 
     private void showFhirValidationReport(String measureId, boolean converted) {
@@ -675,14 +678,14 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         return false;
     }
 
-    private void showFhirConversionError(final String errorMessage) {
+    private void showErrorAlertDialogBox(final String errorMessage, final boolean shouldRefreshSearch) {
         ConfirmationDialogBox errorAlert = new ConfirmationDialogBox(errorMessage, "Return to Measure Library", "Cancel", null, true);
         errorAlert.getNoButton().setVisible(false);
         errorAlert.setObserver(new ConfirmationObserver() {
 
             @Override
             public void onYesButtonClicked() {
-                displaySearch();
+                refresh();
             }
 
             @Override
@@ -691,12 +694,21 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onClose() {
-                displaySearch();
+                refresh();
+            }
+
+            private void refresh() {
+                if (shouldRefreshSearch) {
+                    displaySearch();
+                }
             }
         });
         errorAlert.show();
     }
 
+    private void showErrorAlertDialogBox(final String errorMessage) {
+        showErrorAlertDialogBox(errorMessage, true);
+    }
 
     private void cloneMeasure() {
         if (!MatContext.get().getLoadingQueue().isEmpty()) {
@@ -1622,11 +1634,29 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onConvertMeasureFhir(Result object) {
-                if (object.isConvertedToFhir()) {
-                    confirmAndConvertFhir(object);
-                } else {
-                    convertMeasureFhir(object);
-                }
+                FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
+                fhirMeasureService.checkMeasureForConversion(object, new AsyncCallback<CheckMeasureForConversionResult>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        logger.log(Level.SEVERE, "Error while checking a draft for the measure set " + object.getMeasureSetId() + ". Error message: " + caught.getMessage(), caught);
+                        setSearchingBusy(false);
+                        showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getGenericErrorMessage(), false);
+                        MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                    }
+
+                    @Override
+                    public void onSuccess(CheckMeasureForConversionResult result) {
+                        logger.log(Level.WARNING, "Result is " + result);
+                        if (result.isProceedImmediately()) {
+                            convertMeasureFhir(object);
+                        } else if (result.isConfirmBeforeProceed()) {
+                            confirmAndConvertFhir(object);
+                        } else {
+                            showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getConversionBlockedWithDraftsErrorMessage(), false);
+                        }
+                    }
+                });
             }
 
         };
@@ -2252,7 +2282,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             public void onVersioned(MeasureVersionEvent event) {
                 displaySearch();
                 if (event.isVersioned()) {
-
                     measureDeletion = false;
                     isMeasureDeleted = false;
                     isMeasureVersioned = true;

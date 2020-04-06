@@ -100,8 +100,6 @@ public class Measure {
 
     private String cqlLibraryName;
 
-    private List<Measure> fhirMeasures;
-
     // We don't map it as a Measure object, since it can be potentially invalid,
     // if a source QDM measure is removed after conversion.
     private String sourceMeasureId;
@@ -505,22 +503,6 @@ public class Measure {
 
     public void setCqlLibraryName(String cqlLibraryName) {
         this.cqlLibraryName = cqlLibraryName;
-    }
-
-
-    @Transient
-    public boolean isConvertedToFhir() {
-        return getFhirMeasures() != null && !getFhirMeasures().isEmpty();
-    }
-
-    @JoinColumn(name = "SOURCE_MEASURE_ID")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<Measure> getFhirMeasures() {
-        return fhirMeasures;
-    }
-
-    public void setFhirMeasures(List<Measure> fhirMeasures) {
-        this.fhirMeasures = fhirMeasures;
     }
 
     @Column(name = "SOURCE_MEASURE_ID")

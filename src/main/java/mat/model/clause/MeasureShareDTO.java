@@ -61,8 +61,6 @@ public class MeasureShareDTO implements IsSerializable {
 
     private Boolean isPatientBased;
 
-    private boolean convertedToFhir;
-
     public MeasureShareDTO(String measureId, String shareLevel, String ownerUserId) {
         super();
         this.measureId = measureId;
@@ -290,11 +288,4 @@ public class MeasureShareDTO implements IsSerializable {
         this.isPatientBased = isPatientBased;
     }
 
-    public void setConvertedToFhir(boolean convertedToFhir) {
-        this.convertedToFhir = convertedToFhir;
-    }
-
-    public boolean isConvertedToFhir() {
-        return convertedToFhir;
-    }
 }

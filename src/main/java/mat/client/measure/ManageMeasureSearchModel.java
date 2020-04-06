@@ -72,8 +72,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 
         private boolean isValidatable;
 
-        private boolean convertedToFhir;
-
         private int clickCount = 0;
 
         private boolean isFhirEditorViewable;
@@ -115,7 +113,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
             this.isComposite = result.getIsComposite();
             this.cqlLibraryName = result.getCqlLibraryName();
             this.measureModel = result.getMeasureModel();
-            this.convertedToFhir = result.isConvertedToFhir();
             this.isFhirEditorViewable = result.isFhirEditorViewable();
         }
 
@@ -140,7 +137,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
                     isDraftable() == result.isDraftable() &&
                     isVersionable() == result.isVersionable() &&
                     isValidatable() == result.isValidatable() &&
-                    isConvertedToFhir() == result.isConvertedToFhir() &&
                     getClickCount() == result.getClickCount() &&
                     Objects.equals(getId(), result.getId()) &&
                     Objects.equals(getName(), result.getName()) &&
@@ -164,7 +160,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 
         @Override
         public int hashCode() {
-            return Objects.hash(getId(), getName(), getMeasureModel(), getStatus(), getScoringType(), isHistorical(), isSharable(), isEditable(), isClonable(), isExportable(), isFhirConvertible(), getShortName(), isMeasureLocked(), getLockedUserInfo(), isTransferable(), getVersion(), getFinalizedDate(), isDraft(), getMeasureSetId(), isDeleted(), ownerfirstName, getOwnerLastName(), getOwnerEmailAddress(), geteMeasureId(), isMeasureFamily(), getHqmfReleaseVersion(), isDraftable(), isVersionable(), isPatientBased, getQdmVersion(), getIsComposite(), getCqlLibraryName(), isValidatable(), isConvertedToFhir(), getClickCount());
+            return Objects.hash(getId(), getName(), getMeasureModel(), getStatus(), getScoringType(), isHistorical(), isSharable(), isEditable(), isClonable(), isExportable(), isFhirConvertible(), getShortName(), isMeasureLocked(), getLockedUserInfo(), isTransferable(), getVersion(), getFinalizedDate(), isDraft(), getMeasureSetId(), isDeleted(), ownerfirstName, getOwnerLastName(), getOwnerEmailAddress(), geteMeasureId(), isMeasureFamily(), getHqmfReleaseVersion(), isDraftable(), isVersionable(), isPatientBased, getQdmVersion(), getIsComposite(), getCqlLibraryName(), isValidatable(), getClickCount());
         }
 
         /**
@@ -647,14 +643,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
             this.clickCount++;
         }
 
-        public boolean isConvertedToFhir() {
-            return convertedToFhir;
-        }
-
-        public void setConvertedToFhir(boolean convertedToFhir) {
-            this.convertedToFhir = convertedToFhir;
-        }
-
         public void setFhirEditOrViewable(boolean isFhirEditorViewable) {
             this.isFhirEditorViewable = isFhirEditorViewable;
         }
@@ -796,7 +784,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
     public boolean isColumnSelectAll(int columnIndex) {
         return false;
     }
-
 
     @Override
     public boolean isColumnFiresSelection(int columnIndex) {

@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathConstants;
@@ -34,6 +35,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.MappingException;
@@ -982,7 +984,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setMeasureSetId(dto.getMeasureSetId());
         detail.setDraftable(dto.isDraftable());
         detail.setVersionable(dto.isVersionable());
-        detail.setConvertedToFhir(dto.isConvertedToFhir());
         return detail;
     }
 
@@ -1122,7 +1123,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
         detail.setMeasureSetId(measure.getMeasureSet().getId());
         detail.setScoringType(measure.getMeasureScoring());
-        detail.setConvertedToFhir(measure.isConvertedToFhir());
         boolean isLocked = measureDAO.isMeasureLocked(measure.getId());
         detail.setMeasureLocked(isLocked);
         boolean isEditable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId());
@@ -1769,7 +1769,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             result.setVersionStr(MeasureUtility.formatVersionText(pkg.getRevisionNumber(), pkg.getVersion()));
             result.setSuccess(true);
             result.setId(pkg.getId());
-            saveMeasureXml(createMeasureXmlModel(pkg, MEASURE), pkg.getId(), StringUtils.equals("FHIR",model.getMeasureModel()));
+            saveMeasureXml(createMeasureXmlModel(pkg, MEASURE), pkg.getId(), StringUtils.equals("FHIR", model.getMeasureModel()));
             // Adds population nodes to new measures
             updateMeasureXml(model, pkg, existingMeasureScoringType);
             return result;
@@ -2178,7 +2178,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             } catch (Exception e) {
                 // look the origin of exception
-                logger.debug("failed to convert date");
+                logger.debug("failed to convert date", e);
             }
 
         }
@@ -2332,7 +2332,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
     }
 
-    private String createNewCqlLookupTag(String libraryName, String version,boolean isFhir) {
+    private String createNewCqlLookupTag(String libraryName, String version, boolean isFhir) {
         XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile(isFhir);
         return cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)),
                 version,
@@ -2362,6 +2362,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     @Override
     public final ManageMeasureSearchModel search(MeasureSearchModel measureSearchModel) {
+        final StopWatch stopwatch = new StopWatch();
+        stopwatch.start();
         String currentUserId = LoggedInUserUtil.getLoggedInUser();
         String userRole = LoggedInUserUtil.getLoggedInUserRole();
         boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
@@ -2399,7 +2401,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 detail.setOwnerEmailAddress(user.getEmailAddress());
                 detail.setMeasureSetId(dto.getMeasureSetId());
                 detail.setPatientBased(dto.isPatientBased());
-                detail.setConvertedToFhir(dto.isConvertedToFhir());
                 detailModelList.add(detail);
             }
         } else {
@@ -2423,6 +2424,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             }
             updateMeasureFamily(detailModelList);
         }
+
+        stopwatch.stop();
+        logger.info("MeasureLibraryService::search took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
 
         return searchModel;
     }
@@ -5482,7 +5486,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             }
             return result;
         } catch (RuntimeException re) {
-            logger.error("Error in getMeasureCQLDataForLoad",re);
+            logger.error("Error in getMeasureCQLDataForLoad", re);
             throw re;
         }
     }
@@ -5773,7 +5777,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             saveMeasureXml(createMeasureXmlModel(pkg, MEASURE),
                     pkg.getId(),
-                    StringUtils.equals("FHIR",model.getMeasureModel()));
+                    StringUtils.equals("FHIR", model.getMeasureModel()));
 
             updateMeasureXml(model, pkg, existingMeasureScoringType);
 
@@ -5931,8 +5935,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             standardizeStartAndEndDate(measureInformationModel);
             humanReadableHTML = humanReadableGenerator.generate(measureInformationModel);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.info("Exception in getHumanReadableForMeasureDetails: " + e);
+            logger.error("Exception in getHumanReadableForMeasureDetails: " + e, e);
         }
         return humanReadableHTML;
     }

@@ -68,7 +68,6 @@ import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.CQLService;
-import mat.client.measure.service.CheckMeasureForConversionResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
@@ -5936,7 +5935,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             standardizeStartAndEndDate(measureInformationModel);
             humanReadableHTML = humanReadableGenerator.generate(measureInformationModel);
         } catch (Exception e) {
-            logger.info("Exception in getHumanReadableForMeasureDetails: " + e, e);
+            logger.error("Exception in getHumanReadableForMeasureDetails: " + e, e);
         }
         return humanReadableHTML;
     }

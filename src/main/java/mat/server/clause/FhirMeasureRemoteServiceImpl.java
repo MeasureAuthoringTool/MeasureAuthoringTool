@@ -61,7 +61,7 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
         List<Measure> draftMeasures = measureDAO.getDraftMeasuresBySet(sourceMeasure.getMeasureSetId());
         if (draftMeasures.isEmpty()) {
             // If no drafts found we can proceed with conversion
-            result.setProceedImmediately(draftMeasures.isEmpty());
+            result.setProceedImmediately(true);
         } else {
             // If the only draft is a FHIR draft created from the same source measure then ask for confirmation to override.
             // UI cannot proceed with conversion if User didn't confirm or if there is/are other draft(s)

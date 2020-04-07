@@ -153,7 +153,7 @@ public class FhirValidationReportService {
         paramsMap.put("fhirCqlConversionErrors", fhirCqlConversionErrorsMap);
     }
 
-    void buildCqlConversionErrorMap(Set<CqlConversionError> cqlConversionErrorsSet, Map<String, List<Object>> cqlConversionErrorsMap) {
+    private void buildCqlConversionErrorMap(Set<CqlConversionError> cqlConversionErrorsSet, Map<String, List<Object>> cqlConversionErrorsMap) {
         cqlConversionErrorsSet.forEach(q ->  {
             if(StringUtils.isNotBlank(q.getTargetIncludeLibraryId()) && StringUtils.isNotBlank(q.getTargetIncludeLibraryVersionId())) {
                 String targetIncludedLibraryWithVersion = q.getTargetIncludeLibraryId() + " " + q.getTargetIncludeLibraryVersionId();
@@ -165,7 +165,7 @@ public class FhirValidationReportService {
         });
     }
 
-    void buildMatCqlConversionExceptionMap(Set<MatCqlConversionException> matCqlConversionExceptionSet, Map<String, List<Object>> matCqlConversionExceptionMap) {
+    private void buildMatCqlConversionExceptionMap(Set<MatCqlConversionException> matCqlConversionExceptionSet, Map<String, List<Object>> matCqlConversionExceptionMap) {
         matCqlConversionExceptionSet.forEach(q ->  {
             if(StringUtils.isNotBlank(q.getTargetIncludeLibraryId()) && StringUtils.isNotBlank(q.getTargetIncludeLibraryVersionId())) {
                 String targetIncludedLibraryWithVersion = q.getTargetIncludeLibraryId() + " " + q.getTargetIncludeLibraryVersionId();
@@ -177,7 +177,7 @@ public class FhirValidationReportService {
         });
     }
 
-    void addConversionStatusMessage(ConversionResultDto conversionResultDto, Map<String, Object> paramsMap) {
+    private void addConversionStatusMessage(ConversionResultDto conversionResultDto, Map<String, Object> paramsMap) {
         String conversionStatusMessage = ConversionOutcome.SUCCESS == conversionResultDto.getOutcome() ?
                 "The FHIR measure was created successfully." :
                 "Warning: The FHIR measure was created successfully with errors.";
@@ -186,7 +186,7 @@ public class FhirValidationReportService {
         paramsMap.put("errorReason", StringUtils.trimToNull(conversionResultDto.getErrorReason()));
     }
 
-    List<FhirValidationResult> getMeasureErrors(ConversionResultDto conversionResultDto) {
+    private List<FhirValidationResult> getMeasureErrors(ConversionResultDto conversionResultDto) {
         //Measure FHIR validation errors
         List<FhirValidationResult> measureFhirValidationErrors = new ArrayList<>();
         if (conversionResultDto.getMeasureConversionResults() != null &&
@@ -197,7 +197,7 @@ public class FhirValidationReportService {
         return measureFhirValidationErrors;
     }
 
-    List<FhirValidationResult> getValueSetErrors(ConversionResultDto conversionResultDto) {
+    private List<FhirValidationResult> getValueSetErrors(ConversionResultDto conversionResultDto) {
         // ValueSet FHIR validation errors
         List<FhirValidationResult> valueSetFhirValidationErrors = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(conversionResultDto.getValueSetConversionResults())) {
@@ -210,7 +210,7 @@ public class FhirValidationReportService {
         return valueSetFhirValidationErrors;
     }
 
-     void getLibraryErrors(ConversionResultDto conversionResultDto, List<FhirValidationResult> libraryFhirValidationErrors, HashMap<String, List<Object>> qdmCqlConversionErrorsMap,
+    private void getLibraryErrors(ConversionResultDto conversionResultDto, List<FhirValidationResult> libraryFhirValidationErrors, HashMap<String, List<Object>> qdmCqlConversionErrorsMap,
                            HashMap<String, List<Object>> fhirCqlConversionErrorsMap, Map<String, Object> paramsMap) {
          // Library FHIR validation errors
          CqlConversionResult cqlConversionResult;

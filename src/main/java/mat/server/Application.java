@@ -213,6 +213,7 @@ public class Application extends WebSecurityConfigurerAdapter {
         List<Cache> caches = Arrays.asList(
                 "ConversionResultDto.validate",
                 "featureFlags",
+                "isFhirEditEnabled",
                 "fhirAttributesAndDataTypes")
                 .stream().map(ConcurrentMapCache::new)
                 .collect(Collectors.toList());

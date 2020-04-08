@@ -30,10 +30,12 @@ import javax.persistence.criteria.Subquery;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -75,6 +77,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     private static final String SECURITY_ROLE_USER = "3";
     private static final String MEASURE_MODEL = "measureModel";
     private static final String ID = "id";
+    public static final String SELECT_SHARE_LEVELS = "select m.MEASURE_SET_ID, ms.SHARE_LEVEL_ID from MEASURE_SHARE ms  inner join MEASURE m on m.ID = ms.MEASURE_ID where ms.SHARE_USER_ID = :userId and m.MEASURE_SET_ID in :measureSetIds";
 
     @Autowired
     private UserDAO userDAO;
@@ -437,16 +440,29 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
     @Override
     public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel, User user) {
+        final StopWatch stopwatch = new StopWatch();
+        stopwatch.start();
         final List<Measure> measureResultList = fetchMeasureResultListForCritera(user, measureSearchModel);
-        return getOrderedDTOListFromMeasureResults(measureSearchModel, user, measureResultList);
+        List<MeasureShareDTO> orderedDTOListFromMeasureResults = getOrderedDTOListFromMeasureResults(measureSearchModel, user, measureResultList);
+        stopwatch.stop();
+        logger.info("MeasureDAOImpl::getMeasureShareInfoForUserWithFilter took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
+
+        return orderedDTOListFromMeasureResults;
     }
 
     private List<Measure> fetchMeasureResultListForCritera(User user, MeasureSearchModel measureSearchModel) {
+        logger.debug("MeasureDAOImpl::fetchMeasureResultListForCritera enter");
+        final StopWatch stopwatch = new StopWatch();
+        stopwatch.start();
+
         final Session session = getSessionFactory().getCurrentSession();
         final CriteriaBuilder cb = session.getCriteriaBuilder();
         final CriteriaQuery<Measure> criteriaQuery = cb.createQuery(Measure.class);
         final Root<Measure> root = criteriaQuery.from(Measure.class);
         root.fetch("measureDetails", JoinType.LEFT);
+        root.fetch("measureSet", JoinType.LEFT);
+        root.fetch("owner", JoinType.LEFT);//?batch
+        root.fetch("shares", JoinType.LEFT);
 
         final Predicate predicate = buildPredicateForMeasureSearch(user.getId(), cb, root, criteriaQuery, measureSearchModel);
 
@@ -459,6 +475,10 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         }
 
         measureResultList = sortMeasureList(measureResultList);
+
+        stopwatch.stop();
+        logger.info("MeasureDAOImpl::fetchMeasureResultListForCritera took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
+        logger.debug("MeasureDAOImpl::fetchMeasureResultListForCritera exit");
         return measureResultList;
     }
 
@@ -829,7 +849,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     }
 
     @Override
-    public ShareLevel findShareLevelForUser(String measureId, String userID, String measureSetId) {
+    public ShareLevel findShareLevelForUser(String userID, String measureSetId) {
         ShareLevel shareLevel = null;
 
         final Session session = getSessionFactory().getCurrentSession();
@@ -852,6 +872,29 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         }
 
         return shareLevel;
+    }
+
+    @Override
+    public Map<String, String> findShareLevelsForUser(String userID, Set<String> measureSetIds) {
+        logger.debug("MeasureDAOImpl::findShareLevelsForUser - enter");
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final Session session = getSessionFactory().getCurrentSession();
+        NativeQuery query = session.createNativeQuery(SELECT_SHARE_LEVELS);
+        query.setParameter("userId", userID);
+        query.setParameter("measureSetIds", measureSetIds);
+        List<Object[]> list = query.getResultList();
+
+        Map<String, String> result = new HashMap<>();
+
+        list.stream().forEach(row -> {
+            result.put(String.valueOf(row[0]), String.valueOf(row[1]));
+        });
+
+        logger.debug("MeasureDAOImpl::findShareLevelsForUser took " + stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
+        logger.debug("MeasureDAOImpl::findShareLevelsForUser - exit");
+        return result;
     }
 
     @Override

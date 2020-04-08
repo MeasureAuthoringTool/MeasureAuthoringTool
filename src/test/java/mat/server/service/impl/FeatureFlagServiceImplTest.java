@@ -1,7 +1,5 @@
 package mat.server.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -11,10 +9,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import mat.client.util.FeatureFlagConstant;
 import mat.dao.impl.FeatureFlagDAOImpl;
-import mat.model.FeatureFlag;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,14 +27,14 @@ class FeatureFlagServiceImplTest {
 
     @Test
     void findFeatureFlagTest() {
-        List<FeatureFlag> featureFlaglist = new ArrayList<>();
-        featureFlaglist.add(new FeatureFlag(1, "MAT_ON_FHIR", false));
-        featureFlaglist.add(new FeatureFlag(2, "FHIR_EDIt", true));
-        featureFlaglist.add(new FeatureFlag(3, "FHIR_DELETE", false));
-
-        Mockito.when(featureFlagDAO.findAllFeatureFlags()).thenReturn(featureFlaglist);
+        Map<String, Boolean> featureFlags = Map.of(
+                "MAT_ON_FHIR", false,
+                FeatureFlagConstant.FHIR_EDIT, true,
+                "FHIR_DELETE", false);
+        Mockito.when(featureFlagDAO.findFeatureFlags()).thenReturn(featureFlags);
         Map<String, Boolean> featureFlagMap = featureFlagServiceImpl.findFeatureFlags();
-        assertEquals(3,featureFlagMap.size());
-        Mockito.verify(featureFlagDAO, times(1)).findAllFeatureFlags();
+        assertEquals(3, featureFlagMap.size());
+        Mockito.verify(featureFlagDAO, times(1)).findFeatureFlags();
+        assertTrue(featureFlagServiceImpl.isFhirEditEnabled());
     }
 }

@@ -1,6 +1,8 @@
 package mat.dao.clause;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import mat.dao.IDAO;
 import mat.model.User;
@@ -158,7 +160,15 @@ public interface MeasureDAO extends IDAO<Measure, String> {
      */
     MeasureShareDTO extractDTOFromMeasure(Measure measure);
 
-    ShareLevel findShareLevelForUser(String measureId, String userID, String measureSetId);
+    ShareLevel findShareLevelForUser(String userID, String measureSetId);
+
+    /**
+     * Find share levels per measure sets.
+     * @param userID - current user id.
+     * @param measureSetId - a set of measures. Should not exceed maximum number of allowed IN clause arguments.
+     * @return a map of Measure Set ID / Share Level ID
+     */
+    Map<String, String> findShareLevelsForUser(String userID, Set<String> measureSetId);
 
     List<MeasureShareDTO> getComponentMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel, User user);
 

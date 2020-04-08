@@ -587,7 +587,6 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
                 measureSetIdDraftableMap.put(dto.getMeasureSetId(), dto);
             }
             if (measureResultSet.contains(measure)) {
-                measureResultSet.add(measure);
                 orderedDTOList.add(dto);
             }
         }
@@ -886,11 +885,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         query.setParameter("measureSetIds", measureSetIds);
         List<Object[]> list = query.getResultList();
 
-        Map<String, String> result = new HashMap<>();
-
-        list.stream().forEach(row -> {
-            result.put(String.valueOf(row[0]), String.valueOf(row[1]));
-        });
+        Map<String, String> result = list.stream().collect(Collectors.toMap(row -> String.valueOf(row[0]), row -> String.valueOf(row[1])));
 
         logger.debug("MeasureDAOImpl::findShareLevelsForUser took " + stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
         logger.debug("MeasureDAOImpl::findShareLevelsForUser - exit");

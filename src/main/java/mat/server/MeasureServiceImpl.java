@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -162,7 +161,6 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 
     }
 
-    @Transactional
     @Override
     public ManageMeasureSearchModel search(MeasureSearchModel advancedSearchModel) {
         return this.getMeasureLibraryService().search(advancedSearchModel);

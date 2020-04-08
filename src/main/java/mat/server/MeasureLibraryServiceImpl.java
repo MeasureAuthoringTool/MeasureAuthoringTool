@@ -47,6 +47,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -2370,8 +2371,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public final ManageMeasureSearchModel search(MeasureSearchModel measureSearchModel) {
+    public ManageMeasureSearchModel search(MeasureSearchModel measureSearchModel) {
         logger.debug("MeasureLibraryServiceImpl::search - enter");
         final StopWatch searchStopwatch = new StopWatch();
         searchStopwatch.start();
@@ -2438,6 +2440,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     private List<MeasureShareDTO> getSublist(MeasureSearchModel measureSearchModel, List<MeasureShareDTO> measureTotalList) {
+        logger.debug("MeasureLibraryServiceImpl::getSublist - enter");
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
         List<MeasureShareDTO> measureList;
         if (measureSearchModel.getPageSize() <= measureTotalList.size()) {
             measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1,
@@ -2445,6 +2451,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         } else {
             measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureTotalList.size());
         }
+        logger.debug("MeasureLibraryServiceImpl::getSublist took " + stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
+        logger.debug("MeasureLibraryServiceImpl::getSublist - exit");
         return measureList;
     }
 

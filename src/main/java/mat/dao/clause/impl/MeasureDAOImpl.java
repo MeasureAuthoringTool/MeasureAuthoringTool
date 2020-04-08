@@ -472,9 +472,9 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
         if (isMeasureSetSearch(user, measureSearchModel)) {
             measureResultList = getAllMeasuresInSet(measureResultList);
+        } else {
+            measureResultList = sortMeasureList(measureResultList);
         }
-
-        measureResultList = sortMeasureList(measureResultList);
 
         stopwatch.stop();
         logger.info("MeasureDAOImpl::fetchMeasureResultListForCritera took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");

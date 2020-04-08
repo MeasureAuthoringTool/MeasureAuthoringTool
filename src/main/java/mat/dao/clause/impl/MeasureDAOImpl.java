@@ -14,6 +14,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -573,19 +574,20 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
     private List<MeasureShareDTO> getOrderedDTOListFromMeasureResults(MeasureSearchModel measureSearchModel, User user,
                                                                       List<Measure> measureResultList) {
-
         final ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<>();
 
         final Map<String, MeasureShareDTO> measureSetIdDraftableMap = new HashMap<>();
 
         final List<Measure> measureSets = getAllMeasuresInSet(measureResultList);
+        final Set<Measure> measureResultSet = measureResultList.stream().collect(Collectors.toSet());
 
         for (final Measure measure : measureSets) {
             final MeasureShareDTO dto = extractDTOFromMeasure(measure);
             if (dto.isDraft()) {
                 measureSetIdDraftableMap.put(dto.getMeasureSetId(), dto);
             }
-            if (measureResultList.contains(measure)) {
+            if (measureResultSet.contains(measure)) {
+                measureResultSet.add(measure);
                 orderedDTOList.add(dto);
             }
         }
@@ -804,7 +806,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
             boolean hasList = false;
             for (final List<Measure> mlist : measureLists) {
                 final String msetId = mlist.get(0).getMeasureSet().getId();
-                if (m.getMeasureSet().getId().equalsIgnoreCase(msetId)) {
+                if (m.getMeasureSet().getId().equals(msetId)) {
                     mlist.add(m);
                     hasList = true;
                     break;

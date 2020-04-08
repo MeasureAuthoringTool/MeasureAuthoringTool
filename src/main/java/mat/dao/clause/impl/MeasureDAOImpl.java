@@ -440,13 +440,14 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
     @Override
     public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel, User user) {
+        logger.debug("MeasureDAOImpl::getMeasureShareInfoForUserWithFilter - enter");
         final StopWatch stopwatch = new StopWatch();
         stopwatch.start();
         final List<Measure> measureResultList = fetchMeasureResultListForCritera(user, measureSearchModel);
         List<MeasureShareDTO> orderedDTOListFromMeasureResults = getOrderedDTOListFromMeasureResults(measureSearchModel, user, measureResultList);
         stopwatch.stop();
         logger.info("MeasureDAOImpl::getMeasureShareInfoForUserWithFilter took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
-
+        logger.debug("MeasureDAOImpl::getMeasureShareInfoForUserWithFilter - exit");
         return orderedDTOListFromMeasureResults;
     }
 
@@ -460,9 +461,6 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final CriteriaQuery<Measure> criteriaQuery = cb.createQuery(Measure.class);
         final Root<Measure> root = criteriaQuery.from(Measure.class);
         root.fetch("measureDetails", JoinType.LEFT);
-        root.fetch("measureSet", JoinType.LEFT);
-        root.fetch("owner", JoinType.LEFT);//?batch
-        root.fetch("shares", JoinType.LEFT);
 
         final Predicate predicate = buildPredicateForMeasureSearch(user.getId(), cb, root, criteriaQuery, measureSearchModel);
 

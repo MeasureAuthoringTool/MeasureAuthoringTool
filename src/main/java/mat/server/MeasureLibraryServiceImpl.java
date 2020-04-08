@@ -2427,6 +2427,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     private void searchForUser(MeasureSearchModel measureSearchModel, String currentUserId, boolean isSuperUser, ManageMeasureSearchModel searchModel) {
+        logger.debug("MeasureLibraryServiceImpl::searchForUser - enter");
         List<MeasureShareDTO> measureTotalList = measurePackageService.searchWithFilter(measureSearchModel);
 
         searchModel.setResultsTotal(measureTotalList.size());
@@ -2437,6 +2438,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         List<Result> detailModelList = extractModelDetailList(currentUserId, isSuperUser, measureList);
 
         searchModel.setData(detailModelList);
+        logger.debug("MeasureLibraryServiceImpl::searchForUser - exit");
     }
 
     private List<MeasureShareDTO> getSublist(MeasureSearchModel measureSearchModel, List<MeasureShareDTO> measureTotalList) {

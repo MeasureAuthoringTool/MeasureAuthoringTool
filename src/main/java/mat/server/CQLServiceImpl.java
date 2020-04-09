@@ -246,6 +246,8 @@ public class CQLServiceImpl implements CQLService {
                 r.setCqlString(cql);
                 r.setSuccess(false);
                 r.setCqlErrors(errors);
+                r.setLibraryNameErrorsMap(new HashMap<>());
+                r.setLibraryNameWarningsMap(new HashMap<>());
                 r.setFailureReason(SaveUpdateCQLResult.SYNTAX_ERRORS);
                 return r;
             }

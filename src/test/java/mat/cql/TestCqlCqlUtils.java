@@ -6,7 +6,6 @@ import org.junit.Test;
 import static mat.cql.CqlUtils.nextQuotedString;
 import static mat.cql.CqlUtils.nextTickedString;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @Slf4j
 public class TestCqlCqlUtils {

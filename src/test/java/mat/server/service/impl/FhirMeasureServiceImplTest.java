@@ -4,6 +4,7 @@ import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
 import gov.cms.mat.fhir.rest.dto.MeasureConversionResults;
+import lombok.extern.slf4j.Slf4j;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.CQLService;
@@ -33,12 +34,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 public class FhirMeasureServiceImplTest {
 
@@ -60,9 +61,6 @@ public class FhirMeasureServiceImplTest {
     @Mock
     private PlatformTransactionManager platformTransactionManager;
 
-    @Mock
-    private CQLService cqlService;
-
     @InjectMocks
     private FhirMeasureServiceImpl service;
 
@@ -70,6 +68,7 @@ public class FhirMeasureServiceImplTest {
     public void before() {
         ReflectionTestUtils.setField(service,"cqlParser",new CqlParser());
         ReflectionTestUtils.setField(service,"cqlVisitorFactory",new CqlVisitorFactory());
+        log.info("" + platformTransactionManager);
     }
 
     @Test

@@ -14,9 +14,6 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +63,7 @@ public class CqlToMatXml implements CqlVisitor {
         lib.setLibraryModelType(model);
         lib.setQdmVersion(modelVersion);
         lib.setCqlLibraryId(getGlobalLibId(libName));
-        lib.setCqlLibraryId(CqlUtils.getGlobalLibId(lib.getCqlLibraryName()));
+        lib.setCqlLibraryId(getGlobalLibId(lib.getCqlLibraryName()));
         destinationModel.getCqlIncludeLibrarys().add(lib);
     }
 

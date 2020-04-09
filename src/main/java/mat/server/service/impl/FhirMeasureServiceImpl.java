@@ -187,10 +187,6 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                 .findFirst();
     }
 
-    private ConversionResultDto validateSourceMeasureForFhirConversion(ManageMeasureSearchModel.Result sourceMeasure, String vsacGrantingTicket) {
-        return fhirOrchestrationGatewayService.validate(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
-    }
-
     private ManageMeasureDetailModel loadMeasureAsDetailsForCloning(ManageMeasureSearchModel.Result sourceMeasure) {
         return measureLibraryService.getMeasure(sourceMeasure.getId());
     }

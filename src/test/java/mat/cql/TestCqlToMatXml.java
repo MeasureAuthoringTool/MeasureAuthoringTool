@@ -1,16 +1,11 @@
 package mat.cql;
 
 import lombok.extern.slf4j.Slf4j;
-import mat.dao.CodeDAO;
-import mat.dao.CodeListDAO;
-import mat.dao.CodeSystemDAO;
-import mat.dao.clause.CQLLibraryDAO;
 import mat.model.cql.CQLModel;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
@@ -22,18 +17,6 @@ import static org.junit.Assert.assertEquals;
 @ExtendWith(MockitoExtension.class)
 public class TestCqlToMatXml {
     private static final String CQL_TEST_RESOURCES_DIR = "/test-cql/";
-
-    @Mock
-    private CQLLibraryDAO cqlLibDao;
-
-    @Mock
-    private CodeSystemDAO codeSystemDAO;
-
-    @Mock
-    private CodeListDAO codeListDao;
-
-    @Mock
-    private CodeDAO codeDao;
 
     @InjectMocks
     private CqlParser parser;
@@ -52,42 +35,42 @@ public class TestCqlToMatXml {
         String cql = loadCqlResource("MATGlobalCommonFunctions_FHIR4-4.0.000.cql");
         parser.parse(cql, cqlToMatXml);
         var destination = cqlToMatXml.getDestinationModel();
-        assertEquals(10,destination.getCodeSystemList().size());
-        assertEquals("LOINC",destination.getCodeSystemList().get(0).getCodeSystemName());
-        assertEquals("http://loinc.org",destination.getCodeSystemList().get(0).getCodeSystem());
-        assertEquals("AllergyIntoleranceVerificationStatusCodes",destination.getCodeSystemList().get(9).getCodeSystemName());
-        assertEquals("http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",destination.getCodeSystemList().get(9).getCodeSystem());
+        assertEquals(10, destination.getCodeSystemList().size());
+        assertEquals("LOINC", destination.getCodeSystemList().get(0).getCodeSystemName());
+        assertEquals("http://loinc.org", destination.getCodeSystemList().get(0).getCodeSystem());
+        assertEquals("AllergyIntoleranceVerificationStatusCodes", destination.getCodeSystemList().get(9).getCodeSystemName());
+        assertEquals("http://terminology.hl7.org/CodeSystem/allergyintolerance-verification", destination.getCodeSystemList().get(9).getCodeSystem());
 
-        assertEquals(10,destination.getCodeSystemList().size());
+        assertEquals(10, destination.getCodeSystemList().size());
 
-        assertEquals(3,destination.getValueSetList().size());
-        assertEquals("Encounter Inpatient",destination.getValueSetList().get(0).getName());
-        assertEquals("http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.666.5.307",destination.getValueSetList().get(0).getOid());
-        assertEquals("Emergency Department Visit",destination.getValueSetList().get(1).getName());
-        assertEquals("http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.292",destination.getValueSetList().get(1).getOid());
-        assertEquals("Observation Services",destination.getValueSetList().get(2).getName());
-        assertEquals("http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1111.143",destination.getValueSetList().get(2).getOid());
+        assertEquals(3, destination.getValueSetList().size());
+        assertEquals("Encounter Inpatient", destination.getValueSetList().get(0).getName());
+        assertEquals("http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.666.5.307", destination.getValueSetList().get(0).getOid());
+        assertEquals("Emergency Department Visit", destination.getValueSetList().get(1).getName());
+        assertEquals("http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.292", destination.getValueSetList().get(1).getOid());
+        assertEquals("Observation Services", destination.getValueSetList().get(2).getName());
+        assertEquals("http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1111.143", destination.getValueSetList().get(2).getOid());
 
-        assertEquals(25,destination.getCodeList().size());
-        assertEquals("Birthdate",destination.getCodeList().get(0).getName());
-        assertEquals("21112-8",destination.getCodeList().get(0).getCodeOID());
-        assertEquals("LOINC",destination.getCodeList().get(0).getCodeSystemName());
-        assertEquals("Birth date",destination.getCodeList().get(0).getDisplayName());
+        assertEquals(25, destination.getCodeList().size());
+        assertEquals("Birthdate", destination.getCodeList().get(0).getName());
+        assertEquals("21112-8", destination.getCodeList().get(0).getCodeOID());
+        assertEquals("LOINC", destination.getCodeList().get(0).getCodeSystemName());
+        assertEquals("Birth date", destination.getCodeList().get(0).getDisplayName());
 
-        assertEquals("allergy-refuted",destination.getCodeList().get(22).getName());
-        assertEquals("refuted",destination.getCodeList().get(22).getCodeOID());
-        assertEquals("AllergyIntoleranceVerificationStatusCodes",destination.getCodeList().get(22).getCodeSystemName());
-        assertEquals(null,destination.getCodeList().get(22).getDisplayName());
+        assertEquals("allergy-refuted", destination.getCodeList().get(22).getName());
+        assertEquals("refuted", destination.getCodeList().get(22).getCodeOID());
+        assertEquals("AllergyIntoleranceVerificationStatusCodes", destination.getCodeList().get(22).getCodeSystemName());
+        assertEquals(null, destination.getCodeList().get(22).getDisplayName());
 
-        assertEquals("Community",destination.getCodeList().get(23).getName());
-        assertEquals("community",destination.getCodeList().get(23).getCodeOID());
-        assertEquals("MedicationRequestCategory",destination.getCodeList().get(23).getCodeSystemName());
-        assertEquals("Community",destination.getCodeList().get(23).getDisplayName());
+        assertEquals("Community", destination.getCodeList().get(23).getName());
+        assertEquals("community", destination.getCodeList().get(23).getCodeOID());
+        assertEquals("MedicationRequestCategory", destination.getCodeList().get(23).getCodeSystemName());
+        assertEquals("Community", destination.getCodeList().get(23).getDisplayName());
 
-        assertEquals("Discharge",destination.getCodeList().get(24).getName());
-        assertEquals("discharge",destination.getCodeList().get(24).getCodeOID());
-        assertEquals("MedicationRequestCategory",destination.getCodeList().get(24).getCodeSystemName());
-        assertEquals("Discharge",destination.getCodeList().get(24).getDisplayName());
+        assertEquals("Discharge", destination.getCodeList().get(24).getName());
+        assertEquals("discharge", destination.getCodeList().get(24).getCodeOID());
+        assertEquals("MedicationRequestCategory", destination.getCodeList().get(24).getCodeSystemName());
+        assertEquals("Discharge", destination.getCodeList().get(24).getDisplayName());
 
     }
 
@@ -97,33 +80,33 @@ public class TestCqlToMatXml {
         parser.parse(cql, cqlToMatXml);
         var destination = cqlToMatXml.getDestinationModel();
 
-        assertEquals("ToInterval",destination.getCqlFunctions().get(0).getName());
-        assertEquals("period",destination.getCqlFunctions().get(0).getArgumentList().get(0).getArgumentName());
-        assertEquals("FHIR.Period",destination.getCqlFunctions().get(0).getArgumentList().get(0).getArgumentType());
+        assertEquals("ToInterval", destination.getCqlFunctions().get(0).getName());
+        assertEquals("period", destination.getCqlFunctions().get(0).getArgumentList().get(0).getArgumentName());
+        assertEquals("FHIR.Period", destination.getCqlFunctions().get(0).getArgumentList().get(0).getArgumentType());
         assertEquals("if period is null then\n" +
                 "        null\n" +
                 "    else\n" +
-                "        Interval[period.\"start\".value, period.\"end\".value]",destination.getCqlFunctions().get(0).getLogic());
+                "        Interval[period.\"start\".value, period.\"end\".value]", destination.getCqlFunctions().get(0).getLogic());
 
-        assertEquals("ToQuantity",destination.getCqlFunctions().get(1).getName());
-        assertEquals("quantity",destination.getCqlFunctions().get(1).getArgumentList().get(0).getArgumentName());
-        assertEquals("FHIR.Quantity",destination.getCqlFunctions().get(1).getArgumentList().get(0).getArgumentType());
+        assertEquals("ToQuantity", destination.getCqlFunctions().get(1).getName());
+        assertEquals("quantity", destination.getCqlFunctions().get(1).getArgumentList().get(0).getArgumentName());
+        assertEquals("FHIR.Quantity", destination.getCqlFunctions().get(1).getArgumentList().get(0).getArgumentType());
         assertEquals("if quantity is null then\n" +
                 "        null\n" +
                 "    else\n" +
-                "        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }",destination.getCqlFunctions().get(1).getLogic());
+                "        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }", destination.getCqlFunctions().get(1).getLogic());
 
-        assertEquals("ToInterval",destination.getCqlFunctions().get(2).getName());
-        assertEquals("range",destination.getCqlFunctions().get(2).getArgumentList().get(0).getArgumentName());
-        assertEquals("FHIR.Range",destination.getCqlFunctions().get(2).getArgumentList().get(0).getArgumentType());
+        assertEquals("ToInterval", destination.getCqlFunctions().get(2).getName());
+        assertEquals("range", destination.getCqlFunctions().get(2).getArgumentList().get(0).getArgumentName());
+        assertEquals("FHIR.Range", destination.getCqlFunctions().get(2).getArgumentList().get(0).getArgumentType());
         assertEquals("if range is null then\n" +
                 "        null\n" +
                 "    else\n" +
-                "        Interval[ToQuantity(range.low), ToQuantity(range.high)]",destination.getCqlFunctions().get(2).getLogic());
+                "        Interval[ToQuantity(range.low), ToQuantity(range.high)]", destination.getCqlFunctions().get(2).getLogic());
 
-        assertEquals("ToCode",destination.getCqlFunctions().get(3).getName());
-        assertEquals("coding",destination.getCqlFunctions().get(3).getArgumentList().get(0).getArgumentName());
-        assertEquals("FHIR.Coding",destination.getCqlFunctions().get(3).getArgumentList().get(0).getArgumentType());
+        assertEquals("ToCode", destination.getCqlFunctions().get(3).getName());
+        assertEquals("coding", destination.getCqlFunctions().get(3).getArgumentList().get(0).getArgumentName());
+        assertEquals("FHIR.Coding", destination.getCqlFunctions().get(3).getArgumentList().get(0).getArgumentType());
         assertEquals("if coding is null then\n" +
                 "        null\n" +
                 "    else\n" +
@@ -132,34 +115,34 @@ public class TestCqlToMatXml {
                 "          system: coding.system.value,\n" +
                 "          version: coding.version.value,\n" +
                 "          display: coding.display.value\n" +
-                "        }",destination.getCqlFunctions().get(3).getLogic());
+                "        }", destination.getCqlFunctions().get(3).getLogic());
 
 
-        assertEquals("ToConcept",destination.getCqlFunctions().get(4).getName());
-        assertEquals("concept",destination.getCqlFunctions().get(4).getArgumentList().get(0).getArgumentName());
-        assertEquals("FHIR.CodeableConcept",destination.getCqlFunctions().get(4).getArgumentList().get(0).getArgumentType());
+        assertEquals("ToConcept", destination.getCqlFunctions().get(4).getName());
+        assertEquals("concept", destination.getCqlFunctions().get(4).getArgumentList().get(0).getArgumentName());
+        assertEquals("FHIR.CodeableConcept", destination.getCqlFunctions().get(4).getArgumentList().get(0).getArgumentType());
         assertEquals("if concept is null then\n" +
                 "        null\n" +
                 "    else\n" +
                 "        System.Concept {\n" +
                 "            codes: concept.coding C return ToCode(C),\n" +
                 "            display: concept.text.value\n" +
-                "        }",destination.getCqlFunctions().get(4).getLogic());
+                "        }", destination.getCqlFunctions().get(4).getLogic());
 
-        validateToString(destination,"FHIR.uuid",5);
-        validateToString(destination,"FHIR.TestScriptRequestMethodCode",6);
-        validateToString(destination,"FHIR.SortDirection",7);
-        validateToString(destination,"FHIR.BiologicallyDerivedProductStatus",8);
-        validateToString(destination,"FHIR.UnitsOfTime",9);
-        validateToString(destination,"FHIR.AddressType",10);
-        validateToString(destination,"FHIR.AllergyIntoleranceCategory",11);
-        validateToString(destination,"FHIR.IssueSeverity",12);
-        validateToString(destination,"FHIR.CareTeamStatus",13);
+        validateToString(destination, "FHIR.uuid", 5);
+        validateToString(destination, "FHIR.TestScriptRequestMethodCode", 6);
+        validateToString(destination, "FHIR.SortDirection", 7);
+        validateToString(destination, "FHIR.BiologicallyDerivedProductStatus", 8);
+        validateToString(destination, "FHIR.UnitsOfTime", 9);
+        validateToString(destination, "FHIR.AddressType", 10);
+        validateToString(destination, "FHIR.AllergyIntoleranceCategory", 11);
+        validateToString(destination, "FHIR.IssueSeverity", 12);
+        validateToString(destination, "FHIR.CareTeamStatus", 13);
 
 
-        validateToString(destination,"FHIR.ContractResourcePublicationStatusCodes",229);
-        validateToString(destination,"FHIR.VisionBase",230);
-        validateToString(destination,"FHIR.BundleType",231);
+        validateToString(destination, "FHIR.ContractResourcePublicationStatusCodes", 229);
+        validateToString(destination, "FHIR.VisionBase", 230);
+        validateToString(destination, "FHIR.BundleType", 231);
 
         assertEquals(232, destination.getCqlFunctions().size());
     }
@@ -266,10 +249,10 @@ public class TestCqlToMatXml {
     }
 
     private void validateToString(CQLModel model, String type, int index) {
-        assertEquals("ToString",model.getCqlFunctions().get(index).getName());
-        assertEquals("value",model.getCqlFunctions().get(index).getArgumentList().get(0).getArgumentName());
-        assertEquals(type,model.getCqlFunctions().get(index).getArgumentList().get(0).getArgumentType());
-        assertEquals("value.value",model.getCqlFunctions().get(index).getLogic());
+        assertEquals("ToString", model.getCqlFunctions().get(index).getName());
+        assertEquals("value", model.getCqlFunctions().get(index).getArgumentList().get(0).getArgumentName());
+        assertEquals(type, model.getCqlFunctions().get(index).getArgumentList().get(0).getArgumentType());
+        assertEquals("value.value", model.getCqlFunctions().get(index).getLogic());
 
     }
 }

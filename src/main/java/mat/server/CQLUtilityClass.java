@@ -569,16 +569,6 @@ public final class CQLUtilityClass {
         return sb.toString();
     }
 
-    /**
-     * Method will add multiple escape(backslash) character's.Eevaluate 4 \ to 2 \ and So final will have 2 \.
-     *
-     * @param code
-     * @return
-     */
-    private static String escapeSingleQuote(CQLCode code) {
-        return code.getName().replaceAll("'", "\\\\'");
-    }
-
     private static StringBuilder createParameterSection(List<CQLParameter> paramList,
                                                         StringBuilder cqlStr,
                                                         String toBeInserted,

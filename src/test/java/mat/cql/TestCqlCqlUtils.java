@@ -203,8 +203,8 @@ public class TestCqlCqlUtils {
     public void testParseInvalidOidUrl() {
         String url = "fooobarrred";
         try {
-            String result = CqlUtils.parseOid(url);
-            assertTrue(false);
+            CqlUtils.parseOid(url);
+            assertTrue("Should have been invalid.",false);
         } catch (IllegalArgumentException iae) {
             log.warn("IAE",iae);
         }

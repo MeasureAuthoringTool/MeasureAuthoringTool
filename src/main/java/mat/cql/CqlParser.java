@@ -59,31 +59,32 @@ public class CqlParser {
 
     public void parse(String cql, CqlVisitor v) throws MatException {
         try {
+            String workingCql = cql;
             // Make sure the visitor has everything it needs to start.
             // Validate will throw an exception if there are any issues.
             v.validate();
 
             //Remove all comments.
             if (v.isRemovingBlockComments()) {
-                cql = removeCqlBlockComments(cql);
+                workingCql = removeCqlBlockComments(cql);
             }
             if (v.isRemovingLineComments()) {
-                cql = removeCQLLineComments(cql);
+                workingCql = removeCQLLineComments(cql);
             }
 
             //Populate root object first:
-            processLibraryTag(cql, v);
-            processContext(cql, v);
-            processFhirVersion(cql, v);
+            processLibraryTag(workingCql, v);
+            processContext(workingCql, v);
+            processFhirVersion(workingCql, v);
 
             //Now populate child nodes:
-            processIncludeLibs(cql, v);
-            processCodeSystems(cql, v);
-            processValueSets(cql, v);
-            processCodes(cql, v);
-            processParameters(cql, v);
-            processDefinitions(cql, v);
-            processFunctions(cql, v);
+            processIncludeLibs(workingCql, v);
+            processCodeSystems(workingCql, v);
+            processValueSets(workingCql, v);
+            processCodes(workingCql, v);
+            processParameters(workingCql, v);
+            processDefinitions(workingCql, v);
+            processFunctions(workingCql, v);
         } catch (RuntimeException e) {
             log.warn("RuntimeException encountered in CqlParser", e);
             throw new MatException(e.getMessage(), e);

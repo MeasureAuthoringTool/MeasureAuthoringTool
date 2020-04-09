@@ -56,7 +56,7 @@ public class TestCqlCqlUtils {
     }
 
     @Test
-    public void textNextQuotedStringInnerQuotes() {
+    public void textNextQuotedStringInnerQuotes1() {
         String myString = "kjshdfrkjshdf \"This is the \\\"INNER\\\" string\" 23847293847234\nksjdfhsdf";
         ParseResult p = nextQuotedString(myString,0);
         assertEquals("This is the \\\"INNER\\\" string",p.getString());

@@ -170,7 +170,7 @@ public class TestCqlToMatXml {
     }
 
     @Test
-    public void testHospiceFhir4_1_0_000() throws Exception {
+    public void testHospiceLib() throws Exception {
         String cql = loadCqlResource("Hospice_FHIR4-1.0.000.cql");
         parser.parse(cql, cqlToMatXml);
         var destination = cqlToMatXml.getDestinationModel();

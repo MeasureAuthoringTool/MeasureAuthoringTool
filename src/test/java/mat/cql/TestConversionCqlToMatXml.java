@@ -1,10 +1,6 @@
 package mat.cql;
 
 import lombok.extern.slf4j.Slf4j;
-import mat.dao.CodeDAO;
-import mat.dao.CodeListDAO;
-import mat.dao.CodeSystemDAO;
-import mat.dao.clause.CQLLibraryDAO;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.server.service.impl.XMLMarshalUtil;
@@ -13,7 +9,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;

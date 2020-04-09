@@ -7,7 +7,6 @@ import gov.cms.mat.fhir.rest.dto.MeasureConversionResults;
 import lombok.extern.slf4j.Slf4j;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.service.CQLService;
 import mat.client.shared.MatException;
 import mat.client.shared.MatRuntimeException;
 import mat.cql.CqlParser;

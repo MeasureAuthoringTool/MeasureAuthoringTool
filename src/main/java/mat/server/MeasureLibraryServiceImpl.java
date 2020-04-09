@@ -47,6 +47,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -939,7 +940,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
      * @return {@link ManageMeasureSearchModel.Result}.
      */
     private ManageMeasureSearchModel.Result extractMeasureSearchModelDetail(final String currentUserId,
-                                                                            final boolean isSuperUser, final MeasureShareDTO dto) {
+                                                                            final boolean isSuperUser,
+                                                                            final MeasureShareDTO dto,
+                                                                            final String shareLevelId) {
+        final StopWatch stopwatch = new StopWatch();
+        stopwatch.start();
+
         boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
         ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
         Measure measure = measureDAO.find(dto.getMeasureId());
@@ -963,7 +969,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         detail.setClonable(isClonable);
 
-        detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, dto.getMeasureId()));
+        detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measure, currentUserId, shareLevelId, true));
         detail.setFhirEditOrViewable(MatContextServiceUtil.get().isMeasureModelEditable(dto.getMeasureModel()));
         detail.setExportable(dto.isPackaged());
         detail.setFhirConvertible(MatContextServiceUtil.get().isMeasureConvertible(measure));
@@ -984,6 +990,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setMeasureSetId(dto.getMeasureSetId());
         detail.setDraftable(dto.isDraftable());
         detail.setVersionable(dto.isVersionable());
+
+        stopwatch.stop();
+        logger.info("MeasureLibraryService::extractMeasureSearchModelDetail took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
+
         return detail;
     }
 
@@ -1137,6 +1147,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         detail.setClonable(isClonable);
         detail.setSharable(isOwner || isSuperUser);
+        // Pass measure
         boolean isEditableForVersion = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId(), false);
         if (isEditableForVersion && !isLocked) {
             caclulateVersionAndDraft(detail, measuresInSet);
@@ -2360,75 +2371,111 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public final ManageMeasureSearchModel search(MeasureSearchModel measureSearchModel) {
-        final StopWatch stopwatch = new StopWatch();
-        stopwatch.start();
+    public ManageMeasureSearchModel search(MeasureSearchModel measureSearchModel) {
+        logger.debug("MeasureLibraryServiceImpl::search - enter");
+        final StopWatch searchStopwatch = new StopWatch();
+        searchStopwatch.start();
         String currentUserId = LoggedInUserUtil.getLoggedInUser();
         String userRole = LoggedInUserUtil.getLoggedInUserRole();
         boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
         ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
+
         if (SecurityRole.ADMIN_ROLE.equals(userRole)) {
-            List<MeasureShareDTO> measureList = measurePackageService.searchForAdminWithFilter(
-                    measureSearchModel.getSearchTerm(), 1, Integer.MAX_VALUE, measureSearchModel.getIsMyMeasureSearch());
-
-            List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<>();
-            List<MeasureShareDTO> measureTotalList = measureList;
-            searchModel.setResultsTotal(measureTotalList.size());
-            if (measureSearchModel.getPageSize() < measureTotalList.size()) {
-                measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1,
-                        measureSearchModel.getPageSize());
-            } else if (measureSearchModel.getPageSize() > measureList.size()) {
-                measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureList.size());
-            }
-            searchModel.setStartIndex(measureSearchModel.getStartIndex());
-            searchModel.setData(detailModelList);
-
-            for (MeasureShareDTO dto : measureList) {
-                ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
-                detail.setName(dto.getMeasureName());
-                detail.setId(dto.getMeasureId());
-                detail.setMeasureModel(dto.getMeasureModel());
-                detail.seteMeasureId(dto.geteMeasureId());
-                detail.setDraft(dto.isDraft());
-                String formattedVersion = MeasureUtility.getVersionText(dto.getVersion(), dto.isDraft());
-                detail.setVersion(formattedVersion);
-                detail.setFinalizedDate(dto.getFinalizedDate());
-                detail.setStatus(dto.getStatus());
-                User user = userService.getById(dto.getOwnerUserId());
-                detail.setOwnerfirstName(user.getFirstName());
-                detail.setOwnerLastName(user.getLastName());
-                detail.setOwnerEmailAddress(user.getEmailAddress());
-                detail.setMeasureSetId(dto.getMeasureSetId());
-                detail.setPatientBased(dto.isPatientBased());
-                detailModelList.add(detail);
-            }
+            searchForAdmin(measureSearchModel, searchModel);
         } else {
-            List<MeasureShareDTO> measureList = measurePackageService.searchWithFilter(measureSearchModel);
-            List<MeasureShareDTO> measureTotalList = measureList;
-
-            searchModel.setResultsTotal(measureTotalList.size());
-            if (measureSearchModel.getPageSize() <= measureTotalList.size()) {
-                measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1,
-                        measureSearchModel.getPageSize());
-            } else if (measureSearchModel.getPageSize() > measureList.size()) {
-                measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureList.size());
-            }
-            searchModel.setStartIndex(measureSearchModel.getStartIndex());
-            List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<>();
-            searchModel.setData(detailModelList);
-            for (MeasureShareDTO dto : measureList) {
-                ManageMeasureSearchModel.Result detail = extractMeasureSearchModelDetail(currentUserId, isSuperUser,
-                        dto);
-                detailModelList.add(detail);
-            }
-            updateMeasureFamily(detailModelList);
+            searchForUser(measureSearchModel, currentUserId, isSuperUser, searchModel);
         }
 
-        stopwatch.stop();
-        logger.info("MeasureLibraryService::search took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
-
+        searchStopwatch.stop();
+        logger.info("MeasureLibraryServiceImpl::search took " + searchStopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
+        logger.debug("MeasureLibraryServiceImpl::search - exit");
         return searchModel;
+    }
+
+    private void searchForAdmin(MeasureSearchModel measureSearchModel, ManageMeasureSearchModel searchModel) {
+        List<MeasureShareDTO> measureTotalList = measurePackageService.searchForAdminWithFilter(
+                measureSearchModel.getSearchTerm(), 1, Integer.MAX_VALUE, measureSearchModel.getIsMyMeasureSearch());
+
+        List<Result> detailModelList = new ArrayList<>();
+        searchModel.setResultsTotal(measureTotalList.size());
+
+        List<MeasureShareDTO> measureList = getSublist(measureSearchModel, measureTotalList);
+        searchModel.setStartIndex(measureSearchModel.getStartIndex());
+        searchModel.setData(detailModelList);
+
+        for (MeasureShareDTO dto : measureList) {
+            Result detail = new Result();
+            detail.setName(dto.getMeasureName());
+            detail.setId(dto.getMeasureId());
+            detail.setMeasureModel(dto.getMeasureModel());
+            detail.seteMeasureId(dto.geteMeasureId());
+            detail.setDraft(dto.isDraft());
+            String formattedVersion = MeasureUtility.getVersionText(dto.getVersion(), dto.isDraft());
+            detail.setVersion(formattedVersion);
+            detail.setFinalizedDate(dto.getFinalizedDate());
+            detail.setStatus(dto.getStatus());
+            User user = userService.getById(dto.getOwnerUserId());
+            detail.setOwnerfirstName(user.getFirstName());
+            detail.setOwnerLastName(user.getLastName());
+            detail.setOwnerEmailAddress(user.getEmailAddress());
+            detail.setMeasureSetId(dto.getMeasureSetId());
+            detail.setPatientBased(dto.isPatientBased());
+            detailModelList.add(detail);
+        }
+    }
+
+    private void searchForUser(MeasureSearchModel measureSearchModel, String currentUserId, boolean isSuperUser, ManageMeasureSearchModel searchModel) {
+        logger.debug("MeasureLibraryServiceImpl::searchForUser - enter");
+        List<MeasureShareDTO> measureTotalList = measurePackageService.searchWithFilter(measureSearchModel);
+
+        searchModel.setResultsTotal(measureTotalList.size());
+        searchModel.setStartIndex(measureSearchModel.getStartIndex());
+
+        List<MeasureShareDTO> measureList = getSublist(measureSearchModel, measureTotalList);
+
+        List<Result> detailModelList = extractModelDetailList(currentUserId, isSuperUser, measureList);
+
+        searchModel.setData(detailModelList);
+        logger.debug("MeasureLibraryServiceImpl::searchForUser - exit");
+    }
+
+    private List<MeasureShareDTO> getSublist(MeasureSearchModel measureSearchModel, List<MeasureShareDTO> measureTotalList) {
+        logger.debug("MeasureLibraryServiceImpl::getSublist - enter");
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        List<MeasureShareDTO> measureList;
+        if (measureSearchModel.getPageSize() <= measureTotalList.size()) {
+            measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1,
+                    measureSearchModel.getPageSize());
+        } else {
+            measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureTotalList.size());
+        }
+        logger.debug("MeasureLibraryServiceImpl::getSublist took " + stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
+        logger.debug("MeasureLibraryServiceImpl::getSublist - exit");
+        return measureList;
+    }
+
+    private List<Result> extractModelDetailList(String currentUserId, boolean isSuperUser, List<MeasureShareDTO> measureList) {
+        logger.debug("MeasureLibraryServiceImpl::extractModelDetailList - enter");
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        Set<String> measureSetIds = measureList.stream().map(m -> m.getMeasureSetId()).collect(Collectors.toSet());
+        Map<String, String> shareLevels = measureDAO.findShareLevelsForUser(currentUserId, measureSetIds);
+
+        List<Result> detailModelList = measureList.stream()
+                .map(m -> extractMeasureSearchModelDetail(currentUserId, isSuperUser, m, shareLevels.get(m.getMeasureSetId())))
+                .collect(Collectors.toList());
+
+        updateMeasureFamily(detailModelList);
+
+        stopWatch.stop();
+        logger.info("MeasureLibraryServiceImpl::extractModelDetailList took " + stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
+        logger.debug("MeasureLibraryServiceImpl::extractModelDetailList - exit");
+        return detailModelList;
     }
 
     /**
@@ -2440,15 +2487,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         boolean isFamily = false;
         if (detailModelList != null && !detailModelList.isEmpty()) {
             for (int i = 0; i < detailModelList.size(); i++) {
+                Result currentMeasure = detailModelList.get(i);
                 if (i > 0) {
-                    if (detailModelList.get(i).getMeasureSetId()
-                            .equalsIgnoreCase(detailModelList.get(i - 1).getMeasureSetId())) {
-                        detailModelList.get(i).setMeasureFamily(!isFamily);
+                    Result previousMeasure = detailModelList.get(i - 1);
+                    if (currentMeasure.getMeasureSetId().equalsIgnoreCase(previousMeasure.getMeasureSetId())) {
+                        currentMeasure.setMeasureFamily(!isFamily);
                     } else {
-                        detailModelList.get(i).setMeasureFamily(isFamily);
+                        currentMeasure.setMeasureFamily(isFamily);
                     }
                 } else {
-                    detailModelList.get(i).setMeasureFamily(isFamily);
+                    currentMeasure.setMeasureFamily(isFamily);
                 }
             }
         }
@@ -5609,25 +5657,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
         ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
 
-        List<MeasureShareDTO> measureList = measurePackageService.searchComponentMeasuresWithFilter(measureSearchModel);
-        List<MeasureShareDTO> measureTotalList = measureList;
-
+        List<MeasureShareDTO> measureTotalList = measurePackageService.searchComponentMeasuresWithFilter(measureSearchModel);
         searchModel.setResultsTotal(measureTotalList.size());
-        if (measureSearchModel.getPageSize() <= measureTotalList.size()) {
-            measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1,
-                    measureSearchModel.getPageSize());
-        } else if (measureSearchModel.getPageSize() > measureList.size()) {
-            measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureList.size());
-        }
-        searchModel.setStartIndex(measureSearchModel.getStartIndex());
-        List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<>();
-        searchModel.setData(detailModelList);
-        for (MeasureShareDTO dto : measureList) {
-            ManageMeasureSearchModel.Result detail = extractMeasureSearchModelDetail(currentUserId, isSuperUser, dto);
-            detailModelList.add(detail);
-        }
 
-        updateMeasureFamily(detailModelList);
+        List<MeasureShareDTO> measureList = getSublist(measureSearchModel, measureTotalList);
+        searchModel.setStartIndex(measureSearchModel.getStartIndex());
+
+
+        List<ManageMeasureSearchModel.Result> detailModelList = extractModelDetailList(currentUserId, isSuperUser, measureList);
+        searchModel.setData(detailModelList);
 
         return searchModel;
     }

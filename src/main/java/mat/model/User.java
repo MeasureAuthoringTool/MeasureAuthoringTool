@@ -209,7 +209,7 @@ public class User {
         return "";
     }
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     public UserPassword getPassword() {
         return password;
     }
@@ -306,7 +306,7 @@ public class User {
         }
     }
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "user")
     public UserBonnieAccessInfo getUserBonnieAccessInfo() {
         return userBonnieAccessInfo;
     }
@@ -394,7 +394,7 @@ public class User {
         return this.firstName + " " + this.lastName;
     }
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     public UserPreference getUserPreference() {
         return userPreference;
     }

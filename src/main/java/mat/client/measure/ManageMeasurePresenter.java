@@ -992,6 +992,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     public void displaySearch() {
+        logger.log(Level.INFO, "displaySearch - enter");
         searchDisplay.getCellTablePanel().clear();
         String heading = "Measure Library";
 
@@ -1005,7 +1006,8 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         setSubSkipEmbeddedLink("measureserachView_mainPanel");
         FlowPanel fp = new FlowPanel();
         fp.getElement().setId("fp_FlowPanel");
-        if (ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())) {
+
+        if (isAdminUser()) {
             heading = "";
             filter = SearchWidgetWithFilter.ALL;
             search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter, false);
@@ -1023,6 +1025,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         panel.setContent(fp);
         Mat.focusSkipLists(MEASURE_LIBRARY);
+        logger.log(Level.INFO, "displaySearch - exit");
     }
 
     private void buildCreateMeasure() {
@@ -1373,73 +1376,89 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
         // This to fetch all Measures if user role is Admin. This will go away
         // when Pagination will be implemented in Measure Library.
-        if (currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
-            pageSize = 25;
-            showAdminSearchingBusy(true);
-            MeasureSearchModel searchAdminModel = new MeasureSearchModel(filter, startIndex, pageSize, lastSearchText);
+        if (isAdminUser()) {
+            searchForAdmin(searchText, startIndex, filter, lastSearchText);
+        } else {
+            searchForUser(startIndex, filter, didUserSelectSearch, lastSearchText);
+        }
+    }
 
-            if (null != searchDisplay) {
-                searchDisplay.getSuccessMessageDisplay().clearAlert();
-            }
+    private void searchForUser(int startIndex, int filter, boolean didUserSelectSearch, String lastSearchText) {
+        logger.log(Level.INFO, "searchForUser - enter");
+        MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, 25, lastSearchText);
+        buildAdvancedSearchModel(searchModel);
+        searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);
+        advancedSearch(searchModel, didUserSelectSearch);
+        logger.log(Level.INFO, "searchForUser - exit");
+    }
 
-            MatContext.get().getMeasureService().search(searchAdminModel,
-                    new AsyncCallback<ManageMeasureSearchModel>() {
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            detailDisplay.getErrorMessageDisplay()
-                                    .createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                            MatContext.get().recordTransactionEvent(null, null, null,
-                                    UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
-                            showAdminSearchingBusy(false);
-                        }
+    private void searchForAdmin(String searchText, int startIndex, int filter, String lastSearchText) {
+        logger.log(Level.INFO, "searchForAdmin - enter");
+        int pageSize = 25;
+        showAdminSearchingBusy(true);
+        MeasureSearchModel searchAdminModel = new MeasureSearchModel(filter, startIndex, pageSize, lastSearchText);
 
-                        @Override
-                        public void onSuccess(ManageMeasureSearchModel result) {
-                            result.setSelectedTransferIds(new ArrayList<String>());
-                            result.setSelectedTransferResults(new ArrayList<Result>());
-                            manageMeasureSearchModel = result;
-                            MeasureSearchView measureSearchView = new MeasureSearchView();
-                            measureSearchView.setData(result);
+        if (null != searchDisplay) {
+            searchDisplay.getSuccessMessageDisplay().clearAlert();
+        }
 
-                            MatContext.get().setManageMeasureSearchModel(manageMeasureSearchModel);
-                            searchDisplay.setAdminObserver(new MeasureSearchView.AdminObserver() {
+        MatContext.get().getMeasureService().search(searchAdminModel,
+                new AsyncCallback<ManageMeasureSearchModel>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        detailDisplay.getErrorMessageDisplay()
+                                .createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                        MatContext.get().recordTransactionEvent(null, null, null,
+                                UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                        showAdminSearchingBusy(false);
+                    }
 
-                                @Override
-                                public void onTransferSelectedClicked(Result result) {
-                                    searchDisplay.getErrorMessageDisplay().clearAlert();
-                                    searchDisplay.getErrorMessagesForTransferOS().clearAlert();
-                                    updateTransferIDs(result, manageMeasureSearchModel);
-                                }
+                    @Override
+                    public void onSuccess(ManageMeasureSearchModel result) {
+                        result.setSelectedTransferIds(new ArrayList<String>());
+                        result.setSelectedTransferResults(new ArrayList<Result>());
+                        manageMeasureSearchModel = result;
+                        MeasureSearchView measureSearchView = new MeasureSearchView();
+                        measureSearchView.setData(result);
 
-                                @Override
-                                public void onHistoryClicked(Result result) {
-                                    historyDisplay.setReturnToLinkText("<< Return to MeasureLibrary Owner Ship");
+                        MatContext.get().setManageMeasureSearchModel(manageMeasureSearchModel);
+                        searchDisplay.setAdminObserver(new MeasureSearchView.AdminObserver() {
 
-                                    displayHistory(result.getId(), result.getName());
-
-                                }
-                            });
-                            if ((result.getResultsTotal() == 0) && !lastSearchText.isEmpty()) {
-                                searchDisplay.getErrorMessageDisplay()
-                                        .createAlert(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
-                            } else {
+                            @Override
+                            public void onTransferSelectedClicked(Result result) {
                                 searchDisplay.getErrorMessageDisplay().clearAlert();
                                 searchDisplay.getErrorMessagesForTransferOS().clearAlert();
+                                updateTransferIDs(result, manageMeasureSearchModel);
                             }
-                            SearchResultUpdate sru = new SearchResultUpdate();
-                            sru.update(result, (TextBox) searchDisplay.getAdminSearchString(), lastSearchText);
-                            searchDisplay.buildDataTable(manageMeasureSearchModel, filter, searchText);
-                            panel.setContent(searchDisplay.asWidget());
-                            showAdminSearchingBusy(false);
 
+                            @Override
+                            public void onHistoryClicked(Result result) {
+                                historyDisplay.setReturnToLinkText("<< Return to MeasureLibrary Owner Ship");
+
+                                displayHistory(result.getId(), result.getName());
+
+                            }
+                        });
+                        if ((result.getResultsTotal() == 0) && !lastSearchText.isEmpty()) {
+                            searchDisplay.getErrorMessageDisplay()
+                                    .createAlert(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
+                        } else {
+                            searchDisplay.getErrorMessageDisplay().clearAlert();
+                            searchDisplay.getErrorMessagesForTransferOS().clearAlert();
                         }
-                    });
-        } else {
-            MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, 25, lastSearchText);
-            buildAdvancedSearchModel(searchModel);
-            searchDisplay.getMeasureSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);
-            advancedSearch(searchModel, didUserSelectSearch);
-        }
+                        SearchResultUpdate sru = new SearchResultUpdate();
+                        sru.update(result, (TextBox) searchDisplay.getAdminSearchString(), lastSearchText);
+                        searchDisplay.buildDataTable(manageMeasureSearchModel, filter, searchText);
+                        panel.setContent(searchDisplay.asWidget());
+                        showAdminSearchingBusy(false);
+
+                    }
+                });
+        logger.log(Level.INFO, "searchForAdmin - exit");
+    }
+
+    private boolean isAdminUser() {
+        return currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR);
     }
 
     private void buildAdvancedSearchModel(MeasureSearchModel searchModel) {
@@ -1722,7 +1741,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 measureDeletion = false;
                 isMeasureDeleted = false;
                 isMeasureVersioned = false;
-                if (!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
+                if (!isAdminUser()) {
                     final String mid = event.getSelectedItem().getId();
                     Result result = event.getSelectedItem();
 
@@ -1774,7 +1793,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 measureDeletion = false;
                 isMeasureDeleted = false;
                 isMeasureVersioned = false;
-                if (!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
+                if (!isAdminUser()) {
                     final String mid = event.getSelectedItem().getId();
                     Result result = event.getSelectedItem();
                     final String name = result.getName();

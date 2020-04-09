@@ -80,10 +80,7 @@ public class MatContextServiceUtil implements InitializingBean {
         String userRole = LoggedInUserUtil.getLoggedInUserRole();
         boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
         boolean isOwner = currentUserId.equals(measure.getOwner() == null ? null : measure.getOwner().getId());
-        boolean isSharedToEdit = false;
-        if (shareLevelId != null) {
-            isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevelId);
-        }
+        boolean isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevelId);
         isEditable = (isOwner || isSuperUser || isSharedToEdit);
 
         if (checkForDraft) {

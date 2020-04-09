@@ -1,0 +1,42 @@
+@startuml
+(*)  --> "User selects a convertible measure"
+note right
+    No changes to the enable/disable rules.
+    Prior enable / disable rules for the Convert to FHIR
+    toolbar buttons still function as before.
+end note
+ --> "User clicks 'convert' button"
+--> "Search for draft measures in the measure set/family "
+note right
+    In MatDev we can see multiple drafts
+    for the same measure set:
+    It can have a QDM draft and
+    several FHIR drafts for different versions.
+    So we want to know the order of tests.
+end note
+If "Search for drafts" then
+    --> [draft not found] "convert to FHIR"
+    note right
+         the conversion process will remove
+         any existing FHIR draft measures
+         in the family
+    end note
+'        --> (*)
+else
+    if "Found a QDM draft or an FHIR draft\n not related to the source QDM measure"
+        --> [Yes] "Show alert '<b>Only one draft per measure family should be allowed.'"
+        note right
+            User will have to drop draft measures manually
+        end note
+        -->(*)
+    else
+        --> [FHIR draft from the QDM source] "Show confirmation \n'<b>Are you sure you want to convert this measure again?\n <b>The existing FHIR measure will be overwritten.'"
+        if "confirmation"
+            --> [Yes] "convert to FHIR"
+            --> (*)
+         else
+            -->[No] (*)
+         Endif
+    Endif
+Endif
+@enduml

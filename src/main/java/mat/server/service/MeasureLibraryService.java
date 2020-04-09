@@ -222,20 +222,7 @@ public interface MeasureLibraryService {
 	 *            the measure xml model
 	 */
 	void saveMeasureXml(final MeasureXmlModel measureXmlModel, String measureId, boolean isFhir);
-	
-	/**
-	 * Search.
-	 * 
-	 * @param searchText
-	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param filter
-	 *            the filter
-	 * @return the manage measure search model
-	 */
+
 	ManageMeasureSearchModel search(MeasureSearchModel advancedSearchModel);
 	
 		
@@ -705,4 +692,5 @@ public interface MeasureLibraryService {
 	SaveUpdateCQLResult saveCQLFile(String measureId, String cql);
 	
 	boolean libraryNameExists(String libraryName, String setId);
+
 }

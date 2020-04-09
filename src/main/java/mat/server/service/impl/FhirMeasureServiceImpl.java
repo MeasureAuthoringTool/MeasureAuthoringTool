@@ -1,15 +1,8 @@
 package mat.server.service.impl;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Optional;
 
-import mat.cql.CqlToMatXml;
-import mat.dao.clause.MeasureXMLDAO;
-import mat.model.clause.MeasureXML;
-import mat.model.cql.CQLModel;
-import mat.server.CQLUtilityClass;
-import mat.server.util.XmlProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,13 +21,17 @@ import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirValidationStatus;
 import mat.client.shared.MatException;
 import mat.client.shared.MatRuntimeException;
+import mat.cql.CqlToMatXml;
 import mat.dao.clause.MeasureDAO;
-import mat.model.clause.Measure;
+import mat.dao.clause.MeasureXMLDAO;
+import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLModel;
+import mat.server.CQLUtilityClass;
 import mat.server.service.FhirMeasureService;
 import mat.server.service.FhirOrchestrationGatewayService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
-import mat.shared.SaveUpdateCQLResult;
+import mat.server.util.XmlProcessor;
 
 @Service
 public class FhirMeasureServiceImpl implements FhirMeasureService {
@@ -74,7 +71,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         measureLibraryService.recordRecentMeasureActivity(sourceMeasure.getId(), loggedinUserId);
 
         ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
-        dropFhirMeasureIfExists(sourceMeasureDetails);
+        deleteFhirMeasuresInSet(sourceMeasureDetails.getMeasureSetId());
 
         ConversionResultDto conversionResult = fhirOrchestrationGatewayService.convert(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
         Optional<String> fhirCqlOpt = getFhirCql(conversionResult);
@@ -120,7 +117,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
                 measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
             } catch (MatException | MatRuntimeException e) {
-                logger.error("persistFhirMeasure error",e);
+                logger.error("persistFhirMeasure error", e);
                 throw new MatRuntimeException("Mat cannot persist converted FHIR measure CQL file.");
             }
         });
@@ -158,10 +155,6 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                 .findFirst();
     }
 
-    private ConversionResultDto validateSourceMeasureForFhirConversion(ManageMeasureSearchModel.Result sourceMeasure, String vsacGrantingTicket) {
-        return fhirOrchestrationGatewayService.validate(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
-    }
-
     private ManageMeasureDetailModel loadMeasureAsDetailsForCloning(ManageMeasureSearchModel.Result sourceMeasure) {
         return measureLibraryService.getMeasure(sourceMeasure.getId());
     }
@@ -174,17 +167,12 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         return validationSummary;
     }
 
-    private void dropFhirMeasureIfExists(ManageMeasureDetailModel currentDetails) {
-        transactionTemplate.execute(status -> {
-            Measure currentSourceMeasure = measureDAO.find(currentDetails.getId());
-            Collection<Measure> fhirMeasures = currentSourceMeasure.getFhirMeasures();
-            fhirMeasures.stream().forEach(fhirMeasure ->
-                    logger.debug("Removing existing fhir measure " + fhirMeasure.getId())
-            );
-            // removeOrphan = true should remove the records
-            currentSourceMeasure.getFhirMeasures().clear();
-            return null;
-        });
+    private void deleteFhirMeasuresInSet(String setId) {
+        logger.debug("deleteFhirMeasureIfExists : setId = " + setId);
+        int removed = transactionTemplate.execute(status ->
+                measureDAO.deleteFhirMeasuresBySetId(setId)
+        );
+        logger.debug("deleteFhirMeasureIfExists : removed " + removed);
     }
 
 }

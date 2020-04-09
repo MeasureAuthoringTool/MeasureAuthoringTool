@@ -113,11 +113,11 @@
         <usingModelVersion>5.5</usingModelVersion>
         <cqlContext>Patient</cqlContext>
         <codeSystems>
-            <codeSystem codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMEDCT" codeSystemVersion="2016-03"
-                        id="a82dd545-6ce2-4ec9-a662-0eb9c921b355"/>
-            <codeSystem codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeSystemVersion="2.66"
-                        id="9564f58a071e485ca1ed0c66e05f5922"/>
-        </codeSystems>
+        <codeSystem codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMEDCT" codeSystemVersion="2016-03"
+                    id="a82dd545-6ce2-4ec9-a662-0eb9c921b355"/>
+        <codeSystem codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeSystemVersion="2.66"
+                    id="9564f58a071e485ca1ed0c66e05f5922"/>
+    </codeSystems>
         <valuesets>
             <valueset id="42abb56470824c42b9f58de8b4e2123d" name="Acetaminophen Butalbital Caffeine Codeine"
                       oid="2.16.840.1.113883.3.464.1004.1548" originalName="Acetaminophen Butalbital Caffeine Codeine"

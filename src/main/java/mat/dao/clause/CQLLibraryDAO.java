@@ -45,4 +45,6 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 	boolean isLibraryNameExists(String name, String setId);
 
 	String getLibraryNameIfDraftAlreadyExists(String setId);
+
+	CQLLibrary findByNameAndVersion(String name,double releaseVersion, int revisionNumber);
 }

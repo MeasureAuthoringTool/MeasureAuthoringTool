@@ -488,7 +488,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         SaveUpdateCQLResult latestCQLResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, cqlModel.getExpressionListFromCqlModel(), true);
         CQLLibraryExport cqlLibraryExport = new CQLLibraryExport();
         cqlLibraryExport.setCqlLibrary(cqlLibrary);
-        cqlLibraryExport.setCql(CQLUtilityClass.getCqlString(cqlModel, ""));
+        cqlLibraryExport.setCql(CQLUtilityClass.getCqlString(cqlModel, "").getLeft());
         cqlLibraryExport.setElm(latestCQLResult.getElmString());
         cqlLibraryExport.setJson(latestCQLResult.getJsonString());
         cqlLibraryExportDAO.save(cqlLibraryExport);
@@ -756,7 +756,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
             cqlModel = CQLUtilityClass.getCQLModelFromXML(data);
 
-            cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
+            cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
         } catch (SQLException e) {
             logger.error(e);
         }
@@ -1132,7 +1132,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(library.getLibraryModelType())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
-            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
+            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
             String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString); //remote call
             SaveUpdateCQLResult cqlResult = cqlService.generateParsedCqlObject(cqlValidationResponse, cqlModel);
 

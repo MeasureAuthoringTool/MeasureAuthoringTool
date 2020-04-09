@@ -282,7 +282,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		XmlProcessor xmlProcessor = new XmlProcessor(simpleXML);
 		Node cqlFileName = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathName);
 		
-		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
 
 		if (cqlFileString != null && !cqlFileString.isEmpty()) {
 			CQLFormatter formatter = new CQLFormatter(); 
@@ -327,7 +327,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 					cqlLibraryExport.setCqlLibrary(cqlLibrary);
 				}
 				if(cqlLibraryExport.getCql() == null) {
-					String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString), "");
+					String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString), "").getLeft();
 		
 					try {
 						CQLFormatter formatter = new CQLFormatter(); 
@@ -360,7 +360,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureSimpleXML);
 
-		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		
@@ -427,7 +427,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureSimpleXML);
 
-		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 

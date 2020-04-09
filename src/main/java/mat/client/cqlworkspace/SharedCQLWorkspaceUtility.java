@@ -61,12 +61,23 @@ public class SharedCQLWorkspaceUtility {
 		aceEditor.setAnnotations();
 	}
 
+	public static native void console(String text)
+	/*-{
+		console.log(text);
+	}-*/;
+
+
 	private static void displayMessageBannerForViewCQL(SaveUpdateCQLResult result, MessagePanel messagePanel) {
 		messagePanel.clearAlerts();
 		List<String> errorMessages = new ArrayList<String>();
 		if(!result.isQDMVersionMatching()) {
 			errorMessages.add(AbstractCQLWorkspacePresenter.INVALID_QDM_VERSION_IN_INCLUDES);
 		} else if(!result.getCqlErrors().isEmpty() || !result.getLinterErrorMessages().isEmpty()) {
+			// Dump the errors to the console.
+			result.getCqlErrors().forEach(e -> console("CQL Error: " + e.getErrorMessage() + " " + e.getStartErrorInLine() +
+					" " + e.getEndErrorInLine()));
+			result.getLinterErrorMessages().forEach(e -> console("Linter Error: " + e.toString()));
+
 			if(result.isMeasureComposite() && result.isDoesMeasureHaveIncludedLibraries()) {
 				errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_COMPOSITE_AND_INCLUDED);
 			} else if (result.isMeasureComposite()) {

@@ -1,8 +1,8 @@
 library UseofOpioidsfromMultipleProviders_FHIR4 version '1.0.000' 
 
 using FHIR version '4.0.0'
-include FHIRHelpers version '4.0.0' called FHIRHelpers
-include SupplementalDataElements_FHIR4 version '1.0.0' called SDE
+include FHIRHelpers version '4.0.000' called FHIRHelpers
+include SupplementalDataElements_FHIR4 version '1.0.000' called SDE
 include MATGlobalCommonFunctions_FHIR4 version '4.0.000' called Global
 
 include NCQA_Common_FHIR4 version '5.1.000' called Common

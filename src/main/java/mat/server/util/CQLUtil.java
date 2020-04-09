@@ -586,14 +586,14 @@ public class CQLUtil {
 		Map<String, String> libraryMap = new HashMap<>(); 
 		
 		// get the strings for parsing
-		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "");
+		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
 		String parentLibraryName = cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed();
 		libraryMap.put(parentLibraryName, parentCQLString);
 		for (String cqlLibName : cqlLibNameMap.keySet()) {
 			CQLModel includedCQLModel = CQLUtilityClass.getCQLModelFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
 
 			LibHolderObject libHolderObject = cqlLibNameMap.get(cqlLibName);
-			String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "");			
+			String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "").getLeft();
 			libraryMap.put(libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion(), includedCQLString);
 		}
 

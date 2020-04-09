@@ -22,8 +22,12 @@ import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.cql.CqlParser;
+import mat.cql.CqlToMatXml;
+import mat.cql.CqlVisitorFactory;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.MappingException;
@@ -118,6 +122,12 @@ public class CQLServiceImpl implements CQLService {
     @Autowired
     private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
 
+    @Autowired
+    private CqlVisitorFactory visitorFactory;
+
+    @Autowired
+    private CqlParser cqlParser;
+
     /**
      * The cql supplemental definition XML string.
      */
@@ -192,32 +202,71 @@ public class CQLServiceImpl implements CQLService {
     }
 
     public SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config, String modelType) {
-        XmlProcessor processor = new XmlProcessor(xml);
+        CQLModel newModel = new CQLModel();
+        List<CQLError> errors = new ArrayList<>();
         try {
-            ReverseEngineerListener listener = new ReverseEngineerListener(cql, config.getPreviousCQLModel());
-            CQLModel reversedEngineeredCQLModel = listener.getCQLModel();
-            String reverseEngineeredCQLLookup = marshallCQLModel(reversedEngineeredCQLModel);
-            processor.replaceNode(reverseEngineeredCQLLookup, "cqlLookUp", "measure");
+            //Now parse it into a new CQLModel
+            switch(modelType) {
+                case "QDM":
+                    // Use ReverseEngineerListener for QDM.
+                    // This code overwrites some of the users changes int he CQL that are not allowed.
+                    ReverseEngineerListener listener = new ReverseEngineerListener(cql, config.getPreviousCQLModel());
+                    newModel = listener.getCQLModel();
+                    errors = listener.getSyntaxErrors();
+                    break;
+                case "FHIR":
+                    // Use the CqlToMatXml parser for FHIR.
+                    CqlToMatXml converter = visitorFactory.getCqlToMatXmlVisitor();
+                    try {
+                        cqlParser.parse(cql, converter);
+                        newModel = converter.getDestinationModel();
 
+                        //Overwrite fields the user is not allowed to change for FHIR.
+                        newModel.setLibraryName(config.getPreviousCQLModel().getLibraryName());
+                        newModel.setUsingModelVersion(config.getPreviousCQLModel().getUsingModelVersion());
+                        newModel.setUsingModel(config.getPreviousCQLModel().getUsingModel());
+                        newModel.setVersionUsed(config.getPreviousCQLModel().getVersionUsed());
+                    } catch (MatException me) {
+                        errors = Collections.singletonList(new CQLError());
+                        errors.get(0).setErrorMessage(me.getMessage());
+                        errors.get(0).setErrorInLine(1);
+                        errors.get(0).setErrorAtOffeset(1);
+                        errors.get(0).setStartErrorInLine(1);
+                        errors.get(0).setEndErrorInLine(1);
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unexpected modelType " + modelType);
+            }
+
+            //Parser errors.
+            if (!errors.isEmpty()) {
+                SaveUpdateCQLResult r = new SaveUpdateCQLResult();
+                r.setXml(xml); // retain the old xml if there are syntax errors (essentially not saving)
+                r.setCqlString(cql);
+                r.setSuccess(false);
+                r.setCqlErrors(errors);
+                r.setFailureReason(SaveUpdateCQLResult.SYNTAX_ERRORS);
+                return r;
+            }
+
+            // The model could have altered due to places the user is not allowed to change.
+            // The cql needs to be regenerated from the model to catch these cases.
+            // At one point formatting was being done, but the formatter doesn't work that well with
+            // fhir cql and it was causing errors.
+            cql = CQLUtilityClass.getCqlString(newModel,"").getLeft();
+
+            //Validation.
             SaveUpdateCQLResult parsedResult;
-            CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
             if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
                 String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cql); //remote call
-                parsedResult = generateParsedCqlObject(cqlValidationResponse, cqlModel);
+                parsedResult = generateParsedCqlObject(cqlValidationResponse, newModel);
             } else {
-                parsedResult = parseCQLLibraryForErrors(reversedEngineeredCQLModel);
+                parsedResult = parseCQLLibraryForErrors(newModel);
             }
 
-            if (listener.hasSyntaxErrors()) {
-                parsedResult.setXml(xml); // retain the old xml if there are syntax errors (essentially not saving)
-                parsedResult.setCqlString(cql);
-                parsedResult.setSuccess(false);
-                parsedResult.setCqlErrors(listener.getSyntaxErrors());
-                parsedResult.setFailureReason(SaveUpdateCQLResult.SYNTAX_ERRORS);
-                return parsedResult;
-            }
-
-            if (CQLValidationUtil.doesModelHaveDuplicateIdentifierOrIdentifierAsKeyword(reversedEngineeredCQLModel)) {
+            //Duplicate identifiers.
+            if (CQLValidationUtil.doesModelHaveDuplicateIdentifierOrIdentifierAsKeyword(newModel)) {
                 parsedResult.setXml(xml); // retain the old xml if there are duplicate identifiers (essentially not saving)
                 parsedResult.setCqlString(cql);
                 parsedResult.setSuccess(false);
@@ -225,39 +274,31 @@ public class CQLServiceImpl implements CQLService {
                 return parsedResult;
             }
 
-            if (parsedResult.getCqlErrors().isEmpty()) {
-                CQLFormatter formatter = new CQLFormatter();
-                String formattedCQL = formatter.format(CQLUtilityClass.getCqlString(reversedEngineeredCQLModel, ""));
-                CQLModel formattedReversedEngineeredCQLModel = reverseEngineerCQLModel(formattedCQL, config.getPreviousCQLModel());
-                String formattedCQLLookup = marshallCQLModel(formattedReversedEngineeredCQLModel);
-                parsedResult.setXml(formattedCQLLookup);
-                parsedResult.setCqlString(CQLUtilityClass.getCqlString(formattedReversedEngineeredCQLModel, ""));
-            } else {
-                parsedResult.setXml(reverseEngineeredCQLLookup);
-                parsedResult.setCqlString(CQLUtilityClass.getCqlString(reversedEngineeredCQLModel, ""));
-            }
+            //Gen the new mat xml.
+            String newLibXml = marshallCQLModel(newModel);
 
+            //Lint.
             CQLLinter linter = CQLUtil.lint(cql, config);
-            SaveUpdateCQLResult result = getCQLDataForLoad(parsedResult.getXml());
+            SaveUpdateCQLResult result = getCQLDataForLoad(newLibXml);
             result.setCqlErrors(parsedResult.getCqlErrors());
             result.setCqlWarnings(parsedResult.getCqlWarnings());
             result.setLibraryNameErrorsMap(parsedResult.getLibraryNameErrorsMap());
             result.setLibraryNameWarningsMap(parsedResult.getLibraryNameWarningsMap());
-            result.setCqlString(parsedResult.getCqlString());
-            result.setXml(parsedResult.getXml());
+            result.setCqlString(cql);
+            result.setXml(newLibXml);
             result.getLinterErrors().addAll(linter.getErrors());
             result.getLinterWarningMessages().addAll(linter.getWarningMessages());
             result.getLinterErrorMessages().addAll(linter.getErrorMessages());
-            result.setDatatypeUsedCorrectly(CQLUtil.validateDatatypeCombinations(result.getCqlModel(), result.getUsedCQLArtifacts().getValueSetDataTypeMap(), result.getUsedCQLArtifacts().getCodeDataTypeMap()));
+            result.setDatatypeUsedCorrectly(CQLUtil.validateDatatypeCombinations(result.getCqlModel(),
+                    result.getUsedCQLArtifacts().getValueSetDataTypeMap(),
+                    result.getUsedCQLArtifacts().getCodeDataTypeMap()));
             result.setSuccess(true);
 
             return result;
-
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             return null;
         }
-
     }
 
     public List<CQLLibraryHistory> createCQLLibraryHistory(List<CQLLibraryHistory> existingLibraryHistoryList, String CQLLibraryString, CQLLibrary cqlLibrary, Measure measure) {
@@ -462,7 +503,6 @@ public class CQLServiceImpl implements CQLService {
         }
 
         return functionLogic;
-
     }
 
     @Override
@@ -548,7 +588,7 @@ public class CQLServiceImpl implements CQLService {
      * Builds a temporary parameter expressions string, formats the parameter, and
      * returns the formatted logic
      *
-     * @param parameterExpressionString the
+     * @param parameter the parameter
      * @return the formatted parameter logic
      * @throws IOException
      */
@@ -984,7 +1024,7 @@ public class CQLServiceImpl implements CQLService {
         }
 
         parsedCQL.setCqlModel(cqlModel);
-        parsedCQL.setCqlString(CQLUtilityClass.getCqlString(cqlModel, ""));
+        parsedCQL.setCqlString(CQLUtilityClass.getCqlString(cqlModel, "").getLeft());
 
         return parsedCQL;
     }
@@ -1013,8 +1053,7 @@ public class CQLServiceImpl implements CQLService {
 
     @Override
     public SaveUpdateCQLResult getCQLLibraryData(String xmlString, String modelType) {
-        CQLModel cqlModel = new CQLModel();
-        cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString);
+        CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString);
 
         HashMap<String, LibHolderObject> cqlLibNameMap = new HashMap<>();
         Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<>();
@@ -1024,7 +1063,7 @@ public class CQLServiceImpl implements CQLService {
         cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
 
         // get the strings for parsing
-        String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "");
+        String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
         SaveUpdateCQLResult result;
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
             String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(parentCQLString); //remote call
@@ -1222,7 +1261,7 @@ public class CQLServiceImpl implements CQLService {
     @Override
     public String getCqlString(CQLModel cqlModel) {
 
-        return CQLUtilityClass.getCqlString(cqlModel, "");
+        return CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
     }
 
     @Override
@@ -1341,14 +1380,16 @@ public class CQLServiceImpl implements CQLService {
 
         CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
 
-        String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, cqlExpressionName);
+        Pair<String,Integer> cqlRes = CQLUtilityClass.getCqlString(cqlModel, cqlExpressionName);
+
+        String cqlFileString = cqlRes.getLeft();
 
         cqlModel.setLines(countLines(cqlFileString));
 
         String wholeDef = "";
         int size = 0;
         int startLine = 0;
-        int endLine = CQLUtilityClass.getSize();
+        int endLine = cqlRes.getRight();
 
         if (expressionType.equalsIgnoreCase("parameter")) {
             endLine = endLine + 1; // for parameters, the size is actually 1 more than reported.
@@ -1669,7 +1710,6 @@ public class CQLServiceImpl implements CQLService {
                 qds.setTaxonomy(matValueSet.getCodeSystemName());
             }
         }
-
         return qds;
     }
 
@@ -1944,7 +1984,7 @@ public class CQLServiceImpl implements CQLService {
             int fileStartLine = -1;
             int fileEndLine = -1;
             int size = 0;
-            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, expressionObject.getName());
+            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, expressionObject.getName()).getLeft();
 
             String wholeDef = "";
             String expressionToFind = null;

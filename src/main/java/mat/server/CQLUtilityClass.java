@@ -1,23 +1,5 @@
 package mat.server;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
-import mat.server.util.MeasureUtility;
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.util.CollectionUtils;
-
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
@@ -29,8 +11,31 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.impl.XMLMarshalUtil;
+import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.util.CollectionUtils;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class CQLUtilityClass {
 
@@ -42,16 +47,8 @@ public final class CQLUtilityClass {
 
     public static final String VERSION = " version ";
 
-    private static StringBuilder toBeInsertedAtEnd;
-
-    private static int size;
-
-    public static int getSize() {
-        return size;
-    }
-
-    public static StringBuilder getStrToBeInserted() {
-        return toBeInsertedAtEnd;
+    private CQLUtilityClass() {
+        throw new IllegalStateException("CQL Utility class");
     }
 
     public static String replaceFirstWhitespaceInLineForExpression(String expression) {
@@ -93,13 +90,14 @@ public final class CQLUtilityClass {
     }
 
 
-    public static String getCqlString(CQLModel cqlModel, String toBeInserted) {
+    public static Pair<String, Integer> getCqlString(CQLModel cqlModel, String toBeInserted) {
         return getCqlString(cqlModel, toBeInserted, true, 2);
     }
 
-    public static String getCqlString(CQLModel cqlModel, String toBeInserted, boolean isSpaces, int indentSize) {
+    public static Pair<String, Integer> getCqlString(CQLModel cqlModel, String toBeInserted, boolean isSpaces, int indentSize) {
+        boolean isFhir = StringUtils.equals(cqlModel.getUsingModel(), "FHIR");
+        AtomicInteger size = new AtomicInteger(0);
         StringBuilder cqlStr = new StringBuilder();
-        toBeInsertedAtEnd = new StringBuilder();
         // library Name and Using
         cqlStr.append(CQLUtilityClass.createLibraryNameSection(cqlModel));
 
@@ -107,27 +105,33 @@ public final class CQLUtilityClass {
         cqlStr.append(CQLUtilityClass.createIncludesSection(cqlModel.getCqlIncludeLibrarys()));
 
         //CodeSystems
+        // Not very clean but they use the code list instead of the code system section for codes.
+        // This adds all kinds of complexity but is needed for backwards compatibility.
         cqlStr.append(CQLUtilityClass.createCodeSystemsSection(cqlModel.getCodeList()));
 
         //Valuesets
-        cqlStr.append(CQLUtilityClass.createValueSetsSection(cqlModel.getValueSetList()));
+        cqlStr.append(CQLUtilityClass.createValueSetsSection(cqlModel.getValueSetList(), isFhir));
 
         //Codes
         cqlStr.append(CQLUtilityClass.createCodesSection(cqlModel.getCodeList()));
 
         // parameters
-        CQLUtilityClass.createParameterSection(cqlModel.getCqlParameters(), cqlStr, toBeInserted);
+        CQLUtilityClass.createParameterSection(cqlModel.getCqlParameters(), cqlStr, toBeInserted, size);
 
         // Definitions and Functions by Context
         if (!cqlModel.getDefinitionList().isEmpty() || !cqlModel.getCqlFunctions().isEmpty()) {
-            getDefineAndFunctionsByContext(cqlModel.getDefinitionList(), cqlModel.getCqlFunctions(), cqlStr, toBeInserted, isSpaces, indentSize);
+            getDefineAndFunctionsByContext(cqlModel.getDefinitionList(),
+                    cqlModel.getCqlFunctions(),
+                    cqlStr,
+                    toBeInserted,
+                    isSpaces,
+                    indentSize,
+                    size,
+                    isFhir);
         } else {
             cqlStr.append("context").append(" " + PATIENT).append("\n\n");
         }
-
-
-        return cqlStr.toString();
-
+        return Pair.of(cqlStr.toString(), size.get());
     }
 
     private static String createLibraryNameSection(CQLModel cqlModel) {
@@ -153,7 +157,6 @@ public final class CQLUtilityClass {
         return sb.toString();
     }
 
-
     /**
      * Gets the define and funcs by context.
      *
@@ -165,45 +168,56 @@ public final class CQLUtilityClass {
      * @return the define and funcs by context
      */
     private static StringBuilder getDefineAndFunctionsByContext(
-            List<CQLDefinition> defineList, List<CQLFunctions> functionsList,
-            StringBuilder cqlStr, String toBeInserted, boolean isSpaces, int indentSize) {
+            List<CQLDefinition> defineList,
+            List<CQLFunctions> functionsList,
+            StringBuilder cqlStr,
+            String toBeInserted,
+            boolean isSpaces,
+            int indentSize,
+            AtomicInteger size,
+            boolean isFhir) {
+        Map<String, List<CQLDefinition>> contextToDefMap = new HashMap<>();
+        Map<String, List<CQLFunctions>> funcToContextMap = new HashMap<>();
 
-        List<CQLDefinition> contextPatDefineList = new ArrayList<CQLDefinition>();
-        List<CQLDefinition> contextPopDefineList = new ArrayList<CQLDefinition>();
-        List<CQLFunctions> contextPatFuncList = new ArrayList<CQLFunctions>();
-        List<CQLFunctions> contextPopFuncList = new ArrayList<CQLFunctions>();
-
-        if (defineList != null) {
-            for (int i = 0; i < defineList.size(); i++) {
-                if (defineList.get(i).getContext().equalsIgnoreCase(PATIENT)) {
-                    contextPatDefineList.add(defineList.get(i));
+        if (!CollectionUtils.isEmpty(defineList)) {
+            defineList.forEach(d -> {
+                if (isFhir) {
+                    addToListMap(contextToDefMap, StringUtils.defaultString(d.getContext()), d);
                 } else {
-                    contextPopDefineList.add(defineList.get(i));
+                    //For some reason in QDM it defaults to population.
+                    if (StringUtils.equalsIgnoreCase(d.getContext(), PATIENT)) {
+                        addToListMap(contextToDefMap, PATIENT, d);
+                    } else {
+                        addToListMap(contextToDefMap, POPULATION, d);
+                    }
                 }
-            }
+            });
         }
-        if (functionsList != null) {
-            for (int i = 0; i < functionsList.size(); i++) {
-                if (functionsList.get(i).getContext().equalsIgnoreCase(PATIENT)) {
-                    contextPatFuncList.add(functionsList.get(i));
+        if (!CollectionUtils.isEmpty(functionsList)) {
+            functionsList.forEach(f -> {
+                if (isFhir) {
+                    addToListMap(funcToContextMap, StringUtils.defaultString(f.getContext()), f);
                 } else {
-                    contextPopFuncList.add(functionsList.get(i));
+                    //For some reason in QDM it defaults to population.
+                    if (StringUtils.equalsIgnoreCase(f.getContext(), PATIENT)) {
+                        addToListMap(funcToContextMap, PATIENT, f);
+                    } else {
+                        addToListMap(funcToContextMap, POPULATION, f);
+
+                    }
                 }
-            }
+            });
         }
 
-        if ((!contextPatDefineList.isEmpty()) || (!contextPatFuncList.isEmpty())) {
+        Set<String> keys = new HashSet<>();
+        keys.addAll(contextToDefMap.keySet());
+        keys.addAll(funcToContextMap.keySet());
 
-            getDefineAndFunctionsByContext(contextPatDefineList, contextPatFuncList, PATIENT, cqlStr, toBeInserted, isSpaces, indentSize);
-        }
-
-        if ((!contextPopDefineList.isEmpty()) || (!contextPopFuncList.isEmpty())) {
-
-            getDefineAndFunctionsByContext(contextPopDefineList, contextPopFuncList, POPULATION, cqlStr, toBeInserted, isSpaces, indentSize);
-        }
+        keys.forEach(k -> {
+            getDefineAndFunctionsByContext(contextToDefMap.get(k), funcToContextMap.get(k), k, cqlStr, toBeInserted, isSpaces, indentSize, size);
+        });
 
         return cqlStr;
-
     }
 
     /**
@@ -220,74 +234,74 @@ public final class CQLUtilityClass {
     private static StringBuilder getDefineAndFunctionsByContext(
             List<CQLDefinition> definitionList,
             List<CQLFunctions> functionsList, String context,
-            StringBuilder cqlStr, String toBeInserted, boolean isSpaces, int indentSize) {
+            final StringBuilder cqlStr, String toBeInserted, boolean isSpaces, int indentSize, AtomicInteger size) {
 
-
-        cqlStr = cqlStr.append("context").append(" " + context).append("\n\n");
-        for (CQLDefinition definition : definitionList) {
-
-            if (StringUtils.isNotBlank(definition.getCommentString())) {
-                cqlStr.append(createCommentString(definition.getCommentString()));
-                cqlStr.append(System.lineSeparator());
-            }
-
-            String def = "define " + "\"" + definition.getName() + "\"";
-
-            cqlStr = cqlStr.append(def + ":\n");
-            cqlStr = cqlStr.append(getWhiteSpaceString(isSpaces, indentSize) + definition.getLogic().replaceAll("\\n", "\n" + getWhiteSpaceString(isSpaces, indentSize)));
-            cqlStr = cqlStr.append("\n\n");
-
-            // if the the def we just appended is the current one, then
-            // find the size of the file at that time. ;-
-            // This will give us the end line of the definition we are trying to insert.
-            if (def.equalsIgnoreCase(toBeInserted)) {
-                size = getEndLine(cqlStr.toString());
-            }
-
+        if (StringUtils.isNotBlank(context)) {
+            cqlStr.append("context").append(" " + context).append("\n\n");
         }
 
-        for (CQLFunctions function : functionsList) {
-
-            if (StringUtils.isNotBlank(function.getCommentString())) {
-                cqlStr.append(createCommentString(function.getCommentString()));
-                cqlStr.append(System.lineSeparator());
-            }
-
-            String func = "define function " + "\"" + function.getName() + "\"";
-
-
-            cqlStr = cqlStr.append(func + "(");
-            if (function.getArgumentList() != null && !function.getArgumentList().isEmpty()) {
-                for (CQLFunctionArgument argument : function.getArgumentList()) {
-                    StringBuilder argumentType = new StringBuilder();
-                    if (argument.getArgumentType().equalsIgnoreCase("QDM Datatype")) {
-                        argumentType = argumentType.append("\"").append(argument.getQdmDataType());
-                        if (argument.getAttributeName() != null) {
-                            argumentType = argumentType.append(".").append(argument.getAttributeName());
-                        }
-                        argumentType = argumentType.append("\"");
-                    } else if (argument.getArgumentType().equalsIgnoreCase(
-                            CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
-                        argumentType = argumentType.append(argument.getOtherType());
-                    } else {
-                        argumentType = argumentType.append(argument.getArgumentType());
-                    }
-                    cqlStr = cqlStr.append(argument.getArgumentName() + " " + argumentType + ", ");
+        if (!CollectionUtils.isEmpty(definitionList)) {
+            definitionList.forEach(definition -> {
+                if (StringUtils.isNotBlank(definition.getCommentString())) {
+                    cqlStr.append(createCommentString(definition.getCommentString()));
+                    cqlStr.append(System.lineSeparator());
                 }
-                cqlStr.deleteCharAt(cqlStr.length() - 2);
-            }
 
-            cqlStr = cqlStr.append("):\n" + getWhiteSpaceString(isSpaces, indentSize) + function.getLogic().replaceAll("\\n", "\n" + getWhiteSpaceString(isSpaces, indentSize)));
-            cqlStr = cqlStr.append("\n\n");
+                String def = "define " + "\"" + definition.getName() + "\"";
 
-            // if the the func we just appended is the current one, then
-            // find the size of the file at that time.
-            // This will give us the end line of the function we are trying to insert.
-            if (func.equalsIgnoreCase(toBeInserted)) {
-                size = getEndLine(cqlStr.toString());
-            }
+                cqlStr.append(def + ":\n");
+                cqlStr.append(getWhiteSpaceString(isSpaces, indentSize) + definition.getLogic().replaceAll("\\n", "\n" + getWhiteSpaceString(isSpaces, indentSize)));
+                cqlStr.append("\n\n");
+
+                // if the the def we just appended is the current one, then
+                // find the size of the file at that time. ;-
+                // This will give us the end line of the definition we are trying to insert.
+                if (def.equalsIgnoreCase(toBeInserted)) {
+                    size.set(getEndLine(cqlStr.toString()));
+                }
+            });
         }
+        if (!CollectionUtils.isEmpty(functionsList)) {
+            functionsList.forEach(function -> {
+                if (StringUtils.isNotBlank(function.getCommentString())) {
+                    cqlStr.append(createCommentString(function.getCommentString()));
+                    cqlStr.append(System.lineSeparator());
+                }
 
+                String func = "define function " + "\"" + function.getName() + "\"";
+
+                cqlStr.append(func + "(");
+                if (function.getArgumentList() != null && !function.getArgumentList().isEmpty()) {
+                    for (CQLFunctionArgument argument : function.getArgumentList()) {
+                        StringBuilder argumentType = new StringBuilder();
+                        if (argument.getArgumentType().equalsIgnoreCase("QDM Datatype")) {
+                            argumentType = argumentType.append("\"").append(argument.getQdmDataType());
+                            if (argument.getAttributeName() != null) {
+                                argumentType = argumentType.append(".").append(argument.getAttributeName());
+                            }
+                            argumentType = argumentType.append("\"");
+                        } else if (argument.getArgumentType().equalsIgnoreCase(
+                                CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
+                            argumentType = argumentType.append(argument.getOtherType());
+                        } else {
+                            argumentType = argumentType.append(argument.getArgumentType());
+                        }
+                        cqlStr.append(argument.getArgumentName() + " " + argumentType + ", ");
+                    }
+                    cqlStr.deleteCharAt(cqlStr.length() - 2);
+                }
+
+                cqlStr.append("):\n" + getWhiteSpaceString(isSpaces, indentSize) + function.getLogic().replaceAll("\\n", "\n" + getWhiteSpaceString(isSpaces, indentSize)));
+                cqlStr.append("\n\n");
+
+                // if the the func we just appended is the current one, then
+                // find the size of the file at that time.
+                // This will give us the end line of the function we are trying to insert.
+                if (func.equalsIgnoreCase(toBeInserted)) {
+                    size.set(getEndLine(cqlStr.toString()));
+                }
+            });
+        }
         return cqlStr;
     }
 
@@ -302,7 +316,7 @@ public final class CQLUtilityClass {
                 XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
                 cqlModel = (CQLModel) xmlMarshalUtil.convertXMLToObject("CQLModelMapping.xml", cqlLookUpXMLString, CQLModel.class);
             } catch (Exception e) {
-                logger.info("Error while getting codesystems :" + e.getMessage());
+                logger.info("Error while getting codeystems", e);
             }
         }
 
@@ -435,29 +449,53 @@ public final class CQLUtilityClass {
     }
 
     private static String createCodeSystemsSection(List<CQLCode> codeSystemList) {
-
         StringBuilder sb = new StringBuilder();
 
         List<String> codeSystemAlreadyUsed = new ArrayList<>();
 
         if (!CollectionUtils.isEmpty(codeSystemList)) {
-            for (CQLCode codes : codeSystemList) {
-                if (codes.getCodeSystemOID() != null && !codes.getCodeSystemOID().isEmpty() && !"null".equals(codes.getCodeSystemOID())) {
-                    String codeSysStr = codes.getCodeSystemName();
-                    String codeSysVersion = "";
+            for (CQLCode code : codeSystemList) {
+                if (code.getCodeSystemOID() != null && !code.getCodeSystemOID().isEmpty() && !"null".equals(code.getCodeSystemOID())) {
+                    boolean isUrlCodeSystem = StringUtils.startsWith(code.getCodeSystemOID(), "http");
+                    if (isUrlCodeSystem) {
+                        if (!codeSystemAlreadyUsed.contains(code.getCodeSystemName())) {
+                            // Fhir4 code system
+                            // codesystem "SNOMEDCT:2017-09": 'http://snomed.info/sct/731000124108' version 'http://snomed.info/sct/731000124108/version/201709'
+                            //       or
+                            // codesystem "SNOMEDCT:2017-09": 'http://snomed.info/sct/731000124108'
+                            String csName = code.getCodeSystemName();
+                            String csUri = code.getCodeSystemOID();
+                            String csVersionUri = code.getCodeSystemVersionUri();
 
-                    if (codes.isIsCodeSystemVersionIncluded()) {
-                        codeSysStr = codeSysStr + ":" + codes.getCodeSystemVersion().replaceAll(" ", "%20");
-                        codeSysVersion = "version 'urn:hl7:version:" + codes.getCodeSystemVersion() + "'";
-                    }
+                            if (code.isIsCodeSystemVersionIncluded()) {
+                                csName = csName + ":" + code.getCodeSystemVersion();
+                            }
+                            sb.append("codeystem \"").append(csName).append('"').append(": ").
+                                    append("'").append(csUri).append("' ");
+                            if (StringUtils.isNotBlank(csVersionUri)) {
+                                sb.append("version '" + csVersionUri + "'");
+                            }
+                            sb.append("\n");
+                            codeSystemAlreadyUsed.add(csName);
+                        }
+                    } else {
+                        // Legacy OID system.
+                        String codeSysStr = code.getCodeSystemName();
+                        String codeSysVersion = "";
 
-                    if (!codeSystemAlreadyUsed.contains(codeSysStr)) {
-                        sb.append("codesystem \"").append(codeSysStr).append('"').append(": ");
-                        sb.append("'urn:oid:").append(codes.getCodeSystemOID()).append("' ");
-                        sb.append(codeSysVersion);
-                        sb.append("\n");
+                        if (code.isIsCodeSystemVersionIncluded()) {
+                            codeSysStr = codeSysStr + ":" + code.getCodeSystemVersion().replaceAll(" ", "%20");
+                            codeSysVersion = "version 'urn:hl7:version:" + code.getCodeSystemVersion() + "'";
+                        }
 
-                        codeSystemAlreadyUsed.add(codeSysStr);
+                        if (!codeSystemAlreadyUsed.contains(codeSysStr)) {
+                            sb.append("codesystem \"").append(codeSysStr).append('"').append(": ");
+                            sb.append("'urn:oid:").append(code.getCodeSystemOID()).append("' ");
+                            sb.append(codeSysVersion);
+                            sb.append("\n");
+
+                            codeSystemAlreadyUsed.add(codeSysStr);
+                        }
                     }
                 }
             }
@@ -468,7 +506,7 @@ public final class CQLUtilityClass {
         return sb.toString();
     }
 
-    private static String createValueSetsSection(List<CQLQualityDataSetDTO> valueSetList) {
+    private static String createValueSetsSection(List<CQLQualityDataSetDTO> valueSetList, boolean isFhir) {
         StringBuilder sb = new StringBuilder();
 
         List<String> valueSetAlreadyUsed = new ArrayList<>();
@@ -478,23 +516,24 @@ public final class CQLUtilityClass {
             for (CQLQualityDataSetDTO valueset : valueSetList) {
 
                 if (!valueSetAlreadyUsed.contains(valueset.getName())) {
-
-                    String version = valueset.getVersion().replaceAll(" ", "%20");
-                    sb.append("valueset ").append('"').append(valueset.getName()).append('"');
-                    sb.append(": 'urn:oid:").append(valueset.getOid()).append("' ");
-                    //Check if QDM has expansion identifier or not.
-                    if (StringUtils.isNotBlank(version) && !version.equals("1.0")) {
-                        sb.append("version 'urn:hl7:version:").append(version).append("' ");
+                    if (isFhir) {
+                        sb.append("valueset ").append('"').append(valueset.getName()).append('"');
+                        sb.append(": '").append(valueset.getOid()).append("' ");
+                    } else {
+                        String version = valueset.getVersion().replaceAll(" ", "%20");
+                        sb.append("valueset ").append('"').append(valueset.getName()).append('"');
+                        sb.append(": 'urn:oid:").append(valueset.getOid()).append("' ");
+                        //Check if QDM has expansion identifier or not.
+                        if (StringUtils.isNotBlank(version) && !version.equals("1.0")) {
+                            sb.append("version 'urn:hl7:version:").append(version).append("' ");
+                        }
                     }
                     sb.append("\n");
                     valueSetAlreadyUsed.add(valueset.getName());
                 }
-
             }
-
             sb.append("\n");
         }
-
         return sb.toString();
     }
 
@@ -502,26 +541,26 @@ public final class CQLUtilityClass {
 
         StringBuilder sb = new StringBuilder();
 
-        List<String> codesAlreadyUsed = new ArrayList<String>();
+        List<String> codeAlreadyUsed = new ArrayList<String>();
 
         if (!CollectionUtils.isEmpty(codeList)) {
 
-            for (CQLCode codes : codeList) {
-
-                String codesStr = '"' + codes.getDisplayName() + '"' + ": " + "'" + codes.getCodeOID() + "'";
-                String codeSysStr = codes.getCodeSystemName();
-                if (codes.isIsCodeSystemVersionIncluded()) {
-                    codeSysStr = codeSysStr + ":" + codes.getCodeSystemVersion().replaceAll(" ", "%20");
+            for (CQLCode code : codeList) {
+                String codeStr = '"' + code.getCodeName() + '"' + ": " + "'" + code.getCodeOID() + "'";
+                String codeSysStr = code.getCodeSystemName();
+                if (code.isIsCodeSystemVersionIncluded()) {
+                    codeSysStr = codeSysStr + ":" + code.getCodeSystemVersion().replaceAll(" ", "%20");
                 }
 
-                if (!codesAlreadyUsed.contains(codesStr)) {
-                    sb.append("code ").append(codesStr).append(" ").append("from ");
+                if (!codeAlreadyUsed.contains(codeStr)) {
+                    sb.append("code ").append(codeStr).append(" ").append("from ");
                     sb.append('"').append(codeSysStr).append('"').append(" ");
-                    sb.append("display " + "'" + escapeSingleQuote(codes) + "'");
+                    if (StringUtils.isNotEmpty(code.getDisplayName())) {
+                        sb.append("display " + "'" + code.getDisplayName() + "'");
+                    }
                     sb.append("\n");
-                    codesAlreadyUsed.add(codesStr);
+                    codeAlreadyUsed.add(codeStr);
                 }
-
             }
 
             sb.append("\n");
@@ -533,14 +572,17 @@ public final class CQLUtilityClass {
     /**
      * Method will add multiple escape(backslash) character's.Eevaluate 4 \ to 2 \ and So final will have 2 \.
      *
-     * @param codes
+     * @param code
      * @return
      */
-    private static String escapeSingleQuote(CQLCode codes) {
-        return codes.getName().replaceAll("'", "\\\\'");
+    private static String escapeSingleQuote(CQLCode code) {
+        return code.getName().replaceAll("'", "\\\\'");
     }
 
-    private static StringBuilder createParameterSection(List<CQLParameter> paramList, StringBuilder cqlStr, String toBeInserted) {
+    private static StringBuilder createParameterSection(List<CQLParameter> paramList,
+                                                        StringBuilder cqlStr,
+                                                        String toBeInserted,
+                                                        AtomicInteger size) {
         if (!CollectionUtils.isEmpty(paramList)) {
 
             for (CQLParameter parameter : paramList) {
@@ -559,7 +601,7 @@ public final class CQLUtilityClass {
                 // find the size of the file at that time.
                 // This will give us the end line of the parameter we are trying to insert.
                 if (param.equalsIgnoreCase(toBeInserted)) {
-                    size = getEndLine(cqlStr.toString());
+                    size.set(getEndLine(cqlStr.toString()));
                 }
 
             }
@@ -568,7 +610,6 @@ public final class CQLUtilityClass {
         }
 
         return cqlStr;
-
     }
 
     public static String createCommentString(String comment) {
@@ -577,7 +618,14 @@ public final class CQLUtilityClass {
         return sb.toString();
     }
 
-    private CQLUtilityClass() {
-        throw new IllegalStateException("CQL Utility class");
+    private static <T, O> void addToListMap(Map<O, List<T>> map, O key, T newElem) {
+        if (map != null) {
+            List<T> l = map.get(key);
+            if (CollectionUtils.isEmpty(l)) {
+                l = new ArrayList<T>();
+                map.put(key, l);
+            }
+            l.add(newElem);
+        }
     }
 }

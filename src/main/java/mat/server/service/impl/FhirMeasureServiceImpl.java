@@ -1,27 +1,16 @@
 package mat.server.service.impl;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
-
 import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.service.CQLService;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirValidationStatus;
 import mat.client.shared.MatException;
 import mat.client.shared.MatRuntimeException;
-import mat.cql.CqlToMatXml;
+import mat.cql.CqlParser;
+import mat.cql.CqlVisitorFactory;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.clause.MeasureXML;
@@ -32,6 +21,18 @@ import mat.server.service.FhirOrchestrationGatewayService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.util.XmlProcessor;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class FhirMeasureServiceImpl implements FhirMeasureService {
@@ -52,17 +53,36 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
     private final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
 
-    public FhirMeasureServiceImpl(FhirOrchestrationGatewayService fhirOrchestrationGatewayService, MeasureLibraryService measureLibraryService, MeasureCloningService measureCloningService, MeasureDAO measureDAO, MeasureXMLDAO measureXMLDAO, PlatformTransactionManager txManager) {
+    private final CQLService cqlService;
+
+    private final CqlParser cqlParser;
+
+    private final CqlVisitorFactory cqlVisitorFactory;
+
+    public FhirMeasureServiceImpl(FhirOrchestrationGatewayService fhirOrchestrationGatewayService,
+                                  MeasureLibraryService measureLibraryService,
+                                  MeasureCloningService measureCloningService,
+                                  MeasureDAO measureDAO,
+                                  MeasureXMLDAO measureXMLDAO,
+                                  PlatformTransactionManager txManager,
+                                  CQLService cqlService,
+                                  CqlParser cqlParser,
+                                  CqlVisitorFactory cqlVisitorFactory) {
         this.fhirOrchestrationGatewayService = fhirOrchestrationGatewayService;
         this.measureLibraryService = measureLibraryService;
         this.measureCloningService = measureCloningService;
         this.measureDAO = measureDAO;
         this.measureXMLDAO = measureXMLDAO;
         this.transactionTemplate = new TransactionTemplate(txManager);
+        this.cqlService = cqlService;
+        this.cqlParser = cqlParser;
+        this.cqlVisitorFactory = cqlVisitorFactory;
     }
 
     @Override
-    public FhirConvertResultResponse convert(ManageMeasureSearchModel.Result sourceMeasure, String vsacGrantingTicket, String loggedinUserId) throws MatException {
+    public FhirConvertResultResponse convert(ManageMeasureSearchModel.Result sourceMeasure,
+                                             String vsacGrantingTicket,
+                                             String loggedinUserId) throws MatException {
         if (!sourceMeasure.isFhirConvertible()) {
             throw new MatException("Measure cannot be converted to FHIR");
         }
@@ -117,7 +137,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
                 measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
             } catch (MatException | MatRuntimeException e) {
-                logger.error("persistFhirMeasure error", e);
+                logger.error("persistFhirMeasure error",e);
                 throw new MatRuntimeException("Mat cannot persist converted FHIR measure CQL file.");
             }
         });
@@ -134,12 +154,24 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                     cqlModelXmlFrag,
                     CQLModel.class);
 
-            CqlToMatXml converter = new CqlToMatXml(sourceCqlModel, cql);
-            CQLModel destinationCqlModel = converter.convert();
+            var convCqlToMatXml = cqlVisitorFactory.getConversionCqlToMatXmlVisitor();
+            convCqlToMatXml.setSourceModel(sourceCqlModel);
 
-            String newCqlModelXmlFrag = CQLUtilityClass.getXMLFromCQLModel(destinationCqlModel);
+            cqlParser.parse(cql,convCqlToMatXml);
+
+            var destModel = convCqlToMatXml.getDestinationModel();
+
+            String newCqlModelXmlFrag = CQLUtilityClass.getXMLFromCQLModel(destModel);
             String destinationMeasureXml = processor.replaceNode(newCqlModelXmlFrag, "cqlLookUp", "measure");
             saveMeasureXml(measureXml, destinationMeasureXml);
+
+            destModel.getCqlIncludeLibrarys().forEach(i -> {
+                //Currently only includes global libs and they should all be there.
+                //Just add them in.
+                if (StringUtils.isNotBlank(i.getCqlLibraryId())) {
+                    cqlService.saveCQLAssociation(i,measureId);
+                }
+            });
         } catch (IOException | MappingException | MarshalException | ValidationException e) {
             throw new MatException("Error converting mat xml", e);
         }
@@ -153,6 +185,10 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                 .map(el -> el.getFhirCql())
                 .filter(StringUtils::isNotBlank)
                 .findFirst();
+    }
+
+    private ConversionResultDto validateSourceMeasureForFhirConversion(ManageMeasureSearchModel.Result sourceMeasure, String vsacGrantingTicket) {
+        return fhirOrchestrationGatewayService.validate(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
     }
 
     private ManageMeasureDetailModel loadMeasureAsDetailsForCloning(ManageMeasureSearchModel.Result sourceMeasure) {

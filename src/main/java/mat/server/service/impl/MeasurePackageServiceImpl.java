@@ -204,7 +204,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
     private String formatCQL(final MeasureXML measureXML) throws IOException {
         CQLModel model = CQLUtilityClass.getCQLModelFromXML(measureXML.getMeasureXMLAsString());
-        String cqlString = CQLUtilityClass.getCqlString(model, "");
+        String cqlString = CQLUtilityClass.getCqlString(model, "").getLeft();
         CQLFormatter formatter = new CQLFormatter();
         cqlString = formatter.format(cqlString);
         ReverseEngineerListener listener = new ReverseEngineerListener(cqlString, model);

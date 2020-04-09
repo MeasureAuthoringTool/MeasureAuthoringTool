@@ -1,26 +1,16 @@
 package mat.server.service.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.transaction.PlatformTransactionManager;
-
 import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
 import gov.cms.mat.fhir.rest.dto.MeasureConversionResults;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.service.CQLService;
 import mat.client.shared.MatException;
 import mat.client.shared.MatRuntimeException;
+import mat.cql.CqlParser;
+import mat.cql.CqlVisitorFactory;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.clause.Measure;
@@ -29,6 +19,21 @@ import mat.server.service.FhirOrchestrationGatewayService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
 import mat.shared.SaveUpdateCQLResult;
+import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -55,8 +60,17 @@ public class FhirMeasureServiceImplTest {
     @Mock
     private PlatformTransactionManager platformTransactionManager;
 
+    @Mock
+    private CQLService cqlService;
+
     @InjectMocks
     private FhirMeasureServiceImpl service;
+
+    @BeforeEach
+    public void before() {
+        ReflectionTestUtils.setField(service,"cqlParser",new CqlParser());
+        ReflectionTestUtils.setField(service,"cqlVisitorFactory",new CqlVisitorFactory());
+    }
 
     @Test
     public void testIsNotConvertable() {
@@ -193,7 +207,7 @@ public class FhirMeasureServiceImplTest {
         SaveUpdateCQLResult saveUpdateCQLResult = new SaveUpdateCQLResult();
         saveUpdateCQLResult.setSuccess(false);
 
-        doThrow(MatRuntimeException.class).when(measureLibraryService).recordRecentMeasureActivity(Mockito.any(), Mockito.any());
+        doThrow(MatRuntimeException.class).when(measureLibraryService).recordRecentMeasureActivity(Mockito.any(),Mockito.any());
 
         assertThrows(MatRuntimeException.class, () -> {
             service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);

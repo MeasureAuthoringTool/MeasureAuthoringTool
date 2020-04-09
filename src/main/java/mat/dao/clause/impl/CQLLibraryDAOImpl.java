@@ -66,6 +66,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
     private static final String LIBRARY_NAME = "name";
     private static final String LIBRARY_MODEL_TYPE = "libraryModelType";
     private static final String QDM_VERSION = "qdmVersion";
+    private static final String REVISION_NUMBER = "revisionNumber";
 
     @Autowired
     private UserDAO userDAO;
@@ -450,6 +451,18 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
         }
 
         return (p2 != null) ? cb.and(p1, p2) : p1;
+    }
+
+    @Override
+    public CQLLibrary findByNameAndVersion(String name,double version, int revisionNumber) {
+        Session session = getSessionFactory().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<CQLLibrary> query = cb.createQuery(CQLLibrary.class);
+        Root<CQLLibrary> root = query.from(CQLLibrary.class);
+        query.select(root).where(cb.and(cb.equal(root.get(LIBRARY_NAME), name),
+                cb.and(cb.equal(root.get(VERSION),version),
+                cb.and(cb.equal(root.get(REVISION_NUMBER),revisionNumber)))));
+        return session.createQuery(query).getSingleResult();
     }
 
     @Override

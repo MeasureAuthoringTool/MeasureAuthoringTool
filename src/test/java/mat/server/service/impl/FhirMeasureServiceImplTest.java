@@ -7,6 +7,7 @@ import gov.cms.mat.fhir.rest.dto.MeasureConversionResults;
 import lombok.extern.slf4j.Slf4j;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.service.CQLService;
 import mat.client.shared.MatException;
 import mat.client.shared.MatRuntimeException;
 import mat.cql.CqlParser;
@@ -58,6 +59,9 @@ public class FhirMeasureServiceImplTest {
     private MeasureXMLDAO measureXMLDAO;
 
     @Mock
+    private CQLService cqlService;
+
+    @Mock
     private PlatformTransactionManager platformTransactionManager;
 
     @InjectMocks
@@ -67,7 +71,10 @@ public class FhirMeasureServiceImplTest {
     public void before() {
         ReflectionTestUtils.setField(service,"cqlParser",new CqlParser());
         ReflectionTestUtils.setField(service,"cqlVisitorFactory",new CqlVisitorFactory());
+        //The following log statements are to appease our Codacy tooling it wont let us commit
+        // if we dont use these some place:
         log.info("" + platformTransactionManager);
+        log.info("" + cqlService);
     }
 
     @Test

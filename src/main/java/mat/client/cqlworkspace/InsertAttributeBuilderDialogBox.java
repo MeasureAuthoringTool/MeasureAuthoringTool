@@ -125,8 +125,8 @@ public class InsertAttributeBuilderDialogBox {
             allAttributes = MatContext.get().getCqlConstantContainer().getFhirCqlAttributeList();
             allDataTypes = MatContext.get().getCqlConstantContainer().getFhirCqlDataTypeList();
         } else {
-            allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
             allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
+            allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
         }
 
         dialogModal = new Modal();
@@ -236,7 +236,7 @@ public class InsertAttributeBuilderDialogBox {
         Collections.sort(allAttributes, String.CASE_INSENSITIVE_ORDER);
         Collections.sort(allDataTypes, String.CASE_INSENSITIVE_ORDER);
         addAvailableItems(dtAttriblistBox, allDataTypes);
-        addAvailableItems(attriblistBox, allAttributes);
+        selectAttributesByDataType(messageFormgroup, helpBlock, allAttributes, modelType);
 
         dtAttriblistBox.addChangeHandler(event -> selectAttributesByDataType(messageFormgroup, helpBlock, allAttributes, modelType));
 
@@ -449,6 +449,7 @@ public class InsertAttributeBuilderDialogBox {
         final int selectedIndex = dtAttriblistBox.getSelectedIndex();
         if (selectedIndex != 0) {
             final String dataTypeSelected = dtAttriblistBox.getItemText(selectedIndex);
+            attriblistBox.setEnabled(true);
             if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
                 getAllAttributesByDataTypeForFhir(attriblistBox, dataTypeSelected);
             } else {
@@ -457,7 +458,14 @@ public class InsertAttributeBuilderDialogBox {
         } else {
             attriblistBox.clear();
             unitslistBox.setSelectedIndex(0);
-            addAvailableItems(attriblistBox, allAttributes);
+            if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
+                attriblistBox.setEnabled(false);
+            } else {
+                // Warning: The attribute list box instance is static
+                // and can be reused for both QDM and FHIR dialogs.
+                attriblistBox.setEnabled(true);
+                addAvailableItems(attriblistBox, allAttributes);
+            }
         }
         setEnabled(false);
         defaultFrmGrpValidations();

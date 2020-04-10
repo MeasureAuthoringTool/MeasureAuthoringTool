@@ -992,7 +992,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setVersionable(dto.isVersionable());
 
         stopwatch.stop();
-        logger.info("MeasureLibraryService::extractMeasureSearchModelDetail took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
+        logger.debug("MeasureLibraryService::extractMeasureSearchModelDetail took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
 
         return detail;
     }
@@ -3175,7 +3175,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             }
 
             CQLModel libraryCQLModel = CQLUtilityClass.getCQLModelFromXML(data);
-            String libraryContent = CQLUtilityClass.getCqlString(libraryCQLModel, "").getLeft();;
+            String libraryContent = CQLUtilityClass.getCqlString(libraryCQLModel, "").getLeft();
+            ;
 
             ComponentMeasureTabObject o = new ComponentMeasureTabObject(measureName, alias, libraryName, version, ownerName, libraryContent, componentId);
             componentMeasureInformationList.add(o);
@@ -5261,7 +5262,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getXml());
-            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();;
+            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
+            ;
             String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString); //remote call
             SaveUpdateCQLResult cqlResult = getCqlService().generateParsedCqlObject(cqlValidationResponse, cqlModel);
 

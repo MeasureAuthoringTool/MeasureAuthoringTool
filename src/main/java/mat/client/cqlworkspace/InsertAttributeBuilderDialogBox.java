@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -52,6 +54,9 @@ import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.QDSAttributes;
 
 public class InsertAttributeBuilderDialogBox {
+
+    private static final Logger logger = Logger.getLogger("MAT");
+
     private static final String ATTR_LABEL = "attr-Label";
     private static final String FORM_CONTROL = "form-control";
     private static final String MODE_DETAILS_ALERT = "Mode Details dropdown is now enabled.";
@@ -86,11 +91,11 @@ public class InsertAttributeBuilderDialogBox {
     private static List<String> allDataTypes;
     private static List<String> allAttributes;
 
-    private static final ListBoxMVP dtAttriblistBox = new ListBoxMVP();
-    private static final ListBoxMVP attriblistBox = new ListBoxMVP();
-    private static final ListBoxMVP modelistBox = new ListBoxMVP();
-    private static final ListBoxMVP modeDetailslistBox = new ListBoxMVP();
-    private static final ListBoxMVP unitslistBox = new ListBoxMVP();
+    private static ListBoxMVP dtAttriblistBox;
+    private static ListBoxMVP attriblistBox;
+    private static ListBoxMVP modelistBox;
+    private static ListBoxMVP modeDetailslistBox;
+    private static ListBoxMVP unitslistBox;
 
     private static final FormGroup dtFormGroup = new FormGroup();
     private static final FormGroup attrFormGroup = new FormGroup();
@@ -128,6 +133,11 @@ public class InsertAttributeBuilderDialogBox {
             allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
             allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
         }
+        dtAttriblistBox = new ListBoxMVP();
+        attriblistBox = new ListBoxMVP();
+        modelistBox = new ListBoxMVP();
+        modeDetailslistBox = new ListBoxMVP();
+        unitslistBox = new ListBoxMVP();
 
         dialogModal = new Modal();
         dialogModal.getElement().setAttribute("role", "dialog");
@@ -449,9 +459,9 @@ public class InsertAttributeBuilderDialogBox {
         final int selectedIndex = dtAttriblistBox.getSelectedIndex();
         if (selectedIndex != 0) {
             final String dataTypeSelected = dtAttriblistBox.getItemText(selectedIndex);
-            attriblistBox.setEnabled(true);
             if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
                 getAllAttributesByDataTypeForFhir(attriblistBox, dataTypeSelected);
+                attriblistBox.setEnabled(true);
             } else {
                 getAllAttributesByDataType(attriblistBox, dataTypeSelected);
             }
@@ -461,9 +471,6 @@ public class InsertAttributeBuilderDialogBox {
             if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
                 attriblistBox.setEnabled(false);
             } else {
-                // Warning: The attribute list box instance is static
-                // and can be reused for both QDM and FHIR dialogs.
-                attriblistBox.setEnabled(true);
                 addAvailableItems(attriblistBox, allAttributes);
             }
         }
@@ -949,7 +956,7 @@ public class InsertAttributeBuilderDialogBox {
 
             @Override
             public void onFailure(final Throwable caught) {
-                GWT.log("onFailure", caught);
+                logger.log(Level.SEVERE, "Error in getAllAttributesByDataType. Error message: " + caught.getMessage(), caught);
                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             }
         });
@@ -959,7 +966,7 @@ public class InsertAttributeBuilderDialogBox {
         attributeService.getAllAttributesByDataTypeForFhir(dataType, new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable caught) {
-                GWT.log("onFailure", caught);
+                logger.log(Level.SEVERE, "Error in getAllAttributesByDataTypeForFhir. Error message: " + caught.getMessage(), caught);
                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             }
 

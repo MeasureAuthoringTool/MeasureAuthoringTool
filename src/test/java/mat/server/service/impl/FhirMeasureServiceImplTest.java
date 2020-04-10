@@ -31,6 +31,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.server.service.FhirOrchestrationGatewayService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
@@ -139,10 +140,12 @@ public class FhirMeasureServiceImplTest {
 
         Mockito.when(measureXMLDAO.findForMeasure(Mockito.any())).thenReturn(measureXML);
 
+
         service.TEST_MODE = true;
         service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);
 
         Mockito.verify(measureDAO, Mockito.times(1)).deleteFhirMeasuresBySetId(Mockito.eq(setId));
+        Mockito.verify(cqlService, Mockito.atLeastOnce()).saveCQLAssociation(Mockito.any(CQLIncludeLibrary.class), Mockito.anyString());
     }
 
     @Test

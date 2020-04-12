@@ -251,7 +251,7 @@ public class FhirValidationReportService {
          }
      }
 
-     public void generateExternalErrorsMap(LibraryConversionResults libraryConversionResults, Map<String, List<CqlConversionError>> externalErrorsMap) {
+     private void generateExternalErrorsMap(LibraryConversionResults libraryConversionResults, Map<String, List<CqlConversionError>> externalErrorsMap) {
 
          libraryConversionResults.getExternalErrors().forEach((k, v) -> {
              v.forEach(q -> {

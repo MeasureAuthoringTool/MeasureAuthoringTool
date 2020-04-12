@@ -13,6 +13,7 @@ import java.util.Set;
 import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
 import gov.cms.mat.fhir.rest.dto.CqlConversionError;
 import gov.cms.mat.fhir.rest.dto.FhirValidationResult;
+import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
 import gov.cms.mat.fhir.rest.dto.MatCqlConversionException;
 import gov.cms.mat.fhir.rest.dto.MeasureConversionResults;
 import gov.cms.mat.fhir.rest.dto.ValueSetConversionResults;
@@ -362,12 +363,13 @@ class FhirValidationReportServiceTest {
         HashMap<String, List<Object>> qdmCqlConversionErrorsMap = new HashMap<>();
         HashMap<String, List<Object>> fhirCqlConversionErrorsMap = new HashMap<>();
         Map<String, Object> paramsMap = new HashMap<>();
+        Map<String, List<CqlConversionError>> externalErrorsMap = new HashMap<>();
 
         URL path = FhirValidationReportService.class.getClassLoader().getResource("report.json");
         ConversionResultDto conversionResultDto = new ObjectMapper().readValue(new File(path.getFile()), ConversionResultDto.class);
 
         ReflectionTestUtils.invokeMethod(fhirValidationReportService, "getLibraryErrors", conversionResultDto,
-                libraryFhirValidationErrors, qdmCqlConversionErrorsMap, fhirCqlConversionErrorsMap, paramsMap);
+                libraryFhirValidationErrors, qdmCqlConversionErrorsMap, fhirCqlConversionErrorsMap, paramsMap, externalErrorsMap);
         Map<String, Object> responseParamsMap = new HashMap<>();
         responseParamsMap.put("LibraryNotFoundInHapi", "Not Found in Hapi");
 
@@ -380,15 +382,31 @@ class FhirValidationReportServiceTest {
         HashMap<String, List<Object>> qdmCqlConversionErrorsMap = new HashMap<>();
         HashMap<String, List<Object>> fhirCqlConversionErrorsMap = new HashMap<>();
         Map<String, Object> paramsMap = new HashMap<>();
+        Map<String, List<CqlConversionError>> externalErrorsMap = new HashMap<>();
 
         URL path = FhirValidationReportService.class.getClassLoader().getResource("validationReportResponse.json");
         ConversionResultDto conversionResultDto = new ObjectMapper().readValue(new File(path.getFile()), ConversionResultDto.class);
 
         ReflectionTestUtils.invokeMethod(fhirValidationReportService, "getLibraryErrors", conversionResultDto,
-                libraryFhirValidationErrors, qdmCqlConversionErrorsMap, fhirCqlConversionErrorsMap, paramsMap);
+                libraryFhirValidationErrors, qdmCqlConversionErrorsMap, fhirCqlConversionErrorsMap, paramsMap, externalErrorsMap);
 
         assertEquals(qdmCqlConversionErrorsMap.size(), 0);
         assertEquals(fhirCqlConversionErrorsMap.size(), 2);
+    }
+
+    @Test
+    void testGenerateExternalErrorsMap() throws IOException {
+
+        Map<String, List<CqlConversionError>> externalErrorsMap = new HashMap<>();
+
+        URL path = FhirValidationReportService.class.getClassLoader().getResource("validationReportResponse.json");
+        ConversionResultDto conversionResultDto = new ObjectMapper().readValue(new File(path.getFile()), ConversionResultDto.class);
+
+        for (LibraryConversionResults results : conversionResultDto.getLibraryConversionResults()) {
+            ReflectionTestUtils.invokeMethod(fhirValidationReportService, "generateExternalErrorsMap", results, externalErrorsMap);
+        }
+        assertEquals(externalErrorsMap.size(), 1);
+        assertEquals(externalErrorsMap.get("MATGlobalCommonFunctions_FHIR4 4.0.000").size(), 2);
     }
 
 }

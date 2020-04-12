@@ -142,7 +142,8 @@ public class FhirValidationReportService {
         List<FhirValidationResult> libraryFhirValidationErrors = new ArrayList<>();
         HashMap<String, List<Object>> qdmCqlConversionErrorsMap = new HashMap<>();
         HashMap<String, List<Object>> fhirCqlConversionErrorsMap = new HashMap<>();
-        getLibraryErrors(conversionResultDto, libraryFhirValidationErrors, qdmCqlConversionErrorsMap, fhirCqlConversionErrorsMap, paramsMap);
+        Map<String, List<CqlConversionError>> externalErrorsMap = new HashMap<>();
+        getLibraryErrors(conversionResultDto, libraryFhirValidationErrors, qdmCqlConversionErrorsMap, fhirCqlConversionErrorsMap, paramsMap, externalErrorsMap);
 
         List<FhirValidationResult> measureFhirValidationErrors = getMeasureErrors(conversionResultDto);
 
@@ -151,6 +152,7 @@ public class FhirValidationReportService {
         paramsMap.put("measureFhirValidationErrors", measureFhirValidationErrors);
         paramsMap.put("qdmCqlConversionErrors", qdmCqlConversionErrorsMap);
         paramsMap.put("fhirCqlConversionErrors", fhirCqlConversionErrorsMap);
+        paramsMap.put("externalErrorsMap", externalErrorsMap);
     }
 
     private void buildCqlConversionErrorMap(Set<CqlConversionError> cqlConversionErrorsSet, Map<String, List<Object>> cqlConversionErrorsMap) {
@@ -211,7 +213,7 @@ public class FhirValidationReportService {
     }
 
     private void getLibraryErrors(ConversionResultDto conversionResultDto, List<FhirValidationResult> libraryFhirValidationErrors, HashMap<String, List<Object>> qdmCqlConversionErrorsMap,
-                           HashMap<String, List<Object>> fhirCqlConversionErrorsMap, Map<String, Object> paramsMap) {
+                           HashMap<String, List<Object>> fhirCqlConversionErrorsMap, Map<String, Object> paramsMap, Map<String, List<CqlConversionError>> externalErrorsMap) {
          // Library FHIR validation errors
          CqlConversionResult cqlConversionResult;
          if (CollectionUtils.isNotEmpty(conversionResultDto.getLibraryConversionResults())) {
@@ -223,6 +225,11 @@ public class FhirValidationReportService {
                      if (CollectionUtils.isNotEmpty(results.getLibraryFhirValidationResults())) {
                          libraryFhirValidationErrors.addAll(results.getLibraryFhirValidationResults());
                      }
+
+                     if(results.getSuccess() != null) {
+                         generateExternalErrorsMap(results, externalErrorsMap);
+                     }
+
                      // CQL conversion errors
                      cqlConversionResult = results.getCqlConversionResult();
                      if (cqlConversionResult != null) {
@@ -244,4 +251,18 @@ public class FhirValidationReportService {
          }
      }
 
+     public void generateExternalErrorsMap(LibraryConversionResults libraryConversionResults, Map<String, List<CqlConversionError>> externalErrorsMap) {
+
+         libraryConversionResults.getExternalErrors().forEach((k, v) -> {
+             v.forEach(q -> {
+                 if(StringUtils.isNotBlank(q.getTargetIncludeLibraryId()) && StringUtils.isNotBlank(q.getTargetIncludeLibraryVersionId())) {
+                     String targetIncludedLibraryWithVersion = q.getTargetIncludeLibraryId() + " " + q.getTargetIncludeLibraryVersionId();
+                     if(!externalErrorsMap.containsKey(targetIncludedLibraryWithVersion)) {
+                         externalErrorsMap.put(targetIncludedLibraryWithVersion, new ArrayList<>());
+                     }
+                     externalErrorsMap.get(targetIncludedLibraryWithVersion).add(q);
+                 }
+             });
+         });
+     }
 }

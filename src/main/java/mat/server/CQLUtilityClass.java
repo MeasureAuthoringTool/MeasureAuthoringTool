@@ -470,7 +470,7 @@ public final class CQLUtilityClass {
                             if (code.isIsCodeSystemVersionIncluded()) {
                                 csName = csName + ":" + code.getCodeSystemVersion();
                             }
-                            sb.append("codeystem \"").append(csName).append('"').append(": ").
+                            sb.append("codesystem \"").append(csName).append('"').append(": ").
                                     append("'").append(csUri).append("' ");
                             if (StringUtils.isNotBlank(csVersionUri)) {
                                 sb.append("version '" + csVersionUri + "'");

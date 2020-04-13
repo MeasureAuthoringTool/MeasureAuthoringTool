@@ -22,6 +22,7 @@
                     <#include "measure_fhir_validation_errors.ftl" />
                     <#include "qdm_cql_conversion_errors.ftl" />
                     <#include "fhir_cql_conversion_errors.ftl" />
+                    <#include "external_cql_conversion_errors.ftl" />
                 </div>
             </#if>
         </div>

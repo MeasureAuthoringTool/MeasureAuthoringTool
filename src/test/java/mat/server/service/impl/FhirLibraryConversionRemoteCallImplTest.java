@@ -1,8 +1,10 @@
 package mat.server.service.impl;
 
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
+import gov.cms.mat.fhir.rest.dto.ConversionType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.commons.util.StringUtils;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -33,7 +35,7 @@ class FhirLibraryConversionRemoteCallImplTest {
 
         ResponseEntity<ConversionResultDto> responseEntity = new ResponseEntity<>(new ConversionResultDto(), HttpStatus.OK);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.any(Map.class))).thenReturn(responseEntity);
-        fhirLibraryConversionRemoteCall.convert("libraryId");
+        fhirLibraryConversionRemoteCall.convert("libraryId", ConversionType.CONVERSION);
         Map<String, String> expectedParams = Map.of("id", "libraryId", "conversionType", "CONVERSION");
         String expectedUrl = "http://localhost:9080/library/convertStandAlone?id={id}&conversionType={conversionType}";
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.eq(expectedUrl), Mockito.eq(HttpMethod.POST), Mockito.nullable(HttpEntity.class), Mockito.eq(ConversionResultDto.class), Mockito.eq(expectedParams));

@@ -2,6 +2,7 @@ package mat.server.service.impl;
 
 import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
+import gov.cms.mat.fhir.rest.dto.ConversionType;
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirValidationStatus;
@@ -63,7 +64,7 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService{
         /*if draft FHIR library already exists then delete it here*/
         deleteDraftFhirLibrariesInSet(existingLibrary.getSetId());
 
-        ConversionResultDto conversionResult = fhirLibraryConversionRemoteCall.convert(sourceLibrary.getId());
+        ConversionResultDto conversionResult = fhirLibraryConversionRemoteCall.convert(sourceLibrary.getId(), ConversionType.CONVERSION);
         Optional<String> fhirCqlOpt = getFhirCql(conversionResult);
 
         FhirValidationStatus validationStatus = createValidationStatus(conversionResult);

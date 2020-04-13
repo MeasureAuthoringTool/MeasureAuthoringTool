@@ -36,14 +36,14 @@ public class FhirLibraryConversionRemoteCallImpl implements FhirLibraryConversio
     }
 
     @Override
-    public ConversionResultDto convert(String libraryId) {
+    public ConversionResultDto convert(String libraryId, ConversionType conversionType) {
         if (logger.isDebugEnabled()) {
             logger.debug("callRemoteService " + libraryId + " " + ConversionType.CONVERSION);
         }
         String executeQuery = fhirLibraryConversionRemoteUrl + FHIR_LIBRARY_SRVC_PARAMS;
         Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("id", libraryId);
-        uriVariables.put("conversionType", ConversionType.CONVERSION);
+        uriVariables.put("conversionType", conversionType.name());
         ResponseEntity<ConversionResultDto> response;
         try {
             response = restTemplate.exchange(executeQuery, HttpMethod.POST, null, ConversionResultDto.class, uriVariables);

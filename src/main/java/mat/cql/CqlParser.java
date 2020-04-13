@@ -69,7 +69,11 @@ public class CqlParser {
                 workingCql = removeCqlBlockComments(cql);
             }
             if (v.isRemovingLineComments()) {
-                workingCql = removeCQLLineComments(cql);
+                workingCql = removeCQLLineComments(workingCql);
+            }
+
+            if (log.isTraceEnabled()) {
+                log.trace("workingCql after comments removed: \n" + workingCql);
             }
 
             //Populate root object first:

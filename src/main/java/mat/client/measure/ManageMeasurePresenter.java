@@ -53,7 +53,7 @@ import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
-import mat.client.measure.service.CheckMeasureForConversionResult;
+import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirMeasureRemoteService;
 import mat.client.measure.service.FhirMeasureRemoteServiceAsync;
@@ -1654,7 +1654,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             @Override
             public void onConvertMeasureFhir(Result object) {
                 FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
-                fhirMeasureService.checkMeasureForConversion(object, new AsyncCallback<CheckMeasureForConversionResult>() {
+                fhirMeasureService.checkMeasureForConversion(object, new AsyncCallback<CheckForConversionResult>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -1665,7 +1665,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     }
 
                     @Override
-                    public void onSuccess(CheckMeasureForConversionResult result) {
+                    public void onSuccess(CheckForConversionResult result) {
                         logger.log(Level.WARNING, "Result is " + result);
                         if (result.isProceedImmediately()) {
                             convertMeasureFhir(object);

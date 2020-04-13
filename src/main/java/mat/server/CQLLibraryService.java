@@ -21,6 +21,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.client.measure.service.CheckForConversionResult;
+import mat.client.measure.service.FhirConvertResultResponse;
+import mat.model.clause.ModelTypeHelper;
+import mat.server.service.FhirCqlLibraryService;
+import mat.server.service.VSACApiService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,7 +61,6 @@ import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibraryExport;
-import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
@@ -135,6 +139,12 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
     @Autowired
     private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
+
+    @Autowired
+    private VSACApiService vsacApiService;
+
+    @Autowired
+    private FhirCqlLibraryService fhirCqlLibraryService;
 
     javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 
@@ -220,7 +230,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         }
     }
 
-    private CQLLibraryDataSetObject extractCQLLibraryDataObject(CQLLibrary cqlLibrary) {
+    @Override
+    public CQLLibraryDataSetObject extractCQLLibraryDataObject(CQLLibrary cqlLibrary) {
         CQLLibraryDataSetObject dataSetObject = new CQLLibraryDataSetObject();
         dataSetObject.setId(cqlLibrary.getId());
         dataSetObject.setCqlName(cqlLibrary.getName());
@@ -500,6 +511,40 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         cqlLibraryExport.setElm(latestCQLResult.getElmString());
         cqlLibraryExport.setJson(latestCQLResult.getJsonString());
         cqlLibraryExportDAO.save(cqlLibraryExport);
+    }
+
+    @Override
+    public CheckForConversionResult checkLibraryForConversion(CQLLibraryDataSetObject sourceLibrary) {
+        logger.info("checkLibraryForConversion  libraryId: " + sourceLibrary.getId() + " setId: " + sourceLibrary.getCqlSetId());
+        CheckForConversionResult result = new CheckForConversionResult();
+        List<CQLLibrary> draftLibraries = cqlLibraryDAO.getDraftLibraryBySet(sourceLibrary.getCqlSetId());
+        if (draftLibraries.isEmpty()) {
+            // If no drafts found we can proceed with conversion
+            result.setProceedImmediately(true);
+        } else {
+            // If the only draft is a FHIR draft created from the same source measure then ask for confirmation to override.
+            // UI cannot proceed with conversion if User didn't confirm or if there is/are other draft(s)
+            //TBD
+            result.setConfirmBeforeProceed(draftLibraries.stream().allMatch(m -> m.isFhirLibrary(m.getLibraryModelType()) && StringUtils.equals(sourceLibrary.getCqlSetId(), m.getSetId())));
+        }
+
+        return result;
+    }
+
+    @Override
+    public FhirConvertResultResponse convertCqlLibrary(CQLLibraryDataSetObject sourceLibrary) throws MatException {
+        logger.info("Converting  libraryId: " + sourceLibrary.getId());
+        try {
+            return fhirCqlLibraryService.convertCqlLibrary(sourceLibrary, LoggedInUserUtil.getLoggedInUser());
+        } catch (Exception e) {
+            logger.error("Error calling fhirCqlLibraryService convert", e);
+            throw new MatException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public int deleteDraftFhirLibrariesBySetId(String setId) {
+        return cqlLibraryDAO.deleteDraftFhirLibrariesBySetId(setId);
     }
 
     private void removeUnusedLibraries(CQLLibrary cqlLibrary, SaveUpdateCQLResult cqlResult) {

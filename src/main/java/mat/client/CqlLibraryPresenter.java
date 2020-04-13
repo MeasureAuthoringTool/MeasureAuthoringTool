@@ -2,7 +2,12 @@ package mat.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import mat.client.measure.SearchDisplay;
+import mat.client.measure.service.CheckForConversionResult;
+import mat.client.measure.service.FhirConvertResultResponse;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
@@ -138,6 +143,12 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     private static final String CONTINUE = "Continue";
 
     private static final String CQL_LIBRARY = "CQLLibrary";
+
+    private final Logger logger = Logger.getLogger("MAT");
+
+    private static final String UNHANDLED_EXCEPTION = "Unhandled Exception: ";
+
+    private SearchDisplay searchDisplay;
 
     /**
      * The Interface ViewDisplay.
@@ -607,6 +618,33 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
             }
 
             @Override
+            public void onConvertClicked(CQLLibraryDataSetObject object) {
+                showSearchingBusy(true);
+                MatContext.get().getCQLLibraryService().checkLibraryForConversion(object, new AsyncCallback<CheckForConversionResult>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        logger.log(Level.SEVERE, "Error while checking a draft for the library set " + object.getCqlSetId() + ". Error message: " + caught.getMessage(), caught);
+                        showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getGenericErrorMessage(), false);
+                        MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+                    }
+
+                    @Override
+                    public void onSuccess(CheckForConversionResult result) {
+                        logger.log(Level.WARNING, "Result is " + result);
+                        if (result.isProceedImmediately()) {
+                            convertCqlLibraryFhir(object);
+                        } else if (result.isConfirmBeforeProceed()) {
+                            confirmAndConvertFhir(object);
+                        } else {
+                            showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getConversionBlockedWithDraftsErrorMessageForCqlLibrary(), false);
+                        }
+                    }
+                });
+            }
+
+
+            @Override
             public void onEditClicked(CQLLibraryDataSetObject result) {
                 cqlSharedDataSetObject = result;
                 cqlLibraryDeletion = false;
@@ -620,6 +658,90 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
             }
 
         };
+    }
+
+    private void confirmAndConvertFhir(CQLLibraryDataSetObject object) {
+        ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox("Are you sure you want to convert this Cql Library again? The existing FHIR Library will be overwritten.", "Yes", "No", null, false);
+        confirmationDialogBox.getNoButton().setVisible(true);
+        confirmationDialogBox.setObserver(new ConfirmationObserver() {
+
+            @Override
+            public void onYesButtonClicked() {
+                convertCqlLibraryFhir(object);
+            }
+
+            @Override
+            public void onNoButtonClicked() {
+                // Just skip any conversion
+            }
+
+            @Override
+            public void onClose() {
+                // Just skip any conversion
+            }
+        });
+
+        confirmationDialogBox.show();
+    }
+
+    private void convertCqlLibraryFhir(CQLLibraryDataSetObject object) {
+        logger.log(Level.INFO, "Please wait. Conversion is in progress...");
+
+//        if (!MatContext.get().getLoadingQueue().isEmpty()) {
+//            showSearchingBusy(false);
+//            return;
+//        }
+        MatContext.get().getCQLLibraryService().convertCqlLibrary(object, new AsyncCallback<FhirConvertResultResponse>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Error while converting the measure id " + object.getId() + ". Error message: " + caught.getMessage(), caught);
+                showSearchingBusy(false);
+                showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getConvertCqlLibraryFailureMessage());
+                MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
+            }
+
+            @Override
+            public void onSuccess(FhirConvertResultResponse response) {
+                String outcome = response.getValidationStatus().getOutcome();
+                String errorReason = response.getValidationStatus().getErrorReason();
+                logger.log(Level.WARNING, "Library " + object.getId() + " conversion has completed. Outcome: " + outcome + " errorReason: " + errorReason);
+                showSearchingBusy(false);
+                //Todo call ValidationReport service, use response.getFhirLibrary();
+                displaySearch();
+            }
+        });
+    }
+
+    private void showErrorAlertDialogBox(final String errorMessage) {
+        showErrorAlertDialogBox(errorMessage, true);
+    }
+
+    private void showErrorAlertDialogBox(final String errorMessage, final boolean shouldRefreshSearch) {
+        ConfirmationDialogBox errorAlert = new ConfirmationDialogBox(errorMessage, "Return to CqlLibrary Library", "Cancel", null, true);
+        errorAlert.getNoButton().setVisible(false);
+        errorAlert.setObserver(new ConfirmationObserver() {
+
+            @Override
+            public void onYesButtonClicked() {
+                refresh();
+            }
+
+            @Override
+            public void onNoButtonClicked() {
+            }
+
+            @Override
+            public void onClose() {
+                refresh();
+            }
+
+            private void refresh() {
+                if (shouldRefreshSearch) {
+                    displaySearch();
+                }
+            }
+        });
+        errorAlert.show();
     }
 
     private void addShareDisplayViewHandlers() {

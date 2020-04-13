@@ -20,6 +20,8 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 
 	String findMaxVersion(String setId, String ownerId);
 
+    CQLLibrary findByNameAndVersion(String name, double version, int revisionNumber);
+
 	String findMaxOfMinVersion(String setId, String version);
 
 	List<CQLLibraryShareDTO> getLibraryShareInfoForLibrary(String cqlId, String searchText);
@@ -46,5 +48,7 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 
 	String getLibraryNameIfDraftAlreadyExists(String setId);
 
-	CQLLibrary findByNameAndVersion(String name,double releaseVersion, int revisionNumber);
+    List<CQLLibrary> getDraftLibraryBySet(String cqlSetId);
+
+    int deleteDraftFhirLibrariesBySetId(String setId);
 }

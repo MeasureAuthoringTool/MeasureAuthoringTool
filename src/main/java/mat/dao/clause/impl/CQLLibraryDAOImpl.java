@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
@@ -879,6 +880,33 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
         } catch (NoResultException nre) {
             return null;
         }
+    }
+
+    @Override
+    public List<CQLLibrary> getDraftLibraryBySet(String cqlSetId) {
+        final Session session = getSessionFactory().getCurrentSession();
+        final CriteriaBuilder cb = session.getCriteriaBuilder();
+        final CriteriaQuery<CQLLibrary> query = cb.createQuery(CQLLibrary.class);
+        final Root<CQLLibrary> root = query.from(CQLLibrary.class);
+
+        query.select(root).where(cb.and(cb.equal(root.get(SET_ID), cqlSetId),
+                cb.equal(root.get(DRAFT), true)));
+
+        return session.createQuery(query).setMaxResults(1).getResultList();
+
+    }
+
+    @Override
+    public int deleteDraftFhirLibrariesBySetId(String setId) {
+        final Session session = getSessionFactory().getCurrentSession();
+        final CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaDelete<CQLLibrary> deleteCriteria = cb.
+                createCriteriaDelete(CQLLibrary.class);
+        Root<CQLLibrary> root = deleteCriteria.from(CQLLibrary.class);
+
+        Predicate wherePredicate = cb.and(cb.equal(root.get(SET_ID), setId), cb.equal(root.get(LIBRARY_MODEL_TYPE), ModelTypeHelper.FHIR), cb.equal(root.get(DRAFT), true));
+
+        return session.createQuery(deleteCriteria.where(wherePredicate)).executeUpdate();
     }
 
 }

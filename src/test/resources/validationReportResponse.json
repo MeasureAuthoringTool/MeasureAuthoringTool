@@ -105,7 +105,23 @@
           }
         ]
       },
-      "libraryFhirValidationResults": [],
+      "libraryFhirValidationResults": [
+        {
+          "severity": "Error",
+          "locationField": "Location Field : group[0]",
+          "errorDescription": "Error due to library Fhir valdiation results"
+        },
+        {
+          "severity": "Error",
+          "locationField": "Location Field : group[1]",
+          "errorDescription": "Error due to library Fhir valdiation results"
+        },
+        {
+          "severity": "Warning",
+          "locationField": "Location Field : group[2]",
+          "errorDescription": "Error due to library Fhir valdiation results"
+        }
+      ],
       "cqlConversionResult": {
         "type": null,
         "result": false,

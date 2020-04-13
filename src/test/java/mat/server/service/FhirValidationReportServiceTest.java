@@ -409,4 +409,19 @@ class FhirValidationReportServiceTest {
         assertEquals(externalErrorsMap.get("MATGlobalCommonFunctions_FHIR4 4.0.000").size(), 2);
     }
 
+    @Test
+    void testGenerateLibraryFhirValidationErrors() throws IOException {
+
+        List<FhirValidationResult> libraryFhirValidationErrors = new ArrayList<>();
+
+        URL path = FhirValidationReportService.class.getClassLoader().getResource("validationReportResponse.json");
+        ConversionResultDto conversionResultDto = new ObjectMapper().readValue(new File(path.getFile()), ConversionResultDto.class);
+
+        for (LibraryConversionResults results : conversionResultDto.getLibraryConversionResults()) {
+            ReflectionTestUtils.invokeMethod(fhirValidationReportService, "generateLibraryFhirValidationErrors", results, libraryFhirValidationErrors);
+        }
+
+        assertEquals(libraryFhirValidationErrors.size(), 3);
+    }
+
 }

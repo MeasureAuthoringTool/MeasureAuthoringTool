@@ -222,9 +222,8 @@ public class FhirValidationReportService {
                      paramsMap.put("LibraryNotFoundInHapi", results.getReason());
                  }
                  if (results.getSuccess() == null || !results.getSuccess()) {
-                     if (CollectionUtils.isNotEmpty(results.getLibraryFhirValidationResults())) {
-                         libraryFhirValidationErrors.addAll(results.getLibraryFhirValidationResults());
-                     }
+
+                     generateLibraryFhirValidationErrors(results, libraryFhirValidationErrors);
 
                      if(results.getSuccess() != null) {
                          generateExternalErrorsMap(results, externalErrorsMap);
@@ -264,5 +263,11 @@ public class FhirValidationReportService {
                  }
              });
          });
+     }
+
+     private void generateLibraryFhirValidationErrors(LibraryConversionResults libraryConversionResults, List<FhirValidationResult> libraryFhirValidationErrors) {
+         if (CollectionUtils.isNotEmpty(libraryConversionResults.getLibraryFhirValidationResults())) {
+             libraryFhirValidationErrors.addAll(libraryConversionResults.getLibraryFhirValidationResults());
+         }
      }
 }

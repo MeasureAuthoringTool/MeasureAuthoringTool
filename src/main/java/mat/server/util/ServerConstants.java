@@ -51,4 +51,27 @@ public class ServerConstants {
 		}
 		return PROD_URL;
 	}
+
+	public static final String getHarpUrl() {
+		String harpUrl = System.getProperty("HARP_URL");
+		if(!StringUtils.isBlank(harpUrl)){
+			return harpUrl;
+		}
+		return null;
+	}
+	public static final String getHarpBaseUrl() {
+		String harpBaseUrl = System.getProperty("HARP_BASE_URL");
+		if(!StringUtils.isBlank(harpBaseUrl)){
+			return harpBaseUrl;
+		}
+		return null;
+	}
+
+	public static final String getHarpClientId() {
+		String harpClientId = System.getProperty("HARP_CLIENT_ID");
+		if(!StringUtils.isBlank(harpClientId)){
+			return harpClientId;
+		}
+		return null;
+	}
 }

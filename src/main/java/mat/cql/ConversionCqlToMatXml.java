@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import mat.model.cql.CQLCode;
-import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
@@ -17,17 +15,18 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static mat.cql.CqlUtils.getGlobalLibId;
 import static mat.cql.CqlUtils.isOid;
 import static mat.cql.CqlUtils.newGuid;
-import static mat.cql.CqlUtils.parseCodeSystemName;
 import static mat.cql.CqlUtils.parseOid;
 
 /**
- * A CqlVisitor for converting FHIR to MatXml format without a source model.
- * This version determines the correct ValueSets, Codes, and CodeSystems from the MAT DB.
+ * A CqlVisitor used for conversion from QDM to FHIR.
+ * The CQL used for this visitor should be fhir cql.
+ * This version requires a source CQLModel to be set prior to parsing.
  */
 @Getter
 @Setter
@@ -36,9 +35,17 @@ import static mat.cql.CqlUtils.parseOid;
 //Place holder comments. Eventually this will be a prototype capable of having DAOs.
 //@Component
 //@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class CqlToMatXml implements CqlVisitor {
+public class ConversionCqlToMatXml implements CqlVisitor {
     private List<CQLIncludeLibrary> libsNotFound = new ArrayList<>();
+    private CQLModel sourceModel;
     private CQLModel destinationModel = new CQLModel();
+
+    @Override
+    public void validate() {
+        if (sourceModel == null) {
+            throw new IllegalStateException("To use a ConversionCqlToMatXml bean you must first set the source model.");
+        }
+    }
 
     @Override
     public void libraryTag(String libraryName, String version) {
@@ -62,28 +69,24 @@ public class CqlToMatXml implements CqlVisitor {
         lib.setAliasName(alias);
         lib.setLibraryModelType(model);
         lib.setQdmVersion(modelVersion);
-        lib.setCqlLibraryId(getGlobalLibId(libName));
         lib.setCqlLibraryId(getGlobalLibId(lib.getCqlLibraryName()));
         destinationModel.getCqlIncludeLibrarys().add(lib);
     }
 
     @Override
     public void codeSystem(String name, String uri, String versionUri) {
-        var parsedCodeSystemName = parseCodeSystemName(name);
-        // Backward compatibility this is ugly.
-        // versionUri is a new concept in fhir4 yet they have a version already
-        // that is after the colon in the system name.
-        CQLCodeSystem cs = new CQLCodeSystem();
-        cs.setId(newGuid());
-        cs.setCodeSystemName(parsedCodeSystemName.getLeft());
-        cs.setCodeSystemVersion(parsedCodeSystemName.getRight());
-        cs.setCodeSystem(uri);
-        cs.setVersionUri(versionUri);
-        destinationModel.getCodeSystemList().add(cs);
+        // TO DO: handle http uris vs oids correctly.
+
+        // Right now microservices will never use the http urls.
+        destinationModel.getCodeSystemList().add(findExisting(sourceModel.getCodeSystemList(),
+                cs -> StringUtils.equals(name, cs.getCodeSystemName()),
+                "Could not find sourceCqlModel.codeSystemList for " + name));
     }
 
     @Override
     public void valueSet(String name, String uri) {
+        // For all of fhir4 valuesets will be in the new format.
+        // They are simply a name and a uri.
         var vs = new CQLQualityDataSetDTO();
         vs.setId(newGuid());
         vs.setName(name);
@@ -105,35 +108,26 @@ public class CqlToMatXml implements CqlVisitor {
 
     @Override
     public void code(String name, String code, String codeSystemName, String displayName) {
-        var parsedCodeSystemName = parseCodeSystemName(codeSystemName);
-        var c = new CQLCode();
-        c.setCodeSystemName(parsedCodeSystemName.getLeft());
-        c.setCodeSystemVersion(parsedCodeSystemName.getRight());
-        c.setIsCodeSystemVersionIncluded(parsedCodeSystemName.getRight() != null);
-        c.setCodeIdentifier(code);
-        c.setCodeOID(code);
-        c.setDisplayName(displayName);
-        c.setCodeName(name);
-        c.setId(newGuid());
-        // Backward compatibility this is ugly.
-        // I have no idea why they put this stuff in code originally in MAT.
-        destinationModel.getCodeSystemList().stream().filter(cs ->
-                StringUtils.equals(cs.getCodeSystemName(), c.getCodeSystemName()) &&
-                        StringUtils.equals(cs.getCodeSystemVersion(), c.getCodeSystemVersion())).findFirst().ifPresent(cs -> {
-            c.setCodeSystemOID(cs.getCodeSystem());
-            c.setCodeSystemVersion(cs.getCodeSystemVersion());
-            c.setCodeSystemVersionUri(cs.getVersionUri());
-        });
-        destinationModel.getCodeList().add(c);
+        // TO DO: handle http uris vs oids correctly.
+        // Right now microservices will never use the http urls.
+
+        // For now these should be identical to the sourceCqlModel versions.
+        // Just find the corresponding one by name and use that.
+        destinationModel.getCodeList().add(findExisting(sourceModel.getCodeList(),
+                c -> StringUtils.equals(name, c.getName()),
+                "Could not find sourceCqlModel.code " + name));
     }
 
     @Override
-    public void parameter(String name, String logic) {
+    public void parameter(String name,String logic) {
+        var existingParam = findExisting(sourceModel.getCqlParameters(),
+                p -> StringUtils.equals(p.getName(), name),
+                "Could not find parameter for " + name + " in existingCqlModel");
         CQLParameter p = new CQLParameter();
-        p.setId(newGuid());
+        p.setId(existingParam.getId());
         p.setName(name);
         p.setParameterLogic(logic);
-        p.setReadOnly(false);
+        p.setReadOnly(existingParam.isReadOnly());
         destinationModel.getCqlParameters().add(p);
     }
 
@@ -178,5 +172,14 @@ public class CqlToMatXml implements CqlVisitor {
         result.setSupplDataElement(false);
         result.setPopDefinition(false);
         return result;
+    }
+
+    private <T> T findExisting(List<T> collection, Predicate<T> filter, String messageIfNotFound) {
+        var vs = collection.stream().filter(filter).findFirst();
+        if (vs.isPresent()) {
+            return vs.get();
+        } else {
+            throw new IllegalArgumentException(messageIfNotFound);
+        }
     }
 }

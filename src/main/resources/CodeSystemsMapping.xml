@@ -23,6 +23,9 @@
 					<field name="codeSystemVersion" type="java.lang.String">
 						<bind-xml name="codeSystemVersion" node="attribute" />
 					</field>
+					<field name="versionUri" type="java.lang.String">
+						<bind-xml name="versionUri" node="attribute" />
+					</field>
 					<field name="valueSetOID" type="java.lang.String">
 						<bind-xml name="valueSetOID" node="attribute" />
 					</field>

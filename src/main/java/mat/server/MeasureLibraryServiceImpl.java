@@ -1764,6 +1764,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 measureSet.setId(UUID.randomUUID().toString());
                 measurePackageService.save(measureSet);
             }
+
+            if (pkg.getMeasureDetails() == null) {
+                MeasureDetails measureDetails = new MeasureDetails();
+                measureDetails.setMeasure(pkg);
+                pkg.setMeasureDetails(measureDetails);
+            }
+
             pkg.setMeasureSet(measureSet);
             setValueFromModel(model, pkg);
 
@@ -3175,7 +3182,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             }
 
             CQLModel libraryCQLModel = CQLUtilityClass.getCQLModelFromXML(data);
-            String libraryContent = CQLUtilityClass.getCqlString(libraryCQLModel, "");
+            String libraryContent = CQLUtilityClass.getCqlString(libraryCQLModel, "").getLeft();;
 
             ComponentMeasureTabObject o = new ComponentMeasureTabObject(measureName, alias, libraryName, version, ownerName, libraryContent, componentId);
             componentMeasureInformationList.add(o);
@@ -4599,7 +4606,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     /**
      * Gets the authors list.
      *
-     * @param xmlModel the xml model
      * @return the authors list
      */
     private List<Author> getAuthorsList(Measure measure, List<Organization> allOrganizations) {
@@ -5262,7 +5268,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getXml());
-            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
+            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();;
             String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString); //remote call
             SaveUpdateCQLResult cqlResult = getCqlService().generateParsedCqlObject(cqlValidationResponse, cqlModel);
 

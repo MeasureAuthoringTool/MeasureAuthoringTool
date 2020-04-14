@@ -1764,6 +1764,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 measureSet.setId(UUID.randomUUID().toString());
                 measurePackageService.save(measureSet);
             }
+
+            if (pkg.getMeasureDetails() == null) {
+                MeasureDetails measureDetails = new MeasureDetails();
+                measureDetails.setMeasure(pkg);
+                pkg.setMeasureDetails(measureDetails);
+            }
+
             pkg.setMeasureSet(measureSet);
             setValueFromModel(model, pkg);
 

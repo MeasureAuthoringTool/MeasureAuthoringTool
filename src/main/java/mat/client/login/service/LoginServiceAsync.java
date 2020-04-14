@@ -220,5 +220,15 @@ public interface LoginServiceAsync extends AsynchronousService{
 	 */
 	void isValidPassword(String userId, String password,
 			AsyncCallback<Boolean> callback);
-	
+
+	/**
+	 * Retrieves MAT user details for provided HARP ID and stores the
+	 * session ID that was generated client side.
+	 *
+	 * @param harpId User email
+	 * @param sessionId HTTP Session ID generated during MAT session set-up. See {@see mat.server.LoginServiceImpl#getUserDetailsByHarpId()}
+	 * @Param callback
+	 * @return
+	 */
+	void getUserDetailsByHarpId(String harpId, String sessionId, AsyncCallback<LoginModel> callback);
 }

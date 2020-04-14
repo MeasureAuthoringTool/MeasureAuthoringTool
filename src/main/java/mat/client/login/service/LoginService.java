@@ -192,6 +192,14 @@ public interface LoginService extends RemoteService {
 	 * @return true, if is valid password
 	 */
 	boolean isValidPassword(String userId, String password);
-	
 
+	/**
+	 * Retrieves MAT user details for provided HARP ID and stores the
+	 * session ID that was generated client side.
+	 *
+	 * @param harpId User's email
+	 * @param sessionId HTTP Session ID generated during MAT session set-up. See {@see mat.server.LoginServiceImpl#getUserDetailsByHarpId()}.
+	 * @return
+	 */
+	LoginModel getUserDetailsByHarpId(String harpId, String sessionId);
 }

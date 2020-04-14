@@ -1,10 +1,5 @@
 package mat.client;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -15,6 +10,10 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -70,6 +69,11 @@ import mat.client.umls.service.VsacTicketInformation;
 import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
+
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -132,6 +136,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         @Override
         public void onFailure(final Throwable caught) {
+            alert("userRoleCallback::onFailure::"+caught.getMessage());
             redirectToLogin();
         }
 
@@ -240,6 +245,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
 
     private void callSignOut() {
+        //TODO Update to revoke accessToken and logout idToken.
         MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
 
             @Override
@@ -274,10 +280,31 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             $wnd.close();
         }-*/;
 
+    private native void alert(String msg)
+        /*-{
+            $wnd.alert(msg);
+        }-*/;
+
 
     @Override
     protected void initEntryPoint() {
         MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
+
+        // The HARP Sign-In widget stores tokens in Local Storage.
+        Storage localStorage = Storage.getLocalStorageIfSupported();
+
+        // Get access token and user email to set up MAT session.
+        if(localStorage != null && localStorage.getItem("okta-token-storage") != null) {
+            JSONValue tokens = JSONParser.parseStrict(localStorage.getItem("okta-token-storage"));
+            String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().toString();
+            String harpId = tokens.isObject().get("idToken").isObject().get("claims").isObject().get("email").isString().toString();
+
+            // Create MAT session with HARP ID (user email).
+            harpId = harpId.replace("\"","");
+            accessToken = accessToken.replace("\"","");
+
+            MatContext.get().setUserDetailsByHarpId(harpId, accessToken);
+        }
 
         MatContext.get().getFeatureFlagService().findFeatureFlags(new AsyncCallback<Map<String, Boolean>>() {
             @Override

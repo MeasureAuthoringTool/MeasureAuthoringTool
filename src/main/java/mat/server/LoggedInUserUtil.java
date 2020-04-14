@@ -1,14 +1,13 @@
 package mat.server;
 
-import java.util.Iterator;
-
+import mat.server.model.MatUserDetails;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
-import mat.server.model.MatUserDetails;
+import java.util.Iterator;
 
 /**
  * The Class LoggedInUserUtil.
@@ -30,14 +29,15 @@ public class LoggedInUserUtil {
      *
      * @return the token
      */
-    private static UsernamePasswordAuthenticationToken getToken() {
+    private static PreAuthenticatedAuthenticationToken getToken() {
         //re-factored to support Anonymous user US 439
-        UsernamePasswordAuthenticationToken token = null;
+        PreAuthenticatedAuthenticationToken token = null;
         if (SecurityContextHolder.getContext() != null) {
             if (SecurityContextHolder.getContext().getAuthentication() != null) {
                 try {
-                    if (SecurityContextHolder.getContext().getAuthentication() instanceof UsernamePasswordAuthenticationToken) {
-                        token = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+                    if (SecurityContextHolder.getContext().getAuthentication() instanceof PreAuthenticatedAuthenticationToken) {
+                        token = (PreAuthenticatedAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+                        logger.info(token.getName());
                     }
                 } catch (Exception exc) {
                     logger.info(exc);
@@ -55,7 +55,7 @@ public class LoggedInUserUtil {
         if (loggedInUser != null) {
             return loggedInUser;
         } else {
-            UsernamePasswordAuthenticationToken token = getToken();
+            PreAuthenticatedAuthenticationToken token = getToken();
             String userName = null;
             if (token != null) {
                 userName = token.getName();
@@ -72,7 +72,7 @@ public class LoggedInUserUtil {
         if (loggedInLoginId != null) {
             return loggedInLoginId;
         } else {
-            UsernamePasswordAuthenticationToken token = getToken();
+            PreAuthenticatedAuthenticationToken token = getToken();
             String loginId = null;
             if (token != null) {
                 loginId = ((MatUserDetails) token.getDetails()).getLoginId();
@@ -89,7 +89,7 @@ public class LoggedInUserUtil {
         if (loggedInUserEmail != null) {
             return loggedInUserEmail;
         }
-        UsernamePasswordAuthenticationToken token = getToken();
+        PreAuthenticatedAuthenticationToken token = getToken();
         String emailAddress = null;
         if (token != null) {
             emailAddress = ((MatUserDetails) token.getDetails()).getEmailAddress();
@@ -100,7 +100,7 @@ public class LoggedInUserUtil {
 
     public static String getLoggedInUserRole() {
         String role = null;
-        UsernamePasswordAuthenticationToken token = getToken();
+        PreAuthenticatedAuthenticationToken token = getToken();
         if (token != null) {
             Iterator<GrantedAuthority> iter = token.getAuthorities().iterator();
             if (iter.hasNext()) {
@@ -119,7 +119,7 @@ public class LoggedInUserUtil {
         if (loggedInUserName != null) {
             return loggedInUserName;
         } else {
-            UsernamePasswordAuthenticationToken token = getToken();
+            PreAuthenticatedAuthenticationToken token = getToken();
             String firstName = null;
             String lastName = null;
             if (token != null) {

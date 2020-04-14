@@ -58,24 +58,12 @@ public class Login extends MainLayout implements EntryPoint {
 		});
 	}
 
-	public static native void console(String message) /*-{ console.log(message); }-*/;
-
-	/**
-	 * Retrieves the user token from a JS variable.
-	 * @return User email
-	 */
-	private static native String getUserToken() /*-{
-		alert('gwt '+$wnd.userToken.claims.email);
-		return $wnd.userToken.claims.preferred_username;
-	}-*/;
-
 	/* (non-Javadoc)
 	 * @see mat.client.MainLayout#initEntryPoint()
 	 */
 	@Override
 	protected void initEntryPoint() {
 		MatContext.get().setCurrentModule(ConstantMessages.LOGIN_MODULE);
-		MatContext.get().setAppUserId(getUserToken());
 
 		showLoadingMessage();
 		content = getContentPanel();

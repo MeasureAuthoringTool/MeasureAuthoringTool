@@ -63,5 +63,16 @@ public interface LoginCredentialService {
 	 *            the password
 	 * @return true, if is valid password
 	 */
-	boolean isValidPassword(String userId, String password); 
-		}
+	boolean isValidPassword(String userId, String password);
+
+	/**
+	 * Retrieves MAT user details for provided HARP ID and stores
+	 * session ID that was generated client side.
+	 *
+	 * @param harpId User's HARP id
+	 * @param sessionId Session Id generated at login
+	 * @param accessToken HARP OAuth2 Access Token
+	 * @return
+	 */
+	LoginModel getUserDetails(String harpId, String sessionId, String accessToken);
+}

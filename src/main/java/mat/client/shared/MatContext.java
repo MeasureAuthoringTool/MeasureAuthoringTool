@@ -1,16 +1,5 @@
 package mat.client.shared;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -81,6 +70,17 @@ import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.SaveUpdateCQLResult;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class MatContext implements IsSerializable {
 
@@ -341,7 +341,7 @@ public class MatContext implements IsSerializable {
 
     public LoginServiceAsync getLoginService() {
         if (loginService == null) {
-            loginService = (LoginServiceAsync) GWT.create(LoginService.class);
+            loginService = GWT.create(LoginService.class);
         }
         return loginService;
     }
@@ -456,7 +456,25 @@ public class MatContext implements IsSerializable {
         getLoginService().isValidUser(username, Password, oneTimePassword, callback);
     }
 
-    public void isValidOktaUser(String oktaUserId) {
+    public void setUserDetailsByHarpId(String harpId, String accessToken) {
+        getLoginService().getUserDetailsByHarpId(harpId, accessToken, new AsyncCallback<LoginModel>() {
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                Window.alert("setUserDetailsByHarpId::onFailure::"+ throwable.getMessage());
+                //TODO Harp ID not found in MAT.
+            }
+
+            @Override
+            public void onSuccess(LoginModel loginModel) {
+                MatContext.get().setUserInfo(
+                        loginModel.getUserId(),
+                        loginModel.getEmail(),
+                        loginModel.getRole().getDescription(),
+                        loginModel.getLoginId(),
+                        loginModel.getUserPreference());
+            }
+        });
     }
 
     public void getListBoxData(AsyncCallback<CodeListService.ListBoxData> listBoxCallback) {
@@ -466,7 +484,6 @@ public class MatContext implements IsSerializable {
     public void getCurrentUserRole(AsyncCallback<SessionManagementService.Result> userRoleCallback) {
         getSessionService().getCurrentUserRole(userRoleCallback);
     }
-
 
     public void restartTimeoutWarning() {
         getTimeoutManager().startActivityTimers(ConstantMessages.MAT_MODULE);

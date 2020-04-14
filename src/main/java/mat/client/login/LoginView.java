@@ -36,8 +36,9 @@ import mat.client.shared.ChangePasswordWidget;
 
 public class LoginView implements LoginPresenter.LoginViewDisplay  {
 	private VerticalPanel mainPanel = new VerticalPanel();
+
+	private Anchor signInWithHarp;
 	private Anchor forgotLoginId;
-	
 	private Anchor forgotPassword;
 	
 	private Input userIdText = new Input(InputType.TEXT);
@@ -170,8 +171,16 @@ public class LoginView implements LoginPresenter.LoginViewDisplay  {
 		hPanel.add(forgotLoginId);
 		hPanel.add(or);
 		hPanel.add(forgotPassword);
+
+		HorizontalPanel harpPanel = new HorizontalPanel();
+		signInWithHarp = new Anchor();
+		signInWithHarp.setText("Sign In with HARP");
+		signInWithHarp.setTitle("Sign In with HARP");
+		signInWithHarp.getElement().setAttribute("alt", "HARP Login");
+		harpPanel.add(signInWithHarp);
 		
 		loginPanelFooter.add(hPanel);
+		loginPanelFooter.add(harpPanel);
 		
 		loginPanel.add(header);
 		loginPanel.add(loginPanelBody);
@@ -202,10 +211,20 @@ public class LoginView implements LoginPresenter.LoginViewDisplay  {
 	public Anchor getForgotPassword() {
 		return forgotPassword;
 	}
+
 	@Override
-	
 	public void setForgotPassword(Anchor forgotPassword) {
 		this.forgotPassword = forgotPassword;
+	}
+
+	@Override
+	public Anchor getSignInWithHarp() {
+		return signInWithHarp;
+	}
+
+	@Override
+	public void setSignInWithHarp(Anchor signInWithHarp) {
+		this.signInWithHarp = signInWithHarp;
 	}
 	
 	@Override

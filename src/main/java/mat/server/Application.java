@@ -1,17 +1,10 @@
 package mat.server;
 
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
-import javax.net.ssl.SSLContext;
-import javax.sql.DataSource;
-
+import liquibase.integration.spring.SpringLiquibase;
+import mat.dao.impl.AuditEventListener;
+import mat.dao.impl.AuditInterceptor;
+import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
+import mat.server.util.MATPropertiesService;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
@@ -28,7 +21,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -50,11 +42,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
-import liquibase.integration.spring.SpringLiquibase;
-import mat.dao.impl.AuditEventListener;
-import mat.dao.impl.AuditInterceptor;
-import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
-import mat.server.util.MATPropertiesService;
+import javax.net.ssl.SSLContext;
+import javax.sql.DataSource;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 @Configuration
 @PropertySource("classpath:MAT.properties")
@@ -151,25 +148,34 @@ public class Application extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http
                 .authorizeRequests()
-                .antMatchers("/", "/Login.html").permitAll()
-                .antMatchers("/Mat.html").authenticated()
-                .antMatchers("/Bonnie.html").authenticated()
-                .antMatchers("/mat/**").authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/Login.html")
-                .defaultSuccessUrl("/Mat.html")
-                .and()
-                .formLogin()
-                .loginPage("/Login.html")
-                .defaultSuccessUrl("/Bonnie.html")
-                .and()
-                .logout()
-                .permitAll()
-                .and()
-                .sessionManagement()
-                .invalidSessionUrl("/Login.html")
-                .maximumSessions(1);
+                .antMatchers("/**").permitAll();
+//                .antMatchers("/", "/Login.html").permitAll()
+//                .antMatchers("/Mat.html").authenticated()
+//                .anyRequest().authenticated()
+//                .and().oauth2Client()
+//                .and().oauth2Login();
+
+//                .loginPage("/HarpLogin.html");
+//                .authorizeRequests()
+//                .antMatchers("/", "/Login.html").permitAll()
+//                .antMatchers("/Mat.html").authenticated()
+//                .antMatchers("/Bonnie.html").authenticated()
+//                .antMatchers("/mat/**").authenticated()
+//                .and()
+//                .formLogin()
+//                .loginPage("/Login.html")
+//                .defaultSuccessUrl("/Mat.html")
+//                .and()
+//                .formLogin()
+//                .loginPage("/Login.html")
+//                .defaultSuccessUrl("/Bonnie.html")
+//                .and()
+//                .logout()
+//                .permitAll()
+//                .and()
+//                .sessionManagement()
+//                .invalidSessionUrl("/Login.html")
+//                .maximumSessions(1);
     }
 
     @Override

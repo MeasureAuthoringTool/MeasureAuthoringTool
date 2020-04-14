@@ -1,5 +1,6 @@
 package mat.client.login;
 
+import com.google.gwt.user.client.Window;
 import mat.client.Login;
 import mat.client.event.FirstLoginPageEvent;
 import mat.client.event.ForgotLoginIDEvent;
@@ -8,6 +9,7 @@ import mat.client.event.SuccessfulLoginEvent;
 import mat.client.event.TemporaryPasswordLoginEvent;
 import mat.client.shared.MatContext;
 
+import mat.client.util.ClientConstants;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -39,7 +41,9 @@ public class LoginPresenter {
 		
 		Widget asWidget();
 		
-		
+		Anchor getSignInWithHarp();
+
+		void setSignInWithHarp(Anchor signInWithHarp);
 		
 		Anchor getForgotLoginId();
 		
@@ -85,12 +89,9 @@ public class LoginPresenter {
 		
 	}
 	
-	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
-		@Override
-		public void onKeyDown(KeyDownEvent event) {
-			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
-				submit();
-			}
+	private KeyDownHandler submitOnEnterHandler = event -> {
+		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
+			submit();
 		}
 	};
 	
@@ -99,6 +100,10 @@ public class LoginPresenter {
 		
 		loginModel = new LoginModel();
 
+		view.getSignInWithHarp().addClickHandler(clickEvent -> {
+			Window.Location.replace("HarpLogin.html");
+		});
+
 		view.getSubmitButton().addClickHandler(event -> submit());
 
 		view.getForgotPassword().addClickHandler(event -> {
@@ -106,13 +111,9 @@ public class LoginPresenter {
 			MatContext.get().getEventBus().fireEvent(new ForgottenPasswordEvent());
 		});
 		
-		view.getForgotLoginId().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				reset();
-				MatContext.get().getEventBus().fireEvent(new ForgotLoginIDEvent());
-			}
+		view.getForgotLoginId().addClickHandler(event -> {
+			reset();
+			MatContext.get().getEventBus().fireEvent(new ForgotLoginIDEvent());
 		});
 		view.getUserIdText().addKeyDownHandler(submitOnEnterHandler);
 		view.getPasswordInput().addKeyDownHandler(submitOnEnterHandler);
@@ -137,8 +138,6 @@ public class LoginPresenter {
 		view.getPasswordGroup().setValidationState(ValidationState.NONE);
 		view.getAuthTokenGroup().setValidationState(ValidationState.NONE);
 	}
-
-	public static native void console(String message)/*-{ console.log(message); }-*/;
 
 	private void submit() {
 		view.getSuccessMessagePanel().setVisible(false);
@@ -171,9 +170,8 @@ public class LoginPresenter {
 			view.getPasswordGroup().setValidationState(ValidationState.SUCCESS);
 			view.getAuthTokenGroup().setValidationState(ValidationState.SUCCESS);
 
-			String appUserId = MatContext.get().getAppUserId();
-			console("LoginPresenter::appUserId::"+appUserId);
-			MatContext.get().isValidUser(appUserId, "","123", contextcallback);
+			MatContext.get().isValidUser(view.getUserIdText().getText(), view.getPasswordInput().getText(),
+					view.getSecurityCodeInput().getText(), contextcallback);
 		}
 	}
 	private  final AsyncCallback<LoginModel> contextcallback = new AsyncCallback<LoginModel>(){

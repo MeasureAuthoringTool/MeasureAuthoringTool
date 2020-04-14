@@ -111,6 +111,16 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		LoginModel loginModel = loginCredentialService.isValidUser(userId, password, oneTimePassword,session.getId());
 		return loginModel;
 	}
+
+	@Override
+	public LoginModel getUserDetailsByHarpId(String harpId, String accessToken) {
+		logger.info("getUserDetailsByHarpId::harpId::" + harpId);
+		HttpSession session = getThreadLocalRequest().getSession();
+		if(session.getAttribute("accessToken") == null ) { //FIXME Attribute currently unused. Might be useful to determine the token type.
+			session.setAttribute("accessToken", accessToken);
+		}
+		return loginCredentialService.getUserDetails(harpId, session.getId(), accessToken);
+	}
 	
 	/* (non-Javadoc)
 	 * {@inheritDoc}
@@ -414,6 +424,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	 */
 	@Override
 	public String updateOnSignOut(String userId, String emailId, String activityType) {
+		logger.info("updateOnSignOut::userId::" + userId);
 		UMLSSessionTicket.remove(getThreadLocalRequest().getSession().getId());
 		String resultStr = userService.updateOnSignOut(userId, emailId, activityType);
 		SecurityContextHolder.clearContext();

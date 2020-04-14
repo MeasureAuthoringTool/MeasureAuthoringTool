@@ -16,12 +16,9 @@
     <link type="text/css" rel="stylesheet" href="Mat.css">
     <LINK REL="SHORTCUT ICON"  href="favicon.ico">
 
-    <script src="https://global.oktacdn.com/okta-signin-widget/3.8.2/js/okta-sign-in.min.js" type="text/javascript"></script>
-    <link href="https://global.oktacdn.com/okta-signin-widget/3.8.2/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
-
     <style> body { display : none;} </style>
     <title>Login</title>
-<!--    <script type="text/javascript" language="javascript" src="login/login.nocache.js"></script>-->
+    <script type="text/javascript" language="javascript" src="login/login.nocache.js"></script>
   </head>
 
   <body id="main" style="position:relative;">
@@ -54,71 +51,5 @@
           })();
     </script>
     <div id="mainContent" class="mainContent"></div>
-    <div id="okta-login-container"></div>
-    <script type="text/javascript">
-      var userToken;
-      let loadJS = function(url, implementationCode, location) {
-        let scriptTag = document.createElement('script');
-        scriptTag.src = url;
-
-        scriptTag.onload = implementationCode;
-        scriptTag.onreadystatechange = implementationCode;
-
-        location.appendChild(scriptTag);
-      };
-
-      let oktaSignIn = new OktaSignIn({
-        baseUrl: 'https://dev-120913.okta.com',
-        clientId: '0oa47t6l9KwCVD1cZ4x6',
-        redirectUri: 'http://localhost:8080/MeasureAuthoringTool_war/Mat.html',
-        authParams: {
-          pkce: true,
-          display: 'page',
-          responseType: ['token', 'id_token']
-        }
-      });
-
-      oktaSignIn.authClient.session.get().then(function (res) {
-        // Session exists, show logged in state.
-        if (res.status === 'ACTIVE') {
-          console.log('Welcome back, ' + res.login);
-          oktaSignIn.authClient.token.getWithoutPrompt({
-            scopes: ['openid', 'email', 'profile'],
-          }).then(function(tokens) {
-            tokens.forEach(function(token) {
-              if (token.idToken) {
-                oktaSignIn.authClient.tokenManager.add('idToken', token);
-              }
-              if (token.accessToken) {
-                oktaSignIn.authClient.tokenManager.add('accessToken', token);
-              }
-            });
-
-            oktaSignIn.authClient.tokenManager.get('idToken').then(function (idToken) {
-              userToken = idToken;
-              console.log('js ' + userToken.claims.email);
-              loadJS('login/login.nocache.js', function() {}, document.body);
-              userName(idToken.claims.email);
-              // res.session.get().setCookieAndRedirect('http://localhost:8080/MeasureAuthoringTool_war/Mat.html');
-            });
-          }).catch(function(error) {
-            console.error(error)
-          });
-          return;
-        }
-        // No session, show the login form
-        oktaSignIn.renderEl(
-          {el: '#okta-login-container'},
-          function success(res) {
-            // Nothing to do in this case, the widget will automatically redirect
-            // the user to Okta for authentication, then back to this page if successful
-          },
-          function error(err) {
-            // handle errors as needed
-            console.error(err);
-          }
-        );
-      });
-    </script>
   </body>
 </html>

@@ -5268,8 +5268,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getXml());
-            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();;
-            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString); //remote call
+            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
+            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString);
             SaveUpdateCQLResult cqlResult = getCqlService().generateParsedCqlObject(cqlValidationResponse, cqlModel);
 
             return getCqlService().generateUsedCqlArtifactsResult(cqlModel, measureXML.getXml(), cqlResult);

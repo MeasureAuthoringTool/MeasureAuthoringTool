@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import mat.client.shared.GenericResult;
 import mat.model.cql.CQLCode;
@@ -103,6 +104,7 @@ public class SaveUpdateCQLResult extends GenericResult {
     private boolean isMeasureComposite = false;
 
     private boolean doesMeasureHaveIncludedLibraries = false;
+    private Set<String> includeLibrariesWithErrors;
 
     /**
      * Gets the cql string.
@@ -475,4 +477,11 @@ public class SaveUpdateCQLResult extends GenericResult {
         this.doesMeasureHaveIncludedLibraries = doesMeasureHaveIncludedLibraries;
     }
 
+    public void setIncludeLibrariesWithErrors(Set<String> includeLibrariesWithErrors) {
+        this.includeLibrariesWithErrors = includeLibrariesWithErrors;
+    }
+
+    public Set<String> getIncludeLibrariesWithErrors() {
+        return includeLibrariesWithErrors;
+    }
 }

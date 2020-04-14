@@ -6,7 +6,7 @@
 
     <changeSet author="mat_dev_user" id="1" context="prod">
         <sql>
-            ALTER TABLE MEASURE DROP COLUMN FHIR_MEASURE_ID;
+            UPDATE CQL_LIBRARY SET FHIR_VERSION = "4.0.0" WHERE LIBRARY_MODEL = 'FHIR' and FHIR_VERSION IS NULL;
         </sql>
     </changeSet>
 </databaseChangeLog>

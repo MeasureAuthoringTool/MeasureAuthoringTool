@@ -28,100 +28,101 @@ import mat.shared.error.AuthenticationException;
 
 public interface CQLLibraryServiceInterface {
 
-	SaveCQLLibraryResult search(LibrarySearchModel librarySearchModel);
+    SaveCQLLibraryResult search(LibrarySearchModel librarySearchModel);
 
-	void save(CQLLibrary cqlLibrary);
+    void save(CQLLibrary cqlLibrary);
 
-	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
-	public SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject);
+    CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
 
-	String createCQLLookUpTag(String libraryName,String version);
+    SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject);
 
-	XmlProcessor loadCQLXmlTemplateFile();
+    String createCQLLookUpTag(String libraryName, String version, boolean isFhir);
 
-	public SaveUpdateCQLResult getCQLData(String id);
+    XmlProcessor loadCQLXmlTemplateFile(boolean isFhir);
 
-	public boolean isLibraryLocked(String id);
+    SaveUpdateCQLResult getCQLData(String id);
 
-	public SaveCQLLibraryResult resetLockedDate(String currentLibraryId, String userId);
+    boolean isLibraryLocked(String id);
 
-	public SaveCQLLibraryResult updateLockedDate(String currentLibraryId, String userId);
+    SaveCQLLibraryResult resetLockedDate(String currentLibraryId, String userId);
 
-	SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId);
+    SaveCQLLibraryResult updateLockedDate(String currentLibraryId, String userId);
 
-	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
+    SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId);
 
-	String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath);
+    void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
 
+    String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath, boolean isFhir);
 
-	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
+    SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
 
-	SaveCQLLibraryResult draftExistingCQLLibrary(String libraryId, String libraryName) throws MatException;
+    SaveCQLLibraryResult draftExistingCQLLibrary(String libraryId, String libraryName) throws MatException;
 
-	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context, String libraryComment);
+    SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context, String libraryComment);
 
-	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
+    SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 
-	SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
+    SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
 
-	SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText, String modelType);
+    SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText, String modelType);
 
-	void updateUsersShare(SaveCQLLibraryResult result);
+    void updateUsersShare(SaveCQLLibraryResult result);
 
-	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
+    SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
-	SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj);
+    SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj);
 
-	GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId);
+    GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId);
 
-	int countNumberOfAssociation(String id);
+    int countNumberOfAssociation(String id);
 
-	SaveUpdateCQLResult saveCQLFile(String libraryId, String cql);
+    SaveUpdateCQLResult saveCQLFile(String libraryId, String cql);
 
-	SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
-			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable);
+    SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
+                                                 CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable);
 
-	SaveUpdateCQLResult saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
-			List<CQLFunctions> functionsList, boolean isFormatable);
+    SaveUpdateCQLResult saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
+                                               List<CQLFunctions> functionsList, boolean isFormatable);
 
-	SaveUpdateCQLResult saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
-			List<CQLParameter> parameterList, boolean isFormatable);
+    SaveUpdateCQLResult saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
+                                                List<CQLParameter> parameterList, boolean isFormatable);
 
-	SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj);
+    SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj);
 
-	SaveUpdateCQLResult deleteFunction(String libraryId, CQLFunctions toBeDeletedObj);
+    SaveUpdateCQLResult deleteFunction(String libraryId, CQLFunctions toBeDeletedObj);
 
-	SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj);
+    SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj);
 
-	SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject);
+    SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject);
 
-	SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId);
+    SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId);
 
-	VsacApiResult updateCQLVSACValueSets(String cqlLibraryId, String expansionId, String sessionId);
-	CQLKeywords getCQLKeywordsLists();
+    VsacApiResult updateCQLVSACValueSets(String cqlLibraryId, String expansionId, String sessionId);
 
-	List<CQLLibraryAssociation> getAssociations(String Id);
+    CQLKeywords getCQLKeywordsLists();
 
-	void transferLibraryOwnerShipToUser(List<String> list, String toEmail);
+    List<CQLLibraryAssociation> getAssociations(String Id);
 
-	List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner();
+    void transferLibraryOwnerShipToUser(List<String> list, String toEmail);
 
-	SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject);
+    List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner();
 
-	SaveUpdateCQLResult saveCQLCodeListToCQLLibrary(List<CQLCode> codeList, String libraryId);
+    SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject);
 
-	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
+    SaveUpdateCQLResult saveCQLCodeListToCQLLibrary(List<CQLCode> codeList, String libraryId);
 
-	void deleteCQLLibrary(String cqllibId, String loginUserId, String password) throws AuthenticationException;
+    SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
 
-	SaveUpdateCQLResult getCQLLibraryFileData(String libraryId);
+    void deleteCQLLibrary(String cqllibId, String loginUserId, String password) throws AuthenticationException;
 
-	SaveCQLLibraryResult searchForReplaceLibraries(String setId);
+    SaveUpdateCQLResult getCQLLibraryFileData(String libraryId);
 
-	SaveUpdateCQLResult getCQLDataForLoad(String id);
+    SaveCQLLibraryResult searchForReplaceLibraries(String setId);
 
-	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
-			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
+    SaveUpdateCQLResult getCQLDataForLoad(String id);
 
-	public void saveCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML);
+    CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
+                                                List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
+
+    void saveCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML);
 }

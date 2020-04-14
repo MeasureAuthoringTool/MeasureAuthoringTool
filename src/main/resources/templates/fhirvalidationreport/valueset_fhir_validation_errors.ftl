@@ -16,7 +16,7 @@
                         <tr>
                             <td>${valueSetValidationError?counter}</td>
                             <td>${valueSetValidationError.locationField!""}</td>
-                            <td>${valueSetValidationError.severity!""}</td>
+                            <td>${valueSetValidationError.severity?lower_case?capitalize!""}</td>
                             <td>${valueSetValidationError.errorDescription!""}</td>
                         </tr>
                     </#list>

@@ -916,7 +916,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 				cqlLibraryComment = result.getCqlModel().getLibraryComment();
 				String measureVersion = getCurrentMeasureVersion();
-				cqlWorkspaceView.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, result.getCqlModel().getVersionUsed(),
+				cqlWorkspaceView.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, result.getCqlModel().getUsingModelVersion(),
 						result.getCqlModel().getUsingModelVersion(), MeasureDetailsUtil.getModelTypeDisplayName(MatContext.get().getCurrentMeasureModel()), cqlLibraryComment);
 			}
 

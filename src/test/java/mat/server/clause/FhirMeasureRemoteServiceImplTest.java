@@ -79,4 +79,5 @@ public class FhirMeasureRemoteServiceImplTest {
         Assertions.assertEquals("Expected failure", ex.getMessage());
         Mockito.verify(fhirMeasureService, Mockito.times(1)).convert(Mockito.any(ManageMeasureSearchModel.Result.class), Mockito.anyString(), Mockito.any());
     }
+
 }

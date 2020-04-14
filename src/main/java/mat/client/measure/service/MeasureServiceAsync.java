@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
@@ -232,7 +231,7 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	void saveMeasureXml(MeasureXmlModel measureXmlModel, String measureId,
+	void saveMeasureXml(MeasureXmlModel measureXmlModel, String measureId, boolean isFhir,
 			AsyncCallback<Void> callback);
 	
 	/**

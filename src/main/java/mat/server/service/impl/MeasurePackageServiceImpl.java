@@ -9,6 +9,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import mat.CQLFormatter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -60,8 +62,6 @@ import mat.server.validator.measure.CompositeMeasurePackageValidator;
 import mat.shared.CompositeMeasurePackageValidationResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.ValidationUtility;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 @Service
 public class MeasurePackageServiceImpl implements MeasurePackageService {
@@ -204,7 +204,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
     private String formatCQL(final MeasureXML measureXML) throws IOException {
         CQLModel model = CQLUtilityClass.getCQLModelFromXML(measureXML.getMeasureXMLAsString());
-        String cqlString = CQLUtilityClass.getCqlString(model, "");
+        String cqlString = CQLUtilityClass.getCqlString(model, "").getLeft();
         CQLFormatter formatter = new CQLFormatter();
         cqlString = formatter.format(cqlString);
         ReverseEngineerListener listener = new ReverseEngineerListener(cqlString, model);
@@ -322,8 +322,11 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
     @Override
     public List<MeasureShareDTO> searchWithFilter(MeasureSearchModel measureSearchModel) {
+        logger.debug("MeasurePackageServiceImpl::searchWithFilter - enter");
         final User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-        return measureDAO.getMeasureShareInfoForUserWithFilter(measureSearchModel, user);
+        List<MeasureShareDTO> results = measureDAO.getMeasureShareInfoForUserWithFilter(measureSearchModel, user);
+        logger.debug("MeasurePackageServiceImpl::searchWithFilter - exit");
+        return results;
     }
 
     @Override

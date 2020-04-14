@@ -67,12 +67,12 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
         return this.getCQLLibraryService().saveLibrary(cqlLibraryDataSetObject);
     }
 
-    public String createCQLLookUpTag(String libraryName, String version) {
-        return this.getCQLLibraryService().createCQLLookUpTag(libraryName, version);
+    public String createCQLLookUpTag(String libraryName, String version,boolean isFhir) {
+        return this.getCQLLibraryService().createCQLLookUpTag(libraryName, version,isFhir);
     }
 
-    public XmlProcessor loadCQLXmlTemplateFile() {
-        return this.getCQLLibraryService().loadCQLXmlTemplateFile();
+    public XmlProcessor loadCQLXmlTemplateFile(boolean isFhir) {
+        return this.getCQLLibraryService().loadCQLXmlTemplateFile(isFhir);
     }
 
     public SaveUpdateCQLResult getCQLData(String id) {

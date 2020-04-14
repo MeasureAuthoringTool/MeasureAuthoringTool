@@ -1,22 +1,63 @@
 package mat.cql;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+
+import static java.lang.Integer.max;
 
 /**
  * This class contains methods broken out of CqlToMatXml to make it easier to test.
+ * This class throws IllegalArgumentExceptions on all errors.
  */
-public class CqlStringUtils {
+@Slf4j
+public class CqlUtils {
     public static final char TICK = '\'';
     public static final char QUOTE = '"';
     public static final char NEW_LINE = '\n';
     public static final String BLOCK_COMMENT_START = "/*";
     public static final String BLOCK_COMMENT_END = "*/";
     public static final String LINE_COMMENT = "//";
+    public static final String OID_URL_TOKEN = "urn:oid:";
+
+    private static final Map<String, String> nameToGlobalLibId = new HashMap<>();
+
+    static {
+        //TO DO move this into properties config or a DB lookup eventually.
+        nameToGlobalLibId.put("NCQA_Common", "NCQA-Common-FHIR4-5-1-000");
+        nameToGlobalLibId.put("NCQA_Common_FHIR4", "NCQA-Common-FHIR4-5-1-000");
+        nameToGlobalLibId.put("MATGlobalCommonFunctions_FHIR4", "MATGlobalCommonFunctions-FHIR4-4-0-000");
+        nameToGlobalLibId.put("AdultOutpatientEncounters_FHIR4", "AdultOutpatientEncounters-FHIR4-1-1-000");
+        nameToGlobalLibId.put("AdvancedIllnessandFrailtyExclusion_FHIR4", "AdvancedIllnessandFrailtyExclusion-FHIR4-4-0-000");
+        nameToGlobalLibId.put("FHIRHelpers", "FHIRHelpers-4-0-0");
+        nameToGlobalLibId.put("Hospice_FHIR4", "Hospice-FHIR4-1-0-000");
+        nameToGlobalLibId.put("SupplementalDataElements_FHIR4", "SupplementalDataElements-FHIR4-1-0-0");
+        nameToGlobalLibId.put("TJCOverall_FHIR4", "TJCOverall-FHIR4-4-0-000");
+        nameToGlobalLibId.put("VTEICU_FHIR4", "VTEICU-FHIR4-3-1-000");
+    }
+
+    /**
+     * @param libName The include library name.
+     * @return Returns the global fhir id for the specified include name. Returns null if includeName is not a global fhir lib.
+     */
+    public static String getGlobalLibId(String libName) {
+        return nameToGlobalLibId.get(libName);
+    }
+
+    /**
+     * @param libName The include library name.
+     * @return Returns true if libName is a global fhir id.
+     */
+    public static boolean isGlobalLib(String libName) {
+        return nameToGlobalLibId.containsKey(libName);
+    }
 
     /**
      * Validates that all the specified indexes are non-negative and they are in ascending order.
@@ -78,6 +119,30 @@ public class CqlStringUtils {
     public static ParseResult nextTickedString(String source,
                                                int startIndex) {
         return nextCharBoundary(source, TICK, "\\" + TICK, startIndex);
+    }
+
+    public static ParseResult nextBlock(String source, char startBlockChar, char endBlockChar, int startIndex) {
+        ParseResult result = new ParseResult(null, -1);
+        int firstStartBlock = indexOf(source, startBlockChar, startIndex);
+        int firstEndBlock = indexOf(source, endBlockChar, firstStartBlock + 1);
+        int nextStartBlock = firstStartBlock;
+        int nextEndBlock = firstEndBlock;
+
+        if (areValidAscendingIndexes(firstStartBlock, firstEndBlock)) {
+            do {
+                nextStartBlock = indexOf(source, startBlockChar, nextStartBlock + 1);
+                nextEndBlock = nextStartBlock != -1 ? indexOf(source, endBlockChar, nextStartBlock + 1) : nextEndBlock;
+            }
+            while (areValidAscendingIndexes(nextStartBlock, nextEndBlock));
+
+            if (nextEndBlock != firstEndBlock) {
+                firstEndBlock = indexOf(source, endBlockChar, nextEndBlock + 1);
+            }
+            if (areValidAscendingIndexes(firstEndBlock)) {
+                result = new ParseResult(source.substring(firstStartBlock, firstEndBlock + 1), firstEndBlock);
+            }
+        }
+        return result;
     }
 
     /**
@@ -216,6 +281,18 @@ public class CqlStringUtils {
         return indexStart < 0 ? -1 : source.indexOf(search, indexStart);
     }
 
+    public static int previousIndexOf(String source, char search, int index) {
+        int result = -1;
+        for (int i = index; i >= 0; i--) {
+            char c = source.charAt(i);
+            if (c == search) {
+                result = i;
+                break;
+            }
+        }
+        return result;
+    }
+
     /**
      * Removes the urn:oid: from the specified code system name.
      *
@@ -235,7 +312,6 @@ public class CqlStringUtils {
     }
 
     /**
-     *
      * @param cql The cql.
      * @return Removes all line comments (e.g. //sdfsdfsd ) from the cql.
      */
@@ -243,20 +319,20 @@ public class CqlStringUtils {
         StringBuilder result = new StringBuilder();
         //If line is whitespace remove line.
         //else remove from comment onwards in line.
-        try (StringReader sr = new StringReader(cql);) {
+        try (StringReader sr = new StringReader(cql)) {
             BufferedReader reader = new BufferedReader(sr);
             String line;
             while ((line = reader.readLine()) != null) {
                 int commentStart = line.indexOf(LINE_COMMENT);
                 boolean ignore = false;
-                if (commentStart != -1) {
+                if (commentStart != -1 && !isInTickedOrQuotedString(line, commentStart)) {
                     line = line.substring(0, commentStart);
                     if (StringUtils.isBlank(line)) {
                         ignore = true;
                     }
                 }
                 if (!ignore) {
-                    result.append((result.length() == 0 ? "" : NEW_LINE) + line);
+                    result.append((result.length() == 0 ? "" : NEW_LINE)).append(line);
                 }
             }
         } catch (IOException ioe) {
@@ -264,6 +340,22 @@ public class CqlStringUtils {
         }
         return result.toString();
     }
+
+    public static boolean isInTickedOrQuotedString(String cql, int index) {
+        return isInBoundary(cql, TICK, index) || isInBoundary(cql, QUOTE, index);
+    }
+
+    public static boolean isInBoundary(String cql, char boundaryChar, int index) {
+        int prevNewline = max(0, previousIndexOf(cql, NEW_LINE, index));
+        int prev = previousIndexOf(cql, boundaryChar, index);
+        int next = indexOf(cql, boundaryChar, index);
+        int nextNewLine = indexOf(cql, NEW_LINE, index);
+        if (nextNewLine == -1) {
+            nextNewLine = cql.length() - 1;
+        }
+        return areValidAscendingIndexes(prevNewline, prev, next, nextNewLine);
+    }
+
 
     /**
      * @param cql the cql.
@@ -282,5 +374,85 @@ public class CqlStringUtils {
             }
         }
         return result.toString();
+    }
+
+    public static boolean isValidVersion(String version) {
+        boolean result = true;
+        String[] parts = version.split("\\.");
+
+        if (parts.length == 3) {
+            for (String p : parts) {
+                try {
+                    Integer.parseInt(p);
+                } catch (NumberFormatException nfe) {
+                    result = false;
+                    break;
+                }
+            }
+            result = result && parts[2].length() == 3;
+        } else {
+            result = false;
+        }
+        return result;
+    }
+
+    public static Pair<Double, Integer> versionToVersionAndRevision(String version) {
+        if (isValidVersion(version)) {
+            String[] sp = version.split("\\.");
+            return Pair.of(Double.parseDouble(sp[0] + "." + sp[1]), Integer.parseInt(sp[2]));
+        } else {
+            throw new IllegalArgumentException("Invalid version: " + version);
+        }
+    }
+
+    public static boolean isOid(String uri) {
+        return uri.startsWith(OID_URL_TOKEN);
+    }
+
+    public static String parseOid(String uri) {
+        //urn:oid:2.16.840.1.113883.3.464.1004.1548
+        //Should return 2.16.840.1.113883.3.464.1004.1548
+        if (isOid(uri)) {
+            return uri.substring(OID_URL_TOKEN.length());
+
+        } else {
+            throw new IllegalArgumentException("Invalid oid url: " + uri +
+                    ". Should be in this format: urn:oid:2.16.840.1.113883.3.464.1004.1548");
+        }
+    }
+
+    /**
+     * Parses code system name into name and version parts.
+     *
+     * @return 'SNOMEDCT:2017-09' returns Pair: "SNOMEDCT","2017-09"
+     * 'SNOMEDCT' returns Pair: "SNOMEDCT",null
+     */
+    public static Pair<String, String> parseCodeSystemName(String codeSystemName) {
+        int i = codeSystemName.lastIndexOf(":");
+        return i >= 0 ? Pair.of(codeSystemName.substring(0, i),
+                codeSystemName.substring(i + 1)) : Pair.of(codeSystemName,null);
+    }
+
+    public static boolean startsWith(String s,String... tokens) {
+        boolean result = false;
+        for (String tok : tokens) {
+            if (StringUtils.startsWith(s,tok)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Parses the next line.
+     * @param cql The cql.
+     * @param start The start index.
+     * @return The next line. endIndex is the index of the next \n or -1 if EOF.
+     */
+    public static ParseResult parseNextLine(String cql, int start) {
+        int nextNewline = indexOf(cql, '\n', start);
+        return nextNewline == -1 ? new ParseResult(StringUtils.substring(cql, start, cql.length()), -1) :
+                new ParseResult(StringUtils.substring(cql, start, nextNewline), nextNewline - 1);
     }
 }

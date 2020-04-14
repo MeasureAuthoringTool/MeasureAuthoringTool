@@ -1,8 +1,8 @@
 library UseofOpioidsfromMultipleProviders_FHIR4 version '1.0.000' 
 
 using FHIR version '4.0.0'
-include FHIRHelpers version '4.0.0' called FHIRHelpers
-include SupplementalDataElements_FHIR4 version '1.0.0' called SDE
+include FHIRHelpers version '4.0.000' called FHIRHelpers
+include SupplementalDataElements_FHIR4 version '1.0.000' called SDE
 include MATGlobalCommonFunctions_FHIR4 version '4.0.000' called Global
 
 include NCQA_Common_FHIR4 version '5.1.000' called Common
@@ -385,4 +385,29 @@ define function "RolloutIntervalsOnce"(Intervals List<Interval<DateTime>> ):
         return all duration in days of X
     ), unit: 'day' }]
 
+define function "CalculateMME"(prescriptions List<Tuple {
+  rxNormCode Code,
+  doseQuantity Quantity,
+  dosesPerDay Decimal
+}> ):
+  Flatten(prescriptions Med
+      let Ingredients: "GetDrugIngredients"(Med.rxNormCode)
+      return Ingredients Drug
+        let adjustedDoseQuantity: "EnsureMicrogramQuantity"(Med.doseQuantity),
+        dailyDose: "GetMedicationDailyDose"(Drug.ingredientCode, Drug.strength, Drug.doseFormCode, adjustedDoseQuantity, Med.dosesPerDay),
+        factor: "GetConversionFactor"(Drug.ingredientCode, dailyDose, Drug.doseFormCode),
+        MME: Quantity { value: dailyDose.value * factor, unit: dailyDose.unit + '/d' }
+        return {
+          rxNormCode: Med.rxNormCode,
+          doseFormCode: Drug.doseFormCode,
+          doseQuantity: adjustedDoseQuantity,
+          dosesPerDay: Med.dosesPerDay,
+          ingredientCode: Drug.ingredientCode,
+          ingredientName: Drug.ingredientName,
+          strength: Drug.strength,
+          dailyDose: dailyDose,
+          conversionFactor: factor,
+          dailyMME: MME
+        }
+  )
 

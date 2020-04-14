@@ -13,6 +13,7 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.CQLKeywordsUtil;
+import org.apache.commons.lang3.StringUtils;
 
 public class CQLValidationUtil {
 
@@ -46,7 +47,9 @@ public class CQLValidationUtil {
         return identifierName.equals(model.getLibraryName());
     }
 
+
     public static boolean doesModelHaveDuplicateIdentifierOrIdentifierAsKeyword(CQLModel cqlModel) {
+        boolean isFhir = StringUtils.equals(cqlModel.getUsingModel(),"FHIR");
 
         Set<String> identifiersSet = new HashSet<>();
         Set<String> codesystemsSet = new HashSet<>();
@@ -68,12 +71,23 @@ public class CQLValidationUtil {
             identifiersSet.add(dto.getName());
         }
         for (CQLCode code : cqlModel.getCodeList()) {
-            if (identifiersSet.contains(code.getDisplayName())) {
-                return true;
+            if (isFhir) {
+                if (StringUtils.isNotEmpty(code.getDisplayName())) {
+                    //Display name is optional here in the FHIR CQL spec so have to handle that case.
+                    if (identifiersSet.contains(code.getDisplayName())) {
+                        return true;
+                    }
+                    identifiersSet.add(code.getDisplayName());
+                    codesystemsSet.add(getCodeSystemIdentifier(code));
+                }
+            } else {
+                if (identifiersSet.contains(code.getDisplayName())) {
+                    return true;
+                }
+                identifiersSet.add(code.getDisplayName());
+                codesystemsSet.add(getCodeSystemIdentifier(code));
             }
-            identifiersSet.add(code.getDisplayName());
 
-            codesystemsSet.add(getCodeSystemIdentifier(code));
         }
         for (String codesystem : codesystemsSet) {
             if (identifiersSet.contains(codesystem)) {
@@ -83,31 +97,36 @@ public class CQLValidationUtil {
 
         identifiersSet.addAll(codesystemsSet);
 
+        // Fhir allows overloading of functions
+        if (!isFhir) {
+            for (CQLFunctions func : cqlModel.getCqlFunctions()) {
+                if (identifiersSet.contains(func.getFunctionName())) {
+                    return true;
+                }
+                identifiersSet.add(func.getFunctionName());
+            }
+            for (String name : MatContext.get().getCqlConstantContainer().getFunctionNames()) {
+                if (identifiersSet.contains(name)) {
+                    return true;
+                }
+                identifiersSet.add(name);
+            }
+        }
+
         for (CQLDefinition def : cqlModel.getDefinitionList()) {
             if (identifiersSet.contains(def.getDefinitionName())) {
                 return true;
             }
             identifiersSet.add(def.getDefinitionName());
         }
+
         for (CQLParameter par : cqlModel.getCqlParameters()) {
             if (identifiersSet.contains(par.getParameterName())) {
                 return true;
             }
             identifiersSet.add(par.getParameterName());
         }
-        for (CQLFunctions func : cqlModel.getCqlFunctions()) {
-            if (identifiersSet.contains(func.getFunctionName())) {
-                return true;
-            }
-            identifiersSet.add(func.getFunctionName());
-        }
 
-        for (String name : MatContext.get().getCqlConstantContainer().getFunctionNames()) {
-            if (identifiersSet.contains(name)) {
-                return true;
-            }
-            identifiersSet.add(name);
-        }
         for (String name : CQLKeywordsUtil.getCQLKeywords().getCqlKeywordsList()) {
             if (identifiersSet.contains(name)) {
                 return true;

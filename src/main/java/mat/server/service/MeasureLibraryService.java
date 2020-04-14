@@ -105,7 +105,7 @@ public interface MeasureLibraryService {
 	 */
 	QualityDataModelWrapper getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
-	
+
 	/**
 	 * Gets the max e measure id.
 	 * 
@@ -221,21 +221,8 @@ public interface MeasureLibraryService {
 	 * @param measureXmlModel
 	 *            the measure xml model
 	 */
-	void saveMeasureXml(MeasureXmlModel measureXmlModel, String measureId);
-	
-	/**
-	 * Search.
-	 * 
-	 * @param searchText
-	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param filter
-	 *            the filter
-	 * @return the manage measure search model
-	 */
+	void saveMeasureXml(final MeasureXmlModel measureXmlModel, String measureId, boolean isFhir);
+
 	ManageMeasureSearchModel search(MeasureSearchModel advancedSearchModel);
 	
 		
@@ -705,4 +692,5 @@ public interface MeasureLibraryService {
 	SaveUpdateCQLResult saveCQLFile(String measureId, String cql);
 	
 	boolean libraryNameExists(String libraryName, String setId);
+
 }

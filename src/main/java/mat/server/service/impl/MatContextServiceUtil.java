@@ -68,24 +68,23 @@ public class MatContextServiceUtil implements InitializingBean {
      */
     public boolean isCurrentMeasureEditable(MeasureDAO measureDAO, String measureId, boolean checkForDraft) {
 
+        String currentUserId = LoggedInUserUtil.getLoggedInUser();
         Measure measure = measureDAO.find(measureId);
+        ShareLevel shareLevel = measureDAO.findShareLevelForUser(currentUserId, measure.getMeasureSet().getId());
+        return isCurrentMeasureEditable(measure, currentUserId, shareLevel == null ? null : shareLevel.getId(), checkForDraft);
+    }
+
+    public boolean isCurrentMeasureEditable(Measure measure, String currentUserId, String shareLevelId, boolean checkForDraft) {
         boolean isEditable = false;
 
-        String currentUserId = LoggedInUserUtil.getLoggedInUser();
         String userRole = LoggedInUserUtil.getLoggedInUserRole();
         boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
-        MeasureShareDTO dto = measureDAO.extractDTOFromMeasure(measure);
-        boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
-        ShareLevel shareLevel = measureDAO.findShareLevelForUser(measureId,
-                currentUserId, dto.getMeasureSetId());
-        boolean isSharedToEdit = false;
-        if (shareLevel != null) {
-            isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
-        }
+        boolean isOwner = currentUserId.equals(measure.getOwner() == null ? null : measure.getOwner().getId());
+        boolean isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevelId);
         isEditable = (isOwner || isSuperUser || isSharedToEdit);
 
         if (checkForDraft) {
-            isEditable = isEditable && dto.isDraft();
+            isEditable = isEditable && measure.isDraft();
         }
 
         return isEditable;

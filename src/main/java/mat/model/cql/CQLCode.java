@@ -20,6 +20,9 @@ public class CQLCode implements CQLExpression, IsSerializable {
 	
 	/** The code system version. */
 	private String codeSystemVersion;
+
+	/** The code system version uri. */
+	private String codeSystemVersionUri;
 	
 	private String codeSystemOID;
 	
@@ -206,5 +209,13 @@ public class CQLCode implements CQLExpression, IsSerializable {
 	public void setLogic(String logic) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public String getCodeSystemVersionUri() {
+		return codeSystemVersionUri;
+	}
+
+	public void setCodeSystemVersionUri(String codeSystemVersionUri) {
+		this.codeSystemVersionUri = codeSystemVersionUri;
 	}
 }

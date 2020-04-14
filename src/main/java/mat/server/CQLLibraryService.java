@@ -21,7 +21,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import mat.model.clause.ModelTypeHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,6 +56,7 @@ import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibraryExport;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
@@ -147,7 +147,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     @Override
     public SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText, String modelType) {
         SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult();
-        List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
+        List<CQLLibraryDataSetObject> allLibraries = new ArrayList<>();
         List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(setId, libraryName, searchText, modelType);
         saveCQLLibraryResult.setResultsTotal(list.size());
         for (CQLLibrary cqlLibrary : list) {
@@ -208,8 +208,16 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
     @Override
     public void save(CQLLibrary library) {
-        library.setQdmVersion(MATPropertiesService.get().getQdmVersion());
+        updateModelVersion(library);
         this.cqlLibraryDAO.save(library);
+    }
+
+    private void updateModelVersion(CQLLibrary library) {
+        if (library.isFhirMeasure()) {
+            library.setFhirVersion(MATPropertiesService.get().getFhirVersion());
+        } else {
+            library.setQdmVersion(MATPropertiesService.get().getQdmVersion());
+        }
     }
 
     private CQLLibraryDataSetObject extractCQLLibraryDataObject(CQLLibrary cqlLibrary) {
@@ -488,7 +496,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         SaveUpdateCQLResult latestCQLResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, cqlModel.getExpressionListFromCqlModel(), true);
         CQLLibraryExport cqlLibraryExport = new CQLLibraryExport();
         cqlLibraryExport.setCqlLibrary(cqlLibrary);
-        cqlLibraryExport.setCql(CQLUtilityClass.getCqlString(cqlModel, ""));
+        cqlLibraryExport.setCql(CQLUtilityClass.getCqlString(cqlModel, "").getLeft());
         cqlLibraryExport.setElm(latestCQLResult.getElmString());
         cqlLibraryExport.setJson(latestCQLResult.getJsonString());
         cqlLibraryExportDAO.save(cqlLibraryExport);
@@ -587,12 +595,13 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
         List<String> message = isValidCQLLibrary(cqlLibraryDataSetObject);
         if (message.isEmpty()) {
+            boolean isFhir = "FHIR".equals(cqlLibraryDataSetObject.getLibraryModelType());
             CQLLibrary library = new CQLLibrary();
             library.setDraft(true);
             library.setName(cqlLibraryDataSetObject.getCqlName());
             library.setSetId(UUID.randomUUID().toString());
             library.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
-            library.setQdmVersion(MATPropertiesService.get().getQdmVersion());
+            library.setQdmVersion(isFhir ? MATPropertiesService.get().getFhirVersion() : MATPropertiesService.get().getQdmVersion());
             library.setRevisionNumber("000");
             library.setVersion("0.0");
             library.setLibraryModelType(cqlLibraryDataSetObject.getLibraryModelType());
@@ -606,7 +615,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             }
 
             String version = library.getVersion() + "." + library.getRevisionNumber();
-            String cqlLookUpString = createCQLLookUpTag(cqlLibraryDataSetObject.getCqlName(), version);
+            String cqlLookUpString = createCQLLookUpTag(cqlLibraryDataSetObject.getCqlName(),
+                    version,
+                    StringUtils.equals(cqlLibraryDataSetObject.getLibraryModelType(), "FHIR"));
             if (StringUtils.isNotBlank(cqlLookUpString)) {
                 byte[] cqlByteArray = cqlLookUpString.getBytes();
                 library.setCQLByteArray(cqlByteArray);
@@ -649,14 +660,14 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     @Override
-    public String createCQLLookUpTag(String libraryName, String version) {
-        XmlProcessor xmlProcessor = loadCQLXmlTemplateFile();
-        String cqlLookUpString = getCQLLookUpXml(libraryName, version, xmlProcessor, "//standAlone");
+    public String createCQLLookUpTag(String libraryName, String version, boolean isFhir) {
+        XmlProcessor xmlProcessor = loadCQLXmlTemplateFile(isFhir);
+        String cqlLookUpString = getCQLLookUpXml(libraryName, version, xmlProcessor, "//standAlone", isFhir);
         return cqlLookUpString;
     }
 
     @Override
-    public String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath) {
+    public String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath, boolean isFhir) {
         String cqlLookUp = null;
         try {
             Node cqlTemplateNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/cqlTemplate");
@@ -708,7 +719,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                             Node usingModelVersionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
                                     mainXPath + "//" + nodeTextToChange);
                             if (usingModelVersionNode != null) {
-                                usingModelVersionNode.setTextContent(MATPropertiesService.get().getQdmVersion());
+                                usingModelVersionNode.setTextContent(isFhir ?
+                                        MATPropertiesService.get().getFhirVersion() :
+                                        MATPropertiesService.get().getQdmVersion());
+                            } else {
+
                             }
                         }
                     }
@@ -724,8 +739,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     @Override
-    public XmlProcessor loadCQLXmlTemplateFile() {
-        String fileName = "CQLXmlTemplate.xml";
+    public XmlProcessor loadCQLXmlTemplateFile(boolean isFhir) {
+        String fileName = isFhir ?
+                "CQLXmlTemplate.fhir4.xml" :
+                "CQLXmlTemplate.qdm.xml";
         URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);
         File templateFile = null;
         try {
@@ -747,7 +764,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
             cqlModel = CQLUtilityClass.getCQLModelFromXML(data);
 
-            cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
+            cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
         } catch (SQLException e) {
             logger.error(e);
         }
@@ -1121,9 +1138,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         CQLLibrary library = cqlLibraryDAO.find(libraryId);
         String cqlXml = getCQLLibraryXml(library);
 
-        if(ModelTypeHelper.FHIR.equalsIgnoreCase(library.getLibraryModelType())) {
+        if (ModelTypeHelper.FHIR.equalsIgnoreCase(library.getLibraryModelType())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
-            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
+            String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
             String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString); //remote call
             SaveUpdateCQLResult cqlResult = cqlService.generateParsedCqlObject(cqlValidationResponse, cqlModel);
 
@@ -1412,7 +1429,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         String result = null;
         try {
             result = xmlProcessor.appendNode(newXml, nodeName, parentNodeName);
-        } catch (SAXException| IOException e) {
+        } catch (SAXException | IOException e) {
             logger.error(e);
         }
         return result;

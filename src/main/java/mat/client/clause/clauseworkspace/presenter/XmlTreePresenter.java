@@ -445,7 +445,9 @@ public class XmlTreePresenter {
                             .getXmlTree().getRootTreeNode().getChildValue(0);
                     final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper
                             .createXmlFromTree(cellTreeNode));
-                    service.saveMeasureXml(measureXmlModel, MatContext.get().getCurrentMeasureId(),
+                    service.saveMeasureXml(measureXmlModel,
+                            MatContext.get().getCurrentMeasureId(),
+                            "FHIR".equals(MatContext.get().getCurrentMeasureModel()),
                             new AsyncCallback<Void>() {
                                 @Override
                                 public void onFailure(final Throwable caught) {

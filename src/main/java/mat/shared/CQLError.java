@@ -4,13 +4,13 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CQLError implements IsSerializable, Comparable<CQLError> {
     private int errorInLine;
-	private int errorAtOffeset;
+    private int errorAtOffeset;
 
-	private int startErrorInLine;
-    int startErrorAtOffset;
+    private int startErrorInLine;
+    private int startErrorAtOffset;
 
-	private int endErrorInLine;
-	private int endErrorAtOffset;
+    private int endErrorInLine;
+    private int endErrorAtOffset;
 
     private String errorMessage;
 

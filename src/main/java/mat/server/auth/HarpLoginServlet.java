@@ -1,4 +1,4 @@
-package mat.server.auth.model;
+package mat.server.auth;
 
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.util.ServerConstants;

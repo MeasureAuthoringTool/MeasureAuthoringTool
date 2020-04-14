@@ -1,7 +1,8 @@
-package mat.server.auth.model;
+package mat.server.auth;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import mat.server.SpringRemoteServiceServlet;
+import mat.server.auth.model.TokenIntrospect;
 import mat.server.util.ServerConstants;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;

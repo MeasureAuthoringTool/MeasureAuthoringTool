@@ -38,6 +38,17 @@ public class FhirCQLResultParserTest {
                     "'errorSeverity': 'Error'" +
                     "}";
 
+    private static final String INC_WARM_JSON =
+            "{" +
+                    "'libraryId': 'libraryId', " +
+                    "'targetIncludeLibraryId': 'includeTargetIncludeLibraryId', " +
+                    "'targetIncludeLibraryVersionId': '0.1.1', " +
+                    "'startLine': 0," +
+                    "'startChar': 0," +
+                    "'endLine': 0," +
+                    "'endChar': 0," +
+                    "'errorSeverity': 'Warning'" +
+                    "}";
 
     private FhirCQLResultParser parser = new FhirCQLResultParserImpl();
 
@@ -108,6 +119,17 @@ public class FhirCQLResultParserTest {
         assertNotNull(result);
         assertFalse(result.getLibraryNameErrorsMap().isEmpty());
         assertEquals(Collections.singleton("includeTargetIncludeLibraryId(0.1.1)"), result.getIncludeLibrariesWithErrors());
+    }
+
+    @Test
+    public void testInclWarnLibrary() {
+        var cqlModel = new CQLModel();
+        cqlModel.setLibraryName("lib");
+        cqlModel.setVersionUsed("1.1.1");
+
+        var result = parser.generateParsedCqlObject("{ 'library': { 'annotation': [" + INC_WARM_JSON + "] } }", cqlModel);
+        assertNotNull(result);
+        assertTrue(result.getLibraryNameErrorsMap().isEmpty());
     }
 
 }

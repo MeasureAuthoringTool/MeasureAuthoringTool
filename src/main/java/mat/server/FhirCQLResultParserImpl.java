@@ -17,56 +17,89 @@ import mat.shared.SaveUpdateCQLResult;
 
 @Component
 public class FhirCQLResultParserImpl implements FhirCQLResultParser {
+    private static final String ERROR_SEVERITY = "Error";
+
     @Override
     public SaveUpdateCQLResult generateParsedCqlObject(String cqlValidationResponse, CQLModel cqlModel) {
-        SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
-        Set<String> includeLibrariesWithErrors = new HashSet<>();
-        List<CQLError> errors = new ArrayList<>();
-        Map<String, List<CQLError>> libraryNameErrorsMap = new HashMap<>();
-        Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>();
-        JSONArray jsonArray;
-        String parentLibraryName = cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed();
-        JSONObject cqlValidationResponseJson = new JSONObject(cqlValidationResponse);
-        if (cqlValidationResponseJson.has("errorExceptions")) {
-            jsonArray = cqlValidationResponseJson.getJSONArray("errorExceptions");
-            if (jsonArray != null) {
-                buildCqlErrors(jsonArray, parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors, includeLibrariesWithErrors);
-            }
+        ResultBuilder resultBuilder = new ResultBuilder();
+        resultBuilder.cqlModel(cqlModel);
+        resultBuilder.cqlValidationResponse(cqlValidationResponse);
+        return resultBuilder.build();
+    }
+
+
+    static class ResultBuilder {
+        private final SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
+        private final Set<String> includeLibrariesWithErrors = new HashSet<>();
+        private final List<CQLError> errors = new ArrayList<>();
+        private final Map<String, List<CQLError>> libraryNameErrorsMap = new HashMap<>();
+        private final Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>();
+        private CQLModel cqlModel;
+        private String parentLibraryName;
+        private String cqlValidationResponse;
+        private JSONObject cqlValidationResponseJson;
+
+        public void cqlModel(CQLModel cqlModel) {
+            this.cqlModel = cqlModel;
         }
-        if (cqlValidationResponseJson.has("library")) {
-            JSONObject libraryObject = (JSONObject) cqlValidationResponseJson.get("library");
-            if (libraryObject.has("annotation")) {
-                jsonArray = libraryObject.getJSONArray("annotation");
-                if (jsonArray != null) {
+
+        public void cqlValidationResponse(String cqlValidationResponse) {
+            this.cqlValidationResponse = cqlValidationResponse;
+        }
+
+        public SaveUpdateCQLResult build() {
+            cqlValidationResponseJson = new JSONObject(cqlValidationResponse);
+            parentLibraryName = cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed();
+
+            processErrorExceptions();
+            processLibraryAnnotations();
+
+            parsedCQL.setCqlModel(cqlModel);
+            parsedCQL.setCqlErrors(errors);
+            parsedCQL.setLibraryNameErrorsMap(libraryNameErrorsMap);
+            parsedCQL.setLibraryNameWarningsMap(libraryNameWarningsMap);
+            parsedCQL.setIncludeLibrariesWithErrors(includeLibrariesWithErrors);
+            return parsedCQL;
+        }
+
+        private void processLibraryAnnotations() {
+            if (cqlValidationResponseJson.has("library")) {
+                JSONObject libraryObject = (JSONObject) cqlValidationResponseJson.get("library");
+                if (libraryObject.has("annotation")) {
+                    JSONArray jsonArray = libraryObject.getJSONArray("annotation");
                     buildCqlErrors(jsonArray, parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors, includeLibrariesWithErrors);
                 }
             }
         }
-        parsedCQL.setCqlModel(cqlModel);
-        parsedCQL.setCqlErrors(errors);
-        parsedCQL.setLibraryNameErrorsMap(libraryNameErrorsMap);
-        parsedCQL.setLibraryNameWarningsMap(libraryNameWarningsMap);
-        parsedCQL.setIncludeLibrariesWithErrors(includeLibrariesWithErrors);
-        return parsedCQL;
-    }
 
-    private void buildCqlErrors(JSONArray jsonArray, String parentLibraryName, Map<String, List<CQLError>> libraryNameErrorsMap, Map<String, List<CQLError>> libraryNameWarningsMap, List<CQLError> errors, Set<String> includeLibrariesWithErrors) {
-        JSONObject jsonObject;
-        for (int i = 0; i < jsonArray.length(); i++) {
+        private void processErrorExceptions() {
+            if (cqlValidationResponseJson.has("errorExceptions")) {
+                JSONArray jsonArray = cqlValidationResponseJson.getJSONArray("errorExceptions");
+                buildCqlErrors(jsonArray, parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors, includeLibrariesWithErrors);
+            }
+        }
+
+        private void buildCqlErrors(JSONArray jsonArray, String parentLibraryName, Map<String, List<CQLError>> libraryNameErrorsMap, Map<String, List<CQLError>> libraryNameWarningsMap, List<CQLError> errors, Set<String> includeLibrariesWithErrors) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                buildCqlError(parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors, includeLibrariesWithErrors, jsonObject);
+            }
+        }
+
+        private void buildCqlError(String parentLibraryName, Map<String, List<CQLError>> libraryNameErrorsMap, Map<String, List<CQLError>> libraryNameWarningsMap, List<CQLError> errors, Set<String> includeLibrariesWithErrors, JSONObject jsonObject) {
             CQLError error = new CQLError();
-            jsonObject = jsonArray.getJSONObject(i);
-            String libraryId = jsonObject.has("libraryId") ? jsonObject.getString("libraryId") : null;
-            String targetIncludeLibraryId = jsonObject.has("targetIncludeLibraryId") ? jsonObject.getString("targetIncludeLibraryId") : null;
-            String targetIncludeLibraryVersionId = jsonObject.has("targetIncludeLibraryVersionId") ? jsonObject.getString("targetIncludeLibraryVersionId") : null;
+            String libraryId = jsonObject.optString("libraryId", null);
+            String targetIncludeLibraryId = jsonObject.optString("targetIncludeLibraryId", null);
+            String targetIncludeLibraryVersionId = jsonObject.optString("targetIncludeLibraryVersionId", null);
             error.setStartErrorInLine(jsonObject.getInt("startLine"));
             error.setErrorInLine(jsonObject.getInt("startLine"));
             error.setErrorAtOffeset(jsonObject.getInt("startChar"));
             error.setEndErrorInLine(jsonObject.getInt("endLine"));
             error.setEndErrorAtOffset(jsonObject.getInt("endChar"));
-            error.setErrorMessage(jsonObject.has("message") ? jsonObject.getString("message") : null);
-            error.setSeverity(jsonObject.has("errorSeverity") ? jsonObject.getString("errorSeverity") : "Error");
+            error.setErrorMessage(jsonObject.optString("message", null));
+            error.setSeverity(jsonObject.optString("errorSeverity", ERROR_SEVERITY));
             errors.add(error);
-            boolean isError = error.getSeverity().equalsIgnoreCase("Error");
+            boolean isError = error.getSeverity().equalsIgnoreCase(ERROR_SEVERITY);
             if (isError) {
                 libraryNameErrorsMap.put(parentLibraryName, errors);
             } else {

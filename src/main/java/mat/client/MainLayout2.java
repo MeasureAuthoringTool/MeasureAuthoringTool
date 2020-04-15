@@ -1,7 +1,5 @@
 package mat.client;
-
 import java.util.List;
-
 import org.gwtbootstrap3.client.ui.AnchorButton;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
@@ -20,7 +18,6 @@ import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
 import org.gwtbootstrap3.client.ui.constants.ProgressType;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
-
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -42,67 +39,31 @@ import mat.client.util.ClientConstants;
 import mat.client.util.FeatureFlagConstant;
 import mat.client.util.FooterPanelBuilderUtility;
 import mat.model.clause.ModelTypeHelper;
-
-public abstract class MainLayout {
-
+public abstract class MainLayout2 {
     private static Image alertImage = new Image(ImageResources.INSTANCE.alert());
-
     private static String alertTitle = ClientConstants.MAINLAYOUT_ALERT_TITLE;
-
     private static final int DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS = 500;
-
     private static Panel loadingPanel;
-
     private FocusPanel content;
-
     private HorizontalPanel linksPanel = new HorizontalPanel();
-
     private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
-
     private static IndicatorButton showUMLSState;
     private static IndicatorButton showBonnieState;
-
     protected static FocusableWidget skipListHolder;
-
     NavbarLink homeLink = new NavbarLink();
-
     static ListItem signedInAsName = new ListItem();
     AnchorListItem profile = new AnchorListItem("MAT Account");
     AnchorListItem signOut = new AnchorListItem("Sign Out");
-
     public static final String HEADING = "Measure Authoring Tool";
-
-    /**
-     * clear the loading panel
-     * remove css style
-     * reset the loading queue.
-     */
-    private static void delegateHideLoadingMessage() {
-        MatContext.get().getLoadingQueue().poll();
-        if (MatContext.get().getLoadingQueue().size() == 0) {
-            getLoadingPanel().clear();
-            getLoadingPanel().getElement().removeAttribute("role");
-        }
-    }
-
-    protected static Panel getLoadingPanel() {
-        return loadingPanel;
-    }
-
     protected static FocusableWidget getSkipList() {
         return skipListHolder;
     }
-
     /**
      * no arg method adds default delay to loading message hide op.
      */
     public static void hideLoadingMessage() {
-        bar.setPercent(100.00);
-        bar.setText("Loaded 100% ");
         hideLoadingMessage(DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS);
     }
-
-
     /**
      * delay hiding of loading message artifacts by 'delay' milliseconds
      * NOTE delay cannot be <= 0 else exception is thrown
@@ -123,33 +84,34 @@ public abstract class MainLayout {
             delegateHideLoadingMessage();
         }
     }
-
-    public static void showLoadingMessage() {
-        getLoadingPanel().clear();
-
-        progress.setActive(true);
-        progress.setType(ProgressType.STRIPED);
-
-        bar.setType(ProgressBarType.INFO);
-        bar.setWidth("100%");
-        bar.setPercent(50.00);
-        bar.setText("Please wait. Loaded 50%");
-
-
-        progress.add(bar);
-        progress.setId("LoadingPanel");
-        getLoadingPanel().add(progress);
-
-        getLoadingPanel().setWidth("99%");
-        getLoadingPanel().getElement().setAttribute("role", "alert");
-        MatContext.get().getLoadingQueue().add("node");
+    /**
+     * clear the loading panel
+     * remove css style
+     * reset the loading queue.
+     */
+    private static void delegateHideLoadingMessage() {
+        MatContext.get().getLoadingQueue().poll();
+        if (MatContext.get().getLoadingQueue().size() == 0) {
+            hideBusy();
+        }
     }
-
-
+    public static void showLoadingMessage() {
+        showBusy();
+    }
     public static void showSignOutMessage() {
         loadingWidget = new HTML(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
         showLoadingMessage();
     }
+
+    // Return the whole JSON array, as is
+    private static final native void showBusy() /*-{
+        $wnd.hideSpinner();
+    }-*/;
+
+    // Return the whole JSON array, as is
+    private static final native void hideBusy() /*-{
+        $wnd.showSpinner();
+    }-*/;
 
     private Panel buildContentPanel() {
         content = new FocusPanel();
@@ -162,10 +124,8 @@ public abstract class MainLayout {
         content.setStylePrimaryName("mainContentPanel");
         setId(content, "content");
         Mat.removeInputBoxFromFocusPanel(content.getElement());
-
         return content;
     }
-
     /**
      * Builds the Footer Panel for the Login and Mat View. Currently, it displays the
      * 'Accessibility Policy' , 'Terms Of Use' , 'Privacy Policy' 'User Guide' links with CMS LOGO.
@@ -173,7 +133,6 @@ public abstract class MainLayout {
      * @return Panel
      */
     private Panel buildFooterPanel() {
-
         final FlowPanel footerMainPanel = new FlowPanel();
         footerMainPanel.getElement().setId("footerMainPanel_FlowPanel");
         footerMainPanel.setStylePrimaryName("footer");
@@ -181,8 +140,6 @@ public abstract class MainLayout {
         footerMainPanel.add(fetchAndcreateFooterLinks());
         return footerMainPanel;
     }
-
-
     private Panel buildLoadingPanel() {
         loadingPanel = new HorizontalPanel();
         loadingPanel.setHeight("30px");
@@ -192,7 +149,6 @@ public abstract class MainLayout {
         loadingPanel.getElement().setAttribute("aria-live", "assertive");
         loadingPanel.getElement().setAttribute("aria-atomic", "true");
         loadingPanel.getElement().setAttribute("aria-relevant", "all");
-
         loadingPanel.setStylePrimaryName("mainContentPanel");
         setId(loadingPanel, "loadingContainer");
         alertImage.setTitle(alertTitle);
@@ -200,28 +156,26 @@ public abstract class MainLayout {
         loadingWidget.setStyleName("padLeft5px");
         return loadingPanel;
     }
-
     private Panel buildSkipContent() {
         skipListHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Main Content"));
         Mat.removeInputBoxFromFocusPanel(skipListHolder.getElement());
         return skipListHolder;
     }
-
     private Panel buildTopPanel() {
+        final HorizontalPanel bodyPanel = new HorizontalPanel();
+        bodyPanel.setHeight("30px");
         final VerticalPanel topPanel = new VerticalPanel();
         topPanel.add(buildHeader());
         topPanel.add(buildLoadingPanel());
         topPanel.setStylePrimaryName("topBanner");
         return topPanel;
     }
-
     private HorizontalFlowPanel buildHeader() {
         final HorizontalFlowPanel hfp = new HorizontalFlowPanel();
         hfp.add(buildNavbar());
         hfp.add(linksPanel);
         return hfp;
     }
-
     private Navbar buildNavbar() {
         final Navbar nav = new Navbar();
         nav.setStyleName("versionBanner");
@@ -229,20 +183,16 @@ public abstract class MainLayout {
         nav.add(getHomeLink());
         return nav;
     }
-
     public void buildLinksPanel() {
         showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
         showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
-
         linksPanel.add(showUMLSState.getPanel());
         linksPanel.add(showBonnieState.getPanel());
         linksPanel.add(buildProfileMenu());
         linksPanel.setStyleName("navLinksBanner", true);
     }
-
     private AnchorButton buildProfileIcon() {
         AnchorButton ab = new AnchorButton();
-
         ab.setIcon(IconType.USER_CIRCLE_O);
         ab.setIconSize(IconSize.TIMES2);
         ab.setIconPosition(IconPosition.RIGHT);
@@ -253,21 +203,17 @@ public abstract class MainLayout {
         ab.setTitle("Profile");
         ab.setId("userprofile");
         ab.setDataTarget(Styles.NAVBAR_COLLAPSE);
-
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         sb.appendHtmlConstant("<span style=\"font-size:0px;\" tabindex=\"0\">Profile</span>");
         ab.getElement().setInnerSafeHtml(sb.toSafeHtml());
-
         return ab;
     }
-
     private Navbar buildDivider() {
         Navbar divider = new Navbar();
         divider.setStyleName(Styles.DIVIDER);
         divider.setWidth("100%");
         return divider;
     }
-
     private ListItem buildSignedInAs() {
         ListItem li = new ListItem();
         li.setText("Signed in as");
@@ -276,7 +222,6 @@ public abstract class MainLayout {
         li.setStyleName("profileText", true);
         return li;
     }
-
     public static void setSignedInName(String name) {
         signedInAsName.setText(name);
         signedInAsName.setTitle(name);
@@ -284,20 +229,15 @@ public abstract class MainLayout {
         signedInAsName.setStyleName("profileText", true);
         signedInAsName.getElement().setTabIndex(0);
     }
-
     private void setAccessibilityForLinks() {
         profile.setStyleName(Styles.DROPDOWN);
         profile.getWidget(0).setTitle("MAT Account");
-
         signOut.setStyleName(Styles.DROPDOWN);
         signOut.getWidget(0).setTitle("Sign Out");
     }
-
     private DropDownMenu buildDropDownMenu() {
         DropDownMenu ddm = new DropDownMenu();
-
         setAccessibilityForLinks();
-
         ddm.add(buildSignedInAs());
         ddm.add(signedInAsName);
         ddm.add(buildDivider());
@@ -305,27 +245,20 @@ public abstract class MainLayout {
         ddm.add(signOut);
         ddm.setStyleName(Styles.DROPDOWN_MENU);
         ddm.addStyleDependentName(Styles.RIGHT);
-
         return ddm;
     }
-
     private NavbarCollapse buildProfileMenu() {
         NavbarCollapse collapse = new NavbarCollapse();
         NavbarNav nav = new NavbarNav();
-
         ListDropDown ldd = new ListDropDown();
         AnchorButton icon = buildProfileIcon();
         DropDownMenu ddm = buildDropDownMenu();
-
         ldd.add(icon);
         ldd.add(ddm);
-
         nav.add(ldd);
-
         collapse.add(nav);
         return collapse;
     }
-
     public void setHeader(String version, NavbarLink link) {
         String headerText = HEADING + " v" + version;
         String headerTitle = HEADING + " version " + version;
@@ -338,7 +271,6 @@ public abstract class MainLayout {
         link.getElement().setAttribute("role", "alert");
         link.getElement().setAttribute("aria-label", "Clicking this link will navigate you to Measure Library page.");
     }
-
     private void setLinkTextAndTitle(String text, NavbarLink link) {
         link.setText(text);
         link.setTitle(text);
@@ -346,13 +278,11 @@ public abstract class MainLayout {
         link.setId("Anchor_" + text);
         link.setColor("#337ab7");
     }
-
     private HTML fetchAndcreateFooterLinks() {
         MatContext.get().getLoginService().getFooterURLs(new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable caught) {
             }
-
             @Override
             public void onSuccess(List<String> result) {
                 //Set the Footer URL's on the ClientConstants for use by the app in various locations.
@@ -361,34 +291,25 @@ public abstract class MainLayout {
                 ClientConstants.TERMSOFUSE_URL = result.get(2);
                 ClientConstants.USERGUIDE_URL = result.get(3);
             }
-
         });
         return FooterPanelBuilderUtility.buildFooterLinksPanel();
     }
-
     protected FocusPanel getContentPanel() {
         return content;
     }
-
     protected Widget getNavigationList() {
         return null;
     }
-
     protected abstract void initEntryPoint();
-
     public final void onModuleLoad() {
-
         final Panel skipContent = buildSkipContent();
-
         final Panel topBanner = buildTopPanel();
         final Panel footerPanel = buildFooterPanel();
         final Panel contentPanel = buildContentPanel();
-
         final FlowPanel container = new FlowPanel();
         container.add(topBanner);
         container.add(contentPanel);
         container.add(footerPanel);
-
         RootPanel.get().clear();
         if (RootPanel.get("skipContent") != null) {
             RootPanel.get("skipContent").add(skipContent);
@@ -396,88 +317,66 @@ public abstract class MainLayout {
         RootPanel.get("mainContent").add(container);
         initEntryPoint();
     }
-
     protected void setId(final Widget widget, final String id) {
         widget.getElement().setAttribute("id", id);
     }
-
-
     public HorizontalPanel getLinksPanel() {
         return linksPanel;
     }
-
     public void setLinksPanel(HorizontalPanel linksPanel) {
         this.linksPanel = linksPanel;
     }
-
     public static void createUMLSLinks() {
         showUMLSState.createAllLinks();
     }
-
     public static void hideUMLSActive(boolean hide) {
         showUMLSState.hideActive(hide);
     }
-
     public static void createBonnieLinks() {
         showBonnieState.createAllLinks();
     }
-
     public static void hideBonnieActive(boolean hide) {
         showBonnieState.hideActive(hide);
     }
-
     public HTML getUMLSButton() {
         return showUMLSState.getHideLink();
     }
-
     public HTML getBonnieSignInButton() {
         return showBonnieState.getHideLink();
     }
-
     public HTML getBonnieDisconnectButton() {
         return showBonnieState.getshowLink();
     }
-
     public void setIndicatorsHidden() {
         showBonnieState.hideActive(true);
         showUMLSState.hideActive(true);
     }
-
     //method to easily remove bonnie link from page
     public void removeBonnieLink() {
         showBonnieState.getPanel().removeFromParent();
     }
-
     public NavbarLink getHomeLink() {
         return homeLink;
     }
-
     public void setHomeLink(NavbarLink homeLink) {
         this.homeLink = homeLink;
     }
-
     public ListItem getSignedInAsName() {
         return signedInAsName;
     }
-
     public void setSignedInAsName(ListItem signedInAsName) {
         this.signedInAsName = signedInAsName;
     }
-
     public AnchorListItem getProfile() {
         return profile;
     }
-
     public void setProfile(AnchorListItem profile) {
         this.profile = profile;
     }
-
     public AnchorListItem getSignOut() {
         return signOut;
     }
-
     public void setSignOut(AnchorListItem signOut) {
         this.signOut = signOut;
     }
-
 }

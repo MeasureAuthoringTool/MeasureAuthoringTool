@@ -25,7 +25,6 @@ import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.model.clause.ModelTypeHelper;
 import mat.server.service.FhirCqlLibraryService;
-import mat.server.service.VSACApiService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

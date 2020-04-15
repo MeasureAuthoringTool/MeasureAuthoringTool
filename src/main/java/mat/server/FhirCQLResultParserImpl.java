@@ -67,7 +67,7 @@ public class FhirCQLResultParserImpl implements FhirCQLResultParser {
                 JSONObject libraryObject = (JSONObject) cqlValidationResponseJson.get("library");
                 if (libraryObject.has("annotation")) {
                     JSONArray jsonArray = libraryObject.getJSONArray("annotation");
-                    buildCqlErrors(jsonArray, parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors, includeLibrariesWithErrors);
+                    buildCqlErrors(jsonArray);
                 }
             }
         }
@@ -75,18 +75,18 @@ public class FhirCQLResultParserImpl implements FhirCQLResultParser {
         private void processErrorExceptions() {
             if (cqlValidationResponseJson.has("errorExceptions")) {
                 JSONArray jsonArray = cqlValidationResponseJson.getJSONArray("errorExceptions");
-                buildCqlErrors(jsonArray, parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors, includeLibrariesWithErrors);
+                buildCqlErrors(jsonArray);
             }
         }
 
-        private void buildCqlErrors(JSONArray jsonArray, String parentLibraryName, Map<String, List<CQLError>> libraryNameErrorsMap, Map<String, List<CQLError>> libraryNameWarningsMap, List<CQLError> errors, Set<String> includeLibrariesWithErrors) {
+        private void buildCqlErrors(JSONArray jsonArray) {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                buildCqlError(parentLibraryName, libraryNameErrorsMap, libraryNameWarningsMap, errors, includeLibrariesWithErrors, jsonObject);
+                buildCqlError(jsonObject);
             }
         }
 
-        private void buildCqlError(String parentLibraryName, Map<String, List<CQLError>> libraryNameErrorsMap, Map<String, List<CQLError>> libraryNameWarningsMap, List<CQLError> errors, Set<String> includeLibrariesWithErrors, JSONObject jsonObject) {
+        private void buildCqlError(JSONObject jsonObject) {
             CQLError error = new CQLError();
             String libraryId = jsonObject.optString("libraryId", null);
             String targetIncludeLibraryId = jsonObject.optString("targetIncludeLibraryId", null);

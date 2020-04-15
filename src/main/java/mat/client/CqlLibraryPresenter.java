@@ -687,14 +687,10 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     private void convertCqlLibraryFhir(CQLLibraryDataSetObject object) {
         logger.log(Level.INFO, "Please wait. Conversion is in progress...");
 
-//        if (!MatContext.get().getLoadingQueue().isEmpty()) {
-//            showSearchingBusy(false);
-//            return;
-//        }
         MatContext.get().getCQLLibraryService().convertCqlLibrary(object, new AsyncCallback<FhirConvertResultResponse>() {
             @Override
             public void onFailure(Throwable caught) {
-                logger.log(Level.SEVERE, "Error while converting the measure id " + object.getId() + ". Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error while converting the library id " + object.getId() + ". Error message: " + caught.getMessage(), caught);
                 showSearchingBusy(false);
                 showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getConvertCqlLibraryFailureMessage());
                 MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
@@ -706,7 +702,6 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                 String errorReason = response.getValidationStatus().getErrorReason();
                 logger.log(Level.WARNING, "Library " + object.getId() + " conversion has completed. Outcome: " + outcome + " errorReason: " + errorReason);
                 showSearchingBusy(false);
-                //Todo call ValidationReport service, use response.getFhirLibrary();
                 displaySearch();
             }
         });

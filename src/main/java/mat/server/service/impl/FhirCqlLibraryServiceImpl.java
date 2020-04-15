@@ -3,30 +3,32 @@ package mat.server.service.impl;
 import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
 import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
 import gov.cms.mat.fhir.rest.dto.ConversionType;
-import mat.client.measure.service.CQLService;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirValidationStatus;
 import mat.client.shared.MatException;
+import mat.cql.CqlParser;
+import mat.cql.CqlVisitorFactory;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLLibraryDataSetObject;
+import mat.model.cql.CQLModel;
+import mat.server.CQLUtilityClass;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.service.FhirCqlLibraryService;
 import mat.server.service.FhirLibraryConversionRemoteCall;
 import mat.server.util.MATPropertiesService;
-import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
-import mat.shared.SaveUpdateCQLResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.xml.xpath.XPathExpressionException;
-import java.sql.SQLException;
-import java.util.List;
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -46,11 +48,19 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService{
     @Autowired
     private CQLLibraryDAO cqlLibraryDAO;
 
-    @Autowired
-    private CQLService cqlService;
+    private final CqlParser cqlParser;
+
+    private final CqlVisitorFactory cqlVisitorFactory;
+
+    private final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+
+    public FhirCqlLibraryServiceImpl(CqlParser cqlParser, CqlVisitorFactory cqlVisitorFactory) {
+        this.cqlParser = cqlParser;
+        this.cqlVisitorFactory = cqlVisitorFactory;
+    }
 
     @Override
-    public FhirConvertResultResponse convertCqlLibrary(CQLLibraryDataSetObject sourceLibrary, String loggedInUser) throws MatException {
+    public FhirConvertResultResponse convertCqlLibrary(CQLLibraryDataSetObject sourceLibrary, String loggedInUser) throws MatException, MarshalException, MappingException, IOException, ValidationException {
 
         if (!sourceLibrary.isFhirConvertible()) {
             throw new MatException("Cql Library cannot be converted to FHIR");
@@ -61,7 +71,7 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService{
 
         CQLLibrary existingLibrary = cqlLibraryDAO.find(sourceLibrary.getId());
 
-        /*if draft FHIR library already exists then delete it here*/
+        /*if draft FHIR library already exists then delete it */
         deleteDraftFhirLibrariesInSet(existingLibrary.getSetId());
 
         ConversionResultDto conversionResult = fhirLibraryConversionRemoteCall.convert(sourceLibrary.getId(), ConversionType.CONVERSION);
@@ -74,9 +84,9 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService{
             // If there is no FHIR CQL, then we don't persist the Library. FHIR Library cannot be created.
             throw new MatException("Your library cannot be converted to FHIR. Outcome: " + validationStatus.getOutcome() + " Error Reason: " + validationStatus.getErrorReason());
         } else {
-            persistFhirLibrary(loggedInUser, existingLibrary);
+            /*Create a new cql Library object and store it in DB*/
+            persistFhirLibrary(loggedInUser, existingLibrary, fhirCqlOpt);
         }
-        //we have to store this library in DB
         return fhirConvertResultResponse;
     }
 
@@ -98,53 +108,26 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService{
                 .findFirst();
     }
 
-    private void persistFhirLibrary(String loggedInUser, CQLLibrary existingLibrary) {
-        CQLLibrary newLibraryObject = new CQLLibrary();
-        newLibraryObject.setDraft(true);
-        newLibraryObject.setName(existingLibrary.getName());
-        newLibraryObject.setSetId(existingLibrary.getSetId());
-        newLibraryObject.setOwnerId(existingLibrary.getOwnerId());
-        newLibraryObject.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
-        newLibraryObject.setQdmVersion(MATPropertiesService.get().getQdmVersion());
-        newLibraryObject.setLibraryModelType(ModelTypeHelper.FHIR);
-        // Update QDM Version to latest QDM Version.
-        String versionLibraryXml = getCQLLibraryXml(existingLibrary);
-        if (versionLibraryXml != null) {
-            XmlProcessor processor = new XmlProcessor(getCQLLibraryXml(existingLibrary));
-            try {
-                MeasureUtility.updateModelVersion(processor, existingLibrary.isFhirMeasure());
-                SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(versionLibraryXml, existingLibrary.getLibraryModelType());
-                List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
-                processor.removeUnusedDefaultCodes(usedCodeList);
-                processor.clearValuesetVersionAttribute();
-                processor.updateCQLLibraryName(existingLibrary.getName());
-                versionLibraryXml = processor.transform(processor.getOriginalDoc());
-            } catch (XPathExpressionException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
+    private void persistFhirLibrary(String loggedInUser, CQLLibrary existingLibrary, Optional<String> fhirCqlOpt) throws MatException, MarshalException, MappingException, ValidationException, IOException {
+        CQLLibrary newFhirLibrary = new CQLLibrary();
+        newFhirLibrary.setDraft(true);
+        newFhirLibrary.setName(existingLibrary.getName());
+        newFhirLibrary.setSetId(existingLibrary.getSetId());
+        newFhirLibrary.setOwnerId(existingLibrary.getOwnerId());
+        newFhirLibrary.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
+        newFhirLibrary.setQdmVersion(MATPropertiesService.get().getQdmVersion());
+        newFhirLibrary.setLibraryModelType(ModelTypeHelper.FHIR);
 
-        newLibraryObject.setCQLByteArray(versionLibraryXml.getBytes());
-        newLibraryObject.setVersion(existingLibrary.getVersion());
-        newLibraryObject.setRevisionNumber("000");
-        cqlLibraryServiceInterface.save(newLibraryObject);
+        newFhirLibrary.setLibraryXMLAsByteArray(gneerateCqlXml(existingLibrary,fhirCqlOpt.get()));
 
-        CQLLibraryDataSetObject cqlLibraryDataSetObject = cqlLibraryServiceInterface.extractCQLLibraryDataObject(newLibraryObject);
+        newFhirLibrary.setVersion(existingLibrary.getVersion());
+        newFhirLibrary.setRevisionNumber("000");
+        cqlLibraryServiceInterface.save(newFhirLibrary);
+
+        CQLLibraryDataSetObject cqlLibraryDataSetObject = cqlLibraryServiceInterface.extractCQLLibraryDataObject(newFhirLibrary);
 
         fhirConvertResultResponse.setFhirLibrary(cqlLibraryDataSetObject);
-        cqlLibraryServiceInterface.isLibraryAvailableAndLogRecentActivity(newLibraryObject.getId(), loggedInUser);
-    }
-
-    private String getCQLLibraryXml(CQLLibrary library) {
-        String xmlString = null;
-        if (library != null) {
-            try {
-                xmlString = new String(library.getCqlXML().getBytes(1l, (int) library.getCqlXML().length()));
-            } catch (SQLException e) {
-                logger.error(e);
-            }
-        }
-        return xmlString;
+        cqlLibraryServiceInterface.isLibraryAvailableAndLogRecentActivity(newFhirLibrary.getId(), loggedInUser);
     }
 
     public void deleteDraftFhirLibrariesInSet(String setId) {
@@ -152,4 +135,24 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService{
         int removed = cqlLibraryServiceInterface.deleteDraftFhirLibrariesBySetId(setId);
         logger.debug("deleteDraftFhirLibrariesInSet : removed " + removed);
     }
+
+    private String gneerateCqlXml(CQLLibrary existingLibrary, String newCql) throws MarshalException, MappingException, ValidationException, IOException, MatException {
+        String sourceCqlXml = existingLibrary.getLibraryXMLAsString();
+
+        XmlProcessor processor = new XmlProcessor(sourceCqlXml);
+        String cqlModelXmlFrag = processor.getXmlByTagName("cqlLookUp");
+        CQLModel sourceCqlModel = (CQLModel) xmlMarshalUtil.convertXMLToObject("CQLModelMapping.xml",
+                cqlModelXmlFrag,
+                CQLModel.class);
+
+        var convCqlToMatXml = cqlVisitorFactory.getConversionCqlToMatXmlVisitor();
+        convCqlToMatXml.setSourceModel(sourceCqlModel);
+
+        cqlParser.parse(newCql,convCqlToMatXml);
+
+        var destModel = convCqlToMatXml.getDestinationModel();
+        return CQLUtilityClass.getXMLFromCQLModel(destModel);
+    }
+
+
 }

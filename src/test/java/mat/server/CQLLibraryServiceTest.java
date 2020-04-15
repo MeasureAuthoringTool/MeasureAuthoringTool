@@ -8,6 +8,9 @@ import mat.model.clause.CQLLibrary;
 import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.server.service.FhirCqlLibraryService;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,7 +94,7 @@ class CQLLibraryServiceTest {
     }
 
     @Test
-    void testConvertCqlLibrary() throws MatException {
+    void testConvertCqlLibrary() throws MatException, MarshalException, MappingException, ValidationException, IOException {
         CQLLibraryDataSetObject cqlLibraryDataSetObject = new CQLLibraryDataSetObject();
         FhirConvertResultResponse fhirConvertResultResponse = new FhirConvertResultResponse();
         LoggedInUserUtil.setLoggedInUser("LoggedInUser");
@@ -103,7 +107,7 @@ class CQLLibraryServiceTest {
     }
 
     @Test
-    public void testMatException() throws MatException {
+    public void testMatException() throws MatException, MarshalException, MappingException, ValidationException, IOException {
         LoggedInUserUtil.setLoggedInUser("LoggedInUser");
         Mockito.when(fhirCqlLibraryService.convertCqlLibrary(Mockito.any(CQLLibraryDataSetObject.class), Mockito.anyString())).thenThrow(new MatException("Expected failure"));
         Exception ex = Assertions.assertThrows(MatException.class, () -> {
@@ -114,7 +118,7 @@ class CQLLibraryServiceTest {
     }
 
     @Test
-    public void testMatExceptionOnOtherException() throws MatException {
+    public void testMatExceptionOnOtherException() throws MatException, MarshalException, MappingException, ValidationException, IOException {
         LoggedInUserUtil.setLoggedInUser("LoggedInUser");
         Mockito.when(fhirCqlLibraryService.convertCqlLibrary(Mockito.any(CQLLibraryDataSetObject.class), Mockito.anyString())).thenThrow(new IllegalArgumentException("Expected failure"));
         Exception ex = Assertions.assertThrows(MatException.class, () -> {

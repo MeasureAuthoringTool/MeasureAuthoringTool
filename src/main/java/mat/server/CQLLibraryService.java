@@ -536,6 +536,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         logger.info("Converting  libraryId: " + sourceLibrary.getId());
         try {
             return fhirCqlLibraryService.convertCqlLibrary(sourceLibrary, LoggedInUserUtil.getLoggedInUser());
+        } catch (MatException e) {
+            logger.error("Error calling fhirCqlLibraryService.convert", e);
+            throw e;
         } catch (Exception e) {
             logger.error("Error calling fhirCqlLibraryService convert", e);
             throw new MatException(e.getMessage(), e);

@@ -27,7 +27,7 @@ class FhirLibraryConversionRemoteCallImplTest {
     private FhirLibraryConversionRemoteCallImpl fhirLibraryConversionRemoteCall;
 
     @Test
-    void testConvert() {
+    public void testConvert() {
         Whitebox.setInternalState(fhirLibraryConversionRemoteCall, "fhirLibraryConversionRemoteUrl", "http://localhost:9080/library/convertStandAlone");
 
         ResponseEntity<ConversionResultDto> responseEntity = new ResponseEntity<>(new ConversionResultDto(), HttpStatus.OK);

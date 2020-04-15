@@ -23,22 +23,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;;
 
 @ExtendWith(MockitoExtension.class)
 class CQLLibraryServiceTest {
 
     @Mock
-    CQLLibraryDAO cqlLibraryDAO;
+    private CQLLibraryDAO cqlLibraryDAO;
 
     @Mock
-    FhirCqlLibraryService fhirCqlLibraryService;
+    private FhirCqlLibraryService fhirCqlLibraryService;
 
     @InjectMocks
-    CQLLibraryService cqlLibraryService;
+    private CQLLibraryService cqlLibraryService;
 
     @Test
-    void testCheckLibraryForConversionNoDraftLibraries() {
+    public void testCheckLibraryForConversionNoDraftLibraries() {
         CQLLibraryDataSetObject cqlLibraryDataSetObject = new CQLLibraryDataSetObject();
         cqlLibraryDataSetObject.setId("libraryId");
         cqlLibraryDataSetObject.setCqlSetId("cqlLibrarySetId");
@@ -53,7 +54,7 @@ class CQLLibraryServiceTest {
     }
 
     @Test
-    void testCheckLibraryForConversionFhirDraft() {
+    public void testCheckLibraryForConversionFhirDraft() {
         CQLLibraryDataSetObject cqlLibraryDataSetObject = new CQLLibraryDataSetObject();
         cqlLibraryDataSetObject.setId("libraryId");
         cqlLibraryDataSetObject.setCqlSetId("cqlLibrarySetId");
@@ -73,7 +74,7 @@ class CQLLibraryServiceTest {
     }
 
     @Test
-    void testCheckLibraryForConversionQDMDraft() {
+    public void testCheckLibraryForConversionQDMDraft() {
         CQLLibraryDataSetObject cqlLibraryDataSetObject = new CQLLibraryDataSetObject();
         cqlLibraryDataSetObject.setId("libraryId");
         cqlLibraryDataSetObject.setCqlSetId("cqlLibrarySetId");
@@ -94,7 +95,7 @@ class CQLLibraryServiceTest {
     }
 
     @Test
-    void testConvertCqlLibrary() throws MatException, MarshalException, MappingException, ValidationException, IOException {
+    public void testConvertCqlLibrary() throws MatException, MarshalException, MappingException, ValidationException, IOException {
         CQLLibraryDataSetObject cqlLibraryDataSetObject = new CQLLibraryDataSetObject();
         FhirConvertResultResponse fhirConvertResultResponse = new FhirConvertResultResponse();
         LoggedInUserUtil.setLoggedInUser("LoggedInUser");

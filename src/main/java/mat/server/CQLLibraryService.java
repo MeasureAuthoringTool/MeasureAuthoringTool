@@ -141,9 +141,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
 
     @Autowired
-    private VSACApiService vsacApiService;
-
-    @Autowired
     private FhirCqlLibraryService fhirCqlLibraryService;
 
     javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();

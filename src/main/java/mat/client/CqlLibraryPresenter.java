@@ -148,8 +148,6 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
     private static final String UNHANDLED_EXCEPTION = "Unhandled Exception: ";
 
-    private SearchDisplay searchDisplay;
-
     /**
      * The Interface ViewDisplay.
      */

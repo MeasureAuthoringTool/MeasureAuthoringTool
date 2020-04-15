@@ -1,7 +1,6 @@
 package mat.client.measure.service;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.cms.mat.fhir.rest.dto.CqlConversionError;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.model.cql.CQLLibraryDataSetObject;
 import org.springframework.stereotype.Service;

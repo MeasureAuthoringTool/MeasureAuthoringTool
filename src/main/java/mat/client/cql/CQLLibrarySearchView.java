@@ -126,6 +126,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
          */
         void onDeleteClicked(CQLLibraryDataSetObject object);
 
+        void onConvertClicked(CQLLibraryDataSetObject cqlLibraryDataSetObject);
     }
 
     /**

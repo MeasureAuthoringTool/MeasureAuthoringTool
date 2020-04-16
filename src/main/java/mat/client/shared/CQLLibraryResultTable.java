@@ -144,6 +144,17 @@ public class CQLLibraryResultTable {
         gridToolbar.getDeleteButton().addClickHandler(event -> {
             onDelete(selectionModel);
         });
+
+        gridToolbar.getConvertButton().addClickHandler(event -> {
+            onConvert(selectionModel);
+        });
+    }
+
+    @VisibleForTesting
+    void onConvert(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+        selectionModel.getSelectedSet().stream()
+                .filter(cqlLib -> cqlLib.isFhirConvertible())
+                .forEach(observer::onConvertClicked);
     }
 
     @VisibleForTesting

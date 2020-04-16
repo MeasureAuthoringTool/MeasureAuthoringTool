@@ -91,7 +91,8 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected static final String VIEW_CQL_ERROR_MESSAGE = "You are viewing the CQL file with validation errors. Errors are marked with a red square on the line number.";
 	protected static final String VIEW_CQL_ERROR_MESSAGE_COMPOSITE_AND_INCLUDED = "You are viewing the CQL file with validation errors. Errors in the main library are marked with a red square on the line number. To view errors in included libraries or component measures, navigate to those sections of the CQL Workspace.";
 	protected static final String VIEW_CQL_ERROR_MESSAGE_COMPOSITE = "You are viewing the CQL file with validation errors. Errors in the main library are marked with a red square on the line number. To view errors in component measures, navigate to the Components section of the CQL Workspace.";
-	protected static final String VIEW_CQL_ERROR_MESSAGE_INCLUDED = "You are viewing the CQL file with validation errors. Errors in the main library are marked with a red square on the line number. To view errors in included libraries, navigate to the Includes section of the CQL Workspace.";
+	protected static final String VIEW_CQL_ERROR_MESSAGE_INCLUDED = "You are viewing the CQL file with validation errors. Errors in the main library are marked with a red square on the line number. To view errors in included libraries, navigate to the Includes section of the CQL Workspace. ";
+	protected static final String VIEW_CQL_ERROR_MESSAGE_INCLUDE_LIBS_ERRORS = "These included libraries have errors: ";
 	protected static final String VIEW_CQL_NO_ERRORS_MESSAGE ="You are viewing CQL with no validation errors.";
 	protected static final String VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE ="CQL file with validation errors. You have an incorrect value set/code datatype combination.";
 	protected static final String ERROR_SAVE_CQL_PARAMETER  = "Please enter parameter name.";

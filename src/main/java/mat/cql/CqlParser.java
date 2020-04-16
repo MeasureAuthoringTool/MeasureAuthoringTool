@@ -2,6 +2,7 @@ package mat.cql;
 
 import lombok.extern.slf4j.Slf4j;
 import mat.client.shared.MatException;
+import mat.server.util.MATPropertiesService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -124,7 +125,7 @@ public class CqlParser {
      * Parses out the QDM version from the cql.
      */
     protected void processFhirVersion(String cql, CqlVisitor v) {
-        //using FHIR version '4.0.0'
+        //using FHIR version '4.0.1'
         String fhir = parseSingletonLine(cql, FHIR_VERSION_TOKEN, true);
         ParseResult version = nextTickedString(fhir, 0);
 
@@ -153,7 +154,7 @@ public class CqlParser {
                 throw new IllegalArgumentException("Invalid version , " + version + ", for lib " + name +
                         ". Must be in MAT version format, e.g. '1.0.000'.");
             }
-            v.includeLib(name, version, words[5], "FHIR", "4.0.0");
+            v.includeLib(name, version, words[5], "FHIR", MATPropertiesService.get().getFhirVersion());
         });
     }
 

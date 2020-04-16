@@ -5,7 +5,7 @@
             <library>$libraryName</library>
             <version>$version</version>
             <usingModel>FHIR</usingModel>
-            <usingModelVersion>4.0.0</usingModelVersion>
+            <usingModelVersion>4.0.1</usingModelVersion>
             <cqlContext>Patient</cqlContext>
             <codeSystems/>
             <valuesets/>
@@ -31,14 +31,14 @@
             </definitions>
             <functions/>
             <includeLibrarys>
-                <includeLibrary cqlLibRefId="FHIRHelpers-4-0-0" cqlLibRefName="FHIRHelpers" cqlVersion="4.0.0"
-                                id="8e2942d0-e196-4ab0-b200-143cf162a720" name="FHIRHelpers" qdmVersion="4.0.0"/>
-                <includeLibrary cqlLibRefId="SupplementalDataElements-FHIR4-1-0-0"
-                                cqlLibRefName="SupplementalDataElements_FHIR4" cqlVersion="1.0.0"
-                                id="c3e742a4-25c3-4e7c-a048-ef6cf12a8bcb" name="SDE" qdmVersion="4.0.0"/>
-                <includeLibrary cqlLibRefId="MATGlobalCommonFunctions-FHIR4-4-0-000"
-                                cqlLibRefName="MATGlobalCommonFunctions_FHIR4" cqlVersion="4.0.000"
-                                id="80d189d6-565d-4c8b-a55d-6d8991e674f9" name="Global" qdmVersion="4.0.0"/>
+                <includeLibrary cqlLibRefId="FHIRHelpers-4-0-001" cqlLibRefName="FHIRHelpers" cqlVersion="4.0.001"
+                                id="8e2942d0-e196-4ab0-b200-143cf162a720" name="FHIRHelpers" qdmVersion="4.0.1"/>
+                <includeLibrary cqlLibRefId="SupplementalDataElements-FHIR4-2-0-000"
+                                cqlLibRefName="SupplementalDataElements_FHIR4" cqlVersion="2.0.000"
+                                id="c3e742a4-25c3-4e7c-a048-ef6cf12a8bcb" name="SDE" qdmVersion="4.0.1"/>
+                <includeLibrary cqlLibRefId="MATGlobalCommonFunctions-FHIR4-5-0-000"
+                                cqlLibRefName="MATGlobalCommonFunctions_FHIR4" cqlVersion="5.0.000"
+                                id="80d189d6-565d-4c8b-a55d-6d8991e674f9" name="Global" qdmVersion="4.0.1"/>
             </includeLibrarys>
         </cqlLookUp>
     </measure>
@@ -47,7 +47,7 @@
             <library>$libraryName</library>
             <version>$version</version>
             <usingModel>FHIR</usingModel>
-            <usingModelVersion>4.0.0</usingModelVersion>
+            <usingModelVersion>4.0.1</usingModelVersion>
             <cqlContext>Patient</cqlContext>
             <codeSystems/>
             <valuesets/>

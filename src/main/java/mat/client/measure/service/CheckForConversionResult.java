@@ -2,7 +2,7 @@ package mat.client.measure.service;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class CheckMeasureForConversionResult implements IsSerializable {
+public class CheckForConversionResult implements IsSerializable {
     private boolean proceedImmediately;
     private boolean confirmBeforeProceed;
 

@@ -10,6 +10,6 @@ public interface FhirMeasureRemoteServiceAsync {
 
     void convert(Result sourceMeasure, AsyncCallback<FhirConvertResultResponse> callback);
 
-    void checkMeasureForConversion(Result sourceMeasure, AsyncCallback<CheckMeasureForConversionResult> asyncCallback);
+    void checkMeasureForConversion(Result sourceMeasure, AsyncCallback<CheckForConversionResult> asyncCallback);
 
 }

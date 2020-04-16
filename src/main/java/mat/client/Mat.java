@@ -137,7 +137,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         @Override
         public void onFailure(final Throwable caught) {
-            alert("userRoleCallback::onFailure::"+caught.getMessage());
             redirectToLogin();
         }
 
@@ -329,6 +328,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
             MatContext.get().setIdToken(idToken);
             MatContext.get().setUserDetailsByHarpId(harpId, accessToken, userSessionSetupCallback);
+        } else if(MatContext.get().getLoggedinUserId() != null){
+            initPage();
         } else {
             redirectToLogin();
         }

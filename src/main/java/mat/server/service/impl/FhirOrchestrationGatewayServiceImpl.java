@@ -3,6 +3,8 @@ package mat.server.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import mat.DTO.fhirconversion.ConversionResultDto;
+import mat.DTO.fhirconversion.ConversionType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
-import gov.cms.mat.fhir.rest.dto.ConversionType;
 import mat.client.shared.MatRuntimeException;
 import mat.server.service.FhirOrchestrationGatewayService;
 

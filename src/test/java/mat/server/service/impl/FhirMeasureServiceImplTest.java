@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 
+import mat.DTO.fhirconversion.ConversionOutcome;
+import mat.DTO.fhirconversion.ConversionResultDto;
+import mat.DTO.fhirconversion.LibraryConversionResults;
+import mat.DTO.fhirconversion.MeasureConversionResults;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,10 +17,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
-import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
-import gov.cms.mat.fhir.rest.dto.LibraryConversionResults;
-import gov.cms.mat.fhir.rest.dto.MeasureConversionResults;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.shared.MatException;

@@ -1141,7 +1141,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(library.getLibraryModelType())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
             String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
-            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString); //remote call
+            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString);
             SaveUpdateCQLResult cqlResult = cqlService.generateParsedCqlObject(cqlValidationResponse, cqlModel);
 
             return cqlService.generateUsedCqlArtifactsResult(cqlModel, cqlXml, cqlResult);

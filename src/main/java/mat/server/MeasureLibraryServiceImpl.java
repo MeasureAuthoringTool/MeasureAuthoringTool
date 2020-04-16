@@ -3183,7 +3183,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             CQLModel libraryCQLModel = CQLUtilityClass.getCQLModelFromXML(data);
             String libraryContent = CQLUtilityClass.getCqlString(libraryCQLModel, "").getLeft();
-            ;
 
             ComponentMeasureTabObject o = new ComponentMeasureTabObject(measureName, alias, libraryName, version, ownerName, libraryContent, componentId);
             componentMeasureInformationList.add(o);
@@ -5270,8 +5269,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getXml());
             String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
-            ;
-            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString); //remote call
+            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString);
             SaveUpdateCQLResult cqlResult = getCqlService().generateParsedCqlObject(cqlValidationResponse, cqlModel);
 
             return getCqlService().generateUsedCqlArtifactsResult(cqlModel, measureXML.getXml(), cqlResult);

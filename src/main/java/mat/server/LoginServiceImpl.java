@@ -1,28 +1,7 @@
 package mat.server;
 
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
-
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
@@ -45,6 +24,23 @@ import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -116,9 +112,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	public LoginModel getUserDetailsByHarpId(String harpId, String accessToken) {
 		logger.info("getUserDetailsByHarpId::harpId::" + harpId);
 		HttpSession session = getThreadLocalRequest().getSession();
-		if(session.getAttribute("accessToken") == null ) { //FIXME Attribute currently unused. Might be useful to determine the token type.
-			session.setAttribute("accessToken", accessToken);
-		}
+//		if(session.getAttribute("accessToken") == null ) { //FIXME Attribute currently unused. Might be useful to determine the token type.
+//			session.setAttribute("accessToken", accessToken);
+//		}
 		return loginCredentialService.getUserDetails(harpId, session.getId(), accessToken);
 	}
 	
@@ -424,7 +420,6 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	 */
 	@Override
 	public String updateOnSignOut(String userId, String emailId, String activityType) {
-		logger.info("updateOnSignOut::userId::" + userId);
 		UMLSSessionTicket.remove(getThreadLocalRequest().getSession().getId());
 		String resultStr = userService.updateOnSignOut(userId, emailId, activityType);
 		SecurityContextHolder.clearContext();

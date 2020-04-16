@@ -60,7 +60,7 @@ public interface LoginService extends RemoteService {
 	 * Sign out.
 	 */
 	public void signOut();
-	
+
 	/**
 	 * Change temp password.
 	 * 
@@ -201,5 +201,5 @@ public interface LoginService extends RemoteService {
 	 * @param sessionId HTTP Session ID generated during MAT session set-up. See {@see mat.server.LoginServiceImpl#getUserDetailsByHarpId()}.
 	 * @return
 	 */
-	LoginModel getUserDetailsByHarpId(String harpId, String sessionId);
+	LoginModel getUserDetailsByHarpId(String harpId, String accessToken);
 }

@@ -39,6 +39,7 @@ import mat.client.event.LogoffEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.TimedOutEvent;
 import mat.client.export.ManageExportView;
+import mat.client.login.LoginModel;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.SessionManagementService.Result;
 import mat.client.measure.ComponentMeasureDisplay;
@@ -172,6 +173,27 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         }
     };
 
+    private final AsyncCallback<LoginModel> userSessionSetupCallback = new AsyncCallback<LoginModel>() {
+        @Override
+        public void onFailure(Throwable throwable) {
+            Window.alert("setUserDetailsByHarpId::onFailure::"+ throwable.getMessage());
+            //TODO Harp ID not found in MAT.
+        }
+
+        @Override
+        public void onSuccess(LoginModel loginModel) {
+            MatContext.get().setUserInfo(
+                    loginModel.getUserId(),
+                    loginModel.getEmail(),
+                    loginModel.getRole().getDescription(),
+                    loginModel.getLoginId(),
+                    loginModel.getUserPreference());
+
+            initPage();
+
+        }
+    };
+
     private MatPresenter buildAdminPresenter() {
         ManageAdminPresenter adminPresenter = new ManageAdminPresenter();
         return adminPresenter;
@@ -244,34 +266,33 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     }
 
 
-    private void callSignOut() {
-        //TODO Update to revoke accessToken and logout idToken.
-        MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
-
-            @Override
-            public void onFailure(Throwable arg0) {
-                redirectToLogin();
-            }
-
-            @Override
-            public void onSuccess(Void arg0) {
-                redirectToLogin();
-            }
-        });
-    }
-
-
-    private void callSignOutWithoutRedirect() {
-        MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
-            @Override
-            public void onFailure(Throwable arg0) {
-            }
-
-            @Override
-            public void onSuccess(Void arg0) {
-            }
-        });
-    }
+//    private void callSignOut() {
+//        MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
+//
+//            @Override
+//            public void onFailure(Throwable arg0) {
+//                redirectToLogin();
+//            }
+//
+//            @Override
+//            public void onSuccess(Void arg0) {
+//                redirectToLogin();
+//            }
+//        });
+//    }
+//
+//
+//    private void callSignOutWithoutRedirect() {
+//        MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
+//            @Override
+//            public void onFailure(Throwable arg0) {
+//            }
+//
+//            @Override
+//            public void onSuccess(Void arg0) {
+//            }
+//        });
+//    }
 
 
     private native void closeBrowser()
@@ -289,6 +310,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     @Override
     protected void initEntryPoint() {
         MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
+        showLoadingMessage();
 
         // The HARP Sign-In widget stores tokens in Local Storage.
         Storage localStorage = Storage.getLocalStorageIfSupported();
@@ -297,15 +319,20 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         if(localStorage != null && localStorage.getItem("okta-token-storage") != null) {
             JSONValue tokens = JSONParser.parseStrict(localStorage.getItem("okta-token-storage"));
             String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().toString();
+            String idToken = tokens.isObject().get("idToken").isObject().get("idToken").isString().toString();
             String harpId = tokens.isObject().get("idToken").isObject().get("claims").isObject().get("email").isString().toString();
 
             // Create MAT session with HARP ID (user email).
             harpId = harpId.replace("\"","");
             accessToken = accessToken.replace("\"","");
+            idToken = idToken.replace("\"","");
 
-            MatContext.get().setUserDetailsByHarpId(harpId, accessToken);
+            MatContext.get().setIdToken(idToken);
+            MatContext.get().setUserDetailsByHarpId(harpId, accessToken, userSessionSetupCallback);
         }
+    }
 
+    private void initPage() {
         MatContext.get().getFeatureFlagService().findFeatureFlags(new AsyncCallback<Map<String, Boolean>>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -318,7 +345,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             }
         });
 
-        showLoadingMessage();
         MatContext.get().setListBoxCodeProvider(listBoxCodeProvider);
         MatContext.get().getCurrentUserRole(userRoleCallback);
         mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
@@ -362,45 +388,27 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         });
 
 
-        MatContext.get().getEventBus().addHandler(MeasureEditEvent.TYPE, new MeasureEditEvent.Handler() {
-            @Override
-            final public void onMeasureEdit(MeasureEditEvent event) {
-                mainTabLayout.selectTab(presenterList.indexOf(measureComposer));
-                focusSkipLists("MeasureComposer");
-            }
+        MatContext.get().getEventBus().addHandler(MeasureEditEvent.TYPE, event -> {
+            mainTabLayout.selectTab(presenterList.indexOf(measureComposer));
+            focusSkipLists("MeasureComposer");
         });
 
-        MatContext.get().getEventBus().addHandler(CQLLibraryEditEvent.TYPE, new CQLLibraryEditEvent.Handler() {
-            @Override
-            final public void onCQLLibraryEdit(CQLLibraryEditEvent event) {
-                mainTabLayout.selectTab(presenterList.indexOf(cqlComposer));
-                focusSkipLists("CqlComposer");
-            }
+        MatContext.get().getEventBus().addHandler(CQLLibraryEditEvent.TYPE, event -> {
+            mainTabLayout.selectTab(presenterList.indexOf(cqlComposer));
+            focusSkipLists("CqlComposer");
         });
 
-        MatContext.get().getEventBus().addHandler(BackToMeasureLibraryPage.TYPE, new BackToMeasureLibraryPage.Handler() {
-
-            @Override
-            public void onDeleted(BackToMeasureLibraryPage event) {
-                mainTabLayout.selectTab(presenterList.indexOf(measureLibrary));
-                focusSkipLists("Measure Library");
-            }
+        MatContext.get().getEventBus().addHandler(BackToMeasureLibraryPage.TYPE, event -> {
+            mainTabLayout.selectTab(presenterList.indexOf(measureLibrary));
+            focusSkipLists("Measure Library");
         });
 
-        MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, new EditCompositeMeasureEvent.Handler() {
+        MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, event -> { });
 
-            @Override
-            public void onFire(EditCompositeMeasureEvent event) {
-            }
-        });
-
-        GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
-            @Override
-            public void onUncaughtException(Throwable arg0) {
-                arg0.printStackTrace();
-                MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + arg0.getLocalizedMessage(), 0);
-                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-            }
+        GWT.setUncaughtExceptionHandler(arg0 -> {
+            arg0.printStackTrace();
+            MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + arg0.getLocalizedMessage(), 0);
+            Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
         });
     }
 
@@ -431,7 +439,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         String title;
         tabIndex = 0;
-        presenterList = new LinkedList<MatPresenter>();
+        presenterList = new LinkedList<>();
         currentUserRole = MatContext.get().getLoggedInUserRole();
 
         buildLinksPanel();
@@ -554,14 +562,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                 redirectToLogin();
             }
         });
-        MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, new LogoffEvent.Handler() {
-            @Override
-            public void onLogoff(LogoffEvent event) {
-                Mat.hideLoadingMessage();
-                Mat.showSignOutMessage();
-                MatContext.get().getSynchronizationDelegate().setLogOffFlag();
-                MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
-            }
+        MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, event -> {
+            Mat.hideLoadingMessage();
+            Mat.showSignOutMessage();
+            MatContext.get().getSynchronizationDelegate().setLogOffFlag();
+            MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
         });
 
         MatContext.get().getEventBus().addHandler(TimedOutEvent.TYPE, new TimedOutEvent.Handler() {

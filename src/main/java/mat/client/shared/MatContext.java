@@ -65,6 +65,8 @@ import mat.model.GlobalCopyPasteObject;
 import mat.model.MeasureType;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.client.login.service.HarpService;
+import mat.client.login.service.HarpServiceAsync;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
@@ -109,6 +111,8 @@ public class MatContext implements IsSerializable {
 
     private LoginServiceAsync loginService;
 
+    private HarpServiceAsync harpService;
+
     private MeasureServiceAsync measureService;
 
     private FeatureFlagRemoteServiceAsync featureFlagService;
@@ -151,7 +155,7 @@ public class MatContext implements IsSerializable {
 
     private String userId;
 
-    private String appUserId;
+    private String idToken;
 
     private String userEmail;
 
@@ -345,6 +349,12 @@ public class MatContext implements IsSerializable {
         }
         return loginService;
     }
+    public HarpServiceAsync getHarpService() {
+        if (harpService == null) {
+            harpService = GWT.create(HarpService.class);
+        }
+        return harpService;
+    }
 
     public VSACAPIServiceAsync getVsacapiServiceAsync() {
         if (vsacapiServiceAsync == null) {
@@ -437,8 +447,8 @@ public class MatContext implements IsSerializable {
         return userId;
     }
 
-    public void setAppUserId(String appUserId) {this.appUserId = appUserId; }
-    public String getAppUserId() { return appUserId; }
+    public void setIdToken(String idToken) {this.idToken = idToken; }
+    public String getIdToken() { return idToken; }
 
     public String getLoggedinLoginId() {
         return loginId;
@@ -456,25 +466,8 @@ public class MatContext implements IsSerializable {
         getLoginService().isValidUser(username, Password, oneTimePassword, callback);
     }
 
-    public void setUserDetailsByHarpId(String harpId, String accessToken) {
-        getLoginService().getUserDetailsByHarpId(harpId, accessToken, new AsyncCallback<LoginModel>() {
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                Window.alert("setUserDetailsByHarpId::onFailure::"+ throwable.getMessage());
-                //TODO Harp ID not found in MAT.
-            }
-
-            @Override
-            public void onSuccess(LoginModel loginModel) {
-                MatContext.get().setUserInfo(
-                        loginModel.getUserId(),
-                        loginModel.getEmail(),
-                        loginModel.getRole().getDescription(),
-                        loginModel.getLoginId(),
-                        loginModel.getUserPreference());
-            }
-        });
+    public void setUserDetailsByHarpId(String harpId, String accessToken, AsyncCallback<LoginModel> callback) {
+        getLoginService().getUserDetailsByHarpId(harpId, accessToken, callback);
     }
 
     public void getListBoxData(AsyncCallback<CodeListService.ListBoxData> listBoxCallback) {
@@ -991,23 +984,35 @@ public class MatContext implements IsSerializable {
     public void handleSignOut(String activityType, final boolean isRedirect) {
         MatContext.get().getSynchronizationDelegate().setLogOffFlag();
         MatContext.get().setUMLSLoggedIn(false);
-        MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(),
-                MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
+        MatContext.get().getHarpService().logout(MatContext.get().getIdToken(), new AsyncCallback<Boolean>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                Window.alert("Failed to logout from HARP. " + throwable.getMessage());
+            }
 
-                    @Override
-                    public void onSuccess(final String result) {
-                        if (isRedirect) {
-                            MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-                        }
-                    }
+            @Override
+            public void onSuccess(Boolean aBoolean) {
+                Window.alert("Logged out from HARP.");
 
-                    @Override
-                    public void onFailure(final Throwable caught) {
-                        if (isRedirect) {
-                            MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-                        }
-                    }
-                });
+                MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(),
+                        MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
+
+                            @Override
+                            public void onSuccess(final String result) {
+                                if (isRedirect) {
+                                    MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(final Throwable caught) {
+                                if (isRedirect) {
+                                    MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+                                }
+                            }
+                        });
+            }
+        });
     }
 
     public void getAllOperators() {

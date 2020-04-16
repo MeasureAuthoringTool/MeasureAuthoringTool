@@ -51,12 +51,12 @@ public interface LoginServiceAsync extends AsynchronousService{
 	
 	/**
 	 * Sign out.
-	 * 
+	 *
 	 * @param callback
 	 *            the callback
 	 */
 	void signOut(AsyncCallback<Void> callback);
-	
+
 	/**
 	 * Change password security answers.
 	 * 
@@ -230,5 +230,5 @@ public interface LoginServiceAsync extends AsynchronousService{
 	 * @Param callback
 	 * @return
 	 */
-	void getUserDetailsByHarpId(String harpId, String sessionId, AsyncCallback<LoginModel> callback);
+	void getUserDetailsByHarpId(String harpId, String accessToken, AsyncCallback<LoginModel> callback);
 }

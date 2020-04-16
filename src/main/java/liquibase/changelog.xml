@@ -16,6 +16,6 @@
     <include file="classpath:/liquibase/addMeasureFhirVersionColumn.xml"/>
     <include file="classpath:/liquibase/addLibraryFhirVersionColumn.xml"/>
     <include file="classpath:/liquibase/addLibraryQdmVersionColumnNotRequired.xml"/>
-    <include file="classpath:/liquibase/addFhirGlobalLibraryRows.v6.xml"/>
+    <include file="classpath:/liquibase/addFhirGlobalLibraryRows.v7.3.xml"/>
     <include file="classpath:/liquibase/upateMissingFhirVersion.xml"/>
 </databaseChangeLog>

@@ -149,8 +149,8 @@ public class Application extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/**").permitAll();
-//                .antMatchers("/", "/Login.html").permitAll()
-//                .antMatchers("/Mat.html").authenticated()
+//                .antMatchers("/", "/Login.html", "HarpLogin.html", "/harpLogin").permitAll()
+//                .antMatchers("/Mat.html").authenticated();
 //                .anyRequest().authenticated()
 //                .and().oauth2Client()
 //                .and().oauth2Login();

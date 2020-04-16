@@ -520,8 +520,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         } else {
             // If the only draft is a FHIR draft created from the same source measure then ask for confirmation to override.
             // UI cannot proceed with conversion if User didn't confirm or if there is/are other draft(s)
-            //TBD
-            result.setConfirmBeforeProceed(draftLibraries.stream().allMatch(m -> m.isFhirLibrary(m.getLibraryModelType()) && StringUtils.equals(sourceLibrary.getCqlSetId(), m.getSetId())));
+            result.setConfirmBeforeProceed(draftLibraries.stream().allMatch(m -> m.isFhirLibrary() && StringUtils.equals(sourceLibrary.getCqlSetId(), m.getSetId())));
         }
 
         return result;

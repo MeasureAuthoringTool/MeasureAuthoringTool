@@ -333,8 +333,8 @@ public class CQLLibrary {
     }
 
     @Transient
-    public boolean isFhirLibrary(String modelType) {
-        return ModelTypeHelper.isFhir(modelType);
+    public boolean isFhirLibrary() {
+        return ModelTypeHelper.isFhir(getLibraryModelType());
     }
 
     @Transient

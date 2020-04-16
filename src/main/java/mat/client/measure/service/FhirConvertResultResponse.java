@@ -3,9 +3,7 @@ package mat.client.measure.service;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.model.cql.CQLLibraryDataSetObject;
-import org.springframework.stereotype.Service;
 
-@Service
 public class FhirConvertResultResponse implements IsSerializable {
 
     private FhirValidationStatus validationStatus = new FhirValidationStatus();
@@ -55,7 +53,4 @@ public class FhirConvertResultResponse implements IsSerializable {
     public void setFhirLibrary(CQLLibraryDataSetObject fhirLibrary) {
         this.fhirLibrary = fhirLibrary;
     }
-
-
-
 }

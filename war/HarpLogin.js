@@ -56,8 +56,8 @@
    */
   async function handleOkta() {
     const oktaSignIn = new OktaSignIn({
-      baseUrl: 'https://dev-120913.okta.com',
-      clientId: '0oa47t6l9KwCVD1cZ4x6',
+      baseUrl: '{okta-url}',
+      clientId: '{okta-client-id}',
       redirectUri: window.location.origin + window.location.pathname,
       authParams: {
         pkce: true,
@@ -102,8 +102,6 @@
           // Session exists: get tokens
           const tokens = await authClient.token.getWithoutPrompt({
             scopes: ['openid', 'email', 'profile']
-            // TODO do we need all these?
-            //  Maybe. Can either use okta's introspect endpoint with the idToken and these claims or userinfo endpoint with the accessToken.
           });
 
           // Store the tokens

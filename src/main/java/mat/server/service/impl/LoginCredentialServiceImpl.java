@@ -520,11 +520,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
      */
     @Override
     public void signOut() {
+        //TODO Update to call logout and revoke.
         SecurityContextHolder.clearContext();
-
-        // Revoke access token
-
-        // Logout of Okta
     }
 
     /**

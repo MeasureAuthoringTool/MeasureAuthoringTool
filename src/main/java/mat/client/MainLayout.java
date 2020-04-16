@@ -2,6 +2,13 @@ package mat.client;
 
 import java.util.List;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.Hidden;
 import org.gwtbootstrap3.client.ui.AnchorButton;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
@@ -43,6 +50,8 @@ import mat.client.util.FeatureFlagConstant;
 import mat.client.util.FooterPanelBuilderUtility;
 import mat.model.clause.ModelTypeHelper;
 
+import javax.persistence.criteria.Root;
+
 public abstract class MainLayout {
 
     private static Image alertImage = new Image(ImageResources.INSTANCE.alert());
@@ -56,6 +65,8 @@ public abstract class MainLayout {
     private FocusPanel content;
 
     private HorizontalPanel linksPanel = new HorizontalPanel();
+
+    private FormPanel logoutForm = new FormPanel();
 
     private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
 
@@ -327,6 +338,26 @@ public abstract class MainLayout {
 
         collapse.add(nav);
         return collapse;
+    }
+
+    void buildLogoutForm() {
+        logoutForm.setMethod(FormPanel.METHOD_GET);
+
+        VerticalPanel panel = new VerticalPanel();
+        logoutForm.setWidget(panel);
+
+        Hidden token = new Hidden();
+        token.setName("id_token_hint");
+        token.setValue(MatContext.get().getIdToken());
+
+        panel.add(token);
+
+        RootPanel.get().add(logoutForm);
+    }
+
+    void harpLogout(String harpLogoutUrl) {
+        logoutForm.setAction(harpLogoutUrl);
+        logoutForm.submit();
     }
 
     public void setHeader(String version, NavbarLink link) {

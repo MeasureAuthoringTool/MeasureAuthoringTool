@@ -21,7 +21,7 @@ public interface LoginCredentialService {
 	public LoginModel isValidUser(String userId,String password, String oneTimePassword,String sessionId);
 	
 	/**
-	 * Sign out.
+	 * Sign out Admin Users.
 	 */
 	public void signOut();
 	

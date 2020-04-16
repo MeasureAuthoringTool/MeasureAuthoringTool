@@ -162,6 +162,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                         MatContext.get().setUserSignInDate(result.userId);
                         MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole, result.loginId, result.userPreference);
                         loadMatWidgets(result.userFirstName, result.userLastName, isAlreadySignedIn, resultMatVersion);
+                        buildLogoutForm();
                     }
                 }
 
@@ -190,7 +191,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                     loginModel.getUserPreference());
 
             initPage();
-
         }
     };
 
@@ -329,6 +329,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
             MatContext.get().setIdToken(idToken);
             MatContext.get().setUserDetailsByHarpId(harpId, accessToken, userSessionSetupCallback);
+        } else {
+            redirectToLogin();
         }
     }
 
@@ -555,16 +557,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             getContentPanel().addMouseUpHandler(event -> MatContext.get().restartTimeoutWarning());
         }
 
-        MatContext.get().getEventBus().addHandler(BackToLoginPageEvent.TYPE, new BackToLoginPageEvent.Handler() {
+        MatContext.get().getEventBus().addHandler(BackToLoginPageEvent.TYPE, event -> redirectToLogin());
 
-            @Override
-            public void onLoginFailure(BackToLoginPageEvent event) {
-                redirectToLogin();
-            }
-        });
         MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, event -> {
             Mat.hideLoadingMessage();
             Mat.showSignOutMessage();
+            harpLogout();
             MatContext.get().getSynchronizationDelegate().setLogOffFlag();
             MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
         });
@@ -579,6 +577,18 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         });
 
         MatContext.get().restartTimeoutWarning();
+    }
+
+    void harpLogout() {
+        MatContext.get().getHarpService().getHarpBaseUrl(new AsyncCallback<String>() {
+            @Override
+            public void onFailure(Throwable throwable) { }
+
+            @Override
+            public void onSuccess(String harpUrl) {
+                harpLogout(harpUrl + "/oauth2/v1/logout");
+            }
+        });
     }
 
     public static void setSignedInAsName(String userFirstName, String userLastName) {
@@ -667,7 +677,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         timer.schedule(1000);
 
     }
-
 
     @Override
     public void setEnabled(boolean enabled) {

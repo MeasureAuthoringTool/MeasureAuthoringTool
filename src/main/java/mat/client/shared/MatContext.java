@@ -11,6 +11,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 import mat.DTO.CompositeMeasureScoreDTO;
@@ -984,35 +985,23 @@ public class MatContext implements IsSerializable {
     public void handleSignOut(String activityType, final boolean isRedirect) {
         MatContext.get().getSynchronizationDelegate().setLogOffFlag();
         MatContext.get().setUMLSLoggedIn(false);
-        MatContext.get().getHarpService().logout(MatContext.get().getIdToken(), new AsyncCallback<Boolean>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                Window.alert("Failed to logout from HARP. " + throwable.getMessage());
-            }
+        MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(),
+            MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
 
-            @Override
-            public void onSuccess(Boolean aBoolean) {
-                Window.alert("Logged out from HARP.");
+                @Override
+                public void onSuccess(final String result) {
+                    if (isRedirect) {
+                        MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+                    }
+                }
 
-                MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(),
-                        MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
-
-                            @Override
-                            public void onSuccess(final String result) {
-                                if (isRedirect) {
-                                    MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(final Throwable caught) {
-                                if (isRedirect) {
-                                    MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-                                }
-                            }
-                        });
-            }
-        });
+                @Override
+                public void onFailure(final Throwable caught) {
+                    if (isRedirect) {
+                        MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+                    }
+                }
+            });
     }
 
     public void getAllOperators() {

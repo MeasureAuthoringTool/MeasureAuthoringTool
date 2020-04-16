@@ -331,15 +331,13 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
     }
 
     public LoginModel getUserDetails(String harpId, String sessionId, String accessToken) {
-        logger.info("getUserDetails::" + harpId + "::" + sessionId);
+        logger.debug("getUserDetails::" + harpId + "::" + sessionId);
         // Retrieve user details and set session ID
-//        MatUserDetails userDetails = (MatUserDetails) userDAO.getUserDetailsByEmail(harpId);
         MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByHarpId(harpId);
         userDetails.setSessionId(sessionId);
         hibernateUserService.saveUserDetails(userDetails);
 
         // Set Authn Token. Used by LoggedInUserUtil to retrieve the userId server side.
-        logger.info("getUserDetails::" + userDetails.getId());
         setAuthenticationToken(userDetails, accessToken);
 
         // Set and return user details to client.
@@ -482,7 +480,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
     }
 
     /**
-     * Sets the authentication token.
+     * Sets the authentication token for Legacy logins.
      *
      * @param userDetails the new authentication token
      */
@@ -520,7 +518,6 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
      */
     @Override
     public void signOut() {
-        //TODO Update to call logout and revoke.
         SecurityContextHolder.clearContext();
     }
 

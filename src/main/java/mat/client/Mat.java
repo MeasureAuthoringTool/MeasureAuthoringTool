@@ -177,7 +177,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         @Override
         public void onFailure(Throwable throwable) {
             Window.alert("setUserDetailsByHarpId::onFailure::"+ throwable.getMessage());
-            //TODO Harp ID not found in MAT.
+            //TODO MAT-842: Harp ID not found in MAT, redirect to Access Support Page.
         }
 
         @Override
@@ -293,18 +293,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 //        });
 //    }
 
-
     private native void closeBrowser()
         /*-{
             $wnd.open('', '_self');
             $wnd.close();
         }-*/;
-
-    private native void alert(String msg)
-        /*-{
-            $wnd.alert(msg);
-        }-*/;
-
 
     @Override
     protected void initEntryPoint() {
@@ -314,23 +307,22 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         // The HARP Sign-In widget stores tokens in Local Storage.
         Storage localStorage = Storage.getLocalStorageIfSupported();
 
-        // Get access token and user email to set up MAT session.
         if(localStorage != null && localStorage.getItem("okta-token-storage") != null) {
             JSONValue tokens = JSONParser.parseStrict(localStorage.getItem("okta-token-storage"));
-            String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().toString();
-            String idToken = tokens.isObject().get("idToken").isObject().get("idToken").isString().toString();
-            String harpId = tokens.isObject().get("idToken").isObject().get("claims").isObject().get("email").isString().toString();
+            String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().stringValue();
+            String idToken = tokens.isObject().get("idToken").isObject().get("idToken").isString().stringValue();
+            String harpId = tokens.isObject().get("idToken").isObject().get("claims").isObject().get("email").isString().stringValue();
+
+            // Save idToken for HARP logout.
+            MatContext.get().setIdToken(idToken);
 
             // Create MAT session with HARP ID (user email).
-            harpId = harpId.replace("\"","");
-            accessToken = accessToken.replace("\"","");
-            idToken = idToken.replace("\"","");
-
-            MatContext.get().setIdToken(idToken);
             MatContext.get().setUserDetailsByHarpId(harpId, accessToken, userSessionSetupCallback);
-        } else if(MatContext.get().getLoggedinUserId() != null){
+        } else if(MatContext.get().getLoggedinUserId() != null) {
+            // Legacy Login.
             initPage();
         } else {
+            //FIXME MAT-864. Remove redirect once security config is updated.
             redirectToLogin();
         }
     }

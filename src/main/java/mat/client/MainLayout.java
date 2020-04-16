@@ -2,11 +2,6 @@ package mat.client;
 
 import java.util.List;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Hidden;
 import org.gwtbootstrap3.client.ui.AnchorButton;
@@ -49,8 +44,6 @@ import mat.client.util.ClientConstants;
 import mat.client.util.FeatureFlagConstant;
 import mat.client.util.FooterPanelBuilderUtility;
 import mat.model.clause.ModelTypeHelper;
-
-import javax.persistence.criteria.Root;
 
 public abstract class MainLayout {
 

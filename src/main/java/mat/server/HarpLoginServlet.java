@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Servlet to serve up Environment specific HARP properties to the Login page.
+ */
 @WebServlet("/harpLogin")
 public class HarpLoginServlet extends SpringRemoteServiceServlet {
 
@@ -22,7 +25,6 @@ public class HarpLoginServlet extends SpringRemoteServiceServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(response.toString());
         resp.getWriter().flush();
-
     }
 }
 

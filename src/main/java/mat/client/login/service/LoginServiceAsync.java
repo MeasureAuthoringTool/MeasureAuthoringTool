@@ -222,11 +222,10 @@ public interface LoginServiceAsync extends AsynchronousService{
 			AsyncCallback<Boolean> callback);
 
 	/**
-	 * Retrieves MAT user details for provided HARP ID and stores the
-	 * session ID that was generated client side.
+	 * Retrieves MAT user details for provided HARP ID.
 	 *
 	 * @param harpId User email
-	 * @param sessionId HTTP Session ID generated during MAT session set-up. See {@see mat.server.LoginServiceImpl#getUserDetailsByHarpId()}
+	 * @param accessToken HARP Access Token.
 	 * @Param callback
 	 * @return
 	 */

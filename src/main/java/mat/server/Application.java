@@ -145,6 +145,7 @@ public class Application extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        //FIXME MAT-864: Update Security Configuration
         http.csrf().disable();
         http
                 .authorizeRequests()
@@ -152,27 +153,29 @@ public class Application extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/", "/Login.html", "HarpLogin.html", "/harpLogin").permitAll()
 //                .antMatchers("/Mat.html").authenticated();
 
-//                .loginPage("/HarpLogin.html");
-//                .authorizeRequests()
-//                .antMatchers("/", "/Login.html").permitAll()
-//                .antMatchers("/Mat.html").authenticated()
-//                .antMatchers("/Bonnie.html").authenticated()
-//                .antMatchers("/mat/**").authenticated()
-//                .and()
-//                .formLogin()
-//                .loginPage("/Login.html")
-//                .defaultSuccessUrl("/Mat.html")
-//                .and()
-//                .formLogin()
-//                .loginPage("/Login.html")
-//                .defaultSuccessUrl("/Bonnie.html")
-//                .and()
-//                .logout()
-//                .permitAll()
-//                .and()
-//                .sessionManagement()
-//                .invalidSessionUrl("/Login.html")
-//                .maximumSessions(1);
+/* Legacy Config
+                .loginPage("/HarpLogin.html");
+                .authorizeRequests()
+                .antMatchers("/", "/Login.html").permitAll()
+                .antMatchers("/Mat.html").authenticated()
+                .antMatchers("/Bonnie.html").authenticated()
+                .antMatchers("/mat/**").authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/Login.html")
+                .defaultSuccessUrl("/Mat.html")
+                .and()
+                .formLogin()
+                .loginPage("/Login.html")
+                .defaultSuccessUrl("/Bonnie.html")
+                .and()
+                .logout()
+                .permitAll()
+                .and()
+                .sessionManagement()
+                .invalidSessionUrl("/Login.html")
+                .maximumSessions(1);
+*/
     }
 
     @Override

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class FhirValidationResult {
-    String severity;
-    String locationField;
-    String errorDescription;
+    private String severity;
+    private String locationField;
+    private String errorDescription;
 }

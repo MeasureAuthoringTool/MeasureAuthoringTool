@@ -12,8 +12,8 @@ public class MeasureConversionResults {
     private List<FieldConversionResult> measureResults = new ArrayList();
     private ConversionType measureConversionType;
     private List<FhirValidationResult> measureFhirValidationResults = new ArrayList();
-    String reason;
-    Boolean success;
-    String link;
-    String fhirMeasureJson;
+    private String reason;
+    private Boolean success;
+    private String link;
+    private String fhirMeasureJson;
 }

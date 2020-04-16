@@ -9,10 +9,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ValueSetConversionResults {
-    String oid;
-    String reason;
-    Boolean success;
-    String link;
-    String json;
-    List<FhirValidationResult> valueSetFhirValidationResults = new ArrayList();
+    private String oid;
+    private String reason;
+    private Boolean success;
+    private String link;
+    private String json;
+    private List<FhirValidationResult> valueSetFhirValidationResults = new ArrayList();
 }

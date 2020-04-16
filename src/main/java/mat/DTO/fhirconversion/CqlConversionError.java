@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class CqlConversionError extends CqlConversionBase {
-    String errorSeverity;
-    String targetIncludeLibraryId;
-    String libraryId;
-    String targetIncludeLibraryVersionId;
-    String libraryVersion;
-    String message;
-    String type;
+    private String errorSeverity;
+    private String targetIncludeLibraryId;
+    private String libraryId;
+    private String targetIncludeLibraryVersionId;
+    private String libraryVersion;
+    private String message;
+    private String type;
 
 }

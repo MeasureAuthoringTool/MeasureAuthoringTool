@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class FieldConversionResult {
-    String field;
-    String destination;
-    String reason;
+    private String field;
+    private String destination;
+    private String reason;
 }

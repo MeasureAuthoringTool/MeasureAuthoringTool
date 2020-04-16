@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class MatCqlConversionBase {
-    Integer startLine;
-    Integer startChar;
-    Integer endLine;
-    Integer endChar;
-    String errorType;
+    private Integer startLine;
+    private Integer startChar;
+    private Integer endLine;
+    private Integer endChar;
+    private String errorType;
 }

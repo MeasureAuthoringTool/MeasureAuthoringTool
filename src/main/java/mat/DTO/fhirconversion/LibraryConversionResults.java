@@ -10,15 +10,15 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 public class LibraryConversionResults {
-    String matLibraryId;
-    String fhirLibraryId;
-    String name;
-    String version;
-    String reason;
-    Boolean success;
-    String link;
-    String fhirLibraryJson;
-    Map<String, List<CqlConversionError>> externalErrors;
+    private String matLibraryId;
+    private String fhirLibraryId;
+    private String name;
+    private String version;
+    private String reason;
+    private Boolean success;
+    private String link;
+    private String fhirLibraryJson;
+    private Map<String, List<CqlConversionError>> externalErrors;
     private List<FhirValidationResult> libraryFhirValidationResults = new ArrayList();
     private CqlConversionResult cqlConversionResult = new CqlConversionResult();
 }

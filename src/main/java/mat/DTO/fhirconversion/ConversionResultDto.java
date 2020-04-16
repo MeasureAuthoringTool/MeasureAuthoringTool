@@ -8,12 +8,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ConversionResultDto {
-    String measureId;
-    String modified;
+    private String measureId;
+    private String modified;
     private String errorReason;
-    private ConversionOutcome outcome;
+    private String outcome;
     private ConversionType conversionType;
-    List<ValueSetConversionResults> valueSetConversionResults;
-    MeasureConversionResults measureConversionResults;
-    List<LibraryConversionResults> libraryConversionResults;
+    private List<ValueSetConversionResults> valueSetConversionResults;
+    private MeasureConversionResults measureConversionResults;
+    private List<LibraryConversionResults> libraryConversionResults;
 }

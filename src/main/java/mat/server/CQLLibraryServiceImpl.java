@@ -2,6 +2,8 @@ package mat.server;
 
 import java.util.List;
 
+import mat.client.measure.service.CheckForConversionResult;
+import mat.client.measure.service.FhirConvertResultResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import mat.client.measure.service.CQLLibraryService;
@@ -249,5 +251,16 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
                                                        List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId) {
         return this.getCQLLibraryService().saveValueSetList(transferObjectList, appliedValueSetList, cqlLibraryId);
     }
+
+    @Override
+    public CheckForConversionResult checkLibraryForConversion(CQLLibraryDataSetObject object) {
+        return this.getCQLLibraryService().checkLibraryForConversion(object);
+    }
+
+    @Override
+    public FhirConvertResultResponse convertCqlLibrary(CQLLibraryDataSetObject object) throws MatException {
+        return this.getCQLLibraryService().convertCqlLibrary(object);
+    }
+
 
 }

@@ -333,6 +333,11 @@ public class CQLLibrary {
     }
 
     @Transient
+    public boolean isFhirLibrary() {
+        return ModelTypeHelper.isFhir(getLibraryModelType());
+    }
+
+    @Transient
     public boolean isQdmMeasure() {
         return ModelTypeHelper.isQdm(getLibraryModelType());
     }
@@ -344,6 +349,24 @@ public class CQLLibrary {
 
     public void setFhirVersion(String fhirVersion) {
         this.fhirVersion = fhirVersion;
+    }
+
+    @Transient
+    public String getLibraryXMLAsString() {
+        String xml = "";
+        if (cqlXML != null) {
+            xml = new String(toByteArray(cqlXML));
+        }
+        return xml;
+    }
+
+    public void setLibraryXMLAsByteArray(String xml) {
+        if (null != xml) {
+            byte[] xmlByteArr = xml.getBytes();
+            this.cqlXML = Hibernate.getLobCreator(HibernateConf.getHibernateSession()).createBlob(xmlByteArr);
+        } else {
+            this.cqlXML = null;
+        }
     }
 
 }

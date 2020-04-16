@@ -893,6 +893,10 @@ public class MessageDelegate {
         return "An error occurred while converting the measure. Please try again later. If this continues please contact the mat help desk.";
     }
 
+    public String getConvertCqlLibraryFailureMessage() {
+        return "An error occurred while converting the Cql Library. Please try again later. If this continues please contact the mat help desk.";
+    }
+
     public String getCreateNewLibrarySuccessfulMessage(String libraryName) {
         return "You have created a new library " + StringUtility.trimTextToSixtyChars(libraryName) + ". Please click continue to navigate to the CQL Composer.";
     }
@@ -961,6 +965,10 @@ public class MessageDelegate {
 
     public String getConversionBlockedWithDraftsErrorMessage() {
         return "Only one draft per measure family should be allowed.";
+    }
+
+    public String getConversionBlockedWithDraftsErrorMessageForCqlLibrary() {
+        return "Only one draft per Library family should be allowed.";
     }
 
 }

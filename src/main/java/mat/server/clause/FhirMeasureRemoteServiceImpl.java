@@ -7,7 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import mat.client.measure.service.CheckMeasureForConversionResult;
+import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirMeasureRemoteService;
 import mat.client.shared.MatException;
@@ -55,9 +55,9 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
     }
 
     @Override
-    public CheckMeasureForConversionResult checkMeasureForConversion(Result sourceMeasure) {
+    public CheckForConversionResult checkMeasureForConversion(Result sourceMeasure) {
         logger.info("checkMeasureForConversion  measureId: " + sourceMeasure.getId() + " setId: " + sourceMeasure.getMeasureSetId());
-        CheckMeasureForConversionResult result = new CheckMeasureForConversionResult();
+        CheckForConversionResult result = new CheckForConversionResult();
         List<Measure> draftMeasures = measureDAO.getDraftMeasuresBySet(sourceMeasure.getMeasureSetId());
         if (draftMeasures.isEmpty()) {
             // If no drafts found we can proceed with conversion

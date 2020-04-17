@@ -32,7 +32,12 @@ public class LoginPresenter {
 	
 	private LoginView view;
 	private LoginModel loginModel;
-	
+	private KeyDownHandler submitOnEnterHandler = event -> {
+		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
+			submit();
+		}
+	};
+
 	interface LoginViewDisplay {
 		
 		Widget asWidget();
@@ -84,12 +89,6 @@ public class LoginPresenter {
 		PanelBody getSuccessMessageBody();
 		
 	}
-	
-	private KeyDownHandler submitOnEnterHandler = event -> {
-		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
-			submit();
-		}
-	};
 	
 	public LoginPresenter(LoginView loginView) {
 		view = loginView;

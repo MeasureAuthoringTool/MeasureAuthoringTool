@@ -10,7 +10,6 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
@@ -81,6 +80,8 @@ import java.util.Map;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserver {
+
+    public static final String OKTA_TOKEN_STORAGE = "okta-token-storage";
 
     class EnterKeyDownHandler implements KeyDownHandler {
 
@@ -307,8 +308,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         // The HARP Sign-In widget stores tokens in Local Storage.
         Storage localStorage = Storage.getLocalStorageIfSupported();
 
-        if(localStorage != null && localStorage.getItem("okta-token-storage") != null) {
-            JSONValue tokens = JSONParser.parseStrict(localStorage.getItem("okta-token-storage"));
+        if(localStorage != null && localStorage.getItem(OKTA_TOKEN_STORAGE) != null) {
+            JSONValue tokens = JSONParser.parseStrict(localStorage.getItem(OKTA_TOKEN_STORAGE));
             String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().stringValue();
             String idToken = tokens.isObject().get("idToken").isObject().get("idToken").isString().stringValue();
             String harpId = tokens.isObject().get("idToken").isObject().get("claims").isObject().get("email").isString().stringValue();
@@ -575,7 +576,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     void harpLogout() {
         MatContext.get().getHarpService().getHarpBaseUrl(new AsyncCallback<String>() {
             @Override
-            public void onFailure(Throwable throwable) { }
+            public void onFailure(Throwable throwable) {
+                // Exception while attempting to logout of HARP.
+                Storage localStorage = Storage.getLocalStorageIfSupported();
+                localStorage.removeItem(OKTA_TOKEN_STORAGE);
+            }
 
             @Override
             public void onSuccess(String harpUrl) {

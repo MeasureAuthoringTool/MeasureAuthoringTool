@@ -67,14 +67,17 @@ public class ConfirmationDialogBox {
         this.observer = new ConfirmationObserver() {
             @Override
             public void onYesButtonClicked() {
+                // No action
             }
 
             @Override
             public void onNoButtonClicked() {
+                // No action
             }
 
             @Override
             public void onClose() {
+                // No action
             }
         };
         getMessageAlert().getErrorMessageAlert().createAlert(messageText);

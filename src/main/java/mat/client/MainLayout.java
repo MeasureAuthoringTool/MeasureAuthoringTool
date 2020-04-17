@@ -11,13 +11,9 @@ import org.gwtbootstrap3.client.ui.Navbar;
 import org.gwtbootstrap3.client.ui.NavbarCollapse;
 import org.gwtbootstrap3.client.ui.NavbarLink;
 import org.gwtbootstrap3.client.ui.NavbarNav;
-import org.gwtbootstrap3.client.ui.Progress;
-import org.gwtbootstrap3.client.ui.ProgressBar;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
-import org.gwtbootstrap3.client.ui.constants.ProgressType;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
@@ -28,7 +24,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -45,48 +40,32 @@ import mat.model.clause.ModelTypeHelper;
 
 public abstract class MainLayout {
 
-    private static Image alertImage = new Image(ImageResources.INSTANCE.alert());
-
-    private static String alertTitle = ClientConstants.MAINLAYOUT_ALERT_TITLE;
-
     private static final int DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS = 500;
+    private static final int SPINNER_DIALOG_DELAY_MILLIS = 2000;
+    private static final String HEADING = "Measure Authoring Tool";
 
-    private static Panel loadingPanel;
-
-    private FocusPanel content;
-
-    private HorizontalPanel linksPanel = new HorizontalPanel();
-
-    private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
-
+    private static final SpinnerModal SPINNER_MODAL = new SpinnerModal();
+    private static final HTML SIMPLE_SPIMNNER = new HTML("<div class=\"spinner-loading spinner-loading-shadow\">" + ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG + "</div>");
+    private static ListItem signedInAsName = new ListItem();
     private static IndicatorButton showUMLSState;
     private static IndicatorButton showBonnieState;
+    private static FocusableWidget skipListHolder;
 
-    protected static FocusableWidget skipListHolder;
-
-    NavbarLink homeLink = new NavbarLink();
-
-    static ListItem signedInAsName = new ListItem();
-    AnchorListItem profile = new AnchorListItem("MAT Account");
-    AnchorListItem signOut = new AnchorListItem("Sign Out");
-
-    public static final String HEADING = "Measure Authoring Tool";
+    private NavbarLink homeLink = new NavbarLink();
+    private FocusPanel content;
+    private HorizontalPanel linksPanel = new HorizontalPanel();
+    private AnchorListItem profile = new AnchorListItem("MAT Account");
+    private AnchorListItem signOut = new AnchorListItem("Sign Out");
 
     /**
-     * clear the loading panel
-     * remove css style
+     * hide spinner and
      * reset the loading queue.
      */
     private static void delegateHideLoadingMessage() {
         MatContext.get().getLoadingQueue().poll();
         if (MatContext.get().getLoadingQueue().size() == 0) {
-            getLoadingPanel().clear();
-            getLoadingPanel().getElement().removeAttribute("role");
+            hideProgressSpinner();
         }
-    }
-
-    protected static Panel getLoadingPanel() {
-        return loadingPanel;
     }
 
     protected static FocusableWidget getSkipList() {
@@ -97,8 +76,6 @@ public abstract class MainLayout {
      * no arg method adds default delay to loading message hide op.
      */
     public static void hideLoadingMessage() {
-        bar.setPercent(100.00);
-        bar.setText("Loaded 100% ");
         hideLoadingMessage(DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS);
     }
 
@@ -125,30 +102,38 @@ public abstract class MainLayout {
     }
 
     public static void showLoadingMessage() {
-        getLoadingPanel().clear();
+        showLoadingMessage(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
+    }
 
-        progress.setActive(true);
-        progress.setType(ProgressType.STRIPED);
-
-        bar.setType(ProgressBarType.INFO);
-        bar.setWidth("100%");
-        bar.setPercent(50.00);
-        bar.setText("Please wait. Loaded 50%");
-
-
-        progress.add(bar);
-        progress.setId("LoadingPanel");
-        getLoadingPanel().add(progress);
-
-        getLoadingPanel().setWidth("99%");
-        getLoadingPanel().getElement().setAttribute("role", "alert");
+    public static void showLoadingMessage(String title) {
+        showProgressSpinner(title);
         MatContext.get().getLoadingQueue().add("node");
     }
 
 
     public static void showSignOutMessage() {
-        loadingWidget = new HTML(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
-        showLoadingMessage();
+        showLoadingMessage(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
+        showProgressSpinner(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
+    }
+
+    private static void showProgressSpinner(String title) {
+        SIMPLE_SPIMNNER.setVisible(true);
+        final Timer timer = new Timer() {
+            @Override
+            public void run() {
+                if (MatContext.get().getLoadingQueue().size() != 0) {
+                    SPINNER_MODAL.showSpinnerWithTitle(title);
+                    SIMPLE_SPIMNNER.setVisible(false);
+                }
+            }
+        };
+        timer.schedule(SPINNER_DIALOG_DELAY_MILLIS);
+    }
+
+
+    private static void hideProgressSpinner() {
+        SPINNER_MODAL.hide();
+        SIMPLE_SPIMNNER.setVisible(false);
     }
 
     private Panel buildContentPanel() {
@@ -182,25 +167,6 @@ public abstract class MainLayout {
         return footerMainPanel;
     }
 
-
-    private Panel buildLoadingPanel() {
-        loadingPanel = new HorizontalPanel();
-        loadingPanel.setHeight("30px");
-        loadingPanel.getElement().setAttribute("id", "loadingContainer");
-        loadingPanel.getElement().setAttribute("aria-role", "loadingwidget");
-        loadingPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
-        loadingPanel.getElement().setAttribute("aria-live", "assertive");
-        loadingPanel.getElement().setAttribute("aria-atomic", "true");
-        loadingPanel.getElement().setAttribute("aria-relevant", "all");
-
-        loadingPanel.setStylePrimaryName("mainContentPanel");
-        setId(loadingPanel, "loadingContainer");
-        alertImage.setTitle(alertTitle);
-        alertImage.getElement().setAttribute("alt", alertTitle);
-        loadingWidget.setStyleName("padLeft5px");
-        return loadingPanel;
-    }
-
     private Panel buildSkipContent() {
         skipListHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Main Content"));
         Mat.removeInputBoxFromFocusPanel(skipListHolder.getElement());
@@ -210,7 +176,6 @@ public abstract class MainLayout {
     private Panel buildTopPanel() {
         final VerticalPanel topPanel = new VerticalPanel();
         topPanel.add(buildHeader());
-        topPanel.add(buildLoadingPanel());
         topPanel.setStylePrimaryName("topBanner");
         return topPanel;
     }
@@ -385,6 +350,9 @@ public abstract class MainLayout {
         final Panel contentPanel = buildContentPanel();
 
         final FlowPanel container = new FlowPanel();
+
+        SIMPLE_SPIMNNER.setVisible(false);
+        container.add(SIMPLE_SPIMNNER);
         container.add(topBanner);
         container.add(contentPanel);
         container.add(footerPanel);

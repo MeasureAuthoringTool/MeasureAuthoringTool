@@ -45,7 +45,7 @@ public abstract class MainLayout {
     private static final String HEADING = "Measure Authoring Tool";
 
     private static final SpinnerModal SPINNER_MODAL = new SpinnerModal();
-    private static final HTML SIMPLE_SPIMNNER = new HTML("<div class=\"spinner-loading spinner-loading-shadow\">" + ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG + "</div>");
+    private static final HTML SIMPLE_SPINNER = new HTML("<div class=\"spinner-loading spinner-loading-shadow\">" + ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG + "</div>");
     private static ListItem signedInAsName = new ListItem();
     private static IndicatorButton showUMLSState;
     private static IndicatorButton showBonnieState;
@@ -117,13 +117,13 @@ public abstract class MainLayout {
     }
 
     private static void showProgressSpinner(String title) {
-        SIMPLE_SPIMNNER.setVisible(true);
+        SIMPLE_SPINNER.setVisible(true);
         final Timer timer = new Timer() {
             @Override
             public void run() {
                 if (MatContext.get().getLoadingQueue().size() != 0) {
                     SPINNER_MODAL.showSpinnerWithTitle(title);
-                    SIMPLE_SPIMNNER.setVisible(false);
+                    SIMPLE_SPINNER.setVisible(false);
                 }
             }
         };
@@ -133,7 +133,7 @@ public abstract class MainLayout {
 
     private static void hideProgressSpinner() {
         SPINNER_MODAL.hide();
-        SIMPLE_SPIMNNER.setVisible(false);
+        SIMPLE_SPINNER.setVisible(false);
     }
 
     private Panel buildContentPanel() {
@@ -351,8 +351,8 @@ public abstract class MainLayout {
 
         final FlowPanel container = new FlowPanel();
 
-        SIMPLE_SPIMNNER.setVisible(false);
-        container.add(SIMPLE_SPIMNNER);
+        SIMPLE_SPINNER.setVisible(false);
+        container.add(SIMPLE_SPINNER);
         container.add(topBanner);
         container.add(contentPanel);
         container.add(footerPanel);

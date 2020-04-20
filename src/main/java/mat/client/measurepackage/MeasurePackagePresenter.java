@@ -3,9 +3,9 @@ package mat.client.measurepackage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import mat.client.util.FeatureFlagConstant;
-import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
@@ -39,8 +39,10 @@ import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.WarningMessageAlert;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacTicketInformation;
+import mat.client.util.FeatureFlagConstant;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLDefinition;
 import mat.shared.MeasurePackageClauseValidator;
 import mat.shared.SaveUpdateCQLResult;
@@ -52,6 +54,20 @@ import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
 import mat.shared.packager.error.SaveSupplementalDataElementException;
 
 public class MeasurePackagePresenter implements MatPresenter {
+
+    private final Logger logger = Logger.getLogger("MAT");
+
+    private static final String SIGN_INTO_UMLS = "Please sign into UMLS";
+
+    private static final String SIGN_INTO_BONNIE_MESSAGE = "Please sign into Bonnie.";
+
+    private static final String LOADING_WAIT_MESSAGE = "Loading Please Wait...";
+
+    private static final String UPDATE_TO_BONNIE_SUCCESS_MESSAGE = " has been successfully packaged and updated in Bonnie. Please select open or save to view the results.";
+
+    private static final String INITIAL_BONNIE_UPLOAD_SUCCESS_MESSAGE = " has been successfully packaged and uploaded as a new measure in Bonnie. Please go to the Bonnie tool to create test cases for this measure.";
+
+    private static final String VSAC_PACKAGE_UNAUTHORIZED_ERROR = "Unable to retrieve information from VSAC. The package has been created. Please log in to UMLS again to re-establish a connection and try the upload to Bonnie again.";
 
     private SimplePanel panel = new SimplePanel();
 
@@ -77,21 +93,17 @@ public class MeasurePackagePresenter implements MatPresenter {
 
     private boolean loggedIntoBonnie = false;
 
-    private static final String SIGN_INTO_UMLS = "Please sign into UMLS";
-
-    private static final String SIGN_INTO_BONNIE_MESSAGE = "Please sign into Bonnie.";
-
-    private static final String LOADING_WAIT_MESSAGE = "Loading Please Wait...";
-
-    private static final String UPDATE_TO_BONNIE_SUCCESS_MESSAGE = " has been successfully packaged and updated in Bonnie. Please select open or save to view the results.";
-
-    private static final String INITIAL_BONNIE_UPLOAD_SUCCESS_MESSAGE = " has been successfully packaged and uploaded as a new measure in Bonnie. Please go to the Bonnie tool to create test cases for this measure.";
-
-    private static final String VSAC_PACKAGE_UNAUTHORIZED_ERROR = "Unable to retrieve information from VSAC. The package has been created. Please log in to UMLS again to re-establish a connection and try the upload to Bonnie again.";
-
     private VsacTicketInformation vsacInfo = null;
 
     private MeasureHeading measureHeading;
+
+    private VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get().getVsacapiServiceAsync();
+
+    public MeasurePackagePresenter(PackageView packageView, MeasureHeading measureHeading) {
+        view = packageView;
+        this.measureHeading = measureHeading;
+        addAllHandlers();
+    }
 
     public List<CQLDefinition> getDbCQLSuppDataElements() {
         return dbCQLSuppDataElements;
@@ -129,111 +141,6 @@ public class MeasurePackagePresenter implements MatPresenter {
         this.dbRiskAdjVars = dbRiskAdjVars;
     }
 
-    public interface PackageView {
-        Panel getCellTablePanel();
-
-        Widget asWidget();
-
-        MeasurePackageClauseCellListWidget getPackageGroupingWidget();
-
-        Button getCreateNewButton();
-
-        HasClickHandlers getPackageMeasureButton();
-
-        HasClickHandlers getAddQDMElementsToMeasureButton();
-
-        HasClickHandlers getaddRiskAdjVariablesToMeasure();
-
-        HasClickHandlers getPackageMeasureAndExportButton();
-
-        HasClickHandlers getPackageMeasureAndUploadToBonnieButton();
-
-        ErrorMessageAlert getErrorMessageDisplay();
-
-        ErrorMessageAlert getPackageErrorMessageDisplay();
-
-        MessageAlert getMeasurePackageSuccessMsg();
-
-        MessageAlert getPackageSuccessMessageDisplay();
-
-        MessageAlert getSupplementalDataElementSuccessMessageDisplay();
-
-        MessageAlert getSupplementalDataElementErrorMessageDisplay();
-
-        MessageAlert getMeasureErrorMessageDisplay();
-
-        MessageAlert getRiskAdjustmentVariableSuccessMessageDisplay();
-
-        MessageAlert getRiskAdjustmentVariableErrorMessageDisplay();
-
-        MessageAlert getInProgressMessageDisplay();
-
-        WarningMessageAlert getMeasurePackageWarningMsg();
-
-        WarningMessageAlert getCqlLibraryNameWarningMsg();
-
-        WarningConfirmationMessageAlert getSaveErrorMessageDisplay();
-
-        WarningConfirmationMessageAlert getSaveErrorMessageDisplayOnEdit();
-
-        List<QualityDataSetDTO> getQDMElementsInSuppElements();
-
-        List<QualityDataSetDTO> getQDMElements();
-
-        List<CQLDefinition> getCQLElementsInSuppElements();
-
-        List<CQLDefinition> getCQLQDMElements();
-
-        List<RiskAdjustmentDTO> getRiskAdjClauses();
-
-        List<RiskAdjustmentDTO> getRiskAdjVar();
-
-        void setQDMElementsInSuppElements(List<QualityDataSetDTO> clauses);
-
-        void setQDMElements(List<QualityDataSetDTO> clauses);
-
-        void setCQLElementsInSuppElements(List<CQLDefinition> clauses);
-
-        void setCQLQDMElements(List<CQLDefinition> clauses);
-
-        void setViewIsEditable(boolean b, List<MeasurePackageDetail> packages);
-
-        void setClauses(List<MeasurePackageClauseDetail> clauses);
-
-        void setClausesInPackage(List<MeasurePackageClauseDetail> list);
-
-        void setSubTreeClauseList(List<RiskAdjustmentDTO> riskAdjClauseList);
-
-        void setSubTreeInRiskAdjVarList(List<RiskAdjustmentDTO> riskAdjClauseList);
-
-        void setAppliedQdmList(QDSAppliedListModel appliedListModel);
-
-        void buildCellTable(List<MeasurePackageDetail> packages);
-
-        void setPackageName(String name);
-
-        void setObserver(Observer observer);
-
-        void setCQLMeasure(boolean isCQLMeasure);
-
-        void setRiskAdjustLabel(boolean isCQLMeasure);
-
-        void setQdmElementsLabel(boolean isCQLMeasure);
-
-        void setSaveErrorMessageDisplayOnEdit(WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit);
-
-        void setCellTablePanel(Panel cellTablePanel);
-
-        void clearPackageGroupingsAndSDEAndRAVs();
-    }
-
-    VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get().getVsacapiServiceAsync();
-
-    public MeasurePackagePresenter(PackageView packageView, MeasureHeading measureHeading) {
-        view = packageView;
-        this.measureHeading = measureHeading;
-        addAllHandlers();
-    }
 
     private void addAllHandlers() {
 
@@ -309,6 +216,7 @@ public class MeasurePackagePresenter implements MatPresenter {
                     MatContext.get().getPackageService().saveRiskVariables(currentDetail, new AsyncCallback<Void>() {
                         @Override
                         public void onFailure(final Throwable caught) {
+                            logger.log(Level.SEVERE, "Error in PackageService.saveRiskVariables. Error message: " + caught.getMessage(), caught);
                             if (caught instanceof SaveRiskAdjustmentVariableException) {
                                 getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
                                 view.getRiskAdjustmentVariableErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
@@ -316,7 +224,6 @@ public class MeasurePackagePresenter implements MatPresenter {
                                 view.getRiskAdjustmentVariableErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
                             }
 
-                            Mat.hideLoadingMessage();
                             showMeasurePackagerBusy(false);
                         }
 
@@ -342,6 +249,7 @@ public class MeasurePackagePresenter implements MatPresenter {
                     MatContext.get().getPackageService().saveQDMData(currentDetail, new AsyncCallback<Void>() {
                         @Override
                         public void onFailure(final Throwable caught) {
+                            logger.log(Level.SEVERE, "Error in PackageService.saveQDMData. Error message: " + caught.getMessage(), caught);
                             view.getSupplementalDataElementSuccessMessageDisplay().setType(AlertType.DANGER);
                             if (caught instanceof SaveSupplementalDataElementException) {
                                 getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
@@ -380,6 +288,7 @@ public class MeasurePackagePresenter implements MatPresenter {
                                 .save(tempMeasurePackageDetails, new AsyncCallback<MeasurePackageSaveResult>() {
                                     @Override
                                     public void onFailure(final Throwable caught) {
+                                        logger.log(Level.SEVERE, "Error in PackageService.save. Error message: " + caught.getMessage(), caught);
                                         Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                                         getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
                                         showMeasurePackagerBusy(false);
@@ -394,9 +303,6 @@ public class MeasurePackagePresenter implements MatPresenter {
                                                     MatContext.get().getMessageDelegate().
                                                             getGroupingSavedMessage());
 
-                                            showMeasurePackagerBusy(false);
-
-
                                         } else {
                                             if (result.getMessages().size() > 0) {
                                                 view.getPackageErrorMessageDisplay().
@@ -406,7 +312,7 @@ public class MeasurePackagePresenter implements MatPresenter {
                                                 view.getPackageErrorMessageDisplay().clearAlert();
                                             }
                                         }
-
+                                        showMeasurePackagerBusy(false);
                                     }
                                 });
 
@@ -424,9 +330,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onSuccess(VsacTicketInformation result) {
+                Mat.hideLoadingMessage();
                 if (result == null) {
-
-                    Mat.hideLoadingMessage();
                     enablePackageButtons(true);
                     view.getMeasureErrorMessageDisplay().createAlert(SIGN_INTO_UMLS);
                     view.getInProgressMessageDisplay().clearAlert();
@@ -438,6 +343,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Error in VsacapiServiceAsync.getTicketGrantingToken. Error message: " + caught.getMessage(), caught);
                 Mat.hideLoadingMessage();
                 enablePackageButtons(true);
                 view.getErrorMessageDisplay().createAlert(
@@ -463,10 +369,11 @@ public class MeasurePackagePresenter implements MatPresenter {
     }
 
     protected void validateGroup() {
+        Mat.showLoadingMessage();
         MatContext.get().getMeasureService().validateForGroup(model, new AsyncCallback<ValidateMeasureResult>() {
             @Override
             public void onFailure(final Throwable caught) {
-
+                logger.log(Level.SEVERE, "Error in MeasureService.validateForGroup. Error message: " + caught.getMessage(), caught);
                 Mat.hideLoadingMessage();
                 enablePackageButtons(true);
                 view.getPackageErrorMessageDisplay().createAlert(
@@ -476,11 +383,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onSuccess(final ValidateMeasureResult result) {
-                Mat.showLoadingMessage();
+                Mat.hideLoadingMessage();
                 if (result.isValid()) {
                     validatePackageGrouping();
                 } else {
-                    Mat.hideLoadingMessage();
                     view.getInProgressMessageDisplay().clearAlert();
                     view.getMeasureErrorMessageDisplay().createAlert(result.getValidationMessages());
                     enablePackageButtons(true);
@@ -492,10 +398,12 @@ public class MeasurePackagePresenter implements MatPresenter {
 
     private void validatePackageGrouping() {
 
+        Mat.showLoadingMessage();
         MatContext.get().getMeasureService().validatePackageGrouping(model, new AsyncCallback<ValidateMeasureResult>() {
 
             @Override
             public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Error in MeasureService.validatePackageGrouping. Error message: " + caught.getMessage(), caught);
                 Mat.hideLoadingMessage();
                 enablePackageButtons(true);
                 view.getInProgressMessageDisplay().clearAlert();
@@ -503,11 +411,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onSuccess(ValidateMeasureResult result) {
+                Mat.hideLoadingMessage();
                 if (result.isValid()) {
                     String measureId = MatContext.get().getCurrentMeasureId();
                     validateExports(measureId);
                 } else {
-                    Mat.hideLoadingMessage();
                     if (result.getValidationMessages() != null) {
                         view.getMeasurePackageWarningMsg().createWarningMultiLineAlert(result.getValidationMessages());
                     }
@@ -521,10 +429,12 @@ public class MeasurePackagePresenter implements MatPresenter {
     }
 
     private void validateExports(final String measureId) {
+        Mat.showLoadingMessage();
         MatContext.get().getMeasureService().validateExports(measureId, new AsyncCallback<ValidateMeasureResult>() {
 
             @Override
             public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Error in MeasureService.validateExports. Error message: " + caught.getMessage(), caught);
                 Mat.hideLoadingMessage();
                 enablePackageButtons(true);
                 view.getInProgressMessageDisplay().clearAlert();
@@ -546,10 +456,12 @@ public class MeasurePackagePresenter implements MatPresenter {
 
     private void saveMeasureAtPackage() {
 
+        Mat.showLoadingMessage();
         MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>() {
 
             @Override
             public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Error in MeasureService.saveMeasureAtPackage. Error message: " + caught.getMessage(), caught);
                 Mat.hideLoadingMessage();
                 enablePackageButtons(true);
                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -558,12 +470,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onSuccess(SaveMeasureResult result) {
+                Mat.hideLoadingMessage();
                 if (result.isSuccess()) {
                     MatContext.get().setCurrentMeasureVersion("Draft v" + result.getVersionStr());
                     createExports(MatContext.get().getCurrentMeasureId());
-
                 } else {
-                    Mat.hideLoadingMessage();
                     enablePackageButtons(true);
                     if (result.getFailureReason()
                             == SaveMeasureResult.INVALID_VALUE_SET_DATE) {
@@ -581,10 +492,11 @@ public class MeasurePackagePresenter implements MatPresenter {
     }
 
     private void createExports(final String measureId) {
-
+        Mat.showLoadingMessage();
         MatContext.get().getMeasureService().createExports(measureId, null, true, new AsyncCallback<ValidateMeasureResult>() {
             @Override
             public void onFailure(final Throwable caught) {
+                logger.log(Level.SEVERE, "Error in MeasureService.createExports. Error message: " + caught.getMessage(), caught);
                 Mat.hideLoadingMessage();
                 enablePackageButtons(true);
                 view.getInProgressMessageDisplay().clearAlert();
@@ -691,6 +603,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
                         @Override
                         public void onFailure(Throwable caught) {
+                            logger.log(Level.SEVERE, "Error in MeasureService.getMeasureCQLFileData. Error message: " + caught.getMessage(), caught);
                             Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                             showMeasurePackagerBusy(false);
                         }
@@ -769,6 +682,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
                 @Override
                 public void onFailure(Throwable caught) {
+                    logger.log(Level.SEVERE, "Error in BonnieService.getBonnieUserInformationForUser. Error message: " + caught.getMessage(), caught);
                     showMeasurePackagerBusy(false);
                     loggedIntoBonnie = false;
                     ((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(false);
@@ -789,6 +703,7 @@ public class MeasurePackagePresenter implements MatPresenter {
                         new AsyncCallback<MeasurePackageOverview>() {
                             @Override
                             public void onFailure(final Throwable caught) {
+                                logger.log(Level.SEVERE, "Error in PackageService.getClausesAndPackagesForMeasure. Error message: " + caught.getMessage(), caught);
                                 view.getPackageErrorMessageDisplay()
                                         .createAlert(
                                                 MatContext
@@ -929,6 +844,7 @@ public class MeasurePackagePresenter implements MatPresenter {
                 .delete(pkg, new AsyncCallback<Void>() {
                     @Override
                     public void onFailure(final Throwable caught) {
+                        logger.log(Level.SEVERE, "Error in PackageService.delete. Error message: " + caught.getMessage(), caught);
                         view.getPackageErrorMessageDisplay().createAlert(
                                 MatContext.get().getMessageDelegate()
                                         .getGenericErrorMessage());
@@ -958,6 +874,7 @@ public class MeasurePackagePresenter implements MatPresenter {
                         new AsyncCallback<ManageMeasureDetailModel>() {
                             @Override
                             public void onFailure(final Throwable caught) {
+                                logger.log(Level.SEVERE, "Error in PackageService.getMeasure. Error message: " + caught.getMessage(), caught);
                                 view.getPackageErrorMessageDisplay()
                                         .createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                             }
@@ -1019,8 +936,8 @@ public class MeasurePackagePresenter implements MatPresenter {
             view.setRiskAdjustLabel(true);
             view.setQdmElementsLabel(true);
             //Set supple data to empty if CQL measure
-            view.setQDMElementsInSuppElements(Collections.<QualityDataSetDTO>emptyList());
-            view.setQDMElements(Collections.<QualityDataSetDTO>emptyList());
+            view.setQDMElementsInSuppElements(Collections.emptyList());
+            view.setQDMElements(Collections.emptyList());
             view.setCQLElementsInSuppElements(packageOverview.getCqlSuppDataElements());
             view.setCQLQDMElements(packageOverview.getCqlQdmElements());
         } else {
@@ -1028,8 +945,8 @@ public class MeasurePackagePresenter implements MatPresenter {
             view.setRiskAdjustLabel(false);
             view.setQdmElementsLabel(false);
             //Set CQL Suppl data to empty
-            view.setCQLElementsInSuppElements(Collections.<CQLDefinition>emptyList());
-            view.setCQLQDMElements(Collections.<CQLDefinition>emptyList());
+            view.setCQLElementsInSuppElements(Collections.emptyList());
+            view.setCQLQDMElements(Collections.emptyList());
             //Set QDM and Supplemental Data Elements.
             view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
             view.setQDMElements(packageOverview.getQdmElements());
@@ -1090,7 +1007,7 @@ public class MeasurePackagePresenter implements MatPresenter {
         MatContext.get().getAuditService().recordMeasureEvent(measureId, "Measure Package Created", "", false, new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable caught) {
-
+                logger.log(Level.SEVERE, "Error in AuditService.recordMeasureEvent. Error message: " + caught.getMessage(), caught);
             }
 
             @Override
@@ -1117,7 +1034,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onFailure(Throwable caught) {
-
+                logger.log(Level.SEVERE, "Error in BonnieService.updateOrUploadMeasureToBonnie. Error message: " + caught.getMessage(), caught);
                 if (caught instanceof UMLSNotActiveException) {
                     view.getMeasureErrorMessageDisplay().createAlert(VSAC_PACKAGE_UNAUTHORIZED_ERROR);
                     Mat.hideUMLSActive(true);
@@ -1200,4 +1117,101 @@ public class MeasurePackagePresenter implements MatPresenter {
         return isMeasurePackageDetailsSame();
     }
 
+    public interface PackageView {
+        Panel getCellTablePanel();
+
+        Widget asWidget();
+
+        MeasurePackageClauseCellListWidget getPackageGroupingWidget();
+
+        Button getCreateNewButton();
+
+        HasClickHandlers getPackageMeasureButton();
+
+        HasClickHandlers getAddQDMElementsToMeasureButton();
+
+        HasClickHandlers getaddRiskAdjVariablesToMeasure();
+
+        HasClickHandlers getPackageMeasureAndExportButton();
+
+        HasClickHandlers getPackageMeasureAndUploadToBonnieButton();
+
+        ErrorMessageAlert getErrorMessageDisplay();
+
+        ErrorMessageAlert getPackageErrorMessageDisplay();
+
+        MessageAlert getMeasurePackageSuccessMsg();
+
+        MessageAlert getPackageSuccessMessageDisplay();
+
+        MessageAlert getSupplementalDataElementSuccessMessageDisplay();
+
+        MessageAlert getSupplementalDataElementErrorMessageDisplay();
+
+        MessageAlert getMeasureErrorMessageDisplay();
+
+        MessageAlert getRiskAdjustmentVariableSuccessMessageDisplay();
+
+        MessageAlert getRiskAdjustmentVariableErrorMessageDisplay();
+
+        MessageAlert getInProgressMessageDisplay();
+
+        WarningMessageAlert getMeasurePackageWarningMsg();
+
+        WarningMessageAlert getCqlLibraryNameWarningMsg();
+
+        WarningConfirmationMessageAlert getSaveErrorMessageDisplay();
+
+        WarningConfirmationMessageAlert getSaveErrorMessageDisplayOnEdit();
+
+        List<QualityDataSetDTO> getQDMElementsInSuppElements();
+
+        List<QualityDataSetDTO> getQDMElements();
+
+        List<CQLDefinition> getCQLElementsInSuppElements();
+
+        List<CQLDefinition> getCQLQDMElements();
+
+        List<RiskAdjustmentDTO> getRiskAdjClauses();
+
+        List<RiskAdjustmentDTO> getRiskAdjVar();
+
+        void setQDMElementsInSuppElements(List<QualityDataSetDTO> clauses);
+
+        void setQDMElements(List<QualityDataSetDTO> clauses);
+
+        void setCQLElementsInSuppElements(List<CQLDefinition> clauses);
+
+        void setCQLQDMElements(List<CQLDefinition> clauses);
+
+        void setViewIsEditable(boolean b, List<MeasurePackageDetail> packages);
+
+        void setClauses(List<MeasurePackageClauseDetail> clauses);
+
+        void setClausesInPackage(List<MeasurePackageClauseDetail> list);
+
+        void setSubTreeClauseList(List<RiskAdjustmentDTO> riskAdjClauseList);
+
+        void setSubTreeInRiskAdjVarList(List<RiskAdjustmentDTO> riskAdjClauseList);
+
+        void setAppliedQdmList(QDSAppliedListModel appliedListModel);
+
+        void buildCellTable(List<MeasurePackageDetail> packages);
+
+        void setPackageName(String name);
+
+        void setObserver(Observer observer);
+
+        void setCQLMeasure(boolean isCQLMeasure);
+
+        void setRiskAdjustLabel(boolean isCQLMeasure);
+
+        void setQdmElementsLabel(boolean isCQLMeasure);
+
+        void setSaveErrorMessageDisplayOnEdit(WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit);
+
+        void setCellTablePanel(Panel cellTablePanel);
+
+        void clearPackageGroupingsAndSDEAndRAVs();
+    }
 }

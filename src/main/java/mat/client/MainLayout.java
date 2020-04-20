@@ -352,6 +352,7 @@ public abstract class MainLayout {
         final FlowPanel container = new FlowPanel();
 
         SIMPLE_SPINNER.setVisible(false);
+        SIMPLE_SPINNER.getElement().setAttribute("id", "loadingSimpleSpinner");
         container.add(SIMPLE_SPINNER);
         container.add(topBanner);
         container.add(contentPanel);

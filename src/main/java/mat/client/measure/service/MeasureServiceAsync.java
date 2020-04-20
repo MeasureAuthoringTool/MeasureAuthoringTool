@@ -30,7 +30,6 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
-import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
@@ -530,15 +529,7 @@ public interface MeasureServiceAsync {
 	 * @return the default sde from measure xml
 	 */
 	void getDefaultCQLSDEFromMeasureXml(String measureId, AsyncCallback<CQLQualityDataModelWrapper> callback);
-	
-	/**
-	 * Parses the cql.
-	 *
-	 * @param cqlBuilder the cql builder
-	 * @param asyncCallback the async callback
-	 */
-	void parseCQL(String cqlBuilder , AsyncCallback<CQLModel> asyncCallback);
-	
+
 	void saveCQLFile(String measureId, String cql, AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 	
 	/**
@@ -630,8 +621,6 @@ public interface MeasureServiceAsync {
 	void getCQLKeywordsList(AsyncCallback<CQLKeywords> callback);
 	
 	void getJSONObjectFromXML(AsyncCallback<String> asyncCallback);
-
-	void parseCQLStringForError(String cqlFileString, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getCQLValusets(String measureID, AsyncCallback<CQLQualityDataModelWrapper> callback);
 	

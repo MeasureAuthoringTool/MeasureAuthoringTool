@@ -34,174 +34,163 @@ import mat.shared.cql.error.InvalidLibraryException;
 public interface CQLService {
 
     /**
-     * Parses the cql.
+     * Gets the CQL data.
      *
-     * @param cqlBuilder the cql builder
-     * @return the CQL model
+     * @param xmlString - the measure xml
+     * @return the CQL data
      */
-    CQLModel parseCQL(String cqlBuilder);
+    SaveUpdateCQLResult getCQLData(String xmlString);
 
-	/**
-	 * Gets the CQL data.
-	 *
-	 * @param measureId the measure id
-	 * @return the CQL data
-	 */
-	SaveUpdateCQLResult getCQLData(String xmlString);
+    /**
+     * Save and modify cql general info.
+     *
+     * @param currentMeasureId the current measure id
+     * @param context          the context
+     * @return the save update cql result
+     */
+    SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(
+            String currentMeasureId, String context, String libraryComment);
 
-	/**
-	 * Save and modify cql general info.
-	 *
-	 * @param currentMeasureId the current measure id
-	 * @param context the context
-	 * @return the save update cql result
-	 */
-	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(
-			String currentMeasureId, String context, String libraryComment);
+    /**
+     * Save and modify functions.
+     *
+     * @param measureId       the measure id
+     * @param toBeModifiedObj the to be modified obj
+     * @param currentObj      the current obj
+     * @param functionsList   the functions list
+     * @param isFormatable    flag to determine if the function should be formatted on save
+     * @return the save update cql result
+     */
+    SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
+                                               List<CQLFunctions> functionsList, boolean isFormatable, String modelType);
 
-	/**
-	 * Save and modify functions.
-	 *
-	 * @param measureId the measure id
-	 * @param toBeModifiedObj the to be modified obj
-	 * @param currentObj the current obj
-	 * @param functionsList the functions list
-	 * @param isFormatable flag to determine if the function should be formatted on save
-	 * @return the save update cql result
-	 */
-	SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
-			List<CQLFunctions> functionsList, boolean isFormatable, String modelType);
+    /**
+     * Save and modify parameters.
+     *
+     * @param measureId       the measure id
+     * @param toBeModifiedObj the to be modified obj
+     * @param currentObj      the current obj
+     * @param parameterList   the parameter list
+     * @param isFormatable    flag to determine if the parameter should be formatted on save
+     * @return the save update cql result
+     */
+    SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
+                                                List<CQLParameter> parameterList, boolean isFormatable, String modelType);
 
-	/**
-	 * Save and modify parameters.
-	 *
-	 * @param measureId the measure id
-	 * @param toBeModifiedObj the to be modified obj
-	 * @param currentObj the current obj
-	 * @param parameterList the parameter list
-	 * @param isFormatable flag to determine if the parameter should be formatted on save
+    /**
+     * Save and modify definitions.
+     *
+     * @param measureId       the measure id
+     * @param toBeModifiedObj the to be modified obj
+     * @param currentObj      the current obj
+     * @param definitionList  the definition list
+     * @param isFormatable    flag to determine if the definition should be formatted on save
+     * @return the save update cql result
+     */
+    SaveUpdateCQLResult saveAndModifyDefinitions(String xml, CQLDefinition toBeModifiedObj, CQLDefinition currentObj,
+                                                 List<CQLDefinition> definitionList, boolean isFormatable, String modelType);
 
-	 * @return the save update cql result
-	 */
-	SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
-			List<CQLParameter> parameterList, boolean isFormatable, String modelType);
+    /**
+     * Delete definition
+     *
+     * @param measureId      the measure id
+     * @param toBeDeletedObj the to be deleted obj
+     * @return the save and update result
+     */
+    SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj);
 
-	/**
-	 * Save and modify definitions.
-	 *
-	 * @param measureId the measure id
-	 * @param toBeModifiedObj the to be modified obj
-	 * @param currentObj the current obj
-	 * @param definitionList the definition list
-	 * @param isFormatable flag to determine if the definition should be formatted on save
-	 * @return the save update cql result
-	 */
-	SaveUpdateCQLResult saveAndModifyDefinitions(String xml, CQLDefinition toBeModifiedObj, CQLDefinition currentObj,
-			List<CQLDefinition> definitionList, boolean isFormatable, String modelType);
+    /**
+     * Delete functions
+     *
+     * @param measureId     the measure id
+     * @param toBeDeltedObj the to be deleted obj
+     * @return the save and update result
+     */
+    SaveUpdateCQLResult deleteFunction(String measureId, CQLFunctions toBeDeltedObj);
 
-	/**
-	 * Delete definition
-	 *
-	 * @param measureId the measure id
-	 * @param toBeDeletedObj the to be deleted obj
-	 * @return the save and update result
-	 */
-	SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj);
+    /**
+     * Delete parameter
+     *
+     * @param measureId      the measure id
+     * @param toBeDeletedObj the to be deleted obj
+     * @return the save and update result
+     */
+    SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj);
 
-	/**
-	 * Delete functions
-	 *
-	 * @param measureId the measure id
-	 * @param toBeDeltedObj the to be deleted obj
-	 * @return the save and update result
-	 */
-	SaveUpdateCQLResult deleteFunction(String measureId, CQLFunctions toBeDeltedObj);
+    /**
+     * Gets the CQL data type list.
+     *
+     * @return the CQL data type list
+     */
+    CQLKeywords getCQLKeyWords();
 
-	/**
-	 * Delete parameter
-	 *
-	 * @param measureId the measure id
-	 * @param toBeDeletedObj the to be deleted obj
-	 * @return the save and update result
-	 */
-	SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj);
+    /**
+     * Gets the CQL file data.
+     *
+     * @param xmlString the measure xml
+     * @return the CQL file data
+     */
+    SaveUpdateCQLResult getCQLFileData(String xmlString);
 
-	/**
-	 * Gets the CQL data type list.
-	 *
-	 * @return the CQL data type list
-	 */
-	CQLKeywords getCQLKeyWords();
+    String createParametersXML(CQLParameter parameter);
 
-	/**
-	 * Gets the CQL file data.
-	 *
-	 * @param measureId the measure id
-	 * @return the CQL file data
-	 */
-	SaveUpdateCQLResult getCQLFileData(String xmlString);
+    String getJSONObjectFromXML();
 
-	String createParametersXML(CQLParameter parameter);
+    String createDefinitionsXML(CQLDefinition definition);
 
-	String getJSONObjectFromXML();
+    String getSupplementalDefinitions();
 
-	String createDefinitionsXML(CQLDefinition definition);
+    String getCqlString(CQLModel cqlModel);
 
-	String getSupplementalDefinitions();
+    String getDefaultCodeSystems();
 
-	String getCqlString(CQLModel cqlModel);
+    SaveUpdateCQLResult generateParsedCqlObject(String cqlValidationResponse, CQLModel cqlModel);
 
-	String getDefaultCodeSystems();
+    GetUsedCQLArtifactsResult getUsedCQlArtifacts(String measureId);
 
-	SaveUpdateCQLResult generateParsedCqlObject(String cqlValidationResponse, CQLModel cqlModel);
+    GetUsedCQLArtifactsResult generateUsedCqlArtifactsResult(CQLModel cqlModel, String xml, SaveUpdateCQLResult cqlResult);
 
-	GetUsedCQLArtifactsResult getUsedCQlArtifacts(String measureId);
+    CQLQualityDataModelWrapper getCQLValusets(String measureID, CQLQualityDataModelWrapper cqlQualityDataModelWrapper);
 
-	GetUsedCQLArtifactsResult generateUsedCqlArtifactsResult(CQLModel cqlModel, String xml, SaveUpdateCQLResult cqlResult);
+    SaveUpdateCQLResult saveCQLValueset(String xml, CQLValueSetTransferObject valueSetTransferObject);
 
-	SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
+    SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String xml, CQLIncludeLibrary toBeModifiedObj,
+                                                              CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList, String modelType) throws InvalidLibraryException;
 
-	CQLQualityDataModelWrapper getCQLValusets(String measureID, CQLQualityDataModelWrapper cqlQualityDataModelWrapper);
+    SaveUpdateCQLResult deleteInclude(String currentMeasureId, CQLIncludeLibrary toBeModifiedIncludeObj);
 
-	SaveUpdateCQLResult saveCQLValueset(String xml, CQLValueSetTransferObject valueSetTransferObject);
+    void saveCQLAssociation(CQLIncludeLibrary currentObj, String measureId);
 
-	SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String xml, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList,  String modelType) throws InvalidLibraryException;
+    void deleteCQLAssociation(CQLIncludeLibrary currentObj, String measureId);
 
-	SaveUpdateCQLResult deleteInclude(String currentMeasureId, CQLIncludeLibrary toBeModifiedIncludeObj);
+    SaveUpdateCQLResult updateCQLLookUpTag(String xml, CQLQualityDataSetDTO modifyWithDTO,
+                                           CQLQualityDataSetDTO modifyDTO);
 
-	void saveCQLAssociation(CQLIncludeLibrary currentObj, String measureId);
+    SaveUpdateCQLResult deleteValueSet(String xml, String toBeDelValueSetId);
 
-	void deleteCQLAssociation(CQLIncludeLibrary currentObj, String measureId);
+    int countNumberOfAssociation(String associatedWithId);
 
-	SaveUpdateCQLResult updateCQLLookUpTag(String xml, CQLQualityDataSetDTO modifyWithDTO,
-			CQLQualityDataSetDTO modifyDTO);
+    SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel);
 
-	SaveUpdateCQLResult deleteValueSet(String xml, String toBeDelValueSetId);
+    List<CQLLibraryAssociation> getAssociations(String id);
 
-	int countNumberOfAssociation(String associatedWithId);
+    SaveUpdateCQLResult saveCQLCodes(String xml, MatCodeTransferObject codeTransferObject);
 
-	SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel);
+    CQLCodeWrapper getCQLCodes(String xmlString);
 
-	List<CQLLibraryAssociation> getAssociations(String id);
+    SaveUpdateCQLResult deleteCode(String xml, String toBeDeletedCodeId);
 
-	SaveUpdateCQLResult saveCQLCodes(String xml , MatCodeTransferObject codeTransferObject);
-
-	CQLCodeWrapper getCQLCodes(String xmlString);
-
-	SaveUpdateCQLResult deleteCode(String xml, String toBeDeletedCodeId);
-
-	SaveUpdateCQLResult saveCQLCodeSystem(String xml, CQLCodeSystem codeSystem);
+    SaveUpdateCQLResult saveCQLCodeSystem(String xml, CQLCodeSystem codeSystem);
 
 	SaveUpdateCQLResult getCQLLibraryData(String xmlString, String modelType);
 
-	SaveUpdateCQLResult getCQLDataForLoad(String xmlString);
+    SaveUpdateCQLResult getCQLDataForLoad(String xmlString);
 
-	String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) throws MarshalException, ValidationException, IOException, MappingException;
+    String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) throws MarshalException, ValidationException, IOException, MappingException;
 
-	SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config, String modelType);
+    SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config, String modelType);
 
-	List<CQLLibraryHistory> createCQLLibraryHistory(List<CQLLibraryHistory> exsistingLibraryHistory, String CQLLibraryString, CQLLibrary cqlLibrary, Measure measure);
+    List<CQLLibraryHistory> createCQLLibraryHistory(List<CQLLibraryHistory> exsistingLibraryHistory, String CQLLibraryString, CQLLibrary cqlLibrary, Measure measure);
 
-	boolean checkIfLibraryNameExists(String libraryName, String setId);
+    boolean checkIfLibraryNameExists(String libraryName, String setId);
 }

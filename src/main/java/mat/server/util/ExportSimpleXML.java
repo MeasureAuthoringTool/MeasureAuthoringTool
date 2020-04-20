@@ -290,8 +290,7 @@ public class ExportSimpleXML {
         Document newSimleXmlDoc = null;
         XmlProcessor xmlOriginalProcessor = new XmlProcessor(unMarshalMeasureDetailsAndAddToSimpleXML(measure, originalDoc, organizationDAO, measureTypeDao));
         newSimleXmlDoc = xmlOriginalProcessor.getOriginalDoc();
-
-
+        updateUUIDForMeasureDetails(newSimleXmlDoc, measure.getId());
         setAttributesForComponentMeasures(newSimleXmlDoc, measureDAO);
         modifyHeaderStartStopDates(newSimleXmlDoc);
         removeUnusedComponentMeasures(newSimleXmlDoc);
@@ -320,6 +319,13 @@ public class ExportSimpleXML {
         return null;
     }
 
+	private static void updateUUIDForMeasureDetails(Document doc, String measureId)
+			throws XPathExpressionException {
+		String xPathForUUID = "/measure/measureDetails/uuid";
+		Node uuidNode = (Node) xPath.evaluate(xPathForUUID, doc, XPathConstants.NODE);
+		String uuid = UuidUtility.idToUuid(measureId);
+		uuidNode.setTextContent(uuid);
+	}
 
     private static String getStringValueFromDocument(Document originalDoc) {
         DOMSource domSource = new DOMSource(originalDoc);

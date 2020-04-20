@@ -1,7 +1,20 @@
 package mat.server.service.impl;
 
-import gov.cms.mat.fhir.rest.dto.ConversionOutcome;
-import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
+import java.io.IOException;
+import java.util.Optional;
+
+import mat.DTO.fhirconversion.ConversionOutcome;
+import mat.DTO.fhirconversion.ConversionResultDto;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
+
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.CQLService;
@@ -21,18 +34,6 @@ import mat.server.service.FhirOrchestrationGatewayService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.util.XmlProcessor;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
-
-import java.io.IOException;
-import java.util.Optional;
 
 @Service
 public class FhirMeasureServiceImpl implements FhirMeasureService {

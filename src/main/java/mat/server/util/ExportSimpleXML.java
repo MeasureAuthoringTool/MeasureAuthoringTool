@@ -65,7 +65,7 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 
 public class ExportSimpleXML {
-	
+
 
 	private static final String STRATIFICATION = "stratification";
 	private static final Log logger = LogFactory.getLog(ExportSimpleXML.class);
@@ -129,10 +129,10 @@ public class ExportSimpleXML {
 
 		return simpleXML;
 	}
-	
+
 	/**
 	 * Sets the qdm id as uuid.
-	 * 
+	 *
 	 * @param xmlString
 	 *            the xml string
 	 * @return the string
@@ -195,7 +195,7 @@ public class ExportSimpleXML {
 	 *            the organization dao
 	 * @param measureDAO
 	 * @param cqlLibraryDAO
-	 * @param measure 
+	 * @param measure
 	 * @return the string
 	 */
 	private static String generateExportedXML(Document measureXMLDocument, OrganizationDAO organizationDAO,
@@ -283,16 +283,16 @@ public class ExportSimpleXML {
 	 *            the organization dao
 	 * @param measureDAO
 	 * @param cqlLibraryDAO
-	 * @param measure 
+	 * @param measure
 	 * @return the string
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
-	 * @throws MappingException 
-	 * @throws IOException 
-	 * @throws ValidationException 
-	 * @throws MarshalException 
-	 * @throws ParserConfigurationException 
-	 * @throws SAXException 
+	 * @throws MappingException
+	 * @throws IOException
+	 * @throws ValidationException
+	 * @throws MarshalException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
 	 */
 	private static String generateMeasureExportXML(Document originalDoc, OrganizationDAO organizationDAO, MeasureDAO measureDAO, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel, Measure measure, MeasureTypeDAO measureTypeDao) throws XPathExpressionException, MarshalException, ValidationException, IOException, MappingException, SAXException, ParserConfigurationException {
 		List<String> usedClauseIds = getUsedClauseIds(originalDoc);
@@ -303,19 +303,17 @@ public class ExportSimpleXML {
 		removeUnusedCQLArtifacts(originalDoc, cqlLibraryDAO, cqlModel);
 		modifyMeasureGroupingSequence(originalDoc);
 		removeEmptyCommentsFromPopulationLogic(originalDoc);
-		
+
 		Document newSimleXmlDoc = null;
 		XmlProcessor xmlOriginalProcessor = new XmlProcessor(unMarshalMeasureDetailsAndAddToSimpleXML(measure, originalDoc, organizationDAO, measureTypeDao));
 		newSimleXmlDoc = xmlOriginalProcessor.getOriginalDoc();
-		
-		
-		
+		updateUUIDForMeasureDetails(newSimleXmlDoc, measure.getId());
 		setAttributesForComponentMeasures(newSimleXmlDoc, measureDAO);
 		modifyHeaderStartStopDates(newSimleXmlDoc);
 		removeUnusedComponentMeasures(newSimleXmlDoc);
 		return transform(newSimleXmlDoc);
 	}
-	
+
 	private static String unMarshalMeasureDetailsAndAddToSimpleXML(Measure measure, Document originalDoc, OrganizationDAO organizationDao, MeasureTypeDAO measureTypeDao) {
 		String result = null;
 		try {
@@ -330,15 +328,21 @@ public class ExportSimpleXML {
 
 			XmlProcessor xmlOriginalProcessor = new XmlProcessor(getStringValueFromDocument(originalDoc));
 			return xmlOriginalProcessor.appendNode(result, "measureDetails", "/measure");
-			
-			
+
+
 		} catch(Exception e) {
 			logger.error("Exception in createModelFromXML: " + e);
 		}
 		return null;
 	}
-	
-	
+
+	private static void updateUUIDForMeasureDetails(Document doc, String measureId)
+			throws XPathExpressionException {
+		String xPathForUUID = "/measure/measureDetails/uuid";
+		Node uuidNode = (Node) xPath.evaluate(xPathForUUID, doc, XPathConstants.NODE);
+		String uuid = UuidUtility.idToUuid(measureId);
+		uuidNode.setTextContent(uuid);
+	}
 
 	private static String getStringValueFromDocument(Document originalDoc) {
 		DOMSource domSource = new DOMSource(originalDoc);
@@ -365,7 +369,7 @@ public class ExportSimpleXML {
 		XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
 		try {
 			result = xmlMarshalUtil.convertObjectToXML(xmlMapping, object);
-			
+
 		} catch (MarshalException | ValidationException | MappingException | IOException e) {
 			logger.error("Failed to load MeasureDetailsModelMapping.xml" + e.getMessage());
 			e.printStackTrace();
@@ -375,7 +379,7 @@ public class ExportSimpleXML {
 	}
 
 	/**
-	 * Removes unused component measures from a measure. A component measure is considered not used 
+	 * Removes unused component measures from a measure. A component measure is considered not used
 	 * @param originalDoc
 	 * @throws XPathExpressionException
 	 * @throws MarshalException
@@ -390,11 +394,11 @@ public class ExportSimpleXML {
 
 		String componentMeasuresXPath = "/measure/measureDetails/componentMeasures/measure";
 		NodeList componentMeasureNodeList = (NodeList) xPath.evaluate(componentMeasuresXPath, originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		
+
 		String includedLibraryXPath = "/measure/cqlLookUp/includeLibrarys/includeLibrary";
 		NodeList includedLibraryNodeList = (NodeList) xPath.evaluate(includedLibraryXPath, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 
-		Set<String> usedIncludedLibraryIds = new HashSet<>(); 
+		Set<String> usedIncludedLibraryIds = new HashSet<>();
 		if(includedLibraryNodeList != null) {
 			for(int i = 0; i < includedLibraryNodeList.getLength(); i++) {
 				Node current = includedLibraryNodeList.item(i);
@@ -412,14 +416,14 @@ public class ExportSimpleXML {
 				current.getParentNode().removeChild(current);
 			}
 		}
-		
+
 		logger.info("Finished Removing Unused Component Measures");
 	}
 
 
 	/**
 	 * Removes all unused cql artifacts
-	 * 
+	 *
 	 * @param originalDoc
 	 * @param cqlLibraryDAO
 	 * @param cqlModel
@@ -433,17 +437,17 @@ public class ExportSimpleXML {
 		expressionList.addAll(usedCQLArtifactHolder.getCqlDefFromPopSet());
 		expressionList.addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
 		SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
-		
-			
+
+
 		result.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(usedCQLArtifactHolder.getCqlDefFromPopSet());
 		result.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
 
 		CQLUtil.removeUnusedCQLDefinitions(originalDoc, result.getUsedCQLArtifacts().getUsedCQLDefinitions());
-				
+
 		CQLUtil.removeUnusedCQLFunctions(originalDoc, result.getUsedCQLArtifacts().getUsedCQLFunctions());
-				
+
 		CQLUtil.removeUnusedParameters(originalDoc, result.getUsedCQLArtifacts().getUsedCQLParameters());
-		
+
 		resolveAllValuesetsAndCodes(originalDoc, result, cqlModel);
 
 		updateCqlLibraryToHaveSetId(cqlLibraryDAO, result);
@@ -451,7 +455,7 @@ public class ExportSimpleXML {
 		CQLUtil.addUsedCQLLibstoSimpleXML(originalDoc, result.getUsedCQLArtifacts().getIncludeLibMap(), cqlLibraryDAO);
 		CQLUtil.addUnUsedGrandChildrentoSimpleXML(originalDoc, result, cqlModel, cqlLibraryDAO);
 	}
-	
+
 	private static void updateCqlLibraryToHaveSetId(CQLLibraryDAO cqlLibraryDAO, SaveUpdateCQLResult result) {
 		for(CQLIncludeLibrary library : result.getUsedCQLArtifacts().getIncludeLibMap().values()) {
 			CQLLibrary includedLibrary = cqlLibraryDAO.find(library.getCqlLibraryId());
@@ -484,7 +488,7 @@ public class ExportSimpleXML {
 		System.out.println("resolveValueSets_Codes true");
 		// resolve all value-sets
 		resolveValueSets_Codes(originalDoc, result, cqlModel, elementLookUpNode, true);
-		
+
 		System.out.println("resolveValueSets_Codes false");
 		// resolve all codes (direct reference codes)
 		resolveValueSets_Codes(originalDoc, result, cqlModel, elementLookUpNode, false);
@@ -506,52 +510,52 @@ public class ExportSimpleXML {
 
 		Map<String, List<String>> dataCriteriaValueSetMap = new HashMap<String, List<String>>();
 		if(isValueSet) {
-			
+
 			for(String definitionName : result.getUsedCQLArtifacts().getUsedCQLDefinitions()) {
-				
+
 				if(result.getUsedCQLArtifacts().getExpressionNameToValuesetDataTypeMap().get(definitionName) != null) {
-				
+
 					Map<String, Set<String>> usedValueSetDataTypeMap = result.getUsedCQLArtifacts().getExpressionNameToValuesetDataTypeMap().get(definitionName);
 					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, CQLUtil.mapSetValueToListValue(usedValueSetDataTypeMap));
-					
+
 				}
 			}
-			
+
 			for(String functionName : result.getUsedCQLArtifacts().getUsedCQLFunctions()) {
-				
+
 				if(result.getUsedCQLArtifacts().getExpressionNameToValuesetDataTypeMap().get(functionName) != null) {
-				
+
 					Map<String, Set<String>> usedValueSetDataTypeMap = result.getUsedCQLArtifacts().getExpressionNameToValuesetDataTypeMap().get(functionName);
 					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, CQLUtil.mapSetValueToListValue(usedValueSetDataTypeMap));
-					
+
 				}
 			}
-			
+
 		}else {
-			
+
 			for(String definitionName : result.getUsedCQLArtifacts().getUsedCQLDefinitions()) {
-				
+
 				if(result.getUsedCQLArtifacts().getExpressionNameToCodeDataTypeMap().get(definitionName) != null) {
-				
+
 					Map<String, Set<String>> usedCodeDataTypeMap = result.getUsedCQLArtifacts().getExpressionNameToCodeDataTypeMap().get(definitionName);
 					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, CQLUtil.mapSetValueToListValue(usedCodeDataTypeMap));
-					
+
 				}
 			}
-			
+
 			for(String functionName : result.getUsedCQLArtifacts().getUsedCQLFunctions()) {
-				
+
 				if(result.getUsedCQLArtifacts().getExpressionNameToCodeDataTypeMap().get(functionName) != null) {
-				
+
 					Map<String, Set<String>> usedCodeDataTypeMap = result.getUsedCQLArtifacts().getExpressionNameToCodeDataTypeMap().get(functionName);
 					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, CQLUtil.mapSetValueToListValue(usedCodeDataTypeMap));
-					
+
 				}
 			}
 		}
-		
-		List<String> usedDefinitions = new ArrayList<String>();		
-		
+
+		List<String> usedDefinitions = new ArrayList<String>();
+
 		/**
 		 * Find and add all Supplemental Data definitions to the usedDefinitionList
 		 */
@@ -562,7 +566,7 @@ public class ExportSimpleXML {
 		if (supplementalDefinitionNodeList != null && supplementalDefinitionNodeList.getLength() > 0) {
 			for (int i = 0; i < supplementalDefinitionNodeList.getLength(); i++) {
 				Node supplementalNode = supplementalDefinitionNodeList.item(i);
-				
+
 				String nodeUUID = supplementalNode.getAttributes().getNamedItem("uuid").getNodeValue();
 
 				String definitionXPath = "//cqlLookUp/definitions/definition[@id='" + nodeUUID + "']";
@@ -576,7 +580,7 @@ public class ExportSimpleXML {
 				}
 			}
 		}
-		
+
 		/**
 		 * Find and add all Risk Adjustment Data definitions to the usedDefinitionList
 		 */
@@ -587,7 +591,7 @@ public class ExportSimpleXML {
 		if (riskAdjDefinitionNodeList != null && riskAdjDefinitionNodeList.getLength() > 0) {
 			for (int i = 0; i < riskAdjDefinitionNodeList.getLength(); i++) {
 				Node riskAdjNode = riskAdjDefinitionNodeList.item(i);
-				
+
 				String nodeUUID = riskAdjNode.getAttributes().getNamedItem("uuid").getNodeValue();
 
 				String definitionXPath = "//cqlLookUp/definitions/definition[@id='" + nodeUUID + "']";
@@ -601,12 +605,12 @@ public class ExportSimpleXML {
 				}
 			}
 		}
-		
+
 		for(String definitionName : usedDefinitions) {
-			
+
 			List<CQLExpressionObject> definitionObjects = result.getCqlObject().getCqlDefinitionObjectList();
 			for (CQLExpressionObject expressionObject : definitionObjects) {
-				
+
 				if (expressionObject.getName().equals(definitionName)) {
 
 					Map<String, List<String>> usedValueSetMap = new HashMap<String, List<String>>();
@@ -623,7 +627,7 @@ public class ExportSimpleXML {
 				}
 			}
 		}
-				
+
 		resolve_ValueSets_Codes_WithDataTypes(originalDoc, dataCriteriaValueSetMap, cqlModel, elementLookUpNode,
 				isValueSet);
 
@@ -637,7 +641,7 @@ public class ExportSimpleXML {
 		// remove all the used value-sets/codes that are present in the
 		// retrieval list
 		usedValueSetsCodes_NotRetrieves.removeAll(dataCriteriaValueSetMap.keySet());
-		
+
 		resolve_ValueSets_Codes_WithoutDataTypes(originalDoc, usedValueSetsCodes_NotRetrieves, cqlModel,
 				elementLookUpNode, isValueSet);
 
@@ -719,12 +723,12 @@ public class ExportSimpleXML {
 
 			// rename node to "qdm"
 			xmlDoc.renameNode(clonedValueSet_CodeNode, null, "qdm");
-			
+
 			// MAT-8770 : adding fix on Chinmay's behalf.
 			if(clonedValueSet_CodeNode.getAttributes().getNamedItem("datatype") != null){
 				clonedValueSet_CodeNode.getAttributes().removeNamedItem("datatype");
 			}
-			
+
 
 			// set new attribute "code" to indicate if this is a Direct
 			// reference code or value-set.
@@ -867,7 +871,7 @@ public class ExportSimpleXML {
 
 		Document returnDoc = null;
 		String[] nameSplitArr = valueSetName.split(Pattern.quote("|"));
-		
+
 		if (nameSplitArr.length == 3) {
 			String includedLibName = nameSplitArr[0];
 
@@ -890,7 +894,7 @@ public class ExportSimpleXML {
 	/**
 	 * This method will remove empty comments nodes from clauses which are part
 	 * of Measure Grouping.
-	 * 
+	 *
 	 * @param originalDoc
 	 *            - Document
 	 * @throws XPathExpressionException
@@ -941,7 +945,7 @@ public class ExportSimpleXML {
 	 *            the used sub tree ids
 	 * @param originalDoc
 	 *            the original doc
-	 * @throws XPathExpressionException 
+	 * @throws XPathExpressionException
 	 */
 	private static void formatAttributeDateInQDMAttribute(List<String> usedSubTreeIds, Document originalDoc) throws XPathExpressionException {
 
@@ -1210,7 +1214,7 @@ public class ExportSimpleXML {
 	 * Logic copied to Occ Clause Logic Nodes in Simple xml from actual Clause
 	 * requires attrUUID to be updated to new in case there are elementRef's at
 	 * any level with Attributes. This method is doing the same.
-	 * 
+	 *
 	 * @param qdmVariableNode
 	 *            - Node.
 	 */
@@ -1237,7 +1241,7 @@ public class ExportSimpleXML {
 
 	/**
 	 * Method to re order Measure Grouping Sequence.
-	 * 
+	 *
 	 * @param originalDoc
 	 *            - Document.
 	 * @throws XPathExpressionException
@@ -1265,7 +1269,7 @@ public class ExportSimpleXML {
 
 	/**
 	 * Transform.
-	 * 
+	 *
 	 * @param node
 	 *            the node
 	 * @return the string
@@ -1290,7 +1294,7 @@ public class ExportSimpleXML {
 	/**
 	 * Removes un-wanted qdms, except 'Measurement Period', 'Expired',
 	 * 'Birthdate' QDM elements.
-	 * 
+	 *
 	 * @param usedQDMIds
 	 *            the used qdm ids
 	 * @param originalDoc
@@ -1321,7 +1325,7 @@ public class ExportSimpleXML {
 	 * This method will search for <clause> tags in the XML and check if the
 	 * UUID attribute matches the usedClauseIds list. If not removes the
 	 * <clause> tag from its parent.
-	 * 
+	 *
 	 * @param usedClauseIds
 	 *            the used clause ids
 	 * @param originalDoc
@@ -1363,10 +1367,10 @@ public class ExportSimpleXML {
 	 * <packageClause> child. For each <packageClause> it will copy the original
 	 * <clause> to <group> and remove the <packageClause> tag. Finally, at the
 	 * end of the method it will remove the <populations> tag from the document.
-	 * 
+	 *
 	 * @param originalDoc
 	 *            the original doc
-	 * @param measure 
+	 * @param measure
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
@@ -1508,7 +1512,7 @@ public class ExportSimpleXML {
 	 *            the group nodes
 	 * @param originalDoc
 	 *            the original doc
-	 * @param measure 
+	 * @param measure
 	 * @throws DOMException
 	 *             the DOM exception
 	 * @throws XPathExpressionException
@@ -1672,7 +1676,7 @@ public class ExportSimpleXML {
 	 * @param originalDoc
 	 *            the original doc
 	 * @return the stratification clauses id list
-	 * @throws XPathExpressionException 
+	 * @throws XPathExpressionException
 	 */
 	private static List<String> getStratificationClasuesIDList(String uuid, Document originalDoc) throws XPathExpressionException {
 		String XPATH_MEASURE_GROUPING_STRATIFICATION_CLAUSES = "/measure/strata/stratification" + "[@uuid='" + uuid
@@ -1871,7 +1875,7 @@ public class ExportSimpleXML {
 
 	/**
 	 * Gets the used qdm ids.
-	 * 
+	 *
 	 * @param originalDoc
 	 *            the original doc
 	 * @return the used qdm ids
@@ -1951,7 +1955,7 @@ public class ExportSimpleXML {
 	/**
 	 * Takes an XPath notation String for a particular tag and a Document object
 	 * and finds and removes the tag from the document.
-	 * 
+	 *
 	 * @param nodeXPath
 	 *            the node x path
 	 * @param originalDoc
@@ -1970,7 +1974,7 @@ public class ExportSimpleXML {
 	/**
 	 * We need to modify <startDate> and <stopDate> inside <measureDetails>/
 	 * <period> to have YYYYMMDD format.
-	 * 
+	 *
 	 * @param originalDoc
 	 *            the original doc
 	 * @throws XPathExpressionException
@@ -2017,7 +2021,7 @@ public class ExportSimpleXML {
 	/**
 	 * This method will go through the entire XML file and find
 	 * <functionalOp> tags and add a 'uuid' attribute to each.
-	 * 
+	 *
 	 * @param originalDoc
 	 *            the original doc
 	 * @throws XPathExpressionException
@@ -2040,7 +2044,7 @@ public class ExportSimpleXML {
 	/**
 	 * This method will expect Date String in MM/DD/YYYY format And convert it
 	 * to YYYYMMDD format.
-	 * 
+	 *
 	 * @param date
 	 *            the date
 	 * @return the string

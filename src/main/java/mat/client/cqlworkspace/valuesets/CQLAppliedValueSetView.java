@@ -516,7 +516,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
             public SafeHtml getValue(CQLQualityDataSetDTO object) {
                 StringBuilder title = CQLAppliedValueSetUtility.buildOIDTitle(object);
                 String oid = CQLAppliedValueSetUtility.buildOidColumnOid(object);
-                if (MatContext.get().isCurrentModelFhir() && oid != null) {
+                if (MatContext.get().isCurrentModelTypeFhir() && oid != null) {
                     oid = ".../" + getOidFromUrl(oid);
                 }
                 log.log(Level.INFO, "getValue for oid column: " + oid + " title=" + title);
@@ -1098,7 +1098,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
     public List<CQLValueSetTransferObject> setMatValueSetListForValueSets(List<CQLQualityDataSetDTO> copiedValueSetList, List<CQLQualityDataSetDTO> appliedValueSetTableList) {
         List<CQLValueSetTransferObject> cqlValueSetTransferObjectsList = new ArrayList<>();
         for (CQLQualityDataSetDTO cqlQualityDataSetDTO : copiedValueSetList) {
-            boolean isFhir = MatContext.get().isCurrentModelFhir();
+            boolean isFhir = MatContext.get().isCurrentMeasureModelFhir();
             if (!checkNameInValueSetList(cqlQualityDataSetDTO.getName(), appliedValueSetTableList)) {
                 CQLValueSetTransferObject cqlValueSetTransferObject = new CQLValueSetTransferObject();
                 cqlValueSetTransferObject.setCqlQualityDataSetDTO(cqlQualityDataSetDTO);

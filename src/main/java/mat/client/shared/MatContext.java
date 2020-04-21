@@ -522,6 +522,8 @@ public class MatContext implements IsSerializable {
         return currentModule;
     }
 
+    public boolean isCurrentModelFhir() { return "FHIR".equals(getCurrentMeasureModel()); }
+
     @Deprecated
     public String getCurrentMeasureScoringType() {
         if (currentMeasureInfo != null) {

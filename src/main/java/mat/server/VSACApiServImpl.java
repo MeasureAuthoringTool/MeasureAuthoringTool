@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,6 +41,8 @@ import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.UMLSSessionTicket;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
+
+import static mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility.getOidFromUrl;
 
 @Service
 public class VSACApiServImpl implements VSACApiService{
@@ -273,13 +276,13 @@ public class VSACApiServImpl implements VSACApiService{
 							String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(UMLSSessionTicket.getTicket(sessionId).getTicket());
 								if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getRelease())) {
 									vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(
-										cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getRelease(), fiveMinuteServiceTicket);
+											getOidFromUrl(cqlQualityDataSetDTO.getOid()), cqlQualityDataSetDTO.getRelease(), fiveMinuteServiceTicket);
 								} else if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getVersion())) {
 									vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndVersion(
-											cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getVersion(), fiveMinuteServiceTicket);
+											getOidFromUrl(cqlQualityDataSetDTO.getOid()), cqlQualityDataSetDTO.getVersion(), fiveMinuteServiceTicket);
 								} else {
 									vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
-											cqlQualityDataSetDTO.getOid(), fiveMinuteServiceTicket, defaultExpId);
+											getOidFromUrl(cqlQualityDataSetDTO.getOid()), fiveMinuteServiceTicket, defaultExpId);
 								}
 								
 						} catch (Exception ex) {

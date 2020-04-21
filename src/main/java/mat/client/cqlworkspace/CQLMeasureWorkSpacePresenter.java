@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import mat.shared.model.util.MeasureDetailsUtil;
@@ -69,9 +71,12 @@ import mat.shared.StringUtility;
 import mat.shared.cql.error.InvalidLibraryException;
 
 public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter implements MatPresenter {
+	private static final Logger log = Logger.getLogger(CQLMeasureWorkSpacePresenter.class.getSimpleName());
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
 
 	public CQLMeasureWorkSpacePresenter(final CQLWorkspaceView workspaceView) {
+		log.log(Level.INFO,"Entering CQLMeasureWorkSpacePresenter()");
+
 		cqlWorkspaceView = workspaceView;
 		setInAppHelpMessages();
 		addEventHandlers();
@@ -409,6 +414,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	}
 
 	private void deleteValueSet(String toBeDeletedValueSetId) {
+		log.log(Level.INFO,"Entering deleteValueSet(" + toBeDeletedValueSetId + ")");
 		showSearchingBusy(true);
 		MatContext.get().getMeasureService().deleteValueSet(toBeDeletedValueSetId, MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
 
@@ -640,7 +646,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 	@Override
 	protected void saveCQLFile() {
-
+		log.log(Level.INFO,"Entering saveCQLFile()");
 		if(hasEditPermissions()) {
 
 			String currentCQL = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().getText();
@@ -1647,6 +1653,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 	@Override
 	protected void updateVSACValueSets() {
+		log.log(Level.INFO,"Entering updateVSACValueSets()");
 		showSearchingBusy(true);
 		service.updateCQLVSACValueSets(MatContext.get().getCurrentMeasureId(), null, new AsyncCallback<VsacApiResult>() {
 
@@ -1689,8 +1696,11 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						}
 					}
 					cqlWorkspaceView.getValueSetView().buildAppliedValueSetCellTable(appliedListModel, hasEditPermissions());
+					log.log(Level.INFO,"Applied value sets to table.");
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().setAppliedQdmTableList(appliedValueSetTableList);
+					log.log(Level.INFO,"Applied left nav setAppliedQdmTableList");
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
+					log.log(Level.INFO,"Applied left nav updateValueSetMap");
 				} else {
 					messagePanel.getErrorMessageAlert().createAlert(convertMessage(result.getFailureReason()));
 				}
@@ -1701,6 +1711,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 	@Override
 	protected void searchValueSetInVsac(String release, String expansionProfile) {
+		log.log(Level.INFO,"searchValueSetInVsac(" + release + "," + expansionProfile + ")");
 		currentMatValueSet = null;
 		showSearchingBusy(true);
 		final String oid = cqlWorkspaceView.getValueSetView().getOIDInput().getValue();
@@ -1761,6 +1772,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 	@Override
 	protected void addVSACCQLValueset() {
+		log.log(Level.INFO,"Entering addVSACCQLValueset()");
+
 		String measureID = MatContext.get().getCurrentMeasureId();
 		CQLValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(measureID);
 		matValueSetTransferObject.scrubForMarkUp();
@@ -1773,6 +1786,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	}
 
 	private void saveValueset(CQLValueSetTransferObject matValueSetTransferObject, final String codeListName) {
+		log.log(Level.INFO,"Entering saveValueset(?," + codeListName + ")");
 		if (!cqlWorkspaceView.getValueSetView().checkNameInValueSetList(codeListName, appliedValueSetTableList)) {
 			showSearchingBusy(true);
 			MatContext.get().getMeasureService().saveCQLValuesettoMeasure(matValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
@@ -1818,6 +1832,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 	@Override
 	protected void addUserDefinedValueSet() {
+		log.log(Level.INFO,"addUserDefinedValueSet()");
+
 		CQLValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(MatContext.get().getCurrentMeasureId());
 		matValueSetTransferObject.getCqlQualityDataSetDTO().setOid("");
 		matValueSetTransferObject.scrubForMarkUp();
@@ -1838,6 +1854,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 	@Override
 	protected void updateAppliedValueSetsList(final MatValueSet matValueSet, final CodeListSearchDTO codeListSearchDTO, final CQLQualityDataSetDTO qualityDataSetDTO) {
+		log.log(Level.INFO,"updateAppliedValueSetsList()");
 		CQLValueSetTransferObject matValueSetTransferObject = new CQLValueSetTransferObject();
 		matValueSetTransferObject.setMeasureId(MatContext.get().getCurrentMeasureId());
 		matValueSetTransferObject.setUserDefinedText(cqlWorkspaceView.getValueSetView().getUserDefinedInput().getText());
@@ -1885,7 +1902,9 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 	@Override
 	protected void getAppliedValuesetAndCodeList() {
+		log.log(Level.INFO,"getAppliedValuesetAndCodeList()");
 		String measureId = MatContext.get().getCurrentMeasureId();
+		log.log(Level.INFO,"Entering getAppliedValuesetAndCodeList() measureId=" + measureId);
 		if ((measureId != null) && !measureId.equals(EMPTY_STRING)) {
 			MatContext.get().getMeasureService().getCQLValusets(measureId, new AsyncCallback<CQLQualityDataModelWrapper>() {
 
@@ -1902,6 +1921,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 							|| (v.getCodeIdentifier() != null && !v.getCodeIdentifier().isEmpty()))
 					).collect(Collectors.toList());
 					setAppliedValueSetListInTable(valuesets);
+					log.log(Level.INFO,"leaving onSuccess getAppliedValuesetAndCodeList() measureId=" + measureId);
 				}
 			});
 		}
@@ -1912,7 +1932,14 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		return MatContext.get().getCurrentMeasureModel();
 	}
 
+	protected boolean isFhirModelType() {
+		boolean result = !"QDM".equals(getCurrentModelType());
+		log.log(Level.INFO,"isFhirModelType() returning" + result);
+		return result;
+	}
+
 	private CQLValueSetTransferObject createValueSetTransferObject(String measureID) {
+		log.log(Level.INFO,"Entering createValueSetTransferObject(" + measureID + ")");
 		if (currentMatValueSet == null) {
 			currentMatValueSet = new MatValueSet();
 		}
@@ -1921,7 +1948,15 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		String originalCodeListName = cqlWorkspaceView.getValueSetView().getUserDefinedInput().getValue();
 		matValueSetTransferObject.setCqlQualityDataSetDTO(new CQLQualityDataSetDTO());
 		matValueSetTransferObject.getCqlQualityDataSetDTO().setOriginalCodeListName(originalCodeListName);
-		matValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentMatValueSet.getID());
+
+		if (isFhirModelType()) {
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setOid("http://cts.nlm.nih.gov/fhir/ValueSet/" + currentMatValueSet.getID());
+			currentMatValueSet.setID(matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
+		} else {
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentMatValueSet.getID());
+		}
+		log.log(Level.INFO,"valueset.oid=" + matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
+
 
 		if (!cqlWorkspaceView.getValueSetView().getSuffixInput().getValue().isEmpty()) {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(cqlWorkspaceView.getValueSetView().getSuffixInput().getValue());
@@ -1991,6 +2026,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	}
 
 	private void setAppliedValueSetListInTable(List<CQLQualityDataSetDTO> valueSetList) {
+		log.log(Level.INFO,"Entering setAppliedValueSetListInTable() \n" + valueSetList);
 		appliedValueSetTableList.clear();
 
 
@@ -2011,6 +2047,9 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		}
 		cqlWorkspaceView.getValueSetView().buildAppliedValueSetCellTable(appliedValueSetTableList, hasEditPermissions());
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
+		log.log(Level.INFO,"Leaving setAppliedValueSetListInTable()");
+
+
 	}
 
 	private static final boolean isListValueNotSelected(String selectedValueFromList) {

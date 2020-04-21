@@ -3,6 +3,8 @@ package mat.client.cqlworkspace;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import mat.shared.model.util.MeasureDetailsUtil;
@@ -70,6 +72,8 @@ import mat.shared.StringUtility;
 import mat.shared.cql.error.InvalidLibraryException;
 
 public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresenter implements MatPresenter {
+	private static final Logger log = Logger.getLogger(CQLStandaloneWorkSpacePresenter.class.getSimpleName());
+
 	private SimplePanel emptyWidget = new SimplePanel();
 	private boolean isCQLWorkSpaceLoaded = false;
 	private final CQLLibraryServiceAsync cqlService = MatContext.get().getCQLLibraryService();
@@ -1621,6 +1625,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
 	@Override
 	protected void updateVSACValueSets() {
+		log.log(Level.INFO,"Entering updateVSACValueSets()");
 		showSearchingBusy(true);
 		String expansionId = null;
 
@@ -1664,7 +1669,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					}
 					cqlWorkspaceView.getValueSetView().buildAppliedValueSetCellTable(appliedListModel, hasEditPermissions());
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().setAppliedQdmTableList(appliedValueSetTableList);
+					log.log(Level.INFO,"getCQLLeftNavBarPanelView().setAppliedQdmTableList() success");
 					cqlWorkspaceView.getCQLLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
+					log.log(Level.INFO,"getCQLLeftNavBarPanelView().updateValueSetMap( success");
 				} else {
 					messagePanel.getErrorMessageAlert().createAlert(convertMessage(result.getFailureReason()));
 				}
@@ -1990,6 +1997,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 
 	private void setAppliedValueSetListInTable(List<CQLQualityDataSetDTO> valueSetList) {
+		log.log(Level.INFO,"setAppliedValueSetListInTable()");
 		appliedValueSetTableList.clear();
 		List<CQLQualityDataSetDTO> allValuesets = new ArrayList<>();
 		for (CQLQualityDataSetDTO dto : valueSetList) {
@@ -2005,7 +2013,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 			appliedValueSetTableList.add(valueset);
 		}
 		cqlWorkspaceView.getValueSetView().buildAppliedValueSetCellTable(appliedValueSetTableList, hasEditPermissions());
+
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
+		log.log(Level.INFO,"Completed setAppliedValueSetListInTable");
 	}
 
 	private void leftNavParameterNameListBoxDoubleClickEvent(DoubleClickEvent event) {

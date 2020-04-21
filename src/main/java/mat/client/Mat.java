@@ -10,6 +10,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
@@ -134,7 +135,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private ManageAdminReportingPresenter reportingPresenter;
     private int tabIndex;
 
-    private final AsyncCallback<SessionManagementService.Result> userRoleCallback = new AsyncCallback<SessionManagementService.Result>() {
+    private final AsyncCallback<SessionManagementService.Result> initSessionCallback = new AsyncCallback<SessionManagementService.Result>() {
 
         @Override
         public void onFailure(final Throwable caught) {
@@ -162,7 +163,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                         MatContext.get().setUserSignInDate(result.userId);
                         MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole, result.loginId, result.userPreference);
                         loadMatWidgets(result.userFirstName, result.userLastName, isAlreadySignedIn, resultMatVersion);
-                        buildLogoutForm();
                     }
                 }
 
@@ -174,22 +174,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         }
     };
 
-    private final AsyncCallback<LoginModel> userSessionSetupCallback = new AsyncCallback<LoginModel>() {
+    private final AsyncCallback<LoginModel> harpUserSessionSetupCallback = new AsyncCallback<LoginModel>() {
         @Override
         public void onFailure(Throwable throwable) {
-            Window.alert("setUserDetailsByHarpId::onFailure::"+ throwable.getMessage());
             //TODO MAT-842: Harp ID not found in MAT, redirect to Access Support Page.
         }
 
         @Override
         public void onSuccess(LoginModel loginModel) {
-            MatContext.get().setUserInfo(
-                    loginModel.getUserId(),
-                    loginModel.getEmail(),
-                    loginModel.getRole().getDescription(),
-                    loginModel.getLoginId(),
-                    loginModel.getUserPreference());
-
             initPage();
         }
     };
@@ -304,27 +296,29 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     protected void initEntryPoint() {
         MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
         showLoadingMessage();
-
         // The HARP Sign-In widget stores tokens in Local Storage.
         Storage localStorage = Storage.getLocalStorageIfSupported();
 
         if(localStorage != null && localStorage.getItem(OKTA_TOKEN_STORAGE) != null) {
             JSONValue tokens = JSONParser.parseStrict(localStorage.getItem(OKTA_TOKEN_STORAGE));
-            String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().stringValue();
-            String idToken = tokens.isObject().get("idToken").isObject().get("idToken").isString().stringValue();
-            String harpId = tokens.isObject().get("idToken").isObject().get("claims").isObject().get("email").isString().stringValue();
 
-            // Save idToken for HARP logout.
+            String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().stringValue();
+
+            JSONObject idTokenObj = tokens.isObject().get("idToken").isObject();
+            String idToken = idTokenObj.get("idToken").isString().stringValue();
+            String email = idTokenObj.get("claims").isObject().get("email").isString().stringValue();
+            String harpId = idTokenObj.get("claims").isObject().get("preferred_username").isString().stringValue();
+
+//            Window.alert("username:" + harpId);
+
+            // Save tokens for HARP logout.
             MatContext.get().setIdToken(idToken);
+            MatContext.get().setAccessToken(accessToken);
 
             // Create MAT session with HARP ID (user email).
-            MatContext.get().setUserDetailsByHarpId(harpId, accessToken, userSessionSetupCallback);
-        } else if(MatContext.get().getLoggedinUserId() != null) {
-            // Legacy Login.
-            initPage();
+            MatContext.get().initSession(email, accessToken, harpUserSessionSetupCallback);
         } else {
-            //FIXME MAT-864. Remove redirect once security config is updated.
-            redirectToLogin();
+            initPage();
         }
     }
 
@@ -342,7 +336,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         });
 
         MatContext.get().setListBoxCodeProvider(listBoxCodeProvider);
-        MatContext.get().getCurrentUserRole(userRoleCallback);
+
+        // Init session with current user info.
+        MatContext.get().getCurrentUser(initSessionCallback);
+
         mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
 
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -556,37 +553,49 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, event -> {
             Mat.hideLoadingMessage();
             Mat.showSignOutMessage();
-            harpLogout();
-            MatContext.get().getSynchronizationDelegate().setLogOffFlag();
-            MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
+            logout();
         });
 
-        MatContext.get().getEventBus().addHandler(TimedOutEvent.TYPE, new TimedOutEvent.Handler() {
-            @Override
-            public void onTimedOut(TimedOutEvent event) {
-                if (measureComposer != null) {
-                    Mat.focusSkipLists("MainContent");
-                }
+        MatContext.get().getEventBus().addHandler(TimedOutEvent.TYPE, event -> {
+            if (measureComposer != null) {
+                Mat.focusSkipLists("MainContent");
             }
         });
 
         MatContext.get().restartTimeoutWarning();
     }
 
-    void harpLogout() {
-        MatContext.get().getHarpService().getHarpBaseUrl(new AsyncCallback<String>() {
+    private void logout() {
+        // Revoke Access Token
+        MatContext.get().getHarpService().revoke(MatContext.get().getAccessToken(), new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable throwable) {
-                // Exception while attempting to logout of HARP.
-                Storage localStorage = Storage.getLocalStorageIfSupported();
-                localStorage.removeItem(OKTA_TOKEN_STORAGE);
+                // log user out by removing their Okta browser session.
+                HarpOktaLogout();
+            }
+
+            @Override
+            public void onSuccess(Boolean aBoolean) {
+                HarpOktaLogout();
+            }
+        });
+    }
+
+    private void HarpOktaLogout() {
+        MatContext.get().getHarpService().getHarpUrl(new AsyncCallback<String>() {
+            @Override
+            public void onFailure(Throwable throwable) {
             }
 
             @Override
             public void onSuccess(String harpUrl) {
-                harpLogout(harpUrl + "/oauth2/v1/logout");
+                harpLogout(harpUrl + "/logout");
+                MatContext.get().getSynchronizationDelegate().setLogOffFlag();
+                MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
             }
         });
+        Storage localStorage = Storage.getLocalStorageIfSupported();
+        localStorage.removeItem(OKTA_TOKEN_STORAGE);
     }
 
     public static void setSignedInAsName(String userFirstName, String userLastName) {

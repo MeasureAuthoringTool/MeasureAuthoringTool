@@ -109,13 +109,13 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	}
 
 	@Override
-	public LoginModel getUserDetailsByHarpId(String harpId, String accessToken) {
+	public LoginModel initSession(String harpId, String accessToken) {
 		logger.info("getUserDetailsByHarpId::harpId::" + harpId);
 		HttpSession session = getThreadLocalRequest().getSession();
 //		if(session.getAttribute("accessToken") == null ) { //FIXME Attribute currently unused. Might be useful to determine the token type.
 //			session.setAttribute("accessToken", accessToken);
 //		}
-		return loginCredentialService.getUserDetails(harpId, session.getId(), accessToken);
+		return loginCredentialService.initSession(harpId, session.getId(), accessToken);
 	}
 	
 	/* (non-Javadoc)

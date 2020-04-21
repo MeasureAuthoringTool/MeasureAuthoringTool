@@ -157,6 +157,8 @@ public class MatContext implements IsSerializable {
 
     private String idToken;
 
+    private String accessToken;
+
     private String userEmail;
 
     private String loginId;
@@ -450,6 +452,9 @@ public class MatContext implements IsSerializable {
     public void setIdToken(String idToken) {this.idToken = idToken; }
     public String getIdToken() { return idToken; }
 
+    public void setAccessToken(String accessToken) {this.accessToken = accessToken; }
+    public String getAccessToken() { return accessToken; }
+
     public String getLoggedinLoginId() {
         return loginId;
     }
@@ -466,16 +471,16 @@ public class MatContext implements IsSerializable {
         getLoginService().isValidUser(username, Password, oneTimePassword, callback);
     }
 
-    public void setUserDetailsByHarpId(String harpId, String accessToken, AsyncCallback<LoginModel> callback) {
-        getLoginService().getUserDetailsByHarpId(harpId, accessToken, callback);
+    public void initSession(String harpId, String accessToken, AsyncCallback<LoginModel> callback) {
+        getLoginService().initSession(harpId, accessToken, callback);
     }
 
     public void getListBoxData(AsyncCallback<CodeListService.ListBoxData> listBoxCallback) {
         getCodeListService().getListBoxData(listBoxCallback);
     }
 
-    public void getCurrentUserRole(AsyncCallback<SessionManagementService.Result> userRoleCallback) {
-        getSessionService().getCurrentUserRole(userRoleCallback);
+    public void getCurrentUser(AsyncCallback<SessionManagementService.Result> userCallback) {
+        getSessionService().getCurrentUser(userCallback);
     }
 
     public void restartTimeoutWarning() {

@@ -330,14 +330,14 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
         }
     }
 
-    public LoginModel getUserDetails(String harpId, String sessionId, String accessToken) {
-        logger.debug("getUserDetails::" + harpId + "::" + sessionId);
-        // Retrieve user details and set session ID
+    public LoginModel initSession(String harpId, String sessionId, String accessToken) {
+        logger.debug("setUpUserSession::" + harpId + "::" + sessionId);
+        // Set Session ID in user details.
         MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByHarpId(harpId);
         userDetails.setSessionId(sessionId);
         hibernateUserService.saveUserDetails(userDetails);
 
-        // Set Authn Token. Used by LoggedInUserUtil to retrieve the userId server side.
+        // Set Authn Token. Used to retrieve user info.
         setAuthenticationToken(userDetails, accessToken);
 
         // Set and return user details to client.
@@ -486,11 +486,11 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
      */
     private void setAuthenticationToken(MatUserDetails userDetails) {
         logger.debug("Setting authentication token");
-        Authentication auth =
-                new UsernamePasswordAuthenticationToken(userDetails.getId(), userDetails.getUserPassword().getPassword(), userDetails.getAuthorities());
+        PreAuthenticatedAuthenticationToken auth =
+                new PreAuthenticatedAuthenticationToken(userDetails.getId(), userDetails.getUserPassword().getPassword(), userDetails.getAuthorities());
 
         // US 170. set additional details for history event
-        ((UsernamePasswordAuthenticationToken) auth).setDetails(userDetails);
+        auth.setDetails(userDetails);
         SecurityContext sc = new SecurityContextImpl();
         sc.setAuthentication(auth);
         SecurityContextHolder.setContext(sc);

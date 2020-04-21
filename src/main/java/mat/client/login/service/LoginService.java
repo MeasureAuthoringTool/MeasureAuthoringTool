@@ -200,5 +200,5 @@ public interface LoginService extends RemoteService {
 	 * @param accessToken HARP Access Token.
 	 * @return
 	 */
-	LoginModel getUserDetailsByHarpId(String harpId, String accessToken);
+	LoginModel initSession(String harpId, String accessToken);
 }

@@ -222,12 +222,12 @@ public interface LoginServiceAsync extends AsynchronousService{
 			AsyncCallback<Boolean> callback);
 
 	/**
-	 * Retrieves MAT user details for provided HARP ID.
+	 * initializes session with MAT user details for provided HARP ID.
 	 *
 	 * @param harpId User email
 	 * @param accessToken HARP Access Token.
 	 * @Param callback
 	 * @return
 	 */
-	void getUserDetailsByHarpId(String harpId, String accessToken, AsyncCallback<LoginModel> callback);
+	void initSession(String harpId, String accessToken, AsyncCallback<LoginModel> callback);
 }

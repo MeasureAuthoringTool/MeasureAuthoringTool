@@ -333,7 +333,7 @@ public abstract class MainLayout {
         return collapse;
     }
 
-    protected void buildLogoutForm() {
+    protected void harpLogout(String harpLogoutUrl) {
         logoutForm.setMethod(FormPanel.METHOD_GET);
 
         VerticalPanel panel = new VerticalPanel();
@@ -346,9 +346,7 @@ public abstract class MainLayout {
         panel.add(token);
 
         RootPanel.get().add(logoutForm);
-    }
 
-    protected void harpLogout(String harpLogoutUrl) {
         logoutForm.setAction(harpLogoutUrl);
         logoutForm.submit();
     }

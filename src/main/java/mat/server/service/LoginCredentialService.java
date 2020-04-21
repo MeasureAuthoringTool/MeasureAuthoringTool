@@ -69,10 +69,10 @@ public interface LoginCredentialService {
 	 * Retrieves MAT user details for provided HARP ID and stores
 	 * session ID that was generated client side.
 	 *
-	 * @param harpId User's HARP id
-	 * @param sessionId Session Id generated at login
+	 * @param harpId User's HARP ID
+	 * @param sessionId Session ID generated at login
 	 * @param accessToken HARP OAuth2 Access Token
 	 * @return
 	 */
-	LoginModel getUserDetails(String harpId, String sessionId, String accessToken);
+	LoginModel initSession(String harpId, String sessionId, String accessToken);
 }

@@ -3,8 +3,6 @@ package mat.client.shared;
 import mat.shared.ConstantMessages;
 import mat.shared.StringUtility;
 
-import java.util.logging.Level;
-
 public class MessageDelegate {
     public static final String DEFAULT_SECURITY_QUESTION_VALUE = "********";
     public static final String EMPTY_VALUE = "";

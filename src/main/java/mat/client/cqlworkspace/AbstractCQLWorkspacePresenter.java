@@ -583,6 +583,8 @@ public abstract class AbstractCQLWorkspacePresenter {
             case RED:
                 messagePanel.getErrorMessageAlert().createAlert(errorMessages);
                 break;
+            default:
+                break;
         }
     }
 

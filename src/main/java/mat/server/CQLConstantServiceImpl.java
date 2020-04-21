@@ -147,6 +147,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         cqlConstantContainer.setCqlTimingList(timings);
 
         cqlConstantContainer.setCurrentQDMVersion(MATPropertiesService.get().getQdmVersion());
+        cqlConstantContainer.setCurrentFhirVersion(MATPropertiesService.get().getFhirVersion());
         cqlConstantContainer.setCurrentReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 
         cqlConstantContainer.setQdmContainer(getQDMInformation());

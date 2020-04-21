@@ -1320,6 +1320,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             setCQLLibraryName(measure, manageMeasureDetailModel);
             manageMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
+            manageMeasureDetailModel.setFhirVersion(measure.getFhirVersion());
             manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 
             return manageMeasureDetailModel;

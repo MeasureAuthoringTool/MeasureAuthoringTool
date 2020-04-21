@@ -37,7 +37,6 @@ import mat.client.shared.MessageDelegate;
 import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.WarningMessageAlert;
-import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.client.util.FeatureFlagConstant;
 import mat.model.QualityDataSetDTO;
@@ -96,8 +95,6 @@ public class MeasurePackagePresenter implements MatPresenter {
     private VsacTicketInformation vsacInfo = null;
 
     private MeasureHeading measureHeading;
-
-    private VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get().getVsacapiServiceAsync();
 
     public MeasurePackagePresenter(PackageView packageView, MeasureHeading measureHeading) {
         view = packageView;
@@ -662,7 +659,8 @@ public class MeasurePackagePresenter implements MatPresenter {
             return;
         }
 
-        if (!model.getQdmVersion().equals(MatContext.get().getCurrentQDMVersion())) {
+        if (!ModelTypeHelper.isQdm(model.getMeasureModel()) || !model.getQdmVersion().equals(MatContext.get().getCurrentQDMVersion())) {
+            // FHIR or previous QDM versions are not supported.
             ((Button) view.getPackageMeasureAndUploadToBonnieButton()).setVisible(false);
             return;
         }

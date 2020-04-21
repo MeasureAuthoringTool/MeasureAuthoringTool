@@ -136,6 +136,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         @Override
         public void onFailure(final Throwable caught) {
+            logger.log(Level.SEVERE, "Error in userRoleCallback. Error message: " + caught.getMessage(), caught);
             redirectToLogin();
         }
 
@@ -145,7 +146,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
                 @Override
                 public void onFailure(Throwable caught) {
-
+                    logger.log(Level.SEVERE, "Error in getCurrentReleaseVersion. Error message: " + caught.getMessage(), caught);
                 }
 
                 @Override
@@ -247,7 +248,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
 
             @Override
-            public void onFailure(Throwable arg0) {
+            public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Error in LoginService.signOut. Error message: " + caught.getMessage(), caught);
                 redirectToLogin();
             }
 
@@ -262,7 +264,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private void callSignOutWithoutRedirect() {
         MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
             @Override
-            public void onFailure(Throwable arg0) {
+            public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Error in getLoginService.signOut. Error message: " + caught.getMessage(), caught);
             }
 
             @Override
@@ -286,6 +289,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         MatContext.get().getFeatureFlagService().findFeatureFlags(new AsyncCallback<Map<String, Boolean>>() {
             @Override
             public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Error in FeatureFlagService.findFeatureFlags. Error message: " + caught.getMessage(), caught);
                 Window.alert(MessageDelegate.GENERIC_ERROR_MESSAGE);
             }
 
@@ -576,6 +580,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
                     @Override
                     public void onFailure(Throwable caught) {
+                        logger.log(Level.SEVERE, "Error in BonnieService.revokeBonnieAccessTokenForUser. Error message: " + caught.getMessage(), caught);
                         hideBonnieActive(false);
                     }
 
@@ -603,6 +608,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
             @Override
             public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Error in VsacapiService.getTicketGrantingToken. Error message: " + caught.getMessage(), caught);
                 hideUMLSActive(true);
                 MatContext.get().setUMLSLoggedIn(false);
             }
@@ -620,6 +626,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
             @Override
             public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Error in BonnieService.getBonnieUserInformationForUser. Error message: " + caught.getMessage(), caught);
                 hideBonnieActive(true);
             }
         });

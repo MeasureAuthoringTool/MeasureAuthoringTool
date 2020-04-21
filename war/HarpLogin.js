@@ -54,10 +54,10 @@
    * It's a separate function so we can easily use async/await
    * @returns {Promise<void>}
    */
-  async function handleOkta() {
+  async function handleOkta(clientId, harpBaseUrl) {
     const oktaSignIn = new OktaSignIn({
-      baseUrl: '{okta-url}',
-      clientId: '{okta-client-id}',
+      baseUrl: harpBaseUrl,
+      clientId: clientId,
       redirectUri: window.location.origin + window.location.pathname,
       authParams: {
         pkce: true,
@@ -128,12 +128,15 @@
 
   // Once the DOM is loaded, call our main "handleOkta" function, and handle errors
   $(() => {
-    let tokens = JSON.parse(window.localStorage.getItem("okta-token-storage"));
-    if(tokens != null ) {
-      console.log(tokens.idToken.idToken);
-      // alert(tokens.idToken.idToken);
-    }
-    handleOkta().then(() => {
+    // let tokens = JSON.parse(window.localStorage.getItem("okta-token-storage"));
+    $.ajax({ //FIXME
+      url: 'harpLogin',
+      type: 'GET',
+      async: false
+    }).done(function(props) {
+      harpProps = props;
+    });
+    handleOkta(harpProps.clientId, harpProps.harpBaseUrl).then(() => {
       console.log('success'); // FIXME
     }).catch((err) => {
       console.error('Okta Error');

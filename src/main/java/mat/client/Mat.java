@@ -379,9 +379,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             @Override
             public void onUncaughtException(Throwable caught) {
                 logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
+                hideLoadingMessage();
                 MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                hideLoadingMessage();
             }
         });
     }

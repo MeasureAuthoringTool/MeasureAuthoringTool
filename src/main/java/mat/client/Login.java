@@ -176,9 +176,9 @@ public class Login extends MainLayout implements EntryPoint {
 			@Override
 			public void onUncaughtException(Throwable caught) {
 				logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
-				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				hideLoadingMessage();
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 			}
 		});
 

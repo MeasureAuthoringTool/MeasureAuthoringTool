@@ -50,7 +50,9 @@ public class PreventCachingFilter implements Filter{
 			}
 			httpResponse.setHeader("Location", url);
 		}
-		else if(requestURI.indexOf("/Mat.html") >= 0 || requestURI.indexOf("/Bonnie.html") >= 0) {
+		//TODO MAT-864
+//		else if(requestURI.contains("/Mat.html") || requestURI.contains("/Bonnie.html")) {
+		else if(requestURI.contains("/Bonnie.html")) {
 			logger.info("PreventCachingFilter");
 			
 			//
@@ -62,19 +64,19 @@ public class PreventCachingFilter implements Filter{
 			httpResponse.setDateHeader("Expires", 0);
 			httpResponse.setHeader("Pragma", "no-cache");
 			httpResponse.setHeader("Cache-control", "no-cache, no-store, must-revalidate");
-			//TODO Check if we need to do ALL of this no-cache and re-direct stuff.
-//			if(LoggedInUserUtil.getLoggedInUser() == null) {
-//				logger.info("Redirecting request for " + httpRequest.getRequestURI() + " to Login in session " + httpRequest.getSession().getId());
-//				httpResponse.setStatus(302);
-//				String url = "Login.html";
-//				if(httpRequest.getQueryString() != null) {
-//					url = url + "?" + httpRequest.getQueryString();
-//				}
-//				httpResponse.setHeader("Location", url);
-//			}
-//			else {
+			//TODO MAT-864
+			if(LoggedInUserUtil.getLoggedInUser() == null) {
+				logger.info("Redirecting request for " + httpRequest.getRequestURI() + " to Login in session " + httpRequest.getSession().getId());
+				httpResponse.setStatus(302);
+				String url = "Login.html";
+				if(httpRequest.getQueryString() != null) {
+					url = url + "?" + httpRequest.getQueryString();
+				}
+				httpResponse.setHeader("Location", url);
+			}
+			else {
 				chain.doFilter(request, response);
-//			}
+			}
 		}
 		else if (requestURI.contains("mat.nocache.") || requestURI.contains("bonnie.nocache.")) {
 			   Date now = new Date();
@@ -88,7 +90,6 @@ public class PreventCachingFilter implements Filter{
 		else {
 			chain.doFilter(request, response);
 		}
-//		chain.doFilter(request, response);
 	}
 	
 	/* (non-Javadoc)

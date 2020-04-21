@@ -307,7 +307,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             JSONObject idTokenObj = tokens.isObject().get("idToken").isObject();
             String idToken = idTokenObj.get("idToken").isString().stringValue();
             String email = idTokenObj.get("claims").isObject().get("email").isString().stringValue();
-            String harpId = idTokenObj.get("claims").isObject().get("preferred_username").isString().stringValue();
+            //TODO MAT-633: Replace use of email in initSession call stack with harpId once DB field is established.
+//            String harpId = idTokenObj.get("claims").isObject().get("preferred_username").isString().stringValue();
 
 //            Window.alert("username:" + harpId);
 
@@ -571,17 +572,17 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             @Override
             public void onFailure(Throwable throwable) {
                 // log user out by removing their Okta browser session.
-                HarpOktaLogout();
+                harpOktaLogout();
             }
 
             @Override
             public void onSuccess(Boolean aBoolean) {
-                HarpOktaLogout();
+                harpOktaLogout();
             }
         });
     }
 
-    private void HarpOktaLogout() {
+    private void harpOktaLogout() {
         MatContext.get().getHarpService().getHarpUrl(new AsyncCallback<String>() {
             @Override
             public void onFailure(Throwable throwable) {

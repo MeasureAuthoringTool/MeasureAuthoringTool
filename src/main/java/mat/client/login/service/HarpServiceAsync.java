@@ -1,7 +1,6 @@
 package mat.client.login.service;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import mat.client.shared.MatException;
 
 public interface HarpServiceAsync extends AsynchronousService {
 

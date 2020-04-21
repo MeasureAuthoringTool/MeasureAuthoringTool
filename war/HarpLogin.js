@@ -47,6 +47,7 @@
     const form = document.getElementById('loginForm');
     form.action = "harpCheck"; //tester servlet
     // form.action = "Mat.html";
+    window.alert("pause");
     form.submit();
   }
 
@@ -57,7 +58,8 @@
    */
   async function handleOkta() {
     const oktaSignIn = new OktaSignIn({
-      baseUrl: $('body').attr("data-harpUrl"),
+      // baseUrl: $('body').attr("data-harpUrl"),
+      baseUrl: 'https://dev.idp.idm.cms.gov',
       clientId: $('body').attr("data-clientId"),
       redirectUri: window.location.origin + window.location.pathname,
       authParams: {

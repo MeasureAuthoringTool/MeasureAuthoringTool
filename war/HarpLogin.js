@@ -58,8 +58,7 @@
    */
   async function handleOkta() {
     const oktaSignIn = new OktaSignIn({
-      // baseUrl: $('body').attr("data-harpUrl"),
-      baseUrl: 'https://dev.idp.idm.cms.gov',
+      baseUrl: $('body').attr("data-harpUrl"),
       clientId: $('body').attr("data-clientId"),
       redirectUri: window.location.origin + window.location.pathname,
       authParams: {

@@ -300,6 +300,9 @@ public class MeasurePackagePresenter implements MatPresenter {
                                                     MatContext.get().getMessageDelegate().
                                                             getGroupingSavedMessage());
 
+                                            showMeasurePackagerBusy(false);
+
+
                                         } else {
                                             if (result.getMessages().size() > 0) {
                                                 view.getPackageErrorMessageDisplay().
@@ -309,7 +312,7 @@ public class MeasurePackagePresenter implements MatPresenter {
                                                 view.getPackageErrorMessageDisplay().clearAlert();
                                             }
                                         }
-                                        showMeasurePackagerBusy(false);
+
                                     }
                                 });
 
@@ -327,8 +330,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onSuccess(VsacTicketInformation result) {
-                Mat.hideLoadingMessage();
                 if (result == null) {
+                    Mat.hideLoadingMessage();
                     enablePackageButtons(true);
                     view.getMeasureErrorMessageDisplay().createAlert(SIGN_INTO_UMLS);
                     view.getInProgressMessageDisplay().clearAlert();
@@ -366,7 +369,6 @@ public class MeasurePackagePresenter implements MatPresenter {
     }
 
     protected void validateGroup() {
-        Mat.showLoadingMessage();
         MatContext.get().getMeasureService().validateForGroup(model, new AsyncCallback<ValidateMeasureResult>() {
             @Override
             public void onFailure(final Throwable caught) {
@@ -380,10 +382,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onSuccess(final ValidateMeasureResult result) {
-                Mat.hideLoadingMessage();
+                Mat.showLoadingMessage();
                 if (result.isValid()) {
                     validatePackageGrouping();
                 } else {
+                    Mat.hideLoadingMessage();
                     view.getInProgressMessageDisplay().clearAlert();
                     view.getMeasureErrorMessageDisplay().createAlert(result.getValidationMessages());
                     enablePackageButtons(true);
@@ -394,8 +397,6 @@ public class MeasurePackagePresenter implements MatPresenter {
     }
 
     private void validatePackageGrouping() {
-
-        Mat.showLoadingMessage();
         MatContext.get().getMeasureService().validatePackageGrouping(model, new AsyncCallback<ValidateMeasureResult>() {
 
             @Override
@@ -408,11 +409,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onSuccess(ValidateMeasureResult result) {
-                Mat.hideLoadingMessage();
                 if (result.isValid()) {
                     String measureId = MatContext.get().getCurrentMeasureId();
                     validateExports(measureId);
                 } else {
+                    Mat.hideLoadingMessage();
                     if (result.getValidationMessages() != null) {
                         view.getMeasurePackageWarningMsg().createWarningMultiLineAlert(result.getValidationMessages());
                     }
@@ -426,7 +427,6 @@ public class MeasurePackagePresenter implements MatPresenter {
     }
 
     private void validateExports(final String measureId) {
-        Mat.showLoadingMessage();
         MatContext.get().getMeasureService().validateExports(measureId, new AsyncCallback<ValidateMeasureResult>() {
 
             @Override
@@ -453,7 +453,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 
     private void saveMeasureAtPackage() {
 
-        Mat.showLoadingMessage();
         MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>() {
 
             @Override
@@ -467,11 +466,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onSuccess(SaveMeasureResult result) {
-                Mat.hideLoadingMessage();
                 if (result.isSuccess()) {
                     MatContext.get().setCurrentMeasureVersion("Draft v" + result.getVersionStr());
                     createExports(MatContext.get().getCurrentMeasureId());
                 } else {
+                    Mat.hideLoadingMessage();
                     enablePackageButtons(true);
                     if (result.getFailureReason()
                             == SaveMeasureResult.INVALID_VALUE_SET_DATE) {
@@ -489,7 +488,7 @@ public class MeasurePackagePresenter implements MatPresenter {
     }
 
     private void createExports(final String measureId) {
-        Mat.showLoadingMessage();
+
         MatContext.get().getMeasureService().createExports(measureId, null, true, new AsyncCallback<ValidateMeasureResult>() {
             @Override
             public void onFailure(final Throwable caught) {

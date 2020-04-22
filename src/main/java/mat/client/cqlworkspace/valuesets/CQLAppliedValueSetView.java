@@ -1096,7 +1096,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
     public List<CQLValueSetTransferObject> setMatValueSetListForValueSets(List<CQLQualityDataSetDTO> copiedValueSetList, List<CQLQualityDataSetDTO> appliedValueSetTableList) {
         List<CQLValueSetTransferObject> cqlValueSetTransferObjectsList = new ArrayList<>();
         for (CQLQualityDataSetDTO cqlQualityDataSetDTO : copiedValueSetList) {
-            boolean isFhir = MatContext.get().isCurrentMeasureModelFhir();
+            boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
             if (!checkNameInValueSetList(cqlQualityDataSetDTO.getName(), appliedValueSetTableList)) {
                 CQLValueSetTransferObject cqlValueSetTransferObject = new CQLValueSetTransferObject();
                 cqlValueSetTransferObject.setCqlQualityDataSetDTO(cqlQualityDataSetDTO);

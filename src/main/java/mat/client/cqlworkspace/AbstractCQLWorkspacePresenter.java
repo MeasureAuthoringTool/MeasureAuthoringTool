@@ -61,6 +61,9 @@ import mat.shared.CQLModelValidator;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
 
+import static mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility.getOidFromUrl;
+import static mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility.isFhirUrl;
+
 public abstract class AbstractCQLWorkspacePresenter {
 
 	public static final int CQL_LIBRARY_NAME_WARNING_LENGTH = 200;
@@ -565,12 +568,14 @@ public abstract class AbstractCQLWorkspacePresenter {
 		}
 	}
 
-	protected void onModifyValueSet(CQLQualityDataSetDTO result, boolean isUserDefined) {
-		String oid = isUserDefined ? EMPTY_STRING : result.getOid();
-		cqlWorkspaceView.getValueSetView().getOIDInput().setEnabled(true);
+    protected void onModifyValueSet(CQLQualityDataSetDTO result, boolean isUserDefined) {
+        String oid = isUserDefined ? EMPTY_STRING :
+                isFhirUrl(result.getOid()) ? getOidFromUrl(result.getOid()) :
+                        result.getOid();
 
-		cqlWorkspaceView.getValueSetView().getOIDInput().setValue(oid);
-		cqlWorkspaceView.getValueSetView().getOIDInput().setTitle(oid);
+        cqlWorkspaceView.getValueSetView().getOIDInput().setEnabled(true);
+        cqlWorkspaceView.getValueSetView().getOIDInput().setValue(oid);
+        cqlWorkspaceView.getValueSetView().getOIDInput().setTitle(oid);
 
 		cqlWorkspaceView.getValueSetView().getRetrieveFromVSACButton().setEnabled(!isUserDefined);
 

@@ -1879,6 +1879,14 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
         matValueSetTransferObject.getCqlQualityDataSetDTO().setOriginalCodeListName(originalCodeListName);
         matValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentMatValueSet.getID());
 
+        if (MatContext.get().isCurrentModelTypeFhir()) {
+            matValueSetTransferObject.getCqlQualityDataSetDTO().setOid("http://cts.nlm.nih.gov/fhir/ValueSet/" + currentMatValueSet.getID());
+            currentMatValueSet.setID(matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
+        } else {
+            matValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentMatValueSet.getID());
+        }
+        logger.log(Level.INFO,"valueset.oid=" + matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
+
         if (!cqlWorkspaceView.getValueSetView().getSuffixInput().getValue().isEmpty()) {
             matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(cqlWorkspaceView.getValueSetView().getSuffixInput().getValue());
             matValueSetTransferObject.getCqlQualityDataSetDTO().setName(originalCodeListName + " (" + cqlWorkspaceView.getValueSetView().getSuffixInput().getValue() + ")");

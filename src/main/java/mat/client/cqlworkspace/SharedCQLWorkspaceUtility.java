@@ -56,12 +56,17 @@ public class SharedCQLWorkspaceUtility {
     }
 
     public static void displayAnnotationForViewCQL(SaveUpdateCQLResult result, AceEditor aceEditor) {
+        log.log(Level.INFO,"displayAnnotationForViewCQL libNameToErrorMap:\n" + result.getLibraryNameErrorsMap() + "\nLibWarningMap:\n" +
+                result.getLibraryNameWarningsMap() + "\nlinterErrors:\n" +
+                result.getLinterErrors());
         aceEditor.clearAnnotations();
         String formattedName = result.getCqlModel().getFormattedName();
         SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameErrorsMap().get(formattedName), ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor);
         SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameWarningsMap().get(formattedName), WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor);
         SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLinterErrors(), ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor);
         aceEditor.setAnnotations();
+        log.log(Level.INFO,"leaving displayAnnotationForViewCQL " + result);
+
     }
 
 

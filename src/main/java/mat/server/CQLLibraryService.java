@@ -15,16 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import mat.client.measure.service.CheckForConversionResult;
-import mat.client.measure.service.FhirConvertResultResponse;
-import mat.model.clause.ModelTypeHelper;
-import mat.server.service.FhirCqlLibraryService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,6 +34,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import mat.client.measure.service.CQLService;
+import mat.client.measure.service.CheckForConversionResult;
+import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
@@ -60,6 +59,7 @@ import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibraryExport;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
@@ -80,6 +80,7 @@ import mat.server.cqlparser.CQLLinter;
 import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.model.MatUserDetails;
 import mat.server.service.CQLLibraryServiceInterface;
+import mat.server.service.FhirCqlLibraryService;
 import mat.server.service.UserService;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.CQLUtil;
@@ -144,7 +145,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
     javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 
-    private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
+    // 3 minutes
+    private final long lockThreshold = TimeUnit.MINUTES.toMillis(3);
 
     private VSACApiServImpl getVsacService() {
         return context.getBean(VSACApiServImpl.class);

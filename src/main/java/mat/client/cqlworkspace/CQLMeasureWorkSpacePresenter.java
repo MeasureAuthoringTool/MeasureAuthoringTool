@@ -1932,11 +1932,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		return MatContext.get().getCurrentMeasureModel();
 	}
 
-	protected boolean isFhirModelType() {
-		boolean result = !"QDM".equals(getCurrentModelType());
-		log.log(Level.INFO,"isFhirModelType() returning" + result);
-		return result;
-	}
 
 	private CQLValueSetTransferObject createValueSetTransferObject(String measureID) {
 		log.log(Level.INFO,"Entering createValueSetTransferObject(" + measureID + ")");
@@ -1949,7 +1944,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		matValueSetTransferObject.setCqlQualityDataSetDTO(new CQLQualityDataSetDTO());
 		matValueSetTransferObject.getCqlQualityDataSetDTO().setOriginalCodeListName(originalCodeListName);
 
-		if (isFhirModelType()) {
+		if (MatContext.get().isCurrentModelTypeFhir()) {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setOid("http://cts.nlm.nih.gov/fhir/ValueSet/" + currentMatValueSet.getID());
 			currentMatValueSet.setID(matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
 		} else {

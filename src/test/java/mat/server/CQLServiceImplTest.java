@@ -1,5 +1,6 @@
 package mat.server;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import mat.shared.SaveUpdateCQLResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 public class CQLServiceImplTest {
@@ -39,6 +41,15 @@ public class CQLServiceImplTest {
 
     @InjectMocks
     private CQLServiceImpl cqlService;
+
+    @BeforeEach
+    public void setUp() {
+        // Mute codacy "avoid unused private fields" warning
+        assertNotNull(cqlParser);
+        assertNotNull(visitorFactory);
+        assertNotNull(userDAO);
+        assertNotNull(measurePackageService);
+    }
 
     @Test
     public void testGetCQLData() {

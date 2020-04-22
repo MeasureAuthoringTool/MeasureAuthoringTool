@@ -1,26 +1,23 @@
 package mat.client.cqlworkspace.valuesets;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import mat.client.cqlworkspace.AbstractCQLWorkspacePresenter;
-import org.gwtbootstrap3.client.ui.ListBox;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ConstantMessages;
+import org.gwtbootstrap3.client.ui.ListBox;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CQLAppliedValueSetUtility {
     private static final Logger log = Logger.getLogger(CQLAppliedValueSetUtility.class.getSimpleName());

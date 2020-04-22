@@ -53,7 +53,7 @@ import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
-import mat.client.measure.service.CheckMeasureForConversionResult;
+import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirMeasureRemoteService;
 import mat.client.measure.service.FhirMeasureRemoteServiceAsync;
@@ -618,6 +618,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
         });
 
+        setSearchingBusy(false);
         confirmationDialogBox.show();
     }
 
@@ -627,10 +628,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             return;
         }
         logger.log(Level.INFO, "Please wait. Conversion is in progress...");
-
-        if (!MatContext.get().getLoadingQueue().isEmpty()) {
-            return;
-        }
 
         setSearchingBusy(true);
         FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
@@ -679,6 +676,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void showErrorAlertDialogBox(final String errorMessage, final boolean shouldRefreshSearch) {
+        setSearchingBusy(false);
         ConfirmationDialogBox errorAlert = new ConfirmationDialogBox(errorMessage, "Return to Measure Library", "Cancel", null, true);
         errorAlert.getNoButton().setVisible(false);
         errorAlert.setObserver(new ConfirmationObserver() {
@@ -1654,7 +1652,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             @Override
             public void onConvertMeasureFhir(Result object) {
                 FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
-                fhirMeasureService.checkMeasureForConversion(object, new AsyncCallback<CheckMeasureForConversionResult>() {
+                fhirMeasureService.checkMeasureForConversion(object, new AsyncCallback<CheckForConversionResult>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -1665,7 +1663,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     }
 
                     @Override
-                    public void onSuccess(CheckMeasureForConversionResult result) {
+                    public void onSuccess(CheckForConversionResult result) {
                         logger.log(Level.WARNING, "Result is " + result);
                         if (result.isProceedImmediately()) {
                             convertMeasureFhir(object);

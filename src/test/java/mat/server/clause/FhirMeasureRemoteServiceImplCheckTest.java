@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.service.CheckMeasureForConversionResult;
+import mat.client.measure.service.CheckForConversionResult;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
 import mat.model.clause.ModelTypeHelper;
@@ -56,7 +56,7 @@ public class FhirMeasureRemoteServiceImplCheckTest {
         sourceMeasure.setMeasureSetId(MEASURE_SET_ID);
 
         when(measureDAO.getDraftMeasuresBySet(eq(MEASURE_SET_ID))).thenReturn(List.of());
-        CheckMeasureForConversionResult result = service.checkMeasureForConversion(sourceMeasure);
+        CheckForConversionResult result = service.checkMeasureForConversion(sourceMeasure);
         assertNotNull(result);
         assertTrue(result.isProceedImmediately());
         assertFalse(result.isConfirmBeforeProceed());
@@ -70,7 +70,7 @@ public class FhirMeasureRemoteServiceImplCheckTest {
         draft.setMeasureModel(ModelTypeHelper.QDM);
 
         when(measureDAO.getDraftMeasuresBySet(eq(MEASURE_SET_ID))).thenReturn(List.of(draft));
-        CheckMeasureForConversionResult result = service.checkMeasureForConversion(sourceMeasure);
+        CheckForConversionResult result = service.checkMeasureForConversion(sourceMeasure);
         assertNotNull(result);
         assertFalse(result.isProceedImmediately());
         assertFalse(result.isConfirmBeforeProceed());
@@ -85,7 +85,7 @@ public class FhirMeasureRemoteServiceImplCheckTest {
         draft.setSourceMeasureId(UNRELATED_SOURCE);
 
         when(measureDAO.getDraftMeasuresBySet(eq(MEASURE_SET_ID))).thenReturn(List.of(draft));
-        CheckMeasureForConversionResult result = service.checkMeasureForConversion(sourceMeasure);
+        CheckForConversionResult result = service.checkMeasureForConversion(sourceMeasure);
         assertNotNull(result);
         assertFalse(result.isProceedImmediately());
         assertFalse(result.isConfirmBeforeProceed());
@@ -100,7 +100,7 @@ public class FhirMeasureRemoteServiceImplCheckTest {
         draft.setSourceMeasureId(SOURCE_ID);
 
         when(measureDAO.getDraftMeasuresBySet(eq(MEASURE_SET_ID))).thenReturn(List.of(draft));
-        CheckMeasureForConversionResult result = service.checkMeasureForConversion(sourceMeasure);
+        CheckForConversionResult result = service.checkMeasureForConversion(sourceMeasure);
         assertNotNull(result);
         assertFalse(result.isProceedImmediately());
         assertTrue(result.isConfirmBeforeProceed());
@@ -128,7 +128,7 @@ public class FhirMeasureRemoteServiceImplCheckTest {
         List<Measure> drafts = List.of(qdmMeasure, fhirUnrelatedMeasure, fhirRelatedMeasure);
 
         when(measureDAO.getDraftMeasuresBySet(eq(MEASURE_SET_ID))).thenReturn(drafts);
-        CheckMeasureForConversionResult result = service.checkMeasureForConversion(sourceMeasure);
+        CheckForConversionResult result = service.checkMeasureForConversion(sourceMeasure);
         assertNotNull(result);
         assertFalse(result.isProceedImmediately());
         assertFalse(result.isConfirmBeforeProceed());

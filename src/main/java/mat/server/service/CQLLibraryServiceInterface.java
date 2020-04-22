@@ -2,6 +2,8 @@ package mat.server.service;
 
 import java.util.List;
 
+import mat.client.measure.service.CheckForConversionResult;
+import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
@@ -32,9 +34,11 @@ public interface CQLLibraryServiceInterface {
 
     void save(CQLLibrary cqlLibrary);
 
-    CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
+    CQLLibraryDataSetObject extractCQLLibraryDataObject(CQLLibrary cqlLibrary);
 
-    SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject);
+	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
+
+	SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject);
 
     String createCQLLookUpTag(String libraryName, String version, boolean isFhir);
 
@@ -125,4 +129,10 @@ public interface CQLLibraryServiceInterface {
                                                 List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
 
     void saveCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML);
+
+    CheckForConversionResult checkLibraryForConversion(CQLLibraryDataSetObject object);
+
+    FhirConvertResultResponse convertCqlLibrary(CQLLibraryDataSetObject object) throws MatException;
+
+    int deleteDraftFhirLibrariesBySetId(String setId);
 }

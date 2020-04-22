@@ -374,15 +374,6 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <!--
-            Should have different groupId then the original
-            jar, so it doesn't interfere with micro-services.
-            -->
-            <groupId>mat</groupId>
-            <artifactId>mat-rest-commons</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>28.2-jre</version>
@@ -411,6 +402,10 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -805,22 +800,6 @@
                                     <version>1.4.6.54</version>
                                     <packaging>jar</packaging>
                                     <localRepositoryPath>${maven.project.repo.dir}</localRepositoryPath>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <phase>validate</phase>
-                                <id>install-mat-rest-commons</id>
-                                <goals>
-                                    <goal>install-file</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.basedir}/lib/mat-rest-commons-0.0.1-SNAPSHOT.jar</file>
-                                    <pomFile>${project.basedir}/lib/mat-rest-commons-0.0.1-SNAPSHOT.pom</pomFile>
-                                    <!--
-                                    Should have different groupId then the original
-                                    jar, so it doesn't interfere with micro-services.
-                                    -->
-                                    <localRepositoryPath>${project.local.repo.dir}</localRepositoryPath>
                                 </configuration>
                             </execution>
                             <execution>

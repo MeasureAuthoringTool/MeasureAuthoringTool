@@ -48,7 +48,7 @@ public class ReverseEngineerListenerTest {
         previousModel.setLibraryName("test2");
         previousModel.setVersionUsed("0.0.2");
         previousModel.setUsingModel("FHIR");
-        previousModel.setUsingModelVersion("4.0.0");
+        previousModel.setUsingModelVersion("4.0.1");
         previousModel.setLibraryComment("a library comment");
 
         String cql = new String(Files.readAllBytes(file.toPath()));
@@ -60,7 +60,7 @@ public class ReverseEngineerListenerTest {
         assertEquals("test2", model.getLibraryName());
         assertEquals("0.0.2", model.getVersionUsed());
         assertEquals("FHIR", model.getUsingModel());
-        assertEquals("4.0.0", model.getUsingModelVersion());
+        assertEquals("4.0.1", model.getUsingModelVersion());
     }
 
     @Test

@@ -78,7 +78,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     private static final String SECURITY_ROLE_USER = "3";
     private static final String MEASURE_MODEL = "measureModel";
     private static final String ID = "id";
-    public static final String SELECT_SHARE_LEVELS = "select m.MEASURE_SET_ID, ms.SHARE_LEVEL_ID from MEASURE_SHARE ms  inner join MEASURE m on m.ID = ms.MEASURE_ID where ms.SHARE_USER_ID = :userId and m.MEASURE_SET_ID in :measureSetIds";
+    private static final String SELECT_SHARE_LEVELS = "select m.MEASURE_SET_ID, ms.SHARE_LEVEL_ID from MEASURE_SHARE ms  inner join MEASURE m on m.ID = ms.MEASURE_ID where ms.SHARE_USER_ID = :userId and m.MEASURE_SET_ID in :measureSetIds";
 
     @Autowired
     private UserDAO userDAO;
@@ -876,6 +876,10 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     @Override
     public Map<String, String> findShareLevelsForUser(String userID, Set<String> measureSetIds) {
         logger.debug("MeasureDAOImpl::findShareLevelsForUser - enter");
+        if (CollectionUtils.isEmpty(measureSetIds)) {
+            return Collections.emptyMap();
+        }
+
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 

@@ -176,7 +176,7 @@ public class TestCqlToMatXml {
         var destination = cqlToMatXml.getDestinationModel();
 
         assertEquals("FHIR", destination.getUsingModel());
-        assertEquals("4.0.0", destination.getUsingModelVersion());
+        assertEquals("4.0.1", destination.getUsingModelVersion());
         //TO DO: add more asserts when I get time.
         log.debug(destination.toString());
 

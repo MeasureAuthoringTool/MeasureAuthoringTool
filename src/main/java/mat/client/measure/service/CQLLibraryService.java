@@ -108,4 +108,8 @@ public interface CQLLibraryService extends RemoteService {
 
 	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
+
+    CheckForConversionResult checkLibraryForConversion(CQLLibraryDataSetObject object);
+
+    FhirConvertResultResponse convertCqlLibrary(CQLLibraryDataSetObject object) throws MatException;
 }

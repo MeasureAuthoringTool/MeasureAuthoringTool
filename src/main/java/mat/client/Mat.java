@@ -1,5 +1,12 @@
 package mat.client;
 
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -71,16 +78,13 @@ import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserver {
+
+    private final Logger logger = Logger.getLogger("MAT");
 
     public static final String OKTA_TOKEN_STORAGE = "okta-token-storage";
 
@@ -399,10 +403,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, event -> { });
 
-        GWT.setUncaughtExceptionHandler(arg0 -> {
-            arg0.printStackTrace();
-            MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + arg0.getLocalizedMessage(), 0);
-            Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+        GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
+            @Override
+            public void onUncaughtException(Throwable caught) {
+                logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
+                hideLoadingMessage();
+                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+            }
         });
     }
 

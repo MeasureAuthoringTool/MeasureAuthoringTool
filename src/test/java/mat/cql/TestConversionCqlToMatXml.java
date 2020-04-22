@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.server.service.impl.XMLMarshalUtil;
+import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ public class TestConversionCqlToMatXml {
         var destination = conversionCqlToMatXml.getDestinationModel();
 
         assertEquals("FHIR", destination.getUsingModel());
-        assertEquals("4.0.0", destination.getUsingModelVersion());
+        assertEquals(MATPropertiesService.get().getFhirVersion(), destination.getUsingModelVersion());
         //TO DO: add more asserts when I get time.
         log.debug(conversionCqlToMatXml.toString());
 

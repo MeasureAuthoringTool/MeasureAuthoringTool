@@ -58,6 +58,18 @@ public class CQLLibraryResultTableTest {
         Mockito.verify(observer, Mockito.times(1)).onDeleteClicked(Mockito.eq(selected));
     }
 
+    @Test
+    public void testConvertClick() {
+        CQLLibraryDataSetObject selected = new CQLLibraryDataSetObject();
+        selected.setFhirConvertible(true);
+
+        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        selectionModel.setSelected(selected, true);
+
+        resultTable.onConvert(selectionModel);
+
+        Mockito.verify(observer, Mockito.times(1)).onConvertClicked(Mockito.eq(selected));
+    }
 
     @Test
     public void testDraftOrVersionNoInteraction() {

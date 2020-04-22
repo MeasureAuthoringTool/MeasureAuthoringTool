@@ -1,6 +1,6 @@
 package mat.server.service;
 
-import gov.cms.mat.fhir.rest.dto.ConversionResultDto;
+import mat.DTO.fhirconversion.ConversionResultDto;
 
 public interface FhirOrchestrationGatewayService {
     /**

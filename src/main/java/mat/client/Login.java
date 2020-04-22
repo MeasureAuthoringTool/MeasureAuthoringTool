@@ -1,5 +1,10 @@
 package mat.client;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import mat.client.event.BackToLoginPageEvent;
 import mat.client.event.FirstLoginPageEvent;
 import mat.client.event.ForgotLoginIDEmailSentEvent;
@@ -30,7 +35,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 
 public class Login extends MainLayout implements EntryPoint {
-	
+
+	private final Logger logger = Logger.getLogger("MAT");
+
 	private Panel content;
 	
 	private ForgottenLoginIdPresenter forgottenLoginIdNewPresenter;
@@ -121,17 +128,24 @@ public class Login extends MainLayout implements EntryPoint {
 			tempPwdLogingPresenter.go(content);
 		});
 
-		MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, event -> callSignOut());
+		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
+			@Override
+			public void onUncaughtException(Throwable caught) {
+				logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
+				hideLoadingMessage();
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+			}
+		});
 	}
 	
 	/**
 	 * Inits the presenters.
 	 */
 	private void initPresenters() {
-
 		LoginView loginView = new LoginView();
 		loginNewPresenter = new LoginPresenter(loginView);
-		
+
 		final FirstLoginView securityQuesView = new FirstLoginView();
 		securityQuestionsPresenter = new FirstLoginPresenter(securityQuesView);
 		

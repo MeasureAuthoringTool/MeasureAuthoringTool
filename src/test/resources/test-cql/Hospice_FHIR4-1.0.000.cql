@@ -7,7 +7,7 @@ of finding conventions and usage patterns that meet the needs of the various sta
 in the measure development community.
 */
 
-using FHIR version '4.0.0'
+using FHIR version '4.0.1'
 
 include MATGlobalCommonFunctions_FHIR4 version '4.0.000' called Global
 include FHIRHelpers version '4.0.000' called FHIRHelpers

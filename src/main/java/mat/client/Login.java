@@ -10,7 +10,6 @@ import mat.client.event.FirstLoginPageEvent;
 import mat.client.event.ForgotLoginIDEmailSentEvent;
 import mat.client.event.ForgotLoginIDEvent;
 import mat.client.event.ForgottenPasswordEvent;
-import mat.client.event.LogoffEvent;
 import mat.client.event.PasswordEmailSentEvent;
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.event.SuccessfulLoginEvent;
@@ -128,14 +127,11 @@ public class Login extends MainLayout implements EntryPoint {
 			tempPwdLogingPresenter.go(content);
 		});
 
-		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
-			@Override
-			public void onUncaughtException(Throwable caught) {
-				logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
-				hideLoadingMessage();
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-			}
+		GWT.setUncaughtExceptionHandler(caught -> {
+			logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
+			hideLoadingMessage();
+			Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 		});
 	}
 	

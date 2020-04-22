@@ -594,6 +594,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         MatContext.get().getHarpService().getHarpUrl(new AsyncCallback<String>() {
             @Override
             public void onFailure(Throwable throwable) {
+                removeOktaTokens();
             }
 
             @Override
@@ -601,8 +602,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                 harpLogout(harpUrl + "/logout");
                 MatContext.get().getSynchronizationDelegate().setLogOffFlag();
                 MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
+                removeOktaTokens();
             }
         });
+    }
+
+    private void removeOktaTokens() {
         Storage localStorage = Storage.getLocalStorageIfSupported();
         localStorage.removeItem(OKTA_TOKEN_STORAGE);
     }

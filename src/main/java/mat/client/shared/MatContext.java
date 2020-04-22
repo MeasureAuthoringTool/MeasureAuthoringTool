@@ -269,15 +269,6 @@ public class MatContext implements IsSerializable {
     }
 
     protected MatContext() {
-
-        GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
-
-            @Override
-            public void onUncaughtException(Throwable e) {
-                GWT.log("An uncaught Exception Occured", e);
-                MatContext.this.logException("Uncaught Client Exception", e);
-            }
-        });
         eventBus = new HandlerManager(null);
 
         eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {

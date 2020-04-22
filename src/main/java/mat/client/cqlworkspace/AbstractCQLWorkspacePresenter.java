@@ -3,6 +3,8 @@ package mat.client.cqlworkspace;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.HelpBlock;
@@ -118,8 +120,9 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected static final String PANEL_COLLAPSE_IN = "panel-collapse collapse in";
 	protected static final String PANEL_COLLAPSE_COLLAPSE = "panel-collapse collapse";
 	protected static final String INVALID_INPUT_DATA = "Invalid Input data.";
-
 	protected static final String EMPTY_STRING = "";
+
+	protected final Logger logger = Logger.getLogger("MAT");
 	protected HelpBlock helpBlock = new HelpBlock();
 	protected MessagePanel messagePanel = new MessagePanel();
 	protected CQLWorkspaceView cqlWorkspaceView;
@@ -278,8 +281,6 @@ public abstract class AbstractCQLWorkspacePresenter {
 			cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().setAnnotations();
 			cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().redisplay();
 		}
-
-		showSearchingBusy(false);
 	}
 
 	protected List<CQLIdentifierObject> getDefinitionList(List<CQLDefinition> definitionList) {
@@ -465,6 +466,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 
 			@Override
 			public void onFailure(Throwable caught) {
+				logger.log(Level.SEVERE, "Error in vsacapiService.getDirectReferenceCode. Error message: " + caught.getMessage(), caught);
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				showSearchingBusy(false);
 			}
@@ -2008,8 +2010,9 @@ public abstract class AbstractCQLWorkspacePresenter {
 			MatContext.get().getMeasureService().checkIfLibraryNameExists(this.cqlLibraryName, this.setId, new AsyncCallback<Boolean>() {
 				@Override
 				public void onFailure(Throwable caught) {
-					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					logger.log(Level.SEVERE, "Error in measureService.checkIfLibraryNameExists. Error message: " + caught.getMessage(), caught);
 					showSearchingBusy(false);
+					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
 
 				@Override

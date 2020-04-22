@@ -461,14 +461,6 @@ public interface MeasureService extends RemoteService {
     CQLQualityDataModelWrapper getDefaultCQLSDEFromMeasureXml(String measureId);
 
     /**
-     * Parses the cql.
-     *
-     * @param cqlBuilder the cql builder
-     * @return the CQL model
-     */
-    CQLModel parseCQL(String cqlBuilder);
-
-    /**
      * Gets the CQL data.
      *
      * @param measureId the measure id
@@ -567,8 +559,6 @@ public interface MeasureService extends RemoteService {
     String getJSONObjectFromXML();
 
     GetUsedCQLArtifactsResult getUsedCQLArtifacts(String measureId);
-
-    SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
 
     SaveUpdateCQLResult deleteValueSet(String toBeDeletedValueSetId, String measureID);
 

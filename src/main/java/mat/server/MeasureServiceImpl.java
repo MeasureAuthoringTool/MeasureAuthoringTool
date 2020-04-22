@@ -323,11 +323,6 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     }
 
     @Override
-    public CQLModel parseCQL(String cqlBuilder) {
-        return this.getMeasureLibraryService().parseCQL(cqlBuilder);
-    }
-
-    @Override
     public SaveUpdateCQLResult saveCQLFile(String measureId, String cql) {
         return this.getMeasureLibraryService().saveCQLFile(measureId, cql);
     }
@@ -370,11 +365,6 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     public void createAndSaveCQLLookUp(List<QualityDataSetDTO> list, String measureID, String expProfileToAllQDM) {
         this.getMeasureLibraryService().createAndSaveCQLLookUp(list, measureID, expProfileToAllQDM);
 
-    }
-
-    @Override
-    public SaveUpdateCQLResult parseCQLStringForError(String cqlFileString) {
-        return this.getMeasureLibraryService().parseCQLStringForError(cqlFileString);
     }
 
     @Override

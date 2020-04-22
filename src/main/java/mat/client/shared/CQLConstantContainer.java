@@ -14,6 +14,7 @@ import mat.shared.cql.model.FunctionSignature;
 
 public class CQLConstantContainer implements IsSerializable {
     private String currentQDMVersion;
+    private String currentFhirVersion;
     private String currentReleaseVersion;
     private List<String> fhirCqlAttributeList;
     private List<String> fhirCqlDataTypeList;
@@ -108,6 +109,14 @@ public class CQLConstantContainer implements IsSerializable {
 
     public void setCurrentQDMVersion(String currentQDMVersion) {
         this.currentQDMVersion = currentQDMVersion;
+    }
+
+    public String getCurrentFhirVersion() {
+        return currentFhirVersion;
+    }
+
+    public void setCurrentFhirVersion(String currentFhirVersion) {
+        this.currentFhirVersion = currentFhirVersion;
     }
 
     public String getCurrentReleaseVersion() {

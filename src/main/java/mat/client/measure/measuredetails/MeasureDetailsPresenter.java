@@ -2,6 +2,8 @@ package mat.client.measure.measuredetails;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -10,6 +12,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureHeading;
+import mat.client.cqlworkspace.CQLMeasureWorkSpacePresenter;
 import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureSelectedEvent;
@@ -52,6 +55,8 @@ import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMappe
 import mat.shared.measure.measuredetails.validate.GeneralInformationValidator;
 
 public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObserver {
+    private static final Logger log = Logger.getLogger(CQLMeasureWorkSpacePresenter.class.getSimpleName());
+
     private MeasureDetailsView measureDetailsView;
     private MeasureDetailsNavigation navigationPanel;
     private ComponentMeasureDisplay componentMeasureDisplay;
@@ -425,6 +430,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
     }
 
     private void handleAsyncFailure(Throwable caught) {
+        log.log(Level.SEVERE, "Async failure: ", caught);
         Mat.hideLoadingMessage();
         showErrorAlert(caught.getMessage());
         MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);

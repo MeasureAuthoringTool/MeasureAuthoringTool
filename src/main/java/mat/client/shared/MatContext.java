@@ -513,6 +513,8 @@ public class MatContext implements IsSerializable {
         return currentModule;
     }
 
+    public boolean isCurrentMeasureModelFhir() { return "FHIR".equals(getCurrentMeasureModel()); }
+
     @Deprecated
     public String getCurrentMeasureScoringType() {
         if (currentMeasureInfo != null) {
@@ -1183,6 +1185,14 @@ public class MatContext implements IsSerializable {
         } else {
             return "";
         }
+    }
+
+    public boolean isCurrentModelTypeFhir() {
+        return currentMeasureInfo != null ? isCurrentMeasureModelFhir() : isCurrentCQLLibraryModelTypeFhir();
+    }
+
+    public boolean isCurrentCQLLibraryModelTypeFhir() {
+        return "FHIR".equals(currentLibraryInfo.getLibraryModelType());
     }
 
     public String getCurrentCQLLibraryModelType() {

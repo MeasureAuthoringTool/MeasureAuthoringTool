@@ -1941,6 +1941,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
     }
 
     private CQLValueSetTransferObject createValueSetTransferObject(String measureID) {
+        logger.log(Level.INFO,"Entering createValueSetTransferObject(" + measureID + ")");
         if (currentMatValueSet == null) {
             currentMatValueSet = new MatValueSet();
         }
@@ -1949,7 +1950,15 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
         String originalCodeListName = cqlWorkspaceView.getValueSetView().getUserDefinedInput().getValue();
         matValueSetTransferObject.setCqlQualityDataSetDTO(new CQLQualityDataSetDTO());
         matValueSetTransferObject.getCqlQualityDataSetDTO().setOriginalCodeListName(originalCodeListName);
-        matValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentMatValueSet.getID());
+
+        if (MatContext.get().isCurrentModelTypeFhir()) {
+            matValueSetTransferObject.getCqlQualityDataSetDTO().setOid("http://cts.nlm.nih.gov/fhir/ValueSet/" + currentMatValueSet.getID());
+            currentMatValueSet.setID(matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
+        } else {
+            matValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentMatValueSet.getID());
+        }
+        logger.log(Level.INFO,"valueset.oid=" + matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
+
 
         if (!cqlWorkspaceView.getValueSetView().getSuffixInput().getValue().isEmpty()) {
             matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(cqlWorkspaceView.getValueSetView().getSuffixInput().getValue());
@@ -1961,13 +1970,13 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
         matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(EMPTY_STRING);
         String releaseValue = cqlWorkspaceView.getValueSetView().getReleaseListBox().getSelectedValue();
-        if (!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+        if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
             matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(releaseValue);
         }
 
         matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(EMPTY_STRING);
         String programValue = cqlWorkspaceView.getValueSetView().getProgramListBox().getSelectedValue();
-        if (!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+        if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
             matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(programValue);
         }
 

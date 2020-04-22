@@ -558,15 +558,20 @@ public abstract class AbstractCQLWorkspacePresenter {
 		}
 	}
 
-	protected void onSaveCQLFileFailure(SaveUpdateCQLResult result) {
+    protected void onSaveCQLFileFailure(SaveUpdateCQLResult result) {
+		logger.log(Level.INFO, "onSaveCQLFileFailure failureReason" + result.getFailureReason());
 		SharedCQLWorkspaceUtility.displayAnnotationForViewCQL(result, cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor());
-		if (result.getFailureReason() == SaveUpdateCQLResult.SYNTAX_ERRORS)  {
-			messagePanel.getErrorMessageAlert().createAlert("The MAT was unable to save the changes. All items entered must be written in the correct CQL syntax. The line where MAT is no longer able to read the file is marked with a red square.");
+		if (result.getFailureReason() == SaveUpdateCQLResult.CUSTOM) {
+			StringBuilder msg = new StringBuilder();
+			result.getCqlErrors().forEach(e -> msg.append(msg.length() > 0 ? ", " : "").append(e.getErrorMessage()));
+			messagePanel.getErrorMessageAlert().createAlert("The MAT was unable to save the changes. Errors: " + msg);
 		}
-		else if(result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD) {
-			messagePanel.getErrorMessageAlert().createAlert("The CQL file could not be saved. All identifiers must be unique and can not match any CQL keywords");
-		}
-	}
+        if (result.getFailureReason() == SaveUpdateCQLResult.SYNTAX_ERRORS) {
+            messagePanel.getErrorMessageAlert().createAlert("The MAT was unable to save the changes. All items entered must be written in the correct CQL syntax. The line where MAT is no longer able to read the file is marked with a red square.");
+        } else if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD) {
+            messagePanel.getErrorMessageAlert().createAlert("The CQL file could not be saved. All identifiers must be unique and can not match any CQL keywords");
+        }
+    }
 
     protected void onModifyValueSet(CQLQualityDataSetDTO result, boolean isUserDefined) {
         String oid = isUserDefined ? EMPTY_STRING :

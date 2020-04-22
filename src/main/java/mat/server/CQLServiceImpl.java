@@ -229,6 +229,8 @@ public class CQLServiceImpl implements CQLService {
                         newModel.setUsingModel(config.getPreviousCQLModel().getUsingModel());
                         newModel.setVersionUsed(config.getPreviousCQLModel().getVersionUsed());
                     } catch (MatException me) {
+                        newModel.setLibraryName("");
+                        newModel.setVersionUsed("");
                         errors = Collections.singletonList(new CQLError());
                         errors.get(0).setErrorMessage(me.getMessage());
                         errors.get(0).setErrorInLine(1);
@@ -246,11 +248,12 @@ public class CQLServiceImpl implements CQLService {
                 SaveUpdateCQLResult r = new SaveUpdateCQLResult();
                 r.setXml(xml); // retain the old xml if there are syntax errors (essentially not saving)
                 r.setCqlString(cql);
+                r.setCqlModel(newModel);
                 r.setSuccess(false);
                 r.setCqlErrors(errors);
                 r.setLibraryNameErrorsMap(new HashMap<>());
                 r.setLibraryNameWarningsMap(new HashMap<>());
-                r.setFailureReason(SaveUpdateCQLResult.SYNTAX_ERRORS);
+                r.setFailureReason(StringUtils.equals(modelType, "FHIR") ? SaveUpdateCQLResult.CUSTOM : SaveUpdateCQLResult.SYNTAX_ERRORS);
                 return r;
             }
 

@@ -113,7 +113,7 @@ public class CqlParser {
                 if (words.length == 4) {
                     v.libraryTag(words[1], chomp1(words[3]));
                 } else {
-                    throw new IllegalArgumentException("Invalid library encountered: " + firstLine);
+                    throw new IllegalArgumentException("Invalid library encountered: " + firstLine + ". Verify the version is a valid mat version, e.g. '1.0.000'.");
                 }
             }
         } else {

@@ -137,7 +137,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
             @Override
             public void onFailure(final Throwable caught) {
-				logger.log(Level.SEVERE, "Error in CQLLibraryService.deleteValueSet. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in CQLLibraryService.deleteValueSet. Error message: " + caught.getMessage(), caught);
                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                 showSearchingBusy(false);
             }
@@ -158,7 +158,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                 @Override
                 public void onFailure(Throwable caught) {
-					logger.log(Level.SEVERE, "Error in CQLLibraryService.getCQLData. Error message: " + caught.getMessage(), caught);
+                    logger.log(Level.SEVERE, "Error in CQLLibraryService.getCQLData. Error message: " + caught.getMessage(), caught);
                     Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                     showSearchingBusy(false);
 
@@ -234,7 +234,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
             @Override
             public void onFailure(Throwable caught) {
-				logger.log(Level.SEVERE, "Error in CQLLibraryService.getLibraryCQLFileData. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in CQLLibraryService.getLibraryCQLFileData. Error message: " + caught.getMessage(), caught);
                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             }
         });
@@ -342,7 +342,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                             @Override
                             public void onFailure(Throwable caught) {
-								logger.log(Level.SEVERE, "Error in CQLLibraryService.findCQLLibraryByID. Error message: " + caught.getMessage(), caught);
+                                logger.log(Level.SEVERE, "Error in CQLLibraryService.findCQLLibraryByID. Error message: " + caught.getMessage(), caught);
                                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                             }
 
@@ -393,7 +393,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                             @Override
                             public void onFailure(Throwable caught) {
-								logger.log(Level.SEVERE, "Error in CQLLibraryService.saveAndModifyFunctions. Error message: " + caught.getMessage(), caught);
+                                logger.log(Level.SEVERE, "Error in CQLLibraryService.saveAndModifyFunctions. Error message: " + caught.getMessage(), caught);
                                 cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
                                 cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
                                 cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
@@ -508,7 +508,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                             @Override
                             public void onFailure(Throwable caught) {
-								logger.log(Level.SEVERE, "Error in CQLLibraryService.saveAndModifyFunctions. Error message: " + caught.getMessage(), caught);
+                                logger.log(Level.SEVERE, "Error in CQLLibraryService.saveAndModifyFunctions. Error message: " + caught.getMessage(), caught);
                                 cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
                                 messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                                 showSearchingBusy(false);
@@ -567,8 +567,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                 @Override
                 public void onFailure(Throwable caught) {
-					logger.log(Level.SEVERE, "Error in CQLLibraryService.saveCQLFile. Error message: " + caught.getMessage(), caught);
-					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                    logger.log(Level.SEVERE, "Error in CQLLibraryService.saveCQLFile. Error message: " + caught.getMessage(), caught);
+                    Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                 }
 
                 @Override
@@ -627,7 +627,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                             @Override
                             public void onFailure(Throwable caught) {
-								logger.log(Level.SEVERE, "Error in CQLLibraryService.saveAndModifyDefinitions. Error message: " + caught.getMessage(), caught);
+                                logger.log(Level.SEVERE, "Error in CQLLibraryService.saveAndModifyDefinitions. Error message: " + caught.getMessage(), caught);
                                 cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
                                 messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                                 showSearchingBusy(false);
@@ -729,7 +729,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                                 @Override
                                 public void onFailure(Throwable caught) {
-									logger.log(Level.SEVERE, "Error in CQLLibraryService.saveIncludeLibrayInCQLLookUp. Error message: " + caught.getMessage(), caught);
+                                    logger.log(Level.SEVERE, "Error in CQLLibraryService.saveIncludeLibrayInCQLLookUp. Error message: " + caught.getMessage(), caught);
                                     showSearchingBusy(false);
                                     if (caught instanceof InvalidLibraryException) {
                                         messagePanel.getErrorMessageAlert().createAlert(caught.getMessage());
@@ -785,7 +785,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                 @Override
                 public void onFailure(Throwable caught) {
-					logger.log(Level.SEVERE, "Error in CQLLibraryService.deleteDefinition. Error message: " + caught.getMessage(), caught);
+                    logger.log(Level.SEVERE, "Error in CQLLibraryService.deleteDefinition. Error message: " + caught.getMessage(), caught);
                     cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
                     messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                     showSearchingBusy(false);
@@ -842,7 +842,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                         @Override
                         public void onFailure(Throwable caught) {
-							logger.log(Level.SEVERE, "Error in CQLLibraryService.deleteFunction. Error message: " + caught.getMessage(), caught);
+                            logger.log(Level.SEVERE, "Error in CQLLibraryService.deleteFunction. Error message: " + caught.getMessage(), caught);
                             messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                             showSearchingBusy(false);
                         }
@@ -929,7 +929,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                         @Override
                         public void onFailure(Throwable caught) {
-							logger.log(Level.SEVERE, "Error in CQLLibraryService.deleteParameter. Error message: " + caught.getMessage(), caught);
+                            logger.log(Level.SEVERE, "Error in CQLLibraryService.deleteParameter. Error message: " + caught.getMessage(), caught);
                             messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                             showSearchingBusy(false);
                         }
@@ -986,7 +986,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                         @Override
                         public void onFailure(Throwable caught) {
-							logger.log(Level.SEVERE, "Error in CQLLibraryService.deleteInclude. Error message: " + caught.getMessage(), caught);
+                            logger.log(Level.SEVERE, "Error in CQLLibraryService.deleteInclude. Error message: " + caught.getMessage(), caught);
                             messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                             showSearchingBusy(false);
                         }
@@ -1046,10 +1046,10 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
             @Override
             public void onFailure(Throwable caught) {
-				logger.log(Level.SEVERE, "Error in CQLLibraryService.deleteCode. Error message: " + caught.getMessage(), caught);
-				showSearchingBusy(false);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedCodesObjId(null);
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                logger.log(Level.SEVERE, "Error in CQLLibraryService.deleteCode. Error message: " + caught.getMessage(), caught);
+                showSearchingBusy(false);
+                cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedCodesObjId(null);
+                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             }
 
             @Override
@@ -1110,7 +1110,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
             @Override
             public void onFailure(Throwable caught) {
-				logger.log(Level.SEVERE, "Error in CQLLibraryService.getCQLData. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in CQLLibraryService.getCQLData. Error message: " + caught.getMessage(), caught);
                 cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedValueSetObjId(null);
                 showSearchingBusy(false);
                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -1125,7 +1125,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
             @Override
             public void onFailure(Throwable caught) {
-				logger.log(Level.SEVERE, "Error in CQLLibraryService.saveAndModifyCQLGeneralInfo. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in CQLLibraryService.saveAndModifyCQLGeneralInfo. Error message: " + caught.getMessage(), caught);
                 messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                 showSearchingBusy(false);
             }
@@ -1162,7 +1162,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                     @Override
                     public void onFailure(Throwable caught) {
-						logger.log(Level.SEVERE, "Error in CQLLibraryService.isLibraryAvailableAndLogRecentActivity. Error message: " + caught.getMessage(), caught);
+                        logger.log(Level.SEVERE, "Error in CQLLibraryService.isLibraryAvailableAndLogRecentActivity. Error message: " + caught.getMessage(), caught);
                     }
 
                     @Override
@@ -1253,7 +1253,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
             @Override
             public void onFailure(Throwable caught) {
-				logger.log(Level.SEVERE, "Error in CQLLibraryService.getCQLDataForLoad. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in CQLLibraryService.getCQLDataForLoad. Error message: " + caught.getMessage(), caught);
                 showSearchingBusy(false);
             }
         });
@@ -1386,7 +1386,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                     cqlWorkspaceView.getValueSetView().getSearchHeader().clear();
                     cqlWorkspaceView.getValueSetView().getSearchHeader().add(searchHeaderText);
                     cqlWorkspaceView.getValueSetView().getMainPanel().getElement().focus();
-					isUserDefined = result.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID);
+                    isUserDefined = result.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID);
 
                     onModifyValueSet(result, isUserDefined);
                     cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
@@ -1426,7 +1426,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                     @Override
                     public void onFailure(Throwable caught) {
-						logger.log(Level.SEVERE, "Error in CQLLibraryService.saveValueSetList. Error message: " + caught.getMessage(), caught);
+                        logger.log(Level.SEVERE, "Error in CQLLibraryService.saveValueSetList. Error message: " + caught.getMessage(), caught);
                         showSearchingBusy(false);
                         Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                     }
@@ -1465,24 +1465,24 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                 cqlService.saveCQLCodeListToCQLLibrary(codesToPaste, cqlLibraryId, new AsyncCallback<SaveUpdateCQLResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
-						logger.log(Level.SEVERE, "Error in CQLLibraryService.saveCQLCodeListToCQLLibrary. Error message: " + caught.getMessage(), caught);
-						showSearchingBusy(false);
-						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                        logger.log(Level.SEVERE, "Error in CQLLibraryService.saveCQLCodeListToCQLLibrary. Error message: " + caught.getMessage(), caught);
+                        showSearchingBusy(false);
+                        Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                     }
 
                     @Override
                     public void onSuccess(SaveUpdateCQLResult result) {
-						showSearchingBusy(false);
-						messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFULLY_PASTED_CODES_IN_MEASURE);
-						cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
-						appliedCodeTableList.clear();
-						appliedCodeTableList.addAll(result.getCqlCodeList());
-						MatContext.get().getCQLModel().setCodeList(appliedCodeTableList);
-						cqlWorkspaceView.getCodesView().buildCodesCellTable(appliedCodeTableList, hasEditPermissions());
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
-						if (result != null && result.getCqlModel().getAllValueSetAndCodeList() != null) {
-							setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetAndCodeList());
-						}
+                        showSearchingBusy(false);
+                        messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFULLY_PASTED_CODES_IN_MEASURE);
+                        cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
+                        appliedCodeTableList.clear();
+                        appliedCodeTableList.addAll(result.getCqlCodeList());
+                        MatContext.get().getCQLModel().setCodeList(appliedCodeTableList);
+                        cqlWorkspaceView.getCodesView().buildCodesCellTable(appliedCodeTableList, hasEditPermissions());
+                        cqlWorkspaceView.getCQLLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
+                        if (result != null && result.getCqlModel().getAllValueSetAndCodeList() != null) {
+                            setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetAndCodeList());
+                        }
                     }
                 });
             } else {
@@ -1561,9 +1561,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                 cqlService.saveCQLCodestoCQLLibrary(transferObject, new AsyncCallback<SaveUpdateCQLResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
-						logger.log(Level.SEVERE, "Error in CQLLibraryService.saveCQLCodestoCQLLibrary. Error message: " + caught.getMessage(), caught);
-						showSearchingBusy(false);
-						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                        logger.log(Level.SEVERE, "Error in CQLLibraryService.saveCQLCodestoCQLLibrary. Error message: " + caught.getMessage(), caught);
+                        showSearchingBusy(false);
+                        Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                         appliedCodeTableList.add(modifyCQLCode);
                     }
 
@@ -1630,7 +1630,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                 @Override
                 public void onFailure(Throwable caught) {
-					logger.log(Level.SEVERE, "Error in CQLLibraryService.saveCQLCodestoCQLLibrary. Error message: " + caught.getMessage(), caught);
+                    logger.log(Level.SEVERE, "Error in CQLLibraryService.saveCQLCodestoCQLLibrary. Error message: " + caught.getMessage(), caught);
                     Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                     showSearchingBusy(false);
                 }
@@ -1646,7 +1646,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
         cqlService.updateCQLVSACValueSets(MatContext.get().getCurrentCQLLibraryId(), expansionId, new AsyncCallback<VsacApiResult>() {
             @Override
             public void onFailure(final Throwable caught) {
-				logger.log(Level.SEVERE, "Error in CQLLibraryService.updateCQLVSACValueSets. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in CQLLibraryService.updateCQLVSACValueSets. Error message: " + caught.getMessage(), caught);
                 showSearchingBusy(false);
                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             }
@@ -1715,7 +1715,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
         vsacapiService.getMostRecentValueSetByOID(oid, release, expansionProfile, new AsyncCallback<VsacApiResult>() {
             @Override
             public void onFailure(final Throwable caught) {
-				logger.log(Level.SEVERE, "Error in vsacapiService.getMostRecentValueSetByOID. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in vsacapiService.getMostRecentValueSetByOID. Error message: " + caught.getMessage(), caught);
                 messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
                 messagePanel.getErrorMessageAlert().setVisible(true);
                 showSearchingBusy(false);
@@ -1758,7 +1758,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
         MatContext.get().getLibraryService().saveCQLValueset(matValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
             @Override
             public void onFailure(final Throwable caught) {
-				logger.log(Level.SEVERE, "Error in LibraryService.saveCQLValueset. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in LibraryService.saveCQLValueset. Error message: " + caught.getMessage(), caught);
                 messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                 showSearchingBusy(false);
                 isModified = false;
@@ -1810,7 +1810,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                         @Override
                         public void onFailure(Throwable caught) {
-							logger.log(Level.SEVERE, "Error in LibraryService.saveCQLValueset. Error message: " + caught.getMessage(), caught);
+                            logger.log(Level.SEVERE, "Error in LibraryService.saveCQLValueset. Error message: " + caught.getMessage(), caught);
                             showSearchingBusy(false);
                             if (!appliedValueSetTableList.isEmpty()) {
                                 appliedValueSetTableList.clear();
@@ -1822,7 +1822,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                         @Override
                         public void onSuccess(SaveUpdateCQLResult result) {
                             String message = EMPTY_STRING;
-							showSearchingBusy(false);
+                            showSearchingBusy(false);
                             if (result != null) {
                                 if (result.isSuccess()) {
                                     message = getValuesetSuccessMessage(codeListName);
@@ -1934,7 +1934,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                     @Override
                     public void onFailure(Throwable caught) {
-						logger.log(Level.SEVERE, "Error in LibraryService.getCQLLibraryFileData. Error message: " + caught.getMessage(), caught);
+                        logger.log(Level.SEVERE, "Error in LibraryService.getCQLLibraryFileData. Error message: " + caught.getMessage(), caught);
                         Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                         showSearchingBusy(false);
                     }
@@ -1951,7 +1951,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
             @Override
             public void onFailure(Throwable caught) {
-				logger.log(Level.SEVERE, "Error in LibraryService.searchForIncludes. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in LibraryService.searchForIncludes. Error message: " + caught.getMessage(), caught);
                 messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                 showSearchingBusy(false);
             }
@@ -1989,7 +1989,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
         attributeService.getAllAttributesByDataType(functionArg.getQdmDataType(), new AsyncCallback<List<QDSAttributes>>() {
             @Override
             public void onFailure(Throwable caught) {
-				logger.log(Level.SEVERE, "Error in attributeService.getAllAttributesByDataType. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in attributeService.getAllAttributesByDataType. Error message: " + caught.getMessage(), caught);
                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             }
 
@@ -2066,7 +2066,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                                     @Override
                                     public void onFailure(Throwable caught) {
-										logger.log(Level.SEVERE, "Error in CQLLibraryService.getUsedCqlArtifacts. Error message: " + caught.getMessage(), caught);
+                                        logger.log(Level.SEVERE, "Error in CQLLibraryService.getUsedCqlArtifacts. Error message: " + caught.getMessage(), caught);
                                         showSearchBusyOnDoubleClick(false);
                                         Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                                     }
@@ -2117,7 +2117,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                             @Override
                             public void onFailure(Throwable caught) {
-								logger.log(Level.SEVERE, "Error in CQLLibraryService.saveIncludeLibrayInCQLLookUp. Error message: " + caught.getMessage(), caught);
+                                logger.log(Level.SEVERE, "Error in CQLLibraryService.saveIncludeLibrayInCQLLookUp. Error message: " + caught.getMessage(), caught);
                                 editIncludedLibraryDialogBox.getDialogModal().hide();
                                 editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
                                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -2208,7 +2208,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                                                             @Override
                                                             public void onFailure(Throwable caught) {
-																logger.log(Level.SEVERE, "Error in CQLLibraryService.getUsedCqlArtifacts. Error message: " + caught.getMessage(), caught);
+                                                                logger.log(Level.SEVERE, "Error in CQLLibraryService.getUsedCqlArtifacts. Error message: " + caught.getMessage(), caught);
                                                                 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                                                             }
 
@@ -2234,7 +2234,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                                     @Override
                                     public void onFailure(Throwable caught) {
-										logger.log(Level.SEVERE, "Error in CQLLibraryService.findCQLLibraryByID. Error message: " + caught.getMessage(), caught);
+                                        logger.log(Level.SEVERE, "Error in CQLLibraryService.findCQLLibraryByID. Error message: " + caught.getMessage(), caught);
                                         messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                                     }
                                 });
@@ -2292,7 +2292,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                                     @Override
                                     public void onFailure(Throwable caught) {
-										logger.log(Level.SEVERE, "Error in CQLLibraryService.getUsedCqlArtifacts. Error message: " + caught.getMessage(), caught);
+                                        logger.log(Level.SEVERE, "Error in CQLLibraryService.getUsedCqlArtifacts. Error message: " + caught.getMessage(), caught);
                                         showSearchBusyOnDoubleClick(false);
                                         cqlWorkspaceView.getCQLDefinitionsView().setWidgetReadOnly(hasEditPermissions());
                                         Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -2394,7 +2394,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                                     @Override
                                     public void onFailure(Throwable caught) {
-										logger.log(Level.SEVERE, "Error in CQLLibraryService.getUsedCqlArtifacts. Error message: " + caught.getMessage(), caught);
+                                        logger.log(Level.SEVERE, "Error in CQLLibraryService.getUsedCqlArtifacts. Error message: " + caught.getMessage(), caught);
                                         showSearchingBusy(false);
                                         cqlWorkspaceView.getCQLFunctionsView().setWidgetReadOnly(hasEditPermissions());
                                         Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());

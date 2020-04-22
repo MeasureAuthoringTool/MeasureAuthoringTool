@@ -62,7 +62,7 @@ public abstract class MainLayout {
      * reset the loading queue.
      */
     private static void delegateHideLoadingMessage() {
-        MatContext.get().getLoadingQueue().poll();
+        MatContext.get().getLoadingQueue().clear();
         if (MatContext.get().getLoadingQueue().size() == 0) {
             hideProgressSpinner();
         }

@@ -618,6 +618,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
         });
 
+        setSearchingBusy(false);
         confirmationDialogBox.show();
     }
 
@@ -627,10 +628,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             return;
         }
         logger.log(Level.INFO, "Please wait. Conversion is in progress...");
-
-        if (!MatContext.get().getLoadingQueue().isEmpty()) {
-            return;
-        }
 
         setSearchingBusy(true);
         FhirMeasureRemoteServiceAsync fhirMeasureService = GWT.create(FhirMeasureRemoteService.class);
@@ -679,6 +676,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void showErrorAlertDialogBox(final String errorMessage, final boolean shouldRefreshSearch) {
+        setSearchingBusy(false);
         ConfirmationDialogBox errorAlert = new ConfirmationDialogBox(errorMessage, "Return to Measure Library", "Cancel", null, true);
         errorAlert.getNoButton().setVisible(false);
         errorAlert.setObserver(new ConfirmationObserver() {

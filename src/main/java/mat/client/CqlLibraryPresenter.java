@@ -678,17 +678,18 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
             }
         });
 
+        showSearchingBusy(false);
         confirmationDialogBox.show();
     }
 
     private void convertCqlLibraryFhir(CQLLibraryDataSetObject object) {
         logger.log(Level.INFO, "Please wait. Conversion is in progress...");
 
+        showSearchingBusy(true);
         MatContext.get().getCQLLibraryService().convertCqlLibrary(object, new AsyncCallback<FhirConvertResultResponse>() {
             @Override
             public void onFailure(Throwable caught) {
                 logger.log(Level.SEVERE, "Error while converting the library id " + object.getId() + ". Error message: " + caught.getMessage(), caught);
-                showSearchingBusy(false);
                 showErrorAlertDialogBox(MatContext.get().getMessageDelegate().getConvertCqlLibraryFailureMessage());
                 MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
             }
@@ -709,6 +710,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     }
 
     private void showErrorAlertDialogBox(final String errorMessage, final boolean shouldRefreshSearch) {
+        showSearchingBusy(false);
         ConfirmationDialogBox errorAlert = new ConfirmationDialogBox(errorMessage, "Return to CqlLibrary Library", "Cancel", null, true);
         errorAlert.getNoButton().setVisible(false);
         errorAlert.setObserver(new ConfirmationObserver() {

@@ -65,7 +65,7 @@ public abstract class MainLayout {
      * reset the loading queue.
      */
     private static void delegateHideLoadingMessage() {
-        MatContext.get().getLoadingQueue().poll();
+        MatContext.get().getLoadingQueue().clear();
         if (MatContext.get().getLoadingQueue().size() == 0) {
             hideProgressSpinner();
         }
@@ -373,6 +373,7 @@ public abstract class MainLayout {
         final FlowPanel container = new FlowPanel();
 
         SIMPLE_SPINNER.setVisible(false);
+        SIMPLE_SPINNER.getElement().setAttribute("id", "loadingSimpleSpinner");
         container.add(SIMPLE_SPINNER);
         container.add(topBanner);
         container.add(contentPanel);

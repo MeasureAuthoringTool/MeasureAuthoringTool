@@ -277,15 +277,6 @@ public class MatContext implements IsSerializable {
     }
 
     protected MatContext() {
-
-        GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
-
-            @Override
-            public void onUncaughtException(Throwable e) {
-                GWT.log("An uncaught Exception Occured", e);
-                MatContext.this.logException("Uncaught Client Exception", e);
-            }
-        });
         eventBus = new HandlerManager(null);
 
         eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {
@@ -544,6 +535,8 @@ public class MatContext implements IsSerializable {
     public String getCurrentModule() {
         return currentModule;
     }
+
+    public boolean isCurrentMeasureModelFhir() { return "FHIR".equals(getCurrentMeasureModel()); }
 
     @Deprecated
     public String getCurrentMeasureScoringType() {
@@ -1215,6 +1208,14 @@ public class MatContext implements IsSerializable {
         } else {
             return "";
         }
+    }
+
+    public boolean isCurrentModelTypeFhir() {
+        return currentMeasureInfo != null ? isCurrentMeasureModelFhir() : isCurrentCQLLibraryModelTypeFhir();
+    }
+
+    public boolean isCurrentCQLLibraryModelTypeFhir() {
+        return "FHIR".equals(currentLibraryInfo.getLibraryModelType());
     }
 
     public String getCurrentCQLLibraryModelType() {

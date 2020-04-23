@@ -36,9 +36,9 @@ public interface CQLLibraryServiceInterface {
 
     CQLLibraryDataSetObject extractCQLLibraryDataObject(CQLLibrary cqlLibrary);
 
-	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
+    CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
 
-	SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject);
+    SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject);
 
     String createCQLLookUpTag(String libraryName, String version, boolean isFhir);
 

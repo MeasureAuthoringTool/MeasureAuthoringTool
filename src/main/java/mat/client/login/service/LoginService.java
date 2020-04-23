@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import mat.client.login.LoginModel;
+import mat.client.shared.MatException;
 import mat.model.SecurityQuestions;
 import mat.model.UserSecurityQuestion;
 import mat.shared.ForgottenLoginIDResult;
@@ -60,7 +61,7 @@ public interface LoginService extends RemoteService {
 	 * Sign out.
 	 */
 	public void signOut();
-	
+
 	/**
 	 * Change temp password.
 	 * 
@@ -174,6 +175,14 @@ public interface LoginService extends RemoteService {
 	 * @return true, if is locked user
 	 */
 	public boolean isLockedUser(String loginId);
+
+	/**
+	 * Checks if the HARP user is locked out of the MAT.
+	 *
+	 * @param harpId the user's harp id
+	 * @return true, if is locked user
+	 */
+	public boolean isHarpUserLocked(String harpId);
 	
 	/**
 	 * Gets the security questions.
@@ -192,6 +201,13 @@ public interface LoginService extends RemoteService {
 	 * @return true, if is valid password
 	 */
 	boolean isValidPassword(String userId, String password);
-	
 
+	/**
+	 * Retrieves MAT user details for provided HARP ID.
+	 *
+	 * @param harpId User's email
+	 * @param accessToken HARP Access Token.
+	 * @return
+	 */
+	LoginModel initSession(String harpId, String accessToken) throws MatException;
 }

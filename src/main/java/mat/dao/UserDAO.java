@@ -25,8 +25,15 @@ public interface UserDAO extends IDAO<User, String> {
 	 * @return the list
 	 */
 	public List<User> searchForNonTerminatedUser();
-	
+
 	/**
+	 * Get user details by Email.
+	 * @param email User's email.
+	 * @return UserDetails for setting login values.
+	 */
+    UserDetails getUserDetailsByEmail(String email);
+
+    /**
 	 * User exists.
 	 * 
 	 * @param userid

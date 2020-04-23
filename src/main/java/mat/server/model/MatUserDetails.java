@@ -136,7 +136,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	 */
 	@Transient
 	public Collection<GrantedAuthority> getAuthorities() {
-	       List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+	       List<GrantedAuthority> list = new ArrayList<>();
 	       list.add(new SimpleGrantedAuthority(roles.getDescription()));
 	       return list;
 	}

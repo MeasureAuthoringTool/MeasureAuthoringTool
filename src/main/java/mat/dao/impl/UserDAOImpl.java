@@ -236,6 +236,19 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
         criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("loginId"), loginId));
 		return (UserDetails) session.createQuery(criteriaQuery).uniqueResult();
 	}
+
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#getUser(java.lang.String)
+	 */
+	@Override
+	public UserDetails getUserDetailsByEmail(String email) {
+		Session session = getSessionFactory().getCurrentSession();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+		CriteriaQuery<MatUserDetails> criteriaQuery = criteriaBuilder.createQuery(MatUserDetails.class);
+		Root<MatUserDetails> userRoot = criteriaQuery.from(MatUserDetails.class);
+		criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("emailAddress"), email));
+		return session.createQuery(criteriaQuery).uniqueResult();
+	}
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.UserDAO#userExists(java.lang.String)

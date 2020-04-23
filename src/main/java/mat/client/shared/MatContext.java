@@ -1,16 +1,5 @@
 package mat.client.shared;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -76,11 +65,24 @@ import mat.model.GlobalCopyPasteObject;
 import mat.model.MeasureType;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.client.login.service.HarpService;
+import mat.client.login.service.HarpServiceAsync;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.SaveUpdateCQLResult;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class MatContext implements IsSerializable {
 
@@ -108,6 +110,8 @@ public class MatContext implements IsSerializable {
     private String bonnieLink;
 
     private LoginServiceAsync loginService;
+
+    private HarpServiceAsync harpService;
 
     private MeasureServiceAsync measureService;
 
@@ -150,6 +154,10 @@ public class MatContext implements IsSerializable {
     private AuditServiceAsync auditService;
 
     private String userId;
+
+    private String idToken;
+
+    private String accessToken;
 
     private String userEmail;
 
@@ -330,9 +338,15 @@ public class MatContext implements IsSerializable {
 
     public LoginServiceAsync getLoginService() {
         if (loginService == null) {
-            loginService = (LoginServiceAsync) GWT.create(LoginService.class);
+            loginService = GWT.create(LoginService.class);
         }
         return loginService;
+    }
+    public HarpServiceAsync getHarpService() {
+        if (harpService == null) {
+            harpService = GWT.create(HarpService.class);
+        }
+        return harpService;
     }
 
     public VSACAPIServiceAsync getVsacapiServiceAsync() {
@@ -426,6 +440,12 @@ public class MatContext implements IsSerializable {
         return userId;
     }
 
+    public void setIdToken(String idToken) {this.idToken = idToken; }
+    public String getIdToken() { return idToken; }
+
+    public void setAccessToken(String accessToken) {this.accessToken = accessToken; }
+    public String getAccessToken() { return accessToken; }
+
     public String getLoggedinLoginId() {
         return loginId;
     }
@@ -442,14 +462,17 @@ public class MatContext implements IsSerializable {
         getLoginService().isValidUser(username, Password, oneTimePassword, callback);
     }
 
+    public void initSession(String harpId, String accessToken, AsyncCallback<LoginModel> callback) {
+        getLoginService().initSession(harpId, accessToken, callback);
+    }
+
     public void getListBoxData(AsyncCallback<CodeListService.ListBoxData> listBoxCallback) {
         getCodeListService().getListBoxData(listBoxCallback);
     }
 
-    public void getCurrentUserRole(AsyncCallback<SessionManagementService.Result> userRoleCallback) {
-        getSessionService().getCurrentUserRole(userRoleCallback);
+    public void getCurrentUser(AsyncCallback<SessionManagementService.Result> userCallback) {
+        getSessionService().getCurrentUser(userCallback);
     }
-
 
     public void restartTimeoutWarning() {
         getTimeoutManager().startActivityTimers(ConstantMessages.MAT_MODULE);
@@ -960,22 +983,22 @@ public class MatContext implements IsSerializable {
         MatContext.get().getSynchronizationDelegate().setLogOffFlag();
         MatContext.get().setUMLSLoggedIn(false);
         MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(),
-                MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
+            MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
 
-                    @Override
-                    public void onSuccess(final String result) {
-                        if (isRedirect) {
-                            MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-                        }
+                @Override
+                public void onSuccess(final String result) {
+                    if (isRedirect) {
+                        MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
                     }
+                }
 
-                    @Override
-                    public void onFailure(final Throwable caught) {
-                        if (isRedirect) {
-                            MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-                        }
+                @Override
+                public void onFailure(final Throwable caught) {
+                    if (isRedirect) {
+                        MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
                     }
-                });
+                }
+            });
     }
 
     public void getAllOperators() {

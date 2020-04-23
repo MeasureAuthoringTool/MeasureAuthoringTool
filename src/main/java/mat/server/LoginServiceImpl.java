@@ -1,33 +1,13 @@
 package mat.server;
 
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
-
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.SecurityQuestionOptions;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatException;
 import mat.dao.UserDAO;
 import mat.dao.UserPasswordHistoryDAO;
 import mat.model.SecurityQuestions;
@@ -45,6 +25,23 @@ import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -110,6 +107,16 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		session = getThreadLocalRequest().getSession(true);
 		LoginModel loginModel = loginCredentialService.isValidUser(userId, password, oneTimePassword,session.getId());
 		return loginModel;
+	}
+
+	@Override
+	public LoginModel initSession(String harpId, String accessToken) throws MatException {
+		logger.info("getUserDetailsByHarpId::harpId::" + harpId);
+		HttpSession session = getThreadLocalRequest().getSession();
+		if (userService.isHarpUserLocked(harpId)) {
+			throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
+		}
+		return loginCredentialService.initSession(harpId, session.getId(), accessToken);
 	}
 	
 	/* (non-Javadoc)
@@ -430,7 +437,12 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	public boolean isLockedUser(String loginId) {
 		return userService.isLockedUser(loginId);
 	}
-	
+
+	@Override
+	public boolean isHarpUserLocked(String harpId) {
+		return userService.isHarpUserLocked(harpId);
+	}
+
 	/* 
 	 * {@inheritDoc}
 	 */

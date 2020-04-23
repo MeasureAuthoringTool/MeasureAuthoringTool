@@ -34,7 +34,6 @@ import mat.client.shared.MatContext;
 import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
 
-
 public class Login extends MainLayout implements EntryPoint {
 
     private final Logger logger = Logger.getLogger("MAT");

@@ -2,6 +2,8 @@ package mat.client;
 
 import java.util.List;
 
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.Hidden;
 import org.gwtbootstrap3.client.ui.AnchorButton;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
@@ -56,6 +58,7 @@ public abstract class MainLayout {
     private HorizontalPanel linksPanel = new HorizontalPanel();
     private AnchorListItem profile = new AnchorListItem("MAT Account");
     private AnchorListItem signOut = new AnchorListItem("Sign Out");
+    private FormPanel logoutForm = new FormPanel();
 
     /**
      * hide spinner and
@@ -289,6 +292,24 @@ public abstract class MainLayout {
 
         collapse.add(nav);
         return collapse;
+    }
+
+    protected void harpLogout(String harpLogoutUrl) {
+        logoutForm.setMethod(FormPanel.METHOD_GET);
+
+        VerticalPanel panel = new VerticalPanel();
+        logoutForm.setWidget(panel);
+
+        Hidden token = new Hidden();
+        token.setName("id_token_hint");
+        token.setValue(MatContext.get().getIdToken());
+
+        panel.add(token);
+
+        RootPanel.get().add(logoutForm);
+
+        logoutForm.setAction(harpLogoutUrl);
+        logoutForm.submit();
     }
 
     public void setHeader(String version, NavbarLink link) {

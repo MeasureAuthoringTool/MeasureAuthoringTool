@@ -1,24 +1,5 @@
 package mat.server.service.impl;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.UUID;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
 import mat.DTO.UserPreferenceDTO;
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
@@ -37,6 +18,23 @@ import mat.server.service.UserService;
 import mat.server.twofactorauth.TwoFactorValidationService;
 import mat.shared.HashUtility;
 import mat.shared.StringUtility;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * The Class LoginCredentialServiceImpl.
@@ -330,6 +328,23 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
         }
     }
 
+    public LoginModel initSession(String harpId, String sessionId, String accessToken) {
+        logger.debug("setUpUserSession::" + harpId + "::" + sessionId);
+        // Set Session ID in user details.
+        MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByHarpId(harpId);
+        if(userDetails == null) {
+            throw new IllegalArgumentException("HARP_ID_NOT_FOUND");
+        }
+        userDetails.setSessionId(sessionId);
+        hibernateUserService.saveUserDetails(userDetails);
+
+        // Set Authn Token. Used to retrieve user info.
+        setAuthenticationToken(userDetails, accessToken);
+
+        // Set and return user details to client.
+        return loginModelSetter(new LoginModel(), userDetails);
+    }
+
     /*
      * {@inheritDoc}
      */
@@ -407,6 +422,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
      * @return the login model
      */
     private LoginModel loginModelSetter(LoginModel loginmodel, MatUserDetails userDetails) {
+        logger.info("LoginCredentialServiceImpl::loginModelSetter::MatUserDetails::userId::" + userDetails.getId());
         LoginModel loginModel = loginmodel;
         loginModel.setRole(userDetails.getRoles());
         loginModel.setInitialPassword(userDetails.getUserPassword().isInitial());
@@ -465,16 +481,34 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
     }
 
     /**
-     * Sets the authentication token.
+     * Sets the authentication token for Legacy logins.
      *
      * @param userDetails the new authentication token
      */
     private void setAuthenticationToken(MatUserDetails userDetails) {
         logger.debug("Setting authentication token");
-        Authentication auth = new UsernamePasswordAuthenticationToken(userDetails.getId(), userDetails.getUserPassword().getPassword(), userDetails.getAuthorities());
+        PreAuthenticatedAuthenticationToken auth =
+                new PreAuthenticatedAuthenticationToken(userDetails.getId(), userDetails.getUserPassword().getPassword(), userDetails.getAuthorities());
 
         // US 170. set additional details for history event
-        ((UsernamePasswordAuthenticationToken) auth).setDetails(userDetails);
+        auth.setDetails(userDetails);
+        SecurityContext sc = new SecurityContextImpl();
+        sc.setAuthentication(auth);
+        SecurityContextHolder.setContext(sc);
+    }
+
+    /**
+     * Sets the pre-authentication token for HARP logins.
+     *
+     * @param userDetails the new authentication token
+     */
+    private void setAuthenticationToken(MatUserDetails userDetails, String accessToken) {
+        logger.info("Setting authentication token::"+userDetails.getId());
+        PreAuthenticatedAuthenticationToken auth =
+                new PreAuthenticatedAuthenticationToken(userDetails.getId(), accessToken, userDetails.getAuthorities());
+        auth.setAuthenticated(true);
+        auth.setDetails(userDetails);
+
         SecurityContext sc = new SecurityContextImpl();
         sc.setAuthentication(auth);
         SecurityContextHolder.setContext(sc);

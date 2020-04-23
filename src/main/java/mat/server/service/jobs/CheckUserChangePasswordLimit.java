@@ -32,50 +32,50 @@ import mat.shared.ConstantMessages;
  * The Class CheckUserPasswordLimit.
  */
 public class CheckUserChangePasswordLimit {
-	
+
 	/** The Constant logger. */
 	private static final Log logger=LogFactory.getLog(CheckUserChangePasswordLimit.class);
-	
+
 	/** The user dao. */
 	private UserDAO userDAO;
-	
-	private EmailAuditLogDAO emailAuditLogDAO; 
+
+	private EmailAuditLogDAO emailAuditLogDAO;
 
 	/** The mail sender. */
 	private MailSender mailSender;
-	
+
 	/** The simple mail message. */
 	private SimpleMailMessage simpleMailMessage;
-	
+
 	/** The warning day limit. */
 	private int passwordwarningDayLimit;
-	
+
 	/** The expiry day limit. */
 	private int passwordexpiryDayLimit;
-	
+
 	/** The warning mail template. */
 	private String warningMailTemplate;
-	
+
 	/** The warning mail subject. */
 	private String warningMailSubject;
-	
+
 	/** The expiry mail template. */
 	private String expiryMailTemplate;
-	
+
 	/** The expiry mail subject. */
 	private String expiryMailSubject;
-	
+
 	/** The Constant WARNING_EMAIL_FLAG. */
 	private final static String WARNING_EMAIL_FLAG = "WARNING";
-	
+
 	/** The Constant EXPIRY_EMAIL_FLAG. */
 	private final static String EXPIRY_EMAIL_FLAG = "EXPIRED";
-	
+
 	/** The user service. */
 	private UserService userService;
-	
+
 	@Autowired private Configuration freemarkerConfiguration;
-	
+
 	/**
 	 * Gets the expiry mail template.
 	 *
@@ -112,7 +112,7 @@ public class CheckUserChangePasswordLimit {
 		this.expiryMailSubject = expiryMailSubject;
 	}
 
-	
+
 	/**
 	 * Gets the user dao.
 	 *
@@ -130,7 +130,7 @@ public class CheckUserChangePasswordLimit {
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
-	
+
 	public EmailAuditLogDAO getEmailAuditLogDAO() {
 		return emailAuditLogDAO;
 	}
@@ -275,7 +275,7 @@ public class CheckUserChangePasswordLimit {
 		return WARNING_EMAIL_FLAG;
 	}
 
-	
+
 
 	/**
 	 * Gets the expiry email flag.
@@ -287,23 +287,23 @@ public class CheckUserChangePasswordLimit {
 	}
 
 	/**
-	 * Method to Send 
+	 * Method to Send
 	 * 1.Warning Email for Warning Day Limit 35 days.
 	 * 2.Password change screen for day limit >50 days
-	 *  
+	 *
 	 * @return void
 	 */
 	public void CheckUserPasswordLimitDays(){
-		
+
 		logger.info(" :: CheckUserPasswordLimitDays Method START :: ");
-		
+
 		CheckUserLoginPasswordDays(passwordwarningDayLimit,WARNING_EMAIL_FLAG);
 		CheckUserLoginPasswordDays(passwordexpiryDayLimit,EXPIRY_EMAIL_FLAG);
-		
+
 		logger.info(" :: CheckUserPasswordLimitDays Method END :: ");
-		
+
 	}
-	
+
 	/**
 	 * Check user login password days.
 	 *
@@ -311,24 +311,24 @@ public class CheckUserChangePasswordLimit {
 	 * @param emailType the email type
 	 */
 	private void CheckUserLoginPasswordDays(final long noOfDaysPasswordLimit, final String emailType){
-		
+
 		logger.info(" :: checkUserLoginDays Method START :: for Sending " + emailType + " Type Email");
 		//Get all the Users
-				final List<User> users = userDAO.find(); 
+				final List<User> users = userDAO.find();
 				final List<User> emailUsers=checkUsersLastPassword(noOfDaysPasswordLimit,users);
 				final Map<String, Object> model= new HashMap<String, Object>();
 				final Map<String, String> content= new HashMap<String, String>();
 				final String envirUrl = ServerConstants.getEnvURL();
-				
+
 				for(User user:emailUsers){
-					
+
 					//Send 45 days password limit email for all the users in the list.
 					logger.info("Sending email to "+user.getFirstName());
 					simpleMailMessage.setTo(user.getEmailAddress());
-					
+
 					//Creation of the model map can be its own method.
 					content.put("User", "Measure Authoring Tool User");
-					
+
 					/**
 					 * If the user is not a normal user then set the user role in the email
 					 */
@@ -337,16 +337,17 @@ public class CheckUserChangePasswordLimit {
 						userRole = "("+user.getSecurityRole().getDescription()+")";
 					}
 					content.put("rolename",userRole);
-					
-					content.put(ConstantMessages.LOGINID, user.getLoginId());
-					content.put(ConstantMessages.URL, envirUrl);
-					
+
+                    content.put(ConstantMessages.HARPID, user.getHarpId());
+                    content.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
+                    content.put(ConstantMessages.URL, envirUrl);
+
 					//5 days Expiry Date
 				    if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
 						final String expiryDate=getFormattedExpiryDate(new Date(),5-1);
 						content.put("passwordExpiryDate",expiryDate );
 					}
-					
+
 					model.put("content", content);
 					String text = null;
 					try {
@@ -372,11 +373,11 @@ public class CheckUserChangePasswordLimit {
 						e.printStackTrace();
 					}
 				}
-			
+
 				logger.info(" :: CheckUserLoginPasswordDays Method END :: ");
-				
+
 	}
-	
+
 	/**
 	 * Check users last password date.
 	 *
@@ -385,25 +386,25 @@ public class CheckUserChangePasswordLimit {
 	 * @return the list
 	 */
 	private List<User> checkUsersLastPassword(final long passwordDayLimit,final List<User> users){
-		
+
 		logger.info(" :: checkUsersLastPassword Method Start :: ");
-		
+
 		final List<User> returnUserList = new ArrayList<User>();
 		final Date passwordDaysAgo=getPasswordNumberOfDaysAgo((int)passwordDayLimit);
 	    logger.info(passwordDayLimit + "passwordDaysAgo:"+passwordDaysAgo);
-		
+
 	    for(User user:users){
 			Date lastPasswordCreatedDate = user.getPassword().getCreatedDate();
-			
+
 			if(lastPasswordCreatedDate == null || !checkValidUser(user)){
 				continue;
 			}
-			
+
 			lastPasswordCreatedDate = DateUtils.truncate(lastPasswordCreatedDate, Calendar.DATE);
 			logger.info("User:"+user.getFirstName()+"  :::: last Created Password Date :::::   " + lastPasswordCreatedDate);
 			//for User password equals 35 days
 			if(passwordwarningDayLimit==passwordDayLimit){
-				
+
 				if(lastPasswordCreatedDate.equals(passwordDaysAgo)) {
 					logger.info("User:"+user.getEmailAddress()+" who's last password was "+ passwordDayLimit +" days ago.");
 					returnUserList.add(user);
@@ -411,11 +412,11 @@ public class CheckUserChangePasswordLimit {
 					logger.info("User:"+user.getEmailAddress()+" who's last password was not "+ passwordDayLimit +" days ago.");
 					}
 				}
-			
+
 			    // for User Password Greater than 60days
 			 else if(passwordexpiryDayLimit==passwordDayLimit){
-				
-				if(lastPasswordCreatedDate.before((passwordDaysAgo)) 
+
+				if(lastPasswordCreatedDate.before((passwordDaysAgo))
 						|| lastPasswordCreatedDate.equals(passwordDaysAgo)){
 					logger.info("User:"+user.getEmailAddress()+" who's last password was more than "+ passwordDayLimit +" days ago.");
 					returnUserList.add(user);
@@ -431,14 +432,14 @@ public class CheckUserChangePasswordLimit {
 					logger.info("User:"+user.getEmailAddress()+" who's last password was not more than "+ passwordDayLimit +" days ago.");
 					}
 				}
-			
+
 	    }
 		logger.info(" :: checkUsersLastPassword Method END :: ");
-		
+
 	return returnUserList;
 	}
-	
-	
+
+
    /**
     * Gets the password number of days ago.
     *
@@ -446,18 +447,18 @@ public class CheckUserChangePasswordLimit {
     * @return the password number of days ago
     */
    private Date getPasswordNumberOfDaysAgo(final int noOfDaysPasswordLimit) {
-		
+
 		logger.info(" :: getPasswordNumberOfDaysAgo Method START :: ");
-		
+
 		Date numberOfDaysAgo;
 		numberOfDaysAgo=DateUtils.truncate(new Date(),Calendar.DATE);
 		numberOfDaysAgo=DateUtils.addDays(numberOfDaysAgo, noOfDaysPasswordLimit);
-		
+
 		logger.info(" :: getPasswordNumberOfDaysAgo Method END :: " + numberOfDaysAgo);
 		return numberOfDaysAgo;
 	}
-   
-   
+
+
    /**
     * Check valid user.
     *
@@ -466,21 +467,21 @@ public class CheckUserChangePasswordLimit {
     */
    private boolean checkValidUser(final User user) {
 		logger.info(" :: checkValidUser Method START :: ");
-		
+
 		Boolean isValidUser = true;
-		
+
 		//final Date terminationDate = user.getTerminationDate();
 		final Date signInDate = user.getSignInDate();
 		System.out.println("signInDate :: "+ signInDate);
 		if(signInDate == null || user.getStatus().getStatusId().equals("2")){
 			isValidUser = false;
 		}
-		
+
 		logger.info(user.getFirstName() + " :: checkValidUser Method END :: isValidUser ::: "+ isValidUser);
-		
+
 		return isValidUser;
    }
-   
+
    /**
     * Gets the formatted expiry date.
     *

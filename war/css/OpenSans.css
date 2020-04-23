@@ -1,0 +1,77 @@
+@font-face {
+    font-family: 'OpenSansBold';
+url('../fonts/OpenSans-Bold.woff') format('woff'),;
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSansBoldItalic';
+url('../fonts/OpenSans-BoldItalic.woff') format('woff'),;
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSansExtraBold';
+url('OpenSans-ExtraBold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSansExtraBoldItalic';
+url('OpenSans-ExtraBoldItalic.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSansItalic';
+url('OpenSans-BoldItalic.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSansItalic';
+url('OpenSans-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'OpenSansLight';
+url('OpenSans-Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSansLightItalic';
+url('OpenSans-LightItalic.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSans';
+url('OpenSans-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSansSemibold';
+url('OpenSans-Semibold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSansSemiboldItalic';
+url('OpenSans-SemiboldItalic.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}

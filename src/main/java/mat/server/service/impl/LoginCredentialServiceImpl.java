@@ -5,13 +5,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -20,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import mat.DTO.UserPreferenceDTO;
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatException;
 import mat.dao.UserDAO;
 import mat.dao.UserSecurityQuestionDAO;
 import mat.model.SecurityQuestions;
@@ -33,22 +33,24 @@ import mat.server.service.LoginCredentialService;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
 import mat.server.twofactorauth.TwoFactorValidationService;
+import mat.shared.HarpConstants;
 import mat.shared.HashUtility;
 import mat.shared.StringUtility;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 /** The Class LoginCredentialServiceImpl. */
 public class LoginCredentialServiceImpl implements LoginCredentialService {
-	
+
 	private static final Log logger = LogFactory.getLog(LoginCredentialServiceImpl.class);
 	private static Timestamp currentTimeStamp;
-	
+
 	@Autowired private HibernateUserDetailService hibernateUserService;
 	@Autowired private SecurityQuestionsService securityQuestionsService;
 	@Autowired private UserDAO userDAO;
 	@Autowired private UserService userService;
 	@Autowired private TwoFactorValidationService matOtpValidatorService;
 	@Autowired private UserSecurityQuestionDAO userSecurityQuestionDAO;
-	
+
 	/*
 	 * {@inheritDoc}
 	 */
@@ -58,7 +60,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		logger.info("Changing password");
 		boolean result = false;
 		User user = userService.getById(model.getUserId());
-		
+
 		//before setting new Password we need to store the old password in password History
 		userService.addByUpdateUserPasswordHistory(user,false);
 		userService.setUserPassword(user, model.getPassword(), false);
@@ -74,7 +76,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		SecurityQuestions secQue1 = securityQuestionsService.getSecurityQuestionObj(newQuestion1);
 		secQuestions.get(0).setSecurityQuestionId(secQue1.getQuestionId());
 		secQuestions.get(0).setSecurityQuestions(secQue1);
-		
+
 		String originalAnswer1 = secQuestions.get(0).getSecurityAnswer();
 		if(StringUtility.isEmptyOrNull(originalAnswer1) ||  (!StringUtility.isEmptyOrNull(originalAnswer1) && !originalAnswer1.equalsIgnoreCase(model.getQuestion1Answer()))) {
 			String salt1 = UUID.randomUUID().toString();
@@ -84,7 +86,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			secQuestions.get(0).setRowId("0");
 			userSecurityQuestionDAO.save(secQuestions.get(0));
 		}
-		
+
 		String newQuestion2 = model.getQuestion2();
 		SecurityQuestions secQue2 = securityQuestionsService.getSecurityQuestionObj(newQuestion2);
 		secQuestions.get(1).setSecurityQuestionId(secQue2.getQuestionId());
@@ -99,12 +101,12 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			userSecurityQuestionDAO.save(secQuestions.get(1));
 		}
 
-		
+
 		String newQuestion3 = model.getQuestion3();
 		SecurityQuestions secQue3 = securityQuestionsService.getSecurityQuestionObj(newQuestion3);
 		secQuestions.get(2).setSecurityQuestionId(secQue3.getQuestionId());
 		secQuestions.get(2).setSecurityQuestions(secQue3);
-		
+
 		String originalAnswer3 = secQuestions.get(2).getSecurityAnswer();
 		if(StringUtility.isEmptyOrNull(originalAnswer3) ||  (!StringUtility.isEmptyOrNull(originalAnswer3) && !originalAnswer3.equalsIgnoreCase(model.getQuestion3Answer()))) {
 			String salt3 = UUID.randomUUID().toString();
@@ -153,7 +155,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		logger.info("Roles for " + email + ": " + userDetails.getRoles().getDescription());
 		return loginModel;
 	}
-	
+
 	/**
 	 * First failed login.
 	 *
@@ -294,7 +296,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		}
 		return validateUserLoginModel;
 	}
-	
+
 	/*
 	 * {@inheritDoc}
 	 */
@@ -339,13 +341,13 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		}
 		return validateUserLoginModel;
 	}
-	
+
 	private LoginModel isValid2FactorOTP(String userId, String oneTimePassword, LoginModel validateUserLoginModel, MatUserDetails validateUserMatUserDetails) {
-		
+
 		LoginModel loginModel = validateUserLoginModel;
-		
+
 		if(this.matOtpValidatorService != null){
-			boolean isValidOTP = this.matOtpValidatorService.validateOTPForUser(userId, oneTimePassword); 
+			boolean isValidOTP = this.matOtpValidatorService.validateOTPForUser(userId, oneTimePassword);
 			if(!isValidOTP){
 				loginModel.setLoginFailedEvent(true);
 				loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getLoginFailedMessage());
@@ -354,9 +356,87 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			loginModel.setLoginFailedEvent(true);
 			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getLoginFailedMessage());
 		}
-		
+
 		return loginModel;
 	}
+    public LoginModel initSession(Map<String, String> harpUserInfo, String sessionId) {
+        logger.debug("setUpUserSession::" + harpUserInfo.get(HarpConstants.HARP_ID) + "::" + sessionId);
+        MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByHarpId(harpUserInfo.get(HarpConstants.HARP_ID));
+
+        if(userDetails == null) {
+            throw new IllegalArgumentException("HARP_ID_NOT_FOUND");
+        }
+        userDetails.setSessionId(sessionId);
+        getUpdatedUserDetails(harpUserInfo, userDetails);
+
+        hibernateUserService.saveUserDetails(userDetails);
+
+        // Set Authn Token. Used to retrieve user info.
+        setAuthenticationToken(userDetails, harpUserInfo.get(HarpConstants.ACCESS_TOKEN));
+        // Set and return user details to client.
+        return loginModelSetter(new LoginModel(), userDetails);
+    }
+
+    @Override
+    public void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId, String sessionId) throws MatException {
+        try {
+            MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(loginId);
+            userDetails.setSessionId(sessionId);
+            userDetails.setHarpId(harpUserInfo.get(HarpConstants.HARP_ID));
+            getUpdatedUserDetails(harpUserInfo, userDetails);
+
+            hibernateUserService.saveUserDetails(userDetails);
+
+            setAuthenticationToken(userDetails, harpUserInfo.get(HarpConstants.ACCESS_TOKEN));
+        } catch (Exception e) {
+            throw new MatException("Unable to save Harp User Info");
+        }
+    }
+
+    private void getUpdatedUserDetails(Map<String, String> harpUserInfo, MatUserDetails userDetails) {
+        String fullName = harpUserInfo.get(HarpConstants.HARP_FULLNAME);
+        userDetails.setUsername(fullName.substring(0, fullName.indexOf(" ")));
+        userDetails.setUserLastName(fullName.substring(fullName.indexOf(" ")).trim());
+        userDetails.setEmailAddress(harpUserInfo.get(HarpConstants.HARP_PRIMARY_EMAIL_ID));
+    }
+
+    @Override
+    public LoginModel isValidUser(String userId, String password, String oneTimePassword, String sessionId) {
+        LoginModel validateUserLoginModel = new LoginModel();
+        MatUserDetails validateUserMatUserDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(userId);
+        if (validateUserMatUserDetails != null) {
+            validateUserMatUserDetails.setSessionId(sessionId);
+        }
+        Date currentDate = new Date();
+        currentTimeStamp = new Timestamp(currentDate.getTime());
+        validateUserLoginModel = isValidUserIdPassword(userId, password, validateUserLoginModel, validateUserMatUserDetails);
+        logger.info("loginModel.isLoginFailedEvent() for userId/password matching:" + validateUserLoginModel.isLoginFailedEvent());
+        if (!validateUserLoginModel.isLoginFailedEvent()) {
+            validateUserLoginModel = isValid2FactorOTP(userId, oneTimePassword, validateUserLoginModel, validateUserMatUserDetails);
+        }
+        if (!validateUserLoginModel.isLoginFailedEvent()) {
+            onSuccessLogin(userId, validateUserMatUserDetails);
+        }
+        return validateUserLoginModel;
+    }
+
+    private LoginModel isValid2FactorOTP(String userId, String oneTimePassword, LoginModel validateUserLoginModel, MatUserDetails validateUserMatUserDetails) {
+
+        LoginModel loginModel = validateUserLoginModel;
+
+        if (this.matOtpValidatorService != null) {
+            boolean isValidOTP = this.matOtpValidatorService.validateOTPForUser(userId, oneTimePassword);
+            if (!isValidOTP) {
+                loginModel.setLoginFailedEvent(true);
+                loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getLoginFailedMessage());
+            }
+        } else {
+            loginModel.setLoginFailedEvent(true);
+            loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getLoginFailedMessage());
+        }
+
+        return loginModel;
+    }
 
 	/**
 	 * Checks if is valid user id password.
@@ -368,7 +448,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 * @return the login model
 	 */
 	private LoginModel isValidUserIdPassword(String userId, String password, LoginModel validateUserLoginModel, MatUserDetails validateUserMatUserDetails) {
-		
+
 		if (validateUserMatUserDetails != null) {
 			validateUserLoginModel = isValidUserDetailsNotNull(userId, password, validateUserLoginModel, validateUserMatUserDetails);
 		} else { // user not found
@@ -377,7 +457,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		}
 		return validateUserLoginModel;
 	}
-	
+
 	/*
 	 * {@inheritDoc}
 	 */
@@ -385,7 +465,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	public UserDetails loadUserByUsername(String userId) {
 		return userDAO.getUser(userId);
 	}
-	
+
 	/** Login model setter.
 	 * @param loginmodel the login model
 	 * @param userDetails the user details
@@ -408,67 +488,86 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		return loginModel;
 	}
 
-	/**
-	 * On success login.
-	 *
-	 * @param userId the user id
-	 * @param validateUserMatUserDetails the validate user mat user details
-	 */
-	private void onSuccessLogin(String userId,MatUserDetails validateUserMatUserDetails) {
-		logger.info(validateUserMatUserDetails.getLoginId() + " has logged in.");
-		String s = "\nlogin_success\n";
-		logger.info(s);
-	}
-	
-	/**
-	 * Second failed login.
-	 *
-	 * @param userId the user id
-	 * @param currentPasswordlockCounter the current passwordlock counter
-	 * @param validateUserLoginModel the validate user login model
-	 * @param validateUserMatUserDetails the validate user mat user details
-	 * @return the login model
-	 */
-	private LoginModel secondFailedLogin(String userId, int currentPasswordlockCounter, LoginModel validateUserLoginModel, MatUserDetails validateUserMatUserDetails) {
-		logger.debug("Second failed login attempt");
-		// SECOND FAILED LOGIN ATTEMPT
-		Timestamp firstFailedAttemptTime = validateUserMatUserDetails.getUserPassword().getFirstFailedAttemptTime();
-		long difference = currentTimeStamp.getTime()
-				- firstFailedAttemptTime.getTime();
-		long minuteDifference = difference / (60 * 1000);
-		if (minuteDifference > 15) {
-			validateUserLoginModel.setErrorMessage(MatContext.get().getMessageDelegate().getLoginFailedMessage());
-			logger.info("MinuteDifference:" + minuteDifference);
-			logger.info("Since the minuteDifference is greater than 15 minutes, update the failedAttemptTime");
-			validateUserMatUserDetails.getUserPassword().setFirstFailedAttemptTime(currentTimeStamp);
-		} else {
-			validateUserLoginModel.setErrorMessage(MatContext.get().getMessageDelegate().getLoginFailedMessage());
-			validateUserMatUserDetails.getUserPassword().setPasswordlockCounter(currentPasswordlockCounter + 1);
-		}
-		return validateUserLoginModel;
-	}
-	
-	/** Sets the authentication token.
-	 * 
-	 * @param userDetails the new authentication token */
-	private void setAuthenticationToken(MatUserDetails userDetails) {
-		logger.debug("Setting authentication token");
-		Authentication auth = new UsernamePasswordAuthenticationToken(userDetails.getId(), userDetails.getUserPassword().getPassword(), userDetails.getAuthorities());
-		
-		// US 170. set additional details for history event
-		((UsernamePasswordAuthenticationToken) auth).setDetails(userDetails);
-		SecurityContext sc = new SecurityContextImpl();
-		sc.setAuthentication(auth);
-		SecurityContextHolder.setContext(sc);
-	}
-	
-	/*
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void signOut() {
-		SecurityContextHolder.clearContext();
-	}
+    /**
+     * On success login.
+     *
+     * @param userId                     the user id
+     * @param validateUserMatUserDetails the validate user mat user details
+     */
+    private void onSuccessLogin(String userId, MatUserDetails validateUserMatUserDetails) {
+        logger.info(validateUserMatUserDetails.getLoginId() + " has logged in.");
+        String s = "\nlogin_success\n";
+        logger.info(s);
+    }
+
+    /**
+     * Second failed login.
+     *
+     * @param userId                     the user id
+     * @param currentPasswordlockCounter the current passwordlock counter
+     * @param validateUserLoginModel     the validate user login model
+     * @param validateUserMatUserDetails the validate user mat user details
+     * @return the login model
+     */
+    private LoginModel secondFailedLogin(String userId, int currentPasswordlockCounter, LoginModel validateUserLoginModel, MatUserDetails validateUserMatUserDetails) {
+        logger.debug("Second failed login attempt");
+        // SECOND FAILED LOGIN ATTEMPT
+        Timestamp firstFailedAttemptTime = validateUserMatUserDetails.getUserPassword().getFirstFailedAttemptTime();
+        long difference = currentTimeStamp.getTime()
+                - firstFailedAttemptTime.getTime();
+        long minuteDifference = difference / (60 * 1000);
+        if (minuteDifference > 15) {
+            validateUserLoginModel.setErrorMessage(MatContext.get().getMessageDelegate().getLoginFailedMessage());
+            logger.info("MinuteDifference:" + minuteDifference);
+            logger.info("Since the minuteDifference is greater than 15 minutes, update the failedAttemptTime");
+            validateUserMatUserDetails.getUserPassword().setFirstFailedAttemptTime(currentTimeStamp);
+        } else {
+            validateUserLoginModel.setErrorMessage(MatContext.get().getMessageDelegate().getLoginFailedMessage());
+            validateUserMatUserDetails.getUserPassword().setPasswordlockCounter(currentPasswordlockCounter + 1);
+        }
+        return validateUserLoginModel;
+    }
+
+    /**
+     * Sets the authentication token for Legacy logins.
+     *
+     * @param userDetails the new authentication token
+     */
+    private void setAuthenticationToken(MatUserDetails userDetails) {
+        logger.debug("Setting authentication token");
+        PreAuthenticatedAuthenticationToken auth =
+                new PreAuthenticatedAuthenticationToken(userDetails.getId(), userDetails.getUserPassword().getPassword(), userDetails.getAuthorities());
+
+        // US 170. set additional details for history event
+        auth.setDetails(userDetails);
+        SecurityContext sc = new SecurityContextImpl();
+        sc.setAuthentication(auth);
+        SecurityContextHolder.setContext(sc);
+    }
+
+    /**
+     * Sets the pre-authentication token for HARP logins.
+     *
+     * @param userDetails the new authentication token
+     */
+    private void setAuthenticationToken(MatUserDetails userDetails, String accessToken) {
+        logger.info("Setting authentication token::"+userDetails.getId());
+        PreAuthenticatedAuthenticationToken auth =
+                new PreAuthenticatedAuthenticationToken(userDetails.getId(), accessToken, userDetails.getAuthorities());
+        auth.setDetails(userDetails);
+
+        SecurityContext sc = new SecurityContextImpl();
+        sc.setAuthentication(auth);
+        SecurityContextHolder.setContext(sc);
+    }
+
+    /*
+     * {@inheritDoc}
+     */
+    @Override
+    public void signOut() {
+        SecurityContextHolder.clearContext();
+    }
 
 	/**
 	 * Temp pass expiration.
@@ -498,7 +597,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		}
 		return validateUserLoginModel;
 	}
-	
+
 	/**
 	 * Third failed login.
 	 *
@@ -508,7 +607,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 * @return the login model
 	 */
 	private LoginModel thirdFailedLogin(String userId, LoginModel validateUserLoginModel, MatUserDetails validateUserMatUserDetails) {
-		
+
 		// USER THIRD FAILED LOGIN ATTEMPT
 		logger.info("USER THIRD FAILED LOGIN ATTEMPT :" + userId);
 		Timestamp updatedFailedAttemptTime = validateUserMatUserDetails.getUserPassword().getFirstFailedAttemptTime();

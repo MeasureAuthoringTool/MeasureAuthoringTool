@@ -2,6 +2,12 @@ package mat.client;
 
 import java.util.List;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.Hidden;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.Hidden;
 import org.gwtbootstrap3.client.ui.AnchorButton;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
@@ -43,37 +49,39 @@ import mat.client.util.ClientConstants;
 import mat.client.util.FooterPanelBuilderUtility;
 
 public abstract class MainLayout {
-	
+
 	private static Image alertImage = new Image(ImageResources.INSTANCE.alert());
-	
+
 	private static String alertTitle = ClientConstants.MAINLAYOUT_ALERT_TITLE;
-	
+
 	private static final int DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS = 500;
-	
+
 	private static Panel loadingPanel;
 
 	private FocusPanel content;
-	
+
 	private HorizontalPanel linksPanel = new HorizontalPanel();
 
 	private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
-	
+
 	private static IndicatorButton showUMLSState;
 	private static IndicatorButton showBonnieState;
-	
+
 	protected static FocusableWidget skipListHolder;
 
 	static Progress progress = new Progress();
 	static ProgressBar bar = new ProgressBar();
-	
+
 	NavbarLink homeLink = new NavbarLink();
-	
+
 	static ListItem signedInAsName = new ListItem();
 	AnchorListItem profile = new AnchorListItem("MAT Account");
 	AnchorListItem signOut = new AnchorListItem("Sign Out");
-	
+
+    private FormPanel logoutForm = new FormPanel("logout");
+
 	public static final String HEADING = "Measure Authoring Tool";
-	
+
 	/**
 	 * clear the loading panel
 	 * remove css style
@@ -86,7 +94,7 @@ public abstract class MainLayout {
 			getLoadingPanel().getElement().removeAttribute("role");
 		}
 	}
-	
+
 	protected static Panel getLoadingPanel(){
 		return loadingPanel;
 	}
@@ -94,7 +102,7 @@ public abstract class MainLayout {
 	protected static FocusableWidget getSkipList(){
 		return skipListHolder;
 	}
-	
+
 	/**
 	 * no arg method adds default delay to loading message hide op.
 	 */
@@ -103,8 +111,8 @@ public abstract class MainLayout {
 		bar.setText("Loaded 100% ");
 		hideLoadingMessage(DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS);
 	}
-	
-	
+
+
 	/**
 	 * delay hiding of loading message artifacts by 'delay' milliseconds
 	 * NOTE delay cannot be <= 0 else exception is thrown
@@ -126,19 +134,19 @@ public abstract class MainLayout {
 			delegateHideLoadingMessage();
 		}
 	}
-	
+
 	public static void showLoadingMessage(){
 		getLoadingPanel().clear();
-		
+
 		progress.setActive(true);
 		progress.setType(ProgressType.STRIPED);
-		
+
 		bar.setType(ProgressBarType.INFO);
 		bar.setWidth("100%");
 		bar.setPercent(50.00);
 		bar.setText("Please wait. Loaded 50%");
-		
-		
+
+
 		progress.add(bar);
 		progress.setId("LoadingPanel");
 		getLoadingPanel().add(progress);
@@ -148,12 +156,12 @@ public abstract class MainLayout {
 		MatContext.get().getLoadingQueue().add("node");
 	}
 
-	
+
 	public static void showSignOutMessage(){
 		loadingWidget = new HTML(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
 		showLoadingMessage();
 	}
-	
+
 	private Panel buildContentPanel() {
 		content = new FocusPanel();
 		content.getElement().setAttribute("id", "MainLayout.content");
@@ -165,17 +173,17 @@ public abstract class MainLayout {
 		content.setStylePrimaryName("mainContentPanel");
 		setId(content, "content");
 		Mat.removeInputBoxFromFocusPanel(content.getElement());
-		
+
 		return content;
 	}
-	
+
 	/**
 	 * Builds the Footer Panel for the Login and Mat View. Currently, it displays the
 	 * 'Accessibility Policy' , 'Terms Of Use' , 'Privacy Policy' 'User Guide' links with CMS LOGO.
 	 * @return Panel
 	 */
 	private Panel buildFooterPanel() {
-		
+
 		final FlowPanel footerMainPanel = new FlowPanel();
 		footerMainPanel.getElement().setId("footerMainPanel_FlowPanel");
 		footerMainPanel.setStylePrimaryName("footer");
@@ -183,7 +191,7 @@ public abstract class MainLayout {
 		footerMainPanel.add(fetchAndcreateFooterLinks());
 		return footerMainPanel;
 	}
-	
+
 
 	private Panel buildLoadingPanel() {
 		loadingPanel = new HorizontalPanel();
@@ -194,7 +202,7 @@ public abstract class MainLayout {
 		loadingPanel.getElement().setAttribute("aria-live", "assertive");
 		loadingPanel.getElement().setAttribute("aria-atomic", "true");
 		loadingPanel.getElement().setAttribute("aria-relevant", "all");
-		
+
 		loadingPanel.setStylePrimaryName("mainContentPanel");
 		setId(loadingPanel, "loadingContainer");
 		alertImage.setTitle(alertTitle);
@@ -202,13 +210,13 @@ public abstract class MainLayout {
 		loadingWidget.setStyleName("padLeft5px");
 		return loadingPanel;
 	}
-	
+
 	private Panel buildSkipContent() {
 		skipListHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Main Content"));
 		Mat.removeInputBoxFromFocusPanel(skipListHolder.getElement());
 		return skipListHolder;
 	}
-	
+
 	private Panel buildTopPanel() {
 		final VerticalPanel topPanel = new VerticalPanel();
 		topPanel.add(buildHeader());
@@ -223,7 +231,7 @@ public abstract class MainLayout {
 		hfp.add(linksPanel);
 		return hfp;
 	}
-	
+
 	private Navbar buildNavbar() {
 		final Navbar nav = new Navbar();
 		nav.setStyleName("versionBanner");
@@ -231,17 +239,17 @@ public abstract class MainLayout {
 		nav.add(getHomeLink());
 		return nav;
 	}
-	
+
 	public void buildLinksPanel() {
 		showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
 		showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
 
-		linksPanel.add(showUMLSState.getPanel()); 
+		linksPanel.add(showUMLSState.getPanel());
 		linksPanel.add(showBonnieState.getPanel());
 		linksPanel.add(buildProfileMenu());
 		linksPanel.setStyleName("navLinksBanner", true);
 	}
-	
+
 	private AnchorButton buildProfileIcon() {
 		AnchorButton ab = new AnchorButton();
 
@@ -255,21 +263,21 @@ public abstract class MainLayout {
 		ab.setTitle("Profile");
 		ab.setId("userprofile");
 		ab.setDataTarget(Styles.NAVBAR_COLLAPSE);
-		
+
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
-		sb.appendHtmlConstant("<span style=\"font-size:0px;\" tabindex=\"0\">Profile</span>"); 
+		sb.appendHtmlConstant("<span style=\"font-size:0px;\" tabindex=\"0\">Profile</span>");
 		ab.getElement().setInnerSafeHtml(sb.toSafeHtml());
 
  		return ab;
 	}
-	
+
 	private Navbar buildDivider() {
 		Navbar divider = new Navbar();
 		divider.setStyleName(Styles.DIVIDER);
 		divider.setWidth("100%");
 		return divider;
 	}
-	
+
 	private ListItem buildSignedInAs() {
 		ListItem li = new ListItem();
 		li.setText("Signed in as");
@@ -286,7 +294,7 @@ public abstract class MainLayout {
 		signedInAsName.setStyleName("profileText", true);
 		signedInAsName.getElement().setTabIndex(0);
 	}
-	
+
 	private void setAccessibilityForLinks() {
 		profile.setStyleName(Styles.DROPDOWN );
 		profile.getWidget(0).setTitle("MAT Account");
@@ -294,12 +302,12 @@ public abstract class MainLayout {
 		signOut.setStyleName(Styles.DROPDOWN);
 		signOut.getWidget(0).setTitle("Sign Out");
 	}
-	
+
 	private DropDownMenu buildDropDownMenu() {
 		DropDownMenu ddm = new DropDownMenu();
-	
+
 		setAccessibilityForLinks();
-		
+
 		ddm.add(buildSignedInAs());
 		ddm.add(signedInAsName);
 		ddm.add(buildDivider());
@@ -307,18 +315,18 @@ public abstract class MainLayout {
 		ddm.add(signOut);
 		ddm.setStyleName(Styles.DROPDOWN_MENU);
 		ddm.addStyleDependentName(Styles.RIGHT);
-		
+
 		return ddm;
 	}
-	
+
 	private NavbarCollapse buildProfileMenu() {
 		NavbarCollapse collapse = new NavbarCollapse();
 		NavbarNav nav = new NavbarNav();
-		
+
 		ListDropDown ldd = new ListDropDown();
 		AnchorButton icon = buildProfileIcon();
 		DropDownMenu ddm = buildDropDownMenu();
-		
+
 		ldd.add(icon);
 		ldd.add(ddm);
 
@@ -327,14 +335,51 @@ public abstract class MainLayout {
 		collapse.add(nav);
 		return collapse;
 	}
-	
+    /**
+     * Call Okta logout operation to log a user out by removing their Okta browser session.
+     * Note: When making requests to the /logout endpoint, the browser (user agent)
+     * should be redirected to the endpoint. You can't use AJAX with this endpoint.
+     *
+     * This operation performs a redirect to the post_logout_redirect_uri.
+     * @param harpUrl
+     */
+    protected void harpLogout(String harpUrl) {
+        logoutForm.setMethod(FormPanel.METHOD_GET);
+
+        VerticalPanel panel = new VerticalPanel();
+        logoutForm.setWidget(panel);
+
+        Hidden token = new Hidden();
+        token.setName("id_token_hint");
+        token.setValue(MatContext.get().getIdToken());
+
+        Hidden redirect = new Hidden();
+        redirect.setName("post_logout_redirect_uri");
+        String path = Window.Location.getPath();
+        String redirectUrl = Window.Location.createUrlBuilder()
+                .setPath(path.substring(0, path.lastIndexOf('/')) + ClientConstants.HTML_LOGIN)
+                .buildString();
+        if(redirectUrl.contains("#")) {
+            redirectUrl = redirectUrl.substring(0, redirectUrl.lastIndexOf('#'));
+        }
+        redirect.setValue(redirectUrl);
+
+        panel.add(token);
+        panel.add(redirect);
+
+        RootPanel.get().add(logoutForm);
+
+        logoutForm.setAction(harpUrl + "/logout");
+        logoutForm.submit();
+    }
+
 	public void setHeader(String version, NavbarLink link) {
 		setLinkTextAndTitle(HEADING + " v" + version, link);
 		link.setTitle(HEADING + " version " + version);
 		link.getElement().setAttribute("role", "alert");
 		link.getElement().setAttribute("aria-label", "Clicking this link will navigate you to Measure Library page.");
 	}
-	
+
 	private void setLinkTextAndTitle(String text, NavbarLink link) {
 		link.setText(text);
 		link.setTitle(text);
@@ -348,7 +393,7 @@ public abstract class MainLayout {
 			@Override
 			public void onFailure(Throwable caught) {
 			}
-			
+
 			@Override
 			public void onSuccess(List<String> result) {
 				//Set the Footer URL's on the ClientConstants for use by the app in various locations.
@@ -357,7 +402,7 @@ public abstract class MainLayout {
 				ClientConstants.TERMSOFUSE_URL = result.get(2);
 				ClientConstants.USERGUIDE_URL = result.get(3);
 			}
-			
+
 		});
 		return FooterPanelBuilderUtility.buildFooterLinksPanel();
 	}
@@ -373,18 +418,18 @@ public abstract class MainLayout {
 	protected abstract void initEntryPoint();
 
 	public final void onModuleLoad() {
-		
+
 		final Panel skipContent = buildSkipContent();
-		
+
 		final Panel topBanner = buildTopPanel();
 		final Panel footerPanel = buildFooterPanel();
 		final Panel contentPanel = buildContentPanel();
-		
+
 		final FlowPanel container = new FlowPanel();
 		container.add(topBanner);
 		container.add(contentPanel);
 		container.add(footerPanel);
-		
+
 		RootPanel.get().clear();
 		if(RootPanel.get("skipContent")!= null){
 			RootPanel.get("skipContent").add(skipContent);
@@ -397,7 +442,7 @@ public abstract class MainLayout {
 		widget.getElement().setAttribute("id", id);
 	}
 
-	
+
 	public HorizontalPanel getLinksPanel() {
 		return linksPanel;
 	}
@@ -413,32 +458,32 @@ public abstract class MainLayout {
 	public static void hideUMLSActive(boolean hide) {
 		showUMLSState.hideActive(hide);
 	}
-	
+
 	public static void createBonnieLinks() {
 		showBonnieState.createAllLinks();
 	}
-	
+
 	public static void hideBonnieActive(boolean hide) {
 		showBonnieState.hideActive(hide);
 	}
-	
+
 	public HTML getUMLSButton() {
 		return showUMLSState.getHideLink();
 	}
-	
+
 	public HTML getBonnieSignInButton() {
 		return showBonnieState.getHideLink();
 	}
-	
+
 	public HTML getBonnieDisconnectButton() {
 		return showBonnieState.getshowLink();
 	}
-	
+
 	public void setIndicatorsHidden() {
 		showBonnieState.hideActive(true);
 		showUMLSState.hideActive(true);
 	}
-	
+
 	//method to easily remove bonnie link from page
 	public void removeBonnieLink() {
 		showBonnieState.getPanel().removeFromParent();

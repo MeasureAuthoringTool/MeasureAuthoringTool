@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+
+    <!-- Google Analytics -->
+    <script>
+      (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+      ga('create', 'UA-31005711-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics -->
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <link href="css/OpenSans.css" type="text/css" rel="stylesheet"/>
+    <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet">
+
+    <link href="signInWidget/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
+    <link href="signInWidget/css/otka-theme.css" type="text/css" rel="stylesheet"/>
+    <style>
+        noscript {
+            background-color: white;
+            border: 2px solid red;
+            color: red;
+            font-family: sans-serif;
+            left: 50%;
+            margin-left: -11em;
+            margin-top: 5ex;
+            padding: 12px;
+            position: absolute;
+            width: 22em;
+        }
+
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: OpenSans, Arial, sans-serif;
+        }
+        #okta-login-container {
+            padding-bottom: 80px;
+        }
+        .footer {
+            background-color: #112e51;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                border-right: 1px solid rgba(255, 255, 255, .2);
+            }
+        }
+
+        .screen-reader {
+            border: 0;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            width: 1px;
+        }
+
+        .hhs-logo-wrapper {
+            text-align: center;
+        }
+
+        .hss-logo {
+            height: 100%;
+            max-width: 125px;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .mat-logo {
+            height: 35px;
+        }
+
+        .border-top {
+            height: 1px;
+            margin: 10px 0;
+            opacity: 0.2;
+        }
+
+        .border-bottom {
+            height: 1px;
+            margin: 10px 0 15px 0;
+            opacity: .2;
+        }
+
+        .link-list {
+            padding-left: 0;
+            margin: 5px 0;
+        }
+
+        .link-list-item {
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        .link-list-item a {
+            color: #9bdaf1;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .include-disclaimer::after {
+            content: " - Opens in a new window";
+            border: 0;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            width: 1px;
+        }
+    </style>
+</head>
+​
+<body>
+<noscript>
+    Your web browser must have JavaScript enabled
+    in order for this application to display correctly.
+</noscript>
+<div class="login-bg-image"></div>
+<div id="okta-login-container"></div>
+
+<form action="" method="post" id="loginForm">
+    <input type="hidden" id="loginPost" name="loginPost" value="">
+</form>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 footer-content">
+                <div>
+                    <a title="CMS home page" tabindex="-1" href="http://www.cms.gov/" target="_blank">
+                        <h4 class="screen-reader">CMS.gov</h4>
+                        <img class="mat-logo" alt="CMS.gov" tabIndex="0" src="./images/MAT-logo_white.svg">
+                    </a>
+                </div>
+                <div>
+                    <hr class="border-top">
+
+                    <div class="row footer-links">
+                        <div class="col-md-12 col-6">
+                            <ul class="link-list">
+                                <li class="link-list-item">
+                                    <a title="CMS.gov" target="_blank"
+                                       href="https://cms.gov">
+                                        <span class="include-disclaimer">CMS.gov</span>
+                                    </a>
+                                </li>
+                                <li class="link-list-item">
+                                    <a title="Accessibility Policy" target="_blank"
+                                       href="https://www.emeasuretool.cms.gov/web/guest/accessibility-statement">
+                                        <span class="include-disclaimer">Accessibility Policy</span>
+                                    </a>
+                                </li>
+                                <li class="link-list-item">
+                                    <a title="Privacy Policy" target="_blank"
+                                       href="http://www.cms.gov/About-CMS/Agency-Information/Aboutwebsite/Privacy-Policy.html">
+                                        <span class="include-disclaimer">Privacy Policy</span>
+                                    </a>
+                                </li>
+                                <li class="link-list-item">
+                                    <a title="Terms Of Use" target="_blank"
+                                       href="https://www.emeasuretool.cms.gov/web/guest/terms-of-use">
+                                        <span class="include-disclaimer">Terms Of Use</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-md-12 col-6">
+                            <ul class="link-list">
+                                <li class="link-list-item">
+                                    <a title="Freedom of Information Act" target="_blank"
+                                       href="https://www.cms.gov/center/freedom-of-information-act-center.html">
+                                        <span class="include-disclaimer">Freedom of Information Act</span>
+                                    </a>
+                                </li>
+                                <li class="link-list-item">
+                                    <a title="User Guide" target="_blank"
+                                       href="https://www.emeasuretool.cms.gov/documents/10179/13108/MAT+User+Guide/c50cc2fb-01ee-4b97-9cd1-2e33feca8763">
+                                        <span class="include-disclaimer">User Guide</span>
+                                    </a>
+                                </li>
+                                <li class="link-list-item">
+                                    <a title="Contact Us" target="_blank"
+                                       href="https://www.emeasuretool.cms.gov/web/guest/contact-us">
+                                        <span class="include-disclaimer">Contact Us</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <hr class="border-bottom d-sm-block d-md-none">
+                </div>
+            </div>
+            <div class="col-md-2 hhs-logo-wrapper">
+                <h4 class="screen-reader">hhs.gov</h4>
+                <a href="https://www.hhs.gov" tabIndex="-1" title="Health and Human Services home page" target="_blank">
+                    <img class="hss-logo" alt="U.S. Department of Health &amp; Human Services logo"
+                         src="./images/HHS-logo_white.svg">
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <script src="js/promise-polyfill.min.js"></script>
+    <script src="js/webcrypto-shim.min.js"></script>
+    <script src="signInWidget/js/okta-sign-in.js" type="text/javascript"></script>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/HarpLogin.js"></script>
+</body>
+</html>

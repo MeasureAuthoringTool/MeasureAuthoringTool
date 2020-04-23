@@ -65,7 +65,7 @@ public class MessageDelegate {
 	private static final String INVALID_COMMENT_CHARACTERS = "Comments can not contain /* or */.";
 	private static final String PACKAGER_CQL_ERROR = "Your CQL file contains validation errors. Errors must be corrected before proceeding to measure packaging. Please return to the CQL Workspace to make corrections.";
 	private static final String SUCCESSFULLY_SHARED = " sharing status has been successfully updated.";
-	private static final String UMLS_CODE_IDENTIFIER_REQUIRED = "Please enter a Code URL.";	
+	private static final String UMLS_CODE_IDENTIFIER_REQUIRED = "Please enter a Code URL.";
 	private static final String ACCOUNT_REVOKED = "Your account has been revoked. Please contact Support.";
 	private static final String CLAUSE_WORK_SPACE_VALIDATION_SUCCESS = "Measure logic validation successful.";
 	private static final String ALL_PASSWORD_FIELDS_REQUIRED = "All password fields are required.";
@@ -84,7 +84,7 @@ public class MessageDelegate {
 	private static final String EPISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE = "Measure Observations can only be added to a measure grouping in a Ratio measure, if the measure is Episode-based.";
 	private static final String MEASURE_OBSERVATION_USER_DEFINED_FUNC_VALIDATION_MESSAGE = "Measure Observations added to a measure grouping may only contain a user-defined function that has exactly 1 argument in the argument list.";
 	private static final String MEASURE_OBSERVATION_RETURN_SAME_TYPE_VALIDATION_MESSAGE = "A Measure Observation must have an argument that returns the same type as the items in the list that was returned for the definition applied to the associated measure population.";
-	private static final String MEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE = "Measure Observations added to a measure grouping must contain a user-defined function that returns an integer, a decimal, or a quantity.";	
+	private static final String MEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE = "Measure Observations added to a measure grouping must contain a user-defined function that returns an integer, a decimal, or a quantity.";
 	private static final String CONTINUOUS_VARIABLE_MAY_NOT_CONTAIN = "For a Continuous Variable measure, a grouping may not contain any Numerator, Numerator Exclusions, Denominator, Denominator Exclusions, or Denominator Exceptions.";
 	private static final String CONTINUOUS_VARIABLE_WRONG_NUM = "For a Continuous Variable measure, a grouping must contain exactly one of each of the following: " + "Initial Population, Measure Population,and at least one Measure Observation.";
 	private static final String DELETE_MEASURE_WARNING_MESSAGE = "Deleting a draft or version of a measure will permanently remove the designated measure draft or version from  the Measure Authoring Tool. Deleted measures cannot be recovered.";
@@ -186,6 +186,11 @@ public class MessageDelegate {
 	private static final String ERROR_INVALID_DATE_TIME = "Please Enter a valid Date/Time.";
 	private static final String WARNING_DELETION_CQL_LIBRARY = "Deleting a draft of a library will permanently remove the designated " + "library draft from the Measure Authoring Tool. Deleted libraries cannot be recovered.";
 	private static final String CQL_LIBRARY_DELETION_SUCCESS_MSG = "CQL Library successfully deleted.";
+    private static final String UNABLE_TO_VERIFY_HARP_USER = "Unable to verify user, Please contact the MAT Help Desk or try again.";
+
+    public static String getUnableToVerifyHarpUser() {
+        return UNABLE_TO_VERIFY_HARP_USER;
+    }
 
 	public String getONLY_ONE_CHILD_REQUIRED() {
 		return ONLY_ONE_CHILD_REQUIRED;
@@ -193,48 +198,48 @@ public class MessageDelegate {
 
 	public String getRATIO_TOO_FEW_POPULATIONS() {
 		return RATIO_TOO_FEW_POPULATIONS;
-	}	
-	
+	}
+
 	public String getAccountRevokedMessage() {
 		return ACCOUNT_REVOKED;
 	}
-	
+
 	public String getAlertLoadingMessage() {
 		return ALERT_LOADING_MESSAGE;
 	}
-	
+
 	public String getNoMarkupAllowedMessage() {
 		return NO_MARKUP_ALLOWED;
 	}
-	
+
 	public String getAllPasswordFieldsRequired() {
 		return ALL_PASSWORD_FIELDS_REQUIRED;
 	}
-	
+
 	public String getChangesSavedMessage() {
 		return CHANGES_SAVED;
 	}
-	
+
 	public String getCLAUSE_WORK_SPACE_VALIDATION_SUCCESS() {
 		return CLAUSE_WORK_SPACE_VALIDATION_SUCCESS;
 	}
-	
+
 	public String getContinuousVariableMayNotContainMessage() {
 		return CONTINUOUS_VARIABLE_MAY_NOT_CONTAIN;
 	}
-	
+
 	public String getContinuousVariableWrongNumMessage() {
 		return CONTINUOUS_VARIABLE_WRONG_NUM;
 	}
-	
+
 	public String getDELETE_MEASURE_WARNING_MESSAGE() {
 		return DELETE_MEASURE_WARNING_MESSAGE;
 	}
-	
+
 	public String getDoesntFollowRulesMessage() {
 		return DOESNT_FOLLOW_RULES;
 	}
-	
+
 	public String getDuplicateAppliedValueSetMsg(String name) {
 		return name + " already exists. Please add a unique suffix.";
 	}
@@ -242,23 +247,23 @@ public class MessageDelegate {
 	public String getDuplicateErrorMessage() {
 		return DUPLICATE_ERROR;
 	}
-	
+
 	public String getEmailAlreadyExistsMessage() {
 		return EMAIL_ALREADY_EXISTS;
 	}
-	
+
 	public String getEmailMismatchMessage() {
 		return EMAIL_MISMATCH;
 	}
-	
+
 	public String getEmailNotFoundMessage() {
 		return EMAIL_NOT_FOUND_MSG;
 	}
-	
+
 	public String getEmptyFileError() {
 		return EMPTY_FILE_ERROR;
 	}
-	
+
 	public String getFirstMinMessage() {
 		return FIRST_NAME_MIN;
 	}
@@ -266,7 +271,7 @@ public class MessageDelegate {
 	public String getFirstNameRequiredMessage() {
 		return FIRST_NAME_REQUIRED;
 	}
-	
+
 	public String getGenericErrorMessage() {
 		return GENERIC_ERROR_MESSAGE;
 	}
@@ -274,7 +279,7 @@ public class MessageDelegate {
 	public String getGroupingRequiredMessage() {
 		return GROUPING_REQUIRED;
 	}
-	
+
 	public String getGroupingSavedMessage() {
 		return GROUPING_SAVED;
 	}
@@ -286,7 +291,7 @@ public class MessageDelegate {
 	public String getLoginFailedAlreadyLoggedInMessage() {
 		return LOGIN_FAILED_USER_ALREADY_LOGGED_IN;
 	}
-	
+
 	public String getLoginFailedMessage() {
 		return LOGIN_FAILED;
 	}
@@ -294,30 +299,30 @@ public class MessageDelegate {
 	public String getLoginFailedTempPasswordExpiredMessage() {
 		return LOGIN_FAILED_TEMP_PASSWORD_EXPIRED;
 	}
-	
+
 	public String getLoginIDRequiredMessage() {
 		return LOGIN_ID_REQUIRED;
 	}
-	
+
 	public String getEmailIdFormatIncorrectMessage() {
 		return EMAIL_ID_INCORRECT_FORMAT;
 	}
-	
+
 	public String getLoginUserRequiredMessage() {
 		return LOGIN_USER_REQUIRED;
 	}
-	
+
 	public String getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN() {
 		return MEASURE_PACKAGE_UMLS_NOT_LOGGED_IN;
 	}
 	public String getMEASURE_PACKAGE_VSAC_TIMEOUT() {
 		return MEASURE_PACKAGE_FAILED_VSAC_TIMEOUT;
 	}
-	
+
 	public String getMEASURE_PERIOD_DATES_ERROR() {
 		return MEASURE_PERIOD_DATES_ERROR;
 	}
-	
+
 	public String getMeasureDeletionInvalidPwd() {
 		return MEASURE_DELETION_INVALID_PWD;
 	}
@@ -329,11 +334,11 @@ public class MessageDelegate {
 	public String getMeasureNameRequiredMessage() {
 		return MEASURE_NAME_REQUIRED;
 	}
-	
+
 	public String getMeasureSelectionError() {
 		return MEASURE_SELECTION_ERROR;
 	}
-	
+
 	public String getMODIFY_QDM_ATTRIBUTE_VALIDATION() {
 		return MODIFY_QDM_ATTRIBUTE_VALIDATION;
 	}
@@ -341,11 +346,11 @@ public class MessageDelegate {
 	public String getMODIFY_QDM_NON_ATTRIBUTE_VALIDATION() {
 		return MODIFY_QDM_NON_ATTRIBUTE_VALIDATION;
 	}
-	
+
 	public String getMODIFY_VALUE_SET_SELECT_ATLEAST_ONE() {
 		return MODIFY_VALUE_SET_SELECT_ATLEAST_ONE;
 	}
-	
+
 	public String getMustContainLowerMessage() {
 		return MUST_CONTAIN_LOWER;
 	}
@@ -353,7 +358,7 @@ public class MessageDelegate {
 	public String getMustContainNumberMessage() {
 		return MUST_CONTAIN_NUMBER;
 	}
-	
+
 	public String getMustContainSpecialMessage() {
 		return MUST_CONTAIN_SPECIAL;
 	}
@@ -361,15 +366,15 @@ public class MessageDelegate {
 	public String getMustContainUpperMessage() {
 		return MUST_CONTAIN_UPPER;
 	}
-	
+
 	public String getNoMeasuresMessage() {
 		return NO_MEASURES;
 	}
-	
+
 	public String getNotUniqueQuestions() {
 		return NOT_UNIQUE_QUESTIONS;
-	}	
-	
+	}
+
 	public String getOIDExistsMessage() {
 		return OID_EXISTS;
 	}
@@ -377,11 +382,11 @@ public class MessageDelegate {
 	public String getOIDRequiredMessage() {
 		return OID_REQUIRED;
 	}
-	
+
 	public String getOIDTooLongMessage() {
 		return OID_TOO_LONG;
 	}
-	
+
 	public String getOrgRequiredMessage() {
 		return ORG_REQUIRED;
 	}
@@ -389,15 +394,15 @@ public class MessageDelegate {
 	public final String getPackageSuccessMessage() {
 		return PACKAGE_SUCCESS;
 	}
-	
+
 	public final String getPackageSuccessAmberMessage() {
 		return PACKAGE_SUCCESS_VSAC_OID_MISSING;
 	}
-	
+
 	public String getPasswordMismatchErrorMessage() {
 		return PASSWORD_MISMATCH_ERROR_MESSAGE;
 	}
-	
+
 	public String getPasswordMismatchMessage() {
 		return PASSWORD_MISMATCH;
 	}
@@ -409,43 +414,43 @@ public class MessageDelegate {
 	public String getPasswordRequiredMessage() {
 		return PASSWORD_REQUIRED;
 	}
-	
+
 	public String getSecurityCodeRequiredMessage() {
 		return SECURITYCODE_REQUIRED;
 	}
-	
+
 	public String getPasswordSavedMessage() {
 		return PASSWORD_CHANGED;
 	}
-	
+
 	public String getPasswordWrongLengthMessage() {
 		return PASSWORD_WRONG_LENGTH;
 	}
-	
+
 	public String getPersonalInfoUpdatedMessage() {
 		return PERSONAL_INFO_UPDATED;
 	}
-	
+
 	public String getPhoneRequiredMessage() {
 		return PHONE_REQUIRED;
 	}
-	
+
 	public String getPhoneTenDigitMessage() {
 		return PHONE_10_DIGIT;
 	}
-	
+
 	public String getProportionMayNotContainMessage() {
 		return PROPORTION_MAY_NOT_CONTAIN;
 	}
-	
+
 	public String getProportionTooManyMessage() {
 		return PROPORTION_TOO_MANY;
 	}
-	
+
 	public String getProportionWrongNumMessage() {
 		return PROPORTION_WRONG_NUM;
 	}
-	
+
 	public String getQDMOcurrenceSuccessMessage(String codeListName, String dataType, String occurrenceMessage) {
 		return " The QDM Element " + occurrenceMessage + " of " + codeListName + ": " + dataType + " has been added successfully.";
 	}
@@ -457,7 +462,7 @@ public class MessageDelegate {
 	public String getRatioMayNotContainMessage() {
 		return RATIO_MAY_NOT_CONTAIN;
 	}
-	
+
 	public String getRatioTooManyMessage() {
 		return RATIO_TOO_MANY;
 	}
@@ -465,7 +470,7 @@ public class MessageDelegate {
 	public String getRatioWrongNumMessage() {
 		return RATIO_WRONG_NUM;
 	}
-	
+
 	public String getSaveErrorMsg() {
 		return SAVE_ERROR_MSG;
 	}
@@ -485,20 +490,20 @@ public class MessageDelegate {
 	public String getSecurityQuestionsUpdatedMessage() {
 		return SEC_QUESTIONS_UPDATED;
 	}
-	
+
 	public String getServerCallNullMessage() {
 		return SERVER_CALL_NULL;
 	}
 
 	public String getSUCCESSFUL_MODIFY_APPLIED_VALUESET() {
 		return SUCCESSFUL_MODIFY_APPLIED_VALUESET;
-		
+
 	}
-	
+
 	public String getSuppDataSavedMessage() {
 		return SUPP_DATA_SAVED;
 	}
-	
+
 	public String getRiskAdjSavedMessage() {
 		return RISK_ADJ_SAVED;
 	}
@@ -506,7 +511,7 @@ public class MessageDelegate {
 	public String getSystemErrorMessage() {
 		return SYSTEM_ERROR;
 	}
-	
+
 	public String getTempEmailSentMessage() {
 		return TEMP_EMAIL_SENT;
 	}
@@ -514,11 +519,11 @@ public class MessageDelegate {
 	public String getTransferCheckBoxErrorMeasure() {
 		return TRANSFER_CHECKBOX_ERROR_MEASURE;
 	}
-	
+
 	public String getTransferOwnershipSuccess() {
 		return TRANSFER_OWNERSHIP_SUCCESS;
 	}
-	
+
 	public String getUML_LOGIN_FAILED() {
 		return UML_LOGIN_FAILED;
 	}
@@ -530,7 +535,7 @@ public class MessageDelegate {
 	public String getUMLS_NOT_LOGGEDIN() {
 		return UMLS_NOT_LOGGEDIN;
 	}
-	
+
 	public String getUMLS_OID_REQUIRED() {
 		return UMLS_OID_REQUIRED;
 	}
@@ -558,11 +563,11 @@ public class MessageDelegate {
 	public String getUserRequiredErrorMessage() {
 		return USER_REQUIRED_ERROR_MSG;
 	}
-	
+
 	public String getVALIDATION_MSG_DATA_TYPE_VSAC() {
 		return VALIDATION_MSG_DATA_TYPE_VSAC;
 	}
-	
+
 	public String getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC() {
 		return VALIDATION_MSG_ELEMENT_WITHOUT_VSAC;
 	}
@@ -570,15 +575,15 @@ public class MessageDelegate {
 	public String getValueSetDateInvalidMessage() {
 		return VALUE_SET_DATE_INVALID;
 	}
-	
+
 	public String getVSAC_RETRIEVE_FAILED() {
 		return VSAC_RETRIEVE_FAILED;
 	}
-	
+
 	public String getVSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED() {
 		return VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED;
 	}
-	
+
 	public String getIS_NOT_PREVIOUS_PASSWORD() {
 		return IS_NOT_PREVIOUS_PASSWORD;
 	}
@@ -602,7 +607,7 @@ public class MessageDelegate {
 	public String getComparisonDiloagBoxErrorDisplay() {
 		return COMPARISON_DILOAG_BOX_ERROR_DISPLAY;
 	}
-	
+
 	public String getRATIO_TOO_MANY_POPULATIONS() {
 		return RATIO_TOO_MANY_POPULATIONS;
 	}
@@ -610,27 +615,27 @@ public class MessageDelegate {
 	public String getRatioNumDenoAssociationRequired() {
 		return RATIO_NUM_DENO_ASSOCIATION_REQUIRED;
 	}
-	
+
 	public String getRatioMeasureObsAssociationRequired() {
 		return RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED;
 	}
-	
+
 	public String getMEASURE_LOGIC_IS_INCOMPLETE() {
 		return MEASURE_LOGIC_IS_INCOMPLETE;
 	}
-	
+
 	public String getLHS_RHS_REQUIRED() {
 		return LHS_RHS_REQUIRED;
 	}
-	
+
 	public String getATLEAST_ONE_CHILD_REQUIRED() {
 		return ATLEAST_ONE_CHILD_REQUIRED;
 	}
-	
+
 	public String getAT_LEAST_TWO_CHILDREN_REQUIRED() {
 		return AT_LEAST_TWO_CHILDREN_REQUIRED;
 	}
-	
+
 	public String getAT_LEAST_THREE_CHILDREN_REQUIRED() {
 		return AT_LEAST_THREE_CHILDREN_REQUIRED;
 	}
@@ -638,7 +643,7 @@ public class MessageDelegate {
 	public String getINVALID_CHARACTER_VALIDATION_ERROR() {
 		return INVALID_CHARACTER_VALIDATION_ERROR;
 	}
-	
+
 	public String getSTRATIFICATION_VALIDATION_FOR_GROUPING() {
 		return STRATIFICATION_VALIDATION_FOR_GROUPING;
 	}
@@ -646,7 +651,7 @@ public class MessageDelegate {
 	public String getMEASURE_OBS_VALIDATION_FOR_GROUPING() {
 		return MEASURE_OBS_VALIDATION_FOR_GROUPING;
 	}
-	
+
 	public String getORGANIZATION_SUCCESS_MESSAGE() {
 		return ORGANIZATION_SUCCESS_MESSAGE;
 	}
@@ -658,7 +663,7 @@ public class MessageDelegate {
 	public String getUSER_SUCCESS_MESSAGE() {
 		return USER_SUCCESS_MESSAGE;
 	}
-	
+
 	public String getEmailIdRequired() {
 		return EMAIL_ID_REQUIRED;
 	}
@@ -666,7 +671,7 @@ public class MessageDelegate {
 	public String getINVALID_LOGIC_CQL_WORK_SPACE() {
 		return INVALID_LOGIC_CQL_WORK_SPACE;
 	}
-	
+
 	public String getINVALIDLOGIC_CLAUSE_WORK_SPACE() {
 		return INVALIDLOGIC_CLAUSE_WORK_SPACE;
 	}
@@ -678,23 +683,23 @@ public class MessageDelegate {
 	public String getCLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE() {
 		return CLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE;
 	}
-	
+
 	public String getWelcomeMessage(String userFristName) {
 		return "Welcome "+ userFristName+"! " +WELCOME_MESSAGE;
 	}
-	
+
 	public String getVsacExpansionProfileSelection() {
 		return VSAC_EXPANSION_PROFILE_SELECTION;
 	}
-	
+
 	public String getVsacProfileAppliedToQdmElements() {
 		return VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS;
 	}
-	
+
 	public String getDefaultExpansionIdRemovedMessage() {
 		return DEFAULT_EXPANSION_PROFILE_REMOVED;
 	}
-	
+
 	public String getERROR_IN_SAVING_QDM_ELEMENTS() {
 		return ERROR_IN_SAVING_QDM_ELEMENTS;
 	}
@@ -702,15 +707,15 @@ public class MessageDelegate {
 	public String getWARNING_MEASURE_PACKAGE_CREATION_GENERIC() {
 		return WARNING_MEASURE_PACKAGE_CREATION_GENERIC;
 	}
-	
+
 	public String getWARNING_MEASURE_PACKAGE_CREATION_RISK_ADJUSTMENT(){
 		return WARNING_MEASURE_PACKAGE_CREATION_RISK_ADJUSTMENT;
 	}
-	
+
 	public String getWARNING_MEASURE_PACKAGE_CREATION_STRATA() {
 		return WARNING_MEASURE_PACKAGE_CREATION_STRATA;
 	}
-	
+
 	public String getCLAUSE_WORK_SPACE_INVALID_ATTRIBUTE_IN_SAT_ALL_ANY() {
 		return CLAUSE_WORK_SPACE_INVALID_ATTRIBUTE_IN_SAT_ALL_ANY;
 	}
@@ -718,15 +723,15 @@ public class MessageDelegate {
 	public String getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR() {
 		return CLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR;
 	}
-	
+
 	public String getCLAUSE_EMPTY() {
 		return CLAUSE_EMPTY;
 	}
-	
+
 	public String getSUCCESSFULLY_MODIFIED_ALL_OIDS() {
 		return SUCCESSFULLY_MODIFIED_ALL_OIDS;
 	}
-	
+
 	public String getCOMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY() {
 		return COMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY;
 	}
@@ -734,9 +739,9 @@ public class MessageDelegate {
 	public String getINVALID_LOGIC_MEASURE_PACKAGER() {
 		return INVALID_LOGIC_MEASURE_PACKAGER;
 	}
-	
+
 	public String getDELETE_WARNING_MESSAGE() {
-		return DELETE_WARNING_MESSAGE; 
+		return DELETE_WARNING_MESSAGE;
 	}
 
 	public String getLibraryNameRequired() {
@@ -814,7 +819,7 @@ public class MessageDelegate {
 	public String getUMLS_CODE_IDENTIFIER_REQUIRED() {
 		return UMLS_CODE_IDENTIFIER_REQUIRED;
 	}
-	
+
 	public String getCreatePackageTypeCheckError() {
 		return MSG_TYPE_CHECK_VALIDATION_MEASURE_PACKAGE;
 	}
@@ -854,58 +859,58 @@ public class MessageDelegate {
 	public String getMEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE() {
 		return MEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE;
 	}
-	
+
 	public static String getPACKAGER_CQL_ERROR() {
 		return PACKAGER_CQL_ERROR;
 	}
-	
+
 	public String getSUCESS_FUNCTION_ARG_MODIFY(String ArgName){
 		return "Function Argument "+ ArgName +" successfully modified.";
 	}
 	 public String getSUCESS_FUNCTION_ARG_ADD(String ArgName){
 		 return "Function Argument "+ ArgName +" successfully saved.";
 	 }
-	
+
 	public String getMeasureDraftSuccessfulMessage(String measureName){
 		return "You have created a draft of " + StringUtility.trimTextToSixtyChars(measureName) +". Please click continue to navigate to the Measure Details page.";
 	}
-	
+
 	public String getLibraryDraftSuccessfulMessage(String cqlLibName){
 		return "You have created a draft of " + StringUtility.trimTextToSixtyChars(cqlLibName)+". Please click continue to navigate to the CQL Composer.";
 	}
-	
+
 	public String getCreateNewMeasureSuccessfulMessage(String measureName){
 		return "You have created a new measure " + StringUtility.trimTextToSixtyChars(measureName)+". Please click continue to navigate to the Measure Details page.";
 	}
-	
+
 	public String getEditMeasureSuccessfulMessage(String measureName) {
 		return "You have successfully edited measure " + StringUtility.trimTextToSixtyChars(measureName)+". Please click continue to navigate to the Measure Library page.";
 	}
-	
+
 	public String getCloneMeasureSuccessfulMessage(String measureName) {
 		return "You have successfully cloned measure " + StringUtility.trimTextToSixtyChars(measureName)+". Please click continue to navigate to the Measure Details page.";
 	}
-	
+
 	public String getCreateNewLibrarySuccessfulMessage(String libraryName){
 		return "You have created a new library " + StringUtility.trimTextToSixtyChars(libraryName)+". Please click continue to navigate to the CQL Composer.";
 	}
-	
+
 	public String getVersionSuccessfulMessage(String name, String version){
 		return name + " v" + StringUtility.trimTextToSixtyChars(version) + " has been successfully created.";
 	}
-	
+
 	public String getVersionAndPackageUnsuccessfulMessage() {
 		return "Your measure could not be packaged. Select Cancel and return to the measure composer to correct any issues or select Continue to create a version without a measure package.";
 	}
-	
+
 	public String getVersionAndPackageSuccessfulMessage(String name, String version){
-		return name + " has been successfully packaged and v" + StringUtility.trimTextToSixtyChars(version) + " has been successfully created."; 
+		return name + " has been successfully packaged and v" + StringUtility.trimTextToSixtyChars(version) + " has been successfully created.";
 	}
-	
+
 	public String getUnusedIncludedLibraryWarning(String name) {
 		return "You have included libraries that are unused. In order to version " + name + ", these must be removed. Select Continue to have the MAT remove these included libraries or Cancel to stop the version process.";
 	}
-	
+
 	public static String getMeasureSuccessfullyShared(String measureName) {
 		return measureName + SUCCESSFULLY_SHARED;
 	}
@@ -925,11 +930,11 @@ public class MessageDelegate {
 	public String getINVALID_COMMENT_CHARACTERS() {
 		return INVALID_COMMENT_CHARACTERS;
 	}
-	
+
 	public static String getMeasureSaveServerErrorMessage(int code) {
 		String pre = "Error saving: ";
 		String s = "SPECIAL CODE " + code + ".";
-		
+
 		if (code == ConstantMessages.ID_NOT_UNIQUE) {
 			s = "ID not unique.";
 		}

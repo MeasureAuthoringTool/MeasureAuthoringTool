@@ -24,7 +24,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.DTO.CompositeMeasureScoreDTO;
 import mat.DTO.OperatorDTO;
 import mat.DTO.UserPreferenceDTO;
@@ -52,6 +51,8 @@ import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.login.LoginModel;
+import mat.client.login.service.HarpService;
+import mat.client.login.service.HarpServiceAsync;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.LoginServiceAsync;
@@ -84,7 +85,7 @@ import mat.shared.MatConstants;
 import mat.shared.SaveUpdateCQLResult;
 
 public class MatContext implements IsSerializable {
-		
+
 	private CQLModel cqlModel;
 
 	private boolean isUMLSLoggedIn = false;
@@ -94,7 +95,7 @@ public class MatContext implements IsSerializable {
 	private boolean doMeasureLockUpdates = false;
 
 	private boolean doUserLockUpdates = false;
-	
+
 	// how often to perform lock time updates
 	private final int lockUpdateTime = 2*60*1000;
 
@@ -105,14 +106,16 @@ public class MatContext implements IsSerializable {
 	private static MatContext instance = new MatContext();
 
 	private String currentModule;
-	
+
 	private String bonnieLink;
-	
+
 	private LoginServiceAsync loginService;
 
-	private MeasureServiceAsync measureService;
+    private HarpServiceAsync harpService;
 
-	private CQLConstantServiceAsync cqlConstantService; 
+    private MeasureServiceAsync measureService;
+
+	private CQLConstantServiceAsync cqlConstantService;
 
 	private CQLLibraryServiceAsync cqlLibraryService;
 
@@ -131,7 +134,7 @@ public class MatContext implements IsSerializable {
 	private QDSAttributesServiceAsync qdsAttributesServiceAsync;
 
 	private PopulationServiceAsync populationService;
-	
+
 	private BonnieServiceAsync bonnieService;
 
 	private HandlerManager eventBus;
@@ -148,14 +151,18 @@ public class MatContext implements IsSerializable {
 
 	private AuditServiceAsync auditService;
 
-	private String userId;
-	
-	private String userEmail;
+    private String userId;
+
+    private String idToken;
+
+    private String accessToken;
+
+    private String userEmail;
 
 	private String loginId;
 
 	private String userRole;
-	
+
 	private UserPreferenceDTO userPreference;
 
 	private QDSCodeListSearchView qdsView;
@@ -171,7 +178,7 @@ public class MatContext implements IsSerializable {
 	private int errorTabIndex;
 
 	private boolean isErrorTab;
-	
+
 	public List<String> timings = new ArrayList<String>();
 
 	public List<String> functions = new ArrayList<String>();
@@ -196,7 +203,7 @@ public class MatContext implements IsSerializable {
 
 	public List<CQLQualityDataSetDTO> valueSetCodeQualityDataSetList = new ArrayList<CQLQualityDataSetDTO>();
 
-	public List<CQLIdentifierObject> definitions = new ArrayList<CQLIdentifierObject>(); 
+	public List<CQLIdentifierObject> definitions = new ArrayList<CQLIdentifierObject>();
 
 	public List<CQLIdentifierObject> parameters = new ArrayList<CQLIdentifierObject>();
 
@@ -216,19 +223,21 @@ public class MatContext implements IsSerializable {
 
 	private List<String> shorcutKeyUnits = new ArrayList<String>();
 
-	private CQLConstantContainer cqlConstantContainer = new CQLConstantContainer(); 
-	
-	//VSAC Programs and Releases 
+	private CQLConstantContainer cqlConstantContainer = new CQLConstantContainer();
+
+	//VSAC Programs and Releases
 	private HashMap<String, List<String>> programToReleases = new HashMap<>();
-	
+
 	private HashMap<String, String> programToLatestProfile = new HashMap<>();
 
 	private HashMap<String, List<? extends HasListBox>> selectionMap = new HashMap<>();
-	
-	private List<MeasureType> measureTypeList = new ArrayList<>(); 
-	
+
+	private List<MeasureType> measureTypeList = new ArrayList<>();
+
 	private Map<String, String> expressionToReturnTypeMap = new HashMap<>();
-	
+
+	private Map<String, String> harpUserInfo = new HashMap<>();
+
 	public void clearDVIMessages(){
 		if(qdsView !=null){
 			qdsView.getSuccessMessageDisplay().clear();
@@ -248,7 +257,7 @@ public class MatContext implements IsSerializable {
 	public void setQDSView(QDSCodeListSearchView view){
 		qdsView=view;
 	}
-	
+
 	/**
 	 * Sets the VSAC profile view.
 	 *
@@ -256,11 +265,11 @@ public class MatContext implements IsSerializable {
 	 */
 	public void setQDMAppliedSelectionView(QDMAppliedSelectionView view){
 	}
-	
-	
+
+
 	public void setQdsAppliedListView(QDSAppliedListView qdsAppliedListView) {
 	}
-	
+
 
 	public void setErrorMessage1(ErrorMessageDisplay msg){
 	}
@@ -282,9 +291,9 @@ public class MatContext implements IsSerializable {
 	}
 
 	protected MatContext(){
-		
+
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
-			
+
 			@Override
 			public void onUncaughtException(Throwable e) {
 				GWT.log("An uncaught Exception Occured",e);
@@ -292,24 +301,24 @@ public class MatContext implements IsSerializable {
 			}
 		});
 		eventBus = new HandlerManager(null);
-		
+
 		eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {
-			
+
 			@Override
 			public void onMeasureSelected(MeasureSelectedEvent event) {
 				currentMeasureInfo = event;
 			}
 		});
-		
+
 		eventBus.addHandler(CQLLibrarySelectedEvent.TYPE, new CQLLibrarySelectedEvent.Handler() {
-			
+
 			@Override
 			public void onLibrarySelected(CQLLibrarySelectedEvent event) {
 				currentLibraryInfo = event;
-				
+
 			}
 		});
-		
+
 		//US 439. Start the timeout timer when the user clicked the forgotten password link
 		eventBus.addHandler(ForgottenPasswordEvent.TYPE, new ForgottenPasswordEvent.Handler(){
 			@Override
@@ -358,12 +367,19 @@ public class MatContext implements IsSerializable {
 		return loginService;
 	}
 
-	public VSACAPIServiceAsync getVsacapiServiceAsync() {
-		if(vsacapiServiceAsync == null){
-			vsacapiServiceAsync = (VSACAPIServiceAsync) GWT.create(VSACAPIService.class);
-		}
-		return vsacapiServiceAsync;
-	}
+    public HarpServiceAsync getHarpService() {
+        if (harpService == null) {
+            harpService = GWT.create(HarpService.class);
+        }
+        return harpService;
+    }
+
+    public VSACAPIServiceAsync getVsacapiServiceAsync() {
+        if (vsacapiServiceAsync == null) {
+            vsacapiServiceAsync = (VSACAPIServiceAsync) GWT.create(VSACAPIService.class);
+        }
+        return vsacapiServiceAsync;
+    }
 
 	public void setVsacapiServiceAsync(VSACAPIServiceAsync vsacapiServiceAsync) {
 		this.vsacapiServiceAsync = vsacapiServiceAsync;
@@ -377,12 +393,12 @@ public class MatContext implements IsSerializable {
 	}
 
 	public CQLConstantServiceAsync getCQLContantService() {
-		
+
 		if(cqlConstantService == null) {
 			cqlConstantService = (CQLConstantServiceAsync) GWT.create(CQLConstantService.class);
 		}
-		
-		return cqlConstantService; 
+
+		return cqlConstantService;
 	}
 
 	public MeasureServiceAsync getMeasureService(){
@@ -395,10 +411,10 @@ public class MatContext implements IsSerializable {
 	public CQLLibraryServiceAsync getCQLLibraryService(){
 		if(cqlLibraryService == null){
 			cqlLibraryService = (CQLLibraryServiceAsync)GWT.create(CQLLibraryService.class);
-			
+
 		}
 		return cqlLibraryService;
-		
+
 	}
 
 	public AuditServiceAsync getAuditService(){
@@ -421,7 +437,7 @@ public class MatContext implements IsSerializable {
 		}
 		return bonnieService;
 	}
-	
+
 	public static MatContext get(){
 		return instance;
 	}
@@ -429,7 +445,7 @@ public class MatContext implements IsSerializable {
 	public String getLoggedInUserRole() {
 		return userRole;
 	}
-	
+
 	public UserPreferenceDTO getLoggedInUserPreference() {
 		return userPreference;
 	}
@@ -437,14 +453,31 @@ public class MatContext implements IsSerializable {
 	public void setLoggedInUserPreference(UserPreferenceDTO userPreference) {
 		this.userPreference = userPreference;
 	}
-	
+
 	public String getLoggedinUserId(){
 		return userId;
 	}
-
-	public String getLoggedinLoginId(){
+	public String getLoggedinLoginId() {
 		return loginId;
 	}
+
+    public void setIdToken(String idToken) {
+        this.idToken = idToken;
+    }
+
+    public String getIdToken() {
+        return idToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+
 
 	public String getLoggedInUserEmail() {
 		return userEmail;
@@ -458,15 +491,17 @@ public class MatContext implements IsSerializable {
 		getLoginService().isValidUser(username, Password, oneTimePassword, callback);
 	}
 
-	public void getListBoxData(AsyncCallback<CodeListService.ListBoxData> listBoxCallback){
-		getCodeListService().getListBoxData(listBoxCallback);
-	}
+    public void initSession(Map<String, String> harpUserInfo, AsyncCallback<LoginModel> callback) {
+        getLoginService().initSession(harpUserInfo, callback);
+    }
 
-	public void getCurrentUserRole(AsyncCallback<SessionManagementService.Result> userRoleCallback){
-		getSessionService().getCurrentUserRole(userRoleCallback);
-	}
-	
-	
+    public void getListBoxData(AsyncCallback<CodeListService.ListBoxData> listBoxCallback) {
+        getCodeListService().getListBoxData(listBoxCallback);
+    }
+
+    public void getCurrentUser(AsyncCallback<SessionManagementService.Result> userCallback) {
+        getSessionService().getCurrentUser(userCallback);
+    }
 
 	public void restartTimeoutWarning() {
 		getTimeoutManager().startActivityTimers(ConstantMessages.MAT_MODULE);
@@ -493,16 +528,15 @@ public class MatContext implements IsSerializable {
 			return "";
 		}
 	}
-	
 
-	public String getCurrentMeasureVersion() {
-		if(currentMeasureInfo != null) {
-			return currentMeasureInfo.getMeasureVersion();
-		}
-		else {
-			return "";
-		}
-	}
+
+    public String getCurrentMeasureVersion() {
+        if (currentMeasureInfo != null) {
+            return currentMeasureInfo.getMeasureVersion();
+        } else {
+            return "";
+        }
+    }
 
 	public void setCurrentMeasureVersion(String s) {
 		if(currentMeasureInfo != null) {
@@ -511,7 +545,7 @@ public class MatContext implements IsSerializable {
 	}
 
 	public void setCurrentMeasureScoringType(String s){
-		
+
 		if(currentMeasureInfo!=null) {
 			currentMeasureInfo.setScoringType(s);
 		}
@@ -555,7 +589,7 @@ public class MatContext implements IsSerializable {
 			currentMeasureInfo.setShortName(shortName);
 		}
 	}
-	
+
 	public boolean isCurrentMeasureEditable() {
 		if(currentMeasureInfo != null) {
 			return currentMeasureInfo.isEditable();
@@ -591,27 +625,27 @@ public class MatContext implements IsSerializable {
 			return false;
 		}
 	}
-	
+
 	public boolean isDraftLibrary() {
 		return (currentLibraryInfo != null) ? currentLibraryInfo.isDraft() : false;
 	}
-	
+
 	public boolean isDraftMeasure() {
 		return (currentMeasureInfo != null) ? currentMeasureInfo.isDraft() : false;
 	}
 
 	public void renewSession() {
 		getSessionService().renewSession(new AsyncCallback<Void>() {
-			
+
 			@Override
 			public void onFailure(Throwable arg0) {
 				Window.alert("Error renewing session " + arg0.getMessage());
 			}
-			
+
 			@Override
 			public void onSuccess(Void arg0) {
 			}
-			
+
 		});
 	}
 
@@ -623,7 +657,7 @@ public class MatContext implements IsSerializable {
 		urlBuilder.setPath(path);
 		Window.Location.replace(urlBuilder.buildString());
 	}
-	
+
 	public void redirectToMatPage(String html) {
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 		urlBuilder.setHash("mainTab0");
@@ -633,12 +667,12 @@ public class MatContext implements IsSerializable {
 		urlBuilder.setPath(path);
 		Window.Location.replace(urlBuilder.buildString());
 	}
-	
+
 	public void openURL(String html){
 		Window.open(html, "User_Guide", "");
-		
+
 	}
-	
+
 
 	public void openNewHtmlPage(String html) {
 		String windowFeatures = "toolbar=no, location=no, personalbar=no, menubar=yes, scrollbars=yes, resizable=yes";
@@ -661,10 +695,10 @@ public class MatContext implements IsSerializable {
 	 * This method is the hub for dynamic visibility for The app.
 	 * The setting of aria attributes or styles is delegated to a shared location
 	 * and that logic is invoked where needed.
-	 * 
+	 *
 	 * If we need another way of making objects "invisible" then we need to modify
 	 * widget.setVisible(visible);
-	 * 
+	 *
 	 * @param widget The widget to be rendered or no longer rendered
 	 * @param visible Widget's rendering status
 	 */
@@ -676,7 +710,7 @@ public class MatContext implements IsSerializable {
 		//NOTE: if (visible = true) then (ARIA not hidden)
 		setAriaHidden(widget, !visible);
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public HashMap enableRegistry = new HashMap<String, Enableable>();
 
@@ -698,7 +732,7 @@ public class MatContext implements IsSerializable {
 	public void setCurrentMeasureInfo(MeasureSelectedEvent evt){
 		currentMeasureInfo = evt;
 	}
-	
+
 	/*
 	 * MeasureLock Service --- contains logic to set and release the lock.
 	 *
@@ -708,13 +742,13 @@ public class MatContext implements IsSerializable {
 	public MeasureLockService getMeasureLockService(){
 		return measureLockService;
 	}
-	
+
 	private LibraryLockService libraryLockService = new LibraryLockService();
 
 	public LibraryLockService getLibraryLockService(){
 		return libraryLockService;
 	}
-	
+
 	/*
 	 * Loading queue
 	 * used to track loading behavior in the MAT
@@ -734,7 +768,7 @@ public class MatContext implements IsSerializable {
 	public boolean isLoading(){
 		return !getLoadingQueue().isEmpty();
 	}
-	
+
 	/*
 	 * Message store to prevent duplicated messages
 	 */
@@ -767,7 +801,7 @@ public class MatContext implements IsSerializable {
 						//terminate job
 						this.cancel();
 					}
-					
+
 				}
 			};
 			t.scheduleRepeating(lockUpdateTime);
@@ -777,7 +811,7 @@ public class MatContext implements IsSerializable {
 	public void stopMeasureLockUpdate(){
 		doMeasureLockUpdates = false;
 	}
-	
+
 
 	public void startLibraryLockUpdate(){
 		if (!doLibraryLockUpdates) {
@@ -791,7 +825,7 @@ public class MatContext implements IsSerializable {
 						//terminate job
 						this.cancel();
 					}
-					
+
 				}
 			};
 			t.scheduleRepeating(lockUpdateTime);
@@ -814,13 +848,13 @@ public class MatContext implements IsSerializable {
 						//terminate job
 						this.cancel();
 					}
-					
+
 				}
 			};
 			t.scheduleRepeating(userLockUpdateTime);
 		}
 	}
-	
+
 
 	public void setUserSignInDate(String userid) {
 		if (userid != null) {
@@ -832,7 +866,7 @@ public class MatContext implements IsSerializable {
 			});
 		}
 	}
-	
+
 	/**
 	 * set flag doUserLockUpdates to false the repeating process will verify
 	 * based on its value.
@@ -849,7 +883,7 @@ public class MatContext implements IsSerializable {
 			});
 		}
 	}
-	
+
 	/*
 	 * assuming text is of form *:<<category>>-<<oid>>
 	 * where * could contain a -
@@ -875,7 +909,7 @@ public class MatContext implements IsSerializable {
 		}
 		return item.substring(0,idx).trim();
 	}
-	
+
 	public void fireMeasureEditEvent() {
 		MeasureEditEvent evt = new MeasureEditEvent();
 		MatContext.get().getEventBus().fireEvent(evt);
@@ -892,27 +926,27 @@ public class MatContext implements IsSerializable {
 			public void onSuccess(final Boolean result) { }
 		});
 	}
-	
+
 
 	public void recordUserEvent(String userId, List<String> event, String additionalInfo, boolean isChildLogRequired) {
 		MatContext.get()
 		.getAuditService().recordUserEvent(userId, event, additionalInfo, isChildLogRequired, new AsyncCallback<Boolean>() {
-			
+
 			@Override
 			public void onFailure(Throwable caught) {
 			}
-			
+
 			@Override
 			public void onSuccess(Boolean result) {
 			}
 		});
 	}
-	
+
 
 	public SynchronizationDelegate getSynchronizationDelegate() {
 		return synchronizationDelegate;
 	}
-	
+
 
 	public boolean isAlreadySignedIn(Date lastSignOut, Date lastSignIn, Date current){
 		/*
@@ -936,18 +970,18 @@ public class MatContext implements IsSerializable {
 			ManageMeasureSearchView manageMeasureSearchView) {
 		this.manageMeasureSearchView = manageMeasureSearchView;
 	}
-	
+
 
 	public ManageMeasureSearchModel getManageMeasureSearchModel() {
 		return manageMeasureSearchModel;
 	}
-	
+
 
 	public void setManageMeasureSearchModel(
 			ManageMeasureSearchModel manageMeasureSearchModel) {
 		this.manageMeasureSearchModel = manageMeasureSearchModel;
 	}
-	
+
 
 	public boolean isErrorTab() {
 		return isErrorTab;
@@ -960,40 +994,42 @@ public class MatContext implements IsSerializable {
 	public int getErrorTabIndex() {
 		return errorTabIndex;
 	}
-	
+
 	public void setErrorTabIndex(int errorTabIndex) {
 		this.errorTabIndex = errorTabIndex;
 	}
 
-	public void handleSignOut(String activityType, final boolean isRedirect) {
-		MatContext.get().getSynchronizationDelegate().setLogOffFlag();
-		MatContext.get().setUMLSLoggedIn(false);
-		MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(),
-				MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
-			
-			@Override
-			public void onSuccess(final String result) {
-				if (isRedirect) {
-					MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-				}
-			}
-			
-			@Override
-			public void onFailure(final Throwable caught) {
-				if (isRedirect) {
-					MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-				}
-			}
-		});
-	}
+    public void handleSignOut(final String activityType, final String redirectTo) {
+        MatContext.get().getSynchronizationDelegate().setLogOffFlag();
+        MatContext.get().setUMLSLoggedIn(false);
+        MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(),
+                MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
+
+                    @Override
+                    public void onSuccess(final String result) {
+                        redirect();
+                    }
+
+                    @Override
+                    public void onFailure(final Throwable caught) {
+                        redirect();
+                    }
+
+                    private void redirect() {
+                        if (redirectTo != null && !redirectTo.isEmpty()) {
+                            MatContext.get().redirectToHtmlPage(redirectTo);
+                        }
+                    }
+                });
+    }
 
 	public void getAllOperators(){
 		getCodeListService().getAllOperators(new AsyncCallback<List<OperatorDTO>>() {
-			
+
 			@Override
 			public void onFailure(final Throwable caught) {
 			}
-			
+
 			@Override
 			public void onSuccess(List<OperatorDTO> result) {
 				for (OperatorDTO operatorDTO : result) {
@@ -1014,14 +1050,14 @@ public class MatContext implements IsSerializable {
 						//Collections.sort(setOps);
 						Collections.reverse(setOps);
 					}
-					
+
 				}
 				//for adding Removed Relationship Types
 				addRemovedRelationShipTypes();
 			}
-			
+
 			private void addRemovedRelationShipTypes() {
-				
+
 				removedRelationshipTypes.put("Is Authorized By", "AUTH");
 				removedRelationshipTypes.put("Causes", "CAUS");
 				removedRelationshipTypes.put("Is Derived From", "DRIV");
@@ -1029,38 +1065,38 @@ public class MatContext implements IsSerializable {
 				removedRelationshipTypes.put("Has Outcome Of", "OUTC");
 			}
 		});
-	}	
+	}
 
 	public void setModifyQDMPopUpWidget(
 			QDMAvailableValueSetWidget modifyQDMPopUpWidget) {
 		this.modifyQDMPopUpWidget = modifyQDMPopUpWidget;
 	}
-	
+
 
 	public boolean isMeasureDeleted() {
 		return isMeasureDeleted;
 	}
-	
+
 
 	public void setMeasureDeleted(boolean isMeasureDeleted) {
 		this.isMeasureDeleted = isMeasureDeleted;
 	}
-	
-	
+
+
 
 	public boolean isUMLSLoggedIn() {
 		return isUMLSLoggedIn;
-	}	
-	
+	}
+
 
 	public void setUMLSLoggedIn(boolean isUMLSLoggedIn) {
 		this.isUMLSLoggedIn = isUMLSLoggedIn;
 	}
 
 	public List<String> getAllowedPopulationsInPackage(){
-		
+
 		List<String> allowedPopulationsInPackage = new ArrayList<String>();
-		
+
 		allowedPopulationsInPackage.add("initialPopulation");
 		allowedPopulationsInPackage.add("stratification");
 		allowedPopulationsInPackage.add("measurePopulation");
@@ -1073,29 +1109,29 @@ public class MatContext implements IsSerializable {
 		allowedPopulationsInPackage.add("numeratorExclusions");
 		return allowedPopulationsInPackage;
 	}
-	
-	
+
+
 	public GlobalCopyPasteObject getGlobalCopyPaste() {
 		return globalCopyPaste;
 	}
-	
-	
+
+
 	public void setGlobalCopyPaste(GlobalCopyPasteObject globalCopyPaste) {
 		this.globalCopyPaste = globalCopyPaste;
 	}
-	
+
 	public void getCurrentReleaseVersion(AsyncCallback<String> currentReleaseVersionCallback){
 		getSessionService().getCurrentReleaseVersion(currentReleaseVersionCallback);
 	}
-	
+
 	public List<CQLIdentifierObject> getValuesets() {
 		return this.valuesets;
 	}
 
 	public void setValuesets(List<CQLQualityDataSetDTO> valuesets) {
-		
-		List<CQLIdentifierObject> valuesetIdentifiers = new ArrayList<>(); 
-		
+
+		List<CQLIdentifierObject> valuesetIdentifiers = new ArrayList<>();
+
 		for(int i = 0; i < valuesets.size(); i++) {
 			CQLIdentifierObject valuesetIdentifier = null;
 			if(valuesets.get(i).getType() != null){
@@ -1103,12 +1139,12 @@ public class MatContext implements IsSerializable {
 			} else{
 				valuesetIdentifier  = new CQLIdentifierObject(null, valuesets.get(i).getName(),valuesets.get(i).getId());
 			}
-			
+
 			valuesetIdentifiers.add(valuesetIdentifier);
 		}
-		
+
 		this.valueSetCodeQualityDataSetList = valuesets;
-		
+
 		this.valuesets = valuesetIdentifiers;
 	}
 
@@ -1137,11 +1173,11 @@ public class MatContext implements IsSerializable {
 	}
 
 	public QDSAttributesServiceAsync getQdsAttributesServiceAsync() {
-		
+
 		if(qdsAttributesServiceAsync == null){
 			qdsAttributesServiceAsync = (QDSAttributesServiceAsync) GWT.create(QDSAttributesService.class);
 		}
-		
+
 		return qdsAttributesServiceAsync;
 	}
 
@@ -1223,26 +1259,26 @@ public class MatContext implements IsSerializable {
 		}
 		return cqlLibraryService;
 	}
-	
+
 	/**
-	 * Checks if is measure is CQL Measure depending 
-	 * on Measure release version. If the releaseVersion is null, then it is not a CQL measure. 
+	 * Checks if is measure is CQL Measure depending
+	 * on Measure release version. If the releaseVersion is null, then it is not a CQL measure.
 	 *
 	 * @param releaseVersion the release version
 	 * @return true, if is CQL measure, false if it is not a cql measure or the release version is null
 	 */
 	public boolean isCQLMeasure(String releaseVersion) {
-		
+
 		if(releaseVersion == null) {
-			return false; 
+			return false;
 		}
-		
+
 		String str[] = releaseVersion.replace("v", "").split("\\.");
 		int versionInt = Integer.parseInt(str[0]);
 		if(versionInt<5){
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -1285,7 +1321,7 @@ public class MatContext implements IsSerializable {
 	public void setIncludedCodeNames(List<CQLIdentifierObject> includedCodeNames) {
 		this.includedCodeNames = includedCodeNames;
 	}
-	
+
 	public void setIncludedValues(SaveUpdateCQLResult result) {
 		includedValueSetNames = result.getCqlModel().getCQLIdentifierValueSet();
 		includedCodeNames = result.getCqlModel().getCQLIdentifierCode();
@@ -1298,7 +1334,7 @@ public class MatContext implements IsSerializable {
 		CQLConstantServiceAsync cqlConstantService = (CQLConstantServiceAsync) GWT.create(CQLConstantService.class);
 
 		cqlConstantService.getAllCQLConstants(new AsyncCallback<CQLConstantContainer>() {
-		
+
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -1306,14 +1342,14 @@ public class MatContext implements IsSerializable {
 
 			@Override
 			public void onSuccess(CQLConstantContainer result) {
-				cqlConstantContainer = result; 
+				cqlConstantContainer = result;
 				setShortCutKeyUnits();
 			}
 		});
 	}
 
 	public HashSet<String> getNonQuotesUnits(){
-		 HashSet<String> hset = 
+		 HashSet<String> hset =
 	               new HashSet<String>();
 		hset.add("millisecond");
 		hset.add("milliseconds");
@@ -1331,7 +1367,7 @@ public class MatContext implements IsSerializable {
 		hset.add("months");
 		hset.add("year");
 		hset.add("years");
-		
+
 		return hset;
 	}
 
@@ -1350,7 +1386,7 @@ public class MatContext implements IsSerializable {
 	public void setShortCutKeyUnits() {
 		shorcutKeyUnits.clear();
 		for(Map.Entry<String,String> unitsMap : cqlConstantContainer.getCqlUnitMap().entrySet()){
-			
+
 			MatContext.get();
 			if (!unitsMap.getValue().equalsIgnoreCase(PLEASE_SELECT)) {
 				if (!getNonQuotesUnits().contains(unitsMap.getValue())) {
@@ -1373,19 +1409,19 @@ public class MatContext implements IsSerializable {
 		} else {
 			return cqlConstantContainer.getCurrentQDMVersion();
 		}
-		
+
 	}
 
 	public PopulationServiceAsync getPopulationService() {
-		
+
 		if(populationService == null) {
 			populationService = GWT.create(PopulationService.class);
 		}
-		
-		return populationService; 
+
+		return populationService;
 	}
 
-	public Map<String, List<String>> getProgramToReleases() {		
+	public Map<String, List<String>> getProgramToReleases() {
 		return programToReleases;
 	}
 
@@ -1403,7 +1439,7 @@ public class MatContext implements IsSerializable {
 	}
 
 	public void getProgramsAndReleasesFromVSAC() {
-		
+
 		MatContext.get().getVsacapiServiceAsync().getVSACProgramsReleasesAndProfiles(new AsyncCallback<VsacApiResult>() {
 
 			@Override
@@ -1417,10 +1453,10 @@ public class MatContext implements IsSerializable {
 					MatContext.get().setProgramToReleases(result.getProgramToReleases());
 					MatContext.get().setProgramToLatestProfile(result.getProgramToProfiles());
 				}
-				
+
 			}
 		});
-	
+
 	}
 
 	public Map<String, List<? extends HasListBox>> getSelectionMap() {
@@ -1440,12 +1476,12 @@ public class MatContext implements IsSerializable {
 			this.cqlModel = model;
 		}
 	}
-	
+
 	public void buildBonnieLink() {
 		BonnieServiceAsync bonnie = (BonnieServiceAsync) GWT.create(BonnieService.class);
 
 		bonnie.getBonnieAccessLink(new AsyncCallback<String>() {
-			
+
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -1455,16 +1491,16 @@ public class MatContext implements IsSerializable {
 			public void onSuccess(String result) {
 				bonnieLink = result;
 			}
-			
+
 		});
 	}
-	
+
 	public String getBonnieLink() {
 		return bonnieLink;
 	}
 
 	public void createSelectionMap(List<? extends HasListBox> result) {
-		List<? extends HasListBox> defaultList = result;	
+		List<? extends HasListBox> defaultList = result;
 		List<? extends HasListBox> proportionRatioList = defaultList.stream().filter(x -> "Proportion".equals(x.getItem()) || "Ratio".equals(x.getItem())).collect(Collectors.toList());
 		List<? extends HasListBox> continuousVariableList = defaultList.stream().filter(x -> "Continuous Variable".equals(x.getItem())).collect(Collectors.toList());
 		setSelectionMap(new HashMap<String, List<? extends HasListBox>>(){
@@ -1477,7 +1513,7 @@ public class MatContext implements IsSerializable {
 			}
 		});
 	}
-	
+
 	public List<CompositeMeasureScoreDTO> buildCompositeScoringChoiceList(){
 		List<CompositeMeasureScoreDTO> compositeChoices = new ArrayList<>();
 		compositeChoices.add(new CompositeMeasureScoreDTO("1", CompositeMethodScoringConstant.ALL_OR_NOTHING));
@@ -1485,7 +1521,7 @@ public class MatContext implements IsSerializable {
 		compositeChoices.add(new CompositeMeasureScoreDTO("3", CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR));
 		return compositeChoices;
 	}
-	
+
 	public void setListBoxItems(ListBox listBox, List<? extends HasListBox> itemList, String defaultOption){
 		listBox.clear();
 		listBox.addItem(defaultOption,"");
@@ -1495,7 +1531,7 @@ public class MatContext implements IsSerializable {
 			}
 		}
 	}
-	
+
 	public List<String> getPatientBasedIndicatorOptions(String measureScoringMethod) {
 		List<String> patientBasedList = new ArrayList<>();
 		patientBasedList.add("No");
@@ -1511,7 +1547,7 @@ public class MatContext implements IsSerializable {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
@@ -1521,7 +1557,7 @@ public class MatContext implements IsSerializable {
 			}
 		});
 	}
-	
+
 	public List<MeasureType> getMeasureTypeList() {
 		return measureTypeList;
 	}
@@ -1529,7 +1565,7 @@ public class MatContext implements IsSerializable {
 	public void setMeasureTypeList(List<MeasureType> measureTypeList) {
 		this.measureTypeList = measureTypeList;
 	}
-	
+
 	public ClickHandler addClickHandlerToResetTimeoutWarning() {
 		return new ClickHandler() {
 			@Override
@@ -1553,4 +1589,12 @@ public class MatContext implements IsSerializable {
 	public void setUserPreference(UserPreferenceDTO userPreference) {
 		this.userPreference = userPreference;
 	}
+
+    public Map<String, String> getHarpUserInfo() {
+        return harpUserInfo;
+    }
+
+    public void setHarpUserInfo(Map<String, String> harpUserInfo) {
+        this.harpUserInfo = harpUserInfo;
+    }
 }

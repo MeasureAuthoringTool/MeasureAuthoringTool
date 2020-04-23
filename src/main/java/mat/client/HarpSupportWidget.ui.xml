@@ -1,0 +1,24 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <g:HTMLPanel>
+        <div id="harp-support-header-section" style="text-align: center; margin: 1em;">
+            <p>
+                <i class="fa fa-frown-o fa-3x" aria-hidden="true"></i>
+                <h2>We are sorry...</h2>
+            </p>
+        </div>
+        <div id="harp-support-links-section" style="text-align: left; margin: 2em;">
+            <h4>We were unable to access the Measure Authoring Tool (MAT). The following resources may be helpful:</h4>
+            <ul>
+                <li>View the <a href="https://harp.qualitynet.org/">HARP self-service</a> page</li>
+                <li>Submit a ticket via <a href="https://oncprojectracking.healthit.gov/support/login.jsp">the Office of the National Coordinator (ONC) Jira System</a> and follow the directions on the page
+                </li>
+                <li>Contact the <a href="https://www.emeasuretool.cms.gov/contact-us">MAT Support Desk</a></li>
+                <li>Follow <a href="https://www.emeasuretool.cms.gov/training-resources">Training &amp; Resources / Registering for
+                    a MAT User Account</a> documentation
+                </li>
+                <li><a href="./HarpLogin.html">Login to MAT</a></li>
+            </ul>
+        </div>
+    </g:HTMLPanel>
+</ui:UiBinder>

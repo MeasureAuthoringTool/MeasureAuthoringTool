@@ -4,7 +4,8 @@ You have not signed into the Measure Authoring Tool in 30 days. In order to keep
  
 If you have any questions, please contact the Measure Authoring Tool support desk at sb-mat-help@semanticbits.com.
 
-User ID: ${(content.loginId)!}
+HARP ID: ${(content.harpId)!}
+Email: ${(content.userEmail)!}
 MAT Environment: ${(content.url)!}
  
 Sincerely,

@@ -37,7 +37,6 @@ public class LoggedInUserUtil {
                 try {
                     if (SecurityContextHolder.getContext().getAuthentication() instanceof PreAuthenticatedAuthenticationToken) {
                         token = (PreAuthenticatedAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-                        logger.info(token.getName());
                     }
                 } catch (Exception exc) {
                     logger.info(exc);

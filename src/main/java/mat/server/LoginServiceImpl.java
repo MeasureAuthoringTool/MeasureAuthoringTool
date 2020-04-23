@@ -7,6 +7,7 @@ import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.SecurityQuestionOptions;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatException;
 import mat.dao.UserDAO;
 import mat.dao.UserPasswordHistoryDAO;
 import mat.model.SecurityQuestions;
@@ -109,9 +110,12 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	}
 
 	@Override
-	public LoginModel initSession(String harpId, String accessToken) {
+	public LoginModel initSession(String harpId, String accessToken) throws MatException {
 		logger.info("getUserDetailsByHarpId::harpId::" + harpId);
 		HttpSession session = getThreadLocalRequest().getSession();
+		if (userService.isHarpUserLocked(harpId)) {
+			throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
+		}
 		return loginCredentialService.initSession(harpId, session.getId(), accessToken);
 	}
 	
@@ -433,7 +437,12 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	public boolean isLockedUser(String loginId) {
 		return userService.isLockedUser(loginId);
 	}
-	
+
+	@Override
+	public boolean isHarpUserLocked(String harpId) {
+		return userService.isHarpUserLocked(harpId);
+	}
+
 	/* 
 	 * {@inheritDoc}
 	 */

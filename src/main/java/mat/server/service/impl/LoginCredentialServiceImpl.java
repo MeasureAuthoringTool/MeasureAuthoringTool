@@ -332,6 +332,9 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
         logger.debug("setUpUserSession::" + harpId + "::" + sessionId);
         // Set Session ID in user details.
         MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByHarpId(harpId);
+        if(userDetails == null) {
+            throw new IllegalArgumentException("HARP_ID_NOT_FOUND");
+        }
         userDetails.setSessionId(sessionId);
         hibernateUserService.saveUserDetails(userDetails);
 

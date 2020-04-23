@@ -181,7 +181,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private final AsyncCallback<LoginModel> harpUserSessionSetupCallback = new AsyncCallback<LoginModel>() {
         @Override
         public void onFailure(Throwable throwable) {
-            //TODO MAT-842: Harp ID not found in MAT, redirect to Access Support Page.
+            if(throwable.getMessage().contains("MAT_ACCOUNT_REVOKED_LOCKED")) {
+                //TODO MAT-842: User's MAT account is locked/revoked, replace logout with redirect to Support page.
+                logout();
+            } else if(throwable.getMessage().contains("HARP_ID_NOT_FOUND")) {
+                //TODO MAT-842: Harp ID not found in MAT, redirect to Access Support Page.
+            }
         }
 
         @Override
@@ -312,8 +317,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             String idToken = idTokenObj.get("idToken").isString().stringValue();
             String email = idTokenObj.get("claims").isObject().get("email").isString().stringValue();
             //TODO MAT-633: Replace use of email in initSession call stack with harpId once DB field is established.
-//            String harpId = idTokenObj.get("claims").isObject().get("preferred_username").isString().stringValue();
-
+            String harpId = idTokenObj.get("claims").isObject().get("preferred_username").isString().stringValue();
 //            Window.alert("username:" + harpId);
 
             // Save tokens for HARP logout.
@@ -347,41 +351,38 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
 
-        History.addValueChangeHandler(new ValueChangeHandler<String>() {
-            @Override
-            public void onValueChange(final ValueChangeEvent<String> event) {
-                final String historyToken = event.getValue();
+        History.addValueChangeHandler(event -> {
+            final String historyToken = event.getValue();
 
-                if ((historyToken == null) || historyToken.isEmpty()) {
-                    History.newItem(mainTabLayoutID + 0, false);
-                } else if (!MatContext.get().isLoading()) {
-                    // Parse the history token
+            if ((historyToken == null) || historyToken.isEmpty()) {
+                History.newItem(mainTabLayoutID + 0, false);
+            } else if (!MatContext.get().isLoading()) {
+                // Parse the history token
 
-                    try {
-                        for (Object key : MatContext.get().tabRegistry.keySet()) {
-                            if (key instanceof String) {
-                                String k = (String) key;
-                                if (historyToken.contains(k)) {
-                                    final String tabIndexToken = historyToken.substring(k.length());
-                                    final int tabIndex = Integer.parseInt(tabIndexToken);
-                                    MATTabPanel tp = (MATTabPanel) MatContext.get().tabRegistry.get(key);
-                                    /* Suppressing selection of MAIN_TAB_LAYOUT_ID+mainTabLayout.selectedIndex
-                                     * if already selected
-                                     */
-                                    if (!History.getToken().equals(mainTabLayoutID + mainTabLayout.getSelectedIndex())) {
-                                        tp.selectTab(tabIndex);
-                                    }
+                try {
+                    for (Object key : MatContext.get().tabRegistry.keySet()) {
+                        if (key instanceof String) {
+                            String k = (String) key;
+                            if (historyToken.contains(k)) {
+                                final String tabIndexToken = historyToken.substring(k.length());
+                                final int tabIndex = Integer.parseInt(tabIndexToken);
+                                MATTabPanel tp = (MATTabPanel) MatContext.get().tabRegistry.get(key);
+                                /* Suppressing selection of MAIN_TAB_LAYOUT_ID+mainTabLayout.selectedIndex
+                                 * if already selected
+                                 */
+                                if (!History.getToken().equals(mainTabLayoutID + mainTabLayout.getSelectedIndex())) {
+                                    tp.selectTab(tabIndex);
                                 }
                             }
                         }
-                    } catch (IndexOutOfBoundsException e) {
-                        History.newItem(mainTabLayoutID + 0, false);
                     }
-                } else {
-                    MatContext.get().fireLoadingAlert();
-                    //reload
-                    History.newItem(historyToken, false);
+                } catch (IndexOutOfBoundsException e) {
+                    History.newItem(mainTabLayoutID + 0, false);
                 }
+            } else {
+                MatContext.get().fireLoadingAlert();
+                //reload
+                History.newItem(historyToken, false);
             }
         });
 

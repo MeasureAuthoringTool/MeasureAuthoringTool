@@ -9,16 +9,16 @@
    */
   async function storeTokens(tokens, tokenManager) {
     tokens = Array.isArray(tokens) ? tokens : [tokens];
-    tokens.forEach(token => {
+    tokens.forEach( (token) => {
       const {idToken, accessToken} = token;
       if (idToken) {
-        tokenManager.add('idToken', token);
+        tokenManager.add("idToken", token);
       }
       if (accessToken) {
-        tokenManager.add('accessToken', token);
+        tokenManager.add("accessToken", token);
       }
     });
-    return await tokenManager.get('idToken');
+    return await tokenManager.get("idToken");
   }
 
   /**
@@ -34,7 +34,7 @@
       }, (err) => {
         reject(err);
       });
-    })
+    });
   }
 
   /**
@@ -43,15 +43,15 @@
    */
   function postToken(token) {
     console.dir(token);
-    document.getElementById('loginPost').value = token.idToken;
-    const form = document.getElementById('loginForm');
+    document.getElementById("loginPost").value = token.idToken;
+    const form = document.getElementById("loginForm");
     form.action = "Mat.html";
     form.submit();
   }
 
   /**
    * This is the main, top-level logic function, handling all Okta interactions.
-   * It's a separate function so we can easily use async/await
+   * It"s a separate function so we can easily use async/await
    * @returns {Promise<void>}
    */
   async function handleOkta(clientId, harpBaseUrl) {
@@ -61,12 +61,12 @@
       redirectUri: window.location.origin + window.location.pathname,
       authParams: {
         pkce: true,
-        display: 'page',
-        responseType: ['token', 'id_token']
+        display: "page",
+        responseType: ["token", "id_token"]
       },
       customButtons: [{
-        title: 'Return to MAT Login',
-        className: 'btn-customAuth',
+        title: "Return to MAT Login",
+        className: "btn-customAuth",
         click: function() {
           // clicking on the button navigates to another page
           window.location.href = "Login.html";
@@ -87,40 +87,38 @@
         const idToken = await storeTokens(tokens, tokenManager);
 
         // Send the token to the server
-        console.log('Hello, ' + idToken.claims.email); // FIXME
         postToken(idToken);
       } catch (err) {
         console.error(err);
-        throw new Error('Error retrieving tokens from URL fragment');
+        throw new Error("Error retrieving tokens from URL fragment");
       }
     } else {
-      // It's not an Okta redirect, but we might still have an active session
+      // It"s not an Okta redirect, but we might still have an active session
       const session = await authClient.session.get();
 
-      if (session.status === 'ACTIVE') {
+      if (session.status === "ACTIVE") {
         try {
           // Session exists: get tokens
           const tokens = await authClient.token.getWithoutPrompt({
-            scopes: ['openid', 'email', 'profile']
+            scopes: ["openid", "email", "profile"]
           });
 
           // Store the tokens
           const idToken = await storeTokens(tokens, tokenManager);
 
           // Send the token to the server
-          console.log('Welcome back, ' + idToken.claims.email); // FIXME
           postToken(idToken);
         } catch (err) {
           console.error(err);
-          throw new Error('Cannot retrieve tokens from active session');
+          throw new Error("Cannot retrieve tokens from active session");
         }
       } else {
         try {
           // No session, show the login form
-          await renderWidget(oktaSignIn, '#okta-login-container');
+          await renderWidget(oktaSignIn, "#okta-login-container");
         } catch (err) {
           console.error(err);
-          throw new Error('Cannot render Okta widget');
+          throw new Error("Cannot render Okta widget");
         }
       }
     }
@@ -129,20 +127,18 @@
   // Once the DOM is loaded, call our main "handleOkta" function, and handle errors
   $(() => {
     // let tokens = JSON.parse(window.localStorage.getItem("okta-token-storage"));
-    $.ajax({ //FIXME
-      url: 'harpLogin',
-      type: 'GET',
-      async: false
+    $.ajax({ // FIXME
+      "url": "harpLogin",
+      "type": "GET"
     }).done(function(props) {
-      harpProps = props;
-    });
-    handleOkta(harpProps.clientId, harpProps.harpBaseUrl).then(() => {
-      console.log('success'); // FIXME
-    }).catch((err) => {
-      console.error('Okta Error');
-      console.error(err);
-    }).finally(() => { // FIXME
-      console.log('done!');
+      handleOkta(props.clientId, props.harpBaseUrl).then(() => {
+        console.log("success"); // FIXME
+      }).catch((err) => {
+        console.error("Okta Error");
+        console.error(err);
+      }).finally(() => { // FIXME
+        console.log("done!");
+      });
     });
   });
 })(jQuery);

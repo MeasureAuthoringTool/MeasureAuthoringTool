@@ -23,7 +23,7 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet implem
     private MeasureLibraryService measureLibraryService;
 
     @Override
-    public SessionManagementService.Result getCurrentUserRole() {
+    public SessionManagementService.Result getCurrentUser() {
         SessionManagementService.Result result = new SessionManagementService.Result();
         result.userId = LoggedInUserUtil.getLoggedInUser();
         User user = userService.getById(result.userId);

@@ -33,6 +33,7 @@ public class MessageDelegate {
     private static final String CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name. Library names must start with an alpha-character or underscore, followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
     private static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has an incorrect format.";
     private static final String EMAIL_ID_REQUIRED = "Email Address is required.";
+    private static final String HARP_ID_IS_REQUIRED = "HARP ID is required.";
     private static final String LOGIN_USER_REQUIRED = "User Name is required.";
     private static final String NO_MEASURES = "No measures returned. Please change your search criteria and search again.";
     private static final String NO_LIBRARIES_RETURNED = "No libraries returned. Please change your search criteria and search again.";
@@ -45,7 +46,7 @@ public class MessageDelegate {
     private static final String SEC_QUESTIONS_UPDATED = "Your security questions have been updated.";
     private static final String SUPP_DATA_SAVED = "Supplemental Data Elements have been saved.";
     private static final String RISK_ADJ_SAVED = "Risk Adjustment Variables have been saved.";
-    private static final String TEMP_EMAIL_SENT = " Temporary Password E-mail has been sent.";
+    private static final String TEMP_EMAIL_SENT = " Account re-activated E-mail has been sent.";
     private static final String VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED = "Value set version or effective date has been selected." + " Please enter a date to continue.";
     private static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in the case of more than one Initial Population, " + " Numerator and Denominator must contain one association.";
     private static final String RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED = "For Ratio Measures, each Measure Observation requires an association be made to the Numerator or the Denominator.";
@@ -118,6 +119,7 @@ public class MessageDelegate {
     private static final String PACKAGE_SUCCESS = "Measure packaged successfully. Please access the Measure Library to export the measure.";
     private static final String PACKAGE_SUCCESS_VSAC_OID_MISSING = "Measure packaged successfully. One or more OIDs could not be updated from VSAC.";
     private static final String PASSWORD_MISMATCH = "Your new password and confirm password do not match.";
+    private static final String INVALID_USER = "Login Failed : Try Again";
     private static final String IS_NOT_CURRENT_PASSWORD = "New password cannot be the same as the previous 6 passwords.";
     private static final String IS_NOT_PREVIOUS_PASSWORD = "Previous 6 passwords cannot be reused. Try again.";
     private static final String CHANGE_OLD_PASSWORD = "Password needs to be at least one day old before you can change it. Try again.";
@@ -187,6 +189,11 @@ public class MessageDelegate {
     private static final String ERROR_INVALID_DATE_TIME = "Please Enter a valid Date/Time.";
     private static final String WARNING_DELETION_CQL_LIBRARY = "Deleting a draft of a library will permanently remove the designated " + "library draft from the Measure Authoring Tool. Deleted libraries cannot be recovered.";
     private static final String CQL_LIBRARY_DELETION_SUCCESS_MSG = "CQL Library successfully deleted.";
+    private static final String UNABLE_TO_VERIFY_HARP_USER = "Unable to verify user, Please contact the MAT Help Desk or try again.";
+
+    public static String getUnableToVerifyHarpUser() {
+        return UNABLE_TO_VERIFY_HARP_USER;
+    }
 
     public String getONLY_ONE_CHILD_REQUIRED() {
         return ONLY_ONE_CHILD_REQUIRED;
@@ -402,6 +409,10 @@ public class MessageDelegate {
 
     public String getPasswordMismatchMessage() {
         return PASSWORD_MISMATCH;
+    }
+
+    public static String getInvalidUser() {
+        return INVALID_USER;
     }
 
     public String getPasswordRequiredErrorMessage() {
@@ -971,4 +982,7 @@ public class MessageDelegate {
         return "Only one draft per Library family should be allowed.";
     }
 
+    public String getHarpIdRequiredMessage() {
+        return HARP_ID_IS_REQUIRED;
+    }
 }

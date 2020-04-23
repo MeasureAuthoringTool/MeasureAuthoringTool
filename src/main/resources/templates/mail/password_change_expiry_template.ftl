@@ -2,7 +2,8 @@ Dear ${(content.User)!}${(content.rolename)!},
  
 Your Measure Authoring Tool password is set to expire in 5 days. To reset your password, please access the MAT Account tab within the MAT tool. If the password is not reset by ${content.passwordExpiryDate}, you will be prevented from signing in to your MAT Account and will be required to contact the Measure Authoring Tool support desk at ${(supportEmailAddress)!} to request a new password.
 
-User ID: ${(content.loginId)!}
+HARP ID: ${(content.harpId)!}
+Email: ${(content.userEmail)!}
 MAT Environment: ${(content.url)!}
 
 Sincerely, 

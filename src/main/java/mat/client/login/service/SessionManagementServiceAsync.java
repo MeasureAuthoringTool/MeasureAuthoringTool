@@ -10,13 +10,13 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface SessionManagementServiceAsync {
 
 	/**
-	 * Gets the current user role.
+	 * Gets info about the current user.
 	 * 
 	 * @param callback
 	 *            the callback
 	 * @return the current user role
 	 */
-	void getCurrentUserRole(AsyncCallback<SessionManagementService.Result> callback);
+	void getCurrentUser(AsyncCallback<SessionManagementService.Result> callback);
 	
 	/**
 	 * Renew session.

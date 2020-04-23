@@ -57,7 +57,7 @@ public class OnetimeUserNotificationTask {
      */
     private void sendUserNewTempPasswordEmail(List<User> users) {
         for (User user : users) {
-            userService.requestResetLockedPassword(user.getId());
+            userService.activate(user.getId());
         }
     }
 

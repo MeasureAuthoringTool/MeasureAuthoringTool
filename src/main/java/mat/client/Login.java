@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 import mat.client.event.BackToLoginPageEvent;
@@ -33,7 +32,6 @@ import mat.client.login.TempPwdView;
 import mat.client.shared.MatContext;
 import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
-
 
 public class Login extends MainLayout implements EntryPoint {
 
@@ -177,7 +175,6 @@ public class Login extends MainLayout implements EntryPoint {
             public void onUncaughtException(Throwable caught) {
                 logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
                 hideLoadingMessage();
-                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                 MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
             }
         });

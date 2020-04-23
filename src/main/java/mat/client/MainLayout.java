@@ -2,6 +2,9 @@ package mat.client;
 
 import java.util.List;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.Hidden;
 import org.gwtbootstrap3.client.ui.AnchorButton;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
@@ -56,6 +59,7 @@ public abstract class MainLayout {
     private HorizontalPanel linksPanel = new HorizontalPanel();
     private AnchorListItem profile = new AnchorListItem("MAT Account");
     private AnchorListItem signOut = new AnchorListItem("Sign Out");
+    private FormPanel logoutForm = new FormPanel("logout");
 
     /**
      * hide spinner and
@@ -106,14 +110,13 @@ public abstract class MainLayout {
     }
 
     public static void showLoadingMessage(String title) {
-        showProgressSpinner(title);
         MatContext.get().getLoadingQueue().add("node");
+        showProgressSpinner(title);
     }
 
 
     public static void showSignOutMessage() {
         showLoadingMessage(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
-        showProgressSpinner(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
     }
 
     private static void showProgressSpinner(String title) {
@@ -196,11 +199,13 @@ public abstract class MainLayout {
     }
 
     public void buildLinksPanel() {
-        showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
-        showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
+        if(!Mat.harpUserVerificationInProgress) {
+            showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
+            showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
 
-        linksPanel.add(showUMLSState.getPanel());
-        linksPanel.add(showBonnieState.getPanel());
+            linksPanel.add(showUMLSState.getPanel());
+            linksPanel.add(showBonnieState.getPanel());
+        }
         linksPanel.add(buildProfileMenu());
         linksPanel.setStyleName("navLinksBanner", true);
     }
@@ -251,9 +256,10 @@ public abstract class MainLayout {
     }
 
     private void setAccessibilityForLinks() {
-        profile.setStyleName(Styles.DROPDOWN);
-        profile.getWidget(0).setTitle("MAT Account");
-
+        if(!Mat.harpUserVerificationInProgress) {
+            profile.setStyleName(Styles.DROPDOWN);
+            profile.getWidget(0).setTitle("MAT Account");
+        }
         signOut.setStyleName(Styles.DROPDOWN);
         signOut.getWidget(0).setTitle("Sign Out");
     }
@@ -266,7 +272,9 @@ public abstract class MainLayout {
         ddm.add(buildSignedInAs());
         ddm.add(signedInAsName);
         ddm.add(buildDivider());
-        ddm.add(profile);
+        if(!Mat.harpUserVerificationInProgress) {
+            ddm.add(profile);
+        }
         ddm.add(signOut);
         ddm.setStyleName(Styles.DROPDOWN_MENU);
         ddm.addStyleDependentName(Styles.RIGHT);
@@ -289,6 +297,44 @@ public abstract class MainLayout {
 
         collapse.add(nav);
         return collapse;
+    }
+
+    /**
+     * Call Okta logout operation to log a user out by removing their Okta browser session.
+     * Note: When making requests to the /logout endpoint, the browser (user agent)
+     * should be redirected to the endpoint. You can't use AJAX with this endpoint.
+     *
+     * This operation performs a redirect to the post_logout_redirect_uri.
+     * @param harpUrl
+     */
+    protected void harpLogout(String harpUrl) {
+        logoutForm.setMethod(FormPanel.METHOD_GET);
+
+        VerticalPanel panel = new VerticalPanel();
+        logoutForm.setWidget(panel);
+
+        Hidden token = new Hidden();
+        token.setName("id_token_hint");
+        token.setValue(MatContext.get().getIdToken());
+
+        Hidden redirect = new Hidden();
+        redirect.setName("post_logout_redirect_uri");
+        String path = Window.Location.getPath();
+        String redirectUrl = Window.Location.createUrlBuilder()
+                .setPath(path.substring(0, path.lastIndexOf('/')) + ClientConstants.HTML_LOGIN)
+                .buildString();
+        if(redirectUrl.contains("#")) {
+            redirectUrl = redirectUrl.substring(0, redirectUrl.lastIndexOf('#'));
+        }
+        redirect.setValue(redirectUrl);
+
+        panel.add(token);
+        panel.add(redirect);
+
+        RootPanel.get().add(logoutForm);
+
+        logoutForm.setAction(harpUrl + "/logout");
+        logoutForm.submit();
     }
 
     public void setHeader(String version, NavbarLink link) {
@@ -333,10 +379,6 @@ public abstract class MainLayout {
 
     protected FocusPanel getContentPanel() {
         return content;
-    }
-
-    protected Widget getNavigationList() {
-        return null;
     }
 
     protected abstract void initEntryPoint();

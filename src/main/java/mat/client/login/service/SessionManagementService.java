@@ -44,7 +44,7 @@ public interface SessionManagementService extends RemoteService{
 		public UserPreferenceDTO userPreference;
 	}
 	
-	public SessionManagementService.Result getCurrentUserRole();
+	public SessionManagementService.Result getCurrentUser();
 	
 	public void renewSession();
 

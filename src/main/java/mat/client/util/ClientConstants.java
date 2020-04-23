@@ -17,7 +17,9 @@ public class ClientConstants {
 
     public static final String EXT_LINK_UMLS = "https://utslogin.nlm.nih.gov/cas/login";
 
-    public static final String HTML_LOGIN = "/Login.html";
+    public static final String HTML_LOGIN = "/HarpLogin.html";
+
+    public static final String HTML_HARP_SUPPORT = "/HarpSupport.html";
 
     public static final String HTML_MAT = "/Mat.html";
 

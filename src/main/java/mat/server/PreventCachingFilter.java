@@ -50,7 +50,7 @@ public class PreventCachingFilter implements Filter{
 			}
 			httpResponse.setHeader("Location", url);
 		}
-		else if(requestURI.indexOf("/Mat.html") >= 0 || requestURI.indexOf("/Bonnie.html") >= 0) {
+		else if(requestURI.contains("/Mat.html") || requestURI.contains("/Bonnie.html")) {
 			logger.info("PreventCachingFilter");
 			
 			//
@@ -87,7 +87,6 @@ public class PreventCachingFilter implements Filter{
 		else {
 			chain.doFilter(request, response);
 		}
-//		chain.doFilter(request, response);
 	}
 	
 	/* (non-Javadoc)

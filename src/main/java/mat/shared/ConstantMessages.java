@@ -119,11 +119,17 @@ public class ConstantMessages {
 
     public static final String LOGIN_MODULE = "LOGIN";
 
+    public static final String HARP_SUPPORT_MODULE = "HARP SUPPORT";
+
     public static final String PASSWORD = "password";
 
     public static final String PASSWORD_EXPIRE_DATE = "passwordExpireDate";
 
     public static final String LOGINID = "loginId";
+
+    public static final String HARPID = "harpId";
+
+    public static final String USER_EMAIL = "userEmail";
 
     public static final String URL = "url";
 
@@ -186,4 +192,8 @@ public class ConstantMessages {
     public static final String DEAD_CODE_SYSTEM_OID = "2.16.840.1.113883.6.96";
 
     public static final String SUPPORT_EMAIL = "supportEmailAddress";
+
+    private ConstantMessages() {
+        // Utility class
+    }
 }

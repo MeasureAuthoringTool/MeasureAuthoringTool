@@ -54,9 +54,12 @@ public class CheckUserChangePasswordLimitTest extends MatAppContextTest {
 
     @Test
     public void testWarningEmailPastDayLimit() {
-        String userId = "Password Expiration Warning Email User";
+        String harpId = "Password Expiration HARP ID";
+        String email = "Password Expiration EMAIL";
+
         User testUser = buildNormalUser();
-        testUser.setLoginId(userId);
+        testUser.setHarpId(harpId);
+        testUser.setEmailAddress(email);
         testUser.getPassword().setCreatedDate(DateUtils.addDays(new Date(), passwordWarningDayLimit));
 
         when(userDAO.find()).thenReturn(List.of(testUser));
@@ -65,15 +68,19 @@ public class CheckUserChangePasswordLimitTest extends MatAppContextTest {
         assertFalse(testUser.getPassword().isTemporaryPassword(), "Valid password was marked as temp.");
         assertNotNull(simpleMailMessage.getText());
         assertTrue(simpleMailMessage.getText().contains("It is time to change your Measure Authoring Tool password."));
-        assertTrue(simpleMailMessage.getText().contains(userId));
+        assertTrue(simpleMailMessage.getText().contains(harpId));
+        assertTrue(simpleMailMessage.getText().contains(email));
         verify(emailAuditLogDAO, times(1)).save(any());
     }
 
     @Test
     public void testExpirationEmailPastDayLimit() {
-        String userId = "Password Expiration Email User";
+        String harpId = "Password Expiration HARP ID";
+        String email = "Password Expiration EMAIL";
+
         User testUser = buildNormalUser();
-        testUser.setLoginId(userId);
+        testUser.setHarpId(harpId);
+        testUser.setEmailAddress(email);
         testUser.getPassword().setCreatedDate(DateUtils.addDays(new Date(), passwordExpiryDayLimit));
         Date prevCreateDate = testUser.getPassword().getCreatedDate();
 
@@ -84,7 +91,8 @@ public class CheckUserChangePasswordLimitTest extends MatAppContextTest {
         assertTrue(testUser.getPassword().getCreatedDate().after(prevCreateDate));
         assertNotNull(simpleMailMessage.getText());
         assertTrue(simpleMailMessage.getText().contains("Your Measure Authoring Tool password is set to expire in 5 days."));
-        assertTrue(simpleMailMessage.getText().contains(userId));
+        assertTrue(simpleMailMessage.getText().contains(harpId));
+        assertTrue(simpleMailMessage.getText().contains(email));
         verify(emailAuditLogDAO, times(1)).save(any());
     }
 

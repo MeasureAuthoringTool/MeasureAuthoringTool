@@ -118,6 +118,7 @@ public class MessageDelegate {
     private static final String PACKAGE_SUCCESS = "Measure packaged successfully. Please access the Measure Library to export the measure.";
     private static final String PACKAGE_SUCCESS_VSAC_OID_MISSING = "Measure packaged successfully. One or more OIDs could not be updated from VSAC.";
     private static final String PASSWORD_MISMATCH = "Your new password and confirm password do not match.";
+    private static final String INVALID_USER = "Login Failed : Try Again";
     private static final String IS_NOT_CURRENT_PASSWORD = "New password cannot be the same as the previous 6 passwords.";
     private static final String IS_NOT_PREVIOUS_PASSWORD = "Previous 6 passwords cannot be reused. Try again.";
     private static final String CHANGE_OLD_PASSWORD = "Password needs to be at least one day old before you can change it. Try again.";
@@ -187,6 +188,11 @@ public class MessageDelegate {
     private static final String ERROR_INVALID_DATE_TIME = "Please Enter a valid Date/Time.";
     private static final String WARNING_DELETION_CQL_LIBRARY = "Deleting a draft of a library will permanently remove the designated " + "library draft from the Measure Authoring Tool. Deleted libraries cannot be recovered.";
     private static final String CQL_LIBRARY_DELETION_SUCCESS_MSG = "CQL Library successfully deleted.";
+    private static final String UNABLE_TO_VERIFY_HARP_USER = "Unable to verify user, Please contact the MAT Help Desk or try again.";
+
+    public static String getUnableToVerifyHarpUser() {
+        return UNABLE_TO_VERIFY_HARP_USER;
+    }
 
     public String getONLY_ONE_CHILD_REQUIRED() {
         return ONLY_ONE_CHILD_REQUIRED;
@@ -402,6 +408,10 @@ public class MessageDelegate {
 
     public String getPasswordMismatchMessage() {
         return PASSWORD_MISMATCH;
+    }
+
+    public static String getInvalidUser() {
+        return INVALID_USER;
     }
 
     public String getPasswordRequiredErrorMessage() {

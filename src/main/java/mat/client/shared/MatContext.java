@@ -240,6 +240,8 @@ public class MatContext implements IsSerializable {
 
     private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
+    Map<String, String> harpUserInfo = new HashMap<>();
+
     public void clearDVIMessages() {
         if (qdsView != null) {
             qdsView.getSuccessMessageDisplay().clear();
@@ -1579,4 +1581,11 @@ public class MatContext implements IsSerializable {
         this.expressionToReturnTypeMap = expressionToReturnTypeMap;
     }
 
+    public Map<String, String> getHarpUserInfo() {
+        return harpUserInfo;
+    }
+
+    public void setHarpUserInfo(Map<String, String> harpUserInfo) {
+        this.harpUserInfo = harpUserInfo;
+    }
 }

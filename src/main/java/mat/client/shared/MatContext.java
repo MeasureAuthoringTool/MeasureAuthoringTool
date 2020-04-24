@@ -462,8 +462,8 @@ public class MatContext implements IsSerializable {
         getLoginService().isValidUser(username, Password, oneTimePassword, callback);
     }
 
-    public void initSession(String harpId, String accessToken, AsyncCallback<LoginModel> callback) {
-        getLoginService().initSession(harpId, accessToken, callback);
+    public void initSession(Map<String, String> harpUserInfo, AsyncCallback<LoginModel> callback) {
+        getLoginService().initSession(harpUserInfo, callback);
     }
 
     public void getListBoxData(AsyncCallback<CodeListService.ListBoxData> listBoxCallback) {

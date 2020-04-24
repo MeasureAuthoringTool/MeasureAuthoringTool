@@ -2,7 +2,10 @@ package mat.server.service;
 
 import mat.client.login.LoginModel;
 
+import mat.client.shared.MatException;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Map;
 
 /**
  * The Interface LoginCredentialService.
@@ -69,10 +72,10 @@ public interface LoginCredentialService {
 	 * Retrieves MAT user details for provided HARP ID and stores
 	 * session ID that was generated client side.
 	 *
-	 * @param harpId User's HARP ID
+	 * @param harpUserInfo User's HARP ID
 	 * @param sessionId Session ID generated at login
-	 * @param accessToken HARP OAuth2 Access Token
+
 	 * @return
 	 */
-	LoginModel initSession(String harpId, String sessionId, String accessToken);
+	LoginModel initSession(Map<String, String> harpUserInfo, String sessionId);
 }

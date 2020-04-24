@@ -3,6 +3,7 @@ package mat.client.login.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mat.client.login.LoginModel;
 import mat.client.shared.MatException;
@@ -177,14 +178,6 @@ public interface LoginService extends RemoteService {
 	public boolean isLockedUser(String loginId);
 
 	/**
-	 * Checks if the HARP user is locked out of the MAT.
-	 *
-	 * @param harpId the user's harp id
-	 * @return true, if is locked user
-	 */
-	public boolean isHarpUserLocked(String harpId);
-	
-	/**
 	 * Gets the security questions.
 	 * 
 	 * @return the security questions
@@ -205,9 +198,16 @@ public interface LoginService extends RemoteService {
 	/**
 	 * Retrieves MAT user details for provided HARP ID.
 	 *
-	 * @param harpId User's email
-	 * @param accessToken HARP Access Token.
+	 * @param harpUserInfo User's info
 	 * @return
 	 */
-	LoginModel initSession(String harpId, String accessToken) throws MatException;
+
+	LoginModel initSession(Map<String, String> harpUserInfo) throws MatException;
+
+    Boolean checkForAssociatedHarpId(String harpPrimaryEmailId);
+
+
+    Map<String, String> getUserVerificationInfo(String userId, String password) throws MatException;
+
+    boolean verifyHarpUser(String securityQuestion, String securityAnswer, String userId);
 }

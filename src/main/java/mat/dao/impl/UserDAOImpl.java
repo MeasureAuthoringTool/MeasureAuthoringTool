@@ -241,12 +241,12 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	 * @see mat.dao.UserDAO#getUser(java.lang.String)
 	 */
 	@Override
-	public UserDetails getUserDetailsByEmail(String email) {
+	public UserDetails getUserDetailsByHarpId(String harpId) {
 		Session session = getSessionFactory().getCurrentSession();
 		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
 		CriteriaQuery<MatUserDetails> criteriaQuery = criteriaBuilder.createQuery(MatUserDetails.class);
 		Root<MatUserDetails> userRoot = criteriaQuery.from(MatUserDetails.class);
-		criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("emailAddress"), email));
+		criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("harpId"), harpId));
 		return session.createQuery(criteriaQuery).uniqueResult();
 	}
 	
@@ -435,8 +435,19 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 		
 		return session.createQuery(query).getResultList();
 	}
-	
-	private Predicate getPredicateForUsersToShareMeasure(String userName, CriteriaBuilder cb, Root<User> root) {
+
+    @Override
+    public boolean findAssociatedHarpId(String harpPrimaryEmailId) {
+        Session session = getSessionFactory().getCurrentSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> userRoot = criteriaQuery.from(User.class);
+
+        criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("emailAddress"), harpPrimaryEmailId));
+        return StringUtils.isNotBlank(session.createQuery(criteriaQuery).getSingleResult().getHarpId());
+    }
+
+    private Predicate getPredicateForUsersToShareMeasure(String userName, CriteriaBuilder cb, Root<User> root) {
 		final Predicate p1 = cb.and(cb.equal(root.get("securityRole").get("id"), SECURITY_ROLE_USER),  
 							  cb.equal(root.get("status").get("statusId"), STATUS_ACTIVE), 
 							  cb.notEqual(root.get("id"), LoggedInUserUtil.getLoggedInUser()));
@@ -449,5 +460,16 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 
 		return (p2 != null) ? cb.and(p1, p2) : p1;   
 	}
-	
+
+    @Override
+    public String getLoginIdByEmailId(String harpPrimaryEmailId) {
+        Session session = getSessionFactory().getCurrentSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> userRoot = criteriaQuery.from(User.class);
+
+        criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("emailAddress"), harpPrimaryEmailId));
+        return session.createQuery(criteriaQuery).getSingleResult().getLoginId();
+    }
+
 }

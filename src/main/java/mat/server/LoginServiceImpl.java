@@ -2,6 +2,7 @@ package mat.server;
 
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.server.rpc.SerializationPolicy;
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
@@ -23,13 +24,17 @@ import mat.server.util.UMLSSessionTicket;
 import mat.shared.ConstantMessages;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
+import mat.shared.HarpConstants;
+import mat.shared.HashUtility;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.stringtemplate.v4.ST;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -41,6 +46,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -110,16 +117,48 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	}
 
 	@Override
-	public LoginModel initSession(String harpId, String accessToken) throws MatException {
-		logger.info("getUserDetailsByHarpId::harpId::" + harpId);
+	public LoginModel initSession(Map<String, String> harpUserInfo) throws MatException {
+		logger.info("getUserDetailsByHarpId::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
 		HttpSession session = getThreadLocalRequest().getSession();
-		if (userService.isHarpUserLocked(harpId)) {
+		if (userService.isHarpUserLocked(harpUserInfo.get(HarpConstants.HARP_ID))) {
 			throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
 		}
-		return loginCredentialService.initSession(harpId, session.getId(), accessToken);
+		return loginCredentialService.initSession(harpUserInfo, session.getId());
 	}
-	
-	/* (non-Javadoc)
+
+    @Override
+    public Boolean checkForAssociatedHarpId(String harpPrimaryEmailId) {
+        return userDAO.findAssociatedHarpId(harpPrimaryEmailId);
+    }
+
+    @Override
+    public Map<String, String> getUserVerificationInfo(String userId, String password) throws MatException {
+	    Map<String, String> userVerificationInfo = new HashMap<>();
+
+        if(isValidPassword(userId, password)) {
+            userVerificationInfo.put("matLoginId", userId);
+            userVerificationInfo.put("securityQuestion", userDAO.getRandomSecurityQuestion(userId));
+        } else {
+            throw new MatException("INVALID_USER");
+        }
+
+        return userVerificationInfo;
+    }
+
+    @Override
+    public boolean verifyHarpUser(String securityQuestion, String securityAnswer, String userId) {
+	    User user = userDAO.findByLoginId(userId);
+        if (StringUtils.isNotBlank(securityAnswer)) {
+            for (UserSecurityQuestion q : user.getUserSecurityQuestions()) {
+                if (q.getSecurityQuestions().getQuestion().equalsIgnoreCase(securityQuestion)) {
+                    return HashUtility.getSecurityQuestionHash(q.getSalt(), securityAnswer).equalsIgnoreCase(q.getSecurityAnswer());
+                }
+            }
+        }
+        return false;
+    }
+
+    /* (non-Javadoc)
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -437,12 +476,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	public boolean isLockedUser(String loginId) {
 		return userService.isLockedUser(loginId);
 	}
-
-	@Override
-	public boolean isHarpUserLocked(String harpId) {
-		return userService.isHarpUserLocked(harpId);
-	}
-
+	
 	/* 
 	 * {@inheritDoc}
 	 */

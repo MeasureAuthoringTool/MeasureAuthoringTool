@@ -57,12 +57,17 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	private Timestamp activationDate;
     
     private String loginId;
-    
+
     private String userLastName;
-    
+
+
     private String sessionId;
-    
+
+    private String harpId;
+
     private UserPreference userPreference;
+
+
     
     public MatUserDetails() {
     	
@@ -127,9 +132,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 		this.status = status;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+
 
 	/* (non-Javadoc)
 	 * @see org.springframework.security.core.userdetails.UserDetails#getAuthorities()
@@ -149,6 +152,10 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	public String getUsername() {
 		return username;
 	}
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.security.core.userdetails.UserDetails#isAccountNonExpired()
@@ -248,7 +255,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	public String getLoginId() {
 		return loginId;
 	}
-	
+
 	@Column(name = "LAST_NAME", nullable = false, length = 100)
 	public String getUserLastName() {
 		return userLastName;
@@ -266,6 +273,15 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	public void setUserPreference(UserPreference userPreference) {
 		this.userPreference = userPreference;
 	}
+
+    @Column(name = "HARP_ID", unique = true, length = 45)
+    public String getHarpId() {
+        return harpId;
+    }
+
+    public void setHarpId(String harpId) {
+        this.harpId = harpId;
+    }
 }
 
 

@@ -95,6 +95,7 @@ public class Login extends MainLayout implements EntryPoint {
 
             @Override
             public void onForgottenPassword(final ForgottenPasswordEvent event) {
+                Window.alert("Forgot Password handler for login.java ");
                 content.clear();
                 forgottenPwdPresenter.go(content);
             }

@@ -31,7 +31,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 * @param email User's email.
 	 * @return UserDetails for setting login values.
 	 */
-    UserDetails getUserDetailsByEmail(String email);
+    UserDetails getUserDetailsByHarpId(String harpId);
 
     /**
 	 * User exists.
@@ -157,5 +157,8 @@ public interface UserDAO extends IDAO<User, String> {
 	public List<User> getAllUsers();
 	
 	List<User> getUsersListForSharingMeasureOrLibrary(String userName);
-	
+
+    boolean findAssociatedHarpId(String harpPrimaryEmailId);
+
+    String getLoginIdByEmailId(String harpPrimaryEmailId);
 }

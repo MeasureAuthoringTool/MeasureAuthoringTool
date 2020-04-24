@@ -236,8 +236,8 @@ public interface LoginServiceAsync extends AsynchronousService{
     void checkForAssociatedHarpId(String harpPrimaryEmailId, AsyncCallback<Boolean> async);
 
 
-    void getUserVerificationInfo(String userId, String password, AsyncCallback<Map<String, String>> mapAsyncCallback);
+    void getSecurityQuestionToVerifyHarpUser(String loginId, String password, AsyncCallback<String> mapAsyncCallback);
 
-    void verifyHarpUser(String securityQuestion, String securityAnswer, String userId, AsyncCallback<Boolean> booleanAsyncCallback);
+    void verifyHarpUser(String securityQuestion, String securityAnswer, String loginId, Map<String, String> harpUserInfo, AsyncCallback<Boolean> booleanAsyncCallback);
 
 }

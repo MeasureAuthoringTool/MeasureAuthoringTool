@@ -250,7 +250,7 @@ public interface UserService {
 	 * @param harpId User's HARP ID.
 	 * @return true, if the user was locked (likely due to inactivity).
 	 */
-	public boolean isHarpUserLocked(String harpId);
+	boolean isHarpUserLocked(String harpId);
 
 	/**
 	 * Search for non terminated users.

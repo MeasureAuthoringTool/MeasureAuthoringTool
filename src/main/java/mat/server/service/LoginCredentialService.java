@@ -66,7 +66,7 @@ public interface LoginCredentialService {
 	 *            the password
 	 * @return true, if is valid password
 	 */
-	boolean isValidPassword(String userId, String password);
+	boolean isValidPassword(String loginId, String password);
 
 	/**
 	 * Retrieves MAT user details for provided HARP ID and stores
@@ -78,4 +78,8 @@ public interface LoginCredentialService {
 	 * @return
 	 */
 	LoginModel initSession(Map<String, String> harpUserInfo, String sessionId);
+
+	void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId, String sessionId) throws MatException;
+
+
 }

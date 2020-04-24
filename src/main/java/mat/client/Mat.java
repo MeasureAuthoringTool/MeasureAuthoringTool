@@ -100,6 +100,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
     public static final String OKTA_TOKEN_STORAGE = "okta-token-storage";
 
+    Map<String, String> harpUserInfo = new HashMap<>();
+
     private static final Logger log = Logger.getLogger(Mat.class.getSimpleName());
 
     class EnterKeyDownHandler implements KeyDownHandler {
@@ -328,8 +330,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         Storage localStorage = Storage.getLocalStorageIfSupported();
 
         if(localStorage != null && localStorage.getItem(OKTA_TOKEN_STORAGE) != null) {
-            Map<String, String> harpUserInfo = new HashMap<>();
-            Map<String, String> harpUserVerificationInfo = new HashMap<>();
+
             JSONValue tokens = JSONParser.parseStrict(localStorage.getItem(OKTA_TOKEN_STORAGE));
 
             String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().stringValue();
@@ -350,37 +351,38 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
                 @Override
                 public void onFailure(Throwable caught) {
-
+                    log.log(Level.INFO, "Error in checkForAssociatedHarpId. Error message: " + caught.getMessage(), caught);
+                    logout();
+                    //Todo any error message?
                 }
 
                 @Override
                 public void onSuccess(Boolean result) {
                     if(result) {
                         //Update the User name from HARP and proceed to MAT home page.
-
                         MatContext.get().initSession(harpUserInfo, harpUserSessionSetupCallback);
-
                     } else {
-                        MatContext.get().getEventBus().fireEvent(new ForgottenPasswordEvent());
                         //Display panel to fetch userId and password
-                        MatContext.get().getLoginService().getUserVerificationInfo("ChHemswo1802", "m25Qf?bwNpCRcwu", new AsyncCallback<Map<String, String>>() {
+                        MatContext.get().getLoginService().getSecurityQuestionToVerifyHarpUser("ChHemswo1802", "m25Qf?bwNpCRcwu", new AsyncCallback<String>() {
 
                             @Override
                             public void onFailure(Throwable caught) {
-                                //definietly a null
+                                log.log(Level.INFO, "Error in getSecurityQuestionToVerifyHarpUser. Error message: " + caught.getMessage(), caught);
+                                logout();
+                                //Todo any error message?
                             }
 
                             @Override
-                            public void onSuccess(Map<String, String> result) {
-                                //Display form and fetch security Answer
-                                Window.alert(result.get("matLoginId"));
-                                //Check Mat if is correct if not display error message
-                                Window.alert(result.get("securityQuestion"));
-                                MatContext.get().getLoginService().verifyHarpUser("What is the name of your favorite childhood friend?", "Some random Answer", "ChHemswo1802", new AsyncCallback<Boolean>(){
+                            public void onSuccess(String result) {
+                                //Todo Display form and fetch security Answer
+
+                                MatContext.get().getLoginService().verifyHarpUser("What is the name of your favorite childhood friend?", "rohit", "ChHemswo1802", harpUserInfo, new AsyncCallback<Boolean>() {
 
                                     @Override
                                     public void onFailure(Throwable caught) {
-
+                                        log.log(Level.INFO, "Error in verifyHarpUser. Error message: " + caught.getMessage(), caught);
+                                        logout();
+                                        //Todo any error message?
                                     }
 
                                     @Override
@@ -389,6 +391,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                                             initPage();
                                             Window.alert("Security check completed, Update the Harp_Id in Mat and call intipage()");
                                         } else {
+                                            //Todo redirect to helpDesk
                                             Window.alert("Unable to verify user proceed to HelpDesk");
                                         }
 
@@ -396,8 +399,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                                 });
                             }
                         });
-
-                        //verify in client side if user response matches answer.
                     }
                 }
             });

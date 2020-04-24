@@ -204,10 +204,10 @@ public interface LoginService extends RemoteService {
 
 	LoginModel initSession(Map<String, String> harpUserInfo) throws MatException;
 
-    Boolean checkForAssociatedHarpId(String harpPrimaryEmailId);
+    Boolean checkForAssociatedHarpId(String harpPrimaryEmailId) throws MatException;
 
 
-    Map<String, String> getUserVerificationInfo(String userId, String password) throws MatException;
+    String getSecurityQuestionToVerifyHarpUser(String loginId, String password) throws MatException;
 
-    boolean verifyHarpUser(String securityQuestion, String securityAnswer, String userId);
+    boolean verifyHarpUser(String securityQuestion, String securityAnswer, String loginId, Map<String, String> harpUserInfo) throws MatException;
 }

@@ -462,14 +462,18 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	}
 
     @Override
-    public String getLoginIdByEmailId(String harpPrimaryEmailId) {
+    public User findByHarpId(String harpId) {
         Session session = getSessionFactory().getCurrentSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
         Root<User> userRoot = criteriaQuery.from(User.class);
-
-        criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("emailAddress"), harpPrimaryEmailId));
-        return session.createQuery(criteriaQuery).getSingleResult().getLoginId();
+        criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("harpId"), harpId));
+        List<User> results =  session.createQuery(criteriaQuery).getResultList();
+        if (results.size() > 0) {
+            return results.get(0);
+        } else {
+            return null;
+        }
     }
 
 }

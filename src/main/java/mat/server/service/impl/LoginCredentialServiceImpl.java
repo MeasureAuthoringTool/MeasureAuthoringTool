@@ -313,9 +313,9 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
      * {@inheritDoc}
      */
     @Override
-    public boolean isValidPassword(String userId, String password) {
+    public boolean isValidPassword(String loginId, String password) {
         logger.info("LoginCredentialServiceImpl: isValidPassword start :  ");
-        MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(userId);
+        MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(loginId);
         if (userDetails != null) {
             String hashPassword = userService.getPasswordHash(userDetails.getUserPassword().getSalt(), password);
             if (hashPassword.equalsIgnoreCase(userDetails.getUserPassword().getPassword())) {
@@ -333,17 +333,13 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 
     public LoginModel initSession(Map<String, String> harpUserInfo, String sessionId) {
         logger.debug("setUpUserSession::" + harpUserInfo.get(HarpConstants.HARP_ID) + "::" + sessionId);
-        MatUserDetails userDetails;
-        String fullName = harpUserInfo.get(HarpConstants.HARP_FULLNAME);
-
-        userDetails = (MatUserDetails) hibernateUserService.loadUserByHarpId(harpUserInfo.get(HarpConstants.HARP_ID));
+        MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByHarpId(harpUserInfo.get(HarpConstants.HARP_ID));
 
         if(userDetails == null) {
             throw new IllegalArgumentException("HARP_ID_NOT_FOUND");
         }
         userDetails.setSessionId(sessionId);
-        userDetails.setUsername(fullName.substring(0, fullName.indexOf(" ")));
-        userDetails.setUserLastName(fullName.substring(fullName.indexOf(" ")).trim());
+        getUpdatedUserDetails(harpUserInfo, userDetails);
 
         hibernateUserService.saveUserDetails(userDetails);
 
@@ -353,9 +349,28 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
         return loginModelSetter(new LoginModel(), userDetails);
     }
 
-    /*
-     * {@inheritDoc}
-     */
+    @Override
+    public void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId, String sessionId) throws MatException {
+        try {
+            MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(loginId);
+            userDetails.setSessionId(sessionId);
+            userDetails.setHarpId(harpUserInfo.get(HarpConstants.HARP_ID));
+            getUpdatedUserDetails(harpUserInfo, userDetails);
+
+            hibernateUserService.saveUserDetails(userDetails);
+
+            setAuthenticationToken(userDetails, harpUserInfo.get(HarpConstants.ACCESS_TOKEN));
+        } catch (Exception e) {
+            throw new MatException("Unable to save Harp User Info");
+        }
+    }
+
+    private void getUpdatedUserDetails(Map<String, String> harpUserInfo, MatUserDetails userDetails) {
+        String fullName = harpUserInfo.get(HarpConstants.HARP_FULLNAME);
+        userDetails.setUsername(fullName.substring(0, fullName.indexOf(" ")));
+        userDetails.setUserLastName(fullName.substring(fullName.indexOf(" ")).trim());
+    }
+
     @Override
     public LoginModel isValidUser(String userId, String password, String oneTimePassword, String sessionId) {
         LoginModel validateUserLoginModel = new LoginModel();

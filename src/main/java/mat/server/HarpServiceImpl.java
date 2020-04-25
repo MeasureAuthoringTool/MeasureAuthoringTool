@@ -1,10 +1,15 @@
 package mat.server;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import mat.client.login.service.HarpService;
 import mat.client.shared.MatException;
 import mat.server.util.ServerConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -28,6 +33,12 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
     }
 
     @Override
+    public boolean validateToken(String token) {
+        TokenIntrospect introspect = validate(token);
+        return introspect.isActive();
+    }
+
+    @Override
     public String getHarpUrl() {
         return ServerConstants.getHarpUrl();
     }
@@ -42,6 +53,22 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
         logger.debug("getHarpClientId::"+ServerConstants.getHarpClientId());
         return ServerConstants.getHarpClientId();
     }
+
+    private TokenIntrospect validate(String token) {
+        return getClient()
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/introspect")
+                        .queryParam("token", token)
+                        .queryParam("client_id", ServerConstants.getHarpClientId())
+                        .queryParam("token_type_hint", "id_token")
+                        .build())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .retrieve()
+                .bodyToMono(TokenIntrospect.class).block();
+    }
+
     private ClientResponse revokeToken(String token) {
         return getClient()
                 .post()
@@ -63,5 +90,16 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
             this.harpOtkaClient = WebClient.create(getHarpUrl());
         }
         return harpOtkaClient;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class TokenIntrospect {
+        private boolean isActive;
+        private String username;
+        private String name;
+        private String email;
     }
 }

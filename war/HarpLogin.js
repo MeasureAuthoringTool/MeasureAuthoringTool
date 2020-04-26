@@ -18,7 +18,7 @@
         tokenManager.add("accessToken", token);
       }
     });
-    return await tokenManager.get("idToken");
+    return await tokenManager.get("accessToken");
   }
 
   /**
@@ -43,7 +43,7 @@
    */
   function postToken(token) {
     console.dir(token);
-    document.getElementById("loginPost").value = token.idToken;
+    document.getElementById("loginPost").value = token.accessToken;
     const form = document.getElementById("loginForm");
     form.action = "Mat.html";
     form.submit();
@@ -84,10 +84,10 @@
         const tokens = await authClient.token.parseFromUrl();
 
         // Store the tokens for later
-        const idToken = await storeTokens(tokens, tokenManager);
+        const accessToken = await storeTokens(tokens, tokenManager);
 
         // Send the token to the server
-        postToken(idToken);
+        postToken(accessToken);
       } catch (err) {
         console.error(err);
         throw new Error("Error retrieving tokens from URL fragment");
@@ -104,10 +104,10 @@
           });
 
           // Store the tokens
-          const idToken = await storeTokens(tokens, tokenManager);
+          const accessToken = await storeTokens(tokens, tokenManager);
 
           // Send the token to the server
-          postToken(idToken);
+          postToken(accessToken);
         } catch (err) {
           console.error(err);
           throw new Error("Cannot retrieve tokens from active session");

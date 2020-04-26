@@ -173,6 +173,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	private void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId) throws MatException {
         logger.info("User Verified, updating user information of::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
         HttpSession session = getThreadLocalRequest().getSession();
+        if (userService.isLockedUser(loginId)) {
+            throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
+        }
         loginCredentialService.saveHarpUserInfo(harpUserInfo, loginId, session.getId());
     }
 

@@ -243,7 +243,7 @@ public interface UserService {
 	 *            the login id
 	 * @return true, if is locked user
 	 */
-	public boolean isLockedUser(String loginId);
+	boolean isLockedUser(String loginId);
 
 	/**
 	 * Checks if the user is locked out of the MAT

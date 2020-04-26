@@ -1,6 +1,7 @@
 package mat.server;
 
 import liquibase.integration.spring.SpringLiquibase;
+import mat.client.login.service.HarpService;
 import mat.dao.impl.AuditEventListener;
 import mat.dao.impl.AuditInterceptor;
 import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
@@ -31,13 +32,17 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedCredentialsNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
@@ -69,6 +74,11 @@ public class Application extends WebSecurityConfigurerAdapter {
 
     @Value("${PASSWORDKEY:}")
     private String passwordKey;
+
+    @Bean
+    public HarpService harpService() {
+        return new HarpServiceImpl();
+    }
 
     @Bean
     public DataSource dataSource(@Value("${spring.datasource.jndi-name}") String jndiDataSource) {
@@ -145,13 +155,29 @@ public class Application extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //FIXME MAT-864: Update Security Configuration
+        PreAuthnHarpFilter filter = new PreAuthnHarpFilter();
+        filter.setAuthenticationManager(authentication -> {
+            if (harpService().validateToken(authentication.getPrincipal().toString())) {
+                authentication.setAuthenticated(true);
+            } else {
+                throw new PreAuthenticatedCredentialsNotFoundException("test");
+            }
+            return authentication;
+        });
+
         http.csrf().disable();
         http
+                .addFilter(filter)
                 .authorizeRequests()
-                .antMatchers("/**").permitAll();
-//                .antMatchers("/", "/Login.html", "HarpLogin.html", "/harpLogin").permitAll()
-//                .antMatchers("/Mat.html").authenticated();
+                .antMatchers("/", "/Login.html", "HarpLogin.html", "/harpLogin").permitAll()
+                .antMatchers("/Mat.html").authenticated()
+                .antMatchers("/Bonnie.html").authenticated()
+                .antMatchers("/mat/**").authenticated()
+                .and()
+                .logout()
+                .permitAll()
+                .and()
+                .sessionManagement().invalidSessionUrl("/HarpLogin.html").maximumSessions(1);
 
 /* Legacy Config
                 .loginPage("/HarpLogin.html");

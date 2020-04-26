@@ -679,7 +679,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
             @Override
             public void onSuccess(String harpUrl) {
-                harpLogout(harpUrl + "/logout");
+                harpLogout(harpUrl);
                 MatContext.get().getSynchronizationDelegate().setLogOffFlag();
                 MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
                 removeOktaTokens();

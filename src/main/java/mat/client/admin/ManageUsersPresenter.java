@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mat.client.event.LogoffEvent;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -890,44 +891,10 @@ public class ManageUsersPresenter implements MatPresenter {
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 				showSearchingBusy(false);
 				if (caught instanceof InCorrectUserRoleException) {
-					callSignOut();
+					MatContext.get().getEventBus().fireEvent(new LogoffEvent());
 				}
 			}
 		});
-	}
-
-	/**
-	 * Call sign out.
-	 */
-	private void callSignOut() {
-		MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
-			@Override
-			public void onFailure(Throwable arg0) {
-				redirectToLogin();
-			}
-
-			@Override
-			public void onSuccess(Void arg0) {
-				redirectToLogin();
-			}
-		});
-	}
-
-	/**
-	 * Redirect to login.
-	 */
-	private void redirectToLogin() {
-		/*
-		 * Added a timer to have a delay before redirect since this was causing
-		 * the firefox javascript exception.
-		 */
-		final Timer timer = new Timer() {
-			@Override
-			public void run() {
-				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-			}
-		};
-		timer.schedule(1000);
 	}
 
 	/**

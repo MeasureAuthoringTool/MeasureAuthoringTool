@@ -200,7 +200,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                 //TODO MAT-842: User's MAT account is locked/revoked, replace logout with redirect to Support page.
                 logger.log(Level.INFO, "Harp UserName doesn't match existing MAT HARP_ID, redirecting to access support page");
                 MatContext.get().openURL("https://www.emeasuretool.cms.gov/contact-us");
-                logout();
+                MatContext.get().getEventBus().fireEvent(new LogoffEvent());
             } else if(throwable.getMessage().contains("HARP_ID_NOT_FOUND")) {
                 //TODO MAT-842: Harp ID not found in MAT, redirect to Access Support Page.
             }
@@ -336,7 +336,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         MatContext.get().getEventBus().addHandler(ReturnToLoginEvent.TYPE, event -> {
             content.clear();
-            logout();
+            MatContext.get().getEventBus().fireEvent(new LogoffEvent());
         });
 
         MatContext.get().getEventBus().addHandler(SuccessfulHarpLoginEvent.TYPE, event -> {
@@ -356,7 +356,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                 @Override
                 public void onFailure(Throwable throwable) {
                     //Invalid token
-                    logout();
+                    MatContext.get().getEventBus().fireEvent(new LogoffEvent());
                 }
 
                 @Override
@@ -376,7 +376,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             @Override
             public void onFailure(Throwable caught) {
                 logger.log(Level.INFO, "Error in checkForAssociatedHarpId. Error message: " + caught.getMessage(), caught);
-                logout();
+                MatContext.get().getEventBus().fireEvent(new LogoffEvent());
                 //Todo any error message?
             }
 
@@ -485,14 +485,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, event -> { });
 
-        GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
-            @Override
-            public void onUncaughtException(Throwable caught) {
-                logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
-                hideLoadingMessage();
-                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-            }
+        GWT.setUncaughtExceptionHandler(caught -> {
+            logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
+            hideLoadingMessage();
+            Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+            MatContext.get().recordTransactionEvent(null, null, null,
+                    "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
         });
     }
 

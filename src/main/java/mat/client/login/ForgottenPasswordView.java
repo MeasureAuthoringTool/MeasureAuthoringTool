@@ -45,8 +45,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	public ForgottenPasswordView() {
 		mainPanel = new VerticalPanel();
 		mainPanel.addStyleName("centered");
-		
-		
+		mainPanel.addStyleName("mainContent");
 		SimplePanel titleHolder = new SimplePanel();
 		Label titlePanel = new Label("Request New Password");
 		titleHolder.add(titlePanel);

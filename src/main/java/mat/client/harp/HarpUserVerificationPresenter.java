@@ -128,6 +128,7 @@ public class HarpUserVerificationPresenter {
     private void reset() {
         display.getLoginId().setEnabled(true);
         display.getLoginId().setValue("");
+        display.getPassword().setEnabled(true);
         display.setSecurityQuestionAnswerEnabled(false);
         display.getErrorMessageDisplay().clearAlert();
         display.getLoginId().setFocus(true);

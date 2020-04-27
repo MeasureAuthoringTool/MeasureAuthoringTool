@@ -1,7 +1,6 @@
 package mat.client;
 
 import java.util.Date;
-import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -43,11 +42,9 @@ import mat.client.event.BackToLoginPageEvent;
 import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.EditCompositeMeasureEvent;
-import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.LogoffEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.ReturnToLoginEvent;
-import mat.client.event.SuccessfulLoginEvent;
 import mat.client.event.TimedOutEvent;
 import mat.client.export.ManageExportView;
 import mat.client.harp.HarpUserVerificationEvent;
@@ -102,6 +99,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private Panel content;
 
     private HarpUserVerificationPresenter harpUserVerificationPresenter;
+
+    HarpLayout harpLayout = new HarpLayout();
 
     class EnterKeyDownHandler implements KeyDownHandler {
 
@@ -325,13 +324,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
 //        showLoadingMessage();
         content = getContentPanel();
-
-        final HarpUserVerificationView harpUserVerificationView = new HarpUserVerificationView();
-        harpUserVerificationPresenter = new HarpUserVerificationPresenter(harpUserVerificationView);
-
         MatContext.get().getEventBus().addHandler(HarpUserVerificationEvent.TYPE, event -> {
+            final HarpUserVerificationView harpUserVerificationView = new HarpUserVerificationView();
+            harpUserVerificationPresenter = new HarpUserVerificationPresenter(harpUserVerificationView);
             content.clear();
+            harpLayout.buildLinksPanel();
+            harpLayout.setSignedInName(harpUserInfo.get(HarpConstants.HARP_FULLNAME));
             harpUserVerificationPresenter.go(content);
+            harpLayout.getSignOut().addClickHandler(logOffEvent -> logout());
         });
 
         MatContext.get().getEventBus().addHandler(ReturnToLoginEvent.TYPE, event -> {

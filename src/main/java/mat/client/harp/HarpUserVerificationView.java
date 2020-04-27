@@ -13,9 +13,11 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SpacerWidget;
+import mat.shared.HarpConstants;
 import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.InputType;
@@ -39,6 +41,8 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
 
     public static boolean isUserIdSubmit = true;
 
+    HTML required = new HTML(RequiredIndicator.get());
+
     public HarpUserVerificationView() {
         mainPanel = new VerticalPanel();
         mainPanel.addStyleName("centered");
@@ -59,14 +63,28 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         bluePanel.add(instructions);
         bluePanel.add(new SpacerWidget());
 
+        HorizontalPanel hpHarpUserIdLabel = new HorizontalPanel();
+        hpHarpUserIdLabel.getElement().setId("horizontalPanel_HorizontalPanel");
+        Label harpUserIdLabel = (Label) LabelBuilder.buildLabel("HARP ID: ","HARP ID: ");
+        hpHarpUserIdLabel.add(harpUserIdLabel);
+        bluePanel.add(hpHarpUserIdLabel);
+        bluePanel.add(new SpacerWidget());
+
+        HorizontalPanel hpHarpUserId = new HorizontalPanel();
+        hpHarpUserId.getElement().setId("horizontalPanel_HorizontalPanel");
+        Label harpUserId = (Label) LabelBuilder.buildLabel(MatContext.get().getHarpUserInfo().get(HarpConstants.HARP_ID),"HARP ID: ");
+        hpHarpUserId.add(harpUserId);
+        bluePanel.add(hpHarpUserId);
+        bluePanel.add(new SpacerWidget());
+
         bluePanel.add(errorMessages);
-        HorizontalPanel horizontalPanel = new HorizontalPanel();
-        horizontalPanel.getElement().setId("horizontalPanel_HorizontalPanel");
+        HorizontalPanel hpUserId = new HorizontalPanel();
+        hpUserId.getElement().setId("horizontalPanel_HorizontalPanel");
         Label userIdLabel = (Label) LabelBuilder.buildLabel(loginId, "Mat ID");
-        horizontalPanel.add(userIdLabel);
-        HTML required = new HTML(RequiredIndicator.get());
-        horizontalPanel.add(required);
-        bluePanel.add(horizontalPanel);
+        hpUserId.add(userIdLabel);
+
+        hpUserId.add(required);
+        bluePanel.add(hpUserId);
         bluePanel.add(new SpacerWidget());
 
         loginId.setTitle("Enter Mat ID Required");
@@ -74,12 +92,23 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         loginId.setEnabled(true);
         loginId.setWidth("170px");
 
+        bluePanel.add(loginId);
+        bluePanel.add(new SpacerWidget());
+
+        HorizontalPanel hpPassword = new HorizontalPanel();
+        hpPassword.getElement().setId("horizontalPanel_HorizontalPanel");
+        Label userPasswordLabel = (Label) LabelBuilder.buildLabel(password, "Password");
+        hpPassword.add(userPasswordLabel);
+        hpPassword.add(required);
+        bluePanel.add(hpPassword);
+        bluePanel.add(new SpacerWidget());
+
         password.setTitle("Enter Mat password Required");
-        password.setText("Enter Mat password");
+        password.getElement().setPropertyString("placeholder", "Enter Password");
         password.setEnabled(true);
         password.setWidth("170px");
+        password.addStyleName("form-control");
 
-        bluePanel.add(loginId);
         bluePanel.add(password);
         bluePanel.add(new SpacerWidget());
 
@@ -151,6 +180,8 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
             Label label = (Label)LabelBuilder.buildLabel(securityQuestion, "Security Question:");
             securityQuestionAnsPanel.add(label);
             securityQuestionAnsPanel.add(securityQuestion);
+            HTML required = new HTML(RequiredIndicator.get());
+            securityQuestionAnsPanel.add(required);
             securityQuestionAnsPanel.add(new SpacerWidget());
 
             securityAnswer = new Input(InputType.PASSWORD);

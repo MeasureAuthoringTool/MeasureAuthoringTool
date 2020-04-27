@@ -54,24 +54,36 @@
    * It"s a separate function so we can easily use async/await
    * @returns {Promise<void>}
    */
-  async function handleOkta(clientId, harpBaseUrl) {
+  async function handleOkta(clientId, baseUrl, harpBaseUrl) {
     const oktaSignIn = new OktaSignIn({
-      baseUrl: harpBaseUrl,
-      clientId: clientId,
+      baseUrl,
+      clientId,
       redirectUri: window.location.origin + window.location.pathname,
       authParams: {
         pkce: true,
         display: "page",
         responseType: ["token", "id_token"]
       },
-      customButtons: [{
-        title: "Return to MAT Login",
-        className: "btn-customAuth",
-        click: function() {
-          // clicking on the button navigates to another page
-          window.location.href = "Login.html";
-        }
-      }]
+      harpBaseUrl,
+      oktaTermsConditionsEndPoint: "mft-signin/terms",
+      oktaRedirectEndPoint: "mft-signin/redirect",
+      ktaRedirectParamName: "appPageName",
+      harpSignUpAppName: "HARP Registration",
+      harpRecoveryAppName: "HARP Recovery",
+      harpSignUpEndPoint: "register/profile-info",
+      harpRecorveryEndPoint: "login/account-recovery",
+      oktaHelpEndPoint: "mft-signin/help",
+      oktaTermsConditionsContent: "I agree to the ",
+      oktaTermsConditionsLinkContent: "Terms and Conditions",
+      harpSignUpHeaderContent: "Don't have an account?",
+      harpSignUpLinkContent: "Sign Up",
+      harpRecoveryContent: "Having trouble logging in?",
+      oktaHelpContent: "MFT Help",
+      isOktaHelpContentAvailable: false,
+      allowRemeberDeviceMFA: false,
+      features: {
+        "rememberMe": false
+      },
     });
     const {authClient} = oktaSignIn;
     const {tokenManager} = authClient;
@@ -93,7 +105,7 @@
         throw new Error("Error retrieving tokens from URL fragment");
       }
     } else {
-      // It"s not an Okta redirect, but we might still have an active session
+      // It's not an Okta redirect, but we might still have an active session
       const session = await authClient.session.get();
 
       if (session.status === "ACTIVE") {
@@ -126,12 +138,11 @@
 
   // Once the DOM is loaded, call our main "handleOkta" function, and handle errors
   $(() => {
-    // let tokens = JSON.parse(window.localStorage.getItem("okta-token-storage"));
-    $.ajax({ // FIXME
+    $.ajax({
       "url": "harpLogin",
       "type": "GET"
     }).done(function(props) {
-      handleOkta(props.clientId, props.harpBaseUrl).then(() => {
+      handleOkta(props.clientId, props.baseUrl, props.harpBaseUrl).then(() => {
         console.log("success"); // FIXME
       }).catch((err) => {
         console.error("Okta Error");

@@ -1,0 +1,10 @@
+@startuml
+(*)  --> "Check codesystem cql uri"
+If "Is OID?" then
+--> [Yes] "Process as QDM with OID."
+else
+--> [No] "Use the cached google sheet to find the oid the uri maps to."
+--> "Process as QDM with OID."
+Endif
+-->(*)
+@enduml

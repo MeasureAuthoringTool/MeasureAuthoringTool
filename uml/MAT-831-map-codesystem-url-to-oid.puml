@@ -1,0 +1,10 @@
+@startuml
+(*)  --> "Check codesystem cql uri"
+If "Is OID in cached google sheet?" then
+--> [Yes] "Use the url as the uri."
+-->(*)
+else
+--> [No] "Use https://fixme.org as the uri."
+Endif
+-->(*)
+@enduml

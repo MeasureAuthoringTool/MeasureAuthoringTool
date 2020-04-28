@@ -53,12 +53,12 @@ public interface LoginServiceAsync extends AsynchronousService{
 	
 	/**
 	 * Sign out.
-	 *
+	 * 
 	 * @param callback
 	 *            the callback
 	 */
 	void signOut(AsyncCallback<Void> callback);
-
+	
 	/**
 	 * Change password security answers.
 	 * 
@@ -224,7 +224,7 @@ public interface LoginServiceAsync extends AsynchronousService{
 			AsyncCallback<Boolean> callback);
 
 	/**
-	 * Retrieves MAT user details for provided HARP ID.
+	 * initializes session with MAT user details for provided HARP ID.
 	 *
 	 * @param harpUserInfo User info
 	 * @Param callback
@@ -232,12 +232,17 @@ public interface LoginServiceAsync extends AsynchronousService{
 	 */
     void initSession(Map<String, String> harpUserInfo, AsyncCallback<LoginModel> callback);
 
-
     void checkForAssociatedHarpId(String harpPrimaryEmailId, AsyncCallback<Boolean> async);
-
 
     void getSecurityQuestionToVerifyHarpUser(String loginId, String password, AsyncCallback<String> mapAsyncCallback);
 
     void verifyHarpUser(String securityQuestion, String securityAnswer, String loginId, Map<String, String> harpUserInfo, AsyncCallback<Boolean> booleanAsyncCallback);
 
+	/**
+	 * Checks if the HARP user is locked out of the MAT.
+	 *
+	 * @param harpId the user's harp id
+	 * @return true, if is locked user
+	 */
+	void isHarpUserLocked(String harpId, AsyncCallback<Boolean> async);
 }

@@ -178,6 +178,15 @@ public interface LoginService extends RemoteService {
 	public boolean isLockedUser(String loginId);
 
 	/**
+	 * Checks if the HARP user is locked out of the MAT.
+	 *
+	 * @param harpId the user's harp id
+	 * @return true, if is locked user
+	 */
+	public boolean isHarpUserLocked(String harpId);
+
+
+	/**
 	 * Gets the security questions.
 	 * 
 	 * @return the security questions

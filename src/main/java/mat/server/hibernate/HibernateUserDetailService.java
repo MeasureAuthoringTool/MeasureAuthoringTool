@@ -32,6 +32,10 @@ public class HibernateUserDetailService implements UserDetailsService {
 	public UserDetails loadUserByHarpId(String harpId) {
 		return userDAO.getUserDetailsByHarpId(harpId);
 	}
+
+	public UserDetails loadUserByHarpId(String harpId) {
+		return userDAO.getUserDetailsByEmail(harpId);
+	}
     
    
     /**

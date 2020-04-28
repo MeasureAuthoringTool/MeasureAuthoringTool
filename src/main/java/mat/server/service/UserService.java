@@ -243,14 +243,14 @@ public interface UserService {
 	 *            the login id
 	 * @return true, if is locked user
 	 */
-	boolean isLockedUser(String loginId);
+	public boolean isLockedUser(String loginId);
 
 	/**
 	 * Checks if the user is locked out of the MAT
 	 * @param harpId User's HARP ID.
 	 * @return true, if the user was locked (likely due to inactivity).
 	 */
-	boolean isHarpUserLocked(String harpId);
+	public boolean isHarpUserLocked(String harpId);
 
 	/**
 	 * Search for non terminated users.
@@ -277,5 +277,4 @@ public interface UserService {
 	List<User> getAllUsers();
 
 	List<User> searchForUsersWithActiveBonnie(String searchTerm);
-
 }

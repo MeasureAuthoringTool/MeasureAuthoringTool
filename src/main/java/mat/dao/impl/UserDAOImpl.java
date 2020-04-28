@@ -249,7 +249,7 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 		criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("harpId"), harpId));
 		return session.createQuery(criteriaQuery).uniqueResult();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.dao.UserDAO#userExists(java.lang.String)
 	 */

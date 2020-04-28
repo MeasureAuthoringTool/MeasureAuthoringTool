@@ -485,7 +485,12 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	public boolean isLockedUser(String loginId) {
 		return userService.isLockedUser(loginId);
 	}
-	
+
+	@Override
+	public boolean isHarpUserLocked(String harpId) {
+		return userService.isHarpUserLocked(harpId);
+	}
+
 	/* 
 	 * {@inheritDoc}
 	 */

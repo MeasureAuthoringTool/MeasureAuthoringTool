@@ -7,7 +7,6 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 public class PreAuthnHarpFilter extends AbstractPreAuthenticatedProcessingFilter {
     private static final Log logger = LogFactory.getLog(PreAuthnHarpFilter.class);

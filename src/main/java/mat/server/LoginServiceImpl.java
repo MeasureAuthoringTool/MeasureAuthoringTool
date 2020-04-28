@@ -2,7 +2,6 @@ package mat.server;
 
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.server.rpc.SerializationPolicy;
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
@@ -34,7 +33,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.stringtemplate.v4.ST;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -47,7 +45,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 

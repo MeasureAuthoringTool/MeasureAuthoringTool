@@ -51,7 +51,6 @@ import mat.client.harp.HarpUserVerificationPresenter;
 import mat.client.harp.HarpUserVerificationView;
 import mat.client.harp.SuccessfulHarpLoginEvent;
 import mat.client.login.LoginModel;
-import mat.client.login.SecurityBannerModal;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.SessionManagementService.Result;
 import mat.client.measure.ComponentMeasureDisplay;
@@ -90,7 +89,7 @@ import static mat.shared.HarpConstants.OKTA_TOKEN_STORAGE;
  */
 public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserver {
 
-    Map<String, String> harpUserInfo = new HashMap<>();
+    private Map<String, String> harpUserInfo = new HashMap<>();
 
     private static final Logger logger = Logger.getLogger(Mat.class.getSimpleName());
 

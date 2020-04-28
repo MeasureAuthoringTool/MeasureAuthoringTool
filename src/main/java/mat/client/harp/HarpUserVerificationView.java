@@ -41,8 +41,6 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
 
     public static boolean isUserIdSubmit = true;
 
-    HTML required = new HTML(RequiredIndicator.get());
-
     public HarpUserVerificationView() {
         mainPanel = new VerticalPanel();
         mainPanel.addStyleName("centered");
@@ -76,14 +74,13 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         hpHarpUserId.add(harpUserId);
         bluePanel.add(hpHarpUserId);
         bluePanel.add(new SpacerWidget());
-
         bluePanel.add(errorMessages);
+
         HorizontalPanel hpUserId = new HorizontalPanel();
         hpUserId.getElement().setId("horizontalPanel_HorizontalPanel");
         Label userIdLabel = (Label) LabelBuilder.buildLabel(loginId, "Mat ID");
         hpUserId.add(userIdLabel);
-
-        hpUserId.add(required);
+        hpUserId.add(new HTML(RequiredIndicator.get()));
         bluePanel.add(hpUserId);
         bluePanel.add(new SpacerWidget());
 
@@ -99,7 +96,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         hpPassword.getElement().setId("horizontalPanel_HorizontalPanel");
         Label userPasswordLabel = (Label) LabelBuilder.buildLabel(password, "Password");
         hpPassword.add(userPasswordLabel);
-        hpPassword.add(required);
+        hpPassword.add(new HTML(RequiredIndicator.get()));
         bluePanel.add(hpPassword);
         bluePanel.add(new SpacerWidget());
 
@@ -180,8 +177,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
             Label label = (Label)LabelBuilder.buildLabel(securityQuestion, "Security Question:");
             securityQuestionAnsPanel.add(label);
             securityQuestionAnsPanel.add(securityQuestion);
-            HTML required = new HTML(RequiredIndicator.get());
-            securityQuestionAnsPanel.add(required);
+            securityQuestionAnsPanel.add(new HTML(RequiredIndicator.get()));
             securityQuestionAnsPanel.add(new SpacerWidget());
 
             securityAnswer = new Input(InputType.PASSWORD);

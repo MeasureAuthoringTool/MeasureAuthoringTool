@@ -11,4 +11,6 @@ public interface HarpServiceAsync extends AsynchronousService {
     void getHarpBaseUrl(AsyncCallback<String> async);
 
     void getHarpClientId(AsyncCallback<String> async);
+
+    void validateToken(String token, AsyncCallback<Boolean> async);
 }

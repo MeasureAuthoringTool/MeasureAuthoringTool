@@ -28,7 +28,8 @@
     <!-- End Google Analytics -->
 
 
-    <link href="https://global.oktacdn.com/okta-signin-widget/3.8.2/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
+    <link href="signInWidget/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
+    <link href="signInWidget/css/otka-theme.css" type="text/css" rel="stylesheet"/>
     <style>
         noscript {
             background-color: white;
@@ -50,15 +51,15 @@
     Your web browser must have JavaScript enabled
     in order for this application to display correctly.
 </noscript>
+    <div class="login-bg-image"></div>
+    <div id="okta-login-container"></div>
 
-<div id="okta-login-container"></div>
+    <form action="" method="post" id="loginForm">
+        <input type="hidden" id="loginPost" name="loginPost" value="">
+    </form>
 
-<form action="" method="post" id="loginForm">
-    <input type="hidden" id="loginPost" name="loginPost" value="">
-</form>
-
-<script src="https://global.oktacdn.com/okta-signin-widget/3.8.2/js/okta-sign-in.min.js" type="text/javascript"></script>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="HarpLogin.js"></script>
+    <script src="signInWidget/js/okta-sign-in.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="HarpLogin.js"></script>
 </body>
 </html>

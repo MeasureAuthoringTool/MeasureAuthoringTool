@@ -74,4 +74,12 @@ public class ServerConstants {
 		}
 		return null;
 	}
+
+	public static final String getHarpSiteUrl() {
+		String harpSiteUrl = System.getProperty("HARP_SITE_URL");
+		if(!StringUtils.isBlank(harpSiteUrl)){
+			return harpSiteUrl;
+		}
+		return null;
+	}
 }

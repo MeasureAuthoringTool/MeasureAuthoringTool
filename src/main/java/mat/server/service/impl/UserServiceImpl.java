@@ -830,8 +830,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isHarpUserLocked(String harpId) {
-        //TODO MAT-633 Replace with DAO call that uses harp id.
-        User user = userDAO.findByEmail(harpId);
+        User user = userDAO.findByHarpId(harpId);
         return user != null && (user.getStatus().getStatusId().equals("2") || user.getTerminationDate() != null );
     }
 

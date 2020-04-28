@@ -3,6 +3,7 @@ package mat.server.service.impl;
 import mat.DTO.UserPreferenceDTO;
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatException;
 import mat.dao.UserDAO;
 import mat.dao.UserSecurityQuestionDAO;
 import mat.model.SecurityQuestions;
@@ -16,6 +17,7 @@ import mat.server.service.LoginCredentialService;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
 import mat.server.twofactorauth.TwoFactorValidationService;
+import mat.shared.HarpConstants;
 import mat.shared.HashUtility;
 import mat.shared.StringUtility;
 import org.apache.commons.logging.Log;
@@ -34,6 +36,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -310,9 +313,9 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
      * {@inheritDoc}
      */
     @Override
-    public boolean isValidPassword(String userId, String password) {
+    public boolean isValidPassword(String loginId, String password) {
         logger.info("LoginCredentialServiceImpl: isValidPassword start :  ");
-        MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(userId);
+        MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(loginId);
         if (userDetails != null) {
             String hashPassword = userService.getPasswordHash(userDetails.getUserPassword().getSalt(), password);
             if (hashPassword.equalsIgnoreCase(userDetails.getUserPassword().getPassword())) {
@@ -328,26 +331,46 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
         }
     }
 
-    public LoginModel initSession(String harpId, String sessionId, String accessToken) {
-        logger.debug("setUpUserSession::" + harpId + "::" + sessionId);
-        // Set Session ID in user details.
-        MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByHarpId(harpId);
+    public LoginModel initSession(Map<String, String> harpUserInfo, String sessionId) {
+        logger.debug("setUpUserSession::" + harpUserInfo.get(HarpConstants.HARP_ID) + "::" + sessionId);
+        MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByHarpId(harpUserInfo.get(HarpConstants.HARP_ID));
+
         if(userDetails == null) {
             throw new IllegalArgumentException("HARP_ID_NOT_FOUND");
         }
         userDetails.setSessionId(sessionId);
+        getUpdatedUserDetails(harpUserInfo, userDetails);
+
         hibernateUserService.saveUserDetails(userDetails);
 
         // Set Authn Token. Used to retrieve user info.
-        setAuthenticationToken(userDetails, accessToken);
-
+        setAuthenticationToken(userDetails, harpUserInfo.get(HarpConstants.ACCESS_TOKEN));
         // Set and return user details to client.
         return loginModelSetter(new LoginModel(), userDetails);
     }
 
-    /*
-     * {@inheritDoc}
-     */
+    @Override
+    public void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId, String sessionId) throws MatException {
+        try {
+            MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(loginId);
+            userDetails.setSessionId(sessionId);
+            userDetails.setHarpId(harpUserInfo.get(HarpConstants.HARP_ID));
+            getUpdatedUserDetails(harpUserInfo, userDetails);
+
+            hibernateUserService.saveUserDetails(userDetails);
+
+            setAuthenticationToken(userDetails, harpUserInfo.get(HarpConstants.ACCESS_TOKEN));
+        } catch (Exception e) {
+            throw new MatException("Unable to save Harp User Info");
+        }
+    }
+
+    private void getUpdatedUserDetails(Map<String, String> harpUserInfo, MatUserDetails userDetails) {
+        String fullName = harpUserInfo.get(HarpConstants.HARP_FULLNAME);
+        userDetails.setUsername(fullName.substring(0, fullName.indexOf(" ")));
+        userDetails.setUserLastName(fullName.substring(fullName.indexOf(" ")).trim());
+    }
+
     @Override
     public LoginModel isValidUser(String userId, String password, String oneTimePassword, String sessionId) {
         LoginModel validateUserLoginModel = new LoginModel();

@@ -19,7 +19,8 @@ public class HarpLoginServlet extends SpringRemoteServiceServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         JSONObject response = new JSONObject();
         response.put("clientId", ServerConstants.getHarpClientId());
-        response.put("harpBaseUrl", ServerConstants.getHarpBaseUrl());
+        response.put("baseUrl", ServerConstants.getHarpBaseUrl());
+        response.put("harpBaseUrl", ServerConstants.getHarpSiteUrl());
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");

@@ -13,4 +13,6 @@ public interface HarpService extends RemoteService {
     String getHarpBaseUrl();
 
     String getHarpClientId();
+
+    boolean validateToken(String token);
 }

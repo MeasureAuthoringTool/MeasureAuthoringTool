@@ -199,11 +199,13 @@ public abstract class MainLayout {
     }
 
     public void buildLinksPanel() {
-        showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
-        showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
+        if(!Mat.harpUserVerificationInProgress) {
+            showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
+            showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
 
-        linksPanel.add(showUMLSState.getPanel());
-        linksPanel.add(showBonnieState.getPanel());
+            linksPanel.add(showUMLSState.getPanel());
+            linksPanel.add(showBonnieState.getPanel());
+        }
         linksPanel.add(buildProfileMenu());
         linksPanel.setStyleName("navLinksBanner", true);
     }
@@ -254,9 +256,10 @@ public abstract class MainLayout {
     }
 
     private void setAccessibilityForLinks() {
-        profile.setStyleName(Styles.DROPDOWN);
-        profile.getWidget(0).setTitle("MAT Account");
-
+        if(!Mat.harpUserVerificationInProgress) {
+            profile.setStyleName(Styles.DROPDOWN);
+            profile.getWidget(0).setTitle("MAT Account");
+        }
         signOut.setStyleName(Styles.DROPDOWN);
         signOut.getWidget(0).setTitle("Sign Out");
     }
@@ -269,7 +272,9 @@ public abstract class MainLayout {
         ddm.add(buildSignedInAs());
         ddm.add(signedInAsName);
         ddm.add(buildDivider());
-        ddm.add(profile);
+        if(!Mat.harpUserVerificationInProgress) {
+            ddm.add(profile);
+        }
         ddm.add(signOut);
         ddm.setStyleName(Styles.DROPDOWN_MENU);
         ddm.addStyleDependentName(Styles.RIGHT);

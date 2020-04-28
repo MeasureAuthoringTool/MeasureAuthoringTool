@@ -100,7 +100,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
     private HarpUserVerificationPresenter harpUserVerificationPresenter;
 
-    HarpLayout harpLayout = new HarpLayout();
+    public static boolean harpUserVerificationInProgress = false;
 
     class EnterKeyDownHandler implements KeyDownHandler {
 
@@ -324,23 +324,28 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
 //        showLoadingMessage();
         content = getContentPanel();
+
+        getSignOut().addClickHandler(event -> logout());
+
         MatContext.get().getEventBus().addHandler(HarpUserVerificationEvent.TYPE, event -> {
             final HarpUserVerificationView harpUserVerificationView = new HarpUserVerificationView();
             harpUserVerificationPresenter = new HarpUserVerificationPresenter(harpUserVerificationView);
             content.clear();
-            harpLayout.buildLinksPanel();
-            harpLayout.setSignedInName(harpUserInfo.get(HarpConstants.HARP_FULLNAME));
+            harpUserVerificationInProgress = true;
+            buildLinksPanel();
+            setSignedInName(harpUserInfo.get(HarpConstants.HARP_FULLNAME));
             harpUserVerificationPresenter.go(content);
-            harpLayout.getSignOut().addClickHandler(logOffEvent -> logout());
         });
 
         MatContext.get().getEventBus().addHandler(ReturnToLoginEvent.TYPE, event -> {
             content.clear();
-            MatContext.get().getEventBus().fireEvent(new LogoffEvent());
+            logout();
         });
 
         MatContext.get().getEventBus().addHandler(SuccessfulHarpLoginEvent.TYPE, event -> {
             content.clear();
+            harpUserVerificationInProgress = false;
+            getLinksPanel().clear();
             initPage();
         });
 

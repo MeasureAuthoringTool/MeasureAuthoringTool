@@ -22,7 +22,6 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
@@ -74,7 +73,6 @@ import mat.client.myAccount.SecurityQuestionsPresenter;
 import mat.client.myAccount.SecurityQuestionsView;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
-import mat.client.shared.MessageDelegate;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.ui.MATTabPanel;
 import mat.client.umls.ManageUmlsPresenter;
@@ -422,7 +420,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             @Override
             public void onFailure(Throwable caught) {
                 logger.log(Level.SEVERE, "Error in FeatureFlagService.findFeatureFlags. Error message: " + caught.getMessage(), caught);
-                Window.alert(MessageDelegate.GENERIC_ERROR_MESSAGE);
             }
 
             @Override
@@ -493,7 +490,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         GWT.setUncaughtExceptionHandler(caught -> {
             logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
             hideLoadingMessage();
-            Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
             MatContext.get().recordTransactionEvent(null, null, null,
                     "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
         });
@@ -595,7 +591,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             presenterList.add(myAccountPresenter);
             tabIndex = presenterList.indexOf(myAccountPresenter);
         } else {
-            Window.alert("Unrecognized user role " + currentUserRole);
             MatContext.get().getEventBus().fireEvent(new LogoffEvent());
         }
         mainTabLayout.setHeight("100%");

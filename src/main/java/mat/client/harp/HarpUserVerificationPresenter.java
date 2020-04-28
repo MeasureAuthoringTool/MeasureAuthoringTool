@@ -13,6 +13,8 @@ import org.gwtbootstrap3.client.ui.TextBox;
 
 public class HarpUserVerificationPresenter {
 
+    private final Display display;
+
     public interface Display {
 
         TextBox getLoginId();
@@ -37,8 +39,6 @@ public class HarpUserVerificationPresenter {
 
         Widget asWidget();
     }
-
-    private final Display display;
 
     public HarpUserVerificationPresenter(Display display) {
         this.display = display;
@@ -78,7 +78,6 @@ public class HarpUserVerificationPresenter {
                 display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getInvalidUser());
                 display.getLoginId().setEnabled(true);
                 display.getPassword().setEnabled(true);
-                return;
             }
 
             @Override

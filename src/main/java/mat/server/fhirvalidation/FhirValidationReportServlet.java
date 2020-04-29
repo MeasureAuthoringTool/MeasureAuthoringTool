@@ -42,14 +42,16 @@ public class FhirValidationReportServlet extends HttpServlet {
             var validationReportService = getFhirValidationReportService(request);
             var validationReport = validationReportService.generateReport(id, ticket, converted);
 
+            response.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
             response.getOutputStream().write(validationReport.getBytes());
         } catch (Exception e) {
             var errorResponse = toErrorResponse(request, e);
-            response.getOutputStream().write(errorResponse.getBytes());
+            response.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getOutputStream().write(errorResponse.getBytes());
         }
 
-        response.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
+
     }
 
     /**

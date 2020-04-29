@@ -1,19 +1,16 @@
 package mat.client;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.json.client.JSONObject;
@@ -22,7 +19,6 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,6 +37,7 @@ import mat.client.event.BackToLoginPageEvent;
 import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.EditCompositeMeasureEvent;
+import mat.client.event.HarpSupportEvent;
 import mat.client.event.LogoffEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.ReturnToLoginEvent;
@@ -99,22 +96,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
     public static boolean harpUserVerificationInProgress = false;
 
-    class EnterKeyDownHandler implements KeyDownHandler {
-
-        final private int counter;
-
-        public EnterKeyDownHandler(int index) {
-            counter = index;
-        }
-
-        @Override
-        public void onKeyDown(KeyDownEvent event) {
-            if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                mainTabLayout.selectTab(counter);
-            }
-        }
-    }
-
     public static void focusSkipLists(String skipstr) {
         Widget widget = SkipListBuilder.buildSkipList(skipstr);
         getSkipList().clear();
@@ -136,12 +117,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private List<MatPresenter> presenterList;
     private MatPresenter adminPresenter;
     private MatPresenter myAccountPresenter;
-    private ClosingEvent closingEvent;
     String currentUserRole = ClientConstants.USER_STATUS_NOT_LOGGEDIN;
-    final private ListBoxCodeProvider listBoxCodeProvider = new ListBoxCodeProvider();
+    private final ListBoxCodeProvider listBoxCodeProvider = new ListBoxCodeProvider();
     private MatTabLayoutPanel mainTabLayout;
-    private String mainTabLayoutID;
-    private ManageUmlsPresenter manageUmlsPresenter;
+    private String mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
     private MeasureComposerPresenter measureComposer;
     private ManageMeasurePresenter measureLibrary;
     private ManageCQLLibraryAdminPresenter cqlLibraryAdminPresenter;
@@ -184,7 +163,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
                 private boolean checkIfResultIsNotNull(Result result) {
                     return result != null && result.activeSessionId != null && result.currentSessionId != null;
-
                 }
             });
         }
@@ -193,13 +171,16 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private final AsyncCallback<LoginModel> harpUserSessionSetupCallback = new AsyncCallback<LoginModel>() {
         @Override
         public void onFailure(Throwable throwable) {
-            if(throwable.getMessage().contains("MAT_ACCOUNT_REVOKED_LOCKED")) {
-                //TODO MAT-842: User's MAT account is locked/revoked, replace logout with redirect to Support page.
-                logger.log(Level.INFO, "Harp UserName doesn't match existing MAT HARP_ID, redirecting to access support page");
-                MatContext.get().openURL("https://www.emeasuretool.cms.gov/contact-us");
-                MatContext.get().getEventBus().fireEvent(new LogoffEvent());
-            } else if(throwable.getMessage().contains("HARP_ID_NOT_FOUND")) {
-                //TODO MAT-842: Harp ID not found in MAT, redirect to Access Support Page.
+            if (throwable.getMessage().contains("MAT_ACCOUNT_REVOKED_LOCKED")) {
+                String err = "Harp UserName doesn't match existing MAT HARP_ID, redirecting to access support page";
+                logger.log(Level.SEVERE, err);
+                MatContext.get().recordTransactionEvent(null, null, "MAT_ACCOUNT_REVOKED_LOCKED", err, 0);
+                MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
+            } else if (throwable.getMessage().contains("HARP_ID_NOT_FOUND")) {
+                String err = "Harp ID not found";
+                logger.log(Level.SEVERE, err);
+                MatContext.get().recordTransactionEvent(null, null, "MAT_HARP_ID_NOT_FOUND", err, 0);
+                MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
             }
         }
 
@@ -279,43 +260,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         return accountPresenter;
     }
 
-
-    private void callSignOut() {
-        MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                logger.log(Level.SEVERE, "Error in LoginService.signOut. Error message: " + caught.getMessage(), caught);
-                redirectToLogin();
-            }
-
-            @Override
-            public void onSuccess(Void arg0) {
-                redirectToLogin();
-            }
-        });
-    }
-
-
-    private void callSignOutWithoutRedirect() {
-        MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                logger.log(Level.SEVERE, "Error in getLoginService.signOut. Error message: " + caught.getMessage(), caught);
-            }
-
-            @Override
-            public void onSuccess(Void arg0) {
-            }
-        });
-    }
-
-    private native void closeBrowser()
-        /*-{
-            $wnd.open('', '_self');
-            $wnd.close();
-        }-*/;
-
     @Override
     protected void initEntryPoint() {
         MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
@@ -349,7 +293,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         // The HARP Sign-In widget stores tokens in Local Storage.
         Storage localStorage = Storage.getLocalStorageIfSupported();
 
-        if(localStorage != null && localStorage.getItem(OKTA_TOKEN_STORAGE) != null) {
+        if (localStorage != null && localStorage.getItem(OKTA_TOKEN_STORAGE) != null) {
             // Get user info from the Tokens in Local Storage.
             String accessToken = getUserInfoFromTokens(JSONParser.parseStrict(localStorage.getItem(OKTA_TOKEN_STORAGE)));
 
@@ -357,13 +301,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             MatContext.get().getHarpService().validateToken(accessToken, new AsyncCallback<Boolean>() {
                 @Override
                 public void onFailure(Throwable throwable) {
-                    //Invalid token
+                    // Invalid token
                     MatContext.get().getEventBus().fireEvent(new LogoffEvent());
+
                 }
 
                 @Override
                 public void onSuccess(Boolean aBoolean) {
-                    //Check if user is already linked with a MAT Account
+                    // Check if user is already linked with a MAT Account
                     linkHarpMatAccounts();
                 }
             });
@@ -377,14 +322,15 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
             @Override
             public void onFailure(Throwable caught) {
-                logger.log(Level.INFO, "Error in checkForAssociatedHarpId. Error message: " + caught.getMessage(), caught);
-                MatContext.get().getEventBus().fireEvent(new LogoffEvent());
-                //Todo any error message?
+                String msg = "Error in checkForAssociatedHarpId. Error message: " + caught.getMessage();
+                logger.log(Level.SEVERE, msg, caught);
+                MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
+                MatContext.get().recordTransactionEvent(null, null, "MAT_ACCOUNT_HARP_LINK", msg, 0);
             }
 
             @Override
             public void onSuccess(Boolean result) {
-                if(result) {
+                if (result) {
                     //Update the User name from HARP and proceed to MAT home page.
                     MatContext.get().initSession(harpUserInfo, harpUserSessionSetupCallback);
                 } else {
@@ -430,8 +376,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         // Init session with current user info.
         MatContext.get().getCurrentUser(initSessionCallback);
-
-        mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
 
         History.addValueChangeHandler(event -> {
             final String historyToken = event.getValue();
@@ -484,7 +428,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             focusSkipLists("Measure Library");
         });
 
-        MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, event -> { });
+        MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, event -> {
+        });
 
         GWT.setUncaughtExceptionHandler(caught -> {
             logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
@@ -642,6 +587,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             logout();
         });
 
+        MatContext.get().getEventBus().addHandler(HarpSupportEvent.TYPE, event -> {
+            Mat.hideLoadingMessage();
+            logout(ClientConstants.HTML_HARP_SUPPORT);
+        });
+
         MatContext.get().getEventBus().addHandler(TimedOutEvent.TYPE, event -> {
             if (measureComposer != null) {
                 Mat.focusSkipLists("MainContent");
@@ -652,22 +602,26 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     }
 
     private void logout() {
+        logout(ClientConstants.HTML_LOGIN);
+    }
+
+    private void logout(String redirectTo) {
         // Revoke Access Token
         MatContext.get().getHarpService().revoke(MatContext.get().getAccessToken(), new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable throwable) {
                 // log user out by removing their Okta browser session.
-                harpOktaLogout();
+                harpOktaLogout(redirectTo);
             }
 
             @Override
             public void onSuccess(Boolean aBoolean) {
-                harpOktaLogout();
+                harpOktaLogout(redirectTo);
             }
         });
     }
 
-    private void harpOktaLogout() {
+    private void harpOktaLogout(String redirectTo) {
         MatContext.get().getHarpService().getHarpUrl(new AsyncCallback<String>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -678,7 +632,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             public void onSuccess(String harpUrl) {
                 harpLogout(harpUrl);
                 MatContext.get().getSynchronizationDelegate().setLogOffFlag();
-                MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
+                MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
                 removeOktaTokens();
             }
         });
@@ -776,6 +730,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             }
         };
         timer.schedule(1000);
+    }
+
+    private void redirectToHarpSupportPage() {
 
     }
 

@@ -166,7 +166,7 @@ public class Application extends WebSecurityConfigurerAdapter {
         http
                 .addFilter(filter)
                 .authorizeRequests()
-                .antMatchers("/", "/Login.html", "HarpLogin.html", "/harpLogin").permitAll()
+                .antMatchers("/", "/Login.html", "HarpLogin.html", "/harpLogin", "/HarpSupport.html").permitAll()
                 .antMatchers("/Mat.html").authenticated()
                 .antMatchers("/Bonnie.html").authenticated()
                 .antMatchers("/mat/**").authenticated()
@@ -176,29 +176,6 @@ public class Application extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().invalidSessionUrl("/HarpLogin.html").maximumSessions(1);
 
-/* Legacy Config
-                .loginPage("/HarpLogin.html");
-                .authorizeRequests()
-                .antMatchers("/", "/Login.html").permitAll()
-                .antMatchers("/Mat.html").authenticated()
-                .antMatchers("/Bonnie.html").authenticated()
-                .antMatchers("/mat/**").authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/Login.html")
-                .defaultSuccessUrl("/Mat.html")
-                .and()
-                .formLogin()
-                .loginPage("/Login.html")
-                .defaultSuccessUrl("/Bonnie.html")
-                .and()
-                .logout()
-                .permitAll()
-                .and()
-                .sessionManagement()
-                .invalidSessionUrl("/Login.html")
-                .maximumSessions(1);
-*/
     }
 
     @Override

@@ -109,14 +109,13 @@ public abstract class MainLayout {
     }
 
     public static void showLoadingMessage(String title) {
-        showProgressSpinner(title);
         MatContext.get().getLoadingQueue().add("node");
+        showProgressSpinner(title);
     }
 
 
     public static void showSignOutMessage() {
         showLoadingMessage(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
-        showProgressSpinner(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
     }
 
     private static void showProgressSpinner(String title) {
@@ -359,10 +358,6 @@ public abstract class MainLayout {
 
     protected FocusPanel getContentPanel() {
         return content;
-    }
-
-    protected Widget getNavigationList() {
-        return null;
     }
 
     protected abstract void initEntryPoint();

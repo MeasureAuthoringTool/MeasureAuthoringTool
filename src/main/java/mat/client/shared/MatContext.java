@@ -1,5 +1,16 @@
 package mat.client.shared;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -40,6 +51,8 @@ import mat.client.event.MeasureSelectedEvent;
 import mat.client.featureFlag.service.FeatureFlagRemoteService;
 import mat.client.featureFlag.service.FeatureFlagRemoteServiceAsync;
 import mat.client.login.LoginModel;
+import mat.client.login.service.HarpService;
+import mat.client.login.service.HarpServiceAsync;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.LoginServiceAsync;
@@ -60,29 +73,15 @@ import mat.client.population.service.PopulationServiceAsync;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
-import mat.client.util.ClientConstants;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MeasureType;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLQualityDataSetDTO;
-import mat.client.login.service.HarpService;
-import mat.client.login.service.HarpServiceAsync;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.SaveUpdateCQLResult;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 public class MatContext implements IsSerializable {
 
@@ -344,6 +343,7 @@ public class MatContext implements IsSerializable {
         }
         return loginService;
     }
+
     public HarpServiceAsync getHarpService() {
         if (harpService == null) {
             harpService = GWT.create(HarpService.class);
@@ -442,11 +442,21 @@ public class MatContext implements IsSerializable {
         return userId;
     }
 
-    public void setIdToken(String idToken) {this.idToken = idToken; }
-    public String getIdToken() { return idToken; }
+    public void setIdToken(String idToken) {
+        this.idToken = idToken;
+    }
 
-    public void setAccessToken(String accessToken) {this.accessToken = accessToken; }
-    public String getAccessToken() { return accessToken; }
+    public String getIdToken() {
+        return idToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
 
     public String getLoggedinLoginId() {
         return loginId;
@@ -538,7 +548,9 @@ public class MatContext implements IsSerializable {
         return currentModule;
     }
 
-    public boolean isCurrentMeasureModelFhir() { return "FHIR".equals(getCurrentMeasureModel()); }
+    public boolean isCurrentMeasureModelFhir() {
+        return "FHIR".equals(getCurrentMeasureModel());
+    }
 
     @Deprecated
     public String getCurrentMeasureScoringType() {
@@ -981,26 +993,28 @@ public class MatContext implements IsSerializable {
         this.errorTabIndex = errorTabIndex;
     }
 
-    public void handleSignOut(String activityType, final boolean isRedirect) {
+    public void handleSignOut(final String activityType, final String redirectTo) {
         MatContext.get().getSynchronizationDelegate().setLogOffFlag();
         MatContext.get().setUMLSLoggedIn(false);
         MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(),
-            MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
+                MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
 
-                @Override
-                public void onSuccess(final String result) {
-                    if (isRedirect) {
-                        MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+                    @Override
+                    public void onSuccess(final String result) {
+                        redirect();
                     }
-                }
 
-                @Override
-                public void onFailure(final Throwable caught) {
-                    if (isRedirect) {
-                        MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+                    @Override
+                    public void onFailure(final Throwable caught) {
+                        redirect();
                     }
-                }
-            });
+
+                    private void redirect() {
+                        if (redirectTo != null && !redirectTo.isEmpty()) {
+                            MatContext.get().redirectToHtmlPage(redirectTo);
+                        }
+                    }
+                });
     }
 
     public void getAllOperators() {

@@ -49,7 +49,7 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
 
     @Override
     public String generateReport(String libraryId, String vsacGrantingTicket, boolean converted) throws IOException, TemplateException {
-        logger.error("inside CqlLibraryValidationReportImpl.generateReport() ....");
+
         ConversionResultDto conversionResult = null;
         CQLLibrary cqlLibrary = libraryDAO.find(libraryId);
         if (cqlLibrary != null) {
@@ -64,7 +64,7 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
         if (libraryId == null) {
             return null;
         }
-        logger.info("Calling FHIR conversion validation service for measure: " + libraryId);
+
         try {
             return fhirLibraryConversionRemoteCall.validate(libraryId);
         } catch (MatRuntimeException e) {
@@ -132,11 +132,8 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
         Map<String, List<CqlConversionError>> externalErrorsMap = new HashMap<>();
         getLibraryErrors(conversionResultDto, libraryFhirValidationErrors, qdmCqlConversionErrorsMap, fhirCqlConversionErrorsMap, paramsMap, externalErrorsMap);
 
-        List<FhirValidationResult> measureFhirValidationErrors = getMeasureErrors(conversionResultDto);
-
         paramsMap.put("valueSetFhirValidationErrors", valueSetFhirValidationErrors);
         paramsMap.put("libraryFhirValidationErrors", libraryFhirValidationErrors);
-        paramsMap.put("measureFhirValidationErrors", measureFhirValidationErrors);
         paramsMap.put("qdmCqlConversionErrors", qdmCqlConversionErrorsMap);
         paramsMap.put("fhirCqlConversionErrors", fhirCqlConversionErrorsMap);
         paramsMap.put("externalErrorsMap", externalErrorsMap);
@@ -166,17 +163,6 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
         });
     }
 
-
-    private List<FhirValidationResult> getMeasureErrors(ConversionResultDto conversionResultDto) {
-        //Measure FHIR validation errors
-        List<FhirValidationResult> measureFhirValidationErrors = new ArrayList<>();
-        if (conversionResultDto.getMeasureConversionResults() != null &&
-                (conversionResultDto.getMeasureConversionResults().getSuccess() == null ||
-                        !conversionResultDto.getMeasureConversionResults().getSuccess())) {
-            measureFhirValidationErrors.addAll(conversionResultDto.getMeasureConversionResults().getMeasureFhirValidationResults());
-        }
-        return measureFhirValidationErrors;
-    }
 
     private List<FhirValidationResult> getValueSetErrors(ConversionResultDto conversionResultDto) {
         // ValueSet FHIR validation errors

@@ -660,6 +660,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         if (converted) {
             url.append("&converted=true");
         }
+        url.append("&type=measure");
         Window.open(url.toString(), "_blank", "");
     }
 

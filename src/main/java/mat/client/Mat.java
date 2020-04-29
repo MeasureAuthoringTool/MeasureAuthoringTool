@@ -270,7 +270,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     @Override
     protected void initEntryPoint() {
         MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
-//        showLoadingMessage();
         content = getContentPanel();
 
         getSignOut().addClickHandler(event -> logout());
@@ -632,6 +631,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     }
 
     private void logout(String redirectTo) {
+        logger.log(Level.INFO, "logout " + redirectTo);
         // Revoke Access Token
         MatContext.get().getHarpService().revoke(MatContext.get().getAccessToken(), new AsyncCallback<Boolean>() {
             @Override
@@ -757,7 +757,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         final Timer timer = new Timer() {
             @Override
             public void run() {
-                MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+                // Let's sign out the user, so there is no lurking okta token.
+                logout();
             }
         };
         timer.schedule(1000);

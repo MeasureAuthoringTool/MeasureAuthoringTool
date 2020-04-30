@@ -13,7 +13,7 @@ public class NewUserRegistrationModal extends Modal {
 
     private Button closeButton = new Button("Close");
 
-    private String bodyHtml = "Please submit a ticket via the Office of <a target=\"_blank\" href=\"https://oncprojectracking.healthit.gov/support/login.jsp\">National Coordinator (ONC) Jira System</a> and follow the directions on the page " +
+    private String bodyHtml = "Please submit a ticket via <a target=\"_blank\" href=\"https://oncprojectracking.healthit.gov/support/login.jsp\">the Office of the National Coordinator (ONC) </a> Jira System and follow the directions on the page " +
             "to create a new MAT account.";
 
     public NewUserRegistrationModal() {

@@ -129,7 +129,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         @Override
         public void onFailure(final Throwable caught) {
             logger.log(Level.SEVERE, "Error in initSession. Error message: " + caught.getMessage(), caught);
-            redirectToLogin();
+            logout();
         }
 
         @Override
@@ -140,7 +140,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                 @Override
                 public void onFailure(Throwable caught) {
                     logger.log(Level.SEVERE, "Error in getCurrentReleaseVersion. Error message: " + caught.getMessage(), caught);
-                    redirectToLogin();
+                    logout();
                 }
 
                 @Override
@@ -148,7 +148,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                     logger.log(Level.INFO, "SessionService::getCurrentReleaseVersion -> onSuccess");
                     if (result == null || (checkIfResultIsNotNull(result) && !result.activeSessionId.equals(result.currentSessionId))) {
                         logger.log(Level.SEVERE, "Current session is not valid.");
-                        redirectToLogin();
+                        logout();
                     } else {
                         final Date lastSignIn = result.signInDate;
                         final Date lastSignOut = result.signOutDate;
@@ -269,7 +269,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         getSignOut().addClickHandler(event -> logout());
 
-        MatContext.get().getEventBus().addHandler(BackToLoginPageEvent.TYPE, event -> redirectToLogin());
+        MatContext.get().getEventBus().addHandler(BackToLoginPageEvent.TYPE, event -> logout());
 
         MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, event -> {
             Mat.hideLoadingMessage();
@@ -647,24 +647,17 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             @Override
             public void onFailure(Throwable throwable) {
                 logger.log(Level.SEVERE, "HarpService::getHarpUrl -> onFailure " + throwable.getMessage(), throwable);
-                removeOktaTokens();
             }
 
             @Override
             public void onSuccess(String harpUrl) {
                 logger.log(Level.INFO, "HarpService::getHarpUrl -> onSuccess");
                 MatContext.get().getSynchronizationDelegate().setLogOffFlag();
+                MatContext.get().handleSignOut("SIGN_OUT_EVENT", null);
                 harpLogout(harpUrl);
-                MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
-                removeOktaTokens();
+                redirectToLogin();
             }
         });
-    }
-
-    private void removeOktaTokens() {
-        logger.log(Level.INFO, "removeOktaTokens");
-        Storage localStorage = Storage.getLocalStorageIfSupported();
-        localStorage.removeItem(OKTA_TOKEN_STORAGE);
     }
 
     public static void setSignedInAsName(String userFirstName, String userLastName) {
@@ -752,7 +745,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             @Override
             public void run() {
                 // Let's sign out the user, so there is no lurking okta token.
-                logout();
+                MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
             }
         };
         timer.schedule(1000);

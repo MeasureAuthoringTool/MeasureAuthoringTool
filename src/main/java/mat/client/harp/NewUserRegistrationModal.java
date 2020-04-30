@@ -13,8 +13,9 @@ public class NewUserRegistrationModal extends Modal {
 
     private Button closeButton = new Button("Close");
 
+
     private String bodyHtml = "Please submit a ticket via <a target=\"_blank\" href=\"https://oncprojectracking.healthit.gov/support/login.jsp\">the Office of the National Coordinator (ONC) </a> Jira System and follow the directions on the page " +
-            "to create a new MAT account.";
+            "to create a new MAT account. <p style=\"font-size: small; padding-top: 18px;\"> Note: Please include your organization's OID in the Description field.</p>";
 
     public NewUserRegistrationModal() {
         setHeight("442px");

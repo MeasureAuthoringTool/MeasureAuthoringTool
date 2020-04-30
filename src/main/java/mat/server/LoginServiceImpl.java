@@ -124,9 +124,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	}
 
     @Override
-    public Boolean checkForAssociatedHarpId(String harpPrimaryEmailId) throws MatException {
+    public Boolean checkForAssociatedHarpId(String harpId) throws MatException {
 	    try {
-            return userDAO.findAssociatedHarpId(harpPrimaryEmailId);
+            return userDAO.findAssociatedHarpId(harpId);
         } catch (Exception e) {
             throw new MatException("Unable to verify if user has associated Harp Id");
         }

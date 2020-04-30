@@ -369,6 +369,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
         String fullName = harpUserInfo.get(HarpConstants.HARP_FULLNAME);
         userDetails.setUsername(fullName.substring(0, fullName.indexOf(" ")));
         userDetails.setUserLastName(fullName.substring(fullName.indexOf(" ")).trim());
+        userDetails.setEmailAddress(harpUserInfo.get(HarpConstants.HARP_PRIMARY_EMAIL_ID));
     }
 
     @Override

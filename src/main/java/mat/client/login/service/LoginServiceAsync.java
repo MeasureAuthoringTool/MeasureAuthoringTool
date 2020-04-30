@@ -232,7 +232,7 @@ public interface LoginServiceAsync extends AsynchronousService{
 	 */
     void initSession(Map<String, String> harpUserInfo, AsyncCallback<LoginModel> callback);
 
-    void checkForAssociatedHarpId(String harpPrimaryEmailId, AsyncCallback<Boolean> async);
+    void checkForAssociatedHarpId(String harpId, AsyncCallback<Boolean> async);
 
     void getSecurityQuestionToVerifyHarpUser(String loginId, String password, AsyncCallback<String> mapAsyncCallback);
 

@@ -36,12 +36,10 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
-import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
-import mat.shared.CQLValidationResult;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
@@ -478,14 +476,6 @@ public interface MeasureLibraryService {
 	List<MeasureOwnerReportDTO> getMeasuresForMeasureOwner() throws XPathExpressionException;
 	
 	/**
-	 * Gets the default expansion identifier.
-	 *
-	 * @param measureId the measure id
-	 * @return the default expansion identifier
-	 */
-	//String getDefaultExpansionIdentifier(String measureId);
-	
-	/**
 	 * Gets the current release version.
 	 *
 	 * @return the current release version
@@ -500,41 +490,13 @@ public interface MeasureLibraryService {
 	void setCurrentReleaseVersion(String releaseVersion);
 	
 	/**
-	 * Parses the cql.
-	 *
-	 * @param cqlBuilder the cql builder
-	 * @return the CQL model
-	 */
-	CQLModel parseCQL(String cqlBuilder);
-	
-	//Boolean saveCQLData(CQLModel cqlDataModel);
-	
-	/**
 	 * Gets the CQL data.
 	 *
 	 * @param measureId the measure id
 	 * @return the CQL data
 	 */
-	//SaveUpdateCQLResult getCQLData(String measureId,String fromTable);
-	
 	SaveUpdateCQLResult getMeasureCQLData(String measureId);
-	
-	/**
-	 * Gets the CQL file data.
-	 *
-	 * @param measureId the measure id
-	 * @return the CQL file data
-	 */
-	//SaveUpdateCQLResult getCQLFileData(String xmlString);
-	
-	/**
-	 * Validate cql.
-	 *
-	 * @param cqlModel the cql model
-	 * @return the CQL validation result
-	 */
-	CQLValidationResult validateCQL(CQLModel cqlModel);
-	
+
 	/**
 	 * Save and modify definitions.
 	 *
@@ -632,8 +594,6 @@ public interface MeasureLibraryService {
 	CQLQualityDataModelWrapper getCQLAppliedQDMFromMeasureXml(String measureId, boolean checkForSupplementData);
 
 	CQLQualityDataModelWrapper getDefaultCQLSDEFromMeasureXml(String measureId);
-
-	SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
 
 	CQLQualityDataModelWrapper getCQLValusets(String measureID);
 

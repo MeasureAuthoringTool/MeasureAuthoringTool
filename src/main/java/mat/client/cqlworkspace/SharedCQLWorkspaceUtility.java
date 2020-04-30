@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.gwtbootstrap3.client.ui.ListBox;
 
@@ -19,6 +21,8 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
 
 public class SharedCQLWorkspaceUtility {
+    private static final Logger log = Logger.getLogger(SharedCQLWorkspaceUtility.class.getSimpleName());
+
     public static final String ERROR_PREFIX = "ERROR:";
     public static final String WARNING_PREFIX = "WARNING:";
 
@@ -52,18 +56,18 @@ public class SharedCQLWorkspaceUtility {
     }
 
     public static void displayAnnotationForViewCQL(SaveUpdateCQLResult result, AceEditor aceEditor) {
+        log.log(Level.INFO,"displayAnnotationForViewCQL libNameToErrorMap:\n" + result.getLibraryNameErrorsMap() + "\nLibWarningMap:\n" +
+                result.getLibraryNameWarningsMap() + "\nlinterErrors:\n" +
+                result.getLinterErrors());
         aceEditor.clearAnnotations();
         String formattedName = result.getCqlModel().getFormattedName();
         SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameErrorsMap().get(formattedName), ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor);
         SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameWarningsMap().get(formattedName), WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor);
         SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLinterErrors(), ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor);
         aceEditor.setAnnotations();
-    }
+        log.log(Level.INFO,"leaving displayAnnotationForViewCQL " + result);
 
-    public static native void console(String text)
-        /*-{
-            console.log(text);
-        }-*/;
+    }
 
 
     private static void displayMessageBannerForViewCQL(SaveUpdateCQLResult result, MessagePanel messagePanel) {
@@ -72,10 +76,9 @@ public class SharedCQLWorkspaceUtility {
         if (!result.isQDMVersionMatching()) {
             errorMessages.add(AbstractCQLWorkspacePresenter.INVALID_QDM_VERSION_IN_INCLUDES);
         } else if (!result.getCqlErrors().isEmpty() || !result.getLinterErrorMessages().isEmpty()) {
-            // Dump the errors to the console.
-            result.getCqlErrors().forEach(e -> console("CQL Error: " + e.getErrorMessage() + " " + e.getStartErrorInLine() +
+            result.getCqlErrors().forEach(e -> log.log(Level.INFO,"CQL Error: " + e.getErrorMessage() + " " + e.getStartErrorInLine() +
                     " " + e.getEndErrorInLine()));
-            result.getLinterErrorMessages().forEach(e -> console("Linter Error: " + e.toString()));
+            result.getLinterErrorMessages().forEach(e -> log.log(Level.INFO,"Linter Error: " + e.toString()));
 
             if (result.isMeasureComposite() && result.isDoesMeasureHaveIncludedLibraries()) {
                 errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_COMPOSITE_AND_INCLUDED);

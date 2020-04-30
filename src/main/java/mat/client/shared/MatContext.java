@@ -51,6 +51,8 @@ import mat.client.event.MeasureSelectedEvent;
 import mat.client.featureFlag.service.FeatureFlagRemoteService;
 import mat.client.featureFlag.service.FeatureFlagRemoteServiceAsync;
 import mat.client.login.LoginModel;
+import mat.client.login.service.HarpService;
+import mat.client.login.service.HarpServiceAsync;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.LoginServiceAsync;
@@ -71,7 +73,6 @@ import mat.client.population.service.PopulationServiceAsync;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
-import mat.client.util.ClientConstants;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MeasureType;
 import mat.model.cql.CQLModel;
@@ -108,6 +109,8 @@ public class MatContext implements IsSerializable {
     private String bonnieLink;
 
     private LoginServiceAsync loginService;
+
+    private HarpServiceAsync harpService;
 
     private MeasureServiceAsync measureService;
 
@@ -150,6 +153,10 @@ public class MatContext implements IsSerializable {
     private AuditServiceAsync auditService;
 
     private String userId;
+
+    private String idToken;
+
+    private String accessToken;
 
     private String userEmail;
 
@@ -232,6 +239,8 @@ public class MatContext implements IsSerializable {
 
     private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
+    private Map<String, String> harpUserInfo = new HashMap<>();
+
     public void clearDVIMessages() {
         if (qdsView != null) {
             qdsView.getSuccessMessageDisplay().clear();
@@ -269,15 +278,6 @@ public class MatContext implements IsSerializable {
     }
 
     protected MatContext() {
-
-        GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
-
-            @Override
-            public void onUncaughtException(Throwable e) {
-                GWT.log("An uncaught Exception Occured", e);
-                MatContext.this.logException("Uncaught Client Exception", e);
-            }
-        });
         eventBus = new HandlerManager(null);
 
         eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {
@@ -339,9 +339,16 @@ public class MatContext implements IsSerializable {
 
     public LoginServiceAsync getLoginService() {
         if (loginService == null) {
-            loginService = (LoginServiceAsync) GWT.create(LoginService.class);
+            loginService = GWT.create(LoginService.class);
         }
         return loginService;
+    }
+
+    public HarpServiceAsync getHarpService() {
+        if (harpService == null) {
+            harpService = GWT.create(HarpService.class);
+        }
+        return harpService;
     }
 
     public VSACAPIServiceAsync getVsacapiServiceAsync() {
@@ -435,6 +442,22 @@ public class MatContext implements IsSerializable {
         return userId;
     }
 
+    public void setIdToken(String idToken) {
+        this.idToken = idToken;
+    }
+
+    public String getIdToken() {
+        return idToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
     public String getLoggedinLoginId() {
         return loginId;
     }
@@ -451,14 +474,17 @@ public class MatContext implements IsSerializable {
         getLoginService().isValidUser(username, Password, oneTimePassword, callback);
     }
 
+    public void initSession(Map<String, String> harpUserInfo, AsyncCallback<LoginModel> callback) {
+        getLoginService().initSession(harpUserInfo, callback);
+    }
+
     public void getListBoxData(AsyncCallback<CodeListService.ListBoxData> listBoxCallback) {
         getCodeListService().getListBoxData(listBoxCallback);
     }
 
-    public void getCurrentUserRole(AsyncCallback<SessionManagementService.Result> userRoleCallback) {
-        getSessionService().getCurrentUserRole(userRoleCallback);
+    public void getCurrentUser(AsyncCallback<SessionManagementService.Result> userCallback) {
+        getSessionService().getCurrentUser(userCallback);
     }
-
 
     public void restartTimeoutWarning() {
         getTimeoutManager().startActivityTimers(ConstantMessages.MAT_MODULE);
@@ -520,6 +546,10 @@ public class MatContext implements IsSerializable {
 
     public String getCurrentModule() {
         return currentModule;
+    }
+
+    public boolean isCurrentMeasureModelFhir() {
+        return "FHIR".equals(getCurrentMeasureModel());
     }
 
     @Deprecated
@@ -963,7 +993,7 @@ public class MatContext implements IsSerializable {
         this.errorTabIndex = errorTabIndex;
     }
 
-    public void handleSignOut(String activityType, final boolean isRedirect) {
+    public void handleSignOut(final String activityType, final String redirectTo) {
         MatContext.get().getSynchronizationDelegate().setLogOffFlag();
         MatContext.get().setUMLSLoggedIn(false);
         MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(),
@@ -971,15 +1001,17 @@ public class MatContext implements IsSerializable {
 
                     @Override
                     public void onSuccess(final String result) {
-                        if (isRedirect) {
-                            MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-                        }
+                        redirect();
                     }
 
                     @Override
                     public void onFailure(final Throwable caught) {
-                        if (isRedirect) {
-                            MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+                        redirect();
+                    }
+
+                    private void redirect() {
+                        if (redirectTo != null && !redirectTo.isEmpty()) {
+                            MatContext.get().redirectToHtmlPage(redirectTo);
                         }
                     }
                 });
@@ -1192,6 +1224,14 @@ public class MatContext implements IsSerializable {
         } else {
             return "";
         }
+    }
+
+    public boolean isCurrentModelTypeFhir() {
+        return currentMeasureInfo != null ? isCurrentMeasureModelFhir() : isCurrentCQLLibraryModelTypeFhir();
+    }
+
+    public boolean isCurrentCQLLibraryModelTypeFhir() {
+        return "FHIR".equals(currentLibraryInfo.getLibraryModelType());
     }
 
     public String getCurrentCQLLibraryModelType() {
@@ -1555,4 +1595,11 @@ public class MatContext implements IsSerializable {
         this.expressionToReturnTypeMap = expressionToReturnTypeMap;
     }
 
+    public Map<String, String> getHarpUserInfo() {
+        return harpUserInfo;
+    }
+
+    public void setHarpUserInfo(Map<String, String> harpUserInfo) {
+        this.harpUserInfo = harpUserInfo;
+    }
 }

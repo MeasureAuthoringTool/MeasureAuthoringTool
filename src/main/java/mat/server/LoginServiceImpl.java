@@ -1,33 +1,13 @@
 package mat.server;
 
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
-
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.SecurityQuestionOptions;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatException;
 import mat.dao.UserDAO;
 import mat.dao.UserPasswordHistoryDAO;
 import mat.model.SecurityQuestions;
@@ -43,8 +23,29 @@ import mat.server.util.UMLSSessionTicket;
 import mat.shared.ConstantMessages;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
+import mat.shared.HarpConstants;
+import mat.shared.HashUtility;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -111,19 +112,70 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		LoginModel loginModel = loginCredentialService.isValidUser(userId, password, oneTimePassword,session.getId());
 		return loginModel;
 	}
-	
-	/* (non-Javadoc)
-	 * {@inheritDoc}
-	 */
+
 	@Override
-	public boolean isValidPassword(String userId, String password) {
-		boolean isValid = loginCredentialService.isValidPassword(userId, password);
-		return isValid;
+	public LoginModel initSession(Map<String, String> harpUserInfo) throws MatException {
+		logger.info("getUserDetailsByHarpId::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
+		HttpSession session = getThreadLocalRequest().getSession();
+		if (userService.isHarpUserLocked(harpUserInfo.get(HarpConstants.HARP_ID))) {
+			throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
+		}
+		return loginCredentialService.initSession(harpUserInfo, session.getId());
 	}
-	
-	/* (non-Javadoc)
-	 * {@inheritDoc}
-	 */
+
+    @Override
+    public Boolean checkForAssociatedHarpId(String harpPrimaryEmailId) throws MatException {
+	    try {
+            return userDAO.findAssociatedHarpId(harpPrimaryEmailId);
+        } catch (Exception e) {
+            throw new MatException("Unable to verify if user has associated Harp Id");
+        }
+
+    }
+
+    @Override
+    public String getSecurityQuestionToVerifyHarpUser(String loginId, String password) throws MatException {
+	    try {
+            if(isValidPassword(loginId, password)) {
+                return userDAO.getRandomSecurityQuestion(loginId);
+            } else {
+                throw new MatException("Invalid User");
+            }
+        } catch (Exception e) {
+            throw new MatException("Unable to retrieve a security question to verify user");
+        }
+    }
+
+    @Override
+    public boolean verifyHarpUser(String securityQuestion, String securityAnswer, String loginId, Map<String, String> harpUserInfo) throws MatException {
+	    User user = userDAO.findByLoginId(loginId);
+        if (StringUtils.isNotBlank(securityAnswer)) {
+            for (UserSecurityQuestion q : user.getUserSecurityQuestions()) {
+                if (q.getSecurityQuestions().getQuestion().equalsIgnoreCase(securityQuestion)) {
+                    if(HashUtility.getSecurityQuestionHash(q.getSalt(), securityAnswer).equalsIgnoreCase(q.getSecurityAnswer())) {
+                        saveHarpUserInfo(harpUserInfo, loginId);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+	@Override
+	public boolean isValidPassword(String loginId, String password) {
+        return loginCredentialService.isValidPassword(loginId, password);
+	}
+
+	private void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId) throws MatException {
+        logger.info("User Verified, updating user information of::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
+        HttpSession session = getThreadLocalRequest().getSession();
+        if (userService.isLockedUser(loginId)) {
+            throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
+        }
+        loginCredentialService.saveHarpUserInfo(harpUserInfo, loginId, session.getId());
+    }
+
 	@Override
 	public ForgottenPasswordResult forgotPassword(String loginId, String securityQuestion, String securityAnswer) {
 		
@@ -430,7 +482,12 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	public boolean isLockedUser(String loginId) {
 		return userService.isLockedUser(loginId);
 	}
-	
+
+	@Override
+	public boolean isHarpUserLocked(String harpId) {
+		return userService.isHarpUserLocked(harpId);
+	}
+
 	/* 
 	 * {@inheritDoc}
 	 */

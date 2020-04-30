@@ -25,8 +25,12 @@ public class HibernateUserDetailService implements UserDetailsService {
 	/* (non-Javadoc)
 	 * @see org.springframework.security.core.userdetails.UserDetailsService#loadUserByUsername(java.lang.String)
 	 */
-	public UserDetails loadUserByUsername(String userId) {
-		return userDAO.getUser(userId);
+	public UserDetails loadUserByUsername(String loginId) {
+		return userDAO.getUser(loginId);
+	}
+
+	public UserDetails loadUserByHarpId(String harpId) {
+		return userDAO.getUserDetailsByHarpId(harpId);
 	}
     
    

@@ -149,7 +149,7 @@ public class XmlProcessor {
             originalDoc = docBuilder.parse(oldXmlstream);
             LOG.info("Document Object created successfully for the XML String");
         } catch (Exception e) {
-            LOG.info("Exception thrown on XmlProcessor() costructor");
+            LOG.error("Exception thrown on XmlProcessor() constructor");
             caughtExceptions(e);
         }
 
@@ -389,15 +389,15 @@ public class XmlProcessor {
      */
     private void caughtExceptions(Exception excp) {
         if (excp instanceof ParserConfigurationException) {
-            LOG.info("Document Builder Object creation failed"
+            LOG.error("Document Builder Object creation failed"
                     + excp.getStackTrace());
         } else if (excp instanceof SAXException) {
-            LOG.info("Xml parsing failed:" + excp.getStackTrace());
+            LOG.error("Xml parsing failed:" + excp.getStackTrace());
         } else if (excp instanceof IOException) {
-            LOG.info("Conversion of String XML to InputSource failed"
+            LOG.error("Conversion of String XML to InputSource failed"
                     + excp.getStackTrace());
         } else {
-            LOG.info("Generic Exception: " + excp.getStackTrace());
+            LOG.error("Generic Exception: " + excp.getStackTrace());
         }
     }
 

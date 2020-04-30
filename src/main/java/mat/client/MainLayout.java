@@ -22,7 +22,9 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -56,6 +58,7 @@ public abstract class MainLayout {
     private HorizontalPanel linksPanel = new HorizontalPanel();
     private AnchorListItem profile = new AnchorListItem("MAT Account");
     private AnchorListItem signOut = new AnchorListItem("Sign Out");
+    private FormPanel logoutForm = new FormPanel();
 
     /**
      * hide spinner and
@@ -106,14 +109,13 @@ public abstract class MainLayout {
     }
 
     public static void showLoadingMessage(String title) {
-        showProgressSpinner(title);
         MatContext.get().getLoadingQueue().add("node");
+        showProgressSpinner(title);
     }
 
 
     public static void showSignOutMessage() {
         showLoadingMessage(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
-        showProgressSpinner(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
     }
 
     private static void showProgressSpinner(String title) {
@@ -196,11 +198,13 @@ public abstract class MainLayout {
     }
 
     public void buildLinksPanel() {
-        showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
-        showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
+        if(!Mat.harpUserVerificationInProgress) {
+            showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
+            showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
 
-        linksPanel.add(showUMLSState.getPanel());
-        linksPanel.add(showBonnieState.getPanel());
+            linksPanel.add(showUMLSState.getPanel());
+            linksPanel.add(showBonnieState.getPanel());
+        }
         linksPanel.add(buildProfileMenu());
         linksPanel.setStyleName("navLinksBanner", true);
     }
@@ -251,9 +255,10 @@ public abstract class MainLayout {
     }
 
     private void setAccessibilityForLinks() {
-        profile.setStyleName(Styles.DROPDOWN);
-        profile.getWidget(0).setTitle("MAT Account");
-
+        if(!Mat.harpUserVerificationInProgress) {
+            profile.setStyleName(Styles.DROPDOWN);
+            profile.getWidget(0).setTitle("MAT Account");
+        }
         signOut.setStyleName(Styles.DROPDOWN);
         signOut.getWidget(0).setTitle("Sign Out");
     }
@@ -266,7 +271,9 @@ public abstract class MainLayout {
         ddm.add(buildSignedInAs());
         ddm.add(signedInAsName);
         ddm.add(buildDivider());
-        ddm.add(profile);
+        if(!Mat.harpUserVerificationInProgress) {
+            ddm.add(profile);
+        }
         ddm.add(signOut);
         ddm.setStyleName(Styles.DROPDOWN_MENU);
         ddm.addStyleDependentName(Styles.RIGHT);
@@ -289,6 +296,24 @@ public abstract class MainLayout {
 
         collapse.add(nav);
         return collapse;
+    }
+
+    protected void harpLogout(String harpUrl) {
+        logoutForm.setMethod(FormPanel.METHOD_GET);
+
+        VerticalPanel panel = new VerticalPanel();
+        logoutForm.setWidget(panel);
+
+        Hidden token = new Hidden();
+        token.setName("id_token_hint");
+        token.setValue(MatContext.get().getIdToken());
+
+        panel.add(token);
+
+        RootPanel.get().add(logoutForm);
+
+        logoutForm.setAction(harpUrl + "/logout");
+        logoutForm.submit();
     }
 
     public void setHeader(String version, NavbarLink link) {
@@ -335,10 +360,6 @@ public abstract class MainLayout {
         return content;
     }
 
-    protected Widget getNavigationList() {
-        return null;
-    }
-
     protected abstract void initEntryPoint();
 
     public final void onModuleLoad() {
@@ -352,6 +373,7 @@ public abstract class MainLayout {
         final FlowPanel container = new FlowPanel();
 
         SIMPLE_SPINNER.setVisible(false);
+        SIMPLE_SPINNER.getElement().setAttribute("id", "loadingSimpleSpinner");
         container.add(SIMPLE_SPINNER);
         container.add(topBanner);
         container.add(contentPanel);

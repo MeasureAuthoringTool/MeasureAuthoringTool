@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.ToString;
 import mat.client.shared.GenericResult;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
@@ -18,6 +19,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 /**
  * The Class SaveUpdateCQLResult.
  */
+@ToString
 public class SaveUpdateCQLResult extends GenericResult {
 
     private CQLModel cqlModel;
@@ -79,6 +81,8 @@ public class SaveUpdateCQLResult extends GenericResult {
     public static final int SYNTAX_ERRORS = 11;
 
     public static final int DUPLICATE_LIBRARY_NAME = 12;
+
+    public static final int CUSTOM = 13;
 
     List<CQLQualityDataSetDTO> cqlAppliedQDMList;
 

@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import mat.client.ImageResources;
 import mat.client.Mat;
+import mat.client.event.LogoffEvent;
 import mat.client.event.TimedOutEvent;
 import mat.shared.ConstantMessages;
 
@@ -249,6 +250,6 @@ class TimeoutManager {
 		timeoutWarning.cancel();
 		repeatedWarning.cancel();
 		clearTimeOutWarning();
-		MatContext.get().handleSignOut("TIMEOUT_EVENT", true);
+		MatContext.get().getEventBus().fireEvent(new LogoffEvent());
 	}
 }

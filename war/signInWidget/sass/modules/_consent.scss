@@ -1,0 +1,84 @@
+$space-between-container: 25px;
+$space-of-last-container: $space-between-container - 14px; // 14px is margin between form body and form toolbar
+$image-size: 30px;
+
+.consent-required {
+
+  .default-logo,
+  .custom-logo {
+    width: $image-size;
+    height: $image-size;
+    vertical-align: middle;
+  }
+
+  .detail-row {
+    padding-bottom: $space-between-container;
+
+    &:last-child {
+      padding-bottom: $space-of-last-container;
+    }
+  }
+
+  .consent-title {
+    text-align: center;
+    word-wrap: break-word;
+    font-size: 16px;
+
+    span {
+      padding-left: 10px;
+    }
+
+    b {
+      font-weight: bold;
+    }
+  }
+
+  .scope-item {
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 5px;
+
+    .scope-item-text {
+      float: left;
+      width: 85%;
+      word-wrap: break-word;
+    }
+
+    .scope-item-tooltip {
+      float: right;
+      margin-right: 16px;
+    }
+  }
+
+  .consent-description {
+    p {
+      color: $text-color-light;
+    }
+  }
+
+  .consent-footer {
+    text-align: center;
+    a {
+      color: $primary-color;
+    }
+  }
+
+  .o-form-button-bar {
+    display: inline-block;
+    width: 100%;
+    padding-bottom: $space-between-container;
+
+    input {
+      width: 140px;
+    }
+
+    input[data-type="cancel"] {
+      float: left;
+      margin-left: 0;
+    }
+
+    input[data-type="save"] {
+      float: right;
+    }
+  }
+}

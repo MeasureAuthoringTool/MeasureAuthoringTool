@@ -829,6 +829,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isHarpUserLocked(String harpId) {
+        User user = userDAO.findByHarpId(harpId);
+        return user != null && (user.getStatus().getStatusId().equals("2") || user.getTerminationDate() != null );
+    }
+
+    @Override
     public List<User> searchForNonTerminatedUsers() {
         return userDAO.searchForNonTerminatedUser();
     }

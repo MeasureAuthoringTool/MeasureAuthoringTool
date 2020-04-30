@@ -1,17 +1,11 @@
 package mat.server;
 
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
-import javax.net.ssl.SSLContext;
-import javax.sql.DataSource;
-
+import liquibase.integration.spring.SpringLiquibase;
+import mat.client.login.service.HarpService;
+import mat.dao.impl.AuditEventListener;
+import mat.dao.impl.AuditInterceptor;
+import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
+import mat.server.util.MATPropertiesService;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
@@ -28,7 +22,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -46,15 +39,21 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedCredentialsNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
-import liquibase.integration.spring.SpringLiquibase;
-import mat.dao.impl.AuditEventListener;
-import mat.dao.impl.AuditInterceptor;
-import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
-import mat.server.util.MATPropertiesService;
+import javax.net.ssl.SSLContext;
+import javax.sql.DataSource;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 @Configuration
 @PropertySource("classpath:MAT.properties")
@@ -72,6 +71,11 @@ public class Application extends WebSecurityConfigurerAdapter {
 
     @Value("${PASSWORDKEY:}")
     private String passwordKey;
+
+    @Bean
+    public HarpService harpService() {
+        return new HarpServiceImpl();
+    }
 
     @Bean
     public DataSource dataSource(@Value("${spring.datasource.jndi-name}") String jndiDataSource) {
@@ -148,28 +152,30 @@ public class Application extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        PreAuthnHarpFilter filter = new PreAuthnHarpFilter();
+        filter.setAuthenticationManager(authentication -> {
+            if (harpService().validateToken(authentication.getPrincipal().toString())) {
+                authentication.setAuthenticated(true);
+            } else {
+                throw new PreAuthenticatedCredentialsNotFoundException("test");
+            }
+            return authentication;
+        });
+
         http.csrf().disable();
         http
+                .addFilter(filter)
                 .authorizeRequests()
-                .antMatchers("/", "/Login.html").permitAll()
+                .antMatchers("/", "/Login.html", "HarpLogin.html", "/harpLogin", "/HarpSupport.html").permitAll()
                 .antMatchers("/Mat.html").authenticated()
                 .antMatchers("/Bonnie.html").authenticated()
                 .antMatchers("/mat/**").authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/Login.html")
-                .defaultSuccessUrl("/Mat.html")
-                .and()
-                .formLogin()
-                .loginPage("/Login.html")
-                .defaultSuccessUrl("/Bonnie.html")
-                .and()
                 .logout()
                 .permitAll()
                 .and()
-                .sessionManagement()
-                .invalidSessionUrl("/Login.html")
-                .maximumSessions(1);
+                .sessionManagement().invalidSessionUrl("/HarpLogin.html").maximumSessions(1);
+
     }
 
     @Override

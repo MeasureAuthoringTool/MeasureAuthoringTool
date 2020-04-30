@@ -1,27 +1,9 @@
 package mat.server.service.impl;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.UUID;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
 import mat.DTO.UserPreferenceDTO;
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatException;
 import mat.dao.UserDAO;
 import mat.dao.UserSecurityQuestionDAO;
 import mat.model.SecurityQuestions;
@@ -35,8 +17,27 @@ import mat.server.service.LoginCredentialService;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
 import mat.server.twofactorauth.TwoFactorValidationService;
+import mat.shared.HarpConstants;
 import mat.shared.HashUtility;
 import mat.shared.StringUtility;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * The Class LoginCredentialServiceImpl.
@@ -312,9 +313,9 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
      * {@inheritDoc}
      */
     @Override
-    public boolean isValidPassword(String userId, String password) {
+    public boolean isValidPassword(String loginId, String password) {
         logger.info("LoginCredentialServiceImpl: isValidPassword start :  ");
-        MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(userId);
+        MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(loginId);
         if (userDetails != null) {
             String hashPassword = userService.getPasswordHash(userDetails.getUserPassword().getSalt(), password);
             if (hashPassword.equalsIgnoreCase(userDetails.getUserPassword().getPassword())) {
@@ -330,9 +331,46 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
         }
     }
 
-    /*
-     * {@inheritDoc}
-     */
+    public LoginModel initSession(Map<String, String> harpUserInfo, String sessionId) {
+        logger.debug("setUpUserSession::" + harpUserInfo.get(HarpConstants.HARP_ID) + "::" + sessionId);
+        MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByHarpId(harpUserInfo.get(HarpConstants.HARP_ID));
+
+        if(userDetails == null) {
+            throw new IllegalArgumentException("HARP_ID_NOT_FOUND");
+        }
+        userDetails.setSessionId(sessionId);
+        getUpdatedUserDetails(harpUserInfo, userDetails);
+
+        hibernateUserService.saveUserDetails(userDetails);
+
+        // Set Authn Token. Used to retrieve user info.
+        setAuthenticationToken(userDetails, harpUserInfo.get(HarpConstants.ACCESS_TOKEN));
+        // Set and return user details to client.
+        return loginModelSetter(new LoginModel(), userDetails);
+    }
+
+    @Override
+    public void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId, String sessionId) throws MatException {
+        try {
+            MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(loginId);
+            userDetails.setSessionId(sessionId);
+            userDetails.setHarpId(harpUserInfo.get(HarpConstants.HARP_ID));
+            getUpdatedUserDetails(harpUserInfo, userDetails);
+
+            hibernateUserService.saveUserDetails(userDetails);
+
+            setAuthenticationToken(userDetails, harpUserInfo.get(HarpConstants.ACCESS_TOKEN));
+        } catch (Exception e) {
+            throw new MatException("Unable to save Harp User Info");
+        }
+    }
+
+    private void getUpdatedUserDetails(Map<String, String> harpUserInfo, MatUserDetails userDetails) {
+        String fullName = harpUserInfo.get(HarpConstants.HARP_FULLNAME);
+        userDetails.setUsername(fullName.substring(0, fullName.indexOf(" ")));
+        userDetails.setUserLastName(fullName.substring(fullName.indexOf(" ")).trim());
+    }
+
     @Override
     public LoginModel isValidUser(String userId, String password, String oneTimePassword, String sessionId) {
         LoginModel validateUserLoginModel = new LoginModel();
@@ -407,6 +445,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
      * @return the login model
      */
     private LoginModel loginModelSetter(LoginModel loginmodel, MatUserDetails userDetails) {
+        logger.info("LoginCredentialServiceImpl::loginModelSetter::MatUserDetails::userId::" + userDetails.getId());
         LoginModel loginModel = loginmodel;
         loginModel.setRole(userDetails.getRoles());
         loginModel.setInitialPassword(userDetails.getUserPassword().isInitial());
@@ -465,16 +504,34 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
     }
 
     /**
-     * Sets the authentication token.
+     * Sets the authentication token for Legacy logins.
      *
      * @param userDetails the new authentication token
      */
     private void setAuthenticationToken(MatUserDetails userDetails) {
         logger.debug("Setting authentication token");
-        Authentication auth = new UsernamePasswordAuthenticationToken(userDetails.getId(), userDetails.getUserPassword().getPassword(), userDetails.getAuthorities());
+        PreAuthenticatedAuthenticationToken auth =
+                new PreAuthenticatedAuthenticationToken(userDetails.getId(), userDetails.getUserPassword().getPassword(), userDetails.getAuthorities());
 
         // US 170. set additional details for history event
-        ((UsernamePasswordAuthenticationToken) auth).setDetails(userDetails);
+        auth.setDetails(userDetails);
+        SecurityContext sc = new SecurityContextImpl();
+        sc.setAuthentication(auth);
+        SecurityContextHolder.setContext(sc);
+    }
+
+    /**
+     * Sets the pre-authentication token for HARP logins.
+     *
+     * @param userDetails the new authentication token
+     */
+    private void setAuthenticationToken(MatUserDetails userDetails, String accessToken) {
+        logger.info("Setting authentication token::"+userDetails.getId());
+        PreAuthenticatedAuthenticationToken auth =
+                new PreAuthenticatedAuthenticationToken(userDetails.getId(), accessToken, userDetails.getAuthorities());
+        auth.setAuthenticated(true);
+        auth.setDetails(userDetails);
+
         SecurityContext sc = new SecurityContextImpl();
         sc.setAuthentication(auth);
         SecurityContextHolder.setContext(sc);

@@ -154,7 +154,6 @@ import mat.server.util.ManageMeasureDetailModelConversions;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
 import mat.server.validator.measure.CompositeMeasureValidator;
-import mat.shared.CQLValidationResult;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
@@ -1321,6 +1320,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             setCQLLibraryName(measure, manageMeasureDetailModel);
             manageMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
+            manageMeasureDetailModel.setFhirVersion(measure.getFhirVersion());
             manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 
             return manageMeasureDetailModel;
@@ -4792,10 +4792,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         this.cqlService = cqlService;
     }
 
-    @Override
-    public CQLModel parseCQL(String cqlBuilder) {
-        return getCqlService().parseCQL(cqlBuilder);
-    }
 
     @Override
     public SaveUpdateCQLResult getMeasureCQLFileData(String measureId) {
@@ -4821,12 +4817,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Override
     public SaveUpdateCQLResult getMeasureCQLLibraryData(String measureId) {
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-        Measure measure = measureDAO.find(measureId);
         MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
 
         if (model != null && StringUtils.isNotBlank(model.getXml())) {
             String xmlString = model.getXml();
-            result = cqlService.getCQLLibraryData(xmlString, measure.getMeasureModel());
+            result = cqlService.getCQLLibraryData(xmlString, model.getMeasureModel());
             lintAndAddToResult(measureId, result);
 
             result.setSuccess(true);
@@ -4865,11 +4860,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             return includedLibrarys.size() > 0;
         }
         return includedLibrarys.keySet().stream().anyMatch(library -> !"true".equals(library.getIsComponent()));
-    }
-
-    @Override
-    public CQLValidationResult validateCQL(CQLModel cqlModel) {
-        return null;
     }
 
     @Override
@@ -5314,11 +5304,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             }
         }
         return cqlResult;
-    }
-
-    @Override
-    public SaveUpdateCQLResult parseCQLStringForError(String cqlFileString) {
-        return getCqlService().parseCQLStringForError(cqlFileString);
     }
 
     @Override

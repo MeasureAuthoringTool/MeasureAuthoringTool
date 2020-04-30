@@ -1,30 +1,5 @@
 package mat.server;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.vsac.VSACGroovyClient;
-import org.vsac.VSACResponseResult;
-
 import mat.client.umls.service.VsacApiResult;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.dao.DataTypeDAO;
@@ -40,6 +15,32 @@ import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.UMLSSessionTicket;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.vsac.VSACGroovyClient;
+import org.vsac.VSACResponseResult;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+import static mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility.getOidFromUrl;
 
 @Service
 public class VSACApiServImpl implements VSACApiService{
@@ -273,13 +274,13 @@ public class VSACApiServImpl implements VSACApiService{
 							String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(UMLSSessionTicket.getTicket(sessionId).getTicket());
 								if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getRelease())) {
 									vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(
-										cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getRelease(), fiveMinuteServiceTicket);
+											getOidFromUrl(cqlQualityDataSetDTO.getOid()), cqlQualityDataSetDTO.getRelease(), fiveMinuteServiceTicket);
 								} else if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getVersion())) {
 									vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndVersion(
-											cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getVersion(), fiveMinuteServiceTicket);
+											getOidFromUrl(cqlQualityDataSetDTO.getOid()), cqlQualityDataSetDTO.getVersion(), fiveMinuteServiceTicket);
 								} else {
 									vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
-											cqlQualityDataSetDTO.getOid(), fiveMinuteServiceTicket, defaultExpId);
+											getOidFromUrl(cqlQualityDataSetDTO.getOid()), fiveMinuteServiceTicket, defaultExpId);
 								}
 								
 						} catch (Exception ex) {

@@ -497,7 +497,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         return true;
     }
 
-    private void generateCqlLookupTag(XmlProcessor xmlProcessor, Measure clonedMeasure,boolean isFhir) {
+    private void generateCqlLookupTag(XmlProcessor xmlProcessor, Measure clonedMeasure, boolean isFhir) {
         // This section generates CQL Look Up tag from CQLXmlTemplate.xml
 
         XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile(isFhir);

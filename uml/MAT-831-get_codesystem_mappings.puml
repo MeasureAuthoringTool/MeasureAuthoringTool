@@ -1,0 +1,7 @@
+@startuml
+MAT -> MicroServices : getCodsystemMappings
+MicroServices -> GoogleSheets: getSpreadsheetJson
+GoogleSheets -> MicroServices
+MicroServices -> MAT
+MAT -> MAT: Cache timeout in 30 min
+@enduml

@@ -17,23 +17,30 @@ public interface UserDAO extends IDAO<User, String> {
 	 *            the name
 	 * @return the list
 	 */
-	public List<User> searchForUsersByName(String name);
+	List<User> searchForUsersByName(String name);
 	
 	/**
 	 * Search for non terminated user.
 	 *
 	 * @return the list
 	 */
-	public List<User> searchForNonTerminatedUser();
-	
+	List<User> searchForNonTerminatedUser();
+
 	/**
+	 * Get user details by Email.
+	 * @param email User's email.
+	 * @return UserDetails for setting login values.
+	 */
+    UserDetails getUserDetailsByHarpId(String harpId);
+
+    /**
 	 * User exists.
 	 * 
 	 * @param userid
 	 *            the userid
 	 * @return the boolean
 	 */
-	public Boolean userExists(String userid);
+    Boolean userExists(String userid);
 	
 	/**
 	 * Find by email.
@@ -42,7 +49,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 *            the email
 	 * @return the user
 	 */
-	public User findByEmail(String email);
+	User findByEmail(String email);
 	
 	/**
 	 * Unlock users.
@@ -50,7 +57,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 * @param unlockDate
 	 *            the unlock date
 	 */
-	public void unlockUsers(Date unlockDate);
+	void unlockUsers(Date unlockDate);
 	
 	/**
 	 * Expire temporary passwords.
@@ -58,7 +65,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 * @param targetDate
 	 *            the target date
 	 */
-	public void expireTemporaryPasswords(Date targetDate);
+	void expireTemporaryPasswords(Date targetDate);
 	
 	/**
 	 * Gets the user.
@@ -67,7 +74,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 *            the user id
 	 * @return the user
 	 */
-	public UserDetails getUser(String userId);
+	UserDetails getUser(String loginId);
 	
 	/**
 	 * Save user details.
@@ -75,7 +82,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 * @param userdetails
 	 *            the userdetails
 	 */
-	public void saveUserDetails(MatUserDetails userdetails);
+	void saveUserDetails(MatUserDetails userdetails);
 	
 	/**
 	 * Sets the user sign in date.
@@ -83,7 +90,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 * @param userid
 	 *            the new user sign in date
 	 */
-	public void setUserSignInDate(String userid);
+	void setUserSignInDate(String userid);
 	
 	/**
 	 * Sets the user sign out date.
@@ -91,7 +98,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 * @param userid
 	 *            the new user sign out date
 	 */
-	public void setUserSignOutDate(String userid);
+	void setUserSignOutDate(String userid);
 	
 	/**
 	 * Find by login id.
@@ -100,7 +107,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 *            the login id
 	 * @return the user
 	 */
-	public User findByLoginId(String loginId);
+	User findByLoginId(String loginId);
 	
 	/**
 	 * Find unique login id.
@@ -109,7 +116,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 *            the login id
 	 * @return true, if successful
 	 */
-	public boolean findUniqueLoginId(String loginId);
+	boolean findUniqueLoginId(String loginId);
 	
 	/**
 	 * Search non admin users.
@@ -122,7 +129,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 *            the num results
 	 * @return the list
 	 */
-	public List<User> searchNonAdminUsers(String orgId, int i, int numResults);
+	List<User> searchNonAdminUsers(String orgId, int i, int numResults);
 	
 	/**
 	 * Gets the random security question.
@@ -131,14 +138,14 @@ public interface UserDAO extends IDAO<User, String> {
 	 *            the user id
 	 * @return the random security question
 	 */
-	public String getRandomSecurityQuestion(String userId);
+	String getRandomSecurityQuestion(String loginId);
 	
 	/**
 	 * Gets the all non admin active users.
 	 * 
 	 * @return the all non admin active users
 	 */
-	public List<User> getAllNonAdminActiveUsers();
+	List<User> getAllNonAdminActiveUsers();
 	
 	/**
 	 * Search all used organizations.
@@ -147,8 +154,11 @@ public interface UserDAO extends IDAO<User, String> {
 	 */
 	HashMap<String, Organization> searchAllUsedOrganizations();
 	
-	public List<User> getAllUsers();
+	List<User> getAllUsers();
 	
 	List<User> getUsersListForSharingMeasureOrLibrary(String userName);
-	
+
+    boolean findAssociatedHarpId(String harpPrimaryEmailId);
+
+    User findByHarpId(String harpId);
 }

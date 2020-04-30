@@ -2,7 +2,10 @@ package mat.server.service;
 
 import mat.client.login.LoginModel;
 
+import mat.client.shared.MatException;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Map;
 
 /**
  * The Interface LoginCredentialService.
@@ -21,7 +24,7 @@ public interface LoginCredentialService {
 	public LoginModel isValidUser(String userId,String password, String oneTimePassword,String sessionId);
 	
 	/**
-	 * Sign out.
+	 * Sign out Admin Users.
 	 */
 	public void signOut();
 	
@@ -63,5 +66,20 @@ public interface LoginCredentialService {
 	 *            the password
 	 * @return true, if is valid password
 	 */
-	boolean isValidPassword(String userId, String password); 
-		}
+	boolean isValidPassword(String loginId, String password);
+
+	/**
+	 * Retrieves MAT user details for provided HARP ID and stores
+	 * session ID that was generated client side.
+	 *
+	 * @param harpUserInfo User's HARP ID
+	 * @param sessionId Session ID generated at login
+
+	 * @return
+	 */
+	LoginModel initSession(Map<String, String> harpUserInfo, String sessionId);
+
+	void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId, String sessionId) throws MatException;
+
+
+}

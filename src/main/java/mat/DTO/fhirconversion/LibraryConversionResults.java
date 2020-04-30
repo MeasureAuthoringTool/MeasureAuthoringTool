@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -21,4 +22,13 @@ public class LibraryConversionResults {
     private Map<String, List<CqlConversionError>> externalErrors;
     private List<FhirValidationResult> libraryFhirValidationResults = new ArrayList();
     private CqlConversionResult cqlConversionResult = new CqlConversionResult();
+
+
+    public boolean isSuccess() {
+        return Objects.nonNull(success) && Boolean.TRUE.equals(success);
+    }
+
+    public boolean hasFailure() {
+        return !isSuccess();
+    }
 }

@@ -51,8 +51,8 @@ public class PreventCachingFilter implements Filter{
 			httpResponse.setHeader("Location", url);
 		}
 		//TODO MAT-864
-//		else if(requestURI.contains("/Mat.html") || requestURI.contains("/Bonnie.html")) {
-		else if(requestURI.contains("/Bonnie.html")) {
+		else if(requestURI.contains("/Mat.html") || requestURI.contains("/Bonnie.html")) {
+//		else if(requestURI.contains("/Bonnie.html")) {
 			logger.info("PreventCachingFilter");
 			
 			//

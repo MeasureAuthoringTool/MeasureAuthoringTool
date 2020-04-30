@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,12 +17,14 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
@@ -671,22 +674,18 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         MatContext.get().getHarpService().getHarpUrl(new AsyncCallback<String>() {
             @Override
             public void onFailure(Throwable throwable) {
-                removeOktaTokens();
+                MatContext.get().getSynchronizationDelegate().setLogOffFlag();
+                MatContext.get().handleSignOut("SIGN_OUT_EVENT", false);
             }
 
             @Override
             public void onSuccess(String harpUrl) {
-                harpLogout(harpUrl);
                 MatContext.get().getSynchronizationDelegate().setLogOffFlag();
-                MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
-                removeOktaTokens();
+                MatContext.get().handleSignOut("SIGN_OUT_EVENT", false);
+                harpLogout(harpUrl);
+                redirectToLogin();
             }
         });
-    }
-
-    private void removeOktaTokens() {
-        Storage localStorage = Storage.getLocalStorageIfSupported();
-        localStorage.removeItem(OKTA_TOKEN_STORAGE);
     }
 
     public static void setSignedInAsName(String userFirstName, String userLastName) {

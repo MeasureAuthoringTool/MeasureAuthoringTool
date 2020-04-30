@@ -86,15 +86,25 @@ import static mat.shared.HarpConstants.OKTA_TOKEN_STORAGE;
  */
 public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserver {
 
-    private Map<String, String> harpUserInfo = new HashMap<>();
-
     private static final Logger logger = Logger.getLogger(Mat.class.getSimpleName());
-
-    private Panel content;
-
-    private HarpUserVerificationPresenter harpUserVerificationPresenter;
-
     public static boolean harpUserVerificationInProgress = false;
+    private final ListBoxCodeProvider listBoxCodeProvider = new ListBoxCodeProvider();
+    private Map<String, String> harpUserInfo = new HashMap<>();
+    private Panel content;
+    private HarpUserVerificationPresenter harpUserVerificationPresenter;
+    private List<MatPresenter> presenterList;
+    private MatPresenter adminPresenter;
+    private MatPresenter myAccountPresenter;
+    private String currentUserRole = ClientConstants.USER_STATUS_NOT_LOGGEDIN;
+    private MatTabLayoutPanel mainTabLayout;
+    private String mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
+    private MeasureComposerPresenter measureComposer;
+    private ManageMeasurePresenter measureLibrary;
+    private ManageCQLLibraryAdminPresenter cqlLibraryAdminPresenter;
+    private CqlComposerPresenter cqlComposer;
+    private CqlLibraryPresenter cqlLibrary;
+    private ManageAdminReportingPresenter reportingPresenter;
+    private int tabIndex;
 
     public static void focusSkipLists(String skipstr) {
         Widget widget = SkipListBuilder.buildSkipList(skipstr);
@@ -113,21 +123,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             element.removeChild(element.getFirstChild());
         }
     }
-
-    private List<MatPresenter> presenterList;
-    private MatPresenter adminPresenter;
-    private MatPresenter myAccountPresenter;
-    private String currentUserRole = ClientConstants.USER_STATUS_NOT_LOGGEDIN;
-    private final ListBoxCodeProvider listBoxCodeProvider = new ListBoxCodeProvider();
-    private MatTabLayoutPanel mainTabLayout;
-    private String mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
-    private MeasureComposerPresenter measureComposer;
-    private ManageMeasurePresenter measureLibrary;
-    private ManageCQLLibraryAdminPresenter cqlLibraryAdminPresenter;
-    private CqlComposerPresenter cqlComposer;
-    private CqlLibraryPresenter cqlLibrary;
-    private ManageAdminReportingPresenter reportingPresenter;
-    private int tabIndex;
 
     private final AsyncCallback<SessionManagementService.Result> initSessionCallback = new AsyncCallback<SessionManagementService.Result>() {
 
@@ -175,7 +170,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private final AsyncCallback<LoginModel> harpUserSessionSetupCallback = new AsyncCallback<LoginModel>() {
         @Override
         public void onFailure(Throwable throwable) {
-            logger.log(Level.SEVERE, "LoginService::initSession -> onFailure", throwable);
+            logger.log(Level.SEVERE, "LoginService::initSession -> onFailure: " + throwable.getMessage(), throwable);
             if (throwable.getMessage().contains("MAT_ACCOUNT_REVOKED_LOCKED")) {
                 String msg = "Harp UserName doesn't match existing MAT HARP_ID, redirecting to access support page";
                 logger.log(Level.SEVERE, msg);
@@ -475,7 +470,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         });
     }
 
-
     @SuppressWarnings("unchecked")
     private void loadMatWidgets(String userFirstName, String userLastName, boolean isAlreadySignedIn, String resultMatVersion) {
         logger.log(Level.INFO, "loadMatWidgets");
@@ -636,12 +630,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         MatContext.get().getHarpService().revoke(MatContext.get().getAccessToken(), new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable throwable) {
+                logger.log(Level.SEVERE, "HarpService::revoke -> onFailure:" + throwable.getMessage(), throwable);
                 // log user out by removing their Okta browser session.
                 harpOktaLogout(redirectTo);
             }
 
             @Override
             public void onSuccess(Boolean aBoolean) {
+                logger.log(Level.SEVERE, "HarpService::revoke -> onSuccess:" + aBoolean);
                 harpOktaLogout(redirectTo);
             }
         });
@@ -658,7 +654,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
             @Override
             public void onSuccess(String harpUrl) {
-                logger.log(Level.SEVERE, "HarpService::getHarpUrl -> onSuccess");
+                logger.log(Level.INFO, "HarpService::getHarpUrl -> onSuccess");
                 harpLogout(harpUrl);
                 MatContext.get().getSynchronizationDelegate().setLogOffFlag();
                 MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);

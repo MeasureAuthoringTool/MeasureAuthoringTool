@@ -618,6 +618,16 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>compile-gwt-harp-support</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <moduleName>mat.HarpSupport</moduleName>
+                            <moduleShortName>harpsupport</moduleShortName>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>compile-gwt-mat</id>
                         <goals>
                             <goal>compile</goal>

@@ -19,6 +19,8 @@ public class ClientConstants {
 
     public static final String HTML_LOGIN = "/HarpLogin.html";
 
+    public static final String HTML_HARP_SUPPORT = "/HarpSupport.html";
+
     public static final String HTML_MAT = "/Mat.html";
 
     public static final String HTML_BONNIE = "/Bonnie.html";

@@ -9,6 +9,7 @@ import mat.client.event.ReturnToLoginEvent;
 import mat.client.login.ForgottenPasswordView;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
+import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.TextBox;
 
 public class HarpUserVerificationPresenter {
@@ -26,6 +27,8 @@ public class HarpUserVerificationPresenter {
         String getSecurityAnswer();
 
         HasClickHandlers getSubmit();
+
+        Anchor getNewUserAnchorTab();
 
         HasClickHandlers getReset();
 
@@ -46,6 +49,8 @@ public class HarpUserVerificationPresenter {
         display.getReset().addClickHandler(event -> onCancel());
 
         display.getSubmit().addClickHandler(event -> onGetSecurityQuestion());
+
+        display.getNewUserAnchorTab().addClickHandler(event -> showNewUserInformation());
 
         display.setSecurityQuestionAnswerEnabled(false);
     }
@@ -132,6 +137,12 @@ public class HarpUserVerificationPresenter {
         display.getErrorMessageDisplay().clearAlert();
         display.getLoginId().setFocus(true);
         ForgottenPasswordView.isUserIdSubmit = true;
+    }
+
+    private void showNewUserInformation() {
+        NewUserRegistrationModal newUserRegistrationModal = new NewUserRegistrationModal();
+        newUserRegistrationModal.show();
+        newUserRegistrationModal.getCloseButton().addClickHandler(event -> newUserRegistrationModal.hide());
     }
 
     public void go(HasWidgets container) {

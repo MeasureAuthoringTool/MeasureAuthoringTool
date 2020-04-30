@@ -2,7 +2,14 @@ package mat.server.service.fhirvalidationreport;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
-import mat.DTO.fhirconversion.*;
+import mat.DTO.fhirconversion.ConversionOutcome;
+import mat.DTO.fhirconversion.ConversionResultDto;
+import mat.DTO.fhirconversion.CqlConversionError;
+import mat.DTO.fhirconversion.CqlConversionResult;
+import mat.DTO.fhirconversion.FhirValidationResult;
+import mat.DTO.fhirconversion.LibraryConversionResults;
+import mat.DTO.fhirconversion.MatCqlConversionException;
+import mat.DTO.fhirconversion.ValueSetConversionResults;
 import mat.client.shared.MatRuntimeException;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
@@ -19,7 +26,11 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class CqlLibraryValidationReportImpl implements FhirValidationReport {
@@ -184,6 +195,7 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
          if (CollectionUtils.isNotEmpty(conversionResultDto.getLibraryConversionResults())) {
              for (LibraryConversionResults results : conversionResultDto.getLibraryConversionResults()) {
                  if ("Not Found in Hapi".equals(results.getReason())) {
+                     logger.debug("Not found in Hapi");
                      paramsMap.put("LibraryNotFoundInHapi", results.getReason());
                  }
                  if (results.getSuccess() == null || !results.getSuccess()) {

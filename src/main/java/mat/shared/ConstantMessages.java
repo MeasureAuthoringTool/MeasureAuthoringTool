@@ -119,6 +119,8 @@ public class ConstantMessages {
 
     public static final String LOGIN_MODULE = "LOGIN";
 
+    public static final String HARP_SUPPORT_MODULE = "HARP SUPPORT";
+
     public static final String PASSWORD = "password";
 
     public static final String PASSWORD_EXPIRE_DATE = "passwordExpireDate";

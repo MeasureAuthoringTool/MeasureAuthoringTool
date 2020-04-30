@@ -172,7 +172,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         public void onFailure(Throwable throwable) {
             logger.log(Level.SEVERE, "LoginService::initSession -> onFailure: " + throwable.getMessage(), throwable);
             if (throwable.getMessage().contains("MAT_ACCOUNT_REVOKED_LOCKED")) {
-                String msg = "Harp UserName doesn't match existing MAT HARP_ID, redirecting to access support page";
+                String msg = "HARP User's access to the MAT has been revoked, redirecting to access support page";
                 logger.log(Level.SEVERE, msg);
                 MatContext.get().recordTransactionEvent(null, null, "MAT_ACCOUNT_REVOKED_LOCKED", msg, 0);
             } else if (throwable.getMessage().contains("HARP_ID_NOT_FOUND")) {
@@ -619,7 +619,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     }
 
     private void logout() {
-        logout(ClientConstants.HTML_LOGIN);
+        logout(null);
     }
 
     private void logout(String redirectTo) {
@@ -653,11 +653,18 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             public void onSuccess(String harpUrl) {
                 logger.log(Level.INFO, "HarpService::getHarpUrl -> onSuccess");
                 MatContext.get().getSynchronizationDelegate().setLogOffFlag();
-                MatContext.get().handleSignOut("SIGN_OUT_EVENT", null);
+                MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
                 harpLogout(harpUrl);
+                removeOktaTokens();
                 redirectToLogin();
             }
         });
+    }
+
+    private void removeOktaTokens() {
+        logger.log(Level.INFO, "removeOktaTokens");
+        Storage localStorage = Storage.getLocalStorageIfSupported();
+        localStorage.removeItem(OKTA_TOKEN_STORAGE);
     }
 
     public static void setSignedInAsName(String userFirstName, String userLastName) {

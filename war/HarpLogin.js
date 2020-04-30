@@ -42,7 +42,6 @@
    * @param token
    */
   function postToken(token) {
-    console.dir(token);
     document.getElementById("loginPost").value = token.accessToken;
     const form = document.getElementById("loginForm");
     form.action = "Mat.html";

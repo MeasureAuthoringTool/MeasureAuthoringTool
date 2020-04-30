@@ -44,5 +44,4 @@
     <source path='model'/>
     <source path='DTO'/>
 
-    <!-- <add-linker name="xsiframe" /> -->
 </module>

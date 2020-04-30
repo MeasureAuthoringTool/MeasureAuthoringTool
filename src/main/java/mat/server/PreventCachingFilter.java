@@ -50,9 +50,7 @@ public class PreventCachingFilter implements Filter{
 			}
 			httpResponse.setHeader("Location", url);
 		}
-		//TODO MAT-864
 		else if(requestURI.contains("/Mat.html") || requestURI.contains("/Bonnie.html")) {
-//		else if(requestURI.contains("/Bonnie.html")) {
 			logger.info("PreventCachingFilter");
 			
 			//
@@ -64,7 +62,6 @@ public class PreventCachingFilter implements Filter{
 			httpResponse.setDateHeader("Expires", 0);
 			httpResponse.setHeader("Pragma", "no-cache");
 			httpResponse.setHeader("Cache-control", "no-cache, no-store, must-revalidate");
-			//TODO MAT-864
 			if(LoggedInUserUtil.getLoggedInUser() == null) {
 				logger.info("Redirecting request for " + httpRequest.getRequestURI() + " to Login in session " + httpRequest.getSession().getId());
 				httpResponse.setStatus(302);

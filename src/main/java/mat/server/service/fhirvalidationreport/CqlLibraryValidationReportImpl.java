@@ -20,6 +20,9 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.lang.Boolean.FALSE;
 
 @Service
 public class CqlLibraryValidationReportImpl implements FhirValidationReport {
@@ -124,115 +127,162 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
     }
 
     private void addErrors(ConversionResultDto conversionResultDto, Map<String, Object> paramsMap) {
-        List<FhirValidationResult> valueSetFhirValidationErrors = getValueSetErrors(conversionResultDto);
 
-        List<FhirValidationResult> libraryFhirValidationErrors = new ArrayList<>();
-        HashMap<String, List<Object>> qdmCqlConversionErrorsMap = new HashMap<>();
-        HashMap<String, List<Object>> fhirCqlConversionErrorsMap = new HashMap<>();
-        Map<String, List<CqlConversionError>> externalErrorsMap = new HashMap<>();
-        getLibraryErrors(conversionResultDto, libraryFhirValidationErrors, qdmCqlConversionErrorsMap, fhirCqlConversionErrorsMap, paramsMap, externalErrorsMap);
-
-        paramsMap.put("valueSetFhirValidationErrors", valueSetFhirValidationErrors);
-        paramsMap.put("libraryFhirValidationErrors", libraryFhirValidationErrors);
-        paramsMap.put("qdmCqlConversionErrors", qdmCqlConversionErrorsMap);
-        paramsMap.put("fhirCqlConversionErrors", fhirCqlConversionErrorsMap);
-        paramsMap.put("externalErrorsMap", externalErrorsMap);
-    }
-
-    private void buildCqlConversionErrorMap(Set<CqlConversionError> cqlConversionErrorsSet, Map<String, List<Object>> cqlConversionErrorsMap) {
-        cqlConversionErrorsSet.forEach(q ->  {
-            if(StringUtils.isNotBlank(q.getTargetIncludeLibraryId()) && StringUtils.isNotBlank(q.getTargetIncludeLibraryVersionId())) {
-                String targetIncludedLibraryWithVersion = q.getTargetIncludeLibraryId() + " " + q.getTargetIncludeLibraryVersionId();
-                if(!cqlConversionErrorsMap.containsKey(targetIncludedLibraryWithVersion)) {
-                    cqlConversionErrorsMap.put(targetIncludedLibraryWithVersion, new ArrayList<>());
-                }
-                cqlConversionErrorsMap.get(targetIncludedLibraryWithVersion).add(q);
-            }
-        });
-    }
-
-    private void buildMatCqlConversionExceptionMap(Set<MatCqlConversionException> matCqlConversionExceptionSet, Map<String, List<Object>> matCqlConversionExceptionMap) {
-        matCqlConversionExceptionSet.forEach(q ->  {
-            if(StringUtils.isNotBlank(q.getTargetIncludeLibraryId()) && StringUtils.isNotBlank(q.getTargetIncludeLibraryVersionId())) {
-                String targetIncludedLibraryWithVersion = q.getTargetIncludeLibraryId() + " " + q.getTargetIncludeLibraryVersionId();
-                if(!matCqlConversionExceptionMap.containsKey(targetIncludedLibraryWithVersion)) {
-                    matCqlConversionExceptionMap.put(targetIncludedLibraryWithVersion, new ArrayList<>());
-                }
-                matCqlConversionExceptionMap.get(targetIncludedLibraryWithVersion).add(q);
-            }
-        });
-    }
-
-
-    private List<FhirValidationResult> getValueSetErrors(ConversionResultDto conversionResultDto) {
-        // ValueSet FHIR validation errors
-        List<FhirValidationResult> valueSetFhirValidationErrors = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(conversionResultDto.getValueSetConversionResults())) {
-            for (ValueSetConversionResults valueSetConversionResults : conversionResultDto.getValueSetConversionResults()) {
-                if (Boolean.FALSE.equals(valueSetConversionResults.getSuccess())) {
-                    valueSetFhirValidationErrors.addAll(valueSetConversionResults.getValueSetFhirValidationResults());
-                }
-            }
+        if (CollectionUtils.isEmpty(conversionResultDto.getLibraryConversionResults())) {
+            paramsMap.put("libraryFhirValidationErrors", new ArrayList<Object>());
+            paramsMap.put("externalErrorsMap", new ArrayList<Object>());
+            paramsMap.put("qdmCqlConversionErrors", new ArrayList<Object>());
+            paramsMap.put("fhirCqlConversionErrors", new ArrayList<Object>());
+            paramsMap.put("valueSetFhirValidationErrors", new ArrayList<Object>());
+        } else {
+            paramsMap.put("valueSetFhirValidationErrors", buildValueSetErrors(conversionResultDto));
+            paramsMap.put("LibraryNotFoundInHapi", toLibraryNotFoundInHapi(conversionResultDto));
+            paramsMap.put("libraryFhirValidationErrors", buildLibraryFhirValidationErrors(conversionResultDto));
+            paramsMap.put("qdmCqlConversionErrors", buildQdmConversionErrorsMap(conversionResultDto));
+            paramsMap.put("fhirCqlConversionErrors", buildFhirConversionErrorsMap(conversionResultDto));
+            paramsMap.put("externalErrorsMap", buildExternalErrorsMap(conversionResultDto));
         }
-        return valueSetFhirValidationErrors;
+
     }
 
-    private void getLibraryErrors(ConversionResultDto conversionResultDto, List<FhirValidationResult> libraryFhirValidationErrors, HashMap<String, List<Object>> qdmCqlConversionErrorsMap,
-                           HashMap<String, List<Object>> fhirCqlConversionErrorsMap, Map<String, Object> paramsMap, Map<String, List<CqlConversionError>> externalErrorsMap) {
-         // Library FHIR validation errors
-         CqlConversionResult cqlConversionResult;
-         if (CollectionUtils.isNotEmpty(conversionResultDto.getLibraryConversionResults())) {
-             for (LibraryConversionResults results : conversionResultDto.getLibraryConversionResults()) {
-                 if ("Not Found in Hapi".equals(results.getReason())) {
-                     paramsMap.put("LibraryNotFoundInHapi", results.getReason());
-                 }
-                 if (results.getSuccess() == null || !results.getSuccess()) {
+    private List<FhirValidationResult> buildValueSetErrors(ConversionResultDto conversionResultDto) {
+        return conversionResultDto.getValueSetConversionResults().stream()
+                .filter(results -> isNotSuccess(results.getSuccess()))
+                .map(results -> results.getValueSetFhirValidationResults())
+                .findAny()
+                .orElse(Collections.emptyList());
+    }
 
-                     generateLibraryFhirValidationErrors(results, libraryFhirValidationErrors);
+    private String toLibraryNotFoundInHapi(ConversionResultDto conversionResultDto) {
+        return conversionResultDto.getLibraryConversionResults().stream()
+                .filter(results -> "Not Found in Hapi".equals(results.getReason()))
+                .map(results -> results.getReason())
+                .findAny()
+                .orElse(null);
+    }
 
-                     if(results.getSuccess() != null) {
-                         generateExternalErrorsMap(results, externalErrorsMap);
-                     }
+    private List<FhirValidationResult> buildLibraryFhirValidationErrors(ConversionResultDto conversionResultDto) {
+        return conversionResultDto.getLibraryConversionResults().stream()
+                .filter(results -> Objects.isNull(results) || isNotSuccess(results.getSuccess()))
+                .map(results -> results.getLibraryFhirValidationResults())
+                .findAny()
+                .orElse(Collections.emptyList());
+    }
 
-                     // CQL conversion errors
-                     cqlConversionResult = results.getCqlConversionResult();
-                     if (cqlConversionResult != null) {
-                         if (CollectionUtils.isNotEmpty(cqlConversionResult.getCqlConversionErrors())) {
-                             buildCqlConversionErrorMap(cqlConversionResult.getCqlConversionErrors(), qdmCqlConversionErrorsMap);
-                         }
-                         if (CollectionUtils.isNotEmpty(cqlConversionResult.getMatCqlConversionErrors())) {
-                             buildMatCqlConversionExceptionMap(cqlConversionResult.getMatCqlConversionErrors(), qdmCqlConversionErrorsMap);
-                         }
-                         if (CollectionUtils.isNotEmpty(cqlConversionResult.getFhirCqlConversionErrors())) {
-                             buildCqlConversionErrorMap(cqlConversionResult.getFhirCqlConversionErrors(), fhirCqlConversionErrorsMap);
-                         }
-                         if (CollectionUtils.isNotEmpty(cqlConversionResult.getFhirMatCqlConversionErrors())) {
-                             buildMatCqlConversionExceptionMap(cqlConversionResult.getFhirMatCqlConversionErrors(), fhirCqlConversionErrorsMap);
-                         }
-                     }
-                 }
-             }
-         }
-     }
+    private HashMap<String, List<Object>> buildQdmConversionErrorsMap(ConversionResultDto conversionResultDto) {
+        var qdmCqlConversionErrorsMap = new HashMap<String, List<Object>>();
 
-     private void generateExternalErrorsMap(LibraryConversionResults libraryConversionResults, Map<String, List<CqlConversionError>> externalErrorsMap) {
+        var qdmCqlConversionErrors = extractQdmCqlConversionErrorsMap(conversionResultDto);
+        for (var entry : qdmCqlConversionErrors.entrySet()) {
+            qdmCqlConversionErrorsMap.putIfAbsent(entry.getKey(), new ArrayList<>());
+            qdmCqlConversionErrorsMap.get(entry.getKey()).addAll(entry.getValue());
+        }
 
-         libraryConversionResults.getExternalErrors().forEach((k, v) -> {
-             v.forEach(q -> {
-                 if(StringUtils.isNotBlank(q.getTargetIncludeLibraryId()) && StringUtils.isNotBlank(q.getTargetIncludeLibraryVersionId())) {
-                     String targetIncludedLibraryWithVersion = q.getTargetIncludeLibraryId() + " " + q.getTargetIncludeLibraryVersionId();
-                     if(!externalErrorsMap.containsKey(targetIncludedLibraryWithVersion)) {
-                         externalErrorsMap.put(targetIncludedLibraryWithVersion, new ArrayList<>());
-                     }
-                     externalErrorsMap.get(targetIncludedLibraryWithVersion).add(q);
-                 }
-             });
-         });
-     }
+        var qdmMatCqlConversionErrors = extractQdmMatCqlConversionExceptionsMap(conversionResultDto);
+        for (var entry : qdmMatCqlConversionErrors.entrySet()) {
+            qdmCqlConversionErrorsMap.putIfAbsent(entry.getKey(), new ArrayList<>());
+            qdmCqlConversionErrorsMap.get(entry.getKey()).addAll(entry.getValue());
+        }
 
-     private void generateLibraryFhirValidationErrors(LibraryConversionResults libraryConversionResults, List<FhirValidationResult> libraryFhirValidationErrors) {
-         if (CollectionUtils.isNotEmpty(libraryConversionResults.getLibraryFhirValidationResults())) {
-             libraryFhirValidationErrors.addAll(libraryConversionResults.getLibraryFhirValidationResults());
-         }
-     }
+        return qdmCqlConversionErrorsMap;
+    }
+
+    private Map<String, List<CqlConversionError>> extractQdmCqlConversionErrorsMap(ConversionResultDto conversionResultDto) {
+        return conversionResultDto.getLibraryConversionResults().stream()
+                .filter(results -> Objects.isNull(results) || isNotSuccess(results.getSuccess()))
+                .map(results -> results.getCqlConversionResult())
+                .filter(Objects::nonNull)
+                .map(cqlConversionResult -> cqlConversionResult.getCqlConversionErrors())
+                .filter(CollectionUtils::isNotEmpty)
+                .flatMap(cqlConversionErrors -> cqlConversionErrors.stream())
+                .filter(cqlConversionError -> StringUtils.isNotBlank(cqlConversionError.getTargetIncludeLibraryId()))
+                .filter(cqlConversionError -> StringUtils.isNotBlank(cqlConversionError.getTargetIncludeLibraryVersionId()))
+                .collect(Collectors.groupingBy(cqlConversionError -> toKey(cqlConversionError)));
+    }
+
+    private Map<String, List<MatCqlConversionException>> extractQdmMatCqlConversionExceptionsMap(ConversionResultDto conversionResultDto) {
+        return conversionResultDto.getLibraryConversionResults().stream()
+                .filter(results -> Objects.isNull(results) || isNotSuccess(results.getSuccess()))
+                .map(results -> results.getCqlConversionResult())
+                .map(cqlConversionResult -> cqlConversionResult.getMatCqlConversionErrors())
+                .filter(matCqlConversionException -> CollectionUtils.isNotEmpty(matCqlConversionException))
+                .flatMap(fhirMatCqlConversionErrors -> fhirMatCqlConversionErrors.stream())
+                .filter(mapConversionException -> StringUtils.isNotBlank(mapConversionException.getTargetIncludeLibraryId()))
+                .filter(mapConversionException -> StringUtils.isNotBlank(mapConversionException.getTargetIncludeLibraryVersionId()))
+                .collect(Collectors.groupingBy(mapCqlConversionException -> toKey(mapCqlConversionException)));
+    }
+
+    private Map<String, List<Object>> buildFhirConversionErrorsMap(ConversionResultDto conversionResultDto) {
+        var fhirCqlConversionErrorsMap = new HashMap<String, List<Object>>();
+
+        var fhirCqlConversionErrors = extractFhirCqlConversionErrorsMap(conversionResultDto);
+        for (var entry : fhirCqlConversionErrors.entrySet()) {
+            fhirCqlConversionErrorsMap.putIfAbsent(entry.getKey(), new ArrayList<>());
+            fhirCqlConversionErrorsMap.get(entry.getKey()).addAll(entry.getValue());
+        }
+
+        var fhirMatCqlConversionErrors = extractFhirMatCqlConversionExceptionsMap(conversionResultDto);
+        for (var entry : fhirMatCqlConversionErrors.entrySet()) {
+            fhirCqlConversionErrorsMap.putIfAbsent(entry.getKey(), new ArrayList<>());
+            fhirCqlConversionErrorsMap.get(entry.getKey()).addAll(entry.getValue());
+        }
+
+        return fhirCqlConversionErrorsMap;
+    }
+
+    private Map<String, List<CqlConversionError>> extractFhirCqlConversionErrorsMap(ConversionResultDto conversionResultDto) {
+        return conversionResultDto.getLibraryConversionResults().stream()
+                .filter(results -> Objects.isNull(results) || isNotSuccess(results.getSuccess()))
+                .map(results -> results.getCqlConversionResult())
+                .filter(Objects::nonNull)
+                .map(cqlConversionResult -> cqlConversionResult.getFhirCqlConversionErrors())
+                .filter(CollectionUtils::isNotEmpty)
+                .flatMap(cqlConversionErrors -> cqlConversionErrors.stream())
+                .filter(cqlConversionError -> StringUtils.isNotBlank(cqlConversionError.getTargetIncludeLibraryId()))
+                .filter(cqlConversionError -> StringUtils.isNotBlank(cqlConversionError.getTargetIncludeLibraryVersionId()))
+                .collect(Collectors.groupingBy(cqlConversionError -> toKey(cqlConversionError)));
+    }
+
+    private Map<String, List<MatCqlConversionException>> extractFhirMatCqlConversionExceptionsMap(ConversionResultDto conversionResultDto) {
+        return conversionResultDto.getLibraryConversionResults().stream()
+                .filter(results -> Objects.isNull(results) || isNotSuccess(results.getSuccess()))
+                .map(results -> results.getCqlConversionResult())
+                .map(cqlConversionResult -> cqlConversionResult.getFhirMatCqlConversionErrors())
+                .filter(matCqlConversionException -> CollectionUtils.isNotEmpty(matCqlConversionException))
+                .flatMap(fhirMatCqlConversionErrors -> fhirMatCqlConversionErrors.stream())
+                .filter(mapConversionException -> StringUtils.isNotBlank(mapConversionException.getTargetIncludeLibraryId()))
+                .filter(mapConversionException -> StringUtils.isNotBlank(mapConversionException.getTargetIncludeLibraryVersionId()))
+                .collect(Collectors.groupingBy(mapConversionException -> toKey(mapConversionException)));
+    }
+
+    private Map<String, List<CqlConversionError>> buildExternalErrorsMap(ConversionResultDto conversionResultDto) {
+        return conversionResultDto.getLibraryConversionResults().stream()
+                .filter(results -> Objects.nonNull(results))
+                .filter(results -> isNotSuccess(results.getSuccess()))
+                .map(results -> results.getExternalErrors())
+                .flatMap(entries -> entries.entrySet().stream())
+                .flatMap(e -> e.getValue().stream())
+                .filter(q -> StringUtils.isNotBlank(q.getTargetIncludeLibraryId()))
+                .filter(q -> StringUtils.isNotBlank(q.getTargetIncludeLibraryVersionId()))
+                .collect(Collectors.groupingBy(q -> toKey(q)));
+    }
+
+    private String toKey(CqlConversionError cqlConversionError) {
+        return new StringBuilder(cqlConversionError.getTargetIncludeLibraryId())
+                .append(" ")
+                .append(cqlConversionError.getTargetIncludeLibraryVersionId())
+                .toString();
+    }
+
+    private String toKey(MatCqlConversionException mapConversionException) {
+        return new StringBuilder(mapConversionException.getTargetIncludeLibraryId())
+                .append(" ")
+                .append(mapConversionException.getTargetIncludeLibraryVersionId())
+                .toString();
+    }
+
+    private boolean isNotSuccess(Boolean success) {
+        return FALSE.equals(success);
+    }
+
 }

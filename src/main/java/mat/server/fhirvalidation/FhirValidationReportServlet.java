@@ -115,6 +115,7 @@ public class FhirValidationReportServlet extends HttpServlet {
     private FhirValidationReport getLibraryValidationReportService() {
         return getApplicationContext().getBean(CqlLibraryValidationReportImpl.class);
     }
+
     private FhirValidationReport getMeasureValidationReportService() {
         return getApplicationContext().getBean(MeasureValidationReportImpl.class);
     }

@@ -18,7 +18,10 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SpacerWidget;
 import mat.shared.HarpConstants;
+import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.PanelFooter;
+
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 
@@ -26,6 +29,8 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
     private Panel mainPanel;
 
     private TextBox loginId = new TextBox();
+
+    private Anchor newUserAnchor;
 
     private PasswordTextBox password = new PasswordTextBox();
 
@@ -112,10 +117,23 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         bluePanel.add(securityQuestionAnsPanel);
         bluePanel.add(new SpacerWidget());
 
-        buttonBar.getSaveButton().setText("Submit");
+        buttonBar.getSaveButton().setText("Link to Mat Account");
         bluePanel.add(buttonBar);
+        bluePanel.add(new SpacerWidget());
+
+        PanelFooter loginPanelFooter = new PanelFooter();
+        HorizontalPanel hPanel = new HorizontalPanel();
+        newUserAnchor = new Anchor();
+        newUserAnchor.setText("I do not have a MAT (Measure Authoring tool) account");
+        newUserAnchor.setTitle("I do not have a MAT (Measure Authoring tool) account");
+        newUserAnchor.getElement().setAttribute("alt", "I do not have MAT account");
+        hPanel.add(newUserAnchor);
+
+        loginPanelFooter.add(hPanel);
 
         mainPanel.add(bluePanel);
+        mainPanel.add(loginPanelFooter);
+
     }
 
     @Override
@@ -141,6 +159,11 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
     @Override
     public HasClickHandlers getSubmit() {
         return buttonBar.getSaveButton();
+    }
+
+    @Override
+    public Anchor getNewUserAnchorTab() {
+        return newUserAnchor;
     }
 
     @Override

@@ -61,7 +61,9 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
     private String userLastName;
     
     private String sessionId;
-    
+
+    private String harpId;
+
     private UserPreference userPreference;
     
     public MatUserDetails() {
@@ -266,6 +268,15 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	public void setUserPreference(UserPreference userPreference) {
 		this.userPreference = userPreference;
 	}
+
+    @Column(name = "HARP_ID", unique = true, length = 45)
+    public String getHarpId() {
+        return harpId;
+    }
+
+    public void setHarpId(String harpId) {
+        this.harpId = harpId;
+    }
 }
 
 

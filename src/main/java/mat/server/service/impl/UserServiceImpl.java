@@ -609,7 +609,6 @@ public class UserServiceImpl implements UserService {
                     requestResetLockedPassword(user.getId());
                 }
                 saveExisting(user);
-
             } else {
                 saveNew(user);
             }
@@ -635,6 +634,7 @@ public class UserServiceImpl implements UserService {
         user.setMiddleInit(model.getMiddleInitial());
         user.setTitle(model.getTitle());
         user.setEmailAddress(model.getEmailAddress());
+        user.setHarpId(model.getHarpId());
         user.setPhoneNumber(model.getPhoneNumber());
         user.setStatus(getStatusObject(model.isActive()));
         user.setSecurityRole(getRole(model.getRole()));

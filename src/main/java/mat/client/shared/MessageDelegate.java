@@ -33,6 +33,7 @@ public class MessageDelegate {
     private static final String CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name. Library names must start with an alpha-character or underscore, followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
     private static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has an incorrect format.";
     private static final String EMAIL_ID_REQUIRED = "Email Address is required.";
+    private static final String HARP_ID_IS_REQUIRED = "HARP ID is required.";
     private static final String LOGIN_USER_REQUIRED = "User Name is required.";
     private static final String NO_MEASURES = "No measures returned. Please change your search criteria and search again.";
     private static final String NO_LIBRARIES_RETURNED = "No libraries returned. Please change your search criteria and search again.";
@@ -981,4 +982,7 @@ public class MessageDelegate {
         return "Only one draft per Library family should be allowed.";
     }
 
+    public String getHarpIdRequiredMessage() {
+        return HARP_ID_IS_REQUIRED;
+    }
 }

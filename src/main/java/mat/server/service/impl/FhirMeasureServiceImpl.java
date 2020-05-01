@@ -155,7 +155,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                     cqlModelXmlFrag,
                     CQLModel.class);
 
-            var convCqlToMatXml = cqlVisitorFactory.getConversionCqlToMatXmlVisitor();
+            var convCqlToMatXml = cqlVisitorFactory.getCqlToMatXmlVisitor();
             convCqlToMatXml.setSourceModel(sourceCqlModel);
 
             cqlParser.parse(cql,convCqlToMatXml);

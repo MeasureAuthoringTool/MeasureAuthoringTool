@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import mat.DTO.VSACCodeSystemDTO;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.core.client.GWT;
@@ -850,8 +852,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
                     @Override
                     public void onFailure(Throwable caught) {
                         logger.log(Level.SEVERE, "Error in CQLLibraryService.searchForIncludes. Error message: " + caught.getMessage(), caught);
-						showSearchingBusy(false);
-						messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                        showSearchingBusy(false);
+                        messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                     }
 
                     @Override
@@ -893,7 +895,24 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
             @Override
             public void onSuccess(SaveUpdateCQLResult result) {
                 handleCQLData(result);
-                showSearchingBusy(false);
+                if (MatContext.get().isCurrentModelTypeFhir()) {
+                    MatContext.get().getCodeListService().getOidToVsacCodeSystemMap(new AsyncCallback<Map<String, VSACCodeSystemDTO>>() {
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            logger.log(Level.SEVERE, "Error in CodeSystemMappingService.getOidToFhirUrlMap. Error message: " + throwable.getMessage(), throwable);
+                            Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                            showSearchingBusy(false);
+                        }
+
+                        @Override
+                        public void onSuccess(Map<String, VSACCodeSystemDTO> map) {
+                            MatContext.get().setOidToVSACCodeSystemMap(map);
+                            showSearchingBusy(false);
+                        }
+                    });
+                } else {
+                    showSearchingBusy(false);
+                }
             }
         });
     }
@@ -1051,7 +1070,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
         MatContext.get().getMeasureService().getMeasureCQLLibraryData(MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
             @Override
             public void onSuccess(SaveUpdateCQLResult result) {
-				showSearchingBusy(false);
+                showSearchingBusy(false);
                 if (result.isSuccess()) {
                     buildCQLViewSuccess(result);
                 }
@@ -1535,6 +1554,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
         GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
         if ((gbCopyPaste != null) && (gbCopyPaste.getCopiedCodeList().size() > 0)) {
             List<CQLCode> codesToPaste = cqlWorkspaceView.getCodesView().setMatCodeList(gbCopyPaste.getCopiedCodeList(), appliedCodeTableList);
+            logger.log(Level.INFO,"Codes to paste: " + codesToPaste);
             if (codesToPaste.size() > 0) {
                 String measureId = MatContext.get().getCurrentMeasureId();
                 showSearchingBusy(true);
@@ -1548,6 +1568,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
                     @Override
                     public void onSuccess(SaveUpdateCQLResult result) {
+                        logger.log(Level.INFO,"Add success. Codes to add: " + result.getCqlCodeList());
                         messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFULLY_PASTED_CODES_IN_MEASURE);
                         cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
                         appliedCodeTableList.clear();
@@ -1941,7 +1962,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
     }
 
     private CQLValueSetTransferObject createValueSetTransferObject(String measureID) {
-        logger.log(Level.INFO,"Entering createValueSetTransferObject(" + measureID + ")");
+        logger.log(Level.INFO, "Entering createValueSetTransferObject(" + measureID + ")");
         if (currentMatValueSet == null) {
             currentMatValueSet = new MatValueSet();
         }
@@ -1957,7 +1978,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
         } else {
             matValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentMatValueSet.getID());
         }
-        logger.log(Level.INFO,"valueset.oid=" + matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
+        logger.log(Level.INFO, "valueset.oid=" + matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
 
 
         if (!cqlWorkspaceView.getValueSetView().getSuffixInput().getValue().isEmpty()) {
@@ -1970,13 +1991,13 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
         matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(EMPTY_STRING);
         String releaseValue = cqlWorkspaceView.getValueSetView().getReleaseListBox().getSelectedValue();
-        if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+        if (!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
             matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(releaseValue);
         }
 
         matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(EMPTY_STRING);
         String programValue = cqlWorkspaceView.getValueSetView().getProgramListBox().getSelectedValue();
-        if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+        if (!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
             matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(programValue);
         }
 

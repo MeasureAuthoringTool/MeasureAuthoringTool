@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.DTO.CompositeMeasureScoreDTO;
 import mat.DTO.OperatorDTO;
 import mat.DTO.UserPreferenceDTO;
+import mat.DTO.VSACCodeSystemDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
 import mat.client.admin.service.AdminServiceAsync;
@@ -175,6 +176,8 @@ public class MatContext implements IsSerializable {
     private ManageMeasureSearchModel manageMeasureSearchModel;
 
     private SynchronizationDelegate synchronizationDelegate = new SynchronizationDelegate();
+
+    private Map<String, VSACCodeSystemDTO> oidToVSACCodeSystemMap = new HashMap<>();
 
     private int errorTabIndex;
 
@@ -1601,5 +1604,13 @@ public class MatContext implements IsSerializable {
 
     public void setHarpUserInfo(Map<String, String> harpUserInfo) {
         this.harpUserInfo = harpUserInfo;
+    }
+
+    public Map<String, VSACCodeSystemDTO> getOidToVSACCodeSystemMap() {
+        return oidToVSACCodeSystemMap;
+    }
+
+    public void setOidToVSACCodeSystemMap(Map<String, VSACCodeSystemDTO> oidToVSACCodeSystemMap) {
+        this.oidToVSACCodeSystemMap = oidToVSACCodeSystemMap;
     }
 }

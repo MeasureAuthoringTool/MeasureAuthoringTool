@@ -3,9 +3,11 @@ package mat.client.cqlworkspace;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import mat.DTO.VSACCodeSystemDTO;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.core.client.GWT;
@@ -1242,6 +1244,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
     }
 
     private void getCQLDataForLoad() {
+        logger.log(Level.INFO,"Entering getCQLDataForLoad");
         showSearchingBusy(true);
         MatContext.get().getCQLLibraryService().getCQLDataForLoad(MatContext.get().getCurrentCQLLibraryId(), new AsyncCallback<SaveUpdateCQLResult>() {
 
@@ -1249,6 +1252,26 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
             public void onSuccess(SaveUpdateCQLResult result) {
                 handleCQLData(result);
                 showSearchingBusy(false);
+                if (MatContext.get().isCurrentModelTypeFhir()) {
+                    logger.log(Level.INFO,"isCurrentModelTypeFhir, calling getOidToVsacCodeSystemMap");
+                    MatContext.get().getCodeListService().getOidToVsacCodeSystemMap(new AsyncCallback<Map<String, VSACCodeSystemDTO>>() {
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            logger.log(Level.SEVERE, "Error in CodeSystemMappingService.getOidToFhirUrlMap. Error message: " + throwable.getMessage(), throwable);
+                            Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                            showSearchingBusy(false);
+                        }
+
+                        @Override
+                        public void onSuccess(Map<String, VSACCodeSystemDTO> map) {
+                            logger.log(Level.INFO,"called getOidToVsacCodeSystemMap " + map);
+                            MatContext.get().setOidToVSACCodeSystemMap(map);
+                            showSearchingBusy(false);
+                        }
+                    });
+                } else {
+                    showSearchingBusy(false);
+                }
             }
 
             @Override

@@ -1,6 +1,11 @@
 package mat.cql;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Lookup;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,21 +16,15 @@ import org.springframework.stereotype.Service;
 @Service
 @Configuration
 public class CqlVisitorFactory {
-    /**
-     * Creates a new ConversionCqlToMatXml bean each time this method is called.
-     *
-     * @return A new ConversionCqlToMatXml bean.
-     */
-    public ConversionCqlToMatXml getConversionCqlToMatXmlVisitor() {
-        return new ConversionCqlToMatXml();
+    public CqlVisitorFactory() {
     }
 
     /**
-     * Creates a new CqlToMatXml bean each time this method is called.
-     *
-     * @return Creates a new CqlToMatXml as a spring prototype bean.
+     * Creates a new CqlToMatXml prototype.
+     * @return A new CqlToMatXml bean.
      */
+    @Lookup
     public CqlToMatXml getCqlToMatXmlVisitor() {
-        return new CqlToMatXml();
+        return null;
     }
 }

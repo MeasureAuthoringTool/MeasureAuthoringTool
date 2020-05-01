@@ -144,7 +144,7 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService{
                 cqlModelXmlFrag,
                 CQLModel.class);
 
-        var convCqlToMatXml = cqlVisitorFactory.getConversionCqlToMatXmlVisitor();
+        var convCqlToMatXml = cqlVisitorFactory.getCqlToMatXmlVisitor();
         convCqlToMatXml.setSourceModel(sourceCqlModel);
 
         cqlParser.parse(newCql,convCqlToMatXml);
@@ -152,6 +152,4 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService{
         var destModel = convCqlToMatXml.getDestinationModel();
         return CQLUtilityClass.getXMLFromCQLModel(destModel);
     }
-
-
 }

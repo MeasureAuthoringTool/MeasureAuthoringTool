@@ -1,29 +1,14 @@
 package mat.server.service.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.UUID;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import lombok.extern.slf4j.Slf4j;
 import mat.DTO.CodeSystemDTO;
 import mat.DTO.DataTypeDTO;
 import mat.DTO.OperatorDTO;
 import mat.DTO.UnitDTO;
+import mat.DTO.VSACCodeSystemDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.client.shared.MatRuntimeException;
 import mat.dao.AuthorDAO;
 import mat.dao.CategoryDAO;
 import mat.dao.CodeSystemDAO;
@@ -50,10 +35,36 @@ import mat.server.service.CodeListService;
 import mat.server.service.MeasureLibraryService;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
+import org.apache.commons.lang3.StringUtils;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
+@Slf4j
 public class ManageCodeListServiceImpl implements CodeListService {
 
+    private static final String OID_TO_VSAC_CODE_SYSTEM_DTO = "oidToVSACDodeSystemDTO";
     private static final String QDM_TAG = "<qdm";
     private static final String VALUESET_TAG = "<valueset ";
     private static final String QUALITY_DATA_MODEL_MAPPING = "QualityDataModelMapping.xml";
@@ -61,7 +72,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
     private static final int ASCII_START = 65;
     private static final int ASCII_END = 90;
-    private static final Log logger = LogFactory.getLog(ManageCodeListServiceImpl.class);
     @Autowired
     private AuthorDAO authorDAO;
     @Autowired
@@ -89,15 +99,21 @@ public class ManageCodeListServiceImpl implements CodeListService {
     @Autowired
     private MeasureLibraryService measureLibraryService;
 
+    @Value("${FHIR_SRVC_URL:http://localhost:9080/}codeSystem/mappings")
+    private String mappingsUrl;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
     private String addAppliedQDMInMeasureXML(String mapping, String startTag, QualityDataModelWrapper qualityDataSetDTOWrapper) {
-        logger.info("addAppliedQDMInMeasureXML Method Call Start.");
+        log.info("addAppliedQDMInMeasureXML Method Call Start.");
         String xmlString = null;
         String stream = createNewXML(mapping, qualityDataSetDTOWrapper);
         if (StringUtils.isNotBlank(stream)) {
             int startIndex = stream.indexOf(startTag, 0);
             int lastIndex = stream.indexOf("/>", startIndex);
             xmlString = stream.substring(startIndex, lastIndex + 2);
-            logger.debug("addAppliedQDMInMeasureXML Method Call xmlString :: " + xmlString);
+            log.debug("addAppliedQDMInMeasureXML Method Call xmlString :: " + xmlString);
         }
         return xmlString;
     }
@@ -108,9 +124,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
             final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
             stream = xmlMarshalUtil.convertObjectToXML(mapping, qualityDataSetDTOWrapper);
         } catch (MarshalException | ValidationException | IOException | MappingException e) {
-            logger.info("Exception in converting XML to object: " + e.getMessage(), e);
+            log.info("Exception in converting XML to object: " + e.getMessage(), e);
         }
-        logger.info("Exiting ManageCodeListServiceImpl.createXml()");
+        log.info("Exiting ManageCodeListServiceImpl.createXml()");
         return stream;
     }
 
@@ -125,7 +141,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
     private boolean isDuplicate(
             MatValueSetTransferObject matValueSetTransferObject,
             boolean isVSACValueSet, boolean isSpecificOccurrence) {
-        logger.info(" checkForDuplicates Method Call Start.");
+        log.info(" checkForDuplicates Method Call Start.");
         boolean isQDSExist = false;
         boolean isExpOrVerNotEq = false;
         DataType dt = dataTypeDAO.find(matValueSetTransferObject.getDatatype());
@@ -217,7 +233,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
                 break;
             }
         }
-        logger.info("checkForDuplicates Method Call End.Check resulted in :"
+        log.info("checkForDuplicates Method Call End.Check resulted in :"
                 + (isQDSExist || isExpOrVerNotEq));
         return (isQDSExist || isExpOrVerNotEq);
     }
@@ -275,7 +291,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
     private boolean checkForDuplicates(
             MatValueSetTransferObject matValueSetTransferObject,
             boolean isVSACValueSet) {
-        logger.info(" checkForDuplicates Method Call Start.");
+        log.info(" checkForDuplicates Method Call Start.");
         boolean isQDSExist = false;
         DataType dt = dataTypeDAO.find(matValueSetTransferObject.getDatatype());
         String qdmCompareNameOrID = "";
@@ -313,7 +329,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
                 break;
             }
         }
-        logger.info("checkForDuplicates Method Call End.Check resulted in :"
+        log.info("checkForDuplicates Method Call End.Check resulted in :"
                 + isQDSExist);
         return isQDSExist;
     }
@@ -978,5 +994,29 @@ public class ManageCodeListServiceImpl implements CodeListService {
     public List<CodeListSearchDTO> search(String searchText, int startIndex, int pageSize, String sortColumn,
                                           boolean isAsc, boolean defaultCodeList, int filter) {
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Cacheable(OID_TO_VSAC_CODE_SYSTEM_DTO)
+    @Override
+    public Map<String, VSACCodeSystemDTO> getOidToVsacCodeSystemMap() {
+        //Note: Cache is auto evicted in the Application class after a default of 30 minutes.
+        Map<String, VSACCodeSystemDTO> result = new HashMap<>();
+
+        log.info("Entering getCodesSystemMappings");
+        ResponseEntity<VSACCodeSystemDTO[]> response;
+        try {
+            response = restTemplate.exchange(mappingsUrl, HttpMethod.GET, null, VSACCodeSystemDTO[].class, (Object) null);
+            if (response.getStatusCode().isError()) {
+                throw new MatRuntimeException("getCodesSystemMappings returned error code " + response.getStatusCode());
+            }
+            Arrays.stream(response.getBody()).forEach(v -> result.put(v.getOid(),v));
+            log.info("Exiting getCodesSystemMappings " + result);
+        } catch (RestClientResponseException e) {
+            throw new MatRuntimeException(e);
+        }
+        return result;
     }
 }

@@ -9,6 +9,9 @@ import mat.DTO.fhirconversion.ConversionOutcome;
 import mat.DTO.fhirconversion.ConversionResultDto;
 import mat.DTO.fhirconversion.LibraryConversionResults;
 import mat.DTO.fhirconversion.MeasureConversionResults;
+import mat.cql.CqlToMatXml;
+import mat.model.cql.CQLModel;
+import mat.server.service.CodeListService;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import mat.client.measure.ManageMeasureDetailModel;
@@ -64,6 +68,15 @@ public class FhirMeasureServiceImplTest {
 
     @Mock
     private PlatformTransactionManager platformTransactionManager;
+
+    @Mock
+    private CqlVisitorFactory cqlVisitorFactory;
+
+    @Mock
+    private CodeListService codeListService;
+
+    @Mock
+    private CqlToMatXml cqlToMatXml;
 
     @InjectMocks
     private FhirMeasureServiceImpl service;
@@ -141,6 +154,11 @@ public class FhirMeasureServiceImplTest {
         saveUpdateCQLResult.setSuccess(true);
 
         Mockito.when(measureXMLDAO.findForMeasure(Mockito.any())).thenReturn(measureXML);
+
+
+        Mockito.when(cqlVisitorFactory.getCqlToMatXmlVisitor()).thenReturn(cqlToMatXml);
+        ReflectionTestUtils.setField(service,"cqlVisitorFactory",cqlVisitorFactory);
+        Mockito.when(cqlToMatXml.getDestinationModel()).thenReturn(new CQLModel());
 
         service.TEST_MODE = true;
         service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);

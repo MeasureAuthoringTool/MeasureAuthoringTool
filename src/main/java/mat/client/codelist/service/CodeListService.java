@@ -1,6 +1,7 @@
 package mat.client.codelist.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -8,6 +9,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import mat.DTO.OperatorDTO;
 import mat.DTO.UnitDTO;
+import mat.DTO.VSACCodeSystemDTO;
 import mat.client.codelist.HasListBox;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
@@ -458,5 +460,7 @@ public interface CodeListService extends RemoteService {
 	 * Gets all of the cql units
 	 * @return a list of the cql unit dtos
 	 */
-	List<UnitDTO> getAllCqlUnits();	
+	List<UnitDTO> getAllCqlUnits();
+
+	Map<String, VSACCodeSystemDTO> getOidToVsacCodeSystemMap();
 }

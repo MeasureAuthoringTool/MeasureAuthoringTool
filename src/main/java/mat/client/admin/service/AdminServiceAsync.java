@@ -38,7 +38,7 @@ public interface AdminServiceAsync {
 	 *            the callback
 	 * @return the user
 	 */
-	public void getUser(String key, AsyncCallback<ManageUsersDetailModel> callback);
+	void getUser(String key, AsyncCallback<ManageUsersDetailModel> callback);
 	/**
 	 * Reset user password.
 	 * 
@@ -47,7 +47,7 @@ public interface AdminServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	public void resetUserPassword(String userid, AsyncCallback<Void> callback);
+	void resetUserPassword(String userid, AsyncCallback<Void> callback);
 	
 	/**
 	 * Save update user.
@@ -57,13 +57,13 @@ public interface AdminServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	public void saveUpdateUser(ManageUsersDetailModel model, AsyncCallback<SaveUpdateUserResult> callback);
+	void saveUpdateUser(ManageUsersDetailModel model, AsyncCallback<SaveUpdateUserResult> callback);
 	
 	/** Search organization.
 	 * 
 	 * @param key the key
 	 * @param callback the callback */
-	public void searchOrganization(String key, AsyncCallback<ManageOrganizationSearchModel> callback);
+	void searchOrganization(String key, AsyncCallback<ManageOrganizationSearchModel> callback);
 	
 	/**
 	 * Search users.
@@ -73,9 +73,9 @@ public interface AdminServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	public void searchUsers(String key, AsyncCallback<ManageUsersSearchModel> callback);
+	void searchUsers(String key, AsyncCallback<ManageUsersSearchModel> callback);
 	
-	public void searchUsersWithActiveBonnie(String key, AsyncCallback<ManageUsersSearchModel> callback);
+	void searchUsersWithActiveBonnie(String key, AsyncCallback<ManageUsersSearchModel> callback);
 	
 	/** Gets the all organizations.
 	 * 

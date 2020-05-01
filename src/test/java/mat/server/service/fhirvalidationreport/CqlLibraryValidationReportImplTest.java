@@ -41,7 +41,7 @@ class CqlLibraryValidationReportImplTest {
     private CqlLibraryValidationReportImpl cut;
 
     @BeforeEach
-    void setUp() throws Exception {
+    public void setUp() throws Exception {
 
         //1. set up fake test data
         CQLLibrary cqlLibrary = new CQLLibrary();
@@ -64,7 +64,7 @@ class CqlLibraryValidationReportImplTest {
     }
 
     @Test
-    void shouldReturnErrorWhenLibraryIdDoesNotExist() throws Exception {
+    public void shouldReturnErrorWhenLibraryIdDoesNotExist() throws Exception {
         when(libraryDAO.find(LIBRARY_ID)).thenReturn(null);
 
         var result = cut.generateReport(LIBRARY_ID, VSAC_ID, true);
@@ -72,7 +72,7 @@ class CqlLibraryValidationReportImplTest {
     }
 
     @Test
-    void shouldReturnErrorWhenConversionFails() throws Exception {
+    public void shouldReturnErrorWhenConversionFails() throws Exception {
         when(remoteProxy.validate(Mockito.anyString())).thenReturn(null);
 
         var result = cut.generateReport(LIBRARY_ID, VSAC_ID, true);
@@ -81,7 +81,7 @@ class CqlLibraryValidationReportImplTest {
 
 
     @Test
-    void shouldReturnResponseWhenLibraryIdIsValid() throws Exception {
+    public void shouldReturnResponseWhenLibraryIdIsValid() throws Exception {
 
         var result = cut.generateReport(LIBRARY_ID, VSAC_ID, true);
         assertThat(result, startsWith("<html>"));

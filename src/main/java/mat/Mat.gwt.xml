@@ -12,10 +12,6 @@
     <inherits name="org.gwtbootstrap3.GwtBootstrap3"/>
     <!-- <inherits name="org.gwtbootstrap3.GwtBootstrap3Theme"/> -->
     <inherits name="org.gwtbootstrap3.extras.respond.Respond"/>
-    <inherits name="com.google.gwt.logging.Logging"/>
-    <set-property name="gwt.logging.logLevel" value="INFO"/>
-    <set-property name="gwt.logging.enabled" value="TRUE"/>
-    <set-property name="gwt.logging.consoleHandler" value="ENABLED"/>
     <public path="resource">
         <include name="css/*.*"/>
         <!-- <include name="css/*.js" />

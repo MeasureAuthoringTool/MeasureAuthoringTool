@@ -37,10 +37,7 @@ import mat.shared.DateUtility;
 public class MeasureValidationReportImpl implements FhirValidationReport {
 
     private static final Log logger = LogFactory.getLog(MeasureValidationReportImpl.class);
-    private static final String DATE_FORMAT = "dd-MMM-YYYY";
-    private static final String TIME_FORMAT = "hh:mm aa";
     private static final String NO_MEASURE_FOUND_ERROR = "The measure with that measure id does not exist.";
-    private static final String CONVERSION_SERVICE_ERROR = "An error occurred while validating the FHIR conversion. Please try again later. If this continues please contact the MAT help desk.";
     private static final String REPORT_FTL = "fhirvalidationreport/fhir_validation_report.ftl";
 
     private Configuration freemarkerConfiguration;

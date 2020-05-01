@@ -20,7 +20,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
@@ -36,18 +35,16 @@ import java.util.Set;
 public class CqlLibraryValidationReportImpl implements FhirValidationReport {
 
     private static final Log logger = LogFactory.getLog(CqlLibraryValidationReportImpl.class);
-    private static final String DATE_FORMAT = "dd-MMM-YYYY";
-    private static final String TIME_FORMAT = "hh:mm aa";
-    private static final String CQL_LIBRARY_NOT_FOUND_ERROR = "CQL Library with the given id does not exist.";
-    private static final String CONVERSION_SERVICE_ERROR = "An error occurred while validating the FHIR conversion. Please try again later. If this continues please contact the MAT help desk.";
-    private static final String REPORT_FTL = "fhirvalidationreport/fhir_library_validation_report.ftl";
+    private static final String currentMatVersion = "v6.0";
+
+    public static final String CQL_LIBRARY_NOT_FOUND_ERROR = "CQL Library with the given id does not exist.";
+    public static final String FTL_TEMPLATE_NAME = "fhirvalidationreport/fhir_library_validation_report.ftl";
+
 
     private Configuration freemarkerConfiguration;
     private CQLLibraryDAO libraryDAO;
     private FhirLibraryConversionRemoteCall fhirLibraryConversionRemoteCall;
 
-    @Value("${mat.measure.current.release.version}")
-    private String currentMatVersion;
 
     public CqlLibraryValidationReportImpl(Configuration freemarkerConfiguration,
                                           CQLLibraryDAO libraryDAO,
@@ -95,7 +92,8 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
             prepareReport(conversionResultDto, library, converted, paramsMap);
         }
 
-        return FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(REPORT_FTL), paramsMap);
+        var template = freemarkerConfiguration.getTemplate(FTL_TEMPLATE_NAME);
+        return FreeMarkerTemplateUtils.processTemplateIntoString(template, paramsMap);
     }
 
     private void prepareReport(ConversionResultDto conversionResultDto, CQLLibrary library, boolean converted, Map<String, Object> paramsMap) {

@@ -529,7 +529,6 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
         logger.info("Setting authentication token::"+userDetails.getId());
         PreAuthenticatedAuthenticationToken auth =
                 new PreAuthenticatedAuthenticationToken(userDetails.getId(), accessToken, userDetails.getAuthorities());
-        auth.setAuthenticated(true);
         auth.setDetails(userDetails);
 
         SecurityContext sc = new SecurityContextImpl();

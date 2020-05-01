@@ -39,7 +39,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedCredentialsNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
@@ -156,8 +155,6 @@ public class Application extends WebSecurityConfigurerAdapter {
         filter.setAuthenticationManager(authentication -> {
             if (harpService().validateToken(authentication.getPrincipal().toString())) {
                 authentication.setAuthenticated(true);
-            } else {
-                throw new PreAuthenticatedCredentialsNotFoundException("test");
             }
             return authentication;
         });

@@ -2,6 +2,7 @@ package mat.client;
 
 import java.util.List;
 
+import com.google.gwt.user.client.Window;
 import org.gwtbootstrap3.client.ui.AnchorButton;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
@@ -58,7 +59,7 @@ public abstract class MainLayout {
     private HorizontalPanel linksPanel = new HorizontalPanel();
     private AnchorListItem profile = new AnchorListItem("MAT Account");
     private AnchorListItem signOut = new AnchorListItem("Sign Out");
-    private FormPanel logoutForm = new FormPanel();
+    private FormPanel logoutForm = new FormPanel("logout");
 
     /**
      * hide spinner and
@@ -298,6 +299,14 @@ public abstract class MainLayout {
         return collapse;
     }
 
+    /**
+     * Call Okta logout operation to log a user out by removing their Okta browser session.
+     * Note: When making requests to the /logout endpoint, the browser (user agent)
+     * should be redirected to the endpoint. You can't use AJAX with this endpoint.
+     *
+     * This operation performs a redirect to the post_logout_redirect_uri.
+     * @param harpUrl
+     */
     protected void harpLogout(String harpUrl) {
         logoutForm.setMethod(FormPanel.METHOD_GET);
 
@@ -308,7 +317,19 @@ public abstract class MainLayout {
         token.setName("id_token_hint");
         token.setValue(MatContext.get().getIdToken());
 
+        Hidden redirect = new Hidden();
+        redirect.setName("post_logout_redirect_uri");
+        String path = Window.Location.getPath();
+        String redirectUrl = Window.Location.createUrlBuilder()
+                .setPath(path.substring(0, path.lastIndexOf('/')) + ClientConstants.HTML_LOGIN)
+                .buildString();
+        if(redirectUrl.contains("#")) {
+            redirectUrl = redirectUrl.substring(0, redirectUrl.lastIndexOf('#'));
+        }
+        redirect.setValue(redirectUrl);
+
         panel.add(token);
+        panel.add(redirect);
 
         RootPanel.get().add(logoutForm);
 

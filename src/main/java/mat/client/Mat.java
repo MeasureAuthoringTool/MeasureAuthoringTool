@@ -129,7 +129,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         @Override
         public void onFailure(final Throwable caught) {
             logger.log(Level.SEVERE, "Error in initSession. Error message: " + caught.getMessage(), caught);
-            redirectToLogin();
+            logout();
         }
 
         @Override
@@ -140,7 +140,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                 @Override
                 public void onFailure(Throwable caught) {
                     logger.log(Level.SEVERE, "Error in getCurrentReleaseVersion. Error message: " + caught.getMessage(), caught);
-                    redirectToLogin();
+                    logout();
                 }
 
                 @Override
@@ -148,7 +148,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                     logger.log(Level.INFO, "SessionService::getCurrentReleaseVersion -> onSuccess");
                     if (result == null || (checkIfResultIsNotNull(result) && !result.activeSessionId.equals(result.currentSessionId))) {
                         logger.log(Level.SEVERE, "Current session is not valid.");
-                        redirectToLogin();
+                        logout();
                     } else {
                         final Date lastSignIn = result.signInDate;
                         final Date lastSignOut = result.signOutDate;
@@ -172,7 +172,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         public void onFailure(Throwable throwable) {
             logger.log(Level.SEVERE, "LoginService::initSession -> onFailure: " + throwable.getMessage(), throwable);
             if (throwable.getMessage().contains("MAT_ACCOUNT_REVOKED_LOCKED")) {
-                String msg = "Harp UserName doesn't match existing MAT HARP_ID, redirecting to access support page";
+                String msg = "HARP User's access to the MAT has been revoked, redirecting to access support page";
                 logger.log(Level.SEVERE, msg);
                 MatContext.get().recordTransactionEvent(null, null, "MAT_ACCOUNT_REVOKED_LOCKED", msg, 0);
             } else if (throwable.getMessage().contains("HARP_ID_NOT_FOUND")) {
@@ -269,7 +269,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         getSignOut().addClickHandler(event -> logout());
 
-        MatContext.get().getEventBus().addHandler(BackToLoginPageEvent.TYPE, event -> redirectToLogin());
+        MatContext.get().getEventBus().addHandler(BackToLoginPageEvent.TYPE, event -> logout());
 
         MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, event -> {
             Mat.hideLoadingMessage();
@@ -320,7 +320,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                     logger.log(Level.SEVERE, "HarpService::validateToken -> onFailure: Invalid token", throwable);
                     // Invalid token
                     MatContext.get().getEventBus().fireEvent(new LogoffEvent());
-
                 }
 
                 @Override
@@ -459,8 +458,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             focusSkipLists("Measure Library");
         });
 
-        MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, event -> {
-        });
+        MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, event -> { });
 
         GWT.setUncaughtExceptionHandler(caught -> {
             logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
@@ -621,7 +619,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     }
 
     private void logout() {
-        logout(ClientConstants.HTML_LOGIN);
+        logout(null);
     }
 
     private void logout(String redirectTo) {
@@ -649,16 +647,16 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             @Override
             public void onFailure(Throwable throwable) {
                 logger.log(Level.SEVERE, "HarpService::getHarpUrl -> onFailure " + throwable.getMessage(), throwable);
-                removeOktaTokens();
             }
 
             @Override
             public void onSuccess(String harpUrl) {
                 logger.log(Level.INFO, "HarpService::getHarpUrl -> onSuccess");
-                harpLogout(harpUrl);
                 MatContext.get().getSynchronizationDelegate().setLogOffFlag();
                 MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
+                harpLogout(harpUrl);
                 removeOktaTokens();
+                redirectToLogin();
             }
         });
     }
@@ -754,7 +752,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             @Override
             public void run() {
                 // Let's sign out the user, so there is no lurking okta token.
-                logout();
+                MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
             }
         };
         timer.schedule(1000);

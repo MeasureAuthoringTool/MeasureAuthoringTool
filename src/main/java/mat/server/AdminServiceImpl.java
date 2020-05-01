@@ -62,9 +62,6 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
         }
     }
 
-    /* (non-Javadoc)
-     * @see mat.client.admin.service.AdminService#deleteUser(java.lang.String)
-     */
     @Override
     public void deleteUser(String userId) throws InCorrectUserRoleException {
         checkAdminUser();
@@ -297,7 +294,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 
     @Override
     public void resetUserPassword(String userid) {
-        userService.requestResetLockedPassword(userid);
+        userService.requestReactivateUser(userid);
     }
 
     @Override

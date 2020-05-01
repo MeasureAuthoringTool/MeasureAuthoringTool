@@ -127,6 +127,10 @@ public class ConstantMessages {
 
     public static final String LOGINID = "loginId";
 
+    public static final String HARPID = "harpId";
+
+    public static final String USER_EMAIL = "userEmail";
+
     public static final String URL = "url";
 
     public static final String INSERT = "Insert";

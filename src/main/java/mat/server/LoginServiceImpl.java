@@ -115,9 +115,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 
 	@Override
 	public LoginModel initSession(Map<String, String> harpUserInfo) throws MatException {
-		logger.info("getUserDetailsByHarpId::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
+		logger.info("initSession::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
 		HttpSession session = getThreadLocalRequest().getSession();
-		if (userService.isHarpUserLocked(harpUserInfo.get(HarpConstants.HARP_ID))) {
+		if (userService.isHarpUserLockedRevoked(harpUserInfo.get(HarpConstants.HARP_ID))) {
 			throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
 		}
 		return loginCredentialService.initSession(harpUserInfo, session.getId());
@@ -154,6 +154,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
                 if (q.getSecurityQuestions().getQuestion().equalsIgnoreCase(securityQuestion)) {
                     if(HashUtility.getSecurityQuestionHash(q.getSalt(), securityAnswer).equalsIgnoreCase(q.getSecurityAnswer())) {
                         saveHarpUserInfo(harpUserInfo, loginId);
+						if (userService.isHarpUserLockedRevoked(harpUserInfo.get(HarpConstants.HARP_ID))) {
+							throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
+						}
                         return true;
                     }
                 }
@@ -170,9 +173,6 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	private void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId) throws MatException {
         logger.info("User Verified, updating user information of::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
         HttpSession session = getThreadLocalRequest().getSession();
-        if (userService.isLockedUser(loginId)) {
-            throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
-        }
         loginCredentialService.saveHarpUserInfo(harpUserInfo, loginId, session.getId());
     }
 
@@ -485,7 +485,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 
 	@Override
 	public boolean isHarpUserLocked(String harpId) {
-		return userService.isHarpUserLocked(harpId);
+		return userService.isHarpUserLockedRevoked(harpId);
 	}
 
 	/* 

@@ -343,7 +343,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private void linkHarpMatAccounts() {
         logger.log(Level.INFO, "linkHarpMatAccounts - enter");
         // Check if user is already linked with a MAT Account
-        MatContext.get().getLoginService().checkForAssociatedHarpId(harpUserInfo.get(HarpConstants.HARP_PRIMARY_EMAIL_ID), new AsyncCallback<Boolean>() {
+        MatContext.get().getLoginService().checkForAssociatedHarpId(harpUserInfo.get(HarpConstants.HARP_ID), new AsyncCallback<Boolean>() {
 
             @Override
             public void onFailure(Throwable caught) {

@@ -1,4 +1,4 @@
-Your account has been re-activated. Your can use your HARP ID ${(harpId)!} to access the Measure Authoring Tool at ${(url)!}
+Your account has been re-activated. You can use your HARP ID ${(harpId)!} to access the Measure Authoring Tool at ${(url)!}
 
 HARP ID: ${(harpId)!}
 Email: ${(userEmail)!}

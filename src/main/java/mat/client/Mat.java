@@ -172,7 +172,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         public void onFailure(Throwable throwable) {
             logger.log(Level.SEVERE, "LoginService::initSession -> onFailure: " + throwable.getMessage(), throwable);
             if (throwable.getMessage().contains("MAT_ACCOUNT_REVOKED_LOCKED")) {
-                String msg = "HARP User's access to the MAT has been revoked, redirecting to access support page";
+                String msg = "HARP User does not have access to the MAT, redirecting to access support page";
                 logger.log(Level.SEVERE, msg);
                 MatContext.get().recordTransactionEvent(null, null, "MAT_ACCOUNT_REVOKED_LOCKED", msg, 0);
             } else if (throwable.getMessage().contains("HARP_ID_NOT_FOUND")) {
@@ -653,10 +653,17 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             public void onSuccess(String harpUrl) {
                 logger.log(Level.INFO, "HarpService::getHarpUrl -> onSuccess");
                 MatContext.get().getSynchronizationDelegate().setLogOffFlag();
-                MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
                 harpLogout(harpUrl);
                 removeOktaTokens();
-                redirectToLogin();
+                if (redirectTo == null) {
+                    // MAT logout operation, but don't redirect.
+                    MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
+
+                    // Redirect to Login after 1 second wait.
+                    redirectToLogin();
+                }
+                // MAT Logout operation with specified redirect.
+                MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
             }
         });
     }

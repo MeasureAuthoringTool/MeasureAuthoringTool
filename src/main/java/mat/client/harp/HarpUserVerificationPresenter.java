@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.event.HarpSupportEvent;
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.login.ForgottenPasswordView;
 import mat.client.shared.MatContext;
@@ -106,8 +107,7 @@ public class HarpUserVerificationPresenter {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                    MatContext.get().getEventBus().fireEvent(new ReturnToLoginEvent());
+                    MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
                 }
 
                 @Override

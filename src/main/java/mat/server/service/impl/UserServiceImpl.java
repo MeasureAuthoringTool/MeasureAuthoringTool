@@ -829,9 +829,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isHarpUserLocked(String harpId) {
+    public boolean isHarpUserLockedRevoked(String harpId) {
         User user = userDAO.findByHarpId(harpId);
-        return user != null && (user.getStatus().getStatusId().equals("2") || user.getTerminationDate() != null );
+        return user != null && (user.getStatus().getStatusId().equals("2")
+                || user.getTerminationDate() != null
+                || user.getLockedOutDate() != null
+                || user.getPassword().getPasswordlockCounter() >= 3);
     }
 
     @Override

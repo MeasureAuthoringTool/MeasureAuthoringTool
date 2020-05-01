@@ -137,7 +137,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			}
 		});
 
-		detailDisplay.getResetPasswordButton().addClickHandler(
+		detailDisplay.getReactivateAccountButton().addClickHandler(
 				new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
@@ -145,13 +145,13 @@ public class ManageUsersPresenter implements MatPresenter {
 						MatContext
 								.get()
 								.getAdminService()
-								.resetUserPassword(currentDetails.getUserID(),
+								.activateUser(currentDetails.getUserID(),
 										new AsyncCallback<Void>() {
 											@Override
 											public void onSuccess(Void result) {
-												detailDisplay.getSuccessMessageDisplay().createAlert("Temporary Password E-mail has been sent.");
+												detailDisplay.getSuccessMessageDisplay().createAlert("Re-activate E-mail has been sent.");
 												List<String> event = new ArrayList<String>();
-												event.add("Reset Password");
+												event.add("Re-activate");
 												MatContext.get()
 														.recordUserEvent(
 																currentDetails
@@ -1022,7 +1022,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		 *
 		 * @return the reset password button
 		 */
-		HasClickHandlers getResetPasswordButton();
+		HasClickHandlers getReactivateAccountButton();
 
 		/**
 		 * Sets the title.

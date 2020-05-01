@@ -80,6 +80,8 @@ public class User  {
 	private String loginId;
 	
 	private String sessionId;
+
+	private String harpId;
 	
 	private Set<UserPasswordHistory> passwordHistory;
 	
@@ -415,6 +417,15 @@ public class User  {
 
 	public void setCqlLibraryHistory(List<CQLLibraryHistory> cqlLibraryHistory) {
 		this.cqlLibraryHistory = cqlLibraryHistory;
+	}
+
+	@Column(name = "HARP_ID", unique = true, length = 45)
+	public String getHarpId() {
+		return harpId;
+	}
+
+	public void setHarpId(String harpId) {
+		this.harpId = harpId;
 	}
 
 }

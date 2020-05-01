@@ -34,6 +34,6 @@
     <source path='model'/>
     <source path='shared'/>
     <source path='mat.shared.diagramObject'/>
-    <source path='DTO'/>
+    <source path='dto'/>
     <!-- <add-linker name="xsiframe" /> -->
 </module>

@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void activate(String userid) {
-        logger.info("In requestUnlockUser(String userid).....");
+        logger.info("In activate(String userid).....");
         User user = userDAO.find(userid);
         String newPassword = generateRandomPassword();
         if (user.getPassword() == null) {

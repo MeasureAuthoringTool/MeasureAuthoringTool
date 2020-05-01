@@ -192,4 +192,8 @@ public class ConstantMessages {
     public static final String DEAD_CODE_SYSTEM_OID = "2.16.840.1.113883.6.96";
 
     public static final String SUPPORT_EMAIL = "supportEmailAddress";
+
+    private ConstantMessages() {
+        // Utility class
+    }
 }

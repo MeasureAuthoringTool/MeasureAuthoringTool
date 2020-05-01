@@ -24,7 +24,7 @@ public interface UserService {
 	 *            the org id
 	 * @return the list
 	 */
-	public List<User> searchForUsersByName(String orgId);
+	List<User> searchForUsersByName(String orgId);
 
 	/**
 	 * Gets the by id.
@@ -33,7 +33,7 @@ public interface UserService {
 	 *            the id
 	 * @return the by id
 	 */
-	public User getById(String id);
+	User getById(String id);
 
 	/**
 	 * Save new.
@@ -43,7 +43,7 @@ public interface UserService {
 	 * @throws UserIDNotUnique
 	 *             the user id not unique
 	 */
-	public void saveNew(User user);
+	void saveNew(User user);
 
 	/**
 	 * Save existing.
@@ -52,7 +52,7 @@ public interface UserService {
 	 *            the user
 	 * @throws UserIDNotUnique
 	 */
-	public void saveExisting(User user);
+	void saveExisting(User user);
 
 	/**
 	 * Save update user.
@@ -76,11 +76,11 @@ public interface UserService {
 	 *            the invalid user counter
 	 * @return the forgotten password result
 	 */
-	public ForgottenPasswordResult requestForgottenPassword(String email,
+	ForgottenPasswordResult requestForgottenPassword(String email,
 			String securityQuestion, String securityAnswer, int invalidUserCounter);
 
 	/**
-	 * Request unlock.
+	 * Request activate.
 	 *
 	 * @param userid
 	 *            the userid
@@ -97,7 +97,7 @@ public interface UserService {
 	 * @param isTemporary
 	 *            the is temporary
 	 */
-	public void setUserPassword(User user, String clearTextPassword, boolean isTemporary);
+	void setUserPassword(User user, String clearTextPassword, boolean isTemporary);
 
 	/**
 	 * Gets the password hash.
@@ -108,7 +108,7 @@ public interface UserService {
 	 *            the password
 	 * @return the password hash
 	 */
-	public String getPasswordHash(String userId, String password);
+	String getPasswordHash(String userId, String password);
 
 	/**
 	 * Checks if is admin for user.
@@ -119,14 +119,14 @@ public interface UserService {
 	 *            the user
 	 * @return true, if is admin for user
 	 */
-	public boolean isAdminForUser(User admin, User user);
+	boolean isAdminForUser(User admin, User user);
 
 	/**
 	 * Generate random password.
 	 *
 	 * @return the string
 	 */
-	public String generateRandomPassword();
+	String generateRandomPassword();
 
 	/**
 	 * Delete user.
@@ -134,7 +134,7 @@ public interface UserService {
 	 * @param userid
 	 *            the userid
 	 */
-	public void deleteUser(String userid);
+	void deleteUser(String userid);
 
 	/**
 	 * Gets the security question options.
@@ -143,7 +143,8 @@ public interface UserService {
 	 *            the email
 	 * @return the security question options
 	 */
-	public SecurityQuestionOptions getSecurityQuestionOptions(String email);
+	SecurityQuestionOptions getSecurityQuestionOptions(String email);
+
 	//US212
 	/**
 	 * Sets the user sign in date.
@@ -151,7 +152,7 @@ public interface UserService {
 	 * @param userid
 	 *            the new user sign in date
 	 */
-	public void setUserSignInDate(String userid);
+	void setUserSignInDate(String userid);
 
 	/**
 	 * Sets the user sign out date.
@@ -159,7 +160,7 @@ public interface UserService {
 	 * @param userid
 	 *            the new user sign out date
 	 */
-	public void setUserSignOutDate(String userid);
+	void setUserSignOutDate(String userid);
 
 	/**
 	 * Gets the footer ur ls.
@@ -179,7 +180,7 @@ public interface UserService {
 	 *            the j
 	 * @return the list
 	 */
-	public List<User> searchNonAdminUsers(String string, int i, int j);
+	List<User> searchNonAdminUsers(String string, int i, int j);
 
 	/**
 	 * Find by email id.
@@ -201,7 +202,7 @@ public interface UserService {
 	 *            the activity type
 	 * @return the string
 	 */
-	public String updateOnSignOut(String userId, String email, String activityType);
+	String updateOnSignOut(String userId, String email, String activityType);
 
 	/**
 	 * Request forgotten login id.
@@ -210,7 +211,7 @@ public interface UserService {
 	 *            the email
 	 * @return the forgotten login id result
 	 */
-	public ForgottenLoginIDResult requestForgottenLoginID(String email);
+	ForgottenLoginIDResult requestForgottenLoginID(String email);
 
 	/**
 	 * Gets the security question options for email.
@@ -228,14 +229,14 @@ public interface UserService {
 	 *            the userid
 	 * @return the security question
 	 */
-	public String getSecurityQuestion(String userid);
+	String getSecurityQuestion(String userid);
 
 	/**
 	 * Gets the all non admin active users.
 	 *
 	 * @return the all non admin active users
 	 */
-	public List<User> getAllNonAdminActiveUsers();
+	List<User> getAllNonAdminActiveUsers();
 
 	/**
 	 * Checks if is locked user.

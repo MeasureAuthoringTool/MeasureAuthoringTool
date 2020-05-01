@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.DTO.UserAuditLogDTO;
+import mat.dto.UserAuditLogDTO;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ContentWithHeadingWidget;

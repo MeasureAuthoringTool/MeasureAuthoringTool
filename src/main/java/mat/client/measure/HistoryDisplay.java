@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 
-import mat.DTO.AuditLogDTO;
+import mat.dto.AuditLogDTO;
 
 public interface HistoryDisplay extends BaseDisplay {
 	public void clearErrorMessage();

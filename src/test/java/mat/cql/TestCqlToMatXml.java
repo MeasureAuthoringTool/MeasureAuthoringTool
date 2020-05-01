@@ -1,12 +1,10 @@
 package mat.cql;
 
 import lombok.extern.slf4j.Slf4j;
-import mat.DTO.VSACCodeSystemDTO;
+import mat.dto.VSACCodeSystemDTO;
 import mat.model.cql.CQLModel;
 import mat.server.service.CodeListService;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

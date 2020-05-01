@@ -3,7 +3,7 @@ package mat.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import mat.DTO.UserPreferenceDTO;
+import mat.dto.UserPreferenceDTO;
 import mat.client.login.service.SessionManagementService;
 import mat.model.User;
 import mat.model.UserPreference;

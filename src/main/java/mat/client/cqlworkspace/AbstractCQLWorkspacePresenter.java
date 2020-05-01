@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import mat.DTO.VSACCodeSystemDTO;
+import mat.dto.VSACCodeSystemDTO;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.ListBox;
@@ -26,7 +26,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import mat.DTO.UserPreferenceDTO;
+import mat.dto.UserPreferenceDTO;
 import mat.client.Mat;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -583,6 +583,8 @@ public abstract class AbstractCQLWorkspacePresenter {
             case RED:
                 messagePanel.getErrorMessageAlert().createAlert(errorMessages);
                 break;
+            default:
+                throw new IllegalArgumentException("Invalid color " + color);
         }
     }
 

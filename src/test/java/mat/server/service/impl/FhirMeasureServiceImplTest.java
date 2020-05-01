@@ -1,44 +1,42 @@
 package mat.server.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-
-import mat.DTO.fhirconversion.ConversionOutcome;
-import mat.DTO.fhirconversion.ConversionResultDto;
-import mat.DTO.fhirconversion.LibraryConversionResults;
-import mat.DTO.fhirconversion.MeasureConversionResults;
-import mat.cql.CqlToMatXml;
-import mat.model.cql.CQLModel;
-import mat.server.service.CodeListService;
-import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.PlatformTransactionManager;
-
+import mat.dto.fhirconversion.ConversionOutcome;
+import mat.dto.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.LibraryConversionResults;
+import mat.dto.fhirconversion.MeasureConversionResults;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.CQLService;
 import mat.client.shared.MatException;
 import mat.client.shared.MatRuntimeException;
 import mat.cql.CqlParser;
+import mat.cql.CqlToMatXml;
 import mat.cql.CqlVisitorFactory;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLModel;
+import mat.server.service.CodeListService;
 import mat.server.service.FhirOrchestrationGatewayService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
 import mat.shared.SaveUpdateCQLResult;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -89,6 +87,7 @@ public class FhirMeasureServiceImplTest {
         // if we dont use these some place:
         log.info("" + platformTransactionManager);
         log.info("" + cqlService);
+        log.info("" + codeListService);
     }
 
     @Test

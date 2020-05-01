@@ -1,6 +1,6 @@
 package mat.server.service.impl;
 
-import mat.DTO.UserPreferenceDTO;
+import mat.dto.UserPreferenceDTO;
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;

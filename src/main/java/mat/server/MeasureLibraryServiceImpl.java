@@ -56,8 +56,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import mat.DTO.MeasureTypeDTO;
-import mat.DTO.OperatorDTO;
+import mat.dto.MeasureTypeDTO;
+import mat.dto.OperatorDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;

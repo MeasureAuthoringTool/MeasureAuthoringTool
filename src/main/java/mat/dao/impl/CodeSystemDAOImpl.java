@@ -10,7 +10,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.DTO.CodeSystemDTO;
+import mat.dto.CodeSystemDTO;
 import mat.dao.search.GenericDAO;
 import mat.model.CodeSystem;
 

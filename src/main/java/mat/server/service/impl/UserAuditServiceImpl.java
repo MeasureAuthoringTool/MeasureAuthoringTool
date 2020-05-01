@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import mat.DTO.UserAuditLogDTO;
+import mat.dto.UserAuditLogDTO;
 import mat.dao.UserAuditLogDAO;
 import mat.dao.UserDAO;
 import mat.model.User;

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import mat.DTO.SearchHistoryDTO;
+import mat.dto.SearchHistoryDTO;
 import mat.dao.CQLLibraryAuditLogDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;

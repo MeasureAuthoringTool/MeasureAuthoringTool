@@ -7,9 +7,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import mat.DTO.OperatorDTO;
-import mat.DTO.UnitDTO;
-import mat.DTO.VSACCodeSystemDTO;
+import mat.dto.OperatorDTO;
+import mat.dto.UnitDTO;
+import mat.dto.VSACCodeSystemDTO;
 import mat.client.codelist.HasListBox;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;

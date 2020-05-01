@@ -3,10 +3,10 @@ package mat.server.service;
 import java.util.List;
 import java.util.Map;
 
-import mat.DTO.DataTypeDTO;
-import mat.DTO.OperatorDTO;
-import mat.DTO.UnitDTO;
-import mat.DTO.VSACCodeSystemDTO;
+import mat.dto.DataTypeDTO;
+import mat.dto.OperatorDTO;
+import mat.dto.UnitDTO;
+import mat.dto.VSACCodeSystemDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.model.CodeListSearchDTO;

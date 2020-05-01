@@ -2,7 +2,7 @@ package mat.dao;
 
 import java.util.List;
 
-import mat.DTO.AuthorDTO;
+import mat.dto.AuthorDTO;
 import mat.model.Author;
 
 /**

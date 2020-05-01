@@ -14,7 +14,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.DTO.MeasureTypeDTO;
+import mat.dto.MeasureTypeDTO;
 import mat.dao.search.GenericDAO;
 import mat.model.MeasureType;
 import mat.model.clause.MeasureTypeAssociation;

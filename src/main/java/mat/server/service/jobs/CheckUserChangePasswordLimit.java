@@ -90,7 +90,7 @@ public class CheckUserChangePasswordLimit {
      *
      * @return void
      */
-    @Scheduled(cron = "${mat.checkUserPasswordLimitDays.cron}")
+    @Scheduled(cron = "${mat.checkUserPasswordLimitDays.cron:-}")
     public void checkUserPasswordLimitDays() {
 
         logger.info(" :: CheckUserPasswordLimitDays Method START :: ");

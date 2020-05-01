@@ -57,7 +57,7 @@ public interface AdminService extends RemoteService {
 	 * @throws InCorrectUserRoleException
 	 *             the in correct user role exception
 	 */
-	public void resetUserPassword(String userid) throws InCorrectUserRoleException;
+	void activateUser(String userid) throws InCorrectUserRoleException;
 
 	/**update organization.
 	 *

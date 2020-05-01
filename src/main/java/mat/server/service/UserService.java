@@ -80,12 +80,12 @@ public interface UserService {
 			String securityQuestion, String securityAnswer, int invalidUserCounter);
 
 	/**
-	 * Request reset locked password.
+	 * Request unlock.
 	 *
 	 * @param userid
 	 *            the userid
 	 */
-	void requestReactivateUser(String userid);
+	void activate(String userid);
 
 	/**
 	 * Sets the user password.

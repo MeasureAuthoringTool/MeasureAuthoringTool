@@ -293,8 +293,8 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
     }
 
     @Override
-    public void resetUserPassword(String userid) {
-        userService.requestReactivateUser(userid);
+    public void activateUser(String userid) {
+        userService.activate(userid);
     }
 
     @Override

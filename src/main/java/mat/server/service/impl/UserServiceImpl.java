@@ -141,8 +141,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void requestReactivateUser(String userid) {
-        logger.info("In requestReactivateUser(String userid).....");
+    public void activate(String userid) {
+        logger.info("In requestUnlockUser(String userid).....");
         User user = userDAO.find(userid);
         String newPassword = generateRandomPassword();
         if (user.getPassword() == null) {
@@ -156,7 +156,7 @@ public class UserServiceImpl implements UserService {
         }
         setUserPassword(user, newPassword, true);
         userDAO.save(user);
-        notifyUserOfReactivation(user, newPassword);
+        notifyUserUnlocked(user, newPassword);
     }
 
     /**
@@ -165,8 +165,8 @@ public class UserServiceImpl implements UserService {
      * @param user        the user
      * @param newPassword the new password
      */
-    public void notifyUserOfReactivation(User user, String newPassword) {
-        logger.info("In notifyUserOfReactivation(User user, String newPassword).....");
+    public void notifyUserUnlocked(User user, String newPassword) {
+        logger.info("In notifyUserUnlocked(User user, String newPassword).....");
         SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
         msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT + ServerConstants.getEnvName());
         msg.setTo(user.getEmailAddress());
@@ -178,6 +178,8 @@ public class UserServiceImpl implements UserService {
         paramsMap.put(ConstantMessages.PASSWORD, newPassword);
         paramsMap.put(ConstantMessages.PASSWORD_EXPIRE_DATE, expiryDateString);
         paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
+        paramsMap.put(ConstantMessages.HARPID, user.getHarpId());
+        paramsMap.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
         paramsMap.put(ConstantMessages.SUPPORT_EMAIL, supportEmailAddress);
 
         logger.info("Sending email to " + user.getEmailAddress());
@@ -606,7 +608,7 @@ public class UserServiceImpl implements UserService {
             setModelFieldsOnUser(model, user);
             if (model.isExistingUser()) {
                 if (reactivatingUser) {
-                    requestReactivateUser(user.getId());
+                    activate(user.getId());
                 }
                 saveExisting(user);
             } else {

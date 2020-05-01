@@ -40,15 +40,7 @@ public interface AdminServiceAsync {
 	 */
 	void getUser(String key, AsyncCallback<ManageUsersDetailModel> callback);
 
-	/**
-	 * Reset user password.
-	 * 
-	 * @param userid
-	 *            the userid
-	 * @param callback
-	 *            the callback
-	 */
-	void resetUserPassword(String userid, AsyncCallback<Void> callback);
+	void activateUser(String userid, AsyncCallback<Void> callback);
 	
 	/**
 	 * Save update user.

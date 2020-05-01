@@ -24,9 +24,16 @@ public interface UserDAO extends IDAO<User, String> {
 	 *
 	 * @return the list
 	 */
-	public List<User> searchForNonTerminatedUser();
-	
+	List<User> searchForNonTerminatedUser();
+
 	/**
+	 * Get user details by Email.
+	 * @param harpId User's HARP ID.
+	 * @return UserDetails for setting login values.
+	 */
+    UserDetails getUserDetailsByHarpId(String harpId);
+
+    /**
 	 * User exists.
 	 * 
 	 * @param userid
@@ -150,5 +157,8 @@ public interface UserDAO extends IDAO<User, String> {
 	public List<User> getAllUsers();
 	
 	List<User> getUsersListForSharingMeasureOrLibrary(String userName);
-	
+
+    boolean findAssociatedHarpId(String harpId);
+
+    User findByHarpId(String harpId);
 }

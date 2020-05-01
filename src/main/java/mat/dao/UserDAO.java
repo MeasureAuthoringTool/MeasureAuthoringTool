@@ -134,7 +134,7 @@ public interface UserDAO extends IDAO<User, String> {
 	/**
 	 * Gets the random security question.
 	 * 
-	 * @param userId
+	 * @param loginId
 	 *            the user id
 	 * @return the random security question
 	 */
@@ -158,7 +158,7 @@ public interface UserDAO extends IDAO<User, String> {
 	
 	List<User> getUsersListForSharingMeasureOrLibrary(String userName);
 
-    boolean findAssociatedHarpId(String harpPrimaryEmailId);
+    boolean findAssociatedHarpId(String harpId);
 
     User findByHarpId(String harpId);
 }

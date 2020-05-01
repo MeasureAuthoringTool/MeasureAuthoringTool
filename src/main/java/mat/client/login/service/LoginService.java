@@ -213,7 +213,7 @@ public interface LoginService extends RemoteService {
 
 	LoginModel initSession(Map<String, String> harpUserInfo) throws MatException;
 
-    Boolean checkForAssociatedHarpId(String harpPrimaryEmailId) throws MatException;
+    Boolean checkForAssociatedHarpId(String harpId) throws MatException;
 
 
     String getSecurityQuestionToVerifyHarpUser(String loginId, String password) throws MatException;

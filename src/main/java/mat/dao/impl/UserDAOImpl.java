@@ -437,14 +437,14 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	}
 
     @Override
-    public boolean findAssociatedHarpId(String harpPrimaryEmailId) {
+    public boolean findAssociatedHarpId(String harpId) {
         Session session = getSessionFactory().getCurrentSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
         Root<User> userRoot = criteriaQuery.from(User.class);
 
-        criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("emailAddress"), harpPrimaryEmailId));
-        return StringUtils.isNotBlank(session.createQuery(criteriaQuery).getSingleResult().getHarpId());
+        criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("harpId"), harpId));
+        return session.createQuery(criteriaQuery).getResultList().size() == 0 ? false : true;
     }
 
     private Predicate getPredicateForUsersToShareMeasure(String userName, CriteriaBuilder cb, Root<User> root) {

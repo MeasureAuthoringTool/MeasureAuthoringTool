@@ -131,8 +131,9 @@ public class CheckUserLastLoginTask {
             }
             content.put("rolename", userRole);
 
-            content.put(ConstantMessages.LOGINID, user.getLoginId());
+            content.put(ConstantMessages.HARPID, user.getHarpId());
             content.put(ConstantMessages.URL, envirUrl);
+            content.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
 
             model.put("content", content);
             model.put(ConstantMessages.SUPPORT_EMAIL, supportEmailAddress);

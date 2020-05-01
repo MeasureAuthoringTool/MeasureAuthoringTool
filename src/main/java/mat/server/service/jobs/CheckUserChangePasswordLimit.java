@@ -135,7 +135,8 @@ public class CheckUserChangePasswordLimit {
             }
             content.put("rolename", userRole);
 
-            content.put(ConstantMessages.LOGINID, user.getLoginId());
+            content.put(ConstantMessages.HARPID, user.getHarpId());
+            content.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
             content.put(ConstantMessages.URL, envirUrl);
 
             //5 days Expiry Date

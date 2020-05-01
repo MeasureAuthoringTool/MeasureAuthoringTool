@@ -100,7 +100,7 @@ public class TestCqlToMatXml {
         assertEquals("allergy-refuted", destination.getCodeList().get(22).getName());
         assertEquals("refuted", destination.getCodeList().get(22).getCodeOID());
         assertEquals("AllergyIntoleranceVerificationStatusCodes", destination.getCodeList().get(22).getCodeSystemName());
-        assertEquals(null, destination.getCodeList().get(22).getDisplayName());
+        assertEquals("allergy-refuted", destination.getCodeList().get(22).getDisplayName());
 
         assertEquals("Community", destination.getCodeList().get(23).getName());
         assertEquals("community", destination.getCodeList().get(23).getCodeOID());

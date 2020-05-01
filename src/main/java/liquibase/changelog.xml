@@ -270,4 +270,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-175_10007_update_intermediate_clinical_outcome_abbreviation.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-175_Add_Unique_constraint_measureType_measureDeveloper.xml"/>
 		<include file="classpath:/liquibase/setAdminPasswordsAsTemp.xml"/>
+		<include file="classpath:/liquibase/addHarpIdColumn.xml"/>
 </databaseChangeLog>

@@ -75,15 +75,15 @@ import mat.shared.bonnie.result.BonnieUserInformationResult;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserver{
-	
+
 	class EnterKeyDownHandler implements KeyDownHandler {
-		
+
 		final private int counter;
-		
+
 		public EnterKeyDownHandler(int index){
 			counter = index;
 		}
-		
+
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
@@ -91,25 +91,25 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			}
 		}
 	}
-	
+
 	public static void focusSkipLists(String skipstr){
 		Widget widget = SkipListBuilder.buildSkipList(skipstr);
 		getSkipList().clear();
 		getSkipList().add(widget);
 		getSkipList().setFocus(true);
 	}
-	
+
 	public static native String getUserAgent() /*-{
 		return navigator.userAgent.toLowerCase();
 	}-*/;
-	
+
 
 	public static void removeInputBoxFromFocusPanel(Element element) {
 		if(element.hasChildNodes() && element.getFirstChild().getNodeName().equalsIgnoreCase("input")){// this is done for 508 issue to fix the input box in FF
 			element.removeChild(element.getFirstChild());
 		}
 	}
-	
+
 	private List<MatPresenter> presenterList;
 	private	MatPresenter adminPresenter;
 	private MatPresenter myAccountPresenter;
@@ -126,21 +126,21 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	private CqlLibraryPresenter cqlLibrary;
 	private ManageAdminReportingPresenter reportingPresenter;
 	private int tabIndex;
-	
+
 	private  final AsyncCallback<SessionManagementService.Result> userRoleCallback = new AsyncCallback<SessionManagementService.Result>(){
-		
+
 		@Override
 		public void onFailure(final Throwable caught) {
 			redirectToLogin();
 		}
-		
+
 		@Override
-		public void onSuccess(final SessionManagementService.Result result) {	
+		public void onSuccess(final SessionManagementService.Result result) {
 			MatContext.get().getCurrentReleaseVersion(new AsyncCallback<String>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
-					
+
 				}
 
 				@Override
@@ -161,7 +161,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				private boolean checkIfResultIsNotNull(Result result) {
                     return result != null && result.activeSessionId != null && result.currentSessionId != null;
 
-				}   
+				}
 			});
 			}
 	};
@@ -170,17 +170,17 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		ManageAdminPresenter adminPresenter = new ManageAdminPresenter();
 		return adminPresenter;
 	}
-	
+
 
 	private MeasureComposerPresenter buildMeasureComposer() {
 		return new MeasureComposerPresenter();
 	}
-	
+
 
 	private CqlComposerPresenter buildCqlComposer() {
 		return new CqlComposerPresenter();
 	}
-	
+
 
 	private ManageMeasurePresenter buildMeasureLibraryWidget(Boolean isAdmin) {
 		ManageMeasurePresenter measurePresenter = null;
@@ -188,7 +188,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
 			TransferOwnershipView transferOS = new TransferOwnershipView();
 			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
-			
+
 			measurePresenter = new ManageMeasurePresenter(measureSearchView, null, null, null, null, null, historyView,
 					null, transferOS);
 		} else {
@@ -197,11 +197,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			NewCompositeMeasureView compositeMeasureDetailView = new NewCompositeMeasureView();
 			ManageMeasureVersionView versionView = new ManageMeasureVersionView();
 			ManageMeasureShareView measureShareView = new ManageMeasureShareView();
-			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();		
-			ManageExportView exportView = new ManageExportView();		
+			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
+			ManageExportView exportView = new ManageExportView();
 			ComponentMeasureDisplay componentMeasureDisplay = new ComponentMeasureDisplay();
 			componentMeasureDisplay.getBreadCrumbPanel().setVisible(false);
-			
+
 			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView,
 					compositeMeasureDetailView, componentMeasureDisplay, measureShareView, exportView,
 					historyView, versionView, null);
@@ -210,7 +210,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		return measurePresenter;
 
 	}
-	
+
 
 	private CqlLibraryPresenter buildCqlLibraryWidget() {
 		CqlLibraryView cqlLibraryView = new CqlLibraryView();
@@ -218,41 +218,35 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		CQLLibraryVersionView versionView = new CQLLibraryVersionView();
 		CQLLibraryShareView shareView = new CQLLibraryShareView();
 		CQLLibraryHistoryView historyView = new CQLLibraryHistoryView();
-		CqlLibraryPresenter cqlLibraryPresenter = new CqlLibraryPresenter(cqlLibraryView, detailView, 
+		CqlLibraryPresenter cqlLibraryPresenter = new CqlLibraryPresenter(cqlLibraryView, detailView,
 				versionView, shareView, historyView);
 		return cqlLibraryPresenter;
 	}
 
-	
+
 	private MatPresenter buildMyAccountWidget() {
-		PersonalInformationView informationView = new PersonalInformationView();
-		PersonalInformationPresenter personalInfoPrsnter = new PersonalInformationPresenter(informationView);
-		SecurityQuestionsPresenter quesPresenter = new SecurityQuestionsPresenter(new SecurityQuestionsView());
-		
-		ChangePasswordPresenter passwordPresenter = new ChangePasswordPresenter(new ChangePasswordView());
-		
-		
-		MyAccountPresenter accountPresenter = new MyAccountPresenter(new MyAccountView(personalInfoPrsnter,
-				quesPresenter, passwordPresenter));
+        PersonalInformationView informationView = new PersonalInformationView();
+        PersonalInformationPresenter personalInfoPrsnter = new PersonalInformationPresenter(informationView);
+        MyAccountPresenter accountPresenter = new MyAccountPresenter(new MyAccountView(personalInfoPrsnter));
 		return accountPresenter;
 	}
-	
+
 
 	private void callSignOut(){
 		MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
-			
+
 			@Override
 			public void onFailure(Throwable arg0) {
 				redirectToLogin();
 			}
-			
+
 			@Override
 			public void onSuccess(Void arg0) {
 				redirectToLogin();
 			}
 		});
 	}
-	
+
 
 	private void callSignOutWithoutRedirect(){
 		MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
@@ -262,14 +256,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			public void onSuccess(Void arg0) {}
 		});
 	}
-	
+
 
 	private native void closeBrowser()
 	/*-{
 		$wnd.open('', '_self');
 		$wnd.close();
 	}-*/;
-	
+
 
 	@Override
 	protected void initEntryPoint() {
@@ -278,18 +272,18 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		MatContext.get().setListBoxCodeProvider(listBoxCodeProvider);
 		MatContext.get().getCurrentUserRole(userRoleCallback);
 		mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
-		
+
 		History.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(final ValueChangeEvent<String> event) {
 				final String historyToken = event.getValue();
-				
+
 				if((historyToken == null) || historyToken.isEmpty()){
 					History.newItem(mainTabLayoutID + 0, false);
 				}
 				else if(!MatContext.get().isLoading())   {
 					// Parse the history token
-					
+
 					try {
 						for(Object key : MatContext.get().tabRegistry.keySet()){
 							if(key instanceof String){
@@ -317,8 +311,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				}
 			}
 		});
-		
-		
+
+
 		MatContext.get().getEventBus().addHandler(MeasureEditEvent.TYPE, new MeasureEditEvent.Handler() {
 			@Override
 			final public void onMeasureEdit(MeasureEditEvent event) {
@@ -326,7 +320,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				focusSkipLists("MeasureComposer");
 			}
 		});
-		
+
 		MatContext.get().getEventBus().addHandler(CQLLibraryEditEvent.TYPE, new CQLLibraryEditEvent.Handler() {
 			@Override
 			final public void onCQLLibraryEdit(CQLLibraryEditEvent event) {
@@ -334,18 +328,18 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				focusSkipLists("CqlComposer");
 			}
 		});
-		
+
 		MatContext.get().getEventBus().addHandler(BackToMeasureLibraryPage.TYPE, new BackToMeasureLibraryPage.Handler() {
-			
+
 			@Override
 			public void onDeleted(BackToMeasureLibraryPage event) {
 				mainTabLayout.selectTab(presenterList.indexOf(measureLibrary));
 				focusSkipLists("Measure Library");
 			}
 		});
-		
+
 		MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, new EditCompositeMeasureEvent.Handler() {
-			
+
 			@Override
 			public void onFire(EditCompositeMeasureEvent event) {
 			}
@@ -360,17 +354,17 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			}
 		});
 	}
-	
+
 
 	@SuppressWarnings("unchecked")
 	private void loadMatWidgets(String userFirstName, String userLastName, boolean isAlreadySignedIn, String resultMatVersion){
 		MatContext.get().startUserLockUpdate();
 		MatContext.get().recordTransactionEvent(null, null, "LOGIN_EVENT", null, 1);
-		
+
 		mainTabLayout = new MatTabLayoutPanel(this);
 		mainTabLayout.getElement().setAttribute("id", "matMainTabPanel");
 		mainTabLayout.getElement().setAttribute("aria-role", "TabList");
-		
+
 		MatContext.get().tabRegistry.put(mainTabLayoutID,mainTabLayout);
 		MatContext.get().enableRegistry.put(mainTabLayoutID,this);
 		mainTabLayout.addSelectionHandler(new SelectionHandler<Integer>(){
@@ -381,47 +375,47 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				if(!History.getToken().equals(newToken)){
 					MatContext.get().recordTransactionEvent(null, null, "MAIN_TAB_EVENT", newToken, 1);
 					History.newItem(newToken, false);
-				}	
+				}
 			}
-			
+
 		});
-		
+
 		String title;
 		tabIndex = 0;
 		presenterList = new LinkedList<MatPresenter>();
 		currentUserRole = MatContext.get().getLoggedInUserRole();
-		
+
 		buildLinksPanel();
-		
+
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			MatContext.get().getCQLConstants();
 			MatContext.get().getMeasureTypeListFromDataBase();
-			
+
 			measureLibrary = buildMeasureLibraryWidget(false);
 			title = ClientConstants.TITLE_MEASURE_LIB;
 			mainTabLayout.add(measureLibrary.getWidget(), title, true);
 			presenterList.add(measureLibrary);
-					
+
 			measureComposer= buildMeasureComposer();
 			title = ClientConstants.TITLE_MEASURE_COMPOSER;
 			mainTabLayout.add(measureComposer.getWidget(), title, true);
 			presenterList.add(measureComposer);
-			
+
 			cqlLibrary = buildCqlLibraryWidget();
 			title = ClientConstants.TITLE_CQL_LIB;
 			mainTabLayout.add(cqlLibrary.getWidget(), title, true);
 			presenterList.add(cqlLibrary);
-			
+
 			cqlComposer= buildCqlComposer();
 			title = ClientConstants.TITLE_CQL_COMPOSER;
 			mainTabLayout.add(cqlComposer.getWidget(), title, true);
 			presenterList.add(cqlComposer);
-			
+
 			title = ClientConstants.TITLE_MY_ACCOUNT;
 			myAccountPresenter = buildMyAccountWidget();
 			mainTabLayout.add(myAccountPresenter.getWidget(), title, false);
 			presenterList.add(myAccountPresenter);
-			
+
 			tabIndex = presenterList.indexOf(myAccountPresenter);
 			createUMLSLinks();
 			createBonnieLinks();
@@ -434,12 +428,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			title = ClientConstants.TITLE_ADMIN;
 			mainTabLayout.add(adminPresenter.getWidget(), title, true);
 			presenterList.add(adminPresenter);
-			
+
 			measureLibrary = buildMeasureLibraryWidget(true);
 			title = ClientConstants.TITLE_MEASURE_LIB_CHANGE_OWNERSHIP;
 			mainTabLayout.add(measureLibrary.getWidget(), title, true);
 			presenterList.add(measureLibrary);
-			
+
 			ManageCQLLibraryAdminView cqlLibraryAdminView = new ManageCQLLibraryAdminView();
 			CQLLibraryHistoryView historyView = new CQLLibraryHistoryView();
 			TransferOwnershipView transferOS = new TransferOwnershipView();
@@ -447,13 +441,13 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			title = ClientConstants.CQL_LIBRARY_OWNERSHIP;
 			mainTabLayout.add(cqlLibraryAdminPresenter.getWidget(), title, true);
 			presenterList.add(cqlLibraryAdminPresenter);
-			
+
 			ManageAdminReportingView adminReportingView = new ManageAdminReportingView();
 			reportingPresenter = new ManageAdminReportingPresenter(adminReportingView);
 			title = ClientConstants.ADMIN_REPORTS;
 			mainTabLayout.add(reportingPresenter.getWidget(), title, true);
 			presenterList.add(reportingPresenter);
-			
+
 			title = ClientConstants.TITLE_ADMIN_ACCOUNT;
 			myAccountPresenter = buildMyAccountWidget();
 			mainTabLayout.add(myAccountPresenter.getWidget(), title, true);
@@ -464,52 +458,52 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			Window.alert("Unrecognized user role " + currentUserRole);
 			MatContext.get().getEventBus().fireEvent(new LogoffEvent());
 		}
-		
+
 		mainTabLayout.setHeight("100%");
 
 		setHeader(resultMatVersion.replaceAll("[a-zA-Z]", ""), getHomeLink());
-		
+
 		setSignedInAsName(userFirstName, userLastName);
-		
+
 		getHomeLink().addClickHandler(event -> MatContext.get().redirectToMatPage(ClientConstants.HTML_MAT));
-		
+
 		getProfile().addClickHandler(event -> mainTabLayout.selectTab(presenterList.indexOf(myAccountPresenter)));
-		
+
 		getSignOut().addClickHandler(event -> MatContext.get().getEventBus().fireEvent(new LogoffEvent()));
-		
+
 		setIndicatorsHidden();
 
 		hideLoadingMessage();
-		
+
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			mainTabLayout.selectTab(presenterList.indexOf(measureLibrary));
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			mainTabLayout.selectTab(presenterList.indexOf(adminPresenter));
 		}
-		
+
 		getContentPanel().add(mainTabLayout);
-		
+
 		getContentPanel().addKeyPressHandler(event -> MatContext.get().restartTimeoutWarning());
-		
+
 		getContentPanel().addClickHandler(event -> MatContext.get().restartTimeoutWarning());
-		
+
 		getUMLSButton().addClickHandler(event -> showUMLSModal(userFirstName, isAlreadySignedIn));
-		
-		getBonnieSignInButton().addClickHandler(event -> showBonnieModal()); 
-		
+
+		getBonnieSignInButton().addClickHandler(event -> showBonnieModal());
+
 		getBonnieDisconnectButton().addClickHandler(event -> revokeBonnieAccessTokenForUser());
-		
+
 		/*
 		 * This block adds a special generic handler for any mouse clicks in the mainContent for ie browser.
 		 * Need to add this handler in order to keep track of the user activity in IE8 Browser.
 		 */
 		if(getUserAgent().contains(ClientConstants.MSIE)){
-			getContentPanel().addMouseUpHandler(event -> MatContext.get().restartTimeoutWarning()); 
+			getContentPanel().addMouseUpHandler(event -> MatContext.get().restartTimeoutWarning());
 		}
-		
+
 		MatContext.get().getEventBus().addHandler(BackToLoginPageEvent.TYPE, new BackToLoginPageEvent.Handler() {
-			
+
 			@Override
 			public void onLoginFailure(BackToLoginPageEvent event) {
 				redirectToLogin();
@@ -524,7 +518,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
 			}
 		});
-		
+
 		MatContext.get().getEventBus().addHandler(TimedOutEvent.TYPE,new TimedOutEvent.Handler() {
 			@Override
 			public void onTimedOut(TimedOutEvent event) {
@@ -533,14 +527,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				}
 			}
 		});
-		
+
 		MatContext.get().restartTimeoutWarning();
 	}
-	
+
 	public static void setSignedInAsName(String userFirstName, String userLastName) {
 		setSignedInName(userFirstName + " " + userLastName);
 	}
-	
+
 	private void showUMLSModal(String userFirstName, boolean isAlreadySignedIn) {
 		final UmlsLoginDialogBox login = new UmlsLoginDialogBox();
 		login.showUMLSLogInDialog(this.measureComposer.getCQLWorkspacePresenter(), this.cqlComposer.getCQLStandaloneWorkspacePresenter());
@@ -552,9 +546,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		BonnieModal bonnieModal = new BonnieModal();
 		bonnieModal.show();
 	}
-	
+
 	private void revokeBonnieAccessTokenForUser() {
-		MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(MatContext.get().getLoggedinUserId(), 
+		MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(MatContext.get().getLoggedinUserId(),
 				new AsyncCallback<Void>() {
 
 			@Override
@@ -566,16 +560,16 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			public void onSuccess(Void result) {
 				hideBonnieActive(true);
 				getBonnieSignInButton().getElement().focus();
-				getBonnieSignInButton().getElement().setAttribute("role", "alert"); 
+				getBonnieSignInButton().getElement().setAttribute("role", "alert");
 				getBonnieSignInButton().getElement().setAttribute("aria-label", "Click here to sign in to Bonnie.");
 			}
 
 		});
 	}
-	
-	private void setUMLSActiveLink() {		
+
+	private void setUMLSActiveLink() {
 		MatContext.get().getVsacapiServiceAsync().getTicketGrantingToken(new AsyncCallback<VsacTicketInformation>() {
-			
+
 			@Override
 			public void onSuccess(VsacTicketInformation result) {
 				boolean loggedInToUMLS = (result != null);
@@ -583,7 +577,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				hideUMLSActive(!loggedInToUMLS);
 				MatContext.get().setUMLSLoggedIn(loggedInToUMLS);
 			}
-			
+
 			@Override
 			public void onFailure(Throwable caught) {
 				hideUMLSActive(true);
@@ -595,12 +589,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	private void setBonnieActiveLink() {
 		String matUserId = MatContext.get().getLoggedinUserId();
 		MatContext.get().getBonnieService().getBonnieUserInformationForUser(matUserId, new AsyncCallback<BonnieUserInformationResult>() {
-			
+
 			@Override
 			public void onSuccess(BonnieUserInformationResult result) {
 				hideBonnieActive(false);
 			}
-			
+
 			@Override
 			public void onFailure(Throwable caught) {
 				hideBonnieActive(true);
@@ -621,10 +615,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			}
 		};
 		timer.schedule(1000);
-		
+
 	}
-	
-	
+
+
 
 	@Override
 	public void setEnabled(boolean enabled){
@@ -636,7 +630,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		MatContext.get().setErrorTabIndex(-1);
 		MatContext.get().setErrorTab(false);
 		Integer selectedIndex = mainTabLayout.getSelectedIndex();
-		
+
 		if(presenterList.get(selectedIndex) instanceof TabObserver) {
 			TabObserver tabObserver = (TabObserver) presenterList.get(selectedIndex);
 			return tabObserver.isValid();
@@ -653,7 +647,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			presenter.beforeDisplay();
 		}
 	}
-	
+
 	@Override
 	public void showUnsavedChangesError() {
 		Integer selectedIndex = mainTabLayout.getSelectedIndex();
@@ -685,5 +679,5 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		}
 		presenter.beforeClosingDisplay();
 	}
-	
+
 }

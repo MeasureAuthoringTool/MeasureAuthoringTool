@@ -87,7 +87,7 @@
         },
       });
       const authClient = oktaSignIn.authClient;
-      const tokenManager = oktaSignIn.tokenManager;
+      const tokenManager = authClient.tokenManager;
 
       // Check if there are tokens in our URL fragment e.g. #token=foo
       // If so, that means Okta has redirected back to this page after a successful login

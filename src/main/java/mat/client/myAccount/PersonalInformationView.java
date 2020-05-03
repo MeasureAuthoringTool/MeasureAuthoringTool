@@ -110,17 +110,16 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		
 		FormGroup freeTextEditorGroup = new FormGroup();
 		
-		FormGroup passwordGroup = new FormGroup();
-		
 		firstNameTextBox.setPlaceholder("Enter First Name");
 		firstNameTextBox.setTitle("First Name Required");
 		firstNameTextBox.setId("FirstNameTextBox");
 		firstNameTextBox.setMaxLength(100);
+		firstNameTextBox.setReadOnly(true);
 		
 		FormLabel firstNameLabel = new FormLabel();
 		firstNameLabel.setId("firstNameLabel");
 		firstNameLabel.setFor("FirstNameTextBox");
-		firstNameLabel.setShowRequiredIndicator(true);	
+		firstNameLabel.setShowRequiredIndicator(true);
 		firstNameLabel.setText("First Name");
 		
 		firstNameGroup.add(firstNameLabel);
@@ -130,6 +129,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		middleNameTextBox.setId("MiddleNameTextBox");
 		middleNameTextBox.setWidth("32px");
 		middleNameTextBox.setMaxLength(1);
+		middleNameTextBox.setReadOnly(true);
 		
 		FormLabel middleNameLabel = new FormLabel();
 		middleNameLabel.setId("MiddleNameLabel");
@@ -143,11 +143,12 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		lastNameTextBox.setTitle("Last Name Required");
 		lastNameTextBox.setId("LastNameTextBox");
 		lastNameTextBox.setMaxLength(100);
+        lastNameTextBox.setReadOnly(true);
 		
 		FormLabel lastNameLabel = new FormLabel();
 		lastNameLabel.setId("LastNameLabel");
 		lastNameLabel.setFor("LastNameTextBox");
-		lastNameLabel.setShowRequiredIndicator(true);	
+		lastNameLabel.setShowRequiredIndicator(true);
 		lastNameLabel.setText("Last Name");
 		
 		lastNameGroup.add(lastNameLabel);
@@ -167,6 +168,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		title.setId("titleTextBox");
 		title.setMaxLength(32);
 		title.setWidth("200px");
+		title.setReadOnly(true);
 		titleGroup.add(titleLabel);
 		titleGroup.add(title);
 		
@@ -206,6 +208,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		emailAddress.setId("emailTextBox");
 		emailAddress.setWidth("250px");
 		emailAddress.setMaxLength(254);
+		emailAddress.setReadOnly(true);
 		emailAddressGroup.add(emailAddressLabel);
 		emailAddressGroup.add(emailAddress);
 		
@@ -257,10 +260,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		
 		rightFormSet.add(userPreferencePanel);
 		
-		FieldSet bottomFormSet = new FieldSet();
-		passwordGroup.add(passwordEditInfoWidget.getPasswordExistingGroup());
-		bottomFormSet.add(passwordGroup);
-		
 		HorizontalPanel topPanel = new HorizontalPanel();
 		topPanel.setWidth("100%");
 		topPanel.add(formFieldSet);
@@ -269,7 +268,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		VerticalPanel wrapPanel = new VerticalPanel();
 		wrapPanel.setWidth("100%");
 		wrapPanel.add(topPanel);
-		wrapPanel.add(bottomFormSet);
 		
 		userNameForm.add(wrapPanel);
 		return userNameForm;
@@ -378,14 +376,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	@Override
 	public TextBox getOID() {
 		return oid;
-	}
-
-		/* (non-Javadoc)
-	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getPassword()
-	 */
-	@Override
-	public HasValue<String> getPassword() {
-		return passwordEditInfoWidget.getPassword();
 	}
 	
 	/* (non-Javadoc)

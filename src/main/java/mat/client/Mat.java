@@ -252,13 +252,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private MatPresenter buildMyAccountWidget() {
         PersonalInformationView informationView = new PersonalInformationView();
         PersonalInformationPresenter personalInfoPrsnter = new PersonalInformationPresenter(informationView);
-        SecurityQuestionsPresenter quesPresenter = new SecurityQuestionsPresenter(new SecurityQuestionsView());
-
-        ChangePasswordPresenter passwordPresenter = new ChangePasswordPresenter(new ChangePasswordView());
-
-
-        MyAccountPresenter accountPresenter = new MyAccountPresenter(new MyAccountView(personalInfoPrsnter,
-                quesPresenter, passwordPresenter));
+        MyAccountPresenter accountPresenter = new MyAccountPresenter(new MyAccountView(personalInfoPrsnter));
         return accountPresenter;
     }
 

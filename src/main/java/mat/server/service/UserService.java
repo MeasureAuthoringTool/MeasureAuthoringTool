@@ -77,14 +77,14 @@ public interface UserService {
 	 */
 	public ForgottenPasswordResult requestForgottenPassword(String email,
 			String securityQuestion, String securityAnswer, int invalidUserCounter);
-	
+
 	/**
-	 * Request reset locked password.
-	 * 
+	 * Request activate.
+	 *
 	 * @param userid
 	 *            the userid
 	 */
-	public void requestResetLockedPassword(String userid);
+	void activate(String userid);
 	
 	/**
 	 * Sets the user password.
@@ -243,14 +243,14 @@ public interface UserService {
 	 *            the login id
 	 * @return true, if is locked user
 	 */
-	public boolean isLockedUser(String loginId);
+	boolean isLockedUser(String loginId);
 
 	/**
 	 * Checks if the user is locked out of the MAT
 	 * @param harpId User's HARP ID.
 	 * @return true, if the user was locked (likely due to inactivity).
 	 */
-	public boolean isHarpUserLocked(String harpId);
+	boolean isHarpUserLockedRevoked(String harpId);
 
 	/**
 	 * Search for non terminated users.

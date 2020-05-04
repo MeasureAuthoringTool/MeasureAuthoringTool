@@ -1,5 +1,6 @@
 package mat.client.admin;
 
+import mat.client.event.LogoffEvent;
 import org.gwtbootstrap3.client.ui.Button;
 
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -190,7 +191,7 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 				showSearchingBusy(false);
 				if (caught instanceof InCorrectUserRoleException) {
-					callSignOut();
+					MatContext.get().getEventBus().fireEvent(new LogoffEvent());
 				}
 			}
 		});
@@ -204,33 +205,5 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 		}
 		((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
 		((MatTextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
-	}
-	
-	private void callSignOut() {
-		MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
-			@Override
-			public void onFailure(Throwable arg0) {
-				redirectToLogin();
-			}
-
-			@Override
-			public void onSuccess(Void arg0) {
-				redirectToLogin();
-			}
-		});
-	}
-	
-	private void redirectToLogin() {
-		/*
-		 * Added a timer to have a delay before redirect since this was causing
-		 * the firefox javascript exception.
-		 */
-		final Timer timer = new Timer() {
-			@Override
-			public void run() {
-				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-			}
-		};
-		timer.schedule(1000);
 	}
 }

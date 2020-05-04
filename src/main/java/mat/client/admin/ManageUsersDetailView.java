@@ -66,7 +66,8 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 	
 	/** The email address. */
 	private TextBox emailAddress = new TextBox();
-	
+
+	private TextBox harpId = new TextBox();
 	
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
@@ -85,12 +86,8 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 	/** The oid. */
 	private TextBox oid = new TextBox();
 	
-	
-	
 	/** The org admin radio. */
 	private RadioButton orgAdminRadio = new RadioButton("role", "Top Level Administrator");
-	
-
 	
 	/** The organization. */
 	private ListBoxMVP organizationListBox = new ListBoxMVP();
@@ -110,8 +107,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 	/** The required. */
 	private HTML required = new HTML(RequiredIndicator.get() + " indicates required field");
 	
-	/** The reset password. */
-	private Button resetPassword = new Button("Reset Password");
+	private Button reactivateAccountButton = new Button("Re-activate account");
 	
 	/** The revoked status. */
 	private RadioButton revokedStatus = new RadioButton("status", "Revoked");
@@ -269,7 +265,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 		FormGroup organizationGroup = new FormGroup();
 		FormGroup oidGroup = new FormGroup();
 		FormGroup statusGroup = new FormGroup();
-		FormGroup resetButtonGroup = new FormGroup();
+		FormGroup reactivateAccountButtonGroup = new FormGroup();
 		
 		FormLabel roleLabel = new FormLabel();
 		roleLabel.setText("Role");
@@ -344,15 +340,15 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 		statusGroup.add(hzPanel);
 		statusGroup.add(hzRevokePanel);
 		
-		resetPassword.setTitle("Reset Password");
-		resetButtonGroup.add(resetPassword);
+		reactivateAccountButton.setTitle("Re-activate account");
+		reactivateAccountButtonGroup.add(reactivateAccountButton);
 		
 		FieldSet fieldSet = new FieldSet();
 		fieldSet.add(roleGroup);
 		fieldSet.add(organizationGroup);
 		fieldSet.add(oidGroup);
 		fieldSet.add(statusGroup);
-		fieldSet.add(resetButtonGroup);
+		fieldSet.add(reactivateAccountButtonGroup);
 		
 		centerForm.add(fieldSet);
 		return centerForm;
@@ -421,6 +417,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 		
 		FormGroup titleGroup = new FormGroup();
 		FormGroup emailAddressGroup = new FormGroup();
+		FormGroup harpIdGroup = new FormGroup();
 		FormGroup phoneNumberGroup = new FormGroup();
 		
 		
@@ -498,6 +495,20 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 		emailAddress.setMaxLength(254);
 		emailAddressGroup.add(emailAddressLabel);
 		emailAddressGroup.add(emailAddress);
+
+
+		FormLabel harpIdLabel = new FormLabel();
+		harpIdLabel.setId("harpIdLabel");
+		harpIdLabel.setFor("harpIdTextBox");
+		harpIdLabel.setShowRequiredIndicator(true);
+		harpIdLabel.setText("HARP ID");
+		harpId.setPlaceholder("Enter HARP ID");
+		harpId.setTitle("HARP ID");
+		harpId.setId("harpIdTextBox");
+		harpId.setWidth("250px");
+		harpId.setMaxLength(254);
+		harpIdGroup.add(harpIdLabel);
+		harpIdGroup.add(harpId);
 		
 		
 		FormLabel phoneNumberLabel = new FormLabel();
@@ -515,6 +526,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 		formFieldSet.add(nameGrid);
 		formFieldSet.add(titleGroup);
 		formFieldSet.add(emailAddressGroup);
+		formFieldSet.add(harpIdGroup);
 		formFieldSet.add(phoneNumberGroup);
 		
 		userNameForm.add(formFieldSet);
@@ -522,108 +534,71 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 	}
 	
 	
-
-	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#asWidget()
-	 */
 	@Override
 	public Widget asWidget() {
 		return containerPanel;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getCancelButton()
-	 */
 	@Override
 	public HasClickHandlers getCancelButton() {
 		return buttonBar.getCancelButton();
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getEmailAddress()
-	 */
 	@Override
 	public HasValue<String> getEmailAddress() {
 		return emailAddress;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getErrorMessageDisplay()
-	 */
+
+	@Override
+	public HasValue<String> getHarpId() {
+		return harpId;
+	}
+
 	@Override
 	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getFirstName()
-	 */
 	@Override
 	public HasValue<String> getFirstName() {
 		return firstNameTextBox;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getIsActive()
-	 */
 	@Override
 	public HasValue<Boolean> getIsActive() {
 		return activeStatus;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getIsOrgUser()
-	 */
 	@Override
 	public HasValue<Boolean> getIsOrgUser() {
 		return orgUserRadio;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getIsRevoked()
-	 */
 	@Override
 	public HasValue<Boolean> getIsRevoked() {
 		return revokedStatus;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getLastName()
-	 */
 	@Override
 	public HasValue<String> getLastName() {
 		return lastNameTextBox;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getLoginId()
-	 */
 	@Override
 	public Label getLoginId() {
 		return loginId;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getMiddleInitial()
-	 */
 	@Override
 	public HasValue<String> getMiddleInitial() {
 		return middleNameTextBox;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getOid()
-	 */
 	@Override
 	public TextBox getOid() {
 		return oid;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getOrganizationListBox()
-	 */
 	@Override
 	public ListBoxMVP getOrganizationListBox() {
 		return organizationListBox;
@@ -637,25 +612,16 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 		return organizationsMap;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getPhoneNumber()
-	 */
 	@Override
 	public HasValue<String> getPhoneNumber() {
 		return phoneWidget.getPhoneNumber();
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getResetPasswordButton()
-	 */
 	@Override
-	public HasClickHandlers getResetPasswordButton() {
-		return resetPassword;
+	public HasClickHandlers getReactivateAccountButton() {
+		return reactivateAccountButton;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getRole()
-	 */
 	@Override
 	public HasValue<String> getRole() {
 		return new HasValue<String>() {
@@ -705,19 +671,12 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 		};
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getSaveButton()
-	 */
 	@Override
 	public HasClickHandlers getSaveButton() {
 		return buttonBar.getSaveButton();
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getSuccessMessageDisplay()
-	 */
 	@Override
 	public MessageAlert getSuccessMessageDisplay() {
 		return successMessages;
@@ -729,18 +688,13 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 		return informationMessage;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getTitle()
-	 */
+
 	@Override
 	public HasValue<String> getTitle() {
 		return title;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#populateOrganizations(java.util.List)
-	 */
+
 	@Override
 	public void populateOrganizations(List<Result> organizations) {
 		setListBoxItems(organizationListBox, organizations, MatContext.PLEASE_SELECT);
@@ -777,42 +731,27 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 	public void setOrganizationsMap(Map<String, Result> organizationsMap) {
 		this.organizationsMap = organizationsMap;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#setShowRevokedStatus(boolean)
-	 */
+
 	@Override
 	public void setShowRevokedStatus(boolean b) {
 		MatContext.get().setVisible(revokedStatus, b);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#setShowUnlockOption(boolean)
-	 */
+
 	@Override
 	public void setShowUnlockOption(boolean b) {
-		MatContext.get().setVisible(resetPassword, b);
+		MatContext.get().setVisible(reactivateAccountButton, b);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#setTitle(java.lang.String)
-	 */
+
 	@Override
 	public void setTitle(String title) {
 		containerPanel.setHeading(title, "Manage Users");
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#setUserIsActiveEditable(boolean)
-	 */
+
 	@Override
 	public void setUserIsActiveEditable(boolean b) {
 		activeStatus.setEnabled(b);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#setUserLocked(boolean)
-	 */
+
 	@Override
 	public void setUserLocked(boolean b) {
 		MatContext.get().setVisible(lockedLabel, b);

@@ -19,7 +19,7 @@ public interface SessionManagementService extends RemoteService{
 	 * 
 	 * Note: sessionCreationTimestamp tracks the abruptly closed browser tab session issue
 	 */
-	public class Result implements IsSerializable {
+	class Result implements IsSerializable {
 		
 		public String userId;
 		
@@ -44,9 +44,9 @@ public interface SessionManagementService extends RemoteService{
 		public UserPreferenceDTO userPreference;
 	}
 	
-	public SessionManagementService.Result getCurrentUserRole();
+	SessionManagementService.Result getCurrentUser();
 	
-	public void renewSession();
+	void renewSession();
 
 	String getCurrentReleaseVersion();
 }

@@ -3,8 +3,10 @@ package mat.client.login.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mat.client.login.LoginModel;
+import mat.client.shared.MatException;
 import mat.model.SecurityQuestions;
 import mat.model.UserSecurityQuestion;
 import mat.shared.ForgottenLoginIDResult;
@@ -220,5 +222,27 @@ public interface LoginServiceAsync extends AsynchronousService{
 	 */
 	void isValidPassword(String userId, String password,
 			AsyncCallback<Boolean> callback);
-	
+
+	/**
+	 * initializes session with MAT user details for provided HARP ID.
+	 *
+	 * @param harpUserInfo User info
+	 * @Param callback
+	 * @return
+	 */
+    void initSession(Map<String, String> harpUserInfo, AsyncCallback<LoginModel> callback);
+
+    void checkForAssociatedHarpId(String harpId, AsyncCallback<Boolean> async);
+
+    void getSecurityQuestionToVerifyHarpUser(String loginId, String password, AsyncCallback<String> mapAsyncCallback);
+
+    void verifyHarpUser(String securityQuestion, String securityAnswer, String loginId, Map<String, String> harpUserInfo, AsyncCallback<Boolean> booleanAsyncCallback);
+
+	/**
+	 * Checks if the HARP user is locked out of the MAT.
+	 *
+	 * @param harpId the user's harp id
+	 * @return true, if is locked user
+	 */
+	void isHarpUserLocked(String harpId, AsyncCallback<Boolean> async);
 }

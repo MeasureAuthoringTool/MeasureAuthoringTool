@@ -2,7 +2,8 @@ Dear ${(content.User)!}${(content.rolename)!},
  
 It is time to change your Measure Authoring Tool password. To maintain your access to the MAT, please, reset your password by logging into the MAT and accessing the MAT Account tab.
 
-User ID: ${(content.loginId)!}
+HARP ID: ${(content.harpId)!}
+Email: ${(content.userEmail)!}
 MAT Environment: ${(content.url)!}
 
 Sincerely, 

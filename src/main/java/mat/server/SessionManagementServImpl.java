@@ -18,11 +18,9 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet  imple
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
-	/* (non-Javadoc)
-	 * @see mat.client.login.service.SessionManagementService#getCurrentUserRole()
-	 */
+
 	@Override
-	public SessionManagementService.Result getCurrentUserRole() {
+	public SessionManagementService.Result getCurrentUser() {
 		SessionManagementService.Result result = new SessionManagementService.Result();
 		result.userId = LoggedInUserUtil.getLoggedInUser();
 		User user= getUserService().getById(result.userId);

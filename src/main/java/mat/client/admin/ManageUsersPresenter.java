@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
@@ -18,18 +20,16 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.DTO.UserAuditLogDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.admin.ManageUsersSearchView.Observer;
 import mat.client.admin.service.SaveUpdateUserResult;
+import mat.client.event.LogoffEvent;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.ListBoxMVP;
@@ -37,7 +37,6 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
-import mat.client.util.ClientConstants;
 import mat.client.util.MatTextBox;
 import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
@@ -47,388 +46,7 @@ import mat.shared.InCorrectUserRoleException;
  */
 public class ManageUsersPresenter implements MatPresenter {
 
-	/**
-	 * The Interface SearchDisplay.
-	 */
-	public static interface SearchDisplay {
-
-		/**
-		 * Gets the creates the new button.
-		 * 
-		 * @return the creates the new button
-		 */
-		HasClickHandlers getCreateNewButton();
-
-		/**
-		 * Gets the select id for edit tool.
-		 * 
-		 * @return the select id for edit tool
-		 */
-		HasSelectionHandlers<ManageUsersSearchModel.Result> getSelectIdForEditTool();
-
-		/**
-		 * Builds the data table.
-		 * 
-		 * @param results
-		 *            the results
-		 */
-		void buildDataTable(SearchResults<ManageUsersSearchModel.Result> results);
-
-		/**
-		 * As widget.
-		 * 
-		 * @return the widget
-		 */
-		Widget asWidget();
-
-		/**
-		 * Gets the search button.
-		 * 
-		 * @return the search button
-		 */
-		HasClickHandlers getSearchButton();
-
-		/**
-		 * Gets the search string.
-		 * 
-		 * @return the search string
-		 */
-		HasValue<String> getSearchString();
-
-		/**
-		 * Sets the observer.
-		 *
-		 * @param observer the new observer
-		 */
-		void setObserver(Observer observer);
-
-		/**
-		 * Sets the title.
-		 *
-		 * @param title the new title
-		 */
-		void setTitle(String title);
-		
-		/**
-		 * Gets the success message display.
-		 *
-		 * @return the success message display
-		 */
-		MessageAlert getSuccessMessageDisplay();
-	}
-
-	/**
-	 * The Interface DetailDisplay.
-	 */
-	public static interface DetailDisplay {
-
-		/**
-		 * As widget.
-		 * 
-		 * @return the widget
-		 */
-		Widget asWidget();
-
-		/**
-		 * Gets the save button.
-		 * 
-		 * @return the save button
-		 */
-		HasClickHandlers getSaveButton();
-
-		/**
-		 * Gets the cancel button.
-		 * 
-		 * @return the cancel button
-		 */
-		HasClickHandlers getCancelButton();
-
-		/**
-		 * Gets the first name.
-		 * 
-		 * @return the first name
-		 */
-		HasValue<String> getFirstName();
-
-		/**
-		 * Gets the last name.
-		 * 
-		 * @return the last name
-		 */
-		HasValue<String> getLastName();
-
-		/**
-		 * Gets the middle initial.
-		 * 
-		 * @return the middle initial
-		 */
-		HasValue<String> getMiddleInitial();
-
-		/**
-		 * Gets the login id.
-		 * 
-		 * @return the login id
-		 */
-		Label getLoginId();
-
-		/**
-		 * Gets the title.
-		 * 
-		 * @return the title
-		 */
-		HasValue<String> getTitle();
-
-		/**
-		 * Gets the email address.
-		 * 
-		 * @return the email address
-		 */
-		HasValue<String> getEmailAddress();
-
-		/**
-		 * Gets the phone number.
-		 * 
-		 * @return the phone number
-		 */
-		HasValue<String> getPhoneNumber();
-
-		/**
-		 * Gets the organization list box.
-		 * 
-		 * @return the organization list box
-		 */
-		ListBoxMVP getOrganizationListBox();
-
-		/**
-		 * Populate organizations.
-		 * 
-		 * @param organizations
-		 *            the organizations
-		 */
-		void populateOrganizations(List<Result> organizations);
-
-		/**
-		 * Sets the organizations map.
-		 * 
-		 * @param organizationsMap
-		 *            the organizations map
-		 */
-		void setOrganizationsMap(Map<String, Result> organizationsMap);
-
-		/**
-		 * Gets the organizations map.
-		 * 
-		 * @return the organizations map
-		 */
-		Map<String, Result> getOrganizationsMap();
-
-		/**
-		 * Gets the role.
-		 * 
-		 * @return the role
-		 */
-		HasValue<String> getRole();
-
-		/**
-		 * Gets the oid.
-		 * 
-		 * @return the oid
-		 */
-		TextBox getOid();
-
-		/**
-		 * Gets the checks if is active.
-		 * 
-		 * @return the checks if is active
-		 */
-		HasValue<Boolean> getIsActive();
-
-		/**
-		 * Gets the checks if is revoked.
-		 * 
-		 * @return the checks if is revoked
-		 */
-		HasValue<Boolean> getIsRevoked();
-
-		/**
-		 * Gets the checks if is org user.
-		 * 
-		 * @return the checks if is org user
-		 */
-		HasValue<Boolean> getIsOrgUser();
-
-		/**
-		 * Gets the error message display.
-		 * 
-		 * @return the error message display
-		 */
-		MessageAlert getErrorMessageDisplay();
-
-		/**
-		 * Gets the success message display.
-		 * 
-		 * @return the success message display
-		 */
-		MessageAlert getSuccessMessageDisplay();
-
-		/**
-		 * Sets the user is active editable.
-		 * 
-		 * @param b
-		 *            the new user is active editable
-		 */
-		void setUserIsActiveEditable(boolean b);
-
-		/**
-		 * Sets the user locked.
-		 * 
-		 * @param b
-		 *            the new user locked
-		 */
-		void setUserLocked(boolean b);
-
-		/**
-		 * Sets the show revoked status.
-		 * 
-		 * @param b
-		 *            the new show revoked status
-		 */
-		void setShowRevokedStatus(boolean b);
-
-		/**
-		 * Sets the show unlock option.
-		 * 
-		 * @param b
-		 *            the new show unlock option
-		 */
-		void setShowUnlockOption(boolean b);
-
-		/**
-		 * Gets the reset password button.
-		 * 
-		 * @return the reset password button
-		 */
-		HasClickHandlers getResetPasswordButton();
-
-		/**
-		 * Sets the title.
-		 * 
-		 * @param title
-		 *            the new title
-		 */
-		void setTitle(String title);
-
-		/**
-		 * Gets the information message display.
-		 *
-		 * @return the information message display
-		 */
-		MessageAlert getInformationMessageDisplay();
-
-		/**
-		 * Gets the revoke date.
-		 *
-		 * @return the revoke date
-		 */
-		Label getRevokeDate();
-
-		/**
-		 * Sets the revoke date.
-		 *
-		 * @param revokeDate the new revoke date
-		 */
-		void setRevokeDate(Label revokeDate);
-
-		/**
-		 * Gets the adds the info area.
-		 *
-		 * @return the adds the info area
-		 */
-		CustomTextAreaWithMaxLength getAddInfoArea();
-
-		/**
-		 * Sets the adds the info area.
-		 *
-		 * @param addInfoArea the new adds the info area
-		 */
-		void setAddInfoArea(CustomTextAreaWithMaxLength addInfoArea);
-
-		/**
-		 * Sets the show admin notes.
-		 *
-		 * @param b the new show admin notes
-		 */
-		void setShowAdminNotes(boolean b);
-
-		void populateNotes(List<UserAuditLogDTO> result);
-	}
-
-	/**
-	 * The Interface HistoryDisplay.
-	 */
-	public static interface HistoryDisplay {
-
-		/**
-		 * As widget.
-		 *
-		 * @return the widget
-		 */
-		public Widget asWidget();
-
-		/**
-		 * Gets the user id.
-		 *
-		 * @return the user id
-		 */
-		public String getUserId();
-
-		/**
-		 * Gets the measure name.
-		 * 
-		 * @return the measure name
-		 */
-		public String getUserName();
-
-		/**
-		 * Gets the return to link.
-		 * 
-		 * @return the return to link
-		 */
-		public HasClickHandlers getReturnToLink();
-
-		/**
-		 * Sets the user id.
-		 *
-		 * @param id the new user id
-		 */
-		public void setUserId(String id);
-
-		/**
-		 * Sets the measure name.
-		 * 
-		 * @param name
-		 *            the new measure name
-		 */
-		public void setUserName(String name);
-
-		/**
-		 * Sets the return to link text.
-		 * 
-		 * @param s
-		 *            the new return to link text
-		 */
-		public void setReturnToLinkText(String s);
-
-		/**
-		 * Builds the cell table.
-		 * 
-		 * @param results
-		 *            the results
-		 */
-
-		void buildCellTable(List<UserAuditLogDTO> results);
-
-	}
+	private static final Logger logger = Logger.getLogger(ManageUsersPresenter.class.getSimpleName());
 
 	/** The panel. */
 	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
@@ -519,7 +137,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			}
 		});
 
-		detailDisplay.getResetPasswordButton().addClickHandler(
+		detailDisplay.getReactivateAccountButton().addClickHandler(
 				new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
@@ -527,13 +145,13 @@ public class ManageUsersPresenter implements MatPresenter {
 						MatContext
 								.get()
 								.getAdminService()
-								.resetUserPassword(currentDetails.getUserID(),
+								.activateUser(currentDetails.getUserID(),
 										new AsyncCallback<Void>() {
 											@Override
 											public void onSuccess(Void result) {
-												detailDisplay.getSuccessMessageDisplay().createAlert("Temporary Password E-mail has been sent.");
+												detailDisplay.getSuccessMessageDisplay().createAlert("Re-activate E-mail has been sent.");
 												List<String> event = new ArrayList<String>();
-												event.add("Reset Password");
+												event.add("Re-activate");
 												MatContext.get()
 														.recordUserEvent(
 																currentDetails
@@ -603,12 +221,12 @@ public class ManageUsersPresenter implements MatPresenter {
 						new AsyncCallback<ManageOrganizationSearchModel>() {
 							@Override
 							public void onFailure(Throwable caught) {
-
+								logger.log(Level.SEVERE, "AdminService::getAllOrganizations -> onFailure : " + caught.getMessage(), caught);
 							}
 
 							@Override
-							public void onSuccess(
-									ManageOrganizationSearchModel model) {
+							public void onSuccess(ManageOrganizationSearchModel model) {
+								logger.log(Level.INFO, "AdminService::getAllOrganizations -> onSuccess");
 								List<Result> results = model.getData();
 								detailDisplay.populateOrganizations(results);
 
@@ -641,8 +259,8 @@ public class ManageUsersPresenter implements MatPresenter {
 					.saveUpdateUser(updatedDetails,
 							new AsyncCallback<SaveUpdateUserResult>() {
 								@Override
-								public void onSuccess(
-										SaveUpdateUserResult result) {
+								public void onSuccess(SaveUpdateUserResult result) {
+									logger.log(Level.INFO, "AdminService::saveUpdateUser -> onSuccess");
 									if (result.isSuccess()) {
 										
 										List<String> event = new ArrayList<String>();
@@ -721,6 +339,7 @@ public class ManageUsersPresenter implements MatPresenter {
 										detailDisplay.getTitle().setValue(currentDetails.getTitle());
 										detailDisplay.getMiddleInitial().setValue(currentDetails.getMiddleInitial());
 										detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
+										detailDisplay.getHarpId().setValue(currentDetails.getHarpId());
 										detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
 										detailDisplay.getOid().setValue(currentDetails.getOid());
 										displaySearch(lastSearchKey);
@@ -751,6 +370,7 @@ public class ManageUsersPresenter implements MatPresenter {
 
 								@Override
 								public void onFailure(Throwable caught) {
+									logger.log(Level.SEVERE, "AdminService::saveUpdateUser -> onFailure: " + caught.getMessage(), caught);
 									detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
 								}
 							});
@@ -770,6 +390,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		MatContext.get().getAdminService().getUserByEmail(emailId, new AsyncCallback<ManageUsersDetailModel>() {
 			@Override
 			public void onSuccess(ManageUsersDetailModel result) {
+				logger.log(Level.INFO, "AdminService::getUserByEmail -> onSuccess");
 				currentDetails = result;
 				displaySearch(lastSearchKey);
 				searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE());
@@ -781,6 +402,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(Throwable caught) {
+				logger.log(Level.SEVERE, "AdminService::getUserByEmail -> onFailure: " + caught.getMessage(), caught);
 				//do nothing
 			}
 		});
@@ -816,6 +438,10 @@ public class ManageUsersPresenter implements MatPresenter {
 			} else if (currentDetails.getPhoneNumber() != null
 					&& !currentDetails.getPhoneNumber().equalsIgnoreCase(
 							detailDisplay.getPhoneNumber().getValue())) {
+				isPersonalInfoModified = true;
+			} else if (currentDetails.getHarpId() != null
+					&& !currentDetails.getHarpId().equalsIgnoreCase(
+							detailDisplay.getHarpId().getValue())) {
 				isPersonalInfoModified = true;
 			}
 		}
@@ -853,12 +479,14 @@ public class ManageUsersPresenter implements MatPresenter {
 				.getUser(userKey, new AsyncCallback<ManageUsersDetailModel>() {
 					@Override
 					public void onSuccess(ManageUsersDetailModel result) {
+						logger.log(Level.INFO, "AdminService::getUser -> onSuccess: " + result);
 						currentDetails = result;
 						displayDetail();
 					}
 
 					@Override
 					public void onFailure(Throwable caught) {
+						logger.log(Level.SEVERE, "AdminService::getUser -> onFailure: " + caught.getMessage(), caught);
 						detailDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 					}
@@ -877,6 +505,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		MatContext.get().getAdminService().searchUsers(key, new AsyncCallback<ManageUsersSearchModel>() {
 			@Override
 			public void onSuccess(ManageUsersSearchModel result) {
+				logger.log(Level.INFO, "AdminService::searchUsers -> onSuccess: "  + result);
 				SearchResultUpdate sru = new SearchResultUpdate();
 				sru.update(result, (com.google.gwt.user.client.ui.TextBox)searchDisplay.getSearchString(), lastSearchKey);
 				searchDisplay.buildDataTable(result);
@@ -886,48 +515,15 @@ public class ManageUsersPresenter implements MatPresenter {
 
 			@Override
 			public void onFailure(Throwable caught) {
+				logger.log(Level.INFO, "AdminService::searchUsers -> onFailure: "  + caught.getMessage(), caught);
 				detailDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 				showSearchingBusy(false);
 				if (caught instanceof InCorrectUserRoleException) {
-					callSignOut();
+					MatContext.get().getEventBus().fireEvent(new LogoffEvent());
 				}
 			}
 		});
-	}
-
-	/**
-	 * Call sign out.
-	 */
-	private void callSignOut() {
-		MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
-			@Override
-			public void onFailure(Throwable arg0) {
-				redirectToLogin();
-			}
-
-			@Override
-			public void onSuccess(Void arg0) {
-				redirectToLogin();
-			}
-		});
-	}
-
-	/**
-	 * Redirect to login.
-	 */
-	private void redirectToLogin() {
-		/*
-		 * Added a timer to have a delay before redirect since this was causing
-		 * the firefox javascript exception.
-		 */
-		final Timer timer = new Timer() {
-			@Override
-			public void run() {
-				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-			}
-		};
-		timer.schedule(1000);
 	}
 
 	/**
@@ -987,9 +583,10 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getMiddleInitial().setValue(currentDetails.getMiddleInitial());
 		detailDisplay.getTitle().setValue(currentDetails.getTitle());
 		detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
+		detailDisplay.getHarpId().setValue(currentDetails.getHarpId());
 		detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
 		
-		List<String> messages = new ArrayList<String>();
+		List<String> messages = new ArrayList<>();
 		messages.add("User ID : " + currentDetails.getLoginId());
 		messages.add(currentDetails.getPasswordExpirationMsg());
 		messages.add(currentDetails.getLastSuccessFullLoginDateTimeMessage());
@@ -1047,6 +644,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		updatedDetails.setMiddleInitial(detailDisplay.getMiddleInitial().getValue());
 		updatedDetails.setTitle(detailDisplay.getTitle().getValue());
 		updatedDetails.setEmailAddress(detailDisplay.getEmailAddress().getValue());
+		updatedDetails.setHarpId(detailDisplay.getHarpId().getValue());
 		updatedDetails.setPhoneNumber(detailDisplay.getPhoneNumber().getValue());
 		updatedDetails.setActive(detailDisplay.getIsActive().getValue());
 		updatedDetails.setRole(detailDisplay.getRole().getValue());
@@ -1069,27 +667,6 @@ public class ManageUsersPresenter implements MatPresenter {
 		}
 		updatedDetails.setAdditionalInfo(detailDisplay.getAddInfoArea().getText());
 		updatedDetails.scrubForMarkUp();
-	}
-
-	/**
-	 * Gets the widget with heading.
-	 * 
-	 * @param widget
-	 *            the widget
-	 * @param heading
-	 *            the heading
-	 * @return the widget with heading
-	 */
-	public Widget getWidgetWithHeading(Widget widget, String heading) {
-		FlowPanel vPanel = new FlowPanel();
-		Label h = new Label(heading);
-		h.addStyleName("myAccountHeader");
-		h.addStyleName("leftAligned");
-		vPanel.add(h);
-		vPanel.add(widget);
-		vPanel.addStyleName("myAccountPanel");
-		widget.addStyleName("myAccountPanelContent");
-		return vPanel;
 	}
 
 	/**
@@ -1149,10 +726,12 @@ public class ManageUsersPresenter implements MatPresenter {
 			@Override
 			public void onFailure(Throwable caught) {
 				//do nothing
+				logger.log(Level.SEVERE, "AdminService::executeUserLogSearch -> onFailure: ",  caught);
 			}
 
 			@Override
 			public void onSuccess(List<UserAuditLogDTO> result) {
+				logger.log(Level.INFO, "AdminService::executeUserLogSearch -> onSuccess");
 				detailDisplay.populateNotes(result);
 			}
 		});
@@ -1168,13 +747,400 @@ public class ManageUsersPresenter implements MatPresenter {
 		MatContext.get().getAuditService().executeUserLogSearch(userId, new AsyncCallback<List<UserAuditLogDTO>>() {
 			@Override
 			public void onFailure(Throwable caught) {
+				logger.log(Level.SEVERE, "AdminService::executeUserLogSearch -> onFailure: " + caught.getMessage(), caught);
 				//do nothing
 			}
 
 			@Override
 			public void onSuccess(List<UserAuditLogDTO> result) {
+				logger.log(Level.INFO, "AdminService::executeUserLogSearch -> onSuccess");
 				historyDisplay.buildCellTable(result);
 			}
 		});
+	}
+
+	/**
+	 * The Interface SearchDisplay.
+	 */
+	public interface SearchDisplay {
+
+		/**
+		 * Gets the creates the new button.
+		 *
+		 * @return the creates the new button
+		 */
+		HasClickHandlers getCreateNewButton();
+
+		/**
+		 * Gets the select id for edit tool.
+		 *
+		 * @return the select id for edit tool
+		 */
+		HasSelectionHandlers<ManageUsersSearchModel.Result> getSelectIdForEditTool();
+
+		/**
+		 * Builds the data table.
+		 *
+		 * @param results
+		 *            the results
+		 */
+		void buildDataTable(SearchResults<ManageUsersSearchModel.Result> results);
+
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
+		Widget asWidget();
+
+		/**
+		 * Gets the search button.
+		 *
+		 * @return the search button
+		 */
+		HasClickHandlers getSearchButton();
+
+		/**
+		 * Gets the search string.
+		 *
+		 * @return the search string
+		 */
+		HasValue<String> getSearchString();
+
+		/**
+		 * Sets the observer.
+		 *
+		 * @param observer the new observer
+		 */
+		void setObserver(Observer observer);
+
+		/**
+		 * Sets the title.
+		 *
+		 * @param title the new title
+		 */
+		void setTitle(String title);
+
+		/**
+		 * Gets the success message display.
+		 *
+		 * @return the success message display
+		 */
+		MessageAlert getSuccessMessageDisplay();
+	}
+
+	/**
+	 * The Interface DetailDisplay.
+	 */
+	public interface DetailDisplay {
+
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
+		Widget asWidget();
+
+		/**
+		 * Gets the save button.
+		 *
+		 * @return the save button
+		 */
+		HasClickHandlers getSaveButton();
+
+		/**
+		 * Gets the cancel button.
+		 *
+		 * @return the cancel button
+		 */
+		HasClickHandlers getCancelButton();
+
+		/**
+		 * Gets the first name.
+		 *
+		 * @return the first name
+		 */
+		HasValue<String> getFirstName();
+
+		/**
+		 * Gets the last name.
+		 *
+		 * @return the last name
+		 */
+		HasValue<String> getLastName();
+
+		/**
+		 * Gets the middle initial.
+		 *
+		 * @return the middle initial
+		 */
+		HasValue<String> getMiddleInitial();
+
+		/**
+		 * Gets the login id.
+		 *
+		 * @return the login id
+		 */
+		Label getLoginId();
+
+		/**
+		 * Gets the title.
+		 *
+		 * @return the title
+		 */
+		HasValue<String> getTitle();
+
+		/**
+		 * Gets the email address.
+		 *
+		 * @return the email address
+		 */
+		HasValue<String> getEmailAddress();
+
+		HasValue<String> getHarpId();
+
+		/**
+		 * Gets the phone number.
+		 *
+		 * @return the phone number
+		 */
+		HasValue<String> getPhoneNumber();
+
+		/**
+		 * Gets the organization list box.
+		 *
+		 * @return the organization list box
+		 */
+		ListBoxMVP getOrganizationListBox();
+
+		/**
+		 * Populate organizations.
+		 *
+		 * @param organizations
+		 *            the organizations
+		 */
+		void populateOrganizations(List<Result> organizations);
+
+		/**
+		 * Sets the organizations map.
+		 *
+		 * @param organizationsMap
+		 *            the organizations map
+		 */
+		void setOrganizationsMap(Map<String, Result> organizationsMap);
+
+		/**
+		 * Gets the organizations map.
+		 *
+		 * @return the organizations map
+		 */
+		Map<String, Result> getOrganizationsMap();
+
+		/**
+		 * Gets the role.
+		 *
+		 * @return the role
+		 */
+		HasValue<String> getRole();
+
+		/**
+		 * Gets the oid.
+		 *
+		 * @return the oid
+		 */
+		TextBox getOid();
+
+		/**
+		 * Gets the checks if is active.
+		 *
+		 * @return the checks if is active
+		 */
+		HasValue<Boolean> getIsActive();
+
+		/**
+		 * Gets the checks if is revoked.
+		 *
+		 * @return the checks if is revoked
+		 */
+		HasValue<Boolean> getIsRevoked();
+
+		/**
+		 * Gets the checks if is org user.
+		 *
+		 * @return the checks if is org user
+		 */
+		HasValue<Boolean> getIsOrgUser();
+
+		/**
+		 * Gets the error message display.
+		 *
+		 * @return the error message display
+		 */
+		MessageAlert getErrorMessageDisplay();
+
+		/**
+		 * Gets the success message display.
+		 *
+		 * @return the success message display
+		 */
+		MessageAlert getSuccessMessageDisplay();
+
+		/**
+		 * Sets the user is active editable.
+		 *
+		 * @param b
+		 *            the new user is active editable
+		 */
+		void setUserIsActiveEditable(boolean b);
+
+		/**
+		 * Sets the user locked.
+		 *
+		 * @param b
+		 *            the new user locked
+		 */
+		void setUserLocked(boolean b);
+
+		/**
+		 * Sets the show revoked status.
+		 *
+		 * @param b
+		 *            the new show revoked status
+		 */
+		void setShowRevokedStatus(boolean b);
+
+		/**
+		 * Sets the show unlock option.
+		 *
+		 * @param b
+		 *            the new show unlock option
+		 */
+		void setShowUnlockOption(boolean b);
+
+		/**
+		 * Gets the reset password button.
+		 *
+		 * @return the reset password button
+		 */
+		HasClickHandlers getReactivateAccountButton();
+
+		/**
+		 * Sets the title.
+		 *
+		 * @param title
+		 *            the new title
+		 */
+		void setTitle(String title);
+
+		/**
+		 * Gets the information message display.
+		 *
+		 * @return the information message display
+		 */
+		MessageAlert getInformationMessageDisplay();
+
+		/**
+		 * Gets the revoke date.
+		 *
+		 * @return the revoke date
+		 */
+		Label getRevokeDate();
+
+		/**
+		 * Sets the revoke date.
+		 *
+		 * @param revokeDate the new revoke date
+		 */
+		void setRevokeDate(Label revokeDate);
+
+		/**
+		 * Gets the adds the info area.
+		 *
+		 * @return the adds the info area
+		 */
+		CustomTextAreaWithMaxLength getAddInfoArea();
+
+		/**
+		 * Sets the adds the info area.
+		 *
+		 * @param addInfoArea the new adds the info area
+		 */
+		void setAddInfoArea(CustomTextAreaWithMaxLength addInfoArea);
+
+		/**
+		 * Sets the show admin notes.
+		 *
+		 * @param b the new show admin notes
+		 */
+		void setShowAdminNotes(boolean b);
+
+		void populateNotes(List<UserAuditLogDTO> result);
+	}
+
+	/**
+	 * The Interface HistoryDisplay.
+	 */
+	public static interface HistoryDisplay {
+
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
+		public Widget asWidget();
+
+		/**
+		 * Gets the user id.
+		 *
+		 * @return the user id
+		 */
+		public String getUserId();
+
+		/**
+		 * Gets the measure name.
+		 *
+		 * @return the measure name
+		 */
+		public String getUserName();
+
+		/**
+		 * Gets the return to link.
+		 *
+		 * @return the return to link
+		 */
+		public HasClickHandlers getReturnToLink();
+
+		/**
+		 * Sets the user id.
+		 *
+		 * @param id the new user id
+		 */
+		public void setUserId(String id);
+
+		/**
+		 * Sets the measure name.
+		 *
+		 * @param name
+		 *            the new measure name
+		 */
+		public void setUserName(String name);
+
+		/**
+		 * Sets the return to link text.
+		 *
+		 * @param s
+		 *            the new return to link text
+		 */
+		public void setReturnToLinkText(String s);
+
+		/**
+		 * Builds the cell table.
+		 *
+		 * @param results
+		 *            the results
+		 */
+
+		void buildCellTable(List<UserAuditLogDTO> results);
+
 	}
 }

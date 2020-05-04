@@ -129,49 +129,46 @@ public class UserServiceImpl implements UserService {
 		return password;
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void requestResetLockedPassword(String userid) {
-		logger.info("In requestResetLockedPassword(String userid).....");
-		User user = userDAO.find(userid);
-		String newPassword = generateRandomPassword();
-		if(user.getPassword() == null) {
-			UserPassword pwd = new UserPassword();
-			user.setPassword(pwd);
-		}
+    @Override
+    public void activate(String userid) {
+        logger.info("In activate(String userid).....");
+        User user = userDAO.find(userid);
+        String newPassword = generateRandomPassword();
+        if (user.getPassword() == null) {
+            UserPassword pwd = new UserPassword();
+            user.setPassword(pwd);
+        }
 
-		//to maintain user password History
-		if(user.getPassword()!=null) {
-			addByUpdateUserPasswordHistory(user,false);
-		}
-		setUserPassword(user, newPassword, true);
-		userDAO.save(user);
-		notifyUserOfTemporaryPassword(user, newPassword);
-	}
+        //to maintain user password History
+        if (user.getPassword() != null) {
+            addByUpdateUserPasswordHistory(user, false);
+        }
+        setUserPassword(user, newPassword, true);
+        userDAO.save(user);
+        notifyUserUnlocked(user, newPassword);
+    }
 
-	/**
-	 * Notify user of temporary password.
-	 *
-	 * @param user
-	 *            the user
-	 * @param newPassword
-	 *            the new password
-	 */
-	public void notifyUserOfTemporaryPassword(User user, String newPassword) {
-		logger.info("In notifyUserOfTemporaryPassword(User user, String newPassword).....");
-		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
-		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT + ServerConstants.getEnvName());
-		msg.setTo(user.getEmailAddress());
+    /**
+     * Notify user of temporary password.
+     *
+     * @param user        the user
+     * @param newPassword the new password
+     */
+    public void notifyUserUnlocked(User user, String newPassword) {
+        logger.info("In notifyUserUnlocked(User user, String newPassword).....");
+        SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
+        msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT + ServerConstants.getEnvName());
+        msg.setTo(user.getEmailAddress());
 
 		String expiryDateString = getFormattedExpiryDate(new Date(),5);
 
-		//US 440. Re-factored to use template based framework
-		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
-		paramsMap.put(ConstantMessages.PASSWORD, newPassword);
-		paramsMap.put(ConstantMessages.PASSWORD_EXPIRE_DATE, expiryDateString);
-		paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
+        // US 440. Re-factored to use template based framework
+        HashMap<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put(ConstantMessages.PASSWORD, newPassword);
+        paramsMap.put(ConstantMessages.PASSWORD_EXPIRE_DATE, expiryDateString);
+        paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
+        paramsMap.put(ConstantMessages.HARPID, user.getHarpId());
+        paramsMap.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
 
 		logger.info("Sending email to " + user.getEmailAddress());
 		try {
@@ -484,42 +481,39 @@ public class UserServiceImpl implements UserService {
 		String newLoginId = generateUniqueLoginId(user.getFirstName(), user.getLastName());
 		boolean isUniqueLoginId = false;
 
-		while(!isUniqueLoginId){
-			if(!userDAO.findUniqueLoginId(newLoginId)){
-				isUniqueLoginId = true;
-				user.setLoginId(newLoginId);
-			}
-			else{
-				newLoginId = generateUniqueLoginId(user.getFirstName(), user.getLastName());
-			}
-		}
-		userDAO.save(user);
-		notifyUserOfNewAccount(user);
-		notifyUserOfTemporaryPassword(user, newPassword);
-	}
+        while (!isUniqueLoginId) {
+            if (!userDAO.findUniqueLoginId(newLoginId)) {
+                isUniqueLoginId = true;
+                user.setLoginId(newLoginId);
+            } else {
+                newLoginId = generateUniqueLoginId(user.getFirstName(), user.getLastName());
+            }
+        }
+        userDAO.save(user);
+        notifyUserOfNewAccount(user);
+    }
 
-	/**
-	 * Notify user of new account.
-	 *
-	 * @param user
-	 *            the user
-	 */
-	public void notifyUserOfNewAccount(User user) {
-		logger.info("In notifyUserOfNewAccount(User user)..........");
-		MimeMessage message = mailSender.createMimeMessage();
-		try {
-			message.setSubject(ServerConstants.NEW_ACCESS_SUBJECT + ServerConstants.getEnvName());
-			BodyPart body = new MimeBodyPart();
-			HashMap<String, Object> paramsMap = new HashMap<String, Object>();
-			paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
-			paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
-			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/welcomeTemplate.ftl"), paramsMap);
-			body.setContent(text, "text/html");
-			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(body);
-			message.setFrom(new InternetAddress("sb-mat-noreply-help@semanticbits.com"));
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmailAddress()));
-			message.setContent(multipart);
+    /**
+     * Notify user of new account.
+     *
+     * @param user the user
+     */
+    public void notifyUserOfNewAccount(User user) {
+        logger.info("In notifyUserOfNewAccount(User user)..........");
+        MimeMessage message = mailSender.createMimeMessage();
+        try {
+            message.setSubject(ServerConstants.NEW_ACCESS_SUBJECT + ServerConstants.getEnvName());
+            BodyPart body = new MimeBodyPart();
+            HashMap<String, Object> paramsMap = new HashMap<>();
+            paramsMap.put(ConstantMessages.HARPID, user.getHarpId());
+            paramsMap.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
+            paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
+            String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/welcomeTemplate.ftl"), paramsMap);
+            body.setContent(text, "text/html");
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(body);
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmailAddress()));
+            message.setContent(multipart);
 
 			mailSender.send(message);
 		} catch (MessagingException | IOException | TemplateException e) {
@@ -662,27 +656,26 @@ public class UserServiceImpl implements UserService {
 			user = new User();
 		}
 
-		boolean reactivatingUser = false;
-		if(model.isActive() && (user.getStatus()!= null) && !user.getStatus().getStatusId().equals("1")) {
-			reactivatingUser = true;
-		}
-		User exsitingUser = userDAO.findByEmail(model.getEmailAddress());
-		if((exsitingUser != null) && (!(exsitingUser.getId().equals(user.getId()) ) )) {
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateUserResult.ID_NOT_UNIQUE);
-		} else {
-			setModelFieldsOnUser(model, user);
-			if(model.isExistingUser()) {
-				if(reactivatingUser) {
-					requestResetLockedPassword(user.getId());
-				}
-				saveExisting(user);
-
-			} else {
-				saveNew(user);
-			}
-			result.setSuccess(true);
-		}
+        boolean reactivatingUser = false;
+        if (model.isActive() && (user.getStatus() != null) && !user.getStatus().getStatusId().equals("1")) {
+            reactivatingUser = true;
+        }
+        User exsitingUser = userDAO.findByEmail(model.getEmailAddress());
+        if ((exsitingUser != null) && (!(exsitingUser.getId().equals(user.getId())))) {
+            result.setSuccess(false);
+            result.setFailureReason(SaveUpdateUserResult.ID_NOT_UNIQUE);
+        } else {
+            setModelFieldsOnUser(model, user);
+            if (model.isExistingUser()) {
+                if (reactivatingUser) {
+                    activate(user.getId());
+                }
+                saveExisting(user);
+            } else {
+                saveNew(user);
+            }
+            result.setSuccess(true);
+        }
 
 		return result;
 	}
@@ -700,23 +693,16 @@ public class UserServiceImpl implements UserService {
 		return footerUrls;
 	}
 
-	/**
-	 * Sets the model fields on user.
-	 *
-	 * @param model
-	 *            the model
-	 * @param user
-	 *            the user
-	 */
-	private void setModelFieldsOnUser(ManageUsersDetailModel model, User user) {
-		user.setFirstName(model.getFirstName());
-		user.setLastName(model.getLastName());
-		user.setMiddleInit(model.getMiddleInitial());
-		user.setTitle(model.getTitle());
-		user.setEmailAddress(model.getEmailAddress());
-		user.setPhoneNumber(model.getPhoneNumber());
-		user.setStatus(getStatusObject(model.isActive()));
-		user.setSecurityRole(getRole(model.getRole()));
+    private void setModelFieldsOnUser(ManageUsersDetailModel model, User user) {
+        user.setFirstName(model.getFirstName());
+        user.setLastName(model.getLastName());
+        user.setMiddleInit(model.getMiddleInitial());
+        user.setTitle(model.getTitle());
+        user.setEmailAddress(model.getEmailAddress());
+        user.setHarpId(model.getHarpId());
+        user.setPhoneNumber(model.getPhoneNumber());
+        user.setStatus(getStatusObject(model.isActive()));
+        user.setSecurityRole(getRole(model.getRole()));
 
 		if(model.isActive()){
 			Organization organization = organizationDAO.find(Long.parseLong(model.getOrganizationId()));
@@ -973,9 +959,12 @@ public class UserServiceImpl implements UserService {
 	}
 
     @Override
-    public boolean isHarpUserLocked(String harpId) {
+    public boolean isHarpUserLockedRevoked(String harpId) {
         User user = userDAO.findByHarpId(harpId);
-        return user != null && (user.getStatus().getStatusId().equals("2") || user.getTerminationDate() != null );
+        return user != null && (user.getStatus().getStatusId().equals("2")
+                || user.getTerminationDate() != null
+                || user.getLockedOutDate() != null
+                || user.getPassword().getPasswordlockCounter() >= 3);
     }
 
     @Override

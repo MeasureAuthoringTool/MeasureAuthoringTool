@@ -47,29 +47,24 @@ public interface AdminService extends RemoteService {
 	 * @throws InCorrectUserRoleException
 	 *             the in correct user role exception
 	 */
-	public ManageUsersDetailModel getUser(String key) throws InCorrectUserRoleException;
-	
+	ManageUsersDetailModel getUser(String key) throws InCorrectUserRoleException;
+
 	/**
 	 * Reset user password.
-	 * 
+	 *
 	 * @param userid
 	 *            the userid
 	 * @throws InCorrectUserRoleException
 	 *             the in correct user role exception
 	 */
-	public void resetUserPassword(String userid) throws InCorrectUserRoleException;
-	
+	void activateUser(String userid) throws InCorrectUserRoleException;
+
 	/**update organization.
-	 * 
-	 * @param updatedModel the updated model
+	 *
+	 * @param updatedOrganizationDetailModel the updated model
 	 * @return the save update organization result */
 	SaveUpdateOrganizationResult saveOrganization(ManageOrganizationDetailModel updatedOrganizationDetailModel);
-	
-	/** update organization.
-	 * 
-	 * @param currentModel the current model
-	 * @param updatedModel the updated model
-	 * @return the save update organization result */
+
 	SaveUpdateOrganizationResult updateOrganization(Long currentOrganizationDetailId,
 			ManageOrganizationDetailModel updatedOrganizationDetailModel);
 	
@@ -82,7 +77,7 @@ public interface AdminService extends RemoteService {
 	 * @throws InCorrectUserRoleException
 	 *             the in correct user role exception
 	 */
-	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) throws InCorrectUserRoleException;
+	SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) throws InCorrectUserRoleException;
 	
 	/** Search organization.
 	 * 

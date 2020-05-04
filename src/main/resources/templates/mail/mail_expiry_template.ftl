@@ -4,7 +4,8 @@ Your account has been inactive for 60 days and therefore, has been disabled.
 
 To inquire about re-activating your account, please, contact the Measure Authoring Tool support desk at sb-mat-help@semanticbits.com.
 
-User ID: ${(content.loginId)!}
+HARP ID: ${(content.harpId)!}
+Email: ${(content.userEmail)!}
 MAT Environment: ${(content.url)!}
  
 Sincerely,

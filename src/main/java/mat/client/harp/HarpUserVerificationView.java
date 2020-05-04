@@ -105,7 +105,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         bluePanel.add(hpPassword);
         bluePanel.add(new SpacerWidget());
 
-        password.setTitle("Enter Mat password Required");
+        password.setTitle("Enter MAT password Required");
         password.getElement().setPropertyString("placeholder", "Enter Password");
         password.setEnabled(true);
         password.setWidth("170px");
@@ -117,7 +117,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         bluePanel.add(securityQuestionAnsPanel);
         bluePanel.add(new SpacerWidget());
 
-        buttonBar.getSaveButton().setText("Link to Mat Account");
+        buttonBar.getSaveButton().setText("Link to MAT Account");
         bluePanel.add(buttonBar);
         bluePanel.add(new SpacerWidget());
 

@@ -3,7 +3,7 @@ package mat.server.service.fhirvalidationreport;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import mat.DTO.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.ConversionResultDto;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
 import mat.server.service.FhirLibraryConversionRemoteCall;

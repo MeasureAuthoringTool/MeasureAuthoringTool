@@ -2,7 +2,7 @@ package mat.server.service.impl;
 
 import java.util.Map;
 
-import mat.DTO.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.ConversionResultDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

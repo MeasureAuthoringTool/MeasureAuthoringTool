@@ -1,7 +1,7 @@
 package mat.server.service.impl;
 
-import mat.DTO.fhirconversion.ConversionResultDto;
-import mat.DTO.fhirconversion.ConversionType;
+import mat.dto.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.ConversionType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

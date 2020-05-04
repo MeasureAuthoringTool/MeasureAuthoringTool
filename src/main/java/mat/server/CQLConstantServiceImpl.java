@@ -22,8 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
-import mat.DTO.DataTypeDTO;
-import mat.DTO.UnitDTO;
+import mat.dto.DataTypeDTO;
+import mat.dto.UnitDTO;
 import mat.client.cqlconstant.service.CQLConstantService;
 import mat.client.shared.CQLConstantContainer;
 import mat.client.shared.CQLTypeContainer;

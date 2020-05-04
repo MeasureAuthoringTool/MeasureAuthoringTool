@@ -3,8 +3,8 @@ package mat.server.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import mat.DTO.fhirconversion.ConversionResultDto;
-import mat.DTO.fhirconversion.ConversionType;
+import mat.dto.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.ConversionType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;

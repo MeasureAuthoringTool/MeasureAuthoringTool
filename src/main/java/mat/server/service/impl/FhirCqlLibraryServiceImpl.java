@@ -1,8 +1,8 @@
 package mat.server.service.impl;
 
-import mat.DTO.fhirconversion.ConversionOutcome;
-import mat.DTO.fhirconversion.ConversionResultDto;
-import mat.DTO.fhirconversion.ConversionType;
+import mat.dto.fhirconversion.ConversionOutcome;
+import mat.dto.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.ConversionType;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirValidationStatus;
 import mat.client.shared.MatException;
@@ -144,7 +144,7 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService{
                 cqlModelXmlFrag,
                 CQLModel.class);
 
-        var convCqlToMatXml = cqlVisitorFactory.getConversionCqlToMatXmlVisitor();
+        var convCqlToMatXml = cqlVisitorFactory.getCqlToMatXmlVisitor();
         convCqlToMatXml.setSourceModel(sourceCqlModel);
 
         cqlParser.parse(newCql,convCqlToMatXml);
@@ -152,6 +152,4 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService{
         var destModel = convCqlToMatXml.getDestinationModel();
         return CQLUtilityClass.getXMLFromCQLModel(destModel);
     }
-
-
 }

@@ -3,8 +3,8 @@ package mat.server.service.impl;
 import java.io.IOException;
 import java.util.Optional;
 
-import mat.DTO.fhirconversion.ConversionOutcome;
-import mat.DTO.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.ConversionOutcome;
+import mat.dto.fhirconversion.ConversionResultDto;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -155,7 +155,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                     cqlModelXmlFrag,
                     CQLModel.class);
 
-            var convCqlToMatXml = cqlVisitorFactory.getConversionCqlToMatXmlVisitor();
+            var convCqlToMatXml = cqlVisitorFactory.getCqlToMatXmlVisitor();
             convCqlToMatXml.setSourceModel(sourceCqlModel);
 
             cqlParser.parse(cql,convCqlToMatXml);

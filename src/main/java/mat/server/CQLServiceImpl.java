@@ -219,6 +219,7 @@ public class CQLServiceImpl implements CQLService {
                 case "FHIR":
                     // Use the CqlToMatXml parser for FHIR.
                     CqlToMatXml converter = visitorFactory.getCqlToMatXmlVisitor();
+                    converter.setSourceModel(config.getPreviousCQLModel());
                     try {
                         cqlParser.parse(cql, converter);
                         newModel = converter.getDestinationModel();

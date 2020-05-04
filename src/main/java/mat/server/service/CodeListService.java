@@ -1,10 +1,12 @@
 package mat.server.service;
 
 import java.util.List;
+import java.util.Map;
 
-import mat.DTO.DataTypeDTO;
-import mat.DTO.OperatorDTO;
-import mat.DTO.UnitDTO;
+import mat.dto.DataTypeDTO;
+import mat.dto.OperatorDTO;
+import mat.dto.UnitDTO;
+import mat.dto.VSACCodeSystemDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.model.CodeListSearchDTO;
@@ -39,5 +41,10 @@ public interface CodeListService {
 			boolean defaultCodeList, int filter);
 	
 	SaveUpdateCodeListResult updateQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject);
-	
+
+	/**
+	 * @return Returns a hash map keyed by oid, e.g. urn:oid:2.16.840.1.113883.12.292, and valued by VSACCodeSystemDTO with
+	 * fhir model 4.0.1 url, e.g. http://hl7.org/fhir/sid/cvx, and default VSAC version.
+	 */
+	public Map<String, VSACCodeSystemDTO> getOidToVsacCodeSystemMap();
 }

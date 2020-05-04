@@ -28,7 +28,7 @@ public class TestConversionCqlToMatXml {
     private CqlParser parser;
 
     @InjectMocks
-    private ConversionCqlToMatXml conversionCqlToMatXml;
+    private CqlToMatXml conversionCqlToMatXml;
 
     public String loadCqlResource(String cqlResource) throws IOException {
         try (InputStream i = TestConversionCqlToMatXml.class.getResourceAsStream(CQL_TEST_RESOURCES_DIR + cqlResource)) {

@@ -36,8 +36,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import mat.DTO.CompositeMeasureScoreDTO;
-import mat.DTO.SearchHistoryDTO;
+import mat.dto.CompositeMeasureScoreDTO;
+import mat.dto.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.TabObserver;
@@ -660,6 +660,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         if (converted) {
             url.append("&converted=true");
         }
+        url.append("&type=measure");
         Window.open(url.toString(), "_blank", "");
     }
 

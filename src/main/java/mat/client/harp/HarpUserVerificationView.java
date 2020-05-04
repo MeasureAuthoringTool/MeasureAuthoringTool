@@ -51,7 +51,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         mainPanel.addStyleName("centered");
 
         SimplePanel titleHolder = new SimplePanel();
-        Label titlePanel = new Label("Link your Harp and Mat accounts");
+        Label titlePanel = new Label("Link your HARP and MAT accounts");
         titleHolder.add(titlePanel);
         titleHolder.setStylePrimaryName("loginBlueTitleHolder");
         titleHolder.setWidth("100%");
@@ -61,7 +61,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         VerticalPanel bluePanel = new VerticalPanel();
         bluePanel.setStylePrimaryName("loginContentPanel");
 
-        Label instructions = new Label("Please enter the following information and verify your existing MAT account");
+        Label instructions = new Label("Please enter the following information to verify your existing MAT account");
         instructions.setStylePrimaryName("loginForgotInstructions");
         bluePanel.add(instructions);
         bluePanel.add(new SpacerWidget());
@@ -83,14 +83,14 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
 
         HorizontalPanel hpUserId = new HorizontalPanel();
         hpUserId.getElement().setId("horizontalPanel_HorizontalPanel");
-        Label userIdLabel = (Label) LabelBuilder.buildLabel(loginId, "Mat ID");
+        Label userIdLabel = (Label) LabelBuilder.buildLabel(loginId, "MAT ID");
         hpUserId.add(userIdLabel);
         hpUserId.add(new HTML(RequiredIndicator.get()));
         bluePanel.add(hpUserId);
         bluePanel.add(new SpacerWidget());
 
-        loginId.setTitle("Enter Mat ID Required");
-        loginId.setPlaceholder("Enter Mat ID");
+        loginId.setTitle("Enter MAT ID Required");
+        loginId.setPlaceholder("Enter MAT ID");
         loginId.setEnabled(true);
         loginId.setWidth("170px");
 
@@ -126,7 +126,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         newUserAnchor = new Anchor();
         newUserAnchor.setText("I do not have a MAT (Measure Authoring tool) account");
         newUserAnchor.setTitle("I do not have a MAT (Measure Authoring tool) account");
-        newUserAnchor.getElement().setAttribute("alt", "I do not have MAT account");
+        newUserAnchor.getElement().setAttribute("alt", "I do not have a MAT account");
         hPanel.add(newUserAnchor);
 
         loginPanelFooter.add(hPanel);

@@ -7,8 +7,8 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import mat.DTO.SearchHistoryDTO;
-import mat.DTO.UserAuditLogDTO;
+import mat.dto.SearchHistoryDTO;
+import mat.dto.UserAuditLogDTO;
 
 /**
  * Client interface for Audit Service.

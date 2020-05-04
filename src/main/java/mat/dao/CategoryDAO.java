@@ -2,7 +2,7 @@ package mat.dao;
 
 import java.util.List;
 
-import mat.DTO.CategoryDTO;
+import mat.dto.CategoryDTO;
 import mat.model.Category;
 
 /**

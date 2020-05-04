@@ -10,7 +10,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.DTO.UnitTypeDTO;
+import mat.dto.UnitTypeDTO;
 import mat.dao.UnitTypeDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.UnitType;

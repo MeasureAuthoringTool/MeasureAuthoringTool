@@ -3,7 +3,7 @@ package mat.client.admin;
 import java.util.Date;
 import java.util.List;
 
-import mat.DTO.UserAuditLogDTO;
+import mat.dto.UserAuditLogDTO;
 import mat.client.CustomPager;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSafeHTMLCell;

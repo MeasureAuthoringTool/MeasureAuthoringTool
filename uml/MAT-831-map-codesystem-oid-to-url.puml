@@ -1,10 +1,14 @@
 @startuml
-(*)  --> "Check codesystem cql uri"
-If "Is OID?" then
---> [Yes] "Process as QDM with OID."
-else
---> [No] "Use the cached google sheet to find the oid the uri maps to."
---> "Process as QDM with OID."
-Endif
+(*)  --> "Lookup the URL the oid maps to in the spread sheet and the code system name."
+If "Does code system name have a colon?" then
+--> [No]  "Do not include a version."
 -->(*)
+else
+--> [Yes] If "Does the codesystem name star with SNOWMEDCT" then
+--> [Yes] "Use http://snomed.info/sct/731000124108/version/${text after : with - removed} as the version"
+-->(*)
+else
+--> [No] "Use string after : in code system name as the version"
+--> (*)
+Endif
 @enduml

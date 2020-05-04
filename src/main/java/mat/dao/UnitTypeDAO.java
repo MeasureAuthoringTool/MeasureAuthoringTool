@@ -2,7 +2,7 @@ package mat.dao;
 
 import java.util.List;
 
-import mat.DTO.UnitTypeDTO;
+import mat.dto.UnitTypeDTO;
 import mat.model.UnitType;
 
 /**

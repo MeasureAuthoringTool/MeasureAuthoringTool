@@ -2,7 +2,7 @@ package mat.dao;
 
 import java.util.List;
 
-import mat.DTO.UnitMatrixDTO;
+import mat.dto.UnitMatrixDTO;
 import mat.model.UnitMatrix;
 
 /**

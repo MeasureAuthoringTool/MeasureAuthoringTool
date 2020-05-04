@@ -3,7 +3,7 @@ package mat.client.history;
 
 import java.util.List;
 
-import mat.DTO.AuditLogDTO;
+import mat.dto.AuditLogDTO;
 import mat.client.audit.AuditLogWidget;
 import mat.client.shared.search.PagingFacade;
 

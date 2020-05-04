@@ -1,28 +1,67 @@
 package mat.cql;
 
 import lombok.extern.slf4j.Slf4j;
+import mat.dto.VSACCodeSystemDTO;
 import mat.model.cql.CQLModel;
+import mat.server.service.CodeListService;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 public class TestCqlToMatXml {
     private static final String CQL_TEST_RESOURCES_DIR = "/test-cql/";
 
+    @Mock
+    private CodeListService codeListService;
+
     @InjectMocks
     private CqlParser parser;
 
     @InjectMocks
     private CqlToMatXml cqlToMatXml;
+
+    public void mockSpreadsheet() {
+        Map<String, VSACCodeSystemDTO> map = new HashMap<>();
+        map.put("urn:oid:2.16.840.1.113883.6.96",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.96","http://snomed.info/sct/731000124108","SNOMEDCT","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.5.1001",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.5.1001","http://terminology.hl7.org/CodeSystem/v3-ActMood","ActMood","TBD"));
+        map.put("urn:oid:2.16.840.1.113883.5.1",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.5.1","http://hl7.org/fhir/ValueSet/v3-AdministrativeGender","SNOMEDCT","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.88",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.88","http://www.nlm.nih.gov/research/umls/rxnorm","SNOMEDCT","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.1",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.1","http://loinc.org","SNOMEDCT","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.12",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.12","http://www.ama-assn.org/go/cpt","SNOMEDCT","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.12.292",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.12.292","http://hl7.org/fhir/sid/cvx","SNOMEDCT","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.238",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.238","https://www.hl7.org/fhir/us/core/CodeSystem-cdcrec.html","SNOMEDCT","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.259",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.259","http://terminology.hl7.org/codesystem/nhsn/hsloc","SNOMEDCT","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.12.112",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.12.112","http://ToBeDone.org","DischargeDisposition","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.285",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.285","http://snomed.info/sct/731000124108","HCPCS","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.90",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.90","http://hl7.org/fhir/sid/icd-10-cm","ICD10CM","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.3.221.5",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.3.221.5","http://nahdo.org/sopt","SOP","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.5.111","http://terminology.hl7.org/CodeSystem/v3-RoleCode","RoleCode","2019-03"));
+        map.put("urn:oid:2.15.840.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.15.840.1.113883.5.111","http://hl7.org/fhir/v3/RoleCode","RoleCode","2019-03"));
+        map.put("urn:oid:2.16.1.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.1.1.113883.5.111","http://terminology.hl7.org/CodeSystem/diagnosis-role","RoleCode","2019-03"));
+        map.put("urn:oid:2.16.2.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.2.1.113883.5.111","http://terminology.hl7.org/CodeSystem/request-intent","RoleCode","2019-03"));
+        map.put("urn:oid:2.16.3.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.3.1.113883.5.111","http://terminology.hl7.org/CodeSystem/medicationrequest-category","RoleCode","2019-03"));
+        map.put("urn:oid:2.16.4.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.4.1.113883.5.111","http://terminology.hl7.org/CodeSystem/condition-clinical","RoleCode","2019-03"));
+        map.put("urn:oid:2.16.5.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.5.1.113883.5.111","http://terminology.hl7.org/CodeSystem/condition-verification","RoleCode","2019-03"));
+        map.put("urn:oid:2.16.6.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.6.1.113883.5.111","http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical","RoleCode","2019-03"));
+        map.put("urn:oid:2.16.7.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.7.1.113883.5.111","http://terminology.hl7.org/CodeSystem/allergyintolerance-verification","RoleCode","2019-03"));
+
+
+        when(codeListService.getOidToVsacCodeSystemMap()).thenReturn(map);
+    }
+
 
     public String loadCqlResource(String cqlResource) throws IOException {
         try (InputStream i = TestCqlToMatXml.class.getResourceAsStream(CQL_TEST_RESOURCES_DIR + cqlResource)) {
@@ -32,6 +71,7 @@ public class TestCqlToMatXml {
 
     @Test
     public void testMatGlobalCommonFunctions() throws Exception {
+        mockSpreadsheet();
         String cql = loadCqlResource("MATGlobalCommonFunctions_FHIR4-4.0.000.cql");
         parser.parse(cql, cqlToMatXml);
         var destination = cqlToMatXml.getDestinationModel();
@@ -60,7 +100,7 @@ public class TestCqlToMatXml {
         assertEquals("allergy-refuted", destination.getCodeList().get(22).getName());
         assertEquals("refuted", destination.getCodeList().get(22).getCodeOID());
         assertEquals("AllergyIntoleranceVerificationStatusCodes", destination.getCodeList().get(22).getCodeSystemName());
-        assertEquals(null, destination.getCodeList().get(22).getDisplayName());
+        assertEquals("allergy-refuted", destination.getCodeList().get(22).getDisplayName());
 
         assertEquals("Community", destination.getCodeList().get(23).getName());
         assertEquals("community", destination.getCodeList().get(23).getCodeOID());
@@ -171,6 +211,7 @@ public class TestCqlToMatXml {
 
     @Test
     public void testHospiceLib() throws Exception {
+        mockSpreadsheet();
         String cql = loadCqlResource("Hospice_FHIR4-1.0.000.cql");
         parser.parse(cql, cqlToMatXml);
         var destination = cqlToMatXml.getDestinationModel();
@@ -195,25 +236,25 @@ public class TestCqlToMatXml {
         assertEquals("http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1108.15", destination.getValueSetList().get(1).getOid());
 
         assertEquals(1, destination.getCodeSystemList().size());
-        assertEquals("SNOMEDCT", destination.getCodeSystemList().get(0).getCodeSystemName());
+        assertEquals("SNOMEDCT:2017-09", destination.getCodeSystemList().get(0).getCodeSystemName());
         assertEquals("2017-09", destination.getCodeSystemList().get(0).getCodeSystemVersion());
         assertEquals("http://snomed.info/sct/731000124108", destination.getCodeSystemList().get(0).getCodeSystem());
         assertEquals("http://snomed.info/sct/731000124108/version/201709", destination.getCodeSystemList().get(0).getVersionUri());
 
         assertEquals(2, destination.getCodeList().size());
         assertEquals("Discharge to healthcare facility for hospice care (procedure)", destination.getCodeList().get(0).getName());
-        assertEquals("428371000124100", destination.getCodeList().get(0).getCodeIdentifier());
+        assertEquals("CODE:/CodeSystem/SNOMEDCT/Version/2017-09/Code/428371000124100/Info", destination.getCodeList().get(0).getCodeIdentifier());
         assertEquals("428371000124100", destination.getCodeList().get(0).getCodeOID());
-        assertEquals("SNOMEDCT", destination.getCodeList().get(0).getCodeSystemName());
+        assertEquals("SNOMEDCT:2017-09", destination.getCodeList().get(0).getCodeSystemName());
         assertEquals("2017-09", destination.getCodeList().get(0).getCodeSystemVersion());
         assertEquals("http://snomed.info/sct/731000124108", destination.getCodeList().get(0).getCodeSystemOID());
         assertEquals("http://snomed.info/sct/731000124108/version/201709", destination.getCodeList().get(0).getCodeSystemVersionUri());
         assertEquals(true, destination.getCodeList().get(0).isIsCodeSystemVersionIncluded());
         assertEquals("Discharge to healthcare facility for hospice care (procedure)", destination.getCodeList().get(0).getDisplayName());
         assertEquals("Discharge to home for hospice care (procedure)", destination.getCodeList().get(1).getName());
-        assertEquals("428361000124107", destination.getCodeList().get(1).getCodeIdentifier());
+        assertEquals("CODE:/CodeSystem/SNOMEDCT/Version/2017-09/Code/428361000124107/Info", destination.getCodeList().get(1).getCodeIdentifier());
         assertEquals("428361000124107", destination.getCodeList().get(1).getCodeOID());
-        assertEquals("SNOMEDCT", destination.getCodeList().get(1).getCodeSystemName());
+        assertEquals("SNOMEDCT:2017-09", destination.getCodeList().get(1).getCodeSystemName());
         assertEquals("2017-09", destination.getCodeList().get(1).getCodeSystemVersion());
         assertEquals("http://snomed.info/sct/731000124108", destination.getCodeList().get(1).getCodeSystemOID());
         assertEquals("http://snomed.info/sct/731000124108/version/201709", destination.getCodeList().get(1).getCodeSystemVersionUri());

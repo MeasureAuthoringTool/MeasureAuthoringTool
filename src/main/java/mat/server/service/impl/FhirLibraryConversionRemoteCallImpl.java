@@ -1,7 +1,7 @@
 package mat.server.service.impl;
 
-import mat.DTO.fhirconversion.ConversionResultDto;
-import mat.DTO.fhirconversion.ConversionType;
+import mat.dto.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.ConversionType;
 import mat.client.shared.MatRuntimeException;
 import mat.server.service.FhirLibraryConversionRemoteCall;
 import org.apache.commons.logging.Log;

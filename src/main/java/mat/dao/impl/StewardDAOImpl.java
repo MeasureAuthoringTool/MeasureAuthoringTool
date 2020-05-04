@@ -10,7 +10,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.DTO.StewardDTO;
+import mat.dto.StewardDTO;
 import mat.dao.StewardDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.MeasureSteward;

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import org.gwtbootstrap3.client.ui.Button;
@@ -700,9 +702,20 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                 String errorReason = response.getValidationStatus().getErrorReason();
                 logger.log(Level.WARNING, "Library " + object.getId() + " conversion has completed. Outcome: " + outcome + " errorReason: " + errorReason);
                 showSearchingBusy(false);
+                showFhirValidationReport(object.getId(), true);
                 displaySearch();
             }
         });
+    }
+
+    private void showFhirValidationReport(String libraryId, boolean converted) {
+        StringBuilder url = new StringBuilder(GWT.getModuleBaseURL()).append("validationReport");
+        url.append("?id=").append(SafeHtmlUtils.htmlEscape(libraryId));
+        if (converted) {
+            url.append("&converted=true");
+        }
+        url.append("&type=library");
+        Window.open(url.toString(), "_blank", "");
     }
 
     private void showErrorAlertDialogBox(final String errorMessage) {

@@ -400,44 +400,6 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
         userDetails.setEmailAddress(harpUserInfo.get(HarpConstants.HARP_PRIMARY_EMAIL_ID));
     }
 
-    @Override
-    public LoginModel isValidUser(String userId, String password, String oneTimePassword, String sessionId) {
-        LoginModel validateUserLoginModel = new LoginModel();
-        MatUserDetails validateUserMatUserDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(userId);
-        if (validateUserMatUserDetails != null) {
-            validateUserMatUserDetails.setSessionId(sessionId);
-        }
-        Date currentDate = new Date();
-        currentTimeStamp = new Timestamp(currentDate.getTime());
-        validateUserLoginModel = isValidUserIdPassword(userId, password, validateUserLoginModel, validateUserMatUserDetails);
-        logger.info("loginModel.isLoginFailedEvent() for userId/password matching:" + validateUserLoginModel.isLoginFailedEvent());
-        if (!validateUserLoginModel.isLoginFailedEvent()) {
-            validateUserLoginModel = isValid2FactorOTP(userId, oneTimePassword, validateUserLoginModel, validateUserMatUserDetails);
-        }
-        if (!validateUserLoginModel.isLoginFailedEvent()) {
-            onSuccessLogin(userId, validateUserMatUserDetails);
-        }
-        return validateUserLoginModel;
-    }
-
-    private LoginModel isValid2FactorOTP(String userId, String oneTimePassword, LoginModel validateUserLoginModel, MatUserDetails validateUserMatUserDetails) {
-
-        LoginModel loginModel = validateUserLoginModel;
-
-        if (this.matOtpValidatorService != null) {
-            boolean isValidOTP = this.matOtpValidatorService.validateOTPForUser(userId, oneTimePassword);
-            if (!isValidOTP) {
-                loginModel.setLoginFailedEvent(true);
-                loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getLoginFailedMessage());
-            }
-        } else {
-            loginModel.setLoginFailedEvent(true);
-            loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getLoginFailedMessage());
-        }
-
-        return loginModel;
-    }
-
 	/**
 	 * Checks if is valid user id password.
 	 *

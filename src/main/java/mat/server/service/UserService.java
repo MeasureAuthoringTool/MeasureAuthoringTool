@@ -77,14 +77,14 @@ public interface UserService {
 	 */
 	public ForgottenPasswordResult requestForgottenPassword(String email,
 			String securityQuestion, String securityAnswer, int invalidUserCounter);
-	
+
 	/**
-	 * Request reset locked password.
-	 * 
+	 * Request activate.
+	 *
 	 * @param userid
 	 *            the userid
 	 */
-	public void requestResetLockedPassword(String userid);
+	void activate(String userid);
 	
 	/**
 	 * Sets the user password.

@@ -512,7 +512,6 @@ public class UserServiceImpl implements UserService {
             body.setContent(text, "text/html");
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(body);
-            message.setFrom(new InternetAddress(emailFromAddress));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmailAddress()));
             message.setContent(multipart);
 

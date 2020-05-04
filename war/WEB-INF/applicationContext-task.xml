@@ -67,26 +67,26 @@
  	</bean>
  	
  	<!-- bean for scheduling password change warning email for 45 day limit -->
- 	<bean id="sendPasswordChangeEmailTaskDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
- 		<property name="targetObject" ref="sendPasswordChangeEmailTask" />
-		<property name="targetMethod" value="CheckUserPasswordLimitDays" />
- 	</bean>
+<!-- 	<bean id="sendPasswordChangeEmailTaskDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+<!-- 		<property name="targetObject" ref="sendPasswordChangeEmailTask" />-->
+<!--		<property name="targetMethod" value="CheckUserPasswordLimitDays" />-->
+<!-- 	</bean>-->
 	
 	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
  		<property name="jobDetail" ref="sendEmailTaskDetail" />
 		<property name="cronExpression" value="0 0 0 * * ?" /> 
  	</bean> 
 	
-	<bean id="cronPasswordChangeEmailTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
- 		<property name="jobDetail" ref="sendPasswordChangeEmailTaskDetail" />
-		<property name="cronExpression" value="0 30 0 * * ?" /> 
- 	</bean> 
+<!--	<bean id="cronPasswordChangeEmailTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
+<!-- 		<property name="jobDetail" ref="sendPasswordChangeEmailTaskDetail" />-->
+<!--		<property name="cronExpression" value="0 30 0 * * ?" /> -->
+<!-- 	</bean> -->
 
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
 				<ref bean="cronTrigger" />
-				 <ref bean="cronPasswordChangeEmailTrigger" /> 
+<!--				 <ref bean="cronPasswordChangeEmailTrigger" /> -->
 			</list>
 		</property>
 	</bean>

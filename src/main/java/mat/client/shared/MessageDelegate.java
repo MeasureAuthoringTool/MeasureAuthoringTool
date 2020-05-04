@@ -32,6 +32,7 @@ public class MessageDelegate {
 	private static final String CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name. Library names must start with an alpha-character or underscore, followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
 	private static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has an incorrect format.";
 	private static final String EMAIL_ID_REQUIRED = "Email Address is required.";
+	private static final String HARP_ID_IS_REQUIRED = "HARP ID is required.";
 	private static final String LOGIN_USER_REQUIRED = "User Name is required.";
 	private static final String NO_MEASURES = "No measures returned. Please change your search criteria and search again.";
 	private static final String NO_LIBRARIES_RETURNED = "No libraries returned. Please change your search criteria and search again.";
@@ -117,6 +118,7 @@ public class MessageDelegate {
 	private static final String PACKAGE_SUCCESS = "Measure packaged successfully. Please access the Measure Library to export the measure.";
 	private static final String PACKAGE_SUCCESS_VSAC_OID_MISSING = "Measure packaged successfully. One or more OIDs could not be updated from VSAC.";
 	private static final String PASSWORD_MISMATCH = "Your new password and confirm password do not match.";
+	private static final String INVALID_USER = "Login Failed : Try Again";
 	private static final String IS_NOT_CURRENT_PASSWORD="New password cannot be the same as the previous 6 passwords.";
 	private static final String IS_NOT_PREVIOUS_PASSWORD="Previous 6 passwords cannot be reused. Try again.";
 	private static final String CHANGE_OLD_PASSWORD="Password needs to be at least one day old before you can change it. Try again.";
@@ -405,6 +407,10 @@ public class MessageDelegate {
 
 	public String getPasswordMismatchMessage() {
 		return PASSWORD_MISMATCH;
+	}
+
+	public static String getInvalidUser() {
+		return INVALID_USER;
 	}
 
 	public String getPasswordRequiredErrorMessage() {
@@ -955,5 +961,9 @@ public class MessageDelegate {
 
 	public String getLibraryNameIsCqlKeywordError() {
 		return LIBRARY_NAME_IS_CQL_KEYWORD_ERROR;
+	}
+
+	public String getHarpIdRequiredMessage() {
+		return HARP_ID_IS_REQUIRED;
 	}
 }

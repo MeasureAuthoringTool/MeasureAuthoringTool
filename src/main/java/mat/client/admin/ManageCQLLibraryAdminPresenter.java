@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.DTO.SearchHistoryDTO;
+import mat.dto.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.cql.CQLLibraryHistoryView;

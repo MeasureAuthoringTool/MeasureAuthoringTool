@@ -4,13 +4,15 @@ package mat.server;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import mat.dto.VSACCodeSystemDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import mat.DTO.OperatorDTO;
-import mat.DTO.UnitDTO;
+import mat.dto.OperatorDTO;
+import mat.dto.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.model.MatValueSetTransferObject;
@@ -88,5 +90,11 @@ public class CodeListServiceImpl extends SpringRemoteServiceServlet
     public List<UnitDTO> getAllCqlUnits() {
         logger.info("getAllCqlUnits");
         return getCodeListService().getAllUnits();
+    }
+
+    @Override
+    public Map<String, VSACCodeSystemDTO> getOidToVsacCodeSystemMap() {
+        logger.info("getOidToVsacCodeSystemMap");
+        return getCodeListService().getOidToVsacCodeSystemMap();
     }
 }

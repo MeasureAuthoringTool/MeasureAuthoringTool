@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import mat.DTO.SearchHistoryDTO;
-import mat.DTO.UserAuditLogDTO;
+import mat.dto.SearchHistoryDTO;
+import mat.dto.UserAuditLogDTO;
 import mat.client.audit.service.AuditService;
 import mat.server.service.CQLLibraryAuditService;
 import mat.server.service.CodeListAuditService;

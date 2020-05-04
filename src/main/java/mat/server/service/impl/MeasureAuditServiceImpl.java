@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import mat.DTO.AuditLogDTO;
-import mat.DTO.SearchHistoryDTO;
+import mat.dto.AuditLogDTO;
+import mat.dto.SearchHistoryDTO;
 import mat.dao.CodeListAuditLogDAO;
 import mat.dao.MeasureAuditLogDAO;
 import mat.dao.QualityDataSetDAO;

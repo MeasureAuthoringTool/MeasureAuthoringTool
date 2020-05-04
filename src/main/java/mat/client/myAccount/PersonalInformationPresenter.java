@@ -113,12 +113,6 @@ public class PersonalInformationPresenter implements MatPresenter {
 		 * @return the oid
 		 */
 		TextBox getOID();
-		/**
-		 * Gets the password.
-		 * 
-		 * @return the password
-		 */
-		HasValue<String> getPassword();
 		
 		/**
 		 * Gets the save button.
@@ -139,14 +133,14 @@ public class PersonalInformationPresenter implements MatPresenter {
 		 * 
 		 * @return the error message display
 		 */
-		public MessageAlert getErrorMessageDisplay();
+		MessageAlert getErrorMessageDisplay();
 		
 		/**
 		 * Gets the success message display.
 		 * 
 		 * @return the success message display
 		 */
-		public MessageAlert getSuccessMessageDisplay();
+		MessageAlert getSuccessMessageDisplay();
 
 		Input getPasswordInput();
 
@@ -154,18 +148,15 @@ public class PersonalInformationPresenter implements MatPresenter {
 
 		CheckBox getFreeTextEditorCheckBox();
 		
-		public Panel getUserPreferencePanel();
+		Panel getUserPreferencePanel();
 	}
 	
 	/** The submit on enter handler. */
-	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
-		@Override
-		public void onKeyDown(KeyDownEvent event) {
-			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
-				savePersonalInformation(display.getPassword().getValue());
-			}
-		}
-	};
+	private KeyDownHandler submitOnEnterHandler = event -> {
+        if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
+            savePersonalInformation();
+        }
+    };
 	
 	
 	/** The display. */
@@ -183,19 +174,8 @@ public class PersonalInformationPresenter implements MatPresenter {
 	public PersonalInformationPresenter(Display displayArg) {
 		display = displayArg;
 		
-		display.getCancelButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				beforeDisplay();
-			}
-		});
-		display.getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				savePersonalInformation(display.getPassword().getValue());
-				display.getPassword().setValue("");
-			}
-		});
+		display.getCancelButton().addClickHandler(event -> beforeDisplay());
+		display.getSaveButton().addClickHandler(event -> savePersonalInformation());
 		
 		// if the user enters the "Enter" key on the password field, do a save.
 		display.getPasswordInput().addKeyDownHandler(submitOnEnterHandler);
@@ -205,86 +185,56 @@ public class PersonalInformationPresenter implements MatPresenter {
 	
 	/**
 	 * Save personal information.
-	 * 
-	 * @param password
-	 *            the password
 	 */
-	private void savePersonalInformation(String password) {
+	private void savePersonalInformation() {
 		display.getErrorMessageDisplay().clearAlert();
 		display.getSuccessMessageDisplay().clearAlert();
-		
-		loginService.validatePassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<HashMap<String, String>>(){
-			@Override
-			public void onSuccess(HashMap<String,String> resultMap) {
-				String result = resultMap.get("result");
-				if(result.equals("SUCCESS")){
-					currentModel = getValues();
-					if(isValid(currentModel)) {
-						MatContext.get().getMyAccountService().saveMyAccount(currentModel, new AsyncCallback<SaveMyAccountResult>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							}
-							
-							@Override
-							public void onSuccess(SaveMyAccountResult result) {
-								if (result.isSuccess()) {
-									display.getErrorMessageDisplay().clearAlert();
-									display.getSuccessMessageDisplay().createAlert(MatContext.get()
-											.getMessageDelegate().getPersonalInfoUpdatedMessage());
-									display.getFirstName().setValue(currentModel.getFirstName());
-									display.getMiddleInitial().setValue(currentModel
-											.getMiddleInitial());
-									display.getLastName().setValue(currentModel.getLastName());
-									display.getTitle().setValue(currentModel.getTitle());
-									display.getEmailAddress().setValue(currentModel.getEmailAddress());
-									display.getPhoneNumber().setValue(currentModel.getPhoneNumber());
-									display.getOrganisation().setValue(currentModel.getOrganization());
-									display.getOID().setValue(currentModel.getOid());
-									display.getFreeTextEditorCheckBox().setValue(currentModel.isEnableFreeTextEditor());
-									
-									Mat.setSignedInAsName(currentModel.getFirstName(), currentModel.getLastName());
-									MatContext.get().getLoggedInUserPreference().setFreeTextEditorEnabled(currentModel.isEnableFreeTextEditor());
-								} else {
-									List<String> messages = new ArrayList<String>();
-									switch(result.getFailureReason()) {
-										case SaveMyAccountResult.ID_NOT_UNIQUE:
-											messages.add(MatContext.get().getMessageDelegate()
-													.getEmailAlreadyExistsMessage());
-											break;
-										case SaveMyAccountResult.SERVER_SIDE_VALIDATION:
-											messages = result.getMessages();
-											break;
-										default:
-											messages.add(MatContext.get().getMessageDelegate().
-													getUnknownErrorMessage(result.getFailureReason()));
-									}
-									display.getErrorMessageDisplay().createAlert(messages);
-								}
-							}
-						});
-					}
-				} else {
-					display.getErrorMessageDisplay().clearAlert();
-					display.getSuccessMessageDisplay().clearAlert();
-					String displayErrorMsg = resultMap.get("message");
-					if (displayErrorMsg.equals("REDIRECT")) {
-						MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-					} else {
-						display.getErrorMessageDisplay().createAlert(displayErrorMsg);
-					}
-					
-				}
-				
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				
-			}
-		});
-		
+        currentModel = getValues();
+        if(isValid(currentModel)) {
+            MatContext.get().getMyAccountService().saveMyAccount(currentModel, new AsyncCallback<SaveMyAccountResult>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                }
+
+                @Override
+                public void onSuccess(SaveMyAccountResult result) {
+                    if (result.isSuccess()) {
+                        display.getErrorMessageDisplay().clearAlert();
+                        display.getSuccessMessageDisplay().createAlert(MatContext.get()
+                                .getMessageDelegate().getPersonalInfoUpdatedMessage());
+                        display.getFirstName().setValue(currentModel.getFirstName());
+                        display.getMiddleInitial().setValue(currentModel
+                                .getMiddleInitial());
+                        display.getLastName().setValue(currentModel.getLastName());
+                        display.getTitle().setValue(currentModel.getTitle());
+                        display.getEmailAddress().setValue(currentModel.getEmailAddress());
+                        display.getPhoneNumber().setValue(currentModel.getPhoneNumber());
+                        display.getOrganisation().setValue(currentModel.getOrganization());
+                        display.getOID().setValue(currentModel.getOid());
+                        display.getFreeTextEditorCheckBox().setValue(currentModel.isEnableFreeTextEditor());
+
+                        Mat.setSignedInAsName(currentModel.getFirstName(), currentModel.getLastName());
+                        MatContext.get().getLoggedInUserPreference().setFreeTextEditorEnabled(currentModel.isEnableFreeTextEditor());
+                    } else {
+                        List<String> messages = new ArrayList<String>();
+                        switch(result.getFailureReason()) {
+                            case SaveMyAccountResult.ID_NOT_UNIQUE:
+                                messages.add(MatContext.get().getMessageDelegate()
+                                        .getEmailAlreadyExistsMessage());
+                                break;
+                            case SaveMyAccountResult.SERVER_SIDE_VALIDATION:
+                                messages = result.getMessages();
+                                break;
+                            default:
+                                messages.add(MatContext.get().getMessageDelegate().
+                                        getUnknownErrorMessage(result.getFailureReason()));
+                        }
+                        display.getErrorMessageDisplay().createAlert(messages);
+                    }
+                }
+            });
+        }
 	}
 	
 	
@@ -341,7 +291,6 @@ public class PersonalInformationPresenter implements MatPresenter {
 		display.getOID().setTitle(model.getOid());
 		display.getOID().setWidth(getRequiredWidth(display.getOID().getValue().length()));
 		display.getFreeTextEditorCheckBox().setValue(model.isEnableFreeTextEditor());
-		display.getPassword().setValue("");
 		if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
 				.getLoggedInUserRole())){
 			display.getUserPreferencePanel().setVisible(false);

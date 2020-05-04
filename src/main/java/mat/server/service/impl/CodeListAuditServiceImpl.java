@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import mat.DTO.SearchHistoryDTO;
+import mat.dto.SearchHistoryDTO;
 import mat.dao.CodeListAuditLogDAO;
 import mat.dao.ListObjectDAO;
 import mat.model.ListObject;

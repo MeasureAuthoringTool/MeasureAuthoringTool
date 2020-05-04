@@ -4,7 +4,7 @@ package mat.client.login;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import mat.DTO.UserPreferenceDTO;
+import mat.dto.UserPreferenceDTO;
 import mat.model.BaseModel;
 import mat.model.SecurityRole;
 

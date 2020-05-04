@@ -1,6 +1,6 @@
 package mat.server.service;
 
-import mat.DTO.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.ConversionResultDto;
 
 public interface FhirOrchestrationGatewayService {
     /**

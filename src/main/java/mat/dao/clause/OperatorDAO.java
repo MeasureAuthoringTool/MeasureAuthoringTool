@@ -2,7 +2,7 @@ package mat.dao.clause;
 
 import java.util.List;
 
-import mat.DTO.OperatorDTO;
+import mat.dto.OperatorDTO;
 import mat.dao.IDAO;
 import mat.model.Operator;
 

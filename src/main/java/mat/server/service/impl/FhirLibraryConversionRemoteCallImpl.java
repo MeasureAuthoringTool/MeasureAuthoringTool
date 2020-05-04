@@ -1,7 +1,7 @@
 package mat.server.service.impl;
 
-import mat.DTO.fhirconversion.ConversionResultDto;
-import mat.DTO.fhirconversion.ConversionType;
+import mat.dto.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.ConversionType;
 import mat.client.shared.MatRuntimeException;
 import mat.server.service.FhirLibraryConversionRemoteCall;
 import org.apache.commons.logging.Log;
@@ -39,6 +39,17 @@ public class FhirLibraryConversionRemoteCallImpl implements FhirLibraryConversio
         if (logger.isDebugEnabled()) {
             logger.debug("callRemoteService " + libraryId + " " + ConversionType.CONVERSION);
         }
+        return callRemoteService(libraryId, conversionType);
+    }
+
+    public ConversionResultDto validate(String libraryId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("callRemoteService " + libraryId + " " + ConversionType.VALIDATION);
+        }
+        return callRemoteService(libraryId, ConversionType.VALIDATION);
+    }
+
+    private ConversionResultDto callRemoteService(String libraryId, ConversionType conversionType) {
         String executeQuery = fhirLibraryConversionRemoteUrl + FHIR_LIBRARY_SRVC_PARAMS;
         Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("id", libraryId);

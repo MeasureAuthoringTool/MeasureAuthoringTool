@@ -2,7 +2,7 @@ package mat.dao;
 
 import java.util.List;
 
-import mat.DTO.MeasureTypeDTO;
+import mat.dto.MeasureTypeDTO;
 import mat.model.MeasureType;
 
 /**

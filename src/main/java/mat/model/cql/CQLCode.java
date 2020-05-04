@@ -218,4 +218,23 @@ public class CQLCode implements CQLExpression, IsSerializable {
 	public void setCodeSystemVersionUri(String codeSystemVersionUri) {
 		this.codeSystemVersionUri = codeSystemVersionUri;
 	}
+
+	@Override
+	public String toString() {
+		return "CQLCode{" +
+				"id='" + id + '\'' +
+				", codeName='" + codeName + '\'' +
+				", codeSystemName='" + codeSystemName + '\'' +
+				", codeSystemVersion='" + codeSystemVersion + '\'' +
+				", codeSystemVersionUri='" + codeSystemVersionUri + '\'' +
+				", codeSystemOID='" + codeSystemOID + '\'' +
+				", codeOID='" + codeOID + '\'' +
+				", displayName='" + displayName + '\'' +
+				", codeIdentifier='" + codeIdentifier + '\'' +
+				", isUsed=" + isUsed +
+				", readOnly=" + readOnly +
+				", suffix='" + suffix + '\'' +
+				", isCodeSystemVersionIncluded=" + isCodeSystemVersionIncluded +
+				'}';
+	}
 }

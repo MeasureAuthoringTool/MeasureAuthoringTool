@@ -12,7 +12,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.DTO.UserAuditLogDTO;
+import mat.dto.UserAuditLogDTO;
 import mat.dao.UserAuditLogDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.User;

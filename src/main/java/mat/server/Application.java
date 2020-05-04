@@ -219,7 +219,8 @@ public class Application extends WebSecurityConfigurerAdapter {
                 "ConversionResultDto.validate",
                 "featureFlags",
                 "isFhirEditEnabled",
-                "fhirAttributesAndDataTypes")
+                "fhirAttributesAndDataTypes",
+                "oidToVSACDodeSystemDTO")
                 .stream().map(ConcurrentMapCache::new)
                 .collect(Collectors.toList());
         cacheManager.setCaches(caches);
@@ -233,6 +234,8 @@ public class Application extends WebSecurityConfigurerAdapter {
 
     @Scheduled(fixedRateString = "${mat.cache.expiry.time}")
     public void clearCacheSchedule() {
+        //cacheManager() is actually spring magic. Another bean isn't recreated.
+        //https://stackoverflow.com/questions/27990060/calling-a-bean-annotated-method-in-spring-java-configuration
         cacheManager().getCacheNames().stream().forEach(cacheName ->
                 cacheManager().getCache(cacheName).clear()
         );

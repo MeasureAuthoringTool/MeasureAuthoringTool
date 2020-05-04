@@ -1329,7 +1329,7 @@ body {
 }
 
 #okta-sign-in.auth-container .primary-auth h2.okta-form-title:after {
-    content:'Enter your username and password to login';
+    content:'Enter your HARP ID and password to login';
     display: block;
     height: 20px;
     width:100%;

@@ -53,10 +53,12 @@ public class CheckUserLastLoginTaskTest extends MatAppContextTest {
 
     @Test
     public void testWarningEmail() {
-        String userId = "Inactivity Warning Email User";
+        String harpId = "Inactivity Warning HARP ID";
+        String email = "Inactivity Warning EMAIL";
         User testUser = buildNormalUser();
         testUser.setSignInDate(DateUtils.addDays(new Date(), warningDayLimit));
-        testUser.setLoginId(userId);
+        testUser.setHarpId(harpId);
+        testUser.setEmailAddress(email);
 
         when(userDAO.find()).thenReturn(List.of(testUser));
         checkUserLastLoginTask.checkUserLastLogin();
@@ -64,7 +66,8 @@ public class CheckUserLastLoginTaskTest extends MatAppContextTest {
         assertEquals("1", testUser.getStatus().getStatusId());
         assertNotNull(simpleMailMessage.getText());
         assertTrue(simpleMailMessage.getText().contains("You have not signed into the Measure Authoring Tool in 30 days."));
-        assertTrue(simpleMailMessage.getText().contains(userId));
+        assertTrue(simpleMailMessage.getText().contains(harpId));
+        assertTrue(simpleMailMessage.getText().contains(email));
         verify(emailAuditLogDAO, times(1)).save(any());
     }
 
@@ -85,9 +88,11 @@ public class CheckUserLastLoginTaskTest extends MatAppContextTest {
 
     @Test
     public void testExpirationEmailInactiveUser() {
-        String userId = "Inactivity Expiration Email User";
+        String harpId = "Inactivity Warning HARP ID";
+        String email = "Inactivity Warning EMAIL";
         User testUser = buildNormalUser();
-        testUser.setLoginId(userId);
+        testUser.setHarpId(harpId);
+        testUser.setEmailAddress(email);
         testUser.setSignInDate(DateUtils.addDays(new Date(), expiryDayLimit));
 
         when(userDAO.find()).thenReturn(List.of(testUser));
@@ -96,16 +101,20 @@ public class CheckUserLastLoginTaskTest extends MatAppContextTest {
         assertEquals("2", testUser.getStatus().getStatusId());
         assertNotNull(simpleMailMessage.getText());
         assertTrue(simpleMailMessage.getText().contains("Your account has been inactive for 60 days and therefore, has been disabled."));
-        assertTrue(simpleMailMessage.getText().contains(userId));
+        assertTrue(simpleMailMessage.getText().contains(harpId));
+        assertTrue(simpleMailMessage.getText().contains(email));
         verify(emailAuditLogDAO, times(1)).save(any());
         verify(userDAO, times(1)).save(any());
     }
 
     @Test
     public void testPastExpirationEmailInactiveUser() {
-        String userId = "Inactivity Expiration Email User";
+        String harpId = "Inactivity Warning HARP ID";
+        String email = "Inactivity Warning EMAIL";
+
         User testUser = buildNormalUser();
-        testUser.setLoginId(userId);
+        testUser.setHarpId(harpId);
+        testUser.setEmailAddress(email);
         testUser.setSignInDate(DateUtils.addDays(new Date(), expiryDayLimit - 5));
 
         when(userDAO.find()).thenReturn(List.of(testUser));
@@ -114,7 +123,8 @@ public class CheckUserLastLoginTaskTest extends MatAppContextTest {
         assertEquals("2", testUser.getStatus().getStatusId());
         assertNotNull(simpleMailMessage.getText());
         assertTrue(simpleMailMessage.getText().contains("Your account has been inactive for 60 days and therefore, has been disabled."));
-        assertTrue(simpleMailMessage.getText().contains(userId));
+        assertTrue(simpleMailMessage.getText().contains(email));
+        assertTrue(simpleMailMessage.getText().contains(harpId));
         verify(emailAuditLogDAO, times(1)).save(any());
         verify(userDAO, times(1)).save(any());
     }

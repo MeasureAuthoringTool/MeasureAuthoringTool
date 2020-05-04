@@ -46,7 +46,7 @@ public class MessageDelegate {
     private static final String SEC_QUESTIONS_UPDATED = "Your security questions have been updated.";
     private static final String SUPP_DATA_SAVED = "Supplemental Data Elements have been saved.";
     private static final String RISK_ADJ_SAVED = "Risk Adjustment Variables have been saved.";
-    private static final String TEMP_EMAIL_SENT = " Temporary Password E-mail has been sent.";
+    private static final String TEMP_EMAIL_SENT = " Account re-activated E-mail has been sent.";
     private static final String VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED = "Value set version or effective date has been selected." + " Please enter a date to continue.";
     private static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in the case of more than one Initial Population, " + " Numerator and Denominator must contain one association.";
     private static final String RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED = "For Ratio Measures, each Measure Observation requires an association be made to the Numerator or the Denominator.";

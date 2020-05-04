@@ -107,8 +107,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 	/** The required. */
 	private HTML required = new HTML(RequiredIndicator.get() + " indicates required field");
 	
-	/** The reset password. */
-	private Button resetPassword = new Button("Reset Password");
+	private Button reactivateAccountButton = new Button("Re-activate account");
 	
 	/** The revoked status. */
 	private RadioButton revokedStatus = new RadioButton("status", "Revoked");
@@ -266,7 +265,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 		FormGroup organizationGroup = new FormGroup();
 		FormGroup oidGroup = new FormGroup();
 		FormGroup statusGroup = new FormGroup();
-		FormGroup resetButtonGroup = new FormGroup();
+		FormGroup reactivateAccountButtonGroup = new FormGroup();
 		
 		FormLabel roleLabel = new FormLabel();
 		roleLabel.setText("Role");
@@ -341,15 +340,15 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 		statusGroup.add(hzPanel);
 		statusGroup.add(hzRevokePanel);
 		
-		resetPassword.setTitle("Reset Password");
-		resetButtonGroup.add(resetPassword);
+		reactivateAccountButton.setTitle("Re-activate account");
+		reactivateAccountButtonGroup.add(reactivateAccountButton);
 		
 		FieldSet fieldSet = new FieldSet();
 		fieldSet.add(roleGroup);
 		fieldSet.add(organizationGroup);
 		fieldSet.add(oidGroup);
 		fieldSet.add(statusGroup);
-		fieldSet.add(resetButtonGroup);
+		fieldSet.add(reactivateAccountButtonGroup);
 		
 		centerForm.add(fieldSet);
 		return centerForm;
@@ -619,8 +618,8 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 	}
 	
 	@Override
-	public HasClickHandlers getResetPasswordButton() {
-		return resetPassword;
+	public HasClickHandlers getReactivateAccountButton() {
+		return reactivateAccountButton;
 	}
 	
 	@Override
@@ -740,7 +739,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 
 	@Override
 	public void setShowUnlockOption(boolean b) {
-		MatContext.get().setVisible(resetPassword, b);
+		MatContext.get().setVisible(reactivateAccountButton, b);
 	}
 
 	@Override

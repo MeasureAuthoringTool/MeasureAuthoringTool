@@ -141,8 +141,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void requestResetLockedPassword(String userid) {
-        logger.info("In requestResetLockedPassword(String userid).....");
+    public void activate(String userid) {
+        logger.info("In activate(String userid).....");
         User user = userDAO.find(userid);
         String newPassword = generateRandomPassword();
         if (user.getPassword() == null) {
@@ -156,7 +156,7 @@ public class UserServiceImpl implements UserService {
         }
         setUserPassword(user, newPassword, true);
         userDAO.save(user);
-        notifyUserOfTemporaryPassword(user, newPassword);
+        notifyUserUnlocked(user, newPassword);
     }
 
     /**
@@ -165,8 +165,8 @@ public class UserServiceImpl implements UserService {
      * @param user        the user
      * @param newPassword the new password
      */
-    public void notifyUserOfTemporaryPassword(User user, String newPassword) {
-        logger.info("In notifyUserOfTemporaryPassword(User user, String newPassword).....");
+    public void notifyUserUnlocked(User user, String newPassword) {
+        logger.info("In notifyUserUnlocked(User user, String newPassword).....");
         SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
         msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT + ServerConstants.getEnvName());
         msg.setTo(user.getEmailAddress());
@@ -178,6 +178,8 @@ public class UserServiceImpl implements UserService {
         paramsMap.put(ConstantMessages.PASSWORD, newPassword);
         paramsMap.put(ConstantMessages.PASSWORD_EXPIRE_DATE, expiryDateString);
         paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
+        paramsMap.put(ConstantMessages.HARPID, user.getHarpId());
+        paramsMap.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
         paramsMap.put(ConstantMessages.SUPPORT_EMAIL, supportEmailAddress);
 
         logger.info("Sending email to " + user.getEmailAddress());
@@ -458,7 +460,6 @@ public class UserServiceImpl implements UserService {
         }
         userDAO.save(user);
         notifyUserOfNewAccount(user);
-        notifyUserOfTemporaryPassword(user, newPassword);
     }
 
     /**
@@ -473,7 +474,8 @@ public class UserServiceImpl implements UserService {
             message.setSubject(ServerConstants.NEW_ACCESS_SUBJECT + ServerConstants.getEnvName());
             BodyPart body = new MimeBodyPart();
             HashMap<String, Object> paramsMap = new HashMap<>();
-            paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
+            paramsMap.put(ConstantMessages.HARPID, user.getHarpId());
+            paramsMap.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
             paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
             paramsMap.put(ConstantMessages.SUPPORT_EMAIL, supportEmailAddress);
             String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/welcomeTemplate.ftl"), paramsMap);
@@ -606,7 +608,7 @@ public class UserServiceImpl implements UserService {
             setModelFieldsOnUser(model, user);
             if (model.isExistingUser()) {
                 if (reactivatingUser) {
-                    requestResetLockedPassword(user.getId());
+                    activate(user.getId());
                 }
                 saveExisting(user);
             } else {

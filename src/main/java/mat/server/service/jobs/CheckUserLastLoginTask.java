@@ -1,15 +1,14 @@
 package mat.server.service.jobs;
 
 
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
-import mat.dao.EmailAuditLogDAO;
-import mat.dao.UserDAO;
-import mat.model.EmailAuditLog;
-import mat.model.Status;
-import mat.model.User;
-import mat.server.util.ServerConstants;
-import mat.shared.ConstantMessages;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,8 +21,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import java.io.IOException;
-import java.util.*;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
+import mat.dao.EmailAuditLogDAO;
+import mat.dao.UserDAO;
+import mat.model.EmailAuditLog;
+import mat.model.Status;
+import mat.model.User;
+import mat.server.util.ServerConstants;
+import mat.shared.ConstantMessages;
 
 
 /**
@@ -83,7 +89,7 @@ public class CheckUserLastLoginTask {
      *
      * @return void
      */
-    @Scheduled(cron = "${mat.checkUserLastLogin.cron}")
+    @Scheduled(cron = "${mat.checkUserLastLogin.cron:-}")
     public void checkUserLastLogin() {
         logger.info(" :: checkUserLastLogin Method START :: ");
 
@@ -97,7 +103,7 @@ public class CheckUserLastLoginTask {
     /**
      * Method Find List of Users with Sign_in_date = noOfDayLimit and send email based on emailType using velocityEngineUtils.
      *
-     * @param emailType    type String.
+     * @param emailType type String.
      * @return void
      */
     private void checkUserLoginDays(final String emailType) {
@@ -131,8 +137,9 @@ public class CheckUserLastLoginTask {
             }
             content.put("rolename", userRole);
 
-            content.put(ConstantMessages.LOGINID, user.getLoginId());
+            content.put(ConstantMessages.HARPID, user.getHarpId());
             content.put(ConstantMessages.URL, envirUrl);
+            content.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
 
             model.put("content", content);
             model.put(ConstantMessages.SUPPORT_EMAIL, supportEmailAddress);
@@ -175,15 +182,15 @@ public class CheckUserLastLoginTask {
      * with Sign_in_date before or equal to noOfDayLimit.
      *
      * @param emailType flag identifying email type.
-     * @param users    List of Users being audited for inactivity.
+     * @param users     List of Users being audited for inactivity.
      * @return List.
      */
     private List<User> checkLastLogin(final String emailType, final List<User> users) {
 
         logger.info(" :: checkLastLogin Method Start :: ");
-        final long dayLimit = emailType.equals(WARNING_EMAIL_FLAG) ? warningDayLimit : expiryDayLimit;
+        final int dayLimit = emailType.equals(WARNING_EMAIL_FLAG) ? warningDayLimit : expiryDayLimit;
         final List<User> returnUserList = new ArrayList<>();
-        final Date daysAgo = getNumberOfDaysAgo((int) dayLimit);
+        final Date daysAgo = getNumberOfDaysAgo(dayLimit);
         logger.info(dayLimit + "daysAgo:" + daysAgo);
 
         for (User user : users) {
@@ -205,7 +212,7 @@ public class CheckUserLastLoginTask {
             } else {
                 lastSignInDate = DateUtils.truncate(lastSignInDate, Calendar.DATE);
                 logger.info(USER_LOG_LABEL + user.getFirstName() + "  :::: lastSignInDate :::::   " + lastSignInDate);
-                if(isUserPastLimit(emailType, lastSignInDate, daysAgo)) {
+                if (isUserPastLimit(emailType, lastSignInDate, daysAgo)) {
                     returnUserList.add(user);
                     logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who last logged " + dayLimit + LOG_DAYS_AGO);
                 } else {

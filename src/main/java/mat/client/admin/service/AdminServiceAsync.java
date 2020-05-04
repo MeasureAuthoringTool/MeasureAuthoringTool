@@ -20,7 +20,7 @@ public interface AdminServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	public void deleteUser(String userid, AsyncCallback<Void> callback);
+	void deleteUser(String userid, AsyncCallback<Void> callback);
 	
 	/** Gets the organization.
 	 * 
@@ -39,15 +39,8 @@ public interface AdminServiceAsync {
 	 * @return the user
 	 */
 	void getUser(String key, AsyncCallback<ManageUsersDetailModel> callback);
-	/**
-	 * Reset user password.
-	 * 
-	 * @param userid
-	 *            the userid
-	 * @param callback
-	 *            the callback
-	 */
-	void resetUserPassword(String userid, AsyncCallback<Void> callback);
+
+	void activateUser(String userid, AsyncCallback<Void> callback);
 	
 	/**
 	 * Save update user.
@@ -87,10 +80,10 @@ public interface AdminServiceAsync {
 	
 	void getUserByEmail(String emailId, AsyncCallback<ManageUsersDetailModel> callback);
 
-	public void saveOrganization(ManageOrganizationDetailModel updatedOrganizationDetailModel,
+	void saveOrganization(ManageOrganizationDetailModel updatedOrganizationDetailModel,
 			AsyncCallback<SaveUpdateOrganizationResult> asyncCallback);
 
-	public void updateOrganization(Long currentOrganizationId,
+	void updateOrganization(Long currentOrganizationId,
 			ManageOrganizationDetailModel updatedOrganizationDetailModel,
 			AsyncCallback<SaveUpdateOrganizationResult> asyncCallback);
 }

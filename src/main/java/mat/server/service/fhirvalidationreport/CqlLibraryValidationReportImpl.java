@@ -1,4 +1,27 @@
-package mat.server.service;
+package mat.server.service.fhirvalidationreport;
+
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
+import mat.DTO.fhirconversion.ConversionOutcome;
+import mat.DTO.fhirconversion.ConversionResultDto;
+import mat.DTO.fhirconversion.CqlConversionError;
+import mat.DTO.fhirconversion.CqlConversionResult;
+import mat.DTO.fhirconversion.FhirValidationResult;
+import mat.DTO.fhirconversion.LibraryConversionResults;
+import mat.DTO.fhirconversion.MatCqlConversionException;
+import mat.DTO.fhirconversion.ValueSetConversionResults;
+import mat.client.shared.MatRuntimeException;
+import mat.dao.clause.CQLLibraryDAO;
+import mat.model.clause.CQLLibrary;
+import mat.model.clause.ModelTypeHelper;
+import mat.server.service.FhirLibraryConversionRemoteCall;
+import mat.shared.DateUtility;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -8,108 +31,72 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mat.dto.fhirconversion.ConversionOutcome;
-import mat.dto.fhirconversion.ConversionResultDto;
-import mat.dto.fhirconversion.CqlConversionError;
-import mat.dto.fhirconversion.CqlConversionResult;
-import mat.dto.fhirconversion.FhirValidationResult;
-import mat.dto.fhirconversion.LibraryConversionResults;
-import mat.dto.fhirconversion.MatCqlConversionException;
-import mat.dto.fhirconversion.ValueSetConversionResults;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
-import mat.client.shared.MatRuntimeException;
-import mat.dao.clause.MeasureDAO;
-import mat.model.clause.Measure;
-import mat.model.clause.ModelTypeHelper;
-import mat.shared.DateUtility;
-
 @Service
-public class FhirValidationReportService {
+public class CqlLibraryValidationReportImpl implements FhirValidationReport {
 
-    private static final Log logger = LogFactory.getLog(FhirValidationReportService.class);
-    private static final String DATE_FORMAT = "dd-MMM-YYYY";
-    private static final String TIME_FORMAT = "hh:mm aa";
-    private static final String NO_MEASURE_FOUND_ERROR = "The measure with that measure id does not exist.";
-    private static final String CONVERSION_SERVICE_ERROR = "An error occurred while validating the FHIR conversion. Please try again later. If this continues please contact the MAT help desk.";
-    private static final String REPORT_FTL = "fhirvalidationreport/fhir_validation_report.ftl";
+    private static final Log logger = LogFactory.getLog(CqlLibraryValidationReportImpl.class);
+    private static final String currentMatVersion = "v6.0";
+
+    public static final String CQL_LIBRARY_NOT_FOUND_ERROR = "CQL Library with the given id does not exist.";
+    public static final String FTL_TEMPLATE_NAME = "fhirvalidationreport/fhir_library_validation_report.ftl";
+
 
     private Configuration freemarkerConfiguration;
-    private MeasureDAO measureDAO;
-    private FhirOrchestrationGatewayService fhirOrchestrationGatewayService;
+    private CQLLibraryDAO libraryDAO;
+    private FhirLibraryConversionRemoteCall fhirLibraryConversionRemoteCall;
 
-    @Value("${mat.measure.current.release.version}")
-    private String currentMatVersion;
 
-    public FhirValidationReportService(Configuration freemarkerConfiguration, MeasureDAO measureDAO, FhirOrchestrationGatewayService fhirOrchestrationGatewayService) {
+    public CqlLibraryValidationReportImpl(Configuration freemarkerConfiguration,
+                                          CQLLibraryDAO libraryDAO,
+                                          FhirLibraryConversionRemoteCall fhirLibraryConversionRemoteCall) {
         this.freemarkerConfiguration = freemarkerConfiguration;
-        this.measureDAO = measureDAO;
-        this.fhirOrchestrationGatewayService = fhirOrchestrationGatewayService;
+        this.libraryDAO = libraryDAO;
+        this.fhirLibraryConversionRemoteCall = fhirLibraryConversionRemoteCall;
     }
 
-    /**
-     * This method calls the QDM to FHIR conversion validation micro service for a given measure
-     * and generates the FHIR conversion validation report for measure and its cql libraries & value sets,
-     *
-     * @param measureId          - Measure id for which validation report is requested
-     * @param vsacGrantingTicket - VSAC granting ticket
-     * @param converted          - true if the report is shown for a newly FHIR measure coverted from QDM.
-     * @return HTML string report
-     * @throws IOException
-     * @throws TemplateException
-     */
-    public String getFhirConversionReportForMeasure(String measureId, String vsacGrantingTicket, boolean converted) throws IOException, TemplateException {
+
+    @Override
+    public String generateReport(String libraryId, String vsacGrantingTicket, boolean converted) throws IOException, TemplateException {
+
         ConversionResultDto conversionResult = null;
-        Measure measure = measureDAO.getMeasureByMeasureId(measureId);
-        if (measure != null) {
-            conversionResult = validateFhirConversion(measureId, vsacGrantingTicket, measure.isDraft());
+        CQLLibrary cqlLibrary = libraryDAO.find(libraryId);
+        if (cqlLibrary != null) {
+            conversionResult = validateFhirLibraryConversion(libraryId);
         }
 
-        return generateValidationReport(conversionResult, measure, converted);
+        return generateValidationReport(conversionResult, cqlLibrary, converted);
     }
 
-    /**
-     * Calls the QDM to FHIR conversion validation service and returns the Conversion Results
-     *
-     * @return an instance of FHIR ConversionResultDto
-     * @throws IOException
-     */
-    private ConversionResultDto validateFhirConversion(String measureId, String vsacGrantingTicket, boolean isDraft) throws IOException {
-        if (measureId == null) {
+
+    private ConversionResultDto validateFhirLibraryConversion(String libraryId) throws IOException {
+        if (libraryId == null) {
             return null;
         }
-        logger.info("Calling FHIR conversion validation service for measure: " + measureId);
+
         try {
-            return fhirOrchestrationGatewayService.validate(measureId, vsacGrantingTicket, isDraft);
+            return fhirLibraryConversionRemoteCall.validate(libraryId);
         } catch (MatRuntimeException e) {
             throw new IOException(e);
         }
     }
 
-    private String generateValidationReport(ConversionResultDto conversionResultDto, Measure measure, boolean converted) throws IOException, TemplateException {
+    private String generateValidationReport(ConversionResultDto conversionResultDto, CQLLibrary library, boolean converted) throws IOException, TemplateException {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("matVersion", currentMatVersion);
 
-        if (conversionResultDto != null && measure != null) {
-            prepareForMeasure(conversionResultDto, measure, converted, paramsMap);
-        } else if (measure == null) {
-            paramsMap.put("noMeasureFoundError", NO_MEASURE_FOUND_ERROR);
-        } else {
+        if (library == null) {
+            paramsMap.put("cqlLibraryNotFoundError", CQL_LIBRARY_NOT_FOUND_ERROR);
+        } else if (conversionResultDto == null) {
             paramsMap.put("conversionServiceError", CONVERSION_SERVICE_ERROR);
+        } else {
+            prepareReport(conversionResultDto, library, converted, paramsMap);
         }
 
-        return FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(REPORT_FTL), paramsMap);
+        var template = freemarkerConfiguration.getTemplate(FTL_TEMPLATE_NAME);
+        return FreeMarkerTemplateUtils.processTemplateIntoString(template, paramsMap);
     }
 
-    private void prepareForMeasure(ConversionResultDto conversionResultDto, Measure measure, boolean converted, Map<String, Object> paramsMap) {
+    private void prepareReport(ConversionResultDto conversionResultDto, CQLLibrary library, boolean converted, Map<String, Object> paramsMap) {
         if (converted) {
             addConversionStatusMessage(conversionResultDto, paramsMap);
         }
@@ -121,13 +108,22 @@ public class FhirValidationReportService {
         if (conversionResultDto.getModified() != null) {
             addReportDateTime(conversionResultDto, paramsMap);
         }
-        addMeasureDetails(measure, paramsMap);
+        addCqlLibraryDetails(library, paramsMap);
     }
 
-    private void addMeasureDetails(Measure measure, Map<String, Object> paramsMap) {
-        paramsMap.put("measureName", measure.getDescription());
-        paramsMap.put("measureVersion", measure.getVersion());
-        paramsMap.put("modelType", ModelTypeHelper.defaultTypeIfBlank(measure.getMeasureModel()));
+    private void addConversionStatusMessage(ConversionResultDto conversionResultDto, Map<String, Object> paramsMap) {
+        String conversionStatusMessage = ConversionOutcome.SUCCESS == conversionResultDto.getOutcome() ?
+                "The FHIR CQL Library was created successfully." :
+                "Warning: The FHIR CQL Library was created successfully with errors.";
+        paramsMap.put("conversionStatusMessage", conversionStatusMessage);
+        paramsMap.put("outcome", String.valueOf(conversionResultDto.getOutcome()));
+        paramsMap.put("errorReason", StringUtils.trimToNull(conversionResultDto.getErrorReason()));
+    }
+
+    private void addCqlLibraryDetails(CQLLibrary library, Map<String, Object> paramsMap) {
+        paramsMap.put("cqlLibraryName", library.getName());
+        paramsMap.put("cqlLibraryVersion", library.getVersion());
+        paramsMap.put("cqlLibraryModel", ModelTypeHelper.defaultTypeIfBlank(library.getLibraryModelType()));
     }
 
     private void addReportDateTime(ConversionResultDto conversionResultDto, Map<String, Object> paramsMap) {
@@ -145,11 +141,8 @@ public class FhirValidationReportService {
         Map<String, List<CqlConversionError>> externalErrorsMap = new HashMap<>();
         getLibraryErrors(conversionResultDto, libraryFhirValidationErrors, qdmCqlConversionErrorsMap, fhirCqlConversionErrorsMap, paramsMap, externalErrorsMap);
 
-        List<FhirValidationResult> measureFhirValidationErrors = getMeasureErrors(conversionResultDto);
-
         paramsMap.put("valueSetFhirValidationErrors", valueSetFhirValidationErrors);
         paramsMap.put("libraryFhirValidationErrors", libraryFhirValidationErrors);
-        paramsMap.put("measureFhirValidationErrors", measureFhirValidationErrors);
         paramsMap.put("qdmCqlConversionErrors", qdmCqlConversionErrorsMap);
         paramsMap.put("fhirCqlConversionErrors", fhirCqlConversionErrorsMap);
         paramsMap.put("externalErrorsMap", externalErrorsMap);
@@ -179,25 +172,6 @@ public class FhirValidationReportService {
         });
     }
 
-    private void addConversionStatusMessage(ConversionResultDto conversionResultDto, Map<String, Object> paramsMap) {
-        String conversionStatusMessage = ConversionOutcome.SUCCESS == conversionResultDto.getOutcome() ?
-                "The FHIR measure was created successfully." :
-                "Warning: The FHIR measure was created successfully with errors.";
-        paramsMap.put("conversionStatusMessage", conversionStatusMessage);
-        paramsMap.put("outcome", String.valueOf(conversionResultDto.getOutcome()));
-        paramsMap.put("errorReason", StringUtils.trimToNull(conversionResultDto.getErrorReason()));
-    }
-
-    private List<FhirValidationResult> getMeasureErrors(ConversionResultDto conversionResultDto) {
-        //Measure FHIR validation errors
-        List<FhirValidationResult> measureFhirValidationErrors = new ArrayList<>();
-        if (conversionResultDto.getMeasureConversionResults() != null &&
-                (conversionResultDto.getMeasureConversionResults().getSuccess() == null ||
-                        !conversionResultDto.getMeasureConversionResults().getSuccess())) {
-            measureFhirValidationErrors.addAll(conversionResultDto.getMeasureConversionResults().getMeasureFhirValidationResults());
-        }
-        return measureFhirValidationErrors;
-    }
 
     private List<FhirValidationResult> getValueSetErrors(ConversionResultDto conversionResultDto) {
         // ValueSet FHIR validation errors
@@ -219,6 +193,7 @@ public class FhirValidationReportService {
          if (CollectionUtils.isNotEmpty(conversionResultDto.getLibraryConversionResults())) {
              for (LibraryConversionResults results : conversionResultDto.getLibraryConversionResults()) {
                  if ("Not Found in Hapi".equals(results.getReason())) {
+                     logger.debug("Not found in Hapi");
                      paramsMap.put("LibraryNotFoundInHapi", results.getReason());
                  }
                  if (results.getSuccess() == null || !results.getSuccess()) {

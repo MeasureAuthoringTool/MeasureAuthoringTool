@@ -1,4 +1,27 @@
-package mat.server.service;
+package mat.server.service.fhirvalidationreport;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import mat.DTO.fhirconversion.ConversionOutcome;
+import mat.DTO.fhirconversion.ConversionResultDto;
+import mat.DTO.fhirconversion.CqlConversionError;
+import mat.DTO.fhirconversion.FhirValidationResult;
+import mat.DTO.fhirconversion.LibraryConversionResults;
+import mat.DTO.fhirconversion.MatCqlConversionException;
+import mat.DTO.fhirconversion.MeasureConversionResults;
+import mat.DTO.fhirconversion.ValueSetConversionResults;
+import mat.dao.clause.MeasureDAO;
+import mat.model.clause.Measure;
+import mat.server.service.FhirOrchestrationGatewayService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,34 +33,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mat.dto.fhirconversion.ConversionOutcome;
-import mat.dto.fhirconversion.ConversionResultDto;
-import mat.dto.fhirconversion.CqlConversionError;
-import mat.dto.fhirconversion.FhirValidationResult;
-import mat.dto.fhirconversion.LibraryConversionResults;
-import mat.dto.fhirconversion.MatCqlConversionException;
-import mat.dto.fhirconversion.MeasureConversionResults;
-import mat.dto.fhirconversion.ValueSetConversionResults;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import mat.dao.clause.MeasureDAO;
-import mat.model.clause.Measure;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-class FhirValidationReportServiceTest {
+class MeasureValidationReportImplTest {
 
     private final String templateName = "fhirvalidationreport/fhir_validation_report.ftl";
 
@@ -51,7 +51,7 @@ class FhirValidationReportServiceTest {
     private FhirOrchestrationGatewayService fhirOrchestrationGatewayService;
 
     @InjectMocks
-    private FhirValidationReportService fhirValidationReportService;
+    private MeasureValidationReportImpl fhirValidationReport;
 
     @Test
     void testGetFhirConversionReportForMeasure() throws Exception {
@@ -69,16 +69,16 @@ class FhirValidationReportServiceTest {
         Template template = configuration.getTemplate(templateName);
         Mockito.when(freemarkerConfiguration.getTemplate(templateName)).thenReturn(template);
 
-        URL testResult = FhirValidationReportService.class.getClassLoader().getResource("report.json");
+        URL testResult = MeasureValidationReportImpl.class.getClassLoader().getResource("report.json");
         ConversionResultDto validationResults = new ObjectMapper().readValue(new File(testResult.getFile()), ConversionResultDto.class);
 
 
         Mockito.when(fhirOrchestrationGatewayService.validate(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validationResults);
 
-        ReflectionTestUtils.setField(fhirValidationReportService, "currentMatVersion", "v6.0");
+        ReflectionTestUtils.setField(fhirValidationReport, "currentMatVersion", "v6.0");
 
 
-        String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId, "vsacGrantingTicket", false);
+        String report = fhirValidationReport.generateReport(measureId, "vsacGrantingTicket", false);
         assertTrue(report.startsWith("<html>\n    <head>\n        <title>MAT | FHIR Conversion Report</title>"));
         assertTrue(report.contains("<div class=\"report-header\">\n                Measure Authoring Tool v6.0\n            </div>"));
         assertTrue(report.contains("<div class=\"card-header\">Value Set</div>"));
@@ -97,9 +97,9 @@ class FhirValidationReportServiceTest {
         Template template = configuration.getTemplate(templateName);
         Mockito.when(freemarkerConfiguration.getTemplate(templateName)).thenReturn(template);
 
-        ReflectionTestUtils.setField(fhirValidationReportService, "currentMatVersion", "v6.0");
+        ReflectionTestUtils.setField(fhirValidationReport, "currentMatVersion", "v6.0");
 
-        String report = fhirValidationReportService.getFhirConversionReportForMeasure(measureId, "vsacGrantingTicket", false);
+        String report = fhirValidationReport.generateReport(measureId, "vsacGrantingTicket", false);
         assertTrue(report.startsWith("<html>\n    <head>\n        <title>MAT | FHIR Conversion Report</title>"));
         assertTrue(report.contains("<div class=\"report-header\">\n                Measure Authoring Tool v6.0\n            </div>"));
         assertTrue(report.contains("<div class=\"error-msg\">The measure with that measure id does not exist.</div>"));
@@ -116,7 +116,7 @@ class FhirValidationReportServiceTest {
 
         HashMap<String, List<Object>> cqlConversionErrorsMap = new HashMap<>();
 
-        ReflectionTestUtils.invokeMethod(fhirValidationReportService, "buildCqlConversionErrorMap", cqlConversionErrors, cqlConversionErrorsMap);
+        ReflectionTestUtils.invokeMethod(fhirValidationReport, "buildCqlConversionErrorMap", cqlConversionErrors, cqlConversionErrorsMap);
 
         HashMap<String, List<Object>> sampleCqlConversionErrorsMap = new HashMap<>();
         sampleCqlConversionErrorsMap.put("Sample LibraryId 1.0.003", new ArrayList<>(cqlConversionErrors));
@@ -134,7 +134,7 @@ class FhirValidationReportServiceTest {
 
         HashMap<String, List<Object>> cqlConversionErrorsMap = new HashMap<>();
 
-        ReflectionTestUtils.invokeMethod(fhirValidationReportService, "buildCqlConversionErrorMap", cqlConversionErrors, cqlConversionErrorsMap);
+        ReflectionTestUtils.invokeMethod(fhirValidationReport, "buildCqlConversionErrorMap", cqlConversionErrors, cqlConversionErrorsMap);
 
         HashMap<String, List<Object>> sampleCqlConversionErrorsMap = new HashMap<>();
         assertEquals(sampleCqlConversionErrorsMap, cqlConversionErrorsMap);
@@ -150,7 +150,7 @@ class FhirValidationReportServiceTest {
 
         HashMap<String, List<Object>> cqlConversionErrorsMap = new HashMap<>();
 
-        ReflectionTestUtils.invokeMethod(fhirValidationReportService, "buildCqlConversionErrorMap", cqlConversionErrors, cqlConversionErrorsMap);
+        ReflectionTestUtils.invokeMethod(fhirValidationReport, "buildCqlConversionErrorMap", cqlConversionErrors, cqlConversionErrorsMap);
 
         HashMap<String, List<Object>> sampleCqlConversionErrorsMap = new HashMap<>();
         assertEquals(sampleCqlConversionErrorsMap, cqlConversionErrorsMap);
@@ -166,7 +166,7 @@ class FhirValidationReportServiceTest {
 
         HashMap<String, List<Object>> cqlConversionErrorsMap = new HashMap<>();
 
-        ReflectionTestUtils.invokeMethod(fhirValidationReportService, "buildMatCqlConversionExceptionMap", cqlConversionErrors, cqlConversionErrorsMap);
+        ReflectionTestUtils.invokeMethod(fhirValidationReport, "buildMatCqlConversionExceptionMap", cqlConversionErrors, cqlConversionErrorsMap);
 
         HashMap<String, List<Object>> sampleCqlConversionErrorsMap = new HashMap<>();
         sampleCqlConversionErrorsMap.put("Sample LibraryId 1.0.003", new ArrayList<>(cqlConversionErrors));
@@ -184,7 +184,7 @@ class FhirValidationReportServiceTest {
 
         HashMap<String, List<Object>> cqlConversionErrorsMap = new HashMap<>();
 
-        ReflectionTestUtils.invokeMethod(fhirValidationReportService, "buildMatCqlConversionExceptionMap", cqlConversionErrors, cqlConversionErrorsMap);
+        ReflectionTestUtils.invokeMethod(fhirValidationReport, "buildMatCqlConversionExceptionMap", cqlConversionErrors, cqlConversionErrorsMap);
 
         HashMap<String, List<Object>> sampleCqlConversionErrorsMap = new HashMap<>();
         assertEquals(sampleCqlConversionErrorsMap, cqlConversionErrorsMap);
@@ -200,7 +200,7 @@ class FhirValidationReportServiceTest {
 
         HashMap<String, List<Object>> cqlConversionErrorsMap = new HashMap<>();
 
-        ReflectionTestUtils.invokeMethod(fhirValidationReportService, "buildMatCqlConversionExceptionMap", cqlConversionErrors, cqlConversionErrorsMap);
+        ReflectionTestUtils.invokeMethod(fhirValidationReport, "buildMatCqlConversionExceptionMap", cqlConversionErrors, cqlConversionErrorsMap);
 
         HashMap<String, List<Object>> sampleCqlConversionErrorsMap = new HashMap<>();
         assertEquals(sampleCqlConversionErrorsMap, cqlConversionErrorsMap);
@@ -214,7 +214,7 @@ class FhirValidationReportServiceTest {
 
         Map<String, Object> paramsMap = new HashMap<>();
 
-        ReflectionTestUtils.invokeMethod(fhirValidationReportService, "addConversionStatusMessage", conversionResultDto, paramsMap);
+        ReflectionTestUtils.invokeMethod(fhirValidationReport, "addConversionStatusMessage", conversionResultDto, paramsMap);
 
         String conversionStatusMessage = "The FHIR measure was created successfully.";
         Map<String, Object> sampleParamsMap = new HashMap<>();
@@ -233,7 +233,7 @@ class FhirValidationReportServiceTest {
 
         Map<String, Object> paramsMap = new HashMap<>();
 
-        ReflectionTestUtils.invokeMethod(fhirValidationReportService, "addConversionStatusMessage", conversionResultDto, paramsMap);
+        ReflectionTestUtils.invokeMethod(fhirValidationReport, "addConversionStatusMessage", conversionResultDto, paramsMap);
 
         String conversionStatusMessage = "Warning: The FHIR measure was created successfully with errors.";
         Map<String, Object> sampleParamsMap = new HashMap<>();
@@ -261,7 +261,7 @@ class FhirValidationReportServiceTest {
         ConversionResultDto conversionResultDto = new ConversionResultDto();
         conversionResultDto.setMeasureConversionResults(measureConversionResults);
 
-        List<FhirValidationResult> result = ReflectionTestUtils.invokeMethod(fhirValidationReportService, "getMeasureErrors", conversionResultDto);
+        List<FhirValidationResult> result = ReflectionTestUtils.invokeMethod(fhirValidationReport, "getMeasureErrors", conversionResultDto);
 
         assertEquals(measureFhirValidationResults, result);
     }
@@ -276,7 +276,7 @@ class FhirValidationReportServiceTest {
         ConversionResultDto conversionResultDto = new ConversionResultDto();
         conversionResultDto.setMeasureConversionResults(measureConversionResults);
 
-        List<FhirValidationResult> result = ReflectionTestUtils.invokeMethod(fhirValidationReportService, "getMeasureErrors", conversionResultDto);
+        List<FhirValidationResult> result = ReflectionTestUtils.invokeMethod(fhirValidationReport, "getMeasureErrors", conversionResultDto);
 
         assertEquals(sampleMeasureFhirValidationErrors, result);
     }
@@ -292,7 +292,7 @@ class FhirValidationReportServiceTest {
         ConversionResultDto conversionResultDto = new ConversionResultDto();
         conversionResultDto.setMeasureConversionResults(measureConversionResults);
 
-        List<FhirValidationResult> result = ReflectionTestUtils.invokeMethod(fhirValidationReportService, "getMeasureErrors", conversionResultDto);
+        List<FhirValidationResult> result = ReflectionTestUtils.invokeMethod(fhirValidationReport, "getMeasureErrors", conversionResultDto);
 
         assertEquals(sampleMeasureFhirValidationErrors, result);
     }
@@ -319,7 +319,7 @@ class FhirValidationReportServiceTest {
         ConversionResultDto conversionResultDto = new ConversionResultDto();
         conversionResultDto.setValueSetConversionResults(valueSetConversionResultsList);
 
-        List<FhirValidationResult> result = ReflectionTestUtils.invokeMethod(fhirValidationReportService, "getValueSetErrors", conversionResultDto);
+        List<FhirValidationResult> result = ReflectionTestUtils.invokeMethod(fhirValidationReport, "getValueSetErrors", conversionResultDto);
 
         assertEquals(sampleValueSetFhirValidationErrors, result);
 
@@ -333,7 +333,7 @@ class FhirValidationReportServiceTest {
         List<ValueSetConversionResults> valueSetConversionResults = new ArrayList<>();
         conversionResultDto.setValueSetConversionResults(valueSetConversionResults);
 
-        List<FhirValidationResult> result = ReflectionTestUtils.invokeMethod(fhirValidationReportService, "getValueSetErrors", conversionResultDto);
+        List<FhirValidationResult> result = ReflectionTestUtils.invokeMethod(fhirValidationReport, "getValueSetErrors", conversionResultDto);
 
         assertEquals(samplevalueSetFhirValidationErrors, result);
     }
@@ -352,7 +352,7 @@ class FhirValidationReportServiceTest {
         ConversionResultDto conversionResultDto = new ConversionResultDto();
         conversionResultDto.setValueSetConversionResults(valueSetConversionResultsList);
 
-        List<FhirValidationResult> result = ReflectionTestUtils.invokeMethod(fhirValidationReportService, "getValueSetErrors", conversionResultDto);
+        List<FhirValidationResult> result = ReflectionTestUtils.invokeMethod(fhirValidationReport, "getValueSetErrors", conversionResultDto);
 
         assertEquals(samplevalueSetFhirValidationErrors, result);
     }
@@ -365,10 +365,10 @@ class FhirValidationReportServiceTest {
         Map<String, Object> paramsMap = new HashMap<>();
         Map<String, List<CqlConversionError>> externalErrorsMap = new HashMap<>();
 
-        URL path = FhirValidationReportService.class.getClassLoader().getResource("report.json");
+        URL path = MeasureValidationReportImpl.class.getClassLoader().getResource("report.json");
         ConversionResultDto conversionResultDto = new ObjectMapper().readValue(new File(path.getFile()), ConversionResultDto.class);
 
-        ReflectionTestUtils.invokeMethod(fhirValidationReportService, "getLibraryErrors", conversionResultDto,
+        ReflectionTestUtils.invokeMethod(fhirValidationReport, "getLibraryErrors", conversionResultDto,
                 libraryFhirValidationErrors, qdmCqlConversionErrorsMap, fhirCqlConversionErrorsMap, paramsMap, externalErrorsMap);
         Map<String, Object> responseParamsMap = new HashMap<>();
         responseParamsMap.put("LibraryNotFoundInHapi", "Not Found in Hapi");
@@ -384,10 +384,10 @@ class FhirValidationReportServiceTest {
         Map<String, Object> paramsMap = new HashMap<>();
         Map<String, List<CqlConversionError>> externalErrorsMap = new HashMap<>();
 
-        URL path = FhirValidationReportService.class.getClassLoader().getResource("validationReportResponse.json");
+        URL path = MeasureValidationReportImpl.class.getClassLoader().getResource("validationReportResponse.json");
         ConversionResultDto conversionResultDto = new ObjectMapper().readValue(new File(path.getFile()), ConversionResultDto.class);
 
-        ReflectionTestUtils.invokeMethod(fhirValidationReportService, "getLibraryErrors", conversionResultDto,
+        ReflectionTestUtils.invokeMethod(fhirValidationReport, "getLibraryErrors", conversionResultDto,
                 libraryFhirValidationErrors, qdmCqlConversionErrorsMap, fhirCqlConversionErrorsMap, paramsMap, externalErrorsMap);
 
         assertEquals(qdmCqlConversionErrorsMap.size(), 0);
@@ -399,11 +399,11 @@ class FhirValidationReportServiceTest {
 
         Map<String, List<CqlConversionError>> externalErrorsMap = new HashMap<>();
 
-        URL path = FhirValidationReportService.class.getClassLoader().getResource("validationReportResponse.json");
+        URL path = MeasureValidationReportImpl.class.getClassLoader().getResource("validationReportResponse.json");
         ConversionResultDto conversionResultDto = new ObjectMapper().readValue(new File(path.getFile()), ConversionResultDto.class);
 
         for (LibraryConversionResults results : conversionResultDto.getLibraryConversionResults()) {
-            ReflectionTestUtils.invokeMethod(fhirValidationReportService, "generateExternalErrorsMap", results, externalErrorsMap);
+            ReflectionTestUtils.invokeMethod(fhirValidationReport, "generateExternalErrorsMap", results, externalErrorsMap);
         }
         assertEquals(externalErrorsMap.size(), 1);
         assertEquals(externalErrorsMap.get("MATGlobalCommonFunctions_FHIR4 4.0.000").size(), 2);
@@ -414,11 +414,11 @@ class FhirValidationReportServiceTest {
 
         List<FhirValidationResult> libraryFhirValidationErrors = new ArrayList<>();
 
-        URL path = FhirValidationReportService.class.getClassLoader().getResource("validationReportResponse.json");
+        URL path = MeasureValidationReportImpl.class.getClassLoader().getResource("validationReportResponse.json");
         ConversionResultDto conversionResultDto = new ObjectMapper().readValue(new File(path.getFile()), ConversionResultDto.class);
 
         for (LibraryConversionResults results : conversionResultDto.getLibraryConversionResults()) {
-            ReflectionTestUtils.invokeMethod(fhirValidationReportService, "generateLibraryFhirValidationErrors", results, libraryFhirValidationErrors);
+            ReflectionTestUtils.invokeMethod(fhirValidationReport, "generateLibraryFhirValidationErrors", results, libraryFhirValidationErrors);
         }
 
         assertEquals(libraryFhirValidationErrors.size(), 3);

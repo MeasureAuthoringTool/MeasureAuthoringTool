@@ -1,11 +1,16 @@
 package mat.server;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import mat.client.login.service.HarpService;
-import mat.server.util.ServerConstants;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.net.ssl.SSLContext;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -22,17 +27,14 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.net.ssl.SSLContext;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import mat.client.login.service.HarpService;
+import mat.server.util.ServerConstants;
 
-public class HarpServiceImpl implements HarpService {
+public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpService {
     private static final Log logger = LogFactory.getLog(HarpServiceImpl.class);
 
     private RestTemplate restTemplate;
@@ -40,7 +42,7 @@ public class HarpServiceImpl implements HarpService {
 
     @Override
     public boolean revoke(String accessToken) {
-        logger.debug("Revoking Token::"+accessToken);
+        logger.debug("Revoking Token::" + accessToken);
 //        ClientResponse response = revokeToken(accessToken);
 //        logger.debug(response.statusCode().toString());
 //        return response.statusCode().is2xxSuccessful();
@@ -77,9 +79,10 @@ public class HarpServiceImpl implements HarpService {
                     Void.class,
                     uriVariables);
         } catch (RestClientResponseException e) {
+            logger.error("Error in revoke:" + e.getMessage(), e);
             throw new RuntimeException(e);
         } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
-            e.printStackTrace();
+            logger.error("Error in revoke:" + e.getMessage(), e);
         }
         return response.getStatusCode().is2xxSuccessful();
     }
@@ -116,9 +119,10 @@ public class HarpServiceImpl implements HarpService {
                     TokenIntrospect.class,
                     uriVariables);
         } catch (RestClientResponseException e) {
+            logger.error("Error in validateToken:" + e.getMessage(), e);
             throw new RuntimeException(e);
         } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
-            e.printStackTrace();
+            logger.error("Error in validateToken:" + e.getMessage(), e);
         }
         return response.getBody().isActive();
     }
@@ -135,7 +139,7 @@ public class HarpServiceImpl implements HarpService {
 
     @Override
     public String getHarpClientId() {
-        logger.debug("getHarpClientId::"+ServerConstants.getHarpClientId());
+        logger.debug("getHarpClientId::" + ServerConstants.getHarpClientId());
         return ServerConstants.getHarpClientId();
     }
 

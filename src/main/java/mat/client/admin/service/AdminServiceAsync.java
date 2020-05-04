@@ -20,7 +20,7 @@ public interface AdminServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	public void deleteUser(String userid, AsyncCallback<Void> callback);
+	void deleteUser(String userid, AsyncCallback<Void> callback);
 	
 	/** Gets the organization.
 	 * 
@@ -38,16 +38,9 @@ public interface AdminServiceAsync {
 	 *            the callback
 	 * @return the user
 	 */
-	public void getUser(String key, AsyncCallback<ManageUsersDetailModel> callback);
-	/**
-	 * Reset user password.
-	 * 
-	 * @param userid
-	 *            the userid
-	 * @param callback
-	 *            the callback
-	 */
-	public void resetUserPassword(String userid, AsyncCallback<Void> callback);
+	void getUser(String key, AsyncCallback<ManageUsersDetailModel> callback);
+
+	void activateUser(String userid, AsyncCallback<Void> callback);
 	
 	/**
 	 * Save update user.
@@ -57,13 +50,13 @@ public interface AdminServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	public void saveUpdateUser(ManageUsersDetailModel model, AsyncCallback<SaveUpdateUserResult> callback);
+	void saveUpdateUser(ManageUsersDetailModel model, AsyncCallback<SaveUpdateUserResult> callback);
 	
 	/** Search organization.
 	 * 
 	 * @param key the key
 	 * @param callback the callback */
-	public void searchOrganization(String key, AsyncCallback<ManageOrganizationSearchModel> callback);
+	void searchOrganization(String key, AsyncCallback<ManageOrganizationSearchModel> callback);
 	
 	/**
 	 * Search users.
@@ -73,9 +66,9 @@ public interface AdminServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	public void searchUsers(String key, AsyncCallback<ManageUsersSearchModel> callback);
+	void searchUsers(String key, AsyncCallback<ManageUsersSearchModel> callback);
 	
-	public void searchUsersWithActiveBonnie(String key, AsyncCallback<ManageUsersSearchModel> callback);
+	void searchUsersWithActiveBonnie(String key, AsyncCallback<ManageUsersSearchModel> callback);
 	
 	/** Gets the all organizations.
 	 * 
@@ -87,10 +80,10 @@ public interface AdminServiceAsync {
 	
 	void getUserByEmail(String emailId, AsyncCallback<ManageUsersDetailModel> callback);
 
-	public void saveOrganization(ManageOrganizationDetailModel updatedOrganizationDetailModel,
+	void saveOrganization(ManageOrganizationDetailModel updatedOrganizationDetailModel,
 			AsyncCallback<SaveUpdateOrganizationResult> asyncCallback);
 
-	public void updateOrganization(Long currentOrganizationId,
+	void updateOrganization(Long currentOrganizationId,
 			ManageOrganizationDetailModel updatedOrganizationDetailModel,
 			AsyncCallback<SaveUpdateOrganizationResult> asyncCallback);
 }

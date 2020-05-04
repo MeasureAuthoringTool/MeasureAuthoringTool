@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee/"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee webapp_4_0.xsd"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee/ webapp_4_0.xsd"
          version="4.0">
 
     <!-- Default page to serve -->
-
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
@@ -90,6 +89,10 @@
         <servlet-class>mat.server.LoginServiceImpl</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>harpServiceImpl</servlet-name>
+        <servlet-class>mat.server.HarpServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>codelistServiceImpl</servlet-name>
         <servlet-class>mat.server.CodeListServiceImpl</servlet-class>
     </servlet>
@@ -171,6 +174,10 @@
         <url-pattern>/bonnie/loginService</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>harpServiceImpl</servlet-name>
+        <url-pattern>/mat/harpService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>codelistServiceImpl</servlet-name>
         <url-pattern>/mat/codelist</url-pattern>
     </servlet-mapping>
@@ -226,7 +233,7 @@
         <session-timeout>15</session-timeout>
         <!-- To be Commented for Eclipse gwt dev mode on local developer's machine. Never commit the commented cookie-config tag. -->
         <cookie-config>
-            <http-only>true</http-only>
+           <http-only>true</http-only>
             <secure>true</secure>
         </cookie-config>
     </session-config>

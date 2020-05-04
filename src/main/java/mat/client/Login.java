@@ -69,14 +69,10 @@ public class Login extends MainLayout implements EntryPoint {
 		content = getContentPanel();
 		initPresenters();
 		loginNewPresenter.go(content);
-		MatContext.get().getEventBus().addHandler(PasswordEmailSentEvent.TYPE, new PasswordEmailSentEvent.Handler() {
-			
-			@Override
-			public void onPasswordEmailSent(final PasswordEmailSentEvent event) {
-				content.clear();
-				loginNewPresenter.go(content);
-				loginNewPresenter.displayForgottenPasswordMessage();
-			}
+		MatContext.get().getEventBus().addHandler(PasswordEmailSentEvent.TYPE, event -> {
+			content.clear();
+			loginNewPresenter.go(content);
+			loginNewPresenter.displayForgottenPasswordMessage();
 		});
 		
 		MatContext.get().getEventBus().addHandler(ForgotLoginIDEmailSentEvent.TYPE, new ForgotLoginIDEmailSentEvent.Handler() {

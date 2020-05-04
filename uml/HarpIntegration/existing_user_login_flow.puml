@@ -1,0 +1,29 @@
+@startuml
+title HARP User Login Flow
+
+skinparam defaultTextAlignment center
+:Harp Login page;
+:After successful login;
+if (check if the user has associated Harp Id) then (true)
+    -[#green]->
+    :Updating User FirstName, LastName and Email ID;
+    -[#green]->
+    :Proceed user to Mat Application;
+    stop
+else (false)
+    repeat :Fields to enter Mat Id and last used MAT password;
+    repeat while (Valid User) is (No)
+    -> Yes;
+    if ( Get one security question by Login Id and Verify ) then (Verified)
+        -[#green]->
+        :Update the Full name and Email Id of the user
+        Update the HarpId column with HARP ID;
+        -[#green]->
+        :Proceed user to Mat Application;
+        end
+    else (Verification failed)
+        :HelpDesk;
+        stop
+    endif
+endif
+@enduml

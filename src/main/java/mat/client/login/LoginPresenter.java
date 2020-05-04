@@ -1,5 +1,6 @@
 package mat.client.login;
 
+import com.google.gwt.user.client.Window;
 import mat.client.Login;
 import mat.client.event.FirstLoginPageEvent;
 import mat.client.event.ForgotLoginIDEvent;
@@ -20,10 +21,7 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -34,12 +32,19 @@ public class LoginPresenter {
 	
 	private LoginView view;
 	private LoginModel loginModel;
-	
+	private KeyDownHandler submitOnEnterHandler = event -> {
+		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
+			submit();
+		}
+	};
+
 	interface LoginViewDisplay {
 		
 		Widget asWidget();
 		
-		
+		Anchor getSignInWithHarp();
+
+		void setSignInWithHarp(Anchor signInWithHarp);
 		
 		Anchor getForgotLoginId();
 		
@@ -85,44 +90,25 @@ public class LoginPresenter {
 		
 	}
 	
-	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
-		@Override
-		public void onKeyDown(KeyDownEvent event) {
-			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
-				submit();
-			}
-		}
-	};
-	
 	public LoginPresenter(LoginView loginView) {
 		view = loginView;
 		
 		loginModel = new LoginModel();
-		view.getSubmitButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				submit();
-			}
-			
-			
+
+		view.getSignInWithHarp().addClickHandler(clickEvent -> {
+			Window.Location.replace("HarpLogin.html");
 		});
-		view.getForgotPassword().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				reset();
-				MatContext.get().getEventBus().fireEvent(new ForgottenPasswordEvent());
-			}
+
+		view.getSubmitButton().addClickHandler(event -> submit());
+
+		view.getForgotPassword().addClickHandler(event -> {
+			reset();
+			MatContext.get().getEventBus().fireEvent(new ForgottenPasswordEvent());
 		});
 		
-		view.getForgotLoginId().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				reset();
-				MatContext.get().getEventBus().fireEvent(new ForgotLoginIDEvent());
-			}
+		view.getForgotLoginId().addClickHandler(event -> {
+			reset();
+			MatContext.get().getEventBus().fireEvent(new ForgotLoginIDEvent());
 		});
 		view.getUserIdText().addKeyDownHandler(submitOnEnterHandler);
 		view.getPasswordInput().addKeyDownHandler(submitOnEnterHandler);
@@ -178,6 +164,7 @@ public class LoginPresenter {
 			view.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
 			view.getPasswordGroup().setValidationState(ValidationState.SUCCESS);
 			view.getAuthTokenGroup().setValidationState(ValidationState.SUCCESS);
+
 			MatContext.get().isValidUser(view.getUserIdText().getText(), view.getPasswordInput().getText(),
 					view.getSecurityCodeInput().getText(), contextcallback);
 		}

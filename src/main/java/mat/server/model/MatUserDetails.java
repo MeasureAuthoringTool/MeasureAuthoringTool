@@ -57,14 +57,17 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	private Timestamp activationDate;
     
     private String loginId;
-    
+
     private String userLastName;
-    
+
+
     private String sessionId;
 
     private String harpId;
 
     private UserPreference userPreference;
+
+
     
     public MatUserDetails() {
     	
@@ -129,16 +132,14 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 		this.status = status;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+
 
 	/* (non-Javadoc)
 	 * @see org.springframework.security.core.userdetails.UserDetails#getAuthorities()
 	 */
 	@Transient
 	public Collection<GrantedAuthority> getAuthorities() {
-	       List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+	       List<GrantedAuthority> list = new ArrayList<>();
 	       list.add(new SimpleGrantedAuthority(roles.getDescription()));
 	       return list;
 	}
@@ -151,6 +152,10 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	public String getUsername() {
 		return username;
 	}
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.security.core.userdetails.UserDetails#isAccountNonExpired()
@@ -250,7 +255,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	public String getLoginId() {
 		return loginId;
 	}
-	
+
 	@Column(name = "LAST_NAME", nullable = false, length = 100)
 	public String getUserLastName() {
 		return userLastName;

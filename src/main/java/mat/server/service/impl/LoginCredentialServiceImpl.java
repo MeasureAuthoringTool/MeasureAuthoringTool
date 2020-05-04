@@ -44,12 +44,18 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	private static final Log logger = LogFactory.getLog(LoginCredentialServiceImpl.class);
 	private static Timestamp currentTimeStamp;
 
-	@Autowired private HibernateUserDetailService hibernateUserService;
-	@Autowired private SecurityQuestionsService securityQuestionsService;
-	@Autowired private UserDAO userDAO;
-	@Autowired private UserService userService;
-	@Autowired private TwoFactorValidationService matOtpValidatorService;
-	@Autowired private UserSecurityQuestionDAO userSecurityQuestionDAO;
+	@Autowired
+	private HibernateUserDetailService hibernateUserService;
+	@Autowired
+	private SecurityQuestionsService securityQuestionsService;
+	@Autowired
+	private UserDAO userDAO;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private TwoFactorValidationService matOtpValidatorService;
+	@Autowired
+	private UserSecurityQuestionDAO userSecurityQuestionDAO;
 
 	/*
 	 * {@inheritDoc}
@@ -319,9 +325,6 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		}
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
 	public LoginModel isValidUser(String userId, String password, String oneTimePassword,String sessionId) {
 		LoginModel validateUserLoginModel = new LoginModel();

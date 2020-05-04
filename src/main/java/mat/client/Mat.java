@@ -1,10 +1,12 @@
 package mat.client;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -20,7 +22,6 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
@@ -85,9 +86,9 @@ import static mat.shared.HarpConstants.OKTA_TOKEN_STORAGE;
  */
 public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserver {
 
-    private Map<String, String> harpUserInfo = new HashMap<>();
+    private final Map<String, String> harpUserInfo = new HashMap<>();
 
-//    private static final //logger //logger = //logger.get//logger(Mat.class.getSimpleName());
+    private static final Logger logger = Logger.getLogger(Mat.class.getSimpleName());
 
     private Panel content;
 
@@ -97,7 +98,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
     class EnterKeyDownHandler implements KeyDownHandler {
 
-		final private int counter;
+        final private int counter;
 
         public EnterKeyDownHandler(int index) {
             counter = index;
@@ -146,73 +147,73 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private ManageAdminReportingPresenter reportingPresenter;
     private int tabIndex;
 
-	private final AsyncCallback<SessionManagementService.Result> initSessionCallback = new AsyncCallback<SessionManagementService.Result>() {
+    private final AsyncCallback<SessionManagementService.Result> initSessionCallback = new AsyncCallback<SessionManagementService.Result>() {
 
-		@Override
-		public void onFailure(final Throwable caught) {
-//			//logger.log(Level.SEVERE, "Error in initSession. Error message: " + caught.getMessage(), caught);
-			logout();
-		}
+        @Override
+        public void onFailure(final Throwable caught) {
+            logger.log(Level.SEVERE, "Error in initSession. Error message: " + caught.getMessage(), caught);
+            logout();
+        }
 
-		@Override
-		public void onSuccess(final SessionManagementService.Result result) {
-//			//logger.log(Level.INFO, "SessionService::getCurrentUser -> onSuccess");
-			MatContext.get().getCurrentReleaseVersion(new AsyncCallback<String>() {
+        @Override
+        public void onSuccess(final SessionManagementService.Result result) {
+            logger.log(Level.INFO, "SessionService::getCurrentUser -> onSuccess");
+            MatContext.get().getCurrentReleaseVersion(new AsyncCallback<String>() {
 
-				@Override
-				public void onFailure(Throwable caught) {
-//					//logger.log(Level.SEVERE, "Error in getCurrentReleaseVersion. Error message: " + caught.getMessage(), caught);
-					logout();
-				}
+                @Override
+                public void onFailure(Throwable caught) {
+                    logger.log(Level.SEVERE, "Error in getCurrentReleaseVersion. Error message: " + caught.getMessage(), caught);
+                    logout();
+                }
 
-				@Override
-				public void onSuccess(String resultMatVersion) {
-//					//logger.log(Level.INFO, "SessionService::getCurrentReleaseVersion -> onSuccess");
-					if (result == null || (checkIfResultIsNotNull(result) && !result.activeSessionId.equals(result.currentSessionId))) {
-//						//logger.log(Level.SEVERE, "Current session is not valid.");
-						logout();
-					} else {
-						final Date lastSignIn = result.signInDate;
-						final Date lastSignOut = result.signOutDate;
-						final Date current = new Date();
-						final boolean isAlreadySignedIn = MatContext.get().isAlreadySignedIn(lastSignOut, lastSignIn, current);
-						MatContext.get().setUserSignInDate(result.userId);
-						MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole, result.loginId, result.userPreference);
-						loadMatWidgets(result.userFirstName, result.userLastName, isAlreadySignedIn, resultMatVersion);
-					}
-				}
+                @Override
+                public void onSuccess(String resultMatVersion) {
+                    logger.log(Level.INFO, "SessionService::getCurrentReleaseVersion -> onSuccess");
+                    if (result == null || (checkIfResultIsNotNull(result) && !result.activeSessionId.equals(result.currentSessionId))) {
+                        logger.log(Level.SEVERE, "Current session is not valid.");
+                        logout();
+                    } else {
+                        final Date lastSignIn = result.signInDate;
+                        final Date lastSignOut = result.signOutDate;
+                        final Date current = new Date();
+                        final boolean isAlreadySignedIn = MatContext.get().isAlreadySignedIn(lastSignOut, lastSignIn, current);
+                        MatContext.get().setUserSignInDate(result.userId);
+                        MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole, result.loginId, result.userPreference);
+                        loadMatWidgets(result.userFirstName, result.userLastName, isAlreadySignedIn, resultMatVersion);
+                    }
+                }
 
-				private boolean checkIfResultIsNotNull(Result result) {
-					return result != null && result.activeSessionId != null && result.currentSessionId != null;
-				}
-			});
-		}
-	};
+                private boolean checkIfResultIsNotNull(Result result) {
+                    return result != null && result.activeSessionId != null && result.currentSessionId != null;
+                }
+            });
+        }
+    };
 
-	private final AsyncCallback<LoginModel> harpUserSessionSetupCallback = new AsyncCallback<LoginModel>() {
-		@Override
-		public void onFailure(Throwable throwable) {
-//			//logger.log(Level.SEVERE, "LoginService::initSession -> onFailure: " + throwable.getMessage(), throwable);
-			if (throwable.getMessage().contains("MAT_ACCOUNT_REVOKED_LOCKED")) {
-				String msg = "HARP User does not have access to the MAT, redirecting to access support page";
-//				//logger.log(Level.SEVERE, msg);
-				MatContext.get().recordTransactionEvent(null, null, "MAT_ACCOUNT_REVOKED_LOCKED", msg, 0);
-			} else if (throwable.getMessage().contains("HARP_ID_NOT_FOUND")) {
-				String msg = "Harp ID not found";
-//				//logger.log(Level.SEVERE, msg);
-				MatContext.get().recordTransactionEvent(null, null, "MAT_HARP_ID_NOT_FOUND", msg, 0);
-			}
-//			//logger.log(Level.INFO, "Fire HarpSupportEvent");
-			MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
+    private final AsyncCallback<LoginModel> harpUserSessionSetupCallback = new AsyncCallback<LoginModel>() {
+        @Override
+        public void onFailure(Throwable throwable) {
+            logger.log(Level.SEVERE, "LoginService::initSession -> onFailure: " + throwable.getMessage(), throwable);
+            if (throwable.getMessage().contains("MAT_ACCOUNT_REVOKED_LOCKED")) {
+                String msg = "HARP User does not have access to the MAT, redirecting to access support page";
+                logger.log(Level.SEVERE, msg);
+                MatContext.get().recordTransactionEvent(null, null, "MAT_ACCOUNT_REVOKED_LOCKED", msg, 0);
+            } else if (throwable.getMessage().contains("HARP_ID_NOT_FOUND")) {
+                String msg = "Harp ID not found";
+                logger.log(Level.SEVERE, msg);
+                MatContext.get().recordTransactionEvent(null, null, "MAT_HARP_ID_NOT_FOUND", msg, 0);
+            }
+            logger.log(Level.INFO, "Fire HarpSupportEvent");
+            MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
 
-		}
+        }
 
-		@Override
-		public void onSuccess(LoginModel loginModel) {
-//			//logger.log(Level.INFO, "LoginService::initSession -> onSuccess");
-			initPage();
-		}
-	};
+        @Override
+        public void onSuccess(LoginModel loginModel) {
+            logger.log(Level.INFO, "LoginService::initSession -> onSuccess");
+            initPage();
+        }
+    };
 
     private MatPresenter buildAdminPresenter() {
         ManageAdminPresenter adminPresenter = new ManageAdminPresenter();
@@ -260,16 +261,16 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     }
 
 
-	private CqlLibraryPresenter buildCqlLibraryWidget() {
-		CqlLibraryView cqlLibraryView = new CqlLibraryView();
-		NewLibraryView detailView = new NewLibraryView();
-		CQLLibraryVersionView versionView = new CQLLibraryVersionView();
-		CQLLibraryShareView shareView = new CQLLibraryShareView();
-		CQLLibraryHistoryView historyView = new CQLLibraryHistoryView();
-		CqlLibraryPresenter cqlLibraryPresenter = new CqlLibraryPresenter(cqlLibraryView, detailView,
-				versionView, shareView, historyView);
-		return cqlLibraryPresenter;
-	}
+    private CqlLibraryPresenter buildCqlLibraryWidget() {
+        CqlLibraryView cqlLibraryView = new CqlLibraryView();
+        NewLibraryView detailView = new NewLibraryView();
+        CQLLibraryVersionView versionView = new CQLLibraryVersionView();
+        CQLLibraryShareView shareView = new CQLLibraryShareView();
+        CQLLibraryHistoryView historyView = new CQLLibraryHistoryView();
+        CqlLibraryPresenter cqlLibraryPresenter = new CqlLibraryPresenter(cqlLibraryView, detailView,
+                versionView, shareView, historyView);
+        return cqlLibraryPresenter;
+    }
 
 
     private MatPresenter buildMyAccountWidget() {
@@ -285,202 +286,200 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             $wnd.close();
         }-*/;
 
-	@Override
-	protected void initEntryPoint() {
-		Window.alert("hi");
-		showLoadingMessage();
-		MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
-		content = getContentPanel();
+    @Override
+    protected void initEntryPoint() {
+        showLoadingMessage();
+        MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
+        content = getContentPanel();
 
-		getSignOut().addClickHandler(event -> logout());
+        getSignOut().addClickHandler(event -> logout());
 
-		MatContext.get().getEventBus().addHandler(BackToLoginPageEvent.TYPE, event -> logout());
+        MatContext.get().getEventBus().addHandler(BackToLoginPageEvent.TYPE, event -> logout());
 
-		MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, event -> {
-			Mat.hideLoadingMessage();
-			Mat.showSignOutMessage();
-			logout();
-		});
+        MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, event -> {
+            Mat.hideLoadingMessage();
+            Mat.showSignOutMessage();
+            logout();
+        });
 
-		MatContext.get().getEventBus().addHandler(HarpSupportEvent.TYPE, event -> {
-			Mat.hideLoadingMessage();
-			logout(ClientConstants.HTML_HARP_SUPPORT);
-		});
+        MatContext.get().getEventBus().addHandler(HarpSupportEvent.TYPE, event -> {
+            Mat.hideLoadingMessage();
+            logout(ClientConstants.HTML_HARP_SUPPORT);
+        });
 
-		MatContext.get().getEventBus().addHandler(HarpUserVerificationEvent.TYPE, event -> {
-			//logger.log(Level.INFO, "Processing HarpUserVerificationEvent");
-			final HarpUserVerificationView harpUserVerificationView = new HarpUserVerificationView();
-			harpUserVerificationPresenter = new HarpUserVerificationPresenter(harpUserVerificationView);
-			content.clear();
-			harpUserVerificationInProgress = true;
-			buildLinksPanel();
-			setSignedInName(harpUserInfo.get(HarpConstants.HARP_FULLNAME));
-			harpUserVerificationPresenter.go(content);
-		});
+        MatContext.get().getEventBus().addHandler(HarpUserVerificationEvent.TYPE, event -> {
+            logger.log(Level.INFO, "Processing HarpUserVerificationEvent");
+            final HarpUserVerificationView harpUserVerificationView = new HarpUserVerificationView();
+            harpUserVerificationPresenter = new HarpUserVerificationPresenter(harpUserVerificationView);
+            content.clear();
+            harpUserVerificationInProgress = true;
+            buildLinksPanel();
+            setSignedInName(harpUserInfo.get(HarpConstants.HARP_FULLNAME));
+            harpUserVerificationPresenter.go(content);
+        });
 
-		MatContext.get().getEventBus().addHandler(ReturnToLoginEvent.TYPE, event -> {
-			//logger.log(Level.INFO, "Processing ReturnToLoginEvent");
-			content.clear();
-			logout();
-		});
+        MatContext.get().getEventBus().addHandler(ReturnToLoginEvent.TYPE, event -> {
+            logger.log(Level.INFO, "Processing ReturnToLoginEvent");
+            content.clear();
+            logout();
+        });
 
-		MatContext.get().getEventBus().addHandler(SuccessfulHarpLoginEvent.TYPE, event -> {
-			//logger.log(Level.INFO, "Processing SuccessfulHarpLoginEvent");
-			content.clear();
-			harpUserVerificationInProgress = false;
-			getLinksPanel().clear();
-			initPage();
-		});
+        MatContext.get().getEventBus().addHandler(SuccessfulHarpLoginEvent.TYPE, event -> {
+            logger.log(Level.INFO, "Processing SuccessfulHarpLoginEvent");
+            content.clear();
+            harpUserVerificationInProgress = false;
+            getLinksPanel().clear();
+            initPage();
+        });
 
-		String oktaToken = getOktaToken();
+        String oktaToken = getOktaToken();
 
-		if (oktaToken != null) {
-			// Get user info from the Tokens in Local Storage.
-			String accessToken = getUserInfoFromTokens(JSONParser.parseStrict(oktaToken));
-			Window.alert(accessToken);
-			// Validate tokens
-			MatContext.get().getHarpService().validateToken(accessToken, new AsyncCallback<Boolean>() {
-				@Override
-				public void onFailure(Throwable throwable) {
-					//logger.log(Level.SEVERE, "HarpService::validateToken -> onFailure: Invalid token", throwable);
-					// Invalid token
-					MatContext.get().getEventBus().fireEvent(new LogoffEvent());
-				}
+        if (oktaToken != null) {
+            // Get user info from the Tokens in Local Storage.
+            String accessToken = getUserInfoFromTokens(JSONParser.parseStrict(oktaToken));
+            // Validate tokens
+            MatContext.get().getHarpService().validateToken(accessToken, new AsyncCallback<Boolean>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    logger.log(Level.SEVERE, "HarpService::validateToken -> onFailure: Invalid token", throwable);
+                    // Invalid token
+                    MatContext.get().getEventBus().fireEvent(new LogoffEvent());
+                }
 
-				@Override
-				public void onSuccess(Boolean aBoolean) {
-					//logger.log(Level.INFO, "HarpService::validateToken -> onSuccess");
-					linkHarpMatAccounts();
-				}
-			});
-		} else {
-			initPage();
-		}
-	}
+                @Override
+                public void onSuccess(Boolean aBoolean) {
+                    logger.log(Level.INFO, "HarpService::validateToken -> onSuccess");
+                    linkHarpMatAccounts();
+                }
+            });
+        } else {
+            initPage();
+        }
+    }
 
-	private String getOktaToken() {
-		// The HARP Sign-In widget stores tokens in Local Storage.
-		Window.alert("getting token");
-		Storage localStorage = Storage.getLocalStorageIfSupported();
+    private String getOktaToken() {
+        // The HARP Sign-In widget stores tokens in Local Storage.
+        Storage localStorage = Storage.getLocalStorageIfSupported();
 
-		return localStorage == null ? null : localStorage.getItem(OKTA_TOKEN_STORAGE);
-	}
+        return localStorage == null ? null : localStorage.getItem(OKTA_TOKEN_STORAGE);
+    }
 
-	private void linkHarpMatAccounts() {
-		//logger.log(Level.INFO, "linkHarpMatAccounts - enter");
-		// Check if user is already linked with a MAT Account
-		MatContext.get().getLoginService().checkForAssociatedHarpId(harpUserInfo.get(HarpConstants.HARP_ID), new AsyncCallback<Boolean>() {
+    private void linkHarpMatAccounts() {
+        logger.log(Level.INFO, "linkHarpMatAccounts - enter");
+        // Check if user is already linked with a MAT Account
+        MatContext.get().getLoginService().checkForAssociatedHarpId(harpUserInfo.get(HarpConstants.HARP_ID), new AsyncCallback<Boolean>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				String msg = "Error in checkForAssociatedHarpId. Error message: " + caught.getMessage();
-				//logger.log(Level.SEVERE, msg, caught);
-				MatContext.get().recordTransactionEvent(null, null, "MAT_ACCOUNT_HARP_LINK", msg, 0);
-				//logger.log(Level.INFO, "Fire HarpSupportEvent");
-				MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
-			}
+            @Override
+            public void onFailure(Throwable caught) {
+                String msg = "Error in checkForAssociatedHarpId. Error message: " + caught.getMessage();
+                logger.log(Level.SEVERE, msg, caught);
+                MatContext.get().recordTransactionEvent(null, null, "MAT_ACCOUNT_HARP_LINK", msg, 0);
+                logger.log(Level.INFO, "Fire HarpSupportEvent");
+                MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
+            }
 
-			@Override
-			public void onSuccess(Boolean result) {
-				//logger.log(Level.INFO, "LoginService::checkForAssociatedHarpId -> onSuccess " + result);
-				if (result) {
-					// Update the User name from HARP and proceed to MAT home page.
-					MatContext.get().initSession(harpUserInfo, harpUserSessionSetupCallback);
-				} else {
-					// Display form panel to fetch userId and password
-					//logger.log(Level.INFO, "Fire HarpUserVerificationEvent");
-					MatContext.get().getEventBus().fireEvent(new HarpUserVerificationEvent());
-				}
-			}
-		});
-		//logger.log(Level.INFO, "linkHarpMatAccounts - exit");
-	}
+            @Override
+            public void onSuccess(Boolean result) {
+                logger.log(Level.INFO, "LoginService::checkForAssociatedHarpId -> onSuccess " + result);
+                if (result) {
+                    // Update the User name from HARP and proceed to MAT home page.
+                    MatContext.get().initSession(harpUserInfo, harpUserSessionSetupCallback);
+                } else {
+                    // Display form panel to fetch userId and password
+                    logger.log(Level.INFO, "Fire HarpUserVerificationEvent");
+                    MatContext.get().getEventBus().fireEvent(new HarpUserVerificationEvent());
+                }
+            }
+        });
+        logger.log(Level.INFO, "linkHarpMatAccounts - exit");
+    }
 
-	private String getUserInfoFromTokens(JSONValue tokens) {
-		String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().stringValue();
+    private String getUserInfoFromTokens(JSONValue tokens) {
+        String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().stringValue();
 
-		JSONObject idTokenObj = tokens.isObject().get("idToken").isObject();
-		String idToken = idTokenObj.get("idToken").isString().stringValue();
+        JSONObject idTokenObj = tokens.isObject().get("idToken").isObject();
+        String idToken = idTokenObj.get("idToken").isString().stringValue();
 
-		harpUserInfo.put(HarpConstants.HARP_PRIMARY_EMAIL_ID, idTokenObj.get("claims").isObject().get("email").isString().stringValue());
-		harpUserInfo.put(HarpConstants.HARP_ID, idTokenObj.get("claims").isObject().get("preferred_username").isString().stringValue());
-		harpUserInfo.put(HarpConstants.HARP_FULLNAME, idTokenObj.get("claims").isObject().get("name").isString().stringValue());
-		harpUserInfo.put(HarpConstants.ACCESS_TOKEN, accessToken);
+        harpUserInfo.put(HarpConstants.HARP_PRIMARY_EMAIL_ID, idTokenObj.get("claims").isObject().get("email").isString().stringValue());
+        harpUserInfo.put(HarpConstants.HARP_ID, idTokenObj.get("claims").isObject().get("preferred_username").isString().stringValue());
+        harpUserInfo.put(HarpConstants.HARP_FULLNAME, idTokenObj.get("claims").isObject().get("name").isString().stringValue());
+        harpUserInfo.put(HarpConstants.ACCESS_TOKEN, accessToken);
 
-		// Save tokens for HARP logout.
-		MatContext.get().setIdToken(idToken);
-		MatContext.get().setAccessToken(accessToken);
-		MatContext.get().setHarpUserInfo(harpUserInfo);
+        // Save tokens for HARP logout.
+        MatContext.get().setIdToken(idToken);
+        MatContext.get().setAccessToken(accessToken);
+        MatContext.get().setHarpUserInfo(harpUserInfo);
 
-		return accessToken;
-	}
+        return accessToken;
+    }
 
-	private void initPage() {
-		MatContext.get().setListBoxCodeProvider(listBoxCodeProvider);
+    private void initPage() {
+        MatContext.get().setListBoxCodeProvider(listBoxCodeProvider);
 
-		// Init session with current user info.
-		MatContext.get().getCurrentUser(initSessionCallback);
+        // Init session with current user info.
+        MatContext.get().getCurrentUser(initSessionCallback);
 
-		History.addValueChangeHandler(event -> {
-			final String historyToken = event.getValue();
+        History.addValueChangeHandler(event -> {
+            final String historyToken = event.getValue();
 
-			if ((historyToken == null) || historyToken.isEmpty()) {
-				History.newItem(mainTabLayoutID + 0, false);
-			} else if (!MatContext.get().isLoading()) {
-				// Parse the history token
+            if ((historyToken == null) || historyToken.isEmpty()) {
+                History.newItem(mainTabLayoutID + 0, false);
+            } else if (!MatContext.get().isLoading()) {
+                // Parse the history token
 
-				try {
-					for (Object key : MatContext.get().tabRegistry.keySet()) {
-						if (key instanceof String) {
-							String k = (String) key;
-							if (historyToken.contains(k)) {
-								final String tabIndexToken = historyToken.substring(k.length());
-								final int tabIndex = Integer.parseInt(tabIndexToken);
-								MATTabPanel tp = (MATTabPanel) MatContext.get().tabRegistry.get(key);
-								/* Suppressing selection of MAIN_TAB_LAYOUT_ID+mainTabLayout.selectedIndex
-								 * if already selected
-								 */
-								if (!History.getToken().equals(mainTabLayoutID + mainTabLayout.getSelectedIndex())) {
-									tp.selectTab(tabIndex);
-								}
-							}
-						}
-					}
-				} catch (IndexOutOfBoundsException e) {
-					History.newItem(mainTabLayoutID + 0, false);
-				}
-			} else {
-				MatContext.get().fireLoadingAlert();
-				//reload
-				History.newItem(historyToken, false);
-			}
-		});
+                try {
+                    for (Object key : MatContext.get().tabRegistry.keySet()) {
+                        if (key instanceof String) {
+                            String k = (String) key;
+                            if (historyToken.contains(k)) {
+                                final String tabIndexToken = historyToken.substring(k.length());
+                                final int tabIndex = Integer.parseInt(tabIndexToken);
+                                MATTabPanel tp = (MATTabPanel) MatContext.get().tabRegistry.get(key);
+                                /* Suppressing selection of MAIN_TAB_LAYOUT_ID+mainTabLayout.selectedIndex
+                                 * if already selected
+                                 */
+                                if (!History.getToken().equals(mainTabLayoutID + mainTabLayout.getSelectedIndex())) {
+                                    tp.selectTab(tabIndex);
+                                }
+                            }
+                        }
+                    }
+                } catch (IndexOutOfBoundsException e) {
+                    History.newItem(mainTabLayoutID + 0, false);
+                }
+            } else {
+                MatContext.get().fireLoadingAlert();
+                //reload
+                History.newItem(historyToken, false);
+            }
+        });
 
 
-		MatContext.get().getEventBus().addHandler(MeasureEditEvent.TYPE, event -> {
-			mainTabLayout.selectTab(presenterList.indexOf(measureComposer));
-			focusSkipLists("MeasureComposer");
-		});
+        MatContext.get().getEventBus().addHandler(MeasureEditEvent.TYPE, event -> {
+            mainTabLayout.selectTab(presenterList.indexOf(measureComposer));
+            focusSkipLists("MeasureComposer");
+        });
 
-		MatContext.get().getEventBus().addHandler(CQLLibraryEditEvent.TYPE, event -> {
-			mainTabLayout.selectTab(presenterList.indexOf(cqlComposer));
-			focusSkipLists("CqlComposer");
-		});
+        MatContext.get().getEventBus().addHandler(CQLLibraryEditEvent.TYPE, event -> {
+            mainTabLayout.selectTab(presenterList.indexOf(cqlComposer));
+            focusSkipLists("CqlComposer");
+        });
 
-		MatContext.get().getEventBus().addHandler(BackToMeasureLibraryPage.TYPE, event -> {
-			mainTabLayout.selectTab(presenterList.indexOf(measureLibrary));
-			focusSkipLists("Measure Library");
-		});
+        MatContext.get().getEventBus().addHandler(BackToMeasureLibraryPage.TYPE, event -> {
+            mainTabLayout.selectTab(presenterList.indexOf(measureLibrary));
+            focusSkipLists("Measure Library");
+        });
 
-		MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, event -> { });
+        MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, event -> {
+        });
 
-		GWT.setUncaughtExceptionHandler(caught -> {
-			//logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
-			hideLoadingMessage();
-			MatContext.get().recordTransactionEvent(null, null, null,
-					"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-		});
-	}
+        GWT.setUncaughtExceptionHandler(caught -> {
+            logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
+            hideLoadingMessage();
+            MatContext.get().recordTransactionEvent(null, null, null,
+                    "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+        });
+    }
 
     @SuppressWarnings("unchecked")
     private void loadMatWidgets(String userFirstName, String userLastName, boolean isAlreadySignedIn, String resultMatVersion) {
@@ -638,61 +637,54 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         MatContext.get().restartTimeoutWarning();
     }
 
-	private void logout() {
-		logout(null);
-	}
+    private void logout() {
+        logout(null);
+    }
 
-	private void logout(String redirectTo) {
-		//logger.log(Level.INFO, "logout " + redirectTo);
-		// Revoke Access Token
-		MatContext.get().getHarpService().revoke(MatContext.get().getAccessToken(), new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable throwable) {
-				//logger.log(Level.SEVERE, "HarpService::revoke -> onFailure:" + throwable.getMessage(), throwable);
-				// log user out by removing their Okta browser session.
-				harpOktaLogout(redirectTo);
-			}
+    private void logout(String redirectTo) {
+        //logger.log(Level.INFO, "logout " + redirectTo);
+        // Revoke Access Token
+        MatContext.get().getHarpService().revoke(MatContext.get().getAccessToken(), new AsyncCallback<Boolean>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                //logger.log(Level.SEVERE, "HarpService::revoke -> onFailure:" + throwable.getMessage(), throwable);
+                // log user out by removing their Okta browser session.
+                harpOktaLogout(redirectTo);
+            }
 
-			@Override
-			public void onSuccess(Boolean aBoolean) {
-				//logger.log(Level.SEVERE, "HarpService::revoke -> onSuccess:" + aBoolean);
-				harpOktaLogout(redirectTo);
-			}
-		});
-	}
+            @Override
+            public void onSuccess(Boolean aBoolean) {
+                //logger.log(Level.SEVERE, "HarpService::revoke -> onSuccess:" + aBoolean);
+                harpOktaLogout(redirectTo);
+            }
+        });
+    }
 
-	private void harpOktaLogout(String redirectTo) {
-		//logger.log(Level.INFO, "harpOktaLogout " + redirectTo);
-		MatContext.get().getHarpService().getHarpUrl(new AsyncCallback<String>() {
-			@Override
-			public void onFailure(Throwable throwable) {
-				//logger.log(Level.SEVERE, "HarpService::getHarpUrl -> onFailure " + throwable.getMessage(), throwable);
-			}
+    private void harpOktaLogout(String redirectTo) {
+        //logger.log(Level.INFO, "harpOktaLogout " + redirectTo);
+        MatContext.get().getHarpService().getHarpUrl(new AsyncCallback<String>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                //logger.log(Level.SEVERE, "HarpService::getHarpUrl -> onFailure " + throwable.getMessage(), throwable);
+            }
 
-			@Override
-			public void onSuccess(String harpUrl) {
-				//logger.log(Level.INFO, "HarpService::getHarpUrl -> onSuccess");
-				MatContext.get().getSynchronizationDelegate().setLogOffFlag();
-				harpLogout(harpUrl);
-				removeOktaTokens();
-				if (redirectTo == null) {
-					// MAT logout operation, but don't redirect.
-					MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
+            @Override
+            public void onSuccess(String harpUrl) {
+                //logger.log(Level.INFO, "HarpService::getHarpUrl -> onSuccess");
+                MatContext.get().getSynchronizationDelegate().setLogOffFlag();
+                harpLogout(harpUrl);
+                removeOktaTokens();
+                MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
+                redirectToLogin();
+            }
+        });
+    }
 
-					// Redirect to Login after 1 second wait.
-					redirectToLogin();
-				}
-				// MAT Logout operation with specified redirect.
-				MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
-			}
-		});
-	}
-
-	private void removeOktaTokens() {
-		//logger.log(Level.INFO, "removeOktaTokens");
-		Storage localStorage = Storage.getLocalStorageIfSupported();
-		localStorage.removeItem(OKTA_TOKEN_STORAGE);
-	}
+    private void removeOktaTokens() {
+        //logger.log(Level.INFO, "removeOktaTokens");
+        Storage localStorage = Storage.getLocalStorageIfSupported();
+        localStorage.removeItem(OKTA_TOKEN_STORAGE);
+    }
 
     public static void setSignedInAsName(String userFirstName, String userLastName) {
         setSignedInName(userFirstName + " " + userLastName);

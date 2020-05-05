@@ -96,7 +96,7 @@ public class LoginPresenter {
 		loginModel = new LoginModel();
 
 		view.getSignInWithHarp().addClickHandler(clickEvent -> {
-			Window.Location.replace("HarpLogin.html");
+			Window.Location.replace("Login.html");
 		});
 
 		view.getSubmitButton().addClickHandler(event -> submit());

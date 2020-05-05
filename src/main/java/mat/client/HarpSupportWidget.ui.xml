@@ -17,7 +17,7 @@
                 <li>Follow <a href="https://www.emeasuretool.cms.gov/training-resources">Training &amp; Resources / Registering for
                     a MAT User Account</a> documentation
                 </li>
-                <li><a href="./HarpLogin.html">Login to MAT</a></li>
+                <li><a href="./Login.html">Login to MAT</a></li>
             </ul>
         </div>
     </g:HTMLPanel>

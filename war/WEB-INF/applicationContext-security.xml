@@ -22,16 +22,16 @@
     	<csrf disabled="true"/>
         <custom-filter position="PRE_AUTH_FILTER" ref="preAuthnHarpFilter"/>
         <intercept-url pattern="/HarpSupport.html" access="permitAll()"/>
-        <intercept-url pattern="/HarpLogin.html" access="permitAll()"/>
+        <intercept-url pattern="/Login.html" access="permitAll()"/>
         <intercept-url pattern="/harpLogin" access="permitAll()"/>
         <intercept-url pattern="/Mat.html" access="isAuthenticated()"  />
         <intercept-url pattern="/Bonnie.html" access="isAuthenticated()"  />
         <intercept-url pattern="/mat/**" access="isAuthenticated()"  />
-        <access-denied-handler error-page="/HarpLogin.html"/>
-        <form-login default-target-url="/Mat.html" login-page="/HarpLogin.html"/>
+        <access-denied-handler error-page="/Login.html"/>
+        <form-login default-target-url="/Mat.html" login-page="/Login.html"/>
 <!--        <form-login default-target-url="/Bonnie.html" login-page="/Login.html"/>-->
    	 	<logout/>
-        <session-management invalid-session-url="/HarpLogin.html">
+        <session-management invalid-session-url="/Login.html">
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
         </session-management>
     </http>

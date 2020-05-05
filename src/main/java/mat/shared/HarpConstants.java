@@ -7,4 +7,5 @@ public interface HarpConstants {
     String ACCESS_TOKEN = "accessToken";
 
     String OKTA_TOKEN_STORAGE = "okta-token-storage";
+    String NEW_USER_REGISTRATION_FORM_URL = "https://www.emeasuretool.cms.gov/training-resources/mat-user-registration";
 }

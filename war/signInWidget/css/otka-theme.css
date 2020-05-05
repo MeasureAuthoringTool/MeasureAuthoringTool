@@ -6,13 +6,6 @@ body {
     line-height: 1.9rem;
 }
 
-#okta-sign-in .auth-footer ul li:first-child {
-    position: absolute;
-    bottom: 9.25rem;
-    left: 7.5rem;
-    white-space: nowrap;
-}
-
 /*
  * CUSTOM CODE (CUSTOM CSS)
  * The following CSS is added to fix the UX style issues on the MFA verification

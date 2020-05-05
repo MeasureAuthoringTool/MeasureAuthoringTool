@@ -11864,7 +11864,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
 /* 7 */
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.11' };
+var core = module.exports = { version: '2.6.9' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -26858,6 +26858,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
           }
         };
       }
+
+      props.termsconditions = {
+        type: 'boolean',
+        validate: function validate(value) {
+          if (!value) {
+            return "Please accept the Terms and Conditions";
+          }
+        }
+      };
+
       return props;
     },
 
@@ -29543,16 +29553,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
     template: '\
     <ul>\
     <li>\
-     <a href="{{oktaTermsConditionsUrl}}" class="links" target="_blank">{{oktaTermsConditionsLinkContent}}</a>\
-    </li>\
-    <li>\
     {{harpSignUpHeaderContent}}\
       <a href="{{harpSignUpUrl}}" class="mft-links" target="_blank">\
        {{harpSignUpLinkContent}}\
       </a>\
     </li>\
     <li>\
-      <a href="{{harpRecorveryUrl}}" class=""mft-links" target="_blank">\
+     <a href="{{oktaTermsConditionsUrl}}" class="links" target="_blank">{{oktaTermsConditionsLinkContent}}</a>\
+    </li>\
+    <li>\
+      <a href="{{harpRecorveryUrl}}" class="mft-links" target="_blank">\
        {{harpRecoveryContent}}\
       </a>\
     </li>\
@@ -29576,9 +29586,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
     getTemplateData: function getTemplateData() {
 
       var oktaSettings = this.settings;
-      var oktaTermsConditionsUrl = oktaSettings.get('oktaSignInWidgetBaseUrl') + '/' + oktaSettings.get('oktaTermsConditionsEndPoint');
-      var harpSignUpUrl = oktaSettings.get('oktaSignInWidgetBaseUrl') + '/' + oktaSettings.get('oktaRedirectEndPoint') + '?' + oktaSettings.get('oktaRedirectParamName') + '=' + oktaSettings.get('harpSignUpAppName');
-      var harpRecorveryUrl = oktaSettings.get('oktaSignInWidgetBaseUrl') + '/' + oktaSettings.get('oktaRedirectEndPoint') + '?' + oktaSettings.get('oktaRedirectParamName') + '=' + oktaSettings.get('harpRecoveryAppName');
+      var oktaTermsConditionsUrl = oktaSettings.get('oktaTermsConditionsEndPoint');
+      var harpSignUpUrl = oktaSettings.get('harpSignUpUrl');
+      var harpRecorveryUrl = oktaSettings.get('harpRecoveryUrl');
       var helpLinkUrl = oktaSettings.get('oktaSignInWidgetBaseUrl') + '/' + oktaSettings.get('oktaHelpEndPoint');
 
       var oktaTermsConditionsLinkContent = oktaSettings.get('oktaTermsConditionsLinkContent');

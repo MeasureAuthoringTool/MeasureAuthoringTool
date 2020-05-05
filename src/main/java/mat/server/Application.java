@@ -163,17 +163,17 @@ public class Application extends WebSecurityConfigurerAdapter {
         http
                 .addFilter(filter)
                 .authorizeRequests()
-                .antMatchers("/", "/Login.html", "/HarpLogin.html", "/harpLogin", "/HarpSupport.html").permitAll()
+                .antMatchers("/", "/Login.html", "/harpLogin", "/HarpSupport.html").permitAll()
                 .antMatchers("/Mat.html").authenticated()
                 .antMatchers("/Bonnie.html").authenticated()
                 .antMatchers("/mat/**").authenticated()
                 .and()
-                .exceptionHandling().accessDeniedPage("/HarpLogin.html")
+                .exceptionHandling().accessDeniedPage("/Login.html")
                 .and()
                 .logout()
                 .permitAll()
                 .and()
-                .sessionManagement().invalidSessionUrl("/HarpLogin.html").maximumSessions(1);
+                .sessionManagement().invalidSessionUrl("/Login.html").maximumSessions(1);
 
     }
 

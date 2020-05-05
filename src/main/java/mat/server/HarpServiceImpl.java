@@ -43,23 +43,6 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
     @Override
     public boolean revoke(String accessToken) {
         logger.debug("Revoking Token::" + accessToken);
-//        ClientResponse response = revokeToken(accessToken);
-//        logger.debug(response.statusCode().toString());
-//        return response.statusCode().is2xxSuccessful();
-        /*
-                        .post()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/revoke")
-                        .queryParam("token", token)
-                        .queryParam("client_id", getHarpClientId())
-                        .queryParam("token_type_hint", "access_token")
-                        .build())
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .exchange()
-                .onErrorResume(e -> Mono.error(new MatException("Unable to revoke token.")))
-                .block();
-         */
 
         HttpHeaders headers = new HttpHeaders();
         List<MediaType> acceptList = new ArrayList<>();
@@ -89,18 +72,6 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
 
     @Override
     public boolean validateToken(String token) {
-//        TokenIntrospect introspect = validate(token);
-        TokenIntrospect introspect;
-        /*
-        .path("/introspect")
-                        .queryParam("token", token)
-                        .queryParam("client_id", ServerConstants.getHarpClientId())
-                        .queryParam("token_type_hint", "id_token")
-                        .build())
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-         */
-
         HttpHeaders headers = new HttpHeaders();
         List<MediaType> acceptList = new ArrayList<>();
         acceptList.add(MediaType.APPLICATION_JSON);

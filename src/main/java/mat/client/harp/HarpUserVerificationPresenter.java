@@ -1,6 +1,7 @@
 package mat.client.harp;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -10,6 +11,7 @@ import mat.client.event.ReturnToLoginEvent;
 import mat.client.login.ForgottenPasswordView;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
+import mat.shared.HarpConstants;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.TextBox;
 
@@ -140,9 +142,7 @@ public class HarpUserVerificationPresenter {
     }
 
     private void showNewUserInformation() {
-        NewUserRegistrationModal newUserRegistrationModal = new NewUserRegistrationModal();
-        newUserRegistrationModal.show();
-        newUserRegistrationModal.getCloseButton().addClickHandler(event -> newUserRegistrationModal.hide());
+        Window.open(HarpConstants.NEW_USER_REGISTRATION_FORM_URL, "_blank", "enabled");
     }
 
     public void go(HasWidgets container) {

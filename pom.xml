@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>CMAT</groupId>
     <artifactId>MeasureAuthoringTool</artifactId>
-    <version>5.8</version>
+    <version>5.9</version>
     <packaging>war</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -431,6 +431,9 @@
                         <resource>
                             <!-- this is relative to the pom.xml directory -->
                             <directory>./war</directory>
+                            <excludes>
+                                <exclude>**/LegacyLogin.html</exclude>
+                            </excludes>
                         </resource>
                     </webResources>
                 </configuration>

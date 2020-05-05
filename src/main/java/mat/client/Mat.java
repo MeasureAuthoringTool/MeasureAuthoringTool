@@ -22,6 +22,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
@@ -291,6 +292,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         showLoadingMessage();
         MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
         content = getContentPanel();
+        mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
 
         getSignOut().addClickHandler(event -> logout());
 
@@ -421,7 +423,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         History.addValueChangeHandler(event -> {
             final String historyToken = event.getValue();
-
             if ((historyToken == null) || historyToken.isEmpty()) {
                 History.newItem(mainTabLayoutID + 0, false);
             } else if (!MatContext.get().isLoading()) {

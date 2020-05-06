@@ -32,7 +32,7 @@ public class MappingSpreadsheetService {
     private String fhirMatServicesUrl;
 
     @Resource
-    MappingSpreadsheetService self;
+    private MappingSpreadsheetService self;
 
     private RestTemplate restTemplate;
 

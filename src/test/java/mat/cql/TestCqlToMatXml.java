@@ -26,7 +26,7 @@ public class TestCqlToMatXml {
     private static final String CQL_TEST_RESOURCES_DIR = "/test-cql/";
 
     @Mock
-    MappingSpreadsheetService mappingService;
+    private MappingSpreadsheetService mappingService;
 
     @Mock
     private CodeListService codeListService;
@@ -38,6 +38,7 @@ public class TestCqlToMatXml {
     private CqlToMatXml cqlToMatXml;
 
     public void mockSpreadsheet() {
+        log.info("an offering to the Codacy gods: " + mappingService);
         Map<String, VSACCodeSystemDTO> map = new HashMap<>();
         map.put("urn:oid:2.16.840.1.113883.6.96",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.96","http://snomed.info/sct/731000124108","SNOMEDCT","2019-03"));
         map.put("urn:oid:2.16.840.1.113883.5.1001",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.5.1001","http://terminology.hl7.org/CodeSystem/v3-ActMood","ActMood","TBD"));

@@ -85,7 +85,7 @@ public class ClientConstants {
 
 	public final static String USER_STATUS_NOT_LOGGEDIN ="NotLoggedInYet";
 
-	public static String USERGUIDE_URL="https://www.emeasuretool.cms.gov/sites/default/files/2020-03/MAT%20User%20Guide.pdf";
+    public static String USERGUIDE_URL="https://www.emeasuretool.cms.gov/training-resources/user-guide";
 
 	public final static String TEXT_CONTACT_US ="Contact Us";
 

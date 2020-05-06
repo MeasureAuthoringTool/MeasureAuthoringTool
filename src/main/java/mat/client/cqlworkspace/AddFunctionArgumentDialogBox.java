@@ -1,8 +1,9 @@
 package mat.client.cqlworkspace;
 
 
-import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -41,6 +42,7 @@ import mat.shared.UUIDUtilClient;
 
 
 public class AddFunctionArgumentDialogBox {
+    private static Logger log = Logger.getLogger(AddFunctionArgumentDialogBox.class.getSimpleName());
     private static final String ARGUMENT_NAME_IS_NOT_UNIQUE = "Argument name already exists.";
     private static final String MESSAGE_CQL_DATATYPE_IS_REQUIRED = "CQL datatype is required.";
     private static final String MESSAGE_ARGUMENT_NAME_IS_REQUIRED = "Argument name is required.";
@@ -48,11 +50,16 @@ public class AddFunctionArgumentDialogBox {
     private static ClickHandler handler;
 
     public static void showArgumentDialogBox(final CQLFunctionArgument functionArg,
-                                             final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final MessagePanel messagePanel, final boolean isEditable, String currentModelType) {
+                                             final boolean isEdit,
+                                             final CQLFunctionsView cqlFunctionsView,
+                                             final MessagePanel messagePanel,
+                                             final boolean isEditable,
+                                             String currentModelType) {
         List<String> allCqlDataType = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlDataTypeList();
         final List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
         final List<String> fhirDataTypes = MatContext.get().getCqlConstantContainer().getFhirCqlDataTypeList();
-        Collections.sort(fhirDataTypes, String.CASE_INSENSITIVE_ORDER);
+
+        log.log(Level.INFO,"fhirDataTypes: " +fhirDataTypes);
 
         final TextArea otherTypeTextArea = new TextArea();
         otherTypeTextArea.setEnabled(false);
@@ -89,7 +96,10 @@ public class AddFunctionArgumentDialogBox {
         listAllDataTypes.setWidth("290px");
         listAllDataTypes.addItem(MatContext.PLEASE_SELECT);
         for (int i = 0; i < allCqlDataType.size(); i++) {
-            if (ModelTypeHelper.FHIR.equalsIgnoreCase(currentModelType) && CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE.equalsIgnoreCase(allCqlDataType.get(i))) {
+            if (ModelTypeHelper.FHIR.equalsIgnoreCase(currentModelType) &&
+                    CQLWorkSpaceConstants.CQL_QDM_DATA_TYPE.equalsIgnoreCase(allCqlDataType.get(i))) {
+                //Overwrite FHIR data type with QDM.
+                //This isn't ideal but its the easiest way to add in fhir at this point.
                 listAllDataTypes.addItem(CQLWorkSpaceConstants.CQL_FHIR_DATA_TYPE);
             } else {
                 listAllDataTypes.addItem(allCqlDataType.get(i));
@@ -179,6 +189,7 @@ public class AddFunctionArgumentDialogBox {
         dialogModal.add(modalFooter);
 
         if (isEdit) {
+            log.log(Level.INFO,"isEdit: " +isEdit);
             String selectedDataType = null;
             argumentNameTextArea.setText(functionArg.getArgumentName());
             for (int i = 0; i < listAllDataTypes.getItemCount(); i++) {
@@ -188,7 +199,8 @@ public class AddFunctionArgumentDialogBox {
                     break;
                 }
             }
-            if (selectedDataType.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
+            if (selectedDataType.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_QDM_DATA_TYPE)) {
+                log.log(Level.INFO,"CQL_MODEL_DATA_TYPE ");
                 otherTypeTextArea.setEnabled(false);
                 populateAllDataType(listSelectItem, allDataTypes);
                 listSelectItem.setEnabled(true);
@@ -200,6 +212,7 @@ public class AddFunctionArgumentDialogBox {
                     }
                 }
             } else if (selectedDataType.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FHIR_DATA_TYPE)) {
+                log.log(Level.INFO,"CQL_FHIR_DATA_TYPE ");
                 otherTypeTextArea.setEnabled(false);
                 populateAllDataType(listSelectItem, fhirDataTypes);
                 listSelectItem.setEnabled(true);
@@ -211,6 +224,7 @@ public class AddFunctionArgumentDialogBox {
                     }
                 }
             } else if (selectedDataType.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
+                log.log(Level.INFO,"CQL_OTHER_DATA_TYPE ");
                 listSelectItem.clear();
                 listSelectItem.setEnabled(false);
                 otherTypeTextArea.setText(functionArg.getOtherType());
@@ -231,19 +245,22 @@ public class AddFunctionArgumentDialogBox {
                 argumentNameFormGroup.setValidationState(ValidationState.NONE);
                 selectFormGroup.setValidationState(ValidationState.NONE);
                 helpBlock.setText("");
-                if (listAllDataTypes.getValue().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
+                if (listAllDataTypes.getValue().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_QDM_DATA_TYPE)) {
+                    log.log(Level.INFO,"onChange  CQL_MODEL_DATA_TYPE");
                     otherTypeTextArea.setEnabled(false);
                     otherTypeTextArea.clear();
                     populateAllDataType(listSelectItem, allDataTypes);
                     listSelectItem.setEnabled(true);
                     addButton.setEnabled(true);
                 } else if (listAllDataTypes.getValue().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FHIR_DATA_TYPE)) {
+                    log.log(Level.INFO,"onChange  CQL_FHIR_DATA_TYPE");
                     otherTypeTextArea.setEnabled(false);
                     otherTypeTextArea.clear();
                     populateAllDataType(listSelectItem, fhirDataTypes);
                     listSelectItem.setEnabled(true);
                     addButton.setEnabled(true);
                 } else if (listAllDataTypes.getValue().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
+                    log.log(Level.INFO,"onChange  CQL_OTHER_DATA_TYPE");
                     otherTypeTextArea.setEnabled(true);
                     otherTypeTextArea.clear();
                     listSelectItem.clear();
@@ -295,9 +312,12 @@ public class AddFunctionArgumentDialogBox {
                     if (selectedIndex != 0) {
                         argumentDataType = listAllDataTypes.getItemText(selectedIndex);
 
-                        if (argumentDataType.contains(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
+                        if (argumentDataType.contains(CQLWorkSpaceConstants.CQL_QDM_DATA_TYPE) ||
+                                argumentDataType.contains(CQLWorkSpaceConstants.CQL_FHIR_DATA_TYPE)) {
                             int selectedItemIndex = listSelectItem.getSelectedIndex();
                             if (selectedItemIndex != 0) {
+                                //Reuse qdmDataType for FHIR data type as well.
+                                //It's not idea, but it saves us from changing MAT xml which is a real pain.
                                 qdmDataType = listSelectItem.getItemText(selectedItemIndex);
                             } else {
                                 isValid = false;
@@ -306,6 +326,7 @@ public class AddFunctionArgumentDialogBox {
                                 helpBlock.setText(MESSAGE_SELECT_QDM_DATATYPE);
                                 messageFormgroup.setValidationState(ValidationState.ERROR);
                             }
+                            log.log(Level.INFO,"Adding: qdmDataType=" + qdmDataType);
                         } else if (argumentDataType.equalsIgnoreCase(// Selected Data Type is Others
                                 CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
                             if (otherTypeTextArea.getText().isEmpty()) {
@@ -379,9 +400,11 @@ public class AddFunctionArgumentDialogBox {
                                         currentFunctionArgument.getArgumentName());
                                 cqlFunctionsView.getFunctionArgumentList().remove(i);
                                 cqlFunctionsView.getFunctionArgumentList().add(argument);
-                                cqlFunctionsView.createAddArgumentViewForFunctions(cqlFunctionsView.getFunctionArgumentList(), isEditable);
+                                cqlFunctionsView.createAddArgumentViewForFunctions(
+                                        cqlFunctionsView.getFunctionArgumentList(), isEditable);
                                 cqlFunctionsView.getFunctionArgNameMap().put(argumentName.toLowerCase(), argument);
-                                messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_ARG_MODIFY(argumentName));
+                                messagePanel.getSuccessMessageAlert().createAlert(
+                                        MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_ARG_MODIFY(argumentName));
                                 break;
                             }
                         }
@@ -395,7 +418,8 @@ public class AddFunctionArgumentDialogBox {
                         cqlFunctionsView.getFunctionArgumentList().add(functionArg);
                         cqlFunctionsView.createAddArgumentViewForFunctions(cqlFunctionsView.getFunctionArgumentList(), isEditable);
                         cqlFunctionsView.getFunctionArgNameMap().put(argumentName.toLowerCase(), functionArg);
-                        messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_ARG_ADD(argumentName));
+                        messagePanel.getSuccessMessageAlert().createAlert(
+                                MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_ARG_ADD(argumentName));
                     }
                     dialogModal.hide();
                 }

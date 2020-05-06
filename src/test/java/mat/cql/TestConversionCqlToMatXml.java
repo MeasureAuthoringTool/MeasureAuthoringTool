@@ -3,6 +3,7 @@ package mat.cql;
 import lombok.extern.slf4j.Slf4j;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
+import mat.server.MappingSpreadsheetService;
 import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
@@ -10,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
@@ -23,6 +25,9 @@ import static org.junit.Assert.assertEquals;
 public class TestConversionCqlToMatXml {
     private static final String CQL_TEST_RESOURCES_DIR = "/test-cql/";
     private XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+
+    @Mock
+    private MappingSpreadsheetService mappingService;
 
     @InjectMocks
     private CqlParser parser;
@@ -52,7 +57,7 @@ public class TestConversionCqlToMatXml {
         var destination = conversionCqlToMatXml.getDestinationModel();
 
         assertEquals("FHIR", destination.getUsingModel());
-        assertEquals(MATPropertiesService.get().getFhirVersion(), destination.getUsingModelVersion());
+        assertEquals("4.0.1", destination.getUsingModelVersion());
         //TO DO: add more asserts when I get time.
         log.debug(conversionCqlToMatXml.toString());
 
@@ -62,26 +67,26 @@ public class TestConversionCqlToMatXml {
         assertEquals("RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))", test1.getLogic());
         assertEquals(1, test1.getArgumentList().size());
         assertEquals("Test_1", test1.getArgumentList().get(0).getArgumentName());
-        assertEquals("\"Test \\\" 1\"", test1.getArgumentList().get(0).getQdmDataType());
-        assertEquals("\"Test \\\" 1\"", test1.getArgumentList().get(0).getArgumentType());
+        assertEquals("Test \\\" 1", test1.getArgumentList().get(0).getQdmDataType());
+        assertEquals("QDM Datatype", test1.getArgumentList().get(0).getArgumentType());
 
         CQLFunctions test2 = funs.stream().filter(f -> f.getName().equals("test2")).findFirst().get();
         assertEquals("test2", test2.getName());
         assertEquals("RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))", test2.getLogic());
         assertEquals(1, test2.getArgumentList().size());
         assertEquals("Test_2", test2.getArgumentList().get(0).getArgumentName());
-        assertEquals("\"Test , 2\"", test2.getArgumentList().get(0).getQdmDataType());
-        assertEquals("\"Test , 2\"", test2.getArgumentList().get(0).getArgumentType());
+        assertEquals("Test , 2", test2.getArgumentList().get(0).getQdmDataType());
+        assertEquals("QDM Datatype", test2.getArgumentList().get(0).getArgumentType());
 
         CQLFunctions test3 = funs.stream().filter(f -> f.getName().equals("test3")).findFirst().get();
         assertEquals("test3", test3.getName());
         assertEquals("RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))", test3.getLogic());
         assertEquals(2, test3.getArgumentList().size());
         assertEquals("Test_3", test3.getArgumentList().get(0).getArgumentName());
-        assertEquals("\"Test ,\\\" 3\"", test3.getArgumentList().get(0).getQdmDataType());
-        assertEquals("\"Test ,\\\" 3\"", test3.getArgumentList().get(0).getArgumentType());
+        assertEquals("Test ,\\\" 3", test3.getArgumentList().get(0).getQdmDataType());
+        assertEquals("QDM Datatype", test3.getArgumentList().get(0).getArgumentType());
         assertEquals("Value", test3.getArgumentList().get(1).getArgumentName());
-        assertEquals("Integer", test3.getArgumentList().get(1).getQdmDataType());
+        assertEquals(null, test3.getArgumentList().get(1).getQdmDataType());
         assertEquals("Integer", test3.getArgumentList().get(1).getArgumentType());
 
         CQLFunctions test4 = funs.stream().filter(f -> f.getName().equals("test4")).findFirst().get();
@@ -89,31 +94,25 @@ public class TestConversionCqlToMatXml {
         assertEquals("RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(RolloutIntervalsOnce(Intervals))))", test4.getLogic());
         assertEquals(3, test4.getArgumentList().size());
         assertEquals("Test_4", test4.getArgumentList().get(0).getArgumentName());
-        assertEquals("\"Test ,\\\" 4\"", test4.getArgumentList().get(0).getQdmDataType());
-        assertEquals("\"Test ,\\\" 4\"", test4.getArgumentList().get(0).getArgumentType());
+        assertEquals("Test ,\\\" 4", test4.getArgumentList().get(0).getQdmDataType());
+        assertEquals("QDM Datatype", test4.getArgumentList().get(0).getArgumentType());
         assertEquals("b", test4.getArgumentList().get(1).getArgumentName());
-        assertEquals("List<\"Medication, Order\">", test4.getArgumentList().get(1).getQdmDataType());
-        assertEquals("List<\"Medication, Order\">", test4.getArgumentList().get(1).getArgumentType());
+        assertEquals("List<\"Medication, Order\">", test4.getArgumentList().get(1).getOtherType());
+        assertEquals("Others", test4.getArgumentList().get(1).getArgumentType());
+        assertEquals("QDM Datatype", test4.getArgumentList().get(2).getArgumentType());
         assertEquals("c", test4.getArgumentList().get(2).getArgumentName());
-        assertEquals("\"C\"", test4.getArgumentList().get(2).getQdmDataType());
-        assertEquals("\"C\"", test4.getArgumentList().get(2).getArgumentType());
-        assertEquals("c", test4.getArgumentList().get(2).getArgumentName());
-        assertEquals("\"C\"", test4.getArgumentList().get(2).getQdmDataType());
-        assertEquals("\"C\"", test4.getArgumentList().get(2).getArgumentType());
+        assertEquals("C", test4.getArgumentList().get(2).getQdmDataType());
+
 
         CQLFunctions test5 = funs.stream().filter(f -> f.getName().equals("CalculateMME")).findFirst().get();
         assertEquals("CalculateMME", test5.getName());
         assertEquals(1, test5.getArgumentList().size());
         assertEquals("prescriptions", test5.getArgumentList().get(0).getArgumentName());
+        assertEquals("Others", test5.getArgumentList().get(0).getArgumentType());
         assertEquals("List<Tuple {\n" +
                 "  rxNormCode Code,\n" +
                 "  doseQuantity Quantity,\n" +
                 "  dosesPerDay Decimal\n" +
-                "}>", test5.getArgumentList().get(0).getQdmDataType());
-        assertEquals("List<Tuple {\n" +
-                "  rxNormCode Code,\n" +
-                "  doseQuantity Quantity,\n" +
-                "  dosesPerDay Decimal\n" +
-                "}>", test5.getArgumentList().get(0).getArgumentType());
+                "}>", test5.getArgumentList().get(0).getOtherType());
     }
 }

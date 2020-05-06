@@ -3,6 +3,7 @@ package mat.cql;
 import lombok.extern.slf4j.Slf4j;
 import mat.dto.VSACCodeSystemDTO;
 import mat.model.cql.CQLModel;
+import mat.server.MappingSpreadsheetService;
 import mat.server.service.CodeListService;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class TestCqlToMatXml {
     private static final String CQL_TEST_RESOURCES_DIR = "/test-cql/";
+
+    @Mock
+    MappingSpreadsheetService mappingService;
 
     @Mock
     private CodeListService codeListService;
@@ -122,7 +126,8 @@ public class TestCqlToMatXml {
 
         assertEquals("ToInterval", destination.getCqlFunctions().get(0).getName());
         assertEquals("period", destination.getCqlFunctions().get(0).getArgumentList().get(0).getArgumentName());
-        assertEquals("FHIR.Period", destination.getCqlFunctions().get(0).getArgumentList().get(0).getArgumentType());
+        assertEquals("Others", destination.getCqlFunctions().get(0).getArgumentList().get(0).getArgumentType());
+        assertEquals("FHIR.Period", destination.getCqlFunctions().get(0).getArgumentList().get(0).getOtherType());
         assertEquals("if period is null then\n" +
                 "        null\n" +
                 "    else\n" +
@@ -130,7 +135,8 @@ public class TestCqlToMatXml {
 
         assertEquals("ToQuantity", destination.getCqlFunctions().get(1).getName());
         assertEquals("quantity", destination.getCqlFunctions().get(1).getArgumentList().get(0).getArgumentName());
-        assertEquals("FHIR.Quantity", destination.getCqlFunctions().get(1).getArgumentList().get(0).getArgumentType());
+        assertEquals("Others", destination.getCqlFunctions().get(1).getArgumentList().get(0).getArgumentType());
+        assertEquals("FHIR.Quantity", destination.getCqlFunctions().get(1).getArgumentList().get(0).getOtherType());
         assertEquals("if quantity is null then\n" +
                 "        null\n" +
                 "    else\n" +
@@ -138,7 +144,8 @@ public class TestCqlToMatXml {
 
         assertEquals("ToInterval", destination.getCqlFunctions().get(2).getName());
         assertEquals("range", destination.getCqlFunctions().get(2).getArgumentList().get(0).getArgumentName());
-        assertEquals("FHIR.Range", destination.getCqlFunctions().get(2).getArgumentList().get(0).getArgumentType());
+        assertEquals("Others", destination.getCqlFunctions().get(2).getArgumentList().get(0).getArgumentType());
+        assertEquals("FHIR.Range", destination.getCqlFunctions().get(2).getArgumentList().get(0).getOtherType());
         assertEquals("if range is null then\n" +
                 "        null\n" +
                 "    else\n" +
@@ -146,7 +153,8 @@ public class TestCqlToMatXml {
 
         assertEquals("ToCode", destination.getCqlFunctions().get(3).getName());
         assertEquals("coding", destination.getCqlFunctions().get(3).getArgumentList().get(0).getArgumentName());
-        assertEquals("FHIR.Coding", destination.getCqlFunctions().get(3).getArgumentList().get(0).getArgumentType());
+        assertEquals("Others", destination.getCqlFunctions().get(2).getArgumentList().get(0).getArgumentType());
+        assertEquals("FHIR.Coding", destination.getCqlFunctions().get(3).getArgumentList().get(0).getOtherType());
         assertEquals("if coding is null then\n" +
                 "        null\n" +
                 "    else\n" +
@@ -160,7 +168,8 @@ public class TestCqlToMatXml {
 
         assertEquals("ToConcept", destination.getCqlFunctions().get(4).getName());
         assertEquals("concept", destination.getCqlFunctions().get(4).getArgumentList().get(0).getArgumentName());
-        assertEquals("FHIR.CodeableConcept", destination.getCqlFunctions().get(4).getArgumentList().get(0).getArgumentType());
+        assertEquals("FHIR.CodeableConcept", destination.getCqlFunctions().get(4).getArgumentList().get(0).getOtherType());
+        assertEquals("Others", destination.getCqlFunctions().get(4).getArgumentList().get(0).getArgumentType());
         assertEquals("if concept is null then\n" +
                 "        null\n" +
                 "    else\n" +
@@ -267,7 +276,8 @@ public class TestCqlToMatXml {
         assertEquals("Has Hospice", destination.getCqlFunctions().get(0).getName());
         assertEquals(1, destination.getCqlFunctions().get(0).getArgumentList().size());
         assertEquals("MeasurementPeriod", destination.getCqlFunctions().get(0).getArgumentList().get(0).getArgumentName());
-        assertEquals("Interval<DateTime>", destination.getCqlFunctions().get(0).getArgumentList().get(0).getArgumentType());
+        assertEquals("Others", destination.getCqlFunctions().get(0).getArgumentList().get(0).getArgumentType());
+        assertEquals("Interval<DateTime>", destination.getCqlFunctions().get(0).getArgumentList().get(0).getOtherType());
         assertEquals("exists (\n" +
                 "\t    [Encounter: \"Encounter Inpatient\"] DischargeHospice\n" +
                 "\t\t\twhere DischargeHospice.status = 'finished'\n" +
@@ -292,8 +302,8 @@ public class TestCqlToMatXml {
     private void validateToString(CQLModel model, String type, int index) {
         assertEquals("ToString", model.getCqlFunctions().get(index).getName());
         assertEquals("value", model.getCqlFunctions().get(index).getArgumentList().get(0).getArgumentName());
-        assertEquals(type, model.getCqlFunctions().get(index).getArgumentList().get(0).getArgumentType());
+        assertEquals(type, model.getCqlFunctions().get(index).getArgumentList().get(0).getOtherType());
+        assertEquals("Others", model.getCqlFunctions().get(index).getArgumentList().get(0).getArgumentType());
         assertEquals("value.value", model.getCqlFunctions().get(index).getLogic());
-
     }
 }

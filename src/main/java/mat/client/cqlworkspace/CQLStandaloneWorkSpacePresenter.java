@@ -273,7 +273,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
             public void onModifyClicked(CQLFunctionArgument result) {
                 setIsPageDirty(true);
                 cqlWorkspaceView.resetMessageDisplay();
-                if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
+                if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_QDM_DATA_TYPE)) {
                     getAttributesForDataType(result);
                 } else {
                     AddFunctionArgumentDialogBox.showArgumentDialogBox(result, true, cqlWorkspaceView.getCQLFunctionsView(), messagePanel, hasEditPermissions(), getCurrentModelType());

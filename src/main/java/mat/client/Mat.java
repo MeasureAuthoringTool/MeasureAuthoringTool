@@ -289,7 +289,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
     @Override
     protected void initEntryPoint() {
-        showLoadingMessage();
         MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
         content = getContentPanel();
         mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
@@ -416,6 +415,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     }
 
     private void initPage() {
+        showLoadingMessage();
         MatContext.get().setListBoxCodeProvider(listBoxCodeProvider);
 
         // Init session with current user info.

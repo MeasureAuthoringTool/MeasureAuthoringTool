@@ -453,4 +453,8 @@ public class CqlUtils {
         return nextNewline == -1 ? new ParseResult(StringUtils.substring(cql, start, cql.length()), -1) :
                 new ParseResult(StringUtils.substring(cql, start, nextNewline), nextNewline - 1);
     }
+
+    public static boolean isQuoted(String s) {
+        return StringUtils.isNotBlank(s) && s.startsWith("\"") && s.endsWith("\"");
+    }
 }

@@ -1,5 +1,19 @@
 package mat.server.clause;
 
+import mat.client.clause.QDSAttributesService;
+import mat.dao.DataTypeDAO;
+import mat.dao.clause.ModesAttributesDAO;
+import mat.dao.clause.ModesDAO;
+import mat.dao.clause.QDSAttributesDAO;
+import mat.model.DataType;
+import mat.model.clause.QDSAttributes;
+import mat.server.MappingSpreadsheetService;
+import mat.server.SpringRemoteServiceServlet;
+import mat.server.util.ResourceLoader;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
+import org.json.XML;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,25 +25,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import mat.server.ConversionMapping;
-import mat.server.CqlAttributesRemoteCallService;
-import org.json.JSONObject;
-import org.json.XML;
-
-import mat.client.clause.QDSAttributesService;
-import mat.dao.DataTypeDAO;
-import mat.dao.clause.ModesAttributesDAO;
-import mat.dao.clause.ModesDAO;
-import mat.dao.clause.QDSAttributesDAO;
-import mat.model.DataType;
-import mat.model.clause.QDSAttributes;
-import mat.server.SpringRemoteServiceServlet;
-import mat.server.util.ResourceLoader;
-import org.springframework.stereotype.Service;
+import java.util.stream.Collectors;
 
 /**
  * The Class QDSAttributesServiceImpl.
@@ -52,7 +50,6 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         Collections.sort(attrs, attributeComparator);
         Collections.sort(attrs1, attributeComparator);
         attrs.addAll(attrs1);
-
         return attrs;
     }
 
@@ -75,16 +72,9 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 
     @Override
     public List<String> getAllAttributesByDataTypeForFhir(String dataTypeName) {
-        HashSet<String> fhirAttributeSet = new HashSet();
-
-        ConversionMapping[] conversionMappings = getCqlAttributesRemoteCallService().getFhirAttributeAndDataTypes();
-        for(ConversionMapping conversionMapping : conversionMappings) {
-            if(conversionMapping.getFhirResource().equalsIgnoreCase(dataTypeName)) {
-                fhirAttributeSet.add(conversionMapping.getFhirElement());
-            }
-        }
-        List<String> filterAttrByDataTypeList = new ArrayList<>(fhirAttributeSet);
-        return filterAttrByDataTypeList;
+        return getMappingService().getMatAttributes().stream().
+                filter(a -> StringUtils.equalsIgnoreCase(a.getFhirResource(), dataTypeName)).
+                map(a -> a.getFhirElement()).collect(Collectors.toList());
     }
 
     /**
@@ -117,9 +107,10 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         return context.getBean(QDSAttributesDAO.class);
     }
 
-    public CqlAttributesRemoteCallService getCqlAttributesRemoteCallService() {
-        return context.getBean(CqlAttributesRemoteCallService.class);
+    public MappingSpreadsheetService getMappingService() {
+        return context.getBean(MappingSpreadsheetService.class);
     }
+
     /**
      * Gets the modes dao.
      *
@@ -177,7 +168,6 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         }
 
         return dataTypeListMap;
-
     }
 
     /**

@@ -1,14 +1,14 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <g:HTMLPanel>
-        <div id="harp-support-rectangle" style="width: 759px; border-radius: 24px; background-color: #e9d9d9; padding-top: 35px; padding-bottom: 35px; padding-left: 65px; padding-right: 65px; margin-bottom: 20px;margin-top: 20px; margin-left: auto; margin-right: auto">
-            <i class="fa fa-frown-o fa-4x" aria-hidden="true" style="color: #2b4762;"></i>
+        <div id="harp-support-rectangle" style="width: 759px; height: 460px; border-radius: 24px; background-color: #e9d9d9; padding-top: 35px; padding-bottom: 35px; padding-left: 65px; padding-right: 65px; margin-bottom: 20px;margin-top: 20px; margin-left: auto; margin-right: auto">
+            <i id="harp-support-sad-icon" class="fa fa-frown-o fa-4x" aria-hidden="true" style="color: #2b4762;"></i>
             <div style="font-family: ArialUnicodeMS; font-size: 36px; font-weight: normal; font-stretch: normal; font-style: normal; line-height: normal; letter-spacing: normal; text-align: center; color: #2b4762; margin-bottom: 32px;">We are sorry...</div>
             <div style="font-family: ArialUnicodeMS; font-size: 18px; font-weight: normal; font-stretch: normal; font-style: normal; line-height: normal; letter-spacing: normal; text-align: left; color: #2b4762;">
                 We were unable to access the Measure Authoring Tool (MAT). The following resources may be helpful:
             </div>
             <div style="font-family: ArialUnicodeMS; font-size: 18px; font-weight: normal; font-stretch: normal; font-style: normal; line-height: normal; letter-spacing: normal; color: #2b4762; text-align: left;">
-                <ul>
+                <ul id="harp-support-links">
                     <li>View the <a href="https://harp.qualitynet.org/">HARP self-service</a> page</li>
                     <li>Submit a ticket via <a href="https://oncprojectracking.healthit.gov/support/login.jsp">the Office of the National Coordinator (ONC) Jira System</a> and follow the directions on the page
                     </li>
@@ -18,7 +18,7 @@
                     </li>
                 </ul>
             </div>
-            <a href="./Login.html" class="btn btn-primary btn-lg active" role="button" style="background-color: #ffffff; color: #2b4762; border-radius: 11px; opacity: 0.5; border: none;">Login to MAT</a>
+            <a id="login-button" href="./Login.html" onclick="location.href='./Login.html';" class="btn btn-primary btn-lg active" role="button" style="background-color: #ffffff; color: #2b4762; border-radius: 11px; opacity: 0.5; border: none;">Login to MAT</a>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder>

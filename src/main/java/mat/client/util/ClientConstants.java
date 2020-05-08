@@ -1,6 +1,3 @@
-/**
- *
- */
 package mat.client.util;
 
 public class ClientConstants {
@@ -8,6 +5,8 @@ public class ClientConstants {
     public static String ACCESSIBILITY_POLICY_URL = "https://www.emeasuretool.cms.gov/web/guest/accessibility-statement";
 
     public static final String ADMINISTRATOR = "Administrator";
+    public static final String USER_ROLE = "User";
+    public static final String SUPER_USER_ROLE = "Top Level User";
 
     public static final String ANCHOR_SIGN_OUT = "Sign Out";
 

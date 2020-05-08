@@ -58,6 +58,8 @@ public abstract class MainLayout {
     private FocusPanel content;
     private HorizontalPanel linksPanel = new HorizontalPanel();
     private AnchorListItem profile = new AnchorListItem("MAT Account");
+    private AnchorListItem becomeTopLevelUser = new AnchorListItem("Become a top user");
+    private AnchorListItem becomeUser = new AnchorListItem("Become a user");
     private AnchorListItem signOut = new AnchorListItem("Sign Out");
     private FormPanel logoutForm = new FormPanel("logout");
 
@@ -275,6 +277,10 @@ public abstract class MainLayout {
         if(!Mat.harpUserVerificationInProgress) {
             ddm.add(profile);
         }
+        if (ClientConstants.ADMINISTRATOR.equals(MatContext.get().getLoggedInUserRole())) {
+            ddm.add(becomeUser);
+            ddm.add(becomeTopLevelUser);
+        }
         ddm.add(signOut);
         ddm.setStyleName(Styles.DROPDOWN_MENU);
         ddm.addStyleDependentName(Styles.RIGHT);
@@ -292,6 +298,7 @@ public abstract class MainLayout {
 
         ldd.add(icon);
         ldd.add(ddm);
+
 
         nav.add(ldd);
 
@@ -485,6 +492,14 @@ public abstract class MainLayout {
 
     public AnchorListItem getSignOut() {
         return signOut;
+    }
+
+    public AnchorListItem getBecomeTopLevelUser() {
+        return becomeTopLevelUser;
+    }
+
+    public AnchorListItem getBecomeUser() {
+        return becomeUser;
     }
 
     public void setSignOut(AnchorListItem signOut) {

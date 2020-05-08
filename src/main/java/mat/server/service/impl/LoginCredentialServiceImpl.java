@@ -1,16 +1,39 @@
 package mat.server.service.impl;
 
-import mat.dto.UserPreferenceDTO;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.stereotype.Service;
+
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.dao.UserDAO;
 import mat.dao.UserSecurityQuestionDAO;
+import mat.dto.UserPreferenceDTO;
 import mat.model.SecurityQuestions;
+import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.UserPassword;
 import mat.model.UserPreference;
 import mat.model.UserSecurityQuestion;
+import mat.server.LoggedInUserUtil;
 import mat.server.hibernate.HibernateUserDetailService;
 import mat.server.model.MatUserDetails;
 import mat.server.service.LoginCredentialService;
@@ -20,24 +43,6 @@ import mat.server.twofactorauth.TwoFactorValidationService;
 import mat.shared.HarpConstants;
 import mat.shared.HashUtility;
 import mat.shared.StringUtility;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * The Class LoginCredentialServiceImpl.
@@ -331,11 +336,21 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
         }
     }
 
+    public void switchRole(String newRole) {
+        logger.debug("switchRole: " + newRole);
+        if (SecurityRole.ADMIN_ROLE.equals(LoggedInUserUtil.getLoggedInUserRole())) {
+            PreAuthenticatedAuthenticationToken token = LoggedInUserUtil.getToken();
+            switchRoleOnAuthenticationToken(token, newRole);
+        } else {
+            throw new IllegalArgumentException("Only ADMINs can switch their role");
+        }
+    }
+
     public LoginModel initSession(Map<String, String> harpUserInfo, String sessionId) {
         logger.debug("setUpUserSession::" + harpUserInfo.get(HarpConstants.HARP_ID) + "::" + sessionId);
         MatUserDetails userDetails = (MatUserDetails) hibernateUserService.loadUserByHarpId(harpUserInfo.get(HarpConstants.HARP_ID));
 
-        if(userDetails == null) {
+        if (userDetails == null) {
             throw new IllegalArgumentException("HARP_ID_NOT_FOUND");
         }
         userDetails.setSessionId(sessionId);
@@ -527,10 +542,21 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
      * @param userDetails the new authentication token
      */
     private void setAuthenticationToken(MatUserDetails userDetails, String accessToken) {
-        logger.info("Setting authentication token::"+userDetails.getId());
+        logger.info("Setting authentication token::" + userDetails.getId());
         PreAuthenticatedAuthenticationToken auth =
                 new PreAuthenticatedAuthenticationToken(userDetails.getId(), accessToken, userDetails.getAuthorities());
         auth.setDetails(userDetails);
+
+        SecurityContext sc = new SecurityContextImpl();
+        sc.setAuthentication(auth);
+        SecurityContextHolder.setContext(sc);
+    }
+
+    private void switchRoleOnAuthenticationToken(PreAuthenticatedAuthenticationToken currentToken, String newRole) {
+        logger.info("Updating authentication token: " + currentToken.getName() + " with temporary role: " + newRole);
+        PreAuthenticatedAuthenticationToken auth =
+                new PreAuthenticatedAuthenticationToken(currentToken.getPrincipal(), currentToken.getCredentials(), Arrays.asList(new SimpleGrantedAuthority(newRole)));
+        auth.setDetails(currentToken.getDetails());
 
         SecurityContext sc = new SecurityContextImpl();
         sc.setAuthentication(auth);

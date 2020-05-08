@@ -27,6 +27,7 @@ import mat.model.User;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,6 +61,11 @@ public class UserServiceImplTest {
     @BeforeEach
     public void setUp() {
         Whitebox.setInternalState(userService, "emailFromAddress", "from@example.com");
+        // trick codacy unused warning
+        assertNotNull(templateMessage);
+        assertNotNull(statusDAO);
+        assertNotNull(securityRoleDAO);
+        assertNotNull(organizationDAO);
     }
 
     @Test

@@ -219,8 +219,12 @@ public class Application extends WebSecurityConfigurerAdapter {
                 "ConversionResultDto.validate",
                 "featureFlags",
                 "isFhirEditEnabled",
-                "fhirAttributesAndDataTypes",
-                "oidToVSACDodeSystemDTO")
+                "oidToVSACDodeSystemDTO",
+                "spreadSheetfhirTypes",
+                "spreadSheetMatAttributes",
+                "spreadSheetQdmToQiCoreMapping",
+                "spreadSheetDataTypes",
+                "spreadSheetResourceDefinitions")
                 .stream().map(ConcurrentMapCache::new)
                 .collect(Collectors.toList());
         cacheManager.setCaches(caches);

@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import mat.server.spreadsheet.MatAttribute;
 import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.SystemModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
@@ -89,14 +90,13 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
     private MeasureLibraryService measureLibraryService;
 
     @Autowired
-    private CqlAttributesRemoteCallService cqlAttributesRemoteCallService;
+    private MappingSpreadsheetService mappingService;
 
     @Autowired
     private FeatureFlagService flagService;
 
     @Override
     public CQLConstantContainer getAllCQLConstants() {
-
         HashSet<String> fhirDataTypeSet = new HashSet<>();
         HashSet<String> fhirAttributeSet = new HashSet<>();
 
@@ -160,8 +160,8 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 
     private void loadFhirAttributes(HashSet<String> fhirDataTypeSet, HashSet<String> fhirAttributeSet, CQLConstantContainer cqlConstantContainer) {
         // get all fhir attribnutes and Datatypes
-        ConversionMapping[] conversionMappings = cqlAttributesRemoteCallService.getFhirAttributeAndDataTypes();
-        for (ConversionMapping conversionMapping : conversionMappings) {
+       List<MatAttribute> attribs  = mappingService.getMatAttributes();
+        for (MatAttribute conversionMapping : attribs) {
             String fhirResource = StringUtils.trimToEmpty(conversionMapping.getFhirResource());
             if (!fhirResource.isEmpty()) {
                 fhirDataTypeSet.add(fhirResource);
@@ -179,7 +179,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
                     cqlConstantContainer.getFhirDataTypes().computeIfAbsent(fhirResource, s -> new FhirDataType(fhirResourceId, fhirResource));
             fhirDataType.getAttributes().computeIfAbsent(fhirElement, s -> new FhirAttribute(fhirElementId, fhirElement, StringUtils.trimToEmpty(conversionMapping.getFhirType())));
         }
-        cqlConstantContainer.setFhirCqlDataTypeList(new ArrayList<>(fhirDataTypeSet));
+        cqlConstantContainer.setFhirCqlDataTypeList(getAllFhirTypes());
         cqlConstantContainer.setFhirCqlAttributeList(new ArrayList<>(fhirAttributeSet));
     }
 
@@ -253,4 +253,9 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
     private QDMContainer getQDMInformation() {
         return QDMUtil.getQDMContainer();
     }
+
+    private List<String> getAllFhirTypes() {
+        return mappingService.getFhirTypes();
+    }
+
 }

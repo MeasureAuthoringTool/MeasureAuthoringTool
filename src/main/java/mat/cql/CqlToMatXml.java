@@ -13,6 +13,8 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.CQLKeywordsUtil;
+import mat.server.MappingSpreadsheetService;
 import mat.server.service.CodeListService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -25,8 +27,10 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static mat.cql.CqlUtils.chomp1;
 import static mat.cql.CqlUtils.getGlobalLibId;
 import static mat.cql.CqlUtils.isOid;
+import static mat.cql.CqlUtils.isQuoted;
 import static mat.cql.CqlUtils.newGuid;
 import static mat.cql.CqlUtils.parseCodeSystemName;
 import static mat.cql.CqlUtils.parseOid;
@@ -52,9 +56,12 @@ public class CqlToMatXml implements CqlVisitor {
     private CQLModel destinationModel = new CQLModel();
     private CQLModel sourceModel;
     private CodeListService codeListService;
+    private MappingSpreadsheetService mappingService;
 
-    public CqlToMatXml(CodeListService codeListService) {
+    public CqlToMatXml(CodeListService codeListService,
+                       MappingSpreadsheetService mappingService) {
         this.codeListService = codeListService;
+        this.mappingService = mappingService;
     }
 
     @Override
@@ -178,8 +185,20 @@ public class CqlToMatXml implements CqlVisitor {
             CQLFunctionArgument argument = new CQLFunctionArgument();
             argument.setId(newGuid());
             argument.setArgumentName(a.getName());
-            argument.setQdmDataType(a.getType());
-            argument.setArgumentType(a.getType());
+            if (mappingService.getFhirTypes().contains(a.getType())) {
+                //Reuse QdmDataType for FhirDataType. This isn't ideal but its a real pain to change mat XML.
+                argument.setQdmDataType(a.getType());
+                argument.setArgumentType("FHIR Datatype");
+            } else if (isQuoted(a.getType())) {
+                //In conversions we will still have quoted strings here for QDM type.
+                argument.setQdmDataType(chomp1(a.getType()));
+                argument.setArgumentType("QDM Datatype");
+            } else if (CQLKeywordsUtil.getCQLKeywords().getCqlDataTypeList().contains(a.getType())) {
+                argument.setArgumentType(a.getType());
+            } else { // Other type.
+                argument.setArgumentType(("Others"));
+                argument.setOtherType(a.getType());
+            }
             return argument;
         }).collect(Collectors.toList()));
         f.setContext(destinationModel.getContext());

@@ -78,7 +78,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
     private static final String SECURITY_ROLE_USER = "3";
     private static final String MEASURE_MODEL = "measureModel";
     private static final String ID = "id";
-    private static final String SELECT_SHARE_LEVELS = "select m.MEASURE_SET_ID, ms.SHARE_LEVEL_ID from MEASURE_SHARE ms  inner join MEASURE m on m.ID = ms.MEASURE_ID where ms.SHARE_USER_ID = :userId and m.MEASURE_SET_ID in :measureSetIds";
+    private static final String SELECT_SHARE_LEVELS = "select distinct m.MEASURE_SET_ID, ms.SHARE_LEVEL_ID from MEASURE_SHARE ms  inner join MEASURE m on m.ID = ms.MEASURE_ID where ms.SHARE_USER_ID = :userId and m.MEASURE_SET_ID in :measureSetIds";
 
     @Autowired
     private UserDAO userDAO;
@@ -301,6 +301,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
      */
     @Override
     public List<Measure> getAllMeasuresInSet(List<Measure> ms) {
+        logger.debug("getAllMeasuresInSet " + ms.size());
         if (CollectionUtils.isNotEmpty(ms)) {
             final Set<String> measureSetIds = new HashSet<>();
             for (final Measure m : ms) {
@@ -441,7 +442,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
     @Override
     public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel, User user) {
-        logger.debug("MeasureDAOImpl::getMeasureShareInfoForUserWithFilter - enter");
+        logger.debug("MeasureDAOImpl::getMeasureShareInfoForUserWithFilter - enter: " + measureSearchModel);
         final StopWatch stopwatch = new StopWatch();
         stopwatch.start();
         final List<Measure> measureResultList = fetchMeasureResultListForCritera(user, measureSearchModel);
@@ -476,7 +477,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         }
 
         stopwatch.stop();
-        logger.info("MeasureDAOImpl::fetchMeasureResultListForCritera took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
+        logger.info("MeasureDAOImpl::fetchMeasureResultListForCritera took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms. Found " + measureResultList.size());
         logger.debug("MeasureDAOImpl::fetchMeasureResultListForCritera exit");
         return measureResultList;
     }
@@ -574,19 +575,20 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
     private List<MeasureShareDTO> getOrderedDTOListFromMeasureResults(MeasureSearchModel measureSearchModel, User user,
                                                                       List<Measure> measureResultList) {
-        final ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<>();
+        logger.debug("MeasureDAOImpl::getOrderedDTOListFromMeasureResults enter");
+        final List<MeasureShareDTO> orderedDTOList = new ArrayList<>();
 
         final Map<String, MeasureShareDTO> measureSetIdDraftableMap = new HashMap<>();
 
         final List<Measure> measureSets = getAllMeasuresInSet(measureResultList);
-        final Set<Measure> measureResultSet = measureResultList.stream().collect(Collectors.toSet());
+        final Set<String> measureResultSet = measureResultList.stream().map(Measure::getId).collect(Collectors.toSet());
 
         for (final Measure measure : measureSets) {
             final MeasureShareDTO dto = extractDTOFromMeasure(measure);
             if (dto.isDraft()) {
                 measureSetIdDraftableMap.put(dto.getMeasureSetId(), dto);
             }
-            if (measureResultSet.contains(measure)) {
+            if (measureResultSet.contains(measure.getId())) {
                 orderedDTOList.add(dto);
             }
         }
@@ -614,6 +616,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
                 if (isNormalUserAndAllMeasures && dto.isPrivateMeasure() && !dto.getOwnerUserId().equals(user.getId())
                         && ((shareLevel == null) || !shareLevel.equals(ShareLevel.MODIFY_ID))) {
                     iterator.remove();
+                    logger.debug("Removing measure due to access level id:" + dto.getMeasureId() + " name:" + dto.getMeasureName() + " set:" + dto.getMeasureSetId());
                     continue;
                 }
 
@@ -645,15 +648,12 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
                         dto.setDraftable(true);
                     }
                 }
-
             }
         }
 
-        if (MAX_PAGE_SIZE < orderedDTOList.size()) {
-            return orderedDTOList.subList(0, MAX_PAGE_SIZE);
-        } else {
-            return orderedDTOList;
-        }
+        List<MeasureShareDTO> result = MAX_PAGE_SIZE < orderedDTOList.size() ? orderedDTOList.subList(0, MAX_PAGE_SIZE) : orderedDTOList;
+        logger.debug("MeasureDAOImpl::getOrderedDTOListFromMeasureResults exit. Found " + result.size());
+        return result;
 
     }
 

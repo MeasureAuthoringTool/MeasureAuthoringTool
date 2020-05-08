@@ -280,6 +280,8 @@ public final class CQLUtilityClass {
                                 argumentType = argumentType.append(".").append(argument.getAttributeName());
                             }
                             argumentType = argumentType.append("\"");
+                        } else if (argument.getArgumentType().equalsIgnoreCase("FHIR Datatype")) {
+                            argumentType = argumentType.append(argument.getQdmDataType());
                         } else if (argument.getArgumentType().equalsIgnoreCase(
                                 CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
                             argumentType = argumentType.append(argument.getOtherType());

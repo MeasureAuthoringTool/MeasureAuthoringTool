@@ -380,10 +380,6 @@ public class CqlParser {
                 // Encountered the next block so exit and set index before the newline.
                 nextStartIndex--; // Backup before newline.
                 isBreak = true;
-            } else if (nextStartIndex != startIndex && StringUtils.isBlank(curLine)) {
-                // Found double endline so block ends.
-                nextStartIndex = curLineRes.getEndIndex() == -1 ? cql.length() - 1 : curLineRes.getEndIndex() + 1;
-                isBreak = true;
             } else if (curLineRes.getEndIndex() != -1) {
                 // Still in logic.
                 nextStartIndex = nextStartIndex + curLine.length() + 1;

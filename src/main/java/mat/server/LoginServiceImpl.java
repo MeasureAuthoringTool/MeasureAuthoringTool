@@ -164,6 +164,11 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
         return loginCredentialService.isValidPassword(loginId, password);
 	}
 
+	@Override
+	public void switchRole(String newRole) {
+		loginCredentialService.switchRole(newRole);
+	}
+
 	private void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId) throws MatException {
         logger.info("User Verified, updating user information of::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
         HttpSession session = getThreadLocalRequest().getSession();

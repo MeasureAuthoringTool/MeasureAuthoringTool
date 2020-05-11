@@ -93,6 +93,7 @@ public class MessageDelegate {
     private static final String DOESNT_FOLLOW_RULES = "The new password you entered does not match the following rules:";
     private static final String DUPLICATE_ERROR = "Import failed. One or more duplicate codes exist in file. Please remove then try again.";
     private static final String EMAIL_ALREADY_EXISTS = "E-mail Address already exists.";
+    private static final String HARP_ID_ALREADY_EXISTS = "HARP ID already exists.";
     private static final String EMAIL_MISMATCH = "Email did not match with the User ID.  Please Contact the Administrator.";
     private static final String EMAIL_NOT_FOUND_MSG = "Email Address is required.";
     private static final String EMPTY_FILE_ERROR = "Import failed. File is empty.";
@@ -253,6 +254,10 @@ public class MessageDelegate {
 
     public String getEmailAlreadyExistsMessage() {
         return EMAIL_ALREADY_EXISTS;
+    }
+
+    public String getHarpIdAlreadyExistsMessage() {
+        return HARP_ID_ALREADY_EXISTS;
     }
 
     public String getEmailMismatchMessage() {

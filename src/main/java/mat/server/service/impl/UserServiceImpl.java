@@ -589,7 +589,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) {
         SaveUpdateUserResult result = new SaveUpdateUserResult();
-        User user = null;
+        User user;
         if (model.isExistingUser()) {
             user = getById(model.getKey());
         } else {
@@ -600,25 +600,41 @@ public class UserServiceImpl implements UserService {
         if (model.isActive() && (user.getStatus() != null) && !user.getStatus().getStatusId().equals("1")) {
             reactivatingUser = true;
         }
-        User exsitingUser = userDAO.findByEmail(model.getEmailAddress());
-        if ((exsitingUser != null) && (!(exsitingUser.getId().equals(user.getId())))) {
+        if (checkEmailNotUnique(model)) {
             result.setSuccess(false);
-            result.setFailureReason(SaveUpdateUserResult.ID_NOT_UNIQUE);
+            result.setFailureReason(SaveUpdateUserResult.USER_EMAIL_NOT_UNIQUE);
+        } else if (checkHarpNotUnique(model)) {
+            result.setSuccess(false);
+            result.setFailureReason(SaveUpdateUserResult.USER_HARP_ID_NOT_UNIQUE);
         } else {
-            setModelFieldsOnUser(model, user);
-            if (model.isExistingUser()) {
-                if (reactivatingUser) {
-                    activate(user.getId());
-                }
-                saveExisting(user);
-            } else {
-                saveNew(user);
-            }
-            result.setSuccess(true);
+            saveValidatedUserFromModel(model, result, user, reactivatingUser);
         }
-
         return result;
     }
+
+    private void saveValidatedUserFromModel(ManageUsersDetailModel model, SaveUpdateUserResult result, User user, boolean reactivatingUser) {
+        setModelFieldsOnUser(model, user);
+        if (model.isExistingUser()) {
+            if (reactivatingUser) {
+                activate(user.getId());
+            }
+            saveExisting(user);
+        } else {
+            saveNew(user);
+        }
+        result.setSuccess(true);
+    }
+
+    private boolean checkEmailNotUnique(ManageUsersDetailModel model) {
+        User existing = userDAO.findByEmail(model.getEmailAddress());
+        return existing != null && !(existing.getId().equals(model.getKey()));
+    }
+
+    private boolean checkHarpNotUnique(ManageUsersDetailModel model) {
+        User existing = userDAO.findByHarpId(model.getHarpId());
+        return existing != null && !(existing.getId().equals(model.getKey()));
+    }
+
 
     @Override
     public List<String> getFooterURLs() {

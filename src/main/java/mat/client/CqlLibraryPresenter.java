@@ -5,10 +5,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import mat.client.measure.service.CheckForConversionResult;
-import mat.client.measure.service.FhirConvertResultResponse;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
@@ -16,6 +12,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -27,6 +24,7 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -37,8 +35,6 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import mat.dto.AuditLogDTO;
-import mat.dto.SearchHistoryDTO;
 import mat.client.advancedsearch.AdvancedSearchPillPanel;
 import mat.client.buttons.CustomButton;
 import mat.client.cql.CQLLibraryHistoryView;
@@ -52,7 +48,10 @@ import mat.client.event.CQLLibraryDeleteEvent;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.event.CQLVersionEvent;
+import mat.client.event.UmlsActivatedEvent;
 import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.measure.service.CheckForConversionResult;
+import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ConfirmationObserver;
@@ -71,6 +70,8 @@ import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.client.util.ClientConstants;
+import mat.dto.AuditLogDTO;
+import mat.dto.SearchHistoryDTO;
 import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryShareDTO;
@@ -152,7 +153,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     /**
      * The Interface ViewDisplay.
      */
-    public static interface ViewDisplay {
+    public interface ViewDisplay {
 
         /**
          * Top Main panel of CQL Workspace Tab.
@@ -276,13 +277,13 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
         AdvancedSearchPillPanel getSearchPillPanel();
 
-        public void resetSearchDisplay();
+        void resetSearchDisplay();
 
         VerticalPanel getMostRecentLibraryVerticalPanel();
 
     }
 
-    public static interface VersionDisplay {
+    public interface VersionDisplay {
 
         void buildDataTable(SaveCQLLibraryResult result);
 
@@ -312,7 +313,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     /**
      * The Interface DetailDisplay.
      */
-    public static interface DetailDisplay {
+    public interface DetailDisplay {
         /**
          * Gets the name.
          *
@@ -373,7 +374,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     /**
      * The Interface ShareDisplay.
      */
-    public static interface ShareDisplay {
+    public interface ShareDisplay {
 
         /**
          * As widget.
@@ -522,6 +523,9 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         addHistoryDisplayHandlers();
         addObserverHandlers();
         addDeleteEventHandler();
+
+        MatContext.get().getEventBus().addHandler(UmlsActivatedEvent.TYPE, event -> cqlLibraryView.resetMessageDisplay());
+
     }
 
     private void addDeleteEventHandler() {
@@ -684,7 +688,26 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         confirmationDialogBox.show();
     }
 
+    private boolean showAlertAndReturnIfNotUMLSLoggedIn() {
+        if (!MatContext.get().isUMLSLoggedIn()) {
+            cqlLibraryView.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+            cqlLibraryView.getErrorMessageAlert().setVisible(true);
+            showSearchingBusy(false);
+            return true;
+        } else {
+            cqlLibraryView.getErrorMessageAlert().clearAlert();
+            cqlLibraryView.resetMessageDisplay();
+        }
+        return false;
+    }
+
     private void convertCqlLibraryFhir(CQLLibraryDataSetObject object) {
+        if (showAlertAndReturnIfNotUMLSLoggedIn()) {
+            logger.log(Level.WARNING, "User is not logged in UMSL");
+            return;
+        }
+
+
         logger.log(Level.INFO, "Please wait. Conversion is in progress...");
 
         showSearchingBusy(true);

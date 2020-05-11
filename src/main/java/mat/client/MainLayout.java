@@ -58,8 +58,8 @@ public abstract class MainLayout {
     private FocusPanel content;
     private HorizontalPanel linksPanel = new HorizontalPanel();
     private AnchorListItem profile = new AnchorListItem("MAT Account");
-    private AnchorListItem becomeTopLevelUser = new AnchorListItem("Become a top user");
-    private AnchorListItem becomeUser = new AnchorListItem("Become a user");
+    private AnchorListItem becomeTopLevelUser = new AnchorListItem("Become a Top User");
+    private AnchorListItem becomeUser = new AnchorListItem("Become a User");
     private AnchorListItem signOut = new AnchorListItem("Sign Out");
     private FormPanel logoutForm = new FormPanel("logout");
 

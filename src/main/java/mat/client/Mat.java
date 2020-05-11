@@ -187,7 +187,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
             @Override
             public void onSuccess(Void result) {
-                logger.log(Level.INFO, "LoginService::.switchRole -> onSuccess: ");
+                logger.log(Level.INFO, "LoginService::.switchRole -> onSuccess");
                 MatContext.get().setLoggedInUserRole(newRole);
                 getLinksPanel().clear();
                 getContentPanel().clear();

@@ -5,7 +5,7 @@
 		<#list model.supplementalDataElements as expression>
 			<#include "expression.ftl" />
 		</#list>
-		<#else>
+    <#else>
 		<li>None</li>
 	</#if>
 </ul>

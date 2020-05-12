@@ -51,7 +51,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         mainPanel.addStyleName("centered");
 
         SimplePanel titleHolder = new SimplePanel();
-        Label titlePanel = new Label("Link your Harp and Mat accounts");
+        Label titlePanel = new Label("Link your Harp and MAT accounts");
         titleHolder.add(titlePanel);
         titleHolder.setStylePrimaryName("loginBlueTitleHolder");
         titleHolder.setWidth("100%");
@@ -83,14 +83,14 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
 
         HorizontalPanel hpUserId = new HorizontalPanel();
         hpUserId.getElement().setId("horizontalPanel_HorizontalPanel");
-        Label userIdLabel = (Label) LabelBuilder.buildLabel(loginId, "Mat ID");
+        Label userIdLabel = (Label) LabelBuilder.buildLabel(loginId, "MAT ID");
         hpUserId.add(userIdLabel);
         hpUserId.add(new HTML(RequiredIndicator.get()));
         bluePanel.add(hpUserId);
         bluePanel.add(new SpacerWidget());
 
-        loginId.setTitle("Enter Mat ID Required");
-        loginId.setPlaceholder("Enter Mat ID");
+        loginId.setTitle("Enter MAT ID Required");
+        loginId.setPlaceholder("Enter MAT ID");
         loginId.setEnabled(true);
         loginId.setWidth("170px");
 
@@ -105,7 +105,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         bluePanel.add(hpPassword);
         bluePanel.add(new SpacerWidget());
 
-        password.setTitle("Enter Mat password Required");
+        password.setTitle("Enter MAT password Required");
         password.getElement().setPropertyString("placeholder", "Enter Password");
         password.setEnabled(true);
         password.setWidth("170px");
@@ -117,7 +117,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         bluePanel.add(securityQuestionAnsPanel);
         bluePanel.add(new SpacerWidget());
 
-        buttonBar.getSaveButton().setText("Link to Mat Account");
+        buttonBar.getSaveButton().setText("Link to MAT Account");
         bluePanel.add(buttonBar);
         bluePanel.add(new SpacerWidget());
 

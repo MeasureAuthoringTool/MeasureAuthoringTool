@@ -12,7 +12,7 @@ import freemarker.template.TemplateException;
 @Component
 public class CQLHumanReadableGenerator {
 
-	@Autowired
+    @Autowired
     private Configuration freemarkerConfiguration;
 	
 	public String generate(HumanReadableModel model) throws IOException, TemplateException {

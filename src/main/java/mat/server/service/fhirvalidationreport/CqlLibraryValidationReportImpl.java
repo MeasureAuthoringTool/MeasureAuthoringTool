@@ -112,7 +112,7 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
     }
 
     private void addConversionStatusMessage(ConversionResultDto conversionResultDto, Map<String, Object> paramsMap) {
-        String conversionStatusMessage = ConversionOutcome.SUCCESS == conversionResultDto.getOutcome() ?
+        String conversionStatusMessage = StringUtils.equals(ConversionOutcome.SUCCESS,conversionResultDto.getOutcome()) ?
                 "The FHIR CQL Library was created successfully." :
                 "Warning: The FHIR CQL Library was created successfully with errors.";
         paramsMap.put("conversionStatusMessage", conversionStatusMessage);

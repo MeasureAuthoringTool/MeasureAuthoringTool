@@ -11,7 +11,7 @@
     <Manager pathname="" />
     -->
     <Resources cachingAllowed="true" cacheMaxSize="100000" />
-      <Resource name="jdbc/mat_app_tomcat"
+    <Resource name="jdbc/mat_app_tomcat"
           auth="Container"
           type="javax.sql.DataSource"
           factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
@@ -35,8 +35,6 @@
           username="${MAT_DB_USER}"
           password="${MAT_DB_PASS}"
           driverClassName="com.mysql.jdbc.Driver"
-          url="jdbc:mysql://${MAT_DB_ENDPOINT}/${MAT_DB}"
-          defaultTransactionIsolation="READ_COMMITTED"/>
+          url="jdbc:mysql://${MAT_DB_ENDPOINT}/${MAT_DB}?verifyServerCertificate=true&amp;useSSL=true&amp;requireSSL=true"/>
   </Context>
-
 

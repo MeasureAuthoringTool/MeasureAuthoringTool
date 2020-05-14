@@ -34,7 +34,9 @@ public interface LoginServiceAsync extends AsynchronousService{
 	 */
 	void isValidUser(String username, String password, String oneTimePassword,
 			AsyncCallback<LoginModel> callback);
-	
+
+	void switchRole(String role, AsyncCallback<Void> callback);
+
 	/**
 	 * Forgot password.
 	 * 

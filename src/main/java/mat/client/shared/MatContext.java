@@ -24,10 +24,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
-import mat.dto.CompositeMeasureScoreDTO;
-import mat.dto.OperatorDTO;
-import mat.dto.UserPreferenceDTO;
-import mat.dto.VSACCodeSystemDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
 import mat.client.admin.service.AdminServiceAsync;
@@ -74,6 +70,10 @@ import mat.client.population.service.PopulationServiceAsync;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
+import mat.dto.CompositeMeasureScoreDTO;
+import mat.dto.OperatorDTO;
+import mat.dto.UserPreferenceDTO;
+import mat.dto.VSACCodeSystemDTO;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MeasureType;
 import mat.model.cql.CQLModel;
@@ -165,6 +165,10 @@ public class MatContext implements IsSerializable {
 
     private String userRole;
 
+    private String userFirstName;
+
+    private String userLastName;
+
     private UserPreferenceDTO userPreference;
 
     private QDSCodeListSearchView qdsView;
@@ -243,6 +247,7 @@ public class MatContext implements IsSerializable {
     private Map<String, Boolean> featureFlagMap = new HashMap<>();
 
     private Map<String, String> harpUserInfo = new HashMap<>();
+    private String matVersion;
 
     public void clearDVIMessages() {
         if (qdsView != null) {
@@ -272,12 +277,14 @@ public class MatContext implements IsSerializable {
         this.listBoxCodeProvider = listBoxCodeProvider;
     }
 
-    public void setUserInfo(String userId, String userEmail, String userRole, String loginId, UserPreferenceDTO userPreference) {
-        this.userId = userId;
-        this.userEmail = userEmail;
-        this.userRole = userRole;
-        this.loginId = loginId;
-        this.userPreference = userPreference;
+    public void setUserInfo(final SessionManagementService.Result result) {
+        this.userId = result.userId;
+        this.userEmail = result.userEmail;
+        this.userRole = result.userRole;
+        this.loginId = result.loginId;
+        this.userPreference = result.userPreference;
+        this.userFirstName = result.userFirstName;
+        this.userLastName = result.userLastName;
     }
 
     protected MatContext() {
@@ -429,8 +436,20 @@ public class MatContext implements IsSerializable {
         return instance;
     }
 
+    public String getLoggedInUserFirstName() {
+        return userFirstName;
+    }
+
+    public String getLoggedInUserLastName() {
+        return userLastName;
+    }
+
     public String getLoggedInUserRole() {
         return userRole;
+    }
+
+    public void setLoggedInUserRole(String userRole) {
+        this.userRole = userRole;
     }
 
     public UserPreferenceDTO getLoggedInUserPreference() {
@@ -1612,5 +1631,13 @@ public class MatContext implements IsSerializable {
 
     public void setOidToVSACCodeSystemMap(Map<String, VSACCodeSystemDTO> oidToVSACCodeSystemMap) {
         this.oidToVSACCodeSystemMap = oidToVSACCodeSystemMap;
+    }
+
+    public void setMatVersion(String resultMatVersion) {
+        this.matVersion = resultMatVersion;
+    }
+
+    public String getMatVersion() {
+        return matVersion;
     }
 }

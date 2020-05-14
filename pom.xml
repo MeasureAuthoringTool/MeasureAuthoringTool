@@ -445,16 +445,6 @@
                 <extensions>true</extensions>
                 <executions>
                     <execution>
-                        <id>compile-module1</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <moduleName>mat.Login</moduleName>
-                            <moduleShortName>login</moduleShortName>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>compile-module2</id>
                         <goals>
                             <goal>compile</goal>
@@ -485,7 +475,6 @@
                         </configuration>
                     </execution>
                 </executions>
-
             </plugin>
         </plugins>
     </build>

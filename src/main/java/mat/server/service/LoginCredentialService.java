@@ -21,12 +21,12 @@ public interface LoginCredentialService {
 	 *            the password
 	 * @return the login model
 	 */
-	public LoginModel isValidUser(String userId,String password, String oneTimePassword,String sessionId);
+	LoginModel isValidUser(String userId,String password, String oneTimePassword,String sessionId);
 	
 	/**
 	 * Sign out Admin Users.
 	 */
-	public void signOut();
+	void signOut();
 	
 	/**
 	 * Change temp password.
@@ -37,7 +37,7 @@ public interface LoginCredentialService {
 	 *            the changedpassword
 	 * @return the login model
 	 */
-	public LoginModel changeTempPassword(String userid, String changedpassword);
+	LoginModel changeTempPassword(String userid, String changedpassword);
 	
 	/**
 	 * Change password security answers.
@@ -46,7 +46,7 @@ public interface LoginCredentialService {
 	 *            the model
 	 * @return true, if successful
 	 */
-	public boolean changePasswordSecurityAnswers(LoginModel model);
+	boolean changePasswordSecurityAnswers(LoginModel model);
 	
 	/**
 	 * Load user by username.
@@ -55,12 +55,12 @@ public interface LoginCredentialService {
 	 *            the user id
 	 * @return the user details
 	 */
-	public UserDetails loadUserByUsername(String userId);
+	UserDetails loadUserByUsername(String userId);
 	
 	/**
 	 * Checks if is valid password.
 	 * 
-	 * @param userId
+	 * @param loginId
 	 *            the user id
 	 * @param password
 	 *            the password
@@ -82,4 +82,5 @@ public interface LoginCredentialService {
 	void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId, String sessionId) throws MatException;
 
 
+	void switchRole(String newRole);
 }

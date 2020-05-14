@@ -1,6 +1,7 @@
 package mat.client.shared;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,6 @@ public class CQLConstantContainer implements IsSerializable {
     private String currentQDMVersion;
     private String currentFhirVersion;
     private String currentReleaseVersion;
-    private List<String> fhirCqlAttributeList;
     private List<String> fhirCqlDataTypeList;
     private List<String> cqlAttributeList;
     private List<String> cqlDatatypeList;
@@ -30,14 +30,6 @@ public class CQLConstantContainer implements IsSerializable {
     private List<FunctionSignature> functionSignatures = new ArrayList<>();
     // Sorted by FHIR resource name
     private Map<String, FhirDataType> fhirDataTypes = new TreeMap<>();
-
-    public List<String> getFhirCqlAttributeList() {
-        return fhirCqlAttributeList;
-    }
-
-    public void setFhirCqlAttributeList(List<String> fhirCqlAttributeList) {
-        this.fhirCqlAttributeList = fhirCqlAttributeList;
-    }
 
     public List<String> getFhirCqlDataTypeList() {
         return fhirCqlDataTypeList;
@@ -155,7 +147,7 @@ public class CQLConstantContainer implements IsSerializable {
         });
 
         List<String> names = new ArrayList<>(nameSet);
-        names.sort((f1, f2) -> f1.compareTo(f2));
+        names.sort(Comparator.naturalOrder());
         return names;
     }
 

@@ -148,6 +148,10 @@ cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.
  -DQDM_QICORE_MAPPING_SERVICES_URL=https://matdev.semanticbits.com/qdm-qicore-mapping-services
  -DCQL_ELM_TRANSLATION_URL=https://matdev.semanticbits.com/cql-elm-translation
  ```
+
+#### Optional VM Arguments
+
+`-DSMTP_HOST`: The application sets `localhost` as the default SMTP host. Set this property to override the default.
  
  ### Run MAT on App Server
  Note: If MAT is to be run on an application server, the developer will need to run the build to create a .war file.

@@ -1,13 +1,14 @@
 package mat.server;
 
-import mat.server.model.MatUserDetails;
+import java.util.Iterator;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
-import java.util.Iterator;
+import mat.server.model.MatUserDetails;
 
 /**
  * The Class LoggedInUserUtil.
@@ -29,7 +30,7 @@ public class LoggedInUserUtil {
      *
      * @return the token
      */
-    private static PreAuthenticatedAuthenticationToken getToken() {
+    public static PreAuthenticatedAuthenticationToken getToken() {
         //re-factored to support Anonymous user US 439
         PreAuthenticatedAuthenticationToken token = null;
         if (SecurityContextHolder.getContext() != null) {

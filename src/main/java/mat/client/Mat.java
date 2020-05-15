@@ -19,6 +19,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -151,8 +152,19 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                         final Date current = new Date();
                         final boolean isAlreadySignedIn = MatContext.get().isAlreadySignedIn(lastSignOut, lastSignIn, current);
                         MatContext.get().setUserSignInDate(result.userId);
-                        MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole, result.loginId, result.userPreference);
-                        loadMatWidgets(result.userFirstName, result.userLastName, isAlreadySignedIn, resultMatVersion);
+                        MatContext.get().setUserInfo(result);
+                        MatContext.get().setMatVersion(resultMatVersion);
+                        if (ClientConstants.ADMINISTRATOR.equals(MatContext.get().getLoggedInUserRole())) {
+                            getBecomeUser().addClickHandler(event -> {
+                                logger.log(Level.INFO, "Become a USER");
+                                switchRole(ClientConstants.USER_ROLE);
+                            });
+                            getBecomeTopLevelUser().addClickHandler(event -> {
+                                logger.log(Level.INFO, "Become a top level USER");
+                                switchRole(ClientConstants.SUPER_USER_ROLE);
+                            });
+                        }
+                        loadMatWidgets(isAlreadySignedIn);
                     }
                 }
 
@@ -162,6 +174,27 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             });
         }
     };
+
+    private void switchRole(String newRole) {
+        logger.log(Level.INFO, "Switching to role: " + newRole);
+        MatContext.get().getLoginService().switchRole(newRole, new AsyncCallback<Void>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "LoginService::.switchRole -> onFailure: " + caught.getMessage(), caught);
+                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                logger.log(Level.INFO, "LoginService::.switchRole -> onSuccess");
+                MatContext.get().setLoggedInUserRole(newRole);
+                getLinksPanel().clear();
+                getContentPanel().clear();
+                loadMatWidgets(true);
+            }
+        });
+    }
 
     private final AsyncCallback<LoginModel> harpUserSessionSetupCallback = new AsyncCallback<LoginModel>() {
         @Override
@@ -448,7 +481,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             focusSkipLists("Measure Library");
         });
 
-        MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, event -> { });
+        MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, event -> {
+        });
 
         GWT.setUncaughtExceptionHandler(caught -> {
             logger.log(Level.SEVERE, "UncaughtException: " + caught.getMessage(), caught);
@@ -459,7 +493,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     }
 
     @SuppressWarnings("unchecked")
-    private void loadMatWidgets(String userFirstName, String userLastName, boolean isAlreadySignedIn, String resultMatVersion) {
+    private void loadMatWidgets(boolean isAlreadySignedIn) {
         logger.log(Level.INFO, "loadMatWidgets");
         MatContext.get().startUserLockUpdate();
         MatContext.get().recordTransactionEvent(null, null, "LOGIN_EVENT", null, 1);
@@ -559,9 +593,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         }
         mainTabLayout.setHeight("100%");
 
-        setHeader(resultMatVersion.replaceAll("[a-zA-Z]", ""), getHomeLink());
+        setHeader(MatContext.get().getMatVersion().replaceAll("[a-zA-Z]", ""), getHomeLink());
 
-        setSignedInAsName(userFirstName, userLastName);
+        setSignedInAsName(MatContext.get().getLoggedInUserFirstName(), MatContext.get().getLoggedInUserLastName());
 
         getHomeLink().addClickHandler(event -> MatContext.get().redirectToMatPage(ClientConstants.HTML_MAT));
 
@@ -585,7 +619,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         getContentPanel().addClickHandler(event -> MatContext.get().restartTimeoutWarning());
 
-        getUMLSButton().addClickHandler(event -> showUMLSModal(userFirstName, isAlreadySignedIn));
+        getUMLSButton().addClickHandler(event -> showUMLSModal(MatContext.get().getLoggedInUserFirstName(), isAlreadySignedIn));
 
         getBonnieSignInButton().addClickHandler(event -> showBonnieModal());
 

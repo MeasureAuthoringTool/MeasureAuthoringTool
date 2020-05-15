@@ -45,7 +45,7 @@ public class MappingSpreadsheetService {
         return self.resourceDefinitions().stream().
                 filter(r -> StringUtils.isNotBlank(r.getElementId()) &&
                         StringUtils.contains(r.getElementId(), '.')).
-                map(r -> r.getElementId().substring(0,r.getElementId().indexOf("."))).
+                map(r -> r.getElementId().substring(0,r.getElementId().lastIndexOf("."))).
                 distinct().
                 sorted(String.CASE_INSENSITIVE_ORDER).collect(Collectors.toList());
     }

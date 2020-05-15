@@ -12,8 +12,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import mat.server.spreadsheet.MatAttribute;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cqframework.cql.cql2elm.SystemModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.ClassInfoElement;
@@ -23,8 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
-import mat.dto.DataTypeDTO;
-import mat.dto.UnitDTO;
 import mat.client.cqlconstant.service.CQLConstantService;
 import mat.client.shared.CQLConstantContainer;
 import mat.client.shared.CQLTypeContainer;
@@ -33,15 +32,21 @@ import mat.client.shared.FhirDataType;
 import mat.client.shared.MatContext;
 import mat.client.shared.QDMContainer;
 import mat.dao.clause.QDSAttributesDAO;
+import mat.dto.DataTypeDTO;
+import mat.dto.UnitDTO;
 import mat.model.cql.CQLKeywords;
 import mat.server.service.CodeListService;
 import mat.server.service.FeatureFlagService;
 import mat.server.service.MeasureLibraryService;
+import mat.server.spreadsheet.MatAttribute;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.QDMUtil;
 import mat.shared.cql.model.FunctionSignature;
 
 public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implements CQLConstantService {
+
+    private static final Log logger = LogFactory.getLog(CQLConstantServiceImpl.class);
+
     private static final String TYPE = "type";
 
     private static final String QUALIFICATION = "qualification";
@@ -97,9 +102,6 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 
     @Override
     public CQLConstantContainer getAllCQLConstants() {
-        HashSet<String> fhirDataTypeSet = new HashSet<>();
-        HashSet<String> fhirAttributeSet = new HashSet<>();
-
         final CQLConstantContainer cqlConstantContainer = new CQLConstantContainer();
 
         // get the unit dto list
@@ -115,7 +117,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         cqlConstantContainer.setCqlUnitMap(unitMap);
 
         if (flagService.isFhirEditEnabled()) {
-            loadFhirAttributes(fhirDataTypeSet, fhirAttributeSet, cqlConstantContainer);
+            loadFhirAttributes(cqlConstantContainer);
         }
 
         // get all qdm attributes
@@ -158,18 +160,16 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         return cqlConstantContainer;
     }
 
-    private void loadFhirAttributes(HashSet<String> fhirDataTypeSet, HashSet<String> fhirAttributeSet, CQLConstantContainer cqlConstantContainer) {
+    private void loadFhirAttributes(CQLConstantContainer cqlConstantContainer) {
+        HashSet<String> fhirDataTypeSet = new HashSet<>();
         // get all fhir attribnutes and Datatypes
-       List<MatAttribute> attribs  = mappingService.getMatAttributes();
+        List<MatAttribute> attribs = mappingService.getMatAttributes();
         for (MatAttribute conversionMapping : attribs) {
             String fhirResource = StringUtils.trimToEmpty(conversionMapping.getFhirResource());
             if (!fhirResource.isEmpty()) {
                 fhirDataTypeSet.add(fhirResource);
             }
             String fhirElement = StringUtils.trimToEmpty(conversionMapping.getFhirElement());
-            if (!fhirElement.isEmpty()) {
-                fhirAttributeSet.add(fhirElement);
-            }
             if (fhirElement.isEmpty() || fhirResource.isEmpty()) {
                 continue;
             }
@@ -180,7 +180,6 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             fhirDataType.getAttributes().computeIfAbsent(fhirElement, s -> new FhirAttribute(fhirElementId, fhirElement, StringUtils.trimToEmpty(conversionMapping.getFhirType())));
         }
         cqlConstantContainer.setFhirCqlDataTypeList(getAllFhirTypes());
-        cqlConstantContainer.setFhirCqlAttributeList(new ArrayList<>(fhirAttributeSet));
     }
 
     private String hashForId(String value) {
@@ -198,10 +197,10 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             );
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.warn(e.getMessage(), e);
         }
 
-        return (List<FunctionSignature>) Arrays.asList(signatureArray);
+        return Arrays.asList(signatureArray);
     }
 
     private CQLTypeContainer getCQLTypeInformation() {
@@ -244,7 +243,6 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         typeToTypeAttributeMap.put("QDM.Practitioner", Arrays.asList(ID, IDENTIFIER, ROLE, SPECIALTY, QUALIFICATION));
         typeToTypeAttributeMap.put("QDM.Organization", Arrays.asList(ID, IDENTIFIER, TYPE));
         typeToTypeAttributeMap.put("QDM.Identifier", Arrays.asList(NAMING_SYSTEM, VALUE));
-
 
         container.setTypeToTypeAttributeMap(typeToTypeAttributeMap);
         return container;

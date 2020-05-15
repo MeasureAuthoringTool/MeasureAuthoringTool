@@ -57,14 +57,14 @@ public interface QDSAttributesService extends RemoteService {
 	Map<String, List<String>>getDatatypeList(List<String> dataTypeList);
 	
 	/**
-	 * Gets the JSON object from xml.
+	 * Gets QDM Attributes modes from SimplifiedAttributePatterns.xml.
 	 *
 	 * @return the JSON object from xml
 	 */
 	String getJSONObjectFromXML();
 	
 	/**
-	 * Gets the JSON object from mode details xml.
+	 * Gets the Attributes Mode Details JSON object from mode details (ModeDetails.xml) xml.
 	 *
 	 * @return the JSON object from mode details xml
 	 */

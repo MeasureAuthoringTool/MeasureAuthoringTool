@@ -25,7 +25,9 @@ import mat.shared.CQLIdentifierObject;
 
 public class JSONAttributeModeUtility {
 	private static QDSAttributesServiceAsync qdsAttributesService;
+	// QDM Attribute Modes from SimplifiedAttributePatterns.xml
 	private static HashMap<String, JSONArray> jsonObjectMap = new HashMap<>();
+	// QDM Attribute Mode details from ModelDetails.xml
 	private static HashMap<String, JSONArray> jsonModeDetailsMap = new HashMap<>();
 	private static final String COMPARISON = "Comparison";
 	private static final String COMPUTATIVE = "Computative";

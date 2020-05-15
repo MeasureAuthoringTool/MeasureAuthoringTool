@@ -34,7 +34,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.buttons.CancelButton;
 import mat.client.clause.QDSAttributesService;
@@ -81,6 +80,8 @@ public class InsertAttributeBuilderDialogBox {
     private static final String VALUE_SETS = "Value Sets";
     private static final String CODES = "Codes";
     private static final String NULLABLE = "Nullable";
+    private static final String PERIOD = ".";
+    private static final List<String> ALL_ATTR_MODE_LIST = Arrays.asList("Comparison", "Computative", "Nullable", "ValueSets", "Codes");
 
     private static Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();
 
@@ -127,7 +128,7 @@ public class InsertAttributeBuilderDialogBox {
     public static void showAttributesDialogBox(final AceEditor editor, String modelType) {
 
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
-            allAttributes = MatContext.get().getCqlConstantContainer().getFhirCqlAttributeList();
+            allAttributes = Collections.emptyList();
             allDataTypes = MatContext.get().getCqlConstantContainer().getFhirCqlDataTypeList();
         } else {
             allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
@@ -250,17 +251,17 @@ public class InsertAttributeBuilderDialogBox {
 
         dtAttriblistBox.addChangeHandler(event -> selectAttributesByDataType(messageFormgroup, helpBlock, allAttributes, modelType));
 
-        attriblistBox.addChangeHandler(event -> selectAttributes(messageFormgroup, helpBlock));
+        attriblistBox.addChangeHandler(event -> selectAttributes(messageFormgroup, helpBlock, modelType));
 
         modelistBox.addChangeHandler(event -> selectMode(messageFormgroup, helpBlock));
 
-        modeDetailslistBox.addChangeHandler(event -> selectModeDetails(messageFormgroup, helpBlock));
+        modeDetailslistBox.addChangeHandler(event -> selectModeDetails(messageFormgroup, helpBlock, modelType));
 
         quantityTextBox.addChangeHandler(event -> enterQuantity(messageFormgroup, helpBlock));
 
         unitslistBox.addChangeHandler(event -> selectUnits(messageFormgroup, helpBlock));
 
-        addButton.addClickHandler(event -> clickInsertButton(dialogModal, messageFormgroup, helpBlock, curEditor));
+        addButton.addClickHandler(event -> clickInsertButton(dialogModal, messageFormgroup, helpBlock, curEditor, modelType));
 
         dialogModal.show();
     }
@@ -283,7 +284,7 @@ public class InsertAttributeBuilderDialogBox {
     }
 
     private static void clickInsertButton(final Modal dialogModal, final FormGroup messageFormgroup,
-                                          final HelpBlock helpBlock, final AceEditor curEditor) {
+                                          final HelpBlock helpBlock, final AceEditor curEditor, final String modelType) {
         final int selectedIndex = attriblistBox.getSelectedIndex();
         if (selectedIndex != 0) {
             helpBlock.setText("");
@@ -297,7 +298,7 @@ public class InsertAttributeBuilderDialogBox {
                             helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_QUANTITY());
                             messageFormgroup.setValidationState(ValidationState.ERROR);
                         } else {
-                            curEditor.insertAtCursor(attributeStringBuilder());
+                            curEditor.insertAtCursor(attributeStringBuilder(modelType));
                             curEditor.focus();
                             dialogModal.hide();
                         }
@@ -331,7 +332,7 @@ public class InsertAttributeBuilderDialogBox {
                                 helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_QUANTITY());
                                 messageFormgroup.setValidationState(ValidationState.ERROR);
                             } else {
-                                curEditor.insertAtCursor(attributeStringBuilder());
+                                curEditor.insertAtCursor(attributeStringBuilder(modelType));
                                 curEditor.focus();
                                 dialogModal.hide();
                             }
@@ -351,7 +352,7 @@ public class InsertAttributeBuilderDialogBox {
                         }
 
                     } else {
-                        curEditor.insertAtCursor(attributeStringBuilder());
+                        curEditor.insertAtCursor(attributeStringBuilder(modelType));
                         curEditor.focus();
                         dialogModal.hide();
                     }
@@ -362,7 +363,7 @@ public class InsertAttributeBuilderDialogBox {
                     messageFormgroup.setValidationState(ValidationState.ERROR);
                 }
             } else {
-                curEditor.insertAtCursor(attributeStringBuilder());
+                curEditor.insertAtCursor(attributeStringBuilder(modelType));
                 curEditor.focus();
                 dialogModal.hide();
             }
@@ -386,12 +387,12 @@ public class InsertAttributeBuilderDialogBox {
         messageFormgroup.setValidationState(ValidationState.NONE);
     }
 
-    private static void selectModeDetails(final FormGroup messageFormgroup, final HelpBlock helpBlock) {
+    private static void selectModeDetails(final FormGroup messageFormgroup, final HelpBlock helpBlock, final String modelType) {
         helpBlock.setText("");
         messageFormgroup.setValidationState(ValidationState.NONE);
         final int selectedIndex = modeDetailslistBox.getSelectedIndex();
         if (selectedIndex != 0) {
-            setWidgetEnabled(attriblistBox, modelistBox);
+            setWidgetEnabled(modelType);
         } else {
             setEnabled(false);
         }
@@ -420,7 +421,7 @@ public class InsertAttributeBuilderDialogBox {
         clearAllBoxes();
     }
 
-    private static void selectAttributes(final FormGroup messageFormgroup, final HelpBlock helpBlock) {
+    private static void selectAttributes(final FormGroup messageFormgroup, final HelpBlock helpBlock, final String modelType) {
         helpBlock.setText("");
         modelistBox.clear();
         modeDetailslistBox.clear();
@@ -432,7 +433,11 @@ public class InsertAttributeBuilderDialogBox {
             final String attrSelected = attriblistBox.getItemText(selectedIndex);
             messageHelpBlock.setText(MODE_ALERT);
             modelistBox.setEnabled(true);
-            addModelist(modelistBox, JSONAttributeModeUtility.getAttrModeList(attrSelected));
+            if (ModelTypeHelper.isFhir(modelType)) {
+                addModelist(modelistBox, ALL_ATTR_MODE_LIST);
+            } else {
+                addModelist(modelistBox, JSONAttributeModeUtility.getAttrModeList(attrSelected));
+            }
             modelistBox.setSelectedIndex(0);
             if (isModeDisabledEntry(attrSelected)) {
                 modelistBox.setEnabled(false);
@@ -486,7 +491,6 @@ public class InsertAttributeBuilderDialogBox {
     }
 
     private static void clearAllFormGroups() {
-
         dtFormGroup.clear();
         attrFormGroup.clear();
         modeFormGroup.clear();
@@ -753,51 +757,49 @@ public class InsertAttributeBuilderDialogBox {
         dtw.clearDateTime();
     }
 
-    private static void setWidgetEnabled(final ListBox attributeListBox, final ListBoxMVP modelistBox) {
-        String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
-        String modeName = modelistBox.getItemText(modelistBox.getSelectedIndex());
-        attributeName = attributeName.toLowerCase();
-        modeName = modeName.toLowerCase();
+    private static void setWidgetEnabled(final String modelType) {
+        String attributeName = attriblistBox.getItemText(attriblistBox.getSelectedIndex()).toLowerCase();
+        String modeName = modelistBox.getItemText(modelistBox.getSelectedIndex()).toLowerCase();
 
-
-        if (modeName.equalsIgnoreCase("comparison") || modeName.equalsIgnoreCase("computative")) {
-            if (attributeName.contains("datetime") && modeName.equalsIgnoreCase("comparison")) {
-                // the date time field is about to be enabled. If the it is currently disabled,
-                // alert the user about the change.
-                if (!dtw.getYyyyTxtBox().isEnabled() && !dtw.getMmTxtBox().isEnabled() && !dtw.getDdTxtBox().isEnabled()
-                        && !dtw.getHhTextBox().isEnabled() && !dtw.getMinTxtBox().isEnabled() && !dtw.getSsTxtBox().isEnabled()
-                        && !dtw.getMsTxtBox().isEnabled()) {
-                    messageHelpBlock.setText(DATE_TIME_ALERT);
-                }
-                dtw.setDateTimeEnabled(true);
-                quantityTextBox.setEnabled(false);
-                unitslistBox.setEnabled(false);
-
-            } else if (attributeName.equalsIgnoreCase("result")) {
-                setEnabled(true);
-
-            } else if (attributeName.contains("statusdate") && modeName.equalsIgnoreCase("comparison")) {
-                dtw.setDateTimeEnabled(true);
-                quantityTextBox.setEnabled(false);
-                unitslistBox.setEnabled(false);
-
-            } else {
-                dtw.setDateTimeEnabled(false);
-
-                // the quantity field and units dropdown is about to be enabled. If it is currently disabled,
-                // alert the user about the change.
-                if (!quantityTextBox.isEnabled() && !unitslistBox.isEnabled()) {
-                    messageHelpBlock.setText(QUANTITY_UNIT_ALERT);
-                }
-
-
-                quantityTextBox.setEnabled(true);
-                unitslistBox.setEnabled(true);
-            }
+        boolean comparison = modeName.equalsIgnoreCase("comparison");
+        if (comparison || modeName.equalsIgnoreCase("computative")) {
+            setWidgetEnabledForComparisonOrComputative(modelType, attributeName, comparison);
         } else {
             setEnabled(false);
         }
+    }
 
+    private static void setWidgetEnabledForComparisonOrComputative(String modelType, String attributeName, boolean comparison) {
+        if (attributeName.contains("datetime") && comparison) {
+            // the date time field is about to be enabled. If the it is currently disabled,
+            // alert the user about the change.
+            if (!dtw.getYyyyTxtBox().isEnabled() && !dtw.getMmTxtBox().isEnabled() && !dtw.getDdTxtBox().isEnabled()
+                    && !dtw.getHhTextBox().isEnabled() && !dtw.getMinTxtBox().isEnabled() && !dtw.getSsTxtBox().isEnabled()
+                    && !dtw.getMsTxtBox().isEnabled()) {
+                messageHelpBlock.setText(DATE_TIME_ALERT);
+            }
+            dtw.setDateTimeEnabled(true);
+            quantityTextBox.setEnabled(false);
+            unitslistBox.setEnabled(false);
+
+        } else if (ModelTypeHelper.isFhir(modelType) || attributeName.equalsIgnoreCase("result")) {
+            setEnabled(true);
+        } else if (attributeName.contains("statusdate") && comparison) {
+            dtw.setDateTimeEnabled(true);
+            quantityTextBox.setEnabled(false);
+            unitslistBox.setEnabled(false);
+
+        } else {
+            dtw.setDateTimeEnabled(false);
+            // the quantity field and units dropdown is about to be enabled. If it is currently disabled,
+            // alert the user about the change.
+            if (!quantityTextBox.isEnabled() && !unitslistBox.isEnabled()) {
+                messageHelpBlock.setText(QUANTITY_UNIT_ALERT);
+            }
+
+            quantityTextBox.setEnabled(true);
+            unitslistBox.setEnabled(true);
+        }
     }
 
     private static void defaultFrmGrpValidations() {
@@ -859,17 +861,14 @@ public class InsertAttributeBuilderDialogBox {
         availableItemToInsert.setDropdownOptions(retList, true);
     }
 
-    private static String attributeStringBuilder() {
+    private static String attributeStringBuilder(final String modelType) {
         final StringBuilder sb = new StringBuilder();
-        String selectedAttrItem = "";
         String selectedMode = "";
         String selectedMDetailsItem = "";
         final String selectedQuantity = quantityTextBox.getText();
         final String selectedUnit = allCqlUnits.get(unitslistBox.getItemText(unitslistBox.getSelectedIndex()));
 
-        if (attriblistBox.getSelectedIndex() > 0) {
-            selectedAttrItem = attriblistBox.getItemText(attriblistBox.getSelectedIndex());
-        }
+        final String selectedAttrItem = getSelectedAttribute(modelType);
 
         if (modelistBox.getSelectedIndex() > 0) {
             selectedMode = modelistBox.getItemText(modelistBox.getSelectedIndex());
@@ -880,9 +879,9 @@ public class InsertAttributeBuilderDialogBox {
         }
 
         if (selectedMode.isEmpty() && selectedMDetailsItem.isEmpty()) {
-            sb.append(".").append(selectedAttrItem);
+            sb.append(PERIOD).append(selectedAttrItem);
         } else if (selectedMode.equalsIgnoreCase(NULLABLE)) {
-            sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem);
+            sb.append(PERIOD).append(selectedAttrItem).append(" ").append(selectedMDetailsItem);
         } else if (selectedMode.equalsIgnoreCase(VALUE_SETS) || selectedMode.equalsIgnoreCase(CODES)) {
             final String[] valueArray = modeDetailslistBox.getValue().split(":", 2);
             String type = "";
@@ -890,7 +889,7 @@ public class InsertAttributeBuilderDialogBox {
             if (valueArray.length > 0) {
                 type = valueArray[0];
                 value = valueArray[1];
-                sb.append(".").append(selectedAttrItem);
+                sb.append(PERIOD).append(selectedAttrItem);
                 if (selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_RESULT)
                         || selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_TARGET_OUTCOME)) {
                     if (type.equalsIgnoreCase("valueset")) { // For Value Set
@@ -910,7 +909,7 @@ public class InsertAttributeBuilderDialogBox {
             }
 
         } else if (quantityTextBox.isEnabled()) {
-            sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ");
+            sb.append(PERIOD).append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ");
             if (nonQuoteUnits.contains(selectedUnit)) {
                 sb.append(selectedUnit);
             } else if (!selectedUnit.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
@@ -921,9 +920,24 @@ public class InsertAttributeBuilderDialogBox {
 
     }
 
+    private static String getSelectedAttribute(String modelType) {
+        final String selectedAttrItem;
+        if (attriblistBox.getSelectedIndex() > 0) {
+            if (ModelTypeHelper.isFhir(modelType)) {
+                String fullAttrName = dtAttriblistBox.getItemText(dtAttriblistBox.getSelectedIndex()) + PERIOD + attriblistBox.getItemText(attriblistBox.getSelectedIndex());
+                selectedAttrItem = fullAttrName.substring(fullAttrName.indexOf(PERIOD) + 1);
+            } else {
+                selectedAttrItem = attriblistBox.getItemText(attriblistBox.getSelectedIndex());
+            }
+        } else {
+            selectedAttrItem = "";
+        }
+        return selectedAttrItem;
+    }
+
     private static String buildDateTimeString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append(".").append(attriblistBox.getItemText(attriblistBox.getSelectedIndex()));
+        sb.append(PERIOD).append(attriblistBox.getItemText(attriblistBox.getSelectedIndex()));
         sb.append(" ").append(modeDetailslistBox.getItemText(modeDetailslistBox.getSelectedIndex()));
         sb.append(" ").append(dtw.buildDateTimeString());
         return sb.toString();
@@ -945,6 +959,7 @@ public class InsertAttributeBuilderDialogBox {
 
             @Override
             public void onSuccess(final List<QDSAttributes> result) {
+                logger.log(Level.INFO, "AttributeService::getAllAttributesByDataType -> onSuccess");
                 final List<String> filterAttrByDataTypeList = new ArrayList<>();
                 for (final QDSAttributes qdsAttributes : result) {
                     filterAttrByDataTypeList.add(qdsAttributes.getName());
@@ -972,6 +987,7 @@ public class InsertAttributeBuilderDialogBox {
 
             @Override
             public void onSuccess(List<String> result) {
+                logger.log(Level.INFO, "AttributeService::getAllAttributesByDataTypeForFhir -> onSuccess");
                 Collections.sort(result);
                 availableAttributesToInsert.clear();
                 addAvailableItems(availableAttributesToInsert, result);

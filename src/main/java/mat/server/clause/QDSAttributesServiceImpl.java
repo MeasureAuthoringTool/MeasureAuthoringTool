@@ -1,22 +1,7 @@
 package mat.server.clause;
 
-import mat.client.clause.QDSAttributesService;
-import mat.dao.DataTypeDAO;
-import mat.dao.clause.ModesAttributesDAO;
-import mat.dao.clause.ModesDAO;
-import mat.dao.clause.QDSAttributesDAO;
-import mat.model.DataType;
-import mat.model.clause.QDSAttributes;
-import mat.server.MappingSpreadsheetService;
-import mat.server.SpringRemoteServiceServlet;
-import mat.server.util.ResourceLoader;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
-import org.json.XML;
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -29,6 +14,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
+import org.json.XML;
+
+import mat.client.clause.QDSAttributesService;
+import mat.dao.DataTypeDAO;
+import mat.dao.clause.ModesAttributesDAO;
+import mat.dao.clause.ModesDAO;
+import mat.dao.clause.QDSAttributesDAO;
+import mat.model.DataType;
+import mat.model.clause.QDSAttributes;
+import mat.server.MappingSpreadsheetService;
+import mat.server.SpringRemoteServiceServlet;
+import mat.server.util.ResourceLoader;
+
 /**
  * The Class QDSAttributesServiceImpl.
  */
@@ -36,13 +38,9 @@ import java.util.stream.Collectors;
 public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         implements QDSAttributesService {
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * mat.client.clause.QDSAttributesService#getAllDataTypeAttributes(java.
-     * lang.String)
-     */
+    private static final Log logger = LogFactory.getLog(QDSAttributesServiceImpl.class);
+    private static final char DOT_CHAR = '.';
+
     @Override
     public List<QDSAttributes> getAllDataTypeAttributes(String qdmName) {
         List<QDSAttributes> attrs = getDAO().findByDataType(qdmName, context);
@@ -53,13 +51,6 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         return attrs;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * mat.client.clause.QDSAttributesService#getAllAttributesByDataType(java
-     * .lang.String)
-     */
     @Override
     public List<QDSAttributes> getAllAttributesByDataType(String dataTypeName) {
         List<QDSAttributes> attrs = getDAO().findByDataTypeName(dataTypeName,
@@ -72,9 +63,15 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 
     @Override
     public List<String> getAllAttributesByDataTypeForFhir(String dataTypeName) {
-        return getMappingService().getMatAttributes().stream().
-                filter(a -> StringUtils.equalsIgnoreCase(a.getFhirResource(), dataTypeName)).
-                map(a -> a.getFhirElement()).collect(Collectors.toList());
+        return getMappingService().resourceDefinitions().stream().
+                filter(r -> StringUtils.isNotBlank(r.getElementId()) &&
+                        StringUtils.contains(r.getElementId(), DOT_CHAR)).
+                filter(r -> StringUtils.equalsIgnoreCase(r.getElementId().substring(0, r.getElementId().lastIndexOf(DOT_CHAR)), dataTypeName)).
+                map(r -> r.getElementId().substring(r.getElementId().lastIndexOf(DOT_CHAR) + 1)).
+                map(a -> StringUtils.trimToNull(a)).
+                distinct().
+                sorted(String.CASE_INSENSITIVE_ORDER).
+                collect(Collectors.toList());
     }
 
     /**
@@ -88,11 +85,6 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         }
     };
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see mat.client.clause.QDSAttributesService#getAllDataFlowAttributeName()
-     */
     @Override
     public List<QDSAttributes> getAllDataFlowAttributeName() {
         return getDAO().getAllDataFlowAttributeName();
@@ -129,13 +121,6 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         return context.getBean(ModesAttributesDAO.class);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * mat.client.clause.QDSAttributesService#checkIfQDMDataTypeIsPresent(java
-     * .lang.String)
-     */
     @Override
     public boolean checkIfQDMDataTypeIsPresent(String dataTypeName) {
         boolean checkIfDataTypeIsPresent = false;
@@ -147,12 +132,6 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         return checkIfDataTypeIsPresent;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * mat.client.clause.QDSAttributesService#getDatatypeList(java.util.List)
-     */
     @Override
     public Map<String, List<String>> getDatatypeList(List<String> dataTypeList) {
 
@@ -178,17 +157,13 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
      */
     private List<String> getAllQDMAttributesbyDataType(String dataType) {
         List<QDSAttributes> qdsAttributeList = getAllAttributesByDataType(dataType);
-        List<String> qdsAttributes = new ArrayList<String>();
+        List<String> qdsAttributes = new ArrayList<>();
         for (QDSAttributes qdsAttribtue : qdsAttributeList) {
             qdsAttributes.add(qdsAttribtue.getName());
         }
         return qdsAttributes;
     }
 
-
-    /* (non-Javadoc)
-     * @see mat.client.clause.QDSAttributesService#getJSONObjectFromXML()
-     */
     @Override
     public String getJSONObjectFromXML() {
         String result = null;
@@ -197,15 +172,12 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
             result = jsonObject.toString(4);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error in getJSONObjectFromXML: " + e.getMessage(), e);
         }
 
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see mat.client.clause.QDSAttributesService#getModeDetailsJSONObjectFromXML()
-     */
     @Override
     public String getModeDetailsJSONObjectFromXML() {
         String result = null;
@@ -214,7 +186,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
             result = jsonObject.toString(4);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error in getModeDetailsJSONObjectFromXML: " + e.getMessage(), e);
         }
 
         return result;
@@ -233,23 +205,14 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         String line = "";
         StringBuilder sb = new StringBuilder();
         try {
-            try {
-                xmlFile = new File(templateFileUrl.toURI());
-            } catch (URISyntaxException e1) {
-                e1.printStackTrace();
-            }
+            xmlFile = new File(templateFileUrl.toURI());
             fr = new FileReader(xmlFile);
             BufferedReader br = new BufferedReader(fr);
-
-            try {
-                while ((line = br.readLine()) != null) {
-                    sb.append(line.trim());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            while ((line = br.readLine()) != null) {
+                sb.append(line.trim());
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (URISyntaxException | IOException e) {
+            logger.error("Error in convertXmlToString: " + e.getMessage(), e);
         }
         return sb.toString();
     }
@@ -267,30 +230,18 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
         String line = "";
         StringBuilder sb = new StringBuilder();
         try {
-            try {
-                xmlFile = new File(templateFileUrl.toURI());
-            } catch (URISyntaxException e1) {
-                e1.printStackTrace();
-            }
+            xmlFile = new File(templateFileUrl.toURI());
             fr = new FileReader(xmlFile);
             BufferedReader br = new BufferedReader(fr);
-
-            try {
-                while ((line = br.readLine()) != null) {
-                    sb.append(line.trim());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            while ((line = br.readLine()) != null) {
+                sb.append(line.trim());
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (URISyntaxException | IOException e) {
+            logger.error("Error in convertModeDetailsXmlToString: " + e.getMessage(), e);
         }
         return sb.toString();
     }
 
-    /* (non-Javadoc)
-     * @see mat.client.clause.QDSAttributesService#getAllAttributes()
-     */
     @Override
     public List<String> getAllAttributes() {
         return getDAO().getAllAttributes();

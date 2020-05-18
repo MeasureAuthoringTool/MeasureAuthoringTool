@@ -38,7 +38,7 @@ public class CQLLinterTest {
         String cql = new String(Files.readAllBytes(file.toPath()));
         CQLLinterConfig config = new CQLLinterConfig("testmissingurnoidcodesystem", "0.0.000", "QDM", "5.4");
         config.setPreviousCQLModel(model);
-        CQLLinter linter = new CQLLinter(cql, config);
+        CQLLinter linter = new QdmCQLLinter(cql, config);
 
         assertEquals(true, linter.getWarningMessages().contains(invalidEditMessage));
     }
@@ -50,7 +50,7 @@ public class CQLLinterTest {
         String cql = new String(Files.readAllBytes(file.toPath()));
         CQLLinterConfig config = new CQLLinterConfig("testwrongcommentsbetweenvaluesets", "0.0.000", "QDM", "5.4");
         config.setPreviousCQLModel(model);
-        CQLLinter linter = new CQLLinter(cql, config);
+        CQLLinter linter = new QdmCQLLinter(cql, config);
 
         assertEquals(1, linter.getWarningMessages().size());
         assertEquals(invalidEditMessage, linter.getWarningMessages().get(0));
@@ -63,7 +63,7 @@ public class CQLLinterTest {
         String cql = new String(Files.readAllBytes(file.toPath()));
         CQLLinterConfig config = new CQLLinterConfig("testwrongcomments", "0.0.000", "QDM", "5.4");
         config.setPreviousCQLModel(model);
-        CQLLinter linter = new CQLLinter(cql, config);
+        CQLLinter linter = new QdmCQLLinter(cql, config);
 
         // cql workspace strips any changes made above the contex patient line
         assertEquals(0, linter.getErrorMessages().size());

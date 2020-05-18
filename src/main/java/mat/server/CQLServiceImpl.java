@@ -1024,7 +1024,7 @@ public class CQLServiceImpl implements CQLService {
             result = parseCQLLibraryForErrors(cqlModel);
         }
 
-        if (result.getCqlErrors().isEmpty()) {
+        if (result.getCqlErrors().isEmpty() && !StringUtils.equals(cqlModel.getUsingModel(),"FHIR")) {
             result.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
             setUsedValuesets(result, cqlModel);
             setUsedCodes(result, cqlModel);

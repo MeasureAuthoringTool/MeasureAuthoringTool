@@ -2078,7 +2078,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     cqlLibrary.setRevisionNumber(mDetail.getRevisionNumber());
                     cqlLibrary.setCQLByteArray(cqlByteArray);
                     cqlLibraryService.save(cqlLibrary);
-                    cqlLibraryService.saveCQLLibraryExport(cqlLibrary, cqlXML);
+                    cqlLibraryService.saveQdmCQLLibraryExport(cqlLibrary, cqlXML);
                     logger.info("Versioned CQL successfull.");
                 } else {
                     logger.info("Versioning of cql failed as no cqlLookUpNode available");

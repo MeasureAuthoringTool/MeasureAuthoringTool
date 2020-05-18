@@ -14,7 +14,7 @@ import mat.client.shared.MatRuntimeException;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.ModelTypeHelper;
-import mat.server.service.FhirLibraryConversionRemoteCall;
+import mat.server.service.FhirLibraryRemoteCall;
 import mat.shared.DateUtility;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,12 +43,12 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
 
     private Configuration freemarkerConfiguration;
     private CQLLibraryDAO libraryDAO;
-    private FhirLibraryConversionRemoteCall fhirLibraryConversionRemoteCall;
+    private FhirLibraryRemoteCall fhirLibraryConversionRemoteCall;
 
 
     public CqlLibraryValidationReportImpl(Configuration freemarkerConfiguration,
                                           CQLLibraryDAO libraryDAO,
-                                          FhirLibraryConversionRemoteCall fhirLibraryConversionRemoteCall) {
+                                          FhirLibraryRemoteCall fhirLibraryConversionRemoteCall) {
         this.freemarkerConfiguration = freemarkerConfiguration;
         this.libraryDAO = libraryDAO;
         this.fhirLibraryConversionRemoteCall = fhirLibraryConversionRemoteCall;

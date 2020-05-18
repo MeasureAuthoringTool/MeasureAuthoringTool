@@ -1,33 +1,5 @@
 package mat.server.util;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
-import org.cqframework.cql.elm.tracking.TrackBack;
-import org.hl7.elm.r1.FunctionDef;
-import org.hl7.elm.r1.OperandDef;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import mat.CQLtoELM;
 import mat.MATCQLFilter;
 import mat.dao.clause.CQLLibraryDAO;
@@ -41,6 +13,8 @@ import mat.model.cql.CQLParameter;
 import mat.server.CQLUtilityClass;
 import mat.server.cqlparser.CQLLinter;
 import mat.server.cqlparser.CQLLinterConfig;
+import mat.server.cqlparser.FhirCQLLinter;
+import mat.server.cqlparser.QdmCQLLinter;
 import mat.shared.CQLError;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
@@ -49,6 +23,33 @@ import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
+import org.cqframework.cql.elm.tracking.TrackBack;
+import org.hl7.elm.r1.FunctionDef;
+import org.hl7.elm.r1.OperandDef;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * The Class CQLUtil.
@@ -295,8 +296,8 @@ public class CQLUtil {
      * the usedcodes set, adds them to the xpath string, and then removes all
      * nodes that are not a part of the xpath string.
      *
-     * @param originalDoc           the simple xml document
-     * @param cqlCodesIdentifierSet the usevaluesets
+     * @param originalDoc            the simple xml document
+     * @param cqlCodesIdentifierList the usevaluesets
      * @throws XPathExpressionException the x path expression exception
      */
     public static void removeUnusedCodes(Document originalDoc, List<String> cqlCodesIdentifierList)
@@ -480,12 +481,17 @@ public class CQLUtil {
 
     public static CQLLinter lint(String cql, CQLLinterConfig config) {
         try {
-            return new CQLLinter(cql, config);
+            if (StringUtils.equals("FHIR", config.getModelIdentifier())) {
+                return new FhirCQLLinter(cql, config);
+            } else {
+                return new QdmCQLLinter(cql, config);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
+
 
     /**
      * Parses the CQL library for errors.
@@ -700,7 +706,6 @@ public class CQLUtil {
      *
      * @param cqlModel  the cql model
      * @param parsedCQL the parsed CQL
-     * @param folder    the folder
      * @param cqlToElm  the cql to elm
      * @param exprList  the expr list
      */

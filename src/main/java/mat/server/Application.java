@@ -1,5 +1,6 @@
 package mat.server;
 
+import ca.uhn.fhir.context.FhirContext;
 import liquibase.integration.spring.SpringLiquibase;
 import mat.client.login.service.HarpService;
 import mat.dao.impl.AuditEventListener;
@@ -243,5 +244,10 @@ public class Application extends WebSecurityConfigurerAdapter {
         cacheManager().getCacheNames().stream().forEach(cacheName ->
                 cacheManager().getCache(cacheName).clear()
         );
+    }
+
+    @Bean
+    public FhirContext fhirContext() {
+        return FhirContext.forR4();
     }
 }

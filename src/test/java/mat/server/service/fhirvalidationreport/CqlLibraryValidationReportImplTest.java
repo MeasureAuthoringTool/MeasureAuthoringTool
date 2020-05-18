@@ -6,7 +6,7 @@ import freemarker.template.Template;
 import mat.dto.fhirconversion.ConversionResultDto;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
-import mat.server.service.FhirLibraryConversionRemoteCall;
+import mat.server.service.FhirLibraryRemoteCall;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +35,7 @@ class CqlLibraryValidationReportImplTest {
 
     @Mock private Configuration freemarkerConfig;
     @Mock private CQLLibraryDAO libraryDAO;
-    @Mock private FhirLibraryConversionRemoteCall remoteProxy;
+    @Mock private FhirLibraryRemoteCall remoteProxy;
 
     @InjectMocks
     private CqlLibraryValidationReportImpl cut;

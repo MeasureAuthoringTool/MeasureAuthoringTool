@@ -1,7 +1,6 @@
 package mat.server.cqlparser;
 
 import lombok.Getter;
-import lombok.Setter;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.shared.CQLError;

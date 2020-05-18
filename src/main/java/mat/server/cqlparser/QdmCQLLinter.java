@@ -57,10 +57,10 @@ public class QdmCQLLinter extends CQLLinter {
     	ParseTree tree = parser.library();
 		ParseTreeWalker walker = new ParseTreeWalker();
 		walker.walk(this, tree);
-		doPostProcessing(parser, tokens);
+		doPostProcessing(tokens);
 	} 
 		
-	private void doPostProcessing(cqlParser parser, CommonTokenStream tokens) {		
+	private void doPostProcessing(CommonTokenStream tokens) {
 		if(isCommentInNoCommentZone(tokens)) {
 			hasInvalidEdits = true;
 		}
@@ -74,9 +74,7 @@ public class QdmCQLLinter extends CQLLinter {
 			hasInvalidEdits = true;
 		}
 		
-		if((CollectionUtils.size(config.getPreviousCQLModel().getCqlIncludeLibrarys()) != numberOfIncludedLibraries)
-				|| (CollectionUtils.size(config.getPreviousCQLModel().getValueSetList()) != numberOfValuesets)
-				|| (CollectionUtils.size(config.getPreviousCQLModel().getCodeList()) != numberOfCodes)) {
+		if(hasInvalidSizes()) {
 			hasInvalidEdits = true;
 		}
 		
@@ -94,6 +92,12 @@ public class QdmCQLLinter extends CQLLinter {
 						+ "Please make those changes in the appropriate areas of the CQL Workspace.");
 			}
 		}
+	}
+
+	private boolean hasInvalidSizes() {
+		return (CollectionUtils.size(config.getPreviousCQLModel().getCqlIncludeLibrarys()) != numberOfIncludedLibraries)
+				|| (CollectionUtils.size(config.getPreviousCQLModel().getValueSetList()) != numberOfValuesets)
+				|| (CollectionUtils.size(config.getPreviousCQLModel().getCodeList()) != numberOfCodes);
 	}
 	
 	private boolean hasMissingCodesystem() {

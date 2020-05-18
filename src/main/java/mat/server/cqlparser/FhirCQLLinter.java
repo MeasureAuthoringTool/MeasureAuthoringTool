@@ -4,7 +4,6 @@ import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLQualityDataSetDTO;
-import mat.shared.CQLError;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
@@ -44,10 +43,10 @@ public class FhirCQLLinter extends CQLLinter  {
         ParseTree tree = parser.library();
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(this, tree);
-        doPostProcessing(parser, tokens);
+        doPostProcessing(tokens);
     }
 
-    private void doPostProcessing(cqlParser parser, CommonTokenStream tokens) {
+    private void doPostProcessing(CommonTokenStream tokens) {
         if(isCommentInNoCommentZone(tokens)) {
             hasInvalidEdits = true;
         }
@@ -61,9 +60,7 @@ public class FhirCQLLinter extends CQLLinter  {
             hasInvalidEdits = true;
         }
 
-        if((CollectionUtils.size(config.getPreviousCQLModel().getCqlIncludeLibrarys()) != numberOfIncludedLibraries)
-                || (CollectionUtils.size(config.getPreviousCQLModel().getValueSetList()) != numberOfValuesets)
-                || (CollectionUtils.size(config.getPreviousCQLModel().getCodeList()) != numberOfCodes)) {
+        if(hasInvalidSizes()) {
             hasInvalidEdits = true;
         }
 
@@ -75,6 +72,12 @@ public class FhirCQLLinter extends CQLLinter  {
             this.warningMessages.add("Changes made to the CQL library declaration and model declaration can not be saved through the CQL Library Editor. "
                     + "Please make those changes in the appropriate areas of the CQL Workspace.");
         }
+    }
+
+    private boolean hasInvalidSizes() {
+        return (CollectionUtils.size(config.getPreviousCQLModel().getCqlIncludeLibrarys()) != numberOfIncludedLibraries)
+                || (CollectionUtils.size(config.getPreviousCQLModel().getValueSetList()) != numberOfValuesets)
+                || (CollectionUtils.size(config.getPreviousCQLModel().getCodeList()) != numberOfCodes);
     }
 
     private boolean hasMissingCodesystem() {

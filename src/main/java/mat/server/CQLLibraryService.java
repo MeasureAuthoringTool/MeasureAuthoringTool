@@ -444,6 +444,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             }
         }
 
+        return versionAndUpdateDB(libraryId,isMajor,version,fhirLibPackageRes,result);
+    }
+
+    private SaveCQLLibraryResult versionAndUpdateDB(String libraryId,boolean isMajor, String version,FhirLibraryPackageResult fhirLibPackageRes,SaveCQLLibraryResult result) {
         CQLLibrary library = cqlLibraryDAO.find(libraryId);
         if (library != null) {
             String versionNumber = null;

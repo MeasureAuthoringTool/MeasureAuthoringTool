@@ -551,11 +551,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.vladmihalcea</groupId>
-            <artifactId>hibernate-types-52</artifactId>
-            <version>2.9.9</version>
-        </dependency>
-        <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-structures-r4</artifactId>
             <version>${hapi-fhir-version}</version>

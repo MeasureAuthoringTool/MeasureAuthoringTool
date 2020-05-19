@@ -13,16 +13,16 @@
             <not><columnExists tableName="CQL_LIBRARY_EXPORT" columnName="FHIR_XML"/></not>
         </preConditions>
         <addColumn tableName="MEASURE_EXPORT">
-            <column name="ELM_JSON" type="JSON"/>
+            <column name="ELM_JSON" type="longtext"/>
         </addColumn>
         <addColumn tableName="MEASURE_EXPORT">
             <column name="FHIR_XML" type="longtext"/>
         </addColumn>
         <addColumn tableName="MEASURE_EXPORT">
-            <column name="FHIR_LIBS_JSON" type="JSON"/>
+            <column name="FHIR_LIBS_JSON" type="longtext"/>
         </addColumn>
         <addColumn tableName="CQL_LIBRARY_EXPORT">
-            <column name="ELM_JSON" type="JSON"/>
+            <column name="ELM_JSON" type="longtext"/>
         </addColumn>
         <addColumn tableName="CQL_LIBRARY_EXPORT">
             <column name="FHIR_XML" type="longtext"/>

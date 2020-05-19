@@ -424,7 +424,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             result.setFailureReason(ConstantMessages.INVALID_CQL_DATA);
             return result;
         }
-        boolean isFhir = StringUtils.equals(cqlResult.getCqlModel().getUsingModel(), "FHIR");
+        boolean isFhir = StringUtils.equals(cqlResult.getCqlModel().getUsingModel(), ModelTypeHelper.FHIR);
 
         if (isFhir) {
             fhirCqlLibraryService.pushCqlLib(cqlLibrary.getId());

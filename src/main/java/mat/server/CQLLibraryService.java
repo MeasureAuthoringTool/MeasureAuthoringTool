@@ -1000,9 +1000,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
             String cqlXml = getCQLLibraryXml(cqlLibrary);
 
+            boolean isFhir = cqlLibrary.isFhirLibrary();
             CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(),
-                    MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()),
-                    QDMUtil.QDM_MODEL_IDENTIFIER, cqlLibrary.getQdmVersion());
+                    MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(),cqlLibrary.getVersion()),
+                    isFhir ? "FHIR" : QDMUtil.QDM_MODEL_IDENTIFIER ,
+                    isFhir ? cqlLibrary.getQdmVersion() : cqlLibrary.getFhirVersion());
 
             CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
             config.setPreviousCQLModel(previousModel);
@@ -1263,10 +1265,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
     private void lintAndAddToResult(SaveUpdateCQLResult result, CQLLibrary cqlLibrary) {
         if (cqlLibrary.isDraft()) {
-            boolean isFhir = StringUtils.equals(cqlLibrary.getLibraryModelType(), "FHIR");
+            boolean isFhir = cqlLibrary.isFhirLibrary();
             CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(),
                     MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()),
-                    isFhir ? "FHIR" : "QDM", isFhir ? cqlLibrary.getFhirVersion() : cqlLibrary.getQdmVersion());
+                    isFhir ? "FHIR" : "QDM",
+                    isFhir ? cqlLibrary.getFhirVersion() : cqlLibrary.getQdmVersion());
 
             config.setPreviousCQLModel(result.getCqlModel());
             CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);

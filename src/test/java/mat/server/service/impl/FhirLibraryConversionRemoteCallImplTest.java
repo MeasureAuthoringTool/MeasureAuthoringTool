@@ -24,7 +24,7 @@ class FhirLibraryConversionRemoteCallImplTest {
     private RestTemplate restTemplate;
 
     @InjectMocks
-    private FhirLibraryConversionRemoteCallImpl fhirLibraryConversionRemoteCall;
+    private FhirLibraryRemoteCallImpl fhirLibraryConversionRemoteCall;
 
     @Test
     public void testConvert() {

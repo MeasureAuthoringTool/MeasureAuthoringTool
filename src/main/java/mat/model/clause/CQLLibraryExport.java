@@ -8,8 +8,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
+@TypeDefs({
+		@TypeDef(name = "json", typeClass = JsonStringType.class),
+		@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 @Entity
 @Table(name="CQL_LIBRARY_EXPORT")
 public class CQLLibraryExport {
@@ -31,6 +40,13 @@ public class CQLLibraryExport {
 	
 	@Column(name="JSON")
 	private String json;
+
+	@Column(name="FHIR_XML")
+	private String fhirXml;
+
+	@Column(name="ELM_JSON")
+	@Type( type = "json" )
+	private String elmJson;
 
 	public String getId() {
 		return id;
@@ -70,8 +86,21 @@ public class CQLLibraryExport {
 
 	public void setJson(String json) {
 		this.json = json;
-	} 
-	
-	
-	
+	}
+
+	public String getFhirXml() {
+		return fhirXml;
+	}
+
+	public void setFhirXml(String fhirXml) {
+		this.fhirXml = fhirXml;
+	}
+
+	public String getElmJson() {
+		return elmJson;
+	}
+
+	public void setElmJson(String elmJson) {
+		this.elmJson = elmJson;
+	}
 }

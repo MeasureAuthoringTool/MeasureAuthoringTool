@@ -1,10 +1,9 @@
 package mat.model.clause;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
-import java.sql.SQLException;
+import mat.hibernate.HibernateConf;
+import mat.server.util.XmlProcessor;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,22 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.GenericGenerator;
-
-import mat.hibernate.HibernateConf;
-import mat.server.util.XmlProcessor;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
-
-@TypeDefs({
-		@TypeDef(name = "json", typeClass = JsonStringType.class),
-		@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-})
 @Entity
 @Table(name = "MEASURE_EXPORT")
 public class MeasureExport {
@@ -163,7 +152,6 @@ public class MeasureExport {
 	}
 
 	@Column(name = "ELM_JSON")
-	@Type( type = "json" )
 	public String getElmJson() {
 		return elmJson;
 	}
@@ -191,7 +179,6 @@ public class MeasureExport {
 	}
 
 	@Column(name = "FHIR_LIBS_JSON")
-	@Type( type = "json" )
 	public String getFhirLibsJson() {
 		return fhirLibsJson;
 	}

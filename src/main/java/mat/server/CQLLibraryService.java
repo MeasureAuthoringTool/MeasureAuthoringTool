@@ -426,10 +426,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         }
         boolean isFhir = StringUtils.equals(cqlResult.getCqlModel().getUsingModel(), ModelTypeHelper.FHIR);
 
-        if (isFhir) {
-            fhirCqlLibraryService.pushCqlLib(cqlLibrary.getId());
-            fhirLibPackageRes = fhirCqlLibraryService.packageCqlLib(cqlLibrary.getId());
-        } else {
+        if (!isFhir) {
             List<String> usedLibraries = cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries();
 
             String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
@@ -444,10 +441,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             }
         }
 
-        return versionAndUpdateDB(libraryId,isMajor,version,fhirLibPackageRes,result);
+        return versionAndUpdateDB(libraryId,isMajor,version,result);
     }
 
-    private SaveCQLLibraryResult versionAndUpdateDB(String libraryId,boolean isMajor, String version,FhirLibraryPackageResult fhirLibPackageRes,SaveCQLLibraryResult result) {
+    private SaveCQLLibraryResult versionAndUpdateDB(String libraryId,boolean isMajor, String version,SaveCQLLibraryResult result) {
         CQLLibrary library = cqlLibraryDAO.find(libraryId);
         if (library != null) {
             String versionNumber = null;
@@ -472,7 +469,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 if (isMajor) {
                     if (!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION)) {
                         logger.info("Inside saveFinalizedVersion: incrementVersionNumberAndSave Start");
-                        return incrementVersionNumberAndSave(majorVersionNumber, "1", library, fhirLibPackageRes);
+                        return incrementVersionNumberAndSave(majorVersionNumber, "1", library);
                     } else {
                         logger.info("Inside saveFinalizedVersion: returnFailureReason  isMajor Start");
                         result.setFailureReason(SaveCQLLibraryResult.REACHED_MAXIMUM_MAJOR_VERSION);
@@ -483,7 +480,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                     if (!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)) {
                         versionNumber = versionArr[0] + "." + versionArr[1];
                         logger.info("Inside saveFinalizedVersion: incrementVersionNumberAndSave Start");
-                        return incrementVersionNumberAndSave(versionNumber, "0.001", library, fhirLibPackageRes);
+                        return incrementVersionNumberAndSave(versionNumber, "0.001", library);
                     } else {
                         logger.info("Inside saveFinalizedVersion: returnFailureReason NOT isMajor Start");
                         result.setFailureReason(SaveCQLLibraryResult.REACHED_MAXIMUM_MINOR_VERSION);
@@ -496,7 +493,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 result.setFailureReason(SaveCQLLibraryResult.REACHED_MAXIMUM_VERSION);
                 result.setSuccess(false);
                 return result;
-
             }
         } else {
             result.setFailureReason(SaveCQLLibraryResult.INVALID_DATA);
@@ -586,8 +582,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
     private SaveCQLLibraryResult incrementVersionNumberAndSave(String maximumVersionNumber,
                                                                String incrementBy,
-                                                               CQLLibrary library,
-                                                               FhirLibraryPackageResult fhirPackageResult) {
+                                                               CQLLibrary library) {
         boolean isFhir = library.isFhirLibrary();
         BigDecimal mVersion = new BigDecimal(maximumVersionNumber);
         mVersion = mVersion.add(new BigDecimal(incrementBy));
@@ -617,7 +612,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         cqlLibraryDAO.save(library);
 
         if (isFhir) {
-            saveFhirCQLLibraryExport(library, fhirPackageResult);
+            fhirCqlLibraryService.pushCqlLib(library.getId());
+            saveFhirCQLLibraryExport(library, fhirCqlLibraryService.packageCqlLib(library.getId()));
         } else {
             saveQdmCQLLibraryExport(library, getCQLLibraryXml(library));
         }

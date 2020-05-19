@@ -1,5 +1,7 @@
 package mat.model.clause;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,17 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
-
-@TypeDefs({
-		@TypeDef(name = "json", typeClass = JsonStringType.class),
-		@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-})
 @Entity
 @Table(name="CQL_LIBRARY_EXPORT")
 public class CQLLibraryExport {
@@ -45,7 +36,6 @@ public class CQLLibraryExport {
 	private String fhirXml;
 
 	@Column(name="ELM_JSON")
-	@Type( type = "json" )
 	private String elmJson;
 
 	public String getId() {

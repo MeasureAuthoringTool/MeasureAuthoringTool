@@ -1004,7 +1004,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(),
                     MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(),cqlLibrary.getVersion()),
                     isFhir ? "FHIR" : QDMUtil.QDM_MODEL_IDENTIFIER ,
-                    isFhir ? cqlLibrary.getQdmVersion() : cqlLibrary.getFhirVersion());
+                    isFhir ? cqlLibrary.getFhirVersion() : cqlLibrary.getQdmVersion());
 
             CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
             config.setPreviousCQLModel(previousModel);

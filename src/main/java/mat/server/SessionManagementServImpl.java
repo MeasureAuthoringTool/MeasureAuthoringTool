@@ -1,70 +1,81 @@
 package mat.server;
 
 
-import mat.DTO.UserPreferenceDTO;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import mat.client.login.service.CurrentUserInfo;
 import mat.client.login.service.SessionManagementService;
+import mat.client.login.service.ShortUserInfo;
+import mat.DTO.UserPreferenceDTO;
 import mat.model.User;
 import mat.model.UserPreference;
+import mat.server.model.MatUserDetails;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.UserService;
 
 
-/**
- * The Class SessionManagementServImpl.
- */
-public class SessionManagementServImpl extends SpringRemoteServiceServlet  implements SessionManagementService {
+public class SessionManagementServImpl extends SpringRemoteServiceServlet implements SessionManagementService {
 
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-	
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public SessionManagementService.Result getCurrentUser() {
-		SessionManagementService.Result result = new SessionManagementService.Result();
-		result.userId = LoggedInUserUtil.getLoggedInUser();
-		User user= getUserService().getById(result.userId);
-		result.userRole = user.getSecurityRole().getDescription();
-		result.loginId = user.getLoginId();
-		result.userEmail = user.getEmailAddress();
-		result.signInDate = user.getSignInDate();
-		result.signOutDate = user.getSignOutDate();
-		result.userFirstName = user.getFirstName();
-		result.userLastName = user.getLastName();
-		result.currentSessionId = getThreadLocalRequest().getSession().getId();
-		result.activeSessionId = user.getSessionId();
-		UserPreference userPreference = user.getUserPreference();
-		UserPreferenceDTO userPreferenceDTO = new UserPreferenceDTO();
-		if(userPreference != null) {
-			userPreferenceDTO.setFreeTextEditorEnabled(userPreference.isFreeTextEditorEnabled());
-		}
-		result.userPreference = userPreferenceDTO;
-		return result;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.login.service.SessionManagementService#renewSession()
-	 */
-	@Override 
-	public void renewSession() {
-		// do nothing
-	}
+    @Autowired
+    private UserService userService;
 
-	/**
-	 * Gets the user service.
-	 * 
-	 * @return the user service
-	 */
-	private UserService getUserService() {
-		return (UserService)context.getBean("userService");
-	}
+    @Autowired
+    private MeasureLibraryService measureLibraryService;
 
-	@Override
-	public String getCurrentReleaseVersion(){
-		return getMeasureLibraryService().getCurrentReleaseVersion();
-	}
-	
-	private MeasureLibraryService getMeasureLibraryService(){
-		return (MeasureLibraryService) context.getBean("measureLibraryService");
-	}
+    @Override
+    public CurrentUserInfo getCurrentUser() {
+        CurrentUserInfo result = new CurrentUserInfo();
+        result.userId = LoggedInUserUtil.getLoggedInUser();
+        User user = userService.getById(result.userId);
+        result.userRole = user.getSecurityRole().getDescription();
+        result.loginId = user.getLoginId();
+        result.userEmail = user.getEmailAddress();
+        result.signInDate = user.getSignInDate();
+        result.signOutDate = user.getSignOutDate();
+        result.userFirstName = user.getFirstName();
+        result.userLastName = user.getLastName();
+        result.currentSessionId = getThreadLocalRequest().getSession().getId();
+        result.activeSessionId = user.getSessionId();
+        result.organizationName = user.getOrganizationName();
+        result.harpId = user.getHarpId();
+        UserPreference userPreference = user.getUserPreference();
+        UserPreferenceDTO userPreferenceDTO = new UserPreferenceDTO();
+        if (userPreference != null) {
+            userPreferenceDTO.setFreeTextEditorEnabled(userPreference.isFreeTextEditorEnabled());
+        }
+        result.userPreference = userPreferenceDTO;
+        result.users = userService.getAllActiveUserDetailsByHarpId(user.getHarpId()).stream()
+                .map(this::asUserInfo)
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+    private ShortUserInfo asUserInfo(MatUserDetails d) {
+        ShortUserInfo info = new ShortUserInfo();
+        info.loginId = d.getLoginId();
+        info.harpId = d.getHarpId();
+        info.userEmail = d.getEmailAddress();
+        info.userId = d.getId();
+        info.userFirstName = d.getUsername();
+        info.userLastName = d.getUserLastName();
+        info.organizationName = d.getOrganization().getOrganizationName();
+        info.role = d.getRoles().getDescription();
+        return info;
+    }
+
+
+    @Override
+    public String getCurrentReleaseVersion() {
+        return getMeasureLibraryService().getCurrentReleaseVersion();
+    }
+
+    private MeasureLibraryService getMeasureLibraryService() {
+        return measureLibraryService;
+    }
 }

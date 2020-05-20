@@ -11,9 +11,6 @@ import java.util.logging.Logger;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.json.client.JSONObject;
@@ -46,6 +43,7 @@ import mat.client.event.HarpSupportEvent;
 import mat.client.event.LogoffEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.ReturnToLoginEvent;
+import mat.client.event.SwitchUserEvent;
 import mat.client.event.TimedOutEvent;
 import mat.client.export.ManageExportView;
 import mat.client.harp.HarpUserVerificationEvent;
@@ -53,8 +51,7 @@ import mat.client.harp.HarpUserVerificationPresenter;
 import mat.client.harp.HarpUserVerificationView;
 import mat.client.harp.SuccessfulHarpLoginEvent;
 import mat.client.login.LoginModel;
-import mat.client.login.service.SessionManagementService;
-import mat.client.login.service.SessionManagementService.Result;
+import mat.client.login.service.CurrentUserInfo;
 import mat.client.measure.ComponentMeasureDisplay;
 import mat.client.measure.ManageMeasureHistoryView;
 import mat.client.measure.ManageMeasurePresenter;
@@ -87,31 +84,27 @@ import static mat.shared.HarpConstants.OKTA_TOKEN_STORAGE;
  */
 public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserver {
 
-    private final Map<String, String> harpUserInfo = new HashMap<>();
-
     private static final Logger logger = Logger.getLogger(Mat.class.getSimpleName());
-
-    private Panel content;
-
-    private HarpUserVerificationPresenter harpUserVerificationPresenter;
-
     public static boolean harpUserVerificationInProgress = false;
-
-    class EnterKeyDownHandler implements KeyDownHandler {
-
-        final private int counter;
-
-        public EnterKeyDownHandler(int index) {
-            counter = index;
-        }
-
-        @Override
-        public void onKeyDown(KeyDownEvent event) {
-            if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                mainTabLayout.selectTab(counter);
-            }
-        }
-    }
+    private final ListBoxCodeProvider listBoxCodeProvider = new ListBoxCodeProvider();
+    private final Map<String, String> harpUserInfo = new HashMap<>();
+    private Panel content;
+    private HarpUserVerificationPresenter harpUserVerificationPresenter;
+    private List<MatPresenter> presenterList;
+    private MatPresenter adminPresenter;
+    private MatPresenter myAccountPresenter;
+    private ClosingEvent closingEvent;
+    private String currentUserRole = ClientConstants.USER_STATUS_NOT_LOGGEDIN;
+    private MatTabLayoutPanel mainTabLayout;
+    private String mainTabLayoutID;
+    private ManageUmlsPresenter manageUmlsPresenter;
+    private MeasureComposerPresenter measureComposer;
+    private ManageMeasurePresenter measureLibrary;
+    private ManageCQLLibraryAdminPresenter cqlLibraryAdminPresenter;
+    private CqlComposerPresenter cqlComposer;
+    private CqlLibraryPresenter cqlLibrary;
+    private ManageAdminReportingPresenter reportingPresenter;
+    private int tabIndex;
 
     public static void focusSkipLists(String skipstr) {
         Widget widget = SkipListBuilder.buildSkipList(skipstr);
@@ -131,24 +124,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         }
     }
 
-    private final ListBoxCodeProvider listBoxCodeProvider = new ListBoxCodeProvider();
-    private List<MatPresenter> presenterList;
-    private MatPresenter adminPresenter;
-    private MatPresenter myAccountPresenter;
-    private ClosingEvent closingEvent;
-    private String currentUserRole = ClientConstants.USER_STATUS_NOT_LOGGEDIN;
-    private MatTabLayoutPanel mainTabLayout;
-    private String mainTabLayoutID;
-    private ManageUmlsPresenter manageUmlsPresenter;
-    private MeasureComposerPresenter measureComposer;
-    private ManageMeasurePresenter measureLibrary;
-    private ManageCQLLibraryAdminPresenter cqlLibraryAdminPresenter;
-    private CqlComposerPresenter cqlComposer;
-    private CqlLibraryPresenter cqlLibrary;
-    private ManageAdminReportingPresenter reportingPresenter;
-    private int tabIndex;
-
-    private final AsyncCallback<SessionManagementService.Result> initSessionCallback = new AsyncCallback<SessionManagementService.Result>() {
+    private final AsyncCallback<CurrentUserInfo> loadCurrentUserCallback = new AsyncCallback<CurrentUserInfo>() {
 
         @Override
         public void onFailure(final Throwable caught) {
@@ -157,7 +133,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         }
 
         @Override
-        public void onSuccess(final SessionManagementService.Result result) {
+        public void onSuccess(final CurrentUserInfo result) {
             logger.log(Level.INFO, "SessionService::getCurrentUser -> onSuccess");
             MatContext.get().getCurrentReleaseVersion(new AsyncCallback<String>() {
 
@@ -195,15 +171,36 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                     }
                 }
 
-                private boolean checkIfResultIsNotNull(Result result) {
+                private boolean checkIfResultIsNotNull(CurrentUserInfo result) {
                     return result != null && result.activeSessionId != null && result.currentSessionId != null;
                 }
             });
         }
     };
 
+    private void switchUser(String newUserId) {
+        logger.log(Level.INFO, "Switching to user: " + newUserId);
+        showLoadingMessage();
+        MatContext.get().getLoginService().switchUser(harpUserInfo, newUserId, new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "LoginService::.switchUser -> onFailure: " + caught.getMessage(), caught);
+                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                logger.log(Level.INFO, "LoginService::.switchRole -> onSuccess");
+                getLinksPanel().clear();
+                getContentPanel().clear();
+                MatContext.get().getCurrentUser(loadCurrentUserCallback);
+            }
+        });
+    }
+
     private void switchRole(String newRole) {
         logger.log(Level.INFO, "Switching to role: " + newRole);
+        showLoadingMessage();
         MatContext.get().getLoginService().switchRole(newRole, new AsyncCallback<Void>() {
 
             @Override
@@ -347,8 +344,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             content.clear();
             harpUserVerificationInProgress = true;
             buildLinksPanel();
-            setSignedInName(harpUserInfo.get(HarpConstants.HARP_FULLNAME));
             harpUserVerificationPresenter.go(content);
+        });
+
+        MatContext.get().getEventBus().addHandler(SwitchUserEvent.TYPE, event -> {
+            logger.log(Level.INFO, "Processing SwitchUserEvent");
+            switchUser(event.getNewUserId());
         });
 
         MatContext.get().getEventBus().addHandler(ReturnToLoginEvent.TYPE, event -> {
@@ -369,7 +370,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         if (oktaToken != null) {
             // Get user info from the Tokens in Local Storage.
-            String accessToken = getUserInfoFromTokens(JSONParser.parseStrict(oktaToken));
+            parseOktaToken(oktaToken);
+            String accessToken = MatContext.get().getAccessToken();
+
             // Validate tokens
             MatContext.get().getHarpService().validateToken(accessToken, new AsyncCallback<Boolean>() {
                 @Override
@@ -386,7 +389,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                 }
             });
         } else {
-            initPage();
+            // Invalid token
+            logger.log(Level.INFO, "OktaToken is missing. Logoff the user.");
+            MatContext.get().getEventBus().fireEvent(new LogoffEvent());
         }
     }
 
@@ -427,7 +432,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         logger.log(Level.INFO, "linkHarpMatAccounts - exit");
     }
 
-    private String getUserInfoFromTokens(JSONValue tokens) {
+    private void parseOktaToken(String oktaToken) {
+        JSONValue tokens = JSONParser.parseStrict(oktaToken);
         String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().stringValue();
 
         JSONObject idTokenObj = tokens.isObject().get("idToken").isObject();
@@ -443,7 +449,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         MatContext.get().setAccessToken(accessToken);
         MatContext.get().setHarpUserInfo(harpUserInfo);
 
-        return accessToken;
     }
 
     private void initPage() {
@@ -451,7 +456,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         MatContext.get().setListBoxCodeProvider(listBoxCodeProvider);
 
         // Init session with current user info.
-        MatContext.get().getCurrentUser(initSessionCallback);
+        MatContext.get().getCurrentUser(loadCurrentUserCallback);
 
         History.addValueChangeHandler(event -> {
             final String historyToken = event.getValue();
@@ -615,7 +620,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         setHeader(MatContext.get().getMatVersion().replaceAll("[a-zA-Z]", ""), getHomeLink());
 
-        setSignedInAsName(MatContext.get().getLoggedInUserFirstName(), MatContext.get().getLoggedInUserLastName());
+        setSignedInAsNameOrg();
 
         getHomeLink().addClickHandler(event -> MatContext.get().redirectToMatPage(ClientConstants.HTML_MAT));
 
@@ -624,8 +629,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         getSignOut().addClickHandler(event -> MatContext.get().getEventBus().fireEvent(new LogoffEvent()));
 
         setIndicatorsHidden();
-
-        hideLoadingMessage();
 
         if (!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
             mainTabLayout.selectTab(presenterList.indexOf(measureLibrary));
@@ -666,6 +669,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                 Mat.focusSkipLists("MainContent");
             }
         });
+
+        hideLoadingMessage();
 
         MatContext.get().restartTimeoutWarning();
     }

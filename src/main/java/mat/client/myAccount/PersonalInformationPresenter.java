@@ -214,7 +214,11 @@ public class PersonalInformationPresenter implements MatPresenter {
                         display.getOID().setValue(currentModel.getOid());
                         display.getFreeTextEditorCheckBox().setValue(currentModel.isEnableFreeTextEditor());
 
-                        Mat.setSignedInAsName(currentModel.getFirstName(), currentModel.getLastName());
+                        MatContext.get().getCurrentUserInfo().userFirstName = currentModel.getFirstName();
+						MatContext.get().getCurrentUserInfo().userLastName = currentModel.getLastName();
+						MatContext.get().getCurrentUserInfo().organizationName = currentModel.getOrganization();
+
+                        Mat.setSignedInAsNameOrg();
                         MatContext.get().getLoggedInUserPreference().setFreeTextEditorEnabled(currentModel.isEnableFreeTextEditor());
                     } else {
                         List<String> messages = new ArrayList<String>();

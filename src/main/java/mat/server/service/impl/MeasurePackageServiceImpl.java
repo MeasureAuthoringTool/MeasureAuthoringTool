@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import mat.client.measure.FhirMeasurePackageResult;
+import mat.server.service.FhirMeasureService;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -125,6 +127,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     @Autowired
     private CompositeMeasurePackageValidator compositeMeasurePackageValidator;
 
+    @Autowired
+    private FhirMeasureService fhirMeasureService;
+
     @Value("${mat.measure.current.release.version}")
     private String currentReleaseVersion;
 
@@ -218,12 +223,28 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     }
 
     @Override
-    public void createPackageArtifacts(final String measureId, String releaseVersion, MeasureExport export) {
+    public void createPackageArtifacts(Measure measure, MeasureExport export) {
+        String measureId = measure.getId();
+        String releaseVersion = measure.getReleaseVersion();
         export.setHqmf(MeasureArtifactGenerator.getHQMFArtifact(measureId, releaseVersion));
         export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
-        export.setCql(MeasureArtifactGenerator.getCQLArtifact(measureId));
-        export.setElm(MeasureArtifactGenerator.getELMArtifact(measureId));
-        export.setJson(MeasureArtifactGenerator.getJSONArtifact(measureId));
+
+        if (measure.isFhirMeasure()) {
+            measureExportDAO.save(export);
+            FhirMeasurePackageResult pkg = fhirMeasureService.packageMeasure(measureId);
+            export.setCql(pkg.getMeasureLibCql());
+            export.setElm(pkg.getMeasureLibElmXml());
+            export.setElmJson(pkg.getMeasureLibElmJson());
+            export.setFhirLibsJson(pkg.getInludedLibsJson());
+            export.setFhirLibsXml(pkg.getInludedLibsXml());
+            export.setJson(pkg.getMeasureJson());
+            export.setFhirXml(pkg.getMeasureXml());
+            //TO DO figure out how to store CQL_LIBRARY_EXPORT.
+        } else {
+            export.setCql(MeasureArtifactGenerator.getCQLArtifact(measureId));
+            export.setElm(MeasureArtifactGenerator.getELMArtifact(measureId));
+            export.setJson(MeasureArtifactGenerator.getJSONArtifact(measureId));
+        }
 
         measureExportDAO.save(export);
     }
@@ -512,7 +533,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         measureDAO.save(measure);
         measureExportDAO.save(export);
         if (shouldCreateArtifacts) {
-            createPackageArtifacts(measure.getId(), measure.getReleaseVersion(), export);
+            createPackageArtifacts(measure, export);
         }
     }
 

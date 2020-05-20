@@ -283,7 +283,9 @@ public class ExportSimpleXML {
         removeNode("/measure/subTreeLookUp", originalDoc);
         removeNode("/measure/measureDetails", originalDoc);
         expandAndHandleGrouping(originalDoc, measure);
-        removeUnusedCQLArtifacts(originalDoc, cqlLibraryDAO, cqlModel);
+        if (!cqlModel.isFhir()) {
+            removeUnusedCQLArtifacts(originalDoc, cqlLibraryDAO, cqlModel);
+        }
         modifyMeasureGroupingSequence(originalDoc);
         removeEmptyCommentsFromPopulationLogic(originalDoc);
 
@@ -418,7 +420,7 @@ public class ExportSimpleXML {
         List<String> expressionList = new ArrayList<String>();
         expressionList.addAll(usedCQLArtifactHolder.getCqlDefFromPopSet());
         expressionList.addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
-        SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
+        SaveUpdateCQLResult result = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
 
 
         result.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(usedCQLArtifactHolder.getCqlDefFromPopSet());

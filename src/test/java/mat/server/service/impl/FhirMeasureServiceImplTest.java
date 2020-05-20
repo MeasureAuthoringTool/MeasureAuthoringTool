@@ -19,7 +19,7 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
 import mat.server.service.CodeListService;
-import mat.server.service.FhirOrchestrationGatewayService;
+import mat.server.service.FhirMeasureRemoteCall;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
 import mat.shared.SaveUpdateCQLResult;
@@ -47,7 +47,7 @@ import static org.mockito.Mockito.doThrow;
 public class FhirMeasureServiceImplTest {
 
     @Mock
-    private FhirOrchestrationGatewayService fhirOrchestrationGatewayService;
+    private FhirMeasureRemoteCall fhirOrchestrationGatewayService;
 
     @Mock
     private MeasureLibraryService measureLibraryService;

@@ -291,7 +291,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Autowired
     private MATPropertiesService propertiesService;
 
-
     @Autowired
     private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
 
@@ -2013,7 +2012,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             measureExport.setSimpleXML(updatedSimpleXML);
             measureExportDAO.save(measureExport);
-            measurePackageService.createPackageArtifacts(measure.getId(), measure.getReleaseVersion(), measureExport);
+            measurePackageService.createPackageArtifacts(measure, measureExport);
         }
     }
 
@@ -3437,27 +3436,34 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML);
 
-        SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null);
-
-        if (cqlResult.getCqlErrors() != null && cqlResult.getCqlErrors().isEmpty()) {
-            String exportedXML = ExportSimpleXML.export(newXml, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel, measureTypeDAO);
-
-            CQLModel model = CQLUtilityClass.getCQLModelFromXML(exportedXML);
-
-            SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(model, cqlLibraryDAO,
-                    getExpressionListFromCqlModel(model));
-
-            if (result.getCqlErrors() != null && !result.getCqlErrors().isEmpty()) {
-                isInvalid = true;
-            } else {
-                isInvalid = !CQLUtil.validateDatatypeCombinations(model,
-                        result.getUsedCQLArtifacts().getValueSetDataTypeMap(),
-                        result.getUsedCQLArtifacts().getCodeDataTypeMap());
-            }
+        if (cqlModel.isFhir()) {
+            String cql = CQLUtilityClass.getCqlString(cqlModel,"").getLeft();
+            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cql);
+            SaveUpdateCQLResult cqlResult = getCqlService().generateParsedCqlObject(cqlValidationResponse, cqlModel);
+            return cqlResult.getCqlErrors().size() != 0;
         } else {
-            isInvalid = true;
+            SaveUpdateCQLResult cqlResult = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null);
+
+            if (cqlResult.getCqlErrors() != null && cqlResult.getCqlErrors().isEmpty()) {
+                String exportedXML = ExportSimpleXML.export(newXml, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel, measureTypeDAO);
+
+                CQLModel model = CQLUtilityClass.getCQLModelFromXML(exportedXML);
+
+                SaveUpdateCQLResult result = CQLUtil.parseQDMCQLLibraryForErrors(model, cqlLibraryDAO,
+                        getExpressionListFromCqlModel(model));
+
+                if (result.getCqlErrors() != null && !result.getCqlErrors().isEmpty()) {
+                    isInvalid = true;
+                } else {
+                    isInvalid = !CQLUtil.validateDatatypeCombinations(model,
+                            result.getUsedCQLArtifacts().getValueSetDataTypeMap(),
+                            result.getUsedCQLArtifacts().getCodeDataTypeMap());
+                }
+            } else {
+                isInvalid = true;
+            }
+            return isInvalid;
         }
-        return isInvalid;
     }
 
     private List<String> getExpressionListFromCqlModel(CQLModel cqlModel) {

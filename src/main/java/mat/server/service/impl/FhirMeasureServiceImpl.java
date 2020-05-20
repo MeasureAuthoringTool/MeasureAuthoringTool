@@ -3,6 +3,7 @@ package mat.server.service.impl;
 import java.io.IOException;
 import java.util.Optional;
 
+import mat.client.measure.FhirMeasurePackageResult;
 import mat.dto.fhirconversion.ConversionOutcome;
 import mat.dto.fhirconversion.ConversionResultDto;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +31,7 @@ import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
 import mat.server.service.FhirMeasureService;
-import mat.server.service.FhirOrchestrationGatewayService;
+import mat.server.service.FhirMeasureRemoteCall;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.util.XmlProcessor;
@@ -40,7 +41,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
     public static boolean TEST_MODE = false;
     private static final Log logger = LogFactory.getLog(FhirMeasureServiceImpl.class);
 
-    private final FhirOrchestrationGatewayService fhirOrchestrationGatewayService;
+    private final FhirMeasureRemoteCall fhirMeasureRemote;
 
     private final MeasureLibraryService measureLibraryService;
 
@@ -60,7 +61,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
     private final CqlVisitorFactory cqlVisitorFactory;
 
-    public FhirMeasureServiceImpl(FhirOrchestrationGatewayService fhirOrchestrationGatewayService,
+    public FhirMeasureServiceImpl(FhirMeasureRemoteCall fhirOrchestrationGatewayService,
                                   MeasureLibraryService measureLibraryService,
                                   MeasureCloningService measureCloningService,
                                   MeasureDAO measureDAO,
@@ -69,7 +70,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                                   CQLService cqlService,
                                   CqlParser cqlParser,
                                   CqlVisitorFactory cqlVisitorFactory) {
-        this.fhirOrchestrationGatewayService = fhirOrchestrationGatewayService;
+        this.fhirMeasureRemote = fhirOrchestrationGatewayService;
         this.measureLibraryService = measureLibraryService;
         this.measureCloningService = measureCloningService;
         this.measureDAO = measureDAO;
@@ -94,7 +95,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
         deleteFhirMeasuresInSet(sourceMeasureDetails.getMeasureSetId());
 
-        ConversionResultDto conversionResult = fhirOrchestrationGatewayService.convert(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
+        ConversionResultDto conversionResult = fhirMeasureRemote.convert(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
         Optional<String> fhirCqlOpt = getFhirCql(conversionResult);
 
         FhirValidationStatus validationStatus = createValidationStatus(conversionResult);
@@ -108,6 +109,11 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         }
 
         return fhirConvertResultResponse;
+    }
+
+    @Override
+    public FhirMeasurePackageResult packageMeasure(String measureId) {
+        return fhirMeasureRemote.packageMeasure(measureId);
     }
 
     /**

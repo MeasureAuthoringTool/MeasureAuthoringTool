@@ -463,7 +463,7 @@ public class CQLUtil {
      * @return the save update CQL result
      */
     public static SaveUpdateCQLResult generateELM(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO) {
-        return parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null, true);
+        return parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null, true);
     }
 
     /**
@@ -474,9 +474,9 @@ public class CQLUtil {
      * @param exprList      the expr list
      * @return the save update CQL result
      */
-    public static SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO,
-                                                               List<String> exprList) {
-        return parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList, false);
+    public static SaveUpdateCQLResult parseQDMCQLLibraryForErrors(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO,
+                                                                  List<String> exprList) {
+        return parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList, false);
     }
 
     public static CQLLinter lint(String cql, CQLLinterConfig config) {
@@ -502,8 +502,8 @@ public class CQLUtil {
      * @param generateELM   the generate ELM
      * @return the save update CQL result
      */
-    public static SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO,
-                                                               List<String> exprList, boolean generateELM) {
+    public static SaveUpdateCQLResult parseQDMCQLLibraryForErrors(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO,
+                                                                  List<String> exprList, boolean generateELM) {
 
         SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
 

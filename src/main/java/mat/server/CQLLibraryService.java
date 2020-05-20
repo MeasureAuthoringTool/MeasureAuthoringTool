@@ -1702,7 +1702,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             }
         }
         return cqlLibraryOwnerReports;
-
     }
 
     @Override

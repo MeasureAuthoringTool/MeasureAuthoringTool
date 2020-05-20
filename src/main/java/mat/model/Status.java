@@ -10,58 +10,59 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import mat.model.User;
-
 @Entity
 @Table(name = "STATUS")
 public class Status implements java.io.Serializable {
 
-	private static final long serialVersionUID = 8333823202893417670L;
-	private String statusId;
-	private String description;
-	private Set<User> users = new HashSet<>(0);
+    private static final long serialVersionUID = 8333823202893417670L;
 
-	public Status() {
-	}
+    public static final String STATUS_ACTIVE = "1";
+    public static final String STATUS_TERMINATED = "2";
 
-	public Status(String statusId, String description) {
-		this.statusId = statusId;
-		this.description = description;
-	}
+    private String statusId;
+    private String description;
+    private Set<User> users = new HashSet<>(0);
 
-	public Status(String statusId, String description, Set<User> users) {
-		this.statusId = statusId;
-		this.description = description;
-		this.users = users;
-	}
+    public Status() {
+    }
 
-	@Id
+    public Status(String statusId, String description) {
+        this.statusId = statusId;
+        this.description = description;
+    }
 
-	@Column(name = "STATUS_ID", unique = true, nullable = false, length = 32)
-	public String getStatusId() {
-		return this.statusId;
-	}
+    public Status(String statusId, String description, Set<User> users) {
+        this.statusId = statusId;
+        this.description = description;
+        this.users = users;
+    }
 
-	public void setStatusId(String statusId) {
-		this.statusId = statusId;
-	}
+    @Id
+    @Column(name = "STATUS_ID", unique = true, nullable = false, length = 32)
+    public String getStatusId() {
+        return this.statusId;
+    }
 
-	@Column(name = "DESCRIPTION", nullable = false, length = 50)
-	public String getDescription() {
-		return this.description;
-	}
+    public void setStatusId(String statusId) {
+        this.statusId = statusId;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    @Column(name = "DESCRIPTION", nullable = false, length = 50)
+    public String getDescription() {
+        return this.description;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "status")
-	public Set<User> getUsers() {
-		return this.users;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "status")
+    public Set<User> getUsers() {
+        return this.users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
 
 }

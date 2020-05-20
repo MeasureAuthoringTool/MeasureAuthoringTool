@@ -16,6 +16,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -60,6 +61,7 @@ import mat.model.UserBonnieAccessInfo;
 import mat.model.UserPassword;
 import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
+import mat.server.model.MatUserDetails;
 import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
 import mat.shared.ConstantMessages;
@@ -410,6 +412,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<MatUserDetails> getAllActiveUserDetailsByHarpId(String harpId) {
+        return userDAO.getAllUserDetailsByHarpId(harpId).stream()
+                .filter(MatUserDetails::isNotLockedOrRevoked)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public HashMap<String, Organization> searchForUsedOrganizations() {
         return userDAO.searchAllUsedOrganizations();
     }
@@ -597,7 +606,7 @@ public class UserServiceImpl implements UserService {
         }
 
         boolean reactivatingUser = false;
-        if (model.isActive() && (user.getStatus() != null) && !user.getStatus().getStatusId().equals("1")) {
+        if (model.isActive() && (user.getStatus() != null) && !user.getStatus().getStatusId().equals(Status.STATUS_ACTIVE)) {
             reactivatingUser = true;
         }
         if (checkEmailNotUnique(model)) {
@@ -627,11 +636,6 @@ public class UserServiceImpl implements UserService {
 
     private boolean checkEmailNotUnique(ManageUsersDetailModel model) {
         User existing = userDAO.findByEmail(model.getEmailAddress());
-        return existing != null && !(existing.getId().equals(model.getKey()));
-    }
-
-    private boolean checkHarpNotUnique(ManageUsersDetailModel model) {
-        User existing = userDAO.findByHarpId(model.getHarpId());
         return existing != null && !(existing.getId().equals(model.getKey()));
     }
 
@@ -846,13 +850,14 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    private boolean checkHarpNotUnique(ManageUsersDetailModel model) {
+        MatUserDetails existing = userDAO.getUserDetailsByHarpId(model.getHarpId());
+        return existing != null && !(existing.getId().equals(model.getKey()));
+    }
+
     @Override
     public boolean isHarpUserLockedRevoked(String harpId) {
-        User user = userDAO.findByHarpId(harpId);
-        return user != null && (user.getStatus().getStatusId().equals("2")
-                || user.getTerminationDate() != null
-                || user.getLockedOutDate() != null
-                || user.getPassword().getPasswordlockCounter() >= 3);
+        return userDAO.getAllUserDetailsByHarpId(harpId).stream().allMatch(MatUserDetails::isLockedOrRevoked);
     }
 
     @Override

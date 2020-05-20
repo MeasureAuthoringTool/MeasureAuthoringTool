@@ -3,10 +3,10 @@ package mat.dao;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import mat.model.Organization;
 import mat.model.User;
 import mat.server.model.MatUserDetails;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserDAO extends IDAO<User, String> {
 	
@@ -27,11 +27,14 @@ public interface UserDAO extends IDAO<User, String> {
 	List<User> searchForNonTerminatedUser();
 
 	/**
-	 * Get user details by Email.
-	 * @param email User's email.
+	 * Get user details by HARP ID.
+	 * Returns only one first record by harp id which is not terminated.
+	 * @param harpId User's HARP ID.
 	 * @return UserDetails for setting login values.
 	 */
-    UserDetails getUserDetailsByHarpId(String harpId);
+    MatUserDetails getUserDetailsByHarpId(String harpId);
+
+	List<MatUserDetails> getAllUserDetailsByHarpId(String harpId);
 
     /**
 	 * User exists.
@@ -70,11 +73,13 @@ public interface UserDAO extends IDAO<User, String> {
 	/**
 	 * Gets the user.
 	 * 
-	 * @param userId
-	 *            the user id
+	 * @param loginId
+	 *            the loginId
 	 * @return the user
 	 */
-	UserDetails getUser(String loginId);
+	MatUserDetails getUserDetailsByLoginId(String loginId);
+
+	MatUserDetails getUserDetailsById(String id);
 	
 	/**
 	 * Save user details.
@@ -160,5 +165,4 @@ public interface UserDAO extends IDAO<User, String> {
 
     boolean findAssociatedHarpId(String harpId);
 
-    User findByHarpId(String harpId);
 }

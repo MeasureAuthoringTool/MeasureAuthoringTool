@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.reflect.Whitebox;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -24,6 +25,7 @@ import mat.dao.SecurityRoleDAO;
 import mat.dao.StatusDAO;
 import mat.dao.UserDAO;
 import mat.model.User;
+import mat.server.model.MatUserDetails;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -100,11 +102,11 @@ public class UserServiceImplTest {
     public void testHarpNotUnique() {
         ManageUsersDetailModel model = newDefaultModel();
 
-        User userWithSameEmail = new User();
+        MatUserDetails userWithSameEmail = new MatUserDetails();
         userWithSameEmail.setId(OTHER_USER_ID);
         userWithSameEmail.setHarpId(DEFAULT_HARP_ID);
 
-        Mockito.when(userDAO.findByHarpId(Mockito.anyString())).thenReturn(userWithSameEmail);
+        Mockito.when(userDAO.getUserDetailsByHarpId(Mockito.anyString())).thenReturn(userWithSameEmail);
 
         SaveUpdateUserResult result = userService.saveUpdateUser(model);
         assertFalse(result.isSuccess());

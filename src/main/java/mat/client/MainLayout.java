@@ -1,8 +1,9 @@
 package mat.client;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.google.gwt.user.client.Window;
 import org.gwtbootstrap3.client.ui.AnchorButton;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
@@ -20,6 +21,7 @@ import org.gwtbootstrap3.client.ui.constants.Toggle;
 
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -32,6 +34,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.IndicatorButton;
+import mat.client.event.SwitchUserEvent;
+import mat.client.login.service.ShortUserInfo;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.MatContext;
@@ -43,13 +47,18 @@ import mat.model.clause.ModelTypeHelper;
 
 public abstract class MainLayout {
 
+    private static final Logger logger = Logger.getLogger(MainLayout.class.getSimpleName());
     private static final int DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS = 500;
     private static final int SPINNER_DIALOG_DELAY_MILLIS = 2000;
     private static final String HEADING = "Measure Authoring Tool";
 
     private static final SpinnerModal SPINNER_MODAL = new SpinnerModal();
     private static final HTML SIMPLE_SPINNER = new HTML("<div class=\"spinner-loading spinner-loading-shadow\">" + ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG + "</div>");
+    private static final String ORG_ROLE_SEP = " @ ";
+    private static final String SWITCH_MAT_ACCOUNT = "Switch MAT account";
+    private static final int MAX_MENU_TITLE = 50;
     private static ListItem signedInAsName = new ListItem();
+    private static ListItem signedInAsOrg = new ListItem();
     private static IndicatorButton showUMLSState;
     private static IndicatorButton showBonnieState;
     private static FocusableWidget skipListHolder;
@@ -201,7 +210,7 @@ public abstract class MainLayout {
     }
 
     public void buildLinksPanel() {
-        if(!Mat.harpUserVerificationInProgress) {
+        if (!Mat.harpUserVerificationInProgress) {
             showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
             showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
 
@@ -249,16 +258,22 @@ public abstract class MainLayout {
         return li;
     }
 
-    public static void setSignedInName(String name) {
+    public static void setSignedInAsNameOrg() {
+        String name = MatContext.get().getLoggedInUserFirstName() + " " + MatContext.get().getLoggedInUserLastName();
         signedInAsName.setText(name);
         signedInAsName.setTitle(name);
         signedInAsName.setStyleName("labelStyling", true);
         signedInAsName.setStyleName("profileText", true);
         signedInAsName.getElement().setTabIndex(0);
+        String orgRole = MatContext.get().getLoggedInUserRole() + ORG_ROLE_SEP + MatContext.get().getCurrentUserInfo().organizationName;
+        signedInAsOrg.setText(trimTitleWithEllipses(orgRole));
+        signedInAsOrg.setTitle(orgRole);
+        signedInAsOrg.setStyleName("profileText", true);
+        signedInAsOrg.getElement().setTabIndex(0);
     }
 
     private void setAccessibilityForLinks() {
-        if(!Mat.harpUserVerificationInProgress) {
+        if (!Mat.harpUserVerificationInProgress) {
             profile.setStyleName(Styles.DROPDOWN);
             profile.getWidget(0).setTitle("MAT Account");
         }
@@ -273,8 +288,10 @@ public abstract class MainLayout {
 
         ddm.add(buildSignedInAs());
         ddm.add(signedInAsName);
+        ddm.add(signedInAsOrg);
+        addUserAccountsMenu(ddm);
         ddm.add(buildDivider());
-        if(!Mat.harpUserVerificationInProgress) {
+        if (!Mat.harpUserVerificationInProgress) {
             ddm.add(profile);
         }
         if (ClientConstants.ADMINISTRATOR.equals(MatContext.get().getLoggedInUserRole())) {
@@ -288,6 +305,46 @@ public abstract class MainLayout {
         return ddm;
     }
 
+    private void addUserAccountsMenu(DropDownMenu ddm) {
+        List<ShortUserInfo> users = MatContext.get().getCurrentUserInfo().users;
+        if (users.size() <= 1) {
+            return;
+        }
+        ddm.add(buildDivider());
+
+        ListItem switchUser = new ListItem();
+        switchUser.setText(SWITCH_MAT_ACCOUNT);
+        switchUser.setTitle(SWITCH_MAT_ACCOUNT);
+        switchUser.getElement().setTabIndex(0);
+        switchUser.addStyleName("labelStyling");
+        switchUser.addStyleName("profileText");
+        ddm.add(switchUser);
+
+        for (ShortUserInfo user : users) {
+            boolean selected = MatContext.get().getLoggedinUserId().equals(user.userId);
+            AnchorListItem accMenuItem = new AnchorListItem();
+            String name = user.role + ORG_ROLE_SEP + user.organizationName;
+            accMenuItem.setText(trimTitleWithEllipses(name));
+            accMenuItem.setTitle(name);
+            accMenuItem.getElement().setTabIndex(0);
+            accMenuItem.setStyleName(Styles.DROPDOWN);
+            if (selected) {
+                accMenuItem.addStyleName("labelStyling");
+                accMenuItem.addStyleName("menu-select-user-account-selected");
+            } else {
+                accMenuItem.addStyleName("menu-select-user-account");
+                accMenuItem.addClickHandler(event -> {
+                    MatContext.get().getEventBus().fireEvent(new SwitchUserEvent(user.userId));
+                });
+            }
+            ddm.add(accMenuItem);
+        }
+    }
+
+    private static String trimTitleWithEllipses(String text) {
+        return text.length() <= MAX_MENU_TITLE ? text : text.substring(0, MAX_MENU_TITLE) + "...";
+    }
+
     private NavbarCollapse buildProfileMenu() {
         NavbarCollapse collapse = new NavbarCollapse();
         NavbarNav nav = new NavbarNav();
@@ -299,7 +356,6 @@ public abstract class MainLayout {
         ldd.add(icon);
         ldd.add(ddm);
 
-
         nav.add(ldd);
 
         collapse.add(nav);
@@ -310,8 +366,9 @@ public abstract class MainLayout {
      * Call Okta logout operation to log a user out by removing their Okta browser session.
      * Note: When making requests to the /logout endpoint, the browser (user agent)
      * should be redirected to the endpoint. You can't use AJAX with this endpoint.
-     *
+     * <p>
      * This operation performs a redirect to the post_logout_redirect_uri.
+     *
      * @param harpUrl
      */
     protected void harpLogout(String harpUrl) {
@@ -330,7 +387,7 @@ public abstract class MainLayout {
         String redirectUrl = Window.Location.createUrlBuilder()
                 .setPath(path.substring(0, path.lastIndexOf('/')) + ClientConstants.HTML_LOGIN)
                 .buildString();
-        if(redirectUrl.contains("#")) {
+        if (redirectUrl.contains("#")) {
             redirectUrl = redirectUrl.substring(0, redirectUrl.lastIndexOf('#'));
         }
         redirect.setValue(redirectUrl);
@@ -369,10 +426,12 @@ public abstract class MainLayout {
         MatContext.get().getLoginService().getFooterURLs(new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "LoginService::getFooterURLs -> onFailure: " + caught.getMessage(), caught);
             }
 
             @Override
             public void onSuccess(List<String> result) {
+                logger.log(Level.INFO, "LoginService::getFooterURLs -> onSuccess");
                 //Set the Footer URL's on the ClientConstants for use by the app in various locations.
                 ClientConstants.ACCESSIBILITY_POLICY_URL = result.get(0);
                 ClientConstants.PRIVACYPOLICY_URL = result.get(1);
@@ -461,7 +520,7 @@ public abstract class MainLayout {
         showUMLSState.hideActive(true);
     }
 
-    //method to easily remove bonnie link from page
+    // method to easily remove bonnie link from page
     public void removeBonnieLink() {
         showBonnieState.getPanel().removeFromParent();
     }

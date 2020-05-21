@@ -3299,3 +3299,18 @@ table#MostRecentActivityCellTable {
 .spinner-wrapper {
     height: 80px;
 }
+
+.menu-select-user-account-selected a::before {
+    content: '\2714';
+    position: relative;
+    left: -1em;
+    overflow: hidden;
+}
+
+.menu-select-user-account-selected a {
+    font-weight: bold;
+}
+
+.menu-select-user-account a {
+    margin-left: 1em;
+}

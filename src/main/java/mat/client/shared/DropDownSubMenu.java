@@ -20,15 +20,13 @@ package mat.client.shared;
  * #L%
  */
 
-import javax.swing.ButtonGroup;
 
 /**
  * Container for drop down menu items.
  * <p/>
- * <strong>Must</strong> be encapsulated in a {@link ButtonGroup} to build button dropdowns.
+ * <strong>Must</strong> be encapsulated in a {@link org.gwtbootstrap3.client.ui.ButtonGroup} to build button dropdowns.
  *
  * @author Sven Jacobs
- * @see ButtonGroup
  */
 public class DropDownSubMenu extends ListElement {
 

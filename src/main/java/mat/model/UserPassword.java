@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -20,7 +21,8 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "USER_PASSWORD", uniqueConstraints = @UniqueConstraint(columnNames = "USER_ID"))
 public class UserPassword {
-	
+
+	public static final int PASSWORD_LOCKED_CNT = 3;
 	private String id;
 	
 	private User user;
@@ -138,6 +140,11 @@ public class UserPassword {
 
 	public void setSalt(String salt) {
 		this.salt = salt;
+	}
+
+	@Transient
+	public boolean isPasswordLocked() {
+		return getPasswordlockCounter() >= PASSWORD_LOCKED_CNT;
 	}
 	
 }

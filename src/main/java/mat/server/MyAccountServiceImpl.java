@@ -125,8 +125,8 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements 
             //If there is no validation error messages then proceed to save.
             //TODO Add database constraint for OID to be non-nullable
             User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
-            User exsitingUser = userDAO.findByEmail(model.getEmailAddress());
-            if (exsitingUser != null && (!(exsitingUser.getId().equals(user.getId())))) {
+            User exsistingUser = userDAO.findByEmail(model.getEmailAddress());
+            if (exsistingUser != null && (!(exsistingUser.getId().equals(user.getId())))) {
                 result.setSuccess(false);
                 result.setFailureReason(SaveMyAccountResult.ID_NOT_UNIQUE);
             } else {

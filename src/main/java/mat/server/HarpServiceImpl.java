@@ -1,5 +1,12 @@
 package mat.server;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,12 +14,6 @@ import lombok.ToString;
 import mat.client.login.service.HarpService;
 import mat.client.shared.MatException;
 import mat.server.util.ServerConstants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import static java.util.Objects.isNull;
@@ -25,7 +26,7 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
 
     @Override
     public boolean revoke(String accessToken) {
-        logger.debug("Revoking Token::"+accessToken);
+        logger.debug("Revoking Token::" + accessToken);
         ClientResponse response = revokeToken(accessToken);
         logger.debug(response.statusCode().toString());
         return response.statusCode().is2xxSuccessful();
@@ -49,7 +50,7 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
 
     @Override
     public String getHarpClientId() {
-        logger.debug("getHarpClientId::"+ServerConstants.getHarpClientId());
+        logger.debug("getHarpClientId::" + ServerConstants.getHarpClientId());
         return ServerConstants.getHarpClientId();
     }
 
@@ -85,7 +86,7 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
     }
 
     private WebClient getClient() {
-        if(isNull(harpOtkaClient)) {
+        if (isNull(harpOtkaClient)) {
             this.harpOtkaClient = WebClient.create(getHarpUrl());
         }
         return harpOtkaClient;

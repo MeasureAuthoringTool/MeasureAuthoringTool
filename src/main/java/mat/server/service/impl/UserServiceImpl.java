@@ -847,11 +847,6 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-    private boolean checkHarpNotUnique(ManageUsersDetailModel model) {
-        MatUserDetails existing = userDAO.getUserDetailsByHarpId(model.getHarpId());
-        return existing != null && !(existing.getId().equals(model.getKey()));
-    }
-
     @Override
     public boolean isHarpUserLockedRevoked(String harpId) {
         return userDAO.getAllUserDetailsByHarpId(harpId).stream().allMatch(MatUserDetails::isLockedOrRevoked);

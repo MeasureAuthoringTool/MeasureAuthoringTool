@@ -1,5 +1,8 @@
 package mat.client.harp;
 
+import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.TextBox;
+
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -8,12 +11,9 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 import mat.client.event.HarpSupportEvent;
 import mat.client.event.ReturnToLoginEvent;
-import mat.client.login.ForgottenPasswordView;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.shared.HarpConstants;
-import org.gwtbootstrap3.client.ui.Anchor;
-import org.gwtbootstrap3.client.ui.TextBox;
 
 public class HarpUserVerificationPresenter {
 
@@ -59,20 +59,19 @@ public class HarpUserVerificationPresenter {
     }
 
     private void onGetSecurityQuestion() {
-        if(HarpUserVerificationView.isUserIdSubmit){
+        if (HarpUserVerificationView.isUserIdSubmit) {
             display.getErrorMessageDisplay().clearAlert();
             if (null == display.getLoginId().getValue() || display.getLoginId().getValue().trim().isEmpty()) {
                 display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
                 return;
-            } else if(null == display.getPassword().getValue() || display.getPassword().getValue().trim().isEmpty()) {
+            } else if (null == display.getPassword().getValue() || display.getPassword().getValue().trim().isEmpty()) {
                 display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
                 return;
             }
             display.getLoginId().setEnabled(false);
             display.getPassword().setEnabled(false);
             loadSecurityQuestionForLoginId(display.getLoginId().getText(), display.getPassword().getText());
-        }
-        else {
+        } else {
             forgotSecurityAnswer();
         }
     }
@@ -107,22 +106,22 @@ public class HarpUserVerificationPresenter {
             MatContext.get().getLoginService().verifyHarpUser(display.getSecurityQuestion(), display.getSecurityAnswer(), display.getLoginId().getValue(), MatContext.get().getHarpUserInfo(),
                     new AsyncCallback<Boolean>() {
 
-                @Override
-                public void onFailure(Throwable caught) {
-                    MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
-                }
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            MatContext.get().getEventBus().fireEvent(new HarpSupportEvent());
+                        }
 
-                @Override
-                public void onSuccess(Boolean result) {
-                    if (result) {
-                        MatContext.get().getEventBus().fireEvent(new SuccessfulHarpLoginEvent());
-                    } else {
-                        display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUnableToVerifyHarpUser());
-                        display.getLoginId().setEnabled(true);
-                        display.getPassword().setEnabled(true);
-                    }
-                }
-            });
+                        @Override
+                        public void onSuccess(Boolean result) {
+                            if (result) {
+                                MatContext.get().getEventBus().fireEvent(new SuccessfulHarpLoginEvent());
+                            } else {
+                                display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUnableToVerifyHarpUser());
+                                display.getLoginId().setEnabled(true);
+                                display.getPassword().setEnabled(true);
+                            }
+                        }
+                    });
         }
     }
 
@@ -138,7 +137,6 @@ public class HarpUserVerificationPresenter {
         display.setSecurityQuestionAnswerEnabled(false);
         display.getErrorMessageDisplay().clearAlert();
         display.getLoginId().setFocus(true);
-        ForgottenPasswordView.isUserIdSubmit = true;
     }
 
     private void showNewUserInformation() {

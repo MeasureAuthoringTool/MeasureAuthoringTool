@@ -2,20 +2,16 @@ package mat.server.service.impl;
 
 import ca.uhn.fhir.context.FhirContext;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mat.client.measure.FhirMeasurePackageResult;
 import mat.client.shared.MatRuntimeException;
 import mat.dto.fhirconversion.ConversionResultDto;
 import mat.dto.fhirconversion.ConversionType;
 import mat.server.service.FhirMeasureRemoteCall;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.impl.dv.util.Base64;
-import org.checkerframework.checker.units.qual.A;
 import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Library;
@@ -32,9 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
-
-    private static final Log logger = LogFactory.getLog(FhirMeasureRemoteCallImpl.class);
     private static final String FHIR_ID_PARAMS = "?id={id}";
     private static final String FHIR_PACKAGE_MEASURE_PARAMS = "measure/packager/full/json" + FHIR_ID_PARAMS;
     private static final String FHIR_ORCH_MEASURE_SRVC_PARAMS = "orchestration/measure" + FHIR_ID_PARAMS + "&conversionType={conversionType}&xmlSource={xmlSource}&vsacGrantingTicket={vsacGrantingTicket}";
@@ -106,8 +101,8 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     }
 
     private ConversionResultDto convert(String measureId, ConversionType conversionType, String vsacGrantingTicket, boolean draft) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("callRemoteService " + measureId + " " + conversionType + " draft: " + draft);
+        if (log.isDebugEnabled()) {
+            log.debug("callRemoteService " + measureId + " " + conversionType + " draft: " + draft);
         }
 
         Map<String, Object> uriVariables = new HashMap<>();
@@ -131,9 +126,11 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
                     responseType,
                     paramMap);
         } catch (HttpClientErrorException e) {
+            log.error("HttpClientErrorException",e);
             throw new MatRuntimeException(e);
         }
         if (response.getStatusCode().isError()) {
+            log.error("{} returned {}",url,response.getStatusCode());
             throw new MatRuntimeException("url " + url + " returned error code " + response.getStatusCode());
         }
         return response.getBody();

@@ -4,6 +4,7 @@ import java.util.List;
 
 import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
+import mat.client.measure.service.FhirLibraryPackageResult;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
@@ -128,7 +129,9 @@ public interface CQLLibraryServiceInterface {
     CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
                                                 List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
 
-    void saveCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML);
+    void saveQdmCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML);
+
+    void saveFhirCQLLibraryExport(CQLLibrary cqlLibrary, FhirLibraryPackageResult fhirPackageResults);
 
     CheckForConversionResult checkLibraryForConversion(CQLLibraryDataSetObject object);
 

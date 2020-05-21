@@ -262,12 +262,12 @@ public class CQLServiceImpl implements CQLService {
             // The cql needs to be regenerated from the model to catch these cases.
             // At one point formatting was being done, but the formatter doesn't work that well with
             // fhir cql and it was causing errors.
-            cql = CQLUtilityClass.getCqlString(newModel, "").getLeft();
+            String scrubbedCql = CQLUtilityClass.getCqlString(newModel, "").getLeft();
 
             // Validation.
             SaveUpdateCQLResult parsedResult;
             if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
-                parsedResult = parseFhirCqlLibraryForErrors(newModel, cql);
+                parsedResult = parseFhirCqlLibraryForErrors(newModel, scrubbedCql);
             } else {
                 parsedResult = parseCQLLibraryForErrors(newModel);
             }
@@ -285,13 +285,13 @@ public class CQLServiceImpl implements CQLService {
             String newLibXml = marshallCQLModel(newModel);
 
             //Lint.
-            CQLLinter linter = CQLUtil.lint(cql, config);
+            CQLLinter linter = CQLUtil.lint(cql, config); //lint with original cql
             SaveUpdateCQLResult result = getCQLDataForLoad(newLibXml);
             result.setCqlErrors(parsedResult.getCqlErrors());
             result.setCqlWarnings(parsedResult.getCqlWarnings());
             result.setLibraryNameErrorsMap(parsedResult.getLibraryNameErrorsMap());
             result.setLibraryNameWarningsMap(parsedResult.getLibraryNameWarningsMap());
-            result.setCqlString(cql);
+            result.setCqlString(scrubbedCql);
             result.setXml(newLibXml);
             result.getLinterErrors().addAll(linter.getErrors());
             result.getLinterWarningMessages().addAll(linter.getWarningMessages());
@@ -1024,7 +1024,7 @@ public class CQLServiceImpl implements CQLService {
             result = parseCQLLibraryForErrors(cqlModel);
         }
 
-        if (result.getCqlErrors().isEmpty()) {
+        if (result.getCqlErrors().isEmpty() && !StringUtils.equals(cqlModel.getUsingModel(),"FHIR")) {
             result.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
             setUsedValuesets(result, cqlModel);
             setUsedCodes(result, cqlModel);

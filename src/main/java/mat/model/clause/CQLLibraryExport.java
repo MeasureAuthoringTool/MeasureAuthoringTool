@@ -1,5 +1,7 @@
 package mat.model.clause;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,8 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name="CQL_LIBRARY_EXPORT")
@@ -31,6 +31,12 @@ public class CQLLibraryExport {
 	
 	@Column(name="JSON")
 	private String json;
+
+	@Column(name="FHIR_XML")
+	private String fhirXml;
+
+	@Column(name="ELM_JSON")
+	private String elmJson;
 
 	public String getId() {
 		return id;
@@ -70,8 +76,21 @@ public class CQLLibraryExport {
 
 	public void setJson(String json) {
 		this.json = json;
-	} 
-	
-	
-	
+	}
+
+	public String getFhirXml() {
+		return fhirXml;
+	}
+
+	public void setFhirXml(String fhirXml) {
+		this.fhirXml = fhirXml;
+	}
+
+	public String getElmJson() {
+		return elmJson;
+	}
+
+	public void setElmJson(String elmJson) {
+		this.elmJson = elmJson;
+	}
 }

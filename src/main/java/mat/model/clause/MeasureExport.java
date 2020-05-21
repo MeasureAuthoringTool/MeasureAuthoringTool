@@ -1,10 +1,9 @@
 package mat.model.clause;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
-import java.sql.SQLException;
+import mat.hibernate.HibernateConf;
+import mat.server.util.XmlProcessor;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,39 +14,46 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.GenericGenerator;
-
-import mat.hibernate.HibernateConf;
-import mat.server.util.XmlProcessor;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
 
 @Entity
 @Table(name = "MEASURE_EXPORT")
 public class MeasureExport {
-	
+
 	private String id;
-	
+
 	private String simpleXML;
-	
+
 	private  Blob codeList;
-	
+
 	private Measure measure;
 
 	private String humanReadable;
-	
-	private String hqmf; 
-	
-	private String cql; 
-	
-	private String elm; 
-	
-	private String json; 
-	
+
+	private String hqmf;
+
+	private String cql;
+
+	private String elm;
+
+	private String json;
+
+	private String elmJson;
+
+	private String fhirXml;
+
+	private String fhirLibsXml;
+
+	private String fhirLibsJson;
+
 	private XmlProcessor hqmfXMLProcessor;
-	
+
 	private XmlProcessor simpleXMLProcessor;
-	
+
 	private XmlProcessor humanReadableProcessor;
 
 	@Id
@@ -61,7 +67,7 @@ public class MeasureExport {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	@Column(name = "SIMPLE_XML", nullable = false)
 	public String getSimpleXML() {
 		return simpleXML;
@@ -91,15 +97,15 @@ public class MeasureExport {
 		this.codeList = Hibernate.getLobCreator(HibernateConf.getHibernateSession()).createBlob(codeListBarr);
 	}
 
-  	public void setCodeList(Blob codeList) {  
-		  this.codeList = codeList; 
-	} 
-  	
+  	public void setCodeList(Blob codeList) {
+		  this.codeList = codeList;
+	}
+
   	@Column(name = "CODE_LIST")
-  	public  Blob getCodeList() {  
-		  return this.codeList; 
-	} 
-  	
+  	public  Blob getCodeList() {
+		  return this.codeList;
+	}
+
   	@Column(name = "HUMAN_READABLE")
 	public String getHumanReadable() {
 		return humanReadable;
@@ -145,45 +151,81 @@ public class MeasureExport {
 		this.json = json;
 	}
 
-  	private byte[] toByteArray(Blob fromBlob) {  
-		  ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+	@Column(name = "ELM_JSON")
+	public String getElmJson() {
+		return elmJson;
+	}
+
+	public void setElmJson(String elmJson) {
+		this.elmJson = elmJson;
+	}
+
+	@Column(name = "FHIR_XML")
+	public String getFhirXml() {
+		return fhirXml;
+	}
+
+	public void setFhirXml(String fhirXml) {
+		this.fhirXml = fhirXml;
+	}
+
+	@Column(name = "FHIR_LIBS_XML")
+	public String getFhirLibsXml() {
+		return fhirLibsXml;
+	}
+
+	public void setFhirLibsXml(String fhirLibsXml) {
+		this.fhirLibsXml = fhirLibsXml;
+	}
+
+	@Column(name = "FHIR_LIBS_JSON")
+	public String getFhirLibsJson() {
+		return fhirLibsJson;
+	}
+
+	public void setFhirLibsJson(String fhirLibsJson) {
+		this.fhirLibsJson = fhirLibsJson;
+	}
+
+	private byte[] toByteArray(Blob fromBlob) {
+		  ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		  try {
-			  return toByteArrayImpl(fromBlob, baos);  
-		  } catch (SQLException e) {   
-			  throw new RuntimeException(e); 
-		  } catch (IOException e) {   
-			  throw new RuntimeException(e);  
-		  } finally {   
-			  if (baos != null) {  
-				  try {   
-					  baos.close(); 
+			  return toByteArrayImpl(fromBlob, baos);
+		  } catch (SQLException e) {
+			  throw new RuntimeException(e);
+		  } catch (IOException e) {
+			  throw new RuntimeException(e);
+		  } finally {
+			  if (baos != null) {
+				  try {
+					  baos.close();
 				  } catch (IOException ex) {
 					  ex.printStackTrace();
 				  }
-			  }  
-		  } 
-	  } 
-
-  	private byte[] toByteArrayImpl(Blob fromBlob, ByteArrayOutputStream baos) throws SQLException, IOException {  
-		  byte[] buf = new byte[4000];  
-		  InputStream is = fromBlob.getBinaryStream();  
-		  try {
-			  for (;;) {    
-				  int dataSize = is.read(buf);   
-				  if (dataSize == -1)
-					  break;   
-				  baos.write(buf, 0, dataSize);   
 			  }
-		  } 
+		  }
+	  }
+
+  	private byte[] toByteArrayImpl(Blob fromBlob, ByteArrayOutputStream baos) throws SQLException, IOException {
+		  byte[] buf = new byte[4000];
+		  InputStream is = fromBlob.getBinaryStream();
+		  try {
+			  for (;;) {
+				  int dataSize = is.read(buf);
+				  if (dataSize == -1)
+					  break;
+				  baos.write(buf, 0, dataSize);
+			  }
+		  }
 		  finally {
-			  if (is != null) { 
+			  if (is != null) {
 				  try {
 					  is.close();
 				  } catch (IOException ex) {
 					  ex.printStackTrace();
 				  }
-			  }  
-		  }  
+			  }
+		  }
 		  return baos.toByteArray();
 	}
 
@@ -212,5 +254,5 @@ public class MeasureExport {
 
 	public void setHumanReadableProcessor(XmlProcessor humanReadableProcessor) {
 		this.humanReadableProcessor = humanReadableProcessor;
-	}	
+	}
 }

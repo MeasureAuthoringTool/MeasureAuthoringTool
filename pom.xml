@@ -33,6 +33,8 @@
         <powermock.version>2.0.4</powermock.version>
         <jacoco.version>0.8.5</jacoco.version>
         <jaxb.version>2.3.0</jaxb.version>
+        <hapi-fhir-version>4.1.0</hapi-fhir-version>
+
         <!-- JDK version -->
         <!-- Only GWT HEAD supports sourceLevel 10 & 11. The latest released GWT supports only 1.8 sourceLevel -->
         <gwt.sourceLevel>1.8</gwt.sourceLevel>
@@ -547,6 +549,11 @@
             <artifactId>lombok</artifactId>
             <version>1.18.10</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>hapi-fhir-structures-r4</artifactId>
+            <version>${hapi-fhir-version}</version>
         </dependency>
     </dependencies>
 

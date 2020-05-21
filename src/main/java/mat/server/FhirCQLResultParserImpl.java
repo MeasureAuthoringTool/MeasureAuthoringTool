@@ -51,6 +51,10 @@ public class FhirCQLResultParserImpl implements FhirCQLResultParser {
             cqlValidationResponseJson = new JSONObject(cqlValidationResponse);
             parentLibraryName = cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed();
 
+            if (cqlValidationResponseJson.has("json")) {
+                cqlValidationResponseJson =  new JSONObject(cqlValidationResponseJson.getString("json"));
+            }
+
             processErrorExceptions();
             processLibraryAnnotations();
 

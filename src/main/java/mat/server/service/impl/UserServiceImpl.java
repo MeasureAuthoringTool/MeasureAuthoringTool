@@ -612,9 +612,6 @@ public class UserServiceImpl implements UserService {
         if (checkEmailNotUnique(model)) {
             result.setSuccess(false);
             result.setFailureReason(SaveUpdateUserResult.USER_EMAIL_NOT_UNIQUE);
-        } else if (checkHarpNotUnique(model)) {
-            result.setSuccess(false);
-            result.setFailureReason(SaveUpdateUserResult.USER_HARP_ID_NOT_UNIQUE);
         } else {
             saveValidatedUserFromModel(model, result, user, reactivatingUser);
         }

@@ -1,6 +1,8 @@
 package mat.client;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.gwtbootstrap3.client.ui.AnchorButton;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -45,6 +47,7 @@ import mat.model.clause.ModelTypeHelper;
 
 public abstract class MainLayout {
 
+    private static final Logger logger = Logger.getLogger(MainLayout.class.getSimpleName());
     private static final int DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS = 500;
     private static final int SPINNER_DIALOG_DELAY_MILLIS = 2000;
     private static final String HEADING = "Measure Authoring Tool";
@@ -53,7 +56,7 @@ public abstract class MainLayout {
     private static final HTML SIMPLE_SPINNER = new HTML("<div class=\"spinner-loading spinner-loading-shadow\">" + ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG + "</div>");
     private static final String ORG_ROLE_SEP = " @ ";
     private static final String SWITCH_MAT_ACCOUNT = "Switch MAT account";
-    public static final int MAX_MENU_TITLE = 50;
+    private static final int MAX_MENU_TITLE = 50;
     private static ListItem signedInAsName = new ListItem();
     private static ListItem signedInAsOrg = new ListItem();
     private static IndicatorButton showUMLSState;
@@ -423,10 +426,12 @@ public abstract class MainLayout {
         MatContext.get().getLoginService().getFooterURLs(new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "LoginService::getFooterURLs -> onFailure: " + caught.getMessage(), caught);
             }
 
             @Override
             public void onSuccess(List<String> result) {
+                logger.log(Level.INFO, "LoginService::getFooterURLs -> onSuccess");
                 //Set the Footer URL's on the ClientConstants for use by the app in various locations.
                 ClientConstants.ACCESSIBILITY_POLICY_URL = result.get(0);
                 ClientConstants.PRIVACYPOLICY_URL = result.get(1);
@@ -515,7 +520,7 @@ public abstract class MainLayout {
         showUMLSState.hideActive(true);
     }
 
-    //method to easily remove bonnie link from page
+    // method to easily remove bonnie link from page
     public void removeBonnieLink() {
         showBonnieState.getPanel().removeFromParent();
     }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.mail.internet.MimeMessage;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.reflect.Whitebox;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -98,6 +98,7 @@ public class UserServiceImplTest {
         assertEquals(SaveUpdateUserResult.USER_EMAIL_NOT_UNIQUE, result.getFailureReason());
     }
 
+    @Disabled
     @Test
     public void testHarpNotUnique() {
         ManageUsersDetailModel model = newDefaultModel();
@@ -112,7 +113,6 @@ public class UserServiceImplTest {
         assertFalse(result.isSuccess());
         assertEquals(SaveUpdateUserResult.USER_HARP_ID_NOT_UNIQUE, result.getFailureReason());
     }
-
 
     private ManageUsersDetailModel newDefaultModel() {
         ManageUsersDetailModel model = new ManageUsersDetailModel();

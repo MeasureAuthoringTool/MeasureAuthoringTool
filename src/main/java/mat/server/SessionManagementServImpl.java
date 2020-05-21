@@ -50,13 +50,13 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet implem
         }
         result.userPreference = userPreferenceDTO;
         result.users = userService.getAllActiveUserDetailsByHarpId(user.getHarpId()).stream()
-                .map(this::asUserInfo)
+                .map(this::asShortUserInfo)
                 .collect(Collectors.toList());
 
         return result;
     }
 
-    private ShortUserInfo asUserInfo(MatUserDetails d) {
+    private ShortUserInfo asShortUserInfo(MatUserDetails d) {
         ShortUserInfo info = new ShortUserInfo();
         info.loginId = d.getLoginId();
         info.harpId = d.getHarpId();

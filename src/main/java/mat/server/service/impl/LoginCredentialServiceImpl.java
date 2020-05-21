@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ import mat.server.model.MatUserDetails;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
 import mat.shared.HarpConstants;
+
+import static org.apache.commons.lang3.StringUtils.substring;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 
 /**
  * The Class LoginCredentialServiceImpl.
@@ -92,9 +96,10 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 
     private void updateUserDetails(Map<String, String> harpUserInfo, MatUserDetails userDetails, String sessionId) {
         String fullName = harpUserInfo.get(HarpConstants.HARP_FULLNAME);
-        userDetails.setUsername(fullName.substring(0, fullName.indexOf(" ")));
-        userDetails.setUserLastName(fullName.substring(fullName.indexOf(" ")).trim());
-        // Different emails at different organizatons for the same person.
+        int spaceIndex = StringUtils.indexOf(fullName, ' ');
+        userDetails.setUsername(substring(fullName, 0, spaceIndex));
+        userDetails.setUserLastName(trimToEmpty(substring(fullName, spaceIndex)));
+        // Don't override different emails at different organizations for the same person.
 //        userDetails.setEmailAddress(harpUserInfo.get(HarpConstants.HARP_PRIMARY_EMAIL_ID));
         userDetails.setSessionId(sessionId);
         hibernateUserService.saveUserDetails(userDetails);
@@ -132,7 +137,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
      * @param userDetails the new authentication token
      */
     private void setAuthenticationToken(MatUserDetails userDetails, Object accessToken) {
-        logger.info("Setting authentication token::" + userDetails.getId());
+        logger.info("Setting authentication token::" + userDetails.getId() + " " + userDetails.getAuthorities());
         PreAuthenticatedAuthenticationToken auth =
                 new PreAuthenticatedAuthenticationToken(userDetails.getId(), accessToken, userDetails.getAuthorities());
         auth.setDetails(userDetails);
@@ -155,7 +160,9 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
             sc.setAuthentication(auth);
             SecurityContextHolder.setContext(sc);
         } else {
-            throw new IllegalArgumentException("Only ADMINs can switch their role");
+            // Don't throw exception. Looks like GWT can invoke the same method multiple times due to latency.
+            // Only first call will succeed. Skip others.
+            logger.warn("Only ADMINs can switch their role");
         }
     }
 

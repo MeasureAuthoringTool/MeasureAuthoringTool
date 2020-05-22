@@ -1,12 +1,17 @@
 package mat.server;
 
 
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
-import mat.dto.UserPreferenceDTO;
+import mat.client.login.service.CurrentUserInfo;
 import mat.client.login.service.SessionManagementService;
+import mat.client.login.service.ShortUserInfo;
+import mat.dto.UserPreferenceDTO;
 import mat.model.User;
 import mat.model.UserPreference;
+import mat.server.model.MatUserDetails;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.UserService;
 
@@ -23,8 +28,8 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet implem
     private MeasureLibraryService measureLibraryService;
 
     @Override
-    public SessionManagementService.Result getCurrentUser() {
-        SessionManagementService.Result result = new SessionManagementService.Result();
+    public CurrentUserInfo getCurrentUser() {
+        CurrentUserInfo result = new CurrentUserInfo();
         result.userId = LoggedInUserUtil.getLoggedInUser();
         User user = userService.getById(result.userId);
         result.userRole = user.getSecurityRole().getDescription();
@@ -36,19 +41,34 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet implem
         result.userLastName = user.getLastName();
         result.currentSessionId = getThreadLocalRequest().getSession().getId();
         result.activeSessionId = user.getSessionId();
+        result.organizationName = user.getOrganizationName();
+        result.harpId = user.getHarpId();
         UserPreference userPreference = user.getUserPreference();
         UserPreferenceDTO userPreferenceDTO = new UserPreferenceDTO();
         if (userPreference != null) {
             userPreferenceDTO.setFreeTextEditorEnabled(userPreference.isFreeTextEditorEnabled());
         }
         result.userPreference = userPreferenceDTO;
+        result.users = userService.getAllActiveUserDetailsByHarpId(user.getHarpId()).stream()
+                .map(this::asShortUserInfo)
+                .collect(Collectors.toList());
+
         return result;
     }
 
-    @Override
-    public void renewSession() {
-        // do nothing
+    private ShortUserInfo asShortUserInfo(MatUserDetails d) {
+        ShortUserInfo info = new ShortUserInfo();
+        info.loginId = d.getLoginId();
+        info.harpId = d.getHarpId();
+        info.userEmail = d.getEmailAddress();
+        info.userId = d.getId();
+        info.userFirstName = d.getUsername();
+        info.userLastName = d.getUserLastName();
+        info.organizationName = d.getOrganization().getOrganizationName();
+        info.role = d.getRoles().getDescription();
+        return info;
     }
+
 
     @Override
     public String getCurrentReleaseVersion() {

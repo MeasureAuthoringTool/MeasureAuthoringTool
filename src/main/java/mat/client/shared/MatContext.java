@@ -48,9 +48,9 @@ import mat.client.event.MeasureSelectedEvent;
 import mat.client.featureFlag.service.FeatureFlagRemoteService;
 import mat.client.featureFlag.service.FeatureFlagRemoteServiceAsync;
 import mat.client.login.LoginModel;
+import mat.client.login.service.CurrentUserInfo;
 import mat.client.login.service.HarpService;
 import mat.client.login.service.HarpServiceAsync;
-import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.LoginServiceAsync;
 import mat.client.login.service.SessionManagementService;
@@ -153,23 +153,11 @@ public class MatContext implements IsSerializable {
 
     private AuditServiceAsync auditService;
 
-    private String userId;
+    private CurrentUserInfo currentUserInfo;
 
     private String idToken;
 
     private String accessToken;
-
-    private String userEmail;
-
-    private String loginId;
-
-    private String userRole;
-
-    private String userFirstName;
-
-    private String userLastName;
-
-    private UserPreferenceDTO userPreference;
 
     private QDSCodeListSearchView qdsView;
 
@@ -277,14 +265,12 @@ public class MatContext implements IsSerializable {
         this.listBoxCodeProvider = listBoxCodeProvider;
     }
 
-    public void setUserInfo(final SessionManagementService.Result result) {
-        this.userId = result.userId;
-        this.userEmail = result.userEmail;
-        this.userRole = result.userRole;
-        this.loginId = result.loginId;
-        this.userPreference = result.userPreference;
-        this.userFirstName = result.userFirstName;
-        this.userLastName = result.userLastName;
+    public void setUserInfo(final CurrentUserInfo result) {
+        this.currentUserInfo = result;
+    }
+
+    public CurrentUserInfo getCurrentUserInfo() {
+        return currentUserInfo;
     }
 
     protected MatContext() {
@@ -437,31 +423,27 @@ public class MatContext implements IsSerializable {
     }
 
     public String getLoggedInUserFirstName() {
-        return userFirstName;
+        return currentUserInfo.userFirstName;
     }
 
     public String getLoggedInUserLastName() {
-        return userLastName;
+        return currentUserInfo.userLastName;
     }
 
     public String getLoggedInUserRole() {
-        return userRole;
+        return currentUserInfo.userRole;
     }
 
     public void setLoggedInUserRole(String userRole) {
-        this.userRole = userRole;
+        currentUserInfo.userRole = userRole;
     }
 
     public UserPreferenceDTO getLoggedInUserPreference() {
-        return userPreference;
-    }
-
-    public void setLoggedInUserPreference(UserPreferenceDTO userPreference) {
-        this.userPreference = userPreference;
+        return currentUserInfo.userPreference;
     }
 
     public String getLoggedinUserId() {
-        return userId;
+        return currentUserInfo.userId;
     }
 
     public void setIdToken(String idToken) {
@@ -481,19 +463,11 @@ public class MatContext implements IsSerializable {
     }
 
     public String getLoggedinLoginId() {
-        return loginId;
+        return currentUserInfo.loginId;
     }
 
     public String getLoggedInUserEmail() {
-        return userEmail;
-    }
-
-    public void changePasswordSecurityQuestions(LoginModel model, AsyncCallback<LoginResult> asyncCallback) {
-        getLoginService().changePasswordSecurityAnswers(model, asyncCallback);
-    }
-
-    public void isValidUser(String username, String Password, String oneTimePassword, AsyncCallback<LoginModel> callback) {
-        getLoginService().isValidUser(username, Password, oneTimePassword, callback);
+        return currentUserInfo.userEmail;
     }
 
     public void initSession(Map<String, String> harpUserInfo, AsyncCallback<LoginModel> callback) {
@@ -504,7 +478,7 @@ public class MatContext implements IsSerializable {
         getCodeListService().getListBoxData(listBoxCallback);
     }
 
-    public void getCurrentUser(AsyncCallback<SessionManagementService.Result> userCallback) {
+    public void getCurrentUser(AsyncCallback<CurrentUserInfo> userCallback) {
         getSessionService().getCurrentUser(userCallback);
     }
 
@@ -641,21 +615,6 @@ public class MatContext implements IsSerializable {
 
     public boolean isDraftMeasure() {
         return (currentMeasureInfo != null) ? currentMeasureInfo.isDraft() : false;
-    }
-
-    public void renewSession() {
-        getSessionService().renewSession(new AsyncCallback<Void>() {
-
-            @Override
-            public void onFailure(Throwable arg0) {
-                Window.alert("Error renewing session " + arg0.getMessage());
-            }
-
-            @Override
-            public void onSuccess(Void arg0) {
-            }
-
-        });
     }
 
     public void redirectToHtmlPage(String html) {

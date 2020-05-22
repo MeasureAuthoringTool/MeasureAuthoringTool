@@ -508,7 +508,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         CQLUtil.getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
         cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
         cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
-        SaveUpdateCQLResult latestCQLResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, cqlModel.getExpressionListFromCqlModel(), true);
+        SaveUpdateCQLResult latestCQLResult = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, cqlModel.getExpressionListFromCqlModel(), true);
         CQLLibraryExport cqlLibraryExport = new CQLLibraryExport();
         cqlLibraryExport.setCqlLibrary(cqlLibrary);
         cqlLibraryExport.setCql(CQLUtilityClass.getCqlString(cqlModel, "").getLeft());

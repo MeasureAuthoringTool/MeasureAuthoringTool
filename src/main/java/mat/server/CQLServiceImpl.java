@@ -1081,7 +1081,7 @@ public class CQLServiceImpl implements CQLService {
         } else {
             // QDM
             List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
-            result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
+            result = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
 
             Iterator<CQLIncludeLibrary> libraryIter = cqlModel.getIncludedLibrarys().keySet().iterator();
             while (libraryIter.hasNext()) {
@@ -1176,7 +1176,7 @@ public class CQLServiceImpl implements CQLService {
 
     @Override
     public SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
-        return CQLUtil.parseCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), null);
+        return CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), null);
     }
 
     /**
@@ -1438,7 +1438,7 @@ public class CQLServiceImpl implements CQLService {
             parsedCQL = generateParsedCqlObject(cqlValidationResponse, cqlModel);
         } else {
             List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
-            parsedCQL = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
+            parsedCQL = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
         }
 
         if (CollectionUtils.isNotEmpty(parsedCQL.getLibraryNameErrorsMap().get(formattedName))) {
@@ -1571,7 +1571,7 @@ public class CQLServiceImpl implements CQLService {
             exprList.add(cqlParameter.getName());
         }
 
-        SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), exprList);
+        SaveUpdateCQLResult cqlResult = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), exprList);
         return generateUsedCqlArtifactsResult(cqlModel, xml, cqlResult);
     }
 

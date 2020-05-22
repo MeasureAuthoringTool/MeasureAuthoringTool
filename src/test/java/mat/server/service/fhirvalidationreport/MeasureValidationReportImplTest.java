@@ -14,7 +14,7 @@ import mat.dto.fhirconversion.MeasureConversionResults;
 import mat.dto.fhirconversion.ValueSetConversionResults;
 import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
-import mat.server.service.FhirOrchestrationGatewayService;
+import mat.server.service.FhirMeasureRemoteCall;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,7 +48,7 @@ class MeasureValidationReportImplTest {
     private MeasureDAO measureDAO;
 
     @Mock
-    private FhirOrchestrationGatewayService fhirOrchestrationGatewayService;
+    private FhirMeasureRemoteCall fhirOrchestrationGatewayService;
 
     @InjectMocks
     private MeasureValidationReportImpl fhirValidationReport;

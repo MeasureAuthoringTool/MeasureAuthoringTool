@@ -16,7 +16,7 @@ import mat.dto.fhirconversion.FhirValidationResult;
 import mat.dto.fhirconversion.LibraryConversionResults;
 import mat.dto.fhirconversion.MatCqlConversionException;
 import mat.dto.fhirconversion.ValueSetConversionResults;
-import mat.server.service.FhirOrchestrationGatewayService;
+import mat.server.service.FhirMeasureRemoteCall;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -42,12 +42,12 @@ public class MeasureValidationReportImpl implements FhirValidationReport {
 
     private Configuration freemarkerConfiguration;
     private MeasureDAO measureDAO;
-    private FhirOrchestrationGatewayService fhirOrchestrationGatewayService;
+    private FhirMeasureRemoteCall fhirOrchestrationGatewayService;
 
     @Value("${mat.measure.current.release.version}")
     private String currentMatVersion;
 
-    public MeasureValidationReportImpl(Configuration freemarkerConfiguration, MeasureDAO measureDAO, FhirOrchestrationGatewayService fhirOrchestrationGatewayService) {
+    public MeasureValidationReportImpl(Configuration freemarkerConfiguration, MeasureDAO measureDAO, FhirMeasureRemoteCall fhirOrchestrationGatewayService) {
         this.freemarkerConfiguration = freemarkerConfiguration;
         this.measureDAO = measureDAO;
         this.fhirOrchestrationGatewayService = fhirOrchestrationGatewayService;

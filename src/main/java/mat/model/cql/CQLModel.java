@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.model.clause.ModelTypeHelper;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.LibHolderObject;
 
@@ -32,10 +33,11 @@ public class CQLModel implements IsSerializable {
      * This member is set programmatically from some class and isn't populated by Hibernate.
      * So it is possible it is null/empty.
      */
-    private Map<String, LibHolderObject> includedCQLLibXMLMap = new HashMap<String, LibHolderObject>();
-
+    private Map<String, LibHolderObject> includedCQLLibXMLMap = new HashMap<>();
 
     private int lines;
+
+    public boolean isFhir() { return ModelTypeHelper.isFhir(usingModel);}
 
     public String getContext() {
         return context;

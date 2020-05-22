@@ -1,6 +1,7 @@
 package mat.server.service.impl;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -91,11 +92,14 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
         result.setInludedLibsJson(packagingResp.getIncludeBundle());
         result.setMeasureLibJson(packagingResp.getLibrary());
 
-        Measure measure = fhirContext.newJsonParser().parseResource(Measure.class,result.getMeasureJson());
-        result.setMeasureXml(fhirContext.newXmlParser().encodeResourceToString(measure));
+        IParser jsonParser = fhirContext.newJsonParser();
+        IParser xmlParser = fhirContext.newXmlParser();
 
-        Library lib = fhirContext.newJsonParser().parseResource(Library.class,result.getMeasureLibJson());
-        result.setMeasureLibXml(fhirContext.newXmlParser().encodeResourceToString(lib));
+        Measure measure = jsonParser.parseResource(Measure.class,result.getMeasureJson());
+        result.setMeasureXml(xmlParser.encodeResourceToString(measure));
+
+        Library lib = jsonParser.parseResource(Library.class,result.getMeasureLibJson());
+        result.setMeasureLibXml(xmlParser.encodeResourceToString(lib));
         lib.getContent().forEach(a -> {
             if (StringUtils.equalsIgnoreCase("text/cql", a.getContentType())) {
                 result.setMeasureLibCql(decodeBase64(a));
@@ -106,8 +110,8 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
             }
         });
 
-        Bundle bundle = fhirContext.newJsonParser().parseResource(Bundle.class,result.getInludedLibsJson());
-        result.setInludedLibsXml(fhirContext.newXmlParser().encodeResourceToString(bundle));
+        Bundle bundle = jsonParser.parseResource(Bundle.class,result.getInludedLibsJson());
+        result.setInludedLibsXml(xmlParser.encodeResourceToString(bundle));
         return result;
     }
 

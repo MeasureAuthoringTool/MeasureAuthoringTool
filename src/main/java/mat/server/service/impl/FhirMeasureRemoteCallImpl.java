@@ -46,9 +46,9 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MeasurePackageFullData {
-            String includeBundle;
-            String measure;
-            String library;
+        private String includeBundle;
+        private String measure;
+        private String library;
     }
 
     public FhirMeasureRemoteCallImpl(RestTemplate restTemplate,FhirContext fhirContext) {

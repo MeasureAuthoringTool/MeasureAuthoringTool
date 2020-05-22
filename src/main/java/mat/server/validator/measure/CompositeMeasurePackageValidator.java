@@ -146,7 +146,7 @@ public class CompositeMeasurePackageValidator {
 	
 	public void validateAllSupplementalDataElementsWithSameNameHaveSameType(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel, String simpleXML) throws XPathExpressionException {
 		CQLModel model = CQLUtilityClass.getCQLModelFromXML(simpleXML);
-		SaveUpdateCQLResult cqlSaveUpdateResult = CQLUtil.parseCQLLibraryForErrors(model, cqlLibraryDAO, new ArrayList<>());	
+		SaveUpdateCQLResult cqlSaveUpdateResult = CQLUtil.parseQDMCQLLibraryForErrors(model, cqlLibraryDAO, new ArrayList<>());
 		
 		for(Result componentMeasure : manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
 			String componentSimpleXML = measureExportDAO.findByMeasureId(componentMeasure.getId()).getSimpleXML();
@@ -163,7 +163,7 @@ public class CompositeMeasurePackageValidator {
 	
 	public void validateAllRiskAdjustmentVariablesWithSameNameHaveSameType(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel, String simpleXML) throws XPathExpressionException {
 		CQLModel model = CQLUtilityClass.getCQLModelFromXML(simpleXML);
-		SaveUpdateCQLResult cqlSaveUpdateResult = CQLUtil.parseCQLLibraryForErrors(model, cqlLibraryDAO, new ArrayList<>());	
+		SaveUpdateCQLResult cqlSaveUpdateResult = CQLUtil.parseQDMCQLLibraryForErrors(model, cqlLibraryDAO, new ArrayList<>());
 		
 		for(Result componentMeasure : manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
 			String componentSimpleXML = measureExportDAO.findByMeasureId(componentMeasure.getId()).getSimpleXML();

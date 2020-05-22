@@ -1,8 +1,9 @@
 package mat.server.service;
 
+import mat.client.measure.FhirMeasurePackageResult;
 import mat.dto.fhirconversion.ConversionResultDto;
 
-public interface FhirOrchestrationGatewayService {
+public interface FhirMeasureRemoteCall {
     /**
      * Call fhir conversion
      *
@@ -20,4 +21,8 @@ public interface FhirOrchestrationGatewayService {
      * @throws mat.client.shared.MatRuntimeException
      */
     ConversionResultDto validate(String measureId, String vsacGrantingTicket, boolean isDraft);
+
+    FhirMeasurePackageResult packageMeasure(String measureId);
+
+    String push(String measureId);
 }

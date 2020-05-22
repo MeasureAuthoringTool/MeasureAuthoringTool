@@ -241,7 +241,7 @@ public interface MeasurePackageService {
 
     void updateComponentMeasures(String compositeMeasureId, List<ComponentMeasure> componentMeasuresList);
 
-    void createPackageArtifacts(final String measureId, String releaseVersion, MeasureExport export);
+    void createPackageArtifacts(Measure measure, MeasureExport export);
 
     ValidateMeasureResult validateExportsForCompositeMeasures(String key) throws Exception;
 }

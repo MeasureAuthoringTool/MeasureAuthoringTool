@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import mat.model.clause.ModelTypeHelper;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.LibHolderObject;
 
@@ -39,7 +40,8 @@ public class CQLModel implements IsSerializable{
 	
 	
 	private int lines;
-	
+
+	public boolean isFhir() { return ModelTypeHelper.isFhir(usingModel);}
 	public String getContext() {
 		return context;
 	}

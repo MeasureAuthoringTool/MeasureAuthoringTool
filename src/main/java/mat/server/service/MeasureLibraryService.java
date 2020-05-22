@@ -30,6 +30,7 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.clause.Measure;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
@@ -653,4 +654,5 @@ public interface MeasureLibraryService {
 	
 	boolean libraryNameExists(String libraryName, String setId);
 
+	void exportDraftCQLLibraryForMeasure(Measure measure);
 }

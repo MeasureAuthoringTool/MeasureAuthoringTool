@@ -66,12 +66,14 @@ import mat.shared.UUIDUtilClient;
 
 public class ExportSimpleXML {
 
-
     private static final String STRATIFICATION = "stratification";
     private static final Log logger = LogFactory.getLog(ExportSimpleXML.class);
     private static final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
     private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
 
+    private ExportSimpleXML() {
+        // Utility class
+    }
 
     /**
      * Export.
@@ -94,7 +96,7 @@ public class ExportSimpleXML {
             exportedXML = generateExportedXML(measureXMLDocument, organizationDAO, measureDAO, measureId);
 
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            e.printStackTrace();
+            logger.error("Error in ExportSimpleXML::export: " + e.getMessage(), e);
         }
 
         return exportedXML;
@@ -110,6 +112,7 @@ public class ExportSimpleXML {
      * @return the string
      */
     public static String export(MeasureXML measureXMLObject, MeasureDAO measureDAO, OrganizationDAO organizationDAO, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel, MeasureTypeDAO measureTypeDao) {
+        logger.debug("Export measure to Simple XML");
         String simpleXML = "";
         try {
             Document measureXMLDocument = getXMLDocument(measureXMLObject);
@@ -120,7 +123,7 @@ public class ExportSimpleXML {
             simpleXML = simpleXML.substring(0, insertAt) + "<cqlUUID>" + UUIDUtilClient.uuid() + "</cqlUUID>" + simpleXML.substring(insertAt, simpleXML.length());
             simpleXML = setQDMIdAsUUID(simpleXML);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error in ExportSimpleXML::export: " + e.getMessage(), e);
         }
 
         return simpleXML;
@@ -168,8 +171,7 @@ public class ExportSimpleXML {
         try {
             return traverseXML(measureXMLDocument, organizationDAO, measureDAO, measure_Id);
         } catch (Exception e) {
-            logger.info("Exception thrown on ExportSimpleXML.generateExportedXML()");
-            e.printStackTrace();
+            logger.error("Exception thrown on ExportSimpleXML.generateExportedXML() " + e.getMessage(), e);
         }
         return "";
     }
@@ -191,8 +193,7 @@ public class ExportSimpleXML {
         try {
             return generateMeasureExportXML(measureXMLDocument, organizationDAO, measureDAO, cqlLibraryDAO, cqlModel, measure, measureTypeDao);
         } catch (Exception e) {
-            logger.info("Exception thrown on ExportSimpleXML.generateExportedXML()");
-            e.printStackTrace();
+            logger.error("Exception thrown on ExportSimpleXML.generateExportedXML(): " + e.getMessage(), e);
         }
         return "";
     }
@@ -287,9 +288,8 @@ public class ExportSimpleXML {
         modifyMeasureGroupingSequence(originalDoc);
         removeEmptyCommentsFromPopulationLogic(originalDoc);
 
-        Document newSimleXmlDoc = null;
         XmlProcessor xmlOriginalProcessor = new XmlProcessor(unMarshalMeasureDetailsAndAddToSimpleXML(measure, originalDoc, organizationDAO, measureTypeDao));
-        newSimleXmlDoc = xmlOriginalProcessor.getOriginalDoc();
+        Document newSimleXmlDoc = xmlOriginalProcessor.getOriginalDoc();
         updateUUIDForMeasureDetails(newSimleXmlDoc, measure.getId());
         setAttributesForComponentMeasures(newSimleXmlDoc, measureDAO);
         modifyHeaderStartStopDates(newSimleXmlDoc);
@@ -298,9 +298,9 @@ public class ExportSimpleXML {
     }
 
     private static String unMarshalMeasureDetailsAndAddToSimpleXML(Measure measure, Document originalDoc, OrganizationDAO organizationDao, MeasureTypeDAO measureTypeDao) {
-        String result = null;
         try {
             ManageMeasureDetailModelConversions conversion = new ManageMeasureDetailModelConversions();
+            String result;
             if (BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
                 ManageCompositeMeasureDetailModel manageMeasureDetails = conversion.createManageCompositeMeasureDetailModel(measure, organizationDao, measureTypeDao);
                 result = createXMLStringFromObjectMapping("CompositeMeasureDetailsModelMapping.xml", manageMeasureDetails);
@@ -311,21 +311,19 @@ public class ExportSimpleXML {
 
             XmlProcessor xmlOriginalProcessor = new XmlProcessor(getStringValueFromDocument(originalDoc));
             return xmlOriginalProcessor.appendNode(result, "measureDetails", "/measure");
-
-
         } catch (Exception e) {
-            logger.error("Exception in createModelFromXML: " + e);
+            logger.error("Exception in createModelFromXML: " + e.getMessage(), e);
         }
         return null;
     }
 
-	private static void updateUUIDForMeasureDetails(Document doc, String measureId)
-			throws XPathExpressionException {
-		String xPathForUUID = "/measure/measureDetails/uuid";
-		Node uuidNode = (Node) xPath.evaluate(xPathForUUID, doc, XPathConstants.NODE);
-		String uuid = UuidUtility.idToUuid(measureId);
-		uuidNode.setTextContent(uuid);
-	}
+    private static void updateUUIDForMeasureDetails(Document doc, String measureId)
+            throws XPathExpressionException {
+        String xPathForUUID = "/measure/measureDetails/uuid";
+        Node uuidNode = (Node) xPath.evaluate(xPathForUUID, doc, XPathConstants.NODE);
+        String uuid = UuidUtility.idToUuid(measureId);
+        uuidNode.setTextContent(uuid);
+    }
 
     private static String getStringValueFromDocument(Document originalDoc) {
         DOMSource domSource = new DOMSource(originalDoc);
@@ -338,7 +336,7 @@ public class ExportSimpleXML {
             transformer.transform(domSource, result);
             return writer.toString();
         } catch (TransformerException e) {
-            logger.warn("Failed in getStringValueFromDocument", e);
+            logger.warn("Failed in getStringValueFromDocument:" + e.getMessage(), e);
         }
         return null;
     }
@@ -352,26 +350,13 @@ public class ExportSimpleXML {
             result = xmlMarshalUtil.convertObjectToXML(xmlMapping, object);
 
         } catch (MarshalException | ValidationException | MappingException | IOException e) {
-            logger.error("Failed to load " + xmlMapping + " " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Failed to load " + xmlMapping + " " + e.getMessage(), e);
         }
         return result;
 
     }
 
-    /**
-     * Removes unused component measures from a measure. A component measure is considered not used
-     *
-     * @param originalDoc
-     * @throws XPathExpressionException
-     * @throws MarshalException
-     * @throws ValidationException
-     * @throws IOException
-     * @throws MappingException
-     * @throws SAXException
-     * @throws ParserConfigurationException
-     */
-    private static void removeUnusedComponentMeasures(Document originalDoc) throws XPathExpressionException, MarshalException, ValidationException, IOException, MappingException, SAXException, ParserConfigurationException {
+    private static void removeUnusedComponentMeasures(Document originalDoc) throws XPathExpressionException {
         logger.info("Remove Unused Component Measures");
 
         String componentMeasuresXPath = "/measure/measureDetails/componentMeasures/measure";
@@ -415,7 +400,7 @@ public class ExportSimpleXML {
             throws XPathExpressionException {
 
         CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(originalDoc);
-        List<String> expressionList = new ArrayList<String>();
+        List<String> expressionList = new ArrayList<>();
         expressionList.addAll(usedCQLArtifactHolder.getCqlDefFromPopSet());
         expressionList.addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
         SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
@@ -445,12 +430,6 @@ public class ExportSimpleXML {
         }
     }
 
-    /**
-     * @param originalDoc
-     * @param result
-     * @param cqlModel
-     * @throws XPathExpressionException
-     */
     private static void resolveAllValuesetsAndCodes(Document originalDoc, SaveUpdateCQLResult result, CQLModel cqlModel)
             throws XPathExpressionException {
 
@@ -479,18 +458,9 @@ public class ExportSimpleXML {
         CQLUtil.removeUnusedCodes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLcodes());
     }
 
-    /**
-     * @param originalDoc
-     * @param result
-     * @param cqlModel
-     * @param elementLookUpNode
-     * @param isValueSet
-     * @throws XPathExpressionException
-     */
     private static void resolveValueSets_Codes(Document originalDoc, SaveUpdateCQLResult result, CQLModel cqlModel,
                                                Node elementLookUpNode, boolean isValueSet) throws XPathExpressionException {
-
-        Map<String, List<String>> dataCriteriaValueSetMap = new HashMap<String, List<String>>();
+        Map<String, List<String>> dataCriteriaValueSetMap = new HashMap<>();
         if (isValueSet) {
 
             for (String definitionName : result.getUsedCQLArtifacts().getUsedCQLDefinitions()) {
@@ -1056,13 +1026,6 @@ public class ExportSimpleXML {
         }
     }
 
-    /**
-     * Removes the unwanted sub trees.
-     *
-     * @param usedSubTreeIds the used sub tree ids
-     * @param originalDoc    the original doc
-     * @throws XPathExpressionException the x path expression exception
-     */
     private static void removeUnwantedSubTrees(List<String> usedSubTreeIds, Document originalDoc)
             throws XPathExpressionException {
         if ((usedSubTreeIds != null) && (usedSubTreeIds.size() > 0)) {
@@ -1515,7 +1478,7 @@ public class ExportSimpleXML {
      * @return the required clauses
      */
     private static List<String> getRequiredClauses(String type) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         if ("Cohort".equalsIgnoreCase(type)) {
             list.add("initialPopulation");
             list.add("stratum");

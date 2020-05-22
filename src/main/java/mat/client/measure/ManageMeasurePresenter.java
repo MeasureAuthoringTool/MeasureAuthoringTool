@@ -96,7 +96,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private static final String UNHANDLED_EXCEPTION = "Unhandled Exception: ";
 
-    private final Logger logger = Logger.getLogger("MAT");
+    private static final Logger logger = Logger.getLogger(ManageMeasurePresenter.class.getSimpleName());
 
     private final String currentUserRole = MatContext.get().getLoggedInUserRole();
 
@@ -1310,6 +1310,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         MatContext.get().getMeasureService().saveFinalizedVersion(measureId, isMajor, version, shouldPackage, ignoreUnusedLibraries, new AsyncCallback<SaveMeasureResult>() {
             @Override
             public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "MeasureService::saveFinalizedVersion -> onFailure" + caught.getMessage(), caught);
                 setSearchingBusy(false);
                 versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                 MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
@@ -1317,10 +1318,12 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onSuccess(SaveMeasureResult result) {
+                logger.log(Level.INFO, "MeasureService::saveFinalizedVersion -> onSuccess " + result.isSuccess());
                 setSearchingBusy(false);
                 if (result.isSuccess()) {
                     versionSuccessEvent(measureId, measureName, shouldPackage, result);
                 } else {
+                    logger.log(Level.SEVERE, "MeasureService::saveFinalizedVersion -> success = false " + result.toString());
                     versionFailureEvent(result.getFailureReason(), measureId, measureName, isMajor, version, shouldPackage);
                 }
             }

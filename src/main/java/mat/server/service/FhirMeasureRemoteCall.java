@@ -23,4 +23,6 @@ public interface FhirMeasureRemoteCall {
     ConversionResultDto validate(String measureId, String vsacGrantingTicket, boolean isDraft);
 
     FhirMeasurePackageResult packageMeasure(String measureId);
+
+    String push(String measureId);
 }

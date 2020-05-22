@@ -112,6 +112,12 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
     }
 
     @Override
+    public String push(String measureId) {
+        return fhirMeasureRemote.push(measureId);
+    }
+
+
+    @Override
     public FhirMeasurePackageResult packageMeasure(String measureId) {
         return fhirMeasureRemote.packageMeasure(measureId);
     }

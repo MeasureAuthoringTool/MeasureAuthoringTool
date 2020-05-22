@@ -9,4 +9,5 @@ import mat.client.shared.MatException;
 public interface FhirMeasureService {
     FhirConvertResultResponse convert(ManageMeasureSearchModel.Result sourceMeasure, String vsacGrantingTicket, String loggedinUserId) throws MatException;
     FhirMeasurePackageResult packageMeasure(String measureId);
+    String push(String measureId);
 }

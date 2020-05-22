@@ -31,6 +31,7 @@ import java.util.Map;
 @Slf4j
 public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     private static final String FHIR_ID_PARAMS = "?id={id}";
+    private static final String FHIR_PUSH_MEASURE_PARAMS = "measure/pushMeasure" + FHIR_ID_PARAMS;
     private static final String FHIR_PACKAGE_MEASURE_PARAMS = "measure/packager/full/json" + FHIR_ID_PARAMS;
     private static final String FHIR_ORCH_MEASURE_SRVC_PARAMS = "orchestration/measure" + FHIR_ID_PARAMS + "&conversionType={conversionType}&xmlSource={xmlSource}&vsacGrantingTicket={vsacGrantingTicket}";
     private static final String SIMPLE_XML_SOURCE = "SIMPLE";
@@ -53,6 +54,16 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     public FhirMeasureRemoteCallImpl(RestTemplate restTemplate,FhirContext fhirContext) {
         this.restTemplate = restTemplate;
         this.fhirContext = fhirContext;
+    }
+
+    @Override
+    public String push(String measureId) {
+        Map<String, Object> uriVariables = new HashMap<>();
+        uriVariables.put("id", measureId);
+        return rest(fhirServicesUrl + FHIR_PUSH_MEASURE_PARAMS,
+                HttpMethod.POST,
+                String.class,
+                uriVariables);
     }
 
     @Override
@@ -83,8 +94,8 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
         Measure measure = fhirContext.newJsonParser().parseResource(Measure.class,result.getMeasureJson());
         result.setMeasureXml(fhirContext.newXmlParser().encodeResourceToString(measure));
 
-        Library lib = fhirContext.newJsonParser().parseResource(Library.class,result.getMeasureJson());
-        result.setInludedLibsXml(fhirContext.newXmlParser().encodeResourceToString(lib));
+        Library lib = fhirContext.newJsonParser().parseResource(Library.class,result.getMeasureLibJson());
+        result.setMeasureLibXml(fhirContext.newXmlParser().encodeResourceToString(lib));
         lib.getContent().forEach(a -> {
             if (StringUtils.equalsIgnoreCase("text/cql", a.getContentType())) {
                 result.setMeasureLibCql(decodeBase64(a));

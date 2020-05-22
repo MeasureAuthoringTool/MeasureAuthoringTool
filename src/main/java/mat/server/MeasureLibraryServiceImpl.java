@@ -1524,7 +1524,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         mDetail.setVersionNumber(toVersion);
         mDetail.setRevisionNumber(toRevision);
         mDetail.setDraft(toDraftState);
-        setValueFromModel(mDetail,measure);
+        setValueFromModel(mDetail, measure);
         measurePackageService.save(measure);
     }
 
@@ -1562,7 +1562,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         if (MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
             MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measure.getId());
-            exportCQLibraryFromMeasure(measure, mDetail, xmlModel);
+            exportCQLibraryFromMeasure(measure, mDetail, xmlModel,false);
         }
 
         SaveMeasureResult result = new SaveMeasureResult();
@@ -1846,7 +1846,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         try {
             CQLUtil.removeUnusedIncludes(processor.getOriginalDoc(), cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlResult.getCqlModel());
         } catch (XPathExpressionException e) {
-            log.error("removeUnusedLibraries",e.getStackTrace());
+            log.error("removeUnusedLibraries", e.getStackTrace());
         }
 
         String updatedMeasureXml = new String(processor.transform(processor.getOriginalDoc()).getBytes());
@@ -1976,14 +1976,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 log.warn("updateVersionInSimpleXMLAndGenerateArtifacts failed with exception. " +
                                 "Rolling back versioning." +
                                 "measure={} priorVersion={} priorRevision={} priorDraft={}",
-                        measure.getId(),priorVersion,priorRevision,priorDraft );
+                        measure.getId(), priorVersion, priorRevision, priorDraft);
                 try {
                     rollbackMeasureVersioning(priorVersion, priorRevision, priorDraft, measure);
                 } catch (RuntimeException re2) {
-                    log.error("Error rolling back measure.",re2);
+                    log.error("Error rolling back measure.", re2);
                     log.error("Measure versioned with no way to roll back!. " +
-                            "measure={} priorVersion={} priorRevision={} priorDraft={}",
-                            measure.getId(),priorVersion,priorRevision,priorDraft );
+                                    "measure={} priorVersion={} priorRevision={} priorDraft={}",
+                            measure.getId(), priorVersion, priorRevision, priorDraft);
                 }
                 throw re;
             }
@@ -2052,6 +2052,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
     }
 
+    public void exportDraftCQLLibraryForMeasure(Measure measure) {
+        MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measure.getId());
+        ManageMeasureDetailModel mDetail = getMeasure(measure.getId());
+        exportCQLibraryFromMeasure(measure, mDetail, xmlModel, true);
+    }
+
     /**
      * This method exports cql when measure is versioned. Entry in CQL_Library table
      * is made.
@@ -2061,13 +2067,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
      * @param xmlModel
      */
     private void exportCQLibraryFromMeasure(Measure measure, ManageMeasureDetailModel mDetail,
-                                            MeasureXmlModel xmlModel) {
+                                            MeasureXmlModel xmlModel, boolean isDraft) {
         log.info("exportCQLibraryFromMeasure method :: Start");
 
         String cqlLibraryName = "";
         String cqlQdmVersion = "";
         byte[] cqlByteArray = null;
-        CQLLibrary cqlLibrary = new CQLLibrary();
+        CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measure.getId());
+        if (cqlLibrary == null) {
+            cqlLibrary = new CQLLibrary();
+        }
+
         if (!xmlModel.getXml().isEmpty()) {
             String xPathForCQLLookup = "//cqlLookUp";
             String xPathForCQLLibraryName = "//cqlLookUp/library";
@@ -2109,7 +2119,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     cqlLibrary.setReleaseVersion(measure.getReleaseVersion());
                     cqlLibrary.setQdmVersion(cqlQdmVersion);
                     cqlLibrary.setFinalizedDate(timestamp);
-                    cqlLibrary.setDraft(false);
+                    cqlLibrary.setDraft(isDraft);
                     cqlLibrary.setRevisionNumber(mDetail.getRevisionNumber());
                     cqlLibrary.setCQLByteArray(cqlByteArray);
                     cqlLibraryService.save(cqlLibrary);
@@ -3473,7 +3483,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML);
 
         if (cqlModel.isFhir()) {
-            String cql = CQLUtilityClass.getCqlString(cqlModel,"").getLeft();
+            String cql = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
             String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cql);
             SaveUpdateCQLResult cqlResult = getCqlService().generateParsedCqlObject(cqlValidationResponse, cqlModel);
             return cqlResult.getCqlErrors().size() != 0;

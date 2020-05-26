@@ -160,7 +160,7 @@ public class PatientBasedValidator {
 
 			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXmlL);
 
-			SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, usedExprList);
+			SaveUpdateCQLResult cqlResult = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, usedExprList);
 
 			List<CQLExpressionObject> expressions = cqlResult.getCqlObject().getCqlDefinitionObjectList();
 			List<CQLExpressionObject> expressionsToBeChecked = new ArrayList<CQLExpressionObject>();

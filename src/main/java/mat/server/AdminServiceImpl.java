@@ -109,7 +109,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
         model.setMiddleInitial(user.getMiddleInit());
         model.setTitle(user.getTitle());
         model.setEmailAddress(user.getEmailAddress());
-		model.setHarpId(user.getHarpId());
+        model.setHarpId(user.getHarpId());
         model.setLoginId(user.getLoginId());
         model.setPhoneNumber(user.getPhoneNumber());
         model.setActive(getIsActive(user.getStatus()));
@@ -176,7 +176,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
      */
     private String getUserPwdCreationMsg(String userID) {
         UserDAO userDAO = context.getBean(UserDAO.class);
-        MatUserDetails userDetails = (MatUserDetails) userDAO.getUser(userID);
+        MatUserDetails userDetails = userDAO.getUserDetailsByLoginId(userID);
         Date creationDate = userDetails.getUserPassword().getCreatedDate();
         boolean tempPwd = userDetails.getUserPassword().isTemporaryPassword();
         boolean initialPwd = userDetails.getUserPassword().isInitial();

@@ -8,9 +8,6 @@ import static mat.client.measure.ManageMeasureSearchModel.Result;
 
 @RemoteServiceRelativePath("fhirMeasureService")
 public interface FhirMeasureRemoteService extends RemoteService {
-
     FhirConvertResultResponse convert(Result sourceMeasure) throws MatException;
-
     CheckForConversionResult checkMeasureForConversion(Result sourceMeasure);
-
 }

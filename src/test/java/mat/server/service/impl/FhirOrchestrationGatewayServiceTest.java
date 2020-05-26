@@ -23,11 +23,11 @@ public class FhirOrchestrationGatewayServiceTest {
     @Mock
     private RestTemplate restTemplate;
     @InjectMocks
-    private FhirOrchestrationGatewayServiceImpl service;
+    private FhirMeasureRemoteCallImpl service;
 
     @BeforeEach
     public void setUp() {
-        Whitebox.setInternalState(service, "fhirMeasureOrchestrationUrl", "http://localhost:9080/orchestration/measure");
+        Whitebox.setInternalState(service, "fhirServicesUrl", "http://localhost:9080/");
     }
 
     @Test

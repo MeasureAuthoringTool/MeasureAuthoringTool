@@ -2047,7 +2047,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             measureExport.setSimpleXML(updatedSimpleXML);
             measureExportDAO.save(measureExport);
-            measurePackageService.createPackageArtifacts(measure.getId(), measure.getReleaseVersion(), measureExport);
+            measurePackageService.createPackageArtifacts(measure, measureExport);
         }
     }
 
@@ -2734,7 +2734,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         } catch (XPathExpressionException e) {
             log.error("updateElementLookUp: " + e.getMessage(), e);
         }
-        log.debug(" MeasureLibraryServiceImpl: updateElementLookUp End :  ");
+        log.debug("MeasureLibraryServiceImpl: updateElementLookUp End :  ");
     }
 
     @Override

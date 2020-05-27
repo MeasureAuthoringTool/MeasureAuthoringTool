@@ -83,6 +83,9 @@ public class InsertAttributeBuilderDialogBox {
     private static final String NULLABLE = "Nullable";
     private static final String PERIOD = ".";
     private static final List<String> ALL_ATTR_MODE_LIST = Arrays.asList("Comparison", "Computative", "Nullable", "ValueSets", "Codes");
+    private static final int ATTR_MAX_WIDTH = 90;
+    private static final String ATTR_WIDTH = "45em";
+    private static final int ATTR_VISIBLE_ITEMS = 10;
 
     private static Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();
 
@@ -562,10 +565,10 @@ public class InsertAttributeBuilderDialogBox {
         dtPanel.clear();
         dtPanel.getElement().setId("HorizontalPanel_DtPanel");
         dtAttriblistBox.clear();
-        dtAttriblistBox.setMaxWidth(90);
-        dtAttriblistBox.setWidth("45em");
+        dtAttriblistBox.setMaxWidth(ATTR_MAX_WIDTH);
+        dtAttriblistBox.setWidth(ATTR_WIDTH);
         attriblistBox.setDoTrimDisplay(false);
-        dtAttriblistBox.setVisibleItemCount(10);
+        dtAttriblistBox.setVisibleItemCount(ATTR_VISIBLE_ITEMS);
         dtAttriblistBox.getElement().setId("DataTypeBtAtrr_listBox");
         //setting itemcount value to 1 turns listbox into a drop-down list.
         dtAttriblistBox.setVisibleItemCount(1);
@@ -590,10 +593,10 @@ public class InsertAttributeBuilderDialogBox {
         attrPanel.clear();
         attrPanel.getElement().setId("HorizontalPanel_AttrPanel");
         attriblistBox.clear();
-        attriblistBox.setMaxWidth(90);
-        attriblistBox.setWidth("45em");
+        attriblistBox.setMaxWidth(ATTR_MAX_WIDTH);
+        attriblistBox.setWidth(ATTR_WIDTH);
         attriblistBox.setDoTrimDisplay(false);
-        attriblistBox.setVisibleItemCount(10);
+        attriblistBox.setVisibleItemCount(ATTR_VISIBLE_ITEMS);
         attriblistBox.getElement().setId("Atrr_listBox");
         //setting itemcount value to 1 turns listbox into a drop-down list.
         attriblistBox.setVisibleItemCount(1);
@@ -620,7 +623,7 @@ public class InsertAttributeBuilderDialogBox {
         modePanel.getElement().setId("HorizontalPanel_ModePanel");
         modelistBox.clear();
         modelistBox.setWidth("18em");
-        modelistBox.setVisibleItemCount(10);
+        modelistBox.setVisibleItemCount(ATTR_VISIBLE_ITEMS);
         modelistBox.getElement().setId("Mode_listBox");
         //setting itemcount value to 1 turns listbox into a drop-down list.
         modelistBox.setVisibleItemCount(1);
@@ -648,7 +651,7 @@ public class InsertAttributeBuilderDialogBox {
         modeDetailPanel.getElement().setId("HorizontalPanel_ModeDetailsPanel");
         modeDetailslistBox.clear();
         modeDetailslistBox.setWidth("18em");
-        modeDetailslistBox.setVisibleItemCount(10);
+        modeDetailslistBox.setVisibleItemCount(ATTR_VISIBLE_ITEMS);
         modeDetailslistBox.getElement().setId("ModeDetails_listBox");
         //setting itemcount value to 1 turns listbox into a drop-down list.
         modeDetailslistBox.setVisibleItemCount(1);

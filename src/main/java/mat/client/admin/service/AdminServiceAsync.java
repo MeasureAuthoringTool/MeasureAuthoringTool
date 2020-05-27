@@ -1,5 +1,7 @@
 package mat.client.admin.service;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import mat.client.admin.ManageOrganizationDetailModel;
@@ -79,6 +81,8 @@ public interface AdminServiceAsync {
 	void deleteOrganization(ManageOrganizationSearchModel.Result organization, AsyncCallback<Void> callback);
 	
 	void getUserByEmail(String emailId, AsyncCallback<ManageUsersDetailModel> callback);
+
+	void getUsersByHarpId(String harpId, AsyncCallback<List<ManageUsersDetailModel>> callback);
 
 	void saveOrganization(ManageOrganizationDetailModel updatedOrganizationDetailModel,
 			AsyncCallback<SaveUpdateOrganizationResult> asyncCallback);

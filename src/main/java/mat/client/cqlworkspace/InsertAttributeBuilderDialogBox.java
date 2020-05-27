@@ -31,6 +31,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -54,7 +55,7 @@ import mat.model.clause.QDSAttributes;
 
 public class InsertAttributeBuilderDialogBox {
 
-    private static final Logger logger = Logger.getLogger("MAT");
+    private static final Logger logger = Logger.getLogger(InsertAttributeBuilderDialogBox.class.getSimpleName());
 
     private static final String ATTR_LABEL = "attr-Label";
     private static final String FORM_CONTROL = "form-control";
@@ -159,7 +160,7 @@ public class InsertAttributeBuilderDialogBox {
         dialogModal.setDataBackdrop(ModalBackdrop.STATIC);
         dialogModal.setDataKeyboard(true);
         dialogModal.setId("InsertAttrToAceEditor_Modal");
-        dialogModal.setWidth("50%");
+        dialogModal.setWidth("680px");
         dialogModal.setRemoveOnHide(true);
 
         if (handler == null) {
@@ -210,16 +211,18 @@ public class InsertAttributeBuilderDialogBox {
 
         dtw.setDateTimeEnabled(false);
 
-        final Grid queryGrid = new Grid(6, 2);
+        final FlexTable queryGrid = new FlexTable();
+        queryGrid.getFlexCellFormatter().setColSpan(0, 0, 2);
         queryGrid.setWidget(0, 0, dtFormGroup);
-        queryGrid.setWidget(0, 1, attrFormGroup);
-        queryGrid.setWidget(1, 0, modeFormGroup);
-        queryGrid.setWidget(1, 1, modeDetailsFormGroup);
-        queryGrid.setWidget(2, 0, dateTimeLabel);
-        queryGrid.setWidget(3, 0, datePanel);
-        queryGrid.setWidget(3, 1, timePanel);
-        queryGrid.setWidget(4, 0, quantityFormGroup);
-        queryGrid.setWidget(4, 1, unitFormGroup);
+        queryGrid.getFlexCellFormatter().setColSpan(1, 0, 2);
+        queryGrid.setWidget(1, 0, attrFormGroup);
+        queryGrid.setWidget(2, 0, modeFormGroup);
+        queryGrid.setWidget(2, 1, modeDetailsFormGroup);
+        queryGrid.setWidget(3, 0, dateTimeLabel);
+        queryGrid.setWidget(4, 0, datePanel);
+        queryGrid.setWidget(4, 1, timePanel);
+        queryGrid.setWidget(5, 0, quantityFormGroup);
+        queryGrid.setWidget(5, 1, unitFormGroup);
         queryGrid.setStyleName("attr-grid");
 
         modalBody.add(messageFormgroup);
@@ -407,6 +410,7 @@ public class InsertAttributeBuilderDialogBox {
         final int selectedIndex = modelistBox.getSelectedIndex();
         if (selectedIndex != 0) {
             final String modeSelected = modelistBox.getItemText(selectedIndex);
+            logger.log(Level.INFO, "selectMode: " + modeSelected);
             messageHelpBlock.setText(MODE_DETAILS_ALERT);
             modeDetailslistBox.setEnabled(true);
 
@@ -431,6 +435,7 @@ public class InsertAttributeBuilderDialogBox {
         final int selectedIndex = attriblistBox.getSelectedIndex();
         if (selectedIndex != 0) {
             final String attrSelected = attriblistBox.getItemText(selectedIndex);
+            logger.log(Level.INFO, "selectAttributes: " + attrSelected);
             messageHelpBlock.setText(MODE_ALERT);
             modelistBox.setEnabled(true);
             if (ModelTypeHelper.isFhir(modelType)) {
@@ -464,6 +469,7 @@ public class InsertAttributeBuilderDialogBox {
         final int selectedIndex = dtAttriblistBox.getSelectedIndex();
         if (selectedIndex != 0) {
             final String dataTypeSelected = dtAttriblistBox.getItemText(selectedIndex);
+            logger.log(Level.INFO, "selectAttributesByDataType: " + dataTypeSelected);
             if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
                 getAllAttributesByDataTypeForFhir(attriblistBox, dataTypeSelected);
                 attriblistBox.setEnabled(true);
@@ -556,7 +562,9 @@ public class InsertAttributeBuilderDialogBox {
         dtPanel.clear();
         dtPanel.getElement().setId("HorizontalPanel_DtPanel");
         dtAttriblistBox.clear();
-        dtAttriblistBox.setWidth("18em");
+        dtAttriblistBox.setMaxWidth(90);
+        dtAttriblistBox.setWidth("45em");
+        attriblistBox.setDoTrimDisplay(false);
         dtAttriblistBox.setVisibleItemCount(10);
         dtAttriblistBox.getElement().setId("DataTypeBtAtrr_listBox");
         //setting itemcount value to 1 turns listbox into a drop-down list.
@@ -582,7 +590,9 @@ public class InsertAttributeBuilderDialogBox {
         attrPanel.clear();
         attrPanel.getElement().setId("HorizontalPanel_AttrPanel");
         attriblistBox.clear();
-        attriblistBox.setWidth("18em");
+        attriblistBox.setMaxWidth(90);
+        attriblistBox.setWidth("45em");
+        attriblistBox.setDoTrimDisplay(false);
         attriblistBox.setVisibleItemCount(10);
         attriblistBox.getElement().setId("Atrr_listBox");
         //setting itemcount value to 1 turns listbox into a drop-down list.
@@ -761,6 +771,7 @@ public class InsertAttributeBuilderDialogBox {
         String attributeName = attriblistBox.getItemText(attriblistBox.getSelectedIndex()).toLowerCase();
         String modeName = modelistBox.getItemText(modelistBox.getSelectedIndex()).toLowerCase();
 
+        logger.log(Level.INFO, "setWidgetEnabled attributeName " + attributeName + " modeName " + modeName);
         boolean comparison = modeName.equalsIgnoreCase("comparison");
         if (comparison || modeName.equalsIgnoreCase("computative")) {
             setWidgetEnabledForComparisonOrComputative(modelType, attributeName, comparison);

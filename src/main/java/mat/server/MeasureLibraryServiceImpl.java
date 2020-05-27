@@ -74,6 +74,7 @@ import mat.client.measurepackage.MeasurePackageOverview;
 import mat.client.shared.GenericResult;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
+import mat.client.shared.MatRuntimeException;
 import mat.client.umls.service.VsacApiResult;
 import mat.dao.DataTypeDAO;
 import mat.dao.MeasureTypeDAO;
@@ -2102,14 +2103,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     String cqlXML = xmlProcessor.transform(cqlLookUpNode, true);
                     cqlByteArray = cqlXML.getBytes();
 
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:ss");
-                    Date date = null;
-                    try {
-                        date = dateFormat.parse(mDetail.getFinalizedDate());
-                    } catch (ParseException e) {
-                        log.error("Exception in exportCQLibraryFromMeasure when formatting date: " + e.getMessage(), e);
+                    long time;
+                    if (isDraft && mDetail.getFinalizedDate() == null) {
+                        time = System.currentTimeMillis();
+                    } else {
+                        Date date = null;
+                        try {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:ss");
+                            date = dateFormat.parse(mDetail.getFinalizedDate());
+                            time = date.getTime();
+                        } catch (ParseException e) {
+                            log.error("Exception in exportCQLibraryFromMeasure when formatting date: " + e.getMessage(), e);
+                            throw new MatRuntimeException("If !isDraft, mDetail.getFinalizedDate can not be null!");
+                        }
                     }
-                    long time = date.getTime();
                     Timestamp timestamp = new Timestamp(time);
 
                     cqlLibrary.setMeasureId(mDetail.getId());

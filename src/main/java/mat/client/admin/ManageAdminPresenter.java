@@ -32,7 +32,7 @@ public class ManageAdminPresenter implements MatPresenter, TabObserver {
 	/** Instantiates a new Admin presenter. */
 	@SuppressWarnings("unchecked")
 	public ManageAdminPresenter() {
-		presenterList = new ArrayList<MatPresenter>();
+		presenterList = new ArrayList<>();
 		ManageUsersSearchView musd = new ManageUsersSearchView();
 		ManageUsersDetailView mudd = new ManageUsersDetailView();
 		ManageUserHistoryView muhd = new ManageUserHistoryView();
@@ -68,22 +68,14 @@ public class ManageAdminPresenter implements MatPresenter, TabObserver {
 		});
 		beforeDisplay();
 	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.MatPresenter#beforeClosingDisplay()
-	 */
+
 	@Override
 	public void beforeClosingDisplay() {
 		notifyCurrentTabOfClosing();
 		tabLayout.updateHeaderSelection(0);
 		tabLayout.setSelectedIndex(0);
 	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.MatPresenter#beforeDisplay()
-	 */
+
 	@Override
 	public void beforeDisplay() {
 		fp.add(tabLayout);
@@ -92,9 +84,7 @@ public class ManageAdminPresenter implements MatPresenter, TabObserver {
 		tabLayout.selectTab(presenterList.indexOf(manageUsersPresenter));
 		manageUsersPresenter.beforeDisplay();
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#getWidget()
-	 */
+
 	@Override
 	public Widget getWidget() {
 		return adminContentWidget;
@@ -112,8 +102,10 @@ public class ManageAdminPresenter implements MatPresenter, TabObserver {
 		}
 		
 	}
+
 	@Override
 	public void showUnsavedChangesError() {}
+
 	@Override
 	public void notifyCurrentTabOfClosing() {
 		MatPresenter oldPresenter = presenterList.get(tabLayout.getSelectedIndex());
@@ -122,4 +114,5 @@ public class ManageAdminPresenter implements MatPresenter, TabObserver {
 			oldPresenter.beforeClosingDisplay();
 		}
 	}
+
 }

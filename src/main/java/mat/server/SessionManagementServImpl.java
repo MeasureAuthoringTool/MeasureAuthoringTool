@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import mat.DTO.UserPreferenceDTO;
+import mat.dto.UserPreferenceDTO;
 import mat.client.login.service.CurrentUserInfo;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.ShortUserInfo;

@@ -13,7 +13,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.DTO.UnitDTO;
+import mat.dto.UnitDTO;
 import mat.dao.UnitDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.Unit;

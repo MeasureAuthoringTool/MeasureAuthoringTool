@@ -9,8 +9,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.Collections;
-import mat.DTO.OperatorDTO;
-import mat.DTO.UnitDTO;
+import mat.dto.OperatorDTO;
+import mat.dto.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.model.MatValueSetTransferObject;

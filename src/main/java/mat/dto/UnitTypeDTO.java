@@ -1,28 +1,26 @@
-package mat.DTO;
+package mat.dto;
+
 
 import mat.client.codelist.HasListBox;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * The Class HasListBoxDTO.
+ * DTO for unit type object.
  */
-public class HasListBoxDTO implements IsSerializable, HasListBox {
-   
+public class UnitTypeDTO implements IsSerializable, HasListBox {
+	
 	/** The id. */
 	private String id;
 	
-	/** The description. */
-	private String description;
-	
-	/** The oid. */
-	private String oid;
+	/** The unit type. */
+	private String unitType;
 	
 	/**
-	 * Instantiates a new checks for list box dto.
+	 * Instantiates a new unit type dto.
 	 */
-	public HasListBoxDTO(){
-	
+	public UnitTypeDTO(){
+		
 	}
 	
 	/**
@@ -44,24 +42,6 @@ public class HasListBoxDTO implements IsSerializable, HasListBox {
 		this.id = id;
 	}
 	
-	/**
-	 * Gets the description.
-	 * 
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-	
-	/**
-	 * Sets the description.
-	 * 
-	 * @param description
-	 *            the new description
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getValue()
@@ -74,28 +54,39 @@ public class HasListBoxDTO implements IsSerializable, HasListBox {
 	 * @see mat.client.codelist.HasListBox#getItem()
 	 */
 	public String getItem() {
-		return description;
+		// TODO Auto-generated method stub
+		return unitType;
 	}
 	
 	/**
-	 * Sets the oid.
+	 * Sets the item.
 	 * 
-	 * @param oid
-	 *            the new oid
+	 * @param unitType
+	 *            the new item
 	 */
-	public void setOid(String oid){
-		this.oid = oid;
+	public void setItem(String unitType) {
+		this.unitType = unitType;
+	}	
+	
+	/**
+	 * Gets the unit type.
+	 * 
+	 * @return the unit type
+	 */
+	public String getUnitType() {
+		return unitType;
 	}
 	
 	/**
-	 * Gets the title.
+	 * Sets the unit type.
 	 * 
-	 * @return the title
+	 * @param unitType
+	 *            the new unit type
 	 */
-	public String getTitle(){
-		return oid;
+	public void setUnitType(String unitType) {
+		this.unitType = unitType;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getSortOrder()
 	 */

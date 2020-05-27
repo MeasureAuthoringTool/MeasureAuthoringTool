@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import mat.DTO.SearchHistoryDTO;
+import mat.dto.SearchHistoryDTO;
 import mat.dao.CodeListAuditLogDAO;
 import mat.dao.ListObjectDAO;
 import mat.model.ListObject;

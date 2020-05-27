@@ -1,4 +1,4 @@
-package mat.DTO;
+package mat.dto;
 
 
 import mat.client.codelist.HasListBox;

@@ -22,7 +22,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
-import mat.DTO.UserAuditLogDTO;
+import mat.dto.UserAuditLogDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.admin.ManageOrganizationSearchModel.Result;

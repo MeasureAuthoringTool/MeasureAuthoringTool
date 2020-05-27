@@ -18,10 +18,10 @@ import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import mat.DTO.CodeSystemDTO;
-import mat.DTO.DataTypeDTO;
-import mat.DTO.OperatorDTO;
-import mat.DTO.UnitDTO;
+import mat.dto.CodeSystemDTO;
+import mat.dto.DataTypeDTO;
+import mat.dto.OperatorDTO;
+import mat.dto.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.dao.AuthorDAO;

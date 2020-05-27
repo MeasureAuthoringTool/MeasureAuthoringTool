@@ -2,7 +2,7 @@ package mat.dao;
 
 import java.util.List;
 
-import mat.DTO.SearchHistoryDTO;
+import mat.dto.SearchHistoryDTO;
 import mat.model.MeasureAuditLog;
 import mat.model.clause.Measure;
 

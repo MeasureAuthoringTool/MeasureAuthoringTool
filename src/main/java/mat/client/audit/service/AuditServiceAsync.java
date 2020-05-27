@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import mat.DTO.SearchHistoryDTO;
-import mat.DTO.UserAuditLogDTO;
+import mat.dto.SearchHistoryDTO;
+import mat.dto.UserAuditLogDTO;
 import mat.client.login.service.AsynchronousService;
 
 /**

@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import mat.DTO.UserPreferenceDTO;
+import mat.dto.UserPreferenceDTO;
 
 public class CurrentUserInfo implements IsSerializable {
 

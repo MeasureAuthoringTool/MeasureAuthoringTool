@@ -18,7 +18,7 @@ import mat.server.util.ResourceLoader;
 
 public class XMLMarshalUtil {
 
-	XMLContext xmlContext = new XMLContext();
+	private XMLContext xmlContext = new XMLContext();
 
 	private Marshaller createMarshaller() {
 		return xmlContext.createMarshaller();

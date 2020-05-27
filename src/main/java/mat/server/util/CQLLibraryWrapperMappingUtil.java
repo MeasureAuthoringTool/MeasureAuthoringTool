@@ -10,22 +10,15 @@ import mat.model.cql.CQLIncludeLibraryWrapper;
 import mat.server.service.impl.XMLMarshalUtil;
 
 public class CQLLibraryWrapperMappingUtil {
-	
-	private static final String MAPPING = "CQLIncludeLibraryMapping.xml";
 
-	public static CQLIncludeLibraryWrapper convertXMLToCQLIncludeLibraryWrapper(String cqlIncludeLibraryXML) 
-			throws IOException, MappingException, MarshalException, ValidationException {
+    private static final String MAPPING = "CQLIncludeLibraryMapping.xml";
 
-		final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
-		return (CQLIncludeLibraryWrapper) xmlMarshalUtil.convertXMLToObject(MAPPING, cqlIncludeLibraryXML, CQLIncludeLibraryWrapper.class);
-	}
+    public static String convertCQLIncludeLibraryWrapperToXML(CQLIncludeLibraryWrapper wrapper)
+            throws IOException, MappingException, MarshalException, ValidationException {
 
-	public static String convertCQLIncludeLibraryWrapperToXML(CQLIncludeLibraryWrapper wrapper) 
-			throws IOException, MappingException, MarshalException, ValidationException {
+        final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
+        return xmlMarshalUtil.convertObjectToXML(MAPPING, wrapper);
 
-		final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
-		return xmlMarshalUtil.convertObjectToXML(MAPPING, wrapper);
-
-	}
+    }
 
 }

@@ -1,6 +1,9 @@
 package mat.model.cql;
 
+import java.util.Objects;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.model.clause.ModelTypeHelper;
 
 /**
  * The Class CQLIncludeLibrary.
@@ -25,7 +28,7 @@ public class CQLIncludeLibrary implements IsSerializable {
 
     private String measureId;
 
-    private String libraryModelType;
+    private String libraryModelType = ModelTypeHelper.QDM;
 
     public String getSetId() {
         return setId;
@@ -123,11 +126,12 @@ public class CQLIncludeLibrary implements IsSerializable {
             return false;
         }
 
+        // (cqlIncludeLibrary.libraryModelType == libraryModelType || libraryModelType != null && libraryModelType.equals(cqlIncludeLibrary.libraryModelType))
         if (cqlIncludeLibrary.cqlLibraryId.equals(cqlLibraryId) &&
                 cqlIncludeLibrary.aliasName.equals(aliasName) &&
                 cqlIncludeLibrary.cqlLibraryName.equals(cqlLibraryName) &&
                 cqlIncludeLibrary.version.equals(version) &&
-                cqlIncludeLibrary.libraryModelType.equals(libraryModelType)) {
+                (Objects.equals(libraryModelType, cqlIncludeLibrary.libraryModelType))) {
             return true;
         }
         return false;

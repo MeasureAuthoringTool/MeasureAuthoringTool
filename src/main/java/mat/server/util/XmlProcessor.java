@@ -389,15 +389,13 @@ public class XmlProcessor {
      */
     private void caughtExceptions(Exception excp) {
         if (excp instanceof ParserConfigurationException) {
-            LOG.error("Document Builder Object creation failed"
-                    + excp.getStackTrace());
+            LOG.error("Document Builder Object creation failed:" + excp.getMessage(), excp);
         } else if (excp instanceof SAXException) {
-            LOG.error("Xml parsing failed:" + excp.getStackTrace());
+            LOG.error("Xml parsing failed:" + excp.getMessage(), excp);
         } else if (excp instanceof IOException) {
-            LOG.error("Conversion of String XML to InputSource failed"
-                    + excp.getStackTrace());
+            LOG.error("Conversion of String XML to InputSource failed" + excp.getMessage(), excp);
         } else {
-            LOG.error("Generic Exception: " + excp.getStackTrace());
+            LOG.error("Generic Exception: " + excp.getMessage(), excp);
         }
     }
 

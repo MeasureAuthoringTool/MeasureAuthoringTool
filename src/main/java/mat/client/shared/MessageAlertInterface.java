@@ -8,13 +8,12 @@ public interface MessageAlertInterface {
 	/**
 	 * Clear the alert.
 	 */
-	public void clearAlert();
+	void clearAlert();
 	
 	/**
 	 * Create the alert .
 	 */	
-	public void createAlert(String message);
-	
+	void createAlert(String message);
 
 
 }

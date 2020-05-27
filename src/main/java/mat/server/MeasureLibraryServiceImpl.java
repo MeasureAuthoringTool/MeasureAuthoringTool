@@ -32,6 +32,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import lombok.extern.slf4j.Slf4j;
+import mat.client.shared.MatRuntimeException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -2102,14 +2103,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     String cqlXML = xmlProcessor.transform(cqlLookUpNode, true);
                     cqlByteArray = cqlXML.getBytes();
 
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:ss");
-                    Date date = null;
-                    try {
-                        date = dateFormat.parse(mDetail.getFinalizedDate());
-                    } catch (ParseException e) {
-                        log.debug("Exception in exportCQLibraryFromMeasure when formatting date: " + e);
+                    long time;
+                    if (isDraft && mDetail.getFinalizedDate() == null) {
+                        time = System.currentTimeMillis();
+                    } else {
+                        Date date = null;
+                        try {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:ss");
+                            date = dateFormat.parse(mDetail.getFinalizedDate());
+                            time = date.getTime();
+                        } catch (ParseException e) {
+                            log.debug("Exception in exportCQLibraryFromMeasure when formatting date: " + e);
+                            throw new MatRuntimeException("If !isDraft, mDetail.getFinalizedDate can not be null!");
+                        }
                     }
-                    long time = date.getTime();
                     Timestamp timestamp = new Timestamp(time);
 
                     cqlLibrary.setMeasureId(mDetail.getId());

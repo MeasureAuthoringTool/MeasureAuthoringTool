@@ -160,7 +160,7 @@
       handleOkta(props.clientId, props.baseUrl, props.harpBaseUrl).catch(function (err) {
         console.error("Okta Error");
         console.dir(err);
-        console.log("done!");
+        window.location="HarpSupport.html"
       });
     });
   });

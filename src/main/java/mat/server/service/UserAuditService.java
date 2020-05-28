@@ -2,7 +2,7 @@ package mat.server.service;
 
 import java.util.List;
 
-import mat.DTO.UserAuditLogDTO;
+import mat.dto.UserAuditLogDTO;
 
 
 /**

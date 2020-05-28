@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import mat.DTO.OperatorDTO;
-import mat.DTO.UnitDTO;
+import mat.dto.OperatorDTO;
+import mat.dto.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;

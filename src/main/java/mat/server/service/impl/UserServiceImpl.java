@@ -666,7 +666,7 @@ public class UserServiceImpl implements UserService {
         User exsitingUser = userDAO.findByEmail(model.getEmailAddress());
         if ((exsitingUser != null) && (!(exsitingUser.getId().equals(user.getId())))) {
             result.setSuccess(false);
-            result.setFailureReason(SaveUpdateUserResult.ID_NOT_UNIQUE);
+            result.setFailureReason(SaveUpdateUserResult.USER_EMAIL_NOT_UNIQUE);
         } else {
             setModelFieldsOnUser(model, user);
             if (model.isExistingUser()) {
@@ -994,7 +994,6 @@ public class UserServiceImpl implements UserService {
         }
 
     }
-
 
 
 }

@@ -8,7 +8,7 @@ import java.util.Set;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import mat.DTO.UnitDTO;
+import mat.dto.UnitDTO;
 import mat.model.cql.CQLKeywords;
 import mat.shared.cql.model.FunctionSignature;
 

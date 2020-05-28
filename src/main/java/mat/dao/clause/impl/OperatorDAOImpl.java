@@ -13,7 +13,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.DTO.OperatorDTO;
+import mat.dto.OperatorDTO;
 import mat.dao.clause.OperatorDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.Operator;

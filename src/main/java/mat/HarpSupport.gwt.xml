@@ -26,6 +26,6 @@
     <source path='shared'/>
     <source path='mat.shared.diagramObject'/>
     <source path='model'/>
-    <source path='DTO'/>
+    <source path='dto'/>
 
 </module>

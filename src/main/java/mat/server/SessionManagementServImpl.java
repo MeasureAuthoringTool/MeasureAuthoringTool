@@ -5,10 +5,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import mat.dto.UserPreferenceDTO;
 import mat.client.login.service.CurrentUserInfo;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.ShortUserInfo;
-import mat.DTO.UserPreferenceDTO;
 import mat.model.User;
 import mat.model.UserPreference;
 import mat.server.model.MatUserDetails;
@@ -50,13 +50,13 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet implem
         }
         result.userPreference = userPreferenceDTO;
         result.users = userService.getAllActiveUserDetailsByHarpId(user.getHarpId()).stream()
-                .map(this::asUserInfo)
+                .map(this::convert)
                 .collect(Collectors.toList());
 
         return result;
     }
 
-    private ShortUserInfo asUserInfo(MatUserDetails d) {
+    private ShortUserInfo convert(MatUserDetails d) {
         ShortUserInfo info = new ShortUserInfo();
         info.loginId = d.getLoginId();
         info.harpId = d.getHarpId();
@@ -68,7 +68,6 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet implem
         info.role = d.getRoles().getDescription();
         return info;
     }
-
 
     @Override
     public String getCurrentReleaseVersion() {

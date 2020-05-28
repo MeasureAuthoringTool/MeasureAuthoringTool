@@ -2,7 +2,7 @@ package mat.server.service;
 
 import java.util.List;
 
-import mat.DTO.SearchHistoryDTO;
+import mat.dto.SearchHistoryDTO;
 
 
 /**

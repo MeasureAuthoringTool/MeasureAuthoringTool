@@ -1,26 +1,25 @@
-package mat.DTO;
-
+package mat.dto;
 
 import mat.client.codelist.HasListBox;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * The Class StewardDTO.
+ * The Class CodeSystemDTO.
  */
-public class StewardDTO implements IsSerializable, HasListBox {
-	
+public class CodeSystemDTO implements IsSerializable, HasListBox {
+   
 	/** The id. */
 	private String id;
 	
-	/** The org name. */
-	private String orgName;
+	/** The description. */
+	private String description;
 	
 	/**
-	 * Instantiates a new steward dto.
+	 * Instantiates a new code system dto.
 	 */
-	public StewardDTO(){
-		
+	public CodeSystemDTO(){
+	
 	}
 	
 	/**
@@ -42,6 +41,24 @@ public class StewardDTO implements IsSerializable, HasListBox {
 		this.id = id;
 	}
 	
+	/**
+	 * Gets the description.
+	 * 
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+	
+	/**
+	 * Sets the description.
+	 * 
+	 * @param description
+	 *            the new description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getValue()
@@ -54,29 +71,9 @@ public class StewardDTO implements IsSerializable, HasListBox {
 	 * @see mat.client.codelist.HasListBox#getItem()
 	 */
 	public String getItem() {
-		// TODO Auto-generated method stub
-		return orgName;
+		return description;
 	}
-	
-	/**
-	 * Gets the org name.
-	 * 
-	 * @return the org name
-	 */
-	public String getOrgName() {
-		return orgName;
-	}
-	
-	/**
-	 * Sets the org name.
-	 * 
-	 * @param orgName
-	 *            the new org name
-	 */
-	public void setOrgName(String orgName) {
-		this.orgName = orgName;
-	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getSortOrder()
 	 */

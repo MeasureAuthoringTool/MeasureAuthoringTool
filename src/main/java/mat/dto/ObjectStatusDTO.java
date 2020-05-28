@@ -1,34 +1,28 @@
-package mat.DTO;
-
+package mat.dto;
 
 import mat.client.codelist.HasListBox;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/**
- * DTO for Measure Score table attributes.
- */
-public class CompositeMeasureScoreDTO implements IsSerializable, HasListBox {
 
+/**
+ * The Class ObjectStatusDTO.
+ */
+public class ObjectStatusDTO implements IsSerializable, HasListBox {
+	
 	/** The id. */
 	private String id;
 	
-	/** The score. */
-	private String score;
-	
+	/** The description. */
+	private String description;
+
 	/**
-	 * Instantiates a new measure score dto.
+	 * Instantiates a new object status dto.
 	 */
-	public CompositeMeasureScoreDTO(){
+	public ObjectStatusDTO(){
 		
 	}
 	
-	public CompositeMeasureScoreDTO(String id, String score) {
-		super();
-		this.id = id;
-		this.score = score;
-	}
-
 	/**
 	 * Gets the id.
 	 * 
@@ -37,7 +31,7 @@ public class CompositeMeasureScoreDTO implements IsSerializable, HasListBox {
 	public String getId() {
 		return id;
 	}
-	
+
 	/**
 	 * Sets the id.
 	 * 
@@ -47,47 +41,49 @@ public class CompositeMeasureScoreDTO implements IsSerializable, HasListBox {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
-	
+
+	/**
+	 * Gets the description.
+	 * 
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * Sets the description.
+	 * 
+	 * @param description
+	 *            the new description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getValue()
 	 */
+	@Override
 	public String getValue() {
 		return id;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getItem()
 	 */
+	@Override
 	public String getItem() {
-		return score;
+		return description;
 	}
-	
-	/**
-	 * Gets the score.
-	 * 
-	 * @return the score
-	 */
-	public String getScore() {
-		return score;
-	}
-	
-	/**
-	 * Sets the score.
-	 * 
-	 * @param score
-	 *            the new score
-	 */
-	public void setScore(String score) {
-		this.score = score;
-	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getSortOrder()
 	 */
 	@Override
 	public int getSortOrder() {
+		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 }

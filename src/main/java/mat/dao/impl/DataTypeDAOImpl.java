@@ -12,7 +12,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.DTO.DataTypeDTO;
+import mat.dto.DataTypeDTO;
 import mat.dao.DataTypeDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.DataType;

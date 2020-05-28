@@ -1,4 +1,4 @@
-package mat.DTO;
+package mat.dto;
 
 
 import mat.client.codelist.HasListBox;
@@ -6,20 +6,20 @@ import mat.client.codelist.HasListBox;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * DTO for unit type object.
+ * DTO for UNIT MATRIX object.
  */
-public class UnitTypeDTO implements IsSerializable, HasListBox {
+public class UnitMatrixDTO implements IsSerializable, HasListBox {
 	
 	/** The id. */
 	private String id;
 	
-	/** The unit type. */
-	private String unitType;
+	/** The unit id. */
+	private String unitId;
 	
 	/**
-	 * Instantiates a new unit type dto.
+	 * Instantiates a new unit matrix dto.
 	 */
-	public UnitTypeDTO(){
+	public UnitMatrixDTO(){
 		
 	}
 	
@@ -55,36 +55,36 @@ public class UnitTypeDTO implements IsSerializable, HasListBox {
 	 */
 	public String getItem() {
 		// TODO Auto-generated method stub
-		return unitType;
+		return unitId;
 	}
 	
 	/**
 	 * Sets the item.
 	 * 
-	 * @param unitType
+	 * @param unitId
 	 *            the new item
 	 */
-	public void setItem(String unitType) {
-		this.unitType = unitType;
+	public void setItem(String unitId) {
+		this.unitId = unitId;
 	}	
 	
 	/**
-	 * Gets the unit type.
+	 * Gets the unit id.
 	 * 
-	 * @return the unit type
+	 * @return the unit id
 	 */
-	public String getUnitType() {
-		return unitType;
+	public String getUnitId() {
+		return unitId;
 	}
 	
 	/**
-	 * Sets the unit type.
+	 * Sets the unit id.
 	 * 
-	 * @param unitType
-	 *            the new unit type
+	 * @param unitId
+	 *            the new unit id
 	 */
-	public void setUnitType(String unitType) {
-		this.unitType = unitType;
+	public void setUnitId(String unitId) {
+		this.unitId = unitId;
 	}
 	
 	/* (non-Javadoc)

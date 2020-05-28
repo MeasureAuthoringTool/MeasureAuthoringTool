@@ -2,7 +2,7 @@ package mat.dao;
 
 import java.util.List;
 
-import mat.DTO.StewardDTO;
+import mat.dto.StewardDTO;
 import mat.model.MeasureSteward;
 
 /**

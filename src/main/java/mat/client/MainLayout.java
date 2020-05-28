@@ -37,6 +37,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.IndicatorButton;
+import mat.client.event.SwitchUserEvent;
+import mat.client.login.service.ShortUserInfo;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.MatContext;
@@ -47,7 +49,13 @@ import mat.client.util.FooterPanelBuilderUtility;
 public abstract class MainLayout {
 
     private static final int DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS = 500;
-    public static final String HEADING = "Measure Authoring Tool";
+    private static final String HEADING = "Measure Authoring Tool";
+    private static final String ORG_ROLE_SEP = " @ ";
+    private static final String SWITCH_MAT_ACCOUNT = "Switch MAT account";
+    public static final int MAX_MENU_TITLE = 50;
+    private static ListItem signedInAsName = new ListItem();
+    private static ListItem signedInAsOrg = new ListItem();
+
 
     private static Image alertImage = new Image(ImageResources.INSTANCE.alert());
 
@@ -61,7 +69,6 @@ public abstract class MainLayout {
     private static IndicatorButton showBonnieState;
 
     protected static FocusableWidget skipListHolder;
-    private static ListItem signedInAsName = new ListItem();
 
     static Progress progress = new Progress();
     static ProgressBar bar = new ProgressBar();
@@ -303,6 +310,8 @@ public abstract class MainLayout {
 
         ddm.add(buildSignedInAs());
         ddm.add(signedInAsName);
+        ddm.add(signedInAsOrg);
+        addUserAccountsMenu(ddm);
         ddm.add(buildDivider());
         ddm.add(profile);
         if (ClientConstants.ADMINISTRATOR.equals(MatContext.get().getLoggedInUserRole())) {
@@ -314,6 +323,46 @@ public abstract class MainLayout {
         ddm.addStyleDependentName(Styles.RIGHT);
 
         return ddm;
+    }
+
+    private void addUserAccountsMenu(DropDownMenu ddm) {
+        List<ShortUserInfo> users = MatContext.get().getCurrentUserInfo().users;
+        if (users.size() <= 1) {
+            return;
+        }
+        ddm.add(buildDivider());
+
+        ListItem switchUser = new ListItem();
+        switchUser.setText(SWITCH_MAT_ACCOUNT);
+        switchUser.setTitle(SWITCH_MAT_ACCOUNT);
+        switchUser.getElement().setTabIndex(0);
+        switchUser.addStyleName("labelStyling");
+        switchUser.addStyleName("profileText");
+        ddm.add(switchUser);
+
+        for (ShortUserInfo user : users) {
+            boolean selected = MatContext.get().getLoggedinUserId().equals(user.userId);
+            AnchorListItem accMenuItem = new AnchorListItem();
+            String name = user.role + ORG_ROLE_SEP + user.organizationName;
+            accMenuItem.setText(trimTitleWithEllipses(name));
+            accMenuItem.setTitle(name);
+            accMenuItem.getElement().setTabIndex(0);
+            accMenuItem.setStyleName(Styles.DROPDOWN);
+            if (selected) {
+                accMenuItem.addStyleName("labelStyling");
+                accMenuItem.addStyleName("menu-select-user-account-selected");
+            } else {
+                accMenuItem.addStyleName("menu-select-user-account");
+                accMenuItem.addClickHandler(event -> {
+                    MatContext.get().getEventBus().fireEvent(new SwitchUserEvent(user.userId));
+                });
+            }
+            ddm.add(accMenuItem);
+        }
+    }
+
+    private static String trimTitleWithEllipses(String text) {
+        return text.length() <= MAX_MENU_TITLE ? text : text.substring(0, MAX_MENU_TITLE) + "...";
     }
 
     private NavbarCollapse buildProfileMenu() {
@@ -500,8 +549,18 @@ public abstract class MainLayout {
         return signedInAsName;
     }
 
-    public void setSignedInAsName(ListItem signedInAsName) {
-        this.signedInAsName = signedInAsName;
+    public static void setSignedInAsNameOrg() {
+        String name = MatContext.get().getLoggedInUserFirstName() + " " + MatContext.get().getLoggedInUserLastName();
+        signedInAsName.setText(name);
+        signedInAsName.setTitle(name);
+        signedInAsName.setStyleName("labelStyling", true);
+        signedInAsName.setStyleName("profileText", true);
+        signedInAsName.getElement().setTabIndex(0);
+        String orgRole = MatContext.get().getLoggedInUserRole() + ORG_ROLE_SEP + MatContext.get().getCurrentUserInfo().organizationName;
+        signedInAsOrg.setText(trimTitleWithEllipses(orgRole));
+        signedInAsOrg.setTitle(orgRole);
+        signedInAsOrg.setStyleName("profileText", true);
+        signedInAsOrg.getElement().setTabIndex(0);
     }
 
     public AnchorListItem getProfile() {

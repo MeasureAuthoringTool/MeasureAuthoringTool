@@ -2,7 +2,7 @@ package mat.dao;
 
 import java.util.List;
 
-import mat.DTO.MeasureScoreDTO;
+import mat.dto.MeasureScoreDTO;
 import mat.model.MeasureScore;
 
 /**

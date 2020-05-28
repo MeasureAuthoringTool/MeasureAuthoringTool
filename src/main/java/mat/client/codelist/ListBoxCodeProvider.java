@@ -7,8 +7,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import mat.DTO.OperatorDTO;
-import mat.DTO.UnitDTO;
+import mat.dto.OperatorDTO;
+import mat.dto.UnitDTO;
 import mat.client.codelist.service.CodeListService;
 import mat.client.shared.MatContext;
 

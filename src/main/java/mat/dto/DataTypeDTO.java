@@ -1,4 +1,4 @@
-package mat.DTO;
+package mat.dto;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

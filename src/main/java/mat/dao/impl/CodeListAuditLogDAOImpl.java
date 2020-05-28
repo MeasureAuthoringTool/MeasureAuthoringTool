@@ -16,8 +16,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.DTO.AuditLogDTO;
-import mat.DTO.SearchHistoryDTO;
+import mat.dto.AuditLogDTO;
+import mat.dto.SearchHistoryDTO;
 import mat.dao.search.GenericDAO;
 import mat.model.CodeListAuditLog;
 import mat.model.ListObject;

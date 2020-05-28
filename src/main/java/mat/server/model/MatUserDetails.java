@@ -135,7 +135,7 @@ public class MatUserDetails implements IsSerializable, UserDetails {
 
     @Transient
     public boolean isActive() {
-        return !STATUS_TERMINATED.equals(getStatus());
+        return getStatus() != null && !STATUS_TERMINATED.equals(getStatus().getStatusId());
     }
 
     @Transient

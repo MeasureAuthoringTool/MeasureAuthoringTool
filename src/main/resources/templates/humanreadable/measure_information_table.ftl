@@ -175,7 +175,9 @@
                     <th scope="row" class="row-header"><span class="td_label">Reference</span></th>
                     <td style="width:80%" colspan="3">
                         <div style="width:660px;">
-                            <pre>${reference!""}</pre>
+                            <pre>Reference Type: ${reference.referenceType!""}</pre>
+                            <br/>
+                            <pre>Reference Text: '${reference.referenceText!""}'</pre>
                         </div>
                     </td>
                 </tr>

@@ -318,13 +318,13 @@ public final class CQLUtilityClass {
                 XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
                 cqlModel = (CQLModel) xmlMarshalUtil.convertXMLToObject("CQLModelMapping.xml", cqlLookUpXMLString, CQLModel.class);
             } catch (Exception e) {
-                logger.info("Error while getting codeystems", e);
+                logger.error("Error parsing CQL model from XML: " + e.getMessage(), e);
             }
         }
 
         if (!cqlModel.getValueSetList().isEmpty()) {
             cqlModel.setValueSetList(filterValuesets(cqlModel.getValueSetList()));
-            ArrayList<CQLQualityDataSetDTO> valueSetsList = new ArrayList<CQLQualityDataSetDTO>();
+            ArrayList<CQLQualityDataSetDTO> valueSetsList = new ArrayList<>();
             valueSetsList.addAll(cqlModel.getValueSetList());
             cqlModel.setAllValueSetAndCodeList(valueSetsList);
         }
@@ -351,7 +351,7 @@ public final class CQLUtilityClass {
             marshaller.marshal(cqlModel);
             xml = stream.toString();
         } catch (MarshalException | ValidationException | IOException | MappingException e) {
-            e.printStackTrace();
+            logger.error("Error in  getXMLFromCQLModel: " + e.getMessage(), e);
         }
 
 
@@ -367,7 +367,7 @@ public final class CQLUtilityClass {
                 cqlModel.setValueSetList(filterValuesets(valuesetWrapper.getQualityDataDTO()));
             }
         } catch (Exception e) {
-            logger.info("Error while getting valueset :" + e.getMessage());
+            logger.error("Error while getting valueset :" + e.getMessage(), e);
         }
 
     }
@@ -543,7 +543,7 @@ public final class CQLUtilityClass {
 
         StringBuilder sb = new StringBuilder();
 
-        List<String> codeAlreadyUsed = new ArrayList<String>();
+        List<String> codeAlreadyUsed = new ArrayList<>();
 
         if (!CollectionUtils.isEmpty(codeList)) {
 

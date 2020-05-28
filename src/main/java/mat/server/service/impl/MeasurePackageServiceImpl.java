@@ -556,8 +556,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         measure.setExportedDate(new Date());
         measureDAO.save(measure);
         measureExportDAO.save(export);
-        //New for FHIR we create a CQL_LIBRARY in draft state for the measure so microservices can find it.
-        measureLibraryService.exportDraftCQLLibraryForMeasure(measure);
+        if (measure.isFhirMeasure()) {
+            // New for FHIR we create a CQL_LIBRARY in draft state for the measure so microservices can find it.
+            measureLibraryService.exportDraftCQLLibraryForMeasure(measure);
+        }
         if (shouldCreateArtifacts) {
             createPackageArtifacts(measure, export);
         }

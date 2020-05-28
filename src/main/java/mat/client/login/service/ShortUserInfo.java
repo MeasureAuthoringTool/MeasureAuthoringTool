@@ -3,6 +3,7 @@ package mat.client.login.service;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ShortUserInfo implements IsSerializable {
+
     public String userId;
     public String userEmail;
     public String userFirstName;
@@ -11,4 +12,5 @@ public class ShortUserInfo implements IsSerializable {
     public String harpId;
     public String loginId;
     public String role;
+
 }

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -392,6 +393,25 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
         logger.info("Retrieving user " + emailId);
         User user = userService.findByEmailID(emailId);
         return extractUserModel(user);
+    }
+
+    @Override
+    public List<ManageUsersDetailModel> getUsersByHarpId(String harpId) {
+        return userService.getAllActiveUserDetailsByHarpId(harpId).stream()
+                .map(this::convert)
+                .collect(Collectors.toList());
+    }
+
+    private ManageUsersDetailModel convert(MatUserDetails matUserDetails) {
+        ManageUsersDetailModel model = new ManageUsersDetailModel();
+        model.setUserID(matUserDetails.getId());
+        model.setHarpId(matUserDetails.getHarpId());
+        model.setEmailAddress(matUserDetails.getEmailAddress());
+        model.setFirstName(matUserDetails.getUsername());
+        model.setLastName(matUserDetails.getUserLastName());
+        model.setOrganizationId(String.valueOf(matUserDetails.getOrganization().getId()));
+        model.setOrganization(matUserDetails.getOrganization().getOrganizationName());
+        return model;
     }
 
     @Override

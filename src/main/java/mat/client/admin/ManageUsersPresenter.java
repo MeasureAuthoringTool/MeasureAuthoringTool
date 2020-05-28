@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,11 +17,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
@@ -34,6 +33,7 @@ import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.MatTextBox;
@@ -64,6 +64,9 @@ public class ManageUsersPresenter implements MatPresenter {
 
     private ManageUsersDetailModel updatedDetails;
 
+    private HandlerRegistration yesConfirmHarpHandler;
+    private HandlerRegistration noConfirmHarpHandler;
+
     /**
      * Instantiates a new manage users presenter.
      *
@@ -81,93 +84,65 @@ public class ManageUsersPresenter implements MatPresenter {
             historyDisplayHandlers(historyDisplay);
         }
 
-        searchDisplay.setObserver(new ManageUsersSearchView.Observer() {
-            @Override
-            public void onHistoryClicked(mat.client.admin.ManageUsersSearchModel.Result result) {
-                historyDisplay.setReturnToLinkText("<< Return to Manage Users");
-                displayHistory(result.getKey(), result.getFirstName());
-            }
+        searchDisplay.setObserver(result -> {
+            historyDisplay.setReturnToLinkText("<< Return to Manage Users");
+            displayHistory(result.getKey(), result.getFirstName());
         });
 
         searchDisplay.getSelectIdForEditTool().addSelectionHandler(
-                new SelectionHandler<ManageUsersSearchModel.Result>() {
-                    @Override
-                    public void onSelection(SelectionEvent<ManageUsersSearchModel.Result> event) {
-                        edit(event.getSelectedItem().getKey());
-                    }
-                });
+                event -> edit(event.getSelectedItem().getKey()));
 
-        searchDisplay.getCreateNewButton().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                createNew();
-            }
-        });
+        searchDisplay.getCreateNewButton().addClickHandler(event -> createNew());
 
         MatTextBox searchWidget = (MatTextBox) (searchDisplay.getSearchString());
-        searchWidget.addKeyUpHandler(new KeyUpHandler() {
-            @Override
-            public void onKeyUp(KeyUpEvent event) {
-                searchDisplay.getSuccessMessageDisplay().clearAlert();
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                    ((Button) searchDisplay.getSearchButton()).click();
-                }
+        searchWidget.addKeyUpHandler(event -> {
+            searchDisplay.getSuccessMessageDisplay().clearAlert();
+            if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                ((Button) searchDisplay.getSearchButton()).click();
             }
         });
 
-        detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                update();
-            }
-        });
+        detailDisplay.getSaveButton().addClickHandler(event -> onSaveButtonClicked());
 
-        detailDisplay.getCancelButton().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                displaySearch(lastSearchKey);
-            }
-        });
+        detailDisplay.getCancelButton().addClickHandler(event -> displaySearch(lastSearchKey));
 
         detailDisplay.getReactivateAccountButton().addClickHandler(
-                new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        resetMessages();
-                        MatContext
-                                .get()
-                                .getAdminService()
-                                .activateUser(currentDetails.getUserID(),
-                                        new AsyncCallback<Void>() {
-                                            @Override
-                                            public void onSuccess(Void result) {
-                                                detailDisplay.getSuccessMessageDisplay().createAlert("Re-activate E-mail has been sent.");
-                                                List<String> event = new ArrayList<String>();
-                                                event.add("Re-activate");
-                                                MatContext.get()
-                                                        .recordUserEvent(
-                                                                currentDetails
-                                                                        .getUserID(),
-                                                                event, null,
-                                                                false);
-                                            }
+                event -> {
+                    resetMessages();
+                    MatContext
+                            .get()
+                            .getAdminService()
+                            .activateUser(currentDetails.getUserID(),
+                                    new AsyncCallback<Void>() {
+                                        @Override
+                                        public void onSuccess(Void result) {
+                                            logger.log(Level.SEVERE, "AdminService::activateUser -> onSuccess");
+                                            detailDisplay.getSuccessMessageDisplay().createAlert("Re-activate E-mail has been sent.");
+                                            List<String> event = new ArrayList<>();
+                                            event.add("Re-activate");
+                                            MatContext.get()
+                                                    .recordUserEvent(
+                                                            currentDetails
+                                                                    .getUserID(),
+                                                            event, null,
+                                                            false);
+                                        }
 
-                                            @Override
-                                            public void onFailure(
-                                                    Throwable caught) {
-                                                detailDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                                                MatContext
-                                                        .get()
-                                                        .recordTransactionEvent(
-                                                                null,
-                                                                null,
-                                                                null,
-                                                                "Unhandled Exception: "
-                                                                        + caught.getLocalizedMessage(),
-                                                                0);
-                                            }
-                                        });
-                    }
+                                        @Override
+                                        public void onFailure(Throwable caught) {
+                                            logger.log(Level.SEVERE, "AdminService::activateUser -> onFailure : " + caught.getMessage(), caught);
+                                            detailDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                                            MatContext
+                                                    .get()
+                                                    .recordTransactionEvent(
+                                                            null,
+                                                            null,
+                                                            null,
+                                                            "Unhandled Exception: "
+                                                                    + caught.getLocalizedMessage(),
+                                                            0);
+                                        }
+                                    });
                 });
 
         searchDisplay.getSearchButton().addClickHandler(event -> performSearch());
@@ -234,123 +209,170 @@ public class ManageUsersPresenter implements MatPresenter {
                         });
     }
 
-    /**
-     * Update.
-     */
-    private void update() {
+    private void onSaveButtonClicked() {
         resetMessages();
         updateUserDetailsFromView();
         isUserDetailsModified();
         detailDisplay.getErrorMessageDisplay().clearAlert();
         detailDisplay.getSuccessMessageDisplay().clearAlert();
+        detailDisplay.getWarningConfirmationMessageAlert().clearAlert();
 
-        if (isValid(updatedDetails)) {
-            MatContext
-                    .get()
-                    .getAdminService()
-                    .saveUpdateUser(updatedDetails,
-                            new AsyncCallback<SaveUpdateUserResult>() {
-                                @Override
-                                public void onSuccess(SaveUpdateUserResult result) {
-                                    logger.log(Level.INFO, "AdminService::saveUpdateUser -> onSuccess");
-                                    if (result.isSuccess()) {
+        if (!isValid(updatedDetails)) {
+            logger.log(Level.INFO, "User data is invalid. Don't save changes.");
+            return;
+        }
 
-                                        List<String> event = new ArrayList<String>();
-                                        String addInfo = null;
-                                        String actMsg = "";
-                                        if (currentDetails.getKey() != null) {
-                                            if (detailDisplay.getAddInfoArea()
-                                                    .getText().length() > 0) {
-                                                event.add("Administrator Notes");
-                                                addInfo = updatedDetails.getAdditionalInfo();
-                                                detailDisplay.getAddInfoArea().setText("");
+        MatContext.get().getAdminService().getUsersByHarpId(updatedDetails.getHarpId(), new AsyncCallback<List<ManageUsersDetailModel>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "AdminService::getUsersByHarpId -> onFailure: " + caught.getMessage(), caught);
+                detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
+            }
 
-                                                //Adding Message if the User Account it activated by Admin.
-                                                if (!(detailDisplay.getIsActive()
-                                                        .getValue() == currentDetails
-                                                        .isActive()) && detailDisplay.getIsActive()
-                                                        .getValue()) {
-                                                    actMsg = MatContext.get().getMessageDelegate().getTempEmailSentMessage();
-                                                }
+            @Override
+            public void onSuccess(List<ManageUsersDetailModel> result) {
+                logger.log(Level.INFO, "AdminService::getUsersByHarpId -> onSuccess");
+                Optional<ManageUsersDetailModel> otherUserOpt =
+                        result.stream().filter(d -> !Objects.equals(d.getUserID(), updatedDetails.getUserID())).findFirst();
+                if (otherUserOpt.isPresent()) {
+                    createHarpIdConfirmationDialog(otherUserOpt);
+                } else {
+                    saveUserOnServer();
+                }
+            }
+        });
+    }
 
-                                            } else {
-                                                // adding logs for change in
-                                                // personal Information
-                                                if (isPersonalInfoModified) {
-                                                    event.add("Personal Information Modified");
-                                                    isPersonalInfoModified = false;
-                                                }
+    private void createHarpIdConfirmationDialog(Optional<ManageUsersDetailModel> otherUserOpt) {
+        ManageUsersDetailModel otherUser = otherUserOpt.get();
+        if (yesConfirmHarpHandler != null) {
+            yesConfirmHarpHandler.removeHandler();
+        }
+        if (noConfirmHarpHandler != null) {
+            noConfirmHarpHandler.removeHandler();
+        }
+        WarningConfirmationMessageAlert confirmation = detailDisplay.getWarningConfirmationMessageAlert();
+        yesConfirmHarpHandler = confirmation.getWarningConfirmationYesButton().addClickHandler(event -> {
+            confirmation.clearAlert();
+            saveUserOnServer();
+        });
+        noConfirmHarpHandler = confirmation.getWarningConfirmationNoButton().addClickHandler(event -> {
+            confirmation.clearAlert();
+        });
 
-                                                // maintaining logs for change in
-                                                // organization
-                                                if (currentDetails
-                                                        .getOid() != null
-                                                        && !(updatedDetails
-                                                        .getOid()
-                                                        .equalsIgnoreCase(currentDetails
-                                                                .getOid()))) {
-                                                    event.add("Organization Changed");
-                                                }
+        confirmation.createWarningAlert("Warning: The following active MAT User is also tied to this HARP ID:  " + otherUser.getFirstName() + " " + otherUser.getLastName() + " at " + otherUser.getOrganization() + ". Do you wish to save?");
+    }
 
-                                                // maintaining logs for change in
-                                                // security role
-                                                if (currentDetails.getRole() != null
-                                                        && !(updatedDetails
-                                                        .getRole()
-                                                        .equalsIgnoreCase(currentDetails
-                                                                .getRole()))) {
-                                                    event.add("Security Role Changed");
-                                                }
+    private void saveUserOnServer() {
+        MatContext
+                .get()
+                .getAdminService()
+                .saveUpdateUser(updatedDetails,
+                        new AsyncCallback<SaveUpdateUserResult>() {
+                            @Override
+                            public void onSuccess(SaveUpdateUserResult result) {
+                                onAfterUserSaved(result);
+                            }
 
-                                                // maintaining logs for active and
-                                                // revoked activity
-                                                if (!(detailDisplay.getIsActive()
-                                                        .getValue() == currentDetails
-                                                        .isActive())) {
-                                                    if (detailDisplay.getIsActive()
-                                                            .getValue()) {
-                                                        event.add("Activated");
-                                                        actMsg = MatContext.get().getMessageDelegate().getTempEmailSentMessage();
-                                                    } else {
-                                                        event.add("Revoked");
-                                                    }
-                                                }
-                                            }
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                logger.log(Level.SEVERE, "AdminService::saveUpdateUser -> onFailure: " + caught.getMessage(), caught);
+                                detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
+                            }
+                        });
+    }
 
-                                            if (event.size() > 0) {
-                                                MatContext.get().recordUserEvent(currentDetails.getUserID(), event, addInfo, false);
-                                            }
-                                        } else {
-                                            onNewUserCreation(updatedDetails.getEmailAddress());
-                                        }
+    private void onAfterUserSaved(SaveUpdateUserResult result) {
+        logger.log(Level.INFO, "AdminService::saveUpdateUser -> onSuccess");
+        if (result.isSuccess()) {
 
-                                        currentDetails = updatedDetails;
+            List<String> event = new ArrayList<>();
+            String addInfo = null;
+            String actMsg = "";
+            if (currentDetails.getKey() != null) {
+                if (detailDisplay.getAddInfoArea()
+                        .getText().length() > 0) {
+                    event.add("Administrator Notes");
+                    addInfo = updatedDetails.getAdditionalInfo();
+                    detailDisplay.getAddInfoArea().setText("");
 
-                                        detailDisplay.getFirstName().setValue(currentDetails.getFirstName());
-                                        detailDisplay.getLastName().setValue(currentDetails.getLastName());
-                                        detailDisplay.getTitle().setValue(currentDetails.getTitle());
-                                        detailDisplay.getMiddleInitial().setValue(currentDetails.getMiddleInitial());
-                                        detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
-                                        detailDisplay.getHarpId().setValue(currentDetails.getHarpId());
-                                        detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
-                                        detailDisplay.getOid().setValue(currentDetails.getOid());
-                                        displaySearch(lastSearchKey);
-                                        searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE() + actMsg);
-                                    } else {
-                                        List<String> messages = getAlertMessages(result);
-                                        detailDisplay.getErrorMessageDisplay().createAlert(messages);
-                                    }
+                    //Adding Message if the User Account it activated by Admin.
+                    if (!(detailDisplay.getIsActive()
+                            .getValue() == currentDetails
+                            .isActive()) && detailDisplay.getIsActive()
+                            .getValue()) {
+                        actMsg = MatContext.get().getMessageDelegate().getTempEmailSentMessage();
+                    }
 
-                                }
+                } else {
+                    // adding logs for change in
+                    // personal Information
+                    if (isPersonalInfoModified) {
+                        event.add("Personal Information Modified");
+                        isPersonalInfoModified = false;
+                    }
 
-                                @Override
-                                public void onFailure(Throwable caught) {
-                                    logger.log(Level.SEVERE, "AdminService::saveUpdateUser -> onFailure: " + caught.getMessage(), caught);
-                                    detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
-                                }
-                            });
+                    // maintaining logs for change in
+                    // organization
+                    if (currentDetails
+                            .getOid() != null
+                            && !(updatedDetails
+                            .getOid()
+                            .equalsIgnoreCase(currentDetails
+                                    .getOid()))) {
+                        event.add("Organization Changed");
+                    }
+
+                    // maintaining logs for change in
+                    // security role
+                    if (currentDetails.getRole() != null
+                            && !(updatedDetails
+                            .getRole()
+                            .equalsIgnoreCase(currentDetails
+                                    .getRole()))) {
+                        event.add("Security Role Changed");
+                    }
+
+                    // maintaining logs for active and
+                    // revoked activity
+                    if (!(detailDisplay.getIsActive()
+                            .getValue() == currentDetails
+                            .isActive())) {
+                        if (detailDisplay.getIsActive()
+                                .getValue()) {
+                            event.add("Activated");
+                            actMsg = MatContext.get().getMessageDelegate().getTempEmailSentMessage();
+                        } else {
+                            event.add("Revoked");
+                        }
+                    }
+                }
+
+                if (event.size() > 0) {
+                    MatContext.get().recordUserEvent(currentDetails.getUserID(), event, addInfo, false);
+                }
+            } else {
+                onNewUserCreation(updatedDetails.getEmailAddress());
+            }
+
+            currentDetails = updatedDetails;
+
+            detailDisplay.getFirstName().setValue(currentDetails.getFirstName());
+            detailDisplay.getLastName().setValue(currentDetails.getLastName());
+            detailDisplay.getTitle().setValue(currentDetails.getTitle());
+            detailDisplay.getMiddleInitial().setValue(currentDetails.getMiddleInitial());
+            detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
+            detailDisplay.getHarpId().setValue(currentDetails.getHarpId());
+            detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
+            detailDisplay.getOid().setValue(currentDetails.getOid());
+            displaySearch(lastSearchKey);
+            searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE() + actMsg);
+        } else {
+            List<String> messages = getAlertMessages(result);
+            detailDisplay.getErrorMessageDisplay().createAlert(messages);
         }
     }
+
 
     private List<String> getAlertMessages(SaveUpdateUserResult result) {
         List<String> messages = new ArrayList<>();
@@ -360,12 +382,6 @@ public class ManageUsersPresenter implements MatPresenter {
                         .get()
                         .getMessageDelegate()
                         .getEmailAlreadyExistsMessage());
-                break;
-            case SaveUpdateUserResult.USER_HARP_ID_NOT_UNIQUE:
-                messages.add(MatContext
-                        .get()
-                        .getMessageDelegate()
-                        .getHarpIdAlreadyExistsMessage());
                 break;
             case SaveUpdateUserResult.SERVER_SIDE_VALIDATION:
                 messages = result.getMessages();
@@ -456,6 +472,7 @@ public class ManageUsersPresenter implements MatPresenter {
     private void resetMessages() {
         detailDisplay.getErrorMessageDisplay().clearAlert();
         detailDisplay.getSuccessMessageDisplay().clearAlert();
+        detailDisplay.getWarningConfirmationMessageAlert().clearAlert();
     }
 
     /**
@@ -973,6 +990,8 @@ public class ManageUsersPresenter implements MatPresenter {
          * @return the error message display
          */
         MessageAlert getErrorMessageDisplay();
+
+        WarningConfirmationMessageAlert getWarningConfirmationMessageAlert();
 
         /**
          * Gets the success message display.

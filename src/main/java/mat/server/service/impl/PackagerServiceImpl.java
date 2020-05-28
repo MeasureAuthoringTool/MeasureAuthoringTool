@@ -41,6 +41,7 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
+import mat.server.LoggedInUserUtil;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.PackagerService;
 import mat.server.util.XmlProcessor;
@@ -862,7 +863,7 @@ public class PackagerServiceImpl implements PackagerService {
         } else {
             for (String message : messages) {
                 logger.info("Server-Side Validation failed for MeasurePackageClauseValidator for Login ID: "
-                        + MatContext.get().getLoggedinLoginId() + " And failure Message is :" + message);
+                        + LoggedInUserUtil.getLoggedInLoginId() + " And failure Message is :" + message);
             }
             result.setSuccess(false);
             result.setMessages(messages);

@@ -1,15 +1,16 @@
 package mat.cql;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+
+import lombok.extern.slf4j.Slf4j;
 
 import static java.lang.Integer.max;
 
@@ -428,13 +429,13 @@ public class CqlUtils {
     public static Pair<String, String> parseCodeSystemName(String codeSystemName) {
         int i = codeSystemName.lastIndexOf(":");
         return i >= 0 ? Pair.of(codeSystemName.substring(0, i),
-                codeSystemName.substring(i + 1)) : Pair.of(codeSystemName,null);
+                codeSystemName.substring(i + 1)) : Pair.of(codeSystemName, null);
     }
 
-    public static boolean startsWith(String s,String... tokens) {
+    public static boolean startsWith(String s, String... tokens) {
         boolean result = false;
         for (String tok : tokens) {
-            if (StringUtils.startsWith(s,tok)) {
+            if (StringUtils.startsWith(s, tok)) {
                 result = true;
                 break;
             }
@@ -444,7 +445,8 @@ public class CqlUtils {
 
     /**
      * Parses the next line.
-     * @param cql The cql.
+     *
+     * @param cql   The cql.
      * @param start The start index.
      * @return The next line. endIndex is the index of the next \n or -1 if EOF.
      */
@@ -456,5 +458,83 @@ public class CqlUtils {
 
     public static boolean isQuoted(String s) {
         return StringUtils.isNotBlank(s) && s.startsWith("\"") && s.endsWith("\"");
+    }
+
+    public static String parsePrecedingComment(String cql) {
+        return parsePrecedingComment(cql, 0, cql.length());
+    }
+
+    public static String parsePrecedingComment(String cql, int end) {
+        return parsePrecedingComment(cql, 0, end);
+    }
+
+    /**
+     * Parse a block comment preceding a function/parameter/definition in FHIR CQL.
+     * It is supposed to work in a similar way to comment parsing in QDM CQL.
+     * QDM supports only blocks comments before  function/parameter/definition.
+     * Other comments are considered to be part of logic of a previous function/parameter/definition.
+     *
+     * @param cql   - CQL content
+     * @param start - search area start index
+     * @param end   - search area end index
+     * @return
+     */
+    public static String parsePrecedingComment(String cql, int start, int end) {
+        StringBuilder comment = new StringBuilder();
+        if (areValidAscendingIndexes(start, end)) {
+            String searchArea = cql.substring(start, end);
+            String[] lines = searchArea.split("\r?\n");
+            boolean inBlock = false;
+            for (int i = lines.length; i-- > 0; ) {
+                String line = StringUtils.stripToEmpty(lines[i]);
+
+                boolean blankLine = StringUtils.isBlank(line);
+                boolean startOfCommentBlock = line.startsWith(BLOCK_COMMENT_START);
+                boolean endOfCommentBlock = line.endsWith(BLOCK_COMMENT_END);
+
+                if (!inBlock && blankLine) {
+                    // Skip empty strings Look for a block comment
+                    continue;
+                }
+
+                if (!inBlock && !startOfCommentBlock && !endOfCommentBlock) {
+                    // Terminate the search
+                    break;
+                }
+
+                if (inBlock && endOfCommentBlock) {
+                    log.warn("Block comment syntax issue.");
+                    return "";
+                }
+
+                if (endOfCommentBlock) {
+                    inBlock = true;
+                    line = line.substring(0, line.length() - 2);
+                }
+
+                if (!inBlock && startOfCommentBlock) {
+                    log.warn("Block comment syntax issue.");
+                    return "";
+                }
+
+                if (startOfCommentBlock) {
+                    line = StringUtils.stripStart(line.substring(2), "*");
+                }
+
+                prependCommendLine(comment, line);
+                if (startOfCommentBlock) {
+                    break;
+                }
+            }
+        }
+        return comment.toString();
+    }
+
+    private static void prependCommendLine(StringBuilder comment, String line) {
+        line = StringUtils.strip(line);
+        if (comment.length() > 0) {
+            comment.insert(0, StringUtils.LF);
+        }
+        comment.insert(0, line);
     }
 }

@@ -1,7 +1,8 @@
 package mat.cql;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+
+import lombok.extern.slf4j.Slf4j;
 
 import static mat.cql.CqlUtils.nextQuotedString;
 import static mat.cql.CqlUtils.nextTickedString;
@@ -208,5 +209,76 @@ public class TestCqlCqlUtils {
         } catch (IllegalArgumentException iae) {
             log.warn("IAE",iae);
         }
+    }
+
+    @Test
+    public void testParsePrecedingCommentInvalidIndices() {
+        String comment = CqlUtils.parsePrecedingComment("Some text", -1, 0);
+        assertEquals("", comment);
+    }
+
+    @Test
+    public void testParsePrecedingCommentOneLineBlock() {
+        String comment = CqlUtils.parsePrecedingComment("\n\n/* a new comment     */\n\n");
+        assertEquals("a new comment", comment);
+    }
+
+    @Test
+    public void testParsePrecedingCommentSingleLineCommentNotSupported() {
+        String comment = CqlUtils.parsePrecedingComment("\n\n// a new comment     \n\n");
+        assertEquals("", comment);
+    }
+
+
+    @Test
+    public void testParsePrecedingMultiLineComment() {
+        String comment = CqlUtils.parsePrecedingComment("/*\n" +
+                "This example is a work in progress and should not be considered a final specification\n" +
+                "or recommendation for guidance. This example will help guide and direct the process\n" +
+                "of finding conventions and usage patterns that meet the needs of the various stakeholders\n" +
+                "in the measure development community.\n" +
+                "*/");
+        assertEquals("\n" +
+                "This example is a work in progress and should not be considered a final specification\n" +
+                "or recommendation for guidance. This example will help guide and direct the process\n" +
+                "of finding conventions and usage patterns that meet the needs of the various stakeholders\n" +
+                "in the measure development community.", comment);
+    }
+
+    @Test
+    public void testParsePrecedingMultiLineCommentStopsAtDefine() {
+        String comment = CqlUtils.parsePrecedingComment("define function\n" +
+                "/*" +
+                "This example is a work in progress and should not be considered a final specification\n" +
+                "*/");
+        assertEquals("This example is a work in progress and should not be considered a final specification", comment);
+    }
+
+    @Test
+    public void testParsePrecedingCommentMissingEnd() {
+        assertEquals("", CqlUtils.parsePrecedingComment("/*"));
+    }
+
+    @Test
+    public void testParsePrecedingCommentMissingEnd2() {
+        assertEquals("", CqlUtils.parsePrecedingComment("/*\n/*"));
+    }
+
+    @Test
+    public void testParsePrecedingMissinStart() {
+        assertEquals("", CqlUtils.parsePrecedingComment("*/"));
+    }
+
+    @Test
+    public void testParsePrecedingMissinStart2() {
+        assertEquals("", CqlUtils.parsePrecedingComment("*/\n*/"));
+    }
+
+    @Test
+    public void testParsePrecedingOtherParameterComment() {
+        String comment =  CqlUtils.parsePrecedingComment("parameter \"Measurement Period\" Interval<DateTime> /* measurement period logic comment */\n" +
+                "\n" +
+                "/* other parameter comment */");
+        assertEquals("other parameter comment", comment);
     }
 }

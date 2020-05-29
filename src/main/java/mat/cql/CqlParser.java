@@ -1,13 +1,14 @@
 package mat.cql;
 
-import lombok.extern.slf4j.Slf4j;
-import mat.client.shared.MatException;
-import mat.server.util.MATPropertiesService;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import mat.client.shared.MatException;
+import mat.server.util.MATPropertiesService;
 
 import static java.lang.Integer.max;
 import static mat.cql.CqlUtils.areValidAscendingIndexes;
@@ -21,6 +22,7 @@ import static mat.cql.CqlUtils.nextNonWhitespace;
 import static mat.cql.CqlUtils.nextQuotedString;
 import static mat.cql.CqlUtils.nextTickedString;
 import static mat.cql.CqlUtils.parseNextLine;
+import static mat.cql.CqlUtils.parsePrecedingComment;
 import static mat.cql.CqlUtils.removeCQLLineComments;
 import static mat.cql.CqlUtils.removeCqlBlockComments;
 import static mat.cql.CqlUtils.startsWith;
@@ -242,6 +244,7 @@ public class CqlParser {
             int logicEnd = getDoubleNewLineEndIndex(cql, logicStart);
 
             if (areValidAscendingIndexes(nameResult.getEndIndex())) {
+
                 String name = nameResult.getString();
                 String type = cql.substring(nameResult.getEndIndex() + 1, logicStart).trim();
 
@@ -252,7 +255,8 @@ public class CqlParser {
                     throw new IllegalArgumentException("Empty parameter type encountered for " +
                             name);
                 }
-                v.parameter(name, type);
+                String comment = parsePrecedingComment(cql, nextDefineStart);
+                v.parameter(name, type, comment);
             } else {
                 throw new IllegalArgumentException("Invalid parameter type encountered around index " +
                         nextDefineStart);
@@ -287,13 +291,15 @@ public class CqlParser {
         int parsed = 0;
         while ((nextDefineStart = indexOf(cql, DEFINE_TOKEN, parsed)) > 0) {
             if (!isDefineFunction(cql, nextDefineStart)) {
+
                 ParseResult name = parseNextIdentifier(cql, nextDefineStart + DEFINE_TOKEN.length());
                 int colon = indexOf(cql, COLON, name.getEndIndex() + 1);
                 ParseResult logic = parseLogic(cql, colon + 1, new String[]{"define", "context"});
 
                 if (areValidAscendingIndexes(name.getEndIndex(), colon, logic.getEndIndex())) {
+                    String comment = parsePrecedingComment(cql, nextDefineStart);
                     String title = name.getString();
-                    v.definition(title, logic.getString());
+                    v.definition(title, logic.getString(), comment);
                 } else {
                     throw new IllegalArgumentException("Encountered invalid define around index: " +
                             nextDefineStart);
@@ -333,6 +339,7 @@ public class CqlParser {
         int nextFuncStart;
         int parsed = 0;
         while ((nextFuncStart = indexOf(cql, DEFINE_FUNCTION_TOKEN, parsed)) > 0) {
+
             ParseResult name = parseNextIdentifier(cql, nextFuncStart + DEFINE_FUNCTION_TOKEN.length());
             int parenStart = indexOf(cql, OPEN_PAREN, name.getEndIndex());
             int parenEnd = indexOf(cql, CLOSE_PAREN, parenStart + 1);
@@ -340,8 +347,9 @@ public class CqlParser {
             ParseResult logic = parseLogic(cql, colon + 1, new String[]{"define", "context"});
 
             if (areValidAscendingIndexes(name.getEndIndex(), parenStart, parenEnd, colon, logic.getEndIndex())) {
+                String comment = parsePrecedingComment(cql, nextFuncStart);
                 String title = name.getString();
-                v.function(title, parseArguments(cql.substring(parenStart + 1, parenEnd)), logic.getString());
+                v.function(title, parseArguments(cql.substring(parenStart + 1, parenEnd)), logic.getString(), comment);
             } else {
                 throw new IllegalArgumentException("Encountered invalid define around index: " +
                         nextFuncStart);

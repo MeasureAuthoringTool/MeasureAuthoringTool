@@ -33,7 +33,7 @@ import java.util.Map;
 public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     private static final String FHIR_ID_PARAMS = "?id={id}";
     private static final String FHIR_PUSH_MEASURE_PARAMS = "measure/pushMeasure" + FHIR_ID_PARAMS;
-    private static final String FHIR_PACKAGE_MEASURE_PARAMS = "measure/packager/full/json" + FHIR_ID_PARAMS;
+    private static final String FHIR_PACKAGE_MEASURE_PARAMS = "measure/package" + FHIR_ID_PARAMS;
     private static final String FHIR_ORCH_MEASURE_SRVC_PARAMS = "orchestration/measure" + FHIR_ID_PARAMS + "&conversionType={conversionType}&xmlSource={xmlSource}&vsacGrantingTicket={vsacGrantingTicket}";
     private static final String SIMPLE_XML_SOURCE = "SIMPLE";
     private static final String MEASURE_XML_SOURCE = "MEASURE";

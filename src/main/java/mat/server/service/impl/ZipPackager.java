@@ -212,68 +212,65 @@ public class ZipPackager {
 	 * @param string 
 	 * @return the zip barr
 	 */
-	public void getZipBarr(String emeasureName, ZipOutputStream zip,String emeasureHTMLStr,
-                           String emeasureXMLStr, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult,
+	public void getZipBarr(String emeasureName, ZipOutputStream zip,String emeasureHTMLStr, String emeasureXMLStr,
+                           ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult,
                            String currentRealeaseVersion, String parentPath, String measureId) {
 
-        Measure measure = measureDAO.getMeasureByMeasureId(measureId);
-        MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
-        CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measureId);
-        CQLLibraryExport cqlLibraryExport = cqlLibraryExportDAO.findByLibraryId(cqlLibrary.getId());
+	    Measure measure = measureDAO.getMeasureByMeasureId(measureId);
+	    MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
+	    CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measureId);
+	    CQLLibraryExport cqlLibraryExport = cqlLibraryExportDAO.findByLibraryId(cqlLibrary.getId());
 
-		try{
-			String emeasureHumanReadablePath = "";
-			String emeasureXMLPath = "";
+	    try{
+	        String emeasureHumanReadablePath = "";
+	        String emeasureXMLPath = "";
 
-
-		    String measureReleaseVersion = currentRealeaseVersion;
-		    if(currentRealeaseVersion.contains(".")){
+	        String measureReleaseVersion = currentRealeaseVersion;
+	        if(currentRealeaseVersion.contains(".")){
 		    	currentRealeaseVersion = currentRealeaseVersion.replace(".", "_");
 		    }
 
-		    if (!measure.isFhirMeasure()) {
-                emeasureHumanReadablePath = parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + currentRealeaseVersion);
-                addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
+	        if (!measure.isFhirMeasure()) {
+	            emeasureHumanReadablePath = parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + currentRealeaseVersion);
+	            addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 
-                emeasureXMLPath = parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentRealeaseVersion);
-                addBytesToZip(emeasureXMLPath,emeasureXMLStr.getBytes(),zip);
+	            emeasureXMLPath = parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentRealeaseVersion);
+	            addBytesToZip(emeasureXMLPath,emeasureXMLStr.getBytes(),zip);
+	        } else {
+	            emeasureHumanReadablePath = parentPath + File.separator + HUMAN_READABLE + FileNameUtility.getHtmlFilePath(emeasureName, currentRealeaseVersion);
+	            addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 
-            } else {
+	            String measureJsonPath = parentPath + File.separator + MEASURE + FileNameUtility.getJsonFilePath(emeasureName, currentRealeaseVersion);
+	            addBytesToZip(measureJsonPath,measureExport.getJson().getBytes(),zip);
 
-		        emeasureHumanReadablePath = parentPath + File.separator + HUMAN_READABLE + FileNameUtility.getHtmlFilePath(emeasureName, currentRealeaseVersion);
-                addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
+	            emeasureXMLPath = parentPath + File.separator + MEASURE + FileNameUtility.getXmlFilePath(emeasureName, currentRealeaseVersion);
+	            addBytesToZip(emeasureXMLPath,measureExport.getFhirXml().getBytes(),zip);
 
-                String measureJsonPath = parentPath + File.separator + MEASURE + FileNameUtility.getJsonFilePath(emeasureName, currentRealeaseVersion);
-                addBytesToZip(measureJsonPath,measureExport.getJson().getBytes(),zip);
+	            String measureIncludedLibraryJsonPath = parentPath + File.separator + MEASURE + SEPARATOR + INCLUDED_LIBRARY + FileNameUtility.getJsonFilePath(emeasureName, currentRealeaseVersion);
+	            addBytesToZip(measureIncludedLibraryJsonPath,measureExport.getFhirIncludedLibsJson().getBytes(),zip);
 
-                emeasureXMLPath = parentPath + File.separator + MEASURE + FileNameUtility.getXmlFilePath(emeasureName, currentRealeaseVersion);
-                addBytesToZip(emeasureXMLPath,measureExport.getFhirXml().getBytes(),zip);
+	            String measureLibraryXmlPath = parentPath + File.separator + MEASURE + SEPARATOR + INCLUDED_LIBRARY + FileNameUtility.getXmlFilePath(emeasureName, currentRealeaseVersion);
+	            addBytesToZip(measureLibraryXmlPath,measureExport.getFhirIncludedLibsXml().getBytes(),zip);
 
-                String measureIncludedLibraryJsonPath = parentPath + File.separator + MEASURE + SEPARATOR + INCLUDED_LIBRARY + FileNameUtility.getJsonFilePath(emeasureName, currentRealeaseVersion);
-                addBytesToZip(measureIncludedLibraryJsonPath,measureExport.getFhirIncludedLibsJson().getBytes(),zip);
+	            String cqlLibraryJsonPath = parentPath + File.separator + LIBRARY + FileNameUtility.getJsonFilePath(cqlLibrary.getName(), currentRealeaseVersion);
+	            addBytesToZip(cqlLibraryJsonPath,cqlLibraryExport.getJson().getBytes(),zip);
 
-                String measureLibraryXmlPath = parentPath + File.separator + MEASURE + SEPARATOR + INCLUDED_LIBRARY + FileNameUtility.getXmlFilePath(emeasureName, currentRealeaseVersion);
-                addBytesToZip(measureLibraryXmlPath,measureExport.getFhirIncludedLibsXml().getBytes(),zip);
+	            String cqlLibraryXmlPath = parentPath + File.separator + LIBRARY + FileNameUtility.getXmlFilePath(cqlLibrary.getName(), currentRealeaseVersion);
+	            addBytesToZip(cqlLibraryXmlPath,cqlLibraryExport.getFhirXml().getBytes(),zip);
 
-                String cqlLibraryJsonPath = parentPath + File.separator + LIBRARY + FileNameUtility.getJsonFilePath(cqlLibrary.getName(), currentRealeaseVersion);
-                addBytesToZip(cqlLibraryJsonPath,cqlLibraryExport.getJson().getBytes(),zip);
+	            addFileToZip(measure, cqlExportResult, parentPath, "cql", zip);
+	        }
 
-                String cqlLibraryXmlPath = parentPath + File.separator + LIBRARY + FileNameUtility.getXmlFilePath(cqlLibrary.getName(), currentRealeaseVersion);
-                addBytesToZip(cqlLibraryXmlPath,cqlLibraryExport.getFhirXml().getBytes(),zip);
-
-                addFileToZip(measure, cqlExportResult, parentPath, "cql", zip);
-            }
-		    
 		    if(isV5OrGreater(measureReleaseVersion) && !measure.isFhirMeasure()){
 			    addFileToZip(measure, cqlExportResult, parentPath, "cql", zip);
 			    addFileToZip(measure, elmExportResult, parentPath, "xml", zip);
 			    addFileToZip(measure, jsonExportResult, parentPath, "json", zip);
 		    }
-		    
+
 		} catch (Exception e){
-			System.out.println(e.toString());
-			System.out.println(e.fillInStackTrace());
-		}
+	        System.out.println(e.toString());
+	        System.out.println(e.fillInStackTrace());
+	    }
 	}
 
 	private boolean isV5OrGreater(String version) {

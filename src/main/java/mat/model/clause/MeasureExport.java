@@ -46,9 +46,9 @@ public class MeasureExport {
 
 	private String fhirXml;
 
-	private String fhirLibsXml;
+	private String fhirIncludedLibsXml;
 
-	private String fhirLibsJson;
+	private String fhirIncludedLibsJson;
 
 	private XmlProcessor hqmfXMLProcessor;
 
@@ -171,20 +171,20 @@ public class MeasureExport {
 
 	@Column(name = "FHIR_LIBS_XML")
 	public String getFhirIncludedLibsXml() {
-		return fhirLibsXml;
+		return fhirIncludedLibsXml;
 	}
 
-	public void setFhirIncludedLibsXml(String fhirLibsXml) {
-		this.fhirLibsXml = fhirLibsXml;
+	public void setFhirIncludedLibsXml(String fhirIncludedLibsXml) {
+		this.fhirIncludedLibsXml = fhirIncludedLibsXml;
 	}
 
 	@Column(name = "FHIR_LIBS_JSON")
 	public String getFhirIncludedLibsJson() {
-		return fhirLibsJson;
+		return fhirIncludedLibsJson;
 	}
 
-	public void setFhirIncludedLibsJson(String fhirLibsJson) {
-		this.fhirLibsJson = fhirLibsJson;
+	public void setFhirIncludedLibsJson(String fhirIncludedLibsJson) {
+		this.fhirIncludedLibsJson = fhirIncludedLibsJson;
 	}
 
 	private byte[] toByteArray(Blob fromBlob) {

@@ -168,70 +168,58 @@ public class MeasurePackagePresenter implements MatPresenter {
             }
         });
 
-        view.getPackageMeasureAndExportButton().addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-                    clearMessages();
-                    enablePackageButtons(false);
-                    isMeasurePackageAndExport = true;
-                    isExportToBonnie = false;
-                    view.getInProgressMessageDisplay().createAlert(LOADING_WAIT_MESSAGE);
-                    validateGroup();
-                    clearMessages();
-                }
+        view.getPackageMeasureAndExportButton().addClickHandler(event -> {
+            if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+                clearMessages();
+                enablePackageButtons(false);
+                isMeasurePackageAndExport = true;
+                isExportToBonnie = false;
+                view.getInProgressMessageDisplay().createAlert(LOADING_WAIT_MESSAGE);
+                validateGroup();
+                clearMessages();
             }
         });
 
-        view.getPackageMeasureAndUploadToBonnieButton().addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-                    clearMessages();
-                    enablePackageButtons(false);
-                    isMeasurePackageAndExport = false;
-                    isExportToBonnie = true;
-                    view.getInProgressMessageDisplay().createAlert(LOADING_WAIT_MESSAGE);
-                    validateUMLSLogIn();
-                    clearMessages();
-                }
+        view.getPackageMeasureAndUploadToBonnieButton().addClickHandler(event -> {
+            if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+                clearMessages();
+                enablePackageButtons(false);
+                isMeasurePackageAndExport = false;
+                isExportToBonnie = true;
+                view.getInProgressMessageDisplay().createAlert(LOADING_WAIT_MESSAGE);
+                validateUMLSLogIn();
+                clearMessages();
             }
         });
 
 
-        view.getaddRiskAdjVariablesToMeasure().addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-                    showMeasurePackagerBusy(true);
-                    clearMessages();
-                    updateRiskAdjFromView(currentDetail);
-                    ((Button) view.getPackageMeasureButton()).setEnabled(true);
-                    MatContext.get().getPackageService().saveRiskVariables(currentDetail, new AsyncCallback<Void>() {
-                        @Override
-                        public void onFailure(final Throwable caught) {
-                            logger.log(Level.SEVERE, "Error in PackageService.saveRiskVariables. Error message: " + caught.getMessage(), caught);
-                            if (caught instanceof SaveRiskAdjustmentVariableException) {
-                                getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
-                                view.getRiskAdjustmentVariableErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
-                            } else {
-                                view.getRiskAdjustmentVariableErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
-                            }
-
-                            showMeasurePackagerBusy(false);
-                        }
-
-                        @Override
-                        public void onSuccess(final Void result) {
+        view.getaddRiskAdjVariablesToMeasure().addClickHandler(event -> {
+            if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+                showMeasurePackagerBusy(true);
+                clearMessages();
+                updateRiskAdjFromView(currentDetail);
+                ((Button) view.getPackageMeasureButton()).setEnabled(true);
+                MatContext.get().getPackageService().saveRiskVariables(currentDetail, new AsyncCallback<Void>() {
+                    @Override
+                    public void onFailure(final Throwable caught) {
+                        logger.log(Level.SEVERE, "Error in PackageService.saveRiskVariables. Error message: " + caught.getMessage(), caught);
+                        if (caught instanceof SaveRiskAdjustmentVariableException) {
                             getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
-                            view.getRiskAdjustmentVariableSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getRiskAdjSavedMessage());
-                            showMeasurePackagerBusy(false);
+                            view.getRiskAdjustmentVariableErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
+                        } else {
+                            view.getRiskAdjustmentVariableErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
                         }
-                    });
-                }
+
+                        showMeasurePackagerBusy(false);
+                    }
+
+                    @Override
+                    public void onSuccess(final Void result) {
+                        getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
+                        view.getRiskAdjustmentVariableSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getRiskAdjSavedMessage());
+                        showMeasurePackagerBusy(false);
+                    }
+                });
             }
         });
 

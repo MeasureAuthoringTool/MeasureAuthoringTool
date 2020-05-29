@@ -170,20 +170,20 @@ public class MeasureExport {
 	}
 
 	@Column(name = "FHIR_LIBS_XML")
-	public String getFhirLibsXml() {
+	public String getFhirIncludedLibsXml() {
 		return fhirLibsXml;
 	}
 
-	public void setFhirLibsXml(String fhirLibsXml) {
+	public void setFhirIncludedLibsXml(String fhirLibsXml) {
 		this.fhirLibsXml = fhirLibsXml;
 	}
 
 	@Column(name = "FHIR_LIBS_JSON")
-	public String getFhirLibsJson() {
+	public String getFhirIncludedLibsJson() {
 		return fhirLibsJson;
 	}
 
-	public void setFhirLibsJson(String fhirLibsJson) {
+	public void setFhirIncludedLibsJson(String fhirLibsJson) {
 		this.fhirLibsJson = fhirLibsJson;
 	}
 

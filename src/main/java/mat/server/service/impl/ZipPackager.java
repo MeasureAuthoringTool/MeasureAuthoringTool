@@ -7,9 +7,15 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 
-import mat.server.MeasureLibraryServiceImpl;
+import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.CQLLibraryExportDAO;
+import mat.dao.clause.MeasureDAO;
+import mat.dao.clause.MeasureExportDAO;
+import mat.model.clause.CQLLibrary;
+import mat.model.clause.CQLLibraryExport;
+import mat.model.clause.Measure;
+import mat.model.clause.MeasureExport;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.zip.ZipEntry;
@@ -18,6 +24,10 @@ import org.apache.tools.zip.ZipOutputStream;
 import mat.client.shared.MatContext;
 import mat.server.export.ExportResult;
 import mat.shared.FileNameUtility;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  * User Story ID 357 
@@ -26,8 +36,31 @@ import mat.shared.FileNameUtility;
  * @author aschmidt
  *
  */
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ZipPackager {
+
+
 	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
+
+    private static final String MEASURE = "measure";
+    private static final String INCLUDED_LIBRARY = "included-library";
+    private static final String SEPARATOR = "-";
+    private static final String LIBRARY = "library";
+    private static final String HUMAN_READABLE = "humanReadable";
+
+
+	@Autowired
+    private MeasureDAO measureDAO;
+
+	@Autowired
+    private MeasureExportDAO measureExportDAO;
+
+	@Autowired
+    private CQLLibraryExportDAO cqlLibraryExportDAO;
+
+	@Autowired
+    private CQLLibraryDAO cqlLibraryDAO;
 	
 	/**
 	 * Gets the zip barr.
@@ -179,31 +212,65 @@ public class ZipPackager {
 	 * @param string 
 	 * @return the zip barr
 	 */
-	public void getZipBarr(String emeasureName, ZipOutputStream zip,
-						 String packageDate,String emeasureHTMLStr, String simpleXmlStr, String emeasureXMLStr, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult, String currentRealeaseVersion, String parentPath) {
+	public void getZipBarr(String emeasureName, ZipOutputStream zip,String emeasureHTMLStr, String simpleXmlStr,
+                           String emeasureXMLStr, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult,
+                           String currentRealeaseVersion, String parentPath, String measureId) {
+
+        Measure measure = measureDAO.getMeasureByMeasureId(measureId);
+        MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
+        CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measureId);
+        CQLLibraryExport cqlLibraryExport = cqlLibraryExportDAO.findByLibraryId(cqlLibrary.getId());
+
 		try{
 			String emeasureHumanReadablePath = "";
 			String emeasureXMLPath = "";
-			
-		    
+
+
 		    String measureReleaseVersion = currentRealeaseVersion;
 		    if(currentRealeaseVersion.contains(".")){
 		    	currentRealeaseVersion = currentRealeaseVersion.replace(".", "_");
 		    }
+
+		    if (!measure.isFhirMeasure()) {
+                emeasureHumanReadablePath = parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + currentRealeaseVersion);
+                addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
+
+                emeasureXMLPath = parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentRealeaseVersion);
+                addBytesToZip(emeasureXMLPath,emeasureXMLStr.getBytes(),zip);
+
+            } else {
+
+		        emeasureHumanReadablePath = parentPath + File.separator + HUMAN_READABLE + FileNameUtility.getHtmlFilePath(emeasureName, currentRealeaseVersion);
+                addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
+
+                String measureJsonPath = parentPath + File.separator + MEASURE + FileNameUtility.getJsonFilePath(emeasureName, currentRealeaseVersion);
+                addBytesToZip(measureJsonPath,measureExport.getJson().getBytes(),zip);
+
+                emeasureXMLPath = parentPath + File.separator + MEASURE + FileNameUtility.getXmlFilePath(emeasureName, currentRealeaseVersion);
+                addBytesToZip(emeasureXMLPath,measureExport.getFhirXml().getBytes(),zip);
+
+                String measureIncludedLibraryJsonPath = parentPath + File.separator + MEASURE + SEPARATOR + INCLUDED_LIBRARY + FileNameUtility.getJsonFilePath(emeasureName, currentRealeaseVersion);
+                addBytesToZip(measureIncludedLibraryJsonPath,measureExport.getFhirIncludedLibsJson().getBytes(),zip);
+
+                String measureLibraryXmlPath = parentPath + File.separator + MEASURE + SEPARATOR + INCLUDED_LIBRARY + FileNameUtility.getXmlFilePath(emeasureName, currentRealeaseVersion);
+                addBytesToZip(measureLibraryXmlPath,measureExport.getFhirIncludedLibsXml().getBytes(),zip);
+
+                String cqlLibraryJsonPath = parentPath + File.separator + LIBRARY + FileNameUtility.getJsonFilePath(cqlLibrary.getName(), currentRealeaseVersion);
+                addBytesToZip(cqlLibraryJsonPath,cqlLibraryExport.getJson().getBytes(),zip);
+
+                String cqlLibraryXmlPath = parentPath + File.separator + LIBRARY + FileNameUtility.getXmlFilePath(cqlLibrary.getName(), currentRealeaseVersion);
+                addBytesToZip(cqlLibraryXmlPath,cqlLibraryExport.getFhirXml().getBytes(),zip);
+
+                addFileToZip(measure, cqlExportResult, parentPath, "cql", zip);
+            }
 		    
-			emeasureHumanReadablePath = parentPath+File.separator+FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" +currentRealeaseVersion);
-			emeasureXMLPath = parentPath+File.separator+FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentRealeaseVersion);
-						
-			addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
-		    addBytesToZip(emeasureXMLPath,emeasureXMLStr.getBytes(),zip);
-		    
-		    if(isV5OrGreater(measureReleaseVersion)){
-			    addFileToZip(cqlExportResult, parentPath, "cql", zip);
-			    addFileToZip(elmExportResult, parentPath, "xml", zip);
-			    addFileToZip(jsonExportResult, parentPath, "json", zip);
+		    if(isV5OrGreater(measureReleaseVersion) && !measure.isFhirMeasure()){
+			    addFileToZip(measure, cqlExportResult, parentPath, "cql", zip);
+			    addFileToZip(measure, elmExportResult, parentPath, "xml", zip);
+			    addFileToZip(measure, jsonExportResult, parentPath, "json", zip);
 		    }
 		    
-		}catch(Exception e){
+		} catch(Exception e){
 			System.out.println(e.toString());
 			System.out.println(e.fillInStackTrace());
 		}
@@ -323,7 +390,7 @@ public class ZipPackager {
 	}	 
 	
 
-	public byte[] getCQLZipBarr(ExportResult export, String extension) {
+	public byte[] getCQLZipBarr(Measure measure, ExportResult export, String extension) {
 		byte[] ret = null;
 		
 		try{
@@ -333,7 +400,7 @@ public class ZipPackager {
 			String parentPath = "";
 			parentPath = export.measureName + "_" + extension;
 			
-			addFileToZip(export, parentPath, extension, zip);
+			addFileToZip(measure, export, parentPath, extension, zip);
 			
 			zip.close();
 			ret = baos.toByteArray();
@@ -351,16 +418,17 @@ public class ZipPackager {
 	 * @param zip
 	 * @throws Exception
 	 */
-	private void addFileToZip(ExportResult export, String parentPath, String extension,
+	private void addFileToZip(Measure measure, ExportResult export, String parentPath, String extension,
 			 ZipOutputStream zip) throws Exception {
 							
 		String cqlFilePath = "";
-		cqlFilePath = parentPath+File.separator+export.getCqlLibraryName() + "." + extension;
-		addBytesToZip(cqlFilePath,export.export.getBytes(),zip);
+		cqlFilePath = measure.isFhirMeasure() ? parentPath + File.separator + LIBRARY + "-" + export.getCqlLibraryName() + "." + extension
+                : parentPath + File.separator + export.getCqlLibraryName() + "." + extension;
+		addBytesToZip(cqlFilePath, export.export.getBytes(), zip);
 		
-		for(ExportResult includedResult : export.getIncludedCQLExports()){
-			cqlFilePath = parentPath+File.separator+includedResult.getCqlLibraryName() + "." + extension;
-			addBytesToZip(cqlFilePath,includedResult.export.getBytes(),zip);
+		for (ExportResult includedResult : export.getIncludedCQLExports()) {
+			cqlFilePath = parentPath+File.separator + includedResult.getCqlLibraryName() + "." + extension;
+			addBytesToZip(cqlFilePath, includedResult.export.getBytes(), zip);
 		}
 	}
 	 

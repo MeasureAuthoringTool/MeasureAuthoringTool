@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.server.service.impl.ZipPackagerFactory;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -54,6 +55,7 @@ import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
 
 public class ExportServlet extends HttpServlet {
+
     private static final String LIBRARY_ID = "libraryid";
     private static final String USER_ID = "userId";
     private static final String EXPORT_MEASURE_OWNER = "exportMeasureOwner";
@@ -300,8 +302,8 @@ public class ExportServlet extends HttpServlet {
         ExportResult export = getService().createOrGetELMLibraryFile(id, measureExport);
 
         if (!export.getIncludedCQLExports().isEmpty()) {
-            ZipPackager zp = new ZipPackager();
-            zp.getCQLZipBarr(export, "xml");
+            ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
+            zp.getCQLZipBarr(measure, export, "xml");
 
             resp.setHeader(CONTENT_DISPOSITION,
                     ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "ELM"));
@@ -328,8 +330,8 @@ public class ExportServlet extends HttpServlet {
         ExportResult export = getService().createOrGetJSONLibraryFile(id, measureExport);
 
         if (!export.getIncludedCQLExports().isEmpty()) {
-            ZipPackager zp = new ZipPackager();
-            zp.getCQLZipBarr(export, "json");
+            ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
+            zp.getCQLZipBarr(measure, export, "json");
 
             resp.setHeader(CONTENT_DISPOSITION,
                     ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "JSON"));
@@ -357,8 +359,8 @@ public class ExportServlet extends HttpServlet {
         ExportResult export = getService().createOrGetCQLLibraryFile(id, measureExport);
 
         if (!export.getIncludedCQLExports().isEmpty()) {
-            ZipPackager zp = new ZipPackager();
-            zp.getCQLZipBarr(export, "cql");
+            ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
+            zp.getCQLZipBarr(measure, export, "cql");
 
             resp.setHeader(CONTENT_DISPOSITION,
                     ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "CQL"));

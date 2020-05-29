@@ -80,6 +80,8 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     @Override
     public FhirMeasurePackageResult packageMeasure(String measureId) {
         FhirMeasurePackageResult result = new FhirMeasurePackageResult();
+        IParser jsonParser = fhirContext.newJsonParser();
+        IParser xmlParser = fhirContext.newXmlParser();
 
         Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("id", measureId);
@@ -92,8 +94,8 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
         result.setInludedLibsJson(packagingResp.getIncludeBundle());
         result.setMeasureLibJson(packagingResp.getLibrary());
 
-        IParser jsonParser = fhirContext.newJsonParser();
-        IParser xmlParser = fhirContext.newXmlParser();
+        jsonParser.setPrettyPrint(true);
+        xmlParser.setPrettyPrint(true);
 
         Measure measure = jsonParser.parseResource(Measure.class,result.getMeasureJson());
         result.setMeasureXml(xmlParser.encodeResourceToString(measure));

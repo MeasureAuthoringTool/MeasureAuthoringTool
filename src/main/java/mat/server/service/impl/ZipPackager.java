@@ -190,7 +190,7 @@ public class ZipPackager {
 				addVersion5Exports(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
 			}
 				  
-		}catch(Exception e){
+		} catch (Exception e){
 			System.out.println(e.toString());
 			System.out.println(e.fillInStackTrace());
 		}
@@ -212,7 +212,7 @@ public class ZipPackager {
 	 * @param string 
 	 * @return the zip barr
 	 */
-	public void getZipBarr(String emeasureName, ZipOutputStream zip,String emeasureHTMLStr, String simpleXmlStr,
+	public void getZipBarr(String emeasureName, ZipOutputStream zip,String emeasureHTMLStr,
                            String emeasureXMLStr, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult,
                            String currentRealeaseVersion, String parentPath, String measureId) {
 
@@ -270,7 +270,7 @@ public class ZipPackager {
 			    addFileToZip(measure, jsonExportResult, parentPath, "json", zip);
 		    }
 		    
-		} catch(Exception e){
+		} catch (Exception e){
 			System.out.println(e.toString());
 			System.out.println(e.fillInStackTrace());
 		}

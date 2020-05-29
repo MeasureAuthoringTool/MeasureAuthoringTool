@@ -787,8 +787,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		ExportResult jsonExportResult = createOrGetJSONLibraryFile(measureId, measureExport);
 
 		ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-		zp.getZipBarr(me.getMeasure().getaBBRName(), zip, emeasureHTMLStr,
-				simpleXmlStr, emeasureXML, cqlExportResult, elmExportResult, jsonExportResult,
+		zp.getZipBarr(me.getMeasure().getaBBRName(), zip, emeasureHTMLStr, emeasureXML, cqlExportResult, elmExportResult, jsonExportResult,
 				me.getMeasure().getReleaseVersion(), parentPath, measureId);
 	}
 	

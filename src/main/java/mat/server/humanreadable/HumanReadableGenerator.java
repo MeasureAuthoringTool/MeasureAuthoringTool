@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import mat.cql.CqlUtils;
 import mat.server.CqlValidatorRemoteCallService;
 import mat.server.FhirCQLResultParser;
 import org.apache.commons.collections.CollectionUtils;

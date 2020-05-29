@@ -245,8 +245,8 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
             export.setCql(pkg.getMeasureLibCql());
             export.setElm(pkg.getMeasureLibElmXml()); //elm xml
             export.setElmJson(pkg.getMeasureLibElmJson());
-            export.setFhirLibsJson(pkg.getInludedLibsJson());
-            export.setFhirLibsXml(pkg.getInludedLibsXml());
+            export.setFhirIncludedLibsJson(pkg.getInludedLibsJson());
+            export.setFhirIncludedLibsXml(pkg.getInludedLibsXml());
             export.setJson(pkg.getMeasureJson()); //measure json
             export.setFhirXml(pkg.getMeasureXml());
 

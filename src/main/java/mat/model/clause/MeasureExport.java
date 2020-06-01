@@ -38,15 +38,9 @@ public class MeasureExport {
 
 	private String cql;
 
-	private String elm;
+	private String measureJson;
 
-	private String json;
-
-	private String elmJson;
-
-	private String fhirXml;
-
-	private String fhirIncludedLibsXml;
+	private String elmXml;
 
 	private String fhirIncludedLibsJson;
 
@@ -134,48 +128,21 @@ public class MeasureExport {
 	}
 
 	@Column(name = "ELM")
-	public String getElm() {
-		return elm;
+	public String getElmXml() {
+		return elmXml;
 	}
 
-	public void setElm(String elm) {
-		this.elm = elm;
+	public void setElmXml(String elmXml) {
+		this.elmXml = elmXml;
 	}
 
 	@Column(name = "JSON")
-	public String getJson() {
-		return json;
+	public String getMeasureJson() {
+		return measureJson;
 	}
 
-	public void setJson(String json) {
-		this.json = json;
-	}
-
-	@Column(name = "ELM_JSON")
-	public String getElmJson() {
-		return elmJson;
-	}
-
-	public void setElmJson(String elmJson) {
-		this.elmJson = elmJson;
-	}
-
-	@Column(name = "FHIR_XML")
-	public String getFhirXml() {
-		return fhirXml;
-	}
-
-	public void setFhirXml(String fhirXml) {
-		this.fhirXml = fhirXml;
-	}
-
-	@Column(name = "FHIR_LIBS_XML")
-	public String getFhirIncludedLibsXml() {
-		return fhirIncludedLibsXml;
-	}
-
-	public void setFhirIncludedLibsXml(String fhirIncludedLibsXml) {
-		this.fhirIncludedLibsXml = fhirIncludedLibsXml;
+	public void setMeasureJson(String measureJson) {
+		this.measureJson = measureJson;
 	}
 
 	@Column(name = "FHIR_LIBS_JSON")

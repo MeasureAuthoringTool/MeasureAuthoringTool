@@ -512,8 +512,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         CQLLibraryExport cqlLibraryExport = new CQLLibraryExport();
         cqlLibraryExport.setCqlLibrary(cqlLibrary);
         cqlLibraryExport.setCql(CQLUtilityClass.getCqlString(cqlModel, "").getLeft());
-        cqlLibraryExport.setElm(latestCQLResult.getElmString());
-        cqlLibraryExport.setJson(latestCQLResult.getJsonString());
+        cqlLibraryExport.setElmXml(latestCQLResult.getElmString());
+        cqlLibraryExport.setFhirJson(latestCQLResult.getJsonString());
         cqlLibraryExportDAO.save(cqlLibraryExport);
     }
 
@@ -521,10 +521,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         CQLLibraryExport cqlLibraryExport = new CQLLibraryExport();
         cqlLibraryExport.setCqlLibrary(cqlLibrary);
         cqlLibraryExport.setCql(result.getCql());
-        cqlLibraryExport.setElm(result.getElmXml());
-        cqlLibraryExport.setElmJson(result.getElmJson());
-        cqlLibraryExport.setFhirXml(result.getFhirXml());
-        cqlLibraryExport.setJson(result.getFhirJson());
+        cqlLibraryExport.setFhirJson(result.getFhirJson());
+        cqlLibraryExport.setElmXml(result.getElmXml());
         cqlLibraryExportDAO.save(cqlLibraryExport);
     }
 

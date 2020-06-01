@@ -27,16 +27,10 @@ public class CQLLibraryExport {
 	private String cql; 
 	
 	@Column(name="ELM")
-	private String elm; 
+	private String elmXml;
 	
 	@Column(name="JSON")
-	private String json;
-
-	@Column(name="FHIR_XML")
-	private String fhirXml;
-
-	@Column(name="ELM_JSON")
-	private String elmJson;
+	private String fhirJson;
 
 	public String getId() {
 		return id;
@@ -62,35 +56,19 @@ public class CQLLibraryExport {
 		this.cql = cql;
 	}
 
-	public String getElm() {
-		return elm;
+	public String getFhirJson() {
+		return fhirJson;
 	}
 
-	public void setElm(String elm) {
-		this.elm = elm;
+	public void setFhirJson(String fhirJson) {
+		this.fhirJson = fhirJson;
 	}
 
-	public String getJson() {
-		return json;
+	public String getElmXml() {
+		return elmXml;
 	}
 
-	public void setJson(String json) {
-		this.json = json;
-	}
-
-	public String getFhirXml() {
-		return fhirXml;
-	}
-
-	public void setFhirXml(String fhirXml) {
-		this.fhirXml = fhirXml;
-	}
-
-	public String getElmJson() {
-		return elmJson;
-	}
-
-	public void setElmJson(String elmJson) {
-		this.elmJson = elmJson;
+	public void setElmXml(String elmXml) {
+		this.elmXml = elmXml;
 	}
 }

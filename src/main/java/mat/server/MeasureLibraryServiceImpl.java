@@ -2388,13 +2388,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             xmlModel) {
         if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureXmlModel.getMeasureId())) {
             XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
-            String newXml = xmlProcessor.replaceNode(measureXmlModel.getXml(),
-                    measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
-
             try {
                 MeasureUtility.updateCQLVersion(xmlProcessor, version);
                 MeasureUtility.updateModelVersion(xmlProcessor, ModelTypeHelper.isFhir(measureXmlModel.getMeasureModel()));
-                newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
+                String newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
                 measureXmlModel.setXml(newXml);
                 measurePackageService.saveMeasureXml(measureXmlModel);
             } catch (XPathExpressionException e) {

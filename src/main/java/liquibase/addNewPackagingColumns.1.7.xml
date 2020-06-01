@@ -6,19 +6,15 @@
 
     <changeSet author="mat_dev_user" id="1" context="prod">
         <preConditions onFail="MARK_RAN">
-            <not><columnExists tableName="MEASURE_EXPORT" columnName="ELM_JSON"/></not>
+            <columnExists tableName="MEASURE_EXPORT" columnName="ELM_JSON"/>
         </preConditions>
-        <addColumn tableName="MEASURE_EXPORT">
-            <column name="ELM_JSON" type="longtext"/>
-        </addColumn>
+        <dropColumn tableName="MEASURE_EXPORT" columnName="ELM_JSON"/>
     </changeSet>
     <changeSet author="mat_dev_user" id="2" context="prod">
         <preConditions onFail="MARK_RAN">
-            <not><columnExists tableName="MEASURE_EXPORT" columnName="FHIR_XML"/></not>
+            <columnExists tableName="MEASURE_EXPORT" columnName="FHIR_XML"/>
         </preConditions>
-        <addColumn tableName="MEASURE_EXPORT">
-            <column name="FHIR_XML" type="longtext"/>
-        </addColumn>
+        <dropColumn tableName="MEASURE_EXPORT" columnName="FHIR_XML"/>
     </changeSet>
     <changeSet author="mat_dev_user" id="3" context="prod">
         <preConditions onFail="MARK_RAN">
@@ -30,26 +26,14 @@
     </changeSet>
     <changeSet author="mat_dev_user" id="4" context="prod">
         <preConditions onFail="MARK_RAN">
-            <not><columnExists tableName="MEASURE_EXPORT" columnName="FHIR_LIBS_XML"/></not>
+            <columnExists tableName="CQL_LIBRARY_EXPORT" columnName="ELM_JSON"/>
         </preConditions>
-        <addColumn tableName="MEASURE_EXPORT">
-            <column name="FHIR_LIBS_XML" type="longtext"/>
-        </addColumn>
+        <dropColumn tableName="CQL_LIBRARY_EXPORT" columnName="ELM_JSON"/>
     </changeSet>
     <changeSet author="mat_dev_user" id="5" context="prod">
         <preConditions onFail="MARK_RAN">
-            <not><columnExists tableName="CQL_LIBRARY_EXPORT" columnName="ELM_JSON"/></not>
+            <columnExists tableName="CQL_LIBRARY_EXPORT" columnName="FHIR_XML"/>
         </preConditions>
-        <addColumn tableName="CQL_LIBRARY_EXPORT">
-            <column name="ELM_JSON" type="longtext"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="mat_dev_user" id="6" context="prod">
-        <preConditions onFail="MARK_RAN">
-            <not><columnExists tableName="CQL_LIBRARY_EXPORT" columnName="FHIR_XML"/></not>
-        </preConditions>
-        <addColumn tableName="CQL_LIBRARY_EXPORT">
-            <column name="FHIR_XML" type="longtext"/>
-        </addColumn>
+        <dropColumn tableName="CQL_LIBRARY_EXPORT" columnName="FHIR_XML"/>
     </changeSet>
 </databaseChangeLog>

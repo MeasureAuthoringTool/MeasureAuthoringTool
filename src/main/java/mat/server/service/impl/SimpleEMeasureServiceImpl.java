@@ -399,13 +399,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 					cqlLibraryExport = new CQLLibraryExport();
 					cqlLibraryExport.setCqlLibrary(cqlLibrary);
 				}
-				if(cqlLibraryExport.getJson() == null) {
+				if(cqlLibraryExport.getFhirJson() == null) {
 					SaveUpdateCQLResult jsonResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
-					cqlLibraryExport.setJson(jsonResult.getJsonString());
+					cqlLibraryExport.setFhirJson(jsonResult.getJsonString());
 					cqlLibraryExportDAO.save(cqlLibraryExport);
 				}
 				ExportResult includeResult = new ExportResult();
-				includeResult.export = cqlLibraryExport.getJson();
+				includeResult.export = cqlLibraryExport.getFhirJson();
 	
 				String libName = libNode.getAttributes().getNamedItem("name").getNodeValue();
 				String libVersion = libNode.getAttributes().getNamedItem("version").getNodeValue();
@@ -465,13 +465,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 					cqlLibraryExport = new CQLLibraryExport();
 					cqlLibraryExport.setCqlLibrary(cqlLibrary);
 				}
-				if(cqlLibraryExport.getElm() == null) {
+				if(cqlLibraryExport.getElmXml() == null) {
 					SaveUpdateCQLResult elmResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
-					cqlLibraryExport.setElm(elmResult.getElmString());
+					cqlLibraryExport.setElmXml(elmResult.getElmString());
 					cqlLibraryExportDAO.save(cqlLibraryExport);
 				}
 				ExportResult includeResult = new ExportResult();
-				includeResult.export = cqlLibraryExport.getElm();
+				includeResult.export = cqlLibraryExport.getElmXml();
 	
 				String libName = libNode.getAttributes().getNamedItem("name").getNodeValue();
 				String libVersion = libNode.getAttributes().getNamedItem("version").getNodeValue();
@@ -893,8 +893,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 *            - String.
 	 * @param exportDate
 	 *            the export date
-	 * @param releaseDate
-	 *            the release date
 	 * @param me
 	 *            - MeasureExport.
 	 * @return byte[].
@@ -1112,8 +1110,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 *            - String.
 	 * @param exportDate
 	 *            the export date
-	 * @param releaseDate
-	 *            the release date
 	 * @param me
 	 *            - MeasureExport.
 	 * @param filesMap
@@ -1183,13 +1179,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	public ExportResult createOrGetELMLibraryFile(String measureId, MeasureExport measureExport) throws Exception {
 		ExportResult elmExportResult = null;
 		//if measure export is null then create the file
-		if(measureExport.getElm() == null) {
+		if(measureExport.getElmXml() == null) {
 			elmExportResult = getELMFile(measureId);
-			measureExport.setElm(elmExportResult.export);
+			measureExport.setElmXml(elmExportResult.export);
 			measureExportDAO.save(measureExport);
 		} else { // else create the export result from the elm in the model and return that;
 			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureExport.getSimpleXML());
-			elmExportResult = createExportResultForFile(measureExport, measureExport.getElm(), cqlModel);
+			elmExportResult = createExportResultForFile(measureExport, measureExport.getElmXml(), cqlModel);
 			String simpleXML = measureExport.getSimpleXML();
 			XmlProcessor xmlProcessor = new XmlProcessor(simpleXML);
 			getIncludedCQLELMs(elmExportResult, xmlProcessor);
@@ -1200,13 +1196,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	public ExportResult createOrGetJSONLibraryFile(String measureId, MeasureExport measureExport) throws Exception {
 		ExportResult jsonExportResult = null;
 		//if measure export is null then create the file
-		if(measureExport.getJson() == null) {
+		if(measureExport.getMeasureJson() == null) {
 			jsonExportResult = getJSONFile(measureId);
-			measureExport.setJson(jsonExportResult.export);
+			measureExport.setMeasureJson(jsonExportResult.export);
 			measureExportDAO.save(measureExport);
 		} else { // else create the export result from the json in the model and return that;
 			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureExport.getSimpleXML());
-			jsonExportResult = createExportResultForFile(measureExport, measureExport.getJson(), cqlModel);
+			jsonExportResult = createExportResultForFile(measureExport, measureExport.getMeasureJson(), cqlModel);
 			String simpleXML = measureExport.getSimpleXML();
 			XmlProcessor xmlProcessor = new XmlProcessor(simpleXML);
 			getIncludedCQLJSONs(jsonExportResult, xmlProcessor);

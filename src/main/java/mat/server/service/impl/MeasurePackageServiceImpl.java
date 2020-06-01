@@ -1,24 +1,8 @@
 package mat.server.service.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import mat.client.measure.FhirMeasurePackageResult;
-import mat.dao.clause.CQLLibraryExportDAO;
-import mat.model.clause.CQLLibraryExport;
-import mat.server.service.FhirMeasureService;
-import mat.server.service.MeasureLibraryService;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import mat.CQLFormatter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.measure.FhirMeasurePackageResult;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatContext;
@@ -30,6 +14,7 @@ import mat.dao.OrganizationDAO;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.CQLLibraryExportDAO;
 import mat.dao.clause.CQLLibraryShareDAO;
 import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.clause.MeasureDAO;
@@ -44,6 +29,7 @@ import mat.model.MatValueSet;
 import mat.model.QualityDataSet;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
+import mat.model.clause.CQLLibraryExport;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
@@ -59,6 +45,8 @@ import mat.server.LoggedInUserUtil;
 import mat.server.cqlparser.ReverseEngineerListener;
 import mat.server.export.ExportResult;
 import mat.server.export.MeasureArtifactGenerator;
+import mat.server.service.FhirMeasureService;
+import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.util.ExportSimpleXML;
@@ -67,6 +55,17 @@ import mat.server.validator.measure.CompositeMeasurePackageValidator;
 import mat.shared.CompositeMeasurePackageValidationResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.ValidationUtility;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class MeasurePackageServiceImpl implements MeasurePackageService {
@@ -243,12 +242,8 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
             fhirMeasureService.push(measureId);
             FhirMeasurePackageResult pkg = fhirMeasureService.packageMeasure(measureId);
             export.setCql(pkg.getMeasureLibCql());
-            export.setElm(pkg.getMeasureLibElmXml()); //elm xml
-            export.setElmJson(pkg.getMeasureLibElmJson());
-            export.setFhirIncludedLibsJson(pkg.getInludedLibsJson());
-            export.setFhirIncludedLibsXml(pkg.getInludedLibsXml());
-            export.setJson(pkg.getMeasureJson()); //measure json
-            export.setFhirXml(pkg.getMeasureXml());
+            export.setElmXml(pkg.getMeasureLibElmXml()); //elm xml
+            export.setMeasureJson(pkg.getMeasureJson()); //measure json
 
             CQLLibrary library = cqlLibraryDAO.getLibraryByMeasureId(measure.getId());
             if (library != null) {
@@ -257,17 +252,14 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
                     libExport = new CQLLibraryExport();
                     libExport.setCqlLibrary(library);
                 }
-                libExport.setJson(pkg.getMeasureLibJson());
-                libExport.setFhirXml(pkg.getMeasureLibXml());
+                libExport.setFhirJson(pkg.getMeasureLibJson());
                 libExport.setCql(pkg.getMeasureLibCql());
-                libExport.setElm(pkg.getMeasureLibElmXml());
-                libExport.setElmJson(pkg.getMeasureLibElmJson());
                 libraryExportDao.save(libExport);
             }
         } else {
             export.setCql(MeasureArtifactGenerator.getCQLArtifact(measureId));
-            export.setElm(MeasureArtifactGenerator.getELMArtifact(measureId));
-            export.setJson(MeasureArtifactGenerator.getJSONArtifact(measureId));
+            export.setElmXml(MeasureArtifactGenerator.getELMArtifact(measureId));
+            export.setMeasureJson(MeasureArtifactGenerator.getJSONArtifact(measureId));
         }
 
         measureExportDAO.save(export);

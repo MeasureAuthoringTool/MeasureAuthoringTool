@@ -10,7 +10,7 @@ public class HumanReadableExpressionModel {
 	public HumanReadableExpressionModel(String name, String logic) {
 		this.name = name;
 		this.logic = logic;
-		this.id = name.replaceAll(" ", "_") + new Random().nextInt();
+		this.id = name.replaceAll(" ", "_") + "_" + Math.abs(new Random().nextInt());
 	}
 	public String getName() {
 		return name;

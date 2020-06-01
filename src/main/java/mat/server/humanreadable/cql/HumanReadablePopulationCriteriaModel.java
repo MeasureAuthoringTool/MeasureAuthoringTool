@@ -13,7 +13,7 @@ public class HumanReadablePopulationCriteriaModel {
 		this.populations = nameLogicModel;
 		this.name = name; 
 		this.sequence = sequence; 
-		this.id = this.name.replaceAll(" ", "_") + " " + new Random().nextInt();
+		this.id = this.name.replaceAll(" ", "_") + "_" + Math.abs(new Random().nextInt());
 	}
 
 	public List<HumanReadablePopulationModel> getPopulations() {

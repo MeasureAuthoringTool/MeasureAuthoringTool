@@ -1,7 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
     <head>
-        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title>${model.measureInformation.ecqmTitle} ${model.measureInformation.ecqmVersionNumber}</title>
         <#include "human_readable_css.ftl" />
     </head>

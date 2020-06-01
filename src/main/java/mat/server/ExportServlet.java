@@ -81,6 +81,7 @@ public class ExportServlet extends HttpServlet {
     private static final String CALCULATE_BONNIE_MEASURE_RESULT = "calculateBonnieMeasureResult";
     private static final String TYPE_PARAM = "type";
     private static final String XML_PARAM = "xml";
+    private static final String ELM_FILENAME = "ELM";
     private static final String FORMAT_PARAM = "format";
     private static final String ID_PARAM = "id";
     private static final Log logger = LogFactory.getLog(ExportServlet.class);
@@ -88,7 +89,10 @@ public class ExportServlet extends HttpServlet {
     protected ApplicationContext context;
     private static final String CQL_LIBRARY = "cqlLibrary";
     private static final String ELM = "elm";
+    private static final String CQL = "cql";
+    private static final String CQL_FILENAME = "CQL";
     private static final String JSON = "json";
+    private static final String JSON_FILENAME = "JSON";
     private static final String ADMINISTRATOR = "Administrator";
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String CQL_NO_ERRORS_WARNINGS_MESSAGE = "You are viewing CQL with no errors or warnings.";
@@ -130,13 +134,13 @@ public class ExportServlet extends HttpServlet {
                     exportCodeListXLS(resp, id, measure);
                     break;
                 case CQL_LIBRARY:
-                    exportCQLLibraryFile(resp, id, type, measure);
+                    exportFile(resp, id, type, measure, CQL, CQL_FILENAME);
                     break;
                 case ELM:
-                    exportELMFile(resp, id, type, measure);
+                    exportFile(resp, id, type, measure, XML_PARAM, ELM_FILENAME);
                     break;
                 case JSON:
-                    exportJSONFile(resp, id, type, measure);
+                    exportFile(resp, id, type, measure, JSON, JSON_FILENAME);
                     break;
                 case ZIP:
                     zipMeasure(resp, id, measure, exportDate);
@@ -291,88 +295,46 @@ public class ExportServlet extends HttpServlet {
         return errorMessage.append("Line ").append(error.getErrorInLine()).append(": ").append(error.getErrorMessage());
     }
 
-    private void exportELMFile(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
+    private void exportFile(HttpServletResponse resp, String id, String type, Measure measure, String extension, String fileNameExtension) throws Exception {
         MeasureExport measureExport = getService().getMeasureExport(id);
         getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
         if (!canViewExports(measureExport.getMeasure())) {
             return;
         }
+        ExportResult export = null;
 
+        if(JSON_FILENAME.equals(fileNameExtension)) {
+            export = getService().createOrGetJSONLibraryFile(id, measureExport);
+        } else if(CQL_FILENAME.equals(fileNameExtension)) {
+            export = getService().createOrGetCQLLibraryFile(id, measureExport);
+        } else if(ELM_FILENAME.equals(fileNameExtension)) {
+            export = getService().createOrGetELMLibraryFile(id, measureExport);
+        }
 
-        ExportResult export = getService().createOrGetELMLibraryFile(id, measureExport);
 
         if (!export.getIncludedCQLExports().isEmpty()) {
             ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-            zp.getCQLZipBarr(measure, export, "xml");
+            zp.getCQLZipBarr(measure, export, extension);
 
             resp.setHeader(CONTENT_DISPOSITION,
-                    ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "ELM"));
+                    ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + fileNameExtension));
             resp.setContentType(APPLICATION_ZIP);
             resp.getOutputStream().write(export.zipbarr);
             export.zipbarr = null;
         } else {
             if (SAVE.equals(type)) {
-                resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName() + ".xml");
+                if(CQL_FILENAME.equals(fileNameExtension)) {
+                    resp.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+                }
+                resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName() + "." + extension);
             }
-            resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
 
-            resp.getOutputStream().write(export.export.getBytes());
-        }
-    }
-
-    private void exportJSONFile(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
-        MeasureExport measureExport = getService().getMeasureExport(id);
-        getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
-        if (!canViewExports(measureExport.getMeasure())) {
-            return;
-        }
-
-        ExportResult export = getService().createOrGetJSONLibraryFile(id, measureExport);
-
-        if (!export.getIncludedCQLExports().isEmpty()) {
-            ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-            zp.getCQLZipBarr(measure, export, "json");
-
-            resp.setHeader(CONTENT_DISPOSITION,
-                    ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "JSON"));
-            resp.setContentType(APPLICATION_ZIP);
-            resp.getOutputStream().write(export.zipbarr);
-            export.zipbarr = null;
-        } else {
-            if (SAVE.equals(type)) {
-                resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName() + ".json");
-            }
-            resp.setHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-
-            resp.getOutputStream().write(export.export.getBytes());
-        }
-    }
-
-    private void exportCQLLibraryFile(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
-        MeasureExport measureExport = getService().getMeasureExport(id);
-        getAuditService().recordMeasureEvent(measure.getId(), MEASURE_EXPORTED, null, true);
-        if (!canViewExports(measureExport.getMeasure())) {
-            return;
-        }
-
-
-        ExportResult export = getService().createOrGetCQLLibraryFile(id, measureExport);
-
-        if (!export.getIncludedCQLExports().isEmpty()) {
-            ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-            zp.getCQLZipBarr(measure, export, "cql");
-
-            resp.setHeader(CONTENT_DISPOSITION,
-                    ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "CQL"));
-            resp.setContentType(APPLICATION_ZIP);
-            resp.getOutputStream().write(export.zipbarr);
-            export.zipbarr = null;
-        } else {
-            if (SAVE.equals(type)) {
-                resp.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-                resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName() + ".cql");
-            } else {
+            if(JSON_FILENAME.equals(fileNameExtension)) {
+                resp.setHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+            } else if(CQL_FILENAME.equals(fileNameExtension) && !SAVE.equals(type)) {
                 resp.setHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
+            } else if(ELM_FILENAME.equals(fileNameExtension)) {
+                resp.setHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
             }
 
             resp.getOutputStream().write(export.export.getBytes());

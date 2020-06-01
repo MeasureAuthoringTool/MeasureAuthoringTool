@@ -741,7 +741,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		result.measureName = getMeasureName(measureId).getaBBRName();
 		MeasureExport me = getMeasureExport(measureId);
 		if (me.getMeasure().getReleaseVersion().equals("v3")) {
-			result.zipbarr = getZipBarr(measureId, exportDate, me, me.getMeasure().getReleaseVersion());
+			result.zipbarr = getZipBarr(measureId, me, me.getMeasure().getReleaseVersion());
 		} else {
 			String currentReleaseVersion = getFormatedReleaseVersion(me.getMeasure().getReleaseVersion());
 			FileNameUtility fnu = new FileNameUtility();
@@ -890,17 +890,14 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 *
 	 * @param measureId
 	 *            - String.
-	 * @param exportDate
-	 *            the export date
 	 * @param me
 	 *            - MeasureExport.
 	 * @return byte[].
 	 * @throws Exception
 	 *             - Exception. *
 	 */
-	public final byte[] getZipBarr(final String measureId, Date exportDate, final MeasureExport me,
+	public final byte[] getZipBarr(final String measureId, final MeasureExport me,
 			String releaseVersion) throws Exception {
-		byte[] wkbkbarr = null;
 		StringUtility su = new StringUtility();
 		ExportResult emeasureXMLResult = createOrGetHQMFForv3Measure(measureId);
 		String emeasureName = emeasureXMLResult.measureName;
@@ -914,12 +911,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			measureExportDAO.save(me);
 		}
 		String emeasureHTMLStr = me.getHumanReadable();
-		String simpleXmlStr = me.getSimpleXML();
 		String emeasureXSLUrl = XMLUtility.getInstance().getXMLResource(conversionFileHtml);
 
 		ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-		return zp.getZipBarr(emeasureName, exportDate, releaseVersion, wkbkbarr, emeasureXMLStr, emeasureHTMLStr,
-				emeasureXSLUrl, (new Date()).toString(), simpleXmlStr);
+		return zp.getZipBarr(emeasureName, releaseVersion, emeasureXMLStr, emeasureHTMLStr, emeasureXSLUrl);
 	}
 
 	/**

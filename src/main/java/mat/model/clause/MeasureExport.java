@@ -150,8 +150,8 @@ public class MeasureExport {
 		return fhirIncludedLibsJson;
 	}
 
-	public void setFhirIncludedLibsJson(String measureJson) {
-		this.measureJson = fhirIncludedLibsJson;
+	public void setFhirIncludedLibsJson(String fhirIncludedLibsJson) {
+		this.fhirIncludedLibsJson = fhirIncludedLibsJson;
 	}
 
 	private byte[] toByteArray(Blob fromBlob) {

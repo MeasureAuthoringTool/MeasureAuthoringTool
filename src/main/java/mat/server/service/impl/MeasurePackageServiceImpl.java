@@ -244,6 +244,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
             export.setCql(pkg.getMeasureLibCql());
             export.setElmXml(pkg.getMeasureLibElmXml()); //elm xml
             export.setMeasureJson(pkg.getMeasureJson()); //measure json
+            export.setFhirIncludedLibsJson(pkg.getInludedLibsJson());
 
             CQLLibrary library = cqlLibraryDAO.getLibraryByMeasureId(measure.getId());
             if (library != null) {
@@ -254,6 +255,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
                 }
                 libExport.setFhirJson(pkg.getMeasureLibJson());
                 libExport.setCql(pkg.getMeasureLibCql());
+                libExport.setElmXml(pkg.getMeasureLibElmXml());
                 libraryExportDao.save(libExport);
             }
         } else {

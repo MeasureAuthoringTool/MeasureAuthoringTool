@@ -90,18 +90,23 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
                 MeasurePackageFullData.class,
                 uriVariables);
 
-        result.setMeasureJson(packagingResp.getMeasure());
-        result.setInludedLibsJson(packagingResp.getIncludeBundle());
-        result.setMeasureLibJson(packagingResp.getLibrary());
+        Measure measure = jsonParser.parseResource(Measure.class,packagingResp.getMeasure());
+        Library lib = jsonParser.parseResource(Library.class,packagingResp.getLibrary());
+        Bundle bundle = jsonParser.parseResource(Bundle.class,packagingResp.getIncludeBundle());
 
         jsonParser.setPrettyPrint(true);
         xmlParser.setPrettyPrint(true);
 
-        Measure measure = jsonParser.parseResource(Measure.class,result.getMeasureJson());
+        result.setMeasureJson(jsonParser.encodeResourceToString(measure));
         result.setMeasureXml(xmlParser.encodeResourceToString(measure));
 
-        Library lib = jsonParser.parseResource(Library.class,result.getMeasureLibJson());
+        result.setMeasureLibJson(jsonParser.encodeResourceToString(lib));
         result.setMeasureLibXml(xmlParser.encodeResourceToString(lib));
+
+        result.setInludedLibsJson(jsonParser.encodeResourceToString(bundle));
+        result.setInludedLibsXml(xmlParser.encodeResourceToString(bundle));
+
+
         lib.getContent().forEach(a -> {
             if (StringUtils.equalsIgnoreCase("text/cql", a.getContentType())) {
                 result.setMeasureLibCql(decodeBase64(a));
@@ -111,9 +116,6 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
                 result.setMeasureLibElmXml(decodeBase64(a));
             }
         });
-
-        Bundle bundle = jsonParser.parseResource(Bundle.class,result.getInludedLibsJson());
-        result.setInludedLibsXml(xmlParser.encodeResourceToString(bundle));
         return result;
     }
 

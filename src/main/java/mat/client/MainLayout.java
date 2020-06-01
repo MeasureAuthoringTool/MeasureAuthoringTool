@@ -52,7 +52,6 @@ public abstract class MainLayout {
     private static final int SPINNER_DIALOG_DELAY_MILLIS = 2000;
     private static final String HEADING = "Measure Authoring Tool";
 
-    private static final SpinnerModal SPINNER_MODAL = new SpinnerModal();
     private static final HTML SIMPLE_SPINNER = new HTML("<div class=\"spinner-loading spinner-loading-shadow\">" + ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG + "</div>");
     private static final String ORG_ROLE_SEP = " @ ";
     private static final String SWITCH_MAT_ACCOUNT = "Switch MAT account";
@@ -136,7 +135,7 @@ public abstract class MainLayout {
             @Override
             public void run() {
                 if (MatContext.get().getLoadingQueue().size() != 0) {
-                    SPINNER_MODAL.showSpinnerWithTitle(title);
+                    SpinnerModal.showSpinnerWithTitle(title);
                     SIMPLE_SPINNER.setVisible(false);
                 }
             }
@@ -146,7 +145,7 @@ public abstract class MainLayout {
 
 
     private static void hideProgressSpinner() {
-        SPINNER_MODAL.hide();
+        SpinnerModal.hideSpinner();
         SIMPLE_SPINNER.setVisible(false);
     }
 

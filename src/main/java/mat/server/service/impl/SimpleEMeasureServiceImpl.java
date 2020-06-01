@@ -146,7 +146,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	private HSSFWorkbook wkbk = null;
 	
 	@Autowired
-	private HumanReadableGenerator humanReadableGenerator; 
+	private HumanReadableGenerator humanReadableGenerator;
 
 	@Override
 	public final ExportResult exportMeasureIntoSimpleXML(final String measureId, final String xmlString, final List<MatValueSet> matValueSets) throws Exception {
@@ -786,10 +786,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		ExportResult elmExportResult = createOrGetELMLibraryFile(measureId, measureExport);
 		ExportResult jsonExportResult = createOrGetJSONLibraryFile(measureId, measureExport);
 
-		ZipPackager zp = new ZipPackager();
-		zp.getZipBarr(me.getMeasure().getaBBRName(), zip, (new Date()).toString(), emeasureHTMLStr,
-				simpleXmlStr, emeasureXML, cqlExportResult, elmExportResult, jsonExportResult,
-				me.getMeasure().getReleaseVersion(), parentPath);
+		ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
+		zp.getZipBarr(me.getMeasure().getaBBRName(), zip, emeasureHTMLStr, emeasureXML, cqlExportResult, elmExportResult, jsonExportResult,
+				me.getMeasure().getReleaseVersion(), parentPath, measureId);
 	}
 	
 	private String getFormatedReleaseVersion(String currentReleaseVersion) {
@@ -920,7 +919,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String simpleXmlStr = me.getSimpleXML();
 		String emeasureXSLUrl = XMLUtility.getInstance().getXMLResource(conversionFileHtml);
 
-		ZipPackager zp = new ZipPackager();
+		ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
 		return zp.getZipBarr(emeasureName, exportDate, releaseVersion, wkbkbarr, emeasureXMLStr, emeasureHTMLStr,
 				emeasureXSLUrl, (new Date()).toString(), simpleXmlStr);
 	}
@@ -1032,7 +1031,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				}
 			}
 	
-			ZipPackager zp = new ZipPackager();
+			ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
 			double size = 1024 * 1024 * 100;
 			Set<Entry<String, byte[]>> set = filesMap.entrySet();
 			for (Entry<String, byte[]> fileArr : set) {
@@ -1080,7 +1079,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		ExportResult elmExportResult = createOrGetELMLibraryFile(measureId, measureExport);
 		ExportResult jsonExportResult = createOrGetJSONLibraryFile(measureId, measureExport);
 
-		ZipPackager zp = new ZipPackager();
+		ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
 		zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr, emeasureHTMLStr, (new Date()).toString(),
 				simpleXmlStr, filesMap, seqNum, currentReleaseVersion, cqlExportResult, elmExportResult,
 				jsonExportResult, parentPath);
@@ -1145,7 +1144,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		ExportResult elmExportResult = createOrGetELMLibraryFile(measureId, measureExport);
 		ExportResult jsonExportResult = createOrGetJSONLibraryFile(measureId, measureExport);
 
-		ZipPackager zp = new ZipPackager();
+		ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
 		zp.createBulkExportZip(emeasureName, exportDate, wkbkbarr, emeasureXMLStr, emeasureHTMLStr, emeasureXSLUrl,
 				(new Date()).toString(), simpleXmlStr, filesMap, seqNum, me.getMeasure().getReleaseVersion(),
 				cqlExportResult, elmExportResult, jsonExportResult);

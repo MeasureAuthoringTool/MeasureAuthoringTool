@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.server.CqlValidatorRemoteCallService;
+import mat.server.FhirCQLResultParser;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,8 +70,15 @@ public class HumanReadableGenerator {
 			MatConstants.NUMERATOR_EXCLUSIONS, MatConstants.DENOMINATOR_EXCEPTIONS,
 			MatConstants.MEASURE_POPULATION, MatConstants.MEASURE_POPULATION_EXCLUSIONS, MatConstants.STRATUM ,
 			MatConstants.MEASURE_OBSERVATION_POPULATION};
-	
-	@Autowired CQLHumanReadableGenerator humanReadableGenerator; 
+
+	@Autowired
+    private CQLHumanReadableGenerator humanReadableGenerator;
+
+	@Autowired
+    private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
+
+	@Autowired
+    private FhirCQLResultParser fhirCQLResultParser;
 	
 	public String generateHTMLForPopulationOrSubtree(String measureId, String subXML, String measureXML,CQLLibraryDAO cqlLibraryDAO) {
 
@@ -109,9 +118,11 @@ public class HumanReadableGenerator {
 				XmlProcessor processor = new XmlProcessor(simpleXml);
 				
 				CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXml);
+                String cqlString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
 		
 				CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(processor.getOriginalDoc());
-				SaveUpdateCQLResult cqlResult = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
+
+				SaveUpdateCQLResult cqlResult = cqlModel.isFhir() ? parseFhirCqlLibraryForErrors(cqlModel, cqlString) : CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
 				Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModel);
 				
 				XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
@@ -158,6 +169,17 @@ public class HumanReadableGenerator {
 		
 		return html;
 	}
+
+    private SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel, String cqlString) {
+        SaveUpdateCQLResult result;
+        String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlString);
+        result = generateParsedCqlObject(cqlValidationResponse, cqlModel);
+        return result;
+    }
+
+    private SaveUpdateCQLResult generateParsedCqlObject(String cqlValidationResponse, CQLModel cqlModel) {
+        return fhirCQLResultParser.generateParsedCqlObject(cqlValidationResponse, cqlModel);
+    }
 
 	private void sortDataCriteriaList(List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList) {
 		Collections.sort(valuesetAndCodeDataCriteriaList, new Comparator<HumanReadableTerminologyModel>() {

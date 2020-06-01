@@ -440,8 +440,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onSuccess(ValidateMeasureResult result) {
-                Mat.hideLoadingMessage();
                 if (!result.isValid()) {
+                    Mat.hideLoadingMessage();
                     handleUnsuccessfulPackage(result);
                 } else {
                     saveMeasureAtPackage();
@@ -501,7 +501,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 
             @Override
             public void onSuccess(final ValidateMeasureResult result) {
-                Mat.hideLoadingMessage();
                 if (result.isValid()) {
                     //to Export the Measure.
                     if (isMeasurePackageAndExport) {
@@ -1020,6 +1019,7 @@ public class MeasurePackagePresenter implements MatPresenter {
     }
 
     private void resetPackageButtonsAndMessages() {
+        Mat.hideLoadingMessage();
         enablePackageButtons(true);
         view.getInProgressMessageDisplay().clearAlert();
     }
@@ -1046,7 +1046,6 @@ public class MeasurePackagePresenter implements MatPresenter {
                     view.getMeasureErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                 }
 
-                Mat.hideLoadingMessage();
                 resetPackageButtonsAndMessages();
             }
 
@@ -1066,8 +1065,6 @@ public class MeasurePackagePresenter implements MatPresenter {
                 model.getShortName() + UPDATE_TO_BONNIE_SUCCESS_MESSAGE;
         view.getMeasurePackageSuccessMsg().createAlert(successMessage);
         resetPackageButtonsAndMessages();
-        Mat.hideLoadingMessage();
-
     }
 
     private void showMeasurePackagerBusy(boolean isBusy) {

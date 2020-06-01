@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import mat.cql.CqlUtils;
 import mat.server.CqlValidatorRemoteCallService;
 import mat.server.FhirCQLResultParser;
 import org.apache.commons.collections.CollectionUtils;
@@ -71,13 +70,14 @@ public class HumanReadableGenerator {
 			MatConstants.NUMERATOR_EXCLUSIONS, MatConstants.DENOMINATOR_EXCEPTIONS,
 			MatConstants.MEASURE_POPULATION, MatConstants.MEASURE_POPULATION_EXCLUSIONS, MatConstants.STRATUM ,
 			MatConstants.MEASURE_OBSERVATION_POPULATION};
-	
-	@Autowired CQLHumanReadableGenerator humanReadableGenerator;
 
-    @Autowired
+	@Autowired
+    private CQLHumanReadableGenerator humanReadableGenerator;
+
+	@Autowired
     private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
 
-    @Autowired
+	@Autowired
     private FhirCQLResultParser fhirCQLResultParser;
 	
 	public String generateHTMLForPopulationOrSubtree(String measureId, String subXML, String measureXML,CQLLibraryDAO cqlLibraryDAO) {

@@ -1,10 +1,10 @@
 package mat.cql;
 
-import lombok.extern.slf4j.Slf4j;
-import mat.dto.VSACCodeSystemDTO;
-import mat.model.cql.CQLModel;
-import mat.server.MappingSpreadsheetService;
-import mat.server.service.CodeListService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,10 +12,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import mat.dto.VSACCodeSystemDTO;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLModel;
+import mat.model.cql.CQLParameter;
+import mat.server.MappingSpreadsheetService;
+import mat.server.service.CodeListService;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -40,28 +43,28 @@ public class TestCqlToMatXml {
     public void mockSpreadsheet() {
         log.info("an offering to the Codacy gods: " + mappingService);
         Map<String, VSACCodeSystemDTO> map = new HashMap<>();
-        map.put("urn:oid:2.16.840.1.113883.6.96",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.96","http://snomed.info/sct/731000124108","SNOMEDCT","2019-03"));
-        map.put("urn:oid:2.16.840.1.113883.5.1001",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.5.1001","http://terminology.hl7.org/CodeSystem/v3-ActMood","ActMood","TBD"));
-        map.put("urn:oid:2.16.840.1.113883.5.1",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.5.1","http://hl7.org/fhir/ValueSet/v3-AdministrativeGender","SNOMEDCT","2019-03"));
-        map.put("urn:oid:2.16.840.1.113883.6.88",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.88","http://www.nlm.nih.gov/research/umls/rxnorm","SNOMEDCT","2019-03"));
-        map.put("urn:oid:2.16.840.1.113883.6.1",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.1","http://loinc.org","SNOMEDCT","2019-03"));
-        map.put("urn:oid:2.16.840.1.113883.6.12",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.12","http://www.ama-assn.org/go/cpt","SNOMEDCT","2019-03"));
-        map.put("urn:oid:2.16.840.1.113883.12.292",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.12.292","http://hl7.org/fhir/sid/cvx","SNOMEDCT","2019-03"));
-        map.put("urn:oid:2.16.840.1.113883.6.238",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.238","https://www.hl7.org/fhir/us/core/CodeSystem-cdcrec.html","SNOMEDCT","2019-03"));
-        map.put("urn:oid:2.16.840.1.113883.6.259",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.259","http://terminology.hl7.org/codesystem/nhsn/hsloc","SNOMEDCT","2019-03"));
-        map.put("urn:oid:2.16.840.1.113883.12.112",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.12.112","http://ToBeDone.org","DischargeDisposition","2019-03"));
-        map.put("urn:oid:2.16.840.1.113883.6.285",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.285","http://snomed.info/sct/731000124108","HCPCS","2019-03"));
-        map.put("urn:oid:2.16.840.1.113883.6.90",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.90","http://hl7.org/fhir/sid/icd-10-cm","ICD10CM","2019-03"));
-        map.put("urn:oid:2.16.840.1.113883.3.221.5",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.3.221.5","http://nahdo.org/sopt","SOP","2019-03"));
-        map.put("urn:oid:2.16.840.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.5.111","http://terminology.hl7.org/CodeSystem/v3-RoleCode","RoleCode","2019-03"));
-        map.put("urn:oid:2.15.840.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.15.840.1.113883.5.111","http://hl7.org/fhir/v3/RoleCode","RoleCode","2019-03"));
-        map.put("urn:oid:2.16.1.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.1.1.113883.5.111","http://terminology.hl7.org/CodeSystem/diagnosis-role","RoleCode","2019-03"));
-        map.put("urn:oid:2.16.2.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.2.1.113883.5.111","http://terminology.hl7.org/CodeSystem/request-intent","RoleCode","2019-03"));
-        map.put("urn:oid:2.16.3.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.3.1.113883.5.111","http://terminology.hl7.org/CodeSystem/medicationrequest-category","RoleCode","2019-03"));
-        map.put("urn:oid:2.16.4.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.4.1.113883.5.111","http://terminology.hl7.org/CodeSystem/condition-clinical","RoleCode","2019-03"));
-        map.put("urn:oid:2.16.5.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.5.1.113883.5.111","http://terminology.hl7.org/CodeSystem/condition-verification","RoleCode","2019-03"));
-        map.put("urn:oid:2.16.6.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.6.1.113883.5.111","http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical","RoleCode","2019-03"));
-        map.put("urn:oid:2.16.7.1.113883.5.111",new VSACCodeSystemDTO("urn:oid:2.16.7.1.113883.5.111","http://terminology.hl7.org/CodeSystem/allergyintolerance-verification","RoleCode","2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.96", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.96", "http://snomed.info/sct/731000124108", "SNOMEDCT", "2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.5.1001", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.5.1001", "http://terminology.hl7.org/CodeSystem/v3-ActMood", "ActMood", "TBD"));
+        map.put("urn:oid:2.16.840.1.113883.5.1", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.5.1", "http://hl7.org/fhir/ValueSet/v3-AdministrativeGender", "SNOMEDCT", "2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.88", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.88", "http://www.nlm.nih.gov/research/umls/rxnorm", "SNOMEDCT", "2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.1", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.1", "http://loinc.org", "SNOMEDCT", "2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.12", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.12", "http://www.ama-assn.org/go/cpt", "SNOMEDCT", "2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.12.292", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.12.292", "http://hl7.org/fhir/sid/cvx", "SNOMEDCT", "2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.238", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.238", "https://www.hl7.org/fhir/us/core/CodeSystem-cdcrec.html", "SNOMEDCT", "2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.259", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.259", "http://terminology.hl7.org/codesystem/nhsn/hsloc", "SNOMEDCT", "2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.12.112", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.12.112", "http://ToBeDone.org", "DischargeDisposition", "2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.285", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.285", "http://snomed.info/sct/731000124108", "HCPCS", "2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.6.90", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.6.90", "http://hl7.org/fhir/sid/icd-10-cm", "ICD10CM", "2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.3.221.5", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.3.221.5", "http://nahdo.org/sopt", "SOP", "2019-03"));
+        map.put("urn:oid:2.16.840.1.113883.5.111", new VSACCodeSystemDTO("urn:oid:2.16.840.1.113883.5.111", "http://terminology.hl7.org/CodeSystem/v3-RoleCode", "RoleCode", "2019-03"));
+        map.put("urn:oid:2.15.840.1.113883.5.111", new VSACCodeSystemDTO("urn:oid:2.15.840.1.113883.5.111", "http://hl7.org/fhir/v3/RoleCode", "RoleCode", "2019-03"));
+        map.put("urn:oid:2.16.1.1.113883.5.111", new VSACCodeSystemDTO("urn:oid:2.16.1.1.113883.5.111", "http://terminology.hl7.org/CodeSystem/diagnosis-role", "RoleCode", "2019-03"));
+        map.put("urn:oid:2.16.2.1.113883.5.111", new VSACCodeSystemDTO("urn:oid:2.16.2.1.113883.5.111", "http://terminology.hl7.org/CodeSystem/request-intent", "RoleCode", "2019-03"));
+        map.put("urn:oid:2.16.3.1.113883.5.111", new VSACCodeSystemDTO("urn:oid:2.16.3.1.113883.5.111", "http://terminology.hl7.org/CodeSystem/medicationrequest-category", "RoleCode", "2019-03"));
+        map.put("urn:oid:2.16.4.1.113883.5.111", new VSACCodeSystemDTO("urn:oid:2.16.4.1.113883.5.111", "http://terminology.hl7.org/CodeSystem/condition-clinical", "RoleCode", "2019-03"));
+        map.put("urn:oid:2.16.5.1.113883.5.111", new VSACCodeSystemDTO("urn:oid:2.16.5.1.113883.5.111", "http://terminology.hl7.org/CodeSystem/condition-verification", "RoleCode", "2019-03"));
+        map.put("urn:oid:2.16.6.1.113883.5.111", new VSACCodeSystemDTO("urn:oid:2.16.6.1.113883.5.111", "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical", "RoleCode", "2019-03"));
+        map.put("urn:oid:2.16.7.1.113883.5.111", new VSACCodeSystemDTO("urn:oid:2.16.7.1.113883.5.111", "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification", "RoleCode", "2019-03"));
 
 
         when(codeListService.getOidToVsacCodeSystemMap()).thenReturn(map);
@@ -74,12 +77,16 @@ public class TestCqlToMatXml {
         }
     }
 
+    private CQLModel parseModel(String resource) throws Exception {
+        String cql = loadCqlResource(resource);
+        parser.parse(cql, cqlToMatXml);
+        return cqlToMatXml.getDestinationModel();
+    }
+
     @Test
     public void testMatGlobalCommonFunctions() throws Exception {
         mockSpreadsheet();
-        String cql = loadCqlResource("MATGlobalCommonFunctions_FHIR4-4.0.000.cql");
-        parser.parse(cql, cqlToMatXml);
-        var destination = cqlToMatXml.getDestinationModel();
+        var destination = parseModel("MATGlobalCommonFunctions_FHIR4-4.0.000.cql");
         assertEquals(10, destination.getCodeSystemList().size());
         assertEquals("LOINC", destination.getCodeSystemList().get(0).getCodeSystemName());
         assertEquals("http://loinc.org", destination.getCodeSystemList().get(0).getCodeSystem());
@@ -121,9 +128,7 @@ public class TestCqlToMatXml {
 
     @Test
     public void testFhirHelpers() throws Exception {
-        String cql = loadCqlResource("FhirHelpers_FHIR4-4.0.000.cql");
-        parser.parse(cql, cqlToMatXml);
-        var destination = cqlToMatXml.getDestinationModel();
+        var destination = parseModel("FhirHelpers_FHIR4-4.0.000.cql");
 
         assertEquals("ToInterval", destination.getCqlFunctions().get(0).getName());
         assertEquals("period", destination.getCqlFunctions().get(0).getArgumentList().get(0).getArgumentName());
@@ -199,9 +204,7 @@ public class TestCqlToMatXml {
 
     @Test
     public void testAudltOutpatientEncounters() throws Exception {
-        String cql = loadCqlResource("AdultOutpatientEncounters_FHIR4-1.1.000.cql");
-        parser.parse(cql, cqlToMatXml);
-        var destination = cqlToMatXml.getDestinationModel();
+        var destination = parseModel("AdultOutpatientEncounters_FHIR4-1.1.000.cql");
         assertEquals(1, destination.getCqlParameters().size());
         assertEquals("Measurement Period", destination.getCqlParameters().get(0).getName());
         assertEquals("Interval<DateTime> default Interval[@2019-01-01T00:00:00.0, @2020-01-01T00:00:00.0)", destination.getCqlParameters().get(0).getLogic());
@@ -210,9 +213,7 @@ public class TestCqlToMatXml {
 
     @Test
     public void testParameterNoLogic() throws Exception {
-        String cql = loadCqlResource("ParameterNoLogic.cql");
-        parser.parse(cql, cqlToMatXml);
-        var destination = cqlToMatXml.getDestinationModel();
+        var destination = parseModel("ParameterNoLogic.cql");
         assertEquals(1, destination.getCqlParameters().size());
         assertEquals("Measurement Period", destination.getCqlParameters().get(0).getName());
         assertEquals("Interval<DateTime>", destination.getCqlParameters().get(0).getLogic());
@@ -222,9 +223,8 @@ public class TestCqlToMatXml {
     @Test
     public void testHospiceLib() throws Exception {
         mockSpreadsheet();
-        String cql = loadCqlResource("Hospice_FHIR4-1.0.000.cql");
-        parser.parse(cql, cqlToMatXml);
-        var destination = cqlToMatXml.getDestinationModel();
+
+        var destination = parseModel("Hospice_FHIR4-1.0.000.cql");
 
         assertEquals("FHIR", destination.getUsingModel());
         assertEquals("4.0.1", destination.getUsingModelVersion());
@@ -306,5 +306,63 @@ public class TestCqlToMatXml {
         assertEquals(type, model.getCqlFunctions().get(index).getArgumentList().get(0).getOtherType());
         assertEquals("Others", model.getCqlFunctions().get(index).getArgumentList().get(0).getArgumentType());
         assertEquals("value.value", model.getCqlFunctions().get(index).getLogic());
+    }
+
+
+    @Test
+    public void testFunctionFhirComment() throws Exception {
+        var destination = parseModel("testfunctions_fhir.cql");
+
+        assertEquals(2, destination.getCqlFunctions().size());
+        assertEquals("testfunction", destination.getCqlFunctions().get(0).getName());
+        assertEquals("testfunction comment", destination.getCqlFunctions().get(0).getCommentString());
+        assertEquals("testpopulationfunction", destination.getCqlFunctions().get(1).getName());
+        assertEquals("testpopulationfunction comment", destination.getCqlFunctions().get(1).getCommentString());
+    }
+
+    @Test
+    public void tesParameterComment() throws Exception {
+
+        var destination = parseModel("testparameters_fhir.cql");
+
+        CQLParameter parameter1 = destination.getCqlParameters().get(0);
+        CQLParameter parameter2 = destination.getCqlParameters().get(1);
+
+        assertEquals("Measurement Period", parameter1.getName());
+        assertEquals("Interval<DateTime> /* measurement period logic comment */", parameter1.getLogic());
+        assertEquals("measurement period comment", parameter1.getCommentString());
+
+        assertEquals("Other Parameter", parameter2.getName());
+        assertEquals("Interval<DateTime> /* other parameter logic comment */", parameter2.getLogic());
+        assertEquals("other parameter comment", parameter2.getCommentString());
+    }
+
+    @Test
+    public void testDefinitionsComment() throws Exception {
+        var destination = parseModel("testdefinitions_fhir.cql");
+
+        CQLDefinition definition1 = destination.getDefinitionList().get(0);
+        CQLDefinition definition2 = destination.getDefinitionList().get(1);
+        CQLDefinition definition3 = destination.getDefinitionList().get(2);
+
+
+        assertEquals("test", definition1.getName());
+        assertEquals("true", definition1.getLogic());
+        assertEquals("test comment", definition1.getCommentString());
+
+
+        assertEquals("testwithnocomment", definition2.getName());
+        assertEquals("true\n" +
+                "\n" +
+                "  /* testwithnocomment comment in logic */", definition2.getLogic().replaceAll("\\r\\n", "\n"));
+        assertEquals("", definition2.getCommentString());
+
+
+        assertEquals("testpopulation", definition3.getName());
+        assertEquals(" testpopulation comment ", definition3.getCommentString());
+        assertEquals("true\n" +
+                "\n" +
+                "  /* last comment */", definition3.getLogic().replaceAll("\\r\\n", "\n"));
+        assertEquals("Patient", definition3.getContext());
     }
 }

@@ -12,11 +12,11 @@ public interface CqlVisitor {
     }
 
     default boolean isRemovingBlockComments() {
-        return true;
+        return false;
     }
 
     default boolean isRemovingLineComments() {
-        return true;
+        return false;
     }
 
     default void libraryTag(String libraryName,
@@ -51,7 +51,7 @@ public interface CqlVisitor {
         //by default do nothing unless its implemented.
     }
 
-    default void parameter(String name, String logic) {
+    default void parameter(String name, String logic, String comment) {
         //by default do nothing unless its implemented.
     }
 
@@ -59,11 +59,11 @@ public interface CqlVisitor {
         //by default do nothing unless its implemented.
     }
 
-    default void definition(String name, String logic) {
+    default void definition(String name, String logic, String comment) {
         //by default do nothing unless its implemented.
     }
 
-    default void function(String name, List<FunctionArgument> args, String logic) {
+    default void function(String name, List<FunctionArgument> args, String logic, String comment) {
         //by default do nothing unless its implemented.
     }
 }

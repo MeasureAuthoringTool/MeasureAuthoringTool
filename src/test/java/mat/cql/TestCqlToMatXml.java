@@ -359,7 +359,7 @@ public class TestCqlToMatXml {
 
 
         assertEquals("testpopulation", definition3.getName());
-        assertEquals("", definition3.getCommentString());
+        assertEquals(" testpopulation comment ", definition3.getCommentString());
         assertEquals("true\n" +
                 "\n" +
                 "  /* last comment */", definition3.getLogic().replaceAll("\\r\\n", "\n"));

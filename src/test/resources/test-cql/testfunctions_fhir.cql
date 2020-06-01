@@ -4,10 +4,10 @@ using FHIR version '4.0.1'
 
 context Patient
 
-/* testfunction comment */
+/*testfunction comment*/
 define function "testfunction"(arg1 Boolean, arg2 Interval<DateTime>, arg3 "Encounter, Performed"):
   true
 
-/* testpopulationfunction comment */
+/*testpopulationfunction comment*/
 define function "testpopulationfunction"():
   true

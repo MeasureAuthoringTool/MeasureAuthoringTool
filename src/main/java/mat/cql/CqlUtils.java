@@ -355,7 +355,6 @@ public class CqlUtils {
         return areValidAscendingIndexes(prevNewline, prev, next, nextNewLine);
     }
 
-
     /**
      * @param cql the cql.
      * @return cql with all cql block comments removed.
@@ -373,6 +372,17 @@ public class CqlUtils {
             }
         }
         return result.toString();
+    }
+
+    public static String removeLastCqlBlockComment(String cql) {
+        StringBuilder result = new StringBuilder(cql);
+        String stripped = StringUtils.strip(cql);
+        int start = result.lastIndexOf(BLOCK_COMMENT_START);
+        int end = result.lastIndexOf(BLOCK_COMMENT_END);
+        if (areValidAscendingIndexes(start, end) && stripped.endsWith(BLOCK_COMMENT_END)) {
+            return result.substring(0, start);
+        }
+        return cql;
     }
 
     public static boolean isValidVersion(String version) {
@@ -531,7 +541,6 @@ public class CqlUtils {
     }
 
     private static void prependCommendLine(StringBuilder comment, String line) {
-        line = StringUtils.strip(line);
         if (comment.length() > 0) {
             comment.insert(0, StringUtils.LF);
         }

@@ -4,7 +4,7 @@ using FHIR version '4.0.1'
 
 context Patient
 
-/* test comment */
+/*test comment*/
 define "test":
   true
   
@@ -13,6 +13,7 @@ define "testwithnocomment":
 
   /* testwithnocomment comment in logic */
 
+/* testpopulation comment */
 define "testpopulation":
   true
 

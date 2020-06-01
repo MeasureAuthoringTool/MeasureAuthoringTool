@@ -25,6 +25,7 @@ import static mat.cql.CqlUtils.parseNextLine;
 import static mat.cql.CqlUtils.parsePrecedingComment;
 import static mat.cql.CqlUtils.removeCQLLineComments;
 import static mat.cql.CqlUtils.removeCqlBlockComments;
+import static mat.cql.CqlUtils.removeLastCqlBlockComment;
 import static mat.cql.CqlUtils.startsWith;
 
 /**
@@ -299,7 +300,9 @@ public class CqlParser {
                 if (areValidAscendingIndexes(name.getEndIndex(), colon, logic.getEndIndex())) {
                     String comment = parsePrecedingComment(cql, nextDefineStart);
                     String title = name.getString();
-                    v.definition(title, logic.getString(), comment);
+                    boolean last = logic.getEndIndex() == cql.length();
+                    String logicText = last ? logic.getString() : removeLastCqlBlockComment(logic.getString());
+                    v.definition(title, logicText, comment);
                 } else {
                     throw new IllegalArgumentException("Encountered invalid define around index: " +
                             nextDefineStart);
@@ -349,7 +352,9 @@ public class CqlParser {
             if (areValidAscendingIndexes(name.getEndIndex(), parenStart, parenEnd, colon, logic.getEndIndex())) {
                 String comment = parsePrecedingComment(cql, nextFuncStart);
                 String title = name.getString();
-                v.function(title, parseArguments(cql.substring(parenStart + 1, parenEnd)), logic.getString(), comment);
+                boolean last = logic.getEndIndex() == cql.length();
+                String logicText = last ? logic.getString() : removeLastCqlBlockComment(logic.getString());
+                v.function(title, parseArguments(cql.substring(parenStart + 1, parenEnd)), logicText, comment);
             } else {
                 throw new IllegalArgumentException("Encountered invalid define around index: " +
                         nextFuncStart);

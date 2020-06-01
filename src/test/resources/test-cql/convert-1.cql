@@ -120,6 +120,8 @@ define "Medication Dispensed from 4 Different Prescribers and 4 Different Pharma
       ) >= 4
   )
 
+/**
+*/
 define "Medication Dispensed from 4 Different Prescribers during Measurement Period":
   ( ( Count("Opioid Medication Dispensed" MedDispensed
           return MedDispensed.prescriber.id

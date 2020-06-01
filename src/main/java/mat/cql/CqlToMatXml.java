@@ -148,7 +148,7 @@ public class CqlToMatXml implements CqlVisitor {
     }
 
     @Override
-    public void parameter(String name, String logic) {
+    public void parameter(String name, String logic, String comment) {
         var existingParam = findExisting(sourceModel.getCqlParameters(),
                 p -> StringUtils.equals(p.getName(), name));
 
@@ -156,6 +156,7 @@ public class CqlToMatXml implements CqlVisitor {
         p.setId(newGuid());
         p.setName(name);
         p.setParameterLogic(logic);
+        p.setCommentString(comment);
         if (existingParam.isPresent()) {
             p.setReadOnly(existingParam.get().isReadOnly());
         } else {
@@ -171,16 +172,17 @@ public class CqlToMatXml implements CqlVisitor {
     }
 
     @Override
-    public void definition(String name, String logic) {
-        destinationModel.getDefinitionList().add(buildCQLDef(name, logic));
+    public void definition(String name, String logic, String comment) {
+        destinationModel.getDefinitionList().add(buildCQLDef(name, logic, comment));
     }
 
     @Override
-    public void function(String name, List<FunctionArgument> args, String logic) {
+    public void function(String name, List<FunctionArgument> args, String logic, String comment) {
         var f = new CQLFunctions();
         f.setId(newGuid());
         f.setName(name);
         f.setLogic(logic);
+        f.setCommentString(comment);
         f.setArgumentList(args.stream().map(a -> {
             CQLFunctionArgument argument = new CQLFunctionArgument();
             argument.setId(newGuid());
@@ -208,15 +210,17 @@ public class CqlToMatXml implements CqlVisitor {
     /**
      * @param title The title.
      * @param logic The logic.
+     * @param comment The comment.
      * @return The CQLDefinition with all the defaults and params populated.
      */
-    private CQLDefinition buildCQLDef(String title, String logic) {
+    private CQLDefinition buildCQLDef(String title, String logic, String comment) {
         CQLDefinition result = new CQLDefinition();
         result.setId(newGuid());
         result.setName(title);
         result.setLogic(logic);
         result.setSupplDataElement(false);
         result.setPopDefinition(false);
+        result.setCommentString(comment);
         return result;
     }
 

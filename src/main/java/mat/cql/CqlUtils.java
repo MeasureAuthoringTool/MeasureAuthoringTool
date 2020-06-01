@@ -27,6 +27,7 @@ public class CqlUtils {
     public static final String BLOCK_COMMENT_END = "*/";
     public static final String LINE_COMMENT = "//";
     public static final String OID_URL_TOKEN = "urn:oid:";
+    public static final int BLK_SEP_LENGTH = BLOCK_COMMENT_END.length();
 
     private static final Map<String, String> nameToGlobalLibId = new HashMap<>();
 
@@ -97,7 +98,7 @@ public class CqlUtils {
      * @return Removes 1 character from the front end and end of the string.
      */
     public static String chomp1(String s) {
-        return s.length() >= 2 ? s.substring(1, s.length() - 1) : s;
+        return s.length() >= BLK_SEP_LENGTH ? s.substring(1, s.length() - 1) : s;
     }
 
     /**
@@ -398,7 +399,7 @@ public class CqlUtils {
                     break;
                 }
             }
-            result = result && parts[2].length() == 3;
+            result = result && parts[BLK_SEP_LENGTH].length() == 3;
         } else {
             result = false;
         }
@@ -408,7 +409,7 @@ public class CqlUtils {
     public static Pair<Double, Integer> versionToVersionAndRevision(String version) {
         if (isValidVersion(version)) {
             String[] sp = version.split("\\.");
-            return Pair.of(Double.parseDouble(sp[0] + "." + sp[1]), Integer.parseInt(sp[2]));
+            return Pair.of(Double.parseDouble(sp[0] + "." + sp[1]), Integer.parseInt(sp[BLK_SEP_LENGTH]));
         } else {
             throw new IllegalArgumentException("Invalid version: " + version);
         }
@@ -495,6 +496,7 @@ public class CqlUtils {
             String searchArea = cql.substring(start, end);
             String[] lines = searchArea.split("\r?\n");
             boolean inBlock = false;
+            // Searching backward for a first block comment
             for (int i = lines.length; i-- > 0; ) {
                 String line = StringUtils.stripToEmpty(lines[i]);
 
@@ -503,7 +505,7 @@ public class CqlUtils {
                 boolean endOfCommentBlock = line.endsWith(BLOCK_COMMENT_END);
 
                 if (!inBlock && blankLine) {
-                    // Skip empty strings Look for a block comment
+                    // Skip empty strings. Look for a block comment
                     continue;
                 }
 
@@ -512,6 +514,7 @@ public class CqlUtils {
                     break;
                 }
 
+                // The sequence of checks is important, since we scan backward and update the flags as we go.
                 if (inBlock && endOfCommentBlock) {
                     log.warn("Block comment syntax issue.");
                     return "";
@@ -519,7 +522,7 @@ public class CqlUtils {
 
                 if (endOfCommentBlock) {
                     inBlock = true;
-                    line = line.substring(0, line.length() - 2);
+                    line = line.substring(0, line.length() - BLK_SEP_LENGTH);
                 }
 
                 if (!inBlock && startOfCommentBlock) {
@@ -528,10 +531,10 @@ public class CqlUtils {
                 }
 
                 if (startOfCommentBlock) {
-                    line = StringUtils.stripStart(line.substring(2), "*");
+                    line = StringUtils.stripStart(line.substring(BLK_SEP_LENGTH), "*");
                 }
 
-                prependCommendLine(comment, line);
+                prependCommentLine(comment, line);
                 if (startOfCommentBlock) {
                     break;
                 }
@@ -540,7 +543,7 @@ public class CqlUtils {
         return comment.toString();
     }
 
-    private static void prependCommendLine(StringBuilder comment, String line) {
+    private static void prependCommentLine(StringBuilder comment, String line) {
         if (comment.length() > 0) {
             comment.insert(0, StringUtils.LF);
         }

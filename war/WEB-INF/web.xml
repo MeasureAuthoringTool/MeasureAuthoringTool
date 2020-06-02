@@ -237,6 +237,10 @@
             <secure>true</secure>
         </cookie-config>
     </session-config>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/Login.html</location>
+    </error-page>
 
 </web-app>
 

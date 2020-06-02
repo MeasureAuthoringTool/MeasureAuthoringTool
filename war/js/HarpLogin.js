@@ -130,9 +130,6 @@
               console.dir(err);
               // Sign user out of their Okta session (non-compatible with Okta Auth sdk 3.0+)
               authClient.signOut()
-                  .then(function() {
-                    console.log("successfully logged out");
-                  })
                   .fail(function(err) {
                     console.dir(err);
                   });

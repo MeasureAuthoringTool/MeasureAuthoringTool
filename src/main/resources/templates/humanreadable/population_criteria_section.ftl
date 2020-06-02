@@ -7,16 +7,20 @@
 	<#if model.numberOfGroups == 1>
 	    <#assign pc = model.populationCriterias?first>
         <#list pc.populations as population>
+            <ul>
             <#include "population.ftl">
+            </ul>
         </#list>
         <#-- If the size of the poulation criterias list is greater than one, then we want to create indiviual population criteria sections, so loop through
             all of the population criterias and create a collapsable section for them.
           -->
     <#else>
-        <ul style="list-style:none;">
-            <#list model.populationCriterias as populationCriteria>
-                <#include "population_criteria.ftl">
-        </#list>
-        </ul>
+        <#if model.populationCriterias?size != 0>
+            <ul style="list-style:none;">
+                <#list model.populationCriterias as populationCriteria>
+                    <#include "population_criteria.ftl">
+                </#list>
+            </ul>
+        </#if>
 	</#if>
 </div>

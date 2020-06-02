@@ -67,13 +67,10 @@
         },
         harpBaseUrl: harpBaseUrl,
         oktaTermsConditionsEndPoint: "https://www.emeasuretool.cms.gov/terms-and-conditions",
-        oktaRedirectEndPoint: "mft-signin/redirect",
-        ktaRedirectParamName: "appPageName",
         harpSignUpAppName: "HARP Registration",
         harpRecoveryAppName: "HARP Recovery",
         harpSignUpEndPoint: "register/profile-info",
         harpRecorveryEndPoint: "login/account-recovery",
-        oktaHelpEndPoint: "mft-signin/help",
         oktaTermsConditionsContent: "I agree to the Terms and Conditions",
         oktaTermsConditionsLinkContent: "Terms and Conditions",
         oktaTermsConditionsErrorContent: "Please accept the Terms and Conditions",
@@ -82,7 +79,6 @@
         harpSignUpUrl: "https://harp.qualitynet.org/register/profile-info",
         harpRecoveryContent: "Having trouble logging in?",
         harpRecoveryUrl: " https://harp.qualitynet.org/login/account-recovery",
-        oktaHelpContent: "MFT Help",
         isOktaHelpContentAvailable: false,
         allowRemeberDeviceMFA: false,
         features: {
@@ -132,6 +128,11 @@
             }).catch(function (err) {
               console.error("Error retrieving Okta token");
               console.dir(err);
+              // Sign user out of their Okta session (non-compatible with Okta Auth sdk 3.0+)
+              authClient.signOut()
+                  .fail(function(err) {
+                    console.dir(err);
+                  });
               reject(err);
             });
           } else {
@@ -160,7 +161,7 @@
       handleOkta(props.clientId, props.baseUrl, props.harpBaseUrl).catch(function (err) {
         console.error("Okta Error");
         console.dir(err);
-        console.log("done!");
+        window.location = "HarpSupport.html";
       });
     });
   });

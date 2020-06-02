@@ -31,15 +31,26 @@ public class CommonMeasureValidator {
         }
         return false;
     }
+
+    public List<String> validateFhirLibraryName(String libraryName) {
+		CQLModelValidator validator = new CQLModelValidator();
+		List<String> errorMessages = new ArrayList<>();
+		if(StringUtility.isEmptyOrNull(libraryName)) {
+			errorMessages.add(LIBRARY_NAME_REQUIRED);
+		} else if(!validator.isValidFhirCqlName(libraryName)){
+			errorMessages.add(MatContext.get().getMessageDelegate().getFhirCqlLibyNameError());
+		}
+		return errorMessages;
+	}
     
-    public List<String> validateLibraryName(String libraryName) {
+    public List<String> validateQDMName(String libraryName) {
     	CQLModelValidator validator = new CQLModelValidator();
 		List<String> errorMessages = new ArrayList<>();
 		if(StringUtility.isEmptyOrNull(libraryName)) {
 			errorMessages.add(LIBRARY_NAME_REQUIRED);
-		} else if(!validator.doesAliasNameFollowCQLAliasNamingConvention(libraryName) ||
+		} else if(!validator.isValidQDMName(libraryName) ||
 				validator.isCommentMoreThan2500Characters(libraryName)){
-			errorMessages.add(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+			errorMessages.add(MatContext.get().getMessageDelegate().getQDMCqlLibyNameError());
 		} 
 		
 		return errorMessages;

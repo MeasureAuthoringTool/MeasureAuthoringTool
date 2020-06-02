@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.BaseModel;
 import mat.model.LockedUserInfo;
+import mat.model.clause.ModelTypeHelper;
 import mat.shared.CQLError;
 
 public class CQLLibraryDataSetObject implements IsSerializable, BaseModel {
@@ -42,6 +43,10 @@ public class CQLLibraryDataSetObject implements IsSerializable, BaseModel {
     private boolean fhirConvertible;
 
     private List<CQLError> cqlErrors = new ArrayList<>();
+
+    public boolean isFhir() {
+        return ModelTypeHelper.isFhir(libraryModelType);
+    }
 
     public boolean isLocked() {
         return isLocked;

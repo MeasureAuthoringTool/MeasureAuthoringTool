@@ -417,7 +417,7 @@ public class CQLServiceImpl implements CQLService {
             boolean isValidArgumentName = true;
             if (functionWithEdits.getArgumentList() != null && functionWithEdits.getArgumentList().size() > 0) {
                 for (CQLFunctionArgument argument : functionWithEdits.getArgumentList()) {
-                    isValidArgumentName = validator.doesAliasNameFollowCQLAliasNamingConvention(argument.getArgumentName());
+                    isValidArgumentName = validator.isValidQDMName(argument.getArgumentName());
                     if (!isValidArgumentName) {
                         break;
                     }

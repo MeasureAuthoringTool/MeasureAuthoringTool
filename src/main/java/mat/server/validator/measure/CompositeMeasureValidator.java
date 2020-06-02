@@ -285,7 +285,9 @@ public class CompositeMeasureValidator {
                     messages.add("Alias " + aliasName + ERR_ALIAS_NOT_VALID);
                 } else {
                     CQLModelValidator modelValidator = new CQLModelValidator();
-                    if (!modelValidator.doesAliasNameFollowCQLAliasNamingConvention(aliasName) || CQLValidationUtil.isDuplicateIdentifierName(aliasName, model) || CQLValidationUtil.isCQLReservedWord(aliasName)) {
+                    if (!modelValidator.isValidQDMName(aliasName) ||
+                            CQLValidationUtil.isDuplicateIdentifierName(aliasName, model) ||
+                            CQLValidationUtil.isCQLReservedWord(aliasName)) {
                         messages.add("Alias " + aliasName + ERR_ALIAS_NOT_VALID);
                     }
                 }

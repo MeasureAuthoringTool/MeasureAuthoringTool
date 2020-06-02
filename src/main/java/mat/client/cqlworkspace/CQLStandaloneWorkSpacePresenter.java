@@ -75,7 +75,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
     private SimplePanel emptyWidget = new SimplePanel();
     private boolean isCQLWorkSpaceLoaded = false;
     private final CQLLibraryServiceAsync cqlService = MatContext.get().getCQLLibraryService();
-    private static final String ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR = "Invalid Library Alias. Must be unique, start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
+    private static final String FHIR_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR = "Invalid Library Alias. Must be unique, start with an upper case letter followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
+    private static final String QDM_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR = "Invalid Library Alias. Must be unique, start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";;
 
     public CQLStandaloneWorkSpacePresenter(final CQLWorkspaceView srchDisplay) {
         cqlWorkspaceView = srchDisplay;
@@ -707,11 +708,12 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
         } else {
             messagePanel.getWarningMessageAlert().clearAlert();
         }
-        final String aliasName = cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().getText();
+        String aliasName = cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().getText();
 
         if (!aliasName.isEmpty() && cqlWorkspaceView.getIncludeView().getSelectedObjectList().size() > 0) {
+            aliasName = aliasName.trim();
             CQLLibraryDataSetObject cqlLibraryDataSetObject = cqlWorkspaceView.getIncludeView().getSelectedObjectList().get(0);
-            if (validator.doesAliasNameFollowCQLAliasNamingConvention(aliasName.trim())) {
+            if (isValidLibName(aliasName)) {
                 CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
                 incLibrary.setAliasName(aliasName);
                 incLibrary.setCqlLibraryId(cqlLibraryDataSetObject.getId());
@@ -767,7 +769,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                 }
             } else {
                 ((CQLStandaloneWorkSpaceView) cqlWorkspaceView).getCqlIncludeLibraryView().getAliasNameGroup().setValidationState(ValidationState.ERROR);
-                messagePanel.getErrorMessageAlert().createAlert(ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR);
+                messagePanel.getErrorMessageAlert().createAlert(isFhir() ?
+                        FHIR_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR :
+                        QDM_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR);
                 ((CQLStandaloneWorkSpaceView) cqlWorkspaceView).getAliasNameTxtArea().setText(aliasName.trim());
             }
         } else {
@@ -2534,5 +2538,15 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
     @Override
     public boolean isStandaloneCQLLibrary() {
         return true;
+    }
+
+    protected boolean isValidLibName(String libName) {
+        boolean isFhir = isFhir();
+        return (isFhir && validator.isValidFhirCqlName(libName)) ||
+                (!isFhir && validator.isValidQDMName(libName));
+    }
+
+    protected boolean isFhir() {
+        return MatContext.get().isCurrentModelTypeFhir();
     }
 }

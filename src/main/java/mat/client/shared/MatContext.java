@@ -423,15 +423,15 @@ public class MatContext implements IsSerializable {
     }
 
     public String getLoggedInUserFirstName() {
-        return currentUserInfo.userFirstName;
+        return currentUserInfo == null ? null : currentUserInfo.userFirstName;
     }
 
     public String getLoggedInUserLastName() {
-        return currentUserInfo.userLastName;
+        return currentUserInfo == null ? null : currentUserInfo.userLastName;
     }
 
     public String getLoggedInUserRole() {
-        return currentUserInfo.userRole;
+        return currentUserInfo == null ? null : currentUserInfo.userRole;
     }
 
     public void setLoggedInUserRole(String userRole) {
@@ -439,11 +439,11 @@ public class MatContext implements IsSerializable {
     }
 
     public UserPreferenceDTO getLoggedInUserPreference() {
-        return currentUserInfo.userPreference;
+        return currentUserInfo == null ? null : currentUserInfo.userPreference;
     }
 
     public String getLoggedinUserId() {
-        return currentUserInfo.userId;
+        return currentUserInfo == null ? null : currentUserInfo.userId;
     }
 
     public void setIdToken(String idToken) {
@@ -463,11 +463,11 @@ public class MatContext implements IsSerializable {
     }
 
     public String getLoggedinLoginId() {
-        return currentUserInfo.loginId;
+        return currentUserInfo == null ? null : currentUserInfo.loginId;
     }
 
     public String getLoggedInUserEmail() {
-        return currentUserInfo.userEmail;
+        return currentUserInfo == null ? null : currentUserInfo.userEmail;
     }
 
     public void initSession(Map<String, String> harpUserInfo, AsyncCallback<LoginModel> callback) {

@@ -364,7 +364,7 @@ public class AddFunctionArgumentDialogBox {
                         }
                     }
                     CQLModelValidator validator = new CQLModelValidator();
-                    boolean isValidName = validator.doesAliasNameFollowCQLAliasNamingConvention(argumentName);
+                    boolean isValidName = validator.isValidQDMName(argumentName);
                     if (isValidName && !checkIfDuplicate) {
                         isValid = true;
                         helpBlock.setText("");

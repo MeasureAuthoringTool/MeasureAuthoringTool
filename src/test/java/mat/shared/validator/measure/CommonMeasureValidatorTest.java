@@ -13,23 +13,40 @@ public class CommonMeasureValidatorTest {
 	
 	@Test
 	public void testAllMethods() {
-		testValidateLibraryName();
+		testValidateQDMLibraryName();
+		testValidateFhirLibraryName();
 		testValidateMeasureName();
 		testValidateECQMAbbreviation();
 		testValidateMeasureScore();
 		testValidatePatientBased();
 	}
+
+	private void testValidateFhirLibraryName() {
+		List<String> noErrorList = Arrays.asList();
+		List<String> emptyList = Arrays.asList("A CQL Library name is required.");
+		List<String> invalidLibraryNameList = Arrays.asList("Invalid Library Name. Library names must start with an upper case letter, followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.");
+
+		assertEquals(noErrorList, validator.validateFhirLibraryName("Hey"));
+		assertEquals(noErrorList, validator.validateFhirLibraryName("H123"));
+		assertEquals(noErrorList, validator.validateFhirLibraryName("H_98237498234123"));
+		assertEquals(invalidLibraryNameList, validator.validateFhirLibraryName("hey"));
+		assertEquals(emptyList, validator.validateFhirLibraryName(""));
+		assertEquals(invalidLibraryNameList, validator.validateFhirLibraryName("!"));
+		assertEquals(invalidLibraryNameList, validator.validateFhirLibraryName("?library"));
+		assertEquals(invalidLibraryNameList, validator.validateFhirLibraryName("_library"));
+		assertEquals(invalidLibraryNameList, validator.validateFhirLibraryName("123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
+	}
 	
-	private void testValidateLibraryName() {
+	private void testValidateQDMLibraryName() {
 		List<String> noErrorList = Arrays.asList();    
 		List<String> emptyList = Arrays.asList("A CQL Library name is required.");
 		List<String> invalidLibraryNameList = Arrays.asList("Invalid Library Name. Library names must start with an alpha-character or underscore, followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.");
 		
-		assertEquals(noErrorList, validator.validateLibraryName("hey"));
-		assertEquals(emptyList, validator.validateLibraryName(""));
-		assertEquals(invalidLibraryNameList, validator.validateLibraryName("!"));
-		assertEquals(invalidLibraryNameList, validator.validateLibraryName("?library"));
-		assertEquals(noErrorList, validator.validateLibraryName("_library"));
+		assertEquals(noErrorList, validator.validateQDMName("hey"));
+		assertEquals(emptyList, validator.validateQDMName(""));
+		assertEquals(invalidLibraryNameList, validator.validateQDMName("!"));
+		assertEquals(invalidLibraryNameList, validator.validateQDMName("?library"));
+		assertEquals(noErrorList, validator.validateQDMName("_library"));
 	}
 	
 	private void testValidateMeasureName() {

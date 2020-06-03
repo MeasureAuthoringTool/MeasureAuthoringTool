@@ -18,6 +18,7 @@ public class CQLGeneralInformationUtility {
 	
 	public static boolean validateGeneralInformationSection(CQLGeneralInformationView view, MessagePanel messagePanel, String libraryName, String commentBoxContent) {
 		CQLModelValidator validator = new CQLModelValidator();
+		boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
 
 		if(libraryName != null && libraryName.isEmpty()) {
 			view.getLibraryNameGroup().setValidationState(ValidationState.ERROR);
@@ -25,10 +26,16 @@ public class CQLGeneralInformationUtility {
 			return false; 
 		} 
 		
-		if(libraryName != null && !validator.doesAliasNameFollowCQLAliasNamingConvention(libraryName)) {
+		if(libraryName != null && !isFhir && !validator.isValidQDMName(libraryName)) {
 			view.getLibraryNameGroup().setValidationState(ValidationState.ERROR);
-			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getQDMCqlLibyNameError());
 			return false; 
+		}
+
+		if(libraryName != null && isFhir && !validator.isValidFhirCqlName(libraryName)) {
+			view.getLibraryNameGroup().setValidationState(ValidationState.ERROR);
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getFhirCqlLibyNameError());
+			return false;
 		}
 		
 		if(validator.isLibraryNameMoreThan500Characters(libraryName)) {

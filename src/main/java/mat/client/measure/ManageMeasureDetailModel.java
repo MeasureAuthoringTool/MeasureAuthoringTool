@@ -88,6 +88,10 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel {
 
     }
 
+    public boolean isFhir() {
+        return measureModel != null && measureModel.equals("FHIR");
+    }
+
     public boolean isCalenderYear() {
         return isCalenderYear;
     }

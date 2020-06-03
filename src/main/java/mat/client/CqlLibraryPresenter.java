@@ -853,7 +853,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         selectedLibrary.setLibraryModelType(detailDisplay.getLibraryModelType());
         cqlLibraryView.resetMessageDisplay();
 
-        if (isLibraryNameValid()) {
+        if (isLibraryNameValid(selectedLibrary.isFhir())) {
             createDraftFromLibrary(selectedLibrary.getId(), selectedLibrary.getCqlName());
         }
     }
@@ -1212,16 +1212,22 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         isDirty = isPageDirty;
     }
 
-    private boolean isLibraryNameValid() {
+    private boolean isLibraryNameValid(boolean isFhir) {
         detailDisplay.getErrorMessage().clearAlert();
         if (detailDisplay.getNameField().getText().isEmpty()) {
             detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getLibraryNameRequired());
             return false;
-        } else if (!validator.doesAliasNameFollowCQLAliasNamingConvention(detailDisplay.getNameField().getText())) {
-            detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
-            return false;
+        } else {
+            String cqlName = detailDisplay.getNameField().getText();
+            if (!isFhir && !validator.isValidQDMName(cqlName)) {
+                detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getQDMCqlLibyNameError());
+                return false;
+            }
+            if (isFhir && !validator.isValidFhirCqlName(cqlName)) {
+                detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getFhirCqlLibyNameError());
+                return false;
+            }
         }
-
         return true;
     }
 
@@ -1239,7 +1245,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         libraryDataSetObject.setCqlName(detailDisplay.getNameField().getText());
         libraryDataSetObject.setLibraryModelType(detailDisplay.getLibraryModelType());
 
-        if (isLibraryNameValid()) {
+        if (isLibraryNameValid(libraryDataSetObject.isFhir())) {
             MatContext.get().getCQLLibraryService().saveCQLLibrary(libraryDataSetObject, new AsyncCallback<SaveCQLLibraryResult>() {
                 @Override
                 public void onFailure(Throwable caught) {
@@ -1274,7 +1280,13 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                         } else if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_CQL_KEYWORD) {
                             detailDisplay.getErrorMessage().createAlert(MessageDelegate.LIBRARY_NAME_IS_CQL_KEYWORD_ERROR);
                         } else {
-                            detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+                            boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
+                            if (isFhir) {
+                                detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getQDMCqlLibyNameError());
+                            } else {
+                                detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getFhirCqlLibyNameError());
+                            }
+
                         }
                     }
                 }

@@ -189,7 +189,7 @@ public class RelationshipBuilderModal extends SubExpressionBuilderModal {
 		if (relationshipModel.getSource().getChildModels().isEmpty() || relationshipModel.getCriteria().getChildModels().isEmpty()
 				|| relationshipModel.getAlias().isEmpty()) {
 			getErrorAlert().createAlert(ERROR_MESSAGE);
-		} else if(relationshipModel.getAlias().isEmpty() || !validator.doesAliasNameFollowCQLAliasNamingConvention(relationshipModel.getAlias())) {
+		} else if(relationshipModel.getAlias().isEmpty() || !validator.isValidQDMName(relationshipModel.getAlias())) {
 			getErrorAlert().createAlert("The name of your source must start with an alpha character and can not contain spaces or special characters other than an underscore.");
 		} else {
 			getExpressionBuilderParent().showAndDisplay();

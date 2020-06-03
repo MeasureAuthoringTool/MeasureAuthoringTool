@@ -7,7 +7,6 @@ import java.util.Optional;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.shared.MessageDelegate;
 import mat.shared.StringUtility;
-import mat.shared.validator.measure.CommonMeasureValidator;
 
 public class ManageMeasureModelValidator {
 	
@@ -38,9 +37,11 @@ public class ManageMeasureModelValidator {
 	
 	private List<String> performCommonMeasureValidation(ManageMeasureDetailModel model) {
 		List<String> message = new ArrayList<String>();
+		String libName = model.getCQLLibraryName();
 		CommonMeasureValidator commonMeasureValidator = new CommonMeasureValidator();
 		message.addAll(commonMeasureValidator.validateMeasureName(model.getMeasureName()));
-		message.addAll(commonMeasureValidator.validateLibraryName(model.getCQLLibraryName()));
+		message.addAll(model.isFhir() ? commonMeasureValidator.validateFhirLibraryName(libName):
+				commonMeasureValidator.validateQDMName(libName));
 		message.addAll(commonMeasureValidator.validateECQMAbbreviation(model.getShortName()));
 		String scoring = model.getMeasScoring();
 		message.addAll(commonMeasureValidator.validateMeasureScore(scoring));

@@ -10,7 +10,10 @@ import mat.model.cql.CQLQualityDataSetDTO;
  * The Interface VSACAPIServiceAsync.
  */
 public interface VSACAPIServiceAsync {
+
 	void inValidateVsacUser(AsyncCallback<Void> callback);
+
+	void getSessionId(AsyncCallback<String> callback);
 
 	void isAlreadySignedIn(AsyncCallback<Boolean> callback);
 

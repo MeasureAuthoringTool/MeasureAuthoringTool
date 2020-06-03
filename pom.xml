@@ -24,7 +24,7 @@
         <gwtbootstrap3.extra.version>1.0.2</gwtbootstrap3.extra.version>
         <elemental.version>1.0.0-RC1</elemental.version>
         <gwt.elemento.version>0.9.6-gwt2</gwt.elemento.version>
-        <cqframework.version>1.4.6</cqframework.version>
+        <cqframework.version>1.4.9-SNAPSHOT</cqframework.version>
         <axis.version>1.7.7</axis.version>
         <castor.version>1.4.1</castor.version>
         <slf4j.version>1.7.25</slf4j.version>
@@ -54,10 +54,6 @@
         <repository>
             <id>icm</id>
             <url>http://maven.icm.edu.pl/artifactory/repo/</url>
-        </repository>
-        <repository>
-            <id>project.local.repo.dir</id>
-            <url>file://${project.local.repo.dir}</url>
         </repository>
     </repositories>
 
@@ -106,12 +102,12 @@
         </dependency>
         <dependency>
             <groupId>info.cqframework</groupId>
-            <artifactId>elm</artifactId>
+            <artifactId>cql-to-elm</artifactId>
             <version>${cqframework.version}</version>
         </dependency>
         <dependency>
             <groupId>info.cqframework</groupId>
-            <artifactId>cql-to-elm</artifactId>
+            <artifactId>elm</artifactId>
             <version>${cqframework.version}</version>
         </dependency>
         <dependency>
@@ -127,14 +123,14 @@
         <dependency>
             <groupId>info.cqframework</groupId>
             <artifactId>cql-formatter</artifactId>
-            <version>${cqframework.version}</version>
+            <version>1.4.8</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwtVersion}</version>
         </dependency>
-
         <dependency>
             <groupId>org.gwtbootstrap3</groupId>
             <artifactId>gwtbootstrap3</artifactId>
@@ -372,11 +368,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
             <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>mat</groupId>
-            <artifactId>CQLtoELM</artifactId>
-            <version>1.4.6.54</version>
         </dependency>
         <dependency>
             <groupId>mat</groupId>

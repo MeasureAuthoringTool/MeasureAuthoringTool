@@ -1,5 +1,7 @@
 package mat.cql;
 
+import mat.shared.CQLError;
+
 import java.util.List;
 
 /**
@@ -7,9 +9,15 @@ import java.util.List;
  * methods are invoked when that section is encountered in the cql.
  */
 public interface CqlVisitor {
-    default void validate() {
+    default void validateBeforeParse() {
         //by default do nothing unless its implemented.
     }
+
+    default void validateAfterParse() {
+        //by default do nothing unless its implemented.
+    }
+
+    default void handleError(CQLError error) {}
 
     default boolean isRemovingBlockComments() {
         return false;

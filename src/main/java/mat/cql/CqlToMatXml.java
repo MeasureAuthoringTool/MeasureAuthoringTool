@@ -1,9 +1,14 @@
 package mat.cql;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import mat.client.umls.service.VSACAPIService;
+import mat.client.umls.service.VsacApiResult;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLDefinition;
@@ -16,20 +21,37 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.CQLKeywordsUtil;
 import mat.server.MappingSpreadsheetService;
 import mat.server.service.CodeListService;
+import mat.server.service.VSACApiService;
+import mat.shared.CQLError;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.StringUtils;
+import org.cqframework.cql.gen.cqlLexer;
+import org.cqframework.cql.gen.cqlParser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static mat.cql.CqlUtils.chomp1;
 import static mat.cql.CqlUtils.getGlobalLibId;
-import static mat.cql.CqlUtils.isOid;
 import static mat.cql.CqlUtils.isQuoted;
 import static mat.cql.CqlUtils.newGuid;
 import static mat.cql.CqlUtils.parseCodeSystemName;
@@ -52,11 +74,84 @@ public class CqlToMatXml implements CqlVisitor {
      * %3s os the code value.
      */
     private static final String CODE_IDENTIFIER_FORMAT = "CODE:/CodeSystem/%1$s/Version/%2$s/Code/%3$s/Info";
+    @Value("${mat.codesystem.valueset.simultaneous.validations}")
+    private int simultaneousValidations;
     private List<CQLIncludeLibrary> libsNotFound = new ArrayList<>();
+    private List<CQLError> errors = new ArrayList<>();
+    private List<CQLError> warnings = new ArrayList<>();
     private CQLModel destinationModel = new CQLModel();
     private CQLModel sourceModel;
     private CodeListService codeListService;
     private MappingSpreadsheetService mappingService;
+    private boolean isValidatingCodesystems = true;
+    private boolean isValidatingValuesets = true;
+    private ExecutorService codeSystemValueSetExecutor;
+    private VSACApiService vsacService;
+    private VSACAPIService vsacApiService;
+
+    @Data
+    @AllArgsConstructor
+    private static class CodeValidation {
+        private CQLCode code;
+        private boolean isValid;
+    }
+
+    @Data
+    private class CodeValidator implements Callable<CodeValidation> {
+        private CQLCode code;
+        private boolean isValid;
+
+        public CodeValidator(CQLCode code) {
+            this.code = code;
+        }
+
+        @Override
+        public CodeValidation call() {
+            log.info("Validating code {} with vsac.",code.getCodeIdentifier());
+            String sessionId = vsacApiService.getSessionId();
+            if (StringUtils.isBlank(sessionId)) {
+                log.info("No UMLS session, code validation is false for {}.",code.getCodeIdentifier());
+                code.setValidatedWithVsac(false);
+            } else {
+                VsacApiResult r = vsacService.getDirectReferenceCode(code.getCodeIdentifier(), sessionId);
+                code.setValidatedWithVsac(r.isSuccess());
+            }
+            log.info("Validated code {} with vsac. {}", code.getCodeIdentifier(), code.isValidatedWithVsac());
+            return new CodeValidation(code, code.isValidatedWithVsac());
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class ValueSetValidation {
+        private CQLQualityDataSetDTO valueSet;
+        private boolean isValid;
+    }
+
+    @Data
+    private class ValueSetValidator implements Callable<ValueSetValidation> {
+        private CQLQualityDataSetDTO valueSet;
+
+        public ValueSetValidator(CQLQualityDataSetDTO valueSet) {
+            this.valueSet = valueSet;
+        }
+
+        @Override
+        public ValueSetValidation call() {
+            String sessionId = vsacApiService.getSessionId();
+            String oid = parseOid(valueSet.getOid());
+            if (StringUtils.isBlank(sessionId)) {
+                log.info("Validating valueset {} with vsac.",oid);
+                VsacApiResult r = vsacService.getMostRecentValueSetByOID(oid,null,null,sessionId);
+                valueSet.setValidatedWithVsac(r.isSuccess());
+            } else {
+                log.info("No UMLS session, valueset validation is false for {}.",oid);
+                valueSet.setValidatedWithVsac(false);
+            }
+            log.info("Validated valueset {} with vsac. {}",oid,valueSet.isValidatedWithVsac());
+            return new ValueSetValidation(valueSet, valueSet.isValidatedWithVsac());
+        }
+    }
 
     public CqlToMatXml(CodeListService codeListService,
                        MappingSpreadsheetService mappingService) {
@@ -64,11 +159,76 @@ public class CqlToMatXml implements CqlVisitor {
         this.mappingService = mappingService;
     }
 
+    @PostConstruct
+    protected void setupExecutor() {
+        codeSystemValueSetExecutor = Executors.newFixedThreadPool(simultaneousValidations);
+    }
+
     @Override
-    public void validate() {
+    public void handleError(CQLError e) {
+        if (StringUtils.equalsIgnoreCase("Error", e.getSeverity())) {
+            errors.add(e);
+        } else if (StringUtils.equalsIgnoreCase("Warning", e.getSeverity())) {
+            warnings.add(e);
+        }
+    }
+
+    @Override
+    public void validateBeforeParse() {
         if (sourceModel == null) {
             //If source model is null just create a new empty CQLModel.
             sourceModel = new CQLModel();
+        }
+    }
+
+    @Override
+    public void validateAfterParse() {
+        if (sourceModel == null) {
+            //Validate valuesets and codesystems.
+            if (isValidatingCodesystems) {
+                List<CodeValidator> codeTasks = destinationModel.getCodeList().stream()
+                        .filter(c -> !c.isValidatedWithVsac() &&
+                                !StringUtils.contains(c.getCodeSystemOID(),"NOT.IN.VSAC")).
+                                map(CodeValidator::new).
+                                collect(Collectors.toList());
+
+                // Mark all the non cancelled returned ones with the status returned from VSAC.
+                try {
+                    codeSystemValueSetExecutor.invokeAll(codeTasks, 2, TimeUnit.MINUTES).stream().
+                            filter(c -> !c.isCancelled()).
+                            forEach(v -> {
+                                try {
+                                    v.get().getCode().setValidatedWithVsac(v.get().isValid());
+                                } catch (InterruptedException | ExecutionException e) {
+                                    log.info("Error getting vs.", e);
+                                }
+                            });
+                } catch (InterruptedException ie) {
+                    log.info("Error in invokeAll in Executor", ie);
+
+                }
+            }
+            if (isValidatingValuesets) {
+                List<ValueSetValidator> valuesetTasks = destinationModel.getValueSetList().stream().
+                        filter(v -> !v.isValidatedWithVsac()).
+                        map(ValueSetValidator::new).
+                        collect(Collectors.toList());
+
+                // Mark all the non cancelled returned ones with the status returned from VSAC.
+                try {
+                    codeSystemValueSetExecutor.invokeAll(valuesetTasks, 2, TimeUnit.MINUTES).stream().
+                            filter(v -> !v.isCancelled()).
+                            forEach(v -> {
+                                try {
+                                    v.get().getValueSet().setValidatedWithVsac(v.get().isValid());
+                                } catch (InterruptedException | ExecutionException e) {
+                                    log.info("Error getting vs.", e);
+                                }
+                            });
+                } catch (InterruptedException ie) {
+                    log.info("Error in invokeAll in Executor", ie);
+                }
+            }
         }
     }
 
@@ -119,17 +279,17 @@ public class CqlToMatXml implements CqlVisitor {
         vs.setId(newGuid());
         vs.setName(name);
         vs.setUuid(newGuid());
-        if (isOid(uri)) {
-            vs.setOid(parseOid(uri));
-        } else {
-            vs.setOid(uri);
-        }
+        vs.setOid(parseOid(uri));
 
         // Nonsensical legacy stuff that has to be here for the gwt part to function at the moment.
         vs.setOriginalCodeListName(name);
         vs.setSuppDataElement(false);
         vs.setTaxonomy("Grouping");
         vs.setType("Grouping");
+
+        var existingValueSet = findExisting(sourceModel.getValueSetList(),
+                evs -> StringUtils.equals(parseOid(evs.getOid()), vs.getOid()));
+        vs.setValidatedWithVsac(existingValueSet.map(CQLQualityDataSetDTO::isValidatedWithVsac).orElse(false));
 
         destinationModel.getValueSetList().add(vs);
     }
@@ -143,7 +303,7 @@ public class CqlToMatXml implements CqlVisitor {
         c.setCodeName(name);
         c.setId(newGuid());
         updateCodeSystemInfo(c);
-        updateCodeIdentifier(c);
+        updateCodeIdentifierAndVsacValidationFlag(c);
         destinationModel.getCodeList().add(c);
     }
 
@@ -266,10 +426,11 @@ public class CqlToMatXml implements CqlVisitor {
         }
     }
 
-    private void updateCodeIdentifier(CQLCode c) {
+    private void updateCodeIdentifierAndVsacValidationFlag(CQLCode c) {
         var existingCode = findExisting(sourceModel.getCodeList(),
                 ec -> StringUtils.equals(ec.getCodeName(), c.getCodeName()) &&
                         StringUtils.equals(ec.getCodeSystemName(), c.getCodeSystemName()));
+        c.setValidatedWithVsac(existingCode.map(CQLCode::isValidatedWithVsac).orElse(false));
         c.setCodeIdentifier(existingCode.isPresent() ?
                 existingCode.get().getCodeIdentifier() :
                 buildCodeIdentifier(c));

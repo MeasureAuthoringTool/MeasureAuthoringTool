@@ -22,6 +22,7 @@ public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 		}
 		
 	}
+	private boolean isValidatedWithVsac = true;
 	/** QDM Modified At VSAC. */
 	private boolean hasModifiedAtVSAC;
 	private boolean isUsed;
@@ -176,14 +177,6 @@ public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 		this.dataTypeHasRemoved = dataTypeHasRemoved;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return codeListName + ": " + dataType + "-" + getOid();
-	}
-	
 	public int compare(CQLQualityDataSetDTO o1, CQLQualityDataSetDTO o2) {
 		return o1.getUuid().compareTo(o2.getUuid());
 	}
@@ -284,4 +277,41 @@ public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 	}
 
 
+	public boolean isValidatedWithVsac() {
+		return isValidatedWithVsac;
+	}
+
+	public void setValidatedWithVsac(boolean validatedWithVsac) {
+		isValidatedWithVsac = validatedWithVsac;
+	}
+
+	@Override
+	public String toString() {
+		return "CQLQualityDataSetDTO{" +
+				"isValidatedWithVsac=" + isValidatedWithVsac +
+				", hasModifiedAtVSAC=" + hasModifiedAtVSAC +
+				", isUsed=" + isUsed +
+				", notFoundInVSAC=" + notFoundInVSAC +
+				", codeListName='" + codeListName + '\'' +
+				", suffix='" + suffix + '\'' +
+				", originalCodeListName='" + originalCodeListName + '\'' +
+				", codeSystemName='" + codeSystemName + '\'' +
+				", dataType='" + dataType + '\'' +
+				", id='" + id + '\'' +
+				", displayName='" + displayName + '\'' +
+				", oid='" + oid + '\'' +
+				", codeSystemOID='" + codeSystemOID + '\'' +
+				", codeIdentifier='" + codeIdentifier + '\'' +
+				", isReadOnly=" + isReadOnly +
+				", suppDataElement=" + suppDataElement +
+				", taxonomy='" + taxonomy + '\'' +
+				", type='" + type + '\'' +
+				", uuid='" + uuid + '\'' +
+				", version='" + version + '\'' +
+				", release='" + release + '\'' +
+				", program='" + program + '\'' +
+				", dataTypeHasRemoved=" + dataTypeHasRemoved +
+				", valueSetType='" + valueSetType + '\'' +
+				'}';
+	}
 }

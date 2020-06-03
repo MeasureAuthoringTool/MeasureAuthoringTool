@@ -98,6 +98,9 @@
 					<field name="valueSetType" type="java.lang.String">
 						<bind-xml name="type" node="attribute" />
 					</field>
+					<field name="validatedWithVsac" type="java.lang.Boolean">
+						<bind-xml name="isValidatedWithVsac" node="attribute" />
+					</field>
 				</class>
 			</bind-xml>
 		</field>
@@ -142,6 +145,9 @@
 					</field>
 					<field name="codeSystemVersionUri" type="java.lang.String">
 						<bind-xml name="codeSystemVersionUri" node="attribute" />
+					</field>
+					<field name="validatedWithVsac" type="java.lang.Boolean">
+						<bind-xml name="isValidatedWithVsac" node="attribute" />
 					</field>
 				</class>
 			</bind-xml>

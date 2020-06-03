@@ -43,6 +43,8 @@ public class CQLCode implements CQLExpression, IsSerializable {
 
 	private boolean isCodeSystemVersionIncluded;
 
+	private boolean isValidatedWithVsac = true;
+
 	public boolean isIsCodeSystemVersionIncluded() {
 		return isCodeSystemVersionIncluded;
 	}
@@ -219,6 +221,14 @@ public class CQLCode implements CQLExpression, IsSerializable {
 		this.codeSystemVersionUri = codeSystemVersionUri;
 	}
 
+	public boolean isValidatedWithVsac() {
+		return isValidatedWithVsac;
+	}
+
+	public void setValidatedWithVsac(boolean validatedWithVsac) {
+		isValidatedWithVsac = validatedWithVsac;
+	}
+
 	@Override
 	public String toString() {
 		return "CQLCode{" +
@@ -235,6 +245,7 @@ public class CQLCode implements CQLExpression, IsSerializable {
 				", readOnly=" + readOnly +
 				", suffix='" + suffix + '\'' +
 				", isCodeSystemVersionIncluded=" + isCodeSystemVersionIncluded +
+				", isValidatedWithVsac=" + isValidatedWithVsac +
 				'}';
 	}
 }

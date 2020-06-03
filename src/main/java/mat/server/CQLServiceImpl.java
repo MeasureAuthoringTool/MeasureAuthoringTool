@@ -206,6 +206,7 @@ public class CQLServiceImpl implements CQLService {
     public SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config, String modelType) {
         CQLModel newModel = new CQLModel();
         List<CQLError> errors = new ArrayList<>();
+        CqlToMatXml fhirConverter = null;
         try {
             //Now parse it into a new CQLModel
             switch (modelType) {
@@ -218,11 +219,12 @@ public class CQLServiceImpl implements CQLService {
                     break;
                 case "FHIR":
                     // Use the CqlToMatXml parser for FHIR.
-                    CqlToMatXml converter = visitorFactory.getCqlToMatXmlVisitor();
-                    converter.setSourceModel(config.getPreviousCQLModel());
+                    fhirConverter = visitorFactory.getCqlToMatXmlVisitor();
+                    fhirConverter.setSourceModel(config.getPreviousCQLModel());
                     try {
-                        cqlParser.parse(cql, converter);
-                        newModel = converter.getDestinationModel();
+                        errors.addAll(cqlParser.validateForSyntaxErrors(cql));
+                        cqlParser.parse(cql, fhirConverter);
+                        newModel = fhirConverter.getDestinationModel();
 
                         //Overwrite fields the user is not allowed to change for FHIR.
                         newModel.setLibraryName(config.getPreviousCQLModel().getLibraryName());
@@ -268,6 +270,7 @@ public class CQLServiceImpl implements CQLService {
             SaveUpdateCQLResult parsedResult;
             if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
                 parsedResult = parseFhirCqlLibraryForErrors(newModel, scrubbedCql);
+                parsedResult.getCqlErrors().addAll(fhirConverter.getErrors());
             } else {
                 parsedResult = parseCQLLibraryForErrors(newModel);
             }

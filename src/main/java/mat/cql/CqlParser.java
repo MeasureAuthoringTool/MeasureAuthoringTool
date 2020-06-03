@@ -66,7 +66,7 @@ public class CqlParser {
             String workingCql = cql;
             // Make sure the visitor has everything it needs to start.
             // Validate will throw an exception if there are any issues.
-            v.validate();
+            v.validateBeforeParse();
 
             //Remove all comments.
             if (v.isRemovingBlockComments()) {
@@ -93,6 +93,7 @@ public class CqlParser {
             processParameters(workingCql, v);
             processDefinitions(workingCql, v);
             processFunctions(workingCql, v);
+            v.validateAfterParse();
         } catch (RuntimeException e) {
             log.warn("RuntimeException encountered in CqlParser", e);
             throw new MatException(e.getMessage(), e);

@@ -7,18 +7,17 @@ import com.google.gwt.regexp.shared.RegExp;
  * The Class CQLModelValidator.
  */
 public class CQLModelValidator {
+    private RegExp FHIR_LIB_NAME_REGEX = RegExp.compile("[A-Z]([A-Za-z0-9_]){0,254}");
 
     /**
      * The regex expression.
      */
     private final String REGEX_EXPRESSION = "[\"<>'/]";
-    /*private final String REGEX_ALIAS_EXPRESSION = "[_a-zA-Z0-9]";*/
 
     /**
      * The reg exp.
      */
     private final RegExp regExp = RegExp.compile(REGEX_EXPRESSION);
-    /*private final RegExp regAliasExp = RegExp.compile(REGEX_ALIAS_EXPRESSION);*/
 
     /**
      * The code regex expression.
@@ -64,22 +63,27 @@ public class CQLModelValidator {
      * @param identifierName the identifier name
      * @return true, if successful
      */
-    public boolean doesAliasNameFollowCQLAliasNamingConvention(String identifierName) {
-        if (identifierName.length() > 0) {
+    public boolean isValidQDMName(String identifierName) {
+        boolean result = true;
+        if (identifierName != null && identifierName.length() > 0) {
             char firstChar = identifierName.charAt(0);
             if (!Character.isLetter(firstChar) && firstChar != '_') {
-                return false;
+                result = false;
             }
 
-            for (int i = 1; i < identifierName.length(); i++) {
-                char ch = identifierName.charAt(i);
-                if (!Character.isDigit(ch) && !Character.isLetter(ch) && ch != '_') {
-                    return false;
+            if (result) {
+                for (int i = 1; i < identifierName.length(); i++) {
+                    char ch = identifierName.charAt(i);
+                    if (!Character.isDigit(ch) && !Character.isLetter(ch) && ch != '_') {
+                        result = false;
+                        break;
+                    }
                 }
             }
+        } else {
+            result = false;
         }
-
-        return true;
+        return result;
     }
 
     /**
@@ -123,5 +127,10 @@ public class CQLModelValidator {
     public boolean isLibraryNameMoreThan500Characters(String name) {
         return name.length() > 500;
     }
+
+    public boolean isValidFhirCqlName(String name) {
+        return FHIR_LIB_NAME_REGEX.test(name);
+    }
+
 
 }

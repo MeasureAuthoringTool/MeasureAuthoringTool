@@ -333,7 +333,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
             CQLModelValidator validator = new CQLModelValidator();
             if (validator.isLibraryNameMoreThan500Characters(libraryName)) {
-                throw new MatException(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+                throw new MatException(existingLibrary.isFhirLibrary() ?
+                        MatContext.get().getMessageDelegate().getFhirCqlLibyNameError() :
+                        MatContext.get().getMessageDelegate().getQDMCqlLibyNameError());
             }
 
             if (CQLValidationUtil.isCQLReservedWord(libraryName)) {
@@ -441,10 +443,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             }
         }
 
-        return versionAndUpdateDB(libraryId,isMajor,version,result);
+        return versionAndUpdateDB(libraryId, isMajor, version, result);
     }
 
-    private SaveCQLLibraryResult versionAndUpdateDB(String libraryId,boolean isMajor, String version,SaveCQLLibraryResult result) {
+    private SaveCQLLibraryResult versionAndUpdateDB(String libraryId, boolean isMajor, String version, SaveCQLLibraryResult result) {
         CQLLibrary library = cqlLibraryDAO.find(libraryId);
         if (library != null) {
             String versionNumber = null;
@@ -662,9 +664,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             return result;
         }
 
-        List<String> message = isValidCQLLibrary(cqlLibraryDataSetObject);
+        boolean isFhir = "FHIR".equals(cqlLibraryDataSetObject.getLibraryModelType());
+        List<String> message = isValidCQLLibrary(cqlLibraryDataSetObject, isFhir);
         if (message.isEmpty()) {
-            boolean isFhir = "FHIR".equals(cqlLibraryDataSetObject.getLibraryModelType());
             CQLLibrary library = new CQLLibrary();
             library.setDraft(true);
             library.setName(cqlLibraryDataSetObject.getCqlName());
@@ -710,7 +712,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         }
     }
 
-    private List<String> isValidCQLLibrary(CQLLibraryDataSetObject model) {
+    private List<String> isValidCQLLibrary(CQLLibraryDataSetObject model, boolean isFhir) {
 
         List<String> message = new ArrayList<>();
 
@@ -718,10 +720,17 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             message.add(MatContext.get().getMessageDelegate().getLibraryNameRequired());
         } else {
             CQLModelValidator cqlLibraryModel = new CQLModelValidator();
-            boolean isValid = cqlLibraryModel.doesAliasNameFollowCQLAliasNamingConvention(model.getCqlName())
-                    || !cqlLibraryModel.isLibraryNameMoreThan500Characters(model.getCqlName());
+            boolean isValid;
+            if (isFhir) {
+                isValid = cqlLibraryModel.isValidFhirCqlName(model.getCqlName());
+            } else {
+                isValid = cqlLibraryModel.isValidQDMName(model.getCqlName())
+                        || !cqlLibraryModel.isLibraryNameMoreThan500Characters(model.getCqlName());
+            }
             if (!isValid) {
-                message.add(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+                String msg = isFhir ? MatContext.get().getMessageDelegate().getFhirCqlLibyNameError()
+                        : MatContext.get().getMessageDelegate().getQDMCqlLibyNameError();
+                message.add(msg);
             }
         }
 
@@ -996,8 +1005,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
             boolean isFhir = cqlLibrary.isFhirLibrary();
             CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(),
-                    MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(),cqlLibrary.getVersion()),
-                    isFhir ? "FHIR" : QDMUtil.QDM_MODEL_IDENTIFIER ,
+                    MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()),
+                    isFhir ? "FHIR" : QDMUtil.QDM_MODEL_IDENTIFIER,
                     isFhir ? cqlLibrary.getFhirVersion() : cqlLibrary.getQdmVersion());
 
             CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);

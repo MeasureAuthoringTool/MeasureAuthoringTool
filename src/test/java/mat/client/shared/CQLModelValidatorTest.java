@@ -16,9 +16,9 @@ public class CQLModelValidatorTest {
         String containsSpecialCharacter = "alias*name";
         String containsSpecialCharacter1 = "aliasname!";
 
-        assertEquals(false, validator.doesAliasNameFollowCQLAliasNamingConvention(startsWithNumber));
-        assertEquals(false, validator.doesAliasNameFollowCQLAliasNamingConvention(containsSpecialCharacter));
-        assertEquals(false, validator.doesAliasNameFollowCQLAliasNamingConvention(containsSpecialCharacter1));
+        assertEquals(false, validator.isValidQDMName(startsWithNumber));
+        assertEquals(false, validator.isValidQDMName(containsSpecialCharacter));
+        assertEquals(false, validator.isValidQDMName(containsSpecialCharacter1));
     }
 
     @Test
@@ -27,9 +27,9 @@ public class CQLModelValidatorTest {
         String startsWithLetterAndContainsUnderscore = "alias_name";
         String startsWithLetterAndContainsUnderscoreAndHasNumber = "alias_name1";
 
-        assertEquals(true, validator.doesAliasNameFollowCQLAliasNamingConvention(startsWithUnderscore));
-        assertEquals(true, validator.doesAliasNameFollowCQLAliasNamingConvention(startsWithLetterAndContainsUnderscore));
-        assertEquals(true, validator.doesAliasNameFollowCQLAliasNamingConvention(startsWithLetterAndContainsUnderscoreAndHasNumber));
+        assertEquals(true, validator.isValidQDMName(startsWithUnderscore));
+        assertEquals(true, validator.isValidQDMName(startsWithLetterAndContainsUnderscore));
+        assertEquals(true, validator.isValidQDMName(startsWithLetterAndContainsUnderscoreAndHasNumber));
     }
 
     @Test

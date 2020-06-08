@@ -142,10 +142,10 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
                     UserInfo.class,
                     uriVariables);
         } catch (RestClientResponseException e) {
-            logger.error("Error in validateToken:" + e.getMessage(), e);
+            logger.error("Error in getUserInfo:" + e.getMessage(), e);
             throw new RuntimeException(e);
         } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
-            logger.error("Error in validateToken:" + e.getMessage(), e);
+            logger.error("Error in getUserInfo:" + e.getMessage(), e);
         }
         UserInfo userinfo = response.getBody();
         Map<String, String> harpUserInfo = new HashMap<>();

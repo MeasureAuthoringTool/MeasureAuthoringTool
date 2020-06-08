@@ -385,7 +385,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                 @Override
                 public void onSuccess(Boolean aBoolean) {
                     logger.log(Level.INFO, "HarpService::validateToken -> onSuccess");
-                    linkHarpMatAccounts();
+                    getUserInfo(accessToken);
                 }
             });
         } else {
@@ -435,20 +435,35 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private void parseOktaToken(String oktaToken) {
         JSONValue tokens = JSONParser.parseStrict(oktaToken);
         String accessToken = tokens.isObject().get("accessToken").isObject().get("accessToken").isString().stringValue();
+        String idToken = tokens.isObject().get("idToken").isObject().get("idToken").isString().stringValue();
 
-        JSONObject idTokenObj = tokens.isObject().get("idToken").isObject();
-        String idToken = idTokenObj.get("idToken").isString().stringValue();
-
-        harpUserInfo.put(HarpConstants.HARP_PRIMARY_EMAIL_ID, idTokenObj.get("claims").isObject().get("email").isString().stringValue());
-        harpUserInfo.put(HarpConstants.HARP_ID, idTokenObj.get("claims").isObject().get("preferred_username").isString().stringValue());
-        harpUserInfo.put(HarpConstants.HARP_FULLNAME, idTokenObj.get("claims").isObject().get("name").isString().stringValue());
-        harpUserInfo.put(HarpConstants.ACCESS_TOKEN, accessToken);
-
-        // Save tokens for HARP logout.
         MatContext.get().setIdToken(idToken);
         MatContext.get().setAccessToken(accessToken);
-        MatContext.get().setHarpUserInfo(harpUserInfo);
+        harpUserInfo.put(HarpConstants.ACCESS_TOKEN, accessToken);
+        harpUserInfo.put(HarpConstants.HARP_ID,
+                tokens.isObject().get("idToken").isObject().get("claims").isObject().get("preferred_username").isString().stringValue());
+    }
 
+    private void getUserInfo(String accessToken) {
+        MatContext.get().getHarpService().getUserInfo(accessToken, new AsyncCallback<Map<String, String>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                logger.log(Level.SEVERE, "HarpService::getUserInfo -> onFailure", throwable);
+                // Invalid token
+                MatContext.get().getEventBus().fireEvent(new LogoffEvent());
+            }
+
+            @Override
+            public void onSuccess(Map<String, String> userInfo) {
+                logger.log(Level.INFO, "HarpService::getUserInfo -> onSuccess");
+
+                // Retrieve user details from Okta's userinfo endpoint.
+                harpUserInfo.putAll(userInfo);
+                MatContext.get().setHarpUserInfo(harpUserInfo);
+
+                linkHarpMatAccounts();
+            }
+        });
     }
 
     private void initPage() {

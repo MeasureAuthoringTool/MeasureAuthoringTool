@@ -86,7 +86,7 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
         acceptList.add(MediaType.APPLICATION_JSON);
         headers.setAccept(acceptList);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<TokenIntrospect> request = new HttpEntity<>(headers);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
         Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("clientId", getHarpClientId());
         uriVariables.put("hint", "access_token");
@@ -131,7 +131,7 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
         headers.setAccept(acceptList);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("Authorization", "Bearer " + accessToken);
-        HttpEntity<TokenIntrospect> request = new HttpEntity<>(headers);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
         Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("clientId", getHarpClientId());
         ResponseEntity<UserInfo> response = null;

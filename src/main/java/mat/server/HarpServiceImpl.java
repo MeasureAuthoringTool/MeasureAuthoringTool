@@ -1,5 +1,8 @@
 package mat.server;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.MediaType;
@@ -7,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,7 +18,17 @@ import mat.client.shared.MatException;
 import mat.server.util.ServerConstants;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static java.util.Objects.isNull;
+
+import static mat.shared.HarpConstants.HARP_GIVEN_NAME;
+import static mat.shared.HarpConstants.HARP_FAMILY_NAME;
+import static mat.shared.HarpConstants.HARP_FULLNAME;
+import static mat.shared.HarpConstants.HARP_MIDDLE_NAME;
+import static mat.shared.HarpConstants.HARP_PRIMARY_EMAIL_ID;
+
 
 @Service
 public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpService {
@@ -36,6 +48,19 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
     public boolean validateToken(String token) {
         TokenIntrospect introspect = validate(token);
         return introspect.isActive();
+    }
+
+    @Override
+    public Map<String, String> getUserInfo(String accessToken) {
+        UserInfo userinfo = userinfo(accessToken);
+        Map<String, String> harpUserInfo = new HashMap<>();
+        harpUserInfo.put(HARP_GIVEN_NAME, userinfo.getGivenName());
+        harpUserInfo.put(HARP_MIDDLE_NAME, userinfo.getMiddleName());
+        harpUserInfo.put(HARP_FAMILY_NAME, userinfo.getFamilyName());
+        harpUserInfo.put(HARP_FULLNAME, userinfo.getName());
+        harpUserInfo.put(HARP_PRIMARY_EMAIL_ID, userinfo.getEmail());
+        harpUserInfo.values().forEach(logger::debug);
+        return harpUserInfo;
     }
 
     @Override
@@ -85,6 +110,22 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
                 .block();
     }
 
+    private UserInfo userinfo(String token) {
+        return getClient()
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/userinfo")
+                        .queryParam("client_id", getHarpClientId())
+                        .build())
+                .headers(h -> h.setBearerAuth(token))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .retrieve()
+                .bodyToMono(UserInfo.class)
+                .onErrorResume(e -> Mono.error(new MatException("Unable to retrieve userinfo.", e)))
+                .block();
+    }
+
     private WebClient getClient() {
         if (isNull(harpOtkaClient)) {
             this.harpOtkaClient = WebClient.create(getHarpUrl());
@@ -101,5 +142,18 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
         private String username;
         private String name;
         private String email;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    static class UserInfo {
+        private String email;
+        private String familyName;
+        private String givenName;
+        private String middleName;
+        private String name;
     }
 }

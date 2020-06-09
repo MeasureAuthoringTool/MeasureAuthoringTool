@@ -3,6 +3,9 @@ package mat.shared;
 public interface HarpConstants {
     String HARP_ID = "harpId";
     String HARP_PRIMARY_EMAIL_ID = "harpPrimaryEmailId";
+    String HARP_GIVEN_NAME = "givenName";
+    String HARP_MIDDLE_NAME = "middleName";
+    String HARP_FAMILY_NAME = "familyName";
     String HARP_FULLNAME = "fullName";
     String ACCESS_TOKEN = "accessToken";
 

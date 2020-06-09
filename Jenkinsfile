@@ -27,7 +27,7 @@ pipeline {
             //   that are not deployed.
             sh '''
                ecs deploy -t ${GIT_COMMIT:0:6} --no-deregister --region us-east-1 --timeout 300 --task ${SERVICE} ${CLUSTER_NAME} ${SERVICE}
-               sh 'aws ecs wait services-stable --cluster ${CLUSTER_NAME} --services ${SERVICE} --region us-east-1
+               aws ecs wait services-stable --cluster ${CLUSTER_NAME} --services ${SERVICE} --region us-east-1
                '''
           }
       }

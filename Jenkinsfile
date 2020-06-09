@@ -4,7 +4,6 @@ pipeline {
   stages {
     stage('Build MAT Image') {
       steps {  
-            sh "mvn install:install-file -Dfile=./lib/vipuserservices-test-client-1.0.jar -DgroupId=com.telligen -DartifactId=vipuserservices-test-client -Dversion=1.0 -Dpackaging=jar"
             sh "mvn clean compile package -DskipTests"   
       }
     }

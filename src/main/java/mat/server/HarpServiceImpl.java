@@ -11,6 +11,9 @@ import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import mat.shared.HarpConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -33,6 +36,12 @@ import lombok.Setter;
 import lombok.ToString;
 import mat.client.login.service.HarpService;
 import mat.server.util.ServerConstants;
+
+import static mat.shared.HarpConstants.HARP_FAMILY_NAME;
+import static mat.shared.HarpConstants.HARP_FULLNAME;
+import static mat.shared.HarpConstants.HARP_GIVEN_NAME;
+import static mat.shared.HarpConstants.HARP_MIDDLE_NAME;
+import static mat.shared.HarpConstants.HARP_PRIMARY_EMAIL_ID;
 
 public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpService {
     private static final Log logger = LogFactory.getLog(HarpServiceImpl.class);
@@ -77,7 +86,7 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
         acceptList.add(MediaType.APPLICATION_JSON);
         headers.setAccept(acceptList);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<TokenIntrospect> request = new HttpEntity<>(headers);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
         Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("clientId", getHarpClientId());
         uriVariables.put("hint", "access_token");
@@ -114,43 +123,40 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
         return ServerConstants.getHarpClientId();
     }
 
-//    private TokenIntrospect validate(String token) {
-//        return getClient()
-//                .post()
-//                .uri(uriBuilder -> uriBuilder
-//                        .path("/introspect")
-//                        .queryParam("token", token)
-//                        .queryParam("client_id", ServerConstants.getHarpClientId())
-//                        .queryParam("token_type_hint", "id_token")
-//                        .build())
-//                .accept(MediaType.APPLICATION_JSON)
-//                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//                .retrieve()
-//                .bodyToMono(TokenIntrospect.class).block();
-//    }
-//
-//    private ClientResponse revokeToken(String token) {
-//        return getClient()
-//                .post()
-//                .uri(uriBuilder -> uriBuilder
-//                        .path("/revoke")
-//                        .queryParam("token", token)
-//                        .queryParam("client_id", getHarpClientId())
-//                        .queryParam("token_type_hint", "access_token")
-//                        .build())
-//                .accept(MediaType.APPLICATION_JSON)
-//                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//                .exchange()
-//                .onErrorResume(e -> Mono.error(new MatException("Unable to revoke token.")))
-//                .block();
-//    }
-//
-//    private WebClient getClient() {
-//        if(isNull(harpOtkaClient)) {
-//            this.harpOtkaClient = WebClient.create(getHarpUrl());
-//        }
-//        return harpOtkaClient;
-//    }
+    @Override
+    public Map<String, String> getUserInfo(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        List<MediaType> acceptList = new ArrayList<>();
+        acceptList.add(MediaType.APPLICATION_JSON);
+        headers.setAccept(acceptList);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("Authorization", "Bearer " + accessToken);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        Map<String, Object> uriVariables = new HashMap<>();
+        uriVariables.put("clientId", getHarpClientId());
+        ResponseEntity<UserInfo> response = null;
+        try {
+            response = getRestTemplate().exchange(getHarpUrl() + "/userinfo?client_id={clientId}",
+                    HttpMethod.POST,
+                    request,
+                    UserInfo.class,
+                    uriVariables);
+        } catch (RestClientResponseException e) {
+            logger.error("Error in getUserInfo:" + e.getMessage(), e);
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+            logger.error("Error in getUserInfo:" + e.getMessage(), e);
+        }
+        UserInfo userinfo = response.getBody();
+        Map<String, String> harpUserInfo = new HashMap<>();
+        harpUserInfo.put(HarpConstants.HARP_GIVEN_NAME, userinfo.getGivenName());
+        harpUserInfo.put(HarpConstants.HARP_MIDDLE_NAME, userinfo.getMiddleName());
+        harpUserInfo.put(HarpConstants.HARP_FAMILY_NAME, userinfo.getFamilyName());
+        harpUserInfo.put(HarpConstants.HARP_FULLNAME, userinfo.getName());
+        harpUserInfo.put(HarpConstants.HARP_PRIMARY_EMAIL_ID, userinfo.getEmail());
+        harpUserInfo.values().forEach(logger::debug);
+        return harpUserInfo;
+    }
 
     public RestTemplate getRestTemplate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
@@ -182,5 +188,18 @@ public class HarpServiceImpl extends SpringRemoteServiceServlet implements HarpS
         private String username;
         private String name;
         private String email;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    static class UserInfo {
+        private String email;
+        private String familyName;
+        private String givenName;
+        private String middleName;
+        private String name;
     }
 }

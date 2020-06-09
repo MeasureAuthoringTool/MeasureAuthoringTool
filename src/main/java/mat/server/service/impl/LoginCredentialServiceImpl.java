@@ -89,9 +89,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
     }
 
     private void updateUserDetails(Map<String, String> harpUserInfo, MatUserDetails userDetails, String sessionId) {
-        String fullName = harpUserInfo.get(HarpConstants.HARP_FULLNAME);
-        userDetails.setUsername(fullName.substring(0, fullName.indexOf(" ")));
-        userDetails.setUserLastName(fullName.substring(fullName.indexOf(" ")).trim());
+        userDetails.setUsername(harpUserInfo.get(HarpConstants.HARP_GIVEN_NAME));
+        userDetails.setUserLastName(harpUserInfo.get(HarpConstants.HARP_FAMILY_NAME));
         // Different emails at different organizatons for the same person.
 //        userDetails.setEmailAddress(harpUserInfo.get(HarpConstants.HARP_PRIMARY_EMAIL_ID));
         userDetails.setSessionId(sessionId);

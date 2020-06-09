@@ -3,8 +3,6 @@ package mat.client.login.service;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import java.util.Map;
-
 @RemoteServiceRelativePath("harpService")
 public interface HarpService extends RemoteService {
 
@@ -17,6 +15,4 @@ public interface HarpService extends RemoteService {
     String getHarpClientId();
 
     boolean validateToken(String token);
-
-    Map<String, String> getUserInfo(String accessToken);
 }

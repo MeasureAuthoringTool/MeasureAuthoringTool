@@ -14,9 +14,12 @@ import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.server.CqlValidatorRemoteCallService;
 import mat.server.FhirCQLResultParser;
+import mat.server.service.MeasurePackageService;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.MappingException;
@@ -79,6 +82,9 @@ public class HumanReadableGenerator {
 
 	@Autowired
     private FhirCQLResultParser fhirCQLResultParser;
+
+    @Autowired
+    private MeasurePackageService measurePackageService;
 	
 	public String generateHTMLForPopulationOrSubtree(String measureId, String subXML, String measureXML,CQLLibraryDAO cqlLibraryDAO) {
 
@@ -119,17 +125,26 @@ public class HumanReadableGenerator {
 				
 				CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXml);
                 String cqlString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
+
+                //generating cqlModel from MeasureXml
+                MeasureXmlModel measureXmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+                String measureXmlStr = "";
+
+                if (measureXmlModel != null && StringUtils.isNotBlank(measureXmlModel.getXml())) {
+                    measureXmlStr = measureXmlModel.getXml();
+                }
+                CQLModel cqlModelMeasureXml = CQLUtilityClass.getCQLModelFromXML(measureXmlStr);
 		
 				CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(processor.getOriginalDoc());
 
-				SaveUpdateCQLResult cqlResult = cqlModel.isFhir() ? parseFhirCqlLibraryForErrors(cqlModel, cqlString) : CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
-				Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModel);
+				SaveUpdateCQLResult cqlResult = cqlModel.isFhir() ? parseFhirCqlLibraryForErrors(cqlModelMeasureXml, cqlString) : CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
+				Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModelMeasureXml);
 				
 				XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
 				
 				HumanReadableModel model = (HumanReadableModel) xmlMarshalUtil.convertXMLToObject("SimpleXMLHumanReadableModelMapping.xml", simpleXml, HumanReadableModel.class);
 				List<String> measureTypes = null;
-				if(CollectionUtils.isNotEmpty(model.getMeasureInformation().getMeasureTypes())) {
+				if(model.getMeasureInformation() != null && CollectionUtils.isNotEmpty(model.getMeasureInformation().getMeasureTypes())) {
 					measureTypes = new ArrayList<>();
 					measureTypes.addAll(model.getMeasureInformation().getMeasureTypes());
 					Collections.sort(measureTypes);

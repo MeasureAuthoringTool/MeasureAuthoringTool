@@ -1,28 +1,11 @@
 package mat.server.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import mat.dto.fhirconversion.ConversionOutcome;
-import mat.dto.fhirconversion.ConversionResultDto;
-import mat.dto.fhirconversion.LibraryConversionResults;
-import mat.dto.fhirconversion.MeasureConversionResults;
-import mat.client.measure.ManageMeasureDetailModel;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.service.CQLService;
-import mat.client.shared.MatException;
-import mat.client.shared.MatRuntimeException;
-import mat.cql.CqlParser;
-import mat.cql.CqlToMatXml;
-import mat.cql.CqlVisitorFactory;
-import mat.dao.clause.MeasureDAO;
-import mat.dao.clause.MeasureXMLDAO;
-import mat.model.clause.Measure;
-import mat.model.clause.MeasureXML;
-import mat.model.cql.CQLModel;
-import mat.server.service.CodeListService;
-import mat.server.service.FhirMeasureRemoteCall;
-import mat.server.service.MeasureCloningService;
-import mat.server.service.MeasureLibraryService;
-import mat.shared.SaveUpdateCQLResult;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,14 +14,35 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
+import lombok.extern.slf4j.Slf4j;
+import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.service.CQLService;
+import mat.client.shared.MatException;
+import mat.client.shared.MatRuntimeException;
+import mat.dao.clause.MeasureDAO;
+import mat.dao.clause.MeasureXMLDAO;
+import mat.dto.fhirconversion.ConversionOutcome;
+import mat.dto.fhirconversion.ConversionResultDto;
+import mat.dto.fhirconversion.LibraryConversionResults;
+import mat.dto.fhirconversion.MeasureConversionResults;
+import mat.model.clause.Measure;
+import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLModel;
+import mat.server.service.CodeListService;
+import mat.server.service.FhirMeasureRemoteCall;
+import mat.server.service.MeasureCloningService;
+import mat.server.service.MeasureLibraryService;
+import mat.server.service.VSACApiService;
+import mat.server.service.cql.FhirCqlParser;
+import mat.server.service.cql.MatXmlResponse;
+import mat.shared.SaveUpdateCQLResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 
@@ -68,26 +72,34 @@ public class FhirMeasureServiceImplTest {
     private PlatformTransactionManager platformTransactionManager;
 
     @Mock
-    private CqlVisitorFactory cqlVisitorFactory;
-
-    @Mock
     private CodeListService codeListService;
 
     @Mock
-    private CqlToMatXml cqlToMatXml;
+    private RestTemplate restTemplate;
+
+    @Mock
+    private HttpSession httpSession;
+
+    @Mock
+    private VSACApiService vsacApiService;
+
+    @Mock
+    private FhirCqlParser cqlParser;
 
     @InjectMocks
     private FhirMeasureServiceImpl service;
 
     @BeforeEach
     public void before() {
-        ReflectionTestUtils.setField(service,"cqlParser",new CqlParser());
-        ReflectionTestUtils.setField(service,"cqlVisitorFactory",new CqlVisitorFactory());
-        //The following log statements are to appease our Codacy tooling it wont let us commit
+//        FhirCqlParser cqlParser = new FhirCqlParserService(restTemplate, httpSession, vsacApiService);
+//        ReflectionTestUtils.setField(service, "cqlParser", cqlParser);
+        // The following log statements are to appease our Codacy tooling it wont let us commit
         // if we dont use these some place:
-        log.info("" + platformTransactionManager);
-        log.info("" + cqlService);
-        log.info("" + codeListService);
+        assertNotNull(platformTransactionManager);
+        assertNotNull(cqlService);
+        assertNotNull(codeListService);
+        assertNotNull(cqlParser);
+        assertNotNull(httpSession);
     }
 
     @Test
@@ -155,9 +167,7 @@ public class FhirMeasureServiceImplTest {
         Mockito.when(measureXMLDAO.findForMeasure(Mockito.any())).thenReturn(measureXML);
 
 
-        Mockito.when(cqlVisitorFactory.getCqlToMatXmlVisitor()).thenReturn(cqlToMatXml);
-        ReflectionTestUtils.setField(service,"cqlVisitorFactory",cqlVisitorFactory);
-        Mockito.when(cqlToMatXml.getDestinationModel()).thenReturn(new CQLModel());
+        Mockito.when(cqlParser.parse(Mockito.anyString(), Mockito.any(CQLModel.class))).thenReturn(new MatXmlResponse(Collections.emptyList(), new CQLModel(), "CQL text"));
 
         service.TEST_MODE = true;
         service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);
@@ -230,7 +240,7 @@ public class FhirMeasureServiceImplTest {
         SaveUpdateCQLResult saveUpdateCQLResult = new SaveUpdateCQLResult();
         saveUpdateCQLResult.setSuccess(false);
 
-        doThrow(MatRuntimeException.class).when(measureLibraryService).recordRecentMeasureActivity(Mockito.any(),Mockito.any());
+        doThrow(MatRuntimeException.class).when(measureLibraryService).recordRecentMeasureActivity(Mockito.any(), Mockito.any());
 
         assertThrows(MatRuntimeException.class, () -> {
             service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);

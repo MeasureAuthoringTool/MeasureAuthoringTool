@@ -127,16 +127,20 @@ public class CQLIncludeLibrary implements IsSerializable {
         }
 
         // (cqlIncludeLibrary.libraryModelType == libraryModelType || libraryModelType != null && libraryModelType.equals(cqlIncludeLibrary.libraryModelType))
-        if (cqlIncludeLibrary.cqlLibraryId.equals(cqlLibraryId) &&
-                cqlIncludeLibrary.aliasName.equals(aliasName) &&
-                cqlIncludeLibrary.cqlLibraryName.equals(cqlLibraryName) &&
-                cqlIncludeLibrary.version.equals(version) &&
-                (Objects.equals(libraryModelType, cqlIncludeLibrary.libraryModelType))) {
+        if (Objects.equals(cqlIncludeLibrary.cqlLibraryId, cqlLibraryId) &&
+                Objects.equals(cqlIncludeLibrary.aliasName, aliasName) &&
+                Objects.equals(cqlIncludeLibrary.cqlLibraryName, cqlLibraryName) &&
+                Objects.equals(cqlIncludeLibrary.version, version) &&
+                Objects.equals(cqlIncludeLibrary.libraryModelType, libraryModelType)) {
             return true;
         }
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAliasName(), getCqlLibraryId(), getVersion(), getCqlLibraryName(), getLibraryModelType());
+    }
 
     public static class Comparator implements java.util.Comparator<CQLIncludeLibrary>, IsSerializable {
 

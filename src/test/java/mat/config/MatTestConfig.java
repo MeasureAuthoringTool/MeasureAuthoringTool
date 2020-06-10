@@ -1,5 +1,6 @@
 package mat.config;
 
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import org.springframework.boot.test.context.TestConfiguration;
@@ -28,6 +29,9 @@ public class MatTestConfig {
 
     @MockBean
     private DataSource dataSource;
+
+    @MockBean
+    private HttpSession httpSession;
 
     @Primary
     @Bean

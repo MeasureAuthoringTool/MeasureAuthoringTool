@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -44,9 +45,6 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
 import mat.client.shared.MatException;
-import mat.cql.CqlParser;
-import mat.cql.CqlToMatXml;
-import mat.cql.CqlVisitorFactory;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.clause.CQLLibraryDAO;
@@ -79,6 +77,9 @@ import mat.server.cqlparser.CQLLinter;
 import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.cqlparser.ReverseEngineerListener;
 import mat.server.service.MeasurePackageService;
+import mat.server.service.cql.FhirCqlParser;
+import mat.server.service.cql.LibraryErrors;
+import mat.server.service.cql.MatXmlResponse;
 import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.CQLLibraryWrapperMappingUtil;
 import mat.server.util.CQLUtil;
@@ -162,10 +163,7 @@ public class CQLServiceImpl implements CQLService {
     private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
 
     @Autowired
-    private CqlVisitorFactory visitorFactory;
-
-    @Autowired
-    private CqlParser cqlParser;
+    private FhirCqlParser cqlParser;
 
     @Autowired
     private FhirCQLResultParser fhirCQLResultParser;
@@ -217,19 +215,23 @@ public class CQLServiceImpl implements CQLService {
                     errors = listener.getSyntaxErrors();
                     break;
                 case "FHIR":
-                    // Use the CqlToMatXml parser for FHIR.
-                    CqlToMatXml converter = visitorFactory.getCqlToMatXmlVisitor();
-                    converter.setSourceModel(config.getPreviousCQLModel());
                     try {
-                        cqlParser.parse(cql, converter);
-                        newModel = converter.getDestinationModel();
-
-                        //Overwrite fields the user is not allowed to change for FHIR.
+                        MatXmlResponse cqlParserResponse = cqlParser.parse(cql, config.getPreviousCQLModel());
+                        newModel = cqlParserResponse.getCqlModel();
+                        // Overwrite fields the user is not allowed to change for FHIR.
                         newModel.setLibraryName(config.getPreviousCQLModel().getLibraryName());
                         newModel.setUsingModelVersion(config.getPreviousCQLModel().getUsingModelVersion());
                         newModel.setUsingModel(config.getPreviousCQLModel().getUsingModel());
                         newModel.setVersionUsed(config.getPreviousCQLModel().getVersionUsed());
-                    } catch (MatException me) {
+                        // Combine all cql errors in a single list
+                        errors = Optional.ofNullable(cqlParserResponse.getErrors())
+                                .stream()
+                                .flatMap(Collection::stream)
+                                .map(LibraryErrors::getErrors)
+                                .flatMap(Collection::stream)
+                                .collect(Collectors.toList());
+
+                    } catch (RuntimeException me) {
                         newModel.setLibraryName("");
                         newModel.setVersionUsed("");
                         errors = Collections.singletonList(new CQLError());
@@ -244,7 +246,7 @@ public class CQLServiceImpl implements CQLService {
                     throw new IllegalArgumentException("Unexpected modelType " + modelType);
             }
 
-            //Parser errors.
+            // Parser errors.
             if (!errors.isEmpty()) {
                 SaveUpdateCQLResult r = new SaveUpdateCQLResult();
                 r.setXml(xml); // retain the old xml if there are syntax errors (essentially not saving)
@@ -1024,7 +1026,7 @@ public class CQLServiceImpl implements CQLService {
             result = parseCQLLibraryForErrors(cqlModel);
         }
 
-        if (result.getCqlErrors().isEmpty() && !StringUtils.equals(cqlModel.getUsingModel(),"FHIR")) {
+        if (result.getCqlErrors().isEmpty() && !StringUtils.equals(cqlModel.getUsingModel(), "FHIR")) {
             result.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
             setUsedValuesets(result, cqlModel);
             setUsedCodes(result, cqlModel);

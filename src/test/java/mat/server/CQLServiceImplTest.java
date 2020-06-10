@@ -8,10 +8,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import mat.cql.CqlParser;
-import mat.cql.CqlVisitorFactory;
 import mat.dao.UserDAO;
 import mat.server.service.MeasurePackageService;
+import mat.server.service.cql.FhirCqlParser;
 import mat.shared.SaveUpdateCQLResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,10 +30,7 @@ public class CQLServiceImplTest {
     private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
 
     @Mock
-    private CqlVisitorFactory visitorFactory;
-
-    @Mock
-    private CqlParser cqlParser;
+    private FhirCqlParser cqlParser;
 
     @Mock
     private FhirCQLResultParser fhirCQLResultParser;
@@ -46,7 +42,6 @@ public class CQLServiceImplTest {
     public void setUp() {
         // Mute codacy "avoid unused private fields" warning
         assertNotNull(cqlParser);
-        assertNotNull(visitorFactory);
         assertNotNull(userDAO);
         assertNotNull(measurePackageService);
     }

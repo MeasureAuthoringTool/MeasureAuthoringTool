@@ -91,15 +91,15 @@ public class FhirMeasureServiceImplTest {
 
     @BeforeEach
     public void before() {
-//        FhirCqlParser cqlParser = new FhirCqlParserService(restTemplate, httpSession, vsacApiService);
-//        ReflectionTestUtils.setField(service, "cqlParser", cqlParser);
-        // The following log statements are to appease our Codacy tooling it wont let us commit
+        // The following statements are to appease our Codacy tooling it wont let us commit
         // if we dont use these some place:
         assertNotNull(platformTransactionManager);
         assertNotNull(cqlService);
         assertNotNull(codeListService);
         assertNotNull(cqlParser);
         assertNotNull(httpSession);
+        assertNotNull(restTemplate);
+        assertNotNull(vsacApiService);
     }
 
     @Test

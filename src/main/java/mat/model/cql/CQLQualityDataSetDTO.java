@@ -8,20 +8,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 	
 	
-	/**
-	 * The Class Comparator.
-	 */
-	public static class Comparator implements java.util.Comparator<CQLQualityDataSetDTO>, IsSerializable {
-		
-		/* (non-Javadoc)
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
-		@Override
-		public int compare(CQLQualityDataSetDTO o1, CQLQualityDataSetDTO o2) {
-			return o1.getQDMElement().compareTo(o2.getQDMElement());
-		}
-		
-	}
 	private boolean isValidatedWithVsac = true;
 	/** QDM Modified At VSAC. */
 	private boolean hasModifiedAtVSAC;
@@ -314,4 +300,14 @@ public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 				", valueSetType='" + valueSetType + '\'' +
 				'}';
 	}
+
+	public static class Comparator implements java.util.Comparator<CQLQualityDataSetDTO>, IsSerializable {
+
+		@Override
+		public int compare(CQLQualityDataSetDTO o1, CQLQualityDataSetDTO o2) {
+			return o1.getQDMElement().compareTo(o2.getQDMElement());
+		}
+
+	}
+
 }

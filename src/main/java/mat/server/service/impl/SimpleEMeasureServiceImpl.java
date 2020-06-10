@@ -146,7 +146,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	private HSSFWorkbook wkbk = null;
 	
 	@Autowired
-	private HumanReadableGenerator humanReadableGenerator; 
+	private HumanReadableGenerator humanReadableGenerator;
 
 	@Override
 	public final ExportResult exportMeasureIntoSimpleXML(final String measureId, final String xmlString, final List<MatValueSet> matValueSets) throws Exception {

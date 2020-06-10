@@ -137,7 +137,7 @@ public class HumanReadableGenerator {
 		
 				CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(processor.getOriginalDoc());
 
-				SaveUpdateCQLResult cqlResult = cqlModel.isFhir() ? parseFhirCqlLibraryForErrors(cqlModelMeasureXml, cqlString) : CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
+				SaveUpdateCQLResult cqlResult = cqlModel.isFhir() ? parseFhirCqlLibraryForErrors(cqlModelMeasureXml, cqlString) : CQLUtil.parseQDMCQLLibraryForErrors(cqlModelMeasureXml, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
 				Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModelMeasureXml);
 				
 				XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();

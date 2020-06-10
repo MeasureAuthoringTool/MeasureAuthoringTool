@@ -343,7 +343,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             harpUserVerificationPresenter = new HarpUserVerificationPresenter(harpUserVerificationView);
             content.clear();
             harpUserVerificationInProgress = true;
-            buildLinksPanel();
             harpUserVerificationPresenter.go(content);
         });
 

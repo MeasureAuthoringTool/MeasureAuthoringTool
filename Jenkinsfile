@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage('Notify'){
       steps {
-              slackSend channel: "@Brendan Donohue" color: "#439FE0", message: "Build Started: ${env.JOB_NAME} (build #${env.BUILD_NUMBER} - commit ${env.GIT_COMMIT} on branch ${env.GIT_BRANCH}"
+              slackSend channel: "@Brendan Donohue", color: "#439FE0", message: "Build Started: ${env.JOB_NAME} (build #${env.BUILD_NUMBER} - commit ${env.GIT_COMMIT} on branch ${env.GIT_BRANCH}"
             }
     }
     stage('Build MAT Image') {
@@ -39,10 +39,10 @@ pipeline {
     }
     post {
         success{
-            slackSend channel: "@Brendan Donohue" color: "#439FE0", message: "Build Completed Successfully: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+            slackSend channel: "@Brendan Donohue", color: "#439FE0", message: "Build Completed Successfully: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
         failure{
-            slackSend channel: "@Brendan Donohue" color: "#ff0000", message: "Build Failed: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+            slackSend channel: "@Brendan Donohue", color: "#ff0000", message: "Build Failed: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
 }

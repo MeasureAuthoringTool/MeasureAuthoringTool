@@ -204,6 +204,7 @@ public class CQLServiceImpl implements CQLService {
     public SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config, String modelType) {
         CQLModel newModel = new CQLModel();
         List<CQLError> errors = new ArrayList<>();
+        MatXmlResponse fhirResponse;
         try {
             //Now parse it into a new CQLModel
             switch (modelType) {
@@ -217,16 +218,16 @@ public class CQLServiceImpl implements CQLService {
                 case "FHIR":
                     try {
                         // This code overwrites some of the users changes int he CQL that are not allowed.
-                        MatXmlResponse cqlParserResponse = cqlParser.parse(cql, config.getPreviousCQLModel());
-                        newModel = cqlParserResponse.getCqlModel();
+                        fhirResponse = cqlParser.parse(cql, config.getPreviousCQLModel());
+                        newModel = fhirResponse.getCqlModel();
                         // Combine all cql errors in a single list
-                        errors = Optional.ofNullable(cqlParserResponse.getErrors())
+                        errors = Optional.ofNullable(fhirResponse.getErrors())
                                 .stream()
                                 .flatMap(Collection::stream)
                                 .map(LibraryErrors::getErrors)
                                 .flatMap(Collection::stream)
+                                .filter(e -> StringUtils.equals("Severe",e.getSeverity()))
                                 .collect(Collectors.toList());
-
                     } catch (RuntimeException me) {
                         newModel.setLibraryName("");
                         newModel.setVersionUsed("");

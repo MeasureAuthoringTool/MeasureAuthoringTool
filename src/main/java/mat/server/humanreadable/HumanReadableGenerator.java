@@ -14,7 +14,10 @@ import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.server.service.MeasurePackageService;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.MappingException;
@@ -52,6 +55,9 @@ import mat.shared.SaveUpdateCQLResult;
 
 @Component
 public class HumanReadableGenerator {
+
+    @Autowired
+    private MeasurePackageService measurePackageService;
 	
 	private final String CQLFUNCTION = "cqlfunction";
 
@@ -109,16 +115,25 @@ public class HumanReadableGenerator {
 				XmlProcessor processor = new XmlProcessor(simpleXml);
 				
 				CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXml);
+
+				//generating cqlModel from MeasureXml
+                MeasureXmlModel measureXmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
+                String measureXmlStr = "";
+
+                if (measureXmlModel != null && StringUtils.isNotBlank(measureXmlModel.getXml())) {
+                    measureXmlStr = measureXmlModel.getXml();
+                }
+				CQLModel cqlModelMeasureXml = CQLUtilityClass.getCQLModelFromXML(measureXmlStr);
 		
 				CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(processor.getOriginalDoc());
-				SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
-				Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModel);
+				SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModelMeasureXml, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
+				Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModelMeasureXml);
 				
 				XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
 				
 				HumanReadableModel model = (HumanReadableModel) xmlMarshalUtil.convertXMLToObject("SimpleXMLHumanReadableModelMapping.xml", simpleXml, HumanReadableModel.class);
 				List<String> measureTypes = null;
-				if(CollectionUtils.isNotEmpty(model.getMeasureInformation().getMeasureTypes())) {
+				if(model.getMeasureInformation() != null && CollectionUtils.isNotEmpty(model.getMeasureInformation().getMeasureTypes())) {
 					measureTypes = new ArrayList<>();
 					measureTypes.addAll(model.getMeasureInformation().getMeasureTypes());
 					Collections.sort(measureTypes);

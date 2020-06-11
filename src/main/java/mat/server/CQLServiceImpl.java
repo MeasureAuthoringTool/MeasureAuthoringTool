@@ -216,13 +216,9 @@ public class CQLServiceImpl implements CQLService {
                     break;
                 case "FHIR":
                     try {
+                        // This code overwrites some of the users changes int he CQL that are not allowed.
                         MatXmlResponse cqlParserResponse = cqlParser.parse(cql, config.getPreviousCQLModel());
                         newModel = cqlParserResponse.getCqlModel();
-                        // Overwrite fields the user is not allowed to change for FHIR.
-                        newModel.setLibraryName(config.getPreviousCQLModel().getLibraryName());
-                        newModel.setUsingModelVersion(config.getPreviousCQLModel().getUsingModelVersion());
-                        newModel.setUsingModel(config.getPreviousCQLModel().getUsingModel());
-                        newModel.setVersionUsed(config.getPreviousCQLModel().getVersionUsed());
                         // Combine all cql errors in a single list
                         errors = Optional.ofNullable(cqlParserResponse.getErrors())
                                 .stream()

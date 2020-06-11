@@ -229,6 +229,7 @@ public class CQLServiceImpl implements CQLService {
                         newModel.setUsingModelVersion(config.getPreviousCQLModel().getUsingModelVersion());
                         newModel.setUsingModel(config.getPreviousCQLModel().getUsingModel());
                         newModel.setVersionUsed(config.getPreviousCQLModel().getVersionUsed());
+                        newModel.setLibraryComment(config.getPreviousCQLModel().getLibraryComment());
                     } catch (MatException me) {
                         newModel.setLibraryName("");
                         newModel.setVersionUsed("");
@@ -1024,7 +1025,7 @@ public class CQLServiceImpl implements CQLService {
             result = parseCQLLibraryForErrors(cqlModel);
         }
 
-        if (result.getCqlErrors().isEmpty() && !StringUtils.equals(cqlModel.getUsingModel(),"FHIR")) {
+        if (result.getCqlErrors().isEmpty() && !StringUtils.equals(cqlModel.getUsingModel(), "FHIR")) {
             result.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
             setUsedValuesets(result, cqlModel);
             setUsedCodes(result, cqlModel);

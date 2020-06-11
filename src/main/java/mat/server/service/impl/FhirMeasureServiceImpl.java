@@ -3,9 +3,6 @@ package mat.server.service.impl;
 import java.io.IOException;
 import java.util.Optional;
 
-import mat.client.measure.FhirMeasurePackageResult;
-import mat.dto.fhirconversion.ConversionOutcome;
-import mat.dto.fhirconversion.ConversionResultDto;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import mat.client.measure.FhirMeasurePackageResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.CQLService;
@@ -23,17 +21,18 @@ import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirValidationStatus;
 import mat.client.shared.MatException;
 import mat.client.shared.MatRuntimeException;
-import mat.cql.CqlParser;
-import mat.cql.CqlVisitorFactory;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
+import mat.dto.fhirconversion.ConversionOutcome;
+import mat.dto.fhirconversion.ConversionResultDto;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
-import mat.server.service.FhirMeasureService;
 import mat.server.service.FhirMeasureRemoteCall;
+import mat.server.service.FhirMeasureService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
+import mat.server.service.cql.FhirCqlParser;
 import mat.server.util.XmlProcessor;
 
 @Service
@@ -57,9 +56,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
     private final CQLService cqlService;
 
-    private final CqlParser cqlParser;
-
-    private final CqlVisitorFactory cqlVisitorFactory;
+    private final FhirCqlParser cqlParser;
 
     public FhirMeasureServiceImpl(FhirMeasureRemoteCall fhirOrchestrationGatewayService,
                                   MeasureLibraryService measureLibraryService,
@@ -68,8 +65,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                                   MeasureXMLDAO measureXMLDAO,
                                   PlatformTransactionManager txManager,
                                   CQLService cqlService,
-                                  CqlParser cqlParser,
-                                  CqlVisitorFactory cqlVisitorFactory) {
+                                  FhirCqlParser cqlParser) {
         this.fhirMeasureRemote = fhirOrchestrationGatewayService;
         this.measureLibraryService = measureLibraryService;
         this.measureCloningService = measureCloningService;
@@ -78,7 +74,6 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         this.transactionTemplate = new TransactionTemplate(txManager);
         this.cqlService = cqlService;
         this.cqlParser = cqlParser;
-        this.cqlVisitorFactory = cqlVisitorFactory;
     }
 
     @Override
@@ -150,7 +145,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
                 measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
             } catch (MatException | MatRuntimeException e) {
-                logger.error("persistFhirMeasure error",e);
+                logger.error("persistFhirMeasure error", e);
                 throw new MatRuntimeException("Mat cannot persist converted FHIR measure CQL file.");
             }
         });
@@ -167,12 +162,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                     cqlModelXmlFrag,
                     CQLModel.class);
 
-            var convCqlToMatXml = cqlVisitorFactory.getCqlToMatXmlVisitor();
-            convCqlToMatXml.setSourceModel(sourceCqlModel);
-
-            cqlParser.parse(cql,convCqlToMatXml);
-
-            var destModel = convCqlToMatXml.getDestinationModel();
+            var destModel = cqlParser.parse(cql, sourceCqlModel).getCqlModel();
 
             String newCqlModelXmlFrag = CQLUtilityClass.getXMLFromCQLModel(destModel);
             String destinationMeasureXml = processor.replaceNode(newCqlModelXmlFrag, "cqlLookUp", "measure");
@@ -182,7 +172,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                 //Currently only includes global libs and they should all be there.
                 //Just add them in.
                 if (StringUtils.isNotBlank(i.getCqlLibraryId())) {
-                    cqlService.saveCQLAssociation(i,measureId);
+                    cqlService.saveCQLAssociation(i, measureId);
                 }
             });
         } catch (IOException | MappingException | MarshalException | ValidationException e) {

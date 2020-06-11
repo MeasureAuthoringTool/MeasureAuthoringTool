@@ -35,7 +35,6 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
-import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
@@ -497,10 +496,9 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 
     @Override
     public MeasureDetailsModel getMeasureDetailsAndLogRecentMeasure(String measureId, String userId) {
-        MeasureDetailsModel measureDetailsModel = null;
         ManageMeasureDetailModel manageMeasureDetailModel = getManageMeasureDetailModel(measureId, userId);
         MeasureDetailModelMapper measureDetailModelMapper = new ManageMeasureDetailModelMapper(manageMeasureDetailModel);
-        measureDetailsModel = measureDetailModelMapper.getMeasureDetailsModel(isCompositeMeasure(measureId));
+        MeasureDetailsModel measureDetailsModel = measureDetailModelMapper.getMeasureDetailsModel(isCompositeMeasure(measureId));
         return measureDetailsModel;
     }
 

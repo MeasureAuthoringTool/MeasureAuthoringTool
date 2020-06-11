@@ -22,6 +22,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	private static final long serialVersionUID = 1L;
 	
 	@Autowired VSACApiService vsacapi;
+
+	@Override
+	public String getSessionId() {
+		HttpServletRequest thread = getThreadLocalRequest();
+		return thread.getSession().getId();
+	}
 	
 	/**
 	 *	Method to invalidate VSAC user session by removing HTTP session Id from UMLSSessionMap.

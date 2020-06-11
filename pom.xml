@@ -129,6 +129,7 @@
             <artifactId>cql-formatter</artifactId>
             <version>${cqframework.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>

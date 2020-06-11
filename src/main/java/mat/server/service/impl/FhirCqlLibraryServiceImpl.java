@@ -1,12 +1,27 @@
 package mat.server.service.impl;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xerces.impl.dv.util.Base64;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.hl7.fhir.r4.model.Attachment;
+import org.hl7.fhir.r4.model.Library;
+import org.springframework.stereotype.Service;
+
 import ca.uhn.fhir.context.FhirContext;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirLibraryPackageResult;
 import mat.client.measure.service.FhirValidationStatus;
 import mat.client.shared.MatException;
-import mat.cql.CqlParser;
-import mat.cql.CqlVisitorFactory;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dto.fhirconversion.ConversionOutcome;
 import mat.dto.fhirconversion.ConversionResultDto;
@@ -21,24 +36,9 @@ import mat.server.CQLUtilityClass;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.service.FhirCqlLibraryService;
 import mat.server.service.FhirLibraryRemoteCall;
+import mat.server.service.cql.FhirCqlParser;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.xerces.impl.dv.util.Base64;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.hl7.fhir.r4.model.Attachment;
-import org.hl7.fhir.r4.model.Library;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
@@ -53,20 +53,16 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
 
     private final FhirContext fhirContext;
 
-    private final CqlParser cqlParser;
-
-    private final CqlVisitorFactory cqlVisitorFactory;
+    private final FhirCqlParser cqlParser;
 
     private final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
 
-    public FhirCqlLibraryServiceImpl(CqlParser cqlParser,
-                                     CqlVisitorFactory cqlVisitorFactory,
+    public FhirCqlLibraryServiceImpl(FhirCqlParser cqlParser,
                                      FhirLibraryRemoteCall fhirLibRemote,
                                      CQLLibraryServiceInterface cqlLibService,
                                      CQLLibraryDAO cqlLibDao,
                                      FhirContext fhirContext) {
         this.cqlParser = cqlParser;
-        this.cqlVisitorFactory = cqlVisitorFactory;
         this.fhirLibRemote = fhirLibRemote;
         this.cqlLibService = cqlLibService;
         this.cqlLibraryDAO = cqlLibDao;
@@ -160,7 +156,7 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
         newFhirLibrary.setSetId(existingLibrary.getSetId());
         newFhirLibrary.setOwnerId(existingLibrary.getOwnerId());
         newFhirLibrary.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
-        newFhirLibrary.setFhirVersion(MATPropertiesService.get().getQdmVersion());
+        newFhirLibrary.setFhirVersion(MATPropertiesService.get().getFhirVersion());
         newFhirLibrary.setLibraryModelType(ModelTypeHelper.FHIR);
 
         newFhirLibrary.setLibraryXMLAsByteArray(generateCqlXml(existingLibrary, fhirCqlOpt));
@@ -181,7 +177,7 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
         logger.debug("deleteDraftFhirLibrariesInSet : removed " + removed);
     }
 
-    private String generateCqlXml(CQLLibrary existingLibrary, String newCql) throws MarshalException, MappingException, ValidationException, IOException, MatException {
+    private String generateCqlXml(CQLLibrary existingLibrary, String newCql) throws MarshalException, MappingException, ValidationException, IOException {
         String sourceCqlXml = existingLibrary.getLibraryXMLAsString();
 
         XmlProcessor processor = new XmlProcessor(sourceCqlXml);
@@ -190,12 +186,7 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
                 cqlModelXmlFrag,
                 CQLModel.class);
 
-        var convCqlToMatXml = cqlVisitorFactory.getCqlToMatXmlVisitor();
-        convCqlToMatXml.setSourceModel(sourceCqlModel);
-
-        cqlParser.parse(newCql, convCqlToMatXml);
-
-        var destModel = convCqlToMatXml.getDestinationModel();
+        var destModel = cqlParser.parse(newCql, sourceCqlModel).getCqlModel();
         return CQLUtilityClass.getXMLFromCQLModel(destModel);
     }
 

@@ -1,5 +1,7 @@
 package mat.config;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import org.springframework.boot.test.context.TestConfiguration;
@@ -9,6 +11,7 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.mail.SimpleMailMessage;
 
+import lombok.extern.slf4j.Slf4j;
 import mat.server.service.jobs.CheckUserChangePasswordLimit;
 import mat.server.service.jobs.OnetimeUserNotificationTask;
 
@@ -20,6 +23,7 @@ import mat.server.service.jobs.OnetimeUserNotificationTask;
  * This wiring will help create Integration tests to execute
  * functionality using real data.
  */
+@Slf4j
 @TestConfiguration
 @ImportResource({
         "file:**/war/WEB-INF/applicationContext-mail.xml",
@@ -28,6 +32,9 @@ public class MatTestConfig {
 
     @MockBean
     private DataSource dataSource;
+
+    @MockBean
+    private HttpSession httpSession;
 
     @Primary
     @Bean
@@ -47,4 +54,9 @@ public class MatTestConfig {
         return new SimpleMailMessage();
     }
 
+    @PostConstruct
+    public void init() {
+        log.debug("Mute codacy compalin", dataSource);
+        log.debug("Mute codacy compalin", httpSession);
+    }
 }

@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage('Notify'){
       steps {
-              slackSend  color: "#439FE0", message: "Build Started - ${env.JOB_NAME} [${env.BUILD_NUMBER}] (<${env.BUILD_URL}|Open>) (<${env.GIT_URL}|Git>)"
+              slackSend  color: "#439FE0", message: "Build Started: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (<${env.BUILD_URL}|Open>)"
             }
     }
     stage('Build MAT Image') {
@@ -39,10 +39,10 @@ pipeline {
     }
     post {
         success{
-            slackSend  color: "#439FE0", message: "Job Completed Successfully: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (<${env.BUILD_URL}|Open>)"
+            slackSend  color: "#439FE0", message: "Build Completed Successfully: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (<${env.BUILD_URL}|Open>)"
         }
         failure{
-            slackSend  color: "#ff0000", message: "Job Failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (<${env.BUILD_URL}|Open>)"
+            slackSend  color: "#ff0000", message: "Build Failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (<${env.BUILD_URL}|Open>)"
         }
     }
 }

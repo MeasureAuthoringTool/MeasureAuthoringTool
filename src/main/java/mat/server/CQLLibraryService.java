@@ -139,12 +139,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     private UserService userService;
 
     @Autowired
-    private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
-
-    @Autowired
     private FhirCqlLibraryService fhirCqlLibraryService;
 
-    javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+    private javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 
     // 3 minutes
     private final long lockThreshold = TimeUnit.MINUTES.toMillis(3);
@@ -1223,8 +1220,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(library.getLibraryModelType())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
             String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
-            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString);
-            SaveUpdateCQLResult cqlResult = cqlService.generateParsedCqlObject(cqlValidationResponse, cqlModel);
+            SaveUpdateCQLResult cqlResult = cqlService.parseFhirCQLForErrors(cqlModel, cqlFileString);
 
             return cqlService.generateUsedCqlArtifactsResult(cqlModel, cqlXml, cqlResult);
         } else {

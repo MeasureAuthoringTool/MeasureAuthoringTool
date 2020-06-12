@@ -160,13 +160,7 @@ public class CQLServiceImpl implements CQLService {
     private UserDAO userDAO;
 
     @Autowired
-    private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
-
-    @Autowired
-    private FhirCqlParser cqlParser;
-
-    @Autowired
-    private FhirCQLResultParser fhirCQLResultParser;
+    private FhirCqlParser fhirCqlParser;
 
     @Override
     public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String xml, String libraryName, String libraryComment) {
@@ -204,7 +198,7 @@ public class CQLServiceImpl implements CQLService {
     public SaveUpdateCQLResult saveCQLFile(String xml, String cql, CQLLinterConfig config, String modelType) {
         CQLModel newModel = new CQLModel();
         List<CQLError> errors = new ArrayList<>();
-        MatXmlResponse fhirResponse;
+        MatXmlResponse fhirResponse = new MatXmlResponse();
         try {
             //Now parse it into a new CQLModel
             switch (modelType) {
@@ -218,7 +212,7 @@ public class CQLServiceImpl implements CQLService {
                 case "FHIR":
                     try {
                         // This code overwrites some of the users changes int he CQL that are not allowed.
-                        fhirResponse = cqlParser.parse(cql, config.getPreviousCQLModel());
+                        fhirResponse = fhirCqlParser.parse(cql, config.getPreviousCQLModel());
                         newModel = fhirResponse.getCqlModel();
                         // Combine all cql errors in a single list
                         errors = Optional.ofNullable(fhirResponse.getErrors())
@@ -226,7 +220,7 @@ public class CQLServiceImpl implements CQLService {
                                 .flatMap(Collection::stream)
                                 .map(LibraryErrors::getErrors)
                                 .flatMap(Collection::stream)
-                                .filter(e -> StringUtils.equals("Severe",e.getSeverity()))
+                                .filter(e -> StringUtils.equals("Severe", e.getSeverity()))
                                 .collect(Collectors.toList());
                     } catch (RuntimeException me) {
                         newModel.setLibraryName("");
@@ -266,7 +260,7 @@ public class CQLServiceImpl implements CQLService {
             // Validation.
             SaveUpdateCQLResult parsedResult;
             if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
-                parsedResult = parseFhirCqlLibraryForErrors(newModel, scrubbedCql);
+                parsedResult = parseFhirCQLForErrors(newModel, fhirResponse.getErrors());
             } else {
                 parsedResult = parseCQLLibraryForErrors(newModel);
             }
@@ -326,12 +320,6 @@ public class CQLServiceImpl implements CQLService {
 
     private String marshallCQLModel(CQLModel cqlModel) {
         return CQLUtilityClass.getXMLFromCQLModel(cqlModel);
-    }
-
-    private CQLModel reverseEngineerCQLModel(String cql, CQLModel previousModel) throws IOException {
-        ReverseEngineerListener listener = new ReverseEngineerListener(cql, previousModel);
-        CQLModel reversedEngineeredCQLModel = listener.getCQLModel();
-        return reversedEngineeredCQLModel;
     }
 
     private void updateLibraryName(XmlProcessor processor, String libraryName) {
@@ -1017,13 +1005,13 @@ public class CQLServiceImpl implements CQLService {
         String cqlString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
 
         SaveUpdateCQLResult result;
-        if (ModelTypeHelper.isFhir(cqlModel.getUsingModel())) {
-            result = parseFhirCqlLibraryForErrors(cqlModel, cqlString);
+        if (cqlModel.isFhir()) {
+            result = parseFhirCQLForErrors(cqlModel, cqlString);
         } else {
             result = parseCQLLibraryForErrors(cqlModel);
         }
 
-        if (result.getCqlErrors().isEmpty() && !StringUtils.equals(cqlModel.getUsingModel(), "FHIR")) {
+        if (result.getCqlErrors().isEmpty() && !cqlModel.isFhir()) {
             result.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
             setUsedValuesets(result, cqlModel);
             setUsedCodes(result, cqlModel);
@@ -1076,7 +1064,7 @@ public class CQLServiceImpl implements CQLService {
 
         SaveUpdateCQLResult result;
         if (ModelTypeHelper.isFhir(modelType)) {
-            result = parseFhirCqlLibraryForErrors(cqlModel, cqlString);
+            result = parseFhirCQLForErrors(cqlModel, cqlString);
         } else {
             // QDM
             List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
@@ -1113,13 +1101,6 @@ public class CQLServiceImpl implements CQLService {
         result.setCqlString(cqlString);
         result.setLibraryName(parentLibraryName);
 
-        return result;
-    }
-
-    private SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel, String cqlString) {
-        SaveUpdateCQLResult result;
-        String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlString);
-        result = generateParsedCqlObject(cqlValidationResponse, cqlModel);
         return result;
     }
 
@@ -1372,27 +1353,29 @@ public class CQLServiceImpl implements CQLService {
         return sb.toString();
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public String getSupplementalDefinitions() {
         return CQL_SUPPLEMENTAL_DEFINITION_XML_STRING;
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public String getDefaultCodeSystems() {
         return CQL_DEFAULT_CODE_SYSTEM_XML_STRING;
+    }
+
+    @Override
+    public SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, String cql) {
+        return fhirCqlParser.parseFhirCqlLibraryForErrors(cqlModel, cql);
+    }
+
+    private SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, List<LibraryErrors> libraryErrors) {
+        return fhirCqlParser.parseFhirCqlLibraryForErrors(cqlModel, libraryErrors);
     }
 
     private SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result, String xml,
                                                             String cqlExpressionName, String logic, String expressionName, String expressionType, String modelType) {
 
         SaveUpdateCQLResult parsedCQL;
-        String cqlValidationResponse;
 
         CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
 
@@ -1433,8 +1416,7 @@ public class CQLServiceImpl implements CQLService {
         List<CQLError> expressionWarnings = new ArrayList<>();
 
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
-            cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString);
-            parsedCQL = generateParsedCqlObject(cqlValidationResponse, cqlModel);
+            parsedCQL = parseFhirCQLForErrors(cqlModel, cqlFileString);
         } else {
             List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
             parsedCQL = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
@@ -1467,11 +1449,6 @@ public class CQLServiceImpl implements CQLService {
         result.setCqlWarnings(expressionWarnings);
         result.setUsedCQLArtifacts(parsedCQL.getUsedCQLArtifacts());
         return result;
-    }
-
-    @Override
-    public SaveUpdateCQLResult generateParsedCqlObject(String cqlValidationResponse, CQLModel cqlModel) {
-        return fhirCQLResultParser.generateParsedCqlObject(cqlValidationResponse, cqlModel);
     }
 
     private List<CQLError> buildExpressionExceptionList(int startLine, int endLine, List<CQLError> cqlErrors,

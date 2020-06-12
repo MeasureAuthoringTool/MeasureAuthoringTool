@@ -1,5 +1,7 @@
 package mat.server.service.cql;
 
+import javax.validation.Valid;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MatXmlReq {
     private boolean isLinting = true;
-    private ValidationRequest validationRequest;
+    @Valid
+    private ValidationRequest validationRequest = new ValidationRequest();
 }

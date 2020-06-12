@@ -1,6 +1,7 @@
 package mat.server.service.cql;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -20,6 +21,7 @@ import mat.client.shared.MatRuntimeException;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.model.cql.CQLModel;
 import mat.server.service.VSACApiService;
+import mat.shared.SaveUpdateCQLResult;
 
 /**
  * A service used to parse FHIR cql.
@@ -58,6 +60,20 @@ public class FhirCqlParserService implements FhirCqlParser {
         return rest(fhirServicesUrl + MATXML_FROM_CQL_SRVC, HttpMethod.PUT, request, MatXmlResponse.class, Collections.emptyMap());
     }
 
+    @Override
+    public SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel, List<LibraryErrors> libraryErrors) {
+        CqlValidationResultBuilder resultBuilder = new CqlValidationResultBuilder();
+        resultBuilder.cqlModel(cqlModel);
+        resultBuilder.libraryErrors(libraryErrors);
+        return resultBuilder.buildFromLibraryErrors();
+    }
+
+    @Override
+    public SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel, String cqlString) {
+        MatXmlResponse fhirResponse = parse(cqlString, cqlModel);
+        return parseFhirCqlLibraryForErrors(cqlModel, fhirResponse.getErrors());
+    }
+
     private String getTicket() {
         VsacTicketInformation ticketInfo = vsacApiService.getTicketGrantingTicket(httpSession.getId());
         return ticketInfo == null ? null : ticketInfo.getTicket();
@@ -81,4 +97,5 @@ public class FhirCqlParserService implements FhirCqlParser {
         }
         return response.getBody();
     }
+
 }

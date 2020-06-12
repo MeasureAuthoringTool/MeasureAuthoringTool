@@ -204,14 +204,14 @@ public class CQLServiceImpl implements CQLService {
             switch (modelType) {
                 case "QDM":
                     // Use ReverseEngineerListener for QDM.
-                    // This code overwrites some of the users changes int he CQL that are not allowed.
+                    // This code overwrites some of the users changes in the CQL that are not allowed.
                     ReverseEngineerListener listener = new ReverseEngineerListener(cql, config.getPreviousCQLModel());
                     newModel = listener.getCQLModel();
                     errors = listener.getSyntaxErrors();
                     break;
                 case "FHIR":
                     try {
-                        // This code overwrites some of the users changes int he CQL that are not allowed.
+                        // This code overwrites some of the users changes in the CQL that are not allowed.
                         fhirResponse = fhirCqlParser.parse(cql, config.getPreviousCQLModel());
                         newModel = fhirResponse.getCqlModel();
                         // Combine all cql errors in a single list

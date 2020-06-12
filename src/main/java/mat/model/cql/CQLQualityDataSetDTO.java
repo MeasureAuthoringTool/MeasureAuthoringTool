@@ -8,7 +8,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 	
 	
-	private boolean isValidatedWithVsac = true;
 	/** QDM Modified At VSAC. */
 	private boolean hasModifiedAtVSAC;
 	private boolean isUsed;
@@ -34,7 +33,8 @@ public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 	private String program; 
 	private boolean dataTypeHasRemoved;
 	private String valueSetType;
-	
+	private String isValidatedWithVsac = VsacStatus.VALID.toString();
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -263,12 +263,27 @@ public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 	}
 
 
-	public boolean isValidatedWithVsac() {
+	public VsacStatus obtainValidatedWithVsac() {
+		if (isValidatedWithVsac == null) {
+			return null;
+		}
+		return VsacStatus.valueOf(isValidatedWithVsac);
+	}
+
+	public String getValidatedWithVsac() {
 		return isValidatedWithVsac;
 	}
 
-	public void setValidatedWithVsac(boolean validatedWithVsac) {
+	public void setValidatedWithVsac(String validatedWithVsac) {
 		isValidatedWithVsac = validatedWithVsac;
+	}
+
+	public void addValidatedWithVsac(VsacStatus validatedWithVsac) {
+		isValidatedWithVsac = validatedWithVsac.toString();
+	}
+
+	public String isValidatedWithVsac() {
+		return isValidatedWithVsac;
 	}
 
 	@Override

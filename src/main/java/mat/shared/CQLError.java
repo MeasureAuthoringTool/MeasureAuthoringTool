@@ -3,6 +3,10 @@ package mat.shared;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CQLError implements IsSerializable, Comparable<CQLError> {
+
+    public static final String ERROR_SEVERITY = "Error";
+    public static final String SEVERE_SEVERITY = "Severe";
+
     private int errorInLine;
     private int errorAtOffeset;
 

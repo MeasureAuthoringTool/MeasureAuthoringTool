@@ -220,7 +220,7 @@ public class CQLServiceImpl implements CQLService {
                                 .flatMap(Collection::stream)
                                 .map(LibraryErrors::getErrors)
                                 .flatMap(Collection::stream)
-                                .filter(e -> StringUtils.equals("Severe", e.getSeverity()))
+                                .filter(e -> StringUtils.equals(CQLError.SEVERE_SEVERITY, e.getSeverity()))
                                 .collect(Collectors.toList());
                     } catch (RuntimeException me) {
                         newModel.setLibraryName("");
@@ -239,13 +239,16 @@ public class CQLServiceImpl implements CQLService {
 
             // Parser errors.
             if (!errors.isEmpty()) {
+                Map<String, List<CQLError>> errorsMap = new HashMap<>();
+                errorsMap.put(newModel.getFormattedName(), errors);
+
                 SaveUpdateCQLResult r = new SaveUpdateCQLResult();
                 r.setXml(xml); // retain the old xml if there are syntax errors (essentially not saving)
                 r.setCqlString(cql);
                 r.setCqlModel(newModel);
                 r.setSuccess(false);
                 r.setCqlErrors(errors);
-                r.setLibraryNameErrorsMap(new HashMap<>());
+                r.setLibraryNameErrorsMap(errorsMap);
                 r.setLibraryNameWarningsMap(new HashMap<>());
                 r.setFailureReason(StringUtils.equals(modelType, "FHIR") ? SaveUpdateCQLResult.CUSTOM : SaveUpdateCQLResult.SYNTAX_ERRORS);
                 return r;

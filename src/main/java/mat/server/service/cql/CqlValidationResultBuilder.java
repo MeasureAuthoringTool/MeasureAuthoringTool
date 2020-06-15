@@ -15,7 +15,6 @@ import mat.shared.CQLError;
 import mat.shared.SaveUpdateCQLResult;
 
 public class CqlValidationResultBuilder {
-    private static final String ERROR_SEVERITY = "Error";
     private final SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
     private final Set<String> includeLibrariesWithErrors = new HashSet<>();
     private final List<CQLError> errors = new ArrayList<>();
@@ -66,6 +65,7 @@ public class CqlValidationResultBuilder {
     }
 
     private boolean isError(CQLError error) {
-        return error.getSeverity().equalsIgnoreCase(ERROR_SEVERITY);
+        return error.getSeverity().equalsIgnoreCase(CQLError.ERROR_SEVERITY)
+                || error.getSeverity().equalsIgnoreCase(CQLError.SEVERE_SEVERITY);
     }
 }

@@ -17,7 +17,7 @@
     <include file="classpath:/liquibase/addLibraryFhirVersionColumn.xml"/>
     <include file="classpath:/liquibase/addLibraryQdmVersionColumnNotRequired.xml"/>
     <include file="classpath:/liquibase/upateMissingFhirVersion.xml"/>
-    <include file="classpath:/liquibase/addHarpIdColumn.xml"/>
+    <!--<include file="classpath:/liquibase/addHarpIdColumn.xml"/>-->
     <include file="classpath:/liquibase/addNewPackagingColumns.1.7.xml"/>
-    <include file="classpath:/liquibase/addFhirGlobalLibraryRows.v8.0.xml"/>
+    <include file="classpath:/liquibase/addFhirGlobalLibraryRows.v9.0.xml"/>
 </databaseChangeLog>

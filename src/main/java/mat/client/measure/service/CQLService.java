@@ -144,7 +144,7 @@ public interface CQLService {
 
     String getDefaultCodeSystems();
 
-    SaveUpdateCQLResult generateParsedCqlObject(String cqlValidationResponse, CQLModel cqlModel);
+    SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, String cql);
 
     GetUsedCQLArtifactsResult getUsedCQlArtifacts(String measureId);
 
@@ -182,7 +182,7 @@ public interface CQLService {
 
     SaveUpdateCQLResult saveCQLCodeSystem(String xml, CQLCodeSystem codeSystem);
 
-	SaveUpdateCQLResult getCQLLibraryData(String xmlString, String modelType);
+    SaveUpdateCQLResult getCQLLibraryData(String xmlString, String modelType);
 
     SaveUpdateCQLResult getCQLDataForLoad(String xmlString);
 

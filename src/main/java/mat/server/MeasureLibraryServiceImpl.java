@@ -290,10 +290,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Autowired
     private MATPropertiesService propertiesService;
 
-
-    @Autowired
-    private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
-
     @Override
     public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
         String result = "";
@@ -3493,8 +3489,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         if (cqlModel.isFhir()) {
             String cql = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
-            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cql);
-            SaveUpdateCQLResult cqlResult = getCqlService().generateParsedCqlObject(cqlValidationResponse, cqlModel);
+            SaveUpdateCQLResult cqlResult = getCqlService().parseFhirCQLForErrors(cqlModel, cql);
             return cqlResult.getCqlErrors().size() != 0;
         } else {
             SaveUpdateCQLResult cqlResult = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null);
@@ -4430,8 +4425,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             CQLLinter linter = CQLUtil.lint(result.getCqlString(), config);
             if (result.getCqlModel().isFhir()) {
-                String resp = cqlValidatorRemoteCallService.validateCqlExpression(result.getCqlString());
-                SaveUpdateCQLResult cqlResult = getCqlService().generateParsedCqlObject(resp, result.getCqlModel());
+                SaveUpdateCQLResult cqlResult = getCqlService().parseFhirCQLForErrors(result.getCqlModel(), result.getCqlString());
                 result.setCqlErrors(cqlResult.getCqlErrors());
                 result.setCqlWarnings(cqlResult.getCqlWarnings());
             }
@@ -4853,9 +4847,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getXml());
             String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
-            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString);
-            SaveUpdateCQLResult cqlResult = getCqlService().generateParsedCqlObject(cqlValidationResponse, cqlModel);
-
+            SaveUpdateCQLResult cqlResult = getCqlService().parseFhirCQLForErrors(cqlModel, cqlFileString);
             return getCqlService().generateUsedCqlArtifactsResult(cqlModel, measureXML.getXml(), cqlResult);
         } else {
             return getCqlService().getUsedCQlArtifacts(measureXML.getXml());

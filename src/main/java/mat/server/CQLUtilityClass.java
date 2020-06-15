@@ -95,7 +95,6 @@ public final class CQLUtilityClass {
     }
 
     public static Pair<String, Integer> getCqlString(CQLModel cqlModel, String toBeInserted, boolean isSpaces, int indentSize) {
-        boolean isFhir = StringUtils.equals(cqlModel.getUsingModel(), "FHIR");
         AtomicInteger size = new AtomicInteger(0);
         StringBuilder cqlStr = new StringBuilder();
         // library Name and Using
@@ -110,7 +109,7 @@ public final class CQLUtilityClass {
         cqlStr.append(CQLUtilityClass.createCodeSystemsSection(cqlModel.getCodeList()));
 
         //Valuesets
-        cqlStr.append(CQLUtilityClass.createValueSetsSection(cqlModel.getValueSetList(), isFhir));
+        cqlStr.append(CQLUtilityClass.createValueSetsSection(cqlModel.getValueSetList(), cqlModel.isFhir()));
 
         //Codes
         cqlStr.append(CQLUtilityClass.createCodesSection(cqlModel.getCodeList()));
@@ -127,7 +126,7 @@ public final class CQLUtilityClass {
                     isSpaces,
                     indentSize,
                     size,
-                    isFhir);
+                    cqlModel.isFhir());
         } else {
             cqlStr.append("context").append(" " + PATIENT).append("\n\n");
         }

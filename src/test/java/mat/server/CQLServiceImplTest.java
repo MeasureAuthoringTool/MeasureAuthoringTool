@@ -8,10 +8,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import mat.cql.CqlParser;
-import mat.cql.CqlVisitorFactory;
 import mat.dao.UserDAO;
+import mat.model.cql.CQLModel;
 import mat.server.service.MeasurePackageService;
+import mat.server.service.cql.FhirCqlParser;
 import mat.shared.SaveUpdateCQLResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,16 +28,7 @@ public class CQLServiceImplTest {
     private UserDAO userDAO;
 
     @Mock
-    private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
-
-    @Mock
-    private CqlVisitorFactory visitorFactory;
-
-    @Mock
-    private CqlParser cqlParser;
-
-    @Mock
-    private FhirCQLResultParser fhirCQLResultParser;
+    private FhirCqlParser cqlParser;
 
     @InjectMocks
     private CQLServiceImpl cqlService;
@@ -46,7 +37,6 @@ public class CQLServiceImplTest {
     public void setUp() {
         // Mute codacy "avoid unused private fields" warning
         assertNotNull(cqlParser);
-        assertNotNull(visitorFactory);
         assertNotNull(userDAO);
         assertNotNull(measurePackageService);
     }
@@ -70,15 +60,16 @@ public class CQLServiceImplTest {
     @Test
     public void testGetCQLDataFhir() {
         String xml = "<cqlLookUp><usingModel>FHIR</usingModel><usingModelVersion>4.0.1</usingModelVersion></cqlLookUp>";
-        Mockito.when(fhirCQLResultParser.generateParsedCqlObject(Mockito.any(), Mockito.any())).thenReturn(new SaveUpdateCQLResult());
+
+        SaveUpdateCQLResult actualResult = new SaveUpdateCQLResult();
+        Mockito.when(cqlParser.parseFhirCqlLibraryForErrors(Mockito.any(CQLModel.class), Mockito.anyString())).thenReturn(actualResult);
 
         SaveUpdateCQLResult result = cqlService.getCQLData(xml);
         assertEquals("FHIR", result.getCqlModel().getUsingModel());
         assertEquals("4.0.1", result.getCqlModel().getUsingModelVersion());
         assertFalse(result.isSuccess());
 
-        Mockito.verify(cqlValidatorRemoteCallService, Mockito.times(1)).validateCqlExpression(Mockito.anyString());
-        Mockito.verify(fhirCQLResultParser, Mockito.times(1)).generateParsedCqlObject(Mockito.any(), Mockito.any());
+        Mockito.verify(cqlParser, Mockito.times(1)).parseFhirCqlLibraryForErrors(Mockito.any(CQLModel.class), Mockito.anyString());
     }
 
 }

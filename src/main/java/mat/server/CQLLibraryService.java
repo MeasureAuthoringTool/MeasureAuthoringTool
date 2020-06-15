@@ -1,5 +1,38 @@
 package mat.server;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
@@ -66,37 +99,6 @@ import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("serial")
 @Service
@@ -137,12 +139,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     private UserService userService;
 
     @Autowired
-    private CqlValidatorRemoteCallService cqlValidatorRemoteCallService;
-
-    @Autowired
     private FhirCqlLibraryService fhirCqlLibraryService;
 
-    javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+    private javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 
     // 3 minutes
     private final long lockThreshold = TimeUnit.MINUTES.toMillis(3);
@@ -1221,8 +1220,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(library.getLibraryModelType())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
             String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
-            String cqlValidationResponse = cqlValidatorRemoteCallService.validateCqlExpression(cqlFileString);
-            SaveUpdateCQLResult cqlResult = cqlService.generateParsedCqlObject(cqlValidationResponse, cqlModel);
+            SaveUpdateCQLResult cqlResult = cqlService.parseFhirCQLForErrors(cqlModel, cqlFileString);
 
             return cqlService.generateUsedCqlArtifactsResult(cqlModel, cqlXml, cqlResult);
         } else {

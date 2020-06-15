@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.clause.ModelTypeHelper;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.LibHolderObject;
 
+@JsonIgnoreProperties({"includedLibrarys", "includedCQLLibXMLMap", "fhir", "formattedName"})
 public class CQLModel implements IsSerializable {
     private String libraryName;
     private String versionUsed;
@@ -37,7 +39,9 @@ public class CQLModel implements IsSerializable {
 
     private int lines;
 
-    public boolean isFhir() { return ModelTypeHelper.isFhir(usingModel);}
+    public boolean isFhir() {
+        return ModelTypeHelper.isFhir(usingModel);
+    }
 
     public String getContext() {
         return context;

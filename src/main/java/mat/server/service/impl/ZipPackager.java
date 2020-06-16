@@ -1,5 +1,7 @@
 package mat.server.service.impl;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import lombok.extern.slf4j.Slf4j;
 import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
@@ -15,6 +17,8 @@ import mat.shared.FileNameUtility;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -58,6 +62,9 @@ public class ZipPackager {
 
     @Autowired
     private ExportUtility exportUtility;
+
+    @Autowired
+    private FhirContext fhirContext;
 
     /**
      * Adds the bytes to zip.
@@ -222,27 +229,41 @@ public class ZipPackager {
                     addFileToZip(measure, jsonExportResult, parentPath, "json", zip);
                 }
             } else {
-                String measureJsonPath = parentPath + File.separator + MEASURE + FileNameUtility.getJsonFilePath(emeasureName, currentRealeaseVersion);
-                addBytesToZip(measureJsonPath, measureExport.getMeasureJson().getBytes(), zip);
+                addBytesToZip(parentPath + File.separator + "measure-bundle.json",
+                        buildMeasureBundle(fhirContext,
+                        measureExport.getMeasureJson(),
+                        measureExport.getFhirIncludedLibsJson()).getBytes(),
+                        zip);
 
-                String cqlLibraryJsonPath = parentPath + File.separator + LIBRARY + FileNameUtility.getJsonFilePath(cqlLibrary.getName(), currentRealeaseVersion);
-                addBytesToZip(cqlLibraryJsonPath, cqlLibraryExport.getFhirJson().getBytes(), zip);
+                addBytesToZip(parentPath + File.separator + "library-bundle.json",
+                        measureExport.getFhirIncludedLibsJson().getBytes(),
+                        zip);
 
-                String measureIncludedLibraryJsonPath = parentPath + File.separator + MEASURE + SEPARATOR + INCLUDED_LIBRARY + FileNameUtility.getJsonFilePath(emeasureName, currentRealeaseVersion);
-                addBytesToZip(measureIncludedLibraryJsonPath, measureExport.getFhirIncludedLibsJson().getBytes(), zip);
+                addBytesToZip(parentPath + File.separator + "measure.json",
+                        measureExport.getMeasureJson().getBytes(),
+                        zip);
 
-                String measureHumanReadablePath = parentPath + File.separator + HUMAN_READABLE + FileNameUtility.getHtmlFilePath(emeasureName, currentRealeaseVersion);
-                addBytesToZip(measureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
+                addBytesToZip(parentPath + File.separator + "measure-library" + ".json",
+                        cqlLibraryExport.getFhirJson().getBytes(),
+                        zip);
 
-                String elmJsonPath = parentPath + File.separator + ELM + FileNameUtility.getJsonFilePath(cqlLibrary.getName(), currentRealeaseVersion);
-                addBytesToZip(elmJsonPath, exportUtility.getElmJson(cqlLibraryExport).getBytes(), zip);
+                addBytesToZip(parentPath + File.separator + "measure-library-elm" + ".json",
+                        exportUtility.getElmJson(cqlLibraryExport).getBytes(),
+                        zip);
 
-                addFileToZip(measure, cqlExportResult, parentPath, "cql", zip);
+                addBytesToZip(parentPath + File.separator + "measure-lib" + ".cql",
+                        exportUtility.getCqlJson(cqlLibraryExport).getBytes(),
+                        zip);
+
+                addBytesToZip( parentPath + File.separator + "human-readable.html",
+                        emeasureHTMLStr.getBytes(),
+                        zip);
             }
         } catch (Exception e) {
             log.error("getZipBarr", e);
         }
     }
+
 
     private boolean isV5OrGreater(String version) {
         boolean result = false;
@@ -398,5 +419,34 @@ public class ZipPackager {
             addBytesToZip(cqlFilePath, includedResult.export.getBytes(), zip);
         }
     }
+
+    private String buildMeasureBundle(FhirContext fhirContext, String measureJson, String libBundleJson) {
+        IParser jsonParser = fhirContext.newJsonParser();
+        jsonParser.setPrettyPrint(true);
+        var measure = jsonParser.parseResource(org.hl7.fhir.r4.model.Measure.class, measureJson);
+        var libBundle = jsonParser.parseResource(Bundle.class, libBundleJson);
+
+        Bundle result = new Bundle();
+        result.setType(Bundle.BundleType.TRANSACTION);
+        result.addEntry().setResource(measure).getRequest()
+                .setUrl("Measure/" + getFhirId(measure))
+                .setMethod(Bundle.HTTPVerb.PUT);
+
+        libBundle.getEntry().forEach(e ->
+                result.addEntry().setResource(e.getResource()).setRequest(e.getRequest()));
+
+        return jsonParser.encodeResourceToString(result);
+    }
+
+    private String getFhirId(Resource r) {
+        String id = r.getId();
+        int endIndex = id.indexOf("/_history");
+        if (endIndex >= 0) {
+            id = id.substring(0, endIndex);
+        }
+        int startIndex = id.lastIndexOf('/') + 1;
+        return id.substring(startIndex);
+    }
+
 
 }

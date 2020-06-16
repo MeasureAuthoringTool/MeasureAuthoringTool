@@ -70,6 +70,21 @@ public class ExportUtility {
         return result;
     }
 
+    public String getCqlJson(CQLLibraryExport export) {
+        String result = null;
+        if (StringUtils.isNotBlank(export.getFhirJson())) {
+            var parsers = buildParsers();
+            Library lib = parsers.getLeft().parseResource(Library.class, export.getFhirJson());
+            for (Attachment a : lib.getContent()) {
+                if (StringUtils.equalsIgnoreCase(a.getContentType(),"text/cql")) {
+                    result = decodeBase64(a.getData());
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
     private String decodeBase64(byte[] bytes) {
         try {
         return new String(Base64.decode(new String(bytes,"utf-8")),"utf-8");

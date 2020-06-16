@@ -651,12 +651,13 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
     protected void saveCQLFile() {
 
         if (hasEditPermissions()) {
-
+            Mat.showLoadingMessage();
             String currentCQL = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().getText();
             MatContext.get().getMeasureService().saveCQLFile(MatContext.get().getCurrentMeasureId(), currentCQL, new AsyncCallback<SaveUpdateCQLResult>() {
 
                 @Override
                 public void onFailure(Throwable caught) {
+                    Mat.hideLoadingMessage();
                     logger.log(Level.SEVERE, "Error in MeasureService.saveCQLFile. Error message: " + caught.getMessage(), caught);
                 }
 
@@ -671,6 +672,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
                         onSaveCQLFileSuccess(result);
                         setIsPageDirty(false);
                     }
+                    Mat.hideLoadingMessage();
                     cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().focus();
                 }
             });

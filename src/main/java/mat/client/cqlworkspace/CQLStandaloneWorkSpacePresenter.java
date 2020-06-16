@@ -564,12 +564,13 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
     protected void saveCQLFile() {
 
         if (hasEditPermissions()) {
-
+            Mat.showLoadingMessage();
             String currentCQL = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().getText();
             MatContext.get().getLibraryService().saveCQLFile(MatContext.get().getCurrentCQLLibraryId(), currentCQL, new AsyncCallback<SaveUpdateCQLResult>() {
 
                 @Override
                 public void onFailure(Throwable caught) {
+                    Mat.hideLoadingMessage();
                     logger.log(Level.SEVERE, "Error in CQLLibraryService.saveCQLFile. Error message: " + caught.getMessage(), caught);
                     Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                 }
@@ -585,6 +586,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                         onSaveCQLFileSuccess(result);
                         setIsPageDirty(false);
                     }
+                    Mat.hideLoadingMessage();
                     cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().focus();
                 }
             });

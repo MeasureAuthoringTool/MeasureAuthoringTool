@@ -2,7 +2,6 @@ package mat.server.service.impl;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
-import com.google.gwt.soyc.io.ArtifactsOutputDirectory;
 import lombok.extern.slf4j.Slf4j;
 import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;

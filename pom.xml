@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>CMAT</groupId>
     <artifactId>MeasureAuthoringTool</artifactId>
-    <version>5.9</version>
+    <version>5.91</version>
     <packaging>war</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

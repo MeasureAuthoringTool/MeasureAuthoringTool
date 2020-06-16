@@ -33,7 +33,16 @@ public class CQLEditorPanel extends Composite {
 		this.editor.getElement().setTitle(text);
 		initWidget(buildWidget());
 	}
-	
+
+
+	public static native void setEditorContentSize(String width, String height)
+		/*-{
+    		var contentDiv = $doc.getElementsByClassName('ace_content')[0];
+			contentDiv.style.width = width;
+			contentDiv.style.height = height;
+		}-*/;
+
+
 	private PanelGroup buildWidget() {
 		if(isReadOnly) {
 			this.text = this.text + " (Read Only)";

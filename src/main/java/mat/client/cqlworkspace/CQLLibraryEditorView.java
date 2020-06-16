@@ -11,10 +11,12 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
+import mat.client.buttons.FullScreenToolBarButton;
 import mat.client.buttons.InfoDropDownMenu;
 import mat.client.buttons.InfoToolBarButton;
 import mat.client.buttons.InsertToolBarButton;
@@ -28,6 +30,7 @@ import mat.shared.CQLError;
 
 public class CQLLibraryEditorView {
     private static final String CQL_LIBRARY_EDITOR_ID = "cqlLibraryEditor";
+    private static final String WIDE_CQL_EDITOR_STYLE = "wide-cql-editor";
     private VerticalPanel cqlLibraryEditorVP = new VerticalPanel();
     private HTML heading = new HTML();
     private InAppHelp inAppHelp = new InAppHelp("");
@@ -36,6 +39,7 @@ public class CQLLibraryEditorView {
     private Button exportErrorFile = new Button();
     private Button infoButton = new InfoToolBarButton(CQL_LIBRARY_EDITOR_ID);
     private Button insertButton = new InsertToolBarButton(CQL_LIBRARY_EDITOR_ID);
+    private Button fullScreenButton = new FullScreenToolBarButton(CQL_LIBRARY_EDITOR_ID);
     private Button saveButton = new SaveButton(CQL_LIBRARY_EDITOR_ID);
 
     private ButtonGroup infoBtnGroup;
@@ -47,10 +51,6 @@ public class CQLLibraryEditorView {
         exportErrorFile.setText("Export Error File");
         exportErrorFile.setTitle("Click to download Export Error File.");
         exportErrorFile.setId("Button_exportErrorFile");
-    }
-
-    public Button getSaveButton() {
-        return this.saveButton;
     }
 
     public VerticalPanel buildView(boolean isEditorEditable, boolean isPageEditable) {
@@ -75,13 +75,31 @@ public class CQLLibraryEditorView {
         buildInfoInsertBtnGroup();
         fp.add(infoBtnGroup);
         fp.add(insertButton);
+        fp.add(fullScreenButton);
         cqlLibraryEditorVP.add(fp);
+
+        fullScreenButton.addClickHandler(event -> {
+            if (cqlLibraryEditorVP.getStyleName().contains(WIDE_CQL_EDITOR_STYLE)) {
+                switchOffWideEditor();
+                exitFullscreen();
+
+            } else {
+                switchOnWideEditor();
+                requestFullscreen();
+            }
+        });
 
         getCqlAceEditor().setReadOnly(!isEditorEditable);
         getSaveButton().setEnabled(isEditorEditable);
         insertButton.setEnabled(isEditorEditable);
 
         this.editorPanel.getEditor().addDomHandler(event -> editorPanel.catchTabOutKeyCommand(event, saveButton), KeyUpEvent.getType());
+        this.editorPanel.getEditor().addKeyDownHandler(event -> {
+            if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
+                switchOffWideEditor();
+                exitFullscreen();
+            }
+        });
         editorPanel.setSize("650px", "500px");
 
         cqlLibraryEditorVP.add(editorPanel);
@@ -94,6 +112,56 @@ public class CQLLibraryEditorView {
         cqlLibraryEditorVP.setStyleName("marginLeft15px");
         return cqlLibraryEditorVP;
     }
+
+    private void switchOnWideEditor() {
+        cqlLibraryEditorVP.getElement().getStyle().setBackgroundColor("white");
+        cqlLibraryEditorVP.addStyleName(WIDE_CQL_EDITOR_STYLE);
+        cqlLibraryEditorVP.removeStyleName("cqlRightContainer");
+        cqlLibraryEditorVP.removeStyleName("marginLeft15px");
+        cqlLibraryEditorVP.setWidth("100%");
+        cqlLibraryEditorVP.setHeight("100%");
+        editorPanel.setSize("1000px", "900px");
+        editorPanel.setEditorContentSize("900px", "838px");
+        editorPanel.getEditor().redisplay();
+    }
+
+
+    private void switchOffWideEditor() {
+        cqlLibraryEditorVP.removeStyleName(WIDE_CQL_EDITOR_STYLE);
+        cqlLibraryEditorVP.setStyleName("cqlRightContainer");
+        cqlLibraryEditorVP.setWidth("700px");
+        cqlLibraryEditorVP.setStyleName("marginLeft15px");
+        editorPanel.setSize("650px", "500px");
+        editorPanel.setEditorContentSize("590px", "538px");
+        editorPanel.getEditor().redisplay();
+    }
+
+    public static native void requestFullscreen()
+        /*-{
+            var docElement = $doc.documentElement;
+            if (docElement.requestFullscreen) {
+                docElement.requestFullscreen();
+            } else if (docElement.msRequestFullscreen) {
+                docElement.msRequestFullscreen();
+            } else if (docElement.mozRequestFullScreen) {
+                docElement.mozRequestFullScreen();
+            } else if (docElement.webkitRequestFullScreen) {
+                docElement.webkitRequestFullScreen();
+            }
+        }-*/;
+
+    public static native void exitFullscreen()
+        /*-{
+            if ($doc.exitFullscreen) {
+                $doc.exitFullscreen();
+            } else if ($doc.msExitFullscreen) {
+                $doc.msExitFullscreen();
+            } else if ($doc.mozCancelFullScreen) {
+                $doc.mozCancelFullScreen();
+            } else if ($doc.webkitCancelFullScreen) {
+                $doc.webkitCancelFullScreen();
+            }
+        }-*/;
 
     private void buildInfoInsertBtnGroup() {
         DropDownMenu ddm = new InfoDropDownMenu();
@@ -156,4 +224,16 @@ public class CQLLibraryEditorView {
         return infoButton;
     }
 
+    public Button getSaveButton() {
+        return this.saveButton;
+    }
+
+    public Button getFullScreenButton() {
+        return fullScreenButton;
+    }
+
+
+    public void fullScreen() {
+
+    }
 }

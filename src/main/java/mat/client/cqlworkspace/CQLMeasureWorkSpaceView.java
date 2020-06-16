@@ -21,9 +21,11 @@ import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.VerticalSplitWidget;
 import mat.model.clause.ModelTypeHelper;
 
 public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
+    private static final String PX700 = "700px";
     HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
     private VerticalPanel mainPanel = new VerticalPanel();
     private VerticalPanel mainVerticalPanel = new VerticalPanel();
@@ -68,7 +70,7 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
         unsetEachSectionSelectedObject();
 
         buildGeneralInformation(isEditable);
-        mainFlowPanel.setWidth("700px");
+        mainFlowPanel.setWidth(PX700);
         mainPanel.getElement().setId("CQLWorkspaceView.containerPanel");
         mainPanel.add(new SpacerWidget());
 
@@ -79,7 +81,19 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
         resetMessageDisplay();
 
         mainHorizontalPanel.addStyleName("cqlRightMessage");
-        mainHorizontalPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView());
+        VerticalPanel navPanel = cqlLeftNavBarPanelView.buildMeasureLibCQLView();
+        mainHorizontalPanel.add(navPanel);
+        VerticalSplitWidget w = new VerticalSplitWidget();
+        w.getButton().addClickHandler(event -> {
+            navPanel.setVisible(!navPanel.isVisible());
+
+            if (navPanel.isVisible()) {
+                cqlViewCQLView.getCqlAceEditor().setWidth(PX700);
+            } else {
+                cqlViewCQLView.getCqlAceEditor().setWidth("100%");
+            }
+        });
+        mainHorizontalPanel.add(w);
         mainHorizontalPanel.add(mainPanel);
 
         mainVerticalPanel.add(mainHorizontalPanel);
@@ -116,8 +130,8 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
         valueSetView.buildCellTableWidget();
         VerticalPanel vp = new VerticalPanel();
         vp.setStyleName("cqlRightContainer");
-        vp.setWidth("700px");
-        appliedQDMTopPanel.setWidth("700px");
+        vp.setWidth(PX700);
+        appliedQDMTopPanel.setWidth(PX700);
         appliedQDMTopPanel.setStyleName("marginLeft15px");
         vp.add(appliedQDMTopPanel);
 
@@ -138,8 +152,8 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
         codesView.buildCellTableWidget();
         VerticalPanel vp = new VerticalPanel();
         vp.setStyleName("cqlRightContainer");
-        vp.setWidth("700px");
-        codesTopPanel.setWidth("700px");
+        vp.setWidth(PX700);
+        codesTopPanel.setWidth(PX700);
         codesTopPanel.setStyleName("marginLeft15px");
         vp.add(codesTopPanel);
 
@@ -157,8 +171,8 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 
         VerticalPanel vp = new VerticalPanel();
         vp.setStyleName("cqlRightContainer");
-        vp.setWidth("700px");
-        componentsTopPanel.setWidth("700px");
+        vp.setWidth(PX700);
+        componentsTopPanel.setWidth(PX700);
         componentsTopPanel.setStyleName("marginLeft15px");
         vp.add(componentsTopPanel);
         mainFlowPanel.add(vp);
@@ -178,8 +192,8 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 
         VerticalPanel vp = new VerticalPanel();
         vp.setStyleName("cqlRightContainer");
-        vp.setWidth("700px");
-        includesTopPanel.setWidth("700px");
+        vp.setWidth(PX700);
+        includesTopPanel.setWidth(PX700);
         includesTopPanel.setStyleName("marginLeft15px");
         vp.add(includesTopPanel);
         mainFlowPanel.add(vp);

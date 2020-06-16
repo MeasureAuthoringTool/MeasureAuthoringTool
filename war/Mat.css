@@ -3314,3 +3314,25 @@ table#MostRecentActivityCellTable {
 .menu-select-user-account a {
     margin-left: 1em;
 }
+
+/* Full Screen background  */
+html, *:fullscreen, *:-webkit-full-screen, *:-moz-full-screen {
+    background-color: rgba(255,255,255,0) !important;
+    z-index:1;
+}
+
+::backdrop {
+    z-index:0;
+    background-color: rgba(255,255,255,0) !important;
+}
+
+.wide-cql-editor {
+    display: block;
+    z-index: 9999;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background: rgba(255, 255, 255, 1)
+    top: 0;
+    left: 0;
+}

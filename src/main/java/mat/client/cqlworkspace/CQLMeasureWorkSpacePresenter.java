@@ -649,7 +649,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
     @Override
     protected void saveCQLFile() {
-
         if (hasEditPermissions()) {
 
             String currentCQL = cqlWorkspaceView.getCQLLibraryEditorView().getCqlAceEditor().getText();
@@ -2125,7 +2124,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
                                 @Override
                                 public void onSuccess(GetUsedCQLArtifactsResult result) {
-                                    AceEditor editor = ((CQLMeasureWorkSpaceView) cqlWorkspaceView).getComponentView().getCQLAceEditor();
+                                    AceEditor editor = cqlWorkspaceView.getComponentView().getCQLAceEditor();
                                     editor.clearAnnotations();
                                     editor.removeAllMarkers();
                                     String formattedName = componentMeasureTabObject.getLibraryName() + "-" + componentMeasureTabObject.getVersion();

@@ -31,6 +31,8 @@ import mat.shared.SaveUpdateCQLResult;
 public class FhirCqlParserService implements FhirCqlParser {
 
     private static final String MATXML_FROM_CQL_SRVC = "cql-xml-gen/cql";
+    private static final String MATXML_FROM_MEASURE_ID = "cql-xml-gen/measure/";
+    private static final String MATXML_FROM_LIB_ID = "cql-xml-gen/standalone-lib/";
     private static final String UMLS_TOKEN = "UMLS-TOKEN";
 
     @Value("${FHIR_SRVC_URL:http://localhost:9080/}")
@@ -58,6 +60,30 @@ public class FhirCqlParserService implements FhirCqlParser {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<MatCqlXmlReq> request = new HttpEntity<>(cqlXmlReq, headers);
         return rest(fhirServicesUrl + MATXML_FROM_CQL_SRVC, HttpMethod.PUT, request, MatXmlResponse.class, Collections.emptyMap());
+    }
+
+    @Override
+    public MatXmlResponse parseFromMeasure(String measureId) {
+        String eightHourTicket = getTicket();
+        MatCqlXmlReq cqlXmlReq = new MatCqlXmlReq();
+        cqlXmlReq.setValidationRequest(new ValidationRequest());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(UMLS_TOKEN, eightHourTicket);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<MatCqlXmlReq> request = new HttpEntity<>(cqlXmlReq, headers);
+        return rest(fhirServicesUrl + MATXML_FROM_MEASURE_ID + measureId, HttpMethod.PUT, request, MatXmlResponse.class, Collections.emptyMap());
+    }
+
+    @Override
+    public MatXmlResponse parseFromLib(String libId) {
+        String eightHourTicket = getTicket();
+        MatCqlXmlReq cqlXmlReq = new MatCqlXmlReq();
+        cqlXmlReq.setValidationRequest(new ValidationRequest());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(UMLS_TOKEN, eightHourTicket);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<MatCqlXmlReq> request = new HttpEntity<>(cqlXmlReq, headers);
+        return rest(fhirServicesUrl +  MATXML_FROM_LIB_ID + libId, HttpMethod.PUT, request, MatXmlResponse.class, Collections.emptyMap());
     }
 
     @Override

@@ -2,24 +2,17 @@ package mat.server.service.fhirvalidationreport;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
-import mat.dto.fhirconversion.ConversionOutcome;
-import mat.dto.fhirconversion.ConversionResultDto;
-import mat.dto.fhirconversion.CqlConversionError;
-import mat.dto.fhirconversion.CqlConversionResult;
-import mat.dto.fhirconversion.FhirValidationResult;
-import mat.dto.fhirconversion.LibraryConversionResults;
-import mat.dto.fhirconversion.MatCqlConversionException;
-import mat.dto.fhirconversion.ValueSetConversionResults;
-import mat.client.shared.MatRuntimeException;
+import lombok.extern.slf4j.Slf4j;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.dto.fhirconversion.FhirValidationResult;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.ModelTypeHelper;
-import mat.server.service.FhirLibraryRemoteCall;
+import mat.server.service.cql.FhirCqlParser;
+import mat.server.service.cql.LibraryErrors;
+import mat.server.service.cql.MatXmlResponse;
+import mat.shared.CQLError;
 import mat.shared.DateUtility;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
@@ -29,95 +22,72 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Service
+@Slf4j
 public class CqlLibraryValidationReportImpl implements FhirValidationReport {
-
-    private static final Log logger = LogFactory.getLog(CqlLibraryValidationReportImpl.class);
     private static final String currentMatVersion = "v6.0";
 
     public static final String CQL_LIBRARY_NOT_FOUND_ERROR = "CQL Library with the given id does not exist.";
     public static final String FTL_TEMPLATE_NAME = "fhirvalidationreport/fhir_library_validation_report.ftl";
 
 
-    private Configuration freemarkerConfiguration;
-    private CQLLibraryDAO libraryDAO;
-    private FhirLibraryRemoteCall fhirLibraryConversionRemoteCall;
+    private final Configuration freemarkerConfiguration;
+    private final CQLLibraryDAO libraryDAO;
+    private final FhirCqlParser fhirCqlParser;
 
 
     public CqlLibraryValidationReportImpl(Configuration freemarkerConfiguration,
                                           CQLLibraryDAO libraryDAO,
-                                          FhirLibraryRemoteCall fhirLibraryConversionRemoteCall) {
+                                          FhirCqlParser fhirCqlParser) {
         this.freemarkerConfiguration = freemarkerConfiguration;
         this.libraryDAO = libraryDAO;
-        this.fhirLibraryConversionRemoteCall = fhirLibraryConversionRemoteCall;
+        this.fhirCqlParser = fhirCqlParser;
     }
 
 
     @Override
     public String generateReport(String libraryId, String vsacGrantingTicket, boolean converted) throws IOException, TemplateException {
-
-        ConversionResultDto conversionResult = null;
+        MatXmlResponse parseResponse = null;
         CQLLibrary cqlLibrary = libraryDAO.find(libraryId);
         if (cqlLibrary != null) {
-            conversionResult = validateFhirLibraryConversion(libraryId);
+            parseResponse = fhirCqlParser.parseFromLib(libraryId);
         }
-
-        return generateValidationReport(conversionResult, cqlLibrary, converted);
+        return generateValidationReport(parseResponse, cqlLibrary);
     }
 
-
-    private ConversionResultDto validateFhirLibraryConversion(String libraryId) throws IOException {
-        if (libraryId == null) {
-            return null;
-        }
-
-        try {
-            return fhirLibraryConversionRemoteCall.validate(libraryId);
-        } catch (MatRuntimeException e) {
-            throw new IOException(e);
-        }
-    }
-
-    private String generateValidationReport(ConversionResultDto conversionResultDto, CQLLibrary library, boolean converted) throws IOException, TemplateException {
+    private String generateValidationReport(MatXmlResponse parseResponse, CQLLibrary library) throws IOException, TemplateException {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("matVersion", currentMatVersion);
 
         if (library == null) {
             paramsMap.put("cqlLibraryNotFoundError", CQL_LIBRARY_NOT_FOUND_ERROR);
-        } else if (conversionResultDto == null) {
+        } else if (parseResponse == null) {
             paramsMap.put("conversionServiceError", CONVERSION_SERVICE_ERROR);
         } else {
-            prepareReport(conversionResultDto, library, converted, paramsMap);
+            prepareReport(library, parseResponse, paramsMap);
         }
 
         var template = freemarkerConfiguration.getTemplate(FTL_TEMPLATE_NAME);
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, paramsMap);
     }
 
-    private void prepareReport(ConversionResultDto conversionResultDto, CQLLibrary library, boolean converted, Map<String, Object> paramsMap) {
-        if (converted) {
-            addConversionStatusMessage(conversionResultDto, paramsMap);
-        }
-
-        if (ConversionOutcome.SUCCESS != conversionResultDto.getOutcome()) {
-            addErrors(conversionResultDto, paramsMap);
-        }
-
-        if (conversionResultDto.getModified() != null) {
-            addReportDateTime(conversionResultDto, paramsMap);
-        }
+    private void prepareReport(CQLLibrary library, MatXmlResponse parseResponse, Map<String, Object> paramsMap) {
+        addConversionStatusMessage(parseResponse, paramsMap);
+        addErrors(parseResponse, paramsMap);
+        addReportDateTime(paramsMap);
         addCqlLibraryDetails(library, paramsMap);
     }
 
-    private void addConversionStatusMessage(ConversionResultDto conversionResultDto, Map<String, Object> paramsMap) {
-        String conversionStatusMessage = StringUtils.equals(ConversionOutcome.SUCCESS,conversionResultDto.getOutcome()) ?
+    private void addConversionStatusMessage(MatXmlResponse parseResponse, Map<String, Object> paramsMap) {
+        boolean hasErrors = CollectionUtils.isNotEmpty(parseResponse.getErrors()) &&
+                parseResponse.getErrors().stream().anyMatch(le -> CollectionUtils.isNotEmpty(le.getErrors()));
+        String conversionStatusMessage = !hasErrors ?
                 "The FHIR CQL Library was created successfully." :
                 "Warning: The FHIR CQL Library was created successfully with errors.";
         paramsMap.put("conversionStatusMessage", conversionStatusMessage);
-        paramsMap.put("outcome", String.valueOf(conversionResultDto.getOutcome()));
-        paramsMap.put("errorReason", StringUtils.trimToNull(conversionResultDto.getErrorReason()));
+        paramsMap.put("outcome", "");
+        paramsMap.put("errorReason", "");
     }
 
     private void addCqlLibraryDetails(CQLLibrary library, Map<String, Object> paramsMap) {
@@ -126,123 +96,34 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
         paramsMap.put("cqlLibraryModel", ModelTypeHelper.defaultTypeIfBlank(library.getLibraryModelType()));
     }
 
-    private void addReportDateTime(ConversionResultDto conversionResultDto, Map<String, Object> paramsMap) {
-        Instant instant = Instant.parse(conversionResultDto.getModified());
+    private void addReportDateTime(Map<String, Object> paramsMap) {
+        Instant instant = Instant.now();
         paramsMap.put("runDate", DateUtility.formatInstant(instant, DATE_FORMAT));
         paramsMap.put("runTime", DateUtility.formatInstant(instant, TIME_FORMAT));
     }
 
-    private void addErrors(ConversionResultDto conversionResultDto, Map<String, Object> paramsMap) {
-        List<FhirValidationResult> valueSetFhirValidationErrors = getValueSetErrors(conversionResultDto);
-
-        List<FhirValidationResult> libraryFhirValidationErrors = new ArrayList<>();
-        HashMap<String, List<Object>> qdmCqlConversionErrorsMap = new HashMap<>();
-        HashMap<String, List<Object>> fhirCqlConversionErrorsMap = new HashMap<>();
-        Map<String, List<CqlConversionError>> externalErrorsMap = new HashMap<>();
-        getLibraryErrors(conversionResultDto, libraryFhirValidationErrors, qdmCqlConversionErrorsMap, fhirCqlConversionErrorsMap, paramsMap, externalErrorsMap);
-
-        paramsMap.put("valueSetFhirValidationErrors", valueSetFhirValidationErrors);
-        paramsMap.put("libraryFhirValidationErrors", libraryFhirValidationErrors);
-        paramsMap.put("qdmCqlConversionErrors", qdmCqlConversionErrorsMap);
-        paramsMap.put("fhirCqlConversionErrors", fhirCqlConversionErrorsMap);
-        paramsMap.put("externalErrorsMap", externalErrorsMap);
+    private void addErrors(MatXmlResponse parseResponse, Map<String, Object> paramsMap) {
+        paramsMap.put("libraryFhirValidationErrors", getLibraryErrors(parseResponse));
     }
 
-    private void buildCqlConversionErrorMap(Set<CqlConversionError> cqlConversionErrorsSet, Map<String, List<Object>> cqlConversionErrorsMap) {
-        cqlConversionErrorsSet.forEach(q ->  {
-            if(StringUtils.isNotBlank(q.getTargetIncludeLibraryId()) && StringUtils.isNotBlank(q.getTargetIncludeLibraryVersionId())) {
-                String targetIncludedLibraryWithVersion = q.getTargetIncludeLibraryId() + " " + q.getTargetIncludeLibraryVersionId();
-                if(!cqlConversionErrorsMap.containsKey(targetIncludedLibraryWithVersion)) {
-                    cqlConversionErrorsMap.put(targetIncludedLibraryWithVersion, new ArrayList<>());
-                }
-                cqlConversionErrorsMap.get(targetIncludedLibraryWithVersion).add(q);
-            }
-        });
-    }
-
-    private void buildMatCqlConversionExceptionMap(Set<MatCqlConversionException> matCqlConversionExceptionSet, Map<String, List<Object>> matCqlConversionExceptionMap) {
-        matCqlConversionExceptionSet.forEach(q ->  {
-            if(StringUtils.isNotBlank(q.getTargetIncludeLibraryId()) && StringUtils.isNotBlank(q.getTargetIncludeLibraryVersionId())) {
-                String targetIncludedLibraryWithVersion = q.getTargetIncludeLibraryId() + " " + q.getTargetIncludeLibraryVersionId();
-                if(!matCqlConversionExceptionMap.containsKey(targetIncludedLibraryWithVersion)) {
-                    matCqlConversionExceptionMap.put(targetIncludedLibraryWithVersion, new ArrayList<>());
-                }
-                matCqlConversionExceptionMap.get(targetIncludedLibraryWithVersion).add(q);
-            }
-        });
-    }
-
-
-    private List<FhirValidationResult> getValueSetErrors(ConversionResultDto conversionResultDto) {
-        // ValueSet FHIR validation errors
-        List<FhirValidationResult> valueSetFhirValidationErrors = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(conversionResultDto.getValueSetConversionResults())) {
-            for (ValueSetConversionResults valueSetConversionResults : conversionResultDto.getValueSetConversionResults()) {
-                if (Boolean.FALSE.equals(valueSetConversionResults.getSuccess())) {
-                    valueSetFhirValidationErrors.addAll(valueSetConversionResults.getValueSetFhirValidationResults());
-                }
-            }
+    private List<FhirValidationResult> getLibraryErrors(MatXmlResponse matXmlResponse) {
+        List<FhirValidationResult> result = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(matXmlResponse.getErrors())) {
+            matXmlResponse.getErrors().
+                    forEach(e -> {
+                        if (CollectionUtils.isNotEmpty((e.getErrors()))) {
+                            e.getErrors().forEach(cqle -> result.add(convertCqlErrror(e,cqle)));
+                        }
+                    });
         }
-        return valueSetFhirValidationErrors;
+        return result;
     }
 
-    private void getLibraryErrors(ConversionResultDto conversionResultDto, List<FhirValidationResult> libraryFhirValidationErrors, HashMap<String, List<Object>> qdmCqlConversionErrorsMap,
-                           HashMap<String, List<Object>> fhirCqlConversionErrorsMap, Map<String, Object> paramsMap, Map<String, List<CqlConversionError>> externalErrorsMap) {
-         // Library FHIR validation errors
-         CqlConversionResult cqlConversionResult;
-         if (CollectionUtils.isNotEmpty(conversionResultDto.getLibraryConversionResults())) {
-             for (LibraryConversionResults results : conversionResultDto.getLibraryConversionResults()) {
-                 if ("Not Found in Hapi".equals(results.getReason())) {
-                     logger.debug("Not found in Hapi");
-                     paramsMap.put("LibraryNotFoundInHapi", results.getReason());
-                 }
-                 if (results.getSuccess() == null || !results.getSuccess()) {
-
-                     generateLibraryFhirValidationErrors(results, libraryFhirValidationErrors);
-
-                     if(results.getSuccess() != null) {
-                         generateExternalErrorsMap(results, externalErrorsMap);
-                     }
-
-                     // CQL conversion errors
-                     cqlConversionResult = results.getCqlConversionResult();
-                     if (cqlConversionResult != null) {
-                         if (CollectionUtils.isNotEmpty(cqlConversionResult.getCqlConversionErrors())) {
-                             buildCqlConversionErrorMap(cqlConversionResult.getCqlConversionErrors(), qdmCqlConversionErrorsMap);
-                         }
-                         if (CollectionUtils.isNotEmpty(cqlConversionResult.getMatCqlConversionErrors())) {
-                             buildMatCqlConversionExceptionMap(cqlConversionResult.getMatCqlConversionErrors(), qdmCqlConversionErrorsMap);
-                         }
-                         if (CollectionUtils.isNotEmpty(cqlConversionResult.getFhirCqlConversionErrors())) {
-                             buildCqlConversionErrorMap(cqlConversionResult.getFhirCqlConversionErrors(), fhirCqlConversionErrorsMap);
-                         }
-                         if (CollectionUtils.isNotEmpty(cqlConversionResult.getFhirMatCqlConversionErrors())) {
-                             buildMatCqlConversionExceptionMap(cqlConversionResult.getFhirMatCqlConversionErrors(), fhirCqlConversionErrorsMap);
-                         }
-                     }
-                 }
-             }
-         }
-     }
-
-     private void generateExternalErrorsMap(LibraryConversionResults libraryConversionResults, Map<String, List<CqlConversionError>> externalErrorsMap) {
-
-         libraryConversionResults.getExternalErrors().forEach((k, v) -> {
-             v.forEach(q -> {
-                 if(StringUtils.isNotBlank(q.getTargetIncludeLibraryId()) && StringUtils.isNotBlank(q.getTargetIncludeLibraryVersionId())) {
-                     String targetIncludedLibraryWithVersion = q.getTargetIncludeLibraryId() + " " + q.getTargetIncludeLibraryVersionId();
-                     if(!externalErrorsMap.containsKey(targetIncludedLibraryWithVersion)) {
-                         externalErrorsMap.put(targetIncludedLibraryWithVersion, new ArrayList<>());
-                     }
-                     externalErrorsMap.get(targetIncludedLibraryWithVersion).add(q);
-                 }
-             });
-         });
-     }
-
-     private void generateLibraryFhirValidationErrors(LibraryConversionResults libraryConversionResults, List<FhirValidationResult> libraryFhirValidationErrors) {
-         if (CollectionUtils.isNotEmpty(libraryConversionResults.getLibraryFhirValidationResults())) {
-             libraryFhirValidationErrors.addAll(libraryConversionResults.getLibraryFhirValidationResults());
-         }
-     }
+    private FhirValidationResult convertCqlErrror(LibraryErrors le, CQLError e) {
+        var result = new FhirValidationResult();
+        result.setSeverity(e.getSeverity());
+        result.setLocationField(le.getName() + "-" + le.getVersion() + ": " + e.getStartErrorInLine());
+        result.setErrorDescription(e.getErrorMessage());
+        return result;
+    }
 }

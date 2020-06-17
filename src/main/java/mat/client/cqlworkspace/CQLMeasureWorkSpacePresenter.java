@@ -1,17 +1,5 @@
 package mat.client.cqlworkspace;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-
-import mat.dto.VSACCodeSystemDTO;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -45,6 +33,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.ValueSetNameInputValidator;
 import mat.client.umls.service.VsacApiResult;
+import mat.dto.VSACCodeSystemDTO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
 import mat.model.ComponentMeasureTabObject;
@@ -69,6 +58,16 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.model.util.MeasureDetailsUtil;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter implements MatPresenter {
     private MeasureServiceAsync service = MatContext.get().getMeasureService();
@@ -1556,7 +1555,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
         GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
         if ((gbCopyPaste != null) && (gbCopyPaste.getCopiedCodeList().size() > 0)) {
             List<CQLCode> codesToPaste = cqlWorkspaceView.getCodesView().setMatCodeList(gbCopyPaste.getCopiedCodeList(), appliedCodeTableList);
-            logger.log(Level.INFO,"Codes to paste: " + codesToPaste);
+            logger.log(Level.INFO, "Codes to paste: " + codesToPaste);
             if (codesToPaste.size() > 0) {
                 String measureId = MatContext.get().getCurrentMeasureId();
                 showSearchingBusy(true);
@@ -1570,7 +1569,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
                     @Override
                     public void onSuccess(SaveUpdateCQLResult result) {
-                        logger.log(Level.INFO,"Add success. Codes to add: " + result.getCqlCodeList());
+                        logger.log(Level.INFO, "Add success. Codes to add: " + result.getCqlCodeList());
                         messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFULLY_PASTED_CODES_IN_MEASURE);
                         cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
                         appliedCodeTableList.clear();

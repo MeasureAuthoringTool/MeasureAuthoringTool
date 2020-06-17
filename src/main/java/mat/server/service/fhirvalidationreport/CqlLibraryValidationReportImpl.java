@@ -81,7 +81,7 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
 
     private void addConversionStatusMessage(MatXmlResponse parseResponse, Map<String, Object> paramsMap) {
         boolean hasErrors = CollectionUtils.isNotEmpty(parseResponse.getErrors()) &&
-                parseResponse.getErrors().stream().filter(le -> CollectionUtils.isNotEmpty(le.getErrors())).count() > 1;
+                parseResponse.getErrors().stream().filter(le -> CollectionUtils.isNotEmpty(le.getErrors())).count() > 0;
         String conversionStatusMessage = !hasErrors ?
                 "The FHIR CQL Library was created successfully." :
                 "Warning: The FHIR CQL Library was created successfully with errors.";

@@ -287,12 +287,6 @@ public class FhirCQLLinter extends CQLLinter  {
                             && alias.equals(l.getAliasName())
                             && version.equals(l.getVersion())
             )).collect(Collectors.toList());
-
-            // if there is an included library that does not match one that was in the previous model,
-            // throw an invalid edit error message.
-            if(potentialMatches.isEmpty()) {
-                hasInvalidEdits = true;
-            }
         }
 
         numberOfIncludedLibraries++;

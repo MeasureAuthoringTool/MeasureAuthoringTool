@@ -102,7 +102,7 @@ public class MeasureValidationReportImpl implements FhirValidationReport {
 
     private void addErrors(Measure measure, MatXmlResponse matXmlResponse, Map<String, Object> paramsMap) {
         paramsMap.put("measureFhirValidationErrors", getMeasureErrors(measure, matXmlResponse));
-        paramsMap.put("libraryFhirValidationErrors", getLibraryErrors(matXmlResponse));
+        paramsMap.put("libraryFhirValidationErrors", getLibraryErrors(measure, matXmlResponse));
     }
 
     private void addConversionStatusMessage(MatXmlResponse matXmlResponse, Map<String, Object> paramsMap) {
@@ -132,13 +132,14 @@ public class MeasureValidationReportImpl implements FhirValidationReport {
         return result;
     }
 
-    private List<FhirValidationResult> getLibraryErrors(MatXmlResponse matXmlResponse) {
+    private List<FhirValidationResult> getLibraryErrors(Measure measure, MatXmlResponse matXmlResponse) {
         List<FhirValidationResult> result = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(matXmlResponse.getErrors())) {
-            matXmlResponse.getErrors().
+            matXmlResponse.getErrors().stream().
+                    filter(le -> !StringUtils.equals(le.getName(), measure.getCqlLibraryName())).
                     forEach(e -> {
                         if (CollectionUtils.isNotEmpty((e.getErrors()))) {
-                            e.getErrors().forEach(cqle -> result.add(convertCqlErrror(e,cqle)));
+                            e.getErrors().forEach(cqle -> result.add(convertCqlErrror(e, cqle)));
                         }
                     });
         }

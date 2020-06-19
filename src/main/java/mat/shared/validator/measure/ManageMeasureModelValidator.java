@@ -3,13 +3,16 @@ package mat.shared.validator.measure;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.shared.MessageDelegate;
 import mat.shared.StringUtility;
 
 public class ManageMeasureModelValidator {
-	
+	private final Logger logger = Logger.getLogger("ManageMeasureModelValidator");
+
 	public List<String> validateMeasure(ManageMeasureDetailModel model){
 		List<String> message = performCommonMeasureValidation(model);
 		message.addAll(validateNQF(model));
@@ -40,6 +43,7 @@ public class ManageMeasureModelValidator {
 		String libName = model.getCQLLibraryName();
 		CommonMeasureValidator commonMeasureValidator = new CommonMeasureValidator();
 		message.addAll(commonMeasureValidator.validateMeasureName(model.getMeasureName()));
+		logger.log(Level.INFO,"performCommonMeasureValidation isFhir=" + model.isFhir() + " " + libName);
 		message.addAll(model.isFhir() ? commonMeasureValidator.validateFhirLibraryName(libName):
 				commonMeasureValidator.validateQDMName(libName));
 		message.addAll(commonMeasureValidator.validateECQMAbbreviation(model.getShortName()));

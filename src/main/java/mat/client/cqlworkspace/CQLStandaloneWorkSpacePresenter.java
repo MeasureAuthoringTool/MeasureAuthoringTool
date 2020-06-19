@@ -2544,6 +2544,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
     protected boolean isValidLibName(String libName) {
         boolean isFhir = isFhir();
+        logger.log(Level.INFO,"isValidLibName " + libName + " isFhir= " + isFhir);
         return (isFhir && validator.isValidFhirCqlName(libName)) ||
                 (!isFhir && validator.isValidQDMName(libName));
     }

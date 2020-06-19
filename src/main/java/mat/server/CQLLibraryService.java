@@ -88,7 +88,6 @@ import mat.server.util.CQLUtil;
 import mat.server.util.CQLValidationUtil;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
-import mat.server.util.QDMUtil;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.CQLModelValidator;
@@ -400,7 +399,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     public SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries) {
         logger.info("Inside saveFinalizedVersion: Start");
         SaveCQLLibraryResult result = new SaveCQLLibraryResult();
-        FhirLibraryPackageResult fhirLibPackageRes = null;
 
         boolean isVersionable = MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId);
 
@@ -425,8 +423,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             result.setFailureReason(ConstantMessages.INVALID_CQL_DATA);
             return result;
         }
-        boolean isFhir = StringUtils.equals(cqlResult.getCqlModel().getUsingModel(), ModelTypeHelper.FHIR);
 
+        boolean isFhir = ModelTypeHelper.isFhir(cqlResult.getCqlModel().getUsingModel());
         if (!isFhir) {
             List<String> usedLibraries = cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries();
 
@@ -663,7 +661,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             return result;
         }
 
-        boolean isFhir = "FHIR".equals(cqlLibraryDataSetObject.getLibraryModelType());
+
+        boolean isFhir = ModelTypeHelper.isFhir(cqlLibraryDataSetObject.getLibraryModelType());
         List<String> message = isValidCQLLibrary(cqlLibraryDataSetObject, isFhir);
         if (message.isEmpty()) {
             CQLLibrary library = new CQLLibrary();
@@ -671,10 +670,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             library.setName(cqlLibraryDataSetObject.getCqlName());
             library.setSetId(UUID.randomUUID().toString());
             library.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
-            library.setQdmVersion(isFhir ? MATPropertiesService.get().getFhirVersion() : MATPropertiesService.get().getQdmVersion());
+            library.setLibraryModelType(cqlLibraryDataSetObject.getLibraryModelType());
+            updateModelVersion(library);
             library.setRevisionNumber("000");
             library.setVersion("0.0");
-            library.setLibraryModelType(cqlLibraryDataSetObject.getLibraryModelType());
+
             if (LoggedInUserUtil.getLoggedInUser() != null) {
                 User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
                 library.setOwnerId(currentUser);
@@ -1005,7 +1005,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             boolean isFhir = cqlLibrary.isFhirLibrary();
             CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(),
                     MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()),
-                    isFhir ? "FHIR" : QDMUtil.QDM_MODEL_IDENTIFIER,
+                    isFhir ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM,
                     isFhir ? cqlLibrary.getFhirVersion() : cqlLibrary.getQdmVersion());
 
             CQLModel previousModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
@@ -1217,7 +1217,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         CQLLibrary library = cqlLibraryDAO.find(libraryId);
         String cqlXml = getCQLLibraryXml(library);
 
-        if (ModelTypeHelper.FHIR.equalsIgnoreCase(library.getLibraryModelType())) {
+        if (ModelTypeHelper.isFhir(library.getLibraryModelType())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(cqlXml);
             String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
             SaveUpdateCQLResult cqlResult = cqlService.parseFhirCQLForErrors(cqlModel, cqlFileString);
@@ -1269,7 +1269,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             boolean isFhir = cqlLibrary.isFhirLibrary();
             CQLLinterConfig config = new CQLLinterConfig(cqlLibrary.getName(),
                     MeasureUtility.formatVersionText(cqlLibrary.getRevisionNumber(), cqlLibrary.getVersion()),
-                    isFhir ? "FHIR" : "QDM",
+                    isFhir ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM,
                     isFhir ? cqlLibrary.getFhirVersion() : cqlLibrary.getQdmVersion());
 
             config.setPreviousCQLModel(result.getCqlModel());

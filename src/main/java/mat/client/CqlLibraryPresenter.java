@@ -1223,7 +1223,9 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                 detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getQDMCqlLibyNameError());
                 return false;
             }
+            logger.log(Level.INFO,"isLibraryNameValid isFhir" + isFhir + " " + cqlName);
             if (isFhir && !validator.isValidFhirCqlName(cqlName)) {
+                logger.log(Level.INFO,"isLibraryNameValid invalid name");
                 detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getFhirCqlLibyNameError());
                 return false;
             }

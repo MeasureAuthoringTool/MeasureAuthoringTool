@@ -7,7 +7,7 @@ import com.google.gwt.regexp.shared.RegExp;
  * The Class CQLModelValidator.
  */
 public class CQLModelValidator {
-    private RegExp FHIR_LIB_NAME_REGEX = RegExp.compile("[A-Z]([A-Za-z0-9_]){0,254}");
+    private RegExp FHIR_LIB_NAME_REGEX = RegExp.compile("^[A-Z]([A-Za-z0-9_]{0,254})$");
 
     /**
      * The regex expression.

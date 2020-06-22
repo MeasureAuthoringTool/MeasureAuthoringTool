@@ -207,8 +207,6 @@ public class ZipPackager {
 
         Measure measure = measureDAO.getMeasureByMeasureId(measureId);
         MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
-        CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measureId);
-        CQLLibraryExport cqlLibraryExport = cqlLibraryExportDAO.findByLibraryId(cqlLibrary.getId());
 
         try {
             String measureReleaseVersion = currentRealeaseVersion;
@@ -229,6 +227,9 @@ public class ZipPackager {
                     addFileToZip(measure, jsonExportResult, parentPath, "json", zip);
                 }
             } else {
+                CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measureId);
+                CQLLibraryExport cqlLibraryExport = cqlLibraryExportDAO.findByLibraryId(cqlLibrary.getId());
+
                 addBytesToZip(parentPath + File.separator + "measure-bundle.json",
                         buildMeasureBundle(fhirContext,
                         measureExport.getMeasureJson(),

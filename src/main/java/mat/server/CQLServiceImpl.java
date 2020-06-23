@@ -1,45 +1,5 @@
 package mat.server;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.StringReader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.json.JSONObject;
-import org.json.XML;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import mat.CQLFormatter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
@@ -96,6 +56,44 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.json.JSONObject;
+import org.json.XML;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * The Class CQLServiceImpl.
@@ -254,11 +252,11 @@ public class CQLServiceImpl implements CQLService {
                 return r;
             }
 
-            // The model could have altered due to places the user is not allowed to change.
+            // For QDM, the model could have altered due to places the user is not allowed to change.
             // The cql needs to be regenerated from the model to catch these cases.
-            // At one point formatting was being done, but the formatter doesn't work that well with
-            // fhir cql and it was causing errors.
-            String scrubbedCql = CQLUtilityClass.getCqlString(newModel, "").getLeft();
+            // For FHIR, only do this when we lint.
+            String scrubbedCql = ModelTypeHelper.isFhir(modelType) ? cql :
+                    CQLUtilityClass.getCqlString(newModel, "").getLeft();
 
             // Validation.
             SaveUpdateCQLResult parsedResult;
@@ -280,21 +278,21 @@ public class CQLServiceImpl implements CQLService {
             //Gen the new mat xml.
             String newLibXml = marshallCQLModel(newModel);
 
-            //Lint.
-            CQLLinter linter = CQLUtil.lint(cql, config); //lint with original cql
             SaveUpdateCQLResult result = getCQLDataForLoad(newLibXml);
+            CQLLinter linter = CQLUtil.lint(cql, config); //lint with original cql
             result.setCqlErrors(parsedResult.getCqlErrors());
             result.setCqlWarnings(parsedResult.getCqlWarnings());
             result.setLibraryNameErrorsMap(parsedResult.getLibraryNameErrorsMap());
             result.setLibraryNameWarningsMap(parsedResult.getLibraryNameWarningsMap());
             result.setCqlString(scrubbedCql);
             result.setXml(newLibXml);
-            result.getLinterErrors().addAll(linter.getErrors());
-            result.getLinterWarningMessages().addAll(linter.getWarningMessages());
-            result.getLinterErrorMessages().addAll(linter.getErrorMessages());
             result.setDatatypeUsedCorrectly(CQLUtil.validateDatatypeCombinations(result.getCqlModel(),
                     result.getUsedCQLArtifacts().getValueSetDataTypeMap(),
                     result.getUsedCQLArtifacts().getCodeDataTypeMap()));
+            result.getLinterErrors().addAll(linter.getErrors());
+            result.getLinterWarningMessages().addAll(linter.getWarningMessages());
+            result.getLinterErrorMessages().addAll(linter.getErrorMessages());
+
             result.setSuccess(true);
 
             return result;

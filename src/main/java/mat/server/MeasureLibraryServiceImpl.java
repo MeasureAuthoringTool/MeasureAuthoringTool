@@ -1763,6 +1763,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             if (pkg.getMeasureDetails() == null) {
                 MeasureDetails measureDetails = new MeasureDetails();
+                if (isFhir) {
+                    //Defaulted on new measures for fhir.
+                    measureDetails.setImprovementNotation("increase");
+                }
                 measureDetails.setMeasure(pkg);
                 pkg.setMeasureDetails(measureDetails);
             }

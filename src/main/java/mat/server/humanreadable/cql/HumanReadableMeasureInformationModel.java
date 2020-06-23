@@ -113,6 +113,13 @@ public class HumanReadableMeasureInformationModel {
         this.rationale = model.getRationale();
         this.clinicalRecommendationStatement = model.getClinicalRecomms();
         this.improvementNotation = model.getImprovNotations();
+        if (model.isFhir()) {
+            if ("decrease".equals(this.improvementNotation)) {
+                this.improvementNotation = "Decreased score indicates improvement";
+            } else {
+                this.improvementNotation = "Increased score indicates improvement";
+            }
+        }
 
         if (!CollectionUtils.isEmpty(model.getReferencesList())) {
             this.references = new ArrayList<>(model.getReferencesList());

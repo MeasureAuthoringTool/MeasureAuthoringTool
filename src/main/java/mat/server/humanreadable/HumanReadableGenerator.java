@@ -103,7 +103,10 @@ public class HumanReadableGenerator {
         return html;
     }
 
-    public String generateHTMLForMeasure(String measureId, String simpleXml, String measureReleaseVersion, CQLLibraryDAO cqlLibraryDAO) {
+    public String generateHTMLForMeasure(String measureId,
+                                         String simpleXml,
+                                         String measureReleaseVersion,
+                                         CQLLibraryDAO cqlLibraryDAO) {
 
         String html = "";
         log.info("Generating human readable for ver:" + measureReleaseVersion);
@@ -116,7 +119,9 @@ public class HumanReadableGenerator {
 
                 CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(processor.getOriginalDoc());
 
-                SaveUpdateCQLResult cqlResult = cqlModel.isFhir() ? parseFhirCqlLibraryForErrors(cqlModel, cqlString) : CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
+                SaveUpdateCQLResult cqlResult = cqlModel.isFhir() ?
+                        parseFhirCqlLibraryForErrors(cqlModel, cqlString) :
+                        CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
                 Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModel);
 
                 XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
@@ -153,6 +158,13 @@ public class HumanReadableGenerator {
                 sortDataCriteriaList(valuesetAndCodeDataCriteriaList);
                 model.setValuesetAndCodeDataCriteriaList(valuesetAndCodeDataCriteriaList);
 
+                if (cqlModel.isFhir()) {
+                    if ("decrease".equals(model.getMeasureInformation().getImprovementNotation())) {
+                        model.getMeasureInformation().setImprovementNotation("Decreased score indicates improvement");
+                    } else {
+                        model.getMeasureInformation().setImprovementNotation("Increased score indicates improvement");
+                    }
+                }
                 html = humanReadableGenerator.generate(model);
             } catch (IOException | TemplateException | MappingException | MarshalException | ValidationException | XPathExpressionException e) {
                 log.error("Error in HumanReadableGenerator::generateHTMLForMeasure: " + e.getMessage(), e);

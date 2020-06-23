@@ -74,17 +74,30 @@ public class GenerateCommonFhirLibSql {
 
     public static void main(String args[]) {
 
+
         File out = new File("target/out.sql");
         out.delete();
         try (var c = getConnection();
              var writer = new FileWriter(out)) {
             System.err.println("Connected to DB.");
+
             Arrays.stream(IDS).forEach(id -> {
+                //First step update versions based on the IDs.
+                try (Statement s = c.createStatement()) {
+                    String[] idSplit = id.split("\\-");
+                    String version = idSplit[idSplit.length -3] + "." +  idSplit[idSplit.length - 2];
+                    String revision = idSplit[idSplit.length - 1];
+                    s.executeUpdate("update CQL_LIBRARY set version=" + version + ", revision_number =" + revision + " where id = " + tic(id));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+
                 try (Statement s = c.createStatement()) {
                     Map<String, String> map = new HashMap<>();
                     map.put("ID", tic(id));
                     map.put("CQL_LIB_ID", tic(id));
                     map.put("EXPORT_ID", tic(createId()));
+                    //Gen lib sql.
                     try (ResultSet r = s.executeQuery("select * from CQL_LIBRARY where ID=" + tic(escape(id)) + ";")) {
                         System.err.println("\n\nSelected details from CQL_LIBRARY for " + id);
                         r.next();
@@ -97,6 +110,7 @@ public class GenerateCommonFhirLibSql {
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
+                    //Gen lib export sql.
                     try (ResultSet r = s.executeQuery("select * from CQL_LIBRARY_EXPORT where CQL_LIBRARY_ID=" + tic(escape(id)) + ";")) {
                         r.next();
                         System.err.println("Selected details from CQL_LIBRARY_EXPORT for " + id);

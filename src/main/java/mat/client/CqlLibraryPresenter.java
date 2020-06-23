@@ -725,7 +725,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
                 String errorReason = response.getValidationStatus().getErrorReason();
                 logger.log(Level.WARNING, "Library " + object.getId() + " conversion has completed. Outcome: " + outcome + " errorReason: " + errorReason);
                 showSearchingBusy(false);
-                showFhirValidationReport(object.getId(), true);
+                showFhirValidationReport(response.getFhirMeasureId(), true);
                 displaySearch();
             }
         });

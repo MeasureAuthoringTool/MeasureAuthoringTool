@@ -646,7 +646,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                 String errorReason = response.getValidationStatus().getErrorReason();
                 logger.log(Level.WARNING, "Measure " + object.getId() + " conversion has completed. Outcome: " + outcome + " errorReason: " + errorReason);
                 setSearchingBusy(false);
-                showFhirValidationReport(response.getFhirMeasure().getId(), true);
+                showFhirValidationReport(response.getFhirMeasureId(), true);
                 displaySearch();
             }
         });

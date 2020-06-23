@@ -107,7 +107,6 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
             throw new MatException("Cql Library cannot be converted to FHIR");
         }
 
-        fhirConvertResultResponse.setSourceLibrary(sourceLibrary);
         cqlLibService.isLibraryAvailableAndLogRecentActivity(sourceLibrary.getId(), loggedInUser);
 
         CQLLibrary existingLibrary = cqlLibraryDAO.find(sourceLibrary.getId());
@@ -128,6 +127,7 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
             /*Create a new cql Library object and store it in DB*/
             persistFhirLibrary(loggedInUser, existingLibrary, fhirCqlOpt.get(), fhirConvertResultResponse);
         }
+
         return fhirConvertResultResponse;
     }
 
@@ -167,7 +167,7 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
 
         CQLLibraryDataSetObject cqlLibraryDataSetObject = cqlLibService.extractCQLLibraryDataObject(newFhirLibrary);
 
-        fhirConvertResultResponse.setFhirLibrary(cqlLibraryDataSetObject);
+        fhirConvertResultResponse.setFhirMeasureId(newFhirLibrary.getId());
         cqlLibService.isLibraryAvailableAndLogRecentActivity(newFhirLibrary.getId(), loggedInUser);
     }
 

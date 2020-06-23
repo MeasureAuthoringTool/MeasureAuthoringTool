@@ -7,12 +7,7 @@ import mat.model.cql.CQLLibraryDataSetObject;
 public class FhirConvertResultResponse implements IsSerializable {
 
     private FhirValidationStatus validationStatus = new FhirValidationStatus();
-    private ManageMeasureSearchModel.Result sourceMeasure;
-    private ManageMeasureSearchModel.Result fhirMeasure;
-
-    private CQLLibraryDataSetObject sourceLibrary;
-
-    private CQLLibraryDataSetObject fhirLibrary;
+    private String fhirMeasureId;
 
     public FhirValidationStatus getValidationStatus() {
         return validationStatus;
@@ -22,35 +17,11 @@ public class FhirConvertResultResponse implements IsSerializable {
         this.validationStatus = validationStatus;
     }
 
-    public ManageMeasureSearchModel.Result getSourceMeasure() {
-        return sourceMeasure;
+    public String getFhirMeasureId() {
+        return fhirMeasureId;
     }
 
-    public void setSourceMeasure(ManageMeasureSearchModel.Result sourceMeasure) {
-        this.sourceMeasure = sourceMeasure;
-    }
-
-    public ManageMeasureSearchModel.Result getFhirMeasure() {
-        return fhirMeasure;
-    }
-
-    public void setFhirMeasure(ManageMeasureSearchModel.Result fhirMeasure) {
-        this.fhirMeasure = fhirMeasure;
-    }
-
-    public CQLLibraryDataSetObject getSourceLibrary() {
-        return sourceLibrary;
-    }
-
-    public void setSourceLibrary(CQLLibraryDataSetObject sourceLibrary) {
-        this.sourceLibrary = sourceLibrary;
-    }
-
-    public CQLLibraryDataSetObject getFhirLibrary() {
-        return fhirLibrary;
-    }
-
-    public void setFhirLibrary(CQLLibraryDataSetObject fhirLibrary) {
-        this.fhirLibrary = fhirLibrary;
+    public void setFhirMeasureId(String fhirMeasureId) {
+        this.fhirMeasureId = fhirMeasureId;
     }
 }

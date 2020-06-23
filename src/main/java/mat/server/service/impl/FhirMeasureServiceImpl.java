@@ -1,19 +1,5 @@
 package mat.server.service.impl;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import mat.model.clause.Measure;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
-
 import mat.client.measure.FhirMeasurePackageResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -26,6 +12,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dto.fhirconversion.ConversionOutcome;
 import mat.dto.fhirconversion.ConversionResultDto;
+import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
@@ -35,6 +22,18 @@ import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.cql.FhirCqlParser;
 import mat.server.util.XmlProcessor;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class FhirMeasureServiceImpl implements FhirMeasureService {
@@ -85,7 +84,6 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
             throw new MatException("Measure cannot be converted to FHIR");
         }
         FhirConvertResultResponse fhirConvertResultResponse = new FhirConvertResultResponse();
-        fhirConvertResultResponse.setSourceMeasure(sourceMeasure);
         measureLibraryService.recordRecentMeasureActivity(sourceMeasure.getId(), loggedinUserId);
 
         ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
@@ -139,10 +137,9 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         transactionTemplate.executeWithoutResult(status -> {
             try {
                 ManageMeasureSearchModel.Result fhirMeasure = measureCloningService.cloneForFhir(sourceMeasureDetails);
-                fhirConvertResultResponse.setFhirMeasure(fhirMeasure);
 
                 //Update the MAT xml.
-                convertXml(fhirMeasure.getId(), convertedCql);
+                convertXml(fhirConvertResultResponse,fhirMeasure.getId(), convertedCql);
 
                 measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
             } catch (MatException | MatRuntimeException e) {
@@ -152,7 +149,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         });
     }
 
-    private void convertXml(String measureId, String cql) throws MatException {
+    private void convertXml(FhirConvertResultResponse fhirConvertResultResponse, String measureId, String cql) throws MatException {
         try {
             Measure matMeasure = measureDAO.find(measureId);
             MeasureXML measureXml = measureXMLDAO.findForMeasure(measureId);
@@ -181,6 +178,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
             //All converted measures default to increase.
             matMeasure.getMeasureDetails().setImprovementNotation("increase");
             measureDAO.saveandReturnMaxEMeasureId(matMeasure);
+            fhirConvertResultResponse.setFhirMeasureId(matMeasure.getId());
         } catch (IOException | MappingException | MarshalException | ValidationException e) {
             throw new MatException("Error converting mat xml", e);
         }

@@ -6,6 +6,7 @@ import java.util.Collections;
 
 import javax.servlet.http.HttpSession;
 
+import mat.model.clause.MeasureDetails;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,7 @@ import mat.shared.SaveUpdateCQLResult;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
 @Slf4j
@@ -134,7 +136,7 @@ public class FhirMeasureServiceImplTest {
         validateResult.setLibraryConversionResults(Collections.singletonList(libraryConversionResults));
         validateResult.setValueSetConversionResults(Collections.emptyList());
 
-        Mockito.when(fhirOrchestrationGatewayService.convert(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
+        Mockito.when(fhirOrchestrationGatewayService.convert(any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
 
         ManageMeasureDetailModel sourceMeasureDetails = new ManageMeasureDetailModel();
         sourceMeasureDetails.setId(sourceMeasureId);
@@ -146,13 +148,17 @@ public class FhirMeasureServiceImplTest {
 
         ManageMeasureSearchModel.Result fhirMeasureResult = new ManageMeasureSearchModel.Result();
         fhirMeasureResult.setId(fhirMeasureId);
-        Mockito.when(measureCloningService.cloneForFhir(Mockito.any())).thenReturn(fhirMeasureResult);
+        Mockito.when(measureCloningService.cloneForFhir(any())).thenReturn(fhirMeasureResult);
 
         sourceMeasureResult.setId(sourceMeasureId);
 
         Measure sourceMeasure = new Measure();
         sourceMeasure.setId(sourceMeasureId);
         Mockito.when(measureDAO.deleteFhirMeasuresBySetId(Mockito.eq(setId))).thenReturn(1);
+
+        Measure fhirMeasure = new Measure();
+        fhirMeasure.setMeasureDetails(new MeasureDetails());
+        Mockito.when(measureDAO.find(any())).thenReturn(fhirMeasure);
 
         MeasureXML measureXML = new MeasureXML() {
             @Override
@@ -164,10 +170,10 @@ public class FhirMeasureServiceImplTest {
         SaveUpdateCQLResult saveUpdateCQLResult = new SaveUpdateCQLResult();
         saveUpdateCQLResult.setSuccess(true);
 
-        Mockito.when(measureXMLDAO.findForMeasure(Mockito.any())).thenReturn(measureXML);
+        Mockito.when(measureXMLDAO.findForMeasure(any())).thenReturn(measureXML);
 
 
-        Mockito.when(cqlParser.parse(Mockito.anyString(), Mockito.any(CQLModel.class))).thenReturn(new MatXmlResponse(Collections.emptyList(), new CQLModel(), "CQL text"));
+        Mockito.when(cqlParser.parse(Mockito.anyString(), any(CQLModel.class))).thenReturn(new MatXmlResponse(Collections.emptyList(), new CQLModel(), "CQL text"));
 
         service.TEST_MODE = true;
         service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);
@@ -194,7 +200,7 @@ public class FhirMeasureServiceImplTest {
         validateResult.setLibraryConversionResults(Collections.singletonList(libraryConversionResults));
         validateResult.setValueSetConversionResults(Collections.emptyList());
 
-        Mockito.when(fhirOrchestrationGatewayService.convert(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
+        Mockito.when(fhirOrchestrationGatewayService.convert(any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(validateResult);
 
         ManageMeasureDetailModel sourceMeasureDetails = new ManageMeasureDetailModel();
         sourceMeasureDetails.setId(sourceMeasureId);
@@ -240,13 +246,13 @@ public class FhirMeasureServiceImplTest {
         SaveUpdateCQLResult saveUpdateCQLResult = new SaveUpdateCQLResult();
         saveUpdateCQLResult.setSuccess(false);
 
-        doThrow(MatRuntimeException.class).when(measureLibraryService).recordRecentMeasureActivity(Mockito.any(), Mockito.any());
+        doThrow(MatRuntimeException.class).when(measureLibraryService).recordRecentMeasureActivity(any(), any());
 
         assertThrows(MatRuntimeException.class, () -> {
             service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId);
         });
 
-        Mockito.verify(measureDAO, Mockito.never()).delete(Mockito.any(Measure.class));
+        Mockito.verify(measureDAO, Mockito.never()).delete(any(Measure.class));
     }
 
     public String resourceAsString(String resource) {

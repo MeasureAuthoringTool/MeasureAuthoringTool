@@ -1,38 +1,6 @@
 package mat.server;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
+import lombok.extern.slf4j.Slf4j;
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
@@ -98,12 +66,40 @@ import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("serial")
 @Service
+@Slf4j
 public class CQLLibraryService extends SpringRemoteServiceServlet implements CQLLibraryServiceInterface {
-    private static final Log logger = LogFactory.getLog(CQLLibraryService.class);
-
     @Autowired
     private CQLLibraryDAO cqlLibraryDAO;
 
@@ -372,7 +368,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                     processor.updateCQLLibraryName(libraryName);
                     versionLibraryXml = processor.transform(processor.getOriginalDoc());
                 } catch (XPathExpressionException e) {
-                    logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
 
@@ -397,7 +393,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
     @Override
     public SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries) {
-        logger.info("Inside saveFinalizedVersion: Start");
+        log.info("Inside saveFinalizedVersion: Start");
         SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 
         boolean isVersionable = MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId);
@@ -452,12 +448,12 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 if (versionNumber == null) {
                     versionNumber = "0.000";
                 }
-                logger.info("Max Version Number loaded from DB: " + versionNumber);
+                log.info("Max Version Number loaded from DB: " + versionNumber);
             } else {
                 int versionIndex = version.indexOf('v');
-                logger.info("Min Version number passed from Page Model: " + versionIndex);
+                log.info("Min Version number passed from Page Model: " + versionIndex);
                 String selectedVersion = version.substring(versionIndex + 1);
-                logger.info("Min Version number after trim: " + selectedVersion);
+                log.info("Min Version number after trim: " + selectedVersion);
                 versionNumber = cqlLibraryDAO.findMaxOfMinVersion(library.getSetId(), selectedVersion);
             }
 
@@ -467,10 +463,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 String[] versionArr = versionNumber.split("\\.");
                 if (isMajor) {
                     if (!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION)) {
-                        logger.info("Inside saveFinalizedVersion: incrementVersionNumberAndSave Start");
+                        log.info("Inside saveFinalizedVersion: incrementVersionNumberAndSave Start");
                         return incrementVersionNumberAndSave(majorVersionNumber, "1", library);
                     } else {
-                        logger.info("Inside saveFinalizedVersion: returnFailureReason  isMajor Start");
+                        log.info("Inside saveFinalizedVersion: returnFailureReason  isMajor Start");
                         result.setFailureReason(SaveCQLLibraryResult.REACHED_MAXIMUM_MAJOR_VERSION);
                         result.setSuccess(false);
                         return result;
@@ -478,17 +474,17 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 } else {
                     if (!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)) {
                         versionNumber = versionArr[0] + "." + versionArr[1];
-                        logger.info("Inside saveFinalizedVersion: incrementVersionNumberAndSave Start");
+                        log.info("Inside saveFinalizedVersion: incrementVersionNumberAndSave Start");
                         return incrementVersionNumberAndSave(versionNumber, "0.001", library);
                     } else {
-                        logger.info("Inside saveFinalizedVersion: returnFailureReason NOT isMajor Start");
+                        log.info("Inside saveFinalizedVersion: returnFailureReason NOT isMajor Start");
                         result.setFailureReason(SaveCQLLibraryResult.REACHED_MAXIMUM_MINOR_VERSION);
                         result.setSuccess(false);
                         return result;
                     }
                 }
             } else {
-                logger.info("Inside saveFinalizedVersion: returnFailureReason MAX Major Minor Reached");
+                log.info("Inside saveFinalizedVersion: returnFailureReason MAX Major Minor Reached");
                 result.setFailureReason(SaveCQLLibraryResult.REACHED_MAXIMUM_VERSION);
                 result.setSuccess(false);
                 return result;
@@ -527,31 +523,36 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
     @Override
     public CheckForConversionResult checkLibraryForConversion(CQLLibraryDataSetObject sourceLibrary) {
-        logger.info("checkLibraryForConversion  libraryId: " + sourceLibrary.getId() + " setId: " + sourceLibrary.getCqlSetId());
-        CheckForConversionResult result = new CheckForConversionResult();
-        List<CQLLibrary> draftLibraries = cqlLibraryDAO.getDraftLibraryBySet(sourceLibrary.getCqlSetId());
-        if (draftLibraries.isEmpty()) {
-            // If no drafts found we can proceed with conversion
-            result.setProceedImmediately(true);
-        } else {
-            // If the only draft is a FHIR draft created from the same source measure then ask for confirmation to override.
-            // UI cannot proceed with conversion if User didn't confirm or if there is/are other draft(s)
-            result.setConfirmBeforeProceed(draftLibraries.stream().allMatch(m -> m.isFhirLibrary() && StringUtils.equals(sourceLibrary.getCqlSetId(), m.getSetId())));
-        }
+        try {
+            log.info("checkLibraryForConversion  libraryId: " + sourceLibrary.getId() + " setId: " + sourceLibrary.getCqlSetId());
+            CheckForConversionResult result = new CheckForConversionResult();
+            List<CQLLibrary> draftLibraries = cqlLibraryDAO.getDraftLibraryBySet(sourceLibrary.getCqlSetId());
+            if (draftLibraries.isEmpty()) {
+                // If no drafts found we can proceed with conversion
+                result.setProceedImmediately(true);
+            } else {
+                // If the only draft is a FHIR draft created from the same source measure then ask for confirmation to override.
+                // UI cannot proceed with conversion if User didn't confirm or if there is/are other draft(s)
+                result.setConfirmBeforeProceed(draftLibraries.stream().allMatch(m -> m.isFhirLibrary() && StringUtils.equals(sourceLibrary.getCqlSetId(), m.getSetId())));
+            }
 
-        return result;
+            return result;
+        } catch (RuntimeException re) {
+            log.error("checkLibraryForConversion",re);
+            throw re;
+        }
     }
 
     @Override
     public FhirConvertResultResponse convertCqlLibrary(CQLLibraryDataSetObject sourceLibrary) throws MatException {
-        logger.info("Converting  libraryId: " + sourceLibrary.getId());
+        log.info("Converting  libraryId: " + sourceLibrary.getId());
         try {
             return fhirCqlLibraryService.convertCqlLibrary(sourceLibrary, LoggedInUserUtil.getLoggedInUser());
         } catch (MatException e) {
-            logger.error("Error calling fhirCqlLibraryService.convertCqlLibrary", e);
+            log.error("Error calling fhirCqlLibraryService.convertCqlLibrary", e);
             throw e;
         } catch (Exception e) {
-            logger.error("Error calling fhirCqlLibraryService.convertCqlLibrary", e);
+            log.error("Error calling fhirCqlLibraryService.convertCqlLibrary", e);
             throw new MatException(e.getMessage(), e);
         }
     }
@@ -569,7 +570,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             CQLUtil.removeUnusedIncludes(xmlProcessor.getOriginalDoc(),
                     cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlResult.getCqlModel());
         } catch (XPathExpressionException e) {
-            logger.error(e.getStackTrace());
+            log.error("removeUnusedLibraries",e);
         }
 
         cqlLibrary.setCQLByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()).getBytes());
@@ -620,7 +621,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         result.setId(library.getId());
         versionStr = MeasureUtility.formatVersionText(versionStr);
         result.setVersionStr(versionStr);
-        logger.info("Result passed for Version Number " + versionStr);
+        log.info("Result passed for Version Number " + versionStr);
         return result;
     }
 
@@ -634,7 +635,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 node.setTextContent(MeasureUtility.formatVersionText(revisionNumber, version));
             }
         } catch (XPathExpressionException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
 
     }
@@ -806,10 +807,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                     }
                 }
             }
-            logger.info(xmlProcessor.transform(cqlLookUpNode));
+            log.info(xmlProcessor.transform(cqlLookUpNode));
             cqlLookUp = xmlProcessor.transform(cqlLookUpNode);
         } catch (XPathExpressionException e) {
-            logger.error(e);
+            log.error("getCQLLookUpXml",e);
         }
 
         return cqlLookUp;
@@ -825,7 +826,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         try {
             templateFile = new File(templateFileUrl.toURI());
         } catch (URISyntaxException e) {
-            logger.error(e);
+            log.error("loadCQLXmlTemplateFile",e);
         }
         XmlProcessor templateXMLProcessor = new XmlProcessor(templateFile);
         return templateXMLProcessor;
@@ -843,7 +844,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
             cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
         } catch (SQLException e) {
-            logger.error(e);
+            log.error("getCQLLibraryData",e);
         }
         return cqlFileString;
     }
@@ -889,7 +890,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             try {
                 xmlString = new String(library.getCqlXML().getBytes(1l, (int) library.getCqlXML().length()));
             } catch (SQLException e) {
-                logger.error(e);
+                log.error("getCQLLibraryXml",e);
             }
         }
         return xmlString;
@@ -1510,7 +1511,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         try {
             result = xmlProcessor.appendNode(newXml, nodeName, parentNodeName);
         } catch (SAXException | IOException e) {
-            logger.error(e);
+            log.error("getCQLLibraryData",e);
         }
         return result;
     }
@@ -1578,7 +1579,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                     cqlLibraryShare.setOwner(currentUser);
                     user.getCqlLibraryShares().add(cqlLibraryShare);
                     currentUser.getOwnedCQLLibraryShares().add(cqlLibraryShare);
-                    logger.info("Sharing " + cqlLibraryShare.getCqlLibrary().getId() + " with " + user.getId()
+                    log.info("Sharing " + cqlLibraryShare.getCqlLibrary().getId() + " with " + user.getId()
                             + " at level " + sLevel.getDescription());
                     if (!first) { //first time, don't add the comma.
                         auditLogAdditionlInfo.append(", ");
@@ -1591,7 +1592,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 } else if (cqlLibraryShare != null && !ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
                     recordRevokeShareEvent = true;
                     cqlLibraryShareDAO.delete(cqlLibraryShare.getId());
-                    logger.info("Removing Sharing " + cqlLibraryShare.getCqlLibrary().getId()
+                    log.info("Removing Sharing " + cqlLibraryShare.getCqlLibrary().getId()
                             + " with " + user.getId()
                             + " at level " + sLevel.getDescription());
                     if (!firstRemove) { //first time, don't add the comma.
@@ -1651,15 +1652,15 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
      * @param libraryId - String
      */
     private void updateAllCQLInLibraryXml(HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> map, String libraryId) {
-        logger.info("Start VSACAPIServiceImpl updateAllInLibraryXml :");
+        log.info("Start VSACAPIServiceImpl updateAllInLibraryXml :");
         Iterator<Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO>> it = map.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO> entrySet = it.next();
-            logger.info("Calling updateLibraryXML for : " + entrySet.getKey().getOid());
+            log.info("Calling updateLibraryXML for : " + entrySet.getKey().getOid());
             updateCQLLookUpTagWithModifiedValueSet(entrySet.getKey(), entrySet.getValue(), libraryId);
-            logger.info("Successfully updated Library XML for  : " + entrySet.getKey().getOid());
+            log.info("Successfully updated Library XML for  : " + entrySet.getKey().getOid());
         }
-        logger.info("End VSACAPIServiceImpl updateAllInLibraryXml :");
+        log.info("End VSACAPIServiceImpl updateAllInLibraryXml :");
     }
 
     @Override
@@ -1741,10 +1742,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
     @Override
     public final void deleteCQLLibrary(String cqllibId, String logggedInUserId, String password) throws AuthenticationException {
-        logger.info("CQLLibraryService: delete cql library start : cqlLibId:: " + cqllibId);
+        log.info("CQLLibraryService: delete cql library start : cqlLibId:: " + cqllibId);
         boolean isAuthenticated = loginService.isValidPassword(logggedInUserId, password);
         if (!isAuthenticated) {
-            logger.error("CQL Libraray not deleted. " + MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
+            log.error("CQL Libraray not deleted. " + MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
             throw new AuthenticationException(MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
         }
 
@@ -1754,6 +1755,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             cqlLibraryDAO.delete(cqlLib);
         }
 
-        logger.info("CQL Library Deleted Successfully :: " + cqllibId);
+        log.info("CQL Library Deleted Successfully :: " + cqllibId);
     }
 }

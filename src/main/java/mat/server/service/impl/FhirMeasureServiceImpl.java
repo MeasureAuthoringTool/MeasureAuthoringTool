@@ -3,6 +3,7 @@ package mat.server.service.impl;
 import java.io.IOException;
 import java.util.Optional;
 
+import mat.model.clause.Measure;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -153,6 +154,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
     private void convertXml(String measureId, String cql) throws MatException {
         try {
+            Measure matMeasure = measureDAO.find(measureId);
             MeasureXML measureXml = measureXMLDAO.findForMeasure(measureId);
             String sourceMeasureXml = measureXml.getMeasureXMLAsString();
 
@@ -175,6 +177,10 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                     cqlService.saveCQLAssociation(i, measureId);
                 }
             });
+
+            //All converted measures default to increase.
+            matMeasure.getMeasureDetails().setImprovementNotation("increase");
+            measureDAO.saveandReturnMaxEMeasureId(matMeasure);
         } catch (IOException | MappingException | MarshalException | ValidationException e) {
             throw new MatException("Error converting mat xml", e);
         }

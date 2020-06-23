@@ -2,6 +2,7 @@ package mat.client.measure.measuredetails.observers;
 
 import mat.client.measure.measuredetails.views.ImprovementNotationView;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
+import mat.client.shared.MatContext;
 import mat.shared.measure.measuredetails.models.ImprovementNotationModel;
 
 public class ImprovementNotationObserver implements MeasureDetailsComponentObserver {
@@ -22,12 +23,16 @@ public class ImprovementNotationObserver implements MeasureDetailsComponentObser
 	
 	private ImprovementNotationModel updateFromView() {
 		final ImprovementNotationModel improvementNotationModel = (ImprovementNotationModel) view.getMeasureDetailsComponentModel();
-		improvementNotationModel.setEditorText(view.getTextEditor().getText());
+		if (MatContext.get().isCurrentModelTypeFhir()) {
+			improvementNotationModel.setEditorText(view.getListBox().getSelectedItemText());
+		} else {
+			improvementNotationModel.setEditorText(view.getTextEditor().getText());
+		}
 		return improvementNotationModel;
 	}
 
 	@Override
 	public void setView(MeasureDetailViewInterface view) {
-		this.view = (ImprovementNotationView) view; 
+		this.view = (ImprovementNotationView) view;
 	}
 }

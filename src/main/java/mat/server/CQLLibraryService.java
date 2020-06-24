@@ -128,9 +128,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     private CQLLibraryExportDAO cqlLibraryExportDAO;
 
     @Autowired
-    private LoginServiceImpl loginService;
-
-    @Autowired
     private UserService userService;
 
     @Autowired

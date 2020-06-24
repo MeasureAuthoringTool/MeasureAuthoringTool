@@ -1,5 +1,7 @@
 package mat.client.shared.ui;
 
+import mat.client.shared.MessageAlert;
+import mat.client.shared.WarningMessageAlert;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.Modal;
@@ -33,6 +35,7 @@ import mat.shared.StringUtility;
  */
 public class DeleteConfirmDialogBox {
 	private  Button confirmButton;
+	private  Button cancelButton;
 	private  String passwordEntered;
 	private  Modal panel;
 	private FocusPanel focusPanel = new FocusPanel();
@@ -43,7 +46,8 @@ public class DeleteConfirmDialogBox {
 	public void showDeletionConfimationDialog(String message) {
 		focusPanel.clear();
 	    panel = new Modal();
-	    confirmButton = new Button("Confirm");
+		cancelButton = new Button("Do Not Delete");
+	    confirmButton = new Button("Delete Library Forever");
 	    passwordEntered = "";
 		ModalBody modalBody = new ModalBody();
 		messageAlert = new ErrorMessageAlert();
@@ -74,12 +78,12 @@ public class DeleteConfirmDialogBox {
 		VerticalPanel passwordPanel = new VerticalPanel();
 		passwordPanel.getElement().setId("passwordPanel_VerticalPanel");
 		HTML passwordText = new HTML(
-				"<h4>To confirm deletion, enter your password below:<h4>");
+				"<h4>To confirm deletion, enter DELETE:<h4>");
 		
 		
 		changePasswordWidget.getPassword().setId("password_PasswordTextBox");
-		changePasswordWidget.getPassword().setPlaceholder("Enter Password");
-		changePasswordWidget.getPassword().setTitle( message + " To confirm deletion, enter your password. Required");
+		changePasswordWidget.getPassword().setPlaceholder("Enter DELETE");
+		changePasswordWidget.getPassword().setTitle( message + " To confirm deletion, enter your DELETE. Required");
 		changePasswordWidget.getPassword().setFocus(true);
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setId("hp_HorizontalPanel");
@@ -91,20 +95,9 @@ public class DeleteConfirmDialogBox {
 		passwordPanel.add(new SpacerWidget());
 		passwordPanel.add(hp);
 		
-		getPassword().addKeyUpHandler(new KeyUpHandler() {
-
-			@Override
-			public void onKeyUp(final KeyUpEvent event) {
-				if (getPassword().getText() != null
-						&& event.getNativeEvent().getKeyCode() != KeyCodes.KEY_TAB
-						&& event.getNativeEvent().getKeyCode() != KeyCodes.KEY_BACKSPACE) {
-					confirmButton.setEnabled(true);
-					setPasswordEntered(getPassword().getText());
-				} else if (StringUtility.isEmptyOrNull(getPassword().getText())) {
-					confirmButton.setEnabled(false);
-				}
-			}
-		});
+		getPassword().addKeyUpHandler(c ->
+				confirmButton.setEnabled(getPassword().getText() != null &&
+						"DELETE".equals(getPassword().getText()) ? true : false));
 
 		ModalFooter modalFooter = new ModalFooter();
 
@@ -112,6 +105,12 @@ public class DeleteConfirmDialogBox {
 		confirmButton.setSize(ButtonSize.DEFAULT);
 		confirmButton.setEnabled(false);
 
+		cancelButton.setType(ButtonType.PRIMARY);
+		cancelButton.setSize(ButtonSize.DEFAULT);
+		cancelButton.setEnabled(true);
+		cancelButton.addClickHandler(e -> closeDialogBox());
+
+		modalFooter.add(cancelButton);
 		modalFooter.add(confirmButton);
 		VerticalPanel vp = new VerticalPanel();
 		vp.add(messageAlert);
@@ -133,18 +132,11 @@ public class DeleteConfirmDialogBox {
 		return confirmButton;
 	}
 
-	public  String getPasswordEntered() {
-		return passwordEntered;
-	}
-
-	public  void setPasswordEntered(String passwordEntered) {
-		this.passwordEntered = passwordEntered;
-	}
 
 	public Input getPassword() {
 		return changePasswordWidget.getPassword();
 	}
-	
+
 	public void setMessage(String message) {
 		messageAlert.clear();
 		messageAlert.createAlert(message);

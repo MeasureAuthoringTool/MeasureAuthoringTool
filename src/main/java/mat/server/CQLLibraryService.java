@@ -1741,13 +1741,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     @Override
-    public final void deleteCQLLibrary(String cqllibId, String logggedInUserId, String password) throws AuthenticationException {
+    public final void deleteCQLLibrary(String cqllibId, String logggedInUserId) throws AuthenticationException {
         log.info("CQLLibraryService: delete cql library start : cqlLibId:: " + cqllibId);
-        boolean isAuthenticated = loginService.isValidPassword(logggedInUserId, password);
-        if (!isAuthenticated) {
-            log.error("CQL Libraray not deleted. " + MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
-            throw new AuthenticationException(MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
-        }
 
         CQLLibrary cqlLib = cqlLibraryDAO.find(cqllibId);
         MatUserDetails details = (MatUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();

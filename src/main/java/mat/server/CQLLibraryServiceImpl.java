@@ -1,12 +1,8 @@
 package mat.server;
 
-import java.util.List;
-
+import mat.client.measure.service.CQLLibraryService;
 import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import mat.client.measure.service.CQLLibraryService;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
@@ -28,6 +24,9 @@ import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements CQLLibraryService {
     private static final long serialVersionUID = -2412573290030426288L;
@@ -242,8 +241,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
     }
 
     @Override
-    public final void deleteCQLLibrary(final String cqllibId, String loginUserId, String password) throws AuthenticationException {
-        this.getCQLLibraryService().deleteCQLLibrary(cqllibId, loginUserId, password);
+    public final void deleteCQLLibrary(final String cqllibId, String loginUserId) throws AuthenticationException {
+        this.getCQLLibraryService().deleteCQLLibrary(cqllibId, loginUserId);
     }
 
     @Override

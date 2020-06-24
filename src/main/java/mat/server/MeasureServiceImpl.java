@@ -140,8 +140,8 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     }
 
     @Override
-    public void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException, AuthenticationException {
-        this.getMeasureLibraryService().deleteMeasure(measureId, loggedInUserId, password);
+    public void deleteMeasure(String measureId, String loggedInUserId) throws DeleteMeasureException, AuthenticationException {
+        this.getMeasureLibraryService().deleteMeasure(measureId, loggedInUserId);
     }
 
     @Override

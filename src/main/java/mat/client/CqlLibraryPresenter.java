@@ -1663,7 +1663,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
     }
 
     private void deleteCQLLibrary(String libraryId) {
-        MatContext.get().getCQLLibraryService().deleteCQLLibrary(libraryId, MatContext.get().getLoggedinLoginId(), dialogBox.getPasswordEntered(), new AsyncCallback<Void>() {
+        MatContext.get().getCQLLibraryService().deleteCQLLibrary(libraryId, MatContext.get().getLoggedinLoginId(), new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable caught) {
                 if (caught instanceof AuthenticationException) {

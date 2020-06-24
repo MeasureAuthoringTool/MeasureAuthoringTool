@@ -183,7 +183,7 @@ public interface MeasureService extends RemoteService {
      */
     SaveMeasureResult saveMeasureAtPackage(ManageMeasureDetailModel model);
 
-    void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException, AuthenticationException;
+    void deleteMeasure(String measureId, String loggedInUserId) throws DeleteMeasureException, AuthenticationException;
 
     /**
      * Save finalized version.

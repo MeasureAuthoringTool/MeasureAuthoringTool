@@ -1,37 +1,5 @@
 package mat.server;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLWorkSpaceConstants;
@@ -93,6 +61,36 @@ import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("serial")
 @Service
@@ -1629,14 +1627,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     @Override
-    public final void deleteCQLLibrary(String cqllibId, String logggedInUserId, String password) throws AuthenticationException {
-        logger.info("CQLLibraryService: delete cql library start : cqlLibId:: " + cqllibId);
-        boolean isAuthenticated = loginService.isValidPassword(logggedInUserId, password);
-        if (!isAuthenticated) {
-            logger.error("CQL Libraray not deleted. " + MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
-            throw new AuthenticationException(MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
-        }
-
+    public final void deleteCQLLibrary(String cqllibId, String logggedInUserId) throws AuthenticationException {
         CQLLibrary cqlLib = cqlLibraryDAO.find(cqllibId);
         MatUserDetails details = (MatUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
         if (cqlLib.getOwnerId().getId().equalsIgnoreCase(details.getId())) {

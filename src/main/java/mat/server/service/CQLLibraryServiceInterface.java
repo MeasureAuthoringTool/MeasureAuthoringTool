@@ -112,7 +112,7 @@ public interface CQLLibraryServiceInterface {
 
 	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
 
-	void deleteCQLLibrary(String cqllibId, String loginUserId, String password) throws AuthenticationException;
+	void deleteCQLLibrary(String cqllibId, String loginUserId) throws AuthenticationException;
 
 	SaveUpdateCQLResult getCQLLibraryFileData(String libraryId);
 

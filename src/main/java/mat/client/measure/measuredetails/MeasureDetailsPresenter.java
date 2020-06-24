@@ -228,7 +228,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 	
 	private void deleteMeasure() {
-		MatContext.get().getMeasureService().deleteMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinLoginId(), dialogBox.getPasswordEntered(), deleteMeasureCallback());
+		MatContext.get().getMeasureService().deleteMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinLoginId(), deleteMeasureCallback());
 	}
 	
 	public AsyncCallback<Void> deleteMeasureCallback() {

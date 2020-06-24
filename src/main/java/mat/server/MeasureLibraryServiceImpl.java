@@ -1820,14 +1820,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	@Override
-	public void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException, AuthenticationException {
-		logger.info("Measure Deletion Started for measure Id :: " + measureId);		
-		boolean isValidPassword = loginService.isValidPassword(loggedInUserId, password);
-		if(!isValidPassword) {
-			logger.error("Failed to delete measure: " + MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
-			throw new AuthenticationException(MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
-		}
-		
+	public void deleteMeasure(String measureId, String loggedInUserId) throws DeleteMeasureException, AuthenticationException {
+		logger.info("Measure Deletion Started for measure Id :: " + measureId);
 		GenericResult isUsedAsComponentMeasureResult = checkIfMeasureIsUsedAsComponentMeasure(measureId);
 		if(!isUsedAsComponentMeasureResult.isSuccess()) {
 			logger.error("Failed to delete measure: "  + isUsedAsComponentMeasureResult.getMessages().get(0));
@@ -4656,8 +4650,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/**
 	 * Gets the authors list.
 	 *
-	 * @param xmlModel
-	 *            the xml model
 	 * @return the authors list
 	 */
 	private List<Author> getAuthorsList(Measure measure, List<Organization> allOrganizations) {

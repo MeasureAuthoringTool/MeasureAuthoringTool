@@ -51,7 +51,7 @@ import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
  */
 @RemoteServiceRelativePath("measureLibrary")
 public interface MeasureService extends RemoteService {
-	
+
 	/**
 	 * Append and save node.
 	 * 
@@ -200,7 +200,7 @@ public interface MeasureService extends RemoteService {
 	 */
 	SaveMeasureResult saveMeasureAtPackage(ManageMeasureDetailModel model);
 	
-	void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException, AuthenticationException;
+	void deleteMeasure(String measureId, String loggedInUserId) throws DeleteMeasureException, AuthenticationException;
 	
 	/**
 	 * Save finalized version.

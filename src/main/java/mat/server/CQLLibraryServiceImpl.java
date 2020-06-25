@@ -1,7 +1,5 @@
 package mat.server;
 
-import java.util.List;
-
 import mat.client.measure.service.CQLLibraryService;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatException;
@@ -24,6 +22,8 @@ import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
+
+import java.util.List;
 
 public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements CQLLibraryService {
 	private static final long serialVersionUID = -2412573290030426288L;
@@ -226,13 +226,12 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	}
 		
 	@Override
-	public final void deleteCQLLibrary(final String cqllibId, String loginUserId, String password) throws AuthenticationException {
-		 this.getCQLLibraryService().deleteCQLLibrary(cqllibId, loginUserId, password);
+	public final void deleteCQLLibrary(final String cqllibId, String loginUserId) throws AuthenticationException {
+		 this.getCQLLibraryService().deleteCQLLibrary(cqllibId, loginUserId);
 	}
 	@Override
 	public CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId) {
 		return this.getCQLLibraryService().saveValueSetList(transferObjectList, appliedValueSetList, cqlLibraryId);
 	}
-
 }

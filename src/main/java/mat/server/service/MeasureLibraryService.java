@@ -197,7 +197,7 @@ public interface MeasureLibraryService {
 	
 	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) throws MatException;
 	
-	void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException, AuthenticationException;
+	void deleteMeasure(String measureId, String loggedInUserId) throws DeleteMeasureException, AuthenticationException;
 	
 	/**
 	 * Save finalized version.

@@ -184,7 +184,6 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 		 * Builds the cell table.
 		 *
 		 * @param searchModel the search model
-		 * @param searchText the search text
 		 * @param filter the filter
 		 */
 		void buildCellTable(SaveCQLLibraryResult searchModel, LibrarySearchModel model, int filter);
@@ -504,7 +503,6 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 	 * @param cqlLibraryView the cql library view
 	 * @param detailDisplay the detail display
 	 * @param versionDisplay the version display
-	 * @param draftDisplay the draft display
 	 * @param shareDisplay the share display
 	 * @param historyDisplay the history display
 	 */
@@ -1471,7 +1469,7 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 	}	
 	
 	private void deleteCQLLibrary(String libraryId) {
-		MatContext.get().getCQLLibraryService().deleteCQLLibrary(libraryId, MatContext.get().getLoggedinLoginId(), dialogBox.getPasswordEntered(), new AsyncCallback<Void>() {
+		MatContext.get().getCQLLibraryService().deleteCQLLibrary(libraryId, MatContext.get().getLoggedinLoginId(), new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				if(caught instanceof AuthenticationException) {
@@ -1584,4 +1582,5 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 			sourcePresenter.beforeClosingDisplay();
 		}		
 	}
+
 }

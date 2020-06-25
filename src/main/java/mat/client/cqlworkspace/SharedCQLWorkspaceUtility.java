@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mat.client.shared.MatContext;
 import org.gwtbootstrap3.client.ui.ListBox;
 
 import com.google.gwt.user.client.ui.HTML;
@@ -80,11 +81,11 @@ public class SharedCQLWorkspaceUtility {
                     " " + e.getEndErrorInLine()));
             result.getLinterErrorMessages().forEach(e -> log.log(Level.INFO,"Linter Error: " + e.toString()));
 
-            if (result.isMeasureComposite() && result.isDoesMeasureHaveIncludedLibraries()) {
+            if (!MatContext.get().isCurrentModelTypeFhir() && result.isMeasureComposite() && result.isDoesMeasureHaveIncludedLibraries()) {
                 errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_COMPOSITE_AND_INCLUDED);
             } else if (result.isMeasureComposite()) {
                 errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_COMPOSITE);
-            } else if (result.isDoesMeasureHaveIncludedLibraries()) {
+            } else if (!MatContext.get().isCurrentModelTypeFhir() && result.isDoesMeasureHaveIncludedLibraries()) {
                 prepareIncludeErrors(result, errorMessages);
             } else {
                 errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE);

@@ -1,5 +1,6 @@
 package mat.server.clause;
 
+import mat.model.clause.ModelTypeHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,7 +32,6 @@ public class MeasureCloningRemoteServiceImpl extends SpringRemoteServiceServlet 
     @Autowired
     private MeasureCloningService measureCloningService;
 
-
     @Override
     public ManageMeasureSearchModel.Result cloneExistingMeasure(ManageMeasureDetailModel currentDetails) throws MatException {
 
@@ -54,7 +54,12 @@ public class MeasureCloningRemoteServiceImpl extends SpringRemoteServiceServlet 
             createException("This draft can not be created. A draft of " + name + " has already been created in the system.");
         }
 
-        return measureCloningService.clone(currentDetails, true);
+        if (ModelTypeHelper.FHIR.equalsIgnoreCase(currentDetails.getMeasureModel())) {
+            return measureCloningService.cloneForFhir(currentDetails);
+        } else {
+            return measureCloningService.clone(currentDetails, true);
+        }
+
     }
 
     private void createException(String message) throws MatException {

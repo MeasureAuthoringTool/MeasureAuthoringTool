@@ -210,6 +210,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             result.setShortName(currentDetails.getShortName());
             result.setScoringType(currentDetails.getMeasScoring());
             result.setVersion(formattedVersionWithText);
+            result.setMeasureModel(clonedMeasure.getMeasureModel());
             result.setEditable(Boolean.TRUE);
             result.setClonable(Boolean.TRUE);
             result.setPatientBased(clonedMeasure.getPatientBased());

@@ -783,7 +783,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         if (!MatContext.get().getLoadingQueue().isEmpty()) {
             return;
         }
-
         updateDetailsFromView();
 
         searchDisplay.resetMessageDisplay();

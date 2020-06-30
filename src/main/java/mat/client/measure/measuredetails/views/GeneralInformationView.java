@@ -1,7 +1,10 @@
 package mat.client.measure.measuredetails.views;
 
+import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
+import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -149,7 +152,11 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		calendarYearDatePanel.getElement().setId("calendarYear_HorizontalPanel");
 		calendarYearDatePanel.add(calendarYear);
 		FormLabel calendarLabel = new FormLabel();
-		calendarLabel.setText("Calendar Year (January 1, 20XX through December 31, 20XX)");
+		if(ModelTypeHelper.FHIR.equalsIgnoreCase(MatContext.get().getCurrentMeasureModel())) {
+            calendarLabel.setText("Next Calendar Year");
+        } else {
+            calendarLabel.setText("Calendar Year (January 1, 20XX through December 31, 20XX)");
+        }
 		calendarLabel.getElement().getStyle().setPaddingTop(5.0, Unit.PX);
 		calendarYearDatePanel.getElement().setAttribute("verticalAlign", "middle");
 		calendarYearDatePanel.add(calendarLabel);
@@ -168,6 +175,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		measurePeriodFromInput.getCalendar().setTitle("Click to select From date.");
 		measurePeriodPanel.add(measurePeriodFromInput);
 		measurePeriodFromInput.getElement().setId("measurePeriodFromInput_DateBoxWithCalendar");
+
 		FormLabel toLabel = new FormLabel();
 		toLabel.setText("To");
 		toLabel.setTitle("To");
@@ -192,8 +200,13 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		} else {
 			calendarYear.setTitle("Click to select calendar year measurement period");
 		}
-		
-		calendarYear.setValue(generalInformationModel.isCalendarYear());
+        calendarYear.setValue(generalInformationModel.isCalendarYear());
+		if (generalInformationModel.isCalendarYear()) {
+            String year = DateTimeFormat.getFormat( "d-M-yyyy" ).format( new Date() ).split( "-")[2];
+            int nextCalenderYear = Integer.parseInt(year) + 1;
+            generalInformationModel.setMeasureFromPeriod("01/01/" + nextCalenderYear);
+            generalInformationModel.setMeasureToPeriod("12/31/" + nextCalenderYear);
+        }
 		measurePeriodFromInput.setValue(generalInformationModel.getMeasureFromPeriod());
 		measurePeriodToInput.setValue(generalInformationModel.getMeasureToPeriod());
 		return measurementPeriodPanel;

@@ -1,7 +1,9 @@
 package mat.client.measure.measuredetails.observers;
 
+import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import mat.client.measure.measuredetails.views.GeneralInformationView;
@@ -166,13 +168,15 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 	}
 
 	public void handleCalendarYearChanged() {
+        String year = DateTimeFormat.getFormat( "d-M-yyyy" ).format( new Date() ).split( "-")[2];
+        int nextCalenderYear = Integer.parseInt(year) + 1;
 		boolean calendarYearSelected = generalMeasureInformationView.getCalenderYear().getValue();
 		generalMeasureInformationView.getMeasurePeriodFromInput().setEnabled(!calendarYearSelected);
 		generalMeasureInformationView.getMeasurePeriodToInput().setEnabled(!calendarYearSelected);
 		if(calendarYearSelected) {
 			generalMeasureInformationView.getCalenderYear().setTitle("Click to select custom measurement period");
-			generalMeasureInformationView.getMeasurePeriodFromInput().setValue("");
-			generalMeasureInformationView.getMeasurePeriodToInput().setValue("");
+			generalMeasureInformationView.getMeasurePeriodFromInput().setValue("01/01/" + nextCalenderYear);
+			generalMeasureInformationView.getMeasurePeriodToInput().setValue("12/31/" + nextCalenderYear);
 		} else {
 			generalMeasureInformationView.getCalenderYear().setTitle("Click to select calendar year measurement period");
 		}

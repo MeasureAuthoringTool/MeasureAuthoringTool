@@ -1756,8 +1756,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     pkg.setFhirVersion(propertiesService.getFhirVersion());
                 }
                 pkg.setCqlLibraryName(model.getCQLLibraryName());
-                pkg.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
-                pkg.setMeasurementPeriodTo(getNextCalenderYearToDate());
+                if (ModelTypeHelper.isFhir(model.getMeasureModel())) {
+                    pkg.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
+                    pkg.setMeasurementPeriodTo(getNextCalenderYearToDate());
+                }
                 model.setRevisionNumber("000");
                 measureSet = new MeasureSet();
                 measureSet.setId(UUID.randomUUID().toString());
@@ -2259,13 +2261,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         int year = Calendar.getInstance().get(Calendar.YEAR);
         try {
             if (model.isCalenderYear()) {
-                Date fromDate = dateFormat.parse("01/01/" + ++year);
-                Timestamp fromTimestamp = new java.sql.Timestamp(fromDate.getTime());
-                measure.setMeasurementPeriodFrom(fromTimestamp);
+                if (ModelTypeHelper.isFhir(model.getMeasureModel())) {
+                    Date fromDate = dateFormat.parse("01/01/" + ++year);
+                    Timestamp fromTimestamp = new java.sql.Timestamp(fromDate.getTime());
+                    measure.setMeasurementPeriodFrom(fromTimestamp);
 
-                Date toDate = dateFormat.parse("12/31/" + year);
-                Timestamp toTimestamp = new java.sql.Timestamp(toDate.getTime());
-                measure.setMeasurementPeriodTo(toTimestamp);
+                    Date toDate = dateFormat.parse("12/31/" + year);
+                    Timestamp toTimestamp = new java.sql.Timestamp(toDate.getTime());
+                    measure.setMeasurementPeriodTo(toTimestamp);
+                } else {
+                    measure.setMeasurementPeriodFrom(null);
+                    measure.setMeasurementPeriodTo(null);
+                }
             } else {
                 Date fromDate = dateFormat.parse(model.getMeasFromPeriod());
                 Timestamp fromTimestamp = new java.sql.Timestamp(fromDate.getTime());

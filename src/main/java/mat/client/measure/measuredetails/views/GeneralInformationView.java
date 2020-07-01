@@ -152,7 +152,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		calendarYearDatePanel.getElement().setId("calendarYear_HorizontalPanel");
 		calendarYearDatePanel.add(calendarYear);
 		FormLabel calendarLabel = new FormLabel();
-		if(ModelTypeHelper.FHIR.equalsIgnoreCase(MatContext.get().getCurrentMeasureModel())) {
+		if(ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel())) {
             calendarLabel.setText("Next Calendar Year");
         } else {
             calendarLabel.setText("Calendar Year (January 1, 20XX through December 31, 20XX)");
@@ -201,7 +201,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 			calendarYear.setTitle("Click to select calendar year measurement period");
 		}
         calendarYear.setValue(generalInformationModel.isCalendarYear());
-		if (generalInformationModel.isCalendarYear()) {
+		if (generalInformationModel.isCalendarYear() && ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel())) {
             String year = DateTimeFormat.getFormat( "d-M-yyyy" ).format( new Date() ).split( "-")[2];
             int nextCalenderYear = Integer.parseInt(year) + 1;
             generalInformationModel.setMeasureFromPeriod("01/01/" + nextCalenderYear);

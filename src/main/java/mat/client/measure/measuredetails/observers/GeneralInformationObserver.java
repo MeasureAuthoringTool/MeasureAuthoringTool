@@ -10,6 +10,7 @@ import mat.client.measure.measuredetails.views.GeneralInformationView;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
+import mat.model.clause.ModelTypeHelper;
 import mat.shared.MatConstants;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 
@@ -175,8 +176,14 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 		generalMeasureInformationView.getMeasurePeriodToInput().setEnabled(!calendarYearSelected);
 		if(calendarYearSelected) {
 			generalMeasureInformationView.getCalenderYear().setTitle("Click to select custom measurement period");
-			generalMeasureInformationView.getMeasurePeriodFromInput().setValue("01/01/" + nextCalenderYear);
-			generalMeasureInformationView.getMeasurePeriodToInput().setValue("12/31/" + nextCalenderYear);
+			if (ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel())) {
+                generalMeasureInformationView.getMeasurePeriodFromInput().setValue("01/01/" + nextCalenderYear);
+                generalMeasureInformationView.getMeasurePeriodToInput().setValue("12/31/" + nextCalenderYear);
+            } else {
+                generalMeasureInformationView.getMeasurePeriodFromInput().setValue("");
+                generalMeasureInformationView.getMeasurePeriodToInput().setValue("");
+            }
+
 		} else {
 			generalMeasureInformationView.getCalenderYear().setTitle("Click to select calendar year measurement period");
 		}

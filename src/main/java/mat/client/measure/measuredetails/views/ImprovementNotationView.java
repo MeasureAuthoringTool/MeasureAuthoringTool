@@ -52,6 +52,8 @@ public class ImprovementNotationView implements MeasureDetailViewInterface {
             listBox.addItem("decrease");
             listBox.setSelectedIndex("decrease".equals(modelValue) ? 1 : 0);
             mainPanel.add(listBox);
+            listBox.setTitle("Improvement Notation Editor");
+            addEventHandlers();
         } else {
             measureDetailsTextEditor = new MeasureDetailsTextEditor();
             mainPanel.add(measureDetailsTextEditor);
@@ -63,7 +65,11 @@ public class ImprovementNotationView implements MeasureDetailViewInterface {
 
     @Override
     public void setReadOnly(boolean readOnly) {
-        this.measureDetailsTextEditor.setReadOnly(readOnly);
+        if (MatContext.get().isCurrentModelTypeFhir()) {
+            listBox.setEnabled(!readOnly);
+        } else {
+            this.measureDetailsTextEditor.setReadOnly(readOnly);
+        }
     }
 
     @Override
@@ -74,7 +80,6 @@ public class ImprovementNotationView implements MeasureDetailViewInterface {
     @Override
     public void resetForm() {
         // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -90,7 +95,6 @@ public class ImprovementNotationView implements MeasureDetailViewInterface {
     @Override
     public void clear() {
         // TODO Auto-generated method stub
-
     }
 
     @Override

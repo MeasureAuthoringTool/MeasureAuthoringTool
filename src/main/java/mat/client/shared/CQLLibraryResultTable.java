@@ -77,8 +77,7 @@ public class CQLLibraryResultTable {
                 return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.getModelTypeDisplayName(object.getLibraryModelType()));
             }
         };
-        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR))
-            table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Models" + "</span>"));
+        table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Models" + "</span>"));
 
         AtomicLong lastClickTime = new AtomicLong(System.currentTimeMillis());
 

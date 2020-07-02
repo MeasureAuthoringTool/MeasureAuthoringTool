@@ -3,6 +3,7 @@ package mat.client.admin;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.client.util.FeatureFlagConstant;
 import org.gwtbootstrap3.client.ui.Button;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -409,7 +410,8 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		cqlLibraryAdminView.getSelectedId().clear();
 		cqlLibraryAdminView.getSelectedLibraries().clear();
 		cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
-		LibrarySearchModel librarySearchModel = new LibrarySearchModel(filter, startIndex, pageSize, lastSearchText);
+        boolean isMatOnFhir = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR);
+		LibrarySearchModel librarySearchModel = new LibrarySearchModel(filter, startIndex, pageSize, lastSearchText, isMatOnFhir);
 		MatContext.get().getCQLLibraryService().search(librarySearchModel, new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override

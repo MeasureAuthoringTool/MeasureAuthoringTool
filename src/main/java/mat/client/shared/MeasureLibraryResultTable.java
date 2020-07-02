@@ -87,10 +87,9 @@ public class MeasureLibraryResultTable {
                 return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.getModelTypeDisplayName(object.getMeasureModel()));
             }
         };
-        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
-            table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Models" + "</span>"));
-            table.setColumnWidth(model, MODEL_COLUMN_WIDTH, Style.Unit.PCT);
-        }
+
+        table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Models" + "</span>"));
+        table.setColumnWidth(model, MODEL_COLUMN_WIDTH, Style.Unit.PCT);
         // Add event handler for table
         table.addCellPreviewHandler(event -> {
             String eventType = event.getNativeEvent().getType();

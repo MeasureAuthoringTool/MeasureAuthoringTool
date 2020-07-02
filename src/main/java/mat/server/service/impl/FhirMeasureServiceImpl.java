@@ -218,5 +218,4 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         );
         logger.debug("deleteFhirMeasureIfExists : removed " + removed);
     }
-
 }

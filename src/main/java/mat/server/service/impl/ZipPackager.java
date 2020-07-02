@@ -227,33 +227,10 @@ public class ZipPackager {
                     addFileToZip(measure, jsonExportResult, parentPath, "json", zip);
                 }
             } else {
-                CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measureId);
-                CQLLibraryExport cqlLibraryExport = cqlLibraryExportDAO.findByLibraryId(cqlLibrary.getId());
-
                 addBytesToZip(parentPath + File.separator + "measure-bundle.json",
                         buildMeasureBundle(fhirContext,
                         measureExport.getMeasureJson(),
                         measureExport.getFhirIncludedLibsJson()).getBytes(),
-                        zip);
-
-                addBytesToZip(parentPath + File.separator + "library-bundle.json",
-                        measureExport.getFhirIncludedLibsJson().getBytes(),
-                        zip);
-
-                addBytesToZip(parentPath + File.separator + "measure.json",
-                        measureExport.getMeasureJson().getBytes(),
-                        zip);
-
-                addBytesToZip(parentPath + File.separator + "measure-library" + ".json",
-                        cqlLibraryExport.getFhirJson().getBytes(),
-                        zip);
-
-                addBytesToZip(parentPath + File.separator + "measure-library-elm" + ".json",
-                        exportUtility.getElmJson(cqlLibraryExport).getBytes(),
-                        zip);
-
-                addBytesToZip(parentPath + File.separator + "measure-lib" + ".cql",
-                        exportUtility.getCqlJson(cqlLibraryExport).getBytes(),
                         zip);
 
                 addBytesToZip( parentPath + File.separator + "human-readable.html",
@@ -422,13 +399,15 @@ public class ZipPackager {
     }
 
     private String buildMeasureBundle(FhirContext fhirContext, String measureJson, String libBundleJson) {
+        // http://build.fhir.org/ig/HL7/cqf-measures/StructureDefinition-measure-bundle-cqfm.html
         IParser jsonParser = fhirContext.newJsonParser();
         jsonParser.setPrettyPrint(true);
         var measure = jsonParser.parseResource(org.hl7.fhir.r4.model.Measure.class, measureJson);
         var libBundle = jsonParser.parseResource(Bundle.class, libBundleJson);
 
         Bundle result = new Bundle();
-        result.setType(Bundle.BundleType.TRANSACTION);
+        result.getMeta().addProfile("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/measure-bundle-cqfm");
+        result.setType(Bundle.BundleType.COLLECTION);
         result.addEntry().setResource(measure).getRequest()
                 .setUrl("Measure/" + getFhirId(measure))
                 .setMethod(Bundle.HTTPVerb.PUT);

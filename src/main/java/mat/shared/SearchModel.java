@@ -16,6 +16,8 @@ public abstract class SearchModel implements IsSerializable {
 	protected String modifiedOwner;
 	protected String owner;
 
+	protected boolean matOnFhir;
+
 	protected ModelType modelType = ModelType.ALL;
 
 	protected VersionType versionType;
@@ -30,6 +32,14 @@ public abstract class SearchModel implements IsSerializable {
 
 	public void setStartIndex(int startIndex) {
 		this.startIndex = startIndex;
+	}
+
+	public boolean isMatOnFhir() {
+		return this.matOnFhir;
+	}
+
+	public void setMatOnFhir(boolean matOnFhir) {
+		this.matOnFhir = matOnFhir;
 	}
 
 	public int getPageSize() {

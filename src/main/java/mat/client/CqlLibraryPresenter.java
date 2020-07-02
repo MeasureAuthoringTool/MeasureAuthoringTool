@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mat.client.util.FeatureFlagConstant;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
@@ -1525,8 +1526,9 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         pageSize = 25;
         showSearchingBusy(true);
         cqlLibraryView.resetMessageDisplay();
+        boolean isMatOnFhir = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR);
 
-        LibrarySearchModel searchModel = new LibrarySearchModel(filter, startIndex, pageSize, lastSearchText);
+        LibrarySearchModel searchModel = new LibrarySearchModel(filter, startIndex, pageSize, lastSearchText, isMatOnFhir);
         if (!MatContext.get().getLoggedInUserRole().equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
             buildAdvancedSearchModel(searchModel);
             cqlLibraryView.getSearchFilterWidget().getAdvancedSearchPanel().getCollapsePanel().setIn(false);

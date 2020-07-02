@@ -505,7 +505,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
         if (measureSearchModel.getIsMyMeasureSearch() == MeasureSearchFilterPanel.MY_MEASURES) {
             final Join<Measure, MeasureShare> childJoin = root.join("shares", JoinType.LEFT);
-            predicatesList.add(cb.or(cb.equal(root.get(OWNER).get(ID), userId), cb.equal(childJoin.get(SHARE_USER).get(ID), userId)));
+                predicatesList.add(cb.or(cb.equal(root.get(OWNER).get(ID), userId), cb.equal(childJoin.get(SHARE_USER).get(ID), userId)));
         }
 
         if (StringUtils.isNotBlank(measureSearchModel.getSearchTerm())) {
@@ -557,6 +557,10 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         if (StringUtils.isNotBlank(measureSearchModel.getOwner())) {
             final Subquery<String> subQuery = buildUserSubQuery(cb, query, measureSearchModel.getOwner().toLowerCase());
             predicatesList.add(cb.in(root.get(OWNER).get(ID)).value(subQuery));
+        }
+
+        if (!measureSearchModel.isMatOnFhir()) {
+            predicatesList.add(cb.notEqual(root.get(MEASURE_MODEL), ModelTypeHelper.FHIR));
         }
 
         return cb.and(predicatesList.toArray(new Predicate[predicatesList.size()]));

@@ -1475,6 +1475,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
     private void advancedSearch(MeasureSearchModel measureSearchModel, boolean didUserSelectSearch) {
         setSearchingBusy(true);
+        measureSearchModel.setMatOnFhir(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR));
         MatContext.get().getMeasureService().search(measureSearchModel,
                 new AsyncCallback<ManageMeasureSearchModel>() {
                     @Override

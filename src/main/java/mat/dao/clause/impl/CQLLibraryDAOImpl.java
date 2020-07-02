@@ -300,7 +300,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 
         if (librarySearchModel.getIsMyMeasureSearch() == MeasureSearchFilterPanel.MY_MEASURES) {
             final Join<CQLLibrary, CQLLibraryShare> childJoin = root.join("shares", JoinType.LEFT);
-            predicatesList.add(cb.or(cb.equal(root.get(OWNER_ID).get("id"), userId), cb.equal(childJoin.get(SHARE_USER).get("id"), userId)));
+                predicatesList.add(cb.or(cb.equal(root.get(OWNER_ID).get("id"), userId), cb.equal(childJoin.get(SHARE_USER).get("id"), userId)));
         }
 
         if (librarySearchModel.isDraft() != VersionType.ALL) {
@@ -333,6 +333,10 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
         if (StringUtils.isNotBlank(librarySearchModel.getOwner())) {
             final Subquery<String> subQuery = buildUserSubQuery(cb, query, librarySearchModel.getOwner().toLowerCase());
             predicatesList.add(cb.in(root.get(OWNER_ID).get("id")).value(subQuery));
+        }
+
+        if (!librarySearchModel.isMatOnFhir()) {
+            predicatesList.add(cb.notEqual(root.get(LIBRARY_MODEL_TYPE), ModelTypeHelper.FHIR));
         }
 
         return cb.and(predicatesList.toArray(new Predicate[predicatesList.size()]));

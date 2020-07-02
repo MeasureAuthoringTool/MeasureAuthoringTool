@@ -16,7 +16,7 @@ pipeline {
       steps {
             sh '''
                aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ECR_URL}/${ECR_REPO}
-               docker build -t ${ECR_REPO} --build-arg STOREPASS=${STOREPASS} --build-arg NR_APM_NAME=${NR_APM_NAME} --build-arg NR_APM_KEY=${NR_APM_KEY}  .
+               docker build -t ${ECR_REPO} --build-arg STOREPASS='${STOREPASS}' --build-arg NR_APM_NAME='${NR_APM_NAME}' --build-arg NR_APM_KEY='${NR_APM_KEY}'  .
                docker tag ${ECR_REPO}:latest ${ECR_URL}/${ECR_REPO}:latest
                docker tag ${ECR_REPO}:latest ${ECR_URL}/${ECR_REPO}:${GIT_COMMIT:0:8}
                docker push ${ECR_URL}/${ECR_REPO}:latest

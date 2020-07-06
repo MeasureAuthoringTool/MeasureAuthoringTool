@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -175,8 +176,12 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             clonedMeasure.setMeasureModel(newMeasureModel);
             clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName());
             if (creatingFhir) {
+                clonedMeasure.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
+                clonedMeasure.setMeasurementPeriodTo(getNextCalenderYearToDate());
                 clonedMeasure.setFhirVersion(propertiesService.getFhirVersion());
             } else {
+                clonedMeasure.setMeasurementPeriodFrom(getTimestampFromDateString(currentDetails.getMeasFromPeriod()));
+                clonedMeasure.setMeasurementPeriodTo(getTimestampFromDateString(currentDetails.getMeasToPeriod()));
                 clonedMeasure.setQdmVersion(propertiesService.getQdmVersion());
             }
             clonedMeasure.setReleaseVersion(measure.getReleaseVersion());
@@ -221,6 +226,33 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             logger.error(e.getMessage(), e);
             throw new MatException(e.getMessage());
         }
+    }
+
+
+    private Timestamp getNextCalenderYearFromDate() {
+        Timestamp timestamp = null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            Date fromDate = dateFormat.parse("01/01/" + ++year);
+            timestamp = new java.sql.Timestamp(fromDate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return timestamp;
+    }
+
+    private Timestamp getNextCalenderYearToDate() {
+        Timestamp timestamp = null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            Date fromDate = dateFormat.parse("12/31/" + ++year);
+            timestamp = new java.sql.Timestamp(fromDate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return timestamp;
     }
 
     private void createMeasureXmlAndPersist(ManageMeasureDetailModel currentDetails, boolean creatingDraft, boolean creatingFhir, Measure measure, Measure clonedMeasure, String originalXml) throws MatException {
@@ -432,8 +464,6 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             }
         }
         clonedMeasure.setNqfNumber(currentDetails.getNqfId());
-        clonedMeasure.setMeasurementPeriodFrom(getTimestampFromDateString(currentDetails.getMeasFromPeriod()));
-        clonedMeasure.setMeasurementPeriodTo(getTimestampFromDateString(currentDetails.getMeasToPeriod()));
         ManageMeasureDetailModelConversions conversion = new ManageMeasureDetailModelConversions();
         conversion.createMeasureDetails(clonedMeasure, currentDetails);
         createMeasureType(clonedMeasure, currentDetails);

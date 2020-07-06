@@ -1,6 +1,5 @@
 package mat.client.export.measure;
 
-import com.google.gwt.user.client.Window;
 import mat.client.util.FeatureFlagConstant;
 import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;

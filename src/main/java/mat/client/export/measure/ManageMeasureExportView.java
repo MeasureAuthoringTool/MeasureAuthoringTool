@@ -1,5 +1,6 @@
 package mat.client.export.measure;
 
+import com.google.gwt.user.client.Window;
 import mat.client.util.FeatureFlagConstant;
 import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
@@ -24,7 +25,7 @@ import mat.client.shared.SpacerWidget;
 import mat.model.SecurityRole;
 
 public class ManageMeasureExportView implements ExportDisplay {
-	
+
 	private FlowPanel content = new FlowPanel();
 	
 	private Button measureNameLink = new Button();
@@ -59,7 +60,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 	
 	VerticalPanel vp = new VerticalPanel();
 
-	public ManageMeasureExportView(boolean isTopLevelUser) {
+	public ManageMeasureExportView() {
 		
 		content.add(new SpacerWidget());
 		createMeasureInformationContent();
@@ -114,7 +115,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 	}
 	
 	@Override
-	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure) {
+	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure, String measureModel) {
 		
 		vp.clear();
 		
@@ -122,7 +123,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 			vp.add(simpleXMLRadio);
 		}
 
-		if(ModelTypeHelper.FHIR.equalsIgnoreCase(MatContext.get().getCurrentMeasureModel()) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.EXPORT_V1)) {
+		if(ModelTypeHelper.FHIR.equalsIgnoreCase(measureModel) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.EXPORT_V1)) {
 			vp.add(xmlRadio);
 			vp.add(jsonRadio);
 			vp.add(humanReadableRadio);
@@ -130,7 +131,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 		} else {
 			vp.add(humanReadableRadio);
 			vp.add(hqmfRadio);
-			if(isV5OrGreater(releaseVersion)){
+			if(isV5OrGreater(releaseVersion)) {
 				vp.add(cqlLibraryRadio);
 				vp.add(elmRadio);
 				vp.add(jsonRadio);

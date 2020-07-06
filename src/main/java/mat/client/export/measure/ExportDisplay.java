@@ -26,7 +26,7 @@ public interface ExportDisplay extends BaseDisplay {
 
 	boolean isCQLLibrary();
 
-	void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure);
+	void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure, String measureModel);
 
 	boolean isCompositeMeasurePackageRadio();
 

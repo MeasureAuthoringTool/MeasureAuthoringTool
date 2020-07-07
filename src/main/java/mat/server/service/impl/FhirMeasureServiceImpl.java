@@ -139,7 +139,10 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                 ManageMeasureSearchModel.Result fhirMeasure = measureCloningService.cloneForFhir(sourceMeasureDetails);
 
                 //Update the MAT xml.
-                convertXml(fhirConvertResultResponse,fhirMeasure.getId(), convertedCql);
+                convertXml(sourceMeasureDetails.getId(),
+                        fhirMeasure.getId(),
+                        fhirConvertResultResponse,
+                        convertedCql);
 
                 measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
             } catch (MatException | MatRuntimeException e) {
@@ -149,13 +152,15 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         });
     }
 
-    private void convertXml(FhirConvertResultResponse fhirConvertResultResponse, String measureId, String cql) throws MatException {
+    private void convertXml(String sourceMeasureId, String fhirMeasureId, FhirConvertResultResponse fhirConvertResultResponse, String cql) throws MatException {
         try {
-            Measure matMeasure = measureDAO.find(measureId);
-            MeasureXML measureXml = measureXMLDAO.findForMeasure(measureId);
-            String sourceMeasureXml = measureXml.getMeasureXMLAsString();
+            MeasureXML sourceMeasureXml = measureXMLDAO.findForMeasure(sourceMeasureId);
+            String sourceMeasureXmlString = sourceMeasureXml.getMeasureXMLAsString();
 
-            XmlProcessor processor = new XmlProcessor(sourceMeasureXml);
+            Measure fhirMeasure = measureDAO.find(fhirMeasureId);
+            MeasureXML fhirMeasureXml = measureXMLDAO.findForMeasure(fhirMeasureId);
+
+            XmlProcessor processor = new XmlProcessor(sourceMeasureXmlString);
             String cqlModelXmlFrag = processor.getXmlByTagName("cqlLookUp");
             CQLModel sourceCqlModel = (CQLModel) xmlMarshalUtil.convertXMLToObject("CQLModelMapping.xml",
                     cqlModelXmlFrag,
@@ -165,20 +170,20 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
             String newCqlModelXmlFrag = CQLUtilityClass.getXMLFromCQLModel(destModel);
             String destinationMeasureXml = processor.replaceNode(newCqlModelXmlFrag, "cqlLookUp", "measure");
-            saveMeasureXml(measureXml, destinationMeasureXml);
+            saveMeasureXml(fhirMeasureXml, destinationMeasureXml);
 
             destModel.getCqlIncludeLibrarys().forEach(i -> {
                 //Currently only includes global libs and they should all be there.
                 //Just add them in.
                 if (StringUtils.isNotBlank(i.getCqlLibraryId())) {
-                    cqlService.saveCQLAssociation(i, measureId);
+                    cqlService.saveCQLAssociation(i, fhirMeasureId);
                 }
             });
 
             //All converted measures default to increase.
-            matMeasure.getMeasureDetails().setImprovementNotation("increase");
-            measureDAO.saveandReturnMaxEMeasureId(matMeasure);
-            fhirConvertResultResponse.setFhirMeasureId(matMeasure.getId());
+            fhirMeasure.getMeasureDetails().setImprovementNotation("increase");
+            measureDAO.saveandReturnMaxEMeasureId(fhirMeasure);
+            fhirConvertResultResponse.setFhirMeasureId(fhirMeasure.getId());
         } catch (IOException | MappingException | MarshalException | ValidationException e) {
             throw new MatException("Error converting mat xml", e);
         }
@@ -213,5 +218,4 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         );
         logger.debug("deleteFhirMeasureIfExists : removed " + removed);
     }
-
 }

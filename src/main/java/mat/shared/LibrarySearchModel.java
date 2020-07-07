@@ -17,11 +17,12 @@ public class LibrarySearchModel extends SearchModel implements IsSerializable {
 		this.isMyMeasureSearch = SearchWidgetWithFilter.MY;
 	}
 
-	public LibrarySearchModel(int myMeasureSearch, int startIndex, int pageSize, String searchTerm) {
+	public LibrarySearchModel(int myMeasureSearch, int startIndex, int pageSize, String searchTerm, boolean matOnFhir) {
 		this.isMyMeasureSearch = myMeasureSearch;
 		this.startIndex = startIndex;
 		this.pageSize = pageSize;
 		this.searchTerm = searchTerm;
+		this.matOnFhir = matOnFhir;
 	}
 
 }

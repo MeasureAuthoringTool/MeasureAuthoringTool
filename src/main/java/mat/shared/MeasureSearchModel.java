@@ -18,6 +18,8 @@ public class MeasureSearchModel extends SearchModel implements IsSerializable {
 	private List<String> scoringTypes;
 	
 	private PatientBasedType patientBasedType;
+
+	private boolean isMatOnFhir;
 	
 	public enum PatientBasedType {ALL, PATIENT, NOT_PATIENT}
 	
@@ -49,6 +51,13 @@ public class MeasureSearchModel extends SearchModel implements IsSerializable {
 	}
 	public void setPatientBased(PatientBasedType patientBased) {
 		patientBasedType = patientBased;
+	}
+
+	public boolean isMatOnFhir() {
+		return isMatOnFhir;
+	}
+	public void setMatOnFhir(boolean isMatOnFhir) {
+        this.isMatOnFhir = isMatOnFhir;
 	}
 
 	public List<String> getScoringTypes() {

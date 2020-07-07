@@ -1,14 +1,18 @@
 package mat.server.util;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import mat.model.clause.ModelTypeHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import mat.client.measure.ManageCompositeMeasureDetailModel;
@@ -181,7 +185,13 @@ public class ManageMeasureDetailModelConversions {
         measureDetailModel.setMeasureTypeSelectedList(getMeasureTypeSelectedList(measure.getMeasureTypes(), measureTypeDao));
         measureDetailModel.setScoringAbbr(MeasureDetailsUtil.getScoringAbbr(measure.getMeasureScoring()));
         measureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
-        measureDetailModel.setCalenderYear(measure.getMeasurementPeriodFrom() == null);
+
+        if(ModelTypeHelper.isFhir(measure.getMeasureModel())) {
+            measureDetailModel.setCalenderYear(measure.getMeasurementPeriodFrom().equals(getNextCalenderYearFromDate()));
+        } else {
+            measureDetailModel.setCalenderYear(measure.getMeasurementPeriodFrom() == null);
+        }
+
         measureDetailModel.setIsPatientBased(measure.getPatientBased() == null ? calculateDefaultPatientBasedIndicatorBasedOnScoringType(measure.getMeasureScoring()) : measure.getPatientBased());
 
         boolean endorseByNQF = measure.getNqfNumber() != null;
@@ -245,11 +255,30 @@ public class ManageMeasureDetailModelConversions {
 
     private PeriodModel createPeriodModel(Measure measure) {
         PeriodModel periodModel = new PeriodModel();
-        periodModel.setCalenderYear(measure.getMeasurementPeriodFrom() == null);
-        periodModel.setStartDate(measure.getMeasurementPeriodFrom() == null ? "01/01/20xx" : getSimpleDateFormat(measure.getMeasurementPeriodFrom()));
-        periodModel.setStopDate(measure.getMeasurementPeriodTo() == null ? "12/31/20xx" : getSimpleDateFormat(measure.getMeasurementPeriodTo()));
+        if(ModelTypeHelper.isFhir(measure.getMeasureModel())) {
+            periodModel.setCalenderYear(measure.getMeasurementPeriodFrom().equals(getNextCalenderYearFromDate()));
+            periodModel.setStartDate(getSimpleDateFormat(measure.getMeasurementPeriodFrom()));
+            periodModel.setStopDate(getSimpleDateFormat(measure.getMeasurementPeriodTo()));
+        } else {
+            periodModel.setCalenderYear(measure.getMeasurementPeriodFrom() == null);
+            periodModel.setStartDate(measure.getMeasurementPeriodFrom() == null ? "01/01/20xx" : getSimpleDateFormat(measure.getMeasurementPeriodFrom()));
+            periodModel.setStopDate(measure.getMeasurementPeriodTo() == null ? "12/31/20xx" : getSimpleDateFormat(measure.getMeasurementPeriodTo()));
+        }
         periodModel.setUuid(UUID.randomUUID().toString());
         return periodModel;
+    }
+
+    private Timestamp getNextCalenderYearFromDate() {
+        Timestamp timestamp = null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            Date fromDate = dateFormat.parse("01/01/" + ++year);
+            timestamp = new java.sql.Timestamp(fromDate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return timestamp;
     }
 
     private List<MeasureType> getMeasureTypeSelectedList(List<MeasureTypeAssociation> measureTypesAssociation, MeasureTypeDAO measureTypeDAO) {

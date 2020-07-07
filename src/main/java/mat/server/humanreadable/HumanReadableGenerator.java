@@ -363,7 +363,10 @@ public class HumanReadableGenerator {
 
             for (int i = 0; i < supplementalDataElementNodes.getLength(); i++) {
                 Node sde = supplementalDataElementNodes.item(i);
-                supplementalDataElements.add(getExpressionModel(processor, sde));
+                var model = getExpressionModel(processor, sde);
+                if (model != null) {
+                    supplementalDataElements.add(model);
+                }
             }
         }
         return supplementalDataElements;
@@ -470,11 +473,15 @@ public class HumanReadableGenerator {
 
     private HumanReadableExpressionModel getExpressionModel(XmlProcessor processor, Node sde)
             throws XPathExpressionException {
-        String uuid = sde.getAttributes().getNamedItem("uuid").getNodeValue();
+        //String uuid = sde.getAttributes().getNamedItem("uuid").getNodeValue();
         String name = sde.getAttributes().getNamedItem("displayName").getNodeValue();
-        String logic = processor.findNode(processor.getOriginalDoc(), "/measure/cqlLookUp//definition[@id='" + uuid + "']/logic").getTextContent();
-        HumanReadableExpressionModel expression = new HumanReadableExpressionModel(name, logic);
-        return expression;
+        Node node = processor.findNode(processor.getOriginalDoc(), "/measure/cqlLookUp//definition[@name='" + name + "']/logic");
+        if (node != null) {
+            String logic = node.getTextContent();
+            return new HumanReadableExpressionModel(name, logic);
+        } else {
+            return null;
+        }
     }
 
     private List<HumanReadableExpressionModel> getRiskAdjustmentVariables(XmlProcessor processor) throws XPathExpressionException {

@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1755,6 +1756,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     pkg.setFhirVersion(propertiesService.getFhirVersion());
                 }
                 pkg.setCqlLibraryName(model.getCQLLibraryName());
+                if (ModelTypeHelper.isFhir(model.getMeasureModel())) {
+                    pkg.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
+                    pkg.setMeasurementPeriodTo(getNextCalenderYearToDate());
+                }
                 model.setRevisionNumber("000");
                 measureSet = new MeasureSet();
                 measureSet.setId(UUID.randomUUID().toString());
@@ -1797,6 +1802,32 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             result.setFailureReason(SaveMeasureResult.INVALID_DATA);
             return result;
         }
+    }
+
+    private Timestamp getNextCalenderYearFromDate() {
+        Timestamp timestamp = null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            Date fromDate = dateFormat.parse("01/01/" + ++year);
+            timestamp = new java.sql.Timestamp(fromDate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return timestamp;
+    }
+
+    private Timestamp getNextCalenderYearToDate() {
+        Timestamp timestamp = null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            Date fromDate = dateFormat.parse("12/31/" + ++year);
+            timestamp = new java.sql.Timestamp(fromDate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return timestamp;
     }
 
     @Override
@@ -2225,27 +2256,35 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         measurePackageService.saveMeasureXml(xmlModel);
     }
 
-    private void calculateCalendarYearForMeasure(final ManageMeasureDetailModel model, Measure measure) {
-        if (model.isCalenderYear()) {
-            measure.setMeasurementPeriodFrom(null);
-            measure.setMeasurementPeriodTo(null);
-        } else {
-            try {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-                Date fromDate = dateFormat.parse(model.getMeasFromPeriod());
+    private void calculateCalendarYearForMeasure(final ManageMeasureDetailModel model, Measure measure){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        try {
+            if (model.isCalenderYear()) {
+                if (ModelTypeHelper.isFhir(model.getMeasureModel())) {
+                    Date fromDate = dateFormat.parse("01/01/" + ++year);
+                    Timestamp fromTimestamp = new java.sql.Timestamp(fromDate.getTime());
+                    measure.setMeasurementPeriodFrom(fromTimestamp);
 
+                    Date toDate = dateFormat.parse("12/31/" + year);
+                    Timestamp toTimestamp = new java.sql.Timestamp(toDate.getTime());
+                    measure.setMeasurementPeriodTo(toTimestamp);
+                } else {
+                    measure.setMeasurementPeriodFrom(null);
+                    measure.setMeasurementPeriodTo(null);
+                }
+            } else {
+                Date fromDate = dateFormat.parse(model.getMeasFromPeriod());
                 Timestamp fromTimestamp = new java.sql.Timestamp(fromDate.getTime());
                 measure.setMeasurementPeriodFrom(fromTimestamp);
 
                 Date toDate = dateFormat.parse(model.getMeasToPeriod());
                 Timestamp toTimestamp = new java.sql.Timestamp(toDate.getTime());
                 measure.setMeasurementPeriodTo(toTimestamp);
-
-            } catch (Exception e) {
-                // look the origin of exception
-                log.debug("failed to convert date", e);
             }
-
+        } catch (Exception e) {
+            // look the origin of exception
+            log.debug("failed to convert date", e);
         }
     }
 

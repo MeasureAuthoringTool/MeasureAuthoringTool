@@ -3,6 +3,8 @@ package mat.client.advancedsearch;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.client.shared.MatContext;
+import mat.client.util.FeatureFlagConstant;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -174,10 +176,16 @@ public class AdvancedSearchPanel {
         modelTypeListBox.setId("modelType");
         modelTypeListBox.setHeight(HEIGHT_OF_BOXES);
         modelTypeListBox.addItem("Model Type: All", SearchModel.ModelType.ALL.toString());
-        modelTypeListBox.addItem("Model Type: FHIR / CQL Only", SearchModel.ModelType.FHIR.toString());
+        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
+            modelTypeListBox.addItem("Model Type: FHIR / CQL Only", SearchModel.ModelType.FHIR.toString());
+        }
         modelTypeListBox.addItem("Model Type: QDM / CQL Only", SearchModel.ModelType.QDM_CQL.toString());
         if (isMeasure) {
             modelTypeListBox.addItem("Model Type: QDM / QDM Only", SearchModel.ModelType.QDM_QDM.toString());
+        }
+        if (!isMeasure && !MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
+            modelTypeListBox.setSelectedIndex(1);
+            modelTypeListBox.setEnabled(false);
         }
     }
 

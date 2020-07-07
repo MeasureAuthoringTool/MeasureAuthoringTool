@@ -50,16 +50,6 @@ public class FhirCQLLinter extends CQLLinter  {
         if(isCommentInNoCommentZone(tokens)) {
             hasInvalidEdits = true;
         }
-
-        if(isLineCommentInIncorrectSpot(tokens)) {
-            this.warningMessages.add("End-line comments are not permitted immediately preceding the "
-                    + "parameter or definition sections of the CQL library and have been removed.");
-        }
-
-        if(hasInvalidEdits) {
-            this.warningMessages.add("Changes made to the CQL library declaration and model declaration can not be saved through the CQL Library Editor. "
-                    + "Please make those changes in the appropriate areas of the CQL Workspace.");
-        }
     }
 
     private boolean hasMissingCodesystem() {

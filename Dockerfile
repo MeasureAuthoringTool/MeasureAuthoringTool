@@ -11,7 +11,6 @@ RUN curl -O https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem \
 
 RUN curl -O https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip \
     && unzip newrelic-java.zip \
-    && sed -i "s/ignore_status_codes: 404/ignore_status_codes:/" newrelic/newrelic.yml \
     && sed -i "s/'<%= license_key %>'/${NR_APM_KEY}/" newrelic/newrelic.yml \
     && sed -i "s/My Application/${NR_APM_NAME}/" newrelic/newrelic.yml
 

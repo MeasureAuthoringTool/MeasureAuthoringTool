@@ -1012,7 +1012,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             config.setPreviousCQLModel(previousModel);
 
             result = cqlService.saveCQLFile(cqlXml, cql, config, cqlLibrary.getLibraryModelType());
-            result = handleSaveSevereErrors(result,cqlLibrary,cql);
+            result = handleSaveSevereErrors(result,cqlLibrary);
 
             if (result.isSuccess()) {
                 cqlLibrary.setCqlLibraryHistory(cqlService.createCQLLibraryHistory(cqlLibrary.getCqlLibraryHistory(), result.getCqlString(), cqlLibrary, null));
@@ -1751,7 +1751,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         log.info("CQL Library Deleted Successfully :: " + cqllibId);
     }
 
-    private SaveUpdateCQLResult handleSaveSevereErrors(SaveUpdateCQLResult result, CQLLibrary lib, String cql) {
+    private SaveUpdateCQLResult handleSaveSevereErrors(SaveUpdateCQLResult result, CQLLibrary lib) {
         if (result.getCqlModel().isFhir()) {
             if (result.isSevereError()) {
                 String userId = LoggedInUserUtil.getLoggedInUser();

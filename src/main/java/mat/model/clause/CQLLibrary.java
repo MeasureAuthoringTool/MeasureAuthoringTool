@@ -74,6 +74,8 @@ public class CQLLibrary {
 
     private List<CQLLibraryHistory> cqlLibraryHistory;
 
+    private String severeErrorCql;
+
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -369,4 +371,12 @@ public class CQLLibrary {
         }
     }
 
+    @Column(name = "SEVERE_ERROR_CQL")
+    public String getSevereErrorCql() {
+        return severeErrorCql;
+    }
+
+    public void setSevereErrorCql(String severeErrorCql) {
+        this.severeErrorCql = severeErrorCql;
+    }
 }

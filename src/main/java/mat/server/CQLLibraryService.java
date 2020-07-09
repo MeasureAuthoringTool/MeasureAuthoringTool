@@ -9,6 +9,7 @@ import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
+import mat.client.shared.MatRuntimeException;
 import mat.client.shared.MessageDelegate;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
@@ -358,7 +359,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                 XmlProcessor processor = new XmlProcessor(getCQLLibraryXml(existingLibrary));
                 try {
                     MeasureUtility.updateModelVersion(processor, existingLibrary.isFhirMeasure());
-                    SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(versionLibraryXml, existingLibrary.getLibraryModelType());
+                    SaveUpdateCQLResult saveUpdateCQLResult = cqlService.loadStandaloneLibCql(existingLibrary,versionLibraryXml);
                     List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
                     processor.removeUnusedDefaultCodes(usedCodeList);
                     processor.clearValuesetVersionAttribute();
@@ -1011,15 +1012,14 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             config.setPreviousCQLModel(previousModel);
 
             result = cqlService.saveCQLFile(cqlXml, cql, config, cqlLibrary.getLibraryModelType());
+            result = handleSaveSevereErrors(result,cqlLibrary);
 
             if (result.isSuccess()) {
                 cqlLibrary.setCqlLibraryHistory(cqlService.createCQLLibraryHistory(cqlLibrary.getCqlLibraryHistory(), result.getCqlString(), cqlLibrary, null));
             }
-
             cqlLibrary.setCQLByteArray(result.getXml().getBytes());
             cqlLibraryDAO.save(cqlLibrary);
         }
-
         return result;
     }
 
@@ -1253,7 +1253,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         String cqlXml = getCQLLibraryXml(cqlLibrary);
 
         if (cqlXml != null && !StringUtils.isEmpty(cqlXml)) {
-            result = cqlService.getCQLLibraryData(cqlXml, cqlLibrary.getLibraryModelType());
+            result = cqlService.loadStandaloneLibCql(cqlLibrary,cqlXml);
             lintAndAddToResult(result, cqlLibrary);
             result.setSuccess(true);
         } else {
@@ -1749,5 +1749,29 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         }
 
         log.info("CQL Library Deleted Successfully :: " + cqllibId);
+    }
+
+    private SaveUpdateCQLResult handleSaveSevereErrors(SaveUpdateCQLResult result, CQLLibrary lib) {
+        if (result.getCqlModel().isFhir()) {
+            if (result.isSevereError()) {
+                String userId = LoggedInUserUtil.getLoggedInUser();
+                if (userId == null) {
+                    throw new MatRuntimeException("Can't find a logged in userId.");
+                }
+                User user = userDAO.find(userId);
+                if (user == null) {
+                    throw new MatRuntimeException("User not found: " + userId);
+                }
+                if (user.getUserPreference().isFreeTextEditorEnabled()) {
+                    lib.setSevereErrorCql(result.getCqlString());
+                } else {
+                    result.setSevereError(true);
+                    result.setSuccess(false);
+                }
+            } else {
+                lib.setSevereErrorCql(null);
+            }
+        }
+        return result;
     }
 }

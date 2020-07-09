@@ -96,6 +96,8 @@ public class SaveUpdateCQLResult extends GenericResult {
 
     private String jsonString = "";
 
+    private boolean isSevereError = false;
+
     private boolean isDatatypeUsedCorrectly = true;
 
     private boolean isValidCQLWhileSavingExpression = true;
@@ -487,5 +489,13 @@ public class SaveUpdateCQLResult extends GenericResult {
 
     public Set<String> getIncludeLibrariesWithErrors() {
         return includeLibrariesWithErrors;
+    }
+
+    public boolean isSevereError() {
+        return isSevereError;
+    }
+
+    public void setSevereError(boolean severeError) {
+        this.isSevereError = severeError;
     }
 }

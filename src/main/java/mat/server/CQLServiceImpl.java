@@ -5,9 +5,11 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
 import mat.client.shared.MatException;
+import mat.client.shared.MatRuntimeException;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.MeasureXMLDAO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
@@ -15,6 +17,7 @@ import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibraryHistory;
 import mat.model.clause.Measure;
+import mat.model.clause.MeasureXML;
 import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
@@ -158,6 +161,9 @@ public class CQLServiceImpl implements CQLService {
     private UserDAO userDAO;
 
     @Autowired
+    private MeasureXMLDAO measureXmlDao;
+
+    @Autowired
     private FhirCqlParser fhirCqlParser;
 
     @Override
@@ -239,16 +245,21 @@ public class CQLServiceImpl implements CQLService {
             if (!errors.isEmpty()) {
                 Map<String, List<CQLError>> errorsMap = new HashMap<>();
                 errorsMap.put(newModel.getFormattedName(), errors);
-
                 SaveUpdateCQLResult r = new SaveUpdateCQLResult();
                 r.setXml(xml); // retain the old xml if there are syntax errors (essentially not saving)
                 r.setCqlString(cql);
                 r.setCqlModel(newModel);
-                r.setSuccess(false);
                 r.setCqlErrors(errors);
                 r.setLibraryNameErrorsMap(errorsMap);
                 r.setLibraryNameWarningsMap(new HashMap<>());
                 r.setFailureReason(StringUtils.equals(modelType, "FHIR") ? SaveUpdateCQLResult.CUSTOM : SaveUpdateCQLResult.SYNTAX_ERRORS);
+
+                if (ModelTypeHelper.isFhir(modelType)) {
+                    r.setSevereError(true);
+                    r.setSuccess(true);
+                } else {
+                    r.setSuccess(false);
+                }
                 return r;
             }
 
@@ -625,7 +636,10 @@ public class CQLServiceImpl implements CQLService {
 
     @Override
     public SaveUpdateCQLResult saveAndModifyDefinitions(String xml, CQLDefinition definitionWithOriginalContent,
-                                                        CQLDefinition definitionWithEdits, List<CQLDefinition> definitionList, boolean isFormatable, String modelType) {
+                                                        CQLDefinition definitionWithEdits,
+                                                        List<CQLDefinition> definitionList,
+                                                        boolean isFormatable,
+                                                        String modelType) {
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
         result.setXml(xml); // if any failure, it will use this xml, which is the original
 
@@ -1052,7 +1066,38 @@ public class CQLServiceImpl implements CQLService {
     }
 
     @Override
-    public SaveUpdateCQLResult getCQLLibraryData(String xmlString, String modelType) {
+    public SaveUpdateCQLResult loadStandaloneLibCql(CQLLibrary lib, String xmlString) {
+        if (StringUtils.isNotBlank(lib.getSevereErrorCql())) {
+            return getFhirCqlResultForSevereErrors(lib.getSevereErrorCql(),xmlString);
+        } else {
+            return getCQLLibraryData(xmlString,lib.getLibraryModelType());
+        }
+    }
+
+    @Override
+    public SaveUpdateCQLResult loadMeasureCql(Measure measure, String xmlString) {
+        MeasureXML xml = measureXmlDao.findForMeasure(measure.getId());
+        if (xml == null) {
+            throw new MatRuntimeException("Can't find measureXml for " + measure.getId());
+        }
+        if (StringUtils.isNotBlank(xml.getSevereErrorCql())) {
+            return getFhirCqlResultForSevereErrors(xml.getSevereErrorCql(),xmlString);
+        } else {
+            return getCQLLibraryData(xmlString,measure.getMeasureModel());
+        }
+    }
+
+    private SaveUpdateCQLResult getFhirCqlResultForSevereErrors(String cql, String xmlString) {
+        CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString);
+        SaveUpdateCQLResult result = parseFhirCQLForErrors(cqlModel, cql);
+
+        result.setCqlString(cql);
+        result.setLibraryName(cqlModel.getLibraryName());
+        return result;
+    }
+
+
+    private SaveUpdateCQLResult getCQLLibraryData(String xmlString, String modelType) {
         CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString);
         String cqlString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
 
@@ -1373,8 +1418,13 @@ public class CQLServiceImpl implements CQLService {
         return fhirCqlParser.parseFhirCqlLibraryForErrors(cqlModel, libraryErrors);
     }
 
-    private SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result, String xml,
-                                                            String cqlExpressionName, String logic, String expressionName, String expressionType, String modelType) {
+    private SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result,
+                                                            String xml,
+                                                            String cqlExpressionName,
+                                                            String logic,
+                                                            String expressionName,
+                                                            String expressionType,
+                                                            String modelType) {
 
         SaveUpdateCQLResult parsedCQL;
 

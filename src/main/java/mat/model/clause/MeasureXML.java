@@ -25,6 +25,7 @@ public class MeasureXML {
     private String id;
     private Blob measureXML;
     private String measureId;
+    private String severeErrorCql;
 
     public void setId(String id) {
         this.id = id;
@@ -56,6 +57,15 @@ public class MeasureXML {
     @Column(name = "MEASURE_ID", nullable = false)
     public String getMeasureId() {
         return measureId;
+    }
+
+    @Column(name = "SEVERE_ERROR_CQL")
+    public String getSevereErrorCql() {
+        return severeErrorCql;
+    }
+
+    public void setSevereErrorCql(String severeErrorCql) {
+        this.severeErrorCql = severeErrorCql;
     }
 
     /**
@@ -141,5 +151,4 @@ public class MeasureXML {
         }
         return baos.toByteArray();
     }
-
 }

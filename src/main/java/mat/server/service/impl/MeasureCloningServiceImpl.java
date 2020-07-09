@@ -265,7 +265,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
         String formattedVersion = MeasureUtility.formatVersionText(clonedMeasure.getRevisionNumber(), clonedMeasure.getVersion());
 
-        SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(originalXml, measure.getMeasureModel());
+        SaveUpdateCQLResult saveUpdateCQLResult = cqlService.loadMeasureCql(measure,originalXml);
 
 
         // Create the measureGrouping tag

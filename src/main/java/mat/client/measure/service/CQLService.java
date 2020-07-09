@@ -1,12 +1,5 @@
 package mat.client.measure.service;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.clause.CQLLibrary;
@@ -27,11 +20,21 @@ import mat.server.cqlparser.CQLLinterConfig;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * The Interface CQLService.
  */
 public interface CQLService {
+
+    SaveUpdateCQLResult loadMeasureCql(Measure measure, String xmlString);
+
+    SaveUpdateCQLResult loadStandaloneLibCql(CQLLibrary lib, String xmlString);
 
     /**
      * Gets the CQL data.
@@ -80,7 +83,6 @@ public interface CQLService {
     /**
      * Save and modify definitions.
      *
-     * @param measureId       the measure id
      * @param toBeModifiedObj the to be modified obj
      * @param currentObj      the current obj
      * @param definitionList  the definition list
@@ -181,8 +183,6 @@ public interface CQLService {
     SaveUpdateCQLResult deleteCode(String xml, String toBeDeletedCodeId);
 
     SaveUpdateCQLResult saveCQLCodeSystem(String xml, CQLCodeSystem codeSystem);
-
-    SaveUpdateCQLResult getCQLLibraryData(String xmlString, String modelType);
 
     SaveUpdateCQLResult getCQLDataForLoad(String xmlString);
 

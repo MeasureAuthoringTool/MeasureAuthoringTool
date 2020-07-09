@@ -227,6 +227,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     private MeasureDAO measureDAO;
 
     @Autowired
+    private MeasureXMLDAO measureXMLDAO;
+
+    @Autowired
     private MeasureDetailsReferenceDAO measureDetailsReferenceDAO;
 
     @Autowired
@@ -4440,7 +4443,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         if (model != null && StringUtils.isNotBlank(model.getXml())) {
             String xmlString = model.getXml();
-            result = cqlService.getCQLLibraryData(xmlString, model.getMeasureModel());
+            result = cqlService.loadMeasureCql(measureDAO.find(measureId),
+                    xmlString);
             lintAndAddToResult(measureId, result);
 
             result.setSuccess(true);
@@ -4503,39 +4507,72 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             result = getCqlService().saveCQLFile(measureXMLModel.getXml(), cql, config, measure.getMeasureModel());
 
-            XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
-            processor.replaceNode(result.getXml(), CQL_LOOKUP, MEASURE);
-            measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
+            if (!result.isSevereError()) {
+                XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
+                processor.replaceNode(result.getXml(), CQL_LOOKUP, MEASURE);
+                measureXMLModel.setXml(processor.transform(processor.getOriginalDoc()));
 
-            if (result.isSuccess()) {
-                // need to clean definitions from populations and groupings.
-                // go through all of the definitions in the previous model and check if they are in the new model
-                // if the old definition is not in the new model, clean the groupings
-                for (CQLDefinition previousDefinition : previousModel.getDefinitionList()) {
-                    Optional<CQLDefinition> previousDefinitionInNewModel = result.getCqlModel().getDefinitionList().stream().filter(d -> d.getId().equals((previousDefinition.getId()))).findFirst();
-                    if (!previousDefinitionInNewModel.isPresent()) {
-                        cleanPopulationsAndGroups(previousDefinition, measureXMLModel);
+                if (result.isSuccess()) {
+                    // need to clean definitions from populations and groupings.
+                    // go through all of the definitions in the previous model and check if they are in the new model
+                    // if the old definition is not in the new model, clean the groupings
+                    for (CQLDefinition previousDefinition : previousModel.getDefinitionList()) {
+                        Optional<CQLDefinition> previousDefinitionInNewModel = result.getCqlModel().getDefinitionList().stream().filter(d -> d.getId().equals((previousDefinition.getId()))).findFirst();
+                        if (!previousDefinitionInNewModel.isPresent()) {
+                            cleanPopulationsAndGroups(previousDefinition, measureXMLModel);
+                        }
+                    }
+
+                    // do the same thing for functions
+                    for (CQLFunctions previousFunction : previousModel.getCqlFunctions()) {
+                        Optional<CQLFunctions> previousFunctionInNewModel = result.getCqlModel().getCqlFunctions().stream().filter(f -> f.getId().equals((previousFunction.getId()))).findFirst();
+                        if (!previousFunctionInNewModel.isPresent()) {
+                            cleanMeasureObservationAndGroups(previousFunction, measureXMLModel);
+                        }
                     }
                 }
-
-                // do the same thing for functions
-                for (CQLFunctions previousFunction : previousModel.getCqlFunctions()) {
-                    Optional<CQLFunctions> previousFunctionInNewModel = result.getCqlModel().getCqlFunctions().stream().filter(f -> f.getId().equals((previousFunction.getId()))).findFirst();
-                    if (!previousFunctionInNewModel.isPresent()) {
-                        cleanMeasureObservationAndGroups(previousFunction, measureXMLModel);
-                    }
-                }
+                measurePackageService.saveMeasureXml(measureXMLModel);
             }
-
-            measurePackageService.saveMeasureXml(measureXMLModel);
 
             if (result.isSuccess()) {
                 measure.setCqlLibraryHistory(cqlService.createCQLLibraryHistory(measure.getCqlLibraryHistory(), result.getCqlString(), null, measure));
 
+                if (result.getCqlModel().isFhir()) {
+                    result = handleSaveFhirSevereErrors(result,measure,cql);
+                }
                 measureDAO.save(measure);
             }
         }
 
+        return result;
+    }
+
+    private SaveUpdateCQLResult handleSaveFhirSevereErrors(SaveUpdateCQLResult result, Measure measure, String cql) {
+        if (result.getCqlModel().isFhir()) {
+            MeasureXML xml = measureXMLDAO.findForMeasure(measure.getId());
+            if (xml == null) {
+                throw new MatRuntimeException("Can't find measureXml for " + measure.getId());
+            }
+            if (result.isSevereError()) {
+                String userId = LoggedInUserUtil.getLoggedInUser();
+                if (userId == null) {
+                    throw new MatRuntimeException("Can't find a logged in userId.");
+                }
+                User user = userDAO.find(userId);
+                if (user == null) {
+                    throw new MatRuntimeException("User not found: " + userId);
+                }
+                if (user.getUserPreference().isFreeTextEditorEnabled()) {
+                    xml.setSevereErrorCql(result.getCqlString());
+                } else {
+                    result.setSevereError(true);
+                    result.setSuccess(false);
+                }
+            } else {
+                xml.setSevereErrorCql(null);
+            }
+            measureXMLDAO.save(xml);
+        }
         return result;
     }
 

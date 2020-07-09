@@ -3,7 +3,6 @@ package mat.client.shared;
 import java.util.Collection;
 
 import com.google.common.annotations.VisibleForTesting;
-import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -96,11 +95,14 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
         }
 
         ManageMeasureSearchModel.Result selectedItem = selectedItems.iterator().next();
-        if (ModelTypeHelper.isQdm(selectedItem.getMeasureModel()) ||
-                ModelTypeHelper.isFhir(selectedItem.getMeasureModel()) && options.isFhirExportEnabled()) {
-            exportButton.setEnabled(selectedItems.iterator().next().isExportable());
-            exportButton.setTitle("Click to Export MAT " + selectedItem.getHqmfReleaseVersion());
-        }
+        final boolean[] isExportable = {true};
+        selectedItems.forEach(item -> {
+            if (options.isFhirExportEnabled()) {
+                isExportable[0] = isExportable[0] && item.isExportable();
+                exportButton.setEnabled(isExportable[0]);
+                exportButton.setTitle("Click to Export MAT " + item.getHqmfReleaseVersion());
+            }
+        });
 
         if (selectedItems.size() > 1) {
             exportButton.setTitle("Click to Export");

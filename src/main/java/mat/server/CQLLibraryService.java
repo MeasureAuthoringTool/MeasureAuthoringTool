@@ -1013,13 +1013,12 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
             result = cqlService.saveCQLFile(cqlXml, cql, config, cqlLibrary.getLibraryModelType());
             result = handleSaveSevereErrors(result,cqlLibrary,cql);
-            cqlLibraryDAO.save(cqlLibrary);
 
             if (result.isSuccess()) {
                 cqlLibrary.setCqlLibraryHistory(cqlService.createCQLLibraryHistory(cqlLibrary.getCqlLibraryHistory(), result.getCqlString(), cqlLibrary, null));
             }
-
             cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+            cqlLibraryDAO.save(cqlLibrary);
         }
         return result;
     }

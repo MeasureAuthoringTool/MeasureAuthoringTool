@@ -59,6 +59,15 @@ public class MeasureXML {
         return measureId;
     }
 
+    @Column(name = "SEVERE_ERROR_CQL")
+    public String getSevereErrorCql() {
+        return severeErrorCql;
+    }
+
+    public void setSevereErrorCql(String severeErrorCql) {
+        this.severeErrorCql = severeErrorCql;
+    }
+
     /**
      * Gets the measure xml as string.
      *
@@ -141,13 +150,5 @@ public class MeasureXML {
             }
         }
         return baos.toByteArray();
-    }
-
-    public String getSevereErrorCql() {
-        return severeErrorCql;
-    }
-
-    public void setSevereErrorCql(String severeErrorCql) {
-        this.severeErrorCql = severeErrorCql;
     }
 }

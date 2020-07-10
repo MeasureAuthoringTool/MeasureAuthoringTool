@@ -371,6 +371,7 @@ public class CQLLibrary {
         }
     }
 
+    @Column(name = "SEVERE_ERROR_CQL")
     public String getSevereErrorCql() {
         return severeErrorCql;
     }

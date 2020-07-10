@@ -1,24 +1,5 @@
 package mat.server.service.impl;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
-
-import mat.client.audit.service.AuditService;
-import mat.server.service.CQLLibraryAuditService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.xerces.impl.dv.util.Base64;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.hl7.fhir.r4.model.Attachment;
-import org.hl7.fhir.r4.model.Library;
-import org.springframework.stereotype.Service;
-
 import ca.uhn.fhir.context.FhirContext;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirLibraryPackageResult;
@@ -35,12 +16,29 @@ import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
+import mat.server.service.CQLLibraryAuditService;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.service.FhirCqlLibraryService;
 import mat.server.service.FhirLibraryRemoteCall;
 import mat.server.service.cql.FhirCqlParser;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xerces.impl.dv.util.Base64;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.hl7.fhir.r4.model.Attachment;
+import org.hl7.fhir.r4.model.Library;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {

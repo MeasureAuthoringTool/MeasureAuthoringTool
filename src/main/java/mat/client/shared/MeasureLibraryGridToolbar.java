@@ -3,6 +3,7 @@ package mat.client.shared;
 import java.util.Collection;
 
 import com.google.common.annotations.VisibleForTesting;
+import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -142,7 +143,15 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
             editOrViewButton.setEnabled(false);
         }
 
-        shareButton.setEnabled(selectedItem.isSharable());
+        if (selectedItems.size() == 1) {
+            if (ModelTypeHelper.isFhir(selectedItem.getMeasureModel())) {
+                if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_SHARE)) {
+                    shareButton.setEnabled(selectedItem.isSharable());
+                }
+            } else {
+                shareButton.setEnabled(selectedItem.isSharable());
+            }
+        }
 
         if (!selectedItem.isClonable()) {
             cloneButton.setTitle(Boolean.TRUE.equals(selectedItem.getIsComposite()) ? "Composite measure not cloneable" : "Measure not cloneable");

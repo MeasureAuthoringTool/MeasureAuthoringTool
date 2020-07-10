@@ -1209,16 +1209,19 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
     @Override
-    public ExportResult getMeasureBundleExportResult(MeasureExport measureExport) {
-        ExportResult jsonExportResult = new ExportResult();
-        jsonExportResult.measureName = measureExport.getMeasure().getaBBRName();
+    public ExportResult getMeasureBundleExportResult(MeasureExport measureExport, String fileType) {
+        ExportResult exportResult = new ExportResult();
+        exportResult.measureName = measureExport.getMeasure().getaBBRName();
 
         ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
-        jsonExportResult.export = zp.buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
+        exportResult.export = zp.buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
 
-        jsonExportResult.setCqlLibraryName(measureExport.getMeasure().getCqlLibraryName());
+        if(fileType.equals("xml")) {
+            exportResult.export = zp.convertToXmlBundle(exportResult.export);
+        }
+        exportResult.setCqlLibraryName(measureExport.getMeasure().getCqlLibraryName());
 
-        return jsonExportResult;
+        return exportResult;
     }
 
     private ExportResult createExportResultForFile(MeasureExport measureExport, String fileString, CQLModel cqlModel) {

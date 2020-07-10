@@ -1165,7 +1165,10 @@ public class XmlProcessor {
             NodeList nodeList = findNodeList(getOriginalDoc(), XPATH_FOR_VALUESETS);
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node valuesetNode = nodeList.item(i);
-                valuesetNode.getAttributes().getNamedItem("version").setNodeValue("");
+                Node version = valuesetNode.getAttributes().getNamedItem("version");
+                if (version != null) {
+                    version.setNodeValue("");
+                }
             }
         } catch (XPathExpressionException e) {
             LOG.error(e.getMessage(), e);

@@ -57,7 +57,7 @@ public class ManageMeasureExportPresenter implements MatPresenter {
 		System.out.println("URL: " + url);
 
 		url += (view.isHQMF() ? "hqmf" : view.isHumanReadable() ? "humanreadable" : view.isSimpleXML() ? "simplexml" : 
-			view.isCQLLibrary() ? "cqlLibrary" : view.isELM() ? "elm" : view.isJSON() ? "json" : "zip");
+			view.isCQLLibrary() ? "cqlLibrary" : view.isELM() ? "elm" : view.isJSON() ? "json" : view.isXml() ? "xml" : "zip");
 		return url;
 	}
 

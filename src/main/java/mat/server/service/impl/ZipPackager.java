@@ -8,8 +8,6 @@ import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.CQLLibraryExportDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
-import mat.model.clause.CQLLibrary;
-import mat.model.clause.CQLLibraryExport;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.server.export.ExportResult;
@@ -416,6 +414,15 @@ public class ZipPackager {
                 result.addEntry().setResource(e.getResource()).setRequest(e.getRequest()));
 
         return jsonParser.encodeResourceToString(result);
+    }
+
+    public String convertToXmlBundle(String bundleJson) {
+        IParser jsonParser = fhirContext.newJsonParser();
+        IParser xmlParser = fhirContext.newXmlParser();
+        xmlParser.setPrettyPrint(true);
+        var bundle = jsonParser.parseResource(org.hl7.fhir.r4.model.Bundle.class, bundleJson);
+        String bundleXml = xmlParser.encodeResourceToString(bundle);
+        return bundleXml;
     }
 
     private String getFhirId(Resource r) {

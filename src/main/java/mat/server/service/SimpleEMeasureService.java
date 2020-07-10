@@ -54,7 +54,7 @@ public interface SimpleEMeasureService {
 
 	ExportResult createOrGetJSONLibraryFile(String id, MeasureExport measureExport) throws Exception;
 
-	ExportResult getMeasureBundleExportResult(MeasureExport measureExport);
+	ExportResult getMeasureBundleExportResult(MeasureExport measureExport, String filetype);
 
 	ExportResult createOrGetEMeasureHTML(String measureId) throws Exception;
 

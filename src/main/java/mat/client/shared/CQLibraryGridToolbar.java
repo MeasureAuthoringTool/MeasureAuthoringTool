@@ -141,7 +141,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         shareButton.setIcon(IconType.SHARE_SQUARE);
         shareButton.setTitle(CLICK_TO_SHARE_TITLE);
         if (ModelTypeHelper.isFhir(selectedItem.getLibraryModelType())) {
-            shareButton.setEnabled(selectedItem.isSharable() && MatContext.get().getFeatureFlagStatus("FhirShare"));
+            shareButton.setEnabled(selectedItem.isSharable() && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_SHARE));
         } else {
             shareButton.setEnabled(selectedItem.isSharable());
         }

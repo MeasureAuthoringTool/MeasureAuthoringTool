@@ -145,7 +145,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
         if (selectedItems.size() == 1) {
             if (ModelTypeHelper.isFhir(selectedItem.getMeasureModel())) {
-                if (MatContext.get().getFeatureFlagStatus("FhirShare")) {
+                if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_SHARE)) {
                     shareButton.setEnabled(selectedItem.isSharable());
                 }
             } else {

@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
+import mat.client.audit.service.AuditService;
+import mat.server.service.CQLLibraryAuditService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,16 +59,20 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
 
     private final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
 
+    private final CQLLibraryAuditService auditService;
+
     public FhirCqlLibraryServiceImpl(FhirCqlParser cqlParser,
                                      FhirLibraryRemoteCall fhirLibRemote,
                                      CQLLibraryServiceInterface cqlLibService,
                                      CQLLibraryDAO cqlLibDao,
-                                     FhirContext fhirContext) {
+                                     FhirContext fhirContext,
+                                     CQLLibraryAuditService auditService) {
         this.cqlParser = cqlParser;
         this.fhirLibRemote = fhirLibRemote;
         this.cqlLibService = cqlLibService;
         this.cqlLibraryDAO = cqlLibDao;
         this.fhirContext = fhirContext;
+        this.auditService = auditService;
     }
 
     @Override
@@ -169,6 +175,11 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
 
         fhirConvertResultResponse.setFhirMeasureId(newFhirLibrary.getId());
         cqlLibService.isLibraryAvailableAndLogRecentActivity(newFhirLibrary.getId(), loggedInUser);
+
+        auditService.recordCQLLibraryEvent(newFhirLibrary.getId(),
+                "Converted from QDM/CQL to FHIR",
+                "QDM standalone library " + existingLibrary.getName(),
+                false);
     }
 
     public void deleteDraftFhirLibrariesInSet(String setId) {

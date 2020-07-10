@@ -1,5 +1,6 @@
 package mat.server.service.impl;
 
+import mat.client.audit.service.AuditService;
 import mat.client.measure.FhirMeasurePackageResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -16,8 +17,10 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
+import mat.server.service.CQLLibraryAuditService;
 import mat.server.service.FhirMeasureRemoteCall;
 import mat.server.service.FhirMeasureService;
+import mat.server.service.MeasureAuditService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.cql.FhirCqlParser;
@@ -58,6 +61,8 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
     private final FhirCqlParser cqlParser;
 
+    private final MeasureAuditService auditService;
+
     public FhirMeasureServiceImpl(FhirMeasureRemoteCall fhirOrchestrationGatewayService,
                                   MeasureLibraryService measureLibraryService,
                                   MeasureCloningService measureCloningService,
@@ -65,7 +70,8 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                                   MeasureXMLDAO measureXMLDAO,
                                   PlatformTransactionManager txManager,
                                   CQLService cqlService,
-                                  FhirCqlParser cqlParser) {
+                                  FhirCqlParser cqlParser,
+                                  MeasureAuditService auditService) {
         this.fhirMeasureRemote = fhirOrchestrationGatewayService;
         this.measureLibraryService = measureLibraryService;
         this.measureCloningService = measureCloningService;
@@ -74,6 +80,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         this.transactionTemplate = new TransactionTemplate(txManager);
         this.cqlService = cqlService;
         this.cqlParser = cqlParser;
+        this.auditService = auditService;
     }
 
     @Override
@@ -145,6 +152,11 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
                         convertedCql);
 
                 measureLibraryService.recordRecentMeasureActivity(fhirMeasure.getId(), loggedinUserId);
+
+                auditService.recordMeasureEvent(fhirMeasure.getId(),
+                        "Converted from QDM/CQL to FHIR",
+                        "QDM measure " + sourceMeasureDetails.getCQLLibraryName(),
+                        false);
             } catch (MatException | MatRuntimeException e) {
                 logger.error("persistFhirMeasure error", e);
                 throw new MatRuntimeException("Mat cannot persist converted FHIR measure CQL file.");

@@ -1,5 +1,6 @@
 package mat.client.shared;
 
+import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -135,11 +136,15 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
             editOrViewButton.setEnabled(false);
         }
 
+
         shareButton.setText(SHARE_TEXT);
-        shareButton.setEnabled(selectedItem.isSharable());
         shareButton.setIcon(IconType.SHARE_SQUARE);
         shareButton.setTitle(CLICK_TO_SHARE_TITLE);
-
+        if (ModelTypeHelper.isFhir(selectedItem.getLibraryModelType())) {
+            shareButton.setEnabled(selectedItem.isSharable() && MatContext.get().getFeatureFlagStatus("FhirShare"));
+        } else {
+            shareButton.setEnabled(selectedItem.isSharable());
+        }
 
         deleteButton.setText(DELETE_TEXT);
         deleteButton.setEnabled(selectedItem.isDeletable());

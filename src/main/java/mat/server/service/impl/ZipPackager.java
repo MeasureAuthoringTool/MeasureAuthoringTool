@@ -398,7 +398,7 @@ public class ZipPackager {
         }
     }
 
-    private String buildMeasureBundle(FhirContext fhirContext, String measureJson, String libBundleJson) {
+    public String buildMeasureBundle(FhirContext fhirContext, String measureJson, String libBundleJson) {
         // http://build.fhir.org/ig/HL7/cqf-measures/StructureDefinition-measure-bundle-cqfm.html
         IParser jsonParser = fhirContext.newJsonParser();
         jsonParser.setPrettyPrint(true);

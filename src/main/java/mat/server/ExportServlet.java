@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.model.clause.ModelTypeHelper;
 import mat.server.service.impl.ZipPackagerFactory;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -304,7 +305,8 @@ public class ExportServlet extends HttpServlet {
         ExportResult export = null;
 
         if(JSON_FILENAME.equals(fileNameExtension)) {
-            export = getService().createOrGetJSONLibraryFile(id, measureExport);
+            export = ModelTypeHelper.isFhir(measure.getMeasureModel()) ? getService().getMeasureBundleExportResult(measureExport)
+                    : getService().createOrGetJSONLibraryFile(id, measureExport);
         } else if(CQL_FILENAME.equals(fileNameExtension)) {
             export = getService().createOrGetCQLLibraryFile(id, measureExport);
         } else if(ELM_FILENAME.equals(fileNameExtension)) {

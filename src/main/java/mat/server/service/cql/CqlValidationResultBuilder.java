@@ -52,6 +52,7 @@ public class CqlValidationResultBuilder {
         for (CQLError e : parsedCQL.getCqlErrors()) {
             if (StringUtils.equalsIgnoreCase("SEVERE",e.getSeverity())) {
                 parsedCQL.setSevereError(true);
+                break;
             }
         }
 

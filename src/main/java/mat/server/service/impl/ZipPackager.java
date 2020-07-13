@@ -225,15 +225,19 @@ public class ZipPackager {
                     addFileToZip(measure, jsonExportResult, parentPath, "json", zip);
                 }
             } else {
-                addBytesToZip(parentPath + File.separator + "measure-bundle.json",
-                        buildMeasureBundle(fhirContext,
-                        measureExport.getMeasureJson(),
-                        measureExport.getFhirIncludedLibsJson()).getBytes(),
+                String measureJsonBundle = buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
+                addBytesToZip(parentPath + File.separator + "measure-json-bundle.json",
+                        measureJsonBundle.getBytes(),
+                        zip);
+
+                addBytesToZip(parentPath + File.separator + "measure-xml-bundle.xml",
+                        convertToXmlBundle(measureJsonBundle).getBytes(),
                         zip);
 
                 addBytesToZip( parentPath + File.separator + "human-readable.html",
                         emeasureHTMLStr.getBytes(),
                         zip);
+
             }
         } catch (Exception e) {
             log.error("getZipBarr", e);

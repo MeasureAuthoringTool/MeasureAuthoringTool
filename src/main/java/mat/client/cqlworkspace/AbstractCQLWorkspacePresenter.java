@@ -558,6 +558,10 @@ public abstract class AbstractCQLWorkspacePresenter {
             errorMessages.add("Changes to the CQL File have been successfully saved.");
         }
 
+        if (result.isSevereError()) {
+            errorMessages.add("Please correct the syntax errors so the CQL can be validated.");
+        }
+
         if (!result.getLinterWarningMessages().isEmpty()) {
             errorMessages.addAll(result.getLinterWarningMessages());
             if (c != Color.RED) {

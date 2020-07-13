@@ -1971,7 +1971,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
 
         return updateVersionAndExports(isMajor, version, m);
-
     }
 
     private SaveMeasureResult updateVersionAndExports(final boolean isMajor, final String version, Measure measure) {
@@ -2151,7 +2150,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     cqlLibrary.setMeasureId(mDetail.getId());
                     cqlLibrary.setOwnerId(measure.getOwner());
                     cqlLibrary.setSetId(measure.getMeasureSet().getId());
-                    cqlLibrary.setVersion(mDetail.getVersionNumber());
+                    cqlLibrary.setVersion(new BigDecimal(measure.getVersionNumber()).setScale(3).toString());
                     cqlLibrary.setReleaseVersion(measure.getReleaseVersion());
                     cqlLibrary.setQdmVersion(cqlQdmVersion);
                     cqlLibrary.setFinalizedDate(timestamp);

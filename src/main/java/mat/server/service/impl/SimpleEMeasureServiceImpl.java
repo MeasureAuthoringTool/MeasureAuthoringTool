@@ -25,6 +25,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import ca.uhn.fhir.context.FhirContext;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -147,6 +148,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 	@Autowired
 	private HumanReadableGenerator humanReadableGenerator;
+
+    @Autowired
+    private FhirContext fhirContext;
 
 	@Override
 	public final ExportResult exportMeasureIntoSimpleXML(final String measureId, final String xmlString, final List<MatValueSet> matValueSets) throws Exception {
@@ -1204,7 +1208,23 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return jsonExportResult;
 	}
 
-	private ExportResult createExportResultForFile(MeasureExport measureExport, String fileString, CQLModel cqlModel) {
+    @Override
+    public ExportResult getMeasureBundleExportResult(MeasureExport measureExport, String fileType) {
+        ExportResult exportResult = new ExportResult();
+        exportResult.measureName = measureExport.getMeasure().getaBBRName();
+
+        ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
+        exportResult.export = zp.buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
+
+        if(fileType.equals("xml")) {
+            exportResult.export = zp.convertToXmlBundle(exportResult.export);
+        }
+        exportResult.setCqlLibraryName(measureExport.getMeasure().getCqlLibraryName());
+
+        return exportResult;
+    }
+
+    private ExportResult createExportResultForFile(MeasureExport measureExport, String fileString, CQLModel cqlModel) {
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		result.export = fileString;

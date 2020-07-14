@@ -8,8 +8,6 @@ import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.CQLLibraryExportDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
-import mat.model.clause.CQLLibrary;
-import mat.model.clause.CQLLibraryExport;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.server.export.ExportResult;
@@ -227,15 +225,19 @@ public class ZipPackager {
                     addFileToZip(measure, jsonExportResult, parentPath, "json", zip);
                 }
             } else {
-                addBytesToZip(parentPath + File.separator + "measure-bundle.json",
-                        buildMeasureBundle(fhirContext,
-                        measureExport.getMeasureJson(),
-                        measureExport.getFhirIncludedLibsJson()).getBytes(),
+                String measureJsonBundle = buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
+                addBytesToZip(parentPath + File.separator + "measure-json-bundle.json",
+                        measureJsonBundle.getBytes(),
+                        zip);
+
+                addBytesToZip(parentPath + File.separator + "measure-xml-bundle.xml",
+                        convertToXmlBundle(measureJsonBundle).getBytes(),
                         zip);
 
                 addBytesToZip( parentPath + File.separator + "human-readable.html",
                         emeasureHTMLStr.getBytes(),
                         zip);
+
             }
         } catch (Exception e) {
             log.error("getZipBarr", e);
@@ -398,7 +400,7 @@ public class ZipPackager {
         }
     }
 
-    private String buildMeasureBundle(FhirContext fhirContext, String measureJson, String libBundleJson) {
+    public String buildMeasureBundle(FhirContext fhirContext, String measureJson, String libBundleJson) {
         // http://build.fhir.org/ig/HL7/cqf-measures/StructureDefinition-measure-bundle-cqfm.html
         IParser jsonParser = fhirContext.newJsonParser();
         jsonParser.setPrettyPrint(true);
@@ -416,6 +418,15 @@ public class ZipPackager {
                 result.addEntry().setResource(e.getResource()).setRequest(e.getRequest()));
 
         return jsonParser.encodeResourceToString(result);
+    }
+
+    public String convertToXmlBundle(String bundleJson) {
+        IParser jsonParser = fhirContext.newJsonParser();
+        IParser xmlParser = fhirContext.newXmlParser();
+        xmlParser.setPrettyPrint(true);
+        var bundle = jsonParser.parseResource(org.hl7.fhir.r4.model.Bundle.class, bundleJson);
+        String bundleXml = xmlParser.encodeResourceToString(bundle);
+        return bundleXml;
     }
 
     private String getFhirId(Resource r) {

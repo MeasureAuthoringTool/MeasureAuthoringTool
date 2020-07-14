@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.model.clause.ModelTypeHelper;
 import mat.server.service.impl.ZipPackagerFactory;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -80,7 +81,8 @@ public class ExportServlet extends HttpServlet {
     private static final String SIMPLEXML = "simplexml";
     private static final String CALCULATE_BONNIE_MEASURE_RESULT = "calculateBonnieMeasureResult";
     private static final String TYPE_PARAM = "type";
-    private static final String XML_PARAM = "xml";
+    private static final String XML = "xml";
+    private static final String XML_FILENAME = "XML";
     private static final String ELM_FILENAME = "ELM";
     private static final String FORMAT_PARAM = "format";
     private static final String ID_PARAM = "id";
@@ -137,10 +139,13 @@ public class ExportServlet extends HttpServlet {
                     exportFile(resp, id, type, measure, CQL, CQL_FILENAME);
                     break;
                 case ELM:
-                    exportFile(resp, id, type, measure, XML_PARAM, ELM_FILENAME);
+                    exportFile(resp, id, type, measure, XML, ELM_FILENAME);
                     break;
                 case JSON:
                     exportFile(resp, id, type, measure, JSON, JSON_FILENAME);
+                    break;
+                case XML:
+                    exportFile(resp, id, type, measure, XML, XML_FILENAME);
                     break;
                 case ZIP:
                     zipMeasure(resp, id, measure, exportDate);
@@ -304,13 +309,15 @@ public class ExportServlet extends HttpServlet {
         ExportResult export = null;
 
         if(JSON_FILENAME.equals(fileNameExtension)) {
-            export = getService().createOrGetJSONLibraryFile(id, measureExport);
+            export = ModelTypeHelper.isFhir(measure.getMeasureModel()) ? getService().getMeasureBundleExportResult(measureExport, JSON)
+                    : getService().createOrGetJSONLibraryFile(id, measureExport);
         } else if(CQL_FILENAME.equals(fileNameExtension)) {
             export = getService().createOrGetCQLLibraryFile(id, measureExport);
         } else if(ELM_FILENAME.equals(fileNameExtension)) {
             export = getService().createOrGetELMLibraryFile(id, measureExport);
+        } else if(XML_FILENAME.equals(fileNameExtension)) {
+            export = getService().getMeasureBundleExportResult(measureExport, XML); //only for FHIR measures
         }
-
 
         if (!export.getIncludedCQLExports().isEmpty()) {
             ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();
@@ -403,7 +410,7 @@ public class ExportServlet extends HttpServlet {
 
     private void exportSubTreeHumanReadable(HttpServletRequest req, HttpServletResponse resp, String id)
             throws Exception {
-        String nodeXML = req.getParameter(XML_PARAM);
+        String nodeXML = req.getParameter(XML);
         logger.info("Export servlet received node xml:" + nodeXML + " and Measure ID:" + id);
         ExportResult export = getService().getHumanReadableForNode(id, nodeXML);
         resp.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);

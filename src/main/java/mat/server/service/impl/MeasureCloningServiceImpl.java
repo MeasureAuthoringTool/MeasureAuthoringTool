@@ -247,8 +247,8 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
             int year = Calendar.getInstance().get(Calendar.YEAR);
-            Date fromDate = dateFormat.parse("12/31/" + ++year);
-            timestamp = new java.sql.Timestamp(fromDate.getTime());
+            Date toDate = dateFormat.parse("12/31/" + ++year);
+            timestamp = new java.sql.Timestamp(toDate.getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }

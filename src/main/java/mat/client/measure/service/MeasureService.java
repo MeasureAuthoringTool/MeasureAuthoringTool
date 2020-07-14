@@ -602,7 +602,7 @@ public interface MeasureService extends RemoteService {
 
     int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
 
-    String getHumanReadableForMeasureDetails(String measureId);
+    String getHumanReadableForMeasureDetails(String measureId, String measureModel);
 
     boolean checkIfLibraryNameExists(String libraryName, String setId);
 

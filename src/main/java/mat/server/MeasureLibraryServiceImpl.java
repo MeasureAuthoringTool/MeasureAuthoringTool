@@ -5623,15 +5623,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     @Override
-    public String getHumanReadableForMeasureDetails(String measureId) {
+    public String getHumanReadableForMeasureDetails(String measureId, String measureModel) {
         String humanReadableHTML = "";
         try {
             ManageMeasureDetailModel measureDetailsModel = getMeasure(measureId);
             HumanReadableModel model = new HumanReadableModel();
             HumanReadableMeasureInformationModel measureInformationModel = new HumanReadableMeasureInformationModel(measureDetailsModel);
             model.setMeasureInformation(measureInformationModel);
-            standardizeStartAndEndDate(measureInformationModel);
-            humanReadableHTML = humanReadableGenerator.generate(measureInformationModel);
+            if (!ModelTypeHelper.isFhir(measureModel)) {
+                standardizeStartAndEndDateForQdm(measureInformationModel);
+            }
+            humanReadableHTML = humanReadableGenerator.generate(measureInformationModel, measureModel);
         } catch (Exception e) {
             log.error("Exception in getHumanReadableForMeasureDetails: " + e.getMessage(), e);
         }
@@ -5639,7 +5641,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
 
-    private void standardizeStartAndEndDate(HumanReadableMeasureInformationModel measureInformationModel) {
+    private void standardizeStartAndEndDateForQdm(HumanReadableMeasureInformationModel measureInformationModel) {
+
         if ((measureInformationModel.getMeasurementPeriodStartDate() == null && measureInformationModel.getMeasurementPeriodEndDate() == null) ||
                 (measureInformationModel.getMeasurementPeriodStartDate().equals("01/01/20XX") && measureInformationModel.getMeasurementPeriodEndDate().equals("12/31/20XX"))) {
             measureInformationModel.setMeasurementPeriodStartDate("00000101");

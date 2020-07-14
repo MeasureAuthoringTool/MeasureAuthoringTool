@@ -522,8 +522,8 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     }
 
     @Override
-    public String getHumanReadableForMeasureDetails(String measureId) {
-        return this.getMeasureLibraryService().getHumanReadableForMeasureDetails(measureId);
+    public String getHumanReadableForMeasureDetails(String measureId, String measureModel) {
+        return this.getMeasureLibraryService().getHumanReadableForMeasureDetails(measureId, measureModel);
     }
 
     @Override

@@ -132,7 +132,7 @@ public class MeasureDetailsView {
 
 	private void generateHumanReadableForMeasureDetails() {
 		messagePanel.clearAlerts();
-		MatContext.get().getMeasureService().getHumanReadableForMeasureDetails(MatContext.get().getCurrentMeasureId(), new AsyncCallback<String>() {
+		MatContext.get().getMeasureService().getHumanReadableForMeasureDetails(MatContext.get().getCurrentMeasureId(), MatContext.get().getCurrentMeasureModel(), new AsyncCallback<String>() {
 			@Override
 			public void onSuccess(String result) {
 				showHumanReadableDialogBox(result, measureDetailsModel.getGeneralInformationModel().getMeasureName());

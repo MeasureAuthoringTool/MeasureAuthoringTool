@@ -2150,7 +2150,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     cqlLibrary.setMeasureId(mDetail.getId());
                     cqlLibrary.setOwnerId(measure.getOwner());
                     cqlLibrary.setSetId(measure.getMeasureSet().getId());
-                    cqlLibrary.setVersion(new BigDecimal(measure.getVersionNumber()).setScale(3).toString());
+                    cqlLibrary.setVersion(new BigDecimal(measure.getVersionNumber()).setScale(3,BigDecimal.ROUND_HALF_UP).toString());
                     cqlLibrary.setReleaseVersion(measure.getReleaseVersion());
                     cqlLibrary.setQdmVersion(cqlQdmVersion);
                     cqlLibrary.setFinalizedDate(timestamp);

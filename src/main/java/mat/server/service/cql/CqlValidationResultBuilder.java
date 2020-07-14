@@ -48,6 +48,14 @@ public class CqlValidationResultBuilder {
         parsedCQL.setLibraryNameErrorsMap(libraryNameErrorsMap);
         parsedCQL.setLibraryNameWarningsMap(libraryNameWarningsMap);
         parsedCQL.setIncludeLibrariesWithErrors(includeLibrariesWithErrors);
+
+        for (CQLError e : parsedCQL.getCqlErrors()) {
+            if (StringUtils.equalsIgnoreCase("SEVERE",e.getSeverity())) {
+                parsedCQL.setSevereError(true);
+                break;
+            }
+        }
+
         return parsedCQL;
     }
 

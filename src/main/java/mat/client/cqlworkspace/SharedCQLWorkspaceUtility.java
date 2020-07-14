@@ -97,6 +97,10 @@ public class SharedCQLWorkspaceUtility {
             errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE);
         }
 
+        if (result.isSevereError()) {
+            errorMessages.add("Please correct the syntax errors so the CQL can be validated.");
+        }
+
         if (!errorMessages.isEmpty()) {
             messagePanel.getErrorMessageAlert().createAlert(errorMessages);
         } else if (!result.getCqlWarnings().isEmpty()) {

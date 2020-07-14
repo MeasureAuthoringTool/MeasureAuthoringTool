@@ -512,7 +512,12 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     public void saveFhirCQLLibraryExport(CQLLibrary cqlLibrary, FhirLibraryPackageResult result) {
-        CQLLibraryExport cqlLibraryExport = new CQLLibraryExport();
+        CQLLibraryExport cqlLibraryExport = cqlLibraryExportDAO.findByLibraryId(cqlLibrary.getId());
+        if (cqlLibraryExport == null) {
+            cqlLibraryExport = new CQLLibraryExport();
+            cqlLibraryExport.setCqlLibrary(cqlLibrary);
+        }
+
         cqlLibraryExport.setCqlLibrary(cqlLibrary);
         cqlLibraryExport.setCql(result.getCql());
         cqlLibraryExport.setFhirJson(result.getFhirJson());

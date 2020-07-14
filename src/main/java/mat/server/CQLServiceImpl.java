@@ -1090,7 +1090,6 @@ public class CQLServiceImpl implements CQLService {
     private SaveUpdateCQLResult getFhirCqlResultForSevereErrors(String cql, String xmlString) {
         CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString);
         SaveUpdateCQLResult result = parseFhirCQLForErrors(cqlModel, cql);
-
         result.setCqlString(cql);
         result.setLibraryName(cqlModel.getLibraryName());
         return result;

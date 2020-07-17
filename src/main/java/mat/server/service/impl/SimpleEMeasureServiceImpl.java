@@ -1012,20 +1012,20 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			Date exportDate;
 			FileNameUtility fnu = new FileNameUtility();
 			for (String measureId : measureIds) {
-                    result = new ExportResult();
-                    result.measureName = getMeasureName(measureId).getaBBRName();
-                    exportDate = getMeasureName(measureId).getExportedDate();
-                    MeasureExport me = getMeasureExport(measureId);
-                    String currentReleaseVersion = getFormatedReleaseVersion(me.getMeasure().getReleaseVersion());
-                    String sequence = format.format(fileNameCounter++);
-                    if (me.getMeasure().getReleaseVersion().equals("v3")) {
-                        createFilesInBulkZip(measureId, exportDate, me, filesMap, sequence);
-                    } else if(me.getMeasure().getIsCompositeMeasure()) {
-                        createCompositeFilesInBuildZip(measureId, me, filesMap, sequence, currentReleaseVersion, sequence);
-                    } else {
-                        String parentPath = fnu.getParentPath(sequence +"_"+ result.measureName + "_" + currentReleaseVersion);
-                        createFilesInBulkZip(measureId, me, filesMap, sequence, parentPath);
-                    }
+                result = new ExportResult();
+                result.measureName = getMeasureName(measureId).getaBBRName();
+                exportDate = getMeasureName(measureId).getExportedDate();
+                MeasureExport me = getMeasureExport(measureId);
+                String currentReleaseVersion = getFormatedReleaseVersion(me.getMeasure().getReleaseVersion());
+                String sequence = format.format(fileNameCounter++);
+                if (me.getMeasure().getReleaseVersion().equals("v3")) {
+                    createFilesInBulkZip(measureId, exportDate, me, filesMap, sequence);
+                } else if(me.getMeasure().getIsCompositeMeasure()) {
+                    createCompositeFilesInBuildZip(measureId, me, filesMap, sequence, currentReleaseVersion, sequence);
+                } else {
+                    String parentPath = fnu.getParentPath(sequence +"_"+ result.measureName + "_" + currentReleaseVersion);
+                    createFilesInBulkZip(measureId, me, filesMap, sequence, parentPath);
+                }
 			}
 
 			ZipPackager zp = context.getBean(ZipPackagerFactory.class).getZipPackager();

@@ -1586,7 +1586,16 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     searchDisplay.getErrorMessageDisplayForBulkExport()
                             .createAlert(MatContext.get().getMessageDelegate().getMeasureSelectionError());
                 } else {
-                    bulkExport(exportable.stream().map(i -> i.getId()).collect(Collectors.toList()));
+                    List<Result> errorExportList = exportable.stream()
+                            .filter(Result -> !Result.isExportable())
+                            .collect(Collectors.toList());
+                    List<Result> exportList = exportable.stream()
+                            .filter(Result::isExportable)
+                            .collect(Collectors.toList());
+                    if (!errorExportList.isEmpty()) {
+                        searchDisplay.getErrorMessageDisplay().createAlert(buildBulkErrorMessage(errorExportList).toString());
+                    }
+                    bulkExport(exportList.stream().map(i -> i.getId()).collect(Collectors.toList()));
                     searchDisplay.getMeasureSearchView().clearBulkExportCheckBoxes();
                 }
             }
@@ -1681,6 +1690,15 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
             }
 
         };
+    }
+
+    private StringBuilder buildBulkErrorMessage(List<Result> errorExportList) {
+        StringBuilder errorMessage = new StringBuilder();
+        errorMessage.append("Measure(s) ");
+        errorExportList.forEach(r -> errorMessage.append(r.getName() + ","));
+        errorMessage.deleteCharAt(errorMessage.length()-1);
+        errorMessage.append(" could not be exported because they are not packaged.");
+        return errorMessage;
     }
 
     private void resetSearchFields(MeasureSearchModel measureSearchModel) {

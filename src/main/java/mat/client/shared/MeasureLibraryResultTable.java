@@ -160,7 +160,6 @@ public class MeasureLibraryResultTable {
         Predicate<Result> fhirExportFeatureFlag = result -> isQdm(result.getMeasureModel()) ||
                 (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.EXPORT_V1) && isFhir(result.getMeasureModel()));
         List<Result> exportList = selectionModel.getSelectedSet().stream()
-                .filter(Result::isExportable)
                 .filter(fhirExportFeatureFlag)
                 .collect(Collectors.toList());
         if (exportList.size() == 1) {

@@ -10,6 +10,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
+import mat.model.clause.ModelTypeHelper;
 import mat.server.export.ExportResult;
 import mat.shared.FileNameUtility;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -271,10 +272,10 @@ public class ZipPackager {
      * @param jsonExportResult
      * @throws Exception the exception
      */
-    public void createBulkExportZip(String emeasureName, byte[] wkbkbarr,
-                                    String emeasureXMLStr, String emeasureHTMLStr,
-                                    String packageDate, String simpleXmlStr,
-                                    Map<String, byte[]> filesMap, String seqNum, String currentReleaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult, String parentPath) throws Exception {
+    public void createBulkExportZip(String emeasureName, byte[] wkbkbarr, String emeasureXMLStr, String emeasureHTMLStr,
+                                    String packageDate, String simpleXmlStr, Map<String, byte[]> filesMap, String seqNum,
+                                    String currentReleaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult,
+                                    ExportResult jsonExportResult, String parentPath, MeasureExport measureExport) throws Exception {
         try {
             boolean isCQLMeasure = false;
             String emeasureHumanReadablePath = "";
@@ -284,15 +285,24 @@ public class ZipPackager {
             if (currentReleaseVersion.contains(".")) {
                 currentReleaseVersion = currentReleaseVersion.replace(".", "_");
             }
-            emeasureHumanReadablePath = parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + currentReleaseVersion);
-            emeasureXMLPath = parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentReleaseVersion);
+            if (!ModelTypeHelper.isFhir(measureExport.getMeasure().getMeasureModel())) {
+                emeasureHumanReadablePath = parentPath + File.separator + FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + currentReleaseVersion);
+                emeasureXMLPath = parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentReleaseVersion);
+                filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 
-            filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
-            filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
+                if (isCQLMeasure) {
+                    addVersion5Exports(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
+                }
+            } else {
+                String measureJsonBundle = buildMeasureBundle(fhirContext, measureExport.getMeasureJson(), measureExport.getFhirIncludedLibsJson());
+                String emeasureJsonBundlePath = parentPath + File.separator + "measure-json-bundle.json";
+                String emeasureXmlBundlePath = parentPath + File.separator + "measure-xml-bundle.xml";
+                emeasureHumanReadablePath = parentPath + File.separator + "human-readable.html";
 
-            if (isCQLMeasure) {
-                addVersion5Exports(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
+                filesMap.put(emeasureJsonBundlePath, measureJsonBundle.getBytes());
+                filesMap.put(emeasureXmlBundlePath, convertToXmlBundle(measureJsonBundle).getBytes());
             }
+            filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 
         } catch (Exception e) {
             log.error("createBulkExportZip", e);

@@ -11,6 +11,7 @@ import mat.client.shared.MatRuntimeException;
 import mat.dto.fhirconversion.ConversionResultDto;
 import mat.dto.fhirconversion.ConversionType;
 import mat.server.service.FhirMeasureRemoteCall;
+import mat.server.service.cql.HumanReadableArtifacts;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.hl7.fhir.r4.model.Attachment;
@@ -32,6 +33,7 @@ import java.util.Map;
 @Slf4j
 public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     private static final String FHIR_ID_PARAMS = "?id={id}";
+    private static final String GET_HUMAN_READABLE_ARTIFACTS = "measure/package/humanReadableArtifacts/{measureId}";
     private static final String FHIR_PUSH_MEASURE_PARAMS = "measure/pushMeasure" + FHIR_ID_PARAMS;
     private static final String FHIR_PACKAGE_MEASURE_PARAMS = "measure/package" + FHIR_ID_PARAMS;
     private static final String FHIR_ORCH_MEASURE_SRVC_PARAMS = "orchestration/measure" + FHIR_ID_PARAMS + "&conversionType={conversionType}&xmlSource={xmlSource}&vsacGrantingTicket={vsacGrantingTicket}";
@@ -117,6 +119,17 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
             }
         });
         return result;
+    }
+
+
+    @Override
+    public HumanReadableArtifacts getHumanReadableArtifacts(String measureId) {
+        Map<String, Object> uriVariables = new HashMap<>();
+        uriVariables.put("measureId",measureId);
+        return rest(fhirServicesUrl + GET_HUMAN_READABLE_ARTIFACTS
+                ,HttpMethod.GET,
+                HumanReadableArtifacts.class,
+                uriVariables );
     }
 
     private ConversionResultDto convert(String measureId, ConversionType conversionType, String vsacGrantingTicket, boolean draft) {

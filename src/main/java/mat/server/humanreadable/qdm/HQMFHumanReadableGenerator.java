@@ -1561,6 +1561,7 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 	 */
 	private static void generateTableOfContents(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) {
+		boolean isFhir = simpleXMLProcessor.getOriginalXml().contains("<usingModel>FHIR</usingModel>");
 		Element bodyElement = humanReadableHTMLDocument.body();
 		
 		bodyElement.append("<h2><a name=\"toc\">Table of Contents</a></h2>");
@@ -1576,7 +1577,7 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 		
 		Element dataCriteriaLI = tocULElement.appendElement(HTML_LI);
 		dataCriteriaLI
-		.append("<a href=\"#d1e647\">Data Criteria (QDM Data Elements)</a>");
+		.append("<a href=\"#d1e647\">Data Criteria (" + (isFhir ? "FHIR Data Requirements" : "QDM Data Elements") + ")</a>");
 		
 		Element supplementalCriteriaLI = tocULElement.appendElement(HTML_LI);
 		supplementalCriteriaLI
@@ -1601,10 +1602,10 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 	private static void generateDataCriteria(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor)
 					throws XPathExpressionException {
-		
+		boolean isFhir = simpleXMLProcessor.getOriginalXml().contains("<usingModel>FHIR</usingModel>");
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
-		.append("<h3><a name=\"d1e647\" href=\"#toc\">Data Criteria (QDM Data Elements)</a></h3>");
+		.append("<h3><a name=\"d1e647\" href=\"#toc\">Data Criteria (" + (isFhir ? "FHIR Data Requirements" : "QDM Data Elements") + ")</a></h3>");
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);

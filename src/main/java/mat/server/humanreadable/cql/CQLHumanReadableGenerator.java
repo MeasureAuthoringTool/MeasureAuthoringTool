@@ -17,16 +17,18 @@ public class CQLHumanReadableGenerator {
     @Autowired
     private Configuration freemarkerConfiguration;
 	
-	public String generate(HumanReadableModel model) throws IOException, TemplateException {
-		Map<String, HumanReadableModel> paramsMap = new HashMap<>();	
+	public String generate(HumanReadableModel model, boolean isFhir) throws IOException, TemplateException {
+		Map<String, Object> paramsMap = new HashMap<>();
 		paramsMap.put("model", model);
+		paramsMap.put("isFhir", isFhir);
 		setMeasurementPeriodForQdm(model.getMeasureInformation());
 		return FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("humanreadable/human_readable.ftl"), paramsMap);
 	}
 	
-	public String generateSinglePopulation(HumanReadablePopulationModel population) throws IOException, TemplateException {
-		Map<String, HumanReadablePopulationModel> paramsMap = new HashMap<>(); 
+	public String generateSinglePopulation(HumanReadablePopulationModel population, boolean isFhir) throws IOException, TemplateException {
+		Map<String, Object> paramsMap = new HashMap<>();
 		paramsMap.put("population", population);
+		paramsMap.put("isFhir", isFhir);
 		return FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("humanreadable/population_human_readable.ftl"), paramsMap);
 	}
 
@@ -38,8 +40,9 @@ public class CQLHumanReadableGenerator {
         }
 		HumanReadableModel model = new HumanReadableModel();
 		model.setMeasureInformation(measureInformationModel);
-		Map<String, HumanReadableModel> paramsMap = new HashMap<>();				
+		Map<String, Object> paramsMap = new HashMap<>();
 		paramsMap.put("model", model);
+		paramsMap.put("isFhir", ModelTypeHelper.isFhir(measureModel));
 		return FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("humanreadable/human_readable_measuredetails.ftl"), paramsMap);
 	}
 

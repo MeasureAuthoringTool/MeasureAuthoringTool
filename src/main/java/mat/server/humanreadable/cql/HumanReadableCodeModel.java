@@ -1,7 +1,10 @@
 package mat.server.humanreadable.cql;
 
+import lombok.NoArgsConstructor;
+
 import java.util.Objects;
 
+@NoArgsConstructor
 public class HumanReadableCodeModel implements HumanReadableTerminologyModel {
 	private String name;
 	private String oid;

@@ -132,7 +132,7 @@ public class HQMFGenerator implements Generator {
 		Node dataCritQDMVarNode = generateNarrativeItem(me, humanReadableProcessor, "Data Criteria (QDM Variables)");
 		
 		//Get narrative for Data Criteria (QDM Data Elements) section.
-		Node dataCritQDMNode = generateNarrativeItem(me, humanReadableProcessor, "Data Criteria (QDM Data Elements)");
+		Node dataCritQDMNode = generateNarrativeItem(me, humanReadableProcessor, "Data Criteria (" + (me.isFhir() ? "FHIR Data Requirements" : "QDM Data Elements") + ")");
 		
 		//Get narrative for Supplemental Data Elements section
 		Node dataCritSuppNode = generateNarrativeItem(me, humanReadableProcessor, "Supplemental Data Elements");

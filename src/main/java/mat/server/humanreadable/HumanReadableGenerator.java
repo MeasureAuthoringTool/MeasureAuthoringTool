@@ -1,29 +1,5 @@
 package mat.server.humanreadable;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import mat.client.measure.service.CQLService;
@@ -42,6 +18,8 @@ import mat.server.humanreadable.cql.HumanReadablePopulationModel;
 import mat.server.humanreadable.cql.HumanReadableTerminologyModel;
 import mat.server.humanreadable.cql.HumanReadableValuesetModel;
 import mat.server.humanreadable.qdm.HQMFHumanReadableGenerator;
+import mat.server.service.FhirMeasureRemoteCall;
+import mat.server.service.cql.HumanReadableArtifacts;
 import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.CQLUtil;
 import mat.server.util.CQLUtil.CQLArtifactHolder;
@@ -49,6 +27,29 @@ import mat.server.util.XmlProcessor;
 import mat.shared.LibHolderObject;
 import mat.shared.MatConstants;
 import mat.shared.SaveUpdateCQLResult;
+import org.apache.commons.collections.CollectionUtils;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -74,6 +75,10 @@ public class HumanReadableGenerator {
     @Autowired
     private CQLService cqlService;
 
+    @Autowired
+    private FhirMeasureRemoteCall fhirMeasureRemoteCall;
+    private Consumer<HumanReadableCodeModel> humanReadableCodeModelConsumer;
+
     public String generateHTMLForPopulationOrSubtree(String measureId, String subXML, String measureXML, CQLLibraryDAO cqlLibraryDAO) {
 
         XmlProcessor subXMLProcessor = new XmlProcessor(subXML);
@@ -89,7 +94,7 @@ public class HumanReadableGenerator {
                 HumanReadablePopulationModel population;
                 try {
                     population = getPopulationModel(measureXML, cqlNode.getParentNode());
-                    html = humanReadableGenerator.generateSinglePopulation(population);
+                    html = humanReadableGenerator.generateSinglePopulation(population,measureXML.contains("<usingModel>QDM</usingModel>"));
                 } catch (XPathExpressionException | IOException | TemplateException e) {
                     e.printStackTrace();
                 }
@@ -138,34 +143,43 @@ public class HumanReadableGenerator {
                 model.setPopulationCriterias(getPopulationCriteriaModels(processor));
                 model.setSupplementalDataElements(getSupplementalDataElements(processor));
                 model.setRiskAdjustmentVariables(getRiskAdjustmentVariables(processor));
-                model.setValuesetDataCriteriaList(getValuesetDataCriteria(processor));
-                model.setCodeDataCriteriaList(getCodeDataCriteria(processor));
-
-                List<HumanReadableTerminologyModel> valuesetTerminologyList = getValuesetTerminology(processor);
-                sortTerminologyList(valuesetTerminologyList);
-                model.setValuesetTerminologyList(valuesetTerminologyList);
-
-                List<HumanReadableTerminologyModel> codeTerminologyList = getCodeTerminology(processor);
-                sortTerminologyList(codeTerminologyList);
-                model.setCodeTerminologyList(codeTerminologyList);
-
-                model.setDefinitions(getDefinitions(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
-                model.setFunctions(getFunctions(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
-
-                List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList = new ArrayList<>();
-                valuesetAndCodeDataCriteriaList.addAll(model.getValuesetDataCriteriaList());
-                valuesetAndCodeDataCriteriaList.addAll(model.getCodeDataCriteriaList());
-                sortDataCriteriaList(valuesetAndCodeDataCriteriaList);
-                model.setValuesetAndCodeDataCriteriaList(valuesetAndCodeDataCriteriaList);
 
                 if (cqlModel.isFhir()) {
+                    // For now we are not filtering unused for FHIR.
+                    // We are adding this in as part of QDM 5.6 and then they will be the same again.
+                    model.setDefinitions(getDefinitionsFHIR(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
+                    model.setFunctions(getFunctionsFHIR(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
+
+                    updateFhirValuesetsCodesystemsDataReqs(model, measureId);
+
                     if ("decrease".equals(model.getMeasureInformation().getImprovementNotation())) {
                         model.getMeasureInformation().setImprovementNotation("Decreased score indicates improvement");
                     } else {
                         model.getMeasureInformation().setImprovementNotation("Increased score indicates improvement");
                     }
+                } else {
+                    // For QDM unused is filtered.
+                    model.setDefinitions(getDefinitionsQDM(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
+                    model.setFunctions(getFunctionsQDM(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
+
+                    List<HumanReadableTerminologyModel> valuesetTerminologyList = getValuesetTerminologyQDM(processor);
+                    sortTerminologyList(valuesetTerminologyList);
+                    model.setValuesetTerminologyList(valuesetTerminologyList);
+
+                    List<HumanReadableTerminologyModel> codeTerminologyList = getCodeTerminologyQDM(processor);
+                    sortTerminologyList(codeTerminologyList);
+                    model.setCodeTerminologyList(codeTerminologyList);
+
+                    model.setValuesetDataCriteriaList(getValuesetDataCriteria(processor));
+                    model.setCodeDataCriteriaList(getCodeDataCriteria(processor));
+
+                    List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList = new ArrayList<>();
+                    valuesetAndCodeDataCriteriaList.addAll(model.getValuesetDataCriteriaList());
+                    valuesetAndCodeDataCriteriaList.addAll(model.getCodeDataCriteriaList());
+                    sortDataCriteriaList(valuesetAndCodeDataCriteriaList);
+                    model.setValuesetAndCodeDataCriteriaList(valuesetAndCodeDataCriteriaList);
                 }
-                html = humanReadableGenerator.generate(model);
+                html = humanReadableGenerator.generate(model,cqlModel.isFhir());
             } catch (IOException | TemplateException | MappingException | MarshalException | ValidationException | XPathExpressionException e) {
                 log.error("Error in HumanReadableGenerator::generateHTMLForMeasure: " + e.getMessage(), e);
             }
@@ -278,7 +292,7 @@ public class HumanReadableGenerator {
         return signature;
     }
 
-    private List<HumanReadableExpressionModel> getDefinitions(CQLModel cqlModel, XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
+    private List<HumanReadableExpressionModel> getDefinitionsQDM(CQLModel cqlModel, XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
         List<HumanReadableExpressionModel> definitions = new ArrayList<>();
         List<String> usedDefinitions = cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions();
         List<String> definitionsList = new ArrayList<String>(usedCQLArtifactHolder.getCqlDefFromPopSet());
@@ -304,7 +318,28 @@ public class HumanReadableGenerator {
         return definitions;
     }
 
-    private List<HumanReadableExpressionModel> getFunctions(CQLModel cqlModel, XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
+    private List<HumanReadableExpressionModel> getDefinitionsFHIR(CQLModel cqlModel, XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
+        List<HumanReadableExpressionModel> definitions = new ArrayList<>();
+        cqlModel.getDefinitionList().stream().
+                sorted((d1, d2) -> String.CASE_INSENSITIVE_ORDER.compare(d1.getName(), d2.getName())).
+                forEach(d -> {
+                    String name = d.getName();
+                    String statementIdentifier = d.getName();
+                    XmlProcessor currentProcessor = parentLibraryProcessor;
+                    String[] arr = name.split(Pattern.quote("|"));
+                    if (arr.length == 3) {
+                        name = arr[2];
+                        statementIdentifier = arr[1] + "." + arr[2];
+                        currentProcessor = includedLibraryXmlProcessors.get(arr[0] + "|" + arr[1]);
+                    }
+                    HumanReadableExpressionModel expression = new HumanReadableExpressionModel(statementIdentifier,
+                            getLogicStringFromXMLByName(name, CQLDEFINITION, currentProcessor));
+                    definitions.add(expression);
+                });
+        return definitions;
+    }
+
+    private List<HumanReadableExpressionModel> getFunctionsQDM(CQLModel cqlModel, XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
         List<HumanReadableExpressionModel> functions = new ArrayList<>();
         List<String> usedFunctions = cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions();
         List<String> functionsList = new ArrayList<String>(usedCQLArtifactHolder.getCqlFuncFromPopSet());
@@ -329,6 +364,33 @@ public class HumanReadableGenerator {
             functions.add(expression);
         }
 
+        return functions;
+    }
+
+    private List<HumanReadableExpressionModel> getFunctionsFHIR(CQLModel cqlModel,
+                                                                XmlProcessor parentLibraryProcessor,
+                                                                Map<String, XmlProcessor> includedLibraryXmlProcessors,
+                                                                SaveUpdateCQLResult cqlResult,
+                                                                CQLArtifactHolder usedCQLArtifactHolder) {
+        List<HumanReadableExpressionModel> functions = new ArrayList<>();
+        cqlModel.getCqlFunctions().stream().
+                sorted((d1, d2) -> String.CASE_INSENSITIVE_ORDER.compare(d1.getName(), d2.getName())).
+                forEach(f -> {
+                    String name = f.getName();
+                    String statementIdentifier = name;
+                    XmlProcessor currentProcessor = parentLibraryProcessor;
+                    String[] arr = name.split(Pattern.quote("|"));
+                    if (arr.length == 3) {
+                        name = arr[2];
+                        statementIdentifier = arr[1] + "." + arr[2];
+                        currentProcessor = includedLibraryXmlProcessors.get(arr[0] + "|" + arr[1]);
+                    }
+
+                    HumanReadableExpressionModel expression = new HumanReadableExpressionModel(
+                            statementIdentifier + getCQLFunctionSignature(name, currentProcessor),
+                            getLogicStringFromXMLByName(name, CQLFUNCTION, currentProcessor));
+                    functions.add(expression);
+                });
         return functions;
     }
 
@@ -424,7 +486,7 @@ public class HumanReadableGenerator {
         return codes;
     }
 
-    private List<HumanReadableTerminologyModel> getValuesetTerminology(XmlProcessor processor) throws XPathExpressionException {
+    private List<HumanReadableTerminologyModel> getValuesetTerminologyQDM(XmlProcessor processor) throws XPathExpressionException {
         Set<HumanReadableValuesetModel> valuesets = new HashSet<>();
         NodeList elements = processor.findNodeList(processor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code=\"false\"]");
 
@@ -442,7 +504,7 @@ public class HumanReadableGenerator {
         return valuesetList;
     }
 
-    private List<HumanReadableTerminologyModel> getCodeTerminology(XmlProcessor processor) throws XPathExpressionException {
+    private List<HumanReadableTerminologyModel> getCodeTerminologyQDM(XmlProcessor processor) throws XPathExpressionException {
         Set<HumanReadableCodeModel> codes = new HashSet<>();
         NodeList elements = processor.findNodeList(processor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code=\"true\"]");
         for (int i = 0; i < elements.getLength(); i++) {
@@ -469,6 +531,60 @@ public class HumanReadableGenerator {
         List<HumanReadableTerminologyModel> codesList = new ArrayList<>(codes);
         codesList.sort(Comparator.comparing(HumanReadableTerminologyModel::getTerminologyDisplay));
         return codesList;
+    }
+
+    private void updateFhirValuesetsCodesystemsDataReqs(HumanReadableModel model, String measureId) throws XPathExpressionException {
+        //Retrieve from microservices.
+        HumanReadableArtifacts artifacts = fhirMeasureRemoteCall.getHumanReadableArtifacts(measureId);
+
+        model.setValuesetTerminologyList(new ArrayList<>());
+        model.setCodeTerminologyList(new ArrayList<>());
+        model.setValuesetDataCriteriaList(new ArrayList<>());
+        model.setCodeDataCriteriaList(new ArrayList<>());
+
+        //Add to lists to regenerate display fields in constructor.
+        artifacts.getTerminologyCodeModels().forEach(cm ->
+                model.getCodeTerminologyList().add(new HumanReadableCodeModel(cm.getName(),
+                        cm.getOid(),
+                        cm.getCodesystemName(),
+                        cm.getIsCodesystemVersionIncluded(),
+                        cm.getCodesystemVersion(),
+                        cm.getDatatype()))
+        );
+        artifacts.getTerminologyValueSetModels().forEach(vsm ->
+                model.getValuesetTerminologyList().add(new HumanReadableValuesetModel(vsm.getName(),
+                        vsm.getOid(),
+                        vsm.getVersion(),
+                        vsm.getDatatype()))
+        );
+        artifacts.getDataReqCodes().forEach(drc ->
+                model.getCodeDataCriteriaList().add(new HumanReadableCodeModel(drc.getName(),
+                        drc.getOid(),
+                        drc.getCodesystemName(),
+                        drc.getIsCodesystemVersionIncluded(),
+                        drc.getCodesystemVersion(),
+                        drc.getDatatype()))
+        );
+        artifacts.getDataReqValueSets().forEach(vsm ->
+                model.getValuesetDataCriteriaList().add(new HumanReadableValuesetModel(vsm.getName(),
+                        vsm.getOid(),
+                        vsm.getVersion(),
+                        vsm.getDatatype()))
+        );
+
+        //Update combined data criteria.
+        model.setValuesetAndCodeDataCriteriaList(new ArrayList<>());
+        model.getValuesetAndCodeDataCriteriaList().addAll(model.getValuesetDataCriteriaList());
+        model.getValuesetAndCodeDataCriteriaList().addAll(model.getCodeDataCriteriaList());
+
+        //Sort as QDM did.
+        sortTerminologyList(model.getValuesetTerminologyList());
+        sortTerminologyList(model.getCodeTerminologyList());
+
+        model.getCodeDataCriteriaList().sort(Comparator.comparing(HumanReadableCodeModel::getDataCriteriaDisplay));
+        model.getValuesetDataCriteriaList().sort(Comparator.comparing(HumanReadableValuesetModel::getDataCriteriaDisplay));
+
+        sortDataCriteriaList(model.getValuesetAndCodeDataCriteriaList());
     }
 
     private HumanReadableExpressionModel getExpressionModel(XmlProcessor processor, Node sde)

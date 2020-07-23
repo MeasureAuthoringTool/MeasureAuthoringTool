@@ -222,4 +222,9 @@ public class MeasureExport {
 	public void setHumanReadableProcessor(XmlProcessor humanReadableProcessor) {
 		this.humanReadableProcessor = humanReadableProcessor;
 	}
+
+	@Transient
+	public boolean isFhir() {
+		return getFhirIncludedLibsJson() != null;
+	}
 }

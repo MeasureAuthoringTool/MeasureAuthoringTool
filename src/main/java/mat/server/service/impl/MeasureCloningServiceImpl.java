@@ -176,8 +176,8 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             clonedMeasure.setMeasureModel(newMeasureModel);
             clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName());
             if (creatingFhir) {
-                clonedMeasure.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
-                clonedMeasure.setMeasurementPeriodTo(getNextCalenderYearToDate());
+                clonedMeasure.setMeasurementPeriodFrom(measure.getMeasurementPeriodFrom());
+                clonedMeasure.setMeasurementPeriodTo(measure.getMeasurementPeriodTo());
                 clonedMeasure.setFhirVersion(propertiesService.getFhirVersion());
             } else {
                 clonedMeasure.setMeasurementPeriodFrom(getTimestampFromDateString(currentDetails.getMeasFromPeriod()));
@@ -226,33 +226,6 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             logger.error(e.getMessage(), e);
             throw new MatException(e.getMessage());
         }
-    }
-
-
-    private Timestamp getNextCalenderYearFromDate() {
-        Timestamp timestamp = null;
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-            int year = Calendar.getInstance().get(Calendar.YEAR);
-            Date fromDate = dateFormat.parse("01/01/" + ++year);
-            timestamp = new java.sql.Timestamp(fromDate.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return timestamp;
-    }
-
-    private Timestamp getNextCalenderYearToDate() {
-        Timestamp timestamp = null;
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-            int year = Calendar.getInstance().get(Calendar.YEAR);
-            Date toDate = dateFormat.parse("12/31/" + ++year);
-            timestamp = new java.sql.Timestamp(toDate.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return timestamp;
     }
 
     private void createMeasureXmlAndPersist(ManageMeasureDetailModel currentDetails, boolean creatingDraft, boolean creatingFhir, Measure measure, Measure clonedMeasure, String originalXml) throws MatException {

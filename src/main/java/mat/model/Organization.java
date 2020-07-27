@@ -11,9 +11,11 @@ import javax.persistence.UniqueConstraint;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "ORGANIZATION", uniqueConstraints = @UniqueConstraint(columnNames = "ORG_OID"))
-public class Organization implements IsSerializable{
+public class Organization implements IsSerializable, Serializable {
 	private Long id;
 	private String organizationName;
 	private String organizationOID;

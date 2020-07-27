@@ -16,9 +16,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.model.Organization;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "MEASURE_DEVELOPER_ASSOCIATION")
-public class MeasureDeveloperAssociation implements IsSerializable {
+public class MeasureDeveloperAssociation implements IsSerializable, Serializable {
 
 	private Integer id;
 	private Measure measure;

@@ -43,6 +43,7 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet implem
         result.activeSessionId = user.getSessionId();
         result.organizationName = user.getOrganizationName();
         result.harpId = user.getHarpId();
+        result.isFhirAccessible = user.getFhirFlag();
         UserPreference userPreference = user.getUserPreference();
         UserPreferenceDTO userPreferenceDTO = new UserPreferenceDTO();
         if (userPreference != null) {

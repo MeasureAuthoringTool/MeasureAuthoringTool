@@ -23,5 +23,6 @@ public class CurrentUserInfo implements IsSerializable {
     public String organizationName;
     public List<ShortUserInfo> users = Collections.emptyList();
     public String harpId;
+    public boolean isFhirAccessible;
 
 }

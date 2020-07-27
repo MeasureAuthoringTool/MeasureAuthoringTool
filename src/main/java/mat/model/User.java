@@ -89,6 +89,8 @@ public class User {
 
     private List<CQLLibraryHistory> cqlLibraryHistory;
 
+    private boolean fhirFlag;
+
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -425,6 +427,15 @@ public class User {
 
     public void setHarpId(String harpId) {
         this.harpId = harpId;
+    }
+
+    @Column(name = "FHIR_FLAG")
+    public boolean getFhirFlag() {
+        return fhirFlag;
+    }
+
+    public void setFhirFlag(boolean fhirFlag) {
+        this.fhirFlag = fhirFlag;
     }
 
 }

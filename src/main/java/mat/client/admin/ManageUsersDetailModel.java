@@ -122,6 +122,8 @@ public class ManageUsersDetailModel implements IsSerializable, BaseModel {
      */
     private boolean beingRevoked = false;
 
+    private boolean isFhirAccessible;
+
     public boolean isBeingActivated() {
         return beingActivated;
     }
@@ -599,5 +601,13 @@ public class ManageUsersDetailModel implements IsSerializable, BaseModel {
 
     public void setLastSuccessFullLoginDateTimeMessage(String lastSuccessFullLoginDateTimeMessage) {
         this.lastSuccessFullLoginDateTimeMessage = lastSuccessFullLoginDateTimeMessage;
+    }
+
+    public boolean isFhirAccessible() {
+        return isFhirAccessible;
+    }
+
+    public void setFhirAccessible(boolean fhirAccessible) {
+        isFhirAccessible = fhirAccessible;
     }
 }

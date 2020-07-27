@@ -1546,6 +1546,11 @@ public class MatContext implements IsSerializable {
         this.featureFlagMap = featureFlagMap;
     }
 
+    //returns all feature flags
+    public Map<String, Boolean> getFeatureFlags() {
+        return featureFlagMap;
+    }
+
     // returns if specific feature flag is on/off
     public boolean getFeatureFlagStatus(String flag) {
         return featureFlagMap.getOrDefault(flag, false);

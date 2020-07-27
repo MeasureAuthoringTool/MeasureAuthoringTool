@@ -657,6 +657,7 @@ public class UserServiceImpl implements UserService {
         user.setPhoneNumber(model.getPhoneNumber());
         user.setStatus(getStatusObject(model.isActive()));
         user.setSecurityRole(getRole(model.getRole()));
+        user.setFhirFlag(model.isFhirAccessible());
 
         if (model.isActive()) {
             Organization organization = organizationDAO.find(Long.parseLong(model.getOrganizationId()));

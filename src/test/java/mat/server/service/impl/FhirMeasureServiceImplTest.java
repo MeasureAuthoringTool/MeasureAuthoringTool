@@ -7,6 +7,7 @@ import java.util.Collections;
 import javax.servlet.http.HttpSession;
 
 import mat.model.clause.MeasureDetails;
+import mat.server.service.MeasureAuditService;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,6 +88,9 @@ public class FhirMeasureServiceImplTest {
 
     @Mock
     private FhirCqlParser cqlParser;
+
+    @Mock
+    private MeasureAuditService auditService;
 
     @InjectMocks
     private FhirMeasureServiceImpl service;

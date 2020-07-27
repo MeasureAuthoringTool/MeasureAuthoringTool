@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.user.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
@@ -169,6 +170,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 
     private MessageAlert informationMessage = new InformationMessageAlert();
 
+    private CheckBox fhirAccessCheckBox = new CheckBox("This user has access to FHIR");
 
     /**
      * Instantiates a new manage users detail view.
@@ -390,6 +392,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
         fieldSet.add(oidGroup);
         fieldSet.add(statusGroup);
         fieldSet.add(reactivateAccountButtonGroup);
+        fieldSet.add(fhirAccessCheckBox);
 
         centerForm.add(fieldSet);
         return centerForm;
@@ -650,6 +653,10 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
         return organizationListBox;
     }
 
+    @Override
+    public CheckBox getFhirAccessCheckBox() {
+        return fhirAccessCheckBox;
+    }
     /**
      * Gets the organizations map.
      *

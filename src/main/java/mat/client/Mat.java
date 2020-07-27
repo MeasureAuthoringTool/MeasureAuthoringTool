@@ -72,6 +72,7 @@ import mat.client.umls.ManageUmlsPresenter;
 import mat.client.umls.UmlsLoginDialogBox;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.client.util.ClientConstants;
+import mat.client.util.FeatureFlagConstant;
 import mat.shared.ConstantMessages;
 import mat.shared.HarpConstants;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
@@ -164,6 +165,13 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                                 switchRole(ClientConstants.SUPER_USER_ROLE);
                             });
                         }
+
+                        if (!MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
+                            Map<String, Boolean> featureFlagMap = MatContext.get().getFeatureFlags();
+                            featureFlagMap.put(FeatureFlagConstant.MAT_ON_FHIR, MatContext.get().getCurrentUserInfo().isFhirAccessible);
+                            MatContext.get().setFeatureFlags(featureFlagMap);
+                        }
+
                         loadMatWidgets(isAlreadySignedIn);
                     }
                 }

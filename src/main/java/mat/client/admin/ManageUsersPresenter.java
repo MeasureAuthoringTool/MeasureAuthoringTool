@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.user.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -641,6 +642,7 @@ public class ManageUsersPresenter implements MatPresenter {
             detailDisplay.setShowRevokedStatus(false);
             detailDisplay.setShowAdminNotes(false);
         }
+        detailDisplay.getFhirAccessCheckBox().setValue(currentDetails.isFhirAccessible());
         detailDisplay.setUserIsActiveEditable(currentDetails.isCurrentUserCanChangeAccountStatus());
         detailDisplay.setShowUnlockOption(currentDetails.isCurrentUserCanUnlock() && currentDetails.isActive());
         detailDisplay.getRole().setValue(currentDetails.getRole());
@@ -669,6 +671,7 @@ public class ManageUsersPresenter implements MatPresenter {
         updatedDetails.setOid(detailDisplay.getOid().getValue());
         String orgId = detailDisplay.getOrganizationListBox().getValue();
         updatedDetails.setOrganizationId(orgId);
+        updatedDetails.setFhirAccessible(detailDisplay.getFhirAccessCheckBox().getValue());
         Result organization = detailDisplay.getOrganizationsMap().get(orgId);
         if (organization != null) {
             updatedDetails.setOrganization(organization.getOrgName());
@@ -927,6 +930,8 @@ public class ManageUsersPresenter implements MatPresenter {
          * @return the organization list box
          */
         ListBoxMVP getOrganizationListBox();
+
+        CheckBox getFhirAccessCheckBox();
 
         /**
          * Populate organizations.

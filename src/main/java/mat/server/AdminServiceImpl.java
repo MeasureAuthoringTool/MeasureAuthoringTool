@@ -126,6 +126,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
         model.setCurrentUserCanUnlock(v);
         model.setPasswordExpirationMsg(getUserPwdCreationMsg(user.getLoginId()));
         model.setLastSuccessFullLoginDateTimeMessage(getUserSuccessfulLogonMsg(user.getSignInDate()));
+        model.setFhirAccessible(user.getFhirFlag());
         return model;
     }
 

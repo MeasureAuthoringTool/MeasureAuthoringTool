@@ -3,10 +3,12 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-
-    <changeSet author="mat_dev_user" id="1" context="prod">
-        <sql>
-            ALTER TABLE USER ADD COLUMN FHIR_FLAG BOOLEAN NOT NULL;
-        </sql>
+    <changeSet author="Mat-dev" id="1" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="USER" columnName="FHIR_FLAG"/></not>
+        </preConditions>
+        <addColumn tableName="USER">
+            <column name="FHIR_FLAG" type="boolean"/>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

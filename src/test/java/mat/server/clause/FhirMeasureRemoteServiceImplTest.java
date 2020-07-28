@@ -36,7 +36,6 @@ public class FhirMeasureRemoteServiceImplTest {
     @InjectMocks
     private FhirMeasureRemoteServiceImpl service;
 
-    private VsacTicketInformation ticketInfo;
     private ManageMeasureSearchModel.Result searchModel = new ManageMeasureSearchModel.Result();
 
     @BeforeEach
@@ -46,7 +45,7 @@ public class FhirMeasureRemoteServiceImplTest {
         Whitebox.setInternalState(service, "perThreadRequest", threadLocal);
         Mockito.when(httpServletRequest.getSession()).thenReturn(httpSession);
         Mockito.when(httpSession.getId()).thenReturn("sessionId");
-        ticketInfo = new VsacTicketInformation();
+        VsacTicketInformation ticketInfo = new VsacTicketInformation();
         ticketInfo.setTicket("vsacGrantingTicket");
         Mockito.when(vsacApiService.getTicketGrantingTicket(eq("sessionId"))).thenReturn(ticketInfo);
     }

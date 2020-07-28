@@ -83,16 +83,21 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
     @Override
     public FhirConvertResultResponse convert(ManageMeasureSearchModel.Result sourceMeasure,
-                                             String vsacGrantingTicket,
-                                             String loggedinUserId) throws MatException {
+                                                    String vsacGrantingTicket,
+                                                    String loggedinUserId,
+                                                    boolean isUpdatingMatDB) throws MatException {
         if (!sourceMeasure.isFhirConvertible()) {
             throw new MatException("Measure cannot be converted to FHIR");
         }
         FhirConvertResultResponse fhirConvertResultResponse = new FhirConvertResultResponse();
-        measureLibraryService.recordRecentMeasureActivity(sourceMeasure.getId(), loggedinUserId);
+        if (isUpdatingMatDB) {
+            measureLibraryService.recordRecentMeasureActivity(sourceMeasure.getId(), loggedinUserId);
+        }
 
         ManageMeasureDetailModel sourceMeasureDetails = loadMeasureAsDetailsForCloning(sourceMeasure);
-        deleteFhirMeasuresInSet(sourceMeasureDetails.getMeasureSetId());
+        if (isUpdatingMatDB) {
+            deleteFhirMeasuresInSet(sourceMeasureDetails.getMeasureSetId());
+        }
 
         ConversionResultDto conversionResult = fhirMeasureRemote.convert(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
         Optional<String> fhirCqlOpt = getFhirCql(conversionResult);
@@ -104,7 +109,10 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
             // If there is no FHIR CQL, then we don't persist the measure. FHIR measure cannot be created.
             throw new MatException("Your measure cannot be converted to FHIR. Outcome: " + validationStatus.getOutcome() + " Error Reason: " + validationStatus.getErrorReason());
         } else {
-            persistFhirMeasure(loggedinUserId, fhirConvertResultResponse, sourceMeasureDetails, fhirCqlOpt.get());
+            fhirConvertResultResponse.setFhirCql(fhirCqlOpt.get());
+            if (isUpdatingMatDB) {
+                persistFhirMeasure(loggedinUserId, fhirConvertResultResponse, sourceMeasureDetails, fhirCqlOpt.get());
+            }
         }
 
         return fhirConvertResultResponse;

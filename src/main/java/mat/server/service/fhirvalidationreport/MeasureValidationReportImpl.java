@@ -3,10 +3,18 @@ package mat.server.service.fhirvalidationreport;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.shared.MatException;
+import mat.client.shared.MatRuntimeException;
 import mat.dao.clause.MeasureDAO;
+import mat.dao.clause.MeasureXMLDAO;
 import mat.dto.fhirconversion.FhirValidationResult;
 import mat.model.clause.Measure;
 import mat.model.clause.ModelTypeHelper;
+import mat.model.cql.CQLModel;
+import mat.server.CQLUtilityClass;
+import mat.server.LoggedInUserUtil;
+import mat.server.service.FhirMeasureService;
 import mat.server.service.cql.FhirCqlParser;
 import mat.server.service.cql.LibraryErrors;
 import mat.server.service.cql.MatXmlResponse;
@@ -33,15 +41,22 @@ public class MeasureValidationReportImpl implements FhirValidationReport {
 
     private final Configuration freemarkerConfiguration;
     private final MeasureDAO measureDAO;
+    private final MeasureXMLDAO measureXmlDAO;
     private final FhirCqlParser fhirCqlParser;
+    private final FhirMeasureService measureService;
 
     @Value("${mat.measure.current.release.version}")
     private String currentMatVersion;
 
-    public MeasureValidationReportImpl(Configuration freemarkerConfiguration, MeasureDAO measureDAO, FhirCqlParser fhirCqlParser) {
+    public MeasureValidationReportImpl(Configuration freemarkerConfiguration,
+                                       MeasureDAO measureDAO,
+                                       MeasureXMLDAO measureXmlDAO, FhirCqlParser fhirCqlParser,
+                                       FhirMeasureService measureService) {
         this.freemarkerConfiguration = freemarkerConfiguration;
         this.measureDAO = measureDAO;
+        this.measureXmlDAO = measureXmlDAO;
         this.fhirCqlParser = fhirCqlParser;
+        this.measureService = measureService;
     }
 
     /**
@@ -58,9 +73,28 @@ public class MeasureValidationReportImpl implements FhirValidationReport {
         MatXmlResponse parseResponse = null;
         Measure measure = measureDAO.getMeasureByMeasureId(measureId);
         if (measure != null) {
-            parseResponse = fhirCqlParser.parseFromMeasure(measure.getId()); //measureId, vsacGrantingTicket, measure.isDraft());
+            if (measure.isFhirMeasure()) {
+                //If it is a FHIR measure just do validation.
+                parseResponse = fhirCqlParser.parseFromMeasure(measure.getId()); //measureId, vsacGrantingTicket, measure.isDraft());
+            } else {
+                //If it is a QDM measure we have to do a conversion without storing in the DB then run validation.
+                ManageMeasureSearchModel.Result result = new ManageMeasureSearchModel.Result();
+                result.setFhirConvertible(true);
+                result.setId(measureId);
+                try {
+                    var fhirResult = measureService.convert(result,
+                            vsacGrantingTicket,
+                            LoggedInUserUtil.getLoggedInUser(),
+                            false);
+                    CQLModel model = CQLUtilityClass.getCQLModelFromXML(measureXmlDAO.findForMeasure(measureId).getMeasureXMLAsString());
+                    parseResponse = fhirCqlParser.parse(fhirResult.getFhirCql(),
+                            model);
+                } catch (MatException e) {
+                    log.error("Error running measureService.convert",e);
+                    throw new MatRuntimeException(e);
+                }
+            }
         }
-
         return generateValidationReport(measure, parseResponse);
     }
 

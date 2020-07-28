@@ -8,6 +8,7 @@ public class FhirConvertResultResponse implements IsSerializable {
 
     private FhirValidationStatus validationStatus = new FhirValidationStatus();
     private String fhirMeasureId;
+    private String fhirCql;
 
     public FhirValidationStatus getValidationStatus() {
         return validationStatus;
@@ -23,5 +24,13 @@ public class FhirConvertResultResponse implements IsSerializable {
 
     public void setFhirMeasureId(String fhirMeasureId) {
         this.fhirMeasureId = fhirMeasureId;
+    }
+
+    public String getFhirCql() {
+        return fhirCql;
+    }
+
+    public void setFhirCql(String fhirCql) {
+        this.fhirCql = fhirCql;
     }
 }

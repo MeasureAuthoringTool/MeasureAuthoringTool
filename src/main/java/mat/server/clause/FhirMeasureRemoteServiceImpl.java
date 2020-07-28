@@ -44,7 +44,10 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
             throw new MatException("Cannot get a granting ticket");
         }
         try {
-            return fhirMeasureService.convert(sourceMeasure, vsacTicketInformation.getTicket(), LoggedInUserUtil.getLoggedInUser());
+            return fhirMeasureService.convert(sourceMeasure,
+                    vsacTicketInformation.getTicket(),
+                    LoggedInUserUtil.getLoggedInUser(),
+                    true);
         } catch (MatException e) {
             logger.error("Error calling fhirMeasureService.convert", e);
             throw e;

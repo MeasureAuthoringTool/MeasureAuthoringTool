@@ -21,6 +21,8 @@ import mat.client.umls.service.VsacTicketInformation;
 import mat.server.service.FhirMeasureService;
 import mat.server.service.VSACApiService;
 
+import static org.mockito.ArgumentMatchers.eq;
+
 @ExtendWith(MockitoExtension.class)
 public class FhirMeasureRemoteServiceImplTest {
     @Mock
@@ -34,6 +36,8 @@ public class FhirMeasureRemoteServiceImplTest {
     @InjectMocks
     private FhirMeasureRemoteServiceImpl service;
 
+    private ManageMeasureSearchModel.Result searchModel = new ManageMeasureSearchModel.Result();
+
     @BeforeEach
     public void setUp() {
         ThreadLocal<HttpServletRequest> threadLocal = new ThreadLocal<>();
@@ -43,41 +47,37 @@ public class FhirMeasureRemoteServiceImplTest {
         Mockito.when(httpSession.getId()).thenReturn("sessionId");
         VsacTicketInformation ticketInfo = new VsacTicketInformation();
         ticketInfo.setTicket("vsacGrantingTicket");
-        Mockito.when(vsacApiService.getTicketGrantingTicket(Mockito.eq("sessionId"))).thenReturn(ticketInfo);
+        Mockito.when(vsacApiService.getTicketGrantingTicket(eq("sessionId"))).thenReturn(ticketInfo);
     }
 
     @AfterEach
     public void tearDown() {
-        Mockito.verify(vsacApiService, Mockito.times(1)).getTicketGrantingTicket(Mockito.eq("sessionId"));
+        Mockito.verify(vsacApiService, Mockito.times(1)).getTicketGrantingTicket(eq("sessionId"));
     }
 
     @Test
     public void testResult() throws MatException {
         FhirConvertResultResponse expectedResponse = new FhirConvertResultResponse();
-        Mockito.when(fhirMeasureService.convert(Mockito.any(ManageMeasureSearchModel.Result.class), Mockito.anyString(), Mockito.any())).thenReturn(expectedResponse);
-        FhirConvertResultResponse result = service.convert(new ManageMeasureSearchModel.Result());
+        Mockito.when(fhirMeasureService.convert(eq(searchModel), eq("vsacGrantingTicket"), eq("LoggedInUser"), eq(true))).thenReturn(expectedResponse);
+        FhirConvertResultResponse result = service.convert(searchModel);
         Assertions.assertNotNull(result);
-        Mockito.verify(fhirMeasureService, Mockito.times(1)).convert(Mockito.any(ManageMeasureSearchModel.Result.class), Mockito.anyString(), Mockito.any());
+        Mockito.verify(fhirMeasureService, Mockito.times(1)).convert(eq(searchModel), eq("vsacGrantingTicket"), eq("LoggedInUser"), eq(true));
     }
 
     @Test
     public void testMatException() throws MatException {
-        Mockito.when(fhirMeasureService.convert(Mockito.any(ManageMeasureSearchModel.Result.class), Mockito.anyString(), Mockito.any())).thenThrow(new MatException("Expected failure"));
-        Exception ex = Assertions.assertThrows(MatException.class, () -> {
-            service.convert(new ManageMeasureSearchModel.Result());
-        });
+        Mockito.when(fhirMeasureService.convert(eq(searchModel), eq("vsacGrantingTicket"), eq("LoggedInUser"), eq(true))).thenThrow(new MatException("Expected failure"));
+        Exception ex = Assertions.assertThrows(MatException.class, () -> service.convert(searchModel));
         Assertions.assertEquals("Expected failure", ex.getMessage());
-        Mockito.verify(fhirMeasureService, Mockito.times(1)).convert(Mockito.any(ManageMeasureSearchModel.Result.class), Mockito.anyString(), Mockito.any());
+        Mockito.verify(fhirMeasureService, Mockito.times(1)).convert(eq(searchModel), eq("vsacGrantingTicket"), eq("LoggedInUser"), eq(true));
     }
 
     @Test
     public void testMatExceptionOnOtherException() throws MatException {
-        Mockito.when(fhirMeasureService.convert(Mockito.any(ManageMeasureSearchModel.Result.class), Mockito.anyString(), Mockito.any())).thenThrow(new IllegalArgumentException("Expected failure"));
-        Exception ex = Assertions.assertThrows(MatException.class, () -> {
-            service.convert(new ManageMeasureSearchModel.Result());
-        });
+        Mockito.when(fhirMeasureService.convert(eq(searchModel), eq("vsacGrantingTicket"), eq("LoggedInUser"), eq(true))).thenThrow(new MatException("Expected failure"));
+        Exception ex = Assertions.assertThrows(MatException.class, () -> service.convert(new ManageMeasureSearchModel.Result()));
         Assertions.assertEquals("Expected failure", ex.getMessage());
-        Mockito.verify(fhirMeasureService, Mockito.times(1)).convert(Mockito.any(ManageMeasureSearchModel.Result.class), Mockito.anyString(), Mockito.any());
+        Mockito.verify(fhirMeasureService, Mockito.times(1)).convert(eq(searchModel), eq("vsacGrantingTicket"), eq("LoggedInUser"), eq(true));
     }
 
 }

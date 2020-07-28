@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class GenerateCommonFhirLibSql {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/MAT_APP_BLANK?serverTimezone=UTC&characterEncoding=latin1&useConfigs=maxPerformance";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/local-prd-sbx-dump?serverTimezone=UTC&characterEncoding=latin1&useConfigs=maxPerformance";
     private static final String DB_USER = "root";
     private static final String DB_P = "password";
 

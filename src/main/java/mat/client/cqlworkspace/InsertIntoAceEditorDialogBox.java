@@ -613,11 +613,13 @@ public class InsertIntoAceEditorDialogBox {
     }
 
     private static void showAttributesDialogBox(String modelType) {
-        if (ModelTypeHelper.FHIR.equals(modelType) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_DT)) {
-            InsertFhirAttributeBuilderDialogBox.showAttributesDialogBox(curEditor);
-        } else {
+
+        //Todo for MAT 2.0 Attribute Lightbox
+//        if (ModelTypeHelper.FHIR.equals(modelType) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_DT)) {
+//            InsertFhirAttributeBuilderDialogBox.showAttributesDialogBox(curEditor);
+//        } else {
             InsertAttributeBuilderDialogBox.showAttributesDialogBox(curEditor, modelType);
-        }
+//        }
     }
 
     private static void alertUserItemNameFieldEnabled(final ListBoxMVP listAllItemNames) {

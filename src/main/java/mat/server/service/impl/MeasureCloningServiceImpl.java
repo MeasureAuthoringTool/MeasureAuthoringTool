@@ -176,8 +176,13 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             clonedMeasure.setMeasureModel(newMeasureModel);
             clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName());
             if (creatingFhir) {
-                clonedMeasure.setMeasurementPeriodFrom(measure.getMeasurementPeriodFrom());
-                clonedMeasure.setMeasurementPeriodTo(measure.getMeasurementPeriodTo());
+                if (measure.getMeasurementPeriodFrom() == null || measure.getMeasurementPeriodTo() == null) {
+                    clonedMeasure.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
+                    clonedMeasure.setMeasurementPeriodTo(getNextCalenderYearToDate());
+                } else {
+                    clonedMeasure.setMeasurementPeriodFrom(measure.getMeasurementPeriodFrom());
+                    clonedMeasure.setMeasurementPeriodTo(measure.getMeasurementPeriodTo());
+                }
                 clonedMeasure.setFhirVersion(propertiesService.getFhirVersion());
             } else {
                 clonedMeasure.setMeasurementPeriodFrom(getTimestampFromDateString(currentDetails.getMeasFromPeriod()));
@@ -941,6 +946,31 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         } catch (XPathExpressionException e) {
             logger.error(e.getMessage());
         }
+    }
 
+    private Timestamp getNextCalenderYearFromDate() {
+        Timestamp timestamp = null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            Date fromDate = dateFormat.parse("01/01/" + ++year);
+            timestamp = new java.sql.Timestamp(fromDate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return timestamp;
+    }
+
+    private Timestamp getNextCalenderYearToDate() {
+        Timestamp timestamp = null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            Date fromDate = dateFormat.parse("12/31/" + ++year);
+            timestamp = new java.sql.Timestamp(fromDate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return timestamp;
     }
 }

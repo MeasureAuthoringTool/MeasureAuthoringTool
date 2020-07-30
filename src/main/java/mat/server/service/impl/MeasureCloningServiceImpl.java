@@ -176,8 +176,13 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             clonedMeasure.setMeasureModel(newMeasureModel);
             clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName());
             if (creatingFhir) {
-                clonedMeasure.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
-                clonedMeasure.setMeasurementPeriodTo(getNextCalenderYearToDate());
+                if (measure.getMeasurementPeriodFrom() == null || measure.getMeasurementPeriodTo() == null) {
+                    clonedMeasure.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
+                    clonedMeasure.setMeasurementPeriodTo(getNextCalenderYearToDate());
+                } else {
+                    clonedMeasure.setMeasurementPeriodFrom(measure.getMeasurementPeriodFrom());
+                    clonedMeasure.setMeasurementPeriodTo(measure.getMeasurementPeriodTo());
+                }
                 clonedMeasure.setFhirVersion(propertiesService.getFhirVersion());
             } else {
                 clonedMeasure.setMeasurementPeriodFrom(getTimestampFromDateString(currentDetails.getMeasFromPeriod()));

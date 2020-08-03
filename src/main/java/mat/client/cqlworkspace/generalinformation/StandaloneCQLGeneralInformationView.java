@@ -123,11 +123,12 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         usingModeLabel.setTitle("Using Model");
         usingModeLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         usingModeLabel.setId("usingModeLabel_Label");
-        usingModeLabel.setWidth(PIXEL_150);
+        usingModeLabel.setWidth("200px");
         usingModeLabel.setFor("usingModelValue_TextBox");
 
         usingModelTextBox.getElement().setAttribute(STYLE, MARGIN_STYLE);
         usingModelTextBox.getElement().setId("usingModelValue_TextBox");
+        usingModelTextBox.setWidth("200px");
         usingModelTextBox.setReadOnly(true);
 
         usingModelGroup.add(usingModeLabel);
@@ -138,11 +139,12 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         modelVersionLabel.setTitle("Model Version");
         modelVersionLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
         modelVersionLabel.getElement().setId("modelVersionLabel_Label");
-        modelVersionLabel.setWidth(PIXEL_150);
+        modelVersionLabel.setWidth("200px");
         modelVersionLabel.setFor("modelVersionValue_TextBox");
 
-        modelVersionTextBox.getElement().setAttribute(STYLE, "margin-left:15px;width:250px;height:32px;");
+        modelVersionTextBox.getElement().setAttribute(STYLE, "margin-left:15px;height:32px;");
         modelVersionTextBox.getElement().setId("modelVersionValue_TextBox");
+        modelVersionTextBox.setWidth("200px");
         modelVersionTextBox.setReadOnly(true);
 
         modelVersionGroup.add(modelVersionLabel);

@@ -1,11 +1,7 @@
 package mat.client.cqlworkspace;
 
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.cqlworkspace.codes.CQLCodesView;
 import mat.client.cqlworkspace.components.CQLComponentLibraryView;
@@ -16,6 +12,8 @@ import mat.client.cqlworkspace.includedlibrary.CQLIncludeLibraryView;
 import mat.client.cqlworkspace.parameters.CQLParametersView;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetView;
 import mat.client.shared.MessagePanel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 public interface CQLWorkspaceView {
 	public void hideAceEditorAutoCompletePopUp();
@@ -32,7 +30,6 @@ public interface CQLWorkspaceView {
 	public CQLAppliedValueSetView getValueSetView();
 	public CQLCodesView getCodesView();
 	public CQLParametersView getCQLParametersView();
-	public CQLGeneralInformationView getCqlGeneralInformationView();
 	public void buildIncludesView();
 	public Widget asWidget();
 	public void buildView(MessagePanel messagePanel, HelpBlock helpBlock, boolean isEditable);
@@ -47,4 +44,6 @@ public interface CQLWorkspaceView {
 	public void buildFunctionLibraryView();
 	public void buildCQLFileView(boolean isEditorEditable, boolean isPageEditable);
 	public String getClickedMenu();
+
+	public CQLGeneralInformationView getCqlGeneralInformationView();
 }

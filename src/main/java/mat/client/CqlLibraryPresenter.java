@@ -1,18 +1,5 @@
 package mat.client;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import mat.client.util.FeatureFlagConstant;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.TextArea;
-import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconSize;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -71,6 +58,7 @@ import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.client.util.ClientConstants;
+import mat.client.util.FeatureFlagConstant;
 import mat.dto.AuditLogDTO;
 import mat.dto.SearchHistoryDTO;
 import mat.model.clause.ModelTypeHelper;
@@ -81,6 +69,17 @@ import mat.shared.ConstantMessages;
 import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.error.AuthenticationException;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -1132,6 +1131,12 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
             case ConstantMessages.INVALID_CQL_DATA:
                 versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
                 break;
+            case ConstantMessages.DESCRIPTION_REQUIRED:
+                versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getDescriptionRequired());
+                break;
+            case ConstantMessages.PUBLISHER_REQUIRED:
+                versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getPublisherRequired());
+               break;
             case ConstantMessages.INVALID_CQL_LIBRARIES:
                 displayInvalidLibraryDialog(libraryId, cqlLibName, isMajor, version);
                 break;

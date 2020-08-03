@@ -1,9 +1,6 @@
 package mat.client.measure.service;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
@@ -19,6 +16,8 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
+
+import java.util.List;
 
 public interface CQLLibraryServiceAsync {
 
@@ -55,7 +54,7 @@ public interface CQLLibraryServiceAsync {
 
 	void getCQLLibraryFileData(String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment,
+	void saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment, String description, String stewardId, boolean isExperimental,
 			AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void saveCQLFile(String libraryId, String cql, AsyncCallback<SaveUpdateCQLResult> callback);

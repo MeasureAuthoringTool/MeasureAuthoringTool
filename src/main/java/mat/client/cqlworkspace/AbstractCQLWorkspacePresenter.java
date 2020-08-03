@@ -1,18 +1,5 @@
 package mat.client.cqlworkspace;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import mat.dto.VSACCodeSystemDTO;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.ListBox;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,14 +11,12 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import mat.dto.UserPreferenceDTO;
 import mat.client.Mat;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.cqlworkspace.codes.CQLCodesView;
-import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationUtility;
+import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationView;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility;
 import mat.client.expressionbuilder.modal.ExpressionBuilderHomeModal;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
@@ -44,6 +29,8 @@ import mat.client.shared.ValueSetNameInputValidator;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.MatTextBox;
+import mat.dto.UserPreferenceDTO;
+import mat.dto.VSACCodeSystemDTO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
 import mat.model.GlobalCopyPasteObject;
@@ -61,6 +48,17 @@ import mat.shared.CQLIdentifierObject;
 import mat.shared.CQLModelValidator;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility.getOidFromUrl;
 import static mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility.isFhirUrl;
@@ -1758,7 +1756,7 @@ public abstract class AbstractCQLWorkspacePresenter {
         String comment = cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().getText();
         if (validator.isCommentMoreThan2500Characters(comment)) {
             cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.ERROR);
-            messagePanel.getErrorMessageAlert().createAlert(CQLGeneralInformationUtility.COMMENT_LENGTH_ERROR);
+            messagePanel.getErrorMessageAlert().createAlert(CQLGeneralInformationView.COMMENT_LENGTH_ERROR);
         } else if (validator.doesCommentContainInvalidCharacters(comment)) {
             cqlWorkspaceView.getCqlGeneralInformationView().getCommentsGroup().setValidationState(ValidationState.ERROR);
             messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());

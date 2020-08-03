@@ -1,7 +1,5 @@
 package mat.client.measure.service;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import mat.client.shared.MatException;
@@ -22,6 +20,8 @@ import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
+
+import java.util.List;
 
 @RemoteServiceRelativePath("cqlLibrary")
 public interface CQLLibraryService extends RemoteService {
@@ -45,14 +45,13 @@ public interface CQLLibraryService extends RemoteService {
 
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
 
-
 	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
 
 	SaveCQLLibraryResult saveDraftFromVersion(String libraryId, String libraryName) throws MatException;
 
 	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 
-	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment);
+	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment, String description, String stewardId, boolean isExperimental);
 
 	SaveUpdateCQLResult saveCQLFile(String libraryid, String cql);
 

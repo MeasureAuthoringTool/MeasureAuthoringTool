@@ -1,14 +1,10 @@
 package mat.model.clause;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
+import mat.hibernate.HibernateConf;
+import mat.model.User;
+import mat.model.cql.CQLLibraryShare;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -22,13 +18,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.GenericGenerator;
-
-import mat.hibernate.HibernateConf;
-import mat.model.User;
-import mat.model.cql.CQLLibraryShare;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "CQL_LIBRARY")
@@ -75,6 +73,12 @@ public class CQLLibrary {
     private List<CQLLibraryHistory> cqlLibraryHistory;
 
     private String severeErrorCql;
+
+    private String stewardId;
+
+    private String description;
+
+    private boolean isExperimental;
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -378,5 +382,32 @@ public class CQLLibrary {
 
     public void setSevereErrorCql(String severeErrorCql) {
         this.severeErrorCql = severeErrorCql;
+    }
+
+    @Column(name = "LIBRARY_STEWARD_ID")
+    public String getStewardId() {
+        return stewardId;
+    }
+
+    public void setStewardId(String stewardId) {
+        this.stewardId = stewardId;
+    }
+
+    @Column(name = "DESCRIPTION")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Column(name = "EXPERIMENTAL")
+    public boolean isExperimental() {
+        return isExperimental;
+    }
+
+    public void setExperimental(boolean experimental) {
+        isExperimental = experimental;
     }
 }

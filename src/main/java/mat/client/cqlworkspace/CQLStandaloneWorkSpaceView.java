@@ -1,14 +1,5 @@
 package mat.client.cqlworkspace;
 
-import java.util.List;
-import java.util.Map;
-
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.Icon;
-import org.gwtbootstrap3.client.ui.constants.IconSize;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -21,7 +12,7 @@ import mat.client.cqlworkspace.codes.CQLCodesView;
 import mat.client.cqlworkspace.components.CQLComponentLibraryView;
 import mat.client.cqlworkspace.definitions.CQLDefinitionsView;
 import mat.client.cqlworkspace.functions.CQLFunctionsView;
-import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationView;
+import mat.client.cqlworkspace.generalinformation.StandaloneCQLGeneralInformationView;
 import mat.client.cqlworkspace.includedlibrary.CQLIncludeLibraryView;
 import mat.client.cqlworkspace.parameters.CQLParametersView;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetView;
@@ -31,6 +22,14 @@ import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLFunctionArgument;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
+import java.util.List;
+import java.util.Map;
 
 public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
     HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
@@ -40,7 +39,7 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
     private CQLAppliedValueSetView valueSetView;
     private CQLCodesView codesView;
     private CQLIncludeLibraryView cqlIncludeLibraryView;
-    private CQLGeneralInformationView generalInformationView;
+    private StandaloneCQLGeneralInformationView generalInformationView;
     private CQLParametersView cqlParametersView;
     private CQLDefinitionsView cqlDefinitionsView;
     private CQLFunctionsView cqlFunctionsView;
@@ -53,7 +52,7 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
     private MessagePanel messagePanel;
 
     public CQLStandaloneWorkSpaceView() {
-        generalInformationView = new CQLGeneralInformationView();
+        generalInformationView = new StandaloneCQLGeneralInformationView();
         cqlParametersView = new CQLParametersView();
         cqlDefinitionsView = new CQLDefinitionsView(() -> ModelTypeHelper.FHIR.equalsIgnoreCase(MatContext.get().getCurrentCQLLibraryModelType()));
         cqlFunctionsView = new CQLFunctionsView();
@@ -288,7 +287,7 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
         return cqlIncludeLibraryView;
     }
 
-    public CQLGeneralInformationView getCqlGeneralInformationView() {
+    public StandaloneCQLGeneralInformationView getCqlGeneralInformationView() {
         return generalInformationView;
     }
 

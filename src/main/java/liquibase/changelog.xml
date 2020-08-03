@@ -22,5 +22,6 @@
     <include file="classpath:/liquibase/addFhirGlobalLibraryRows.v11.6.xml"/>
     <include file="classpath:/liquibase/addSevereErrorCqlColumn.xml"/>
     <include file="classpath:/liquibase/addUserLevelFhirFlagV3.xml"/>
+    <include file="classpath:/liquibase/addNewCqlLibColumns_v3.xml"/>
 
 </databaseChangeLog>

@@ -20,7 +20,6 @@ import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.cqlworkspace.codes.CQLCodesView.Delegator;
 import mat.client.cqlworkspace.functions.CQLFunctionsView.Observer;
-import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationUtility;
 import mat.client.cqlworkspace.includedlibrary.CQLIncludeLibraryView;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetView;
 import mat.client.inapphelp.message.InAppHelpMessages;
@@ -214,7 +213,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
             cqlWorkspaceView.resetMessageDisplay();
             String libraryName = cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().getText().trim();
             String comments = cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().getText().trim();
-            boolean isvalid = CQLGeneralInformationUtility.validateGeneralInformationSection(cqlWorkspaceView.getCqlGeneralInformationView(), messagePanel, libraryName, comments);
+            boolean isvalid = ((CQLMeasureWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView().validateGeneralInformationSection( messagePanel, libraryName, comments);
             if (isvalid) {
                 saveCQLGeneralInformationAsync(libraryName, comments);
             }
@@ -949,7 +948,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
                 cqlLibraryComment = result.getCqlModel().getLibraryComment();
                 String measureVersion = getCurrentMeasureVersion();
-                cqlWorkspaceView.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, result.getCqlModel().getUsingModelVersion(),
+                ((CQLMeasureWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, result.getCqlModel().getUsingModelVersion(),
                         result.getCqlModel().getUsingModelVersion(), MeasureDetailsUtil.getModelTypeDisplayName(MatContext.get().getCurrentMeasureModel()), cqlLibraryComment);
             }
 

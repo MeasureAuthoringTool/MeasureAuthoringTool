@@ -1,8 +1,5 @@
 package mat.client.cqlworkspace;
 
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -13,7 +10,7 @@ import mat.client.cqlworkspace.components.CQLComponentLibraryPresenter;
 import mat.client.cqlworkspace.components.CQLComponentLibraryView;
 import mat.client.cqlworkspace.definitions.CQLDefinitionsView;
 import mat.client.cqlworkspace.functions.CQLFunctionsView;
-import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationView;
+import mat.client.cqlworkspace.generalinformation.MeasureCQLGeneralInformationView;
 import mat.client.cqlworkspace.includedlibrary.CQLIncludeLibraryView;
 import mat.client.cqlworkspace.parameters.CQLParametersView;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetView;
@@ -22,6 +19,8 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 import mat.model.clause.ModelTypeHelper;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
     HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
@@ -34,18 +33,18 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
     private CQLAppliedValueSetView valueSetView;
     private CQLIncludeLibraryView inclView;
     private CQLCodesView codesView;
-    private CQLGeneralInformationView generalInformationView;
     private CQLParametersView cqlParametersView;
     private CQLDefinitionsView cqlDefinitionsView;
     private CQLFunctionsView cqlFunctionsView;
     private CQLLibraryEditorView cqlViewCQLView;
     private CQLLeftNavBarPanelView cqlLeftNavBarPanelView;
     private CQLComponentLibraryPresenter componentPresenter;
+    private MeasureCQLGeneralInformationView generalInformationView;
     private HelpBlock helpBlock = new HelpBlock();
     MessagePanel messagePanel;
 
     public CQLMeasureWorkSpaceView() {
-        generalInformationView = new CQLGeneralInformationView();
+        generalInformationView = new MeasureCQLGeneralInformationView();
         componentPresenter = new CQLComponentLibraryPresenter();
         cqlParametersView = new CQLParametersView();
         cqlDefinitionsView = new CQLDefinitionsView(() -> ModelTypeHelper.FHIR.equalsIgnoreCase(MatContext.get().getCurrentMeasureModel()));
@@ -300,7 +299,7 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 
     }
 
-    public CQLGeneralInformationView getCqlGeneralInformationView() {
+    public MeasureCQLGeneralInformationView getCqlGeneralInformationView() {
         return generalInformationView;
     }
 
@@ -364,5 +363,13 @@ public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
     @Override
     public CQLFunctionsView getCQLFunctionsView() {
         return cqlFunctionsView;
+    }
+
+    public MeasureCQLGeneralInformationView getGeneralInformationView() {
+        return generalInformationView;
+    }
+
+    public void setGeneralInformationView(MeasureCQLGeneralInformationView generalInformationView) {
+        this.generalInformationView = generalInformationView;
     }
 }

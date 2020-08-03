@@ -23,6 +23,10 @@ public class ConstantMessages {
 
     public static final int INVALID_CQL_LIBRARIES = 8;
 
+    public static final int DESCRIPTION_REQUIRED = 14;
+
+    public static final int PUBLISHER_REQUIRED = 15;
+
     public static final String INCOMPLETE_ROW_ERROR = "Import failed. One or more rows is missing a Code or a Descriptor.";
 
     public static final String CONTINUOUS_VARIABLE_SCORING = "Continuous Variable";

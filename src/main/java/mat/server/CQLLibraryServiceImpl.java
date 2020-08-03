@@ -68,8 +68,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
         return this.getCQLLibraryService().saveLibrary(cqlLibraryDataSetObject);
     }
 
-    public String createCQLLookUpTag(String libraryName, String version,boolean isFhir) {
-        return this.getCQLLibraryService().createCQLLookUpTag(libraryName, version,isFhir);
+    public String createCQLLookUpTag(String libraryName, String version, boolean isFhir) {
+        return this.getCQLLibraryService().createCQLLookUpTag(libraryName, version, isFhir);
     }
 
     public XmlProcessor loadCQLXmlTemplateFile(boolean isFhir) {
@@ -120,8 +120,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
     }
 
     @Override
-    public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment) {
-        return this.getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryValue, libraryComment);
+    public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment, String description, String stewardId, boolean isExperimental) {
+        return this.getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryValue, libraryComment, description, stewardId, isExperimental);
     }
 
     @Override

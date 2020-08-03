@@ -1,7 +1,5 @@
 package mat.server.service;
 
-import java.util.List;
-
 import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirLibraryPackageResult;
@@ -28,6 +26,8 @@ import mat.shared.LibrarySearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
+
+import java.util.List;
 
 public interface CQLLibraryServiceInterface {
 
@@ -63,7 +63,7 @@ public interface CQLLibraryServiceInterface {
 
     SaveCQLLibraryResult draftExistingCQLLibrary(String libraryId, String libraryName) throws MatException;
 
-    SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context, String libraryComment);
+    SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context, String libraryComment, String description, String stewardId, boolean isExperimental);
 
     SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 

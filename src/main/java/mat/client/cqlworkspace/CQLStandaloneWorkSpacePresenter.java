@@ -1,15 +1,5 @@
 package mat.client.cqlworkspace;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-
-import mat.dto.VSACCodeSystemDTO;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,7 +24,7 @@ import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.cqlworkspace.codes.CQLCodesView.Delegator;
 import mat.client.cqlworkspace.functions.CQLFunctionsView.Observer;
-import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationUtility;
+import mat.client.cqlworkspace.generalinformation.StandaloneCQLGeneralInformationView;
 import mat.client.cqlworkspace.includedlibrary.CQLIncludeLibraryView;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetView;
@@ -47,6 +37,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.ValueSetNameInputValidator;
 import mat.client.umls.service.VsacApiResult;
+import mat.dto.VSACCodeSystemDTO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
 import mat.model.GlobalCopyPasteObject;
@@ -70,13 +61,27 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.model.util.MeasureDetailsUtil;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresenter implements MatPresenter {
     private SimplePanel emptyWidget = new SimplePanel();
     private boolean isCQLWorkSpaceLoaded = false;
     private final CQLLibraryServiceAsync cqlService = MatContext.get().getCQLLibraryService();
     private static final String FHIR_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR = "Invalid Library Alias. Must be unique, start with an upper case letter followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
-    private static final String QDM_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR = "Invalid Library Alias. Must be unique, start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";;
+    private static final String QDM_ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR = "Invalid Library Alias. Must be unique, start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
+
+    protected String cqlLibraryStewardId;
+    protected String cqlLibraryDescription;
+    protected boolean cqlLibraryIsExperimental;
+    protected StandaloneCQLGeneralInformationView cqlGeneralInformationView;
+
 
     public CQLStandaloneWorkSpacePresenter(final CQLWorkspaceView srchDisplay) {
         cqlWorkspaceView = srchDisplay;
@@ -86,7 +91,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
     }
 
     private void setInAppHelpMessages() {
-        cqlWorkspaceView.getCqlGeneralInformationView().getInAppHelp().setMessage(InAppHelpMessages.STANDALONE_CQL_LIBRARY_GENERAL_INFORMATION);
+        ((CQLStandaloneWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView().getInAppHelp().setMessage(InAppHelpMessages.STANDALONE_CQL_LIBRARY_GENERAL_INFORMATION);
         cqlWorkspaceView.getValueSetView().getInAppHelp().setMessage(InAppHelpMessages.STANDALONE_CQL_LIBRARY_VALUE_SET);
         cqlWorkspaceView.getCQLParametersView().getInAppHelp().setMessage(InAppHelpMessages.STANDALONE_CQL_LIBRARY_PARAMETER);
         cqlWorkspaceView.getCQLFunctionsView().getInAppHelp().setMessage(InAppHelpMessages.STANDALONE_CQL_LIBRARY_FUNCTION);
@@ -303,25 +308,33 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
     }
 
     private void addGeneralInfoEventHandlers() {
-        cqlWorkspaceView.getCqlGeneralInformationView().getSaveButton().addClickHandler(event -> saveCQLGeneralInfo());
-        cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().addKeyUpHandler(event -> resetMessagesAndSetPageDirty(true));
-        cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().addKeyUpHandler(event -> keyUpEvent());
-        cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().addBlurHandler(event -> generalCommentBlurEvent());
+        StandaloneCQLGeneralInformationView generalInfoView = ((CQLStandaloneWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView();
+        generalInfoView.getSaveButton().addClickHandler(event -> saveCQLGeneralInfo());
+        generalInfoView.getLibraryNameTextBox().addKeyUpHandler(event -> resetMessagesAndSetPageDirty(true));
+        generalInfoView.getDescriptionTextArea().addKeyUpHandler(event -> resetMessagesAndSetPageDirty(true));
+        generalInfoView.getDescriptionTextArea().addBlurHandler(event -> resetMessagesAndSetPageDirty(true));
+        generalInfoView.getStewardListBox().addChangeHandler(event -> resetMessagesAndSetPageDirty(true));
+        generalInfoView.getExperimentalCheckbox().addValueChangeHandler(event -> resetMessagesAndSetPageDirty(true));
+        generalInfoView.getCommentsTextBox().addKeyUpHandler(event -> keyUpEvent());
     }
 
     private void saveCQLGeneralInfo() {
-
         if (hasEditPermissions()) {
             resetMessagesAndSetPageDirty(false);
-            String libraryName = cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().getText().trim();
-            String commentContent = cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().getText().trim();
-            boolean isValid = CQLGeneralInformationUtility.validateGeneralInformationSection(cqlWorkspaceView.getCqlGeneralInformationView(), messagePanel, libraryName, commentContent);
+            StandaloneCQLGeneralInformationView generalInfoView = ((CQLStandaloneWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView();
+            String libraryName = generalInfoView.getLibraryNameTextBox().getText().trim();
+            String commentContent = generalInfoView.getCommentsTextBox().getText().trim();
+            String description = generalInfoView.getDescriptionTextArea().getText().trim();
+            String stewardId = generalInfoView.getStewardListBox().getSelectedValue();
+            if (stewardId.equals("--Select--")) {
+                stewardId = null;
+            }
+            boolean isExperimental = generalInfoView.getExperimentalCheckbox().getValue();
+            boolean isValid = generalInfoView.validateGeneralInformationSection(messagePanel, libraryName, commentContent, description, stewardId, isExperimental);
             if (isValid) {
-                saveCQLGeneralInformation(libraryName, commentContent);
+                saveCQLGeneralInformation(libraryName, commentContent, description, stewardId, isExperimental);
             }
         }
-
-
     }
 
     private void addIncludeCQLLibraryHandlers() {
@@ -1126,42 +1139,48 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
         });
     }
 
-    private void saveCQLGeneralInformation(String libraryName, String libraryComment) {
+    private void saveCQLGeneralInformation(String libraryName, String libraryComment, String description, String stewardId, boolean isExperimental) {
         String libraryId = MatContext.get().getCurrentCQLLibraryId();
         showSearchingBusy(true);
-        MatContext.get().getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryName, libraryComment, new AsyncCallback<SaveUpdateCQLResult>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                logger.log(Level.SEVERE, "Error in CQLLibraryService.saveAndModifyCQLGeneralInfo. Error message: " + caught.getMessage(), caught);
-                messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                showSearchingBusy(false);
-            }
-
-            @Override
-            public void onSuccess(SaveUpdateCQLResult result) {
-                if (result != null) {
-                    if (result.isSuccess()) {
-                        cqlLibraryName = result.getCqlModel().getLibraryName().trim();
-                        cqlLibraryComment = result.getCqlModel().getLibraryComment();
-                        cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameTextBox().setText(cqlLibraryName);
-                        cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setText(result.getCqlModel().getLibraryComment());
-                        cqlWorkspaceView.getCqlGeneralInformationView().getCommentsTextBox().setCursorPos(0);
-                        displayMsgAndResetDirtyPostSave(cqlLibraryName);
-                        MatContext.get().getCurrentLibraryInfo().setLibraryName(cqlLibraryName);
-                        CqlComposerPresenter.setContentHeading();
-                    } else {
-                        if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
-                            isLibraryNameExists = true;
-                            messagePanel.getErrorMessageAlert().createAlert(MessageDelegate.DUPLICATE_LIBRARY_NAME_SAVE);
-                        } else {
-                            messagePanel.getErrorMessageAlert().createAlert(MessageDelegate.GENERIC_ERROR_MESSAGE);
-                        }
+        MatContext.get().
+                getCQLLibraryService().
+                saveAndModifyCQLGeneralInfo(libraryId, libraryName, libraryComment, description, stewardId, isExperimental, new AsyncCallback<SaveUpdateCQLResult>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        logger.log(Level.SEVERE, "Error in CQLLibraryService.saveAndModifyCQLGeneralInfo. Error message: " + caught.getMessage(), caught);
+                        messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                        showSearchingBusy(false);
                     }
-                }
-                showSearchingBusy(false);
-            }
-        });
+
+                    @Override
+                    public void onSuccess(SaveUpdateCQLResult result) {
+                        if (result != null) {
+                            if (result.isSuccess()) {
+                                cqlLibraryName = result.getCqlModel().getLibraryName().trim();
+                                cqlLibraryComment = result.getCqlModel().getLibraryComment();
+                                StandaloneCQLGeneralInformationView generalInfo = ((CQLStandaloneWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView();
+                                generalInfo.getLibraryNameTextBox().setText(cqlLibraryName);
+                                generalInfo.getCommentsTextBox().setText(result.getCqlModel().getLibraryComment());
+                                generalInfo.getCommentsTextBox().setCursorPos(0);
+                                generalInfo.getDescriptionTextArea().setText(result.getLibDescription());
+                                generalInfo.getDescriptionTextArea().setCursorPos(0);
+                                generalInfo.getExperimentalCheckbox().setValue(result.isLibIsExperimental());
+                                generalInfo.getStewardListBox().setValue(result.getLibStewardId());
+                                displayMsgAndResetDirtyPostSave(cqlLibraryName);
+                                MatContext.get().getCurrentLibraryInfo().setLibraryName(cqlLibraryName);
+                                CqlComposerPresenter.setContentHeading();
+                            } else {
+                                if (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
+                                    isLibraryNameExists = true;
+                                    messagePanel.getErrorMessageAlert().createAlert(MessageDelegate.DUPLICATE_LIBRARY_NAME_SAVE);
+                                } else {
+                                    messagePanel.getErrorMessageAlert().createAlert(MessageDelegate.GENERIC_ERROR_MESSAGE);
+                                }
+                            }
+                        }
+                        showSearchingBusy(false);
+                    }
+                });
     }
 
     private void logRecentActivity() {
@@ -1250,7 +1269,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
     }
 
     private void getCQLDataForLoad() {
-        logger.log(Level.INFO,"Entering getCQLDataForLoad");
+        logger.log(Level.INFO, "Entering getCQLDataForLoad");
         showSearchingBusy(true);
         MatContext.get().getCQLLibraryService().getCQLDataForLoad(MatContext.get().getCurrentCQLLibraryId(), new AsyncCallback<SaveUpdateCQLResult>() {
 
@@ -1259,7 +1278,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                 handleCQLData(result);
                 showSearchingBusy(false);
                 if (MatContext.get().isCurrentModelTypeFhir()) {
-                    logger.log(Level.INFO,"isCurrentModelTypeFhir, calling getOidToVsacCodeSystemMap");
+                    logger.log(Level.INFO, "isCurrentModelTypeFhir, calling getOidToVsacCodeSystemMap");
                     MatContext.get().getCodeListService().getOidToVsacCodeSystemMap(new AsyncCallback<Map<String, VSACCodeSystemDTO>>() {
                         @Override
                         public void onFailure(Throwable throwable) {
@@ -1270,7 +1289,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                         @Override
                         public void onSuccess(Map<String, VSACCodeSystemDTO> map) {
-                            logger.log(Level.INFO,"called getOidToVsacCodeSystemMap " + map);
+                            logger.log(Level.INFO, "called getOidToVsacCodeSystemMap " + map);
                             MatContext.get().setOidToVSACCodeSystemMap(map);
                             showSearchingBusy(false);
                         }
@@ -1296,16 +1315,29 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                     setId = result.getSetId();
                 }
                 if (result.getCqlModel().getLibraryName() != null) {
+                    StandaloneCQLGeneralInformationView generalInfoView = ((CQLStandaloneWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView();
                     isLibraryNameExists = (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
-                    cqlLibraryName = cqlWorkspaceView.getCqlGeneralInformationView().createCQLLibraryName(MatContext.get().getCurrentCQLLibraryeName());
+                    cqlLibraryName = generalInfoView.createCQLLibraryName(MatContext.get().getCurrentCQLLibraryeName());
                     cqlLibraryComment = result.getCqlModel().getLibraryComment();
+                    cqlLibraryStewardId = result.getLibStewardId();
+                    cqlLibraryDescription = result.getLibDescription();
+                    cqlLibraryIsExperimental = result.isLibIsExperimental();
                     String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
                     libraryVersion = libraryVersion.replaceAll("Draft ", EMPTY_STRING).trim();
                     if (libraryVersion.startsWith("v")) {
                         libraryVersion = libraryVersion.substring(1);
                     }
-                    cqlWorkspaceView.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, libraryVersion, result.getCqlModel().getUsingModelVersion(),
-                            MeasureDetailsUtil.getModelTypeDisplayName(MatContext.get().getCurrentCQLLibraryModelType()), cqlLibraryComment);
+
+
+                    generalInfoView.setGeneralInfoOfLibrary(cqlLibraryName,
+                            libraryVersion,
+                            result.getCqlModel().getUsingModelVersion(),
+                            MeasureDetailsUtil.getModelTypeDisplayName(MatContext.get().getCurrentCQLLibraryModelType()),
+                            cqlLibraryComment,
+                            cqlLibraryDescription,
+                            result.getLibStewards(),
+                            cqlLibraryStewardId,
+                            cqlLibraryIsExperimental);
                 }
 
                 List<CQLQualityDataSetDTO> appliedValueSetAndCodeList = result.getCqlModel().getAllValueSetAndCodeList();
@@ -1914,7 +1946,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
         } else {
             matValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentMatValueSet.getID());
         }
-        logger.log(Level.INFO,"valueset.oid=" + matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
+        logger.log(Level.INFO, "valueset.oid=" + matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
 
         if (!cqlWorkspaceView.getValueSetView().getSuffixInput().getValue().isEmpty()) {
             matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(cqlWorkspaceView.getValueSetView().getSuffixInput().getValue());
@@ -2019,7 +2051,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
     @Override
     protected void setGeneralInformationViewEditable(boolean isEditable) {
-        cqlWorkspaceView.getCqlGeneralInformationView().setIsEditable(hasEditPermissions() && isEditable);
+        ((CQLStandaloneWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView().setIsEditable(hasEditPermissions() && isEditable);
     }
 
     private void getAttributesForDataType(final CQLFunctionArgument functionArg) {
@@ -2544,12 +2576,20 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
     protected boolean isValidLibName(String libName) {
         boolean isFhir = isFhir();
-        logger.log(Level.INFO,"isValidLibName " + libName + " isFhir= " + isFhir);
+        logger.log(Level.INFO, "isValidLibName " + libName + " isFhir= " + isFhir);
         return (isFhir && validator.isValidFhirCqlName(libName)) ||
                 (!isFhir && validator.isValidQDMName(libName));
     }
 
     protected boolean isFhir() {
         return MatContext.get().isCurrentModelTypeFhir();
+    }
+
+    public StandaloneCQLGeneralInformationView getCqlGeneralInformationView() {
+        return cqlGeneralInformationView;
+    }
+
+    public void setCqlGeneralInformationView(StandaloneCQLGeneralInformationView cqlGeneralInformationView) {
+        this.cqlGeneralInformationView = cqlGeneralInformationView;
     }
 }

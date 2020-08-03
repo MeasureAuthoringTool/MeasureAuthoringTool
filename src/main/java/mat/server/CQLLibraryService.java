@@ -14,6 +14,7 @@ import mat.client.shared.MessageDelegate;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
 import mat.dao.CQLLibraryAuditLogDAO;
+import mat.dao.OrganizationDAO;
 import mat.dao.RecentCQLActivityLogDAO;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
@@ -24,6 +25,8 @@ import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.LockedUserInfo;
 import mat.model.MatCodeTransferObject;
+import mat.model.MeasureSteward;
+import mat.model.Organization;
 import mat.model.RecentCQLActivityLog;
 import mat.model.SecurityRole;
 import mat.model.User;
@@ -133,6 +136,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
     @Autowired
     private FhirCqlLibraryService fhirCqlLibraryService;
+
+    @Autowired
+    private OrganizationDAO organizationDAO;
 
     private javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 
@@ -408,6 +414,14 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         if (cqlService.checkIfLibraryNameExists(cqlLibrary.getName(), cqlLibrary.getSetId())) {
             result.setSuccess(false);
             result.setFailureReason(SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+            return result;
+        } else if (StringUtils.isBlank(cqlLibrary.getDescription())) {
+            result.setSuccess(false);
+            result.setFailureReason(SaveUpdateCQLResult.DESCRIPTION_REQUIRED);
+            return result;
+        } else if (StringUtils.isBlank(cqlLibrary.getStewardId())) {
+            result.setSuccess(false);
+            result.setFailureReason(SaveUpdateCQLResult.PUBLISHER_REQUIRED);
             return result;
         }
 
@@ -878,6 +892,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         if (cqlLibraryXml != null) {
             cqlResult = cqlService.getCQLDataForLoad(cqlLibraryXml);
             cqlResult.setSetId(cqlLibrary.getSetId());
+            cqlResult.setLibDescription(cqlLibrary.getDescription());
+            cqlResult.setLibIsExperimental(cqlLibrary.isExperimental());
+            cqlResult.setLibStewardId(cqlLibrary.getStewardId());
+            cqlResult.setLibStewards(getAllStewardList(getAllOrganizations()));
             cqlResult.setSuccess(true);
 
             if (cqlLibrary.isDraft() && cqlService.checkIfLibraryNameExists(cqlLibrary.getName(), cqlLibrary.getSetId())) {
@@ -886,6 +904,22 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         }
 
         return cqlResult;
+    }
+
+    /**
+     * Gets the all steward list.
+     *
+     * @return the all steward list
+     */
+    private List<MeasureSteward> getAllStewardList(List<Organization> organizationList) {
+        return organizationList.stream().map(
+                org -> new MeasureSteward(String.valueOf(org.getId()),
+                        org.getOrganizationName(),
+                        org.getOrganizationOID())).collect(Collectors.toList());
+    }
+
+    private List<Organization> getAllOrganizations() {
+        return organizationDAO.getAllOrganizations();
     }
 
     private String getCQLLibraryXml(CQLLibrary library) {
@@ -1024,6 +1058,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             }
             cqlLibrary.setCQLByteArray(result.getXml().getBytes());
             cqlLibraryDAO.save(cqlLibrary);
+
+            result.setLibStewards(getAllStewardList(getAllOrganizations()));
+            result.setLibDescription(cqlLibrary.getDescription());
+            result.setLibStewardId(cqlLibrary.getStewardId());
+            result.setLibIsExperimental(cqlLibrary.isExperimental());
         }
         return result;
     }
@@ -1071,7 +1110,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
     }
 
     @Override
-    public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryName, String libraryComment) {
+    public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryName, String libraryComment, String description, String stewardId, boolean isExperimental) {
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
         if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
             CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
@@ -1086,8 +1125,16 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
                     result = cqlService.saveAndModifyCQLGeneralInfo(cqlXml, libraryName, libraryComment);
                     if (result != null && result.isSuccess()) {
                         cqlLibrary.setName(libraryName);
+                        cqlLibrary.setDescription(description);
+                        cqlLibrary.setStewardId(stewardId);
+                        cqlLibrary.setExperimental(isExperimental);
                         cqlLibrary.setCQLByteArray(result.getXml().getBytes());
                         cqlLibraryDAO.save(cqlLibrary);
+
+                        result.setLibIsExperimental(cqlLibrary.isExperimental());
+                        result.setLibStewardId(cqlLibrary.getStewardId());
+                        result.setLibDescription(cqlLibrary.getDescription());
+                        result.setLibStewards(getAllStewardList(getAllOrganizations()));
                     }
                 }
             }

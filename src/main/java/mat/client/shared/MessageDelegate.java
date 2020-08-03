@@ -192,6 +192,12 @@ public class MessageDelegate {
     private static final String WARNING_DELETION_CQL_LIBRARY = "Deleting a draft of a library will permanently remove the designated " + "library draft from the Measure Authoring Tool. Deleted libraries cannot be recovered.";
     private static final String CQL_LIBRARY_DELETION_SUCCESS_MSG = "CQL Library successfully deleted.";
     private static final String UNABLE_TO_VERIFY_HARP_USER = "Unable to verify user, Please contact the MAT Help Desk or try again.";
+    private static final String DESCRIPTION_REQUIRED = "Description is required for Standalone Libraries. Please populate it in General Information.";
+    private static final String PUBLISHER_REQUIRED = "Publisher is required for Standalone Libraries. Please populate it in General Information.";
+
+
+    private static final String CQL_LIBRARY_DESCRIPTION_REQUIRED = "CQL Library Description is required.";
+    private static final String CQL_LIBRARY_PUBLISHER_REQUIRED = "CQL Library Publisher is required.";
 
     public static String getUnableToVerifyHarpUser() {
         return UNABLE_TO_VERIFY_HARP_USER;
@@ -994,5 +1000,21 @@ public class MessageDelegate {
 
     public String getHarpIdRequiredMessage() {
         return HARP_ID_IS_REQUIRED;
+    }
+
+    public String getCqlLibraryDescriptionRequired() {
+        return CQL_LIBRARY_DESCRIPTION_REQUIRED;
+    }
+
+    public String getCqlLibraryPublisherRequired() {
+        return CQL_LIBRARY_PUBLISHER_REQUIRED;
+    }
+
+    public String getDescriptionRequired() {
+        return DESCRIPTION_REQUIRED;
+    }
+
+    public String getPublisherRequired() {
+        return PUBLISHER_REQUIRED;
     }
 }

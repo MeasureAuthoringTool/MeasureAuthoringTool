@@ -1,13 +1,8 @@
 package mat.shared;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import lombok.ToString;
 import mat.client.shared.GenericResult;
+import mat.model.MeasureSteward;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
@@ -15,6 +10,12 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The Class SaveUpdateCQLResult.
@@ -33,6 +34,14 @@ public class SaveUpdateCQLResult extends GenericResult {
     private String xml;
 
     private String cqlString;
+
+    private String libDescription;
+
+    private boolean libIsExperimental;
+
+    private String libStewardId;
+
+    private List<MeasureSteward> libStewards;
 
     private List<CQLError> cqlErrors = new ArrayList<>();
 
@@ -83,6 +92,10 @@ public class SaveUpdateCQLResult extends GenericResult {
     public static final int DUPLICATE_LIBRARY_NAME = 12;
 
     public static final int CUSTOM = 13;
+
+    public static final int DESCRIPTION_REQUIRED = 14;
+
+    public static final int PUBLISHER_REQUIRED = 15;
 
     List<CQLQualityDataSetDTO> cqlAppliedQDMList;
 
@@ -497,5 +510,37 @@ public class SaveUpdateCQLResult extends GenericResult {
 
     public void setSevereError(boolean severeError) {
         this.isSevereError = severeError;
+    }
+
+    public String getLibDescription() {
+        return libDescription;
+    }
+
+    public void setLibDescription(String libDescription) {
+        this.libDescription = libDescription;
+    }
+
+    public boolean isLibIsExperimental() {
+        return libIsExperimental;
+    }
+
+    public void setLibIsExperimental(boolean libIsExperimental) {
+        this.libIsExperimental = libIsExperimental;
+    }
+
+    public String getLibStewardId() {
+        return libStewardId;
+    }
+
+    public void setLibStewardId(String libStewardId) {
+        this.libStewardId = libStewardId;
+    }
+
+    public List<MeasureSteward> getLibStewards() {
+        return libStewards;
+    }
+
+    public void setLibStewards(List<MeasureSteward> libStewards) {
+        this.libStewards = libStewards;
     }
 }

@@ -45,7 +45,11 @@
 		<field name="measureSteward" type="java.lang.String">
 			<bind-xml name="steward"/>
 		</field>
-		
+
+		<field name="experimental" type="boolean">
+			<bind-xml name="experimental"/>
+		</field>
+
 		<field name="measureDevelopers" type="java.lang.String" collection="arraylist">
 			<bind-xml name="developer" location="developers"></bind-xml>
 		</field>

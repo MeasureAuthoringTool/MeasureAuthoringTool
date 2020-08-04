@@ -83,6 +83,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel {
     private String qdmVersion;
     private String fhirVersion;
     private String formattedVersion;
+    private boolean isExperimental;
 
     public ManageMeasureDetailModel() {
 
@@ -1221,6 +1222,15 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel {
                 ", qdmVersion='" + qdmVersion + '\'' +
                 ", fhirVersion='" + fhirVersion + '\'' +
                 ", formattedVersion='" + formattedVersion + '\'' +
+                ", isExperimental=" + isExperimental +
                 '}';
+    }
+
+    public boolean isExperimental() {
+        return isExperimental;
+    }
+
+    public void setExperimental(boolean experimental) {
+        isExperimental = experimental;
     }
 }

@@ -278,6 +278,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper 
         generalInformationModel.setCalendarYear(manageMeasureDetailModel.isCalenderYear());
         generalInformationModel.setMeasureFromPeriod(manageMeasureDetailModel.getMeasFromPeriod());
         generalInformationModel.setMeasureToPeriod(manageMeasureDetailModel.getMeasToPeriod());
+        generalInformationModel.setExperimental(manageMeasureDetailModel.isExperimental());
         if (manageMeasureDetailModel instanceof ManageCompositeMeasureDetailModel) {
             generalInformationModel.setCompositeScoringMethod(((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).getCompositeScoringMethod());
         }
@@ -341,6 +342,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper 
         manageMeasureDetailModel.setCalenderYear(isCalendarYear());
         manageMeasureDetailModel.setMeasFromPeriod(getMeasureFromPeriod());
         manageMeasureDetailModel.setMeasToPeriod(getMeasureToPeriod());
+        manageMeasureDetailModel.setExperimental(measureDetailsModel.getGeneralInformationModel().isExperimental());
         return manageMeasureDetailModel;
     }
 

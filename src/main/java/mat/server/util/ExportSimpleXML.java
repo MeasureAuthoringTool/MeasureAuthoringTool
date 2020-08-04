@@ -278,7 +278,13 @@ public class ExportSimpleXML {
      * @throws ParserConfigurationException
      * @throws SAXException
      */
-    private static String generateMeasureExportXML(Document originalDoc, OrganizationDAO organizationDAO, MeasureDAO measureDAO, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel, Measure measure, MeasureTypeDAO measureTypeDao) throws XPathExpressionException, MarshalException, ValidationException, IOException, MappingException, SAXException, ParserConfigurationException {
+    private static String generateMeasureExportXML(Document originalDoc,
+                                                   OrganizationDAO organizationDAO,
+                                                   MeasureDAO measureDAO,
+                                                   CQLLibraryDAO cqlLibraryDAO,
+                                                   CQLModel cqlModel,
+                                                   Measure measure,
+                                                   MeasureTypeDAO measureTypeDao) throws XPathExpressionException, MarshalException, ValidationException, IOException, MappingException, SAXException, ParserConfigurationException {
         List<String> usedClauseIds = getUsedClauseIds(originalDoc);
         removeUnwantedClauses(usedClauseIds, originalDoc);
         removeNode("/measure/subTreeLookUp", originalDoc);

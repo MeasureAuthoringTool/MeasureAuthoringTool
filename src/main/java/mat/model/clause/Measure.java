@@ -100,6 +100,8 @@ public class Measure {
 
     private String cqlLibraryName;
 
+    private boolean experimental;
+
     // We don't map it as a Measure object, since it can be potentially invalid,
     // if a source QDM measure is removed after conversion.
     private String sourceMeasureId;
@@ -512,5 +514,14 @@ public class Measure {
 
     public void setSourceMeasureId(String sourceMeasureId) {
         this.sourceMeasureId = sourceMeasureId;
+    }
+
+    @Column(name = "EXPERIMENTAL")
+    public boolean isExperimental() {
+        return experimental;
+    }
+
+    public void setExperimental(boolean experimental) {
+        this.experimental = experimental;
     }
 }

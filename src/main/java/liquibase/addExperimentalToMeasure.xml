@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet author="mat_dev_user" id="3" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="MEASURE" columnName="EXPERIMENTAL"/></not>
+        </preConditions>
+        <addColumn tableName="MEASURE">
+            <column name="EXPERIMENTAL" type="boolean" defaultValue="false"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

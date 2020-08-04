@@ -66,6 +66,10 @@
             <bind-xml name="id" node="attribute" location="steward"/>
         </field>
 
+        <field name="experimental" type="boolean">
+            <bind-xml name="experimental" node="element"/>
+        </field>
+
         <!-- <field name="measStewardOther" type="java.lang.String"> <bind-xml
             name="steward" node="element"/> </field> -->
 

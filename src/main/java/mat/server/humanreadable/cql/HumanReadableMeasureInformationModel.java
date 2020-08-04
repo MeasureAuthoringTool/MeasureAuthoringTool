@@ -54,6 +54,7 @@ public class HumanReadableMeasureInformationModel {
     private String supplementalDataElements;
     private String measureSet;
     private boolean patientBased;
+    private boolean experimental;
 
     public HumanReadableMeasureInformationModel() {
 
@@ -140,58 +141,7 @@ public class HumanReadableMeasureInformationModel {
         this.supplementalDataElements = model.getSupplementalData();
         this.measureSet = model.getGroupName();
         this.patientBased = model.isPatientBased();
-    }
-
-    public HumanReadableMeasureInformationModel(String eCQMTitle, String eCQMIdentifier, String eCQMVersionNumber, String nqfNumber,
-                                                String guid, String measurementPeriodStartDate, String measurementPeriodEndDate, boolean isCalendarYear,
-                                                String measureSteward, List<String> measureDevelopers, String endorsedBy,
-                                                String description, String copyright, String disclaimer, String compositeScoringMethod, String measureScoring, List<String> measureTypes,
-                                                List<HumanReadableComponentMeasureModel> componentMeasures, String stratification, String riskAdjustment, String rateAggregation, String rationale,
-                                                String clinicalRecommendationStatement, String improvementNotation, List<ReferenceTextAndType> references, String definition,
-                                                String guidance, String transmissionFormat, String initialPopulation, String denominator,
-                                                String denominatorExclusions, String denominatorExceptions, String numerator, String numeratorExclusions,
-                                                String measurePopulation, String measurePopulationExclusions, String measureObservations,
-                                                String supplementalDataElements, String measureSet, boolean patientBased) {
-        this.ecqmTitle = eCQMTitle;
-        this.ecqmIdentifier = eCQMIdentifier;
-        this.ecqmVersionNumber = eCQMVersionNumber;
-        this.nqfNumber = nqfNumber;
-        this.guid = guid;
-        this.isCalendarYear = isCalendarYear;
-        this.measurementPeriodStartDate = measurementPeriodStartDate;
-        this.measurementPeriodEndDate = measurementPeriodEndDate;
-        this.measureSteward = measureSteward;
-        this.measureDevelopers = measureDevelopers;
-        this.endorsedBy = endorsedBy;
-        this.description = description;
-        this.copyright = copyright;
-        this.disclaimer = disclaimer;
-        this.compositeScoringMethod = compositeScoringMethod;
-        this.measureScoring = measureScoring;
-        this.measureTypes = measureTypes;
-        this.componentMeasures = componentMeasures;
-        this.stratification = stratification;
-        this.riskAdjustment = riskAdjustment;
-        this.rateAggregation = rateAggregation;
-        this.rationale = rationale;
-        this.clinicalRecommendationStatement = clinicalRecommendationStatement;
-        this.improvementNotation = improvementNotation;
-        this.references = references;
-        this.definition = definition;
-        this.guidance = guidance;
-        this.transmissionFormat = transmissionFormat;
-        this.initialPopulation = initialPopulation;
-        this.denominator = denominator;
-        this.denominatorExclusions = denominatorExclusions;
-        this.denominatorExceptions = denominatorExceptions;
-        this.numerator = numerator;
-        this.numeratorExclusions = numeratorExclusions;
-        this.measurePopulation = measurePopulation;
-        this.measurePopulationExclusions = measurePopulationExclusions;
-        this.measureObservations = measureObservations;
-        this.supplementalDataElements = supplementalDataElements;
-        this.measureSet = measureSet;
-        this.patientBased = patientBased;
+        this.experimental = model.isExperimental();
     }
 
     public String getEcqmTitle() {
@@ -530,4 +480,11 @@ public class HumanReadableMeasureInformationModel {
         this.qdmVersion = qdmVersion;
     }
 
+    public boolean isExperimental() {
+        return experimental;
+    }
+
+    public void setExperimental(boolean experimental) {
+        this.experimental = experimental;
+    }
 }

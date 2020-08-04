@@ -1311,6 +1311,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             manageMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
             manageMeasureDetailModel.setFhirVersion(measure.getFhirVersion());
             manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
+            manageMeasureDetailModel.setExperimental(measure.isExperimental());
 
             return manageMeasureDetailModel;
         } else {
@@ -2205,6 +2206,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
                 measure.seteMeasureId(model.geteMeasureId());
                 measure.setNqfNumber(model.getNqfId());
+                measure.setExperimental(model.isExperimental());
                 calculateCalendarYearForMeasure(model, measure);
 
                 measurePackageService.save(measure);

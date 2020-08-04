@@ -59,6 +59,7 @@
       	</xsl:choose>
       </xsl:variable>
       <setId root="{$set-id}"/>
+      <experimental value="{$experimental}"/>
        <!-- Version -->
       <versionNumber value="{normalize-space(version)}"/>
        <!-- Measure Developer -->

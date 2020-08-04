@@ -57,6 +57,7 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 		generalInformationModel.setCalendarYear(generalMeasureInformationView.getCalenderYear().getValue());
 		generalInformationModel.setMeasureFromPeriod(generalMeasureInformationView.getMeasurePeriodFromInput().getValue());
 		generalInformationModel.setMeasureToPeriod(generalMeasureInformationView.getMeasurePeriodToInput().getValue());
+		generalInformationModel.setExperimental(generalMeasureInformationView.getExperimentalCheckbox().getValue());
 		return generalInformationModel;
 	}
 	

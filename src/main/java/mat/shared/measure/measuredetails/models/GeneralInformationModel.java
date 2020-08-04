@@ -22,6 +22,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	private boolean isCalendarYear;
 	private String measureFromPeriod;
 	private String measureToPeriod;
+	private boolean isExperimental;
 
 	public GeneralInformationModel() {
 	}
@@ -42,6 +43,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 		this.setCalendarYear(model.isCalendarYear());
 		this.setMeasureFromPeriod(model.getMeasureFromPeriod());
 		this.setMeasureToPeriod(model.getMeasureToPeriod());
+		this.isExperimental = model.isExperimental;
 	}
 
 	public int geteMeasureId() {
@@ -102,7 +104,8 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 				modelValuesAreEqual(originalModel.getEndorseByNQF(), getEndorseByNQF()) &&
 				modelValuesAreEqual(originalModel.isCalendarYear(), isCalendarYear) &&
 				modelValuesAreEqual(originalModel.getMeasureFromPeriod(), getMeasureFromPeriod()) &&
-				modelValuesAreEqual(originalModel.getMeasureToPeriod(), getMeasureToPeriod()));
+				modelValuesAreEqual(originalModel.getMeasureToPeriod(), getMeasureToPeriod()) &&
+				modelValuesAreEqual(originalModel.isExperimental(), isExperimental()));
 	}
 	
 
@@ -171,6 +174,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 		sb.append(", isCalendarYear: " + isCalendarYear);
 		sb.append(", measureFromPeriod: " + measureFromPeriod);
 		sb.append(", measureToperiod: " + measureToPeriod);
+		sb.append(", isExperimental: " + isExperimental);
 		return sb.toString();
 	}
 	
@@ -209,5 +213,13 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	
 	public void setMeasureToPeriod(String measToPeriod) {
 		this.measureToPeriod = StringUtility.doTrim(measToPeriod);
+	}
+
+	public boolean isExperimental() {
+		return isExperimental;
+	}
+
+	public void setExperimental(boolean experimental) {
+		isExperimental = experimental;
 	}
 }

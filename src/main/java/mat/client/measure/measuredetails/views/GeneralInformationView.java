@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.CheckBox;
 import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Form;
@@ -68,6 +69,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	private CustomCheckBox calendarYear = new CustomCheckBox("Click to select custom measurement period", "Click to select custom measurement period", false);	
 	protected DateBoxWithCalendar measurePeriodFromInput = new DateBoxWithCalendar();
 	protected DateBoxWithCalendar measurePeriodToInput = new DateBoxWithCalendar();
+	protected CheckBox experimentalCheckbox = new CheckBox();
 	private FormLabel measureNameLabel;
 
 	public GeneralInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel) {
@@ -112,6 +114,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		panelGrid.setWidget(2, 0, buildFinalizedDate());
 		panelGrid.setWidget(2, 1, buildGUIDPanel());
 		panelGrid.setWidget(3, 0, buildeCQMVersionPanel());
+		panelGrid.setWidget(3, 1, buildExperimentalPanel());
 		panelGrid.setWidget(4, 0, buldeCQMIdentifierPanel());
 		panelGrid.setWidget(5, 0, buildNQFNumberPanel());
 		panelGrid.setWidget(6, 0, buildMeasurementPeriodPanel());
@@ -355,6 +358,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		getCalenderYear().addClickHandler(event -> observer.handleCalendarYearChanged());
 		getMeasurePeriodFromInput().addValueChangeHandler(event -> observer.handleInputChanged());
 		getMeasurePeriodToInput().addValueChangeHandler(event -> observer.handleInputChanged());
+		getExperimentalCheckbox().addValueChangeHandler(event -> observer.handleInputChanged());
 	}
 
 	private VerticalPanel buildBlankPanel() {
@@ -387,6 +391,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	private VerticalPanel buildeCQMVersionPanel() {
 		VerticalPanel panel = new VerticalPanel();
 		panel.getElement().addClassName("generalInformationPanel");
+
 		FormLabel eCQMVersionNumberLabel = new FormLabel();
 		eCQMVersionNumberLabel.setText("eCQM Version Number");
 		eCQMVersionNumberLabel.setTitle(eCQMVersionNumberLabel.getText());
@@ -396,10 +401,31 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		eCQMVersionNumberTextBox.setEnabled(false);
 		eCQMVersionNumberTextBox.setWidth(TEXT_BOX_WIDTH);
 		eCQMVersionNumberTextBox.setId("versionInput");
+
+		eCQMVersionNumberTextBox.setText(generalInformationModel.geteCQMVersionNumber());
+
 		panel.add(eCQMVersionNumberLabel);
 		panel.add(eCQMVersionNumberTextBox);
-		
-		eCQMVersionNumberTextBox.setText(generalInformationModel.geteCQMVersionNumber());
+		panel.add(new SpacerWidget());
+
+		return panel;
+	}
+
+	private VerticalPanel buildExperimentalPanel() {
+		VerticalPanel panel = new VerticalPanel();
+		panel.getElement().addClassName("generalInformationPanel");
+		FormLabel experimentalLabel = new FormLabel();
+		experimentalLabel.setText("Experimental");
+		experimentalLabel.setTitle("Experimental");
+		experimentalLabel.setId("experimentalCB");
+		experimentalLabel.setFor("versionInput");
+		experimentalCheckbox.setEnabled(false);
+		experimentalCheckbox.getElement().setAttribute("id","experimentalCB");
+		experimentalCheckbox.setValue(generalInformationModel.isExperimental());
+
+		panel.add(experimentalLabel);
+		panel.add(experimentalCheckbox);
+		panel.add(new SpacerWidget());
 		return panel;
 	}
 	
@@ -557,6 +583,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		measureScoringInput.setEnabled(!readOnly);
 		patientBasedInput.setEnabled(!readOnly);
 		endorsedByListBox.setEnabled(!readOnly);
+		experimentalCheckbox.setEnabled(!readOnly);
 		setNQFIdInputReadOnly(readOnly);
 		setGenerateEMeasureButtonReadOnly(readOnly);
 		setMeasurementPeriodReadOnly(readOnly);
@@ -711,6 +738,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		measureScoringInput.clear();
 		compositeScoringMethodInput.clear();
 		patientBasedInput.clear();
+		experimentalCheckbox.setValue(false);
 	}
 
 	public void setPatientBasedInputOptions(List<String> patientBasedIndicatorOptions) {
@@ -804,5 +832,9 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	@Override
 	public Widget getFirstElement() {
 		return measureNameInput.asWidget();
+	}
+
+	public CheckBox getExperimentalCheckbox() {
+		return experimentalCheckbox;
 	}
 }

@@ -1,5 +1,7 @@
 package mat.server;
 
+import mat.dao.clause.MeasureXMLDAO;
+import mat.model.clause.MeasureXML;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +19,7 @@ import mat.shared.SaveUpdateCQLResult;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CQLServiceImplTest {
@@ -26,6 +29,9 @@ public class CQLServiceImplTest {
 
     @Mock
     private UserDAO userDAO;
+
+    @Mock
+    private MeasureXMLDAO measureXmlDao;
 
     @Mock
     private FhirCqlParser cqlParser;
@@ -44,14 +50,14 @@ public class CQLServiceImplTest {
     @Test
     public void testGetCQLData() {
         String xml = "<cqlLookUp></cqlLookUp>";
-        SaveUpdateCQLResult result = cqlService.getCQLData(xml);
+        SaveUpdateCQLResult result = cqlService.getCQLData("12345",true,xml);
         assertFalse(result.isSuccess());
     }
 
     @Test
     public void testGetCQLDataQdm() {
         String xml = "<cqlLookUp><usingModel>QDM</usingModel><usingModelVersion>5.5</usingModelVersion></cqlLookUp>";
-        SaveUpdateCQLResult result = cqlService.getCQLData(xml);
+        SaveUpdateCQLResult result = cqlService.getCQLData("12345",true,xml);
         assertEquals("QDM", result.getCqlModel().getUsingModel());
         assertEquals("5.5", result.getCqlModel().getUsingModelVersion());
         assertFalse(result.isSuccess());
@@ -64,7 +70,10 @@ public class CQLServiceImplTest {
         SaveUpdateCQLResult actualResult = new SaveUpdateCQLResult();
         Mockito.when(cqlParser.parseFhirCqlLibraryForErrors(Mockito.any(CQLModel.class), Mockito.anyString())).thenReturn(actualResult);
 
-        SaveUpdateCQLResult result = cqlService.getCQLData(xml);
+        MeasureXML measureXML = new MeasureXML();
+        measureXML.setSevereErrorCql(null);
+        when(measureXmlDao.findForMeasure("12345")).thenReturn(measureXML);
+        SaveUpdateCQLResult result = cqlService.getCQLData("12345",true,xml);
         assertEquals("FHIR", result.getCqlModel().getUsingModel());
         assertEquals("4.0.1", result.getCqlModel().getUsingModelVersion());
         assertFalse(result.isSuccess());

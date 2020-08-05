@@ -906,7 +906,7 @@ public class CQLServiceImpl implements CQLService {
     }
 
     @Override
-    public SaveUpdateCQLResult deleteCode(String xml, String toBeDeletedCodeId) {
+    public SaveUpdateCQLResult deleteCode(String id, boolean isMeasure, String xml, String toBeDeletedCodeId) {
         logger.info("Start deleteCode : ");
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
         XmlProcessor xmlProcessor = new XmlProcessor(xml);
@@ -932,7 +932,7 @@ public class CQLServiceImpl implements CQLService {
                 result.setSuccess(true);
                 result.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
                 result.setCqlModel(CQLUtilityClass.getCQLModelFromXML(result.getXml()));
-                result.setCqlCodeList(getCQLCodes(result.getXml()).getCqlCodeList());
+                result.setCqlCodeList(getCQLCodes(id, isMeasure, result.getXml()).getCqlCodeList());
                 result.setCqlCode(cqlCode);
             } else {
                 logger.info("Unable to find the selected Code element with id in deleteCode : " + toBeDeletedCodeId);
@@ -1014,13 +1014,25 @@ public class CQLServiceImpl implements CQLService {
         return result;
     }
 
+
     @Override
-    public SaveUpdateCQLResult getCQLData(String xmlString) {
+    public SaveUpdateCQLResult getCQLData(String id, boolean isMeasure, String xmlString) {
         CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString);
         String cqlString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
 
         SaveUpdateCQLResult result;
         if (cqlModel.isFhir()) {
+            if (isMeasure) {
+                MeasureXML xml = measureXmlDao.findForMeasure(id);
+                if (StringUtils.isNotBlank(xml.getSevereErrorCql())) {
+                    cqlString = xml.getSevereErrorCql();
+                }
+            } else {
+                CQLLibrary cqlLib = cqlLibraryDAO.find(id);
+                if (StringUtils.isNotBlank(cqlLib.getSevereErrorCql())) {
+                    cqlString = cqlLib.getSevereErrorCql();
+                }
+            }
             result = parseFhirCQLForErrors(cqlModel, cqlString);
         } else {
             result = parseCQLLibraryForErrors(cqlModel);
@@ -1286,8 +1298,8 @@ public class CQLServiceImpl implements CQLService {
     }
 
     @Override
-    public SaveUpdateCQLResult getCQLFileData(String xmlString) {
-        SaveUpdateCQLResult result = getCQLData(xmlString);
+    public SaveUpdateCQLResult getCQLFileData(String id,boolean isMeasure, String xmlString) {
+        SaveUpdateCQLResult result = getCQLData(id, isMeasure, xmlString);
         String cqlString = getCqlString(result.getCqlModel());
         result.setSuccess(cqlString != null);
         result.setCqlString(cqlString);
@@ -1896,7 +1908,7 @@ public class CQLServiceImpl implements CQLService {
                                                      CQLQualityDataModelWrapper cqlQualityDataModelWrapper) {
         MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
         String xmlString = model.getXml();
-        SaveUpdateCQLResult cqlDataResult = getCQLData(xmlString);
+        SaveUpdateCQLResult cqlDataResult = getCQLData(measureId,true, xmlString);
         List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
                 .sortCQLQualityDataSetDto(cqlDataResult.getCqlModel().getAllValueSetAndCodeList());
         cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
@@ -1905,10 +1917,10 @@ public class CQLServiceImpl implements CQLService {
     }
 
     @Override
-    public CQLCodeWrapper getCQLCodes(String xmlString) {
+    public CQLCodeWrapper getCQLCodes(String id, boolean isMeasure, String xmlString) {
         CQLCodeWrapper cqlCodeWrapper = new CQLCodeWrapper();
         if (xmlString != null && !xmlString.isEmpty()) {
-            SaveUpdateCQLResult parsedResult = getCQLData(xmlString);
+            SaveUpdateCQLResult parsedResult = getCQLData(id, isMeasure, xmlString);
             CQLModel cqlModel = parsedResult.getCqlModel();
             List<CQLCode> allCodes = cqlModel.getCodeList();
             if (parsedResult.getCqlErrors().isEmpty()) {

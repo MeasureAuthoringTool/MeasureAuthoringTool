@@ -199,6 +199,11 @@ public class MessageDelegate {
     private static final String CQL_LIBRARY_DESCRIPTION_REQUIRED = "CQL Library Description is required.";
     private static final String CQL_LIBRARY_PUBLISHER_REQUIRED = "CQL Library Publisher is required.";
 
+
+    private static final String MEASURE_DESCRIPTION_REQUIRED = "Please enter the Measure Description prior to packaging.";
+    private static final String MEASURE_STEWARD_REQUIRED = "Please enter the Steward prior to packaging.";
+    private static final String MEASURE_TYPE_REQUIRED = "Please enter the Measure Type prior to packaging.";
+
     public static String getUnableToVerifyHarpUser() {
         return UNABLE_TO_VERIFY_HARP_USER;
     }
@@ -1016,5 +1021,17 @@ public class MessageDelegate {
 
     public String getPublisherRequired() {
         return PUBLISHER_REQUIRED;
+    }
+
+    public static String getMeasureDescriptionRequired() {
+        return MEASURE_DESCRIPTION_REQUIRED;
+    }
+
+    public static String getMeasureStewardRequired() {
+        return MEASURE_STEWARD_REQUIRED;
+    }
+
+    public static String getMeasureTypeRequired() {
+        return MEASURE_TYPE_REQUIRED;
     }
 }

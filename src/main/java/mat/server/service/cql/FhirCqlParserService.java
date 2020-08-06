@@ -63,6 +63,20 @@ public class FhirCqlParserService implements FhirCqlParser {
     }
 
     @Override
+    public MatXmlResponse parse(String cql, CQLModel sourceModel, ValidationRequest validationRequest) {
+        String eightHourTicket = getTicket();
+        MatCqlXmlReq cqlXmlReq = new MatCqlXmlReq();
+        cqlXmlReq.setCql(cql);
+        cqlXmlReq.setSourceModel(sourceModel);
+        cqlXmlReq.setValidationRequest(validationRequest);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(UMLS_TOKEN, eightHourTicket);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<MatCqlXmlReq> request = new HttpEntity<>(cqlXmlReq, headers);
+        return rest(fhirServicesUrl + MATXML_FROM_CQL_SRVC, HttpMethod.PUT, request, MatXmlResponse.class, Collections.emptyMap());
+    }
+
+    @Override
     public MatXmlResponse parseFromMeasure(String measureId) {
         String eightHourTicket = getTicket();
         MatCqlXmlReq cqlXmlReq = new MatCqlXmlReq();
@@ -95,9 +109,24 @@ public class FhirCqlParserService implements FhirCqlParser {
     }
 
     @Override
+    public SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel, MatXmlResponse matXmlResponse, ValidationRequest validationRequest) {
+        CqlValidationResultBuilder resultBuilder = new CqlValidationResultBuilder();
+        resultBuilder.cqlModel(cqlModel);
+        resultBuilder.libraryErrors(matXmlResponse.getErrors());
+        resultBuilder.cqlObject(matXmlResponse.getCqlObject());
+        return resultBuilder.buildFromLibraryErrors();
+    }
+
+    @Override
     public SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel, String cqlString) {
         MatXmlResponse fhirResponse = parse(cqlString, cqlModel);
         return parseFhirCqlLibraryForErrors(cqlModel, fhirResponse.getErrors());
+    }
+
+    @Override
+    public SaveUpdateCQLResult parseFhirCqlLibraryForErrors(CQLModel cqlModel, String cqlString, ValidationRequest validationRequest) {
+        MatXmlResponse fhirResponse = parse(cqlString, cqlModel, validationRequest);
+        return parseFhirCqlLibraryForErrors(cqlModel, fhirResponse, validationRequest);
     }
 
     private String getTicket() {

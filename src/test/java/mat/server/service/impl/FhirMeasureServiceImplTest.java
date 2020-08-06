@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import mat.model.clause.MeasureDetails;
 import mat.server.service.MeasureAuditService;
+import mat.shared.CQLObject;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -177,7 +178,7 @@ public class FhirMeasureServiceImplTest {
         Mockito.when(measureXMLDAO.findForMeasure(any())).thenReturn(measureXML);
 
 
-        Mockito.when(cqlParser.parse(Mockito.anyString(), any(CQLModel.class))).thenReturn(new MatXmlResponse(Collections.emptyList(), new CQLModel(), "CQL text"));
+        Mockito.when(cqlParser.parse(Mockito.anyString(), any(CQLModel.class))).thenReturn(new MatXmlResponse(Collections.emptyList(), new CQLModel(), "CQL text", new CQLObject()));
 
         service.TEST_MODE = true;
         service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId, true);

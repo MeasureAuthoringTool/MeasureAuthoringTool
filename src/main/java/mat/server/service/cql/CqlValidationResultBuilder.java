@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import mat.shared.CQLObject;
 import org.apache.commons.lang3.StringUtils;
 
 import mat.model.cql.CQLModel;
@@ -21,12 +22,17 @@ public class CqlValidationResultBuilder {
     private final Map<String, List<CQLError>> libraryNameErrorsMap = new HashMap<>();
     private final Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>();
     private CQLModel cqlModel;
+    private CQLObject cqlObject;
     private String parentLibraryName;
 
     private List<LibraryErrors> libraryErrors = Collections.emptyList();
 
     public void cqlModel(CQLModel cqlModel) {
         this.cqlModel = cqlModel;
+    }
+
+    public void cqlObject(CQLObject cqlObject) {
+        this.cqlObject = cqlObject;
     }
 
     public void libraryErrors(List<LibraryErrors> libraryErrors) {
@@ -45,6 +51,7 @@ public class CqlValidationResultBuilder {
         }
         parsedCQL.setCqlModel(cqlModel);
         parsedCQL.setCqlErrors(errors);
+        parsedCQL.setCqlObject(cqlObject);
         parsedCQL.setLibraryNameErrorsMap(libraryNameErrorsMap);
         parsedCQL.setLibraryNameWarningsMap(libraryNameWarningsMap);
         parsedCQL.setIncludeLibrariesWithErrors(includeLibrariesWithErrors);

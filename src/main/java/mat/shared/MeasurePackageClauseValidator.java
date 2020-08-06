@@ -9,9 +9,8 @@ import mat.client.shared.MatContext;
 
 public class MeasurePackageClauseValidator {
 
-	public List<String> isValidMeasurePackage(List<MeasurePackageClauseDetail> detailList){
+	public List<String> isValidMeasurePackage(List<MeasurePackageClauseDetail> detailList, String scoring){
 		List<String> messages = new ArrayList<>();
-		String scoring = MatContext.get().getCurrentMeasureScoringType();
 
 		if (ConstantMessages.CONTINUOUS_VARIABLE_SCORING.equalsIgnoreCase(scoring)) {
 			messages = checkContinuousVariableGroupings(detailList);

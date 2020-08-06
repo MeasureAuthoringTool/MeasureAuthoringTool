@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mat.model.cql.CQLModel;
+import mat.shared.CQLObject;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,5 +17,6 @@ public class MatXmlResponse {
     private List<LibraryErrors> errors = new ArrayList<>();
     private CQLModel cqlModel;
     private String cql;
+    private CQLObject cqlObject;
 
 }

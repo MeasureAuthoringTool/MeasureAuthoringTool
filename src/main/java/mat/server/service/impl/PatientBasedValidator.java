@@ -7,8 +7,13 @@ import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.model.clause.ModelTypeHelper;
+import mat.server.service.cql.FhirCqlParser;
+import mat.server.service.cql.ValidationRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -25,6 +30,7 @@ import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
 import mat.shared.SaveUpdateCQLResult;
 
+@Component
 public class PatientBasedValidator {
 	
 		private static final String SCORING_CONTINUOUS_VARIABLE = "Continuous Variable";
@@ -55,35 +61,36 @@ public class PatientBasedValidator {
 
 	//Indicator for CQL return types of Boolean.
 	private static final String CQL_RETURN_TYPE_BOOLEAN = "BOOLEAN";
-		
+
+	@Autowired
+    private FhirCqlParser fhirCqlParser;
 	
-	
-	public static List<String> checkPatientBasedValidations(String measureXmlL, MeasurePackageDetail detail, CQLLibraryDAO cqlLibraryDAO, Measure measure) throws XPathExpressionException {
-		Map<String, List<String>> expressionPopMap = new HashMap<String,List<String>>();
-		Map<String, List<String>> assoExpressionPopMap = new HashMap<String,List<String>>();
+	public List<String> checkPatientBasedValidations(String measureXmlL, MeasurePackageDetail detail, CQLLibraryDAO cqlLibraryDAO, Measure measure) throws XPathExpressionException {
+		Map<String, List<String>> expressionPopMap = new HashMap<>();
+		Map<String, List<String>> assoExpressionPopMap = new HashMap<>();
 		
-		List<String> errorMessages = new ArrayList<String>();
+		List<String> errorMessages = new ArrayList<>();
 		
 		XmlProcessor xmlProcessor = new XmlProcessor(measureXmlL);
 
 		String scoringType = measure.getMeasureScoring();
 		
-		List<String> exprList = new ArrayList<String>();
-		List<String> msrObsFunctionList = new ArrayList<String>();
-		List<String> moAssociatedPopUsedExpression = new ArrayList<String>();
+		List<String> exprList = new ArrayList<>();
+		List<String> msrObsFunctionList = new ArrayList<>();
+		List<String> moAssociatedPopUsedExpression = new ArrayList<>();
 		List<MeasurePackageClauseDetail> packageClauses =  detail.getPackageClauses();
 		
-		for(MeasurePackageClauseDetail measurePackageClauseDetail : packageClauses){
+		for (MeasurePackageClauseDetail measurePackageClauseDetail : packageClauses) {
 			String populationUUID = measurePackageClauseDetail.getId();
 			String type = measurePackageClauseDetail.getType();
 			String name = measurePackageClauseDetail.getName();
 			
 			Node clauseNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure//clause[@uuid='"+populationUUID+"']");
 			
-			if(type.equalsIgnoreCase("stratification")){
+			if (type.equalsIgnoreCase("stratification")) {
 				Node stratificationNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure//stratification[@uuid='"+populationUUID+"']");
 				NodeList childNodes = stratificationNode.getChildNodes();
-				for(int i = 0; i < childNodes.getLength(); i++) {
+				for (int i = 0; i < childNodes.getLength(); i++) {
 					Node child = childNodes.item(i);
 					
 					String stratumName = child.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
@@ -92,109 +99,109 @@ public class PatientBasedValidator {
 					
 					createExpressionsToBeCheckedData(expressionPopMap, exprList, name + " - " + stratumName, definitionName);
 				}
-				
-				
-			}
-			else if(type.equals(MEASURE_OBSERVATION)){
-				
+			} else if (type.equals(MEASURE_OBSERVATION)) {
 				//find the cqlfunction here
 				Node firstChildNode = clauseNode.getFirstChild();
-				
-				if(firstChildNode.getNodeName().equals(CQLAGGFUNCTION) || firstChildNode.getNodeName().equals(CQLFUNCTION)){
-					if(firstChildNode.hasChildNodes()){
+				if (firstChildNode.getNodeName().equals(CQLAGGFUNCTION) || firstChildNode.getNodeName().equals(CQLFUNCTION)) {
+					if (firstChildNode.hasChildNodes()) {
 						firstChildNode = firstChildNode.getFirstChild();
-					}else{
+					} else {
 						//MAT-9070 changes
 						errorMessages.add(name + " must contain both an Aggregate Function and a valid User Defined Function.");
 						continue;
 					}
 				}				
 				msrObsFunctionList.add(firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-				
-				 if(expressionPopMap.containsKey(firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue())){
+
+				if (expressionPopMap.containsKey(firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue())) {
 					 expressionPopMap.get(firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue()).add(name); 
 				} else {
-					List<String> populationTypes = new ArrayList<String>();
+					List<String> populationTypes = new ArrayList<>();
 					populationTypes.add(name);
 					expressionPopMap.put(firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue(), populationTypes); 
 				}
-				 
-								
+
 				String associatedClauseNodeUUID  = null;
-				if(scoringType.equalsIgnoreCase(SCORING_CONTINUOUS_VARIABLE)){
+				if (scoringType.equalsIgnoreCase(SCORING_CONTINUOUS_VARIABLE)) {
 					associatedClauseNodeUUID = findMeasurePopInGrouping(packageClauses);
-				} else if(scoringType.equalsIgnoreCase(SCORING_RATIO)){
+				} else if (scoringType.equalsIgnoreCase(SCORING_RATIO)) {
 					associatedClauseNodeUUID = measurePackageClauseDetail.getAssociatedPopulationUUID();
 				}
-				if(associatedClauseNodeUUID !=null){
+
+				if (associatedClauseNodeUUID !=null) {
 					Node associatedPopNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure//clause[@uuid='"+associatedClauseNodeUUID+"']");
 					String definitionName = associatedPopNode.getFirstChild().getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 					moAssociatedPopUsedExpression.add(definitionName);
 					
-					 if(assoExpressionPopMap.containsKey(definitionName)){
+					if (assoExpressionPopMap.containsKey(definitionName)) {
 						 assoExpressionPopMap.get(definitionName).add(name); 
 					} else {
-						List<String> populationTypes = new ArrayList<String>();
+						List<String> populationTypes = new ArrayList<>();
 						populationTypes.add(name);
 						assoExpressionPopMap.put(definitionName, populationTypes); 
 					}
-					
 				}
-				
-			}else{
-				
+			} else {
 				Node firstChildNode = clauseNode.getFirstChild();
-				
 				String definitionName = firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
-				
 				createExpressionsToBeCheckedData(expressionPopMap, exprList, name, definitionName);
 			}
 		}
 		
 		if (errorMessages.isEmpty()) {
+
+            SaveUpdateCQLResult cqlResult = null;
 			//MAT-9070 changes
-			List<String> usedExprList = new ArrayList<String>();
+			List<String> usedExprList = new ArrayList<>();
 			usedExprList.addAll(exprList);
 			usedExprList.addAll(msrObsFunctionList);
 			usedExprList.addAll(moAssociatedPopUsedExpression);
 
 			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXmlL);
+            String cqlString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
 
-			SaveUpdateCQLResult cqlResult = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, usedExprList);
+
+            //Todo uncomment for FHIR
+//            try {
+//                if (ModelTypeHelper.isFhir(measure.getMeasureModel())) {
+//                    cqlResult = fhirCqlParser.parseFhirCqlLibraryForErrors(cqlModel, cqlString, new ValidationRequest().builder().validateReturnType(true).build());
+//                } else {
+                    cqlResult = CQLUtil.parseQDMCQLLibraryForErrors(cqlModel, cqlLibraryDAO, usedExprList);
+//                }
+//            } catch (Exception e) {
+//                logger.error("PatientBasedValidator::checkPatientBasedValidations --> Error parseFhirCqlLibraryForErrors");
+//            }
 
 			List<CQLExpressionObject> expressions = cqlResult.getCqlObject().getCqlDefinitionObjectList();
-			List<CQLExpressionObject> expressionsToBeChecked = new ArrayList<CQLExpressionObject>();
-			List<CQLExpressionObject> expressionsToBeCheckedForMO = new ArrayList<CQLExpressionObject>();
+			List<CQLExpressionObject> expressionsToBeChecked = new ArrayList<>();
+			List<CQLExpressionObject> expressionsToBeCheckedForMO = new ArrayList<>();
 
-			for(CQLExpressionObject cqlExpressionObject : expressions){
+			for (CQLExpressionObject cqlExpressionObject : expressions) {
 				String name = cqlExpressionObject.getName();
 
-				if(exprList.contains(name)){
+				if (exprList.contains(name)) {
 					expressionsToBeChecked.add(cqlExpressionObject);
 				}
 
-				if(moAssociatedPopUsedExpression.contains(name)) {
+				if (moAssociatedPopUsedExpression.contains(name)) {
 					expressionsToBeCheckedForMO.add(cqlExpressionObject);
 				}
 			}
 
 			boolean isPatientBasedIndicator = measure.getPatientBased();
 			
-			if(isPatientBasedIndicator){
-
+			if (isPatientBasedIndicator) {
 				//Check for MAT-8606 validations.			
 				List<String> messages = checkReturnType(expressionsToBeChecked, CQL_RETURN_TYPE_BOOLEAN, expressionPopMap);
-				if(messages.size() > 0){
+				if (messages.size() > 0) {
 					errorMessages.addAll(messages);
 				}
 				//Check for MAT-8622 Measure Observation and Patient-based Measure Indicator in Ratio scoring type.
-				if(msrObsFunctionList.size() >0 && scoringType.equalsIgnoreCase(SCORING_RATIO) ){
+				if (msrObsFunctionList.size() >0 && scoringType.equalsIgnoreCase(SCORING_RATIO) ) {
 					String message = MatContext.get().getMessageDelegate().getEPISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE();
 					errorMessages.add(message);
 				}
-
-			}else{
-
+			} else {
 				//Check for MAT-8608 validations.			
 				List<String> messages = checkSimilarReturnTypes(expressionsToBeChecked,expressionPopMap);
 				if(messages.size() > 0){
@@ -203,11 +210,11 @@ public class PatientBasedValidator {
 
 			}
 			//check for MAT-8627 validations for functions attached to Measure Observations.
-			if(!isPatientBasedIndicator || !scoringType.equalsIgnoreCase(SCORING_RATIO)){
+			if (!isPatientBasedIndicator || !scoringType.equalsIgnoreCase(SCORING_RATIO)) {
 				List<CQLExpressionObject> functions = cqlResult.getCqlObject().getCqlFunctionObjectList();
 				List<CQLExpressionObject> functionsToBeChecked = new ArrayList<CQLExpressionObject>();
 
-				for(CQLExpressionObject cqlExpressionObject : functions){
+				for (CQLExpressionObject cqlExpressionObject : functions) {
 					String name = cqlExpressionObject.getName();
 
 					if(msrObsFunctionList.contains(name)){
@@ -275,7 +282,7 @@ public class PatientBasedValidator {
 				String funcArgumentReturnType = argumentList.get(0).getReturnType();
 				logger.info("funcArgumentReturnType Start ==========" + funcArgumentReturnType);
 				// for now parser returns  positive with positive qdm data model and negative of positive for negative qdm data model for function argument return type.
-				for(CQLExpressionObject expressionObject : associatedPopExpressionTobeChecked){
+				for (CQLExpressionObject expressionObject : associatedPopExpressionTobeChecked) {
 					String returnTypeOfExpression = expressionObject.getReturnType();
 					String expressionName = expressionObject.getName();
 					//in case list<qdm.{data Model}> , comparison had to be with only qdm.{data Model}. So dropping list and < ,> from definition return type if exists.
@@ -289,7 +296,7 @@ public class PatientBasedValidator {
 					}
 					logger.info("funcArgumentReturnType ==========" + funcArgumentReturnType);
 					if(!returnTypeOfExpression.equalsIgnoreCase(funcArgumentReturnType)){
-						if(!expressionAlreadyEval.contains(expressionName)){
+						if(!expressionAlreadyEval.contains(expressionName)) {
 							List<String> generatedMessages = generateMessageList(expressionName, assoExpressionPopMap, MatContext.get().getMessageDelegate().getMEASURE_OBSERVATION_RETURN_SAME_TYPE_VALIDATION_MESSAGE());
 							returnMessages.addAll(generatedMessages);
 						}
@@ -314,23 +321,22 @@ public class PatientBasedValidator {
 	private static List<String> checkSimilarReturnTypes(
 			List<CQLExpressionObject> expressionsToBeChecked, Map<String, List<String>> expressionPopMap ) {
 		
-		List<String> returnMessages = new ArrayList<String>();
-		List<String>expressionAlreadyEval = new ArrayList<String>();
+		List<String> returnMessages = new ArrayList<>();
+		List<String>expressionAlreadyEval = new ArrayList<>();
 		String returnType = null;
 		
-		for(CQLExpressionObject cqlExpressionObject : expressionsToBeChecked){
-
+		for (CQLExpressionObject cqlExpressionObject : expressionsToBeChecked) {
 			logger.info("Return type for "+cqlExpressionObject.getName()+" is "+cqlExpressionObject.getReturnType());
 			String expressionReturnType = cqlExpressionObject.getReturnType();
 			boolean isList = expressionReturnType.toLowerCase().startsWith("list");
 			
-			if(!isList && !expressionAlreadyEval.contains(cqlExpressionObject.getName())){
+			if (!isList && !expressionAlreadyEval.contains(cqlExpressionObject.getName())) {
 				List<String> generatedMessages = generateMessageList(cqlExpressionObject.getName(), expressionPopMap, MatContext.get().getMessageDelegate().getEPISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE());
 				returnMessages.addAll(generatedMessages);
-			}else{
-				if(returnType == null){
+			} else {
+				if (returnType == null) {
 					returnType = expressionReturnType;
-				}else if(!returnType.equals(expressionReturnType) && !expressionAlreadyEval.contains(cqlExpressionObject.getName())){
+				} else if(!returnType.equals(expressionReturnType) && !expressionAlreadyEval.contains(cqlExpressionObject.getName())) {
 					List<String> generatedMessages = generateMessageList(cqlExpressionObject.getName(), expressionPopMap, MatContext.get().getMessageDelegate().getEPISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE());
 					returnMessages.addAll(generatedMessages);
 
@@ -361,7 +367,7 @@ public class PatientBasedValidator {
 			returnType = returnType.replaceAll(">", "]");
 			
 			//check for return type to be "System.Boolean"
-			if(returnTypeCheck.equals(CQL_RETURN_TYPE_BOOLEAN)){
+			if (returnTypeCheck.equals(CQL_RETURN_TYPE_BOOLEAN)) {
 				
 				if(!cqlExpressionObject.getReturnType().equals(SYSTEM_BOOLEAN) && !expressionAlreadyEval.contains(cqlExpressionObject.getName())){
 					
@@ -369,7 +375,7 @@ public class PatientBasedValidator {
 					returnMessages.addAll(generatedMessages);
 				}
 				
-			}else if(returnTypeCheck.equals(CQL_RETURN_TYPE_NUMERIC) && !expressionAlreadyEval.contains(cqlExpressionObject.getName())){
+			} else if(returnTypeCheck.equals(CQL_RETURN_TYPE_NUMERIC) && !expressionAlreadyEval.contains(cqlExpressionObject.getName())) {
 				String exprReturnType = cqlExpressionObject.getReturnType();
 				
 				if(!exprReturnType.equals(SYSTEM_INTEGER) && 

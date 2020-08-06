@@ -250,56 +250,53 @@ public class MeasurePackagePresenter implements MatPresenter {
             }
         });
 
-        view.getPackageGroupingWidget().getSaveGrouping().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent event) {
-                if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-                    clearMessages();
-                    ((Button) view.getPackageMeasureButton()).setEnabled(true);
-                    final MeasurePackageDetail tempMeasurePackageDetails = new MeasurePackageDetail(currentDetail);
-                    updateDetailsFromView(tempMeasurePackageDetails);
+        view.getPackageGroupingWidget().getSaveGrouping().addClickHandler(event -> {
+            if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+                clearMessages();
+                ((Button) view.getPackageMeasureButton()).setEnabled(true);
+                final MeasurePackageDetail tempMeasurePackageDetails = new MeasurePackageDetail(currentDetail);
+                updateDetailsFromView(tempMeasurePackageDetails);
 
-                    if (isValid()) {
-                        showMeasurePackagerBusy(true);
-                        MatContext.get().getPackageService()
-                                .save(tempMeasurePackageDetails, new AsyncCallback<MeasurePackageSaveResult>() {
-                                    @Override
-                                    public void onFailure(final Throwable caught) {
-                                        logger.log(Level.SEVERE, "Error in PackageService.save. Error message: " + caught.getMessage(), caught);
-                                        Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                if (isValid()) {
+                    showMeasurePackagerBusy(true);
+                    MatContext.get().getPackageService()
+                            .save(tempMeasurePackageDetails, new AsyncCallback<MeasurePackageSaveResult>() {
+                                @Override
+                                public void onFailure(final Throwable caught) {
+                                    logger.log(Level.SEVERE, "Error in PackageService.save. Error message: " + caught.getMessage(), caught);
+                                    Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                                    getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
+                                    showMeasurePackagerBusy(false);
+                                }
+
+                                @Override
+                                public void onSuccess(final MeasurePackageSaveResult result) {
+                                    if (result.isSuccess()) {
+                                        updateDetailsFromView(currentDetail);
                                         getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
+                                        view.getPackageSuccessMessageDisplay().createAlert(
+                                                MatContext.get().getMessageDelegate().
+                                                        getGroupingSavedMessage());
+
                                         showMeasurePackagerBusy(false);
-                                    }
 
-                                    @Override
-                                    public void onSuccess(final MeasurePackageSaveResult result) {
-                                        if (result.isSuccess()) {
-                                            updateDetailsFromView(currentDetail);
+
+                                    } else {
+                                        if (result.getMessages().size() > 0) {
+                                            view.getPackageErrorMessageDisplay().
+                                                    createAlert(result.getMessages());
                                             getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
-                                            view.getPackageSuccessMessageDisplay().createAlert(
-                                                    MatContext.get().getMessageDelegate().
-                                                            getGroupingSavedMessage());
-
-                                            showMeasurePackagerBusy(false);
-
-
                                         } else {
-                                            if (result.getMessages().size() > 0) {
-                                                view.getPackageErrorMessageDisplay().
-                                                        createAlert(result.getMessages());
-                                                getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
-                                            } else {
-                                                view.getPackageErrorMessageDisplay().clearAlert();
-                                            }
+                                            view.getPackageErrorMessageDisplay().clearAlert();
                                         }
-
                                     }
-                                });
 
-                        showMeasurePackagerBusy(false);
-                    } else {
-                        getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
-                    }
+                                }
+                            });
+
+                    showMeasurePackagerBusy(false);
+                } else {
+                    getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
                 }
             }
         });
@@ -515,7 +512,7 @@ public class MeasurePackagePresenter implements MatPresenter {
         List<MeasurePackageClauseDetail> detailList = view.getPackageGroupingWidget().getGroupingPopulationList();
         MeasurePackageClauseValidator clauseValidator = new MeasurePackageClauseValidator();
         MeasurePackageClauseCellListWidget measurePackageClauseCellListWidget = new MeasurePackageClauseCellListWidget();
-        List<String> messages = clauseValidator.isValidMeasurePackage(detailList);
+        List<String> messages = clauseValidator.isValidMeasurePackage(detailList, MatContext.get().getCurrentMeasureScoringType());
         measurePackageClauseCellListWidget.checkForNumberOfStratification(detailList, messages);
         if (!messages.isEmpty()) {
             view.getPackageErrorMessageDisplay().createAlert(messages);

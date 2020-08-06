@@ -292,6 +292,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     @Autowired
     private MATPropertiesService propertiesService;
 
+    @Autowired
+    private PatientBasedValidator patientBasedValidator;
+
     @Override
     public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
         String result = "";
@@ -3424,7 +3427,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                             try {
                                 for (Map.Entry<Integer, MeasurePackageDetail> entry : seqDetailMap.entrySet()) {
                                     Measure measure = measureDAO.find(entry.getValue().getMeasureId());
-                                    List<String> messages = PatientBasedValidator.checkPatientBasedValidations(
+                                    List<String> messages = patientBasedValidator.checkPatientBasedValidations(
                                             xmlModel.getXml(), entry.getValue(), cqlLibraryDAO, measure);
                                     if (!messages.isEmpty()) {
                                         allMessages = allMessages + "Grouping " + entry.getKey() + ", ";

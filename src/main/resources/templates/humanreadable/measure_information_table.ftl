@@ -28,11 +28,12 @@
             <th scope="row" class="row-header"><span class="td_label">Measure Steward</span></th>
             <td style="width:80%" colspan="3">${model.measureInformation.measureSteward!""}</td>
         </tr>
-        <tr>
-            <th scope="row" class="row-header"><span class="td_label">Experimental</span></th>
-            <td style="width:80%" colspan="3">${model.measureInformation.experimental?string('Yes', 'No')!""}</td>
-
-        </tr>
+        <#if model.measureInformation.fhir>
+            <tr>
+                <th scope="row" class="row-header"><span class="td_label">Experimental</span></th>
+                <td style="width:80%" colspan="3">${model.measureInformation.experimental?string('Yes', 'No')!""}</td>
+            </tr>
+        </#if>
         <#-- Loop through all measure developers if the measureDeveloeprs list exists, otherwise display a blank row -->
         <#if model.measureInformation.measureDevelopers??>
             <#list model.measureInformation.measureDevelopers as measureDeveloper>

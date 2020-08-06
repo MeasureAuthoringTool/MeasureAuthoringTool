@@ -36,13 +36,7 @@ public interface CQLService {
 
     SaveUpdateCQLResult loadStandaloneLibCql(CQLLibrary lib, String xmlString);
 
-    /**
-     * Gets the CQL data.
-     *
-     * @param xmlString - the measure xml
-     * @return the CQL data
-     */
-    SaveUpdateCQLResult getCQLData(String xmlString);
+    public SaveUpdateCQLResult getCQLData(String id, boolean isMeasure, String xmlString);
 
     /**
      * Save and modify cql general info.
@@ -132,7 +126,7 @@ public interface CQLService {
      * @param xmlString the measure xml
      * @return the CQL file data
      */
-    SaveUpdateCQLResult getCQLFileData(String xmlString);
+    SaveUpdateCQLResult getCQLFileData(String id, boolean isMeasure, String xmlString);
 
     String createParametersXML(CQLParameter parameter);
 
@@ -178,9 +172,9 @@ public interface CQLService {
 
     SaveUpdateCQLResult saveCQLCodes(String xml, MatCodeTransferObject codeTransferObject);
 
-    CQLCodeWrapper getCQLCodes(String xmlString);
+    CQLCodeWrapper getCQLCodes(String id, boolean isMeasure, String xmlString);
 
-    SaveUpdateCQLResult deleteCode(String xml, String toBeDeletedCodeId);
+    SaveUpdateCQLResult deleteCode(String id, boolean isMeasure, String xml, String toBeDeletedCodeId);
 
     SaveUpdateCQLResult saveCQLCodeSystem(String xml, CQLCodeSystem codeSystem);
 

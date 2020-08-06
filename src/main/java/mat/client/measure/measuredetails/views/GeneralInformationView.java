@@ -95,6 +95,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
 	@Override
 	public void buildDetailView() {
+		boolean isFhir = ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel());
 		mainPanel.clear();
 		HorizontalPanel detailPanel = new HorizontalPanel();
 		Form measureDetailForm = new Form();
@@ -114,7 +115,9 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		panelGrid.setWidget(2, 0, buildFinalizedDate());
 		panelGrid.setWidget(2, 1, buildGUIDPanel());
 		panelGrid.setWidget(3, 0, buildeCQMVersionPanel());
-		panelGrid.setWidget(3, 1, buildExperimentalPanel());
+		if (isFhir) {
+			panelGrid.setWidget(3, 1, buildExperimentalPanel());
+		}
 		panelGrid.setWidget(4, 0, buldeCQMIdentifierPanel());
 		panelGrid.setWidget(5, 0, buildNQFNumberPanel());
 		panelGrid.setWidget(6, 0, buildMeasurementPeriodPanel());

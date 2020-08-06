@@ -1,15 +1,5 @@
 package mat.client.measurepackage;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.constants.AlertType;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -51,6 +41,15 @@ import mat.shared.bonnie.error.UMLSNotActiveException;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
 import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
 import mat.shared.packager.error.SaveSupplementalDataElementException;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.constants.AlertType;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MeasurePackagePresenter implements MatPresenter {
 
@@ -509,6 +508,7 @@ public class MeasurePackagePresenter implements MatPresenter {
     }
 
     private boolean isValid() {
+
         List<MeasurePackageClauseDetail> detailList = view.getPackageGroupingWidget().getGroupingPopulationList();
         MeasurePackageClauseValidator clauseValidator = new MeasurePackageClauseValidator();
         MeasurePackageClauseCellListWidget measurePackageClauseCellListWidget = new MeasurePackageClauseCellListWidget();
@@ -583,20 +583,24 @@ public class MeasurePackagePresenter implements MatPresenter {
                         @Override
                         public void onSuccess(SaveUpdateCQLResult result) {
 
-                            if (result.getCqlErrors().isEmpty() && result.getLinterErrors().isEmpty()
+                            if (result.getCqlErrors().isEmpty() &&
+                                    !result.isSevereError() &&
+                                    result.getLinterErrors().isEmpty()
                                     && result.getFailureReason() != SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
-                                getMeasure(MatContext.get().getCurrentMeasureId());
-
-                                checkAndDisplayLibraryNameWarning(result.getCqlModel().getLibraryName());
+                                boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
+                                if (isFhir && (result.getMeasureDescription() == null || result.getMeasureDescription().isEmpty())) {
+                                    showError(MessageDelegate.getMeasureDescriptionRequired());
+                                } else if (isFhir && (result.getMeasureStewardId() == null || result.getMeasureStewardId().isEmpty())) {
+                                    showError(MessageDelegate.getMeasureStewardRequired());
+                                } else if (isFhir && (result.getMeasureTypes() == null || result.getMeasureTypes().size() == 0)) {
+                                    showError(MessageDelegate.getMeasureTypeRequired());
+                                } else {
+                                    getMeasure(MatContext.get().getCurrentMeasureId());
+                                    checkAndDisplayLibraryNameWarning(result.getCqlModel().getLibraryName());
+                                }
 
                             } else {
-                                panel.clear();
-                                panel.getElement().setId("MeasurePackagerContentFlowPanel");
-                                ErrorMessageAlert errorMessageAlert = new ErrorMessageAlert();
-                                panel.add(errorMessageAlert);
-
-                                MatContext.get().getMessageDelegate();
-                                errorMessageAlert.createAlert(MessageDelegate.getPACKAGER_CQL_ERROR());
+                                showError(MessageDelegate.getPACKAGER_CQL_ERROR());
                             }
                             showMeasurePackagerBusy(false);
                         }
@@ -609,6 +613,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 
         MeasureComposerPresenter.setSubSkipEmbeddedLink("MeasurePackagerContentFlowPanel");
         Mat.focusSkipLists("MeasureComposer");
+    }
+
+    private void showError(String errorMessage) {
+        panel.clear();
+        panel.getElement().setId("MeasurePackagerContentFlowPanel");
+        ErrorMessageAlert errorMessageAlert = new ErrorMessageAlert();
+        panel.add(errorMessageAlert);
+        errorMessageAlert.createAlert(errorMessage);
     }
 
     private void checkAndDisplayLibraryNameWarning(String libraryName) {

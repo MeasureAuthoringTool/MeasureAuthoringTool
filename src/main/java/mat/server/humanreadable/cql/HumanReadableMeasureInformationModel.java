@@ -55,6 +55,7 @@ public class HumanReadableMeasureInformationModel {
     private String measureSet;
     private boolean patientBased;
     private boolean experimental;
+    private boolean fhir;
 
     public HumanReadableMeasureInformationModel() {
 
@@ -142,6 +143,7 @@ public class HumanReadableMeasureInformationModel {
         this.measureSet = model.getGroupName();
         this.patientBased = model.isPatientBased();
         this.experimental = model.isExperimental();
+        this.fhir = model.isFhir();
     }
 
     public String getEcqmTitle() {
@@ -486,5 +488,13 @@ public class HumanReadableMeasureInformationModel {
 
     public void setExperimental(boolean experimental) {
         this.experimental = experimental;
+    }
+
+    public boolean isFhir() {
+        return fhir;
+    }
+
+    public void setFhir(boolean fhir) {
+        this.fhir = fhir;
     }
 }

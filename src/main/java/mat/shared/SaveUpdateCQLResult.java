@@ -43,6 +43,12 @@ public class SaveUpdateCQLResult extends GenericResult {
 
     private List<MeasureSteward> libStewards;
 
+    private String measureDescription;
+
+    private String measureStewardId;
+
+    private List<String> measureTypes;
+
     private List<CQLError> cqlErrors = new ArrayList<>();
 
     private List<CQLError> cqlWarnings = new ArrayList<>();
@@ -542,5 +548,29 @@ public class SaveUpdateCQLResult extends GenericResult {
 
     public void setLibStewards(List<MeasureSteward> libStewards) {
         this.libStewards = libStewards;
+    }
+
+    public String getMeasureDescription() {
+        return measureDescription;
+    }
+
+    public void setMeasureDescription(String measureDescription) {
+        this.measureDescription = measureDescription;
+    }
+
+    public String getMeasureStewardId() {
+        return measureStewardId;
+    }
+
+    public void setMeasureStewardId(String measureStewardId) {
+        this.measureStewardId = measureStewardId;
+    }
+
+    public List<String> getMeasureTypes() {
+        return measureTypes;
+    }
+
+    public void setMeasureTypes(List<String> measureTypes) {
+        this.measureTypes = measureTypes;
     }
 }

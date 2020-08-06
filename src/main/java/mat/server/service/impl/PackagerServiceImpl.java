@@ -92,6 +92,9 @@ public class PackagerServiceImpl implements PackagerService {
     @Autowired
     private CompositeMeasurePackageValidator compositeMeasurePackageValidator;
 
+    @Autowired
+    private PatientBasedValidator patientBasedValidator;
+
     /**
      * 1) Loads the MeasureXml from DB and converts into Xml Document Object 2)
      * XPATH retrieves all Clause nodes in Measure_Xml except for Clause type
@@ -804,17 +807,16 @@ public class PackagerServiceImpl implements PackagerService {
     public MeasurePackageSaveResult save(MeasurePackageDetail detail) {
 
         long time1 = System.currentTimeMillis();
+        Measure measure = measureDAO.find(detail.getMeasureId());
 
         MeasurePackageClauseValidator clauseValidator = new MeasurePackageClauseValidator();
-        List<String> messages = clauseValidator.isValidMeasurePackage(detail.getPackageClauses());
+        List<String> messages = clauseValidator.isValidMeasurePackage(detail.getPackageClauses(), measure.getMeasureScoring());
         MeasurePackageSaveResult result = new MeasurePackageSaveResult();
 
         if (messages.size() == 0) {
             MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
-
-            Measure measure = measureDAO.find(detail.getMeasureId());
             try {
-                messages = PatientBasedValidator.checkPatientBasedValidations(measureXML.getMeasureXMLAsString(), detail, cqlLibraryDAO, measure);
+                messages = patientBasedValidator.checkPatientBasedValidations(measureXML.getMeasureXMLAsString(), detail, cqlLibraryDAO, measure);
             } catch (XPathExpressionException e) {
                 messages.add("Unexpected error encountered while doing Group Validations. Please contact HelpDesk.");
             }

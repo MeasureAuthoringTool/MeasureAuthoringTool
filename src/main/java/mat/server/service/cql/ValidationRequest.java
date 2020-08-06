@@ -2,12 +2,16 @@ package mat.server.service.cql;
 
 import javax.annotation.Nullable;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@AllArgsConstructor
 @Nullable
+@Builder
+@NoArgsConstructor
 public class ValidationRequest {
 
     private int timeoutSeconds = -1;
@@ -15,5 +19,5 @@ public class ValidationRequest {
     private boolean validateCodeSystems = true;
     private boolean validateSyntax = true;
     private boolean validateCqlToElm = true;
-
+    private boolean validateReturnType = false;
 }

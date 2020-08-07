@@ -26,18 +26,4 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
     public Map<String, Boolean> findFeatureFlags() {
         return featureFlagDAO.findFeatureFlags();
     }
-
-    @Cacheable("isFhirEnabled")
-    public boolean isFhirEnabled() {
-        final StopWatch stopwatch = new StopWatch();
-        stopwatch.start();
-
-        Boolean fhirEnabled = findFeatureFlags().getOrDefault(FeatureFlagConstant.MAT_ON_FHIR, false);
-
-        stopwatch.stop();
-        logger.info("FeatureFlagServiceImpl::isFhirEnabled took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
-
-        return fhirEnabled;
-    }
-
 }

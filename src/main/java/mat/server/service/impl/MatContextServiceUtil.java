@@ -236,14 +236,6 @@ public class MatContextServiceUtil implements InitializingBean {
         }
     }
 
-    public boolean isMeasureModelEditable(String modelType) {
-        return featureFlagService.isFhirEnabled() || !ModelTypeHelper.FHIR.equals(modelType);
-    }
-
-    public boolean isCqlLibraryModelEditable(String modelType) {
-        return featureFlagService.isFhirEnabled() || !ModelTypeHelper.FHIR.equals(modelType);
-    }
-
     public boolean isCqlLibraryConvertible(CQLLibrary cqlLibrary) {
         String ownerId = cqlLibrary.getOwnerId() == null ? null : cqlLibrary.getOwnerId().getId();
         return isConvertible(cqlLibrary.getLibraryModelType(), cqlLibrary.isDraft(), cqlLibrary.getQdmVersion(), cqlLibrary.getReleaseVersion(), ownerId);

@@ -107,7 +107,7 @@ public class MeasureLibraryResultTable {
                         }
                     };
                     singleClickTimer.schedule(MOUSE_CLICK_DELAY);
-                } else if (obj.getClickCount() == 2  && obj.isFhirEditOrViewable()) {
+                } else if (obj.getClickCount() == 2  && obj.isEditable()) {
                     singleClickTimer.cancel();
                     obj.setClickCount(0);
                     SelectionEvent.fire(fireEvent, obj);

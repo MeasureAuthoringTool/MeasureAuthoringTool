@@ -12,7 +12,6 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.http.client.UrlBuilder;
@@ -70,6 +69,7 @@ import mat.client.population.service.PopulationServiceAsync;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
+import mat.client.util.FeatureFlagConstant;
 import mat.dto.CompositeMeasureScoreDTO;
 import mat.dto.OperatorDTO;
 import mat.dto.UserPreferenceDTO;
@@ -1317,7 +1317,7 @@ public class MatContext implements IsSerializable {
     public void getCQLConstants() {
         CQLConstantServiceAsync cqlConstantService = (CQLConstantServiceAsync) GWT.create(CQLConstantService.class);
 
-        cqlConstantService.getAllCQLConstants(new AsyncCallback<CQLConstantContainer>() {
+        cqlConstantService.getAllCQLConstants(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR), new AsyncCallback<CQLConstantContainer>() {
 
             @Override
             public void onFailure(Throwable caught) {

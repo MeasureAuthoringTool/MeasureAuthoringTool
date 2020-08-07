@@ -36,7 +36,6 @@ import mat.dto.DataTypeDTO;
 import mat.dto.UnitDTO;
 import mat.model.cql.CQLKeywords;
 import mat.server.service.CodeListService;
-import mat.server.service.FeatureFlagService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.spreadsheet.MatAttribute;
 import mat.server.util.MATPropertiesService;
@@ -97,11 +96,8 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
     @Autowired
     private MappingSpreadsheetService mappingService;
 
-    @Autowired
-    private FeatureFlagService flagService;
-
     @Override
-    public CQLConstantContainer getAllCQLConstants() {
+    public CQLConstantContainer getAllCQLConstants(boolean isFhirEnabled) {
         final CQLConstantContainer cqlConstantContainer = new CQLConstantContainer();
 
         // get the unit dto list
@@ -116,7 +112,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         }
         cqlConstantContainer.setCqlUnitMap(unitMap);
 
-        if (flagService.isFhirEnabled()) {
+        if (isFhirEnabled) {
             loadFhirAttributes(cqlConstantContainer);
         }
 

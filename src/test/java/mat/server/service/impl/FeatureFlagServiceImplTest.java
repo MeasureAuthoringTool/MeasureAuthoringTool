@@ -33,7 +33,5 @@ class FeatureFlagServiceImplTest {
         Mockito.when(featureFlagDAO.findFeatureFlags()).thenReturn(featureFlags);
         Map<String, Boolean> featureFlagMap = featureFlagServiceImpl.findFeatureFlags();
         assertEquals(2, featureFlagMap.size());
-        Mockito.verify(featureFlagDAO, times(1)).findFeatureFlags();
-        assertTrue(featureFlagServiceImpl.isFhirEnabled());
     }
 }

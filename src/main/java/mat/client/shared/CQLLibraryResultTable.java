@@ -118,7 +118,6 @@ public class CQLLibraryResultTable {
         return lastRowCLicked != null &&
                 lastRowCLicked.getId() != null &&
                 lastRowCLicked.getId().equals(obj.getId()) && //same row clicked twice.
-                obj.isFhirEditOrViewable() && //is editable.
                 clickDuration <= DELAY_TIME; //was within delay time.
     }
 

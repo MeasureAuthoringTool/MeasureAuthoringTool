@@ -120,66 +120,6 @@ public class MatContextServiceUtilTest {
     }
 
     @Test
-    public void testIsMeasureEditable() {
-        featureFlagMap.put("FhirEdit", true);
-        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
-
-        measure.setMeasureModel("QDM");
-
-        assertEquals(true, matContextServiceUtil.isMeasureModelEditable(measure.getMeasureModel()));
-    }
-
-    @Test
-    public void testIsMeasureEditableFail() {
-        featureFlagMap.put("FhirEdit", false);
-        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
-
-        measure.setMeasureModel("QDM");
-
-        assertEquals(true, matContextServiceUtil.isMeasureModelEditable(measure.getMeasureModel()));
-    }
-
-    @Test
-    public void testIsMeasureEditableNullCheck() {
-        featureFlagMap.put("FhirEdit", false);
-        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
-
-        measure.setMeasureModel("");
-
-        assertEquals(true, matContextServiceUtil.isMeasureModelEditable(measure.getMeasureModel()));
-    }
-
-    @Test
-    public void testIsCqlLibraryEditable() {
-        featureFlagMap.put("FhirEdit", true);
-        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
-
-        cqlLibrary.setLibraryModelType("QDM");
-
-        assertEquals(true, matContextServiceUtil.isCqlLibraryModelEditable(cqlLibrary.getLibraryModelType()));
-    }
-
-    @Test
-    public void testIsCqlLibraryEditableFail() {
-        featureFlagMap.put("FhirEdit", false);
-        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
-
-        cqlLibrary.setLibraryModelType("QDM");
-
-        assertEquals(true, matContextServiceUtil.isCqlLibraryModelEditable(cqlLibrary.getLibraryModelType()));
-    }
-
-    @Test
-    public void testIsCqlLibraryEditableNullCheck() {
-        featureFlagMap.put("FhirEdit", false);
-        Mockito.when(featureFlagService.findFeatureFlags()).thenReturn(featureFlagMap);
-
-        cqlLibrary.setLibraryModelType("");
-
-        assertEquals(true, matContextServiceUtil.isCqlLibraryModelEditable(cqlLibrary.getLibraryModelType()));
-    }
-
-    @Test
     public void testCqlLibraryObjectConvertible() {
         setUserAndRole();
 

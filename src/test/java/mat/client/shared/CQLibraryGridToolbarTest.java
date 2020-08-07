@@ -241,7 +241,6 @@ public class CQLibraryGridToolbarTest {
     @Test
     public void testViewNotEditable() {
         CQLLibraryDataSetObject selectedItem = new CQLLibraryDataSetObject();
-        selectedItem.setFhirEditOrViewable(true);
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setIcon(Mockito.eq(IconType.EYE));
@@ -260,7 +259,6 @@ public class CQLibraryGridToolbarTest {
         selectedItem.setLockedUserInfo(new LockedUserInfo());
         selectedItem.getLockedUserInfo().setEmailAddress("lockerby@gmail.com");
         selectedItem.setLocked(true);
-        selectedItem.setFhirEditOrViewable(true);
         MatContext.get().setFeatureFlags(featureFlagMap);
 
         toolbar.updateOnSelectionChanged(selectedItem);
@@ -280,7 +278,6 @@ public class CQLibraryGridToolbarTest {
 
         MatContext.get().setFeatureFlags(featureFlagMap);
         selectedItem.setEditable(true);
-        selectedItem.setFhirEditOrViewable(true);
 
         toolbar.updateOnSelectionChanged(selectedItem);
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.times(1)).setEnabled(Mockito.eq(true));

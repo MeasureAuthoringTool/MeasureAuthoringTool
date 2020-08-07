@@ -26,18 +26,4 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
     public Map<String, Boolean> findFeatureFlags() {
         return featureFlagDAO.findFeatureFlags();
     }
-
-    @Cacheable("isFhirEditEnabled")
-    public boolean isFhirEditEnabled() {
-        final StopWatch stopwatch = new StopWatch();
-        stopwatch.start();
-
-        Boolean editEnbled = findFeatureFlags().getOrDefault(FeatureFlagConstant.FHIR_EDIT, false);
-
-        stopwatch.stop();
-        logger.info("FeatureFlagServiceImpl::isFhirEditEnabled took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
-
-        return editEnbled;
-    }
-
 }

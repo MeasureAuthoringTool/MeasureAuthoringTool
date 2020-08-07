@@ -219,7 +219,6 @@ public class Application extends WebSecurityConfigurerAdapter {
         List<Cache> caches = Arrays.asList(
                 "ConversionResultDto.validate",
                 "featureFlags",
-                "isFhirEditEnabled",
                 "oidToVSACDodeSystemDTO",
                 "spreadSheetfhirTypes",
                 "spreadSheetMatAttributes",

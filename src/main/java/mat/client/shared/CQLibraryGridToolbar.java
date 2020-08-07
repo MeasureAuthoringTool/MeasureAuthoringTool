@@ -115,7 +115,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         historyButton.setIcon(IconType.CLOCK_O);
         historyButton.setTitle(CLICK_TO_VIEW_HISTORY_TITLE);
 
-        if (selectedItem.isEditable() && selectedItem.isFhirEditOrViewable()) {
+        if (selectedItem.isEditable()) {
             if (selectedItem.isLocked()) {
                 editOrViewButton.setText(EDIT_TEXT);
                 editOrViewButton.setEnabled(false);
@@ -127,13 +127,11 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
                 editOrViewButton.setIcon(IconType.PENCIL);
                 editOrViewButton.setTitle(CLICK_TO_EDIT_TITLE);
             }
-        } else if (!selectedItem.isEditable() && selectedItem.isFhirEditOrViewable()) {
+        } else {
             editOrViewButton.setText(VIEW_TEXT);
             editOrViewButton.setEnabled(true);
             editOrViewButton.setIcon(IconType.EYE);
             editOrViewButton.setTitle("Read-Only");
-        } else {
-            editOrViewButton.setEnabled(false);
         }
 
 
@@ -141,7 +139,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         shareButton.setIcon(IconType.SHARE_SQUARE);
         shareButton.setTitle(CLICK_TO_SHARE_TITLE);
         if (ModelTypeHelper.isFhir(selectedItem.getLibraryModelType())) {
-            shareButton.setEnabled(selectedItem.isSharable() && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_SHARE));
+            shareButton.setEnabled(selectedItem.isSharable() && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR));
         } else {
             shareButton.setEnabled(selectedItem.isSharable());
         }
@@ -212,7 +210,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
         public static Options fromFeatureFlags() {
             Options options = new Options();
-            options.setConvertButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1));
+            options.setConvertButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR));
             return options;
         }
 

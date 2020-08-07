@@ -79,7 +79,7 @@ public interface MeasureService extends RemoteService {
      * @param userId the user id
      * @return the all recent measure for user
      */
-    ManageMeasureSearchModel getAllRecentMeasureForUser(String userId);
+    ManageMeasureSearchModel getAllRecentMeasureForUser(String userId, boolean isFhirEnabled);
 
     /**
      * Gets the applied qdm from measure xml.

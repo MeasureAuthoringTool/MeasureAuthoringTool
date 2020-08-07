@@ -107,7 +107,7 @@ public class MeasureLibraryResultTable {
                         }
                     };
                     singleClickTimer.schedule(MOUSE_CLICK_DELAY);
-                } else if (obj.getClickCount() == 2  && obj.isFhirEditOrViewable()) {
+                } else if (obj.getClickCount() == 2  && obj.isEditable()) {
                     singleClickTimer.cancel();
                     obj.setClickCount(0);
                     SelectionEvent.fire(fireEvent, obj);
@@ -158,7 +158,7 @@ public class MeasureLibraryResultTable {
     @VisibleForTesting
     void onExportButtonClicked(MultiSelectionModel<Result> selectionModel) {
         Predicate<Result> fhirExportFeatureFlag = result -> isQdm(result.getMeasureModel()) ||
-                (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.EXPORT_V1) && isFhir(result.getMeasureModel()));
+                (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR) && isFhir(result.getMeasureModel()));
         List<Result> exportList = selectionModel.getSelectedSet().stream()
                 .filter(fhirExportFeatureFlag)
                 .collect(Collectors.toList());

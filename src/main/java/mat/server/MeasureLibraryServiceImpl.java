@@ -1081,7 +1081,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
      * @return {@link ManageMeasureSearchModel}.
      **/
     @Override
-    public ManageMeasureSearchModel getAllRecentMeasureForUser(String userId) {
+    public ManageMeasureSearchModel getAllRecentMeasureForUser(String userId, boolean isFhirEnabled) {
         // Call to fetch
         ArrayList<RecentMSRActivityLog> recentMeasureActivityList = (ArrayList<RecentMSRActivityLog>) recentMSRActivityLogDAO
                 .getRecentMeasureActivityLog(userId);
@@ -1092,7 +1092,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         boolean isSuperUser = LoggedInUserUtil.getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE);
         for (RecentMSRActivityLog activityLog : recentMeasureActivityList) {
             ManageMeasureSearchModel.Result detail = buildSearchModelResultObjectFromMeasureId(activityLog.getMeasureId(), isSuperUser);
-            detailModelList.add(detail);
+            if (isFhirEnabled) {
+                detailModelList.add(detail);
+            } else if (!ModelTypeHelper.isFhir(detail.getMeasureModel())) {
+                detailModelList.add(detail);
+            }
+
         }
         return manageMeasureSearchModel;
     }

@@ -116,7 +116,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         }
         cqlConstantContainer.setCqlUnitMap(unitMap);
 
-        if (flagService.isFhirEditEnabled()) {
+        if (flagService.isFhirEnabled()) {
             loadFhirAttributes(cqlConstantContainer);
         }
 

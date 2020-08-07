@@ -142,7 +142,7 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
         if (selectedItems.size() == 1) {
             if (ModelTypeHelper.isFhir(selectedItem.getMeasureModel())) {
-                if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_SHARE)) {
+                if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
                     shareButton.setEnabled(selectedItem.isSharable());
                 }
             } else {
@@ -243,9 +243,9 @@ public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 
         public static Options fromFeatureFlags() {
             Options options = new Options();
-            options.setConvertButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1));
-            options.setFhirValidationButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1));
-            options.setFhirExportEnabled(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.EXPORT_V1));
+            options.setConvertButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR));
+            options.setFhirValidationButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR));
+            options.setFhirExportEnabled(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR));
             return options;
         }
     }

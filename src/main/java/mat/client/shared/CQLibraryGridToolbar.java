@@ -141,7 +141,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         shareButton.setIcon(IconType.SHARE_SQUARE);
         shareButton.setTitle(CLICK_TO_SHARE_TITLE);
         if (ModelTypeHelper.isFhir(selectedItem.getLibraryModelType())) {
-            shareButton.setEnabled(selectedItem.isSharable() && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_SHARE));
+            shareButton.setEnabled(selectedItem.isSharable() && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR));
         } else {
             shareButton.setEnabled(selectedItem.isSharable());
         }
@@ -212,7 +212,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
         public static Options fromFeatureFlags() {
             Options options = new Options();
-            options.setConvertButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_CONV_V1));
+            options.setConvertButtonVisible(MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR));
             return options;
         }
 

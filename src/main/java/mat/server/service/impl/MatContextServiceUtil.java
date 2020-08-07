@@ -237,11 +237,11 @@ public class MatContextServiceUtil implements InitializingBean {
     }
 
     public boolean isMeasureModelEditable(String modelType) {
-        return featureFlagService.isFhirEditEnabled() || !ModelTypeHelper.FHIR.equals(modelType);
+        return featureFlagService.isFhirEnabled() || !ModelTypeHelper.FHIR.equals(modelType);
     }
 
     public boolean isCqlLibraryModelEditable(String modelType) {
-        return featureFlagService.isFhirEditEnabled() || !ModelTypeHelper.FHIR.equals(modelType);
+        return featureFlagService.isFhirEnabled() || !ModelTypeHelper.FHIR.equals(modelType);
     }
 
     public boolean isCqlLibraryConvertible(CQLLibrary cqlLibrary) {

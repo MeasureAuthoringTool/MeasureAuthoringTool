@@ -1565,12 +1565,7 @@ public class MatContext implements IsSerializable {
     }
 
     public ClickHandler addClickHandlerToResetTimeoutWarning() {
-        return new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                MatContext.get().restartTimeoutWarning();
-            }
-        };
+        return event -> MatContext.get().restartTimeoutWarning();
     }
 
     public Map<String, String> getExpressionToReturnTypeMap() {

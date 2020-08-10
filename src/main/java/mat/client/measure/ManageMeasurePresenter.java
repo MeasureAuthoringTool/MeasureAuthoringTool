@@ -1959,7 +1959,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
      */
     private void searchRecentMeasures() {
         searchDisplay.getMostRecentMeasureVerticalPanel().setVisible(false);
-        MatContext.get().getMeasureService().getAllRecentMeasureForUser(MatContext.get().getLoggedinUserId(),
+        MatContext.get().getMeasureService().getAllRecentMeasureForUser(MatContext.get().getLoggedinUserId(), MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR),
                 new AsyncCallback<ManageMeasureSearchModel>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -1968,16 +1968,12 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                     @Override
                     public void onSuccess(ManageMeasureSearchModel result) {
                         searchDisplay.getMostRecentMeasureWidget().setMeasureSearchModel(result);
-                        searchDisplay.getMostRecentMeasureWidget().setObserver(new MostRecentMeasureWidget.Observer() {
-                            @Override
-                            public void onExportClicked(Result result) {
-                                measureDeletion = false;
-                                isMeasureDeleted = false;
-                                isMeasureVersioned = false;
-                                searchDisplay.resetMessageDisplay();
-                                export(result);
-                            }
-
+                        searchDisplay.getMostRecentMeasureWidget().setObserver(result1 -> {
+                            measureDeletion = false;
+                            isMeasureDeleted = false;
+                            isMeasureVersioned = false;
+                            searchDisplay.resetMessageDisplay();
+                            export(result1);
                         });
                         searchDisplay.buildMostRecentWidget();
                         searchDisplay.getMostRecentMeasureWidget().setTableObserver(createMeasureTableObserver());

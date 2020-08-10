@@ -267,7 +267,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
         VerticalFlowPanel measureModelPanel = new VerticalFlowPanel();
         measureModelGroup.add(buildModelTypeLabel());
         //new model creation defaulted to FHIR
-        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.FHIR_ADD)) {
+        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
             fhirModel.setValue(true);
         } else {
             fhirModel.setEnabled(false);

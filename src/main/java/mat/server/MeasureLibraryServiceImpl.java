@@ -961,7 +961,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setClonable(isClonable);
 
         detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measure, currentUserId, shareLevelId, true));
-        detail.setFhirEditOrViewable(MatContextServiceUtil.get().isMeasureModelEditable(dto.getMeasureModel()));
         detail.setExportable(dto.isPackaged());
         detail.setFhirConvertible(MatContextServiceUtil.get().isMeasureConvertible(measure));
         detail.setHqmfReleaseVersion(measure.getReleaseVersion());
@@ -1081,7 +1080,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
      * @return {@link ManageMeasureSearchModel}.
      **/
     @Override
-    public ManageMeasureSearchModel getAllRecentMeasureForUser(String userId) {
+    public ManageMeasureSearchModel getAllRecentMeasureForUser(String userId, boolean isFhirEnabled) {
         // Call to fetch
         ArrayList<RecentMSRActivityLog> recentMeasureActivityList = (ArrayList<RecentMSRActivityLog>) recentMSRActivityLogDAO
                 .getRecentMeasureActivityLog(userId);
@@ -1092,7 +1091,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         boolean isSuperUser = LoggedInUserUtil.getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE);
         for (RecentMSRActivityLog activityLog : recentMeasureActivityList) {
             ManageMeasureSearchModel.Result detail = buildSearchModelResultObjectFromMeasureId(activityLog.getMeasureId(), isSuperUser);
-            detailModelList.add(detail);
+            if (isFhirEnabled) {
+                detailModelList.add(detail);
+            } else if (!ModelTypeHelper.isFhir(detail.getMeasureModel())) {
+                detailModelList.add(detail);
+            }
+
         }
         return manageMeasureSearchModel;
     }
@@ -1128,7 +1132,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setMeasureLocked(isLocked);
         boolean isEditable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId());
         detail.setEditable(isEditable);
-        detail.setFhirEditOrViewable(MatContextServiceUtil.get().isMeasureModelEditable(measure.getMeasureModel()));
         detail.setPatientBased(measure.getPatientBased());
         boolean isOwner = measure.getOwner().getId().equals(LoggedInUserUtil.getLoggedInUser());
         String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());

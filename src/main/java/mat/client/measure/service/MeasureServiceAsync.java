@@ -74,7 +74,7 @@ public interface MeasureServiceAsync {
 	 * @param userId the user id
 	 * @param callback the callback
 	 * @return the all recent measure for user */
-	void getAllRecentMeasureForUser(String userId, AsyncCallback<ManageMeasureSearchModel> callback);
+	void getAllRecentMeasureForUser(String userId, boolean isFhirEnabled, AsyncCallback<ManageMeasureSearchModel> callback);
 	
 	/**
 	 * Gets the applied qdm from measure xml.

@@ -224,7 +224,6 @@ public class MeasureLibraryGridToolbarTest {
     public void testViewOnSelectedNotEditable() {
         ManageMeasureSearchModel.Result item = new ManageMeasureSearchModel.Result();
         item.setIsComposite(true);
-        item.setFhirEditOrViewable(true);
         toolbar.updateOnSelectionChanged(Arrays.asList(item));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setIcon(Mockito.eq(IconType.EYE));
@@ -244,7 +243,6 @@ public class MeasureLibraryGridToolbarTest {
         item.setLockedUserInfo(new LockedUserInfo());
         item.getLockedUserInfo().setEmailAddress("fake@gmail.com");
         item.setIsComposite(true);
-        item.setFhirEditOrViewable(true);
         MatContext.get().setFeatureFlags(featureFlagMap);
 
         toolbar.updateOnSelectionChanged(Arrays.asList(item));
@@ -267,7 +265,6 @@ public class MeasureLibraryGridToolbarTest {
         item.setLockedUserInfo(new LockedUserInfo());
         item.getLockedUserInfo().setEmailAddress("fake@gmail.com");
         item.setIsComposite(true);
-        item.setFhirEditOrViewable(true);
         MatContext.get().setFeatureFlags(featureFlagMap);
 
         toolbar.updateOnSelectionChanged(Arrays.asList(item));
@@ -473,7 +470,7 @@ public class MeasureLibraryGridToolbarTest {
     @Test
     public void testFromFeatureFlagsConvertButtonVisible() {
         HashMap<String, Boolean> flags = new HashMap<>();
-        flags.put(FeatureFlagConstant.FHIR_CONV_V1, true);
+        flags.put(FeatureFlagConstant.MAT_ON_FHIR, true);
         MatContext.get().setFeatureFlags(flags);
         MeasureLibraryGridToolbar.Options otherOptions = MeasureLibraryGridToolbar.Options.fromFeatureFlags();
         Assert.assertTrue(otherOptions.isConvertButtonVisible());
@@ -482,7 +479,7 @@ public class MeasureLibraryGridToolbarTest {
     @Test
     public void testWithOptionsFromFlags() {
         HashMap<String, Boolean> flags = new HashMap<>();
-        flags.put(FeatureFlagConstant.FHIR_CONV_V1, true);
+        flags.put(FeatureFlagConstant.MAT_ON_FHIR, true);
         MatContext.get().setFeatureFlags(flags);
 
         MeasureLibraryGridToolbar otherTooblar = MeasureLibraryGridToolbar.withOptionsFromFlags();

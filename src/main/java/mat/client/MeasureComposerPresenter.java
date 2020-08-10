@@ -202,7 +202,7 @@ public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, E
     public void disableMeasurePackageTabForFhirMeasures(String currentMeasureModel) {
         for(int i = 0; i < measureComposerTabLayout.getTabBar().getTabCount(); i++) {
             if(measureComposerTabLayout.getTabBar().getTabHTML(i).contains(MEASURE_PACKAGER)) {
-                if(MeasureDetailsUtil.isPackageable(currentMeasureModel, MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.PACKAGE_V1))) {
+                if(MeasureDetailsUtil.isPackageable(currentMeasureModel, MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR))) {
                     measureComposerTabLayout.getTabBar().setTabEnabled(i, false);
                 } else {
                     measureComposerTabLayout.getTabBar().setTabEnabled(i, true);

@@ -74,8 +74,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 
         private int clickCount = 0;
 
-        private boolean isFhirEditorViewable;
-
         public Result() {
         }
 
@@ -113,7 +111,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
             this.isComposite = result.getIsComposite();
             this.cqlLibraryName = result.getCqlLibraryName();
             this.measureModel = result.getMeasureModel();
-            this.isFhirEditorViewable = result.isFhirEditorViewable();
         }
 
 
@@ -405,14 +402,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
             isFhirConvertible = fhirConvertible;
         }
 
-        public boolean isFhirEditorViewable() {
-            return isFhirEditorViewable;
-        }
-
-        public void setFhirEditorViewable(boolean fhirEditorViewable) {
-            isFhirEditorViewable = fhirEditorViewable;
-        }
-
         /**
          * Checks if is measure locked.
          *
@@ -642,15 +631,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
         public void incrementClickCount() {
             this.clickCount++;
         }
-
-        public void setFhirEditOrViewable(boolean isFhirEditorViewable) {
-            this.isFhirEditorViewable = isFhirEditorViewable;
-        }
-
-        public boolean isFhirEditOrViewable() {
-            return this.isFhirEditorViewable;
-        }
-
     }
 
     /**

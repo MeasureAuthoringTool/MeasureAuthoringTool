@@ -39,7 +39,6 @@ public class CQLLibraryDataSetObject implements IsSerializable, BaseModel {
     private boolean isVersionable;
     private boolean isDeletable;
     private String libraryModelType;
-    private boolean isFhirEditorViewable;
     private boolean fhirConvertible;
 
     private List<CQLError> cqlErrors = new ArrayList<>();
@@ -311,14 +310,6 @@ public class CQLLibraryDataSetObject implements IsSerializable, BaseModel {
 
     public void setLibraryModelType(String libraryModelType) {
         this.libraryModelType = libraryModelType;
-    }
-
-    public void setFhirEditOrViewable(boolean isFhirEditorViewable) {
-        this.isFhirEditorViewable = isFhirEditorViewable;
-    }
-
-    public boolean isFhirEditOrViewable() {
-        return this.isFhirEditorViewable;
     }
 
     public boolean isFhirConvertible() {

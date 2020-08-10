@@ -122,7 +122,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 			vp.add(simpleXMLRadio);
 		}
 
-		if(ModelTypeHelper.FHIR.equalsIgnoreCase(measureModel) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.EXPORT_V1)) {
+		if(ModelTypeHelper.FHIR.equalsIgnoreCase(measureModel) && MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
 			vp.add(xmlRadio);
 			vp.add(jsonRadio);
 			vp.add(humanReadableRadio);

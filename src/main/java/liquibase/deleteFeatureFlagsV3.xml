@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet author="mat_dev_user" id="1" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="FEATURE_FLAGS" columnName="FLAG_NAME"/>
+            <columnExists tableName="FEATURE_FLAGS" columnName="FLAG_ON"/>
+        </preConditions>
+        <sql>
+            DELETE FROM FEATURE_FLAGS
+            WHERE FLAG_NAME IN  ('PackageV1',
+                'FhirView',
+                'FhirShare',
+                'FhirEdit',
+                'FhirDT',
+                'FhirDelete',
+                'FhirConvV1',
+                'FhirAdd',
+                'ExportV1',
+                'DraftVersion')
+        </sql>
+    </changeSet>
+</databaseChangeLog>

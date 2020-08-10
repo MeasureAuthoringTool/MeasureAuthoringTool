@@ -28,13 +28,10 @@ class FeatureFlagServiceImplTest {
     @Test
     void findFeatureFlagTest() {
         Map<String, Boolean> featureFlags = Map.of(
-                "MAT_ON_FHIR", false,
-                FeatureFlagConstant.FHIR_EDIT, true,
-                "FHIR_DELETE", false);
+                FeatureFlagConstant.MAT_ON_FHIR, true,
+                FeatureFlagConstant.FHIR_BONNIE, false);
         Mockito.when(featureFlagDAO.findFeatureFlags()).thenReturn(featureFlags);
         Map<String, Boolean> featureFlagMap = featureFlagServiceImpl.findFeatureFlags();
-        assertEquals(3, featureFlagMap.size());
-        Mockito.verify(featureFlagDAO, times(1)).findFeatureFlags();
-        assertTrue(featureFlagServiceImpl.isFhirEditEnabled());
+        assertEquals(2, featureFlagMap.size());
     }
 }

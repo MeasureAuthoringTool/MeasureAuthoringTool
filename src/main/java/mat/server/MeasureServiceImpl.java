@@ -69,8 +69,8 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     }
 
     @Override
-    public ManageMeasureSearchModel getAllRecentMeasureForUser(String userId) {
-        return this.getMeasureLibraryService().getAllRecentMeasureForUser(userId);
+    public ManageMeasureSearchModel getAllRecentMeasureForUser(String userId, boolean isFhirEnabled) {
+        return this.getMeasureLibraryService().getAllRecentMeasureForUser(userId, isFhirEnabled);
     }
 
     @Override

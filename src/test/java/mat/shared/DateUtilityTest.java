@@ -23,7 +23,7 @@ public class DateUtilityTest {
 
     @Test
     public void testConvertDateToString() {
-        assertEquals(DateUtility.convertDateToString(date), "12/23/2019 02:02 PM");
+        assertEquals(DateUtility.convertDateToString(date), "12/23/2019 07:02 PM");
         //null test
         assertEquals(DateUtility.convertDateToString(null), "");
     }
@@ -58,7 +58,7 @@ public class DateUtilityTest {
     public void testFormatInstant() {
         Instant instant = Instant.parse("2019-12-23T19:02:02.329Z");
         assertEquals(DateUtility.formatInstant(instant, "dd-MMM-YYYY"), "23-Dec-2019");
-        assertEquals(DateUtility.formatInstant(instant, "hh:mm aa"), "02:02 PM");
+        assertEquals(DateUtility.formatInstant(instant, "hh:mm aa"), "07:02 PM");
         assertEquals(DateUtility.formatInstant(null, "hh:mm aa"), "");
     }
 }

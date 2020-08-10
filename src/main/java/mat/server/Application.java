@@ -2,6 +2,7 @@ package mat.server;
 
 import ca.uhn.fhir.context.FhirContext;
 import liquibase.integration.spring.SpringLiquibase;
+import lombok.extern.slf4j.Slf4j;
 import mat.client.login.service.HarpService;
 import mat.dao.impl.AuditEventListener;
 import mat.dao.impl.AuditInterceptor;
@@ -44,6 +45,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import javax.net.ssl.SSLContext;
 import javax.sql.DataSource;
 import java.security.KeyManagementException;
@@ -53,6 +55,7 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -64,6 +67,7 @@ import java.util.stream.Collectors;
 @EnableScheduling
 @EnableJpaRepositories
 @Service
+@Slf4j
 public class Application extends WebSecurityConfigurerAdapter {
 
     @Value("${ALGORITHM:}")
@@ -71,6 +75,15 @@ public class Application extends WebSecurityConfigurerAdapter {
 
     @Value("${PASSWORDKEY:}")
     private String passwordKey;
+
+    /**
+     *  Force UTC timezone locally.
+     */
+    @PostConstruct
+    public void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        log.info("Set timezone to UTC.");
+    }
 
     @Bean
     public HarpService harpService() {

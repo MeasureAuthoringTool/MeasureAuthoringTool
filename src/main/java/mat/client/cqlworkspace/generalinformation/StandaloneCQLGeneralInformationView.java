@@ -23,8 +23,11 @@ import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class StandaloneCQLGeneralInformationView implements CQLGeneralInformationView {
+    private static final Logger logger = Logger.getLogger("StandaloneCQLGeneralInformationView");
+
     protected static final String STYLE = "style";
     protected static final String PIXEL_150 = "150px";
     protected static final String FONT_SIZE_90_MARGIN_LEFT_15PX = "font-size:90%;margin-left:15px;";
@@ -541,6 +544,11 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
                                                      String description,
                                                      String stewardId,
                                                      boolean isExperimental) {
+        logger.info("libraryName:" + libraryName +
+                " commentBoxContent:" +commentBoxContent +
+                " description:" + description +
+                " stewardId:" + stewardId +
+                " isExperimental:" + isExperimental);
         CQLModelValidator validator = new CQLModelValidator();
         boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
 

@@ -358,6 +358,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
             newLibraryObject.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
             newLibraryObject.setQdmVersion(MATPropertiesService.get().getQdmVersion());
             newLibraryObject.setLibraryModelType(existingLibrary.getLibraryModelType());
+            newLibraryObject.setDescription(existingLibrary.getDescription());
+            newLibraryObject.setStewardId(existingLibrary.getStewardId());
+            newLibraryObject.setExperimental(existingLibrary.isExperimental());
             // Update QDM Version to latest QDM Version.
             String versionLibraryXml = getCQLLibraryXml(existingLibrary);
             if (versionLibraryXml != null) {

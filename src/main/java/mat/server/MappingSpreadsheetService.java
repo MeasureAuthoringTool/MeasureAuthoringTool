@@ -7,6 +7,7 @@ import mat.server.spreadsheet.QdmToQicoreMapping;
 import mat.server.spreadsheet.RequiredMeasureField;
 import mat.server.spreadsheet.ResourceDefinition;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ public class MappingSpreadsheetService {
     @Resource
     private MappingSpreadsheetService self;
 
+    @Qualifier("internalRestTemplate")
     private RestTemplate restTemplate;
 
     public MappingSpreadsheetService(RestTemplate restTemplate) {

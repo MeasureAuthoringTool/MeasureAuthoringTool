@@ -40,6 +40,7 @@ import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
@@ -103,6 +104,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
     private String mappingsUrl;
 
     @Autowired
+    @Qualifier("internalRestTemplate")
     private RestTemplate restTemplate;
 
     private String addAppliedQDMInMeasureXML(String mapping, String startTag, QualityDataModelWrapper qualityDataSetDTOWrapper) {

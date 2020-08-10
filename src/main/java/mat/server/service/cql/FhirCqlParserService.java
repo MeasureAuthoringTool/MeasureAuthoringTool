@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -37,6 +38,7 @@ public class FhirCqlParserService implements FhirCqlParser {
 
     @Value("${FHIR_SRVC_URL:http://localhost:9080/}")
     private String fhirServicesUrl;
+    @Qualifier("internalRestTemplate")
     private final RestTemplate restTemplate;
     private final VSACApiService vsacApiService;
     // HttpSession instance proxy

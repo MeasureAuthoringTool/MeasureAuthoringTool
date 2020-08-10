@@ -5,6 +5,8 @@ import liquibase.integration.spring.SpringLiquibase;
 import mat.client.login.service.HarpService;
 import mat.dao.impl.AuditEventListener;
 import mat.dao.impl.AuditInterceptor;
+import mat.server.logging.RequestResponseLoggingInterceptor;
+import mat.server.logging.RequestResponseLoggingMdcInternalInterceptor;
 import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 import mat.server.util.MATPropertiesService;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -24,10 +26,14 @@ import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -71,6 +77,15 @@ public class Application extends WebSecurityConfigurerAdapter {
 
     @Value("${PASSWORDKEY:}")
     private String passwordKey;
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
+        final PropertySourcesPlaceholderConfigurer ppc = new PropertySourcesPlaceholderConfigurer();
+        final Properties propertiesSource = new Properties();
+        propertiesSource.setProperty("systemPropertiesMode", "2");
+        ppc.setProperties(propertiesSource);
+        return ppc;
+    }
 
     @Bean
     public HarpService harpService() {
@@ -122,15 +137,6 @@ public class Application extends WebSecurityConfigurerAdapter {
     @Bean
     public AuditInterceptor auditInterceptor() {
         return new AuditInterceptor();
-    }
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
-        final PropertySourcesPlaceholderConfigurer ppc = new PropertySourcesPlaceholderConfigurer();
-        final Properties propertiesSource = new Properties();
-        propertiesSource.setProperty("systemPropertiesMode", "2");
-        ppc.setProperties(propertiesSource);
-        return ppc;
     }
 
     @Bean
@@ -190,26 +196,43 @@ public class Application extends WebSecurityConfigurerAdapter {
         return new InMemoryUserDetailsManager(user);
     }
 
-    @Bean
-    public RestTemplate getRestTemplate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    @Bean(name = "internalRestTemplate")
+    @Primary
+    public RestTemplate getRestTemplateInternal() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+        return buildRestTemplate(new RequestResponseLoggingMdcInternalInterceptor());
+    }
+
+    @Bean(name = "externalRestTemplate")
+    public RestTemplate getRestTemplateExternal() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+        return buildRestTemplate(new RequestResponseLoggingMdcInternalInterceptor());
+    }
+
+
+    private RestTemplate buildRestTemplate(RequestResponseLoggingInterceptor requestResponseLoggingInterceptor) throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException {
         TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
 
         SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
                 .loadTrustMaterial(null, acceptingTrustStrategy)
                 .build();
 
-        SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+        SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
 
         CloseableHttpClient httpClient
                 = HttpClients.custom()
                 .setSSLHostnameVerifier(new NoopHostnameVerifier())
-                .setSSLSocketFactory(csf)
+                .setSSLSocketFactory(sslConnectionSocketFactory)
                 .build();
-        HttpComponentsClientHttpRequestFactory requestFactory
-                = new HttpComponentsClientHttpRequestFactory();
-        requestFactory.setHttpClient(httpClient);
+        HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        httpComponentsClientHttpRequestFactory.setHttpClient(httpClient);
 
-        return new RestTemplate(requestFactory);
+        ClientHttpRequestFactory bufferingClientHttpRequestFactory = new BufferingClientHttpRequestFactory(httpComponentsClientHttpRequestFactory);
+
+        RestTemplate restTemplate = new RestTemplate(bufferingClientHttpRequestFactory);
+
+        restTemplate
+                .setInterceptors(List.of(requestResponseLoggingInterceptor));
+
+        return restTemplate;
     }
 
 

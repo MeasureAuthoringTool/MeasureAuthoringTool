@@ -961,6 +961,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setClonable(isClonable);
 
         detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measure, currentUserId, shareLevelId, true));
+        detail.setMeasureEditOrViewable(MatContextServiceUtil.get().isCurrentMeasureViewable(measure));
         detail.setExportable(dto.isPackaged());
         detail.setFhirConvertible(MatContextServiceUtil.get().isMeasureConvertible(measure));
         detail.setHqmfReleaseVersion(measure.getReleaseVersion());
@@ -1132,6 +1133,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setMeasureLocked(isLocked);
         boolean isEditable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId());
         detail.setEditable(isEditable);
+        detail.setMeasureEditOrViewable(MatContextServiceUtil.get().isCurrentMeasureViewable(measure));
         detail.setPatientBased(measure.getPatientBased());
         boolean isOwner = measure.getOwner().getId().equals(LoggedInUserUtil.getLoggedInUser());
         String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());

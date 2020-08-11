@@ -90,6 +90,12 @@ public class MatContextServiceUtil implements InitializingBean {
         return isEditable;
     }
 
+    public boolean isCurrentMeasureViewable(Measure measure) {
+        String currentUserId = LoggedInUserUtil.getLoggedInUser();
+        boolean isOwner = currentUserId.equals(measure.getOwner() == null ? null : measure.getOwner().getId());
+        return !measure.getIsPrivate() || isOwner;
+    }
+
     /**
      * Checks if is current measure is draftable.
      *

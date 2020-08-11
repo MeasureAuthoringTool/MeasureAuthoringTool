@@ -41,16 +41,6 @@ public class CQLLibraryDataSetObject implements IsSerializable, BaseModel {
     private String libraryModelType;
     private boolean fhirConvertible;
 
-    public boolean isCqlEditOrViewable() {
-        return isCqlEditOrViewable;
-    }
-
-    public void setCqlEditOrViewable(boolean cqlEditOrViewable) {
-        isCqlEditOrViewable = cqlEditOrViewable;
-    }
-
-    private boolean isCqlEditOrViewable;
-
     private List<CQLError> cqlErrors = new ArrayList<>();
 
     public boolean isFhir() {

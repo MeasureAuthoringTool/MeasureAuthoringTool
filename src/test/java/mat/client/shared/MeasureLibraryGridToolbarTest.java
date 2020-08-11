@@ -224,6 +224,7 @@ public class MeasureLibraryGridToolbarTest {
     public void testViewOnSelectedNotEditable() {
         ManageMeasureSearchModel.Result item = new ManageMeasureSearchModel.Result();
         item.setIsComposite(true);
+        item.setMeasureEditOrViewable(true);
         toolbar.updateOnSelectionChanged(Arrays.asList(item));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setIcon(Mockito.eq(IconType.EYE));
@@ -235,15 +236,12 @@ public class MeasureLibraryGridToolbarTest {
     public void testEditOnSelectedEditableAndLocked() {
         ManageMeasureSearchModel.Result item = new ManageMeasureSearchModel.Result();
 
-        Map<String, Boolean> featureFlagMap = new HashMap<>();
-        featureFlagMap.put("FhirEdit", true);
-
         item.setEditable(true);
         item.setMeasureLocked(true);
         item.setLockedUserInfo(new LockedUserInfo());
         item.getLockedUserInfo().setEmailAddress("fake@gmail.com");
         item.setIsComposite(true);
-        MatContext.get().setFeatureFlags(featureFlagMap);
+        item.setMeasureEditOrViewable(true);
 
         toolbar.updateOnSelectionChanged(Arrays.asList(item));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(false));
@@ -257,15 +255,12 @@ public class MeasureLibraryGridToolbarTest {
     public void testEditOnSelectedEditableAndNotLocked() {
         ManageMeasureSearchModel.Result item = new ManageMeasureSearchModel.Result();
 
-        Map<String, Boolean> featureFlagMap = new HashMap<>();
-        featureFlagMap.put("FhirEdit", true);
-
         item.setEditable(true);
         item.setMeasureLocked(false);
         item.setLockedUserInfo(new LockedUserInfo());
         item.getLockedUserInfo().setEmailAddress("fake@gmail.com");
         item.setIsComposite(true);
-        MatContext.get().setFeatureFlags(featureFlagMap);
+        item.setMeasureEditOrViewable(true);
 
         toolbar.updateOnSelectionChanged(Arrays.asList(item));
         Mockito.verify(toolbar.getEditOrViewButton(), Mockito.atLeastOnce()).setEnabled(Mockito.eq(true));

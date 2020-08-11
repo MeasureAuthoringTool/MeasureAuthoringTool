@@ -18,6 +18,7 @@ import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Library;
 import org.hl7.fhir.r4.model.Measure;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,7 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
 
     @Value("${FHIR_SRVC_URL:http://localhost:9080/}")
     private String fhirServicesUrl;
+    @Qualifier("internalRestTemplate")
     private final RestTemplate restTemplate;
     private final FhirContext fhirContext;
 

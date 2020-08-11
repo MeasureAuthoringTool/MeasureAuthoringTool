@@ -8,6 +8,7 @@ import mat.server.service.FhirLibraryRemoteCall;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hl7.fhir.r4.model.Library;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class FhirLibraryRemoteCallImpl implements FhirLibraryRemoteCall {
 
     private static final String CONVERT_PARAMS = ID_PARAMS + "&conversionType={conversionType}";
 
+    @Qualifier("internalRestTemplate")
     private RestTemplate restTemplate;
 
     @Value("${FHIR_SRVC_URL:http://localhost:9080/}library/convertStandAlone")

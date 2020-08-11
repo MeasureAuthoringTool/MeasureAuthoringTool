@@ -90,6 +90,19 @@ public class MatContextServiceUtil implements InitializingBean {
         return isEditable;
     }
 
+    public boolean isCurrentMeasureViewable(Measure measure) {
+        String currentUserId = LoggedInUserUtil.getLoggedInUser();
+        boolean isOwner = currentUserId.equals(measure.getOwner() == null ? null : measure.getOwner().getId());
+        return !measure.getIsPrivate() || isOwner;
+    }
+
+    public boolean isCurrentCqlViewable(CQLLibrary cqlLibrary) {
+        return LoggedInUserUtil.getLoggedInUser().equals(cqlLibrary.getOwnerId() == null ? null : cqlLibrary.getOwnerId());
+    }
+
+    public boolean isCurrentCqlViewable(CQLLibraryShareDTO cqlLibraryShareDTO) {
+        return LoggedInUserUtil.getLoggedInUser().equals(cqlLibraryShareDTO.getOwnerUserId() == null ? null : cqlLibraryShareDTO.getOwnerUserId());
+    }
     /**
      * Checks if is current measure is draftable.
      *

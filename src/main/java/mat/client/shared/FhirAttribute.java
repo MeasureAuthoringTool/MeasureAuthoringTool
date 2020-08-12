@@ -1,8 +1,8 @@
 package mat.client.shared;
 
-import java.util.Objects;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.Objects;
 
 public class FhirAttribute implements IsSerializable {
 

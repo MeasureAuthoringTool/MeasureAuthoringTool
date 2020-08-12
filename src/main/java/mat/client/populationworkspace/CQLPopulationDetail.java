@@ -1,13 +1,11 @@
 package mat.client.populationworkspace;
 
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.user.client.ui.Grid;
-
 import mat.client.populationworkspace.model.PopulationClauseObject;
 import mat.client.populationworkspace.model.PopulationsObject;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
+import java.util.List;
 
 public interface CQLPopulationDetail {
 	void displayPopulationDetail(FlowPanel mainFlowPanel);

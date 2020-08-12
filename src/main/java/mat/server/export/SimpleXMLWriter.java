@@ -1,14 +1,13 @@
 package mat.server.export;
 
+import com.thoughtworks.xstream.XStream;
+import mat.server.service.impl.XMLUtility;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import mat.server.service.impl.XMLUtility;
-
-import com.thoughtworks.xstream.XStream;
 
 /**
  * The Class SimpleXMLWriter.

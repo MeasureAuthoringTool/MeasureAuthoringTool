@@ -1,9 +1,9 @@
 package mat.shared.validator.measure;
 
+import mat.client.measure.ManageCompositeMeasureDetailModel;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import mat.client.measure.ManageCompositeMeasureDetailModel;
 
 public class ManageCompositeMeasureModelValidator extends ManageMeasureModelValidator {
 	public static final String ERR_COMPOSITE_MEASURE_SCORE_REQUIRED = "Composite Scoring Method is required. ";

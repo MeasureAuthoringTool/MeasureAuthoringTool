@@ -1,9 +1,9 @@
 package mat.client.expressionbuilder.model;
 
+import mat.client.expressionbuilder.constant.CQLType;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import mat.client.expressionbuilder.constant.CQLType;
 
 public class ExpressionBuilderModel implements IExpressionBuilderModel {
 	private IExpressionBuilderModel parentModel;

@@ -1,13 +1,12 @@
 package mat.client.util;
 
-import mat.client.ImageResources;
-import mat.client.shared.MatContext;
-import mat.shared.ConstantMessages;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import mat.client.ImageResources;
+import mat.client.shared.MatContext;
+import mat.shared.ConstantMessages;
 
 /**
  * The Class FooterPanelBuilderUtility.

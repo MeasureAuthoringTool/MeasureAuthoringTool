@@ -1,41 +1,8 @@
 package mat.server.service.fhirvalidationreport;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import mat.dto.fhirconversion.ConversionOutcome;
-import mat.dto.fhirconversion.ConversionResultDto;
-import mat.dto.fhirconversion.CqlConversionError;
-import mat.dto.fhirconversion.FhirValidationResult;
-import mat.dto.fhirconversion.LibraryConversionResults;
-import mat.dto.fhirconversion.MatCqlConversionException;
-import mat.dto.fhirconversion.MeasureConversionResults;
-import mat.dto.fhirconversion.ValueSetConversionResults;
-import mat.dao.clause.MeasureDAO;
-import mat.model.clause.Measure;
-import mat.server.service.FhirMeasureRemoteCall;
 import org.junit.Ignore;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Ignore
 @ExtendWith(MockitoExtension.class)

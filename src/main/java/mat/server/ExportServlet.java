@@ -1,30 +1,5 @@
 package mat.server;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.xpath.XPathExpressionException;
-
-import mat.model.clause.ModelTypeHelper;
-import mat.server.service.impl.ZipPackagerFactory;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.http.MediaType;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
 import mat.client.shared.MatException;
 import mat.dao.OrganizationDAO;
 import mat.dao.clause.MeasureDAO;
@@ -37,14 +12,17 @@ import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureShare;
+import mat.model.clause.ModelTypeHelper;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.export.ExportResult;
+import mat.server.logging.LogFactory;
 import mat.server.service.MeasureAuditService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.UserService;
 import mat.server.service.impl.ZipPackager;
+import mat.server.service.impl.ZipPackagerFactory;
 import mat.shared.CQLError;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
@@ -54,6 +32,26 @@ import mat.shared.bonnie.error.BonnieDoesNotExistException;
 import mat.shared.bonnie.error.BonnieNotFoundException;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.context.ApplicationContext;
+import org.springframework.http.MediaType;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ExportServlet extends HttpServlet {
 

@@ -1,11 +1,11 @@
 package mat.client.expressionbuilder.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.shared.StringUtility;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class QuantityModel extends ExpressionBuilderModel {
 	Set<String> timingUnits = new HashSet<String>() {

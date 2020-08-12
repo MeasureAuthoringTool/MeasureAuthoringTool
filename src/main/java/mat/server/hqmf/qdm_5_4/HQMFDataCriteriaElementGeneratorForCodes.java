@@ -1,14 +1,6 @@
 
 package mat.server.hqmf.qdm_5_4;
 
-import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import mat.client.shared.MatContext;
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
@@ -16,6 +8,13 @@ import mat.server.hqmf.QDMTemplateProcessorFactory;
 import mat.server.hqmf.qdm.HQMFDataCriteriaGenerator;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathExpressionException;
 
 /**
  * The Class CQLBasedHQMFDataCriteriaElementGenerator.

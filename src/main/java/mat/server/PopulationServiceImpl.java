@@ -1,13 +1,12 @@
 package mat.server;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.population.service.PopulationService;
 import mat.server.service.MeasurePackageService;
 import mat.server.util.XmlProcessor;
 import mat.shared.SaveUpdateCQLResult;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

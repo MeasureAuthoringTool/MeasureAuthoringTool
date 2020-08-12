@@ -1,9 +1,9 @@
 package mat.client.expressionbuilder.constant;
 
+import mat.client.expressionbuilder.util.OperatorTypeUtil;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import mat.client.expressionbuilder.util.OperatorTypeUtil;
 
 public enum ExpressionType implements ExpressionBuilderType {
 

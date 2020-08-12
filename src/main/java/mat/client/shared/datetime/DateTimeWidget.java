@@ -1,14 +1,12 @@
 package mat.client.shared.datetime;
 
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
+import mat.client.expressionbuilder.constant.CQLType;
+import mat.client.shared.CustomDateTimeTextBox;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
-
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-
-import mat.client.expressionbuilder.constant.CQLType;
-import mat.client.shared.CustomDateTimeTextBox;
 
 public class DateTimeWidget {
 

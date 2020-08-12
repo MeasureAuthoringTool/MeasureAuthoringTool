@@ -1,11 +1,11 @@
 package mat.shared.measure.measuredetails.models;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.model.MeasureType;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-import mat.model.MeasureType;
 
 public class MeasureTypeModel implements MeasureDetailsComponentModel, IsSerializable {
     private List<MeasureType> measureTypeList;

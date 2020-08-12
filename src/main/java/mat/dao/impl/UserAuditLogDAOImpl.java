@@ -1,23 +1,21 @@
 package mat.dao.impl;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
+import mat.dao.UserAuditLogDAO;
+import mat.dao.search.GenericDAO;
+import mat.dto.UserAuditLogDTO;
+import mat.model.User;
+import mat.model.UserAuditLog;
+import mat.server.LoggedInUserUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dto.UserAuditLogDTO;
-import mat.dao.UserAuditLogDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.User;
-import mat.model.UserAuditLog;
-import mat.server.LoggedInUserUtil;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.Date;
+import java.util.List;
 
 @Repository("userAuditLogDAO")
 public class UserAuditLogDAOImpl extends GenericDAO<UserAuditLog, String> implements UserAuditLogDAO {

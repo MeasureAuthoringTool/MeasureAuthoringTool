@@ -1,18 +1,17 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import mat.dao.search.GenericDAO;
+import mat.dto.MeasureScoreDTO;
+import mat.model.MeasureScore;
+import mat.server.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dto.MeasureScoreDTO;
-import mat.dao.search.GenericDAO;
-import mat.model.MeasureScore;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Repository("measureScoreDAO")

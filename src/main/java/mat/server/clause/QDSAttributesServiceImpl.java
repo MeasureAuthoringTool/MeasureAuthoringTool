@@ -1,5 +1,21 @@
 package mat.server.clause;
 
+import mat.client.clause.QDSAttributesService;
+import mat.dao.DataTypeDAO;
+import mat.dao.clause.ModesAttributesDAO;
+import mat.dao.clause.ModesDAO;
+import mat.dao.clause.QDSAttributesDAO;
+import mat.model.DataType;
+import mat.model.clause.QDSAttributes;
+import mat.server.MappingSpreadsheetService;
+import mat.server.SpringRemoteServiceServlet;
+import mat.server.logging.LogFactory;
+import mat.server.util.ResourceLoader;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.json.JSONObject;
+import org.json.XML;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -13,23 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.json.JSONObject;
-import org.json.XML;
-
-import mat.client.clause.QDSAttributesService;
-import mat.dao.DataTypeDAO;
-import mat.dao.clause.ModesAttributesDAO;
-import mat.dao.clause.ModesDAO;
-import mat.dao.clause.QDSAttributesDAO;
-import mat.model.DataType;
-import mat.model.clause.QDSAttributes;
-import mat.server.MappingSpreadsheetService;
-import mat.server.SpringRemoteServiceServlet;
-import mat.server.util.ResourceLoader;
 
 /**
  * The Class QDSAttributesServiceImpl.

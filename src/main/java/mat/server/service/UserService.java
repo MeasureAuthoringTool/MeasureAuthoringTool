@@ -1,8 +1,5 @@
 package mat.server.service;
 
-import java.util.HashMap;
-import java.util.List;
-
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.SecurityQuestionOptions;
@@ -11,6 +8,9 @@ import mat.model.User;
 import mat.server.model.MatUserDetails;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * The Interface UserService.

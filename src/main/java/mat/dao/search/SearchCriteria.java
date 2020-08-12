@@ -1,9 +1,9 @@
 package mat.dao.search;
 
-import java.util.Map;
-
 import mat.dao.ISearchCriteria;
 import mat.dao.PropertyOperator;
+
+import java.util.Map;
 
 /**
  * The Class SearchCriteria.

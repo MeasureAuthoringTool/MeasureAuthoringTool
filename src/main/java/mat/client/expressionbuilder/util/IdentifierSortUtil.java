@@ -1,8 +1,8 @@
 package mat.client.expressionbuilder.util;
 
-import java.util.List;
-
 import mat.shared.CQLIdentifierObject;
+
+import java.util.List;
 
 public class IdentifierSortUtil {
 	

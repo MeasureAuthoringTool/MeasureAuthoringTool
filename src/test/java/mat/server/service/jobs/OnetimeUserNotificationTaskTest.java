@@ -1,7 +1,10 @@
 package mat.server.service.jobs;
 
-import java.util.Arrays;
-
+import mat.config.MatAppContextTest;
+import mat.dao.MatFlagDAO;
+import mat.dao.UserDAO;
+import mat.model.MatFlag;
+import mat.server.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -10,11 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import mat.config.MatAppContextTest;
-import mat.dao.MatFlagDAO;
-import mat.dao.UserDAO;
-import mat.model.MatFlag;
-import mat.server.service.UserService;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertNotNull;
 

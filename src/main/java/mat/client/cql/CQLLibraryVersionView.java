@@ -1,10 +1,5 @@
 package mat.client.cql;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -23,7 +18,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
-
 import mat.client.CqlLibraryPresenter;
 import mat.client.CustomPager;
 import mat.client.buttons.SaveContinueCancelButtonBar;
@@ -37,6 +31,10 @@ import mat.client.shared.RadioButtonCell;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryDataSetObject;
+import org.gwtbootstrap3.client.ui.Button;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay{
 	private static final int PAGE_SIZE = 25;

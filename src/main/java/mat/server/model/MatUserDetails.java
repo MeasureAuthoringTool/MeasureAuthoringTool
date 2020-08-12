@@ -1,9 +1,14 @@
 package mat.server.model;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.model.Organization;
+import mat.model.SecurityRole;
+import mat.model.Status;
+import mat.model.UserPassword;
+import mat.model.UserPreference;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,17 +21,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-import mat.model.Organization;
-import mat.model.SecurityRole;
-import mat.model.Status;
-import mat.model.UserPassword;
-import mat.model.UserPreference;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static mat.model.Status.STATUS_TERMINATED;
 

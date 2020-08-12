@@ -1,13 +1,7 @@
 package mat.client.populationworkspace;
 
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.NavPills;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.Document;
-
 import mat.client.cqlworkspace.DeleteConfirmationDialogBox;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.shared.CQLWorkSpaceConstants.POPULATIONS;
@@ -17,6 +11,10 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.WarningMessageAlert;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.NavPills;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 
 /**
  * The Class CQLPopulationLeftNavBarPanelView.

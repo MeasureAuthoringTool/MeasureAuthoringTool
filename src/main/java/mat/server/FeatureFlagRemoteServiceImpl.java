@@ -1,12 +1,11 @@
 package mat.server;
 
 
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import mat.client.featureFlag.service.FeatureFlagRemoteService;
 import mat.server.service.FeatureFlagService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Map;
 
 public class FeatureFlagRemoteServiceImpl extends SpringRemoteServiceServlet implements FeatureFlagRemoteService {
 

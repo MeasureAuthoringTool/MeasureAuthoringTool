@@ -1,9 +1,9 @@
 package mat.server.service.cql;
 
-import java.util.List;
-
 import mat.model.cql.CQLModel;
 import mat.shared.SaveUpdateCQLResult;
+
+import java.util.List;
 
 public interface FhirCqlParser {
     MatXmlResponse parse(String cql, CQLModel sourceModel);

@@ -1,18 +1,9 @@
 package mat.client.expressionbuilder.component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Code;
-import org.gwtbootstrap3.client.ui.FormLabel;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
 import mat.client.buttons.InAppHelpButton;
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
@@ -27,6 +18,13 @@ import mat.client.expressionbuilder.model.OperatorModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.ExpressionTypeUtil;
 import mat.client.expressionbuilder.util.OperatorTypeUtil;
+import org.gwtbootstrap3.client.ui.Code;
+import org.gwtbootstrap3.client.ui.FormLabel;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
 
 public class ExpressionTypeSelectorList extends Composite {
 

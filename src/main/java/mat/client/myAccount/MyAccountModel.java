@@ -1,7 +1,6 @@
 package mat.client.myAccount;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.model.BaseModel;
 
 public class MyAccountModel implements IsSerializable, BaseModel {

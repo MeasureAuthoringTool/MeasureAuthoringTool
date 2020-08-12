@@ -1,18 +1,16 @@
 package mat.server.hqmf.qdm_5_3;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import org.w3c.dom.Node;
-
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+import org.w3c.dom.Node;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 

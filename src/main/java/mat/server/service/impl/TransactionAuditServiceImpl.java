@@ -1,12 +1,11 @@
 package mat.server.service.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Service;
-
 import mat.dao.TransactionAuditLogDAO;
 import mat.model.TransactionAuditLog;
+import mat.server.logging.LogFactory;
 import mat.server.service.TransactionAuditService;
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
 
 /**
  * Service implementation for Transaction Audit Service.

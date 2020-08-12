@@ -1,6 +1,6 @@
 package mat.model;
 
-import java.util.Date;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,8 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.GenericGenerator;
+import java.util.Date;
 
 @Entity
 @Table(name = "RECENT_MSR_ACTIVITY_LOG")

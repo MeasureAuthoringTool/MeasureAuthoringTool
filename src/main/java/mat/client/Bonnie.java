@@ -4,7 +4,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.client.bonnie.BonnieService;
 import mat.client.bonnie.BonnieServiceAsync;
 import mat.client.shared.MatContext;

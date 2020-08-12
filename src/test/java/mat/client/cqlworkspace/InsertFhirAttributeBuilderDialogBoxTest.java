@@ -1,16 +1,15 @@
 package mat.client.cqlworkspace;
 
 
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import mat.client.cqlworkspace.shared.CQLEditor;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import mat.client.cqlworkspace.shared.CQLEditor;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class InsertFhirAttributeBuilderDialogBoxTest {

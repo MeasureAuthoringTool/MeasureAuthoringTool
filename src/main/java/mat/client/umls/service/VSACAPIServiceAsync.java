@@ -1,10 +1,9 @@
 package mat.client.umls.service;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.model.cql.CQLQualityDataSetDTO;
+
+import java.util.List;
 
 /**
  * The Interface VSACAPIServiceAsync.

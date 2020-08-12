@@ -1,20 +1,5 @@
 package mat.client.clause.clauseworkspace.view;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-import mat.client.ImageResources;
-import mat.client.clause.QDSAttributesService;
-import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
-import mat.client.shared.DateBoxWithCalendar;
-import mat.client.shared.JSONAttributeModeUtility;
-import mat.client.shared.LabelBuilder;
-import mat.model.clause.QDSAttributes;
-import mat.shared.ConstantMessages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.dom.client.OptionElement;
@@ -40,6 +25,22 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Node;
+import mat.client.ImageResources;
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.shared.DateBoxWithCalendar;
+import mat.client.shared.JSONAttributeModeUtility;
+import mat.client.shared.LabelBuilder;
+import mat.model.clause.QDSAttributes;
+import mat.shared.ConstantMessages;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class QDMAttributeDialogBox {
 	private static final String NEGATION_RATIONALE = "negation rationale";

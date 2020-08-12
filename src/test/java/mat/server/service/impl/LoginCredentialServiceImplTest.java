@@ -1,7 +1,11 @@
 package mat.server.service.impl;
 
-import java.util.Map;
-
+import com.google.gwt.dev.util.collect.HashMap;
+import mat.client.shared.MatRuntimeException;
+import mat.model.SecurityRole;
+import mat.server.LoggedInUserUtil;
+import mat.server.hibernate.HibernateUserDetailService;
+import mat.server.model.MatUserDetails;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,12 +21,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
-import com.google.gwt.dev.util.collect.HashMap;
-import mat.client.shared.MatRuntimeException;
-import mat.model.SecurityRole;
-import mat.server.LoggedInUserUtil;
-import mat.server.hibernate.HibernateUserDetailService;
-import mat.server.model.MatUserDetails;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

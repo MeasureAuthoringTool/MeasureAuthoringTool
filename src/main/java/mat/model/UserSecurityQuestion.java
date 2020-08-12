@@ -1,8 +1,6 @@
 package mat.model;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.io.Serializable;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,8 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "USER_SECURITY_QUESTIONS")

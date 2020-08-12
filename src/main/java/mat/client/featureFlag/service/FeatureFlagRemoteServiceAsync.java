@@ -1,9 +1,9 @@
 package mat.client.featureFlag.service;
 
-import java.util.Map;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import mat.client.login.service.AsynchronousService;
+
+import java.util.Map;
 
 public interface FeatureFlagRemoteServiceAsync extends AsynchronousService {
 

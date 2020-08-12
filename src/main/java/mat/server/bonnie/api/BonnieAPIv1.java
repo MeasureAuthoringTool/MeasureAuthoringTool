@@ -1,20 +1,22 @@
 package mat.server.bonnie.api;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.DatatypeConverter;
-
+import mat.model.UserBonnieAccessInfo;
+import mat.server.bonnie.api.result.BonnieCalculatedResult;
+import mat.server.bonnie.api.result.BonnieMeasureResult;
+import mat.server.logging.LogFactory;
+import mat.server.service.EncryptDecryptToken;
+import mat.server.util.APIConnectionUtillity;
+import mat.shared.BonnieOAuthResult;
+import mat.shared.FileInfomationObject;
+import mat.shared.bonnie.error.BonnieAlreadyExistsException;
+import mat.shared.bonnie.error.BonnieBadParameterException;
+import mat.shared.bonnie.error.BonnieDoesNotExistException;
+import mat.shared.bonnie.error.BonnieNotFoundException;
+import mat.shared.bonnie.error.BonnieServerException;
+import mat.shared.bonnie.error.BonnieUnauthorizedException;
+import mat.shared.bonnie.result.BonnieUserInformationResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -36,20 +38,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 
-import mat.model.UserBonnieAccessInfo;
-import mat.server.bonnie.api.result.BonnieCalculatedResult;
-import mat.server.bonnie.api.result.BonnieMeasureResult;
-import mat.server.service.EncryptDecryptToken;
-import mat.server.util.APIConnectionUtillity;
-import mat.shared.BonnieOAuthResult;
-import mat.shared.FileInfomationObject;
-import mat.shared.bonnie.error.BonnieAlreadyExistsException;
-import mat.shared.bonnie.error.BonnieBadParameterException;
-import mat.shared.bonnie.error.BonnieDoesNotExistException;
-import mat.shared.bonnie.error.BonnieNotFoundException;
-import mat.shared.bonnie.error.BonnieServerException;
-import mat.shared.bonnie.error.BonnieUnauthorizedException;
-import mat.shared.bonnie.result.BonnieUserInformationResult;
+import javax.xml.bind.DatatypeConverter;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configurable
 @Service

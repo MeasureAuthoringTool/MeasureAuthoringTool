@@ -1,9 +1,9 @@
 package mat.model.clause;
 
-import java.sql.Timestamp;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.LockedUserInfo;
+
+import java.sql.Timestamp;
 
 public class MeasureShareDTO implements IsSerializable {
 

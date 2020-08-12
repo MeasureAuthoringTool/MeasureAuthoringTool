@@ -1,7 +1,6 @@
 package mat.client.bonnie;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.client.umls.service.VsacTicketInformation;
 import mat.shared.BonnieOAuthResult;
 import mat.shared.bonnie.result.BonnieUserInformationResult;

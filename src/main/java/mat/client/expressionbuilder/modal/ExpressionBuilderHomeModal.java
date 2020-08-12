@@ -1,17 +1,7 @@
 package mat.client.expressionbuilder.modal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
-
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.cqlworkspace.AbstractCQLWorkspacePresenter;
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
@@ -24,6 +14,14 @@ import mat.client.expressionbuilder.util.OperatorTypeUtil;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ConfirmationObserver;
 import mat.client.shared.MatContext;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExpressionBuilderHomeModal extends ExpressionBuilderModal {
 

@@ -1,20 +1,11 @@
 package mat.client.measure;
 
-import java.util.List;
-
-import com.google.gwt.user.client.ui.VerticalPanel;
-import org.gwtbootstrap3.client.ui.FieldSet;
-import org.gwtbootstrap3.client.ui.Form;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-
 import com.google.gwt.dom.client.BRElement;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.codelist.HasListBox;
 import mat.client.shared.ListBoxMVP;
@@ -23,6 +14,12 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.StringUtility;
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+
+import java.util.List;
 
 public class NewCompositeMeasureView extends AbstractNewMeasureView {
 	private String cautionMsgStr = "Caution: The Composite Scoring Method field controls the options available in the Measure Scoring field. The Measure Scoring field controls the options available in the Patient-based Measure field. Changing the selection in the Composite Scoring Method will reset the Measure Scoring and Patient-based Measure fields. Changing the Measure Scoring field will reset the Patient-based Measure field.";

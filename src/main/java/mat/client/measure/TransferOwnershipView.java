@@ -1,8 +1,5 @@
 package mat.client.measure;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -23,7 +20,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
-
 import mat.client.CustomPager;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.measure.TransferOwnerShipModel.Result;
@@ -37,6 +33,9 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryDataSetObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class TransferOwnershipView.

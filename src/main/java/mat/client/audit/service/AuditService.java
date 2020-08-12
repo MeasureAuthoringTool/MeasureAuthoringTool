@@ -1,14 +1,12 @@
 package mat.client.audit.service;
 
 
-
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-
 import mat.dto.SearchHistoryDTO;
 import mat.dto.UserAuditLogDTO;
+
+import java.util.List;
 
 /**
  * Client interface for Audit Service.

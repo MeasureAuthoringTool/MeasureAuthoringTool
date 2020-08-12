@@ -3,18 +3,11 @@
  */
 package mat.client.cqlworkspace.parameters;
 
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.TextArea;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
 import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
@@ -24,6 +17,11 @@ import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 public class CQLParametersView {
 

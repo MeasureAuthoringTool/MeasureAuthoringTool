@@ -1,10 +1,6 @@
 package mat.server.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import mat.client.shared.QDMContainer;
 import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ChoiceTypeSpecifier;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
@@ -15,7 +11,10 @@ import org.hl7.elm_modelinfo.r1.ProfileInfo;
 import org.hl7.elm_modelinfo.r1.TypeInfo;
 import org.hl7.elm_modelinfo.r1.TypeSpecifier;
 
-import mat.client.shared.QDMContainer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class QDMUtil {
 

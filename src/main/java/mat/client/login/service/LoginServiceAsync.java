@@ -1,11 +1,11 @@
 package mat.client.login.service;
 
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import mat.client.login.LoginModel;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**

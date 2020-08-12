@@ -1,20 +1,18 @@
 package mat.client.expressionbuilder.modal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Form;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-
 import com.google.gwt.user.client.ui.VerticalPanel;
-
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.RetrieveModel;
 import mat.client.expressionbuilder.util.IdentifierSortUtil;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.shared.CQLIdentifierObject;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RetrieveBuilderModal extends SubExpressionBuilderModal {
 

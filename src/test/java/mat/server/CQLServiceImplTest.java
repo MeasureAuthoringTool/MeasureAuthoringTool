@@ -1,7 +1,12 @@
 package mat.server;
 
+import mat.dao.UserDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLModel;
+import mat.server.service.MeasurePackageService;
+import mat.server.service.cql.FhirCqlParser;
+import mat.shared.SaveUpdateCQLResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,12 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import mat.dao.UserDAO;
-import mat.model.cql.CQLModel;
-import mat.server.service.MeasurePackageService;
-import mat.server.service.cql.FhirCqlParser;
-import mat.shared.SaveUpdateCQLResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

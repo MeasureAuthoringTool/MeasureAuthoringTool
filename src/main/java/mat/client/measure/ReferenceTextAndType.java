@@ -1,9 +1,9 @@
 package mat.client.measure;
 
-import java.util.Objects;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.shared.measure.measuredetails.models.MeasureReferenceType;
+
+import java.util.Objects;
 
 public class ReferenceTextAndType implements IsSerializable {
     private String referenceText;

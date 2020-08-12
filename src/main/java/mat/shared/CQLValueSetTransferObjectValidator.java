@@ -1,9 +1,9 @@
 package mat.shared;
 
-import java.util.List;
-
 import mat.model.CQLValueSetTransferObject;
 import mat.model.cql.CQLQualityDataSetDTO;
+
+import java.util.List;
 
 public class CQLValueSetTransferObjectValidator {
 	public boolean isValid(CQLValueSetTransferObject object) {

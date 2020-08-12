@@ -1,10 +1,9 @@
 package mat.client.event;
 
-import mat.client.shared.MatContext;
-
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.Window;
+import mat.client.shared.MatContext;
 
 /**
  * Control center for MAT conditionally executed events handleEvent

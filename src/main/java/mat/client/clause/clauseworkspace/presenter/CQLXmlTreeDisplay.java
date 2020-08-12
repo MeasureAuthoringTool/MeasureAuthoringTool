@@ -3,7 +3,6 @@ package mat.client.clause.clauseworkspace.presenter;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.clause.clauseworkspace.model.CQLCellTreeNode;
 
 // TODO: Auto-generated Javadoc

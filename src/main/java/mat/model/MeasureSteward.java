@@ -1,11 +1,11 @@
 package mat.model;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 @Entity
 @Table(name = "STEWARD_ORG")

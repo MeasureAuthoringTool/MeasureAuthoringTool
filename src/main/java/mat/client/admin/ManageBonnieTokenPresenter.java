@@ -1,25 +1,21 @@
 package mat.client.admin;
 
-import mat.client.event.LogoffEvent;
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.event.LogoffEvent;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ConfirmationObserver;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResultUpdate;
-import mat.client.util.ClientConstants;
 import mat.client.util.MatTextBox;
 import mat.shared.InCorrectUserRoleException;
 import mat.shared.StringUtility;
+import org.gwtbootstrap3.client.ui.Button;
 
 public class ManageBonnieTokenPresenter implements MatPresenter {
 	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();

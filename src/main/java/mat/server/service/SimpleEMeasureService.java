@@ -1,9 +1,5 @@
 package mat.server.service;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
 import mat.model.MatValueSet;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.MeasureExport;
@@ -14,6 +10,10 @@ import mat.shared.bonnie.error.BonnieDoesNotExistException;
 import mat.shared.bonnie.error.BonnieNotFoundException;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 public interface SimpleEMeasureService {	
 	ExportResult getSimpleXML(String measureId) throws Exception;

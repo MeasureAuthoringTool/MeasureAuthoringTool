@@ -1,12 +1,10 @@
 package mat.server.service.cql;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
+import mat.client.umls.service.VsacTicketInformation;
+import mat.model.cql.CQLModel;
+import mat.server.service.VSACApiService;
+import mat.shared.CQLError;
+import mat.shared.SaveUpdateCQLResult;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,11 +20,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import mat.client.umls.service.VsacTicketInformation;
-import mat.model.cql.CQLModel;
-import mat.server.service.VSACApiService;
-import mat.shared.CQLError;
-import mat.shared.SaveUpdateCQLResult;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

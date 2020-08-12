@@ -1,11 +1,11 @@
 package mat.shared;
 
+import mat.client.measurepackage.MeasurePackageClauseDetail;
+import mat.client.shared.MatContext;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-
-import mat.client.measurepackage.MeasurePackageClauseDetail;
-import mat.client.shared.MatContext;
 
 public class MeasurePackageClauseValidator {
 

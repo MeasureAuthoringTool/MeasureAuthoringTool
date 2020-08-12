@@ -1,8 +1,8 @@
 package mat.server.humanreadable.cql;
 
-import java.util.Random;
-
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Random;
 
 public class HumanReadablePopulationModel {
 	

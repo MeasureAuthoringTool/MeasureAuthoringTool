@@ -1,11 +1,10 @@
 package mat.shared;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.client.shared.SearchWidgetWithFilter;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-import mat.client.shared.SearchWidgetWithFilter;
 
 public class MeasureSearchModel extends SearchModel implements IsSerializable {
 

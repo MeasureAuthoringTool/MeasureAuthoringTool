@@ -1,10 +1,9 @@
 package mat.server.export;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Component;
-
+import mat.server.logging.LogFactory;
 import mat.server.service.SimpleEMeasureService;
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Component;
 
 @Component
 public class MeasureArtifactGenerator {

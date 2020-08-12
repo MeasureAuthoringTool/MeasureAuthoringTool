@@ -1,13 +1,12 @@
 package mat.client.populationworkspace.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
-
 import mat.client.shared.MatContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PopulationDataModel {
 	

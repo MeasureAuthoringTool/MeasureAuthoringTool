@@ -1,8 +1,8 @@
 package mat.model;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.List;
 
 /**
  * Container for holding Code System information.

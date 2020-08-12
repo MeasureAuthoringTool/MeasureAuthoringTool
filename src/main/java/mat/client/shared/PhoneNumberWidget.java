@@ -1,13 +1,12 @@
 package mat.client.shared;
 
-import org.gwtbootstrap3.client.ui.TextBox;
-
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 
 public class PhoneNumberWidget extends Composite {

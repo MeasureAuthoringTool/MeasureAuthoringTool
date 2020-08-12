@@ -1,7 +1,6 @@
 package mat.client.export.measure;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
-
 import mat.client.measure.BaseDisplay;
 
 public interface ExportDisplay extends BaseDisplay {

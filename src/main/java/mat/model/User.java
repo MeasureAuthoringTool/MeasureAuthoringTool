@@ -1,9 +1,9 @@
 package mat.model;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import mat.model.clause.CQLLibraryHistory;
+import mat.model.clause.MeasureShare;
+import mat.model.cql.CQLLibraryShare;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,12 +20,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import mat.model.clause.CQLLibraryHistory;
-import mat.model.clause.MeasureShare;
-import mat.model.cql.CQLLibraryShare;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "USER", uniqueConstraints = @UniqueConstraint(columnNames = "LOGIN_ID"))

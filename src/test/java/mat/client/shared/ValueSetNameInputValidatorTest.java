@@ -1,10 +1,9 @@
 package mat.client.shared;
 
-import static org.junit.Assert.*;
-
+import mat.model.CQLValueSetTransferObject;
 import org.junit.Test;
 
-import mat.model.CQLValueSetTransferObject;
+import static org.junit.Assert.assertEquals;
 
 public class ValueSetNameInputValidatorTest {
 

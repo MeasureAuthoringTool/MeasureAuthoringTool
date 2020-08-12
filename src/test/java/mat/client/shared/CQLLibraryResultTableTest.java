@@ -1,16 +1,15 @@
 package mat.client.shared;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.model.cql.CQLLibraryDataSetObject;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class CQLLibraryResultTableTest {

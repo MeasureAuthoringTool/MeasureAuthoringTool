@@ -1,16 +1,15 @@
 package mat.server.hqmf.qdm;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
+import mat.server.logging.LogFactory;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathExpressionException;
 
 /**
  * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 

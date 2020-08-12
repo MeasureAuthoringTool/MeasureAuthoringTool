@@ -1,18 +1,17 @@
 package mat.client.umls.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.model.DirectReferenceCode;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.VSACExpansionProfile;
 import mat.model.VSACVersion;
 import mat.model.cql.CQLQualityDataSetDTO;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**

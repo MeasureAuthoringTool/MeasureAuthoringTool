@@ -1,16 +1,5 @@
 package mat.client.measure;
 
-import java.util.List;
-
-import mat.client.shared.VerticalFlowPanel;
-import org.gwtbootstrap3.client.ui.FieldSet;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.TextArea;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -29,9 +18,19 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MeasureNameLabel;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.VerticalFlowPanel;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.util.FeatureFlagConstant;
 import mat.model.clause.ModelTypeHelper;
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+
+import java.util.List;
 
 public class AbstractNewMeasureView implements DetailDisplay {
     protected SimplePanel mainPanel = new SimplePanel();

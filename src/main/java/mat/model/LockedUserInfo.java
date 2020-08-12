@@ -3,9 +3,9 @@
  */
 package mat.model;
 
-import java.util.Objects;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.Objects;
 
 /**
  * The Class LockedUserInfo.

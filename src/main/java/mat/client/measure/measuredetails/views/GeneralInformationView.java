@@ -1,30 +1,16 @@
 package mat.client.measure.measuredetails.views;
 
-import java.util.Date;
-import java.util.List;
-
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.CheckBox;
-import mat.model.clause.ModelTypeHelper;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Form;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
-import mat.dto.CompositeMeasureScoreDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.measuredetails.observers.GeneralInformationObserver;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
@@ -35,11 +21,23 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.SpacerWidget;
+import mat.dto.CompositeMeasureScoreDTO;
+import mat.model.clause.ModelTypeHelper;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.MatConstants;
 import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+
+import java.util.Date;
+import java.util.List;
 
 public class GeneralInformationView implements MeasureDetailViewInterface {
 	private static final String EMPTY_STRING = "";

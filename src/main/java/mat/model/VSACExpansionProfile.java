@@ -1,8 +1,7 @@
 package mat.model;
 
-import mat.client.codelist.HasListBox;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.client.codelist.HasListBox;
 
 public class VSACExpansionProfile implements IsSerializable, HasListBox {
 

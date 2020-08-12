@@ -1,6 +1,7 @@
 package mat.server.logging;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -11,8 +12,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-@Slf4j
-public abstract class RequestResponseLoggingInterceptor implements ClientHttpRequestInterceptor {
+public class RequestResponseLoggingInterceptor implements ClientHttpRequestInterceptor {
+
+    private static final Log log = LogFactory.getLog(RequestResponseLoggingInterceptor.class);
     @Override
     public ClientHttpResponse intercept(HttpRequest request,
                                         byte[] body,
@@ -27,7 +29,8 @@ public abstract class RequestResponseLoggingInterceptor implements ClientHttpReq
         return response;
     }
 
-    protected abstract void processHeaders(HttpRequest request);
+    protected  void processHeaders(HttpRequest request) {
+    }
 
     private void logResponse(ClientHttpResponse response, long start) throws IOException {
         if (log.isInfoEnabled()) {

@@ -1,11 +1,10 @@
 package mat.model;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.model.cql.CQLCode;
 import mat.shared.StringUtility;
+
+import java.util.List;
 
 public class MatCodeTransferObject implements IsSerializable , BaseModel{
 

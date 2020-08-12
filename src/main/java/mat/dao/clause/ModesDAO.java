@@ -1,9 +1,9 @@
 package mat.dao.clause;
 
-import java.util.List;
-
 import mat.dao.IDAO;
 import mat.model.clause.Modes;
+
+import java.util.List;
 
 /**
  * The Interface ModesDAO.

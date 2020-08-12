@@ -1,13 +1,12 @@
 package mat.shared.model.util;
 
+import mat.client.measure.ReferenceTextAndType;
+import mat.shared.measure.measuredetails.models.MeasureReferenceType;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import mat.client.measure.ReferenceTextAndType;
-import mat.shared.measure.measuredetails.models.MeasureReferenceType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

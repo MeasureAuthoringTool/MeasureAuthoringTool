@@ -1,8 +1,7 @@
 package mat.client.shared;
 
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.gwtbootstrap3.client.ui.Button;
 
 public class MessagePanel extends VerticalPanel {
 	private MessageAlert successMessageAlert = new SuccessMessageAlert();

@@ -1,14 +1,13 @@
 package mat.client.measure;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.client.measurepackage.MeasurePackageOverview;
+import mat.model.BaseModel;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-import mat.client.measurepackage.MeasurePackageOverview;
-import mat.model.BaseModel;
 
 public class ManageCompositeMeasureDetailModel extends ManageMeasureDetailModel implements IsSerializable, BaseModel {
 

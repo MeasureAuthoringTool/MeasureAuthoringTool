@@ -1,5 +1,10 @@
 package mat.model.cql;
 
+import mat.model.User;
+import mat.model.clause.CQLLibrary;
+import mat.model.clause.ShareLevel;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,12 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import mat.model.User;
-import mat.model.clause.CQLLibrary;
-import mat.model.clause.ShareLevel;
 
 @Entity
 @Table(name = "CQL_LIBRARY_SHARE")

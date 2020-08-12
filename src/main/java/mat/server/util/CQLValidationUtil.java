@@ -1,9 +1,5 @@
 package mat.server.util;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
@@ -14,6 +10,10 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.CQLKeywordsUtil;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class CQLValidationUtil {
 

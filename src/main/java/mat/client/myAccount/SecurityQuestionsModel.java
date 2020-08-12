@@ -1,9 +1,8 @@
 package mat.client.myAccount;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.BaseModel;
 import mat.shared.StringUtility;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * The Class SecurityQuestionsModel.

@@ -1,13 +1,12 @@
 package mat.client.shared;
 
-import java.util.List;
-
+import com.google.gwt.core.client.JavaScriptException;
+import com.google.gwt.user.client.ui.HTML;
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
-import com.google.gwt.core.client.JavaScriptException;
-import com.google.gwt.user.client.ui.HTML;
+import java.util.List;
 
 public class MessageAlert extends Alert implements MessageAlertInterface {
 

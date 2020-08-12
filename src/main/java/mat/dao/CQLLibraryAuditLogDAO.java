@@ -1,10 +1,10 @@
 package mat.dao;
 
-import java.util.List;
-
 import mat.dto.SearchHistoryDTO;
 import mat.model.CQLAuditLog;
 import mat.model.clause.CQLLibrary;
+
+import java.util.List;
 
 /**
  * DAO Interface for CQLAuditLogDAO.

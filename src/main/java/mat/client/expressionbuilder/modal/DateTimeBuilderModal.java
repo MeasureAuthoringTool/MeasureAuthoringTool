@@ -1,16 +1,15 @@
 package mat.client.expressionbuilder.modal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.expressionbuilder.model.DateTimeModel;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.shared.datetime.DateTimeHelper;
 import mat.client.shared.datetime.DateTimeWidget;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DateTimeBuilderModal extends SubExpressionBuilderModal {
 

@@ -1,11 +1,5 @@
 package mat.client.shared;
 
-import static com.google.gwt.dom.client.BrowserEvents.BLUR;
-import static com.google.gwt.dom.client.BrowserEvents.CHANGE;
-import static com.google.gwt.dom.client.BrowserEvents.CLICK;
-import static com.google.gwt.dom.client.BrowserEvents.KEYDOWN;
-import static com.google.gwt.dom.client.BrowserEvents.KEYUP;
-
 import com.google.gwt.cell.client.AbstractEditableCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
@@ -16,6 +10,12 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+
+import static com.google.gwt.dom.client.BrowserEvents.BLUR;
+import static com.google.gwt.dom.client.BrowserEvents.CHANGE;
+import static com.google.gwt.dom.client.BrowserEvents.CLICK;
+import static com.google.gwt.dom.client.BrowserEvents.KEYDOWN;
+import static com.google.gwt.dom.client.BrowserEvents.KEYUP;
 
 
 

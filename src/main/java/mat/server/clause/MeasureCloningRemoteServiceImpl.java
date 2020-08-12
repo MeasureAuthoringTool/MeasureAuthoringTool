@@ -1,11 +1,5 @@
 package mat.server.clause;
 
-import mat.model.clause.ModelTypeHelper;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -13,9 +7,14 @@ import mat.client.measure.service.MeasureCloningRemoteService;
 import mat.client.shared.MatException;
 import mat.dao.UserDAO;
 import mat.dao.clause.MeasureDAO;
+import mat.model.clause.ModelTypeHelper;
 import mat.server.SpringRemoteServiceServlet;
+import mat.server.logging.LogFactory;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.impl.MatContextServiceUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class MeasureCloningRemoteServiceImpl extends SpringRemoteServiceServlet implements MeasureCloningRemoteService {
 

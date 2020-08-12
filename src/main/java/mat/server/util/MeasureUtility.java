@@ -1,13 +1,11 @@
 package mat.server.util;
 
-import java.text.DecimalFormat;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import org.w3c.dom.Node;
-
 import mat.model.clause.ModelTypeHelper;
 import mat.shared.StringUtility;
+import org.w3c.dom.Node;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.text.DecimalFormat;
 
 public class MeasureUtility {
 

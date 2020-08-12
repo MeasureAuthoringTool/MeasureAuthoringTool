@@ -1,8 +1,6 @@
 package mat.client.measure.service;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.model.cql.CQLLibraryDataSetObject;
 
 public class FhirConvertResultResponse implements IsSerializable {
 

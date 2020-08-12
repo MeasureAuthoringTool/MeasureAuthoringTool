@@ -1,11 +1,11 @@
 package mat.shared.validator.measure;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import org.hamcrest.CoreMatchers;
-import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class CommonMeasureValidatorTest {
 	

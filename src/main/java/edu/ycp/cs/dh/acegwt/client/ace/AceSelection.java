@@ -1,9 +1,9 @@
 package edu.ycp.cs.dh.acegwt.client.ace;
 
+import com.google.gwt.core.client.JavaScriptObject;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Represents GWT wrapper around an Ace Selection object

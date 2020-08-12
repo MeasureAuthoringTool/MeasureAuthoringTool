@@ -1,15 +1,14 @@
 package mat.client.shared;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.gwt.core.client.GWT;
+import mat.client.util.FeatureFlagConstant;
 import mat.model.clause.ModelTypeHelper;
+import mat.model.cql.CQLLibraryDataSetObject;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.gwt.core.client.GWT;
-import mat.client.util.FeatureFlagConstant;
-import mat.model.cql.CQLLibraryDataSetObject;
 
 public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 

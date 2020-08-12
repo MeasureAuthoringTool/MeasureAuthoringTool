@@ -1,13 +1,12 @@
 package mat.client.expressionbuilder.component;
 
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.Pre;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
-
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 
 public class ViewCQLExpressionWidget extends Composite{
 	private static final String CQL_EXPRESSION = "CQL Expression";

@@ -1,11 +1,5 @@
 package mat.server;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
@@ -49,6 +43,11 @@ import mat.shared.error.measure.DeleteMeasureException;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.shared.measure.measuredetails.translate.MeasureDetailModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class MeasureServiceImpl extends SpringRemoteServiceServlet implements MeasureService {
     private static final long serialVersionUID = 2280421300224680146L;

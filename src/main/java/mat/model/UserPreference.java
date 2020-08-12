@@ -1,7 +1,5 @@
 package mat.model;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "USER_PREFERENCE", uniqueConstraints = @UniqueConstraint(columnNames = "ID"))

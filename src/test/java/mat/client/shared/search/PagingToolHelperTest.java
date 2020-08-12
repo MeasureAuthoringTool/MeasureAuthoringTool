@@ -1,13 +1,8 @@
 package mat.client.shared.search;
 
-import junit.framework.TestCase;
-
-import mat.client.shared.search.PagingToolHelper;
-import mat.client.shared.search.SearchResults;
-
-import org.junit.Test;
-
 import com.google.gwt.user.client.ui.Widget;
+import junit.framework.TestCase;
+import org.junit.Test;
 
 public class PagingToolHelperTest extends TestCase {
 	private static class SearchResultsForTest implements SearchResults<String> {

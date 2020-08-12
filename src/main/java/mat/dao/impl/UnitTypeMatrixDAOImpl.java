@@ -1,19 +1,18 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import mat.dao.UnitTypeMatrixDAO;
+import mat.dao.search.GenericDAO;
+import mat.dto.UnitMatrixDTO;
+import mat.model.UnitMatrix;
+import mat.server.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dto.UnitMatrixDTO;
-import mat.dao.UnitTypeMatrixDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.UnitMatrix;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository("unitTypeMatrixDAO")
 public class UnitTypeMatrixDAOImpl extends GenericDAO<UnitMatrix, String> implements UnitTypeMatrixDAO{

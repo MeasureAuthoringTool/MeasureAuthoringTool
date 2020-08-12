@@ -1,12 +1,5 @@
 package mat.server.clause;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import mat.client.measure.service.CheckForConversionResult;
 import mat.client.measure.service.FhirConvertResultResponse;
 import mat.client.measure.service.FhirMeasureRemoteService;
@@ -16,8 +9,14 @@ import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
 import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
+import mat.server.logging.LogFactory;
 import mat.server.service.FhirMeasureService;
 import mat.server.service.VSACApiService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 import static mat.client.measure.ManageMeasureSearchModel.Result;
 

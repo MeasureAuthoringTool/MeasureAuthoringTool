@@ -1,6 +1,7 @@
 package mat.model.clause;
 
-import static javax.persistence.GenerationType.IDENTITY;
+import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.model.MeasureType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,9 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-import mat.model.MeasureType;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "MEASURE_TYPE_ASSOCIATION")

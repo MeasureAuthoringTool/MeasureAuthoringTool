@@ -1,8 +1,7 @@
 package mat.shared;
 
-import mat.model.cql.CQLIncludeLibrary;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.model.cql.CQLIncludeLibrary;
 
 public class LibHolderObject implements IsSerializable{
 	String measureXML = "";

@@ -3,7 +3,6 @@ package mat.client.measure;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.user.client.ui.FocusPanel;
-
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
 

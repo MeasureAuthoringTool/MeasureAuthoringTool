@@ -1,12 +1,12 @@
 package mat.shared.model.util;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import mat.client.measure.ReferenceTextAndType;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static mat.model.clause.ModelTypeHelper.FHIR;
 import static mat.model.clause.ModelTypeHelper.QDM;

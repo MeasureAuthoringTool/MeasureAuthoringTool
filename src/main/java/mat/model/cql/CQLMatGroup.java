@@ -1,8 +1,8 @@
 package mat.model.cql;
 
-import java.util.ArrayList;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.ArrayList;
 
 /**
  * Container for holding Group information.

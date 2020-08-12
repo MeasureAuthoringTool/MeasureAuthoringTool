@@ -1,13 +1,14 @@
 package mat.client.admin.reports;
-import mat.client.Mat;
-import mat.client.MatPresenter;
-import mat.client.admin.reports.ManageAdminReportingView.Observer;
-import mat.client.shared.ContentWithHeadingWidget;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.Mat;
+import mat.client.MatPresenter;
+import mat.client.admin.reports.ManageAdminReportingView.Observer;
+import mat.client.shared.ContentWithHeadingWidget;
 /** The Class ManageAdminPresenter. */
 public class ManageAdminReportingPresenter implements MatPresenter {
 	

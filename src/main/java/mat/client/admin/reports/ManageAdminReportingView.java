@@ -1,12 +1,5 @@
 package mat.client.admin.reports;
 
-import java.util.ArrayList;
-import java.util.List;
-import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatButtonCell;
-import mat.client.shared.SpacerWidget;
-import mat.client.util.CellTableUtility;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Style.Unit;
@@ -20,6 +13,14 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatButtonCell;
+import mat.client.shared.SpacerWidget;
+import mat.client.util.CellTableUtility;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ManageAdminReportingView implements ManageAdminReportingPresenter.Display {

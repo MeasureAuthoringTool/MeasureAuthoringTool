@@ -1,8 +1,8 @@
 package mat.dao;
 
-import java.util.List;
-
 import mat.model.ListObject;
+
+import java.util.List;
 
 /**
  * The Interface ListObjectDAO.

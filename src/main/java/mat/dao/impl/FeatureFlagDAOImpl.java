@@ -1,20 +1,20 @@
 package mat.dao.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import mat.dao.FeatureFlagDAO;
+import mat.dao.search.GenericDAO;
+import mat.model.FeatureFlag;
+import mat.server.logging.LogFactory;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import mat.dao.FeatureFlagDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.FeatureFlag;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository("FeatureFlagDAO")
 public class FeatureFlagDAOImpl extends GenericDAO<FeatureFlag, String> implements FeatureFlagDAO {

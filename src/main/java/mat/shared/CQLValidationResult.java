@@ -1,8 +1,8 @@
 package mat.shared;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.List;
 
 public class CQLValidationResult implements IsSerializable {
 	private boolean isValid;

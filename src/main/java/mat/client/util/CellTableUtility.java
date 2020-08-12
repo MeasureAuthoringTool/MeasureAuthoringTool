@@ -2,7 +2,6 @@ package mat.client.util;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-
 import mat.shared.StringUtility;
 
 public class CellTableUtility {

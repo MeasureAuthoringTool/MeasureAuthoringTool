@@ -1,24 +1,22 @@
 package mat.server.hqmf.qdm;
 
+import mat.model.clause.MeasureExport;
+import mat.server.hqmf.Generator;
+import mat.server.humanreadable.qdm.HQMFHumanReadableGenerator;
+import mat.server.logging.LogFactory;
+import mat.server.util.XmlProcessor;
+import org.apache.commons.logging.Log;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.tidy.Tidy;
+
+import javax.xml.xpath.XPathExpressionException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import mat.model.clause.MeasureExport;
-import mat.server.hqmf.Generator;
-import mat.server.humanreadable.qdm.HQMFHumanReadableGenerator;
-import mat.server.util.XmlProcessor;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.tidy.Tidy;
 
 /**
  * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 

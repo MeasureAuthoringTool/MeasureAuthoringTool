@@ -1,9 +1,10 @@
 package mat.client.shared;
 
+import com.google.gwt.user.client.ui.SuggestOracle;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import com.google.gwt.user.client.ui.SuggestOracle;
 
 public class CQLSuggestOracle extends SuggestOracle {
 

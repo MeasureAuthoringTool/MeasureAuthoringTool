@@ -1,14 +1,5 @@
 package mat.server.util;
 
-import javax.xml.xpath.XPathExpressionException;
-
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.w3c.dom.Node;
-
 import mat.dao.MeasureTypeDAO;
 import mat.dao.OrganizationDAO;
 import mat.dao.clause.CQLLibraryDAO;
@@ -16,6 +7,14 @@ import mat.dao.clause.MeasureDAO;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.w3c.dom.Node;
+
+import javax.xml.xpath.XPathExpressionException;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;

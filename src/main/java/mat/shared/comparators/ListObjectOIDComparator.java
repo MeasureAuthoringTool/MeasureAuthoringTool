@@ -1,8 +1,8 @@
 package mat.shared.comparators;
 
-import java.util.Comparator;
-
 import mat.model.ListObject;
+
+import java.util.Comparator;
 
 /**
  * The Class ListObjectOIDComparator.

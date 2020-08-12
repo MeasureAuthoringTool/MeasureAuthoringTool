@@ -1,6 +1,6 @@
 package mat.model.clause;
 
-import static javax.persistence.GenerationType.IDENTITY;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "QDM_ATTRIBUTES")

@@ -30,6 +30,24 @@ public class CQLConstantContainer implements IsSerializable {
     private List<FunctionSignature> functionSignatures = new ArrayList<>();
     // Sorted by FHIR resource name
     private Map<String, FhirDataType> fhirDataTypes = new TreeMap<>();
+    private List<FhirDatatypeAttributeAssociation> attributeAssociations;
+    private List<String> compoundFhirDataTypes; // uniq set of DataTypes from attributeAssociations
+
+    public List<String> getCompoundFhirDataTypes() {
+        return compoundFhirDataTypes;
+    }
+
+    public void setCompoundFhirDataTypes(List<String> compoundFhirDataTypes) {
+        this.compoundFhirDataTypes = compoundFhirDataTypes;
+    }
+
+    public List<FhirDatatypeAttributeAssociation> getAttributeAssociations() {
+        return attributeAssociations;
+    }
+
+    public void setAttributeAssociations(List<FhirDatatypeAttributeAssociation> attributeAssociations) {
+        this.attributeAssociations = attributeAssociations;
+    }
 
     public List<String> getFhirCqlDataTypeList() {
         return fhirCqlDataTypeList;

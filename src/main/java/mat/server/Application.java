@@ -34,7 +34,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -82,15 +81,6 @@ public class Application extends WebSecurityConfigurerAdapter {
     @Value("${PASSWORDKEY:}")
     private String passwordKey;
 
-    /**
-     *  Force UTC timezone locally.
-     */
-    @PostConstruct
-    public void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-        log.info("Set timezone to UTC.");
-    }
-
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
         final PropertySourcesPlaceholderConfigurer ppc = new PropertySourcesPlaceholderConfigurer();
@@ -98,6 +88,15 @@ public class Application extends WebSecurityConfigurerAdapter {
         propertiesSource.setProperty("systemPropertiesMode", "2");
         ppc.setProperties(propertiesSource);
         return ppc;
+    }
+
+    /**
+     * Force UTC timezone locally.
+     */
+    @PostConstruct
+    public void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        log.info("Set timezone to UTC.");
     }
 
     @Bean
@@ -260,6 +259,8 @@ public class Application extends WebSecurityConfigurerAdapter {
                 "spreadSheetMatAttributes",
                 "spreadSheetQdmToQiCoreMapping",
                 "spreadSheetDataTypes",
+                "typesForFunctionArgs",
+                "fhirAssociation",
                 "spreadSheetResourceDefinitions")
                 .stream().map(ConcurrentMapCache::new)
                 .collect(Collectors.toList());

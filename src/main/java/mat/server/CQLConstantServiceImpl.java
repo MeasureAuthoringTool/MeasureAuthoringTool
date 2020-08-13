@@ -1,27 +1,5 @@
 package mat.server;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cqframework.cql.cql2elm.SystemModelInfoProvider;
-import org.hl7.elm_modelinfo.r1.ClassInfo;
-import org.hl7.elm_modelinfo.r1.ClassInfoElement;
-import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.TypeInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import mat.client.cqlconstant.service.CQLConstantService;
@@ -29,6 +7,7 @@ import mat.client.shared.CQLConstantContainer;
 import mat.client.shared.CQLTypeContainer;
 import mat.client.shared.FhirAttribute;
 import mat.client.shared.FhirDataType;
+import mat.client.shared.FhirDatatypeAttributeAssociation;
 import mat.client.shared.MatContext;
 import mat.client.shared.QDMContainer;
 import mat.dao.clause.QDSAttributesDAO;
@@ -41,6 +20,27 @@ import mat.server.spreadsheet.MatAttribute;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.QDMUtil;
 import mat.shared.cql.model.FunctionSignature;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cqframework.cql.cql2elm.SystemModelInfoProvider;
+import org.hl7.elm_modelinfo.r1.ClassInfo;
+import org.hl7.elm_modelinfo.r1.ClassInfoElement;
+import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.hl7.elm_modelinfo.r1.TypeInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implements CQLConstantService {
 
@@ -176,6 +176,19 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             fhirDataType.getAttributes().computeIfAbsent(fhirElement, s -> new FhirAttribute(fhirElementId, fhirElement, StringUtils.trimToEmpty(conversionMapping.getFhirType())));
         }
         cqlConstantContainer.setFhirCqlDataTypeList(getAllFhirTypes());
+
+        List<FhirDatatypeAttributeAssociation> fhirDatatypeAttributeAssociations = mappingService.fhirDatatypeAttributeAssociation();
+
+        List<String> compoundDataTypes = new ArrayList<>();
+
+        for (FhirDatatypeAttributeAssociation a : fhirDatatypeAttributeAssociations) {
+            if (!compoundDataTypes.contains(a.getDatatype())) {
+                compoundDataTypes.add(a.getDatatype()); // use list and will retain sorted order, from server
+            }
+        }
+
+        cqlConstantContainer.setAttributeAssociations(fhirDatatypeAttributeAssociations);
+        cqlConstantContainer.setCompoundFhirDataTypes(compoundDataTypes);
     }
 
     private String hashForId(String value) {

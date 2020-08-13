@@ -1,31 +1,5 @@
 package mat.client.cqlworkspace;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.Modal;
-import org.gwtbootstrap3.client.ui.ModalBody;
-import org.gwtbootstrap3.client.ui.ModalFooter;
-import org.gwtbootstrap3.client.ui.ModalHeader;
-import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -43,6 +17,7 @@ import mat.client.inapphelp.component.InAppHelp;
 import mat.client.inapphelp.message.InAppHelpMessages;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.CustomQuantityTextBox;
+import mat.client.shared.FhirDatatypeAttributeAssociation;
 import mat.client.shared.JSONAttributeModeUtility;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -52,6 +27,31 @@ import mat.client.shared.datetime.DateTimeWidget;
 import mat.model.ModeDetailModel;
 import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.QDSAttributes;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Modal;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.ModalFooter;
+import org.gwtbootstrap3.client.ui.ModalHeader;
+import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class InsertAttributeBuilderDialogBox {
 
@@ -86,38 +86,29 @@ public class InsertAttributeBuilderDialogBox {
     private static final int ATTR_MAX_WIDTH = 90;
     private static final String ATTR_WIDTH = "45em";
     private static final int ATTR_VISIBLE_ITEMS = 10;
-
-    private static Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();
-
-    private static HashSet<String> nonQuoteUnits = MatContext.get().getNonQuotesUnits();
-
-    private static QDSAttributesServiceAsync attributeService = GWT.create(QDSAttributesService.class);
-
-    private static List<String> allDataTypes;
-    private static List<String> allAttributes;
-
-    private static ListBoxMVP dtAttriblistBox;
-    private static ListBoxMVP attriblistBox;
-    private static ListBoxMVP modelistBox;
-    private static ListBoxMVP modeDetailslistBox;
-    private static ListBoxMVP unitslistBox;
-
     private static final FormGroup dtFormGroup = new FormGroup();
     private static final FormGroup attrFormGroup = new FormGroup();
     private static final FormGroup modeFormGroup = new FormGroup();
     private static final FormGroup modeDetailsFormGroup = new FormGroup();
     private static final FormGroup quantityFormGroup = new FormGroup();
     private static final FormGroup unitFormGroup = new FormGroup();
-
     private static final HorizontalPanel dtPanel = new HorizontalPanel();
     private static final HorizontalPanel attrPanel = new HorizontalPanel();
     private static final HorizontalPanel modePanel = new HorizontalPanel();
     private static final HorizontalPanel modeDetailPanel = new HorizontalPanel();
     private static final HorizontalPanel quantityPanel = new HorizontalPanel();
     private static final HorizontalPanel unitPanel = new HorizontalPanel();
-
     private static final CustomQuantityTextBox quantityTextBox = new CustomQuantityTextBox(30);
-
+    private static Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();
+    private static HashSet<String> nonQuoteUnits = MatContext.get().getNonQuotesUnits();
+    private static QDSAttributesServiceAsync attributeService = GWT.create(QDSAttributesService.class);
+    private static List<String> allDataTypes;
+    private static List<String> allAttributes;
+    private static ListBoxMVP dtAttriblistBox;
+    private static ListBoxMVP attriblistBox;
+    private static ListBoxMVP modelistBox;
+    private static ListBoxMVP modeDetailslistBox;
+    private static ListBoxMVP unitslistBox;
     private static HelpBlock messageHelpBlock = new HelpBlock();
 
     private static DateTimeWidget dtw = new DateTimeWidget(false);
@@ -133,10 +124,12 @@ public class InsertAttributeBuilderDialogBox {
 
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(modelType)) {
             allAttributes = Collections.emptyList();
-            allDataTypes = MatContext.get().getCqlConstantContainer().getFhirCqlDataTypeList();
+            allDataTypes = MatContext.get().getCqlConstantContainer().getCompoundFhirDataTypes();
         } else {
             allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
             allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
+            Collections.sort(allAttributes, String.CASE_INSENSITIVE_ORDER);
+            Collections.sort(allDataTypes, String.CASE_INSENSITIVE_ORDER);
         }
         dtAttriblistBox = new ListBoxMVP();
         attriblistBox = new ListBoxMVP();
@@ -250,8 +243,7 @@ public class InsertAttributeBuilderDialogBox {
         dialogModal.add(modalBody);
         dialogModal.add(modalFooter);
 
-        Collections.sort(allAttributes, String.CASE_INSENSITIVE_ORDER);
-        Collections.sort(allDataTypes, String.CASE_INSENSITIVE_ORDER);
+
         addAvailableItems(dtAttriblistBox, allDataTypes);
         selectAttributesByDataType(messageFormgroup, helpBlock, allAttributes, modelType);
 
@@ -938,8 +930,10 @@ public class InsertAttributeBuilderDialogBox {
         final String selectedAttrItem;
         if (attriblistBox.getSelectedIndex() > 0) {
             if (ModelTypeHelper.isFhir(modelType)) {
-                String fullAttrName = dtAttriblistBox.getItemText(dtAttriblistBox.getSelectedIndex()) + PERIOD + attriblistBox.getItemText(attriblistBox.getSelectedIndex());
-                selectedAttrItem = fullAttrName.substring(fullAttrName.indexOf(PERIOD) + 1);
+                // String fullAttrName = dtAttriblistBox.getItemText(dtAttriblistBox.getSelectedIndex()) + PERIOD + attriblistBox.getItemText(attriblistBox.getSelectedIndex());
+                //  selectedAttrItem = fullAttrName.substring(fullAttrName.indexOf(PERIOD) + 1);
+
+                selectedAttrItem = attriblistBox.getItemText(attriblistBox.getSelectedIndex());
             } else {
                 selectedAttrItem = attriblistBox.getItemText(attriblistBox.getSelectedIndex());
             }
@@ -992,20 +986,16 @@ public class InsertAttributeBuilderDialogBox {
     }
 
     private static void getAllAttributesByDataTypeForFhir(final ListBoxMVP availableAttributesToInsert, final String dataType) {
-        attributeService.getAllAttributesByDataTypeForFhir(dataType, new AsyncCallback<List<String>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                logger.log(Level.SEVERE, "Error in getAllAttributesByDataTypeForFhir. Error message: " + caught.getMessage(), caught);
-                Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-            }
+        List<String> attributes = new ArrayList<>();
+        List<FhirDatatypeAttributeAssociation> associations = MatContext.get().getCqlConstantContainer().getAttributeAssociations();
 
-            @Override
-            public void onSuccess(List<String> result) {
-                logger.log(Level.INFO, "AttributeService::getAllAttributesByDataTypeForFhir -> onSuccess");
-                Collections.sort(result);
-                availableAttributesToInsert.clear();
-                addAvailableItems(availableAttributesToInsert, result);
+        for (FhirDatatypeAttributeAssociation a : associations) {
+            if (a.getDatatype().equals(dataType)) {
+                attributes.add(a.getAttribute());
             }
-        });
+        }
+
+        availableAttributesToInsert.clear();
+        addAvailableItems(availableAttributesToInsert, attributes);
     }
 }

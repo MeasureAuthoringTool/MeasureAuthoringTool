@@ -2,6 +2,7 @@ package mat.server;
 
 import mat.client.shared.MatRuntimeException;
 import mat.server.spreadsheet.DataType;
+import mat.client.shared.FhirDatatypeAttributeAssociation;
 import mat.server.spreadsheet.MatAttribute;
 import mat.server.spreadsheet.QdmToQicoreMapping;
 import mat.server.spreadsheet.RequiredMeasureField;
@@ -27,15 +28,14 @@ public class MappingSpreadsheetService {
     private static final String REQUIRED_MEASURE_FIELDS = "/requiredMeasureFields";
     private static final String RESOURCE_DEFINITION = "/resourceDefinition";
     private static final String TYPES_FOR_FUNCTION_ARGS = "/fhirLightboxDataTypesForFunctionArgs";
-
-    @Value("${QDM_QICORE_MAPPING_SERVICES_URL:http://localhost:9090}")
-    private String fhirMatMappingServicesUrl;
-
-    @Resource
-    private MappingSpreadsheetService self;
+    private static final String FHIR_DATATYPE_ATTRIBUTE_ASSOCIATION = "/fhirLightBoxDatatypeAttributeAssociation";
 
     @Qualifier("internalRestTemplate")
     private final RestTemplate restTemplate;
+    @Value("${QDM_QICORE_MAPPING_SERVICES_URL:http://localhost:9090}")
+    private String fhirMatMappingServicesUrl;
+    @Resource
+    private MappingSpreadsheetService self;
 
     public MappingSpreadsheetService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -43,7 +43,7 @@ public class MappingSpreadsheetService {
 
     @Cacheable("spreadSheetfhirTypes")
     public List<String> getFhirTypes() {
-       return typesForFunctionArgs(); // rest call sorts list
+        return typesForFunctionArgs(); // rest call sorts list
     }
 
     @Cacheable("spreadSheetMatAttributes")
@@ -106,6 +106,17 @@ public class MappingSpreadsheetService {
         ResponseEntity<String[]> response;
         try {
             response = restTemplate.getForEntity(fhirMatMappingServicesUrl + TYPES_FOR_FUNCTION_ARGS, String[].class);
+        } catch (RestClientResponseException e) {
+            throw new MatRuntimeException(e);
+        }
+        return response.getBody() == null ? Collections.emptyList() : Arrays.asList(response.getBody());
+    }
+
+   @Cacheable("fhirAssociation")
+    public List<FhirDatatypeAttributeAssociation> fhirDatatypeAttributeAssociation() {
+        ResponseEntity<FhirDatatypeAttributeAssociation[]> response;
+        try {
+            response = restTemplate.getForEntity(fhirMatMappingServicesUrl + FHIR_DATATYPE_ATTRIBUTE_ASSOCIATION, FhirDatatypeAttributeAssociation[].class);
         } catch (RestClientResponseException e) {
             throw new MatRuntimeException(e);
         }

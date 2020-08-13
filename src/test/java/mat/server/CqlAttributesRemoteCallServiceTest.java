@@ -18,15 +18,14 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 class CqlAttributesRemoteCallServiceTest {
 
-    private String fhirMatServicesUrl = "https://localhost:9090";
-
     private final static String FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES = "/matAttributes";
-
+    private String fhirMatMappingServicesUrl = "https://localhost:9090";
     @Mock
     private RestTemplate restTemplate;
 
@@ -34,13 +33,14 @@ class CqlAttributesRemoteCallServiceTest {
     private MappingSpreadsheetService cqlAttributesRemoteCallService;
 
     @Test
-    public void testGetFhirAttributeAndDataTypes() throws Exception {
-        Whitebox.setInternalState(cqlAttributesRemoteCallService, "fhirMatServicesUrl", fhirMatServicesUrl);
+    void testGetFhirAttributeAndDataTypes() throws Exception {
+        Whitebox.setInternalState(cqlAttributesRemoteCallService, "fhirMatMappingServicesUrl", fhirMatMappingServicesUrl);
 
         URL path = MappingSpreadsheetService.class.getClassLoader().getResource("fhirAttributes&DataTypes.txt");
+        assertNotNull(path);
         MatAttribute[] conversionMappingsTestData = new ObjectMapper().readValue(new File(path.getFile()), MatAttribute[].class);
-        Mockito.when(restTemplate.getForEntity(fhirMatServicesUrl + FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES, MatAttribute[].class))
-                .thenReturn(new ResponseEntity(conversionMappingsTestData, HttpStatus.OK));
+        Mockito.when(restTemplate.getForEntity(fhirMatMappingServicesUrl + FHIR_MAT_SERVICES_RECOURSE_FOR_ATTRIBUTES, MatAttribute[].class))
+                .thenReturn(new ResponseEntity<>(conversionMappingsTestData, HttpStatus.OK));
 
         List<MatAttribute> conversionMappings = cqlAttributesRemoteCallService.getMatAttributes();
         assertEquals(Arrays.asList(conversionMappingsTestData), conversionMappings);

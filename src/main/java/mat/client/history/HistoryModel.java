@@ -1,15 +1,14 @@
 package mat.client.history;
 
 
-import java.util.List;
-
-import mat.dto.AuditLogDTO;
-import mat.client.audit.AuditLogWidget;
-import mat.client.shared.search.PagingFacade;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.audit.AuditLogWidget;
+import mat.client.shared.search.PagingFacade;
+import mat.dto.AuditLogDTO;
+
+import java.util.List;
 
 /**
  * The Class HistoryModel.

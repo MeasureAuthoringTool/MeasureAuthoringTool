@@ -1,8 +1,8 @@
 package mat.dao;
 
-import java.util.List;
-
 import mat.model.RecentMSRActivityLog;
+
+import java.util.List;
 
 public interface RecentMSRActivityLogDAO extends IDAO<RecentMSRActivityLog, String> {
 	

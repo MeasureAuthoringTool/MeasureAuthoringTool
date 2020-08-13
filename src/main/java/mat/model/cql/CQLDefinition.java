@@ -1,13 +1,13 @@
 package mat.model.cql;
 
-import java.util.Set;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.Set;
 
 public class CQLDefinition implements CQLExpression, IsSerializable, Cell<CQLDefinition> {
     private String id;

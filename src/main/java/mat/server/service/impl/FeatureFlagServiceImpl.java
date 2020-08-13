@@ -1,18 +1,13 @@
 package mat.server.service.impl;
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang3.time.StopWatch;
+import mat.dao.FeatureFlagDAO;
+import mat.server.logging.LogFactory;
+import mat.server.service.FeatureFlagService;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import mat.client.util.FeatureFlagConstant;
-import mat.dao.FeatureFlagDAO;
-import mat.server.service.FeatureFlagService;
+import java.util.Map;
 
 @Service
 public class FeatureFlagServiceImpl implements FeatureFlagService {

@@ -1,11 +1,10 @@
 package mat.model.cql;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.RiskAdjustmentDTO;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CQLDefinitionsWrapper implements IsSerializable{
 

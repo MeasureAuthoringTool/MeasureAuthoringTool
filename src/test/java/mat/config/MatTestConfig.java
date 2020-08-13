@@ -1,9 +1,8 @@
 package mat.config;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
-
+import lombok.extern.slf4j.Slf4j;
+import mat.server.service.jobs.CheckUserChangePasswordLimit;
+import mat.server.service.jobs.OnetimeUserNotificationTask;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -11,9 +10,9 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.mail.SimpleMailMessage;
 
-import lombok.extern.slf4j.Slf4j;
-import mat.server.service.jobs.CheckUserChangePasswordLimit;
-import mat.server.service.jobs.OnetimeUserNotificationTask;
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 /**
  * Class to set Test configuration. This is the base configuration

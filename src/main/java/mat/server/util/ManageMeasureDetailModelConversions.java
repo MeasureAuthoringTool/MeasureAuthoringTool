@@ -1,20 +1,5 @@
 package mat.server.util;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import mat.model.clause.ModelTypeHelper;
-import org.apache.commons.lang3.StringUtils;
-
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -32,9 +17,23 @@ import mat.model.clause.MeasureDetails;
 import mat.model.clause.MeasureDetailsReference;
 import mat.model.clause.MeasureDeveloperAssociation;
 import mat.model.clause.MeasureTypeAssociation;
+import mat.model.clause.ModelTypeHelper;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
+import org.apache.commons.lang3.StringUtils;
+
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ManageMeasureDetailModelConversions {
 

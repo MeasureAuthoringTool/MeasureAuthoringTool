@@ -1,8 +1,11 @@
 package mat.server.clause;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.service.FhirConvertResultResponse;
+import mat.client.shared.MatException;
+import mat.client.umls.service.VsacTicketInformation;
+import mat.server.service.FhirMeasureService;
+import mat.server.service.VSACApiService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +17,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.reflect.Whitebox;
 
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.service.FhirConvertResultResponse;
-import mat.client.shared.MatException;
-import mat.client.umls.service.VsacTicketInformation;
-import mat.server.service.FhirMeasureService;
-import mat.server.service.VSACApiService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import static org.mockito.ArgumentMatchers.eq;
 

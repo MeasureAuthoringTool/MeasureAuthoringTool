@@ -1,17 +1,16 @@
 package mat.server;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
+import mat.client.audit.service.AuditService;
 import mat.dto.SearchHistoryDTO;
 import mat.dto.UserAuditLogDTO;
-import mat.client.audit.service.AuditService;
 import mat.server.service.CQLLibraryAuditService;
 import mat.server.service.CodeListAuditService;
 import mat.server.service.MeasureAuditService;
 import mat.server.service.TransactionAuditService;
 import mat.server.service.UserAuditService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Client implementation of Audit Service Implementation.

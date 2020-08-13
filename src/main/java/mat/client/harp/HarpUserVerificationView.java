@@ -21,7 +21,6 @@ import mat.shared.HarpConstants;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.PanelFooter;
-
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 

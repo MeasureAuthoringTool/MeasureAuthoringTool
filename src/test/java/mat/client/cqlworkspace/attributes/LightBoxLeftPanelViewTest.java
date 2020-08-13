@@ -1,12 +1,11 @@
 package mat.client.cqlworkspace.attributes;
 
-import java.util.Collections;
-
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import java.util.Collections;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class LightBoxLeftPanelViewTest {

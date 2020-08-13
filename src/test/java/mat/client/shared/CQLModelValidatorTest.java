@@ -1,8 +1,7 @@
 package mat.client.shared;
 
-import org.junit.jupiter.api.Test;
-
 import mat.shared.CQLModelValidator;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 

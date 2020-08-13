@@ -1,8 +1,8 @@
 package mat.client.umls.service;
 
-import java.util.Date;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.Date;
 
 public class VsacTicketInformation implements IsSerializable{
 	

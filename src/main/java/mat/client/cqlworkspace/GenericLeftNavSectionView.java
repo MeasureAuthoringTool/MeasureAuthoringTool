@@ -4,7 +4,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SuccessMessageAlert;

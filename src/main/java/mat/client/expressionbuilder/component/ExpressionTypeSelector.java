@@ -1,26 +1,24 @@
 package mat.client.expressionbuilder.component;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
 import mat.client.expressionbuilder.modal.ExpressionBuilderModal;
 import mat.client.expressionbuilder.model.AliasModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.shared.ListBoxMVP;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class ExpressionTypeSelector extends Composite {
 

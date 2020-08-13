@@ -14,12 +14,20 @@
         </param-value>
     </context-param>
     <filter>
-        <filter-name>hibernateStatsFilter</filter-name>
-        <filter-class>mat.server.HibernateStatisticsFilter</filter-class>
+        <filter-name>bufferedInputFilter</filter-name>
+        <filter-class>mat.server.logging.BufferingInputFilter</filter-class>
     </filter>
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter>
+        <filter-name>requestResponseLoggingFilter</filter-name>
+        <filter-class>mat.server.logging.RequestResponseLoggingFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>hibernateStatsFilter</filter-name>
+        <filter-class>mat.server.HibernateStatisticsFilter</filter-class>
     </filter>
     <filter>
         <filter-name>hibernateFilter</filter-name>
@@ -31,10 +39,17 @@
     </filter>
 
     <filter-mapping>
+        <filter-name>bufferedInputFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
+    <filter-mapping>
+        <filter-name>requestResponseLoggingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     <filter-mapping>
         <filter-name>hibernateStatsFilter</filter-name>
         <url-pattern>/*</url-pattern>

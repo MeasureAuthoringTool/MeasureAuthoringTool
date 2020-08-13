@@ -1,13 +1,11 @@
 package mat.client;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.shared.MatContext;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 import java.util.Map;

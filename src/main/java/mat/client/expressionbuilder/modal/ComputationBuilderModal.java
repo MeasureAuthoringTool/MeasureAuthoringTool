@@ -1,15 +1,8 @@
 
 package mat.client.expressionbuilder.modal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.constant.ArithmeticOperatorType;
 import mat.client.expressionbuilder.constant.ExpressionType;
@@ -18,6 +11,11 @@ import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.QueryFinderHelper;
 import mat.client.shared.ListBoxMVP;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ComputationBuilderModal extends SubExpressionBuilderModal {
 

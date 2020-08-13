@@ -1,11 +1,10 @@
 package mat.dao.impl;
 
+import mat.dao.search.GenericDAO;
+import mat.model.AuditLog;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import mat.dao.search.GenericDAO;
-import mat.model.AuditLog;
 
 @Repository("auditLogDAO")
 public class AuditLogDAOImpl extends GenericDAO<AuditLog, String> implements mat.dao.AuditLogDAO {

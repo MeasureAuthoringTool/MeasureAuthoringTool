@@ -1,9 +1,5 @@
 package mat.client.shared;
 
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.EventTarget;
@@ -25,6 +21,10 @@ import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.util.CellTableUtility;
 import mat.client.util.FeatureFlagConstant;
 import mat.shared.model.util.MeasureDetailsUtil;
+
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static mat.model.clause.ModelTypeHelper.isFhir;
 import static mat.model.clause.ModelTypeHelper.isQdm;

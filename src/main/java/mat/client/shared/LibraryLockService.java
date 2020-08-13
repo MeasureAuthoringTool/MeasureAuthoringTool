@@ -4,7 +4,6 @@
 package mat.client.shared;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.measure.service.CQLLibraryServiceAsync;
 import mat.client.measure.service.SaveCQLLibraryResult;

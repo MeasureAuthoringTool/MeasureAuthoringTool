@@ -1,10 +1,9 @@
 package mat.shared.measure.measuredetails.models;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.shared.StringUtility;
+
+import java.util.List;
 
 public class GeneralInformationModel implements MeasureDetailsComponentModel, IsSerializable {
 	private String measureName;

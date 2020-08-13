@@ -1,13 +1,13 @@
 package mat.shared.measure.measuredetails.models;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ReferenceTextAndType;
 import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.validate.GeneralInformationValidator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MeasureDetailsModel implements MeasureDetailsComponentModel, MeasureDetailsModelVisitor, IsSerializable {
     private String id;

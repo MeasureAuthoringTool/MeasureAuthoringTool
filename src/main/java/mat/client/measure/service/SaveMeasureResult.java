@@ -1,12 +1,12 @@
 package mat.client.measure.service;
 
-import java.util.List;
-
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.shared.GenericResult;
 import mat.model.Author;
 import mat.model.MeasureType;
 import mat.shared.ConstantMessages;
+
+import java.util.List;
 
 public class SaveMeasureResult extends GenericResult {
 

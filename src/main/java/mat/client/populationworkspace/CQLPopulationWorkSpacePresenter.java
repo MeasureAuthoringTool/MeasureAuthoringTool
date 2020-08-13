@@ -1,11 +1,5 @@
 package mat.client.populationworkspace;
 
-import java.util.List;
-import java.util.function.Predicate;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -16,7 +10,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.XMLParser;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -31,6 +24,11 @@ import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * The Class CQLPopulationWorkSpacePresenter.

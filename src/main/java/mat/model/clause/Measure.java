@@ -1,9 +1,7 @@
 package mat.model.clause;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import mat.model.User;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,10 +17,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import mat.model.User;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "MEASURE")

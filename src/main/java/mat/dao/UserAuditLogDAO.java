@@ -1,10 +1,10 @@
 package mat.dao;
 
-import java.util.List;
-
 import mat.dto.UserAuditLogDTO;
 import mat.model.User;
 import mat.model.UserAuditLog;
+
+import java.util.List;
 
 public interface UserAuditLogDAO extends IDAO<UserAuditLog, String> {
 

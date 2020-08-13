@@ -1,5 +1,11 @@
 package mat.client.expressionbuilder.util;
 
+import mat.client.expressionbuilder.constant.CQLType;
+import mat.client.expressionbuilder.constant.ExpressionType;
+import mat.client.shared.MatContext;
+import mat.shared.CQLIdentifierObject;
+import mat.shared.cql.model.FunctionSignature;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,12 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import mat.client.expressionbuilder.constant.CQLType;
-import mat.client.expressionbuilder.constant.ExpressionType;
-import mat.client.shared.MatContext;
-import mat.shared.CQLIdentifierObject;
-import mat.shared.cql.model.FunctionSignature;
 
 public class ExpressionTypeUtil {
 

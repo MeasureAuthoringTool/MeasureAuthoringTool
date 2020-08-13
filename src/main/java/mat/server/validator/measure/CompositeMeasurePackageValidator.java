@@ -1,24 +1,5 @@
 package mat.server.validator.measure;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.MessageDelegate;
@@ -27,12 +8,29 @@ import mat.dao.clause.MeasureExportDAO;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
+import mat.server.logging.LogFactory;
 import mat.server.service.MeasureLibraryService;
 import mat.server.util.CQLUtil;
 import mat.server.util.CompositeMeasureDetailUtil;
 import mat.server.util.XmlProcessor;
 import mat.shared.CompositeMeasurePackageValidationResult;
 import mat.shared.SaveUpdateCQLResult;
+import org.apache.commons.logging.Log;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class CompositeMeasurePackageValidator {

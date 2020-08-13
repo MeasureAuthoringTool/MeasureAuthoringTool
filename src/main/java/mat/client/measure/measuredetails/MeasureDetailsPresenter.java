@@ -1,10 +1,5 @@
 package mat.client.measure.measuredetails;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -53,6 +48,11 @@ import mat.shared.measure.measuredetails.models.ReferencesModel;
 import mat.shared.measure.measuredetails.models.StratificationModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.shared.measure.measuredetails.validate.GeneralInformationValidator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObserver {
     private static final Logger log = Logger.getLogger(CQLMeasureWorkSpacePresenter.class.getSimpleName());

@@ -1,10 +1,9 @@
 package mat.model;
 
-import java.util.List;
-
+import com.google.gwt.user.client.rpc.IsSerializable;
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.util.List;
 
 /**
  * Container for holding VSAC value set.

@@ -1,11 +1,10 @@
 package mat.client.clause.clauseworkspace.model;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.model.Author;
 import mat.model.MeasureSteward;
+
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**

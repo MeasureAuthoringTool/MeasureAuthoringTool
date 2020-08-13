@@ -1,12 +1,11 @@
 package mat.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLQualityDataSetDTO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GlobalCopyPasteObject implements IsSerializable{
 	

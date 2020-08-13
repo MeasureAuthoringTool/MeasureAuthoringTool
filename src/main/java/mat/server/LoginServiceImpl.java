@@ -1,29 +1,27 @@
 package mat.server;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginService;
 import mat.client.shared.MatException;
 import mat.dao.UserDAO;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
+import mat.server.logging.LogFactory;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
 import mat.server.util.UMLSSessionTicket;
 import mat.shared.HarpConstants;
 import mat.shared.HashUtility;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 /**

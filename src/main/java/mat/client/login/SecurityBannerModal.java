@@ -1,5 +1,7 @@
 package mat.client.login;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.HTML;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Modal;
@@ -9,9 +11,6 @@ import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.client.ui.html.Div;
 import org.gwtbootstrap3.client.ui.html.Span;
-
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.HTML;
 
 public class SecurityBannerModal extends Modal {
     private Button acceptButton = new Button("I Accept");

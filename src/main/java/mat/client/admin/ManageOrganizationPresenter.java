@@ -1,10 +1,5 @@
 package mat.client.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -20,7 +15,6 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
@@ -33,6 +27,10 @@ import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.MatTextBox;
 import mat.shared.AdminManageOrganizationModelValidator;
+import org.gwtbootstrap3.client.ui.Button;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** The Class ManageOrganizationPresenter. */
 public class ManageOrganizationPresenter implements MatPresenter {

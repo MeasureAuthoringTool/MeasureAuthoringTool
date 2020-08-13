@@ -3,29 +3,27 @@ package mat.server;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import mat.client.login.service.HarpService;
 import mat.client.shared.MatException;
+import mat.server.logging.LogFactory;
 import mat.server.util.ServerConstants;
+import org.apache.commons.logging.Log;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
-
-import static mat.shared.HarpConstants.HARP_GIVEN_NAME;
 import static mat.shared.HarpConstants.HARP_FAMILY_NAME;
 import static mat.shared.HarpConstants.HARP_FULLNAME;
+import static mat.shared.HarpConstants.HARP_GIVEN_NAME;
 import static mat.shared.HarpConstants.HARP_MIDDLE_NAME;
 import static mat.shared.HarpConstants.HARP_PRIMARY_EMAIL_ID;
 

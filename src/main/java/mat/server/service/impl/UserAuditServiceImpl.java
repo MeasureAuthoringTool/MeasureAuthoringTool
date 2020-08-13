@@ -1,15 +1,14 @@
 package mat.server.service.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import mat.dto.UserAuditLogDTO;
 import mat.dao.UserAuditLogDAO;
 import mat.dao.UserDAO;
+import mat.dto.UserAuditLogDTO;
 import mat.model.User;
 import mat.server.service.UserAuditService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserAuditServiceImpl implements UserAuditService{

@@ -1,10 +1,5 @@
 package mat.client.measure;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.FormLabel;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -24,7 +19,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-
 import mat.client.CustomPager;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -40,6 +34,10 @@ import mat.client.shared.WarningMessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
+import org.gwtbootstrap3.client.ui.FormLabel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class ManageMeasureShareView.

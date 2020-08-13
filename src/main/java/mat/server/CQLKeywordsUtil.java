@@ -1,16 +1,14 @@
 package mat.server;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import mat.model.cql.CQLKeywords;
 import mat.server.cqlparser.CQLTemplateXML;
 import mat.server.util.XmlProcessor;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CQLKeywordsUtil {
 	

@@ -1,7 +1,7 @@
 package mat.server;
 
-import java.io.IOException;
-import java.util.Date;
+import mat.server.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -11,9 +11,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.io.IOException;
+import java.util.Date;
 
 /**
  * The Class PreventCachingFilter.

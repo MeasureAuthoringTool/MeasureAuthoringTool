@@ -1,8 +1,8 @@
 package mat.client.shared.search;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.List;
 
 //
 // takes the whole results collection and then mimics

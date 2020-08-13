@@ -1,9 +1,5 @@
 package mat.client.measure.measuredetails.views;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.TableCaptionElement;
@@ -19,7 +15,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.measure.measuredetails.observers.MeasureTypeObserver;
 import mat.client.shared.ConfirmationDialogBox;
@@ -30,6 +25,10 @@ import mat.client.util.CellTableUtility;
 import mat.model.MeasureType;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureTypeModel;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MeasureTypeView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();

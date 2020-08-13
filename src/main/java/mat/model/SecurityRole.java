@@ -1,13 +1,12 @@
 package mat.model;
 
-import java.io.Serializable;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "SECURITY_ROLE")

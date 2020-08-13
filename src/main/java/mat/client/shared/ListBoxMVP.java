@@ -1,9 +1,5 @@
 package mat.client.shared;
 
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.ListBox;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
@@ -13,6 +9,9 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
+import org.gwtbootstrap3.client.ui.ListBox;
+
+import java.util.List;
 
 
 /**

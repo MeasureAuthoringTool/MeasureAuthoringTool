@@ -1,9 +1,9 @@
 package mat.shared.cql.model;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class FunctionSignature implements IsSerializable {
 

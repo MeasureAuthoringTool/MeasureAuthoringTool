@@ -1,13 +1,12 @@
 package mat.server.service.impl;
 
-import static org.junit.Assert.assertTrue;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.server.util.XmlProcessor;
+import org.junit.Test;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.server.util.XmlProcessor;
-
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 public class NormalizeNodeForSpacesTest {
 	

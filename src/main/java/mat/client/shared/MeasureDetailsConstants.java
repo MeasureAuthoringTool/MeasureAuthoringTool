@@ -1,10 +1,10 @@
 package mat.client.shared;
 
+import mat.shared.ConstantMessages;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import mat.shared.ConstantMessages;
 
 public class MeasureDetailsConstants {
 	public static final String PROPORTION = ConstantMessages.PROPORTION_SCORING;

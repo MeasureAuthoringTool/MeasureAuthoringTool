@@ -1,15 +1,14 @@
 package mat.dao.clause.impl;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.Root;
-
-import org.hibernate.Session;
-import org.springframework.stereotype.Repository;
-
 import mat.dao.clause.MeasureDeveloperDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.clause.MeasureDeveloperAssociation;
+import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.Root;
 
 @Repository("MeasureDeveloperDAO")
 public class MeasureDeveloperDAOImpl extends GenericDAO<MeasureDeveloperDAO, String> implements MeasureDeveloperDAO {

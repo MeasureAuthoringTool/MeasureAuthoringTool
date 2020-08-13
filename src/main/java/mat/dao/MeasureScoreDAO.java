@@ -1,9 +1,9 @@
 package mat.dao;
 
-import java.util.List;
-
 import mat.dto.MeasureScoreDTO;
 import mat.model.MeasureScore;
+
+import java.util.List;
 
 /**
  * DAO interface for Measure Score table operation.

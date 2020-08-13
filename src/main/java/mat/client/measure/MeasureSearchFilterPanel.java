@@ -1,12 +1,11 @@
 package mat.client.measure;
 
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
-
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.ListBoxMVP;
 
 /**
  * The Class MeasureSearchFilterPanel.

@@ -1,10 +1,10 @@
 package mat.dto;
 
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.sql.Timestamp;
 import java.util.Date;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class UserAuditLogDTO implements IsSerializable{
 

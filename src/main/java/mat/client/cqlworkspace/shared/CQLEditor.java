@@ -1,12 +1,12 @@
 package mat.client.cqlworkspace.shared;
 
-import java.util.List;
-
 import com.google.gwt.dom.client.Style.Unit;
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.shared.CQLError;
+
+import java.util.List;
 
 public class CQLEditor extends EditorView {
 

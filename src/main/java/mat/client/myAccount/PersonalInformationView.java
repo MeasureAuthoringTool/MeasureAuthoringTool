@@ -1,5 +1,23 @@
 package mat.client.myAccount;
 
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import mat.client.buttons.SaveContinueCancelButtonBar;
+import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.PasswordEditInfoWidget;
+import mat.client.shared.PhoneNumberWidget;
+import mat.client.shared.RequiredIndicator;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
@@ -11,26 +29,6 @@ import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
-
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-
-import mat.client.buttons.SaveContinueCancelButtonBar;
-import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.PasswordEditInfoWidget;
-import mat.client.shared.PhoneNumberWidget;
-import mat.client.shared.RequiredIndicator;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
 
 public class PersonalInformationView implements PersonalInformationPresenter.Display {
 	

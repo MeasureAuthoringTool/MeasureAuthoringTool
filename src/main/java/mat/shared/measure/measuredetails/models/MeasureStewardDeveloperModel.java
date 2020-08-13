@@ -1,13 +1,12 @@
 package mat.shared.measure.measuredetails.models;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.model.Author;
+import mat.model.MeasureSteward;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-import mat.model.Author;
-import mat.model.MeasureSteward;
 
 public class MeasureStewardDeveloperModel implements MeasureDetailsComponentModel, IsSerializable{
 

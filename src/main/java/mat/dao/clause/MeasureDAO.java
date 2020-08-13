@@ -1,9 +1,5 @@
 package mat.dao.clause;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import mat.dao.IDAO;
 import mat.model.User;
 import mat.model.clause.Measure;
@@ -11,6 +7,10 @@ import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.shared.MeasureSearchModel;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface MeasureDAO extends IDAO<Measure, String> {
     /**

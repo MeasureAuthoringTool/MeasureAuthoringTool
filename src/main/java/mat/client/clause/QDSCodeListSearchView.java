@@ -1,25 +1,5 @@
 package mat.client.clause;
 
-import java.util.List;
-import java.util.ListIterator;
-import mat.client.CustomPager;
-import mat.client.codelist.HasListBox;
-import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.shared.DateBoxWithCalendar;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SecondaryButton;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.model.MatValueSet;
-import mat.shared.ConstantMessages;
-import org.apache.commons.lang3.StringUtils;
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
@@ -45,6 +25,26 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import mat.client.CustomPager;
+import mat.client.codelist.HasListBox;
+import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.shared.DateBoxWithCalendar;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.PrimaryButton;
+import mat.client.shared.SecondaryButton;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.model.MatValueSet;
+import mat.shared.ConstantMessages;
+import org.apache.commons.lang3.StringUtils;
+import org.gwtbootstrap3.client.ui.Button;
+
+import java.util.List;
+import java.util.ListIterator;
 
 
 /**

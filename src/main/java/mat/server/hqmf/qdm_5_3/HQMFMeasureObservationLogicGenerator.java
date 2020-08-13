@@ -1,15 +1,9 @@
 package mat.server.hqmf.qdm_5_3;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
+import mat.model.clause.MeasureExport;
+import mat.server.hqmf.QDMTemplateProcessorFactory;
+import mat.server.util.XmlProcessor;
+import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -18,10 +12,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import mat.model.clause.MeasureExport;
-import mat.server.hqmf.QDMTemplateProcessorFactory;
-import mat.server.util.XmlProcessor;
-import mat.shared.UUIDUtilClient;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 

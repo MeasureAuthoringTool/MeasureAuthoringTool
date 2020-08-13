@@ -1,8 +1,8 @@
 package mat.server.util;
 
-import java.util.HashMap;
-
 import mat.client.umls.service.VsacTicketInformation;
+
+import java.util.HashMap;
 
 /**
  * The Class UMLSSessionTicket.

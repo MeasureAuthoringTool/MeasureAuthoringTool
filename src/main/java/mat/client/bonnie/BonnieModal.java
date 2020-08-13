@@ -1,5 +1,12 @@
 package mat.client.bonnie;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Label;
+import mat.client.buttons.NoButton;
+import mat.client.buttons.YesButton;
+import mat.client.shared.MatContext;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
@@ -7,15 +14,6 @@ import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Label;
-
-import mat.client.buttons.NoButton;
-import mat.client.buttons.YesButton;
-import mat.client.shared.MatContext;
 
 public class BonnieModal {
 	private final String MESSAGE = "You are leaving the Measure Authoring Tool (MAT) and entering another website. "

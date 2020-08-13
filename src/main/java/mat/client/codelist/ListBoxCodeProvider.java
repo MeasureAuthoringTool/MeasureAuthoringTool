@@ -1,19 +1,18 @@
 package mat.client.codelist;
 
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.client.codelist.service.CodeListService;
+import mat.client.shared.MatContext;
+import mat.dto.OperatorDTO;
+import mat.dto.UnitDTO;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-
-import mat.dto.OperatorDTO;
-import mat.dto.UnitDTO;
-import mat.client.codelist.service.CodeListService;
-import mat.client.shared.MatContext;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ListBoxCodeProvider implements IsSerializable {
 	private static final String NONE = " ";

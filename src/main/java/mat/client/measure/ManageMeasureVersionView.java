@@ -9,7 +9,6 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.ErrorMessageAlert;

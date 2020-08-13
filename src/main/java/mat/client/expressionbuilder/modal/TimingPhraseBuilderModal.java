@@ -1,19 +1,18 @@
 package mat.client.expressionbuilder.modal;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.expressionbuilder.component.TimingPhraseWidget;
 import mat.client.expressionbuilder.constant.TimingOperator;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.TimingOperatorModel;
 import mat.client.expressionbuilder.util.TimingGraph;
 import mat.client.expressionbuilder.util.TimingGraphUtil;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class TimingPhraseBuilderModal extends SubExpressionBuilderModal {
 

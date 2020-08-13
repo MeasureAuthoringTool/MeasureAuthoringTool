@@ -1,8 +1,5 @@
 package mat.server.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -15,6 +12,9 @@ import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
 import mat.shared.MeasureSearchModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public interface MeasurePackageService {
     /**

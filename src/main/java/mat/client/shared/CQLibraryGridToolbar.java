@@ -1,15 +1,14 @@
 package mat.client.shared;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.gwt.core.client.GWT;
+import mat.client.util.FeatureFlagConstant;
 import mat.model.clause.ModelTypeHelper;
+import mat.model.cql.CQLLibraryDataSetObject;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.gwt.core.client.GWT;
-import mat.client.util.FeatureFlagConstant;
-import mat.model.cql.CQLLibraryDataSetObject;
 
 public class CQLibraryGridToolbar extends HorizontalFlowPanel {
 
@@ -115,7 +114,7 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
         historyButton.setIcon(IconType.CLOCK_O);
         historyButton.setTitle(CLICK_TO_VIEW_HISTORY_TITLE);
 
-        if (selectedItem.isEditable() && selectedItem.isCqlEditOrViewable()) {
+        if (selectedItem.isEditable()) {
             if (selectedItem.isLocked()) {
                 editOrViewButton.setText(EDIT_TEXT);
                 editOrViewButton.setEnabled(false);
@@ -127,15 +126,12 @@ public class CQLibraryGridToolbar extends HorizontalFlowPanel {
                 editOrViewButton.setIcon(IconType.PENCIL);
                 editOrViewButton.setTitle(CLICK_TO_EDIT_TITLE);
             }
-        } else if (!selectedItem.isEditable() && selectedItem.isCqlEditOrViewable()) {
+        } else if (!selectedItem.isEditable()) {
             editOrViewButton.setText(VIEW_TEXT);
             editOrViewButton.setEnabled(true);
             editOrViewButton.setIcon(IconType.EYE);
             editOrViewButton.setTitle("Read-Only");
-        } else {
-            editOrViewButton.setEnabled(false);
         }
-
 
         shareButton.setText(SHARE_TEXT);
         shareButton.setIcon(IconType.SHARE_SQUARE);

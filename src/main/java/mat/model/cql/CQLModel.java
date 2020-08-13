@@ -1,16 +1,16 @@
 package mat.model.cql;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.clause.ModelTypeHelper;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.LibHolderObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @JsonIgnoreProperties({"includedLibrarys", "includedCQLLibXMLMap", "fhir", "formattedName"})
 public class CQLModel implements IsSerializable {

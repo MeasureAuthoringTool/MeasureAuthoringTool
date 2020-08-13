@@ -1,15 +1,13 @@
 package mat.client.measure.measuredetails.views;
 
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.measure.measuredetails.observers.MeasureObservationsObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureObservationsModel;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 public class MeasureObservationsView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();

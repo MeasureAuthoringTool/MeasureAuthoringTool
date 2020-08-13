@@ -1,10 +1,10 @@
 package mat.client.expressionbuilder.constant;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import mat.client.expressionbuilder.modal.QueryBuilderModal;
 import mat.client.expressionbuilder.modal.RelationshipBuilderModal;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public enum ExpressionBuilderUserAssistText {
 

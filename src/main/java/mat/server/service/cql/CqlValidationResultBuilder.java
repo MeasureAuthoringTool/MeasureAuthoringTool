@@ -1,5 +1,11 @@
 package mat.server.service.cql;
 
+import mat.model.cql.CQLModel;
+import mat.shared.CQLError;
+import mat.shared.CQLObject;
+import mat.shared.SaveUpdateCQLResult;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,13 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import mat.shared.CQLObject;
-import org.apache.commons.lang3.StringUtils;
-
-import mat.model.cql.CQLModel;
-import mat.shared.CQLError;
-import mat.shared.SaveUpdateCQLResult;
 
 public class CqlValidationResultBuilder {
     private final SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();

@@ -1,11 +1,13 @@
 package mat.server.service.cql;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
+import lombok.extern.slf4j.Slf4j;
+import mat.client.shared.MatRuntimeException;
+import mat.client.umls.service.VsacTicketInformation;
+import mat.model.cql.CQLModel;
+import mat.server.logging.LogFactory;
+import mat.server.service.VSACApiService;
+import mat.shared.SaveUpdateCQLResult;
+import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -17,24 +19,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import lombok.extern.slf4j.Slf4j;
-import mat.client.shared.MatRuntimeException;
-import mat.client.umls.service.VsacTicketInformation;
-import mat.model.cql.CQLModel;
-import mat.server.service.VSACApiService;
-import mat.shared.SaveUpdateCQLResult;
+import javax.servlet.http.HttpSession;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A service used to parse FHIR cql.
  */
 @Service
-@Slf4j
 public class FhirCqlParserService implements FhirCqlParser {
+
 
     private static final String MATXML_FROM_CQL_SRVC = "cql-xml-gen/cql";
     private static final String MATXML_FROM_MEASURE_ID = "cql-xml-gen/measure/";
     private static final String MATXML_FROM_LIB_ID = "cql-xml-gen/standalone-lib/";
     private static final String UMLS_TOKEN = "UMLS-TOKEN";
+
+    private Log log = LogFactory.getLog(FhirCqlParserService.class);
 
     @Value("${FHIR_SRVC_URL:http://localhost:9080/}")
     private String fhirServicesUrl;
@@ -149,7 +151,7 @@ public class FhirCqlParserService implements FhirCqlParser {
             throw new MatRuntimeException(e);
         }
         if (response.getStatusCode().isError()) {
-            log.error("{} returned {}", url, response.getStatusCode());
+            log.error(url + " returned " + response.getStatusCode());
             throw new MatRuntimeException("url " + url + " returned error code " + response.getStatusCode());
         }
         return response.getBody();

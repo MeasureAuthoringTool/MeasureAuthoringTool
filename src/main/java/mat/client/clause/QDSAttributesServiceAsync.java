@@ -1,10 +1,10 @@
 package mat.client.clause;
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import mat.model.clause.QDSAttributes;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Interface QDSAttributesServiceAsync.

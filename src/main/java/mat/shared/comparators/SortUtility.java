@@ -1,11 +1,11 @@
 package mat.shared.comparators;
 
+import mat.model.ListObject;
+import mat.model.QualityDataSet;
+
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import mat.model.ListObject;
-import mat.model.QualityDataSet;
 
 /**
  * The Class SortUtility.

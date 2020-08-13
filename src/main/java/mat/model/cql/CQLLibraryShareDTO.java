@@ -1,10 +1,9 @@
 package mat.model.cql;
 
-import java.sql.Timestamp;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.model.LockedUserInfo;
+
+import java.sql.Timestamp;
 
 public class CQLLibraryShareDTO implements IsSerializable {
 	

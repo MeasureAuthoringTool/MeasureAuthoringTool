@@ -1,10 +1,10 @@
 package mat.dao.clause;
 
 
-import java.util.List;
-
 import mat.dao.IDAO;
 import mat.model.clause.ComponentMeasure;
+
+import java.util.List;
 
 public interface ComponentMeasuresDAO extends IDAO<ComponentMeasure, String> {
 	

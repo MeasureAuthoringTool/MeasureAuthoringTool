@@ -1,12 +1,12 @@
 package mat.dao.clause;
 
-import java.util.HashMap;
-import java.util.List;
-
 import mat.dao.IDAO;
 import mat.model.QualityDataModelWrapper;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLQualityDataModelWrapper;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * The Interface MeasureXMLDAO.

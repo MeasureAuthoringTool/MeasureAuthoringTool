@@ -1,11 +1,11 @@
 package mat.server.cqlparser;
 
+import mat.server.util.ResourceLoader;
+import mat.server.util.XmlProcessor;
+
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import mat.server.util.ResourceLoader;
-import mat.server.util.XmlProcessor;
 
 public class CQLTemplateXML {
 	

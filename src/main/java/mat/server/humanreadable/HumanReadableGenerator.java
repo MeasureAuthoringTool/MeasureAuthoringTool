@@ -18,6 +18,7 @@ import mat.server.humanreadable.cql.HumanReadablePopulationModel;
 import mat.server.humanreadable.cql.HumanReadableTerminologyModel;
 import mat.server.humanreadable.cql.HumanReadableValuesetModel;
 import mat.server.humanreadable.qdm.HQMFHumanReadableGenerator;
+import mat.server.logging.LogFactory;
 import mat.server.service.FhirMeasureRemoteCall;
 import mat.server.service.cql.HumanReadableArtifacts;
 import mat.server.service.impl.XMLMarshalUtil;
@@ -28,6 +29,7 @@ import mat.shared.LibHolderObject;
 import mat.shared.MatConstants;
 import mat.shared.SaveUpdateCQLResult;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.logging.Log;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -51,13 +53,14 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Component
 public class HumanReadableGenerator {
 
     private final String CQLFUNCTION = "cqlfunction";
 
     private final String CQLDEFINITION = "cqldefinition";
+
+    private static final Log log = LogFactory.getLog(HumanReadableGenerator.class);
 
     private Map<String, Integer> populationCountMap = new HashMap<>();
     private Map<String, Integer> popCountMultipleMap = new HashMap<>();

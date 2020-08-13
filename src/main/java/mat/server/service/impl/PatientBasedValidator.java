@@ -1,22 +1,5 @@
 package mat.server.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import mat.model.clause.ModelTypeHelper;
-import mat.server.service.cql.FhirCqlParser;
-import mat.server.service.cql.ValidationRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.shared.MatContext;
@@ -24,11 +7,24 @@ import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.Measure;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
+import mat.server.logging.LogFactory;
+import mat.server.service.cql.FhirCqlParser;
 import mat.server.util.CQLUtil;
 import mat.server.util.XmlProcessor;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
 import mat.shared.SaveUpdateCQLResult;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class PatientBasedValidator {

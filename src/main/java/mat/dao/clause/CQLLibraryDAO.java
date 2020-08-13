@@ -1,7 +1,5 @@
 package mat.dao.clause;
 
-import java.util.List;
-
 import mat.dao.IDAO;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
@@ -9,6 +7,8 @@ import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.shared.LibrarySearchModel;
+
+import java.util.List;
 
 public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 

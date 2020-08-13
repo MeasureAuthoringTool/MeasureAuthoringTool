@@ -12,8 +12,10 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.model.clause.ModelTypeHelper;
 import mat.server.export.ExportResult;
+import mat.server.logging.LogFactory;
 import mat.shared.FileNameUtility;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.logging.Log;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
 import org.hl7.fhir.r4.model.Bundle;
@@ -38,7 +40,6 @@ import java.util.Map;
  */
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@Slf4j
 public class ZipPackager {
     private static final String MEASURE = "measure";
     private static final String INCLUDED_LIBRARY = "included-library";
@@ -46,6 +47,8 @@ public class ZipPackager {
     private static final String LIBRARY = "library";
     private static final String ELM = "elm";
     private static final String HUMAN_READABLE = "humanReadable";
+
+    private Log log = LogFactory.getLog(ZipPackager.class);
 
     @Autowired
     private MeasureDAO measureDAO;

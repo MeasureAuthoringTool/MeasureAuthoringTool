@@ -1,11 +1,11 @@
 package mat.client.login.service;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.dto.UserPreferenceDTO;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-import mat.dto.UserPreferenceDTO;
 
 public class CurrentUserInfo implements IsSerializable {
 

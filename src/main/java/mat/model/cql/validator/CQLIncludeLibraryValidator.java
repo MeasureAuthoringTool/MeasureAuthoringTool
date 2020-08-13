@@ -1,13 +1,12 @@
 package mat.model.cql.validator;
 
-import org.apache.commons.lang3.StringUtils;
-
 import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.server.Validator;
 import mat.server.util.CQLValidationUtil;
 import mat.shared.CQLModelValidator;
+import org.apache.commons.lang3.StringUtils;
 
 public class CQLIncludeLibraryValidator extends Validator {
 

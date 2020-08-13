@@ -1,13 +1,11 @@
 package mat.dao.clause.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import mat.client.shared.MatContext;
+import mat.dao.DataTypeDAO;
+import mat.dao.clause.QDSAttributesDAO;
+import mat.dao.search.GenericDAO;
+import mat.model.DataType;
+import mat.model.clause.QDSAttributes;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,12 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Repository;
 
-import mat.client.shared.MatContext;
-import mat.dao.DataTypeDAO;
-import mat.dao.clause.QDSAttributesDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.DataType;
-import mat.model.clause.QDSAttributes;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository("qDSAttributesDAO")
 public class QDSAttributesDAOImpl extends GenericDAO<QDSAttributes, String> implements QDSAttributesDAO {

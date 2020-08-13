@@ -1,16 +1,5 @@
 package mat.server.bonnie;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
 import mat.client.bonnie.BonnieService;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.dao.UserBonnieAccessInfoDAO;
@@ -27,6 +16,7 @@ import mat.server.bonnie.api.BonnieAPIv1;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.bonnie.api.result.BonnieMeasureResult;
 import mat.server.export.ExportResult;
+import mat.server.logging.LogFactory;
 import mat.server.service.EncryptDecryptToken;
 import mat.server.service.SimpleEMeasureService;
 import mat.shared.BonnieOAuthResult;
@@ -38,6 +28,14 @@ import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
 import mat.shared.bonnie.error.UMLSNotActiveException;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 @Service

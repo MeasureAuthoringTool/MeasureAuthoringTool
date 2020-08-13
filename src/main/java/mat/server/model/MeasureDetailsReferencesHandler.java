@@ -1,9 +1,8 @@
 package mat.server.model;
 
-import org.exolab.castor.mapping.GeneralizedFieldHandler;
-
 import mat.client.measure.ReferenceTextAndType;
 import mat.shared.measure.measuredetails.models.MeasureReferenceType;
+import org.exolab.castor.mapping.GeneralizedFieldHandler;
 
 public class MeasureDetailsReferencesHandler extends GeneralizedFieldHandler {
 

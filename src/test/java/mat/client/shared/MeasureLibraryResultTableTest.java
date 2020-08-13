@@ -1,15 +1,5 @@
 package mat.client.shared;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -20,6 +10,15 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.MeasureSearchView;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;

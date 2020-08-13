@@ -1,8 +1,5 @@
 package mat.client.history;
 
-import java.util.Date;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
@@ -18,8 +15,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-
-import mat.dto.AuditLogDTO;
 import mat.client.CustomPager;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
@@ -32,6 +27,10 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.util.CellTableUtility;
+import mat.dto.AuditLogDTO;
+
+import java.util.Date;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**

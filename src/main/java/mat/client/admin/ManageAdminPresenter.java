@@ -1,11 +1,4 @@
 package mat.client.admin;
-import mat.client.MatPresenter;
-import mat.client.TabObserver;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatTabLayoutPanel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -13,6 +6,13 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.MatPresenter;
+import mat.client.TabObserver;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatTabLayoutPanel;
+
+import java.util.ArrayList;
+import java.util.List;
 /** The Class ManageAdminPresenter. */
 public class ManageAdminPresenter implements MatPresenter, TabObserver {
 	private List<MatPresenter> presenterList;

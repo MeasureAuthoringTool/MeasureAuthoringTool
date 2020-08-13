@@ -1,18 +1,16 @@
 package mat.server.hqmf.qdm_5_4;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import org.w3c.dom.Node;
-
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+import org.w3c.dom.Node;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class HQMFMeasureDetailsGenerator implements Generator  {
 	

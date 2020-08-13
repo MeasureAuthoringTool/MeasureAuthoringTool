@@ -1,13 +1,5 @@
 package mat.server.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
@@ -20,6 +12,13 @@ import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
 import mat.server.service.FeatureFlagService;
+import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Objects;
 
 @Service
 public class MatContextServiceUtil implements InitializingBean {
@@ -96,13 +95,6 @@ public class MatContextServiceUtil implements InitializingBean {
         return !measure.getIsPrivate() || isOwner;
     }
 
-    public boolean isCurrentCqlViewable(CQLLibrary cqlLibrary) {
-        return LoggedInUserUtil.getLoggedInUser().equals(cqlLibrary.getOwnerId() == null ? null : cqlLibrary.getOwnerId());
-    }
-
-    public boolean isCurrentCqlViewable(CQLLibraryShareDTO cqlLibraryShareDTO) {
-        return LoggedInUserUtil.getLoggedInUser().equals(cqlLibraryShareDTO.getOwnerUserId() == null ? null : cqlLibraryShareDTO.getOwnerUserId());
-    }
     /**
      * Checks if is current measure is draftable.
      *

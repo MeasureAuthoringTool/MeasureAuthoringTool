@@ -1,20 +1,20 @@
 package mat.client.clause.clauseworkspace.presenter;
 
-import java.util.List;
+import com.google.gwt.user.cellview.client.CellTree;
+import com.google.gwt.user.cellview.client.TreeNode;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.SuggestBox;
+import com.google.gwt.user.client.ui.Widget;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
 import mat.client.clause.clauseworkspace.view.PopulationWorkSpaceContextMenu;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
-
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
-import com.google.gwt.user.cellview.client.CellTree;
-import com.google.gwt.user.cellview.client.TreeNode;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.Widget;
+
+import java.util.List;
 
 /**
  * The Interface XmlTreeDisplay.

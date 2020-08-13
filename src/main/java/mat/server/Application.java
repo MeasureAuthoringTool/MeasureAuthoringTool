@@ -6,10 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import mat.client.login.service.HarpService;
 import mat.dao.impl.AuditEventListener;
 import mat.dao.impl.AuditInterceptor;
+import mat.server.logging.LogFactory;
 import mat.server.logging.RequestResponseLoggingInterceptor;
 import mat.server.logging.RequestResponseLoggingMdcInternalInterceptor;
 import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 import mat.server.util.MATPropertiesService;
+import org.apache.commons.logging.Log;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
@@ -72,8 +74,8 @@ import java.util.stream.Collectors;
 @EnableScheduling
 @EnableJpaRepositories
 @Service
-@Slf4j
 public class Application extends WebSecurityConfigurerAdapter {
+    private static Log log = LogFactory.getLog(Application.class);
 
     @Value("${ALGORITHM:}")
     private String algorithm;
@@ -216,7 +218,7 @@ public class Application extends WebSecurityConfigurerAdapter {
 
     @Bean(name = "externalRestTemplate")
     public RestTemplate getRestTemplateExternal() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        return buildRestTemplate(new RequestResponseLoggingMdcInternalInterceptor());
+        return buildRestTemplate(new RequestResponseLoggingInterceptor());
     }
 
 

@@ -1,13 +1,8 @@
 package mat.server.util;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Map;
-import java.util.Set;
-
+import mat.server.logging.LogFactory;
+import mat.shared.FileInfomationObject;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
@@ -15,7 +10,11 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.springframework.stereotype.Component;
 
-import mat.shared.FileInfomationObject;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class APIConnectionUtillity {

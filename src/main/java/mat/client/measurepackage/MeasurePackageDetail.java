@@ -1,13 +1,12 @@
 package mat.client.measurepackage;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.model.cql.CQLDefinition;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MeasurePackageDetail implements IsSerializable, Comparable<MeasurePackageDetail>{
 	

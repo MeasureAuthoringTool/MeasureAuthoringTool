@@ -1,14 +1,14 @@
 package mat.client.measure;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
 import mat.client.shared.search.SearchResults;
 import mat.model.LockedUserInfo;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * The Class ManageMeasureSearchModel.

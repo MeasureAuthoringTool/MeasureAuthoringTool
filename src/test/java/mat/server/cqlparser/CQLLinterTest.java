@@ -1,14 +1,13 @@
 package mat.server.cqlparser;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
+import mat.model.cql.CQLModel;
+import mat.model.cql.CQLQualityDataSetDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import mat.model.cql.CQLModel;
-import mat.model.cql.CQLQualityDataSetDTO;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import static org.junit.Assert.assertEquals;
 

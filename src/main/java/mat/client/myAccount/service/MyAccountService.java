@@ -1,10 +1,9 @@
 package mat.client.myAccount.service;
 
-import mat.client.myAccount.MyAccountModel;
-import mat.client.myAccount.SecurityQuestionsModel;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import mat.client.myAccount.MyAccountModel;
+import mat.client.myAccount.SecurityQuestionsModel;
 
 /**
  * The client side stub for the RPC service.

@@ -1,17 +1,7 @@
 package mat.client.cqlworkspace.components;
 
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.constants.LabelType;
-import org.gwtbootstrap3.client.ui.constants.PanelType;
-
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -23,6 +13,14 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 import mat.model.ComponentMeasureTabObject;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.LabelType;
+import org.gwtbootstrap3.client.ui.constants.PanelType;
 
 public class CQLComponentLibraryView extends GenericLeftNavSectionView  {
 

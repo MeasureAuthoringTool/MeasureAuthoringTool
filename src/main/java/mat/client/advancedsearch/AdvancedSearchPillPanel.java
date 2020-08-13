@@ -1,20 +1,18 @@
 package mat.client.advancedsearch;
 
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Anchor;
-import org.gwtbootstrap3.client.ui.Badge;
-
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
 import mat.client.shared.SpacerWidget;
 import mat.shared.MeasureSearchModel;
 import mat.shared.MeasureSearchModel.PatientBasedType;
 import mat.shared.SearchModel;
 import mat.shared.SearchModel.VersionType;
 import mat.shared.StringUtility;
+import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.Badge;
+
+import java.util.List;
 
 public class AdvancedSearchPillPanel {
 

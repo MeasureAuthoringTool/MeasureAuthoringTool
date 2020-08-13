@@ -1,12 +1,10 @@
 package mat.client.bonnie;
 
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonToolBar;
-
 import com.google.gwt.user.client.ui.Composite;
-
 import mat.client.buttons.CancelButton;
 import mat.client.buttons.UploadButton;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
 
 public class BonnieUploadCancelButtonBar extends Composite {
 	private Button uploadButton;

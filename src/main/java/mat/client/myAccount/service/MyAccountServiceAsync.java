@@ -1,9 +1,8 @@
 package mat.client.myAccount.service;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import mat.client.myAccount.MyAccountModel;
 import mat.client.myAccount.SecurityQuestionsModel;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The async counterpart of <code>GreetingService</code>.

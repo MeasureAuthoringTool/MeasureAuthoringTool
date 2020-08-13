@@ -1,8 +1,8 @@
 package mat.dao;
 
-import java.util.List;
-
 import mat.model.Organization;
+
+import java.util.List;
 
 public interface OrganizationDAO extends IDAO<Organization, Long> {
 	

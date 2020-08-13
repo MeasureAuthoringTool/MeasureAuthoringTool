@@ -1,8 +1,8 @@
 package mat.client.event;
 
-import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
 
 /**
  * The Class ClauseSpecificOccurenceEvent.

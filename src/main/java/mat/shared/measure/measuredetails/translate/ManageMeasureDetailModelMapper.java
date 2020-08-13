@@ -1,11 +1,8 @@
 package mat.shared.measure.measuredetails.translate;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.ReferenceTextAndType;
 import mat.client.measurepackage.MeasurePackageOverview;
 import mat.model.Author;
 import mat.model.MeasureSteward;
@@ -33,12 +30,15 @@ import mat.shared.measure.measuredetails.models.NumeratorExclusionsModel;
 import mat.shared.measure.measuredetails.models.NumeratorModel;
 import mat.shared.measure.measuredetails.models.RateAggregationModel;
 import mat.shared.measure.measuredetails.models.RationaleModel;
-import mat.client.measure.ReferenceTextAndType;
 import mat.shared.measure.measuredetails.models.ReferencesModel;
 import mat.shared.measure.measuredetails.models.RiskAdjustmentModel;
 import mat.shared.measure.measuredetails.models.StratificationModel;
 import mat.shared.measure.measuredetails.models.SupplementalDataElementsModel;
 import mat.shared.measure.measuredetails.models.TransmissionFormatModel;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper {
     private ManageMeasureDetailModel manageMeasureDetailModel;

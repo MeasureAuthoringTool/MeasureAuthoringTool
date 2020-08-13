@@ -1,25 +1,24 @@
 package mat.client.cqlworkspace;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import mat.client.shared.MatContext;
-import org.gwtbootstrap3.client.ui.ListBox;
-
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility;
 import mat.client.inapphelp.component.InAppHelp;
+import mat.client.shared.MatContext;
 import mat.client.shared.MessagePanel;
 import mat.shared.CQLError;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
+import org.gwtbootstrap3.client.ui.ListBox;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SharedCQLWorkspaceUtility {
     private static final Logger log = Logger.getLogger(SharedCQLWorkspaceUtility.class.getSimpleName());

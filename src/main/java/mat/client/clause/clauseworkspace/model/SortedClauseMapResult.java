@@ -1,8 +1,8 @@
 package mat.client.clause.clauseworkspace.model;
 
-import java.util.LinkedHashMap;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.LinkedHashMap;
 
 // TODO: Auto-generated Javadoc
 /**

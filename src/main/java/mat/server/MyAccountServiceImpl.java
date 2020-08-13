@@ -1,13 +1,5 @@
 package mat.server;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import mat.client.myAccount.MyAccountModel;
 import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.myAccount.service.MyAccountService;
@@ -18,6 +10,7 @@ import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserPreference;
 import mat.model.UserSecurityQuestion;
+import mat.server.logging.LogFactory;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
 import mat.shared.HashUtility;
@@ -25,6 +18,12 @@ import mat.shared.MyAccountModelValidator;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
 import mat.shared.StringUtility;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * The server side implementation of the RPC service.

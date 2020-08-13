@@ -1,10 +1,8 @@
 package mat.model.clause;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
-import java.sql.SQLException;
+import mat.hibernate.HibernateConf;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,11 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.GenericGenerator;
-
-import mat.hibernate.HibernateConf;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
 
 @Entity
 @Table(name = "MEASURE_XML")

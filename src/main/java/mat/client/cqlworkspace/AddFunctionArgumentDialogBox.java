@@ -1,10 +1,22 @@
 package mat.client.cqlworkspace;
 
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import mat.client.buttons.NoButton;
+import mat.client.buttons.YesButton;
+import mat.client.cqlworkspace.functions.CQLFunctionsView;
+import mat.client.shared.CQLWorkSpaceConstants;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageDelegate;
+import mat.client.shared.MessagePanel;
+import mat.model.clause.ModelTypeHelper;
+import mat.model.cql.CQLFunctionArgument;
+import mat.shared.CQLModelValidator;
+import mat.shared.UUIDUtilClient;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FieldSet;
@@ -23,22 +35,9 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import mat.client.buttons.NoButton;
-import mat.client.buttons.YesButton;
-import mat.client.cqlworkspace.functions.CQLFunctionsView;
-import mat.client.shared.CQLWorkSpaceConstants;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.client.shared.MessageDelegate;
-import mat.client.shared.MessagePanel;
-import mat.model.clause.ModelTypeHelper;
-import mat.model.cql.CQLFunctionArgument;
-import mat.shared.CQLModelValidator;
-import mat.shared.UUIDUtilClient;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class AddFunctionArgumentDialogBox {

@@ -1,8 +1,8 @@
 package mat.shared.measure.measuredetails.models;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.List;
 
 public class InitialPopulationModel extends MeasureDetailsTextAbstractModel implements IsSerializable {
 

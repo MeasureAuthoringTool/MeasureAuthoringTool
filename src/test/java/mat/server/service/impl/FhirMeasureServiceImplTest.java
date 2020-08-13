@@ -1,25 +1,5 @@
 package mat.server.service.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-
-import javax.servlet.http.HttpSession;
-
-import mat.model.clause.MeasureDetails;
-import mat.server.service.MeasureAuditService;
-import mat.shared.CQLObject;
-import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.web.client.RestTemplate;
-
 import lombok.extern.slf4j.Slf4j;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -33,16 +13,34 @@ import mat.dto.fhirconversion.ConversionResultDto;
 import mat.dto.fhirconversion.LibraryConversionResults;
 import mat.dto.fhirconversion.MeasureConversionResults;
 import mat.model.clause.Measure;
+import mat.model.clause.MeasureDetails;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
 import mat.server.service.CodeListService;
 import mat.server.service.FhirMeasureRemoteCall;
+import mat.server.service.MeasureAuditService;
 import mat.server.service.MeasureCloningService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.VSACApiService;
 import mat.server.service.cql.FhirCqlParser;
 import mat.server.service.cql.MatXmlResponse;
+import mat.shared.CQLObject;
 import mat.shared.SaveUpdateCQLResult;
+import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

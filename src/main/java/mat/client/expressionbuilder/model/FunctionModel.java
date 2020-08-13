@@ -1,11 +1,11 @@
 package mat.client.expressionbuilder.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.util.ExpressionTypeUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FunctionModel extends ExpressionBuilderModel {
 	private String name;

@@ -1,6 +1,11 @@
 package mat.client;
 
 
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import mat.client.event.CQLLibrarySelectedEvent;
+import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.MatContext;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,11 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
 
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import mat.client.event.CQLLibrarySelectedEvent;
-import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.MatContext;
 import java.util.HashMap;
 import java.util.Map;
 

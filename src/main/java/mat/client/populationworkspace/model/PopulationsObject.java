@@ -1,10 +1,10 @@
 package mat.client.populationworkspace.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PopulationsObject {
 	

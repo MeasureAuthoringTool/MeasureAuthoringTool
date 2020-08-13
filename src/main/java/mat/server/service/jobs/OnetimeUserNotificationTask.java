@@ -1,16 +1,15 @@
 package mat.server.service.jobs;
 
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import mat.dao.MatFlagDAO;
 import mat.dao.UserDAO;
 import mat.model.MatFlag;
 import mat.model.User;
+import mat.server.logging.LogFactory;
 import mat.server.service.UserService;
 import mat.server.service.impl.UserServiceImpl;
+import org.apache.commons.logging.Log;
+
+import java.util.List;
 
 /**
  * The Class OnetimeUserNotificationTask.

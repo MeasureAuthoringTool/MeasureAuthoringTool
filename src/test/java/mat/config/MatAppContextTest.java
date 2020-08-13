@@ -1,5 +1,6 @@
 package mat.config;
 
+import mat.server.service.jobs.CheckUserChangePasswordLimit;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,8 +9,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import mat.server.service.jobs.CheckUserChangePasswordLimit;
 
 import static org.junit.Assert.assertNotNull;
 

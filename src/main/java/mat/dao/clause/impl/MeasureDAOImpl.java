@@ -1,5 +1,46 @@
 package mat.dao.clause.impl;
 
+import mat.client.measure.MeasureSearchFilterPanel;
+import mat.client.shared.SearchWidgetWithFilter;
+import mat.dao.UserDAO;
+import mat.dao.clause.MeasureDAO;
+import mat.dao.search.GenericDAO;
+import mat.model.LockedUserInfo;
+import mat.model.SecurityRole;
+import mat.model.User;
+import mat.model.clause.Measure;
+import mat.model.clause.MeasureShare;
+import mat.model.clause.MeasureShareDTO;
+import mat.model.clause.ModelTypeHelper;
+import mat.model.clause.ShareLevel;
+import mat.server.LoggedInUserUtil;
+import mat.server.logging.LogFactory;
+import mat.shared.MeasureSearchModel;
+import mat.shared.MeasureSearchModel.PatientBasedType;
+import mat.shared.SearchModel;
+import mat.shared.SearchModel.VersionType;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
+import org.apache.commons.logging.Log;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.NativeQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,49 +56,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import javax.persistence.NoResultException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.NativeQuery;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import mat.client.measure.MeasureSearchFilterPanel;
-import mat.client.shared.SearchWidgetWithFilter;
-import mat.dao.UserDAO;
-import mat.dao.clause.MeasureDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.LockedUserInfo;
-import mat.model.SecurityRole;
-import mat.model.User;
-import mat.model.clause.Measure;
-import mat.model.clause.MeasureShare;
-import mat.model.clause.MeasureShareDTO;
-import mat.model.clause.ModelTypeHelper;
-import mat.model.clause.ShareLevel;
-import mat.server.LoggedInUserUtil;
-import mat.shared.MeasureSearchModel;
-import mat.shared.MeasureSearchModel.PatientBasedType;
-import mat.shared.SearchModel;
-import mat.shared.SearchModel.VersionType;
 
 @Repository("measureDAO")
 public class MeasureDAOImpl extends GenericDAO<Measure, String> implements MeasureDAO {

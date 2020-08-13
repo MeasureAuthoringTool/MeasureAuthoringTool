@@ -1,9 +1,9 @@
 package mat.client.cqlworkspace.attributes;
 
+import mat.client.shared.FhirDataType;
+
 import java.util.Map;
 import java.util.TreeMap;
-
-import mat.client.shared.FhirDataType;
 
 public class InsertFhirAttributesDialogModel {
 

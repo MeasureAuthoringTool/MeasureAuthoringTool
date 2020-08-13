@@ -1,9 +1,9 @@
 package mat.model.cql;
 
-import java.util.Objects;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.clause.ModelTypeHelper;
+
+import java.util.Objects;
 
 /**
  * The Class CQLIncludeLibrary.

@@ -1,14 +1,13 @@
 package mat.shared;
 
-import java.util.Arrays;
-import java.util.List;
-
+import mat.client.admin.ManageUsersDetailModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import mat.client.admin.ManageUsersDetailModel;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

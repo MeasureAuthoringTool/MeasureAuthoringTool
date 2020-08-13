@@ -1,10 +1,6 @@
 package mat.server;
 
 
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import mat.client.login.service.CurrentUserInfo;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.ShortUserInfo;
@@ -14,6 +10,9 @@ import mat.model.UserPreference;
 import mat.server.model.MatUserDetails;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.stream.Collectors;
 
 
 public class SessionManagementServImpl extends SpringRemoteServiceServlet implements SessionManagementService {

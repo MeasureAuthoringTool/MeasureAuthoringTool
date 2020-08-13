@@ -1,17 +1,16 @@
 package mat.server.cqlparser;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Arrays;
-
-import org.junit.Test;
-
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,7 +1,5 @@
 package mat.client.shared;
 
-import org.gwtbootstrap3.client.ui.TextBox;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
@@ -11,6 +9,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Event;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 
 // TODO: Auto-generated Javadoc

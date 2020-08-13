@@ -1,9 +1,9 @@
 package mat.client.cqlworkspace.attributes;
 
-import java.util.Collection;
-
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.Collection;
 
 public interface LightBoxLeftPanelDisplay {
 

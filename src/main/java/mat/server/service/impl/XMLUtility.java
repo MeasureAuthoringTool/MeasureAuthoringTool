@@ -1,7 +1,10 @@
 package mat.server.service.impl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.StringReader;
+import net.sf.saxon.TransformerFactoryImpl;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,13 +18,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
-
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.XMLReader;
-
-import net.sf.saxon.TransformerFactoryImpl;
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
 
 public class XMLUtility {
 	private static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";

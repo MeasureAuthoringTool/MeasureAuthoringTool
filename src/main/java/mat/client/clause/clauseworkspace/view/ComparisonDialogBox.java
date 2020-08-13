@@ -1,19 +1,5 @@
 package mat.client.clause.clauseworkspace.view;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import mat.client.ImageResources;
-import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.shared.MatConstants;
-
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -32,6 +18,19 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.ImageResources;
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.shared.MatConstants;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ComparisonDialogBox {
 	

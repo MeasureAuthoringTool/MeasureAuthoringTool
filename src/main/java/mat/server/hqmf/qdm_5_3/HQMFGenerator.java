@@ -1,12 +1,11 @@
 package mat.server.hqmf.qdm_5_3;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
 import mat.server.hqmf.qdm.HQMFFinalCleanUp;
+import mat.server.logging.LogFactory;
 import mat.server.util.XmlProcessor;
+import org.apache.commons.logging.Log;
 
 /**
  * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 

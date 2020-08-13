@@ -1,17 +1,16 @@
 package mat.client.shared;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.client.cqlworkspace.TimingExpressionObj;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.MeasureServiceAsync;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class JSONCQLTimingExpressionUtility {

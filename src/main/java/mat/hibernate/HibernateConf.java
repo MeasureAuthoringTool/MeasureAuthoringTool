@@ -1,10 +1,9 @@
 package mat.hibernate;
 
+import mat.server.HibernateStatisticsFilter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import mat.server.HibernateStatisticsFilter;
 
 @EnableTransactionManagement
 public class HibernateConf{

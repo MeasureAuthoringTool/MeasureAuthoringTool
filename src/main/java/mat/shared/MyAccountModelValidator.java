@@ -1,9 +1,10 @@
 package mat.shared;
 
-import java.util.ArrayList;
-import java.util.List;
 import mat.client.myAccount.MyAccountModel;
 import mat.client.shared.MatContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class MyAccountModelValidator.

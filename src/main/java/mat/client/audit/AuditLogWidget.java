@@ -1,15 +1,14 @@
 package mat.client.audit;
 
-import java.util.Date;
-
-import mat.client.shared.LabelBuilder;
-
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import mat.client.shared.LabelBuilder;
+
+import java.util.Date;
 
 /**
  * The Class AuditLogWidget.

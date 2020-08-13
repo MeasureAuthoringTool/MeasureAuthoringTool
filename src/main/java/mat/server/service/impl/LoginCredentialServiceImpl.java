@@ -1,20 +1,5 @@
 package mat.server.service.impl;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.stereotype.Service;
-
 import mat.client.login.LoginModel;
 import mat.client.shared.MatException;
 import mat.client.shared.MatRuntimeException;
@@ -23,13 +8,23 @@ import mat.model.SecurityRole;
 import mat.model.UserPreference;
 import mat.server.LoggedInUserUtil;
 import mat.server.hibernate.HibernateUserDetailService;
+import mat.server.logging.LogFactory;
 import mat.server.model.MatUserDetails;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
 import mat.shared.HarpConstants;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.stereotype.Service;
 
-import static org.apache.commons.lang3.StringUtils.substring;
-import static org.apache.commons.lang3.StringUtils.trimToEmpty;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * The Class LoginCredentialServiceImpl.

@@ -1,19 +1,17 @@
 package mat.client.shared;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.gwtbootstrap3.client.ui.HelpBlock;
-
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.shared.MatConstants;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MeasurePackagerAssociations {
 	

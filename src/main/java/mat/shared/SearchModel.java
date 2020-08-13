@@ -1,7 +1,6 @@
 package mat.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.client.shared.SearchWidgetWithFilter;
 
 public abstract class SearchModel implements IsSerializable {

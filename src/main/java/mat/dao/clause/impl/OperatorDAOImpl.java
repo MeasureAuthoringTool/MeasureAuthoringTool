@@ -1,22 +1,20 @@
 package mat.dao.clause.impl;
 
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
+import mat.dao.clause.OperatorDAO;
+import mat.dao.search.GenericDAO;
+import mat.dto.OperatorDTO;
+import mat.model.Operator;
+import mat.server.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dto.OperatorDTO;
-import mat.dao.clause.OperatorDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.Operator;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 
 @Repository("operatorDAO")
 public class OperatorDAOImpl extends GenericDAO<Operator, String> implements OperatorDAO{

@@ -1,11 +1,15 @@
 package mat.server.service.impl;
 
-import java.io.IOException;
-
-import javax.mail.internet.MimeMessage;
-
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import mat.client.admin.ManageUsersDetailModel;
+import mat.client.admin.service.SaveUpdateUserResult;
+import mat.dao.OrganizationDAO;
+import mat.dao.SecurityRoleDAO;
+import mat.dao.StatusDAO;
+import mat.dao.UserDAO;
+import mat.model.User;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,16 +20,8 @@ import org.powermock.reflect.Whitebox;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import mat.client.admin.ManageUsersDetailModel;
-import mat.client.admin.service.SaveUpdateUserResult;
-import mat.dao.OrganizationDAO;
-import mat.dao.SecurityRoleDAO;
-import mat.dao.StatusDAO;
-import mat.dao.UserDAO;
-import mat.model.User;
-import mat.server.model.MatUserDetails;
+import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -1,7 +1,6 @@
 package mat.client.populationworkspace;
 
 import com.google.gwt.user.client.ui.Grid;
-
 import mat.client.populationworkspace.model.PopulationClauseObject;
 import mat.client.populationworkspace.model.PopulationsObject;
 import mat.client.populationworkspace.model.StrataDataModel;

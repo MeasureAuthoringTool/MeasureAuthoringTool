@@ -1,10 +1,5 @@
 package mat.client.clause.clauseworkspace.view;
 
-import java.util.Map.Entry;
-import java.util.Set;
-import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
@@ -29,6 +24,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+
+import java.util.Map.Entry;
+import java.util.Set;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -1,11 +1,5 @@
 package mat.client.clause.clauseworkspace.view;
 
-import mat.client.ImageResources;
-import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
-import mat.client.shared.LabelBuilder;
-import mat.shared.UUIDUtilClient;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -22,6 +16,11 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import mat.client.ImageResources;
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.shared.LabelBuilder;
+import mat.shared.UUIDUtilClient;
 
 
 /**

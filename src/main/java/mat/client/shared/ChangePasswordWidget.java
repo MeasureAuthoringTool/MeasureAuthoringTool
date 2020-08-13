@@ -1,11 +1,10 @@
 package mat.client.shared;
 
+import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.constants.InputType;
-
-import com.google.gwt.user.client.ui.Composite;
 
 
 public class ChangePasswordWidget extends Composite {

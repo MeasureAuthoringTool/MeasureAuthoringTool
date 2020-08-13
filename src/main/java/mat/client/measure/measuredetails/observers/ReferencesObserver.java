@@ -1,7 +1,5 @@
 package mat.client.measure.measuredetails.observers;
 
-import java.util.List;
-
 import mat.client.measure.ReferenceTextAndType;
 import mat.client.measure.measuredetails.MeasureDetailsObserver;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
@@ -9,6 +7,8 @@ import mat.client.measure.measuredetails.views.ReferencesView;
 import mat.client.shared.MessagePanel;
 import mat.shared.measure.measuredetails.models.MeasureReferenceType;
 import mat.shared.measure.measuredetails.models.ReferencesModel;
+
+import java.util.List;
 
 public class ReferencesObserver implements MeasureDetailsComponentObserver {
     private ReferencesView referencesView;

@@ -1,15 +1,7 @@
 package mat.client.expressionbuilder.modal;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.gwtbootstrap3.client.ui.FormLabel;
-
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
@@ -21,6 +13,12 @@ import mat.client.expressionbuilder.util.QueryFinderHelper;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.shared.cql.model.FunctionSignature;
+import org.gwtbootstrap3.client.ui.FormLabel;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class FunctionArgumentsBuilderModal extends SubExpressionBuilderModal {
 

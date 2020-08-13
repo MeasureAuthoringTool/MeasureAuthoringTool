@@ -1,9 +1,9 @@
 package mat.client.measure.service;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.client.shared.GenericResult;
+
+import java.util.List;
 
 /**
  * The Class ValidateMeasureResult.

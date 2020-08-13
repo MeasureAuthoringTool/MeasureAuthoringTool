@@ -1,12 +1,11 @@
 package mat.client.clause;
 
-import java.util.List;
-import java.util.Map;
-
-import mat.model.clause.QDSAttributes;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import mat.model.clause.QDSAttributes;
+
+import java.util.List;
+import java.util.Map;
 
 // TODO: Auto-generated Javadoc
 /**

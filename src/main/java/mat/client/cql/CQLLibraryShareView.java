@@ -1,9 +1,5 @@
 package mat.client.cql;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -22,7 +18,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-
 import mat.client.CqlLibraryPresenter;
 import mat.client.CustomPager;
 import mat.client.buttons.SaveContinueCancelButtonBar;
@@ -39,6 +34,9 @@ import mat.client.shared.WarningMessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShareDTO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 

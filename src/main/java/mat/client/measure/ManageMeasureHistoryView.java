@@ -1,8 +1,7 @@
 package mat.client.measure;
 
-import mat.client.history.HistoryBaseView;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import mat.client.history.HistoryBaseView;
 
 public class ManageMeasureHistoryView  extends HistoryBaseView implements HistoryDisplay{
 

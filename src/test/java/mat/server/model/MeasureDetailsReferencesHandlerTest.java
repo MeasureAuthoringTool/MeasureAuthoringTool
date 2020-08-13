@@ -1,9 +1,8 @@
 package mat.server.model;
 
-import org.junit.jupiter.api.Test;
-
 import mat.client.measure.ReferenceTextAndType;
 import mat.shared.measure.measuredetails.models.MeasureReferenceType;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

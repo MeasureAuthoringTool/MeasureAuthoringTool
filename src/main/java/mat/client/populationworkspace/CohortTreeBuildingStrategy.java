@@ -1,15 +1,14 @@
 package mat.client.populationworkspace;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.xml.client.Document;
-
 import mat.client.clause.clauseworkspace.model.CQLCellTreeNode;
 import mat.client.clause.clauseworkspace.model.CQLCellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.CQLXmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.shared.MatContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CohortTreeBuildingStrategy implements PopulationTreeBuilderStrategy {
 	

@@ -1,11 +1,12 @@
 package mat.client.clause.clauseworkspace.model;
 
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.shared.UUIDUtilClient;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.shared.UUIDUtilClient;
 
 @SuppressWarnings("unchecked")
 public class CQLCellTreeNodeImpl implements CQLCellTreeNode {

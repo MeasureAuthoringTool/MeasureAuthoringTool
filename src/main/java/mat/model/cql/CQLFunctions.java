@@ -1,8 +1,8 @@
 package mat.model.cql;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.List;
 
 public class CQLFunctions implements CQLExpression, IsSerializable {
 	

@@ -1,11 +1,11 @@
 package mat.client.measure.service;
 
-import java.util.List;
-
 import mat.client.shared.GenericResult;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.shared.ConstantMessages;
+
+import java.util.List;
 
 public class SaveCQLLibraryResult extends GenericResult {
 

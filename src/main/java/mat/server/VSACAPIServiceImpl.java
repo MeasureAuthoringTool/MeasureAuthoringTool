@@ -1,18 +1,16 @@
 package mat.server;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.stereotype.Service;
-
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.VSACApiService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /** VSACAPIServiceImpl class. **/
 @Configurable

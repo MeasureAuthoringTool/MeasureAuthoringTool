@@ -1,14 +1,14 @@
 package mat.model.cql;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.BaseModel;
 import mat.model.LockedUserInfo;
 import mat.model.clause.ModelTypeHelper;
 import mat.shared.CQLError;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CQLLibraryDataSetObject implements IsSerializable, BaseModel {
     private String id;

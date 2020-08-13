@@ -1,9 +1,5 @@
 package mat.client.measure.service;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -38,6 +34,10 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 
 public interface MeasureServiceAsync {

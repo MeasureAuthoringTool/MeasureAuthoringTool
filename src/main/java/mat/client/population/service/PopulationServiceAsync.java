@@ -1,7 +1,6 @@
 package mat.client.population.service;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.shared.SaveUpdateCQLResult;
 
 public interface PopulationServiceAsync {

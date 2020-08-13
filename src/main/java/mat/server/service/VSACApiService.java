@@ -1,10 +1,10 @@
 package mat.server.service;
 
-import java.util.List;
-
 import mat.client.umls.service.VsacApiResult;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.model.cql.CQLQualityDataSetDTO;
+
+import java.util.List;
 
 public interface VSACApiService {
     void inValidateVsacUser(String sessionId);

@@ -1,21 +1,22 @@
 package mat.client.shared;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import mat.model.LockedUserInfo;
+import mat.model.cql.CQLLibraryDataSetObject;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import mat.model.LockedUserInfo;
-import mat.model.cql.CQLLibraryDataSetObject;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(GwtMockitoTestRunner.class)
+@Ignore
 public class CQLibraryGridToolbarTest {
 
     @Mock(name = "versionButton")

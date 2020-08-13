@@ -1,27 +1,5 @@
 package mat.server;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cqframework.cql.cql2elm.SystemModelInfoProvider;
-import org.hl7.elm_modelinfo.r1.ClassInfo;
-import org.hl7.elm_modelinfo.r1.ClassInfoElement;
-import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.TypeInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import mat.client.cqlconstant.service.CQLConstantService;
@@ -35,12 +13,33 @@ import mat.dao.clause.QDSAttributesDAO;
 import mat.dto.DataTypeDTO;
 import mat.dto.UnitDTO;
 import mat.model.cql.CQLKeywords;
+import mat.server.logging.LogFactory;
 import mat.server.service.CodeListService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.spreadsheet.MatAttribute;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.QDMUtil;
 import mat.shared.cql.model.FunctionSignature;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.cqframework.cql.cql2elm.SystemModelInfoProvider;
+import org.hl7.elm_modelinfo.r1.ClassInfo;
+import org.hl7.elm_modelinfo.r1.ClassInfoElement;
+import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.hl7.elm_modelinfo.r1.TypeInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implements CQLConstantService {
 

@@ -1,9 +1,9 @@
 package mat.server.service;
 
-import java.util.Map;
-
 import mat.client.login.LoginModel;
 import mat.client.shared.MatException;
+
+import java.util.Map;
 
 /**
  * The Interface LoginCredentialService.

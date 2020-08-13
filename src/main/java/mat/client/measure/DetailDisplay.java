@@ -1,17 +1,15 @@
 package mat.client.measure;
 
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.HasValue;
-
 import mat.client.codelist.HasListBox;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.WarningConfirmationMessageAlert;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+
+import java.util.List;
 
 public interface DetailDisplay extends BaseDisplay {
 	public void clearFields();

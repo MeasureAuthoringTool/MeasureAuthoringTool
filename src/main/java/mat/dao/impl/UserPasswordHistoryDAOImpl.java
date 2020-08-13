@@ -1,20 +1,18 @@
 package mat.dao.impl;
 
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
+import mat.dao.UserPasswordHistoryDAO;
+import mat.dao.search.GenericDAO;
+import mat.model.User;
+import mat.model.UserPasswordHistory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dao.UserPasswordHistoryDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.User;
-import mat.model.UserPasswordHistory;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 
 @Repository("userPasswordHistoryDAO")
 public class UserPasswordHistoryDAOImpl extends GenericDAO<UserPasswordHistory, String> implements UserPasswordHistoryDAO{

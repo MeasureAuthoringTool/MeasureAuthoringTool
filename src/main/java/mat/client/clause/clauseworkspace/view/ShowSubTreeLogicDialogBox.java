@@ -1,14 +1,5 @@
 package mat.client.clause.clauseworkspace.view;
 
-import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
-import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
-import mat.client.shared.DialogBoxWithCloseButton;
-import mat.client.shared.SpacerWidget;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -22,6 +13,13 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
+import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.shared.DialogBoxWithCloseButton;
+import mat.client.shared.SpacerWidget;
+import org.apache.commons.lang3.StringUtils;
 
 public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper {
 

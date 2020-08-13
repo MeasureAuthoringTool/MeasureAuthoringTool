@@ -1,24 +1,5 @@
 package mat.client;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.gwtbootstrap3.client.ui.AnchorButton;
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.DropDownMenu;
-import org.gwtbootstrap3.client.ui.ListDropDown;
-import org.gwtbootstrap3.client.ui.ListItem;
-import org.gwtbootstrap3.client.ui.Navbar;
-import org.gwtbootstrap3.client.ui.NavbarCollapse;
-import org.gwtbootstrap3.client.ui.NavbarLink;
-import org.gwtbootstrap3.client.ui.NavbarNav;
-import org.gwtbootstrap3.client.ui.constants.IconPosition;
-import org.gwtbootstrap3.client.ui.constants.IconSize;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.Styles;
-import org.gwtbootstrap3.client.ui.constants.Toggle;
-
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -44,6 +25,24 @@ import mat.client.util.ClientConstants;
 import mat.client.util.FeatureFlagConstant;
 import mat.client.util.FooterPanelBuilderUtility;
 import mat.model.clause.ModelTypeHelper;
+import org.gwtbootstrap3.client.ui.AnchorButton;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtbootstrap3.client.ui.ListDropDown;
+import org.gwtbootstrap3.client.ui.ListItem;
+import org.gwtbootstrap3.client.ui.Navbar;
+import org.gwtbootstrap3.client.ui.NavbarCollapse;
+import org.gwtbootstrap3.client.ui.NavbarLink;
+import org.gwtbootstrap3.client.ui.NavbarNav;
+import org.gwtbootstrap3.client.ui.constants.IconPosition;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Styles;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
+
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class MainLayout {
 

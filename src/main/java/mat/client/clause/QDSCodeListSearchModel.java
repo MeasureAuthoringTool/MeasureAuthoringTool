@@ -1,16 +1,5 @@
 package mat.client.clause;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import mat.client.shared.RadioButtonCell;
-import mat.client.codelist.events.OnChangeOptionsEvent;
-import mat.client.shared.MatContext;
-import mat.client.shared.search.SearchResults;
-import mat.model.CodeListSearchDTO;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -18,14 +7,24 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import mat.client.codelist.events.OnChangeOptionsEvent;
+import mat.client.shared.MatContext;
+import mat.client.shared.RadioButtonCell;
+import mat.client.shared.search.SearchResults;
+import mat.model.CodeListSearchDTO;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Class QDSCodeListSearchModel.

@@ -1,10 +1,5 @@
 package mat.client.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -29,7 +24,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-
 import mat.client.CustomPager;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.shared.ContentWithHeadingWidget;
@@ -43,6 +37,10 @@ import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
+import org.gwtbootstrap3.client.ui.Button;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay. **/
 public class ManageOrganizationView implements ManageOrganizationPresenter.SearchDisplay,

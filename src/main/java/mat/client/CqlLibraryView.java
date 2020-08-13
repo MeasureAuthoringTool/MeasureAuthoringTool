@@ -1,16 +1,12 @@
 package mat.client;
 
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.advancedsearch.AdvancedSearchPillPanel;
 import mat.client.buttons.CustomButton;
 import mat.client.cql.CQLLibrarySearchView;
@@ -23,9 +19,9 @@ import mat.client.shared.MostRecentCQLLibraryWidget;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.LibrarySearchModel;
+import org.gwtbootstrap3.client.ui.Button;
 
 public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 

@@ -1,11 +1,5 @@
 package mat.client.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import mat.client.util.FeatureFlagConstant;
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -16,8 +10,6 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
-import mat.dto.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.cql.CQLLibraryHistoryView;
@@ -32,9 +24,15 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.search.SearchResultUpdate;
+import mat.client.util.FeatureFlagConstant;
 import mat.client.util.MatTextBox;
+import mat.dto.SearchHistoryDTO;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.LibrarySearchModel;
+import org.gwtbootstrap3.client.ui.Button;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 

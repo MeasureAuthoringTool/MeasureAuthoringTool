@@ -1,9 +1,9 @@
 package mat.shared;
 
+import mat.client.shared.MatContext;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import mat.client.shared.MatContext;
 
 /**
  * The Class PasswordVerifier.

@@ -1,12 +1,5 @@
 package mat.client;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import mat.client.event.MeasureEditEvent;
-import mat.client.util.FeatureFlagConstant;
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -27,6 +20,7 @@ import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
 import mat.client.cqlworkspace.CQLMeasureWorkSpacePresenter;
 import mat.client.cqlworkspace.CQLMeasureWorkSpaceView;
 import mat.client.event.MATClickHandler;
+import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.measuredetails.MeasureDetailsPresenter;
 import mat.client.measure.metadata.events.ContinueToMeasurePackageEvent;
@@ -41,8 +35,13 @@ import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.PreviousContinueButtonBar;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.util.FeatureFlagConstant;
 import mat.shared.ConstantMessages;
 import mat.shared.model.util.MeasureDetailsUtil;
+import org.gwtbootstrap3.client.ui.Button;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class MeasureComposerPresenter implements MatPresenter, MeasureHeading, Enableable, TabObserver {
     MatTabLayoutPanel targetTabLayout;

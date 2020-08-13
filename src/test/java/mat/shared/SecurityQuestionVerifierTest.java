@@ -2,8 +2,6 @@ package mat.shared;
 
 import junit.framework.TestCase;
 
-import mat.shared.SecurityQuestionVerifier;
-
 public class SecurityQuestionVerifierTest extends TestCase {
 	public void testValid() {
 		SecurityQuestionVerifier sqv = 	

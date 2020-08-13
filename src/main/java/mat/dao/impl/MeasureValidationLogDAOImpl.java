@@ -1,16 +1,15 @@
 package mat.dao.impl;
 
-import java.util.Date;
-
+import mat.dao.search.GenericDAO;
+import mat.model.MeasureValidationLog;
+import mat.model.clause.Measure;
+import mat.server.LoggedInUserUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dao.search.GenericDAO;
-import mat.model.MeasureValidationLog;
-import mat.model.clause.Measure;
-import mat.server.LoggedInUserUtil;
+import java.util.Date;
 
 @Repository("measureValidationLogDAO")
 public class MeasureValidationLogDAOImpl extends GenericDAO<MeasureValidationLog, String> implements mat.dao.MeasureValidationLogDAO{

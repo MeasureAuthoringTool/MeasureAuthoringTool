@@ -1,11 +1,5 @@
 package mat.server.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import mat.dto.CodeSystemDTO;
-import mat.dto.DataTypeDTO;
-import mat.dto.OperatorDTO;
-import mat.dto.UnitDTO;
-import mat.dto.VSACCodeSystemDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.shared.MatRuntimeException;
@@ -21,6 +15,11 @@ import mat.dao.UnitDAO;
 import mat.dao.UnitTypeDAO;
 import mat.dao.UnitTypeMatrixDAO;
 import mat.dao.clause.OperatorDAO;
+import mat.dto.CodeSystemDTO;
+import mat.dto.DataTypeDTO;
+import mat.dto.OperatorDTO;
+import mat.dto.UnitDTO;
+import mat.dto.VSACCodeSystemDTO;
 import mat.model.Category;
 import mat.model.CodeListSearchDTO;
 import mat.model.CodeSystem;
@@ -31,11 +30,13 @@ import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
+import mat.server.logging.LogFactory;
 import mat.server.service.CodeListService;
 import mat.server.service.MeasureLibraryService;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -60,10 +61,11 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
-@Slf4j
 public class ManageCodeListServiceImpl implements CodeListService {
+    private Log log = LogFactory.getLog(ManageCodeListServiceImpl.class);
 
     private static final String OID_TO_VSAC_CODE_SYSTEM_DTO = "oidToVSACDodeSystemDTO";
     private static final String QDM_TAG = "<qdm";

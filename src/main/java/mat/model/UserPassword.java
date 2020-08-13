@@ -1,7 +1,6 @@
 package mat.model;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,8 +14,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.GenericGenerator;
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Table(name = "USER_PASSWORD", uniqueConstraints = @UniqueConstraint(columnNames = "USER_ID"))

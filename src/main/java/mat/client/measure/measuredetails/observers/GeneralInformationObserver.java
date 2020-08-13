@@ -1,11 +1,7 @@
 package mat.client.measure.measuredetails.observers;
 
-import java.util.Date;
-import java.util.List;
-
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.client.measure.measuredetails.views.GeneralInformationView;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.shared.ConfirmationDialogBox;
@@ -13,6 +9,9 @@ import mat.client.shared.MatContext;
 import mat.model.clause.ModelTypeHelper;
 import mat.shared.MatConstants;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
+
+import java.util.Date;
+import java.util.List;
 
 /*  */
 /**

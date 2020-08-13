@@ -1,8 +1,5 @@
 package mat.client.expressionbuilder.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.modal.RelationshipBuilderModal;
 import mat.client.expressionbuilder.model.AliasModel;
@@ -17,6 +14,9 @@ import mat.client.expressionbuilder.model.QueryModel;
 import mat.client.expressionbuilder.model.QuerySortModel;
 import mat.client.expressionbuilder.model.RelationshipModel;
 import mat.client.expressionbuilder.model.TimingModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class QueryFinderHelper {
 

@@ -1,8 +1,5 @@
 package mat.client.cql;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -48,6 +45,9 @@ import mat.client.util.ClientConstants;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.LibrarySearchModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class CQLLibrarySearchView is used to build the CQL Library Ownership table.

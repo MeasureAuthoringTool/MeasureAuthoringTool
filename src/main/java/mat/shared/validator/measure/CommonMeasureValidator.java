@@ -1,13 +1,13 @@
 package mat.shared.validator.measure;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.shared.CQLModelValidator;
 import mat.shared.MatConstants;
 import mat.shared.StringUtility;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommonMeasureValidator {
 	private static final String MEASURE_NAME_REQUIRED = "A measure name is required.";

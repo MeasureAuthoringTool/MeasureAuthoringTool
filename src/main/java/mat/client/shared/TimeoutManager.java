@@ -1,8 +1,6 @@
 package mat.client.shared;
 
 
-import java.util.Date;
-
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
@@ -18,6 +16,8 @@ import mat.client.Mat;
 import mat.client.event.LogoffEvent;
 import mat.client.event.TimedOutEvent;
 import mat.shared.ConstantMessages;
+
+import java.util.Date;
 
 /**
  * The Class TimeoutManager.

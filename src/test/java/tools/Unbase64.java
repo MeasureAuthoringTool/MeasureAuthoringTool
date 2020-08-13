@@ -2,7 +2,6 @@ package tools;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
-import lombok.extern.slf4j.Slf4j;
 import mat.client.shared.MatRuntimeException;
 import org.apache.commons.io.IOUtils;
 import org.hl7.fhir.r4.model.Bundle;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 
-@Slf4j
 public class Unbase64 {
 
     public static String resourceAsString(String resource) {

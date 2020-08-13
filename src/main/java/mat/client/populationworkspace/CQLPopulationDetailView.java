@@ -1,8 +1,17 @@
 package mat.client.populationworkspace;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import mat.client.populationworkspace.model.PopulationClauseObject;
+import mat.client.populationworkspace.model.PopulationDataModel;
+import mat.client.populationworkspace.model.PopulationDataModel.ExpressionObject;
+import mat.client.populationworkspace.model.PopulationsObject;
+import mat.client.shared.CQLPopulationTopLevelButtonGroup;
+import mat.client.shared.SpacerWidget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.ListBox;
@@ -11,19 +20,8 @@ import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
-import com.google.gwt.dom.client.OptionElement;
-import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.ScrollPanel;
-
-import mat.client.populationworkspace.model.PopulationClauseObject;
-import mat.client.populationworkspace.model.PopulationDataModel;
-import mat.client.populationworkspace.model.PopulationDataModel.ExpressionObject;
-import mat.client.populationworkspace.model.PopulationsObject;
-import mat.client.shared.CQLPopulationTopLevelButtonGroup;
-import mat.client.shared.SpacerWidget;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CQLPopulationDetailView implements CQLPopulationDetail {
 	

@@ -2,7 +2,6 @@ package mat.dto;
 
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.client.codelist.HasListBox;
 
 public class MeasureTypeDTO implements IsSerializable, HasListBox {

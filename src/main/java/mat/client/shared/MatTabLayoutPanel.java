@@ -3,7 +3,6 @@ package mat.client.shared;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.Enableable;
 import mat.client.TabObserver;
 import mat.client.shared.ui.MATTabPanel;

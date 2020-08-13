@@ -5,14 +5,15 @@ import ca.uhn.fhir.parser.IParser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import mat.client.measure.FhirMeasurePackageResult;
 import mat.client.shared.MatRuntimeException;
 import mat.dto.fhirconversion.ConversionResultDto;
 import mat.dto.fhirconversion.ConversionType;
+import mat.server.logging.LogFactory;
 import mat.server.service.FhirMeasureRemoteCall;
 import mat.server.service.cql.HumanReadableArtifacts;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Bundle;
@@ -31,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@Slf4j
 public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     private static final String FHIR_ID_PARAMS = "?id={id}";
     private static final String GET_HUMAN_READABLE_ARTIFACTS = "measure/package/humanReadableArtifacts/{measureId}";
@@ -40,6 +40,8 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     private static final String FHIR_ORCH_MEASURE_SRVC_PARAMS = "orchestration/measure" + FHIR_ID_PARAMS + "&conversionType={conversionType}&xmlSource={xmlSource}&vsacGrantingTicket={vsacGrantingTicket}";
     private static final String SIMPLE_XML_SOURCE = "SIMPLE";
     private static final String MEASURE_XML_SOURCE = "MEASURE";
+
+    private static final Log log = LogFactory.getLog(FhirMeasureRemoteCallImpl.class);
 
     @Value("${FHIR_SRVC_URL:http://localhost:9080/}")
     private String fhirServicesUrl;
@@ -164,7 +166,7 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
             throw new MatRuntimeException(e);
         }
         if (response.getStatusCode().isError()) {
-            log.error("{} returned {}",url,response.getStatusCode());
+            log.error(url + " returned " + response.getStatusCode());
             throw new MatRuntimeException("url " + url + " returned error code " + response.getStatusCode());
         }
         return response.getBody();

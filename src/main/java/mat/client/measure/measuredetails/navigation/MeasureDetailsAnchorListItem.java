@@ -1,15 +1,13 @@
 package mat.client.measure.measuredetails.navigation;
 
+import com.google.gwt.dom.client.Element;
+import mat.client.measure.measuredetails.MeasureDetailState;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
-
-import com.google.gwt.dom.client.Element;
-
-import mat.client.measure.measuredetails.MeasureDetailState;
 
 public class MeasureDetailsAnchorListItem extends AnchorListItem{
 	private MeasureDetailState state;

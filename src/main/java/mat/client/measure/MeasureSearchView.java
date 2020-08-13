@@ -1,9 +1,5 @@
 package mat.client.measure;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -49,6 +45,10 @@ import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.ClientConstants;
 import mat.shared.MeasureSearchModel;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSearchModel.Result> {
     private VerticalPanel cellTablePanel = new VerticalPanel();

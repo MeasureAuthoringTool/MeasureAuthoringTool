@@ -1,12 +1,6 @@
 package mat.client.expressionbuilder.modal;
 
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
-
 import com.google.gwt.user.client.ui.HorizontalPanel;
-
 import mat.client.expressionbuilder.constant.ExpressionBuilderUserAssistText;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.model.AttributeModel;
@@ -30,6 +24,10 @@ import mat.client.expressionbuilder.model.TimeBoundaryModel;
 import mat.client.expressionbuilder.model.TimingModel;
 import mat.client.expressionbuilder.model.TimingPhraseModel;
 import mat.client.shared.MatContext;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 
 public abstract class SubExpressionBuilderModal extends ExpressionBuilderModal {
 	private boolean firstSelection;

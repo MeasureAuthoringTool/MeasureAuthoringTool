@@ -1,7 +1,5 @@
 package mat.client.measure;
 
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -17,6 +15,7 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.shared.MeasureSearchModel;
+import org.gwtbootstrap3.client.ui.Button;
 
 public interface SearchDisplay extends BaseDisplay {
     @Override

@@ -1,10 +1,17 @@
 package mat.client.advancedsearch;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.shared.MatContext;
 import mat.client.util.FeatureFlagConstant;
+import mat.shared.ConstantMessages;
+import mat.shared.MeasureSearchModel.PatientBasedType;
+import mat.shared.SearchModel;
+import mat.shared.SearchModel.ModelType;
+import mat.shared.SearchModel.VersionType;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -15,16 +22,8 @@ import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import mat.shared.ConstantMessages;
-import mat.shared.MeasureSearchModel.PatientBasedType;
-import mat.shared.SearchModel;
-import mat.shared.SearchModel.ModelType;
-import mat.shared.SearchModel.VersionType;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AdvancedSearchPanel {
 

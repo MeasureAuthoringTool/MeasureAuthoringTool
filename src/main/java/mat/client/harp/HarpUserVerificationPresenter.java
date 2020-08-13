@@ -1,8 +1,5 @@
 package mat.client.harp;
 
-import org.gwtbootstrap3.client.ui.Anchor;
-import org.gwtbootstrap3.client.ui.TextBox;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -14,6 +11,8 @@ import mat.client.event.ReturnToLoginEvent;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.shared.HarpConstants;
+import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 public class HarpUserVerificationPresenter {
 

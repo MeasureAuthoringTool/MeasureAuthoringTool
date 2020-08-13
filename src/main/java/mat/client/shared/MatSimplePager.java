@@ -1,10 +1,9 @@
 package mat.client.shared;
 
-import mat.client.CustomPager;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.view.client.Range;
+import mat.client.CustomPager;
 
 //public class MatSimplePager extends SimplePager {
 /**

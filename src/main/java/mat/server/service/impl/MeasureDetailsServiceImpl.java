@@ -1,15 +1,15 @@
 package mat.server.service.impl;
 
+import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.ReferenceTextAndType;
+import mat.model.clause.MeasureDetails;
+import mat.model.clause.MeasureDetailsReference;
+import mat.server.service.MeasureDetailsService;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import mat.client.measure.ManageMeasureDetailModel;
-import mat.model.clause.MeasureDetails;
-import mat.model.clause.MeasureDetailsReference;
-import mat.client.measure.ReferenceTextAndType;
-import mat.server.service.MeasureDetailsService;
-import org.springframework.stereotype.Service;
 
 @Service
 public class MeasureDetailsServiceImpl implements MeasureDetailsService {

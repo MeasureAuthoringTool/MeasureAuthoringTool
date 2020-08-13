@@ -1,7 +1,5 @@
 package mat.model.cql.validator;
 
-import org.junit.Test;
-
 import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
@@ -10,6 +8,7 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

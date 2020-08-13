@@ -1,13 +1,5 @@
 package mat.server.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
@@ -20,6 +12,13 @@ import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
 import mat.server.service.FeatureFlagService;
+import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Objects;
 
 @Service
 public class MatContextServiceUtil implements InitializingBean {

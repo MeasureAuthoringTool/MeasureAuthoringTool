@@ -1,7 +1,5 @@
 package mat.client.measure.measuredetails.views;
 
-import java.util.Arrays;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -33,6 +31,8 @@ import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureReferenceType;
 import mat.shared.measure.measuredetails.models.ReferencesModel;
+
+import java.util.Arrays;
 
 public class ReferencesView implements MeasureDetailViewInterface {
     public static final int MAX_TEXT_DISPLAY = 35;

@@ -1,18 +1,8 @@
 package mat.client.expressionbuilder.modal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.expressionbuilder.component.ExpandCollapseCQLExpressionPanel;
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
@@ -28,6 +18,14 @@ import mat.model.cql.CQLFunctions;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.cql.model.FunctionArgument;
 import mat.shared.cql.model.FunctionSignature;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FunctionBuilderModal extends SubExpressionBuilderModal {
 

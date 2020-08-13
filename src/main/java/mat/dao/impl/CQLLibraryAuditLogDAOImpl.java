@@ -1,7 +1,16 @@
 package mat.dao.impl;
 
-import java.util.Date;
-import java.util.List;
+import mat.dao.search.GenericDAO;
+import mat.dto.AuditLogDTO;
+import mat.dto.SearchHistoryDTO;
+import mat.model.CQLAuditLog;
+import mat.model.clause.CQLLibrary;
+import mat.server.LoggedInUserUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -9,19 +18,8 @@ import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import mat.dto.AuditLogDTO;
-import mat.dto.SearchHistoryDTO;
-import mat.dao.search.GenericDAO;
-import mat.model.CQLAuditLog;
-import mat.model.clause.CQLLibrary;
-import mat.server.LoggedInUserUtil;
+import java.util.Date;
+import java.util.List;
 
 @Repository("cqlLibraryAuditLogDAO")
 public class CQLLibraryAuditLogDAOImpl extends GenericDAO<CQLAuditLog, String> implements mat.dao.CQLLibraryAuditLogDAO{

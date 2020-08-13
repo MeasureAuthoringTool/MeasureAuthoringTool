@@ -1,10 +1,9 @@
 package mat.client.cqlworkspace.attributes;
 
-import java.util.Collections;
-
+import mat.client.shared.FhirDataType;
 import org.junit.jupiter.api.Test;
 
-import mat.client.shared.FhirDataType;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

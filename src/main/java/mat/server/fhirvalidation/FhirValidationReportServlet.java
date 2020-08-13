@@ -1,23 +1,21 @@
 package mat.server.fhirvalidation;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import mat.client.shared.MatException;
+import mat.server.logging.LogFactory;
+import mat.server.service.VSACApiService;
 import mat.server.service.fhirvalidationreport.CqlLibraryValidationReportImpl;
+import mat.server.service.fhirvalidationreport.FhirValidationReport;
 import mat.server.service.fhirvalidationreport.MeasureValidationReportImpl;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import mat.client.shared.MatException;
-import mat.server.service.fhirvalidationreport.FhirValidationReport;
-import mat.server.service.VSACApiService;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class FhirValidationReportServlet extends HttpServlet {
 

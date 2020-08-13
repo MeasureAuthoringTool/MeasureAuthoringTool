@@ -1,9 +1,9 @@
 package mat.client.shared;
 
-import java.util.List;
-
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+
+import java.util.List;
 
 public class WarningMessageAlert extends MessageAlert implements MessageAlertInterface {
 

@@ -2,7 +2,6 @@ package mat.client.cqlconstant.service;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-
 import mat.client.shared.CQLConstantContainer;
 
 /**

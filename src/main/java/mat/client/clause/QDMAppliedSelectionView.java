@@ -1,11 +1,5 @@
 package mat.client.clause;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.CheckBox;
-
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.OptionElement;
@@ -61,6 +55,11 @@ import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.CheckBox;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Deprecated

@@ -1,21 +1,19 @@
 package mat.dao.impl;
 
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
+import mat.dao.DataTypeDAO;
+import mat.dao.search.GenericDAO;
+import mat.dto.DataTypeDTO;
+import mat.model.DataType;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dto.DataTypeDTO;
-import mat.dao.DataTypeDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.DataType;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 
 @Repository("dataTypeDAO")
 public class DataTypeDAOImpl extends GenericDAO<DataType, String> implements DataTypeDAO {

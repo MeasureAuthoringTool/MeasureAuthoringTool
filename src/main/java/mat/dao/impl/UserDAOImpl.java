@@ -1,10 +1,20 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import mat.dao.UserDAO;
+import mat.dao.search.GenericDAO;
+import mat.model.Organization;
+import mat.model.SecurityQuestions;
+import mat.model.User;
+import mat.model.UserSecurityQuestion;
+import mat.server.LoggedInUserUtil;
+import mat.server.logging.LogFactory;
+import mat.server.model.MatUserDetails;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,23 +24,11 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import mat.dao.UserDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.Organization;
-import mat.model.SecurityQuestions;
-import mat.model.User;
-import mat.model.UserSecurityQuestion;
-import mat.server.LoggedInUserUtil;
-import mat.server.model.MatUserDetails;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 import static mat.model.Status.STATUS_ACTIVE;
 import static mat.model.Status.STATUS_TERMINATED;

@@ -1,7 +1,6 @@
 package mat.model;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,8 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.GenericGenerator;
+import java.sql.Timestamp;
+import java.util.Date;
 
 
 @Entity

@@ -1,32 +1,8 @@
 package mat.server.service.fhirvalidationreport;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import mat.dto.fhirconversion.ConversionResultDto;
-import mat.dao.clause.CQLLibraryDAO;
-import mat.model.clause.CQLLibrary;
-import mat.server.service.FhirLibraryRemoteCall;
 import org.junit.Ignore;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.File;
-import java.net.URL;
-
-import static mat.server.service.fhirvalidationreport.CqlLibraryValidationReportImpl.CONVERSION_SERVICE_ERROR;
-import static mat.server.service.fhirvalidationreport.CqlLibraryValidationReportImpl.CQL_LIBRARY_NOT_FOUND_ERROR;
-import static mat.server.service.fhirvalidationreport.CqlLibraryValidationReportImpl.FTL_TEMPLATE_NAME;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
 
 @Ignore
 @ExtendWith(MockitoExtension.class)

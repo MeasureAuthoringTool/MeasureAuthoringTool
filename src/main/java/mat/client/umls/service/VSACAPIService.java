@@ -3,12 +3,11 @@
  */
 package mat.client.umls.service;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-
 import mat.model.cql.CQLQualityDataSetDTO;
+
+import java.util.List;
 
 @RemoteServiceRelativePath("vsacapi")
 public interface VSACAPIService extends RemoteService {

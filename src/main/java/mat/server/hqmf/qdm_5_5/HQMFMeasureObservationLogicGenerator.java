@@ -1,15 +1,9 @@
 package mat.server.hqmf.qdm_5_5;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
+import mat.model.clause.MeasureExport;
+import mat.server.hqmf.QDMTemplateProcessorFactory;
+import mat.server.util.XmlProcessor;
+import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -18,10 +12,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import mat.model.clause.MeasureExport;
-import mat.server.hqmf.QDMTemplateProcessorFactory;
-import mat.server.util.XmlProcessor;
-import mat.shared.UUIDUtilClient;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * The Class HQMFPopulationLogicGenerator.

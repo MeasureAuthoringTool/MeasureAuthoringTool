@@ -18,7 +18,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class CqlAttributesRemoteCallServiceTest {

@@ -1,6 +1,5 @@
 package mat.server;
 
-import lombok.extern.slf4j.Slf4j;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
@@ -82,12 +81,14 @@ import mat.server.cqlparser.CQLLinterConfig;
 import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
 import mat.server.humanreadable.cql.HumanReadableMeasureInformationModel;
 import mat.server.humanreadable.cql.HumanReadableModel;
+import mat.server.logging.LogFactory;
 import mat.server.model.MatUserDetails;
 import mat.server.service.InvalidValueSetDateException;
 import mat.server.service.MeasureDetailsService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
+import mat.server.service.fhirvalidationreport.MeasureValidationReportImpl;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.service.impl.MeasureAuditServiceImpl;
 import mat.server.service.impl.PatientBasedValidator;
@@ -118,6 +119,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.commons.logging.Log;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -168,7 +170,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     private static final int NESTED_CLAUSE_DEPTH = 10;
@@ -212,6 +213,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     private static final String CQL_LOOKUP = "cqlLookUp";
 
     private static final String QDM_MAPPING = "QualityDataModelMapping.xml";
+
+    private static final Log log = LogFactory.getLog(MeasureLibraryServiceImpl.class);
 
     @Value("${mat.measure.current.release.version}")
     private String currentReleaseVersion;
@@ -2009,16 +2012,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 updateVersionInSimpleXMLAndGenerateArtifacts(measure);
             } catch (RuntimeException re) {
                 log.warn("updateVersionInSimpleXMLAndGenerateArtifacts failed with exception. " +
-                                "Rolling back versioning." +
-                                "measure={} priorVersion={} priorRevision={} priorDraft={}",
-                        measure.getId(), priorVersion, priorRevision, priorDraft);
+                        "Rolling back versioning. measure=" + measure.getId() +
+                        " priorVersion=" + priorVersion +
+                        " priorRevision=" + priorRevision +
+                        " priorDraft=" + priorDraft);
                 try {
                     rollbackMeasureVersioning(priorVersion, priorRevision, priorDraft, measure);
                 } catch (RuntimeException re2) {
                     log.error("Error rolling back measure.", re2);
                     log.error("Measure versioned with no way to roll back!. " +
-                                    "measure={} priorVersion={} priorRevision={} priorDraft={}",
-                            measure.getId(), priorVersion, priorRevision, priorDraft);
+                            "measure=" + measure.getId() +
+                            " priorVersion=" + priorVersion +
+                            " priorRevision=" + priorRevision +
+                            " priorDraft=" + priorDraft);
                 }
                 throw re;
             }

@@ -1,5 +1,7 @@
 package mat.client.cqlworkspace.shared;
 
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Panel;
@@ -9,9 +11,6 @@ import org.gwtbootstrap3.client.ui.PanelGroup;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
-
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.user.client.ui.Composite;
 
 public class CQLEditorPanel extends Composite {
 

@@ -1,5 +1,24 @@
 package mat.client.umls;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import mat.client.buttons.CancelButton;
+import mat.client.buttons.SaveContinueCancelButtonBar;
+import mat.client.cqlworkspace.CQLMeasureWorkSpacePresenter;
+import mat.client.cqlworkspace.CQLStandaloneWorkSpacePresenter;
+import mat.client.shared.ChangePasswordWidget;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -15,27 +34,6 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
-
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-
-import mat.client.buttons.CancelButton;
-import mat.client.buttons.SaveContinueCancelButtonBar;
-import mat.client.cqlworkspace.CQLMeasureWorkSpacePresenter;
-import mat.client.cqlworkspace.CQLStandaloneWorkSpacePresenter;
-import mat.client.shared.ChangePasswordWidget;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
 
 public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	

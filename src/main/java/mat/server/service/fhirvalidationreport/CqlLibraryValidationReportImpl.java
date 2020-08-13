@@ -7,12 +7,14 @@ import mat.dao.clause.CQLLibraryDAO;
 import mat.dto.fhirconversion.FhirValidationResult;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.ModelTypeHelper;
+import mat.server.logging.LogFactory;
 import mat.server.service.cql.FhirCqlParser;
 import mat.server.service.cql.LibraryErrors;
 import mat.server.service.cql.MatXmlResponse;
 import mat.shared.CQLError;
 import mat.shared.DateUtility;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
@@ -24,13 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Slf4j
 public class CqlLibraryValidationReportImpl implements FhirValidationReport {
     private static final String currentMatVersion = "v6.0";
 
     public static final String CQL_LIBRARY_NOT_FOUND_ERROR = "CQL Library with the given id does not exist.";
     public static final String FTL_TEMPLATE_NAME = "fhirvalidationreport/fhir_library_validation_report.ftl";
-
 
     private final Configuration freemarkerConfiguration;
     private final CQLLibraryDAO libraryDAO;
@@ -112,7 +112,7 @@ public class CqlLibraryValidationReportImpl implements FhirValidationReport {
             matXmlResponse.getErrors().
                     forEach(e -> {
                         if (CollectionUtils.isNotEmpty((e.getErrors()))) {
-                            e.getErrors().forEach(cqle -> result.add(convertCqlErrror(e,cqle)));
+                            e.getErrors().forEach(cqle -> result.add(convertCqlErrror(e, cqle)));
                         }
                     });
         }

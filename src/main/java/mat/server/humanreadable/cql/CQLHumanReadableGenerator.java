@@ -1,15 +1,15 @@
 package mat.server.humanreadable.cql;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import mat.model.clause.ModelTypeHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class CQLHumanReadableGenerator {

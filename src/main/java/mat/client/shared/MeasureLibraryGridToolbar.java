@@ -1,17 +1,16 @@
 package mat.client.shared;
 
-import java.util.Collection;
-
 import com.google.common.annotations.VisibleForTesting;
+import com.google.gwt.core.client.GWT;
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.util.FeatureFlagConstant;
 import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
-import com.google.gwt.core.client.GWT;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.util.FeatureFlagConstant;
+import java.util.Collection;
 
 public class MeasureLibraryGridToolbar extends HorizontalFlowPanel {
 

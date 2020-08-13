@@ -1,10 +1,10 @@
 package mat.client.populationworkspace;
 
+import mat.client.clause.clauseworkspace.model.CQLCellTreeNode;
+
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-
-import mat.client.clause.clauseworkspace.model.CQLCellTreeNode;
 
 public class PopulationsNodeComparator implements Comparator<CQLCellTreeNode>{
 	private final List<String> sortingList = new LinkedList<String>() {

@@ -1,8 +1,8 @@
 package mat.shared;
 
-import java.util.List;
-
 import mat.model.cql.CQLCode;
+
+import java.util.List;
 
 /**
  * The Class StringUtility.

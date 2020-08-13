@@ -1,9 +1,13 @@
 package mat.client.cqlworkspace.attributes;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
+import mat.client.shared.FhirAttribute;
+import mat.client.shared.FhirDataType;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Panel;
@@ -15,14 +19,9 @@ import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.Widget;
-import mat.client.shared.FhirAttribute;
-import mat.client.shared.FhirDataType;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class LightBoxLeftPanelView implements LightBoxLeftPanelDisplay {
 

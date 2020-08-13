@@ -1,10 +1,10 @@
 package mat.client.shared;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.util.FeatureFlagConstant;
+import mat.model.LockedUserInfo;
+import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.junit.Assert;
@@ -14,11 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.util.FeatureFlagConstant;
-import mat.model.clause.ModelTypeHelper;
-import mat.model.LockedUserInfo;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class MeasureLibraryGridToolbarTest {

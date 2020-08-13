@@ -1,11 +1,5 @@
 package mat.client.clause;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -21,7 +15,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -40,6 +33,11 @@ import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
+import org.gwtbootstrap3.client.ui.Button;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Deprecated
 /*

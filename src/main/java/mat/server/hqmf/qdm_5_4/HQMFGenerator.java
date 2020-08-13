@@ -1,12 +1,11 @@
 package mat.server.hqmf.qdm_5_4;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
 import mat.server.hqmf.qdm.HQMFFinalCleanUp;
+import mat.server.logging.LogFactory;
 import mat.server.util.XmlProcessor;
+import org.apache.commons.logging.Log;
 
 /**
  * The Class CQLbasedHQMFGenerator.

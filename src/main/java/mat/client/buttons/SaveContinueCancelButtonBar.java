@@ -1,8 +1,8 @@
 package mat.client.buttons;
 
+import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import com.google.gwt.user.client.ui.Composite;
 
 public class SaveContinueCancelButtonBar extends Composite {
 

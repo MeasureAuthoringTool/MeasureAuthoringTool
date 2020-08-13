@@ -1,16 +1,14 @@
 package mat.client.measure;
 
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.buttons.BackSaveCancelButtonBar;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MessagePanel;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 public class ComponentMeasureDisplay implements BaseDisplay {
 	

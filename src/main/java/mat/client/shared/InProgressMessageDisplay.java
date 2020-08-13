@@ -1,7 +1,5 @@
 package mat.client.shared;
 
-import java.util.List;
-import mat.client.ImageResources;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -9,6 +7,9 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.ImageResources;
+
+import java.util.List;
 
 public class InProgressMessageDisplay extends Composite implements WarningMessageDisplayInterface {
 	/** The h panel. */

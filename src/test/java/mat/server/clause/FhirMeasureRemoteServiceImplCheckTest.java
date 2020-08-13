@@ -1,7 +1,10 @@
 package mat.server.clause;
 
-import java.util.List;
-
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.service.CheckForConversionResult;
+import mat.dao.clause.MeasureDAO;
+import mat.model.clause.Measure;
+import mat.model.clause.ModelTypeHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,11 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.service.CheckForConversionResult;
-import mat.dao.clause.MeasureDAO;
-import mat.model.clause.Measure;
-import mat.model.clause.ModelTypeHelper;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

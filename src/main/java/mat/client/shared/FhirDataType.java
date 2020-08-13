@@ -1,9 +1,9 @@
 package mat.client.shared;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class FhirDataType implements IsSerializable {
     private String id;

@@ -7,6 +7,7 @@ import mat.client.shared.CQLConstantContainer;
 import mat.client.shared.CQLTypeContainer;
 import mat.client.shared.FhirAttribute;
 import mat.client.shared.FhirDataType;
+import mat.client.shared.FhirDatatypeAttributeAssociation;
 import mat.client.shared.MatContext;
 import mat.client.shared.QDMContainer;
 import mat.dao.clause.QDSAttributesDAO;
@@ -175,6 +176,19 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             fhirDataType.getAttributes().computeIfAbsent(fhirElement, s -> new FhirAttribute(fhirElementId, fhirElement, StringUtils.trimToEmpty(conversionMapping.getFhirType())));
         }
         cqlConstantContainer.setFhirCqlDataTypeList(getAllFhirTypes());
+
+        List<FhirDatatypeAttributeAssociation> fhirDatatypeAttributeAssociations = mappingService.fhirDatatypeAttributeAssociation();
+
+        List<String> compoundDataTypes = new ArrayList<>();
+
+        for (FhirDatatypeAttributeAssociation a : fhirDatatypeAttributeAssociations) {
+            if (!compoundDataTypes.contains(a.getDatatype())) {
+                compoundDataTypes.add(a.getDatatype()); // use list and will retain sorted order, from server
+            }
+        }
+
+        cqlConstantContainer.setAttributeAssociations(fhirDatatypeAttributeAssociations);
+        cqlConstantContainer.setCompoundFhirDataTypes(compoundDataTypes);
     }
 
     private String hashForId(String value) {

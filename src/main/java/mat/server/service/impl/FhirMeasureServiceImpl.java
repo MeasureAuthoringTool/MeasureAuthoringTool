@@ -100,14 +100,16 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         }
 
         ConversionResultDto conversionResult = fhirMeasureRemote.convert(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
-        Optional<String> fhirCqlOpt = getFhirCql(conversionResult);
+        Optional<String> fhirCqlOpt = getFhirCql(sourceMeasure.getCqlLibraryName(),conversionResult);
 
         FhirValidationStatus validationStatus = createValidationStatus(conversionResult);
         fhirConvertResultResponse.setValidationStatus(validationStatus);
 
         if (!fhirCqlOpt.isPresent()) {
             // If there is no FHIR CQL, then we don't persist the measure. FHIR measure cannot be created.
-            throw new MatException("Your measure cannot be converted to FHIR. Outcome: " + validationStatus.getOutcome() + " Error Reason: " + validationStatus.getErrorReason());
+            throw new MatException("Your measure cannot be converted to FHIR. Outcome: " +
+                    validationStatus.getOutcome() +
+                    " Error Reason: " + validationStatus.getErrorReason());
         } else {
             fhirConvertResultResponse.setFhirCql(fhirCqlOpt.get());
             if (isUpdatingMatDB) {
@@ -191,8 +193,6 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
             saveMeasureXml(fhirMeasureXml, destinationMeasureXml);
 
             destModel.getCqlIncludeLibrarys().forEach(i -> {
-                //Currently only includes global libs and they should all be there.
-                //Just add them in.
                 if (StringUtils.isNotBlank(i.getCqlLibraryId())) {
                     cqlService.saveCQLAssociation(i, fhirMeasureId);
                 }
@@ -207,14 +207,16 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         }
     }
 
-    private Optional<String> getFhirCql(ConversionResultDto conversionResult) {
-        return Optional.ofNullable(conversionResult.getLibraryConversionResults()).stream()
-                .flatMap(libConvRes -> libConvRes.stream())
-                .map(cqlLibRes -> cqlLibRes.getCqlConversionResult())
-                .filter(el -> el != null)
-                .map(el -> el.getFhirCql())
-                .filter(StringUtils::isNotBlank)
-                .findFirst();
+    private Optional<String> getFhirCql(String measureLibName, ConversionResultDto conversionResult) {
+        if (conversionResult == null || conversionResult.getLibraryConversionResults() == null) {
+            return Optional.empty();
+        } else {
+            return conversionResult.getLibraryConversionResults().stream().
+                    filter(lcr -> StringUtils.equals(lcr.getName(), measureLibName)).
+                    map(lcr -> lcr.getCqlConversionResult()).
+                    map(ccr -> ccr.getFhirCql()).
+                    filter(StringUtils::isNotBlank).findFirst();
+        }
     }
 
     private ManageMeasureDetailModel loadMeasureAsDetailsForCloning(ManageMeasureSearchModel.Result sourceMeasure) {
@@ -236,6 +238,4 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         );
         logger.debug("deleteFhirMeasureIfExists : removed " + removed);
     }
-
-
 }

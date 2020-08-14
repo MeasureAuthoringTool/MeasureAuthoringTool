@@ -32,6 +32,15 @@ public class CQLConstantContainer implements IsSerializable {
     private Map<String, FhirDataType> fhirDataTypes = new TreeMap<>();
     private List<FhirDatatypeAttributeAssociation> attributeAssociations;
     private List<String> compoundFhirDataTypes; // uniq set of DataTypes from attributeAssociations
+    private List<String> populationBasisValidValues;
+
+    public List<String> getPopulationBasisValidValues() {
+        return populationBasisValidValues;
+    }
+
+    public void setPopulationBasisValidValues(List<String> populationBasisValidValues) {
+        this.populationBasisValidValues = populationBasisValidValues;
+    }
 
     public List<String> getCompoundFhirDataTypes() {
         return compoundFhirDataTypes;

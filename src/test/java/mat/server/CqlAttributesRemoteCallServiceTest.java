@@ -44,6 +44,5 @@ class CqlAttributesRemoteCallServiceTest {
 
         List<MatAttribute> conversionMappings = cqlAttributesRemoteCallService.getMatAttributes();
         assertEquals(Arrays.asList(conversionMappingsTestData), conversionMappings);
-
     }
 }

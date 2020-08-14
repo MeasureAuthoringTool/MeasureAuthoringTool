@@ -46,6 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 
 @Slf4j
@@ -151,13 +152,13 @@ public class FhirMeasureServiceImplTest {
 
         ManageMeasureSearchModel.Result fhirMeasureResult = new ManageMeasureSearchModel.Result();
         fhirMeasureResult.setId(fhirMeasureId);
-        Mockito.when(measureCloningService.cloneForFhir(any())).thenReturn(fhirMeasureResult);
+        Mockito.when(measureCloningService.cloneForFhir(any(),eq(true))).thenReturn(fhirMeasureResult);
 
         sourceMeasureResult.setId(sourceMeasureId);
 
         Measure sourceMeasure = new Measure();
         sourceMeasure.setId(sourceMeasureId);
-        Mockito.when(measureDAO.deleteFhirMeasuresBySetId(Mockito.eq(setId))).thenReturn(1);
+        Mockito.when(measureDAO.deleteFhirMeasuresBySetId(eq(setId))).thenReturn(1);
 
         Measure fhirMeasure = new Measure();
         fhirMeasure.setMeasureDetails(new MeasureDetails());
@@ -181,7 +182,7 @@ public class FhirMeasureServiceImplTest {
         service.TEST_MODE = true;
         service.convert(sourceMeasureResult, "vsacGrantingTicket", loggedinUserId, true);
 
-        Mockito.verify(measureDAO, Mockito.times(1)).deleteFhirMeasuresBySetId(Mockito.eq(setId));
+        Mockito.verify(measureDAO, Mockito.times(1)).deleteFhirMeasuresBySetId(eq(setId));
     }
 
     @Test

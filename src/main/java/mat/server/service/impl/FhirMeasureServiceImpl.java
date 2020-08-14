@@ -151,7 +151,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         // Just to make sure the change is atomic and performed within the same single transaction.
         transactionTemplate.executeWithoutResult(status -> {
             try {
-                ManageMeasureSearchModel.Result fhirMeasure = measureCloningService.cloneForFhir(sourceMeasureDetails);
+                ManageMeasureSearchModel.Result fhirMeasure = measureCloningService.cloneForFhir(sourceMeasureDetails,true);
 
                 //Update the MAT xml.
                 convertXml(sourceMeasureDetails.getId(),
@@ -172,7 +172,10 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         });
     }
 
-    private void convertXml(String sourceMeasureId, String fhirMeasureId, FhirConvertResultResponse fhirConvertResultResponse, String cql) throws MatException {
+    private void convertXml(String sourceMeasureId,
+                            String fhirMeasureId,
+                            FhirConvertResultResponse fhirConvertResultResponse,
+                            String cql) throws MatException {
         try {
             MeasureXML sourceMeasureXml = measureXMLDAO.findForMeasure(sourceMeasureId);
             String sourceMeasureXmlString = sourceMeasureXml.getMeasureXMLAsString();

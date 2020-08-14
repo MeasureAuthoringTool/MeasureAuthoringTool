@@ -54,7 +54,7 @@ public class MeasureCloningRemoteServiceImpl extends SpringRemoteServiceServlet 
         }
 
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(currentDetails.getMeasureModel())) {
-            return measureCloningService.cloneForFhir(currentDetails);
+            return measureCloningService.cloneForFhir(currentDetails,false);
         } else {
             return measureCloningService.clone(currentDetails, true);
         }

@@ -30,6 +30,8 @@ public class MappingSpreadsheetService {
     private static final String TYPES_FOR_FUNCTION_ARGS = "/fhirLightboxDataTypesForFunctionArgs";
     private static final String FHIR_DATATYPE_ATTRIBUTE_ASSOCIATION = "/fhirLightBoxDatatypeAttributeAssociation";
 
+    private static final String POPULATION_BASIS_VALID_VALUES = "/populationBasisValidValues";
+
     @Qualifier("internalRestTemplate")
     private final RestTemplate restTemplate;
     @Value("${QDM_QICORE_MAPPING_SERVICES_URL:http://localhost:9090}")
@@ -112,7 +114,7 @@ public class MappingSpreadsheetService {
         return response.getBody() == null ? Collections.emptyList() : Arrays.asList(response.getBody());
     }
 
-   @Cacheable("fhirAssociation")
+    @Cacheable("fhirAssociation")
     public List<FhirDatatypeAttributeAssociation> fhirDatatypeAttributeAssociation() {
         ResponseEntity<FhirDatatypeAttributeAssociation[]> response;
         try {
@@ -123,4 +125,14 @@ public class MappingSpreadsheetService {
         return response.getBody() == null ? Collections.emptyList() : Arrays.asList(response.getBody());
     }
 
+    @Cacheable("populationBasisValidValues")
+    public List<String> populationBasisValidValues() {
+        ResponseEntity<String[]> response;
+        try {
+            response = restTemplate.getForEntity(fhirMatMappingServicesUrl + POPULATION_BASIS_VALID_VALUES , String[].class);
+        } catch (RestClientResponseException e) {
+            throw new MatRuntimeException(e);
+        }
+        return response.getBody() == null ? Collections.emptyList() : Arrays.asList(response.getBody());
+    }
 }

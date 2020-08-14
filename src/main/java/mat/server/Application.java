@@ -263,6 +263,7 @@ public class Application extends WebSecurityConfigurerAdapter {
                 "spreadSheetDataTypes",
                 "typesForFunctionArgs",
                 "fhirAssociation",
+                "populationBasisValidValues",
                 "spreadSheetResourceDefinitions")
                 .stream().map(ConcurrentMapCache::new)
                 .collect(Collectors.toList());

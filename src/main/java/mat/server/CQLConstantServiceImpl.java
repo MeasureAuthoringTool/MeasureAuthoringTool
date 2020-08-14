@@ -187,8 +187,11 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
             }
         }
 
+        List<String> populationBasisValidValues =  mappingService.populationBasisValidValues();
+
         cqlConstantContainer.setAttributeAssociations(fhirDatatypeAttributeAssociations);
         cqlConstantContainer.setCompoundFhirDataTypes(compoundDataTypes);
+        cqlConstantContainer.setPopulationBasisValidValues(populationBasisValidValues);
     }
 
     private String hashForId(String value) {
@@ -208,6 +211,8 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
         } catch (FileNotFoundException e) {
             logger.warn(e.getMessage(), e);
         }
+
+
 
         return Arrays.asList(signatureArray);
     }

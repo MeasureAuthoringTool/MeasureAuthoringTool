@@ -169,7 +169,9 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
 
     @Override
     public void setLibraryModelType(String type, boolean isDraft) {
-        if (FHIR.equals(type)) {
+        boolean isFhirAvailable = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR);
+
+        if (isFhirAvailable) {
             //set FHIR model
             fhirModel.setEnabled(true);
             fhirModel.setValue(true);

@@ -138,15 +138,18 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
     @Override
     public ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails, boolean creatingDraft) throws MatException {
-        return clone(currentDetails, creatingDraft, false);
+        return clone(currentDetails, creatingDraft, false, false);
     }
 
     @Override
-    public ManageMeasureSearchModel.Result cloneForFhir(ManageMeasureDetailModel currentDetails) throws MatException {
-        return clone(currentDetails, true, true);
+    public ManageMeasureSearchModel.Result cloneForFhir(ManageMeasureDetailModel currentDetails, boolean isQdmToFhir) throws MatException {
+        return clone(currentDetails, true, true, isQdmToFhir);
     }
 
-    private ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails, boolean creatingDraft, boolean creatingFhir) throws MatException {
+    private ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails,
+                                                  boolean creatingDraft,
+                                                  boolean creatingFhir,
+                                                  boolean isQdmToFhir) throws MatException {
         logger.info("In MeasureCloningServiceImpl.clone() method..");
 
         validateMeasure(currentDetails);
@@ -192,6 +195,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             clonedMeasure.setPatientBased(currentDetails.isPatientBased());
             clonedMeasure.setReleaseVersion(propertiesService.getCurrentReleaseVersion());
 
+
             if (CollectionUtils.isNotEmpty(measure.getComponentMeasures()) && Boolean.TRUE.equals(measure.getIsCompositeMeasure())) {
                 clonedMeasure.setIsCompositeMeasure(measure.getIsCompositeMeasure());
                 clonedMeasure.setCompositeScoring(measure.getCompositeScoring());
@@ -202,7 +206,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
             // when creating a draft of a shared version Measure then the Measure Owner should not change
             if (creatingDraft) {
-                createDraftAndDetermineIfNonCQLAndPersist(clonedMeasure, currentDetails, measure);
+                createDraftAndDetermineIfNonCQLAndPersist(isQdmToFhir, clonedMeasure, currentDetails, measure);
             } else {
                 cloneMeasureAndPersist(clonedMeasure);
             }
@@ -241,7 +245,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
         String formattedVersion = MeasureUtility.formatVersionText(clonedMeasure.getRevisionNumber(), clonedMeasure.getVersion());
 
-        SaveUpdateCQLResult saveUpdateCQLResult = cqlService.loadMeasureCql(measure,originalXml);
+        SaveUpdateCQLResult saveUpdateCQLResult = cqlService.loadMeasureCql(measure, originalXml);
 
 
         // Create the measureGrouping tag
@@ -408,9 +412,9 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         return componentMeasures.stream().map(f -> new ComponentMeasure(clonedMeasure, f.getComponentMeasure(), f.getAlias())).collect(Collectors.toList());
     }
 
-    private boolean createDraftAndDetermineIfNonCQLAndPersist(Measure clonedMeasure, ManageMeasureDetailModel currentDetails, Measure measure) {
+    private boolean createDraftAndDetermineIfNonCQLAndPersist(boolean isQdmToFhir, Measure clonedMeasure, ManageMeasureDetailModel currentDetails, Measure measure) {
 
-        copyMeasureDetails(clonedMeasure, currentDetails);
+        copyMeasureDetails(isQdmToFhir, clonedMeasure, currentDetails);
 
         boolean isNonCQLtoCQLDraft = false;
         clonedMeasure.setOwner(measure.getOwner());
@@ -431,7 +435,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         return isNonCQLtoCQLDraft;
     }
 
-    private void copyMeasureDetails(Measure clonedMeasure, ManageMeasureDetailModel currentDetails) {
+    private void copyMeasureDetails(boolean isQdmToFhir, Measure clonedMeasure, ManageMeasureDetailModel currentDetails) {
         String stewardId = currentDetails.getStewardId();
         if (isOrgPresentCheckByID(stewardId) || isOrgPresentCheckByOID(stewardId)) {
             Organization organization = organizationDAO.findByOidOrId(currentDetails.getStewardId());
@@ -441,7 +445,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         }
         clonedMeasure.setNqfNumber(currentDetails.getNqfId());
         ManageMeasureDetailModelConversions conversion = new ManageMeasureDetailModelConversions();
-        conversion.createMeasureDetails(clonedMeasure, currentDetails);
+        conversion.createMeasureDetails(isQdmToFhir, clonedMeasure, currentDetails);
         createMeasureType(clonedMeasure, currentDetails);
         createMeasureDevelopers(clonedMeasure, currentDetails);
     }

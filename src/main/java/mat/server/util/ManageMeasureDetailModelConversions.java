@@ -20,6 +20,7 @@ import mat.model.clause.MeasureTypeAssociation;
 import mat.model.clause.ModelTypeHelper;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
+import mat.shared.measure.measuredetails.models.MeasureReferenceType;
 import mat.shared.model.util.MeasureDetailsUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,7 +45,7 @@ public class ManageMeasureDetailModelConversions {
     public ManageMeasureDetailModelConversions() {
     }
 
-    public void createMeasureDetails(Measure clonedMeasure, ManageMeasureDetailModel currentDetails) {
+    public void createMeasureDetails(boolean isQdmToFhir, Measure clonedMeasure, ManageMeasureDetailModel currentDetails) {
         MeasureDetails measureDetails = new MeasureDetails();
         measureDetails.setMeasure(clonedMeasure);
         measureDetails.setDescription(currentDetails.getDescription());
@@ -73,8 +74,15 @@ public class ManageMeasureDetailModelConversions {
         List<MeasureDetailsReference> references = new ArrayList<>();
         if (currentDetails.getReferencesList() != null) {
             for (int i = 0; i < currentDetails.getReferencesList().size(); i++) {
+
                 ReferenceTextAndType referenceTextAndType = currentDetails.getReferencesList().get(i);
-                MeasureDetailsReference reference = new MeasureDetailsReference(measureDetails, referenceTextAndType.getReferenceText(), referenceTextAndType.getReferenceType(), i);
+                MeasureDetailsReference reference = new MeasureDetailsReference(measureDetails,
+                        referenceTextAndType.getReferenceText(),
+                        referenceTextAndType.getReferenceType(),
+                        i);
+                if (isQdmToFhir && reference.getReferenceType() == MeasureReferenceType.UNKNOWN) {
+                    reference.setReferenceType(MeasureReferenceType.CITATION);
+                }
                 references.add(reference);
             }
         }

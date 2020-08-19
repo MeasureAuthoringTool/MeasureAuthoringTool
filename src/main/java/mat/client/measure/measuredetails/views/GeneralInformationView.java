@@ -38,6 +38,8 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GeneralInformationView implements MeasureDetailViewInterface {
 	private static final String EMPTY_STRING = "";
@@ -53,7 +55,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	private TextBox finalizedDateTextBox = new TextBox();
 	private TextBox eCQMVersionNumberTextBox = new TextBox(); 
 	private boolean isCompositeMeasure = false;
-	private ListBoxMVP  measureScoringInput = new ListBoxMVP();
+	private ListBoxMVP measureScoringInput = new ListBoxMVP();
+	private ListBoxMVP populationBasisInput = new ListBoxMVP();
 	private ListBoxMVP compositeScoringMethodInput = new ListBoxMVP();
 	private ListBoxMVP patientBasedInput = new ListBoxMVP();
 	private ListBoxMVP endorsedByListBox = new ListBoxMVP();
@@ -69,6 +72,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	protected DateBoxWithCalendar measurePeriodToInput = new DateBoxWithCalendar();
 	protected CheckBox experimentalCheckbox = new CheckBox();
 	private FormLabel measureNameLabel;
+    private static final Logger logger = Logger.getLogger(GeneralInformationView.class.getSimpleName());
 
 	public GeneralInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel) {
 		originalModel = originalGeneralInformationModel;
@@ -104,7 +108,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		messageFormGrp.getElement().setAttribute("role", "alert");
 		measureDetailForm.add(messageFormGrp);
 		detailPanel.add(measureDetailForm);
-		Grid panelGrid = new Grid(7, 2);
+		Grid panelGrid = new Grid(8, 2);
 		
 		panelGrid.setWidget(0, 0, buildMeasureNamePanel());
 		panelGrid.setWidget(0, 1, buildAbbreviationPanel());
@@ -112,16 +116,17 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		panelGrid.setWidget(1, 1, buildPatientBasedPanel());
 		panelGrid.setWidget(2, 0, buildFinalizedDate());
 		panelGrid.setWidget(2, 1, buildGUIDPanel());
-		panelGrid.setWidget(3, 0, buildeCQMVersionPanel());
 		if (isFhir) {
+            panelGrid.setWidget(3, 0, buildPopulationBasis());
 			panelGrid.setWidget(3, 1, buildExperimentalPanel());
 		}
-		panelGrid.setWidget(4, 0, buldeCQMIdentifierPanel());
-		panelGrid.setWidget(5, 0, buildNQFNumberPanel());
-		panelGrid.setWidget(6, 0, buildMeasurementPeriodPanel());
+        panelGrid.setWidget(4, 0, buildeCQMVersionPanel());
+		panelGrid.setWidget(5, 0, buldeCQMIdentifierPanel());
+		panelGrid.setWidget(6, 0, buildNQFNumberPanel());
+		panelGrid.setWidget(7, 0, buildMeasurementPeriodPanel());
 		hackTheColspan(panelGrid);
 		
-		if(isCompositeMeasure) {
+		if (isCompositeMeasure) {
 			panelGrid.insertRow(1);
 			VerticalPanel compositeScoringPanel = buildCompositeScoringPanel();
 			panelGrid.setWidget(1, 0, compositeScoringPanel);
@@ -136,8 +141,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	}
 
 	private void hackTheColspan(Grid panelGrid) {
-		panelGrid.getCellFormatter().getElement(6, 1).removeFromParent();
-		panelGrid.getCellFormatter().getElement(6, 0).setAttribute("colspan", "2");
+		panelGrid.getCellFormatter().getElement(7, 1).removeFromParent();
+		panelGrid.getCellFormatter().getElement(7, 0).setAttribute("colspan", "2");
 	}
 
 	private VerticalPanel buildMeasurementPeriodPanel() {
@@ -254,7 +259,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		resetEndorsedByListBox();
 
 		boolean endorsedByNQF = generalInformationModel.getEndorseByNQF() != null ? generalInformationModel.getEndorseByNQF() : false;
-		if(endorsedByNQF) {
+		if (endorsedByNQF) {
 			endorsedByListBox.setSelectedIndex(endorsedByNQF ? 1 : 0);
 		}
 		
@@ -340,6 +345,10 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 					setPatientbasedIndicator();
 				}
 			});
+            //setting up population basis values retrieved from Spreadsheet (Displayed only for FHIR)
+            setPopulationBasisList(MatContext.get().getCqlConstantContainer().getPopulationBasisValidValues());
+            populationBasisInput.setValueMetadata(generalInformationModel.getPopulationBasis());
+
 		}
 	}
 
@@ -360,6 +369,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		getMeasurePeriodFromInput().addValueChangeHandler(event -> observer.handleInputChanged());
 		getMeasurePeriodToInput().addValueChangeHandler(event -> observer.handleInputChanged());
 		getExperimentalCheckbox().addValueChangeHandler(event -> observer.handleInputChanged());
+		getPopulationBasisInput().addValueChangeHandler(event -> observer.handleInputChanged());
 	}
 
 	private VerticalPanel buildBlankPanel() {
@@ -390,7 +400,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	}
 	
 	private VerticalPanel buildeCQMVersionPanel() {
-		VerticalPanel panel = new VerticalPanel();
+        VerticalPanel panel = new VerticalPanel();
 		panel.getElement().addClassName("generalInformationPanel");
 
 		FormLabel eCQMVersionNumberLabel = new FormLabel();
@@ -449,8 +459,6 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		guidTextBox.setText(generalInformationModel.getGuid());
 		return panel;
 	}
-	
-	
 
 	private VerticalPanel buildMeasureNamePanel() {
 		VerticalPanel measureNamePanel = new VerticalPanel();
@@ -510,6 +518,27 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		setPatientBasedInputOptions(MatContext.get().getPatientBasedIndicatorOptions(null));
 		patientBasedInput.setSelectedIndex(1);
 	}
+
+    private VerticalPanel buildPopulationBasis() {
+        VerticalPanel populationBasisPanel = new VerticalPanel();
+        populationBasisPanel.getElement().addClassName("generalInformationPanel");
+
+        FormLabel populationBasisLabel =  new FormLabel();
+        populationBasisLabel.setText("Population Basis");
+        populationBasisLabel.setTitle(populationBasisLabel.getText());
+        populationBasisLabel.setId("populationBasisLabel");
+        populationBasisLabel.setFor("populationBasisInput_ListBoxMVP");
+
+        populationBasisInput.getElement().setId("measScoringInput_ListBoxMVP");
+        populationBasisInput.setTitle("Measure Scoring Required.");
+        populationBasisInput.setStyleName("form-control");
+        populationBasisInput.setVisibleItemCount(1);
+        populationBasisInput.setWidth("18em");
+
+        populationBasisPanel.add(populationBasisLabel);
+        populationBasisPanel.add(populationBasisInput);
+        return populationBasisPanel;
+    }
 	
 	private VerticalPanel buildMeasureScoringPanel() {
 		VerticalPanel measureSCoringPanel = new VerticalPanel();
@@ -582,6 +611,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		measureNameInput.setEnabled(!readOnly);
 		compositeScoringMethodInput.setEnabled(!readOnly);
 		measureScoringInput.setEnabled(!readOnly);
+		populationBasisInput.setEnabled(!readOnly);
 		patientBasedInput.setEnabled(!readOnly);
 		endorsedByListBox.setEnabled(!readOnly);
 		experimentalCheckbox.setEnabled(!readOnly);
@@ -644,6 +674,14 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		this.measureScoringInput = measureScoringInput;
 	}
 
+    public ListBoxMVP getPopulationBasisInput() {
+        return populationBasisInput;
+    }
+
+    public void setPopulationBasisInput(ListBoxMVP populationBasisInput) {
+        this.populationBasisInput = populationBasisInput;
+    }
+
 	public ListBoxMVP getCompositeScoringMethodInput() {
 		return compositeScoringMethodInput;
 	}
@@ -659,10 +697,15 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 	public void setPatientBasedInput(ListBoxMVP patientBasedInput) {
 		this.patientBasedInput = patientBasedInput;
 	}
-	
+
 	public void setScoringChoices(List<? extends HasListBox> texts) {
 		MatContext.get().setListBoxItems(measureScoringInput, texts, MatContext.PLEASE_SELECT);
 	}
+
+    public void setPopulationBasisList(List<String> populationBasisList) {
+        MatContext.get().setPopulationBasisList(populationBasisInput, populationBasisList, MatContext.PLEASE_SELECT);
+        logger.log(Level.INFO, "Successfully retrieved population Basis valid values");
+    }
 	
 	public void setCompositeScoringChoices(List<? extends HasListBox> texts) {
 		MatContext.get().setListBoxItems(compositeScoringMethodInput, texts, MatContext.PLEASE_SELECT);
@@ -737,6 +780,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		guidTextBox.setText(EMPTY_STRING);
 		measureNameInput.setText(EMPTY_STRING);
 		measureScoringInput.clear();
+		populationBasisInput.clear();
 		compositeScoringMethodInput.clear();
 		patientBasedInput.clear();
 		experimentalCheckbox.setValue(false);

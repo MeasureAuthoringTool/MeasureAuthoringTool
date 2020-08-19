@@ -70,6 +70,10 @@
             <bind-xml name="experimental" node="element"/>
         </field>
 
+        <field name="populationBasis" type="String">
+            <bind-xml name="populationBasis" node="element"/>
+        </field>
+
         <!-- <field name="measStewardOther" type="java.lang.String"> <bind-xml
             name="steward" node="element"/> </field> -->
 

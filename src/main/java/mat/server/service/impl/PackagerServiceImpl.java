@@ -807,6 +807,7 @@ public class PackagerServiceImpl implements PackagerService {
         long time1 = System.currentTimeMillis();
         Measure measure = measureDAO.find(detail.getMeasureId());
 
+        //Checking if right number of groupings are added based on Measure Scoring
         MeasurePackageClauseValidator clauseValidator = new MeasurePackageClauseValidator();
         List<String> messages = clauseValidator.isValidMeasurePackage(detail.getPackageClauses(), measure.getMeasureScoring());
         MeasurePackageSaveResult result = new MeasurePackageSaveResult();

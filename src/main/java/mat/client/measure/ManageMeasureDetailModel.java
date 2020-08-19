@@ -84,6 +84,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel {
     private String fhirVersion;
     private String formattedVersion;
     private boolean experimental;
+    private String populationBasis;
 
     public ManageMeasureDetailModel() {
 
@@ -1223,6 +1224,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel {
                 ", fhirVersion='" + fhirVersion + '\'' +
                 ", formattedVersion='" + formattedVersion + '\'' +
                 ", experimental=" + experimental +
+                ", populationBasis=" + populationBasis +
                 '}';
     }
 
@@ -1232,5 +1234,13 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel {
 
     public void setExperimental(boolean experimental) {
         this.experimental = experimental;
+    }
+
+    public String getPopulationBasis() {
+        return populationBasis;
+    }
+
+    public void setPopulationBasis(String populationBasis) {
+        this.populationBasis = populationBasis;
     }
 }

@@ -83,6 +83,7 @@ public class MessageDelegate {
     private static final String USER_SUCCESS_MESSAGE = "User information saved successfully.";
     private static final String CLAUSE_EMPTY = "Clause must contain logic.";
     private static final String PATIENT_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE = "For Patient-based Measures, all definitions directly added to populations must return a Boolean.";
+    private static final String FHIR_SAVE_GROUPING_VALIDATION_MESSAGE = "All definitions directly added to populations must match with the return type selected in population basis.";
     private static final String EPISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE = "For Episode-based Measures, all definitions directly added to populations must return a list of the same type.";
     private static final String EPISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE = "Measure Observations can only be added to a measure grouping in a Ratio measure, if the measure is Episode-based.";
     private static final String MEASURE_OBSERVATION_USER_DEFINED_FUNC_VALIDATION_MESSAGE = "Measure Observations added to a measure grouping may only contain a user-defined function that has exactly 1 argument in the argument list.";
@@ -203,6 +204,7 @@ public class MessageDelegate {
     private static final String MEASURE_DESCRIPTION_REQUIRED = "Please enter the Measure Description prior to packaging.";
     private static final String MEASURE_STEWARD_REQUIRED = "Please enter the Steward prior to packaging.";
     private static final String MEASURE_TYPE_REQUIRED = "Please enter the Measure Type prior to packaging.";
+    private static final String MEASURE_POPULATION_BASIS = "Please select the measure's Population basis prior to packaging.";
 
     public static String getUnableToVerifyHarpUser() {
         return UNABLE_TO_VERIFY_HARP_USER;
@@ -869,6 +871,10 @@ public class MessageDelegate {
         return PATIENT_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE;
     }
 
+    public String getFhir_SAVE_GROUPING_VALIDATION_MESSAGE() {
+        return FHIR_SAVE_GROUPING_VALIDATION_MESSAGE;
+    }
+
     public String getEPISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE() {
         return EPISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE;
     }
@@ -1033,5 +1039,9 @@ public class MessageDelegate {
 
     public static String getMeasureTypeRequired() {
         return MEASURE_TYPE_REQUIRED;
+    }
+
+    public static String getMeasurePopulationBasis() {
+        return MEASURE_POPULATION_BASIS;
     }
 }

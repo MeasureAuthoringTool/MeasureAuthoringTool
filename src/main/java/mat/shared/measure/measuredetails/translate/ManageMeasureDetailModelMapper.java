@@ -279,6 +279,8 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper 
         generalInformationModel.setMeasureFromPeriod(manageMeasureDetailModel.getMeasFromPeriod());
         generalInformationModel.setMeasureToPeriod(manageMeasureDetailModel.getMeasToPeriod());
         generalInformationModel.setExperimental(manageMeasureDetailModel.isExperimental());
+        generalInformationModel.setPopulationBasis(manageMeasureDetailModel.getPopulationBasis());
+
         if (manageMeasureDetailModel instanceof ManageCompositeMeasureDetailModel) {
             generalInformationModel.setCompositeScoringMethod(((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).getCompositeScoringMethod());
         }
@@ -343,6 +345,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper 
         manageMeasureDetailModel.setMeasFromPeriod(getMeasureFromPeriod());
         manageMeasureDetailModel.setMeasToPeriod(getMeasureToPeriod());
         manageMeasureDetailModel.setExperimental(measureDetailsModel.getGeneralInformationModel().isExperimental());
+        manageMeasureDetailModel.setPopulationBasis(measureDetailsModel.getGeneralInformationModel().getPopulationBasis());
         return manageMeasureDetailModel;
     }
 

@@ -25,5 +25,6 @@
     <include file="classpath:/liquibase/addNewCqlLibColumns_v3.xml"/>
     <include file="classpath:/liquibase/addExperimentalToMeasure.xml"/>
     <include file="classpath:/liquibase/deleteFeatureFlagsV3.xml"/>
+    <include file="classpath:/liquibase/addPopulationBasisV2.xml"/>
 
 </databaseChangeLog>

@@ -54,6 +54,7 @@ public class HumanReadableMeasureInformationModel {
     private String measureSet;
     private boolean patientBased;
     private boolean experimental;
+    private String populationBasis;
     private boolean fhir;
 
     public HumanReadableMeasureInformationModel() {
@@ -142,6 +143,7 @@ public class HumanReadableMeasureInformationModel {
         this.measureSet = model.getGroupName();
         this.patientBased = model.isPatientBased();
         this.experimental = model.isExperimental();
+        this.populationBasis = model.getPopulationBasis();
         this.fhir = model.isFhir();
     }
 
@@ -487,6 +489,14 @@ public class HumanReadableMeasureInformationModel {
 
     public void setExperimental(boolean experimental) {
         this.experimental = experimental;
+    }
+
+    public String getPopulationBasis() {
+        return populationBasis;
+    }
+
+    public void setPopulationBasis(String populationBasis) {
+        this.populationBasis = populationBasis;
     }
 
     public boolean isFhir() {

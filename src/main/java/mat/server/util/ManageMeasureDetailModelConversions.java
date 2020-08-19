@@ -193,6 +193,7 @@ public class ManageMeasureDetailModelConversions {
         measureDetailModel.setScoringAbbr(MeasureDetailsUtil.getScoringAbbr(measure.getMeasureScoring()));
         measureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
         measureDetailModel.setExperimental(measure.isExperimental());
+        measureDetailModel.setPopulationBasis(measure.getPopulationBasis());
 
         if(ModelTypeHelper.isFhir(measure.getMeasureModel())) {
             measureDetailModel.setCalenderYear(measure.getMeasurementPeriodFrom().equals(getNextCalenderYearFromDate()));

@@ -62,11 +62,11 @@
       <experimental value="{$experimental}"/>
 
        <!-- Population Basis -->
-       <text>
+       <!--<text>
            <xsl:call-template name="trim">
                <xsl:with-param name="textString" select="populationBasis"/>
            </xsl:call-template>
-       </text>
+       </text>-->
        <!-- Version -->
       <versionNumber value="{normalize-space(version)}"/>
        <!-- Measure Developer -->

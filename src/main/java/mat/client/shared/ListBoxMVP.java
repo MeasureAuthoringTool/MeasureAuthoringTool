@@ -202,7 +202,7 @@ public class ListBoxMVP extends ListBox implements HasValue<String> {
             value = "";
         }
         for (int i = 0; i < getItemCount(); i++) {
-            if (getItemText(i).equals(value)) {
+            if (getItemText(i).equalsIgnoreCase(value)) {
                 setSelectedIndex(i);
                 break;
             }

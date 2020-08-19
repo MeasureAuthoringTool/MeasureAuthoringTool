@@ -410,11 +410,13 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
             @Override
             public void onFailure(Throwable caught) {
+                log.log(Level.SEVERE, "Async failure: getAsyncCallBackForMeasureAndLogRecentMeasure", caught);
                 handleAsyncFailure(caught);
             }
 
             @Override
             public void onSuccess(MeasureDetailsModel result) {
+                log.log(Level.INFO, "Successfully retrieved measure details::getAsyncCallBackForMeasureAndLogRecentMeasure");
                 setCompositeMeasure(result.isComposite());
                 handleAsyncSuccess(result, callbackRequestTime);
             }

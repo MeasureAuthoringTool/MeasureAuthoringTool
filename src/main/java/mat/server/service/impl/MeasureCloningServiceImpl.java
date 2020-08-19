@@ -194,6 +194,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             clonedMeasure.setDraft(Boolean.TRUE);
             clonedMeasure.setPatientBased(currentDetails.isPatientBased());
             clonedMeasure.setReleaseVersion(propertiesService.getCurrentReleaseVersion());
+            clonedMeasure.setPopulationBasis(currentDetails.getPopulationBasis());
 
 
             if (CollectionUtils.isNotEmpty(measure.getComponentMeasures()) && Boolean.TRUE.equals(measure.getIsCompositeMeasure())) {

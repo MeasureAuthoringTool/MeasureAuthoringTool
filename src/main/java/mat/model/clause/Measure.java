@@ -100,6 +100,8 @@ public class Measure {
 
     private boolean experimental;
 
+    private String populationBasis;
+
     // We don't map it as a Measure object, since it can be potentially invalid,
     // if a source QDM measure is removed after conversion.
     private String sourceMeasureId;
@@ -521,5 +523,14 @@ public class Measure {
 
     public void setExperimental(boolean experimental) {
         this.experimental = experimental;
+    }
+
+    @Column(name = "POPULATION_BASIS")
+    public String getPopulationBasis() {
+        return populationBasis;
+    }
+
+    public void setPopulationBasis(String populationBasis) {
+        this.populationBasis = populationBasis;
     }
 }

@@ -1323,6 +1323,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             manageMeasureDetailModel.setFhirVersion(measure.getFhirVersion());
             manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
             manageMeasureDetailModel.setExperimental(measure.isExperimental());
+            manageMeasureDetailModel.setPopulationBasis(measure.getPopulationBasis());
 
             return manageMeasureDetailModel;
         } else {
@@ -1738,76 +1739,77 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
         List<String> message = manageMeasureModelValidator.validateMeasure(model);
         String existingMeasureScoringType = "";
+        String existingMeasurePopulationBasis = "";
         if (message.isEmpty()) {
-            Measure pkg = null;
+            Measure measure = null;
             MeasureSet measureSet = null;
             if (model.getId() != null) {
                 // editing an existing measure
-                pkg = measurePackageService.getById(model.getId());
-                model.setVersionNumber(pkg.getVersion());
-                if (pkg.isDraft()) {
-                    model.setRevisionNumber(pkg.getRevisionNumber());
+                measure = measurePackageService.getById(model.getId());
+                model.setVersionNumber(measure.getVersion());
+                if (measure.isDraft()) {
+                    model.setRevisionNumber(measure.getRevisionNumber());
                 } else {
                     model.setRevisionNumber("000");
                 }
-                if (pkg.getMeasureSet().getId() != null) {
-                    measureSet = measurePackageService.findMeasureSet(pkg.getMeasureSet().getId());
+                if (measure.getMeasureSet().getId() != null) {
+                    measureSet = measurePackageService.findMeasureSet(measure.getMeasureSet().getId());
                 }
-                if (!pkg.getMeasureScoring().equalsIgnoreCase(model.getMeasScoring())) {
+                if (!measure.getMeasureScoring().equalsIgnoreCase(model.getMeasScoring())) {
                     // US 194 User is changing the measure scoring. Make sure to
                     // delete any groupings for that measure and save.
-                    measurePackageService.deleteExistingPackages(pkg.getId());
+                    measurePackageService.deleteExistingPackages(measure.getId());
                 }
-                existingMeasureScoringType = pkg.getMeasureScoring();
+                existingMeasureScoringType = measure.getMeasureScoring();
+                existingMeasurePopulationBasis = measure.getPopulationBasis();
             } else {
                 // creating a new measure.
-                pkg = new Measure();
-                pkg.setReleaseVersion(propertiesService.getCurrentReleaseVersion());
+                measure = new Measure();
+                measure.setReleaseVersion(propertiesService.getCurrentReleaseVersion());
                 if (!isFhir) {
-                    pkg.setQdmVersion(propertiesService.getQdmVersion());
+                    measure.setQdmVersion(propertiesService.getQdmVersion());
                 } else {
-                    pkg.setFhirVersion(propertiesService.getFhirVersion());
+                    measure.setFhirVersion(propertiesService.getFhirVersion());
+                    measure.setPopulationBasis("boolean");//todo MAT-1546 add boolean as default value
+                    measure.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
+                    measure.setMeasurementPeriodTo(getNextCalenderYearToDate());
                 }
-                pkg.setCqlLibraryName(model.getCQLLibraryName());
-                if (ModelTypeHelper.isFhir(model.getMeasureModel())) {
-                    pkg.setMeasurementPeriodFrom(getNextCalenderYearFromDate());
-                    pkg.setMeasurementPeriodTo(getNextCalenderYearToDate());
-                }
+                measure.setCqlLibraryName(model.getCQLLibraryName());
                 model.setRevisionNumber("000");
                 measureSet = new MeasureSet();
                 measureSet.setId(UUID.randomUUID().toString());
                 measurePackageService.save(measureSet);
             }
 
-            if (pkg.getMeasureDetails() == null) {
+            if (measure.getMeasureDetails() == null) {
                 MeasureDetails measureDetails = new MeasureDetails();
                 if (isFhir) {
                     //Defaulted on new measures for fhir.
                     measureDetails.setImprovementNotation("increase");
                 }
-                measureDetails.setMeasure(pkg);
-                pkg.setMeasureDetails(measureDetails);
+                measureDetails.setMeasure(measure);
+                measure.setMeasureDetails(measureDetails);
             }
 
-            pkg.setMeasureSet(measureSet);
-            setValueFromModel(model, pkg);
+            measure.setMeasureSet(measureSet);
+            setValueFromModel(model, measure);
 
             try {
                 getAndValidateValueSetDate(model.getValueSetDate());
-                pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
-                measurePackageService.save(pkg);
+                measure.setValueSetDate(DateUtility.addTimeToDate(measure.getValueSetDate()));
+                measurePackageService.save(measure);
             } catch (InvalidValueSetDateException e) {
                 result.setSuccess(false);
                 result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
-                result.setId(pkg.getId());
+                result.setId(measure.getId());
                 return result;
             }
-            result.setVersionStr(MeasureUtility.formatVersionText(pkg.getRevisionNumber(), pkg.getVersion()));
+            result.setVersionStr(MeasureUtility.formatVersionText(measure.getRevisionNumber(), measure.getVersion()));
             result.setSuccess(true);
-            result.setId(pkg.getId());
-            saveMeasureXml(createMeasureXmlModel(pkg, MEASURE), pkg.getId(), StringUtils.equals("FHIR", model.getMeasureModel()));
+            result.setId(measure.getId());
+            saveMeasureXml(createMeasureXmlModel(measure, MEASURE), measure.getId(), StringUtils.equals("FHIR", model.getMeasureModel()));
             // Adds population nodes to new measures
-            updateMeasureXml(model, pkg, existingMeasureScoringType);
+            updateMeasureXml(model, measure, existingMeasureScoringType, existingMeasurePopulationBasis);
             return result;
         } else {
             log.info("Validation Failed for measure :: Invalid Data Issues.");
@@ -2200,9 +2202,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
 
         String existingMeasureScoringType = "";
+        String existingMeasurePopulationBasis = "";
         if (message.isEmpty()) {
             if (model.getId() != null) {
                 existingMeasureScoringType = measure.getMeasureScoring();
+                existingMeasurePopulationBasis = measure.getPopulationBasis();
 
                 measure.setDescription(model.getMeasureName());
                 String shortName = buildMeasureShortName(model);
@@ -2221,13 +2225,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 measure.seteMeasureId(model.geteMeasureId());
                 measure.setNqfNumber(model.getNqfId());
                 measure.setExperimental(model.isExperimental());
+                measure.setPopulationBasis(model.getPopulationBasis().equalsIgnoreCase("Boolean") ? "boolean" : model.getPopulationBasis());
+
                 calculateCalendarYearForMeasure(model, measure);
 
                 measurePackageService.save(measure);
             }
             model.setRevisionNumber(measure.getRevisionNumber());
 
-            updateMeasureXml(model, measure, existingMeasureScoringType);
+            updateMeasureXml(model, measure, existingMeasureScoringType, existingMeasurePopulationBasis);
 
             SaveMeasureResult result = new SaveMeasureResult();
             result.setSuccess(true);
@@ -2259,13 +2265,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     private void updateMeasureXml(final ManageMeasureDetailModel model, Measure measure,
-                                  String existingMeasureScoringType) {
+                                  String existingMeasureScoringType, String existingMeasurePopulationBasis) {
         // update measure xml biased off of measure details changed
         MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measure.getId());
         XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 
         xmlProcessor.checkForScoringType(propertiesService.getQdmVersion(), model.getMeasScoring(), model.isPatientBased());
-        if (!existingMeasureScoringType.equalsIgnoreCase(model.getMeasScoring())) {
+        if (!existingMeasureScoringType.equalsIgnoreCase(model.getMeasScoring()) || (model.getPopulationBasis() != null && !model.getPopulationBasis().equalsIgnoreCase(existingMeasurePopulationBasis))) {
             deleteExistingGroupings(xmlProcessor);
             MatContext.get().setCurrentMeasureScoringType(model.getMeasScoring());
         }
@@ -4448,6 +4454,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             result.setMeasureStewardId(measure.getMeasureStewardId());
             result.setMeasureDescription(measure.getMeasureDetails().getDescription());
+            result.setPopulationBasis(measure.getPopulationBasis());
             if (CollectionUtils.isNotEmpty(measure.getMeasureTypes())) {
                 result.setMeasureTypes(new ArrayList<>());
                 var resultMts = result.getMeasureTypes();
@@ -5420,6 +5427,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             MeasureSet measureSet = null;
             String existingMeasureScoringType = "";
+            String existingMeasurePopulationBasis = "";
             final boolean existingMeasure;
 
             if (model.getId() != null) {
@@ -5428,6 +5436,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 existingMeasure = true;
 
                 existingMeasureScoringType = pkg.getMeasureScoring();
+                existingMeasurePopulationBasis = pkg.getPopulationBasis();
                 model.setVersionNumber(pkg.getVersion());
                 if (pkg.isDraft()) {
                     model.setRevisionNumber(pkg.getRevisionNumber());
@@ -5501,7 +5510,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                     pkg.getId(),
                     StringUtils.equals("FHIR", model.getMeasureModel()));
 
-            updateMeasureXml(model, pkg, existingMeasureScoringType);
+            updateMeasureXml(model, pkg, existingMeasureScoringType, existingMeasurePopulationBasis);
 
             result.setSuccess(true);
             result.setId(pkg.getId());

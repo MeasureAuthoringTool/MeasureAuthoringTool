@@ -594,6 +594,8 @@ public class MeasurePackagePresenter implements MatPresenter {
                                     showError(MessageDelegate.getMeasureStewardRequired());
                                 } else if (isFhir && (result.getMeasureTypes() == null || result.getMeasureTypes().size() == 0)) {
                                     showError(MessageDelegate.getMeasureTypeRequired());
+                                } else if (isFhir && (result.getPopulationBasis() == null || result.getPopulationBasis().isEmpty())) {
+                                    showError(MessageDelegate.getMeasurePopulationBasis());
                                 } else {
                                     getMeasure(MatContext.get().getCurrentMeasureId());
                                     checkAndDisplayLibraryNameWarning(result.getCqlModel().getLibraryName());

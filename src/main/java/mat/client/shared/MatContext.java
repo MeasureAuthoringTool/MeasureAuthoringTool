@@ -1517,6 +1517,20 @@ public class MatContext implements IsSerializable {
         }
     }
 
+    public void setPopulationBasisList(ListBox listBox, List<String> list, String defaultOption ) {
+        listBox.clear();
+        listBox.addItem(defaultOption, "");
+        if (list != null) {
+            for (String listBoxContent : list) {
+                if (listBoxContent.equalsIgnoreCase("boolean")) {
+                    listBox.addItem("Boolean");
+                } else {
+                    listBox.addItem(listBoxContent);
+                }
+            }
+        }
+    }
+
     public List<String> getPatientBasedIndicatorOptions(String measureScoringMethod) {
         List<String> patientBasedList = new ArrayList<>();
         patientBasedList.add("No");

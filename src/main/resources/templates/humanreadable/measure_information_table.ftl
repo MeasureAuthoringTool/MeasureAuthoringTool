@@ -30,6 +30,10 @@
         </tr>
         <#if model.measureInformation.fhir>
             <tr>
+                <th scope="row" class="row-header"><span class="td_label">Population Basis</span></th>
+                <td style="width:80%" colspan="3">${model.measureInformation.populationBasis!""}</td>
+            </tr>
+            <tr>
                 <th scope="row" class="row-header"><span class="td_label">Experimental</span></th>
                 <td style="width:80%" colspan="3">${model.measureInformation.experimental?string('Yes', 'No')!""}</td>
             </tr>

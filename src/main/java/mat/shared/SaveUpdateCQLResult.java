@@ -124,12 +124,16 @@ public class SaveUpdateCQLResult extends GenericResult {
     private boolean isQDMVersionMatching = true;
 
     private Map<String, List<CQLError>> libraryNameErrorsMap = new HashMap<>();
+
     private Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>();
 
     private boolean isMeasureComposite = false;
 
     private boolean doesMeasureHaveIncludedLibraries = false;
+
     private Set<String> includeLibrariesWithErrors;
+
+    private String populationBasis;
 
     /**
      * Gets the cql string.
@@ -572,5 +576,13 @@ public class SaveUpdateCQLResult extends GenericResult {
 
     public void setMeasureTypes(List<String> measureTypes) {
         this.measureTypes = measureTypes;
+    }
+
+    public String getPopulationBasis() {
+        return populationBasis;
+    }
+
+    public void setPopulationBasis(String populationBasis) {
+        this.populationBasis = populationBasis;
     }
 }

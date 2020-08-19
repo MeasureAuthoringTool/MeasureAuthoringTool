@@ -66,6 +66,10 @@
             <bind-xml name="experimental" node="element"/>
         </field>
 
+        <field name="populationBasis" type="String">
+            <bind-xml name="populationBasis" node="element"/>
+        </field>
+
         <field name="authorSelectedList"
                type="mat.model.Author"
                collection="arraylist">

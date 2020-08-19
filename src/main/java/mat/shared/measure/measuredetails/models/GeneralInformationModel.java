@@ -22,6 +22,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	private String measureFromPeriod;
 	private String measureToPeriod;
 	private boolean isExperimental;
+	private String populationBasis;
 
 	public GeneralInformationModel() {
 	}
@@ -43,6 +44,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 		this.setMeasureFromPeriod(model.getMeasureFromPeriod());
 		this.setMeasureToPeriod(model.getMeasureToPeriod());
 		this.isExperimental = model.isExperimental;
+        this.populationBasis = model.populationBasis;
 	}
 
 	public int geteMeasureId() {
@@ -104,7 +106,8 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 				modelValuesAreEqual(originalModel.isCalendarYear(), isCalendarYear) &&
 				modelValuesAreEqual(originalModel.getMeasureFromPeriod(), getMeasureFromPeriod()) &&
 				modelValuesAreEqual(originalModel.getMeasureToPeriod(), getMeasureToPeriod()) &&
-				modelValuesAreEqual(originalModel.isExperimental(), isExperimental()));
+				modelValuesAreEqual(originalModel.isExperimental(), isExperimental()) &&
+				modelValuesAreEqual(originalModel.getPopulationBasis(), getPopulationBasis()));
 	}
 	
 
@@ -174,6 +177,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 		sb.append(", measureFromPeriod: " + measureFromPeriod);
 		sb.append(", measureToperiod: " + measureToPeriod);
 		sb.append(", isExperimental: " + isExperimental);
+		sb.append(", populationBasis: " + populationBasis);
 		return sb.toString();
 	}
 	
@@ -221,4 +225,12 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	public void setExperimental(boolean experimental) {
 		isExperimental = experimental;
 	}
+
+    public String getPopulationBasis() {
+        return populationBasis;
+    }
+
+    public void setPopulationBasis(String populationBasis) {
+        this.populationBasis = populationBasis;
+    }
 }

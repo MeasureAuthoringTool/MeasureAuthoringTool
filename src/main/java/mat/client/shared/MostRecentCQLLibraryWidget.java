@@ -15,7 +15,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.client.util.FeatureFlagConstant;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLLibraryDataSetObject;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MostRecentCQLLibraryWidget extends Composite implements HasSelectionHandlers<CQLLibraryDataSetObject> {
 
@@ -58,7 +63,19 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
         cellTable.redraw();
         cellTable.setRowCount(result.getCqlLibraryDataSetObjects().size(), true);
         sortProvider.refresh();
+
+        boolean isMatOnFhir = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR);
+
+        if (!isMatOnFhir) {
+            List<CQLLibraryDataSetObject> libraryDataSetObjects = result.getCqlLibraryDataSetObjects().stream()
+                    .filter(l -> !ModelTypeHelper.isFhir(l.getLibraryModelType()))
+                    .collect(Collectors.toList());
+            result.setCqlLibraryDataSetObjects(libraryDataSetObjects);
+        }
+
         sortProvider.getList().addAll(result.getCqlLibraryDataSetObjects());
+
+
         cellTable = cqlLibraryResultTable.addColumnToTable(gridToolbar, cellTable, MostRecentCQLLibraryWidget.this);
         sortProvider.addDataDisplay(cellTable);
         Label invisibleLabel = (Label) LabelBuilder
@@ -113,12 +130,12 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
         return result;
     }
 
-    public HasSelectionHandlers<CQLLibraryDataSetObject> getSelectIdForEditTool() {
-        return this;
-    }
-
     public void setResult(SaveCQLLibraryResult result) {
         this.result = result;
+    }
+
+    public HasSelectionHandlers<CQLLibraryDataSetObject> getSelectIdForEditTool() {
+        return this;
     }
 
     public void setTableObserver(mat.client.cql.CQLLibrarySearchView.Observer observer) {

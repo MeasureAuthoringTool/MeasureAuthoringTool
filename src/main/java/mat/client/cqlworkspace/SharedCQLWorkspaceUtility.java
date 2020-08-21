@@ -156,29 +156,31 @@ public class SharedCQLWorkspaceUtility {
     }
 
     public static String addLinebreaks(String original) {
-        final int lineLength = 90;
+        final int lineLength = 85;
 
         if (original.length() < lineLength) {
             return original;
         } else {
-            String[] arr = original.split(" ");
+            String stripped = original.replace("\n", "");
+
+            String[] words = stripped.split(" ");
             StringBuilder lines = new StringBuilder();
             StringBuilder line = new StringBuilder();
 
-            for (int i = 0, arrLength = arr.length; i < arrLength; i++) {
-                String word = arr[i];
+            for (int i = 0, arrLength = words.length; i < arrLength; i++) {
+                String word = words[i];
 
                 if (line.length() + word.length() > lineLength) {
                     lines.append(line.toString());
 
-                    if (i + 1 < arr.length) {
+                    if (i + 1 < words.length) {
                         lines.append("\n  ");
                     }
 
                     line = new StringBuilder();
                 }
 
-                line.append(word);
+                line.append(word).append(" ");
             }
 
             if (line.length() > 0) {

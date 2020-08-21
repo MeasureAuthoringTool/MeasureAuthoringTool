@@ -161,7 +161,7 @@ public class SharedCQLWorkspaceUtility {
         if (original.length() < lineLength) {
             return original;
         } else {
-            String stripped = original.replace("\n", "");
+            String stripped = original.replaceAll("\\n", "");
 
             String[] words = stripped.split(" ");
             StringBuilder lines = new StringBuilder();

@@ -54,8 +54,8 @@ public class CQLHumanReadableGenerator {
 	}
 
     private void setMeasurementPeriodForFhir(HumanReadableMeasureInformationModel model) {
-        String[] startDate = model.getMeasurementPeriodStartDate().split(" ");
-        String[] endDate = model.getMeasurementPeriodEndDate().split(" ");
-	    model.setMeasurementPeriod(startDate[0] + " through " + endDate[0]);
+	    model.setMeasurementPeriod(HumanReadableDateUtil.getFormattedMeasurementPeriodForFhir(model.getMeasurementPeriodStartDate(), model.getMeasurementPeriodEndDate()));
+
+
     }
 }

@@ -203,7 +203,6 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
 
             //All converted measures default to increase.
             fhirMeasure.getMeasureDetails().setImprovementNotation("increase");
-            measureDAO.saveandReturnMaxEMeasureId(fhirMeasure);
             fhirConvertResultResponse.setFhirMeasureId(fhirMeasure.getId());
         } catch (IOException | MappingException | MarshalException | ValidationException e) {
             throw new MatException("Error converting mat xml", e);

@@ -176,6 +176,9 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
             String newMeasureModel = creatingFhir ? ModelTypeHelper.FHIR : currentDetails.getMeasureModel();
             clonedMeasure.setMeasureModel(newMeasureModel);
             clonedMeasure.setCqlLibraryName(currentDetails.getCQLLibraryName());
+            if (isQdmToFhir) {
+                clonedMeasure.seteMeasureId(currentDetails.geteMeasureId());
+            }
             if (creatingFhir) {
                 if (measure.getMeasurementPeriodFrom() == null || measure.getMeasurementPeriodTo() == null) {
                     clonedMeasure.setMeasurementPeriodFrom(getNextCalenderYearFromDate());

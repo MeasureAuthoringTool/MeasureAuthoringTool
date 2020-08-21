@@ -16,6 +16,7 @@ import mat.server.util.XmlProcessor;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
 import mat.shared.SaveUpdateCQLResult;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -286,7 +287,7 @@ public class PatientBasedValidator {
 						}
 					}
 					logger.info("funcArgumentReturnType ==========" + funcArgumentReturnType);
-					if(!returnTypeOfExpression.equalsIgnoreCase(funcArgumentReturnType)){
+					if(!StringUtils.containsIgnoreCase(returnTypeOfExpression, funcArgumentReturnType)){
 						if(!expressionAlreadyEval.contains(expressionName)) {
 							List<String> generatedMessages = generateMessageList(expressionName, assoExpressionPopMap, MatContext.get().getMessageDelegate().getMEASURE_OBSERVATION_RETURN_SAME_TYPE_VALIDATION_MESSAGE());
 							returnMessages.addAll(generatedMessages);
@@ -367,7 +368,7 @@ public class PatientBasedValidator {
 
             String populationBasis = measure.getPopulationBasis().equalsIgnoreCase("boolean") ? "Boolean" : measure.getPopulationBasis();
 
-            if (ModelTypeHelper.isFhir(measure.getMeasureModel())) {
+            if (ModelTypeHelper.isFhir(measure.getMeasureModel()) && !returnTypeCheck.equalsIgnoreCase(CQL_RETURN_TYPE_NUMERIC)) {
                 if (!expressionAlreadyEval.contains(cqlExpressionObject.getName()) && !cqlExpressionObject.getReturnType().contains(populationBasis)) {
                     List<String> generatedMessages = generateMessageList(cqlExpressionObject.getName(), expressionPopMap, MatContext.get().getMessageDelegate().getFhir_SAVE_GROUPING_VALIDATION_MESSAGE());
                     returnMessages.addAll(generatedMessages);

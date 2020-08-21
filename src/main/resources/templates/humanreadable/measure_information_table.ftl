@@ -28,7 +28,7 @@
             <th scope="row" class="row-header"><span class="td_label">Measure Steward</span></th>
             <td style="width:80%" colspan="3">${model.measureInformation.measureSteward!""}</td>
         </tr>
-        <#if model.measureInformation.fhir>
+        <#if isFhir>
             <tr>
                 <th scope="row" class="row-header"><span class="td_label">Population Basis</span></th>
                 <td style="width:80%" colspan="3">${model.measureInformation.populationBasis!""}</td>

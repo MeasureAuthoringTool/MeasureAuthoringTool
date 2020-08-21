@@ -21,16 +21,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SharedCQLWorkspaceUtility {
-    private static final Logger log = Logger.getLogger(SharedCQLWorkspaceUtility.class.getSimpleName());
-
     public static final String ERROR_PREFIX = "ERROR:";
     public static final String WARNING_PREFIX = "WARNING:";
-
     public static final String MUST_HAVE_PROGRAM_WITH_RELEASE = "Cannot select a release without selecting a program.";
-
-    public void loadPrograms(ListBox programBox) {
-        CQLAppliedValueSetUtility.loadPrograms(programBox);
-    }
+    private static final Logger log = Logger.getLogger(SharedCQLWorkspaceUtility.class.getSimpleName());
 
     public static boolean validateCQLArtifact(SaveUpdateCQLResult result, AceEditor aceEditor, MessagePanel messagePanel, String expressionType, String expressionName) {
         displayAnnotations(result, aceEditor);
@@ -56,7 +50,7 @@ public class SharedCQLWorkspaceUtility {
     }
 
     public static void displayAnnotationForViewCQL(SaveUpdateCQLResult result, AceEditor aceEditor) {
-        log.log(Level.INFO,"displayAnnotationForViewCQL libNameToErrorMap:\n" + result.getLibraryNameErrorsMap() + "\nLibWarningMap:\n" +
+        log.log(Level.INFO, "displayAnnotationForViewCQL libNameToErrorMap:\n" + result.getLibraryNameErrorsMap() + "\nLibWarningMap:\n" +
                 result.getLibraryNameWarningsMap() + "\nlinterErrors:\n" +
                 result.getLinterErrors());
         aceEditor.clearAnnotations();
@@ -65,10 +59,9 @@ public class SharedCQLWorkspaceUtility {
         SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLibraryNameWarningsMap().get(formattedName), WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor);
         SharedCQLWorkspaceUtility.createCQLWorkspaceAnnotations(result.getLinterErrors(), ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor);
         aceEditor.setAnnotations();
-        log.log(Level.INFO,"leaving displayAnnotationForViewCQL " + result);
+        log.log(Level.INFO, "leaving displayAnnotationForViewCQL " + result);
 
     }
-
 
     private static void displayMessageBannerForViewCQL(SaveUpdateCQLResult result, MessagePanel messagePanel) {
         messagePanel.clearAlerts();
@@ -76,9 +69,9 @@ public class SharedCQLWorkspaceUtility {
         if (!result.isQDMVersionMatching()) {
             errorMessages.add(AbstractCQLWorkspacePresenter.INVALID_QDM_VERSION_IN_INCLUDES);
         } else if (!result.getCqlErrors().isEmpty() || !result.getLinterErrorMessages().isEmpty()) {
-            result.getCqlErrors().forEach(e -> log.log(Level.INFO,"CQL Error: " + e.getErrorMessage() + " " + e.getStartErrorInLine() +
+            result.getCqlErrors().forEach(e -> log.log(Level.INFO, "CQL Error: " + e.getErrorMessage() + " " + e.getStartErrorInLine() +
                     " " + e.getEndErrorInLine()));
-            result.getLinterErrorMessages().forEach(e -> log.log(Level.INFO,"Linter Error: " + e.toString()));
+            result.getLinterErrorMessages().forEach(e -> log.log(Level.INFO, "Linter Error: " + e.toString()));
 
             if (!MatContext.get().isCurrentModelTypeFhir() && result.isMeasureComposite() && result.isDoesMeasureHaveIncludedLibraries()) {
                 errorMessages.add(AbstractCQLWorkspacePresenter.VIEW_CQL_ERROR_MESSAGE_COMPOSITE_AND_INCLUDED);
@@ -154,11 +147,46 @@ public class SharedCQLWorkspaceUtility {
     public static AceEditor createCQLWorkspaceAnnotations(List<CQLError> errors, String prefix, AceAnnotationType aceAnnotationType, AceEditor aceEditor) {
         if (errors != null) {
             for (final CQLError e : errors) {
-                aceEditor.addAnnotation(e.getStartErrorInLine() - 1, e.getStartErrorAtOffset(), prefix + e.getErrorMessage(), aceAnnotationType);
+                String formatted = addLinebreaks(e.getErrorMessage());
+                aceEditor.addAnnotation(e.getStartErrorInLine() - 1, e.getStartErrorAtOffset(), prefix + formatted, aceAnnotationType);
             }
         }
 
         return aceEditor;
+    }
+
+    public static String addLinebreaks(String original) {
+        final int lineLength = 90;
+
+        if (original.length() < lineLength) {
+            return original;
+        } else {
+            String[] arr = original.split(" ");
+            StringBuilder lines = new StringBuilder();
+            StringBuilder line = new StringBuilder();
+
+            for (int i = 0, arrLength = arr.length; i < arrLength; i++) {
+                String word = arr[i];
+
+                if (line.length() + word.length() > lineLength) {
+                    lines.append(line.toString());
+
+                    if (i + 1 < arr.length) {
+                        lines.append("\n  ");
+                    }
+
+                    line = new StringBuilder();
+                }
+
+                line.append(word);
+            }
+
+            if (line.length() > 0) {
+                lines.append(line.toString());
+            }
+
+            return lines.toString();
+        }
     }
 
     private static AceEditor createCQLWorkspaceAnnotations(CQLError error, String prefix, AceAnnotationType aceAnnotationType, AceEditor aceEditor) {
@@ -173,6 +201,10 @@ public class SharedCQLWorkspaceUtility {
         headerPanel.add(heading);
         headerPanel.add(inAppHelp);
         return headerPanel;
+    }
+
+    public void loadPrograms(ListBox programBox) {
+        CQLAppliedValueSetUtility.loadPrograms(programBox);
     }
 
 }

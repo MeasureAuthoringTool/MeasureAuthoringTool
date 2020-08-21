@@ -88,7 +88,6 @@ import mat.server.service.MeasureDetailsService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
-import mat.server.service.fhirvalidationreport.MeasureValidationReportImpl;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.service.impl.MeasureAuditServiceImpl;
 import mat.server.service.impl.PatientBasedValidator;
@@ -215,53 +214,36 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     private static final String QDM_MAPPING = "QualityDataModelMapping.xml";
 
     private static final Log log = LogFactory.getLog(MeasureLibraryServiceImpl.class);
-
+    javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
     @Value("${mat.measure.current.release.version}")
     private String currentReleaseVersion;
-
     private Comparator<QDSAttributes> attributeComparator = (arg0, arg1) -> arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
-
     @Autowired
     private ApplicationContext context;
-
     @Autowired
     private MeasureDAO measureDAO;
-
     @Autowired
     private MeasureXMLDAO measureXMLDAO;
-
     @Autowired
     private MeasureDetailsReferenceDAO measureDetailsReferenceDAO;
-
     @Autowired
     private MeasureDeveloperDAO measureDeveloperDAO;
-
     @Autowired
     private RecentMSRActivityLogDAO recentMSRActivityLogDAO;
-
     @Autowired
     private MeasureTypeDAO measureTypeDAO;
-
     @Autowired
     private OperatorDAO operatorDAO;
-
     @Autowired
     private OrganizationDAO organizationDAO;
-
     @Autowired
     private CQLLibraryDAO cqlLibraryDAO;
-
     @Autowired
     private CQLLibraryService cqlLibraryService;
-
     @Autowired
     private MeasureExportDAO measureExportDAO;
-
     @Autowired
     private UserDAO userDAO;
-
-    javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-
     @Autowired
     private CQLService cqlService;
 
@@ -1286,6 +1268,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         return context;
     }
 
+    /**
+     * Sets the context.
+     *
+     * @param context the new context
+     */
+    public void setContext(ApplicationContext context) {
+        this.context = context;
+    }
+
     private User getLockedUser(final Measure existingMeasure) {
         return existingMeasure.getLockedUser();
     }
@@ -1387,7 +1378,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         return manageCompositeMeasureDetailModel;
     }
-
 
     /**
      * Gets the measure xml dao.
@@ -1622,7 +1612,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         }
         return xmlProcessor.transform(xmlProcessor.getOriginalDoc());
     }
-
 
     /**
      * Checks if Measure is locked.
@@ -2094,7 +2083,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             measurePackageService.createPackageArtifacts(measure, measureExport);
         }
     }
-
 
     public void exportDraftCQLLibraryForMeasure(Measure measure) {
         MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measure.getId());
@@ -2654,15 +2642,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         return result;
 
-    }
-
-    /**
-     * Sets the context.
-     *
-     * @param context the new context
-     */
-    public void setContext(ApplicationContext context) {
-        this.context = context;
     }
 
     private void setValueFromModel(final ManageMeasureDetailModel model, final Measure measure) {

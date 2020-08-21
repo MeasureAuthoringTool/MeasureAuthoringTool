@@ -2225,8 +2225,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 measure.seteMeasureId(model.geteMeasureId());
                 measure.setNqfNumber(model.getNqfId());
                 measure.setExperimental(model.isExperimental());
-                measure.setPopulationBasis(model.getPopulationBasis().equalsIgnoreCase("Boolean") ? "boolean" : model.getPopulationBasis());
 
+                if (model.getPopulationBasis() == null) {
+                    measure.setPopulationBasis(null);
+                } else {
+                    measure.setPopulationBasis(model.getPopulationBasis().equalsIgnoreCase("Boolean") ? "boolean" : model.getPopulationBasis());
+                }
                 calculateCalendarYearForMeasure(model, measure);
 
                 measurePackageService.save(measure);

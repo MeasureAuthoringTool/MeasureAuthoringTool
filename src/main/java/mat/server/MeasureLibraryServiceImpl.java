@@ -2219,7 +2219,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                 } else {
                     measure.setPopulationBasis(model.getPopulationBasis().equalsIgnoreCase("Boolean") ? "boolean" : model.getPopulationBasis());
                 }
-
                 calculateCalendarYearForMeasure(model, measure);
 
                 measurePackageService.save(measure);

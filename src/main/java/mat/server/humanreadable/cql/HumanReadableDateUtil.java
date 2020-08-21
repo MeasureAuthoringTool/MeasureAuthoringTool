@@ -82,5 +82,15 @@ public class HumanReadableDateUtil {
 		}
 		return returnMonth;
 	}
-	
+
+	public static String getFormattedMeasurementPeriodForFhir(String startDate, String endDate) {
+
+        String[] startDateMonth = startDate.split("/");
+        String[] endDateMonth = endDate.split("/");
+
+        String formattedStartDate = getMonth(startDateMonth[0]) + " " + startDateMonth[1] + ", " + startDateMonth[2];
+        String formattedEndDate = getMonth(endDateMonth[0]) + " " + endDateMonth[1] + ", " + endDateMonth[2];
+
+        return formattedStartDate + " through "+ formattedEndDate;
+    }
 }

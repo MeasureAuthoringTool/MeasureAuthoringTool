@@ -321,7 +321,10 @@ public class PatientBasedValidator {
 			logger.info("Return type for "+cqlExpressionObject.getName()+" is "+cqlExpressionObject.getReturnType());
 			String expressionReturnType = cqlExpressionObject.getReturnType();
 
-            String populationBasis = measure.getPopulationBasis().equalsIgnoreCase("boolean") ? "Boolean" : measure.getPopulationBasis();
+            String populationBasis = "";
+            if (measure.getPopulationBasis() != null) {
+                populationBasis = measure.getPopulationBasis().equalsIgnoreCase("boolean") ? "Boolean" : measure.getPopulationBasis();
+            }
 
             if (ModelTypeHelper.isFhir(measure.getMeasureModel())) {
                 if (!expressionAlreadyEval.contains(cqlExpressionObject.getName()) && !expressionReturnType.contains(populationBasis)) {
@@ -365,8 +368,10 @@ public class PatientBasedValidator {
 			 * Angular brackets "<" and ">" are filtered out by Javascript/mark-up hack validators.
 			 * Replace angular brackets "<" and ">" by square brackets "[" and "]".
 			*/
-
-            String populationBasis = measure.getPopulationBasis().equalsIgnoreCase("boolean") ? "Boolean" : measure.getPopulationBasis();
+            String populationBasis = "";
+            if (measure.getPopulationBasis() != null) {
+                populationBasis = measure.getPopulationBasis().equalsIgnoreCase("boolean") ? "Boolean" : measure.getPopulationBasis();
+            }
 
             if (ModelTypeHelper.isFhir(measure.getMeasureModel()) && !returnTypeCheck.equalsIgnoreCase(CQL_RETURN_TYPE_NUMERIC)) {
                 if (!expressionAlreadyEval.contains(cqlExpressionObject.getName()) && !cqlExpressionObject.getReturnType().contains(populationBasis)) {

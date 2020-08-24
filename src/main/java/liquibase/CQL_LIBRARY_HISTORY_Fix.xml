@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="mat-dev-user" id="1" context="prod">
+        <sql>
+            alter table CQL_LIBRARY_HISTORY modify CQL_LIBRARY longblob null;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -4,7 +4,6 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 			http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-
     <include file="classpath:/liquibase/featureFlagDataBaseChanges.xml"/>
     <include file="classpath:/liquibase/addMeasureModelColumn.xml"/>
     <include file="classpath:/liquibase/addLibraryModelColumn.xml"/>
@@ -26,5 +25,5 @@
     <include file="classpath:/liquibase/addExperimentalToMeasure.xml"/>
     <include file="classpath:/liquibase/deleteFeatureFlagsV3.xml"/>
     <include file="classpath:/liquibase/addPopulationBasisV2.xml"/>
-
+    <include file="classpath:/liquibase/CQL_LIBRARY_HISTORY_Fix.xml"/>
 </databaseChangeLog>

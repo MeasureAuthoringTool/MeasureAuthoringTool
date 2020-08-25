@@ -4436,7 +4436,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             }
 
             result.setMeasureStewardId(measure.getMeasureStewardId());
-            result.setMeasureDescription(measure.getMeasureDetails().getDescription());
+            if (measure.getMeasureDetails() != null ) {
+                result.setMeasureDescription(measure.getMeasureDetails().getDescription());
+            }
             result.setPopulationBasis(measure.getPopulationBasis());
             if (CollectionUtils.isNotEmpty(measure.getMeasureTypes())) {
                 result.setMeasureTypes(new ArrayList<>());

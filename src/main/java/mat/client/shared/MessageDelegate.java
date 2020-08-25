@@ -84,6 +84,7 @@ public class MessageDelegate {
     private static final String CLAUSE_EMPTY = "Clause must contain logic.";
     private static final String PATIENT_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE = "For Patient-based Measures, all definitions directly added to populations must return a Boolean.";
     private static final String FHIR_SAVE_GROUPING_VALIDATION_MESSAGE = "All definitions directly added to populations must match with the return type selected in population basis.";
+    private static final String INVALID_RETURN_TYPE = "Couldn’t determine return type.";
     private static final String EPISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE = "For Episode-based Measures, all definitions directly added to populations must return a list of the same type.";
     private static final String EPISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE = "Measure Observations can only be added to a measure grouping in a Ratio measure, if the measure is Episode-based.";
     private static final String MEASURE_OBSERVATION_USER_DEFINED_FUNC_VALIDATION_MESSAGE = "Measure Observations added to a measure grouping may only contain a user-defined function that has exactly 1 argument in the argument list.";
@@ -873,6 +874,10 @@ public class MessageDelegate {
 
     public String getFhir_SAVE_GROUPING_VALIDATION_MESSAGE() {
         return FHIR_SAVE_GROUPING_VALIDATION_MESSAGE;
+    }
+
+    public String getInvalidReturnType() {
+        return INVALID_RETURN_TYPE;
     }
 
     public String getEPISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE() {

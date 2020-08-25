@@ -318,20 +318,23 @@ public class PatientBasedValidator {
 		String returnType = null;
 		
 		for (CQLExpressionObject cqlExpressionObject : expressionsToBeChecked) {
-			logger.info("Return type for "+cqlExpressionObject.getName()+" is "+cqlExpressionObject.getReturnType());
-			String expressionReturnType = cqlExpressionObject.getReturnType();
+			logger.info("Return type for "+ cqlExpressionObject.getName()+" is "+ cqlExpressionObject.getReturnType());
 
             String populationBasis = "";
             if (measure.getPopulationBasis() != null) {
                 populationBasis = measure.getPopulationBasis().equalsIgnoreCase("boolean") ? "Boolean" : measure.getPopulationBasis();
             }
 
-            if (ModelTypeHelper.isFhir(measure.getMeasureModel())) {
-                if (!expressionAlreadyEval.contains(cqlExpressionObject.getName()) && !expressionReturnType.contains(populationBasis)) {
+            if (cqlExpressionObject.getReturnType() == null) {
+                List<String> generatedMessages = generateMessageList(cqlExpressionObject.getName(), expressionPopMap, MatContext.get().getMessageDelegate().getInvalidReturnType());
+                returnMessages.addAll(generatedMessages);
+            } else if (ModelTypeHelper.isFhir(measure.getMeasureModel())) {
+                if (!expressionAlreadyEval.contains(cqlExpressionObject.getName()) && !cqlExpressionObject.getReturnType().contains(populationBasis)) {
                     List<String> generatedMessages = generateMessageList(cqlExpressionObject.getName(), expressionPopMap, MatContext.get().getMessageDelegate().getFhir_SAVE_GROUPING_VALIDATION_MESSAGE());
                     returnMessages.addAll(generatedMessages);
                 }
             } else {
+                String expressionReturnType = cqlExpressionObject.getReturnType();
                 boolean isList = expressionReturnType.toLowerCase().startsWith("list");
 
                 if (!isList && !expressionAlreadyEval.contains(cqlExpressionObject.getName())) {
@@ -348,7 +351,7 @@ public class PatientBasedValidator {
                 }
             }
 
-			if (!expressionAlreadyEval.contains(cqlExpressionObject.getName())){
+			if (!expressionAlreadyEval.contains(cqlExpressionObject.getName())) {
 				expressionAlreadyEval.add(cqlExpressionObject.getName());
 			}
 		}
@@ -373,7 +376,10 @@ public class PatientBasedValidator {
                 populationBasis = measure.getPopulationBasis().equalsIgnoreCase("boolean") ? "Boolean" : measure.getPopulationBasis();
             }
 
-            if (ModelTypeHelper.isFhir(measure.getMeasureModel()) && !returnTypeCheck.equalsIgnoreCase(CQL_RETURN_TYPE_NUMERIC)) {
+            if (cqlExpressionObject.getReturnType() == null) {
+                List<String> generatedMessages = generateMessageList(cqlExpressionObject.getName(), expressionPopMap, MatContext.get().getMessageDelegate().getInvalidReturnType());
+                returnMessages.addAll(generatedMessages);
+            } else if (ModelTypeHelper.isFhir(measure.getMeasureModel()) && !returnTypeCheck.equalsIgnoreCase(CQL_RETURN_TYPE_NUMERIC)) {
                 if (!expressionAlreadyEval.contains(cqlExpressionObject.getName()) && !cqlExpressionObject.getReturnType().contains(populationBasis)) {
                     List<String> generatedMessages = generateMessageList(cqlExpressionObject.getName(), expressionPopMap, MatContext.get().getMessageDelegate().getFhir_SAVE_GROUPING_VALIDATION_MESSAGE());
                     returnMessages.addAll(generatedMessages);
@@ -389,9 +395,9 @@ public class PatientBasedValidator {
                 } else if(returnTypeCheck.equals(CQL_RETURN_TYPE_NUMERIC) && !expressionAlreadyEval.contains(cqlExpressionObject.getName())) {
                     String exprReturnType = cqlExpressionObject.getReturnType();
 
-                    if(!exprReturnType.equals(SYSTEM_INTEGER) &&
+                    if (!exprReturnType.equals(SYSTEM_INTEGER) &&
                             !exprReturnType.equals(SYSTEM_DECIMAL) &&
-                            !exprReturnType.equals(SYSTEM_QUANTITY)){
+                            !exprReturnType.equals(SYSTEM_QUANTITY)) {
 
                         List<String> generatedMessages = generateMessageList(cqlExpressionObject.getName(), expressionPopMap, MatContext.get().getMessageDelegate().getMEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE());
                         returnMessages.addAll(generatedMessages);
@@ -399,19 +405,19 @@ public class PatientBasedValidator {
                 }
             }
 
-			if (!expressionAlreadyEval.contains(cqlExpressionObject.getName())){
+			if (!expressionAlreadyEval.contains(cqlExpressionObject.getName())) {
 				expressionAlreadyEval.add(cqlExpressionObject.getName());
 			}
 		}		
 		return returnMessages;
 	}
 	
-	private static List<String> generateMessageList(String expressionName, Map<String,List<String>>expressionPopMap, String errorMessage){
+	private static List<String> generateMessageList(String expressionName, Map<String,List<String>>expressionPopMap, String errorMessage) {
 		List<String> returnMessages = new ArrayList<String>();
 		List<String> values = expressionPopMap.get(expressionName);
 		
-		for(int i=0;i<values.size();i++){
-			String message = values.get(i) + " : " +errorMessage;
+		for (int i=0; i<values.size(); i++) {
+			String message = values.get(i) + " : " + errorMessage;
 			returnMessages.add(message);
 		}
 		

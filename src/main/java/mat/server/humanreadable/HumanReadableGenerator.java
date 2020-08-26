@@ -136,7 +136,7 @@ public class HumanReadableGenerator {
 
                 HumanReadableModel model = (HumanReadableModel) xmlMarshalUtil.convertXMLToObject("SimpleXMLHumanReadableModelMapping.xml", simpleXml, HumanReadableModel.class);
                 List<String> measureTypes = null;
-                if (CollectionUtils.isNotEmpty(model.getMeasureInformation().getMeasureTypes())) {
+                if (model.getMeasureInformation() != null && CollectionUtils.isNotEmpty(model.getMeasureInformation().getMeasureTypes())) {
                     measureTypes = new ArrayList<>();
                     measureTypes.addAll(model.getMeasureInformation().getMeasureTypes());
                     Collections.sort(measureTypes);

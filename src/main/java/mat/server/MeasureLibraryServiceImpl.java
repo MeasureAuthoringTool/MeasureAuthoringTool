@@ -1850,6 +1850,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     private void deleteMeasure(String measureId) {
         Measure m = measureDAO.find(measureId);
+        CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measureId);
+
         SecurityContext sc = SecurityContextHolder.getContext();
         MatUserDetails details = (MatUserDetails) sc.getAuthentication().getDetails();
         if (m.getOwner().getId().equalsIgnoreCase(details.getId())) {
@@ -1860,6 +1862,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
             m.setLastModifiedBy(null);
             m.setLockedUser(null);
             measureDAO.delete(m);
+            if (cqlLibrary != null) {
+                cqlLibraryDAO.delete(cqlLibrary.getId());
+            }
         }
     }
 

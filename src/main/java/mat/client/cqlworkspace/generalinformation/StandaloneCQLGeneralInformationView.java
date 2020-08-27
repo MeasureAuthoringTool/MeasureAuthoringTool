@@ -483,17 +483,29 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
                                         List<MeasureSteward> allStewardList,
                                         String stewardId,
                                         boolean isExperimental) {
-        getLibraryVersionTextBox().setText(version);
+        logger.info("setGeneralInfoOfLibrary(" + libraryName + "," +
+                version + "," +
+                versionOfModel + "," +
+                modelUsed + "," +
+                comments + "," +
+                allStewardList + "," +
+                stewardId + "," +
+                isExperimental + ")");
+        getLibraryVersionTextBox().setText(defaultString(version));
         getUsingModelTextBox().setText(modelUsed);
-        getModelVersionTextBox().setText(versionOfModel);
-        getLibraryNameTextBox().setText(libraryName);
-        getCommentsTextBox().setText(comments);
+        getModelVersionTextBox().setText(defaultString(versionOfModel));
+        getLibraryNameTextBox().setText(defaultString(libraryName));
+        getCommentsTextBox().setText(defaultString(comments));
         getCommentsTextBox().setCursorPos(0);
-        getDescriptionTextArea().setText(description);
+        getDescriptionTextArea().setText(defaultString(description));
         getDescriptionTextArea().setCursorPos(0);
         setOptionsInStewardList(allStewardList);
-        getStewardListBox().setValue(stewardId);
+        getStewardListBox().setValue(defaultString(stewardId));
         getExperimentalCheckbox().setValue(isExperimental);
+    }
+
+    private String defaultString(String s) {
+        return s == null ? "" : s;
     }
 
     public void setHeading(String text, String linkName) {

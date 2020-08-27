@@ -1,7 +1,7 @@
 package mat.server.util;
 
-import mat.CQLtoELM;
-import mat.MATCQLFilter;
+import cqltoelm.CQLtoELM;
+import cqltoelm.MATCQLFilter;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLCode;

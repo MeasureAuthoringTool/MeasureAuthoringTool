@@ -53,7 +53,7 @@
         </repository>
         <repository>
             <id>icm</id>
-            <url>http://maven.icm.edu.pl/artifactory/repo/</url>
+            <url>https://maven.ceon.pl/artifactory/repo/</url>
         </repository>
         <repository>
             <id>project.local.repo.dir</id>
@@ -373,11 +373,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
             <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>mat</groupId>
-            <artifactId>CQLtoELM</artifactId>
-            <version>1.4.6.54</version>
         </dependency>
         <dependency>
             <groupId>mat</groupId>
@@ -809,21 +804,6 @@
                         <artifactId>maven-install-plugin</artifactId>
                         <version>3.0.0-M1</version>
                         <executions>
-                            <execution>
-                                <phase>validate</phase>
-                                <id>install-CQLtoELM</id>
-                                <goals>
-                                    <goal>install-file</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.basedir}/lib/CQLtoELM-1.4.6.54.jar</file>
-                                    <groupId>mat</groupId>
-                                    <artifactId>CQLtoELM</artifactId>
-                                    <version>1.4.6.54</version>
-                                    <packaging>jar</packaging>
-                                    <localRepositoryPath>${maven.project.repo.dir}</localRepositoryPath>
-                                </configuration>
-                            </execution>
                             <execution>
                                 <phase>validate</phase>
                                 <id>install-vsac</id>

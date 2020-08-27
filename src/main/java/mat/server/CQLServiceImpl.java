@@ -1,6 +1,6 @@
 package mat.server;
 
-import mat.CQLFormatter;
+import cqltoelm.CQLFormatter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;

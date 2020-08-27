@@ -1309,24 +1309,31 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
 
     private void handleCQLData(SaveUpdateCQLResult result) {
+        logger.info("handleCQLData result.success=" + result.isSuccess());
         if (result.isSuccess()) {
             if (result.getCqlModel() != null) {
+                logger.info("result.getCqlModel() isn't null");
                 if (result.getSetId() != null) {
                     setId = result.getSetId();
                 }
+                logger.info("result.getCqlModel().getLibraryName()");
                 if (result.getCqlModel().getLibraryName() != null) {
                     StandaloneCQLGeneralInformationView generalInfoView = ((CQLStandaloneWorkSpaceView) cqlWorkspaceView).getCqlGeneralInformationView();
                     isLibraryNameExists = (result.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);
+                    logger.info("isLibraryNameExists=" + isLibraryNameExists);
                     cqlLibraryName = generalInfoView.createCQLLibraryName(MatContext.get().getCurrentCQLLibraryeName());
+                    logger.info("cqlLibraryName=" + cqlLibraryName);
                     cqlLibraryComment = result.getCqlModel().getLibraryComment();
                     cqlLibraryStewardId = result.getLibStewardId();
                     cqlLibraryDescription = result.getLibDescription();
                     cqlLibraryIsExperimental = result.isLibIsExperimental();
                     String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
+                    logger.info("libraryVersion=" + libraryVersion);
                     libraryVersion = libraryVersion.replaceAll("Draft ", EMPTY_STRING).trim();
                     if (libraryVersion.startsWith("v")) {
                         libraryVersion = libraryVersion.substring(1);
                     }
+                    logger.info("after checks libraryVersion=" + libraryVersion);
 
 
                     generalInfoView.setGeneralInfoOfLibrary(cqlLibraryName,
@@ -1338,6 +1345,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                             result.getLibStewards(),
                             cqlLibraryStewardId,
                             cqlLibraryIsExperimental);
+                    logger.info("after generalInfoView.setGeneralInfoOfLibrary");
                 }
 
                 List<CQLQualityDataSetDTO> appliedValueSetAndCodeList = result.getCqlModel().getAllValueSetAndCodeList();

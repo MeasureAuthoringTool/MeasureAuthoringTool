@@ -18,17 +18,21 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.util.FeatureFlagConstant;
+import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.TextArea;
+import org.springframework.ui.Model;
+
+import java.util.logging.Logger;
 
 import static mat.model.clause.ModelTypeHelper.FHIR;
 import static mat.model.clause.ModelTypeHelper.QDM;
 
 public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
-
+    private final Logger logger = Logger.getLogger("NewLibraryView");
 
     private static final String CQL_LIBRARY_NAME = "CQL Library Name";
     private TextArea nameField = new TextArea();
@@ -170,30 +174,11 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
     @Override
     public void setLibraryModelType(String type, boolean isDraft) {
         boolean isFhirAvailable = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR);
-
-        if (isFhirAvailable) {
-            //set FHIR model
-            fhirModel.setEnabled(true);
-            fhirModel.setValue(true);
-            //set QDM model off
-            qdmModel.setValue(false);
-            if (isDraft) {
-                qdmModel.setEnabled(false);
-            } else {
-                qdmModel.setEnabled(true);
-            }
-        } else {
-            //set QDM model
-            qdmModel.setEnabled(true);
-            qdmModel.setValue(true);
-            //set FHIR model off
-            fhirModel.setValue(false);
-            if (isDraft) {
-                fhirModel.setEnabled(false);
-            } else {
-                fhirModel.setEnabled(true);
-            }
-        }
+        logger.info("setLibraryModelType(" + type + "," + isDraft + ") isFhirAvailable=" + isFhirAvailable);
+        fhirModel.setEnabled(!isDraft && isFhirAvailable);
+        qdmModel.setEnabled(!isDraft);
+        fhirModel.setValue(ModelTypeHelper.isFhir(type));
+        qdmModel.setValue(!ModelTypeHelper.isFhir(type));
     }
 
     @Override

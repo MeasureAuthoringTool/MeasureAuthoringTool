@@ -556,13 +556,14 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
                                                      String description,
                                                      String stewardId,
                                                      boolean isExperimental) {
+        CQLModelValidator validator = new CQLModelValidator();
+        boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
         logger.info("libraryName:" + libraryName +
                 " commentBoxContent:" +commentBoxContent +
                 " description:" + description +
                 " stewardId:" + stewardId +
-                " isExperimental:" + isExperimental);
-        CQLModelValidator validator = new CQLModelValidator();
-        boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
+                " isExperimental:" + isExperimental +
+                " isFhir:" + isFhir);
 
         if (libraryName != null && libraryName.isEmpty()) {
             getLibraryNameGroup().setValidationState(ValidationState.ERROR);
@@ -606,13 +607,13 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
             return false;
         }
 
-        if (isFhir && description == null || description.trim().equals("")) {
+        if (isFhir && (description == null || description.trim().equals(""))) {
             getDescriptionGroup().setValidationState(ValidationState.ERROR);
             messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLibraryDescriptionRequired());
             return false;
         }
 
-        if (isFhir && stewardId == null || stewardId.trim().equals("")) {
+        if (isFhir && (stewardId == null || stewardId.trim().equals(""))) {
             getStewardGroup().setValidationState(ValidationState.ERROR);
             messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLibraryPublisherRequired());
             return false;

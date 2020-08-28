@@ -1,11 +1,5 @@
 package cqltoelm.models;
 
-import mat.models.CQLCodeModelObject;
-import mat.models.CQLCodeSystemModelObject;
-import mat.models.CQLFunctionModelObject;
-import mat.models.CQLIncludeModelObject;
-import mat.models.CQLParameterModelObject;
-import mat.models.CQLValueSetModelObject;
 import org.hl7.elm.r1.ExpressionDef;
 
 import java.util.ArrayList;
@@ -24,23 +18,29 @@ public class CQLExpressionModelObject {
 
     private List<CQLParameterModelObject> refersToParameters;
 
-    private List<mat.models.CQLExpressionModelObject> refersToExpressions;
+    private List<cqltoelm.models.CQLExpressionModelObject> refersToExpressions;
 
     private List<CQLFunctionModelObject> refersToFunctions;
 
     private List<CQLIncludeModelObject> refersToLibrary;
 
-    private List<mat.models.CQLExpressionModelObject> referredByExpressions;
+    private List<cqltoelm.models.CQLExpressionModelObject> referredByExpressions;
 
     private List<CQLFunctionModelObject> referredByFunctions;
 
-    /** The expression definition created by the CQL to ELM parser **/
+    /**
+     * The expression definition created by the CQL to ELM parser
+     **/
     private ExpressionDef expression;
 
-    /** The name of the epxression in dot notation, library.expression **/
+    /**
+     * The name of the epxression in dot notation, library.expression
+     **/
     private String name;
 
-    /** The tokens from the CQL to ELM Visitor **/
+    /**
+     * The tokens from the CQL to ELM Visitor
+     **/
     private List<String> tokens;
 
     public CQLExpressionModelObject(String name, List<String> tokens, ExpressionDef expression) {
@@ -84,7 +84,7 @@ public class CQLExpressionModelObject {
         this.refersToParameters.add(parameter);
     }
 
-    public void addRefersToExpression(mat.models.CQLExpressionModelObject expression) {
+    public void addRefersToExpression(cqltoelm.models.CQLExpressionModelObject expression) {
         this.refersToExpressions.add(expression);
     }
 
@@ -92,7 +92,7 @@ public class CQLExpressionModelObject {
         this.refersToLibrary.add(library);
     }
 
-    public void addReferredByExpression(mat.models.CQLExpressionModelObject expression) {
+    public void addReferredByExpression(cqltoelm.models.CQLExpressionModelObject expression) {
         this.referredByExpressions.add(expression);
     }
 
@@ -140,11 +140,11 @@ public class CQLExpressionModelObject {
         this.refersToParameters = refersToParameters;
     }
 
-    public List<mat.models.CQLExpressionModelObject> getRefersToExpressions() {
+    public List<cqltoelm.models.CQLExpressionModelObject> getRefersToExpressions() {
         return refersToExpressions;
     }
 
-    public void setRefersToExpressions(List<mat.models.CQLExpressionModelObject> refersToExpressions) {
+    public void setRefersToExpressions(List<cqltoelm.models.CQLExpressionModelObject> refersToExpressions) {
         this.refersToExpressions = refersToExpressions;
     }
 
@@ -164,11 +164,11 @@ public class CQLExpressionModelObject {
         this.refersToLibrary = refersToLibrary;
     }
 
-    public List<mat.models.CQLExpressionModelObject> getReferredByExpressions() {
+    public List<cqltoelm.models.CQLExpressionModelObject> getReferredByExpressions() {
         return referredByExpressions;
     }
 
-    public void setReferredByExpressions(List<mat.models.CQLExpressionModelObject> referredByExpressions) {
+    public void setReferredByExpressions(List<cqltoelm.models.CQLExpressionModelObject> referredByExpressions) {
         this.referredByExpressions = referredByExpressions;
     }
 

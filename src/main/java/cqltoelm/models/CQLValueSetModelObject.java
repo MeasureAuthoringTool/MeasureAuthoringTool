@@ -1,8 +1,5 @@
 package cqltoelm.models;
 
-import mat.models.CQLExpressionModelObject;
-import mat.models.CQLFunctionModelObject;
-import mat.models.CQLIncludeModelObject;
 import org.hl7.elm.r1.ValueSetDef;
 
 import java.util.ArrayList;
@@ -19,13 +16,19 @@ public class CQLValueSetModelObject {
 
     private List<CQLIncludeModelObject> refersToLibrary;
 
-    /** The value set definition created by the CQL to ELM Parser **/
+    /**
+     * The value set definition created by the CQL to ELM Parser
+     **/
     private ValueSetDef valueset;
 
-    /** The name of the valueset in dot notation, library.valueset **/
+    /**
+     * The name of the valueset in dot notation, library.valueset
+     **/
     private String name;
 
-    /** The tokens from the CQl to ELM Visitor **/
+    /**
+     * The tokens from the CQl to ELM Visitor
+     **/
     private List<String> tokens;
 
     public CQLValueSetModelObject(String name, List<String> tokens, ValueSetDef valueset) {

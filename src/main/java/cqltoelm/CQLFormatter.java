@@ -31,12 +31,13 @@ public class CQLFormatter {
 
     /**
      * Formats the string passed to it
+     *
      * @param cqlString the cql string to format
      */
     public String format(String cqlString) throws IOException {
 
         InputStream is = null;
-        if(!cqlString.isEmpty()) {
+        if (!cqlString.isEmpty()) {
             is = new ByteArrayInputStream(cqlString.getBytes(StandardCharsets.UTF_8));
         }
 
@@ -45,6 +46,7 @@ public class CQLFormatter {
 
     /**
      * Formats the file passed to it
+     *
      * @param cqlFile the cql file to format
      */
     public void format(File cqlFile) throws IOException {
@@ -63,6 +65,7 @@ public class CQLFormatter {
 
     /**
      * Formats the stream passed to it and returns a formatted cql string
+     *
      * @param is the input stream
      * @return the formatted cql string
      * @throws IOException
@@ -71,17 +74,16 @@ public class CQLFormatter {
 //        CqlFormatterVisitor.setUseSpaces(useSpaces);
         CqlFormatterVisitor.FormatResult result = CqlFormatterVisitor.getFormattedOutput(is);
 
-        if(result != null) {
+        if (result != null) {
             return result.getOutput();
-        }
-
-        else {
+        } else {
             return "";
         }
     }
 
     /**
      * Converts a cql file to a cql string
+     *
      * @param file the file to convert
      * @return the cql string
      */

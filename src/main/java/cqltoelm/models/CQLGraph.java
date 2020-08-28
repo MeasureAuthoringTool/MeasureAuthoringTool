@@ -27,11 +27,11 @@ public class CQLGraph {
 
     public void addEdge(String parent, String child) {
         // check to see if the nod exists yet.
-        if(this.graph.get(parent) == null) {
+        if (this.graph.get(parent) == null) {
             addNode(parent);
         }
 
-        if(this.graph.get(child) == null) {
+        if (this.graph.get(child) == null) {
             addNode(child);
         }
 
@@ -43,7 +43,7 @@ public class CQLGraph {
     public boolean isPath(String source, String destination) {
 
         // if a node is itself, return false because an expression cannot call itself
-        if(source.equals(destination)) {
+        if (source.equals(destination)) {
             return false;
         }
 
@@ -54,18 +54,18 @@ public class CQLGraph {
         visited.add(source); // mark source as visited.
         queue.add(source);
 
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             String currentNode = (String) queue.remove();
             List<String> adjacentVerticies = new ArrayList<>(this.getAdjecencyList().get(currentNode));
 
-            for(String adjacentNode : adjacentVerticies) {
+            for (String adjacentNode : adjacentVerticies) {
                 // we've found the destination node that we were looking for, so return true.
-                if(adjacentNode.equals(destination)) {
+                if (adjacentNode.equals(destination)) {
                     return true;
                 }
 
                 // if it's not the destination node and the node hasn't been visited yet, add it to the queue to be visited.
-                if(!visited.contains(adjacentNode)) {
+                if (!visited.contains(adjacentNode)) {
                     visited.add(adjacentNode);
                     queue.add(adjacentNode);
                 }
@@ -81,7 +81,7 @@ public class CQLGraph {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for(String node : graph.keySet()) {
+        for (String node : graph.keySet()) {
             builder.append(node + " ---> " + graph.get(node) + "\n");
         }
 

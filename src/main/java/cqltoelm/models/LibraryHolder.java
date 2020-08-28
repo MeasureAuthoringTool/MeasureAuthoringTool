@@ -1,17 +1,10 @@
 package cqltoelm.models;
 
-import mat.models.CQLCodeModelObject;
-import mat.models.CQLCodeSystemModelObject;
-import mat.models.CQLExpressionModelObject;
-import mat.models.CQLFunctionModelObject;
-import mat.models.CQLIncludeModelObject;
-import mat.models.CQLParameterModelObject;
-import mat.models.CQLValueSetModelObject;
 import org.hl7.elm.r1.Library;
 
 import java.util.List;
 
-public class LibraryHolder{
+public class LibraryHolder {
     private Library library;
     private String path;
 

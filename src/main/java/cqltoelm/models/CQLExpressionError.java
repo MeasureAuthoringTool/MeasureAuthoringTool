@@ -4,7 +4,7 @@ import org.cqframework.cql.cql2elm.CqlTranslatorException;
 
 /**
  * @author Jack Meyer
- *
+ * <p>
  * The CQL Expression Error. This error represents a simplified version of the CqlException class.
  */
 public class CQLExpressionError {

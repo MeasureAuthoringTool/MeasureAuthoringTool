@@ -1,8 +1,5 @@
 package cqltoelm.models;
 
-import mat.models.CQLExpressionModelObject;
-import mat.models.CQLFunctionModelObject;
-import mat.models.CQLIncludeModelObject;
 import org.hl7.elm.r1.CodeDef;
 
 import java.util.ArrayList;
@@ -19,16 +16,22 @@ public class CQLCodeModelObject {
 
     private List<CQLIncludeModelObject> refersToLibrary;
 
-    /** The name of the code in dot notation, library.codeName **/
+    /**
+     * The name of the code in dot notation, library.codeName
+     **/
     private String name;
 
-    /** The tokens of the code from the CQLtoELM Visitor **/
+    /**
+     * The tokens of the code from the CQLtoELM Visitor
+     **/
     private List<String> tokens;
 
-    /** The code definition object from the CQL to ELM parser**/
+    /**
+     * The code definition object from the CQL to ELM parser
+     **/
     private CodeDef code;
 
-    public CQLCodeModelObject(String name, List<String> tokens,  CodeDef codeRef) {
+    public CQLCodeModelObject(String name, List<String> tokens, CodeDef codeRef) {
         this.referredByExpressions = new ArrayList<>();
         this.referredByFunctions = new ArrayList<>();
         this.refersToLibrary = new ArrayList<>();

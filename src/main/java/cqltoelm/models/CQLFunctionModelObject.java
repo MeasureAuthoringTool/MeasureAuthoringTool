@@ -1,11 +1,6 @@
+
 package cqltoelm.models;
 
-import mat.models.CQLCodeModelObject;
-import mat.models.CQLCodeSystemModelObject;
-import mat.models.CQLExpressionModelObject;
-import mat.models.CQLIncludeModelObject;
-import mat.models.CQLParameterModelObject;
-import mat.models.CQLValueSetModelObject;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.OperandDef;
 
@@ -27,32 +22,38 @@ public class CQLFunctionModelObject {
 
     private List<CQLExpressionModelObject> refersToExpressions;
 
-    private List<mat.models.CQLFunctionModelObject> refersToFunctions;
+    private List<cqltoelm.models.CQLFunctionModelObject> refersToFunctions;
 
     private List<CQLIncludeModelObject> refersToLibrary;
 
     private List<CQLExpressionModelObject> referredByExpressions;
 
-    private List<mat.models.CQLFunctionModelObject> referredByFunctions;
+    private List<cqltoelm.models.CQLFunctionModelObject> referredByFunctions;
 
-    /** The name of the function in dot notation, library.functionName **/
+    /**
+     * The name of the function in dot notation, library.functionName
+     **/
     private String name;
 
-    /** The tokens from the CQL to ELM Visitor **/
+    /**
+     * The tokens from the CQL to ELM Visitor
+     **/
     private List<String> tokens;
 
-    /** The function definition created by the CQL to ELM Parser **/
+    /**
+     * The function definition created by the CQL to ELM Parser
+     **/
     private FunctionDef function;
 
     private List<FunctionArgument> arguments;
 
-    public CQLFunctionModelObject(String name, List<String> tokens, FunctionDef function)  {
+    public CQLFunctionModelObject(String name, List<String> tokens, FunctionDef function) {
         this.name = name;
         this.tokens = tokens;
         this.function = function;
         this.arguments = new ArrayList<>();
 
-        for(OperandDef operand : function.getOperand()) {
+        for (OperandDef operand : function.getOperand()) {
             FunctionArgument argument = new FunctionArgument();
             argument.setArgumentName(operand.getName());
             argument.setArgumentType(operand.getResultType().toString());
@@ -91,7 +92,7 @@ public class CQLFunctionModelObject {
         this.refersToExpressions.add(expression);
     }
 
-    public void addRefersToFunction(mat.models.CQLFunctionModelObject function) {
+    public void addRefersToFunction(cqltoelm.models.CQLFunctionModelObject function) {
         this.refersToFunctions.add(function);
     }
 
@@ -103,7 +104,7 @@ public class CQLFunctionModelObject {
         this.referredByExpressions.add(expression);
     }
 
-    public void addReferredByFunction(mat.models.CQLFunctionModelObject function) {
+    public void addReferredByFunction(cqltoelm.models.CQLFunctionModelObject function) {
         this.referredByFunctions.add(function);
     }
 
@@ -147,11 +148,11 @@ public class CQLFunctionModelObject {
         this.refersToExpressions = refersToExpressions;
     }
 
-    public List<mat.models.CQLFunctionModelObject> getRefersToFunctions() {
+    public List<cqltoelm.models.CQLFunctionModelObject> getRefersToFunctions() {
         return refersToFunctions;
     }
 
-    public void setRefersToFunctions(List<mat.models.CQLFunctionModelObject> refersToFunctions) {
+    public void setRefersToFunctions(List<cqltoelm.models.CQLFunctionModelObject> refersToFunctions) {
         this.refersToFunctions = refersToFunctions;
     }
 
@@ -171,11 +172,11 @@ public class CQLFunctionModelObject {
         this.referredByExpressions = referredByExpressions;
     }
 
-    public List<mat.models.CQLFunctionModelObject> getReferredByFunctions() {
+    public List<cqltoelm.models.CQLFunctionModelObject> getReferredByFunctions() {
         return referredByFunctions;
     }
 
-    public void setReferredByFunctions(List<mat.models.CQLFunctionModelObject> referredByFunctions) {
+    public void setReferredByFunctions(List<cqltoelm.models.CQLFunctionModelObject> referredByFunctions) {
         this.referredByFunctions = referredByFunctions;
     }
 

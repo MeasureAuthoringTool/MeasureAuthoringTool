@@ -1,7 +1,7 @@
 package cqltoelm;
 
-import mat.models.CQLGraph;
-import mat.parsers.MATCQL2ELMListener;
+import cqltoelm.models.CQLGraph;
+import cqltoelm.parsers.MATCQL2ELMListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -79,7 +79,7 @@ public class MATCQLFilter {
      * Map in the form of <LibraryName-x.x.xxx, <ExpressionName, ReturnType>>.
      */
     private Map<String, Map<String, String>> allNamesToReturnTypeMap = new HashMap<>();
-    
+
     private Map<String, String> expressionToReturnTypeMap = new HashMap<>();
 
     // used expression sets
@@ -93,12 +93,12 @@ public class MATCQLFilter {
 
 
     public MATCQLFilter(
-    		String parentLibraryString, 
-    		Map<String, String> childrenLibraries, 
-    		List<String> parentExpressions, 
-    		CqlTranslator translator, 
-    		Map<String, TranslatedLibrary> translatedLibraries) {
-    	
+            String parentLibraryString,
+            Map<String, String> childrenLibraries,
+            List<String> parentExpressions,
+            CqlTranslator translator,
+            Map<String, TranslatedLibrary> translatedLibraries) {
+
         this.parentLibraryString = parentLibraryString;
         this.translator = translator;
         this.library = translator.getTranslatedLibrary();
@@ -109,9 +109,10 @@ public class MATCQLFilter {
 
     /**
      * The CQL Filter Entry Point.
-     *
+     * <p>
      * This function will find all of the used CQL expressions, create a valueset - datatype map and code - datatype map,
      * and find return types for each expression.
+     *
      * @throws IOException
      */
     public void filter() throws IOException {
@@ -164,7 +165,7 @@ public class MATCQLFilter {
         List<String> definitions = new ArrayList<>(definitionsSet);
         List<String> functions = new ArrayList<>(functionsSet);
 
-        for(String parentExpression : parentExpressions) {
+        for (String parentExpression : parentExpressions) {
             collectUsedLibraries(graph, libraries, parentExpression);
             collectUsedValuesets(graph, valuesets, parentExpression);
             collectUsedCodes(graph, codes, parentExpression);
@@ -178,13 +179,14 @@ public class MATCQLFilter {
     /**
      * For every function reference from the listener, checks if the parent expression and the function make a path.
      * If it does make a path, that means the function is used and should therefore be added to the used functions list.
-     * @param graph the graph
-     * @param functions the function references from the listener
+     *
+     * @param graph            the graph
+     * @param functions        the function references from the listener
      * @param parentExpression the parent expression to check
      */
     private void collectUsedFunctions(CQLGraph graph, List<String> functions, String parentExpression) {
-        for(String function : functions) {
-            if(graph.isPath(parentExpression, function)) {
+        for (String function : functions) {
+            if (graph.isPath(parentExpression, function)) {
                 usedFunctions.add(function);
             }
         }
@@ -193,13 +195,14 @@ public class MATCQLFilter {
     /**
      * For every definition reference from the listener, checks if the parent expression and the definition make a path.
      * If it does make a path, that means the definition is used and should therefore be added to the used definitions list.
-     * @param graph the graph
-     * @param definitions the definition references from the listener
+     *
+     * @param graph            the graph
+     * @param definitions      the definition references from the listener
      * @param parentExpression the parent expression to check
      */
     private void collectUsedDefinitions(CQLGraph graph, List<String> definitions, String parentExpression) {
-        for(String definition : definitions) {
-            if(graph.isPath(parentExpression, definition) && !definition.equalsIgnoreCase("Patient") && !definition.equalsIgnoreCase("Population")) {
+        for (String definition : definitions) {
+            if (graph.isPath(parentExpression, definition) && !definition.equalsIgnoreCase("Patient") && !definition.equalsIgnoreCase("Population")) {
                 usedDefinitions.add(definition);
             }
         }
@@ -208,13 +211,14 @@ public class MATCQLFilter {
     /**
      * For every parameter reference from the listener, checks if the parent expression and the parameter make a path.
      * If it does make a path, that means the parameter is used and should therefore be added to the used parameters list.
-     * @param graph the graph
-     * @param parameters the parameter references from the listener
+     *
+     * @param graph            the graph
+     * @param parameters       the parameter references from the listener
      * @param parentExpression the parent expression to check
      */
     private void collectUsedParameters(CQLGraph graph, List<String> parameters, String parentExpression) {
-        for(String parameter : parameters) {
-            if(graph.isPath(parentExpression, parameter)) {
+        for (String parameter : parameters) {
+            if (graph.isPath(parentExpression, parameter)) {
                 usedParameters.add(parameter);
             }
         }
@@ -223,13 +227,14 @@ public class MATCQLFilter {
     /**
      * For every code reference from the listener, checks if the parent expression and the code make a path.
      * If it does make a path, that means the code is used and should therefore be added to the used codes list.
-     * @param graph the graph
-     * @param codes the code references from the listener
+     *
+     * @param graph            the graph
+     * @param codes            the code references from the listener
      * @param parentExpression the parent expression to check
      */
     private void collectUsedCodes(CQLGraph graph, List<String> codes, String parentExpression) {
-        for(String code : codes) {
-            if(graph.isPath(parentExpression, code)) {
+        for (String code : codes) {
+            if (graph.isPath(parentExpression, code)) {
                 usedCodes.add(code);
             }
         }
@@ -238,13 +243,14 @@ public class MATCQLFilter {
     /**
      * For every codesystem reference from the listener, checks if the parent expression and the codesystem make a path.
      * If it does make a path, that means the codesystem is used and should therefore be added to the used codesystems list.
-     * @param graph the graph
-     * @param codesystems the code references from the listener
+     *
+     * @param graph            the graph
+     * @param codesystems      the code references from the listener
      * @param parentExpression the parent expression to check
      */
     private void collectUsedCodeSystems(CQLGraph graph, List<String> codesystems, String parentExpression) {
-        for(String codesystem : codesystems) {
-            if(graph.isPath(parentExpression, codesystem)) {
+        for (String codesystem : codesystems) {
+            if (graph.isPath(parentExpression, codesystem)) {
                 usedCodeSystems.add(codesystem);
             }
         }
@@ -253,13 +259,14 @@ public class MATCQLFilter {
     /**
      * For every valueset reference from the listener, checks if the parent expression and the valueset make a path.
      * If it does make a path, that means the valueset is used and should therefore be added to the used valuesets list.
-     * @param graph the graph
-     * @param valuesets the valueset references from the listener
+     *
+     * @param graph            the graph
+     * @param valuesets        the valueset references from the listener
      * @param parentExpression the parent expression to check
      */
     private void collectUsedValuesets(CQLGraph graph, List<String> valuesets, String parentExpression) {
-        for(String valueset: valuesets) {
-            if(graph.isPath(parentExpression, valueset)) {
+        for (String valueset : valuesets) {
+            if (graph.isPath(parentExpression, valueset)) {
                 usedValuesets.add(valueset);
             }
         }
@@ -268,13 +275,14 @@ public class MATCQLFilter {
     /**
      * For every library reference from the listener, checks if the parent expression and the library make a path.
      * If it does make a path, that means the library is used and should therefore be added to the used libraries list.
-     * @param graph the graph
-     * @param libraries the library references from the listener
+     *
+     * @param graph            the graph
+     * @param libraries        the library references from the listener
      * @param parentExpression the parent expression to check
      */
     private void collectUsedLibraries(CQLGraph graph, List<String> libraries, String parentExpression) {
-        for(String library : libraries) {
-            if(graph.isPath(parentExpression, library)) {
+        for (String library : libraries) {
+            if (graph.isPath(parentExpression, library)) {
                 usedLibraries.add(library);
             }
         }
@@ -292,50 +300,50 @@ public class MATCQLFilter {
         String libraryName = this.library.getIdentifier().getId();
         String libraryVersion = this.library.getIdentifier().getVersion();
         this.allNamesToReturnTypeMap.put(libraryName + "-" + libraryVersion, new HashMap<>());
-        
-        for(ExpressionDef expression : statements.getDef()) {
+
+        for (ExpressionDef expression : statements.getDef()) {
             this.allNamesToReturnTypeMap.get(libraryName + "-" + libraryVersion).put(expression.getName(), expression.getResultType().toString());
             this.nameToReturnTypeMap.put(expression.getName(), expression.getResultType().toString());
             this.expressionToReturnTypeMap.put(expression.getName(), expression.getResultType().toString());
         }
-        
-        if(parameters != null) {
-            for(ParameterDef parameter : parameters.getDef()) {
+
+        if (parameters != null) {
+            for (ParameterDef parameter : parameters.getDef()) {
                 this.allNamesToReturnTypeMap.get(libraryName + "-" + libraryVersion).put(parameter.getName(), parameter.getResultType().toString());
                 this.nameToReturnTypeMap.put(parameter.getName(), parameter.getResultType().toString());
                 this.expressionToReturnTypeMap.put(parameter.getName(), parameter.getResultType().toString());
             }
         }
 
-        
+
         if (null != this.library.getLibrary().getIncludes()) {
-        	for(IncludeDef include : this.library.getLibrary().getIncludes().getDef()) {
-        		TranslatedLibrary lib = this.translatedLibraryMap.get(include.getPath() + "-" + include.getVersion());
+            for (IncludeDef include : this.library.getLibrary().getIncludes().getDef()) {
+                TranslatedLibrary lib = this.translatedLibraryMap.get(include.getPath() + "-" + include.getVersion());
 
-        		Library.Statements statementsFromIncludedLibrary = lib.getLibrary().getStatements();
-        		Library.Parameters parametersFromIncludedLibrary = lib.getLibrary().getParameters();
-        		String includedLibraryName = lib.getIdentifier().getId();
-        		String includedLibraryVersion = lib.getIdentifier().getVersion();
-        		this.allNamesToReturnTypeMap.put(includedLibraryName + "-" + includedLibraryVersion, new HashMap<>());
+                Library.Statements statementsFromIncludedLibrary = lib.getLibrary().getStatements();
+                Library.Parameters parametersFromIncludedLibrary = lib.getLibrary().getParameters();
+                String includedLibraryName = lib.getIdentifier().getId();
+                String includedLibraryVersion = lib.getIdentifier().getVersion();
+                this.allNamesToReturnTypeMap.put(includedLibraryName + "-" + includedLibraryVersion, new HashMap<>());
 
-        		for(ExpressionDef expression : statementsFromIncludedLibrary.getDef()) {
-        			this.allNamesToReturnTypeMap.get(includedLibraryName + "-" + includedLibraryVersion).put(expression.getName(), expression.getResultType().toString());
-        			this.expressionToReturnTypeMap.put(include.getLocalIdentifier() + "." + expression.getName(), expression.getResultType().toString());
-        		}
+                for (ExpressionDef expression : statementsFromIncludedLibrary.getDef()) {
+                    this.allNamesToReturnTypeMap.get(includedLibraryName + "-" + includedLibraryVersion).put(expression.getName(), expression.getResultType().toString());
+                    this.expressionToReturnTypeMap.put(include.getLocalIdentifier() + "." + expression.getName(), expression.getResultType().toString());
+                }
 
-        		if(parametersFromIncludedLibrary != null) {
-            		for(ParameterDef parameter : parametersFromIncludedLibrary.getDef()) {
-            			this.allNamesToReturnTypeMap.get(includedLibraryName + "-" + includedLibraryVersion).put(parameter.getName(), parameter.getResultType().toString());
-            			this.expressionToReturnTypeMap.put(include.getLocalIdentifier() + "." + parameter.getName(), parameter.getResultType().toString());
-            		}
-        		}
-        	}        	
+                if (parametersFromIncludedLibrary != null) {
+                    for (ParameterDef parameter : parametersFromIncludedLibrary.getDef()) {
+                        this.allNamesToReturnTypeMap.get(includedLibraryName + "-" + includedLibraryVersion).put(parameter.getName(), parameter.getResultType().toString());
+                        this.expressionToReturnTypeMap.put(include.getLocalIdentifier() + "." + parameter.getName(), parameter.getResultType().toString());
+                    }
+                }
+            }
         }
     }
 
     /**
      * Collects the valueset - datatype map and code - datatype map.
-     *
+     * <p>
      * It loos through each translator object from the parser, and then for each translator it loops through the retrieves.
      * It then puts the valueset/code and it's corresponding data type into the correct map.
      */
@@ -357,12 +365,12 @@ public class MATCQLFilter {
         Map<String, Set<String>> flattenedMap = new HashMap<>();
 
         Set<String> keys = mapToFlatten.keySet();
-        for(String key : keys) {
+        for (String key : keys) {
             Map<String, Set<String>> innerMap = mapToFlatten.get(key);
 
             Set<String> innerKeys = innerMap.keySet();
-            for(String innerKey : innerKeys) {
-                if(flattenedMap.get(innerKey) == null) {
+            for (String innerKey : innerKeys) {
+                if (flattenedMap.get(innerKey) == null) {
                     flattenedMap.put(innerKey, new HashSet());
                 }
 
@@ -378,7 +386,7 @@ public class MATCQLFilter {
 
         List<String> keySet = new ArrayList<>(valuesetDataTypeMap.keySet());
 
-        for(String key : keySet) {
+        for (String key : keySet) {
             List<String> dataTypes = new ArrayList<>(valuesetDataTypeMap.get(key));
             valuesetDataTypeMapWithList.put(key, dataTypes);
         }
@@ -391,7 +399,7 @@ public class MATCQLFilter {
 
         List<String> keySet = new ArrayList<>(codeDataTypeMap.keySet());
 
-        for(String key : keySet) {
+        for (String key : keySet) {
             List<String> dataTypes = new ArrayList<>(codeDataTypeMap.get(key));
             codeDataTypeMapWithList.put(key, dataTypes);
         }
@@ -413,7 +421,7 @@ public class MATCQLFilter {
 
     private List<String> formatUsedLibraries() {
         Set<String> usedLibraryFormatted = new HashSet<>();
-        for(String usedLibrary : usedLibraries) {
+        for (String usedLibrary : usedLibraries) {
             IncludeDef def = (IncludeDef) this.library.resolve(usedLibrary);
             usedLibraryFormatted.add(def.getPath() + "-" + def.getVersion() + "|" + usedLibrary);
         }
@@ -464,7 +472,7 @@ public class MATCQLFilter {
         cqLtoELM.doTranslation(true, "XML");
         List<String> parentExpressions = new ArrayList<>();
         parentExpressions.add("test");
-        if(!cqLtoELM.getErrors().isEmpty()) {
+        if (!cqLtoELM.getErrors().isEmpty()) {
             System.out.println(cqLtoELM.getErrors());
             return;
         }
@@ -509,6 +517,7 @@ public class MATCQLFilter {
 
     /**
      * Converts a cql file to a cql string
+     *
      * @param file the file to convert
      * @return the cql string
      */
@@ -527,8 +536,8 @@ public class MATCQLFilter {
         return allNamesToReturnTypeMap;
     }
 
-	public Map<String, String> getExpressionToReturnTypeMap() {
-		return expressionToReturnTypeMap;
-	}
+    public Map<String, String> getExpressionToReturnTypeMap() {
+        return expressionToReturnTypeMap;
+    }
 
 }

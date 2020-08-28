@@ -1,8 +1,8 @@
 package mat.server.cqlparser;
 
+import cqltoelm.models.LibraryHolder;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
-import mat.models.LibraryHolder;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
 import mat.shared.CQLObject;
@@ -150,7 +150,7 @@ public class CQLFilter {
 	 *            the lists of populations that are included in MAT
 	 */
 	public CQLFilter(Library library, List<String> populationList,
-			Map<String, LibraryHolder> map, CQLModel cqlModel) {
+					 Map<String, LibraryHolder> map, CQLModel cqlModel) {
 
 		this.libraryHolderMapping = map;
 		this.library = library;

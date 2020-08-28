@@ -1,8 +1,5 @@
 package cqltoelm.models;
 
-import mat.models.CQLExpressionModelObject;
-import mat.models.CQLFunctionModelObject;
-import mat.models.CQLIncludeModelObject;
 import org.hl7.elm.r1.ParameterDef;
 
 import java.util.ArrayList;
@@ -19,13 +16,19 @@ public class CQLParameterModelObject {
 
     private List<CQLIncludeModelObject> refersToLibrary;
 
-    /** The parameter definition created by the CQL to ELM Parser **/
+    /**
+     * The parameter definition created by the CQL to ELM Parser
+     **/
     private ParameterDef parameter;
 
-    /** The name of the parameter in dot notation, library.parameter **/
+    /**
+     * The name of the parameter in dot notation, library.parameter
+     **/
     private String name;
 
-    /** The tokens form the CQL to ELM Visitor **/
+    /**
+     * The tokens form the CQL to ELM Visitor
+     **/
     private List<String> tokens;
 
     public CQLParameterModelObject(String name, List<String> tokens, ParameterDef parameter) {

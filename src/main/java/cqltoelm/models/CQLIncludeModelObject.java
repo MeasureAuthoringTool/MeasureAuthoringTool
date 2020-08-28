@@ -1,11 +1,5 @@
 package cqltoelm.models;
 
-import mat.models.CQLCodeModelObject;
-import mat.models.CQLCodeSystemModelObject;
-import mat.models.CQLExpressionModelObject;
-import mat.models.CQLFunctionModelObject;
-import mat.models.CQLParameterModelObject;
-import mat.models.CQLValueSetModelObject;
 import org.hl7.elm.r1.IncludeDef;
 
 import java.util.ArrayList;

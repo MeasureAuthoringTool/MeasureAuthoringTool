@@ -1,8 +1,5 @@
 package cqltoelm.models;
 
-import mat.models.CQLExpressionModelObject;
-import mat.models.CQLFunctionModelObject;
-import mat.models.CQLIncludeModelObject;
 import org.hl7.elm.r1.CodeSystemDef;
 
 import java.util.ArrayList;
@@ -19,13 +16,19 @@ public class CQLCodeSystemModelObject {
 
     private List<CQLIncludeModelObject> refersToLibrary;
 
-    /** The name of the code system in dot notation, library.codeSystem **/
+    /**
+     * The name of the code system in dot notation, library.codeSystem
+     **/
     private String name;
 
-    /** The tokens from the CQLtoELM Visitor **/
+    /**
+     * The tokens from the CQLtoELM Visitor
+     **/
     private List<String> tokens;
 
-    /** The code system definition object created by the CQL to ELM parser **/
+    /**
+     * The code system definition object created by the CQL to ELM parser
+     **/
     private CodeSystemDef codeSystem;
 
     public CQLCodeSystemModelObject(String name, List<String> tokens, CodeSystemDef codeSystemDef) {

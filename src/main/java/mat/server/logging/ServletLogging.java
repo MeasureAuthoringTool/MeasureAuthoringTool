@@ -42,12 +42,12 @@ public final class ServletLogging {
     }
 
     public static void logOutgoingResponse(String statusCode, String statusText, long executionTime, String headers, String body) {
-        if (log.isInfoEnabled()) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("\nExternal response. Time="+ executionTime +"ms Status=" + statusCode + " StatusText=" + StringUtils.defaultString(statusText) + "\n" +
-                    "\tHeaders=\n" + headers + "\n" +
-                    "\tBody=\n" + StringUtils.defaultString(body));
-            log.info(builder.toString());
-        }
+//        if (log.isInfoEnabled()) {
+//            StringBuilder builder = new StringBuilder();
+//            builder.append("\nExternal response. Time="+ executionTime +"ms Status=" + statusCode + " StatusText=" + StringUtils.defaultString(statusText) + "\n" +
+//                    "\tHeaders=\n" + headers + "\n" +
+//                    "\tBody=\n" + StringUtils.defaultString(body));
+//            log.info(builder.toString());
+//        }
     }
 }

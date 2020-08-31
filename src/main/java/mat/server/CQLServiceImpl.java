@@ -44,6 +44,7 @@ import mat.server.service.MeasurePackageService;
 import mat.server.service.cql.FhirCqlParser;
 import mat.server.service.cql.LibraryErrors;
 import mat.server.service.cql.MatXmlResponse;
+import mat.server.service.cql.ValidationRequest;
 import mat.server.service.impl.XMLMarshalUtil;
 import mat.server.util.CQLLibraryWrapperMappingUtil;
 import mat.server.util.CQLUtil;
@@ -1038,7 +1039,8 @@ public class CQLServiceImpl implements CQLService {
             result = parseCQLLibraryForErrors(cqlModel);
         }
 
-        if (result.getCqlErrors().isEmpty() && !cqlModel.isFhir()) {;
+        if (result.getCqlErrors().isEmpty() && !cqlModel.isFhir()) {
+            ;
             result.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
             setUsedValuesets(result, cqlModel);
             setUsedCodes(result, cqlModel);
@@ -1080,9 +1082,9 @@ public class CQLServiceImpl implements CQLService {
     @Override
     public SaveUpdateCQLResult loadStandaloneLibCql(CQLLibrary lib, String xmlString) {
         if (StringUtils.isNotBlank(lib.getSevereErrorCql())) {
-            return getFhirCqlResultForSevereErrors(lib.getSevereErrorCql(),xmlString);
+            return getFhirCqlResultForSevereErrors(lib.getSevereErrorCql(), xmlString);
         } else {
-            return getCQLLibraryData(xmlString,lib.getLibraryModelType());
+            return getCQLLibraryData(xmlString, lib.getLibraryModelType());
         }
     }
 
@@ -1093,9 +1095,9 @@ public class CQLServiceImpl implements CQLService {
             throw new MatRuntimeException("Can't find measureXml for " + measure.getId());
         }
         if (StringUtils.isNotBlank(xml.getSevereErrorCql())) {
-            return getFhirCqlResultForSevereErrors(xml.getSevereErrorCql(),xmlString);
+            return getFhirCqlResultForSevereErrors(xml.getSevereErrorCql(), xmlString);
         } else {
-            return getCQLLibraryData(xmlString,measure.getMeasureModel());
+            return getCQLLibraryData(xmlString, measure.getMeasureModel());
         }
     }
 
@@ -1298,7 +1300,7 @@ public class CQLServiceImpl implements CQLService {
     }
 
     @Override
-    public SaveUpdateCQLResult getCQLFileData(String id,boolean isMeasure, String xmlString) {
+    public SaveUpdateCQLResult getCQLFileData(String id, boolean isMeasure, String xmlString) {
         SaveUpdateCQLResult result = getCQLData(id, isMeasure, xmlString);
         String cqlString = getCqlString(result.getCqlModel());
         result.setSuccess(cqlString != null);
@@ -1423,6 +1425,10 @@ public class CQLServiceImpl implements CQLService {
     @Override
     public SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, String cql) {
         return fhirCqlParser.parseFhirCqlLibraryForErrors(cqlModel, cql);
+    }
+
+    public SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, String cql, ValidationRequest req) {
+        return fhirCqlParser.parseFhirCqlLibraryForErrors(cqlModel, cql, req);
     }
 
     private SaveUpdateCQLResult parseFhirCQLForErrors(CQLModel cqlModel, List<LibraryErrors> libraryErrors) {
@@ -1618,13 +1624,23 @@ public class CQLServiceImpl implements CQLService {
         String formattedName = cqlModel.getFormattedName();
         // if there are no errors in the cql library, get the used cql artifacts
         if (CollectionUtils.isEmpty(cqlResult.getCqlErrors())) {
-            XmlProcessor xmlProcessor = new XmlProcessor(xml);
-            CQLArtifactHolder cqlArtifactHolder = CQLUtil
-                    .getCQLArtifactsReferredByPoplns(xmlProcessor.getOriginalDoc());
-            cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(cqlArtifactHolder.getCqlDefFromPopSet());
-            cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
-            setReturnTypes(cqlResult, cqlModel);
-
+            if (cqlModel.isFhir()) {
+                cqlResult.getCqlObject().getCqlDefinitionObjectList().forEach(d -> cqlResult.getUsedCQLArtifacts().getExpressionReturnTypeMap().put(d.getName(),
+                        d.getReturnType()));
+                // This is wrong because functions can be overloaded in FHIR. Eventually we need to fix this.
+                cqlResult.getCqlObject().getCqlFunctionObjectList().forEach(f -> cqlResult.getUsedCQLArtifacts().getExpressionReturnTypeMap().put(f.getName(),
+                        f.getReturnType()));
+                cqlResult.getCqlObject().getCqlParameterObjectList().forEach(p -> cqlResult.getUsedCQLArtifacts().getExpressionReturnTypeMap().put(p.getName(),
+                        p.getReturnType()));
+                setReturnTypes(cqlResult, cqlModel);
+            } else {
+                XmlProcessor xmlProcessor = new XmlProcessor(xml);
+                CQLArtifactHolder cqlArtifactHolder = CQLUtil
+                        .getCQLArtifactsReferredByPoplns(xmlProcessor.getOriginalDoc());
+                cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(cqlArtifactHolder.getCqlDefFromPopSet());
+                cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
+                setReturnTypes(cqlResult, cqlModel);
+            }
         } else {
             cqlResult.getUsedCQLArtifacts().setLibraryNameErrorsMap(cqlResult.getLibraryNameErrorsMap());
             cqlResult.getUsedCQLArtifacts().setLibraryNameWarningsMap(cqlResult.getLibraryNameWarningsMap());
@@ -1908,7 +1924,7 @@ public class CQLServiceImpl implements CQLService {
                                                      CQLQualityDataModelWrapper cqlQualityDataModelWrapper) {
         MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
         String xmlString = model.getXml();
-        SaveUpdateCQLResult cqlDataResult = getCQLData(measureId,true, xmlString);
+        SaveUpdateCQLResult cqlDataResult = getCQLData(measureId, true, xmlString);
         List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
                 .sortCQLQualityDataSetDto(cqlDataResult.getCqlModel().getAllValueSetAndCodeList());
         cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);

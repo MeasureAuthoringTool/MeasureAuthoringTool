@@ -88,6 +88,7 @@ import mat.server.service.MeasureDetailsService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
+import mat.server.service.cql.ValidationRequest;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.service.impl.MeasureAuditServiceImpl;
 import mat.server.service.impl.PatientBasedValidator;
@@ -4943,7 +4944,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         if (ModelTypeHelper.FHIR.equalsIgnoreCase(measure.getMeasureModel())) {
             CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getXml());
             String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").getLeft();
-            SaveUpdateCQLResult cqlResult = getCqlService().parseFhirCQLForErrors(cqlModel, cqlFileString);
+            SaveUpdateCQLResult cqlResult = getCqlService().parseFhirCQLForErrors(cqlModel,
+                    cqlFileString,
+                    ValidationRequest.builder().validateReturnType(true).build());
             return getCqlService().generateUsedCqlArtifactsResult(cqlModel, measureXML.getXml(), cqlResult);
         } else {
             return getCqlService().getUsedCQlArtifacts(measureXML.getXml());

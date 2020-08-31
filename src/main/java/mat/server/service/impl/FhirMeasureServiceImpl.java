@@ -100,7 +100,7 @@ public class FhirMeasureServiceImpl implements FhirMeasureService {
         }
 
         ConversionResultDto conversionResult = fhirMeasureRemote.convert(sourceMeasure.getId(), vsacGrantingTicket, sourceMeasure.isDraft());
-        Optional<String> fhirCqlOpt = getFhirCql(sourceMeasure.getCqlLibraryName(),conversionResult);
+        Optional<String> fhirCqlOpt = getFhirCql(sourceMeasureDetails.getCQLLibraryName(),conversionResult);
 
         FhirValidationStatus validationStatus = createValidationStatus(conversionResult);
         fhirConvertResultResponse.setValidationStatus(validationStatus);

@@ -102,7 +102,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
     @Autowired
     private MeasureLibraryService measureLibraryService;
 
-    @Value("${FHIR_SRVC_URL:http://localhost:9080/}codeSystem/mappings")
+    @Value("${QDM_QICORE_MAPPING_SERVICES_URL:http://localhost:9090}/codeSystemEntries")
     private String mappingsUrl;
 
     @Autowired

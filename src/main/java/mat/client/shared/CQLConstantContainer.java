@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class CQLConstantContainer implements IsSerializable {
     private String currentQDMVersion;
@@ -48,6 +49,16 @@ public class CQLConstantContainer implements IsSerializable {
 
     public void setCompoundFhirDataTypes(List<String> compoundFhirDataTypes) {
         this.compoundFhirDataTypes = compoundFhirDataTypes;
+    }
+
+    public Set<String> getAllFhirAttributes() {
+        Set<String> allAttributes = new TreeSet<>();
+
+        for (FhirDatatypeAttributeAssociation a : attributeAssociations) {
+            allAttributes.add(a.getAttribute());
+        }
+
+        return allAttributes;
     }
 
     public List<FhirDatatypeAttributeAssociation> getAttributeAssociations() {
@@ -166,6 +177,10 @@ public class CQLConstantContainer implements IsSerializable {
         return functionSignatures;
     }
 
+    public void setFunctionSignatures(List<FunctionSignature> functionSignatures) {
+        this.functionSignatures = functionSignatures;
+    }
+
     public List<String> getFunctionNames() {
         Set<String> nameSet = new HashSet<>();
 
@@ -176,10 +191,6 @@ public class CQLConstantContainer implements IsSerializable {
         List<String> names = new ArrayList<>(nameSet);
         names.sort(Comparator.naturalOrder());
         return names;
-    }
-
-    public void setFunctionSignatures(List<FunctionSignature> functionSignatures) {
-        this.functionSignatures = functionSignatures;
     }
 
     public Map<String, FhirDataType> getFhirDataTypes() {

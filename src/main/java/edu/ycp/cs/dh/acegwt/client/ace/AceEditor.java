@@ -41,7 +41,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * A GWT widget for the Ajax.org Code Editor (ACE).
@@ -1100,33 +1099,28 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
         Set<String> dataTypeList = new HashSet<>();
 
         if (MatContext.get().isCurrentModelTypeFhir()) {
-            MatContext.get().getCqlConstantContainer().getFhirDataTypes().keySet().forEach(
-                    s -> dataTypeList.addAll(splitPeriod(s)));
+            MatContext.get().getCqlConstantContainer().getCompoundFhirDataTypes()
+                     .stream().filter(AceEditor::isValidFhirDataTypeForList)
+                    .forEach(dataTypeList::add);
         } else {
             dataTypeList.addAll(MatContext.get().getCqlConstantContainer().getCqlDatatypeList());
         }
 
         JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
-        for (String string : dataTypeList) {
-            if (!string.equals(MatContext.PLEASE_SELECT)) {
-                jsArray.push("[\"" + string + "\"]");
+        for (String type : dataTypeList) {
+            if (!type.equals(MatContext.PLEASE_SELECT) ) {
+                jsArray.push("[\"" + type + "\"]");
             }
         }
         return jsArray;
     }
 
-    private static List<String> splitPeriod(String s) {
-        if (s == null || s.equals("")) {
-            return new ArrayList<>();
-        } else {
-            List<String> result = new ArrayList<>();
-            ;
-            String[] split = s.split(".");
-            for (String sp : split) {
-                result.add(sp);
-            }
-            return result;
+    private static boolean isValidFhirDataTypeForList(String type) {
+        if (type == null || type.equals("")) {
+            return false;
         }
+
+        return type.indexOf('.') < 0;
     }
 
     /**
@@ -1194,10 +1188,8 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
         Set<String> attrList = new HashSet<>();
 
         if (MatContext.get().isCurrentModelTypeFhir()) {
-            MatContext.get().getCqlConstantContainer().getFhirDataTypes().values().
-                    forEach(v -> attrList.addAll(
-                            v.getAttributes().values().stream().
-                                    map(a -> a.getFhirElement()).collect(Collectors.toList())));
+
+            attrList = MatContext.get().getCqlConstantContainer().getAllFhirAttributes();
         } else {
             attrList.addAll(MatContext.get().getCqlConstantContainer().getCqlAttributeList());
         }

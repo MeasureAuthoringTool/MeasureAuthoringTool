@@ -937,6 +937,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.seteMeasureId(dto.geteMeasureId());
         detail.setPatientBased(dto.isPatientBased());
         detail.setQdmVersion(measure.getQdmVersion());
+        detail.setFhirVersion(measure.getFhirVersion());
         detail.setIsComposite(measure.getIsCompositeMeasure());
 
         String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
@@ -1102,6 +1103,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
         detail.setDraft(measure.isDraft());
         detail.setIsComposite(measure.getIsCompositeMeasure());
         detail.setQdmVersion(measure.getQdmVersion());
+        detail.setFhirVersion(measure.getFhirVersion());
         detail.setExportable(measure.getExportedDate() != null); // to show export icon.
         detail.setFhirConvertible(MatContextServiceUtil.get().isMeasureConvertible(measure));
         detail.setHqmfReleaseVersion(measure.getReleaseVersion());

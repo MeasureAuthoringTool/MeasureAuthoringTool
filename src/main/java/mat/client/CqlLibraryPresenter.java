@@ -1464,12 +1464,14 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
      */
     private void displayNewCQLLibraryWidget() {
         setIsPageDirty(false);
+        boolean isFhirAvailable = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR);
         warningConfirmationMessageAlert = detailDisplay.getWarningConfirmationAlert();
         warningConfirmationMessageAlert.clearAlert();
         panel.getButtonPanel().clear();
         panel.setHeading("My CQL Library > Create New CQL Library", CQL_LIBRARY);
         panel.setContent(detailDisplay.asWidget());
-        detailDisplay.setLibraryModelType(ModelTypeHelper.FHIR, false);
+        detailDisplay.setLibraryModelType(isFhirAvailable ? ModelTypeHelper.FHIR : ModelTypeHelper.QDM,
+                false);
         updateSaveButtonHandler(event -> createCQLLibrary());
         Mat.focusSkipLists(CQL_LIBRARY);
     }

@@ -15,6 +15,7 @@ import com.google.gwt.view.client.SelectionModel;
 import mat.client.cql.CQLLibrarySearchView.Observer;
 import mat.client.util.CellTableUtility;
 import mat.client.util.FeatureFlagConstant;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.model.util.MeasureDetailsUtil;
@@ -59,8 +60,18 @@ public class CQLLibraryResultTable {
         table.addColumn(cqlLibraryName,
                 SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>" + "CQL Library Name" + "</span>"));
 
+        // Model Version Column
+        Column<CQLLibraryDataSetObject, SafeHtml> modelVersion = new Column<CQLLibraryDataSetObject, SafeHtml> (
+                new ClickableSafeHtmlCell()) {
+            @Override
+            public SafeHtml getValue(CQLLibraryDataSetObject object) {
+                return CellTableUtility.getColumnToolTip(getModelVersion(object));
+            }
+        };
+        table.addColumn(modelVersion, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Model Version" + "</span>"));
+
         // Version Column
-        Column<CQLLibraryDataSetObject, SafeHtml> version = new Column<CQLLibraryDataSetObject, SafeHtml>(
+        Column<CQLLibraryDataSetObject, SafeHtml> version = new Column<CQLLibraryDataSetObject, SafeHtml> (
                 new ClickableSafeHtmlCell()) {
             @Override
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
@@ -246,5 +257,15 @@ public class CQLLibraryResultTable {
 
     public void setObserver(Observer observer) {
         this.observer = observer;
+    }
+
+    private String getModelVersion(CQLLibraryDataSetObject object) {
+        if (ModelTypeHelper.isFhir(object.getLibraryModelType()) && object.getFhirVersion() != null) {
+            return object.getFhirVersion();
+        } else if (ModelTypeHelper.isQdm(object.getLibraryModelType()) && object.getQdmVersion() != null) {
+            return object.getQdmVersion();
+        } else {
+            return " ";
+        }
     }
 }

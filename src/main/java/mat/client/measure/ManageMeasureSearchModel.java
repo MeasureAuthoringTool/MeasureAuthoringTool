@@ -66,6 +66,8 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 
         private String qdmVersion;
 
+        private String fhirVersion;
+
         private Boolean isComposite;
 
         private String cqlLibraryName;
@@ -613,6 +615,14 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 
         public void setQdmVersion(String qdmVersion) {
             this.qdmVersion = qdmVersion;
+        }
+
+        public String getFhirVersion() {
+            return fhirVersion;
+        }
+
+        public void setFhirVersion(String fhirVersion) {
+            this.fhirVersion = fhirVersion;
         }
 
         public Boolean getIsComposite() {

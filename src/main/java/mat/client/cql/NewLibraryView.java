@@ -104,7 +104,6 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
         contentPanel.add(new SpacerWidget());
         contentPanel.add(new SpacerWidget());
 
-
         mainDetailViewVP.add(contentPanel);
     }
 
@@ -179,6 +178,10 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
         qdmModel.setEnabled(!isDraft);
         fhirModel.setValue(ModelTypeHelper.isFhir(type));
         qdmModel.setValue(!ModelTypeHelper.isFhir(type));
+        logger.info("setLibraryModelType qdmModel=" + qdmModel.getValue() +
+                " fhirModel=" + fhirModel.getValue() +
+                " fhirModelEnabled=" + fhirModel.isEnabled() +
+                " qdmModelEnabled=" + qdmModel.isEnabled());
     }
 
     @Override
@@ -232,5 +235,4 @@ public class NewLibraryView implements CqlLibraryPresenter.DetailDisplay {
     public EditConfirmationDialogBox getCreateNewConfirmationDialogBox() {
         return createNewConfirmationDialogBox;
     }
-
 }

@@ -52,6 +52,11 @@ public class RequestResponseLoggingMdcInternalInterceptor extends RequestRespons
         headerMap.forEach(MDC::put);
 
         request.getHeaders().add(MDC_PARAMS_ID, paramString);
+        String matApiKey = System.getProperty("MAT_API_KEY");
+        if (StringUtils.isNotBlank(matApiKey) &&
+                !StringUtils.equals(matApiKey,"DISABLED")) {
+            request.getHeaders().add("MAT-API-KEY",matApiKey);
+        }
     }
 }
 

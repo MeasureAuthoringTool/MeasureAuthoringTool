@@ -20,6 +20,7 @@ import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.util.CellTableUtility;
 import mat.client.util.FeatureFlagConstant;
+import mat.model.clause.ModelTypeHelper;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 import java.util.List;
@@ -68,8 +69,19 @@ public class MeasureLibraryResultTable {
         table.addColumn(measureName,
                 SafeHtmlUtils.fromSafeConstant("<span title='Measure Name Column'>" + "Measure Name" + "</span>"));
 
+        // Model Version Column
+        Column<ManageMeasureSearchModel.Result, SafeHtml> modelVersion = new Column<ManageMeasureSearchModel.Result, SafeHtml> (
+                new MatSafeHTMLCell()) {
+            @Override
+            public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+                return CellTableUtility.getColumnToolTip(getModelVersion(object));
+            }
+        };
+        table.addColumn(modelVersion, SafeHtmlUtils.fromSafeConstant("<span title='modelVersion'>" + "Model Version" + "</span>"));
+        table.setColumnWidth(modelVersion, VERSION_COLUMN_WIDTH, Style.Unit.PCT);
+
         // Version Column
-        Column<ManageMeasureSearchModel.Result, SafeHtml> version = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+        Column<ManageMeasureSearchModel.Result, SafeHtml> version = new Column<ManageMeasureSearchModel.Result, SafeHtml> (
                 new MatSafeHTMLCell()) {
             @Override
             public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
@@ -80,16 +92,16 @@ public class MeasureLibraryResultTable {
         table.setColumnWidth(version, VERSION_COLUMN_WIDTH, Style.Unit.PCT);
 
         // Measure Model Column
-        Column<ManageMeasureSearchModel.Result, SafeHtml> model = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+        Column<ManageMeasureSearchModel.Result, SafeHtml> model = new Column<ManageMeasureSearchModel.Result, SafeHtml> (
                 new MatSafeHTMLCell()) {
             @Override
             public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
                 return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.getModelTypeDisplayName(object.getMeasureModel()));
             }
         };
-
         table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Model'>" + "Models" + "</span>"));
         table.setColumnWidth(model, MODEL_COLUMN_WIDTH, Style.Unit.PCT);
+
         // Add event handler for table
         table.addCellPreviewHandler(event -> {
             String eventType = event.getNativeEvent().getType();
@@ -312,4 +324,13 @@ public class MeasureLibraryResultTable {
         return selectionModel;
     }
 
+    private String getModelVersion(ManageMeasureSearchModel.Result object) {
+        if (ModelTypeHelper.isFhir(object.getMeasureModel()) && object.getFhirVersion() != null) {
+            return object.getFhirVersion();
+        } else if (ModelTypeHelper.isQdm(object.getMeasureModel()) && object.getQdmVersion() != null) {
+            return object.getQdmVersion();
+        } else {
+            return " ";
+        }
+    }
 }

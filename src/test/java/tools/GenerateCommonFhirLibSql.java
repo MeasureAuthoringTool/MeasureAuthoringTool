@@ -16,11 +16,22 @@ import java.util.Map;
 import java.util.UUID;
 
 public class GenerateCommonFhirLibSql {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/local-prd-sbx-dump?serverTimezone=UTC&characterEncoding=latin1&useConfigs=maxPerformance";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/mat_prd_dmp?serverTimezone=UTC&characterEncoding=latin1&useConfigs=maxPerformance";
     private static final String DB_USER = "root";
     private static final String DB_P = "password";
 
     private static final String[] IDS = {
+            "33b6e38e5e0543ada0e8942b91d42795",
+            "11a37cbfc8634b00a69a56d005f10fd7",
+            "09b6df1d5cfb4ed787d63ffd8e4e32a8",
+            "35e8cdb0bb204ce1a39682093adbf5f1",
+            "1b9d3281e08c4053a24a9f6b911d680e",
+            "747a00aa82d340f29f257d848c125742",
+            "195c13832b09499ca1e1ccc4fb5fd77b",
+            "544333b6ef7e47268672589073a33538"
+    };
+
+    private static final String[] NAMES = {
             "FHIRHelpers-4-0-001",
             "AdultOutpatientEncounters-FHIR4-2-0-000",
             "AdvancedIllnessandFrailtyExclusion-FHIR4-5-0-000",
@@ -73,20 +84,20 @@ public class GenerateCommonFhirLibSql {
             "${EXPORT_ID},\n${CQL_LIB_ID},\n${CQL},\n${ELM},\n${JSON}\n);";
 
     public static void main(String args[]) {
-
-
         File out = new File("target/out.sql");
         out.delete();
         try (var c = getConnection();
              var writer = new FileWriter(out)) {
             System.err.println("Connected to DB.");
 
-            Arrays.stream(IDS).forEach(id -> {
+            for (int i = 0; i < IDS.length; i++) {
+                String id = IDS[i];
+                String[] nameSplit = NAMES[i].split("\\-");
+                String version = nameSplit[nameSplit.length -3] + "." +  nameSplit[nameSplit.length - 2];
+                String revision = nameSplit[nameSplit.length - 1];
+
                 //First step update versions based on the IDs.
                 try (Statement s = c.createStatement()) {
-                    String[] idSplit = id.split("\\-");
-                    String version = idSplit[idSplit.length -3] + "." +  idSplit[idSplit.length - 2];
-                    String revision = idSplit[idSplit.length - 1];
                     s.executeUpdate("update CQL_LIBRARY set version=" + version + ", revision_number =" + revision + " where id = " + tic(id));
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -121,15 +132,15 @@ public class GenerateCommonFhirLibSql {
                         throw new RuntimeException(e);
                     }
 
-                    System.err.println("Wrote sql for " + id + "");
-                    writer.write("\n\n\n########" + id + "##########\n");
+                    System.err.println("Wrote INSERT_CQL_LIB sql for " + nameSplit[0] + "");
+                    writer.write("\n\n\n########" + nameSplit[0] + "##########\n");
                     writer.write(runTemplate(INSERT_CQL_LIB, map)+ "\n");
                     writer.write(runTemplate(INSERT_EXPORT, map)+ "\n");
-                    System.err.println("Wrote sql for " + id + "");
+                    System.err.println("Wrote INSERT_EXPORT sql for " + nameSplit[0] + "");
                 } catch (SQLException|IOException e) {
                     throw new RuntimeException(e);
                 }
-            });
+            }
             System.err.println("\nComplete. Results written to: target/out.sql");
         } catch (Exception e) {
             e.printStackTrace();

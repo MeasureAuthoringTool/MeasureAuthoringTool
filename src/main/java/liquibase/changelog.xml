@@ -18,7 +18,6 @@
     <include file="classpath:/liquibase/upateMissingFhirVersion.xml"/>
     <include file="classpath:/liquibase/addHarpIdColumn.xml"/>
     <include file="classpath:/liquibase/addNewPackagingColumns.1.7.xml"/>
-    <include file="classpath:/liquibase/addFhirGlobalLibraryRows.v11.6.xml"/>
     <include file="classpath:/liquibase/addSevereErrorCqlColumn.xml"/>
     <include file="classpath:/liquibase/addUserLevelFhirFlagV3.xml"/>
     <include file="classpath:/liquibase/addNewCqlLibColumns_v3.xml"/>
@@ -26,4 +25,5 @@
     <include file="classpath:/liquibase/deleteFeatureFlagsV3.xml"/>
     <include file="classpath:/liquibase/addPopulationBasisV2.xml"/>
     <include file="classpath:/liquibase/CQL_LIBRARY_HISTORY_Fix.xml"/>
+    <include file="classpath:/liquibase/addFhirGlobalLibraryRows.v12.8.xml"/>
 </databaseChangeLog>

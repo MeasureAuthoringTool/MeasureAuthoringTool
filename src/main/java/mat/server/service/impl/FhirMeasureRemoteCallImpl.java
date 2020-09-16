@@ -14,7 +14,6 @@ import mat.server.service.FhirMeasureRemoteCall;
 import mat.server.service.cql.HumanReadableArtifacts;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.xerces.impl.dv.util.Base64;
 import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Library;
@@ -42,23 +41,13 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
     private static final String MEASURE_XML_SOURCE = "MEASURE";
 
     private static final Log log = LogFactory.getLog(FhirMeasureRemoteCallImpl.class);
-
-    @Value("${FHIR_SRVC_URL:http://localhost:9080/}")
-    private String fhirServicesUrl;
     @Qualifier("internalRestTemplate")
     private final RestTemplate restTemplate;
     private final FhirContext fhirContext;
+    @Value("${FHIR_SRVC_URL:http://localhost:9080/}")
+    private String fhirServicesUrl;
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class MeasurePackageFullData {
-        private String includeBundle;
-        private String measure;
-        private String library;
-    }
-
-    public FhirMeasureRemoteCallImpl(RestTemplate restTemplate,FhirContext fhirContext) {
+    public FhirMeasureRemoteCallImpl(RestTemplate restTemplate, FhirContext fhirContext) {
         this.restTemplate = restTemplate;
         this.fhirContext = fhirContext;
     }
@@ -96,9 +85,9 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
                 MeasurePackageFullData.class,
                 uriVariables);
 
-        Measure measure = jsonParser.parseResource(Measure.class,packagingResp.getMeasure());
-        Library lib = jsonParser.parseResource(Library.class,packagingResp.getLibrary());
-        Bundle bundle = jsonParser.parseResource(Bundle.class,packagingResp.getIncludeBundle());
+        Measure measure = jsonParser.parseResource(Measure.class, packagingResp.getMeasure());
+        Library lib = jsonParser.parseResource(Library.class, packagingResp.getLibrary());
+        Bundle bundle = jsonParser.parseResource(Bundle.class, packagingResp.getIncludeBundle());
 
         jsonParser.setPrettyPrint(true);
         xmlParser.setPrettyPrint(true);
@@ -115,25 +104,24 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
 
         lib.getContent().forEach(a -> {
             if (StringUtils.equalsIgnoreCase("text/cql", a.getContentType())) {
-                result.setMeasureLibCql(decodeBase64(a));
+                result.setMeasureLibCql(getDataFromAttachment(a));
             } else if (StringUtils.equalsIgnoreCase("application/elm+json", a.getContentType())) {
-                result.setMeasureLibElmJson(decodeBase64(a));
+                result.setMeasureLibElmJson(getDataFromAttachment(a));
             } else if (StringUtils.equalsIgnoreCase("application/elm+xml", a.getContentType())) {
-                result.setMeasureLibElmXml(decodeBase64(a));
+                result.setMeasureLibElmXml(getDataFromAttachment(a));
             }
         });
         return result;
     }
 
-
     @Override
     public HumanReadableArtifacts getHumanReadableArtifacts(String measureId) {
         Map<String, Object> uriVariables = new HashMap<>();
-        uriVariables.put("measureId",measureId);
+        uriVariables.put("measureId", measureId);
         return rest(fhirServicesUrl + GET_HUMAN_READABLE_ARTIFACTS
-                ,HttpMethod.GET,
+                , HttpMethod.GET,
                 HumanReadableArtifacts.class,
-                uriVariables );
+                uriVariables);
     }
 
     private ConversionResultDto convert(String measureId, ConversionType conversionType, String vsacGrantingTicket, boolean draft) {
@@ -153,7 +141,7 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
                 uriVariables);
     }
 
-    private <T> T rest(String url, HttpMethod method, Class<T> responseType, Map<String,Object> paramMap) {
+    private <T> T rest(String url, HttpMethod method, Class<T> responseType, Map<String, Object> paramMap) {
         ResponseEntity<T> response;
         try {
             response = restTemplate.exchange(url,
@@ -162,7 +150,7 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
                     responseType,
                     paramMap);
         } catch (HttpClientErrorException e) {
-            log.error("HttpClientErrorException",e);
+            log.error("HttpClientErrorException", e);
             throw new MatRuntimeException(e);
         }
         if (response.getStatusCode().isError()) {
@@ -172,9 +160,16 @@ public class FhirMeasureRemoteCallImpl implements FhirMeasureRemoteCall {
         return response.getBody();
     }
 
-    private String decodeBase64(Attachment a) {
-        return new String(Base64.decode(
-                new String(a.getData(), StandardCharsets.UTF_8)),
-                StandardCharsets.UTF_8);
+    private String getDataFromAttachment(Attachment a) {
+        return new String(a.getData(), StandardCharsets.UTF_8);
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MeasurePackageFullData {
+        private String includeBundle;
+        private String measure;
+        private String library;
     }
 }

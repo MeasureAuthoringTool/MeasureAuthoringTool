@@ -64,8 +64,12 @@ public class CQLLibraryShareDTO implements IsSerializable {
 	private boolean isVersionable;
 
 	private String libraryModelType;
+
 	private String releaseVersion;
+
 	private String qdmVersion;
+
+	private String fhirVersion;
 
 	/**
 	 * Gets the user id.
@@ -396,4 +400,12 @@ public class CQLLibraryShareDTO implements IsSerializable {
 	public String getQdmVersion() {
 		return qdmVersion;
 	}
+
+    public String getFhirVersion() {
+        return fhirVersion;
+    }
+
+    public void setFhirVersion(String fhirVersion) {
+        this.fhirVersion = fhirVersion;
+    }
 }

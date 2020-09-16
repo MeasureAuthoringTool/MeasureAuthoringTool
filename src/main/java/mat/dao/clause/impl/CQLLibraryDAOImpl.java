@@ -639,6 +639,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
         dto.setLibraryModelType(cqlLibrary.getLibraryModelType());
         dto.setReleaseVersion(cqlLibrary.getReleaseVersion());
         dto.setQdmVersion(cqlLibrary.getQdmVersion());
+        dto.setFhirVersion(cqlLibrary.getFhirVersion());
 
         final boolean isLocked = isLocked(cqlLibrary.getLockedOutDate());
         dto.setLocked(isLocked);

@@ -1603,6 +1603,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         dataObject.setDraftable(dto.isDraftable());
         dataObject.setVersionable(dto.isVersionable());
         dataObject.setLibraryModelType(dto.getLibraryModelType());
+        dataObject.setFhirVersion(dto.getFhirVersion());
+        dataObject.setQdmVersion(dto.getQdmVersion());
         return dataObject;
     }
 

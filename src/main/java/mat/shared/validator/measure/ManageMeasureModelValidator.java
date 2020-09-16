@@ -42,7 +42,8 @@ public class ManageMeasureModelValidator {
 		List<String> message = new ArrayList<String>();
 		String libName = model.getCQLLibraryName();
 		CommonMeasureValidator commonMeasureValidator = new CommonMeasureValidator();
-		message.addAll(commonMeasureValidator.validateMeasureName(model.getMeasureName()));
+		message.addAll(model.isFhir() ? commonMeasureValidator.validateFhirMeasureName(model.getMeasureName()) :
+                commonMeasureValidator.validateMeasureName(model.getMeasureName()));
 		logger.log(Level.INFO,"performCommonMeasureValidation isFhir=" + model.isFhir() + " " + libName);
 		message.addAll(model.isFhir() ? commonMeasureValidator.validateFhirLibraryName(libName):
 				commonMeasureValidator.validateQDMName(libName));

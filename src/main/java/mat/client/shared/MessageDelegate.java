@@ -31,7 +31,7 @@ public class MessageDelegate {
     private static final String LIBRARY_NAME_REQUIRED = "Library Name is required.";
     public static final String LIBRARY_NAME_IS_CQL_KEYWORD_ERROR = "The CQL Library Name can not be the same as a CQL Keyword.";
     public static final String QDM_CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name. Library names must start with an alpha-character or underscore, followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
-    public static final String FHIR_CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name. Library names must start with an upper case letter, followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
+    public static final String FHIR_CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name. Library names must start with an upper case letter, followed by an alpha-numeric character(s) and must not contain spaces or  '_' (underscores).";
     private static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has an incorrect format.";
     private static final String EMAIL_ID_REQUIRED = "Email Address is required.";
     private static final String HARP_ID_IS_REQUIRED = "HARP ID is required.";

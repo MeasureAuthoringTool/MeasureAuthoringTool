@@ -553,7 +553,11 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
                 isReadOnly = !MatContext.get().getMeasureLockService().checkForEditPermission();
                 measureDetailsView.setReadOnly(isReadOnly);
                 measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
-                measureDetailsView.displaySuccessMessage("Changes for the " + measureDetailsView.getCurrentMeasureDetail().displayName() + " section have been successfully saved.");
+                if (!result.getMessages().isEmpty()) {
+                    measureDetailsView.displaySuccessMessage(result.getMessages().get(0));
+                } else {
+                    measureDetailsView.displaySuccessMessage("Changes for the " + measureDetailsView.getCurrentMeasureDetail().displayName() + " section have been successfully saved.");
+                }
                 handleStateChanged();
                 navigationPanel.setActiveMenuItem(activeMenuItem);
                 measureDetailsModel.setCompositeMeasureDetailModel(result.getCompositeMeasureDetailModel());

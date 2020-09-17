@@ -553,8 +553,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
                 isReadOnly = !MatContext.get().getMeasureLockService().checkForEditPermission();
                 measureDetailsView.setReadOnly(isReadOnly);
                 measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
-                if (!result.getMessages().isEmpty()) {
-                    measureDetailsView.displaySuccessMessage(result.getMessages().get(0));
+                if (result.getMessages() != null) {
+                    measureDetailsView.displayErrorMessage(result.getMessages());
                 } else {
                     measureDetailsView.displaySuccessMessage("Changes for the " + measureDetailsView.getCurrentMeasureDetail().displayName() + " section have been successfully saved.");
                 }

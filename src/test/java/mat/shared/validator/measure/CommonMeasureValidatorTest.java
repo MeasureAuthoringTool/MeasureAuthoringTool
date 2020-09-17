@@ -24,11 +24,11 @@ public class CommonMeasureValidatorTest {
 	private void testValidateFhirLibraryName() {
 		List<String> noErrorList = Arrays.asList();
 		List<String> emptyList = Arrays.asList("A CQL Library name is required.");
-		List<String> invalidLibraryNameList = Arrays.asList("Invalid Library Name. Library names must start with an upper case letter, followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.");
+		List<String> invalidLibraryNameList = Arrays.asList("Invalid Library Name. Library names must start with an upper case letter, followed by an alpha-numeric character(s) and must not contain spaces or  '_' (underscores).");
 
 		assertEquals(noErrorList, validator.validateFhirLibraryName("Hey"));
 		assertEquals(noErrorList, validator.validateFhirLibraryName("H123"));
-		assertEquals(noErrorList, validator.validateFhirLibraryName("H_98237498234123"));
+		assertEquals(noErrorList, validator.validateFhirLibraryName("H98237498234123"));
 		assertEquals(invalidLibraryNameList, validator.validateFhirLibraryName("hey"));
 		assertEquals(emptyList, validator.validateFhirLibraryName(""));
 		assertEquals(invalidLibraryNameList, validator.validateFhirLibraryName("!"));

@@ -200,8 +200,6 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
     }
 
     private String decodeBase64(Attachment a) {
-        return new String(Base64.decode(
-                new String(a.getData(), StandardCharsets.UTF_8)),
-                StandardCharsets.UTF_8);
+        return new String(a.getData(), StandardCharsets.UTF_8);
     }
 }

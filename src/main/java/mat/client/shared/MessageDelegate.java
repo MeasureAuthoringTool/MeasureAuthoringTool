@@ -63,6 +63,7 @@ public class MessageDelegate {
     private static final String DELETE_WARNING_MESSAGE = "You have selected to delete this expression. Do you want to permanently delete";
     private static final String NO_USERS_RETURNED = "No users returned. Please search again.";
     private static final String NO_VERSION_CREATED = "Unable to version. There are validation errors in CQL. Please correct and try again.";
+    private static final String MEASURE_NAME_INVALID = "Unable to version. Measure name must not contain '_' (underscore)";
     private static final String MSG_TYPE_CHECK_VALIDATION_MEASURE_PACKAGE = "Unable to create measure package. There is an incorrect return type in the following grouping(s): ";
     private static final String ERROR_VALIDATION_COMMENT_AREA = "Comment cannot exceed 250 characters. ";
     private static final String INVALID_COMMENT_CHARACTERS = "Comments can not contain /* or */.";
@@ -206,6 +207,7 @@ public class MessageDelegate {
     private static final String MEASURE_STEWARD_REQUIRED = "Please enter the Steward prior to packaging.";
     private static final String MEASURE_TYPE_REQUIRED = "Please enter the Measure Type prior to packaging.";
     private static final String MEASURE_POPULATION_BASIS = "Please select the measure's Population basis prior to packaging.";
+    private static final String MEASURE_DESCRIPTION_UNDERSCORE = "Measure name must not contain '_' (underscore).";
 
     public static String getUnableToVerifyHarpUser() {
         return UNABLE_TO_VERIFY_HARP_USER;
@@ -804,6 +806,10 @@ public class MessageDelegate {
         return NO_VERSION_CREATED;
     }
 
+    public String getMeasureNameInvalid() {
+        return MEASURE_NAME_INVALID;
+    }
+
     public String getERROR_SELECT_ATTRIBUTE_NAME() {
         return ERROR_SELECT_ATTRIBUTE_NAME;
     }
@@ -1048,5 +1054,9 @@ public class MessageDelegate {
 
     public static String getMeasurePopulationBasis() {
         return MEASURE_POPULATION_BASIS;
+    }
+
+    public static String getMeasureDescriptionUnderscore() {
+        return MEASURE_DESCRIPTION_UNDERSCORE;
     }
 }

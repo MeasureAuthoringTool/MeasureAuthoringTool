@@ -233,7 +233,7 @@ public class CQLServiceImpl implements CQLService {
                         errors = Collections.singletonList(new CQLError());
                         errors.get(0).setErrorMessage(me.getMessage());
                         errors.get(0).setErrorInLine(1);
-                        errors.get(0).setErrorAtOffeset(1);
+                        errors.get(0).setErrorAtOffset(1);
                         errors.get(0).setStartErrorInLine(1);
                         errors.get(0).setEndErrorInLine(1);
                     }

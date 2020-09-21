@@ -27,6 +27,8 @@ public class ConstantMessages {
 
     public static final int PUBLISHER_REQUIRED = 15;
 
+    public static final int MEASURE_NAME_INVALID = 16;
+
     public static final String INCOMPLETE_ROW_ERROR = "Import failed. One or more rows is missing a Code or a Descriptor.";
 
     public static final String CONTINUOUS_VARIABLE_SCORING = "Continuous Variable";

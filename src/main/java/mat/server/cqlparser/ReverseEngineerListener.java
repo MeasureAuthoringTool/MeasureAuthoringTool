@@ -58,7 +58,7 @@ public class ReverseEngineerListener extends cqlBaseListener {
             CQLError error = new CQLError();
             error.setErrorMessage(msg);
             error.setErrorInLine(line - 1);
-            error.setErrorAtOffeset(charPositionInLine);
+            error.setErrorAtOffset(charPositionInLine);
             error.setStartErrorInLine(line - 1);
             error.setEndErrorInLine(line - 1);
             errors.add(error);

@@ -590,6 +590,8 @@ public class MeasurePackagePresenter implements MatPresenter {
                                 boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
                                 if (isFhir && (result.getMeasureDescription() == null || result.getMeasureDescription().isEmpty())) {
                                     showError(MessageDelegate.getMeasureDescriptionRequired());
+                                } else if (isFhir && result.getMeasureDescription().contains("_")) {
+                                    showError(MessageDelegate.getMeasureDescriptionUnderscore());
                                 } else if (isFhir && (result.getMeasureStewardId() == null || result.getMeasureStewardId().isEmpty())) {
                                     showError(MessageDelegate.getMeasureStewardRequired());
                                 } else if (isFhir && (result.getMeasureTypes() == null || result.getMeasureTypes().size() == 0)) {

@@ -103,6 +103,8 @@ public class SaveUpdateCQLResult extends GenericResult {
 
     public static final int PUBLISHER_REQUIRED = 15;
 
+    public static final int MEASURE_NAME_INVALID = 16;
+
     List<CQLQualityDataSetDTO> cqlAppliedQDMList;
 
     CQLQualityDataSetDTO cqlQualityDataSetDTO;

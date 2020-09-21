@@ -1344,6 +1344,9 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
                                      final boolean shouldPackage) {
         isMeasureVersioned = false;
         switch (failureReason) {
+            case SaveUpdateCQLResult.MEASURE_NAME_INVALID:
+                versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getMeasureNameInvalid());
+                break;
             case ConstantMessages.INVALID_CQL_DATA:
                 versionDisplay.getMessagePanel().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
                 break;

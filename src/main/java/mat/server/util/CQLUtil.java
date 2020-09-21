@@ -655,7 +655,7 @@ public class CQLUtil {
                 CQLError error = new CQLError();
                 error.setStartErrorInLine(trackback.getStartLine());
                 error.setErrorInLine(trackback.getStartLine());
-                error.setErrorAtOffeset(trackback.getStartChar());
+                error.setErrorAtOffset(trackback.getStartChar());
                 error.setEndErrorInLine(trackback.getEndLine());
                 error.setEndErrorAtOffset(trackback.getEndChar());
                 error.setErrorMessage("A Parameter titled \"Measurement Period\" must return an Interval<DateTime>");
@@ -673,7 +673,7 @@ public class CQLUtil {
         if (cte != null && cte.getLocator() != null) {
             cqlError.setStartErrorInLine(cte.getLocator().getStartLine());
             cqlError.setErrorInLine(cte.getLocator().getStartLine());
-            cqlError.setErrorAtOffeset(cte.getLocator().getStartChar());
+            cqlError.setErrorAtOffset(cte.getLocator().getStartChar());
             cqlError.setEndErrorInLine(cte.getLocator().getEndLine());
             cqlError.setEndErrorAtOffset(cte.getLocator().getEndChar());
 

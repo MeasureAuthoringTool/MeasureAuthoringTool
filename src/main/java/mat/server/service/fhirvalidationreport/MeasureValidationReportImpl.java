@@ -2,7 +2,6 @@ package mat.server.service.fhirvalidationreport;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.shared.MatException;
 import mat.client.shared.MatRuntimeException;
@@ -28,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -92,6 +92,9 @@ public class MeasureValidationReportImpl implements FhirValidationReport {
                     CQLModel model = CQLUtilityClass.getCQLModelFromXML(measureXmlDAO.findForMeasure(measureId).getMeasureXMLAsString());
                     parseResponse = fhirCqlParser.parse(fhirResult.getFhirCql(),
                             model);
+                    if (measure.getDescription().contains("_")) {
+                        parseResponse.getErrors().addAll(getMeasureValidations(measure));
+                    }
                 } catch (MatException e) {
                     log.error("Error running measureService.convert",e);
                     throw new MatRuntimeException(e);
@@ -189,5 +192,27 @@ public class MeasureValidationReportImpl implements FhirValidationReport {
         result.setLocationField(le.getName() + "-" + le.getVersion() + ": " + e.getStartErrorInLine());
         result.setErrorDescription(e.getErrorMessage());
         return result;
+    }
+
+    private @NotNull List<LibraryErrors> getMeasureValidations(Measure measure) {
+        @NotNull List<LibraryErrors> libraryErrorsList = new ArrayList<>();
+        LibraryErrors libraryErrors = new LibraryErrors(measure.getDescription(), measure.getVersion().toString());
+        List<CQLError> errors = new ArrayList<>();
+        CQLError cqlError = createError("Measure name must not contain '_' (underscore)", "Severe", 1);
+        errors.add(cqlError);
+        libraryErrors.setErrors(errors);
+        libraryErrorsList.add(libraryErrors);
+        return libraryErrorsList;
+    }
+
+    private CQLError createError(String msg, String sevrity, int lineNumber) {
+        CQLError e = new CQLError();
+        e.setSeverity(sevrity);
+        e.setErrorMessage(msg);
+        e.setErrorInLine(lineNumber);
+        e.setErrorAtOffset(0);
+        e.setStartErrorInLine(lineNumber);
+        e.setEndErrorInLine(lineNumber);
+        return e;
     }
 }

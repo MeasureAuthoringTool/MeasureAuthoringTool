@@ -1939,6 +1939,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
         SaveUpdateCQLResult cqlResult = getMeasureCQLFileData(measureId);
 
+        if (m.isFhirMeasure() && m.getDescription().contains("_")) {
+            log.error("Measure Package and Version Failed for measure with id " + measureId + " -> MEASURE_NAME_INVALID");
+            return returnFailureReason(saveMeasureResult, SaveUpdateCQLResult.MEASURE_NAME_INVALID);
+        }
+
         if (cqlResult.getFailureReason() == SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME) {
             log.error("Measure Package and Version Failed for measure with id " + measureId + " -> DUPLICATE_LIBRARY_NAME DATA");
             return returnFailureReason(saveMeasureResult, SaveUpdateCQLResult.DUPLICATE_LIBRARY_NAME);

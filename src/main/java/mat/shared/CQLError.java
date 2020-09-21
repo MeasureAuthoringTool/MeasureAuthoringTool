@@ -41,7 +41,7 @@ public class CQLError implements IsSerializable, Comparable<CQLError> {
         return errorAtOffeset;
     }
 
-    public void setErrorAtOffeset(int errorAtOffeset) {
+    public void setErrorAtOffset(int errorAtOffeset) {
         this.errorAtOffeset = errorAtOffeset;
     }
 

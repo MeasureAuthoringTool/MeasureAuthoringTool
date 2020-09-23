@@ -5454,6 +5454,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
             } else {
                 // creating a new measure.
+                model.setMeasureModel("QDM");
                 existingMeasure = false;
                 pkg = new Measure();
                 pkg.setReleaseVersion(propertiesService.getCurrentReleaseVersion());

@@ -3,6 +3,7 @@ FROM tomcat:9
 ARG STOREPASS
 ARG NR_APM_KEY
 ARG NR_APM_NAME
+ARG WAR_PATH="MeasureAuthoringTool.war"
 
 RUN curl -O https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem \
     && curl -O https://s3.amazonaws.com/rds-downloads/rds-ca-2019-us-east-1.pem \
@@ -17,6 +18,6 @@ RUN curl -O https://download.newrelic.com/newrelic/java-agent/newrelic-agent/cur
     && sed -i "s/My Application/${NR_APM_NAME}/" newrelic/newrelic.yml \
     && sed -i "/common: &default_settings/a \ \ host: gov-collector.newrelic.com" newrelic/newrelic.yml
 
-COPY target/MeasureAuthoringTool.war /usr/local/tomcat/webapps/sbx#MeasureAuthoringTool.war
+COPY target/MeasureAuthoringTool.war /usr/local/tomcat/webapps/${WAR_PATH}
 COPY context.xml /usr/local/tomcat/conf/
 

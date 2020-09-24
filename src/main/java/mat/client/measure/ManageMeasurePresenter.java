@@ -63,6 +63,7 @@ import mat.client.util.FeatureFlagConstant;
 import mat.client.util.MatTextBox;
 import mat.dto.CompositeMeasureScoreDTO;
 import mat.dto.SearchHistoryDTO;
+import mat.model.clause.ModelTypeHelper;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
@@ -853,7 +854,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         final String version = currentCompositeMeasureDetails.getVersionNumber() + "." + currentCompositeMeasureDetails.getRevisionNumber();
         final boolean isDraft = currentCompositeMeasureDetails.isDraft();
         final boolean isPatientBased = calculatePatientBased(currentCompositeMeasureDetails.isPatientBased(), scoringType);
-        final String measureModel = currentCompositeMeasureDetails.getMeasureModel();
+        final String measureModel = ModelTypeHelper.QDM;
 
         postSaveMeasureEvents(isInsert, measureId, compositeDetailDisplay, name, shortName, scoringType, version, isDraft, isPatientBased, measureModel);
     }

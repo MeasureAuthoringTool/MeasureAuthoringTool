@@ -26,4 +26,5 @@
     <include file="classpath:/liquibase/addPopulationBasisV2.xml"/>
     <include file="classpath:/liquibase/CQL_LIBRARY_HISTORY_Fix.xml"/>
     <include file="classpath:/liquibase/addFhirGlobalLibraryRows.v12.8.xml"/>
+    <include file="classpath:/liquibase/UpdateMeasureDetailsReferenceType.xml"/>
 </databaseChangeLog>

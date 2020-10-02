@@ -118,7 +118,7 @@
 			<bind-xml name="improvementNotations"></bind-xml>
 		</field>
 		
-		<field name="references" type="java.lang.String" collection="arraylist">
+		<field name="references" type="mat.client.measure.ReferenceTextAndType" collection="arraylist">
 			<bind-xml name="reference" location="references"></bind-xml>
 		</field>
 		

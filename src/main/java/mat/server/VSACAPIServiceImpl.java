@@ -61,9 +61,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	 *@return Boolean.
 	 * **/
 	@Override
-	public final boolean validateVsacUser(final String userName, final String password) {
+	public final boolean validateVsacUser(final String apiKey) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.vsacapi.validateVsacUser(userName, password,sessionId);
+		return this.vsacapi.validateVsacUser(apiKey,sessionId);
 	}
 
 	@Override

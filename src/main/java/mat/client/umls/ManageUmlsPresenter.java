@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 
 public class ManageUmlsPresenter implements MatPresenter {
 
-    private final Logger logger = Logger.getLogger("MAT");
+    private final Logger logger = Logger.getLogger("ManageUmlsPresenter");
 
     private boolean showWelcomeMessage = false;
 
@@ -55,21 +55,15 @@ public class ManageUmlsPresenter implements MatPresenter {
 
         Anchor getUmlsExternalLink();
 
-        Anchor getUmlsTroubleLogging();
-
         void setInitialFocus();
 
-        Input getUserIdText();
+        Input getApiKeyInput();
 
-        Input getPasswordInput();
-
-        FormGroup getPasswordGroup();
+        FormGroup getApiKeyGroup();
 
         HelpBlock getHelpBlock();
 
         FormGroup getMessageFormGrp();
-
-        FormGroup getUserIdGroup();
 
         MessageAlert getSuccessMessageAlert();
 
@@ -107,27 +101,14 @@ public class ManageUmlsPresenter implements MatPresenter {
         showWelcomeMessage = !isAlreadySignedIn;
         resetWidget();
         display.getSubmit().addClickHandler(new ClickHandler() {
-
             @Override
             public void onClick(final ClickEvent event) {
                 submit();
             }
 
-
         });
-        display.getUserIdText().addKeyDownHandler(submitOnEnterHandler);
-        display.getPasswordInput().addKeyDownHandler(submitOnEnterHandler);
+        display.getApiKeyInput().addKeyDownHandler(submitOnEnterHandler);
         display.getUmlsExternalLink().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent event) {
-                display.getExternalLinkDisclaimer().setVisible(true);
-                display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
-                display.getExternalLinkDisclaimer().getElement().removeAttribute("role");
-                display.getExternalLinkDisclaimer().getElement().setAttribute("id", "ExternalLinkDisclaimer");
-                display.getExternalLinkDisclaimer().getElement().setAttribute("role", "alert");
-            }
-        });
-        display.getUmlsTroubleLogging().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(final ClickEvent event) {
                 display.getExternalLinkDisclaimer().setVisible(true);
@@ -205,10 +186,8 @@ public class ManageUmlsPresenter implements MatPresenter {
         display.getErrorMessageDisplay().clear();
         display.getSuccessMessageAlert().clear();
         display.getExternalLinkDisclaimer().setVisible(false);
-        display.getPasswordInput().setText("");
-        display.getUserIdText().setText("");
-        display.getUserIdGroup().setValidationState(ValidationState.NONE);
-        display.getPasswordGroup().setValidationState(ValidationState.NONE);
+        display.getApiKeyInput().setText("");
+        display.getApiKeyGroup().setValidationState(ValidationState.NONE);
         display.getMessageFormGrp().setValidationState(ValidationState.NONE);
         display.getHelpBlock().setText("");
     }
@@ -221,62 +200,50 @@ public class ManageUmlsPresenter implements MatPresenter {
         display.getSuccessMessageAlert().clearAlert();
         display.getExternalLinkDisclaimer().setVisible(false);
 
-        if (display.getUserIdText().getText().isEmpty()) {
-            display.getUserIdGroup().setValidationState(ValidationState.ERROR);
-            display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
-            display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getLoginUserRequiredMessage());
-            display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
-            display.getSubmit().setEnabled(true);
-        } else if (display.getPasswordInput().getText().isEmpty()) {
+        if (display.getApiKeyInput().getText().isEmpty()) {
             display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
             display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
             display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
-            display.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
-            display.getPasswordGroup().setValidationState(ValidationState.ERROR);
+            display.getApiKeyGroup().setValidationState(ValidationState.ERROR);
             display.getSubmit().setEnabled(true);
         } else {
-            display.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
-            display.getPasswordGroup().setValidationState(ValidationState.SUCCESS);
-            vsacapiService.validateVsacUser(display.getUserIdText().getText(),
-                    display.getPasswordInput().getText(), new AsyncCallback<Boolean>() {
-                        @Override
-                        public void onFailure(final Throwable caught) {
-                            logger.log(Level.SEVERE, "VSACAPIServiceAsync#validateVsacUser onFailure: Error message: " + caught.getMessage(), caught);
-                            display.getErrorMessageDisplay().setMessage(
-                                    MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
-                            Mat.hideUMLSActive(true);
-                        }
+            display.getApiKeyGroup().setValidationState(ValidationState.SUCCESS);
+            vsacapiService.validateVsacUser(display.getApiKeyInput().getText(), new AsyncCallback<Boolean>() {
+                @Override
+                public void onFailure(final Throwable caught) {
+                    logger.log(Level.SEVERE, "VSACAPIServiceAsync#validateVsacUser onFailure: Error message: " + caught.getMessage(), caught);
+                    display.getErrorMessageDisplay().setMessage(
+                            MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
+                    Mat.hideUMLSActive(true);
+                }
 
-                        @Override
-                        public void onSuccess(final Boolean result) {
-                            display.getUserIdGroup().setValidationState(ValidationState.NONE);
-                            display.getPasswordGroup().setValidationState(ValidationState.NONE);
-                            if (result) {
-                                display.getMessageFormGrp().setValidationState(ValidationState.NONE);
-                                display.getHelpBlock().setText("");
-                                Mat.hideUMLSActive(false);
-                                display.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
-                                display.getPasswordInput().setText("");
-                                display.getUserIdText().setText("");
-                                display.getUserIdGroup().setVisible(false);
-                                display.getPasswordGroup().setVisible(false);
-                                display.getSubmit().setVisible(false);
-                                display.getCancel().setVisible(false);
-                                display.getFooter().setVisible(false);
-                                display.getContinue().setVisible(true);
-                                MatContext.get().restartUMLSSignout();
-                                MatContext.get().setUMLSLoggedIn(true);
-                                MatContext.get().getEventBus().fireEvent(new UmlsActivatedEvent());
-                            } else { //incorrect UMLS credential - no ticket is assigned.
-                                display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
-                                display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
-                                display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
-                                Mat.hideUMLSActive(true);
-                                MatContext.get().setUMLSLoggedIn(false);
-                                invalidateVsacSession();
-                            }
-                        }
-                    });
+                @Override
+                public void onSuccess(final Boolean result) {
+                    display.getApiKeyGroup().setValidationState(ValidationState.NONE);
+                    if (result) {
+                        display.getMessageFormGrp().setValidationState(ValidationState.NONE);
+                        display.getHelpBlock().setText("");
+                        Mat.hideUMLSActive(false);
+                        display.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
+                        display.getApiKeyInput().setText("");
+                        display.getApiKeyGroup().setVisible(false);
+                        display.getSubmit().setVisible(false);
+                        display.getCancel().setVisible(false);
+                        display.getFooter().setVisible(false);
+                        display.getContinue().setVisible(true);
+                        MatContext.get().restartUMLSSignout();
+                        MatContext.get().setUMLSLoggedIn(true);
+                        MatContext.get().getEventBus().fireEvent(new UmlsActivatedEvent());
+                    } else { //incorrect UMLS credential - no ticket is assigned.
+                        display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
+                        display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
+                        display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
+                        Mat.hideUMLSActive(true);
+                        MatContext.get().setUMLSLoggedIn(false);
+                        invalidateVsacSession();
+                    }
+                }
+            });
         }
     }
 

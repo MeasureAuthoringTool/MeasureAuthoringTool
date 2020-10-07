@@ -11,7 +11,7 @@ public interface VSACApiService {
 
     boolean isAlreadySignedIn(String sessionId);
 
-    boolean validateVsacUser(String userName, String password, String sessionId);
+    boolean validateVsacUser(final String apiKey, String sessionId);
 
     VsacApiResult getMostRecentValueSetByOID(String oid, String release, String expansionId, String sessionId);
 

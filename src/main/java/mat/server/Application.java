@@ -2,6 +2,7 @@ package mat.server;
 
 import ca.uhn.fhir.context.FhirContext;
 import liquibase.integration.spring.SpringLiquibase;
+import liquibase.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import mat.client.login.service.HarpService;
 import mat.dao.impl.AuditEventListener;
@@ -51,8 +52,10 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
+import vsac.VsacService;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Named;
 import javax.net.ssl.SSLContext;
 import javax.sql.DataSource;
 import java.security.KeyManagementException;
@@ -288,5 +291,20 @@ public class Application extends WebSecurityConfigurerAdapter {
     @Bean
     public FhirContext fhirContext() {
         return FhirContext.forR4();
+    }
+
+    @Bean
+    public VsacService vsacService(@Named("externalRestTemplate") RestTemplate restTemplate) {
+        String ticketBase =  System.getProperty("VSAC_TICKET_URL_BASE");
+        String urlBase = System.getProperty("VSAC_URL_BASE");
+
+        if (StringUtils.isEmpty(ticketBase)) {
+            throw new IllegalArgumentException("No system property VSAC_TICKET_URL_BASE provided. Please add one.");
+        }
+        if (StringUtils.isEmpty(urlBase)) {
+            throw new IllegalArgumentException("No system property VSAC_URL_BASE provided. Please add one.");
+        }
+
+        return new VsacService(ticketBase,urlBase,restTemplate);
     }
 }

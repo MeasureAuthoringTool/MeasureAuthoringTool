@@ -18,7 +18,7 @@ public interface VSACAPIServiceAsync {
 
 	void updateCQLVSACValueSets(List<CQLQualityDataSetDTO> appliedQDMList, String defaultExpId, AsyncCallback<VsacApiResult> callback);
 
-	void validateVsacUser(String userName, String password, AsyncCallback<Boolean> callback);
+	void validateVsacUser(String apiKey, AsyncCallback<Boolean> callback);
 	
     void getMostRecentValueSetByOID(final String oid, final String release, final String profile, AsyncCallback<VsacApiResult> callback);
 

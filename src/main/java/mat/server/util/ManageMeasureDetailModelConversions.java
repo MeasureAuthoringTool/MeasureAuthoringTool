@@ -212,6 +212,7 @@ public class ManageMeasureDetailModelConversions {
         MeasureDetails measureDetails = measure.getMeasureDetails();
         if (measureDetails != null) {
             measureDetailModel.setGroupName(measureDetails.getMeasureSet());
+            measureDetailModel.setQltyMeasureSetUuid(measureDetails.getMeasure().getMeasureSet().getId());
             measureDetailModel.setDescription(measureDetails.getDescription());
             measureDetailModel.setCopyright(measureDetails.getCopyright());
             measureDetailModel.setClinicalRecomms(measureDetails.getClinicalRecommendation());

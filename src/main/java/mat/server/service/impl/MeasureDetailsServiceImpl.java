@@ -85,6 +85,7 @@ public class MeasureDetailsServiceImpl implements MeasureDetailsService {
             model.setDenominatorExceptions(measureDetails.getDenominatorExceptions());
             model.setSupplementalData(measureDetails.getSupplementalDataElements());
             model.setGroupName(measureDetails.getMeasureSet());
+            model.setQltyMeasureSetUuid(measureDetails.getMeasure().getMeasureSet().getId());
 
             model.setReferencesList(measureDetails.getMeasureDetailsReference().stream().map(reference -> new ReferenceTextAndType(reference.getReference(), reference.getReferenceType())).collect(Collectors.toList()));
         }

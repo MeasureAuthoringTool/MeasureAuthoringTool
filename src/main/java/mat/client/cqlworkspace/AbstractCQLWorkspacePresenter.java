@@ -643,7 +643,7 @@ public abstract class AbstractCQLWorkspacePresenter {
         CQLCodesView codesView = cqlWorkspaceView.getCodesView();
         boolean isCodeSystemVersionIncluded = codesView.getIncludeCodeSystemVersionCheckBox().getValue();
         refCode.setCodeOID(codesView.getCodeInput().getValue());
-        refCode.setName(codesView.getCodeDescriptorInput().getValue());
+        refCode.setName(codeName);
         refCode.setCodeSystemName(codesView.getCodeSystemInput().getValue());
         refCode.setCodeSystemVersion(codesView.getCodeSystemVersionInput().getValue());
         refCode.setCodeIdentifier(codesView.getCodeSearchInput().getValue());

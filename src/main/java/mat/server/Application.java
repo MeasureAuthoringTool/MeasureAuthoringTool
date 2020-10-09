@@ -2,7 +2,6 @@ package mat.server;
 
 import ca.uhn.fhir.context.FhirContext;
 import liquibase.integration.spring.SpringLiquibase;
-import lombok.extern.slf4j.Slf4j;
 import mat.client.login.service.HarpService;
 import mat.dao.impl.AuditEventListener;
 import mat.dao.impl.AuditInterceptor;
@@ -276,12 +275,15 @@ public class Application extends WebSecurityConfigurerAdapter {
         return MATPropertiesService.get();
     }
 
-    @Scheduled(fixedRateString = "${mat.cache.expiry.time}")
+    // On the hour every hour
+    @Scheduled(cron =  "${mat.cache.expiry.cron}")
     public void clearCacheSchedule() {
         //cacheManager() is actually spring magic. Another bean isn't recreated.
         //https://stackoverflow.com/questions/27990060/calling-a-bean-annotated-method-in-spring-java-configuration
-        cacheManager().getCacheNames().stream().forEach(cacheName ->
-                cacheManager().getCache(cacheName).clear()
+        cacheManager().getCacheNames().forEach(cacheName -> {
+                    cacheManager().getCache(cacheName).clear();
+                    log.info("Cleared cache: " + cacheName);
+                }
         );
     }
 

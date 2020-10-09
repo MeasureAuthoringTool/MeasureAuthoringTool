@@ -25,7 +25,6 @@ import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.PackagerDAO;
 import mat.dao.clause.ShareLevelDAO;
 import mat.model.DataType;
-import mat.model.MatValueSet;
 import mat.model.QualityDataSet;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
@@ -61,6 +60,7 @@ import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import mat.vsac.model.ValueSet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -174,7 +174,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         return measureDAO.findMaxOfMinVersion(measureId, measureSetId);
     }
 
-    private String generateSimpleXML(final Measure measure, MeasureXML measureXML, final List<MatValueSet> matValueSetList) throws Exception {
+    private String generateSimpleXML(final Measure measure, MeasureXML measureXML, final List<ValueSet> ValueSetList) throws Exception {
         String exportedXML = "";
 
         if (measure.getReleaseVersion() != null && MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
@@ -187,7 +187,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         return exportedXML;
     }
 
-    private MeasureExport generateExport(final String measureId, final List<MatValueSet> matValueSetList) throws Exception {
+    private MeasureExport generateExport(final String measureId, final List<ValueSet> ValueSetList) throws Exception {
         MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
         final Measure measure = measureDAO.find(measureId);
 
@@ -201,8 +201,8 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         saveMeasureXml(xmlModel);
         measureXML = measureXMLDAO.findForMeasure(measureId);
 
-        final String simpleXML = generateSimpleXML(measure, measureXML, matValueSetList);
-        final ExportResult exportResult = eMeasureService.exportMeasureIntoSimpleXML(measure.getId(), simpleXML, matValueSetList);
+        final String simpleXML = generateSimpleXML(measure, measureXML, ValueSetList);
+        final ExportResult exportResult = eMeasureService.exportMeasureIntoSimpleXML(measure.getId(), simpleXML, ValueSetList);
 
         MeasureExport export = measureExportDAO.findByMeasureId(measureId);
         if (export == null) {
@@ -536,8 +536,8 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
     }
 
     @Override
-    public ValidateMeasureResult createExports(final String key, final List<MatValueSet> matValueSetsList, boolean shouldCreateArtifacts) throws Exception {
-        final MeasureExport export = generateExport(key, matValueSetsList);
+    public ValidateMeasureResult createExports(final String key, final List<ValueSet> ValueSetsList, boolean shouldCreateArtifacts) throws Exception {
+        final MeasureExport export = generateExport(key, ValueSetsList);
         final ValidateMeasureResult result = new ValidateMeasureResult();
         result.setValid(true);
         createAndSaveExportsAndArtifacts(export, shouldCreateArtifacts);

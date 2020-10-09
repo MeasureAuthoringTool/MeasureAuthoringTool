@@ -55,7 +55,7 @@ public class FhirValidationReportServlet extends HttpServlet {
     /**
      * Given sessionId, delegates to VsacApiService to fetch the VSAC ticket
      * @param sessionId
-     * @return vsac Ticket
+     * @return mat.vsac Ticket
      * @throws MatException
      */
     private String getVsacTicket(String sessionId) throws MatException {

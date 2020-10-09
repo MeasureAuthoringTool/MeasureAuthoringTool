@@ -2,11 +2,11 @@ package mat.client.umls.service;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.DirectReferenceCode;
-import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.VSACExpansionProfile;
 import mat.model.VSACVersion;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.vsac.model.ValueSet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,8 +49,8 @@ public class VsacApiResult implements IsSerializable {
 	/** The CQLQualityDataSetDTO List. */
 	private List<CQLQualityDataSetDTO> updatedCQLQualityDataDTOLIst;
 	
-	/** The vsac response. */
-	private List<MatValueSet> vsacResponse;
+	/** The mat.vsac response. */
+	private List<ValueSet> vsacResponse;
 	
 	private List<VSACExpansionProfile> vsacExpProfileResp;
 	
@@ -80,11 +80,11 @@ public class VsacApiResult implements IsSerializable {
 	}
 	
 	/**
-	 * Gets the vsac response.
+	 * Gets the mat.vsac response.
 	 * 
-	 * @return the vsac response
+	 * @return the mat.vsac response
 	 */
-	public List<MatValueSet> getVsacResponse() {
+	public List<ValueSet> getVsacResponse() {
 		return vsacResponse;
 	}
 	
@@ -122,12 +122,12 @@ public class VsacApiResult implements IsSerializable {
 	}
 	
 	/**
-	 * Sets the vsac response.
+	 * Sets the mat.vsac response.
 	 * 
 	 * @param vsacResponse
-	 *            the new vsac response
+	 *            the new mat.vsac response
 	 */
-	public void setVsacResponse(ArrayList<MatValueSet> vsacResponse) {
+	public void setVsacResponse(ArrayList<ValueSet> vsacResponse) {
 		this.vsacResponse = vsacResponse;
 	}
 
@@ -167,7 +167,7 @@ public class VsacApiResult implements IsSerializable {
 	}
 
 	/**
-	 * @param vsacProfileResp the vsacProfileResp to set
+	 * @param vsacExpProfileResp the vsacProfileResp to set
 	 */
 	public void setVsacExpProfileResp(List<VSACExpansionProfile> vsacExpProfileResp) {
 		this.vsacExpProfileResp = vsacExpProfileResp;

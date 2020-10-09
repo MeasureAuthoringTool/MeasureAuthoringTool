@@ -1,6 +1,5 @@
 package mat.server.service;
 
-import mat.model.MatValueSet;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.MeasureExport;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
@@ -10,6 +9,7 @@ import mat.shared.bonnie.error.BonnieDoesNotExistException;
 import mat.shared.bonnie.error.BonnieNotFoundException;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
+import mat.vsac.model.ValueSet;
 
 import java.io.IOException;
 import java.util.Date;
@@ -28,7 +28,7 @@ public interface SimpleEMeasureService {
 	
 	ExportResult getBulkExportZIP(String[] measureIds, Date[] exportDates) throws Exception;
 	
-	ExportResult exportMeasureIntoSimpleXML(String measureId, String xmlString, List<MatValueSet> matValueSetList) throws Exception;
+	ExportResult exportMeasureIntoSimpleXML(String measureId, String xmlString, List<ValueSet> ValueSetList) throws Exception;
 
 	ExportResult getHumanReadableForNode(String measureId, String populationSubXML) throws Exception;
 

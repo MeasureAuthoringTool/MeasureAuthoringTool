@@ -34,7 +34,7 @@ import mat.dto.VSACCodeSystemDTO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
 import mat.model.GlobalCopyPasteObject;
-import mat.model.MatValueSet;
+import mat.vsac.model.ValueSet;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
@@ -155,7 +155,7 @@ public abstract class AbstractCQLWorkspacePresenter {
     protected List<CQLQualityDataSetDTO> appliedValueSetTableList = new ArrayList<CQLQualityDataSetDTO>();
     protected List<CQLCode> appliedCodeTableList = new ArrayList<CQLCode>();
     protected CQLQualityDataSetDTO modifyValueSetDTO;
-    protected MatValueSet currentMatValueSet = null;
+    protected ValueSet currentValueSet = null;
     protected String cqlLibraryName;
 
     protected enum Color {
@@ -210,7 +210,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 
     protected abstract void pasteValueSets();
 
-    protected abstract void updateAppliedValueSetsList(MatValueSet matValueSet, CodeListSearchDTO codeListSearchDTO, CQLQualityDataSetDTO qualityDataSetDTO);
+    protected abstract void updateAppliedValueSetsList(ValueSet ValueSet, CodeListSearchDTO codeListSearchDTO, CQLQualityDataSetDTO qualityDataSetDTO);
 
     protected abstract void addIncludeLibraryInCQLLookUp();
 
@@ -1064,7 +1064,7 @@ public abstract class AbstractCQLWorkspacePresenter {
     }
 
     protected void modifyValueSet() {
-        MatValueSet modifyWithDTO = currentMatValueSet;
+        ValueSet modifyWithDTO = currentValueSet;
         if ((modifyValueSetDTO != null) && (modifyWithDTO != null)) {
             String originalName = cqlWorkspaceView.getValueSetView().getUserDefinedInput().getText();
             String suffix = cqlWorkspaceView.getValueSetView().getSuffixInput().getValue();

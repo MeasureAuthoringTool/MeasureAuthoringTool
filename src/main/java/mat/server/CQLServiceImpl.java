@@ -12,7 +12,7 @@ import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
-import mat.model.MatValueSet;
+import mat.vsac.model.ValueSet;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibraryHistory;
@@ -1701,7 +1701,7 @@ public class CQLServiceImpl implements CQLService {
 
     private CQLQualityDataSetDTO convertValueSetTransferObjectToQualityDataSetDTO(CQLValueSetTransferObject valueSetTransferObject) {
         CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
-        MatValueSet matValueSet = valueSetTransferObject.getMatValueSet();
+        ValueSet ValueSet = valueSetTransferObject.getValueSet();
         qds.setName(valueSetTransferObject.getCqlQualityDataSetDTO().getName());
         qds.setSuffix(valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
         qds.setOriginalCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
@@ -1717,15 +1717,15 @@ public class CQLServiceImpl implements CQLService {
             qds.setRelease("");
             qds.setProgram("");
         } else {
-            qds.setOid(matValueSet.getID());
+            qds.setOid(ValueSet.getID());
             qds.setRelease(valueSetTransferObject.getCqlQualityDataSetDTO().getRelease());
             qds.setProgram(valueSetTransferObject.getCqlQualityDataSetDTO().getProgram());
             qds.setVersion("");
-            qds.setValueSetType(matValueSet.getType());
-            if (matValueSet.isGrouping()) {
+            qds.setValueSetType(ValueSet.getType());
+            if (ValueSet.isGrouping()) {
                 qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
             } else {
-                qds.setTaxonomy(matValueSet.getCodeSystemName());
+                qds.setTaxonomy(ValueSet.getCodeSystemName());
             }
         }
         return qds;
@@ -1813,17 +1813,17 @@ public class CQLServiceImpl implements CQLService {
     /**
      * Checks if is duplicate.
      *
-     * @param matValueSetTransferObject the mat value set transfer object
+     * @param ValueSetTransferObject the mat value set transfer object
      * @param isVSACValueSet            the is VSAC value set
      * @return true, if is duplicate
      */
-    private boolean isDuplicate(CQLValueSetTransferObject matValueSetTransferObject, boolean isVSACValueSet) {
+    private boolean isDuplicate(CQLValueSetTransferObject ValueSetTransferObject, boolean isVSACValueSet) {
         logger.info(" checkForDuplicates Method Call Start.");
         boolean isQDSExist = false;
 
-        String qdmCompareName = matValueSetTransferObject.getCqlQualityDataSetDTO().getName();
+        String qdmCompareName = ValueSetTransferObject.getCqlQualityDataSetDTO().getName();
 
-        List<CQLQualityDataSetDTO> existingQDSList = matValueSetTransferObject.getAppliedQDMList();
+        List<CQLQualityDataSetDTO> existingQDSList = ValueSetTransferObject.getAppliedQDMList();
         for (CQLQualityDataSetDTO dataSetDTO : existingQDSList) {
 
             String codeListName = dataSetDTO.getName();

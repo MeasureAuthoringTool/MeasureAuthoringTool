@@ -1,12 +1,13 @@
-package vsac.model;
+package mat.vsac.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Container for holding Code System information.
  *
  * **/
-public class MatConceptList {
+public class MatConceptList implements Serializable {
 	/**
 	 * Container for holding Code System information.
 	 *

@@ -30,13 +30,13 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.util.MatTextBox;
 import mat.model.CodeListSearchDTO;
-import mat.model.MatValueSet;
-import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
+import mat.model.MatValueSetTransferObject;
 import mat.shared.ConstantMessages;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
+import mat.vsac.model.ValueSet;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -76,7 +76,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
         ListBoxMVP getVSACExpansionIdentifierListBox();
 
         /**
-         * Sets the vsac profile list box.
+         * Sets the mat.vsac profile list box.
          */
         void setDefaultExpansionIdentifierListBox();
 
@@ -88,7 +88,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
         ErrorMessageDisplayInterface getErrorMessageDisplay();
 
         /**
-         * Reset vsac value set widget.
+         * Reset mat.vsac value set widget.
          */
         void resetVSACValueSetWidget();
 
@@ -137,9 +137,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
         Button getApplyDefaultExpansionIdButton();
 
         /**
-         * Gets the retrieve from vsac button.
+         * Gets the retrieve from mat.vsac button.
          *
-         * @return the retrieve from vsac button
+         * @return the retrieve from mat.vsac button
          */
         //PrimaryButton getRetrieveFromVSACButton();
 
@@ -207,9 +207,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
         void setQDMExpIdentifierListBox(List<? extends HasListBox> texts);
 
         /**
-         * Gets the update from vsac button.
+         * Gets the update from mat.vsac button.
          *
-         * @return the update from vsac button
+         * @return the update from mat.vsac button
          */
         Button getUpdateFromVSACButton();
 
@@ -302,16 +302,16 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
         MatSimplePager getPager();
 
         /**
-         * Gets the update vsac error message panel.
+         * Gets the update mat.vsac error message panel.
          *
-         * @return the update vsac error message panel
+         * @return the update mat.vsac error message panel
          */
         ErrorMessageDisplay getUpdateVSACErrorMessagePanel();
 
         /**
-         * Gets the update vsac success message panel.
+         * Gets the update mat.vsac success message panel.
          *
-         * @return the update vsac success message panel
+         * @return the update mat.vsac success message panel
          */
         SuccessMessageDisplay getUpdateVSACSuccessMessagePanel();
 
@@ -419,7 +419,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
     /**
      * The current mat value set.
      */
-    private MatValueSet currentMatValueSet;
+    private ValueSet currentValueSet;
 
     /**
      * The exp profile to all qdm.
@@ -1313,14 +1313,14 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
     /**
      * Update applied qdm list.
      *
-     * @param matValueSet          the mat value set
+     * @param ValueSet          the mat value set
      * @param codeListSearchDTO    the code list search dto
      * @param qualityDataSetDTO    the quality data set dto
      * @param dataType             the data type
      * @param isSpecificOccurrence the is specific occurrence
      * @param isUSerDefined        the is u ser defined
      */
-    private void updateAppliedQDMList(final MatValueSet matValueSet, final CodeListSearchDTO codeListSearchDTO,
+    private void updateAppliedQDMList(final ValueSet ValueSet, final CodeListSearchDTO codeListSearchDTO,
                                       final QualityDataSetDTO qualityDataSetDTO, final String dataType, final Boolean isSpecificOccurrence,
                                       final boolean isUSerDefined) {
 
@@ -1328,38 +1328,38 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
         String version = searchDisplay.getVersionValue(searchDisplay.getVersionListBox());
         String expansionProfile = searchDisplay.getExpansionIdentifierValue(
                 searchDisplay.getQDMExpIdentifierListBox());
-        MatValueSetTransferObject matValueSetTransferObject = new MatValueSetTransferObject();
-        matValueSetTransferObject.setMeasureId(MatContext.get().getCurrentMeasureId());
-        matValueSetTransferObject.setDatatype(dataType);
-        matValueSetTransferObject.setMatValueSet(matValueSet);
-        matValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);
-        matValueSetTransferObject.setQualityDataSetDTO(qualityDataSetDTO);
-        matValueSetTransferObject.setAppliedQDMList(appliedQDMList);
-        matValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
+        MatValueSetTransferObject ValueSetTransferObject = new MatValueSetTransferObject();
+        ValueSetTransferObject.setMeasureId(MatContext.get().getCurrentMeasureId());
+        ValueSetTransferObject.setDatatype(dataType);
+        ValueSetTransferObject.setValueSet(ValueSet);
+        ValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);
+        ValueSetTransferObject.setQualityDataSetDTO(qualityDataSetDTO);
+        ValueSetTransferObject.setAppliedQDMList(appliedQDMList);
+        ValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
         if ((version != null) || (expansionProfile != null)) {
             if (!expansionProfile.equalsIgnoreCase(MatContext.PLEASE_SELECT)
                     && !expansionProfile.equalsIgnoreCase("")) {
-                matValueSetTransferObject.setExpansionProfile(true);
-                matValueSetTransferObject.setVersionDate(false);
-                currentMatValueSet.setExpansionProfile(searchDisplay
+                ValueSetTransferObject.setExpansionProfile(true);
+                ValueSetTransferObject.setVersionDate(false);
+                currentValueSet.setExpansionProfile(searchDisplay
                         .getQDMExpIdentifierListBox().getValue());
 
             } else if (!version.equalsIgnoreCase(MatContext.PLEASE_SELECT)
                     && !version.equalsIgnoreCase("")) {
-                matValueSetTransferObject.setVersionDate(true);
-                matValueSetTransferObject.setExpansionProfile(false);
-                currentMatValueSet.setVersion(searchDisplay.getVersionListBox().getValue());
+                ValueSetTransferObject.setVersionDate(true);
+                ValueSetTransferObject.setExpansionProfile(false);
+                currentValueSet.setVersion(searchDisplay.getVersionListBox().getValue());
             }
         }
 
         if (!expIdentifierToAllQDM.isEmpty() && !isUSerDefined) {
-            currentMatValueSet.setExpansionProfile(expIdentifierToAllQDM);
-            currentMatValueSet.setVersion("1.0");
-            matValueSetTransferObject.setExpansionProfile(true);
-            matValueSetTransferObject.setVersionDate(false);
+            currentValueSet.setExpansionProfile(expIdentifierToAllQDM);
+            currentValueSet.setVersion("1.0");
+            ValueSetTransferObject.setExpansionProfile(true);
+            ValueSetTransferObject.setVersionDate(false);
         }
-        matValueSetTransferObject.scrubForMarkUp();
-        MatContext.get().getCodeListService().updateCodeListToMeasure(matValueSetTransferObject,
+        ValueSetTransferObject.scrubForMarkUp();
+        MatContext.get().getCodeListService().updateCodeListToMeasure(ValueSetTransferObject,
                 new AsyncCallback<SaveUpdateCodeListResult>() {
                     @Override
                     public void onFailure(final Throwable caught) {
@@ -1487,7 +1487,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
      */
     private void modifyValueSetQDM() {
         //Normal Available QDM Flow
-        MatValueSet modifyWithDTO = currentMatValueSet;
+        ValueSet modifyWithDTO = currentValueSet;
         if ((modifyValueSetDTO != null) && (modifyWithDTO != null)) {
             String dataType;
             String dataTypeText;

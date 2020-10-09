@@ -1,16 +1,19 @@
-package vsac.model;
+package mat.vsac.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class VsacCode {
+@NoArgsConstructor
+public class VsacCode implements Serializable {
     private String message;
     private String status;
 
@@ -19,36 +22,36 @@ public class VsacCode {
 
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class VsacData {
+    public static class VsacData implements Serializable {
         private int resultCount;
         private List<VsacDataResultSet> resultSet = new ArrayList<>();
     }
 
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class VsacError {
-        private  int errorCount;
-        private  List<VsacErrorResultSet> resultSet = new ArrayList<>();
+    public static class VsacError implements Serializable {
+        private int errorCount;
+        private List<VsacErrorResultSet> resultSet = new ArrayList<>();
     }
 
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class VsacErrorResultSet {
-        private  String errDesc;
-        private  String errCode;
+    public static class VsacErrorResultSet implements Serializable {
+        private String errDesc;
+        private String errCode;
     }
 
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class VsacDataResultSet {
+    public static class VsacDataResultSet implements Serializable {
         private String csName;
         private String csOID;
         private String csVersion;
         private String code;
         private String contentMode;
         private String codeName;
-        private  String termType;
-        private  String active;
-        private  Long revision;
+        private String termType;
+        private String active;
+        private Long revision;
     }
 }

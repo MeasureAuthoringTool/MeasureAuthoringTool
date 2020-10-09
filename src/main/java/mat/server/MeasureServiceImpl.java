@@ -17,7 +17,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.ComponentMeasureTabObject;
 import mat.model.MatCodeTransferObject;
-import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
@@ -44,6 +43,7 @@ import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.shared.measure.measuredetails.translate.MeasureDetailModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import mat.vsac.model.ValueSet;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -204,9 +204,9 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
     }
 
     @Override
-    public ValidateMeasureResult createExports(String key, List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts)
+    public ValidateMeasureResult createExports(String key, List<ValueSet> ValueSetList, boolean shouldCreateArtifacts)
             throws MatException {
-        return this.getMeasureLibraryService().createExports(key, matValueSetList, shouldCreateArtifacts);
+        return this.getMeasureLibraryService().createExports(key, ValueSetList, shouldCreateArtifacts);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package vsac.util;
+package mat.vsac.util;
 
 import java.io.InputStream;
 import java.net.URL;

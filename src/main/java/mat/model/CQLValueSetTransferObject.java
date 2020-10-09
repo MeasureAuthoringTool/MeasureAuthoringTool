@@ -3,6 +3,7 @@ package mat.model;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLValueSetTransferObjectValidator;
+import mat.vsac.model.ValueSet;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 	CodeListSearchDTO codeListName;
 	
 	/** The mat value set. */
-	MatValueSet matValueSet;
+	ValueSet ValueSet;
 	
 	/** The measure id. */
 	String measureId;
@@ -75,17 +76,17 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 	 *
 	 * @return the mat value set
 	 */
-	public MatValueSet getMatValueSet() {
-		return matValueSet;
+	public ValueSet getValueSet() {
+		return ValueSet;
 	}
 
 	/**
 	 * Sets the mat value set.
 	 *
-	 * @param matValueSet the new mat value set
+	 * @param ValueSet the new mat value set
 	 */
-	public void setMatValueSet(MatValueSet matValueSet) {
-		this.matValueSet = matValueSet;
+	public void setValueSet(ValueSet ValueSet) {
+		this.ValueSet = ValueSet;
 	}
 
 	/**
@@ -171,11 +172,11 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 				this.setUserDefinedText(noMarkupText);
 			}
 		}
-		if (this.getMatValueSet() != null && this.getMatValueSet().getDisplayName()!= null) {
-			String noMarkupText = this.getMatValueSet().getDisplayName().trim().replaceAll(markupRegExp, "");
+		if (this.getValueSet() != null && this.getValueSet().getDisplayName()!= null) {
+			String noMarkupText = this.getValueSet().getDisplayName().trim().replaceAll(markupRegExp, "");
 			//System.out.println("QDM VSAC Value set name:" + noMarkupText);
-			if (this.getMatValueSet().getDisplayName().trim().length() > noMarkupText.length()) {
-				this.getMatValueSet().setDisplayName(noMarkupText);
+			if (this.getValueSet().getDisplayName().trim().length() > noMarkupText.length()) {
+				this.getValueSet().setDisplayName(noMarkupText);
 			}
 		}
 		if (this.getCqlQualityDataSetDTO() != null) {

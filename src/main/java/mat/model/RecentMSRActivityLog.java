@@ -9,11 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "RECENT_MSR_ACTIVITY_LOG")
-public class RecentMSRActivityLog {
+public class RecentMSRActivityLog implements Serializable {
 	private String id;
 	private Date time;
 	private String userId;

@@ -937,14 +937,14 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		boolean addVersionToValueTag = false;
 		if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion) || StringUtils.isBlank(valueSetVersion)) {
 			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-				valueSetVersion = "vsac:profile:"
+				valueSetVersion = "mat.vsac:profile:"
 						+ qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
 				addVersionToValueTag = true;
 			} else {
 				addVersionToValueTag = false;
 			}
 		} else {
-			valueSetVersion = "vsac:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue();
+			valueSetVersion = "mat.vsac:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 			addVersionToValueTag = true;
 		}
 		if (addVersionToValueTag) {
@@ -1094,10 +1094,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String version = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		if ("1.0".equals(version) || "1".equals(version) || StringUtils.isBlank(version)) {
 			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
+				version = "mat.vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
 			}
 		} else {
-			version = "vsac:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue();
+			version = "mat.vsac:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		}
 		return version;
 	}
@@ -1148,7 +1148,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("valueSet")
 							.setNodeValue(qdmOidValue);
 					String valueSetVersion = valueSetVersionStringValue(qdmNode);
-					if (valueSetVersion.contains("vsac")) {
+					if (valueSetVersion.contains("mat/vsac")) {
 						Attr attrNode = attributedToBeChangedInNode.item(0).getOwnerDocument()
 								.createAttribute("valueSetVersion");
 						attrNode.setNodeValue(valueSetVersion);
@@ -1486,7 +1486,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
 
 						String valueSetVersion = valueSetVersionStringValue(attrNode);
-						if (valueSetVersion.contains("vsac")) {
+						if (valueSetVersion.contains("mat/vsac")) {
 							Attr valuesetVersionAttr = attributedToBeChangedInNode.item(0).getOwnerDocument()
 									.createAttribute("valueSetVersion");
 							valuesetVersionAttr.setNodeValue(valueSetVersion);
@@ -1661,7 +1661,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			translationNode.setAttribute("valueSet", attrOID.getNodeValue());
 
 			String valueSetVersion = valueSetVersionStringValue(attributeQDMNode);
-			if (valueSetVersion.contains("vsac")) {
+			if (valueSetVersion.contains("mat/vsac")) {
 				translationNode.setAttribute("valueSetVersion", valueSetVersion);
 			} else {
 				if (translationNode.getAttributes().getNamedItem("valueSetVersion") != null) {
@@ -2029,7 +2029,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
 
 							String valueSetVersion = valueSetVersionStringValue(attributeQDMNode);
-							if (valueSetVersion.contains("vsac")) {
+							if (valueSetVersion.contains("mat/vsac")) {
 								Attr valuesetVersionAttr = attributedToBeChangedInNode.item(0).getOwnerDocument()
 										.createAttribute("valueSetVersion");
 								valuesetVersionAttr.setNodeValue(valueSetVersion);

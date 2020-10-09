@@ -5,8 +5,8 @@ import mat.client.codelist.HasListBox;
 import mat.dto.OperatorDTO;
 import mat.dto.UnitDTO;
 import mat.dto.VSACCodeSystemDTO;
-import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
+import mat.model.MatValueSetTransferObject;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,7 @@ public interface CodeListServiceAsync {
 
 	/**
 	 * @return Returns a hash map keyed by oid, e.g. urn:oid:2.16.840.1.113883.12.292, and valued by VSACCodeSystemDTO containing
-	 * fhir model 4.0.1 url, e.g. http://hl7.org/fhir/sid/cvx, and the default vsac version.
+	 * fhir model 4.0.1 url, e.g. http://hl7.org/fhir/sid/cvx, and the default mat.vsac version.
 	 */
 	public void getOidToVsacCodeSystemMap(AsyncCallback<Map<String, VSACCodeSystemDTO>> asyncCallback);
 	
@@ -90,37 +90,37 @@ public interface CodeListServiceAsync {
 	/**
 	 * Save qd sto measure.
 	 * 
-	 * @param matValueSetTransferObject
+	 * @param ValueSetTransferObject
 	 *            the mat value set transfer object
 	 * @param callback
 	 *            the callback
 	 */
-	void saveQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject,
-			AsyncCallback<SaveUpdateCodeListResult> callback);
+	void saveQDStoMeasure(MatValueSetTransferObject ValueSetTransferObject,
+                          AsyncCallback<SaveUpdateCodeListResult> callback);
 	
 	/**
 	 * Save user defined qds to measure.
 	 * 
-	 * @param matValueSetTransferObject
+	 * @param ValueSetTransferObject
 	 *            the mat value set transfer object
 	 * @param asyncCallback
 	 *            the async callback
 	 */
-	public void saveUserDefinedQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject,
-			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
+	public void saveUserDefinedQDStoMeasure(MatValueSetTransferObject ValueSetTransferObject,
+                                            AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
 	
 	
 	
 	/**
 	 * Update code list to measure.
 	 * 
-	 * @param matValueSetTransferObject
+	 * @param ValueSetTransferObject
 	 *            mat Value Set Transfer Object
 	 * @param asyncCallback
 	 *            the async callback
 	 */
-	void updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject,
-			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
+	void updateCodeListToMeasure(MatValueSetTransferObject ValueSetTransferObject,
+                                 AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
 	
 	
 }

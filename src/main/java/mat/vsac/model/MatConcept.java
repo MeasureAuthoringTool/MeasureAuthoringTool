@@ -1,10 +1,12 @@
-package vsac.model;
+package mat.vsac.model;
 
+
+import java.io.Serializable;
 
 /**
  * The Class MatConcept.
  */
-public class MatConcept  {
+public class MatConcept  implements Serializable {
 
 	/** The code. */
 	private String code;

@@ -43,7 +43,7 @@ import mat.model.ComponentMeasureTabObject;
 import mat.model.DataType;
 import mat.model.LockedUserInfo;
 import mat.model.MatCodeTransferObject;
-import mat.model.MatValueSet;
+import mat.vsac.model.ValueSet;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
@@ -1486,7 +1486,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     /**
-     * Gets the vsac service.
+     * Gets the mat.vsac service.
      *
      * @return the service
      */
@@ -3222,10 +3222,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
     }
 
     @Override
-    public final ValidateMeasureResult createExports(final String key, final List<MatValueSet> matValueSetList,
+    public final ValidateMeasureResult createExports(final String key,
+                                                     final List<ValueSet> ValueSetList,
                                                      boolean shouldCreateArtifacts) throws MatException {
         try {
-            return measurePackageService.createExports(key, matValueSetList, shouldCreateArtifacts);
+            return measurePackageService.createExports(key, ValueSetList, shouldCreateArtifacts);
         } catch (Exception exc) {
             log.error("Exception validating export for " + key, exc);
             throw new MatException(exc.getMessage());

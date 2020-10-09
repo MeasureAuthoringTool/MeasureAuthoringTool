@@ -1,13 +1,14 @@
-package vsac.model;
+package mat.vsac.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * This class holds list of MatValueSet.
+ * This class holds list of ValueSet.
  * **/
-public class ValueSetWrapper {
+public class ValueSetWrapper implements Serializable  {
 	/**
-	 * List of MatValueSet.
+	 * List of ValueSet.
 	 * **/
 	private ArrayList<ValueSet> valueSetList;
 
@@ -24,7 +25,7 @@ public class ValueSetWrapper {
 	 * Setter Method.
 	 * 
 	 * @param valueSet
-	 *            - List of MatValueSet.
+	 *            - List of ValueSet.
 	 * **/
 	public final void setValueSetList(final ArrayList<ValueSet> valueSet) {
 		this.valueSetList = valueSet;

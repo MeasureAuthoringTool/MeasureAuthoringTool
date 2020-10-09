@@ -1,4 +1,4 @@
-package vsac.util;
+package mat.vsac.util;
 
 
 import org.exolab.castor.mapping.Mapping;

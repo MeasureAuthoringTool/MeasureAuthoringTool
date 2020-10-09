@@ -1,15 +1,15 @@
-package vsac;
+package mat.vsac;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import vsac.model.BasicResponse;
-import vsac.model.CodeSystemVersionResponse;
-import vsac.model.ValueSetResult;
-import vsac.model.ValueSetWrapper;
-import vsac.model.VsacCode;
-import vsac.util.VsacConverter;
+import mat.vsac.model.BasicResponse;
+import mat.vsac.model.CodeSystemVersionResponse;
+import mat.vsac.model.ValueSetResult;
+import mat.vsac.model.ValueSetWrapper;
+import mat.vsac.model.VsacCode;
+import mat.vsac.util.VsacConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,7 +56,7 @@ public class VsacService {
     }
 
     /**
-     * @param apiKey A users vsac api-key.
+     * @param apiKey A users mat.vsac api-key.
      * @return Null if a ticket granting ticket could not be obtained.
      */
     public String getTicketGrantingTicket(String apiKey) {
@@ -154,11 +154,11 @@ public class VsacService {
             try {
                 return vsacConverter.toWrapper(vsacResponseResult.getXmlPayLoad());
             } catch (Exception e) {
-                log.warn("Cannot get XMl from vsac oid: {}, reason: {}", oid, vsacResponseResult.getFailReason(),e);
+                log.warn("Cannot get XMl from mat.vsac oid: {}, reason: {}", oid, vsacResponseResult.getFailReason(),e);
                 return null;
             }
         } else {
-            log.warn("Error response from the vsac service, result: {}", vsacResponseResult);
+            log.warn("Error response from the mat.vsac service, result: {}", vsacResponseResult);
             return null;
         }
     }
@@ -246,12 +246,12 @@ public class VsacService {
     /**
      * Retrieve All profile List.
      *
-     * @param serviceTicket The service ticket.
+     * @param ticketGrantingTicket The service ticket.
      * @return VSACResponseResult The result.
      */
-    public BasicResponse getProfileList(String serviceTicket) {
+    public BasicResponse getProfileList(String ticketGrantingTicket) {
         // https://vsac.nlm.nih.gov/vsac/profiles
-        String singleUseTicket = getServiceTicket(serviceTicket);
+        String singleUseTicket = getServiceTicket(ticketGrantingTicket);
 
         if (StringUtils.isEmpty(singleUseTicket)) {
             log.error("Error getting singleUseTicket");
@@ -278,17 +278,10 @@ public class VsacService {
      * @return VSACResponseResult
      */
     public BasicResponse reteriveVersionListForOid(String oid, String serviceTicket) {
-        String singleUseTicket = getServiceTicket(serviceTicket);
-
-        if (StringUtils.isEmpty(singleUseTicket)) {
-            log.error("Error getting singleUseTicket");
-            return buildBasicResponseForFailure();
-        }
-
         try {
             return buildBasicResponseFromEntity(restTemplate.getForEntity(
                     UriComponentsBuilder.fromHttpUrl(baseVsacUrl + "/vsac/oid/" + oid + "/versions")
-                            .queryParam("ticket", singleUseTicket)
+                            .queryParam("ticket", serviceTicket)
                             .build()
                             .encode()
                             .toUri(), String.class));
@@ -306,19 +299,12 @@ public class VsacService {
      */
     public BasicResponse getMultipleValueSetsResponseByOID(String oid, String serviceTicket, String profile) {
         // https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets
-        String singleUseTicket = getServiceTicket(serviceTicket);
-
-        if (StringUtils.isEmpty(singleUseTicket)) {
-            log.error("Error getting singleUseTicket");
-            return buildBasicResponseForFailure();
-        }
-
         try {
             return buildBasicResponseFromEntity(restTemplate.getForEntity(
                     UriComponentsBuilder.fromHttpUrl(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets")
                             .queryParam("id", oid)
                             .queryParam("profile", profile)
-                            .queryParam("ticket", singleUseTicket)
+                            .queryParam("ticket", serviceTicket)
                             .queryParam("includeDraft", "yes")
                             .build()
                             .encode()
@@ -338,19 +324,12 @@ public class VsacService {
      */
     public BasicResponse getMultipleValueSetsResponseByOIDAndVersion(String oid, String version, String serviceTicket) {
         // https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets
-        String singleUseTicket = getServiceTicket(serviceTicket);
-
-        if (StringUtils.isEmpty(singleUseTicket)) {
-            log.error("Error getting singleUseTicket");
-            return buildBasicResponseForFailure();
-        }
-
         try {
             return buildBasicResponseFromEntity(restTemplate.getForEntity(
                     UriComponentsBuilder.fromHttpUrl(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets")
                             .queryParam("id", oid)
                             .queryParam("version", version)
-                            .queryParam("ticket", singleUseTicket)
+                            .queryParam("ticket", serviceTicket)
                             .build()
                             .encode()
                             .toUri(), String.class));
@@ -369,19 +348,12 @@ public class VsacService {
      */
     public BasicResponse getMultipleValueSetsResponseByOIDAndEffectiveDate(String oid, String effectiveDate, String serviceTicket) {
         // https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets
-        String singleUseTicket = getServiceTicket(serviceTicket);
-
-        if (StringUtils.isEmpty(singleUseTicket)) {
-            log.error("Error getting singleUseTicket");
-            return buildBasicResponseForFailure();
-        }
-
         try {
             return buildBasicResponseFromEntity(restTemplate.getForEntity(
                     UriComponentsBuilder.fromHttpUrl(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets")
                             .queryParam("id", oid)
                             .queryParam("effectiveDate", effectiveDate)
-                            .queryParam("ticket", singleUseTicket)
+                            .queryParam("ticket", serviceTicket)
                             .queryParam("ReleaseType", "VSAC")
                             .queryParam("includeDraft", "yes")
                             .build()
@@ -401,19 +373,12 @@ public class VsacService {
      */
     public BasicResponse getMultipleValueSetsResponseByOIDAndProfile(String oid, String profile, String serviceTicket) {
         // https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets
-        String singleUseTicket = getServiceTicket(serviceTicket);
-
-        if (StringUtils.isEmpty(singleUseTicket)) {
-            log.error("Error getting singleUseTicket");
-            return buildBasicResponseForFailure();
-        }
-
         try {
             return buildBasicResponseFromEntity(restTemplate.getForEntity(
                     UriComponentsBuilder.fromHttpUrl(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets")
                             .queryParam("id", oid)
                             .queryParam("profile", profile)
-                            .queryParam("ticket", singleUseTicket)
+                            .queryParam("ticket", serviceTicket)
                             .queryParam("includeDraft", "yes")
                             .build()
                             .encode()
@@ -489,19 +454,12 @@ public class VsacService {
 
     public BasicResponse getMultipleValueSetsResponseByOIDAndRelease(String oid, String release, String serviceTicket) {
         // https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets
-        String singleUseTicket = getServiceTicket(serviceTicket);
-
-        if (StringUtils.isEmpty(singleUseTicket)) {
-            log.error("Error getting singleUseTicket");
-            return buildBasicResponseForFailure();
-        }
-
         try {
             return buildBasicResponseFromEntity(restTemplate.getForEntity(
                     UriComponentsBuilder.fromHttpUrl(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets")
                             .queryParam("id", oid)
                             .queryParam("release", release)
-                            .queryParam("ticket", singleUseTicket)
+                            .queryParam("ticket", serviceTicket)
                             .build()
                             .encode()
                             .toUri(), String.class));
@@ -513,17 +471,10 @@ public class VsacService {
     public BasicResponse getDirectReferenceCode(String codeURLString, String serviceTicket) {
         //  https://vsac.nlm.nih.gov/vsac/CodeSystem/LOINC/Version/2.66/Code/21112-8/Info?ticket=ST-281185-McNb53ZGHYtaGjHamgKg-cas&resultFormat=json&resultSet=standard
         // "/CodeSystem/LOINC22/Version/2.67/Code/21112-8/Info";
-
-        String singleUseTicket = getServiceTicket(serviceTicket);
-
-        if (StringUtils.isEmpty(singleUseTicket)) {
-            log.error("Error getting singleUseTicket");
-            return buildBasicResponseForFailure();
-        }
         try {
             return buildBasicResponseFromEntity(restTemplate.getForEntity(
                     UriComponentsBuilder.fromHttpUrl(baseVsacUrl + "/vsac" + codeURLString)
-                            .queryParam("ticket", singleUseTicket)
+                            .queryParam("ticket", serviceTicket)
                             .queryParam("resultFormat", "json")
                             .queryParam("resultSet", "standard")
                             .build()

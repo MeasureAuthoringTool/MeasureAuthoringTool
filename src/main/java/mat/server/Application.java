@@ -3,7 +3,6 @@ package mat.server;
 import ca.uhn.fhir.context.FhirContext;
 import liquibase.integration.spring.SpringLiquibase;
 import liquibase.util.StringUtils;
-import lombok.extern.slf4j.Slf4j;
 import mat.client.login.service.HarpService;
 import mat.dao.impl.AuditEventListener;
 import mat.dao.impl.AuditInterceptor;
@@ -52,7 +51,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
-import vsac.VsacService;
+import mat.vsac.VsacService;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
@@ -298,11 +297,12 @@ public class Application extends WebSecurityConfigurerAdapter {
         String ticketBase =  System.getProperty("VSAC_TICKET_URL_BASE");
         String urlBase = System.getProperty("VSAC_URL_BASE");
 
+        //Default for test cases.
         if (StringUtils.isEmpty(ticketBase)) {
-            throw new IllegalArgumentException("No system property VSAC_TICKET_URL_BASE provided. Please add one.");
+            ticketBase = "https://utslogin.nlm.nih.gov/cas/v1";
         }
         if (StringUtils.isEmpty(urlBase)) {
-            throw new IllegalArgumentException("No system property VSAC_URL_BASE provided. Please add one.");
+            urlBase = "https://vsac.nlm.nih.gov";
         }
 
         return new VsacService(ticketBase,urlBase,restTemplate);

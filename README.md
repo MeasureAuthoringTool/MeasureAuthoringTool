@@ -126,15 +126,15 @@ cp ~/.m2/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.
  [Run] -> [Run Configurations] -> Select your MAT project on the Left Hand Side and on the [Arguments] tab -> add the following information below into the VM arguments box.
  ```text
  -Xmx1G 
- -DVSAC_DRC_URL=https://vsac.nlm.nih.gov/vsac
- -DSERVER_TICKET_URL=https://vsac.nlm.nih.gov/vsac/ws/Ticket
- -DSERVER_SINGLE_VALUESET_URL=https://vsac.nlm.nih.gov/vsac/ws/RetrieveValueSet? 
- -DSERVER_MULTIPLE_VALUESET_URL_NEW=https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets? 
+ -DVSAC_DRC_URL=https://mat.vsac.nlm.nih.gov/mat.vsac
+ -DSERVER_TICKET_URL=https://mat.vsac.nlm.nih.gov/mat.vsac/ws/Ticket
+ -DSERVER_SINGLE_VALUESET_URL=https://mat.vsac.nlm.nih.gov/mat.vsac/ws/RetrieveValueSet? 
+ -DSERVER_MULTIPLE_VALUESET_URL_NEW=https://mat.vsac.nlm.nih.gov/mat.vsac/svs/RetrieveMultipleValueSets? 
  -DSERVICE_URL=http://umlsks.nlm.nih.gov 
  -DENVIRONMENT=DEV 
  -Dlog4j.ignoreTCL=true 
- -DPROFILE_SERVICE=https://vsac.nlm.nih.gov/vsac/profiles 
- -DVERSION_SERVICE=https://vsac.nlm.nih.gov/vsac/oid/ 
+ -DPROFILE_SERVICE=https://mat.vsac.nlm.nih.gov/mat.vsac/profiles 
+ -DVERSION_SERVICE=https://mat.vsac.nlm.nih.gov/mat.vsac/oid/ 
  -D2FA_AUTH_CLASS=mat.server.twofactorauth.DefaultOTPValidatorForUser 
  -D2FA_AUTH_CLASS1=mat.server.twofactorauth.DefaultOTPValidatorForUser 
  -DBONNIE_RESPONSE_TYPE=code 

@@ -14,7 +14,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.ComponentMeasureTabObject;
 import mat.model.MatCodeTransferObject;
-import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
@@ -34,6 +33,7 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
+import mat.vsac.model.ValueSet;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -322,12 +322,12 @@ public interface MeasureServiceAsync {
 	 * 
 	 * @param key
 	 *            the key
-	 * @param matValueSetList
+	 * @param ValueSetList
 	 *            the mat value set list
 	 * @param callback
 	 *            the callback
 	 */
-	void createExports(String key, List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts, AsyncCallback<ValidateMeasureResult> callback);
+	void createExports(String key, List<ValueSet> ValueSetList, boolean shouldCreateArtifacts, AsyncCallback<ValidateMeasureResult> callback);
 	
 	void validateExports(String keys,  AsyncCallback<ValidateMeasureResult> callback);
 	
@@ -553,7 +553,6 @@ public interface MeasureServiceAsync {
 	 * @param toBemodifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param parameterList the parameter list
-	 * @param isFormtable flag for if the parameter should be formatted on save
 	 * @param callback the callback
 	 */
 	void saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj, CQLParameter currentObj,
@@ -577,7 +576,6 @@ public interface MeasureServiceAsync {
 	 * @param toBeModifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param functionsList the functions list
-	 * @param isFormtable flag for if the function should be formatted on save
 	 * @param callback the callback
 	 */
 	void saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,

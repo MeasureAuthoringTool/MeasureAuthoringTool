@@ -1,13 +1,13 @@
 package mat.server;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.dao.DataTypeDAO;
 import mat.model.DataType;
 import mat.model.DirectReferenceCode;
-import mat.model.MatValueSet;
 import mat.model.VSACExpansionProfileWrapper;
-import mat.model.VSACValueSetWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.logging.LogFactory;
 import mat.server.service.MeasureLibraryService;
@@ -24,8 +24,10 @@ import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import vsac.VsacService;
-import vsac.model.BasicResponse;
+import mat.vsac.VsacService;
+import mat.vsac.model.BasicResponse;
+import mat.vsac.model.ValueSet;
+import mat.vsac.model.ValueSetWrapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,6 +52,8 @@ public class VSACApiServImpl implements VSACApiService{
 	@Value("${mat.qdm.default.expansion.id}")
 	private String defaultExpId;
 
+	private JsonMapper jsonMapper = new JsonMapper();
+
 	@Autowired
 	private VsacService vsacService;
 	@Autowired
@@ -63,22 +67,22 @@ public class VSACApiServImpl implements VSACApiService{
 	 * Private method to Convert VSAC xml pay load into Java object through
 	 * Castor.
 	 * @param xmlPayLoad
-	 *            - String vsac pay load.
+	 *            - String mat.vsac pay load.
 	 * @return VSACValueSetWrapper.
 	 * */
-	private VSACValueSetWrapper convertXmltoValueSet(final String xmlPayLoad) {
+	private ValueSetWrapper convertXmltoValueSet(final String xmlPayLoad) {
 		LOGGER.info("Start VSACAPIServiceImpl convertXmltoValueSet");
-		VSACValueSetWrapper details = null;
+		ValueSetWrapper details = null;
 		String xml = xmlPayLoad;
 		if (StringUtils.isNotBlank(xml)) {
 			LOGGER.info("xml To reterive RetrieveMultipleValueSetsResponse tag is not null ");
 		}
 		try {
 			XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
-			details = (VSACValueSetWrapper) xmlMarshalUtil.convertXMLToObject(
+			details = (ValueSetWrapper) xmlMarshalUtil.convertXMLToObject(
 					"MultiValueSetMapping.xml",
 					xml,
-					VSACValueSetWrapper.class);
+					ValueSetWrapper.class);
 			LOGGER.info("unmarshalling complete..RetrieveMultipleValueSetsResponse" +
 					details.getValueSetList().get(0).getDefinition());
 		} catch (MarshalException | ValidationException | MappingException | IOException e) {
@@ -119,29 +123,42 @@ public class VSACApiServImpl implements VSACApiService{
 		return profileDetails;
 	}
 	
-	private DirectReferenceCode convertXmltoDirectCodeRef(final String xmlPayLoad) {
+	private DirectReferenceCode convertXmltoDirectCodeRef(final String jsonPayload) {
 		LOGGER.info("Start VSACAPIServiceImpl convertXmltoValueSet");		
 		DirectReferenceCode details = null;
-		int firstIndex = xmlPayLoad.indexOf("<csCode>");
-		int lastIndex = xmlPayLoad.lastIndexOf("</csCode>");
-		
-		String xml = xmlPayLoad.substring(firstIndex, lastIndex).concat("</csCode>");
-		if (StringUtils.isNotBlank(xml)) {
-			LOGGER.info("xml To reterive csCode tag is not null ");
-		}
-		
+		//{
+		//  "data": {
+		//    "resultCount": 1,
+		//    "resultSet": [
+		//      {
+		//        "csName": "ActMood",
+		//        "csOID": "2.16.840.1.113883.5.1001",
+		//        "csVersion": "HL7V3.0_2019-12",
+		//        "code": "_ActMoodDesire",
+		//        "contentMode": "Complete",
+		//        "codeName": "desire",
+		//        "termType": "PT",
+		//        "active": "Yes",
+		//        "revision": 2098070245
+		//      }
+		//    ]
+		//  },
+		//  "message": "ok",
+		//  "status": "ok"
+		//}
+
 		try {
-			XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
-			details = (DirectReferenceCode) xmlMarshalUtil.convertXMLToObject(
-					"DirectCodeReferenceMapping.xml",
-					xml,
-					DirectReferenceCode.class);
-			LOGGER.info("unmarshalling complete..csCode" + details.getCodeDescriptor());
-		} catch (MarshalException | ValidationException | MappingException | IOException e) {
-			LOGGER.debug("Exception in convertXmltoDirectCodeRef:" + e);
-			e.printStackTrace();
+			JsonNode node =  jsonMapper.readTree(jsonPayload).get("data").get("resultSet").elements().next();
+			details = new DirectReferenceCode();
+			details.setCode(node.get("code").asText());
+			details.setCodeDescriptor(node.get("codeName").asText());
+			details.setCodeSystemName(node.get("csName").asText());
+			details.setCodeSystemOid(node.get("csOID").asText());
+			details.setCodeSystemVersion(node.get("csVersion").asText());
+			LOGGER.info(details);
+		} catch (Exception e) {
+			LOGGER.debug("Exception in convertXmltoDirectCodeRef:" , e);
 		}
-		LOGGER.info("End VSACAPIServiceImpl convertXmltoDirectCodeRef");
 		return details;
 	}
 	
@@ -302,27 +319,27 @@ public class VSACApiServImpl implements VSACApiService{
 							}
 							if (vsacResponseResult.getXmlPayLoad() != null &&
 									StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
-								VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
-								MatValueSet matValueSet = wrapper.getValueSetList().get(0);
-								if (matValueSet != null) {
-									cqlQualityDataSetDTO.setName(matValueSet.getDisplayName());
-									cqlQualityDataSetDTO.setOriginalCodeListName(matValueSet.getDisplayName());
+								ValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
+								ValueSet ValueSet = wrapper.getValueSetList().get(0);
+								if (ValueSet != null) {
+									cqlQualityDataSetDTO.setName(ValueSet.getDisplayName());
+									cqlQualityDataSetDTO.setOriginalCodeListName(ValueSet.getDisplayName());
 									if(cqlQualityDataSetDTO.getSuffix() != null &&
 											!cqlQualityDataSetDTO.getSuffix().isEmpty()){
-										cqlQualityDataSetDTO.setName(matValueSet.getDisplayName()+
+										cqlQualityDataSetDTO.setName(ValueSet.getDisplayName()+
 												" ("+cqlQualityDataSetDTO.getSuffix()+")");
 									}
-									if (matValueSet.isGrouping()) {
+									if (ValueSet.isGrouping()) {
 										cqlQualityDataSetDTO.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 									} else {
-										if (matValueSet.getConceptList().getConceptList() != null) {
-											cqlQualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().
+										if (ValueSet.getConceptList().getConceptList() != null) {
+											cqlQualityDataSetDTO.setTaxonomy(ValueSet.getConceptList().
 													getConceptList().get(0).getCodeSystemName());
 										} else {
 											cqlQualityDataSetDTO.setTaxonomy(StringUtils.EMPTY);
 										}
 									}
-									cqlQualityDataSetDTO.setValueSetType(matValueSet.getType());
+									cqlQualityDataSetDTO.setValueSetType(ValueSet.getType());
 									updateInMeasureXml.put(cqlQualityDataSetDTO, toBeModifiedQDM);
 									toBeModifiedQDM.setHasModifiedAtVSAC(true); // Used at Applied QDM Tab
 									//to show icons in CellTable.
@@ -388,10 +405,10 @@ public class VSACApiServImpl implements VSACApiService{
 	}
 	
 	/**
-	 * Fetches a direct reference code from vsac
+	 * Fetches a direct reference code from mat.vsac
 	 * @param url the url to fetch
 	 * @param sessionId the user's session id
-	 * @return the result of the vsac api call
+	 * @return the result of the mat.vsac api call
 	 */
 	private VsacApiResult getCodeFromVsac(String url, String sessionId) {
 		LOGGER.info("Start VSACAPIServiceImpl getDirectReferenceCode method : url entered :" + url);
@@ -523,9 +540,9 @@ public class VSACApiServImpl implements VSACApiService{
 									
 					if (vsacResponseResult != null && StringUtils.isNotBlank(vsacResponseResult.getXmlPayLoad())) {
 						result.setSuccess(true);
-						VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
+						ValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
 						result.setVsacResponse(wrapper.getValueSetList());
-						LOGGER.info("Successfully converted valueset object from vsac xml payload.");
+						LOGGER.info("Successfully converted valueset object from mat.vsac xml payload.");
 					} else {
 						result.setSuccess(false);
 						LOGGER.info("Unable to retrieve value set in VSAC.");
@@ -583,10 +600,8 @@ public class VSACApiServImpl implements VSACApiService{
 		LOGGER.info("Start VSACAPIServiceImpl getProgramsList method :");
 		VsacApiResult result = new VsacApiResult();
 		
-		try {		
-			
+		try {
 			BasicResponse vsacResponseResult = vsacService.getAllPrograms();
-			
 			if(vsacResponseResult != null && vsacResponseResult.getPgmRels() != null) {				
 				if (vsacResponseResult.isFailResponse() &&
 						(vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
@@ -617,7 +632,6 @@ public class VSACApiServImpl implements VSACApiService{
 		}
 
 		return result;
-
 	}
 
 	private List<String> getReleasesListForProgram(String programName) {

@@ -1,7 +1,8 @@
-package vsac.model;
+package mat.vsac.model;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  *
  * **/
 
-public class ValueSet  {
+public class ValueSet  implements Serializable {
     /**
     * VSAC value set ID.
 	*
@@ -103,8 +104,8 @@ public class ValueSet  {
 	
 	/**
 	 * getCodeSystemName method returns the code system name of the first concept in this "conceptList" object.
-	 * This method is used to get code system name for "Extensional" Type MatValueSet. 
-	 * For "Grouping" Type MatValueSet, iterate through this groupedValueSet list object and call getCodeSystemName() for each object in groupedValueSet list. 
+	 * This method is used to get code system name for "Extensional" Type ValueSet.
+	 * For "Grouping" Type ValueSet, iterate through this groupedValueSet list object and call getCodeSystemName() for each object in groupedValueSet list.
 	 * @return String Code System Name.
 	 */
 	public String getCodeSystemName() {
@@ -318,7 +319,7 @@ public class ValueSet  {
 
 	/**
 	 *Setter for groupedValueSet.
-	 *@param groupedValueSets - MatValueSet.
+	 *@param groupedValueSets - ValueSet.
 	 * **/
 	public final void setGroupedValueSet(final List<ValueSet> groupedValueSets) {
 		this.groupedValueSet = groupedValueSets;

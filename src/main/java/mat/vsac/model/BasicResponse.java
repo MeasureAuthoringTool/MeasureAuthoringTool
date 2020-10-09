@@ -1,15 +1,16 @@
-package vsac.model;
+package mat.vsac.model;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
 @ToString
-public class BasicResponse {
+public class BasicResponse implements Serializable {
     public static final int REQUEST_TIMEDOUT = 3;
     public static final int REQUEST_FAILED = 4;
 

@@ -1,13 +1,14 @@
-package vsac.model;
+package mat.vsac.model;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Container for holding Group information.
  *
  * **/
-public class MatGroup  {
+public class MatGroup  implements Serializable {
 /**
 * Group ID.
 *

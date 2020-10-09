@@ -44,6 +44,7 @@ in the VM options text box, add the following and edit for your configuration.
 -DPASSWORDKEY=PasswordKey
 -DFHIR_SRVC_URL=https://matdev.semanticbits.com/mat-fhir-services/
 -DQDM_QICORE_MAPPING_SERVICES_URL=https://matdev.semanticbits.com/qdm-qicore-mapping-services
+-DMAT_API_KEY=DISABLED
 ```
 
 Now from the intellij menu, you should be able to run or debug the MAT application.

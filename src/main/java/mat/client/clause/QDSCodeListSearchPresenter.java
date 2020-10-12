@@ -29,8 +29,8 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplay;
-import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
+import mat.vsacmodel.ValueSet;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import org.gwtbootstrap3.client.ui.Button;
@@ -50,7 +50,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		Widget asWidget();
 		
 		void buildValueSetDetailsWidget(
-				List<MatValueSet> list);
+				List<ValueSet> list);
 		
 		void clearVSACValueSetMessages();
 		
@@ -58,7 +58,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		
 		Button getApplyToMeasureButton();
 		
-		MatValueSet getCurrentMatValueSet();
+		ValueSet getCurrentValueSet();
 		
 		ListBoxMVP getDataTypesListBox();
 		
@@ -241,10 +241,10 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 						searchDisplay.getAllDataTypeInput()).equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 			if(isValidUserDefinedInput){
 				String dataType = searchDisplay.getDataTypeValue(searchDisplay.getAllDataTypeInput());
-				MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, false,
+				MatValueSetTransferObject ValueSetTransferObject = createValueSetTransferObject(dataType, false,
 						MatContext.get().getCurrentMeasureId());
 				MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(
-						matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
+						ValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
 							@Override
 							public void onFailure(final Throwable caught) {
 								if (appliedQDMList.size() > 0) {
@@ -331,9 +331,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		String measureID = MatContext.get().getCurrentMeasureId();
 		
 		if (!dataType.isEmpty() && !dataType.equals("")) {
-			MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, isSpecificOccurrence,
+			MatValueSetTransferObject ValueSetTransferObject = createValueSetTransferObject(dataType, isSpecificOccurrence,
 					measureID);
-			MatContext.get().getCodeListService().saveQDStoMeasure(matValueSetTransferObject,
+			MatContext.get().getCodeListService().saveQDStoMeasure(ValueSetTransferObject,
 					new AsyncCallback<SaveUpdateCodeListResult>() {
 				@Override
 				public void onFailure(final Throwable caught) {
@@ -367,7 +367,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 									.getMessageDelegate()
 									.getQDMOcurrenceSuccessMessage(
 											searchDisplay
-											.getCurrentMatValueSet()
+											.getCurrentValueSet()
 											.getDisplayName(),
 											dataTypeText,
 											result.getOccurrenceMessage());
@@ -377,7 +377,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 									.getMessageDelegate()
 									.getQDMSuccessMessage(
 											searchDisplay
-											.getCurrentMatValueSet()
+											.getCurrentValueSet()
 											.getDisplayName(),
 											dataTypeText);
 						}
@@ -385,7 +385,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 						.getEventBus().fireEvent(
 								new QDSElementCreatedEvent(
 										searchDisplay
-										.getCurrentMatValueSet()
+										.getCurrentValueSet()
 										.getDisplayName()));
 						searchDisplay
 						.getSuccessMessageDisplay()
@@ -450,30 +450,31 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	 * @param measureID the measure id
 	 * @return the mat value set transfer object
 	 */
-	private MatValueSetTransferObject createValueSetTransferObject(final String dataType, final boolean isSpecificOccurrence,
-			String measureID) {
-		MatValueSetTransferObject matValueSetTransferObject = new MatValueSetTransferObject();
-		matValueSetTransferObject.setMeasureId(measureID);
-		matValueSetTransferObject.setDatatype(dataType);
-		matValueSetTransferObject.setMatValueSet(searchDisplay.getCurrentMatValueSet());
-		matValueSetTransferObject.setAppliedQDMList(appliedQDMList);
-		matValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
+	private MatValueSetTransferObject createValueSetTransferObject(final String dataType,
+																   final boolean isSpecificOccurrence,
+																   String measureID) {
+		MatValueSetTransferObject ValueSetTransferObject = new MatValueSetTransferObject();
+		ValueSetTransferObject.setMeasureId(measureID);
+		ValueSetTransferObject.setDatatype(dataType);
+		ValueSetTransferObject.setValueSet(searchDisplay.getCurrentValueSet());
+		ValueSetTransferObject.setAppliedQDMList(appliedQDMList);
+		ValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
 		if ((searchDisplay.getDateInput().getValue() != null) && !searchDisplay.getDateInput().getValue().trim().isEmpty()) {
 			if (searchDisplay.getVersion().getValue().equals(Boolean.TRUE)) {
-				matValueSetTransferObject.setVersionDate(true);
-				matValueSetTransferObject.setEffectiveDate(false);
+				ValueSetTransferObject.setVersionDate(true);
+				ValueSetTransferObject.setEffectiveDate(false);
 			} else if (searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
-				matValueSetTransferObject.setEffectiveDate(true);
-				matValueSetTransferObject.setVersionDate(false);
+				ValueSetTransferObject.setEffectiveDate(true);
+				ValueSetTransferObject.setVersionDate(false);
 			} else {
-				matValueSetTransferObject.setEffectiveDate(false);
-				matValueSetTransferObject.setVersionDate(false);
+				ValueSetTransferObject.setEffectiveDate(false);
+				ValueSetTransferObject.setVersionDate(false);
 			}
-			matValueSetTransferObject.setQueryDate(searchDisplay.getDateInput().getValue());
+			ValueSetTransferObject.setQueryDate(searchDisplay.getDateInput().getValue());
 		}
-		matValueSetTransferObject.setMeasureId(measureID);
-		matValueSetTransferObject.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
-		return matValueSetTransferObject;
+		ValueSetTransferObject.setMeasureId(measureID);
+		ValueSetTransferObject.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
+		return ValueSetTransferObject;
 	}
 	
 	/**

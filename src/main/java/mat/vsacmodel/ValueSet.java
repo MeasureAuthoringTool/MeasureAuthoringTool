@@ -1,8 +1,6 @@
-package mat.model.cql;
+package mat.vsacmodel;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-import org.apache.commons.lang3.StringUtils;
-
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +8,7 @@ import java.util.List;
  *
  * **/
 
-public class CQLMatValueSet implements IsSerializable {
+public class ValueSet  implements Serializable {
     /**
     * VSAC value set ID.
 	*
@@ -35,7 +33,7 @@ public class CQLMatValueSet implements IsSerializable {
 	 * VSAC value set conceptList.
 	 *
 	 * **/
-	private CQLMatConceptList conceptList;
+	private MatConceptList conceptList;
 	/**
 	 * VSAC value set source.
 	 *
@@ -70,12 +68,12 @@ public class CQLMatValueSet implements IsSerializable {
 	 * VSAC value set Group List.
 	 *
 	 * **/
-	private List<CQLMatGroup> groupList;
+	private List<MatGroup> groupList;
 	/**
 	 * VSAC value set Grouped Value Set.
 	 *
 	 * **/
-	private List<CQLMatValueSet> groupedValueSet;
+	private List<ValueSet> groupedValueSet;
 	
 	private String expansionProfile;
 
@@ -110,14 +108,14 @@ public class CQLMatValueSet implements IsSerializable {
 	 */
 	public String getCodeSystemName() {
 		if (getConceptList() != null) {
-			List<CQLMatConcept> matConcepts = getConceptList().getConceptList();
+			List<MatConcept> matConcepts = getConceptList().getConceptList();
 			if (matConcepts != null && !matConcepts.isEmpty()) {
 				if (matConcepts.get(0) != null) {
 					return matConcepts.get(0).getCodeSystemName();
 				}
 			}
 		}
-		return StringUtils.EMPTY;
+		return "";
 	}
 
 	/**
@@ -177,7 +175,7 @@ public class CQLMatValueSet implements IsSerializable {
 	 * @return conceptList.
 	 *
 	 * **/
-	public final CQLMatConceptList getConceptList() {
+	public final MatConceptList getConceptList() {
 		return conceptList;
 	}
 
@@ -185,7 +183,7 @@ public class CQLMatValueSet implements IsSerializable {
 	 *Setter for conceptList.
 	 *@param conceptLists - conceptList.
 	 * **/
-	public final void setConceptList(final CQLMatConceptList conceptLists) {
+	public final void setConceptList(final MatConceptList conceptLists) {
 		this.conceptList = conceptLists;
 	}
 
@@ -279,7 +277,7 @@ public class CQLMatValueSet implements IsSerializable {
 	 * @return groupList.
 	 *
 	 * **/
-	public final List<CQLMatGroup> getGroupList() {
+	public final List<MatGroup> getGroupList() {
 		return groupList;
 	}
 
@@ -287,7 +285,7 @@ public class CQLMatValueSet implements IsSerializable {
 	 *Setter for groupList.
 	 *@param groupLists - groupList.
 	 * **/
-	public final void setGroupList(final List<CQLMatGroup> groupLists) {
+	public final void setGroupList(final List<MatGroup> groupLists) {
 		this.groupList = groupLists;
 	}
 
@@ -313,7 +311,7 @@ public class CQLMatValueSet implements IsSerializable {
 	 * @return groupedValueSet.
 	 *
 	 * **/
-	public final List<CQLMatValueSet> getGroupedValueSet() {
+	public final List<ValueSet> getGroupedValueSet() {
 		return groupedValueSet;
 	}
 
@@ -321,7 +319,7 @@ public class CQLMatValueSet implements IsSerializable {
 	 *Setter for groupedValueSet.
 	 *@param groupedValueSets - ValueSet.
 	 * **/
-	public final void setGroupedValueSet(final List<CQLMatValueSet> groupedValueSets) {
+	public final void setGroupedValueSet(final List<ValueSet> groupedValueSets) {
 		this.groupedValueSet = groupedValueSets;
 	}
 

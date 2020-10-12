@@ -7,8 +7,8 @@ import mat.dto.OperatorDTO;
 import mat.dto.UnitDTO;
 import mat.dto.VSACCodeSystemDTO;
 import mat.model.CodeListSearchDTO;
-import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
+import mat.model.MatValueSetTransferObject;
 
 import java.util.List;
 import java.util.Map;
@@ -35,12 +35,12 @@ public interface CodeListService {
 
 	SaveUpdateCodeListResult saveQDStoMeasure(MatValueSetTransferObject valueSetTransferObject);
 
-	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject);
+	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(MatValueSetTransferObject ValueSetTransferObject);
 	
 	List<CodeListSearchDTO> search(String searchText, int startIndex, int pageSize, String sortColumn, boolean isAsc,
 			boolean defaultCodeList, int filter);
 	
-	SaveUpdateCodeListResult updateQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject);
+	SaveUpdateCodeListResult updateQDStoMeasure(MatValueSetTransferObject ValueSetTransferObject);
 
 	/**
 	 * @return Returns a hash map keyed by oid, e.g. urn:oid:2.16.840.1.113883.12.292, and valued by VSACCodeSystemDTO with

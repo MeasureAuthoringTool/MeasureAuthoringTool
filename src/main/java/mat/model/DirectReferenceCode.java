@@ -1,11 +1,13 @@
 package mat.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import lombok.ToString;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class DirectReferenceCode.
  */
+@ToString
 public class DirectReferenceCode implements IsSerializable{
 
 	/** The code descriptor. */

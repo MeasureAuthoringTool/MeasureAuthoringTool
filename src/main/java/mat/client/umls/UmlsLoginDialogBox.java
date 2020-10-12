@@ -32,55 +32,57 @@ import org.gwtbootstrap3.client.ui.ModalSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.InputType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
-public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
-	
-	private Input userIdText = new Input(InputType.TEXT);
-	private ChangePasswordWidget passwordInput = new ChangePasswordWidget();
-	
-	private FormGroup userIdGroup = new FormGroup();
-	private FormGroup passwordGroup = new FormGroup();
-	
-	private FormGroup messageFormGrp = new FormGroup();
-	private HelpBlock helpBlock = new HelpBlock();
-	
-	private MessageAlert successMessageAlert = new SuccessMessageAlert();
-	
-	private  Button submitButton;
-	
-	private  Button closeButton;
-	
+import java.util.logging.Logger;
+
+public class UmlsLoginDialogBox implements ManageUmlsPresenter.UMLSDisplay {
+	private final Logger logger = Logger.getLogger("UmlsLoginDialogBox");
+
+
+	private final ChangePasswordWidget apiKey = new ChangePasswordWidget();
+
+	private final FormGroup apiKeyGroup = new FormGroup();
+
+	private final FormGroup messageFormGrp = new FormGroup();
+	private final HelpBlock helpBlock = new HelpBlock();
+
+	private final MessageAlert successMessageAlert = new SuccessMessageAlert();
+
+	private Button submitButton;
+
+	private Button closeButton;
+
 	private Button continueButton;
 
-	private  String passwordEntered;
-	
-	private  Modal panel;
-	
+	private Modal panel;
+
 	private ModalFooter modalFooter;
-	
+
+	private String apiKeyEntered;
+
 	FocusPanel focusPanel = new FocusPanel();
-	
-	Anchor umlsExternalLink ;
-	
-	Anchor umlsTroubleLogging ;
-	
+
+	Anchor umlsExternalLink;
+
 	SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("umls");
-	
-	HTML externalDisclamerText = new HTML("You are leaving the Measure Authoring Tool and entering another Web site.The Measure Authoring Tool cannot attest to the accuracy of information provided by linked sites.You will be subject to the destination site's Privacy Policy when you leave the Measure Authoring Tool.");
-	
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+
+	HTML externalDisclamerText = new HTML("You are leaving the Measure Authoring Tool and entering another Web site." +
+			"The Measure Authoring Tool cannot attest to the accuracy of information provided by linked sites." +
+			"You will be subject to the destination site's Privacy Policy when you leave the Measure Authoring Tool.");
+
+	private final ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	VerticalPanel externalLinkDisclaimer = new VerticalPanel();
 
-	public void showUMLSLogInDialog(CQLMeasureWorkSpacePresenter cqlMeasureWorkspacePresenter, CQLStandaloneWorkSpacePresenter cqlStandaloneWorkspacePresenter) {
-		
+	public void showUMLSLogInDialog(CQLMeasureWorkSpacePresenter cqlMeasureWorkspacePresenter,
+									CQLStandaloneWorkSpacePresenter cqlStandaloneWorkspacePresenter) {
+		logger.info("Entering showUMLSLogInDialog");
 		cqlMeasureWorkspacePresenter.getSearchDisplay().resetMessageDisplay();//removes error "not signed in" message above search box
 		cqlStandaloneWorkspacePresenter.getSearchDisplay().resetMessageDisplay();
-		
+
 		focusPanel.clear();
-	    panel = new Modal();
-	    panel.setWidth("300px");
+		panel = new Modal();
+		panel.setWidth("300px");
 
 		ModalBody modalBody = new ModalBody();
 		ErrorMessageAlert messageAlert = new ErrorMessageAlert();
@@ -89,16 +91,16 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		messageAlert.clear();
 		modalBody.remove(messageAlert);
 		panel.remove(modalBody);
-		
+
 		panel.setClosable(true);
 		panel.setFade(true);
 		panel.setDataBackdrop(ModalBackdrop.STATIC);
 		panel.setSize(ModalSize.MEDIUM);
 		panel.setRemoveOnHide(true);
 		panel.getElement().setAttribute("tabindex", "0");
-		
+
 		ModalHeader modalHeader = new ModalHeader();
-		
+
 		HorizontalPanel header = new HorizontalPanel();
 		header.setWidth("250px");
 		HTML loginText = new HTML("<strong>Please sign in to UMLS</strong>");
@@ -107,53 +109,41 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		modalHeader.setStyleName("loginNewBlueTitleHolder");
 		modalHeader.setHeight("40px");
 		modalHeader.add(header);
-				
+
+		logger.info("Updating panel");
 		panel.add(modalHeader);
-		
+
 		messageFormGrp.add(successMessageAlert);
 		messageFormGrp.add(helpBlock);
 		messageFormGrp.getElement().setAttribute("role", "alert");
-		
-		
-		FormLabel userIdLabel = new FormLabel();
-		userIdLabel.setText("User Name");
-		userIdLabel.setTitle("User Name");
-		userIdLabel.setFor("inputUserId");
-		userIdText.setWidth("250px");
-		userIdText.setHeight("27px");
-		userIdText.setId("inputUserId");
-		userIdText.setPlaceholder("Enter UMLS User Name");
-		userIdText.setTitle("Enter UMLS User Name Required");
-		userIdGroup.add(userIdLabel);
-		userIdGroup.add(userIdText);
-		
-		FormLabel passwordLabel = new FormLabel();
-		passwordLabel.setText("Password");
-		passwordLabel.setTitle("Password");
-		passwordLabel.setFor("inputPwd");
-		passwordInput.getPassword().setWidth("250px");
-		passwordInput.getPassword().setHeight("27px");
-		passwordInput.getPassword().setId("inputPwd");
-		passwordInput.getPassword().setPlaceholder("Enter UMLS Password");
-		passwordInput.getPassword().setTitle("Enter UMLS Password Required");
-		passwordInput.getPassword().setValidateOnBlur(true);
-		passwordGroup.add(passwordLabel);
-		passwordGroup.add(passwordInput.getPassword());
-		
+
+		FormLabel apiKeyLbl = new FormLabel();
+		apiKeyLbl.setText("API key");
+		apiKeyLbl.setTitle("API key");
+		apiKeyLbl.setFor("inputPwd");
+		apiKey.getPassword().setWidth("250px");
+		apiKey.getPassword().setHeight("27px");
+		apiKey.getPassword().setId("inputPwd");
+		apiKey.getPassword().setPlaceholder("Enter UMLS API key");
+		apiKey.getPassword().setTitle("Enter UMLS UMLS API key Required");
+		apiKey.getPassword().setValidateOnBlur(true);
+		apiKeyGroup.add(apiKeyLbl);
+		apiKeyGroup.add(apiKey.getPassword());
+
 		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
-		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);		
+		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
 
 		HorizontalPanel hp = new HorizontalPanel();
-		
 
-		submitButton = new Button("Sign In");
+		logger.info("Before buttons");
+		submitButton = new Button("Connect to UMLS");
 		submitButton.setType(ButtonType.SUCCESS);
 		submitButton.setSize(ButtonSize.DEFAULT);
 
 		closeButton = new CancelButton("UMLSSignIn");
 		closeButton.setMarginLeft(10.00);
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
-		
+
 		continueButton = new Button("Continue");
 		continueButton.setType(ButtonType.PRIMARY);
 		continueButton.setSize(ButtonSize.DEFAULT);
@@ -161,45 +151,41 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		continueButton.setDataDismiss(ButtonDismiss.MODAL);
 		continueButton.setVisible(false);
 
+		logger.info("After buttons");
 		hp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		hp.add(submitButton);
 		hp.add(closeButton);
 		hp.add(continueButton);
-		
+
 		VerticalPanel vp = new VerticalPanel();
-		
+
 		vp.add(messageFormGrp);
-		
+
 		vp.getElement().setAttribute("id", "umlsContent");
 		vp.add(new SpacerWidget());
 		vp.add(new SpacerWidget());
-		
+
 		vp.add(messageAlert);
-		vp.add(userIdGroup);
-		vp.add(passwordGroup);
+		vp.add(apiKeyGroup);
 		vp.add(hp);
 		focusPanel.add(vp);
 		modalBody.add(focusPanel);
-		
-		
-		
-		
+
 		panel.add(modalBody);
-		
+
+		logger.info("Before footer");
+
 		modalFooter = new ModalFooter();
 		VerticalPanel vPanel = new VerticalPanel();
 		umlsExternalLink = new Anchor("Need a UMLS license?");
-		umlsTroubleLogging = new Anchor("Trouble signing in?");
 		umlsExternalLink.setTitle("Need UMLS license");
 		umlsExternalLink.getElement().setAttribute("alt", "Need UMLS license");
-		umlsTroubleLogging.setTitle("Trouble Logging in");
-		umlsTroubleLogging.getElement().setAttribute("alt", "Trouble signing in");
-		
+
 		vPanel.add(umlsExternalLink);
-		vPanel.add(umlsTroubleLogging);
-		
+
 		modalFooter.add(vPanel);
-		
+
+		logger.info("Before externalDisclamerText");
 		externalDisclamerText.getElement().setAttribute("id", "externalDisclamerText");
 		externalLinkDisclaimer.getElement().setAttribute("id", "ExternalLinkDisclaimer");
 		externalLinkDisclaimer.getElement().setAttribute("aria-role", "panel");
@@ -219,12 +205,13 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		externalLinkDisclaimer.add(buttonBar);
 		externalLinkDisclaimer.setVisible(false);
 		externalLinkDisclaimer.addStyleName("widgitDisclaimer");
-		
+
 		modalFooter.add(externalLinkDisclaimer);
-		
+
 		panel.add(modalFooter);
 		panel.getElement().focus();
-		
+
+		logger.info("Finished showUMLSLogInDialog");
 	}
 
 	public void showModal() {
@@ -235,27 +222,28 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		return submitButton;
 	}
 
-	public  String getPasswordEntered() {
-		return passwordEntered;
+	public String getApiKeyEntered() {
+		return apiKeyEntered;
 	}
 
-	public  void setPasswordEntered(String passwordEntered) {
-		this.passwordEntered = passwordEntered;
+	public void setApiKeyEntered(String apiKeyEntered) {
+		this.apiKeyEntered = apiKeyEntered;
 	}
 
-	public  Button getsubmitbutton() {
+	public Button getsubmitbutton() {
 		return submitButton;
 	}
 
-	public Input getPassword() {
-		return passwordInput.getPassword();
+	@Override
+	public Input getApiKeyInput() {
+		return apiKey.getPassword();
 	}
 
 	@Override
 	public Widget asWidget() {
 		return panel;
 	}
-	
+
 
 	@Override
 	public SaveContinueCancelButtonBar getButtonBar() {
@@ -283,29 +271,8 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	}
 
 	@Override
-	public Anchor getUmlsTroubleLogging() {
-		return umlsTroubleLogging;
-	}
-
-	@Override
 	public void setInitialFocus() {
-		userIdText.setFocus(false);
-		
-	}
-
-	@Override
-	public Input getUserIdText() {
-		return userIdText;
-	}
-
-	@Override
-	public Input getPasswordInput() {
-		return passwordInput.getPassword();
-	}
-
-	@Override
-	public FormGroup getPasswordGroup() {
-		return passwordGroup;
+		apiKey.getPassword().setFocus(false);
 	}
 
 	@Override
@@ -318,10 +285,6 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		return messageFormGrp;
 	}
 
-	@Override
-	public FormGroup getUserIdGroup() {
-		return userIdGroup;
-	}
 
 	@Override
 	public MessageAlert getSuccessMessageAlert() {
@@ -331,7 +294,6 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	@Override
 	public Modal getModel() {
 		return panel;
-		
 	}
 
 	@Override
@@ -347,5 +309,10 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	@Override
 	public Button getContinue() {
 		return continueButton;
+	}
+
+	@Override
+	public FormGroup getApiKeyGroup() {
+		return apiKeyGroup;
 	}
 }

@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
-                         " http://castor.codehaus.org/mapping.dtd ">
+		"http://castor.codehaus.org/mapping.dtd">
 <mapping>
-	<class name="mat.model.VSACValueSetWrapper">
+	<class name="mat.vsacmodel.ValueSetWrapper">
 		<map-to xml="RetrieveMultipleValueSetsResponse" ns-uri="urn:ihe:iti:svs:2008" />
-		<field name="valueSetList" type="mat.model.MatValueSet"
+		<field name="valueSetList" type="mat.vsacmodel.ValueSet"
 			collection="arraylist">
 			<bind-xml name="DescribedValueSet" QName-prefix="ns0" />
 		</field>
 	</class>
-	<class name="mat.model.MatValueSet">
+	<class name="mat.vsacmodel.ValueSet">
 		<map-to xml="DescribedValueSet" ns-uri="urn:ihe:iti:svs:2008" />
 		<field name="ID" type="java.lang.String">
 			<bind-xml name="ID" node="attribute" />
@@ -20,7 +20,7 @@
 		<field name="version" type="java.lang.String">
 			<bind-xml name="version" node="attribute" />
 		</field>
-		<field name="conceptList" type="mat.model.MatConceptList">
+		<field name="conceptList" type="mat.vsacmodel.MatConceptList">
 			<bind-xml name="ConceptList" node="element" />
 		</field>
 		<field name="source" type="java.lang.String">
@@ -38,7 +38,7 @@
 		<field name="revisionDate" type="java.lang.String">
 			<bind-xml name="RevisionDate" node="element" />
 		</field>
-		<field name="groupList" type="mat.model.MatGroup" collection="arraylist">
+		<field name="groupList" type="mat.vsacmodel.MatGroup" collection="arraylist">
 			<bind-xml name="Group" />
 		</field>
 		<field name="definition" type="java.lang.String">
@@ -50,14 +50,14 @@
 			String type; private String binding; private String status; private String
 			revisionDate; private List<Group> groupList -->
 	</class>
-	<class name="mat.model.MatConceptList">
+	<class name="mat.vsacmodel.MatConceptList">
 		<map-to xml="ConceptList" ns-uri="urn:ihe:iti:svs:2008" />
-		<field name="conceptList" type="mat.model.MatConcept"
+		<field name="conceptList" type="mat.vsacmodel.MatConcept"
 			collection="arraylist">
 			<bind-xml name="Concept" />
 		</field>
 	</class>
-	<!--  <class name="mat.model.MatGroup">
+	<!--  <class name="MatGroup">
 		<map-to xml="Group" ns-uri="urn:ihe:iti:svs:2008" />
 		<field name="Id" type="java.lang.String">
 			<bind-xml name="ID" node="attribute" />
@@ -72,7 +72,7 @@
 			<bind-xml name="Keyword" node="element" />
 		</field>
 	</class>-->
-	<class name="mat.model.MatConcept">
+	<class name="mat.vsacmodel.MatConcept">
 		<map-to xml="Concept" ns-uri="urn:ihe:iti:svs:2008" />
 		<field name="code" type="java.lang.String">
 			<bind-xml name="code" node="attribute" />
@@ -89,8 +89,5 @@
 		<field name="displayName" type="java.lang.String">
 			<bind-xml name="displayName" node="attribute" />
 		</field>
-
-		<!-- Fields private String code; private String codeSystem; private String
-			codeSystemName; private String codeSystemVersion; private String displayName; -->
 	</class>
 </mapping>

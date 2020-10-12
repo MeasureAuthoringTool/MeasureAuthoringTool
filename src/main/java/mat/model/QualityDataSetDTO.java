@@ -132,7 +132,7 @@ public class QualityDataSetDTO implements IsSerializable {
 	}
 	
 	/**
-	 * Gets the checks for modified at vsac.
+	 * Gets the checks for modified at mat.vsac.
 	 *
 	 * @return the hasModifiedAtVSAC
 	 */
@@ -213,7 +213,7 @@ public class QualityDataSetDTO implements IsSerializable {
 	}
 	
 	/**
-	 * Checks if is not found in vsac.
+	 * Checks if is not found in mat.vsac.
 	 *
 	 * @return the notFoundInVSAC
 	 */
@@ -277,7 +277,7 @@ public class QualityDataSetDTO implements IsSerializable {
 	}
 	
 	/**
-	 * Sets the checks for modified at vsac.
+	 * Sets the checks for modified at mat.vsac.
 	 *
 	 * @param hasModifiedAtVSAC the hasModifiedAtVSAC to set
 	 */
@@ -296,7 +296,7 @@ public class QualityDataSetDTO implements IsSerializable {
 	}
 	
 	/**
-	 * Sets the not found in vsac.
+	 * Sets the not found in mat.vsac.
 	 *
 	 * @param notFoundInVSAC the notFoundInVSAC to set
 	 */

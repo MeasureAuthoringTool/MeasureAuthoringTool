@@ -4,7 +4,6 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.model.DataType;
-import mat.model.MatValueSet;
 import mat.model.QualityDataSet;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
@@ -12,6 +11,7 @@ import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
 import mat.shared.MeasureSearchModel;
+import mat.vsacmodel.ValueSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -204,11 +204,11 @@ public interface MeasurePackageService {
      * Validate measure for export.
      *
      * @param key             - {@link String}.
-     * @param matValueSetList - {@link ArrayList} of {@link MatValueSet}.
+     * @param ValueSetList - {@link ArrayList} of {@link ValueSet}.
      * @return {@link ValidateMeasureResult}.
      * @throws Exception - {@link Exception}.
      */
-    ValidateMeasureResult createExports(String key, List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws Exception;
+    ValidateMeasureResult createExports(String key, List<ValueSet> ValueSetList, boolean shouldCreateArtifacts) throws Exception;
 
     /**
      * Gets the human readable for node.

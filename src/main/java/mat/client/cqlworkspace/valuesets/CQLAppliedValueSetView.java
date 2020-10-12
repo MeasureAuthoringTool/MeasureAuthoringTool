@@ -49,9 +49,6 @@ import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
-import mat.model.MatConcept;
-import mat.model.MatConceptList;
-import mat.model.MatValueSet;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
@@ -72,6 +69,9 @@ import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
+import mat.vsacmodel.MatConcept;
+import mat.vsacmodel.MatConceptList;
+import mat.vsacmodel.ValueSet;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -1093,7 +1093,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
      * @param copiedValueSetList
      * @return List of {@link CQLValueSetTransferObject}
      */
-    public List<CQLValueSetTransferObject> setMatValueSetListForValueSets(List<CQLQualityDataSetDTO> copiedValueSetList, List<CQLQualityDataSetDTO> appliedValueSetTableList) {
+    public List<CQLValueSetTransferObject> setValueSetListForValueSets(List<CQLQualityDataSetDTO> copiedValueSetList, List<CQLQualityDataSetDTO> appliedValueSetTableList) {
         List<CQLValueSetTransferObject> cqlValueSetTransferObjectsList = new ArrayList<>();
         for (CQLQualityDataSetDTO cqlQualityDataSetDTO : copiedValueSetList) {
             boolean isFhir = MatContext.get().isCurrentModelTypeFhir();
@@ -1107,19 +1107,19 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
                     if (cqlQualityDataSetDTO.getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
                         cqlValueSetTransferObject.setUserDefinedText(cqlQualityDataSetDTO.getOriginalCodeListName());
                     } else {
-                        MatValueSet matValueSet = new MatValueSet();
+                        ValueSet ValueSet = new ValueSet();
                         List<MatConcept> matConcepts = new ArrayList<>();
                         MatConcept matConcept = new MatConcept();
-                        matValueSet.setType(cqlQualityDataSetDTO.getValueSetType());
+                        ValueSet.setType(cqlQualityDataSetDTO.getValueSetType());
                         matConcept.setCodeSystemName(cqlQualityDataSetDTO.getTaxonomy());
                         matConcepts.add(matConcept);
                         MatConceptList matConceptList = new MatConceptList();
                         matConceptList.setConceptList(matConcepts);
-                        matValueSet.setConceptList(matConceptList);
+                        ValueSet.setConceptList(matConceptList);
 
-                        matValueSet.setID(cqlQualityDataSetDTO.getOid());
-                        matValueSet.setDisplayName(cqlQualityDataSetDTO.getName());
-                        cqlValueSetTransferObject.setMatValueSet(matValueSet);
+                        ValueSet.setID(cqlQualityDataSetDTO.getOid());
+                        ValueSet.setDisplayName(cqlQualityDataSetDTO.getName());
+                        cqlValueSetTransferObject.setValueSet(ValueSet);
                     }
                     CodeListSearchDTO codeListSearchDTO = new CodeListSearchDTO();
                     codeListSearchDTO.setName(cqlQualityDataSetDTO.getOriginalCodeListName());

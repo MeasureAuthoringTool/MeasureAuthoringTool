@@ -16,7 +16,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.ComponentMeasureTabObject;
 import mat.model.MatCodeTransferObject;
-import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
@@ -39,6 +38,7 @@ import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
+import mat.vsacmodel.ValueSet;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -282,12 +282,12 @@ public interface MeasureService extends RemoteService {
      * Validate measure for export.
      *
      * @param key             the key
-     * @param matValueSetList the mat value set list
+     * @param ValueSetList the mat value set list
      * @return the validate measure result
      * @throws MatException the mat exception
      */
     ValidateMeasureResult createExports(String key,
-                                        List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException;
+                                        List<ValueSet> ValueSetList, boolean shouldCreateArtifacts) throws MatException;
 
     /**
      * Save sub tree in measure xml.
@@ -476,7 +476,6 @@ public interface MeasureService extends RemoteService {
      * @param toBemodifiedObj the to bemodified obj
      * @param currentObj      the current obj
      * @param definitionList  the definition list
-     * @param isFormtable     flag for if the definition should be formatted on save
      * @return the save update cql result
      */
     SaveUpdateCQLResult saveAndModifyDefinitions(String measureId,
@@ -490,7 +489,6 @@ public interface MeasureService extends RemoteService {
      * @param toBemodifiedObj the to bemodified obj
      * @param currentObj      the current obj
      * @param parameterList   the parameter list
-     * @param isFormtable     flag for if the parameter should be formatted on save
      * @return the save update cql result
      */
     SaveUpdateCQLResult saveAndModifyParameters(String measureId,
@@ -514,7 +512,6 @@ public interface MeasureService extends RemoteService {
      * @param toBeModifiedObj the to be modified obj
      * @param currentObj      the current obj
      * @param functionsList   the functions list
-     * @param isFormtable     flag for if the function should be formatted on save
      * @return the save update cql result
      */
     SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,

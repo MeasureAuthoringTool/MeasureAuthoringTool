@@ -2,10 +2,10 @@ package mat.server.service.impl;
 
 import mat.dao.ListObjectDAO;
 import mat.model.ListObject;
-import mat.model.MatValueSet;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import mat.vsacmodel.ValueSet;
 
 import java.sql.Timestamp;
 
@@ -84,10 +84,10 @@ public class ValueSetXLSGenerator extends XLSGenerator {
 	}
 
 	/* (non-Javadoc)
-	 * @see mat.server.service.impl.XLSGenerator#cacheXLSRow(mat.model.MatValueSet)
+	 * @see mat.server.service.impl.XLSGenerator#cacheXLSRow(mat.model.ValueSet)
 	 */
 	@Override
-	protected void cacheXLSRow(final MatValueSet lo) {
+	protected void cacheXLSRow(final ValueSet lo) {
 
 	}
 }

@@ -6,8 +6,8 @@ import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.dto.OperatorDTO;
 import mat.dto.UnitDTO;
 import mat.dto.VSACCodeSystemDTO;
-import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
+import mat.model.MatValueSetTransferObject;
 import mat.server.logging.LogFactory;
 import mat.server.service.CodeListService;
 import mat.shared.ConstantMessages;
@@ -70,19 +70,19 @@ public class CodeListServiceImpl extends SpringRemoteServiceServlet
     }
 
     @Override
-    public SaveUpdateCodeListResult saveQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject) {
-        return getCodeListService().saveQDStoMeasure(matValueSetTransferObject);
+    public SaveUpdateCodeListResult saveQDStoMeasure(MatValueSetTransferObject ValueSetTransferObject) {
+        return getCodeListService().saveQDStoMeasure(ValueSetTransferObject);
     }
 
     @Override
-    public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject) {
-        return getCodeListService().saveUserDefinedQDStoMeasure(matValueSetTransferObject);
+    public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(MatValueSetTransferObject ValueSetTransferObject) {
+        return getCodeListService().saveUserDefinedQDStoMeasure(ValueSetTransferObject);
     }
 
     @Override
-    public SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject) {
-        matValueSetTransferObject.scrubForMarkUp();
-        return getCodeListService().updateQDStoMeasure(matValueSetTransferObject);
+    public SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject ValueSetTransferObject) {
+        ValueSetTransferObject.scrubForMarkUp();
+        return getCodeListService().updateQDStoMeasure(ValueSetTransferObject);
     }
 
     @Override

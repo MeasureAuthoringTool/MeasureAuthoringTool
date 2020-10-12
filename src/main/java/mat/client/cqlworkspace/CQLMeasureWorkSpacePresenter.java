@@ -38,7 +38,7 @@ import mat.model.CodeListSearchDTO;
 import mat.model.ComponentMeasureTabObject;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MatCodeTransferObject;
-import mat.model.MatValueSet;
+import mat.vsacmodel.ValueSet;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
@@ -1447,7 +1447,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
         GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
         if ((gbCopyPaste != null) && (gbCopyPaste.getCopiedValueSetList().size() > 0)) {
             List<CQLValueSetTransferObject> cqlValueSetTransferObjectsList = cqlWorkspaceView.getValueSetView()
-                    .setMatValueSetListForValueSets(gbCopyPaste.getCopiedValueSetList(), appliedValueSetTableList);
+                    .setValueSetListForValueSets(gbCopyPaste.getCopiedValueSetList(), appliedValueSetTableList);
             if (cqlValueSetTransferObjectsList.size() > 0) {
                 MatContext.get().getMeasureService().saveValueSetList(cqlValueSetTransferObjectsList,
                         appliedValueSetTableList, MatContext.get().getCurrentMeasureId(),
@@ -1746,7 +1746,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
     @Override
     protected void searchValueSetInVsac(String release, String expansionProfile) {
-        currentMatValueSet = null;
+        currentValueSet = null;
         showSearchingBusy(true);
         final String oid = cqlWorkspaceView.getValueSetView().getOIDInput().getValue();
         if (!MatContext.get().isUMLSLoggedIn()) {
@@ -1778,10 +1778,10 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
                 if (result.isSuccess()) {
                     String valueSetName = EMPTY_STRING;
 
-                    List<MatValueSet> matValueSets = result.getVsacResponse();
-                    if (matValueSets != null) {
-                        currentMatValueSet = matValueSets.get(0);
-                        valueSetName = currentMatValueSet.getDisplayName();
+                    List<ValueSet> ValueSets = result.getVsacResponse();
+                    if (ValueSets != null) {
+                        currentValueSet = ValueSets.get(0);
+                        valueSetName = currentValueSet.getDisplayName();
                     }
 
                     cqlWorkspaceView.getValueSetView().getOIDInput().setTitle(oid);
@@ -1793,7 +1793,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
                     cqlWorkspaceView.getValueSetView().getHelpBlock().setColor("transparent");
                     cqlWorkspaceView.getValueSetView().getHelpBlock().setText("Version selection is ".concat(Boolean.TRUE.equals(isVersionEnabled) ? "enabled" : "disabled"));
                     showSearchingBusy(false);
-                    messagePanel.getSuccessMessageAlert().createAlert(getValuesetSuccessfulReterivalMessage(matValueSets.get(0).getDisplayName()));
+                    messagePanel.getSuccessMessageAlert().createAlert(getValuesetSuccessfulReterivalMessage(ValueSets.get(0).getDisplayName()));
                     messagePanel.getSuccessMessageAlert().setVisible(true);
                 } else {
                     String message = convertMessage(result.getFailureReason());
@@ -1808,20 +1808,20 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
     @Override
     protected void addVSACCQLValueset() {
         String measureID = MatContext.get().getCurrentMeasureId();
-        CQLValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(measureID);
-        matValueSetTransferObject.scrubForMarkUp();
-        final String originalCodeListName = matValueSetTransferObject.getMatValueSet().getDisplayName();
+        CQLValueSetTransferObject ValueSetTransferObject = createValueSetTransferObject(measureID);
+        ValueSetTransferObject.scrubForMarkUp();
+        final String originalCodeListName = ValueSetTransferObject.getValueSet().getDisplayName();
         final String suffix = cqlWorkspaceView.getValueSetView().getSuffixInput().getValue();
         final String codeListName = (originalCodeListName != null ? originalCodeListName : EMPTY_STRING)
                 + (!suffix.isEmpty() ? " (" + suffix + ")" : EMPTY_STRING);
 
-        saveValueset(matValueSetTransferObject, codeListName);
+        saveValueset(ValueSetTransferObject, codeListName);
     }
 
-    private void saveValueset(CQLValueSetTransferObject matValueSetTransferObject, final String codeListName) {
+    private void saveValueset(CQLValueSetTransferObject ValueSetTransferObject, final String codeListName) {
         if (!cqlWorkspaceView.getValueSetView().checkNameInValueSetList(codeListName, appliedValueSetTableList)) {
             showSearchingBusy(true);
-            MatContext.get().getMeasureService().saveCQLValuesettoMeasure(matValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
+            MatContext.get().getMeasureService().saveCQLValuesettoMeasure(ValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
 
                 @Override
                 public void onFailure(Throwable caught) {
@@ -1830,7 +1830,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
                     if (!appliedValueSetTableList.isEmpty()) {
                         appliedValueSetTableList.clear();
                     }
-                    currentMatValueSet = null;
+                    currentValueSet = null;
                     cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(false);
                 }
 
@@ -1853,7 +1853,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
                             }
                         }
                     }
-                    currentMatValueSet = null;
+                    currentValueSet = null;
                     cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(false);
                     showSearchingBusy(false);
                 }
@@ -1865,16 +1865,16 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
     @Override
     protected void addUserDefinedValueSet() {
-        CQLValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(MatContext.get().getCurrentMeasureId());
-        matValueSetTransferObject.getCqlQualityDataSetDTO().setOid("");
-        matValueSetTransferObject.scrubForMarkUp();
-        matValueSetTransferObject.setMatValueSet(null);
-        if ((matValueSetTransferObject.getUserDefinedText().length() > 0)) {
+        CQLValueSetTransferObject ValueSetTransferObject = createValueSetTransferObject(MatContext.get().getCurrentMeasureId());
+        ValueSetTransferObject.getCqlQualityDataSetDTO().setOid("");
+        ValueSetTransferObject.scrubForMarkUp();
+        ValueSetTransferObject.setValueSet(null);
+        if ((ValueSetTransferObject.getUserDefinedText().length() > 0)) {
             ValueSetNameInputValidator valueSetNameInputValidator = new ValueSetNameInputValidator();
-            String message = valueSetNameInputValidator.validate(matValueSetTransferObject);
+            String message = valueSetNameInputValidator.validate(ValueSetTransferObject);
             if (message.isEmpty()) {
-                final String userDefinedInput = matValueSetTransferObject.getCqlQualityDataSetDTO().getName();
-                saveValueset(matValueSetTransferObject, userDefinedInput);
+                final String userDefinedInput = ValueSetTransferObject.getCqlQualityDataSetDTO().getName();
+                saveValueset(ValueSetTransferObject, userDefinedInput);
             } else {
                 messagePanel.getErrorMessageAlert().createAlert(message);
             }
@@ -1884,25 +1884,25 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
     }
 
     @Override
-    protected void updateAppliedValueSetsList(final MatValueSet matValueSet, final CodeListSearchDTO codeListSearchDTO, final CQLQualityDataSetDTO qualityDataSetDTO) {
-        CQLValueSetTransferObject matValueSetTransferObject = new CQLValueSetTransferObject();
-        matValueSetTransferObject.setMeasureId(MatContext.get().getCurrentMeasureId());
-        matValueSetTransferObject.setUserDefinedText(cqlWorkspaceView.getValueSetView().getUserDefinedInput().getText());
-        matValueSetTransferObject.setMatValueSet(matValueSet);
-        matValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);
-        matValueSetTransferObject.setCqlQualityDataSetDTO(qualityDataSetDTO);
-        matValueSetTransferObject.setAppliedQDMList(appliedValueSetTableList);
+    protected void updateAppliedValueSetsList(final ValueSet ValueSet, final CodeListSearchDTO codeListSearchDTO, final CQLQualityDataSetDTO qualityDataSetDTO) {
+        CQLValueSetTransferObject ValueSetTransferObject = new CQLValueSetTransferObject();
+        ValueSetTransferObject.setMeasureId(MatContext.get().getCurrentMeasureId());
+        ValueSetTransferObject.setUserDefinedText(cqlWorkspaceView.getValueSetView().getUserDefinedInput().getText());
+        ValueSetTransferObject.setValueSet(ValueSet);
+        ValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);
+        ValueSetTransferObject.setCqlQualityDataSetDTO(qualityDataSetDTO);
+        ValueSetTransferObject.setAppliedQDMList(appliedValueSetTableList);
 
-        matValueSetTransferObject.scrubForMarkUp();
+        ValueSetTransferObject.scrubForMarkUp();
         showSearchingBusy(true);
-        MatContext.get().getMeasureService().saveCQLValuesettoMeasure(matValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
+        MatContext.get().getMeasureService().saveCQLValuesettoMeasure(ValueSetTransferObject, new AsyncCallback<SaveUpdateCQLResult>() {
             @Override
             public void onFailure(final Throwable caught) {
                 logger.log(Level.SEVERE, "Error in MeasureService.saveCQLValuesettoMeasure. Error message: " + caught.getMessage(), caught);
                 showSearchingBusy(false);
                 isModified = false;
                 modifyValueSetDTO = null;
-                currentMatValueSet = null;
+                currentValueSet = null;
                 messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                 cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(false);
             }
@@ -1913,7 +1913,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
                     if (result.isSuccess()) {
                         isModified = false;
                         modifyValueSetDTO = null;
-                        currentMatValueSet = null;
+                        currentValueSet = null;
                         cqlWorkspaceView.getValueSetView().resetCQLValuesetearchPanel();
                         messagePanel.getSuccessMessageAlert().createAlert(SUCCESSFUL_MODIFY_APPLIED_VALUESET);
                         getAppliedValuesetAndCodeList();
@@ -1963,52 +1963,52 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
     private CQLValueSetTransferObject createValueSetTransferObject(String measureID) {
         logger.log(Level.INFO, "Entering createValueSetTransferObject(" + measureID + ")");
-        if (currentMatValueSet == null) {
-            currentMatValueSet = new MatValueSet();
+        if (currentValueSet == null) {
+            currentValueSet = new ValueSet();
         }
-        CQLValueSetTransferObject matValueSetTransferObject = new CQLValueSetTransferObject();
-        matValueSetTransferObject.setMeasureId(measureID);
+        CQLValueSetTransferObject ValueSetTransferObject = new CQLValueSetTransferObject();
+        ValueSetTransferObject.setMeasureId(measureID);
         String originalCodeListName = cqlWorkspaceView.getValueSetView().getUserDefinedInput().getValue();
-        matValueSetTransferObject.setCqlQualityDataSetDTO(new CQLQualityDataSetDTO());
-        matValueSetTransferObject.getCqlQualityDataSetDTO().setOriginalCodeListName(originalCodeListName);
+        ValueSetTransferObject.setCqlQualityDataSetDTO(new CQLQualityDataSetDTO());
+        ValueSetTransferObject.getCqlQualityDataSetDTO().setOriginalCodeListName(originalCodeListName);
 
         if (MatContext.get().isCurrentModelTypeFhir()) {
-            matValueSetTransferObject.getCqlQualityDataSetDTO().setOid("http://cts.nlm.nih.gov/fhir/ValueSet/" + currentMatValueSet.getID());
-            currentMatValueSet.setID(matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
+            ValueSetTransferObject.getCqlQualityDataSetDTO().setOid("http://cts.nlm.nih.gov/fhir/ValueSet/" + currentValueSet.getID());
+            currentValueSet.setID(ValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
         } else {
-            matValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentMatValueSet.getID());
+            ValueSetTransferObject.getCqlQualityDataSetDTO().setOid(currentValueSet.getID());
         }
-        logger.log(Level.INFO, "valueset.oid=" + matValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
+        logger.log(Level.INFO, "valueset.oid=" + ValueSetTransferObject.getCqlQualityDataSetDTO().getOid());
 
 
         if (!cqlWorkspaceView.getValueSetView().getSuffixInput().getValue().isEmpty()) {
-            matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(cqlWorkspaceView.getValueSetView().getSuffixInput().getValue());
-            matValueSetTransferObject.getCqlQualityDataSetDTO().setName(
+            ValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(cqlWorkspaceView.getValueSetView().getSuffixInput().getValue());
+            ValueSetTransferObject.getCqlQualityDataSetDTO().setName(
                     originalCodeListName + " (" + cqlWorkspaceView.getValueSetView().getSuffixInput().getValue() + ")");
         } else {
-            matValueSetTransferObject.getCqlQualityDataSetDTO().setName(originalCodeListName);
+            ValueSetTransferObject.getCqlQualityDataSetDTO().setName(originalCodeListName);
         }
 
-        matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(EMPTY_STRING);
+        ValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(EMPTY_STRING);
         String releaseValue = cqlWorkspaceView.getValueSetView().getReleaseListBox().getSelectedValue();
         if (!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-            matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(releaseValue);
+            ValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(releaseValue);
         }
 
-        matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(EMPTY_STRING);
+        ValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(EMPTY_STRING);
         String programValue = cqlWorkspaceView.getValueSetView().getProgramListBox().getSelectedValue();
         if (!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-            matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(programValue);
+            ValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(programValue);
         }
 
         CodeListSearchDTO codeListSearchDTO = new CodeListSearchDTO();
         codeListSearchDTO.setName(cqlWorkspaceView.getValueSetView().getUserDefinedInput().getText());
-        matValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);
-        matValueSetTransferObject.setAppliedQDMList(appliedValueSetTableList);
-        matValueSetTransferObject.setMatValueSet(currentMatValueSet);
-        matValueSetTransferObject.setMeasureId(measureID);
-        matValueSetTransferObject.setUserDefinedText(cqlWorkspaceView.getValueSetView().getUserDefinedInput().getText());
-        return matValueSetTransferObject;
+        ValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);
+        ValueSetTransferObject.setAppliedQDMList(appliedValueSetTableList);
+        ValueSetTransferObject.setValueSet(currentValueSet);
+        ValueSetTransferObject.setMeasureId(measureID);
+        ValueSetTransferObject.setUserDefinedText(cqlWorkspaceView.getValueSetView().getUserDefinedInput().getText());
+        return ValueSetTransferObject;
     }
 
     @Override

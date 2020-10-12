@@ -43,7 +43,7 @@ import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.shared.measure.measuredetails.translate.MeasureDetailModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

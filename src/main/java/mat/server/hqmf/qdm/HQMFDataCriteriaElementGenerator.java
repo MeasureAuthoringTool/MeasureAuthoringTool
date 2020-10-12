@@ -1148,7 +1148,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("valueSet")
 							.setNodeValue(qdmOidValue);
 					String valueSetVersion = valueSetVersionStringValue(qdmNode);
-					if (valueSetVersion.contains("mat/vsac")) {
+					if (valueSetVersion.contains("mat/vsacmodel")) {
 						Attr attrNode = attributedToBeChangedInNode.item(0).getOwnerDocument()
 								.createAttribute("valueSetVersion");
 						attrNode.setNodeValue(valueSetVersion);
@@ -1486,7 +1486,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
 
 						String valueSetVersion = valueSetVersionStringValue(attrNode);
-						if (valueSetVersion.contains("mat/vsac")) {
+						if (valueSetVersion.contains("mat/vsacmodel")) {
 							Attr valuesetVersionAttr = attributedToBeChangedInNode.item(0).getOwnerDocument()
 									.createAttribute("valueSetVersion");
 							valuesetVersionAttr.setNodeValue(valueSetVersion);
@@ -1661,7 +1661,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			translationNode.setAttribute("valueSet", attrOID.getNodeValue());
 
 			String valueSetVersion = valueSetVersionStringValue(attributeQDMNode);
-			if (valueSetVersion.contains("mat/vsac")) {
+			if (valueSetVersion.contains("mat/vsacmodel")) {
 				translationNode.setAttribute("valueSetVersion", valueSetVersion);
 			} else {
 				if (translationNode.getAttributes().getNamedItem("valueSetVersion") != null) {
@@ -2029,7 +2029,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
 
 							String valueSetVersion = valueSetVersionStringValue(attributeQDMNode);
-							if (valueSetVersion.contains("mat/vsac")) {
+							if (valueSetVersion.contains("mat/vsacmodel")) {
 								Attr valuesetVersionAttr = attributedToBeChangedInNode.item(0).getOwnerDocument()
 										.createAttribute("valueSetVersion");
 								valuesetVersionAttr.setNodeValue(valueSetVersion);

@@ -12,7 +12,7 @@ import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibraryHistory;

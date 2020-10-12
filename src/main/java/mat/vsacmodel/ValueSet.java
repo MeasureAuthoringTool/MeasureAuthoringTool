@@ -1,6 +1,4 @@
-package mat.vsac.model;
-
-import org.apache.commons.lang3.StringUtils;
+package mat.vsacmodel;
 
 import java.io.Serializable;
 import java.util.List;
@@ -117,7 +115,7 @@ public class ValueSet  implements Serializable {
 				}
 			}
 		}
-		return StringUtils.EMPTY;
+		return "";
 	}
 
 	/**

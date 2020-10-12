@@ -27,6 +27,6 @@
     <source path='mat.shared.diagramObject'/>
     <source path='model'/>
     <source path='dto'/>
-    <source path='vsac'/>
+    <source path='vsacmodel'/>
 
 </module>

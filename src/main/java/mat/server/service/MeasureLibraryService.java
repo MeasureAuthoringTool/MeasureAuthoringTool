@@ -40,7 +40,7 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.util.Date;

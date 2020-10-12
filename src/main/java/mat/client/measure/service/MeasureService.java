@@ -38,7 +38,7 @@ import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

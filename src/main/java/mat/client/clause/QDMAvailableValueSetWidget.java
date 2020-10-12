@@ -40,7 +40,7 @@ import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 import mat.shared.ConstantMessages;
 import org.apache.commons.lang3.StringUtils;
 import org.gwtbootstrap3.client.ui.Button;

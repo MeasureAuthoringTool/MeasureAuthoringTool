@@ -1,4 +1,4 @@
-package mat.vsac.model;
+package mat.vsacmodel;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

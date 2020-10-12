@@ -11,7 +11,7 @@ import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
 import mat.shared.MeasureSearchModel;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 
 import java.util.ArrayList;
 import java.util.List;

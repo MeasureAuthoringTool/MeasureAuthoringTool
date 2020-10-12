@@ -69,9 +69,9 @@ import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
-import mat.vsac.model.MatConcept;
-import mat.vsac.model.MatConceptList;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.MatConcept;
+import mat.vsacmodel.MatConceptList;
+import mat.vsacmodel.ValueSet;
 
 import java.util.ArrayList;
 import java.util.Iterator;

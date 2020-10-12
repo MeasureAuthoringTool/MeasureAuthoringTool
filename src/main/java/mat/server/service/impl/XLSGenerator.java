@@ -20,8 +20,8 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Name;
-import mat.vsac.model.MatConcept;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.MatConcept;
+import mat.vsacmodel.ValueSet;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

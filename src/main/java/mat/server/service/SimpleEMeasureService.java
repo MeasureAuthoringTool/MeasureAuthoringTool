@@ -9,7 +9,7 @@ import mat.shared.bonnie.error.BonnieDoesNotExistException;
 import mat.shared.bonnie.error.BonnieNotFoundException;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 
 import java.io.IOException;
 import java.util.Date;

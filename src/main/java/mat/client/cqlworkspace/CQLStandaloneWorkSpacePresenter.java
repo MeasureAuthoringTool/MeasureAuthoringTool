@@ -42,7 +42,7 @@ import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MatCodeTransferObject;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;

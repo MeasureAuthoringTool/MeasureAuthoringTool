@@ -41,7 +41,7 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.shared.ConstantMessages;
 import org.apache.commons.lang3.StringUtils;
 import org.gwtbootstrap3.client.ui.Button;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 
 import java.util.List;
 import java.util.ListIterator;

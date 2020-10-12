@@ -6,7 +6,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.VSACExpansionProfile;
 import mat.model.VSACVersion;
 import mat.model.cql.CQLQualityDataSetDTO;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 
 import java.util.ArrayList;
 import java.util.HashMap;

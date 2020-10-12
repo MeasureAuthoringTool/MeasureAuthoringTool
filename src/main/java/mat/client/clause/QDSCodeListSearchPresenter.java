@@ -30,7 +30,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.model.MatValueSetTransferObject;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import org.gwtbootstrap3.client.ui.Button;

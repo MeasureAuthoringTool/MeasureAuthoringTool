@@ -27,7 +27,7 @@ import mat.model.DataType;
 import mat.model.GroupedCodeList;
 import mat.model.ListObject;
 import mat.model.MatValueSetTransferObject;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.server.logging.LogFactory;

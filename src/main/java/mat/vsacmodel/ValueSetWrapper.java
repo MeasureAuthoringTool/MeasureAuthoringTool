@@ -1,4 +1,4 @@
-package mat.vsac.model;
+package mat.vsacmodel;
 
 import java.io.Serializable;
 import java.util.ArrayList;

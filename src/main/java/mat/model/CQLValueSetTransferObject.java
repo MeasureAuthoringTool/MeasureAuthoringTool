@@ -3,7 +3,7 @@ package mat.model;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLValueSetTransferObjectValidator;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 
 import java.util.List;
 

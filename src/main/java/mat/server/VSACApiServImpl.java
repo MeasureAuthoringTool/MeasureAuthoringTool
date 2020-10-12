@@ -25,9 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import mat.vsac.VsacService;
-import mat.vsac.model.BasicResponse;
-import mat.vsac.model.ValueSet;
-import mat.vsac.model.ValueSetWrapper;
+import mat.vsacmodel.BasicResponse;
+import mat.vsacmodel.ValueSet;
+import mat.vsacmodel.ValueSetWrapper;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -43,7 +43,7 @@ import mat.model.ComponentMeasureTabObject;
 import mat.model.DataType;
 import mat.model.LockedUserInfo;
 import mat.model.MatCodeTransferObject;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;

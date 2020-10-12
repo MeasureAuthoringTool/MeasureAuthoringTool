@@ -1,7 +1,7 @@
 package mat.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 
 import java.util.List;
 

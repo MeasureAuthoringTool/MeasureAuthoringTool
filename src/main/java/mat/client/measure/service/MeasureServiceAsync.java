@@ -33,7 +33,7 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

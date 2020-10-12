@@ -36,7 +36,7 @@ import mat.model.MatValueSetTransferObject;
 import mat.shared.ConstantMessages;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
-import mat.vsac.model.ValueSet;
+import mat.vsacmodel.ValueSet;
 
 import java.util.ArrayList;
 import java.util.Collections;

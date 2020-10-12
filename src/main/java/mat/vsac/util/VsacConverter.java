@@ -1,6 +1,6 @@
 package mat.vsac.util;
 
-import mat.vsac.model.ValueSetWrapper;
+import mat.vsacmodel.ValueSetWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

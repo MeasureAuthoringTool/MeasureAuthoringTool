@@ -1,4 +1,4 @@
-package mat.vsac.model;
+package mat.vsacmodel;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -10,6 +10,7 @@ import mat.server.logging.RequestResponseLoggingInterceptor;
 import mat.server.logging.RequestResponseLoggingMdcInternalInterceptor;
 import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 import mat.server.util.MATPropertiesService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;

@@ -12,7 +12,7 @@ public class CQLQualityDataModelWrapper implements IsSerializable{
 	/** The quality data dto list. */
 	private List<CQLQualityDataSetDTO> qualityDataDTOList;
 	
-	/** The vsac profile. */
+	/** The mat.vsac profile. */
 	//private String vsacExpIdentifier;
 	/**
 	 * Gets the quality data dto.
@@ -34,18 +34,18 @@ public class CQLQualityDataModelWrapper implements IsSerializable{
 	}
 
 	/**
-	 * Gets the vsac profile.
+	 * Gets the mat.vsac profile.
 	 *
-	 * @return the vsac profile
+	 * @return the mat.vsac profile
 	 */
 	/*public String getVsacExpIdentifier() {
 		return vsacExpIdentifier;
 	}*/
 
 	/**
-	 * Sets the vsac identifier.
+	 * Sets the mat.vsac identifier.
 	 *
-	 * @param vsac Identifier the new vsac profile
+	 * @param mat.vsac Identifier the new mat.vsac profile
 	 */
 	/*public void setVsacExpIdentifier(String vsacExpIdentifier) {
 		this.vsacExpIdentifier = vsacExpIdentifier;

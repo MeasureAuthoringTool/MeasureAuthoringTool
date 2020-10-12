@@ -27,6 +27,8 @@
     <inherits name="com.google.gwt.json.JSON"/>
     <inherits name="org.gwtbootstrap3.extras.toggleswitch.ToggleSwitch"/>
     <inherits name="org.gwtbootstrap3.extras.summernote.Summernote"/>
+    <inherits name="edu.ycp.cs.dh.acegwt.AceGWT"/>
+    <inherits name="edu.ycp.cs.dh.acegwt.AceGWT"/>
     <!-- This is the third party jar,added for GWT client side logging. For
         development, a default of `DEBUG` is recommended <inherits name="com.allen_sauer.gwt.log.gwt-log-DEBUG"
         /> -->
@@ -42,6 +44,6 @@
     <source path='mat.shared.diagramObject'/>
     <source path='model'/>
     <source path='dto'/>
-
+    <source path='vsacmodel'/>
     <!-- <add-linker name="xsiframe" /> -->
 </module>

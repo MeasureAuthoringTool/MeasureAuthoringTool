@@ -50,8 +50,10 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
+import mat.vsac.VsacService;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Named;
 import javax.net.ssl.SSLContext;
 import javax.sql.DataSource;
 import java.security.KeyManagementException;
@@ -290,5 +292,21 @@ public class Application extends WebSecurityConfigurerAdapter {
     @Bean
     public FhirContext fhirContext() {
         return FhirContext.forR4();
+    }
+
+    @Bean
+    public VsacService vsacService(@Named("externalRestTemplate") RestTemplate restTemplate) {
+        String ticketBase =  System.getProperty("VSAC_TICKET_URL_BASE");
+        String urlBase = System.getProperty("VSAC_URL_BASE");
+
+        //Default for test cases.
+        if (StringUtils.isEmpty(ticketBase)) {
+            ticketBase = "https://utslogin.nlm.nih.gov/cas/v1";
+        }
+        if (StringUtils.isEmpty(urlBase)) {
+            urlBase = "https://vsac.nlm.nih.gov";
+        }
+
+        return new VsacService(ticketBase,urlBase,restTemplate);
     }
 }

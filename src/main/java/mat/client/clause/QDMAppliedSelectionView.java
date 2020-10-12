@@ -118,7 +118,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
     private CheckBox defaultExpIdentifierSel = new CheckBox();
     //ToggleSwitch toggleSwitch = new ToggleSwitch();
     /**
-     * The vsac profile list box.
+     * The mat.vsac profile list box.
      */
     private ListBoxMVP defaultExpIdentifierListBox = new ListBoxMVP();
 
@@ -139,7 +139,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
     private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 
     /**
-     * The update vsac error message panel.
+     * The update mat.vsac error message panel.
      */
     private ErrorMessageDisplay updateVSACErrorMessagePanel = new ErrorMessageDisplay();
 
@@ -194,7 +194,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
     private SuccessMessageDisplay successMessagePanel = new SuccessMessageDisplay();
 
     /**
-     * The update vsac success message panel.
+     * The update mat.vsac success message panel.
      */
     private SuccessMessageDisplay updateVSACSuccessMessagePanel = new SuccessMessageDisplay();
 
@@ -457,7 +457,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 
 
     /**
-     * Builds the element with vsac expansion identifier.
+     * Builds the element with mat.vsac expansion identifier.
      *
      * @return the widget
      */
@@ -473,7 +473,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 
 
     /**
-     * Builds the element with vsac value set widget.
+     * Builds the element with mat.vsac value set widget.
      *
      * @return the widget
      */
@@ -934,7 +934,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
      */
 
     /**
-     * Sets the vsac expansion identifier list box.
+     * Sets the mat.vsac expansion identifier list box.
      */
     @Override
     public void setDefaultExpansionIdentifierListBox() {
@@ -1040,7 +1040,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
      */
 
     /**
-     * Reset vsac value set widget.
+     * Reset mat.vsac value set widget.
      */
     @Override
     public void resetVSACValueSetWidget() {
@@ -1247,9 +1247,9 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
      * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getRetrieveFromVSACButton()
      */
     /**
-     * Gets the retrieve from vsac button.
+     * Gets the retrieve from mat.vsac button.
      *
-     * @return the retrieve from vsac button
+     * @return the retrieve from mat.vsac button
      */
     //@Override
 	/*public Button getRetrieveFromVSACButton(){
@@ -1274,9 +1274,9 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
      */
 
     /**
-     * Gets the update from vsac button.
+     * Gets the update from mat.vsac button.
      *
-     * @return the update from vsac button
+     * @return the update from mat.vsac button
      */
     @Override
     public Button getUpdateFromVSACButton() {
@@ -1535,9 +1535,9 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
     }
 
     /**
-     * Gets the update vsac error message panel.
+     * Gets the update mat.vsac error message panel.
      *
-     * @return the update vsac error message panel
+     * @return the update mat.vsac error message panel
      */
     @Override
     public ErrorMessageDisplay getUpdateVSACErrorMessagePanel() {
@@ -1545,9 +1545,9 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
     }
 
     /**
-     * Gets the update vsac success message panel.
+     * Gets the update mat.vsac success message panel.
      *
-     * @return the update vsac success message panel
+     * @return the update mat.vsac success message panel
      */
     @Override
     public SuccessMessageDisplay getUpdateVSACSuccessMessagePanel() {

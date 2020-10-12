@@ -12,7 +12,6 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.ListObject;
-import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibraryExport;
@@ -58,6 +57,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import mat.vsacmodel.ValueSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -151,7 +151,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
     private FhirContext fhirContext;
 
 	@Override
-	public final ExportResult exportMeasureIntoSimpleXML(final String measureId, final String xmlString, final List<MatValueSet> matValueSets) throws Exception {
+	public final ExportResult exportMeasureIntoSimpleXML(final String measureId,
+														 final String xmlString,
+														 final List<ValueSet> ValueSets) throws Exception {
 		ExportResult result = new ExportResult();
 		DocumentBuilderFactory documentBuilderFactory = XMLUtility.getInstance().buildDocumentBuilderFactory();
 		DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -195,7 +197,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		qdmRefID = new ArrayList<String>(uniqueRefIds);
 
 		findAndAddDTO(allSupplementIDs, masterRefID, supplRefID);
-		wkbk = createEMeasureXLS(measureId, qdmRefID, supplRefID, matValueSets);
+		wkbk = createEMeasureXLS(measureId, qdmRefID, supplRefID, ValueSets);
 		result.wkbkbarr = getHSSFWorkbookBytes(wkbk);
 		wkbk = null;
 		return result;
@@ -643,17 +645,17 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 *            - List.
 	 * @param supplementalQDMS
 	 *            - List.
-	 * @param matValueSets
+	 * @param ValueSets
 	 *            - List.
 	 * @return HSSFWorkbook
 	 * @throws Exception
 	 *             - Exception. **
 	 */
 	public final HSSFWorkbook createEMeasureXLS(final String measureId, final List<String> allQDMs,
-												final List<String> supplementalQDMS, final List<MatValueSet> matValueSets) throws Exception {
+												final List<String> supplementalQDMS, final List<ValueSet> ValueSets) throws Exception {
 		CodeListXLSGenerator clgen = new CodeListXLSGenerator();
 		return clgen.getXLS(getMeasureName(measureId), allQDMs, qualityDataSetDAO, listObjectDAO, supplementalQDMS,
-				matValueSets);
+				ValueSets);
 	}
 
 	/**

@@ -16,7 +16,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.ComponentMeasureTabObject;
 import mat.model.MatCodeTransferObject;
-import mat.model.MatValueSet;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.MeasureType;
 import mat.model.Organization;
@@ -41,6 +40,7 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
+import mat.vsacmodel.ValueSet;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.util.Date;
@@ -291,14 +291,15 @@ public interface MeasureLibraryService {
 	 * 
 	 * @param key
 	 *            the key
-	 * @param matValueSetList
+	 * @param ValueSetList
 	 *            the mat value set list
 	 * @return the validate measure result
 	 * @throws MatException
 	 *             the mat exception
 	 */
 	ValidateMeasureResult createExports(String key,
-			List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException;
+										List<ValueSet> ValueSetList,
+										boolean shouldCreateArtifacts) throws MatException;
 		
 	/**
 	 * Save measure at package.

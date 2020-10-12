@@ -8,8 +8,8 @@ import java.util.List;
 public class CQLValueSetTransferObjectValidator {
 	public boolean isValid(CQLValueSetTransferObject object) {
 		boolean isValid = true;
-		if(object.getMatValueSet() != null){
-			if(StringUtility.isEmptyOrNull(object.getMatValueSet().getDisplayName())) {
+		if(object.getValueSet() != null){
+			if(StringUtility.isEmptyOrNull(object.getValueSet().getDisplayName())) {
 				isValid = false;
 			} 
 		} else if(object.getUserDefinedText().trim().isEmpty()){

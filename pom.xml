@@ -375,11 +375,6 @@
             <version>2.3.0</version>
         </dependency>
         <dependency>
-            <groupId>mat</groupId>
-            <artifactId>vsac</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>28.2-jre</version>
@@ -546,6 +541,7 @@
             <version>0.8.13</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
@@ -794,35 +790,6 @@
                     </exclusions>
                 </dependency>
             </dependencies>
-        </profile>
-        <profile>
-            <id>install-libs</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-install-plugin</artifactId>
-                        <version>3.0.0-M1</version>
-                        <executions>
-                            <execution>
-                                <phase>validate</phase>
-                                <id>install-vsac</id>
-                                <goals>
-                                    <goal>install-file</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.basedir}/lib/vsac-1.0.jar</file>
-                                    <groupId>mat</groupId>
-                                    <artifactId>vsac</artifactId>
-                                    <version>1.0</version>
-                                    <packaging>jar</packaging>
-                                    <localRepositoryPath>${project.local.repo.dir}</localRepositoryPath>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
     </profiles>
 </project>

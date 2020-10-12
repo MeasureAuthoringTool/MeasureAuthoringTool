@@ -55,23 +55,23 @@ public class CodeListSearchDTO implements IsSerializable {
 	/** The owner email address. */
 	private String ownerEmailAddress;
 	
-	/** The vsac xml payload. */
+	/** The mat.vsac xml payload. */
 	private String vsacXMLPayload;
 	
 	/**
-	 * Gets the vsac xml payload.
+	 * Gets the mat.vsac xml payload.
 	 * 
-	 * @return the vsac xml payload
+	 * @return the mat.vsac xml payload
 	 */
 	public String getVsacXMLPayload() {
 		return vsacXMLPayload;
 	}
 
 	/**
-	 * Sets the vsac xml payload.
+	 * Sets the mat.vsac xml payload.
 	 * 
 	 * @param vsacXMLPayload
-	 *            the new vsac xml payload
+	 *            the new mat.vsac xml payload
 	 */
 	public void setVsacXMLPayload(String vsacXMLPayload) {
 		this.vsacXMLPayload = vsacXMLPayload;

@@ -68,7 +68,7 @@ public class GenerateCommonFhirLibSql {
             "0,\n" +
             "${VERSION},\n " +
             "null,\n" +
-            "'v6.0',\n" +
+            "'v6.01',\n" +
             "${OWNER_ID},\n" +
             "null,\n" +
             "null,\n" +

@@ -70,6 +70,12 @@ public class ManageUmlsPresenter implements MatPresenter {
         Modal getModel();
 
         ModalFooter getFooter();
+
+        boolean isShowingInstructions();
+
+        void setShowingInstructions(boolean isShowing);
+
+        Anchor getShowInstructions();
     }
 
     private UMLSDisplay display;
@@ -100,38 +106,21 @@ public class ManageUmlsPresenter implements MatPresenter {
         userFirstName = firstName;
         showWelcomeMessage = !isAlreadySignedIn;
         resetWidget();
-        display.getSubmit().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent event) {
-                submit();
-            }
-
-        });
+        display.getSubmit().addClickHandler(ce -> submit());
         display.getApiKeyInput().addKeyDownHandler(submitOnEnterHandler);
-        display.getUmlsExternalLink().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent event) {
-                display.getExternalLinkDisclaimer().setVisible(true);
-                display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
-                display.getExternalLinkDisclaimer().getElement().removeAttribute("role");
-                display.getExternalLinkDisclaimer().getElement().setAttribute("id", "ExternalLinkDisclaimer");
-                display.getExternalLinkDisclaimer().getElement().setAttribute("role", "alert");
-            }
+        display.getShowInstructions().addClickHandler(ce -> display.setShowingInstructions(!display.isShowingInstructions()));
+        display.getUmlsExternalLink().addClickHandler(ce -> {
+            display.getExternalLinkDisclaimer().setVisible(true);
+            display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
+            display.getExternalLinkDisclaimer().getElement().removeAttribute("role");
+            display.getExternalLinkDisclaimer().getElement().setAttribute("id", "ExternalLinkDisclaimer");
+            display.getExternalLinkDisclaimer().getElement().setAttribute("role", "alert");
         });
-        display.getButtonBar().getSaveButton().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent event) {
-                display.getExternalLinkDisclaimer().setVisible(false);
-                Window.open(ClientConstants.EXT_LINK_UMLS, "_blank", "");
-            }
+        display.getButtonBar().getSaveButton().addClickHandler(ce -> {
+            display.getExternalLinkDisclaimer().setVisible(false);
+            Window.open(ClientConstants.EXT_LINK_UMLS, "_blank", "");
         });
-
-        display.getButtonBar().getCancelButton().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent event) {
-                display.getExternalLinkDisclaimer().setVisible(false);
-            }
-        });
+        display.getButtonBar().getCancelButton().addClickHandler(ce -> display.getExternalLinkDisclaimer().setVisible(false));
     }
 
 
@@ -202,7 +191,6 @@ public class ManageUmlsPresenter implements MatPresenter {
 
         if (display.getApiKeyInput().getText().isEmpty()) {
             display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
-            display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
             display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
             display.getApiKeyGroup().setValidationState(ValidationState.ERROR);
             display.getSubmit().setEnabled(true);

@@ -27,7 +27,7 @@ import java.util.Map;
 
 @Service
 public class CqlLibraryValidationReportImpl implements FhirValidationReport {
-    private static final String currentMatVersion = "v6.0";
+    private static final String currentMatVersion = "v6.01";
 
     public static final String CQL_LIBRARY_NOT_FOUND_ERROR = "CQL Library with the given id does not exist.";
     public static final String FTL_TEMPLATE_NAME = "fhirvalidationreport/fhir_library_validation_report.ftl";

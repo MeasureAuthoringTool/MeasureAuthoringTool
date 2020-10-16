@@ -220,12 +220,17 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
         String cqlString = CQLUtilityClass.getCqlString(model, "").getLeft();
         CQLFormatter formatter = new CQLFormatter();
         cqlString = formatter.format(cqlString);
-        ReverseEngineerListener listener = new ReverseEngineerListener(cqlString, model);
-        CQLModel reversedEngineeredCQLModel = listener.getCQLModel();
-        String formattedXML = CQLUtilityClass.getXMLFromCQLModel(reversedEngineeredCQLModel);
+
+        if (!model.isFhir()) {
+            // Right now this uses model 1.4.6 so it won't work with fhir.
+            // Once we upgrade to 1.5.0_SNAPSHOT it should work.
+            ReverseEngineerListener listener = new ReverseEngineerListener(cqlString, model);
+            CQLModel reversedEngineeredCQLModel = listener.getCQLModel();
+            cqlString = CQLUtilityClass.getXMLFromCQLModel(reversedEngineeredCQLModel);
+        }
 
         XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
-        processor.replaceNode(formattedXML, "cqlLookUp", "measure");
+        processor.replaceNode(cqlString, "cqlLookUp", "measure");
         String updatedMeasureXMLString = processor.transform(processor.getOriginalDoc());
         return updatedMeasureXMLString;
     }

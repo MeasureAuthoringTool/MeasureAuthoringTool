@@ -105,48 +105,6 @@ public class VsacService {
         return postForString2xx(uri, buildEntityWithTicketHeaders());
     }
 
-    public ValueSetResult getValueSetResult(String oid, String ticketGrantingTicket) {
-        String singleUseTicket = getServiceTicket(ticketGrantingTicket);
-
-        if (StringUtils.isEmpty(singleUseTicket)) {
-            return ValueSetResult.builder()
-                    .isFailResponse(true)
-                    .failReason(CANNOT_OBTAIN_A_SINGLE_USE_SERVICE_TICKET)
-                    .build();
-        }
-
-        String url = baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets";
-
-        URI uri = UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam("ticket", singleUseTicket)
-                .queryParam("id", oid)
-                .queryParam("profile", PROFILE)
-                .build()
-                .encode()
-                .toUri();
-
-        try {
-            String xml = restTemplate.getForObject(uri, String.class);
-
-            return ValueSetResult.builder()
-                    .isFailResponse(false)
-                    .xmlPayLoad(xml)
-                    .build();
-        } catch (RestClientException e) {
-            String message;
-            if (Objects.equals(e.getMessage(), "404 : [no body]")) {
-                message = "404 Cannot find value set with oid: " + oid;
-            } else {
-                message = e.getMessage();
-            }
-
-            return ValueSetResult.builder()
-                    .isFailResponse(true)
-                    .failReason(message)
-                    .build();
-        }
-    }
-
     public ValueSetWrapper getVSACValueSetWrapper(String oid, String ticketGrantingTicket) {
         ValueSetResult vsacResponseResult = getValueSetResult(oid, ticketGrantingTicket);
 
@@ -330,6 +288,7 @@ public class VsacService {
                             .queryParam("id", oid)
                             .queryParam("version", version)
                             .queryParam("ticket", serviceTicket)
+                            .queryParam("includeDraft", "yes")
                             .build()
                             .encode()
                             .toUri(), String.class));
@@ -385,6 +344,66 @@ public class VsacService {
                             .toUri(), String.class));
         } catch (HttpClientErrorException e) {
             return buildBasicResponseForHttpClientError(e);
+        }
+    }
+
+    public BasicResponse getMultipleValueSetsResponseByOIDAndRelease(String oid, String release, String serviceTicket) {
+        // https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets
+        try {
+            return buildBasicResponseFromEntity(restTemplate.getForEntity(
+                    UriComponentsBuilder.fromHttpUrl(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets")
+                            .queryParam("id", oid)
+                            .queryParam("release", release)
+                            .queryParam("ticket", serviceTicket)
+                            .queryParam("includeDraft", "yes")
+                            .build()
+                            .encode()
+                            .toUri(), String.class));
+        } catch (HttpClientErrorException e) {
+            return buildBasicResponseForHttpClientError(e);
+        }
+    }
+
+    public ValueSetResult getValueSetResult(String oid, String ticketGrantingTicket) {
+        String singleUseTicket = getServiceTicket(ticketGrantingTicket);
+
+        if (StringUtils.isEmpty(singleUseTicket)) {
+            return ValueSetResult.builder()
+                    .isFailResponse(true)
+                    .failReason(CANNOT_OBTAIN_A_SINGLE_USE_SERVICE_TICKET)
+                    .build();
+        }
+
+        String url = baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets";
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("ticket", singleUseTicket)
+                .queryParam("id", oid)
+                .queryParam("profile", PROFILE)
+                .queryParam("includeDraft", "yes")
+                .build()
+                .encode()
+                .toUri();
+
+        try {
+            String xml = restTemplate.getForObject(uri, String.class);
+
+            return ValueSetResult.builder()
+                    .isFailResponse(false)
+                    .xmlPayLoad(xml)
+                    .build();
+        } catch (RestClientException e) {
+            String message;
+            if (Objects.equals(e.getMessage(), "404 : [no body]")) {
+                message = "404 Cannot find value set with oid: " + oid;
+            } else {
+                message = e.getMessage();
+            }
+
+            return ValueSetResult.builder()
+                    .isFailResponse(true)
+                    .failReason(message)
+                    .build();
         }
     }
 
@@ -447,22 +466,6 @@ public class VsacService {
             } else {
                 return buildBasicResponseForFailure();
             }
-        } catch (HttpClientErrorException e) {
-            return buildBasicResponseForHttpClientError(e);
-        }
-    }
-
-    public BasicResponse getMultipleValueSetsResponseByOIDAndRelease(String oid, String release, String serviceTicket) {
-        // https://vsac.nlm.nih.gov/vsac/svs/RetrieveMultipleValueSets
-        try {
-            return buildBasicResponseFromEntity(restTemplate.getForEntity(
-                    UriComponentsBuilder.fromHttpUrl(baseVsacUrl + "/vsac/svs/RetrieveMultipleValueSets")
-                            .queryParam("id", oid)
-                            .queryParam("release", release)
-                            .queryParam("ticket", serviceTicket)
-                            .build()
-                            .encode()
-                            .toUri(), String.class));
         } catch (HttpClientErrorException e) {
             return buildBasicResponseForHttpClientError(e);
         }
@@ -554,7 +557,7 @@ public class VsacService {
     }
 
     private BasicResponse buildBasicResponseForHttpClientError(HttpClientErrorException e) {
-        log.error(e.getResponseBodyAsString());
+        log.error(e.getResponseBodyAsString(),e);
         return buildBasicResponseForFailure();
     }
 

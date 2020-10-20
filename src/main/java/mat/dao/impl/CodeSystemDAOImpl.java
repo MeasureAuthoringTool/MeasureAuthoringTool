@@ -24,7 +24,7 @@ public class CodeSystemDAOImpl extends GenericDAO<CodeSystem, String> implements
 	
 	public List<CodeSystemDTO> getAllCodeSystem(){
 		List<CodeSystemDTO> codeSystemDTOList = new ArrayList<CodeSystemDTO>();
-		logger.info("Getting all the codeSystem from the category table");
+		logger.debug("Getting all the codeSystem from the category table");
 		Session session = getSessionFactory().getCurrentSession();
 		
 		List<CodeSystem> codeSystemList = session.createCriteria(CodeSystem.class).setCacheable(true).setCacheRegion(CodeSystem.class.getCanonicalName()).list();

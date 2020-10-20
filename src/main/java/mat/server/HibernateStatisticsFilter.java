@@ -43,7 +43,7 @@ public class HibernateStatisticsFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
 		httpRequest.getSession();
 		String uri = httpRequest.getRequestURI();
-		logger.info("Requesting " + uri + " in session " + httpRequest.getSession().getId());
+		logger.debug("Requesting " + uri + " in session " + httpRequest.getSession().getId());
 		
 		if(logger.isDebugEnabled()) {
 			if(!uri.endsWith(".png") && !uri.endsWith(".gif") && !uri.endsWith(".html") &&

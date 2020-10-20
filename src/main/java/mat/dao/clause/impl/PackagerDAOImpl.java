@@ -23,7 +23,7 @@ public class PackagerDAOImpl extends GenericDAO<Packager, String> implements Pac
 	
 	@Override
 	public void deleteAllPackages(String measureId) {
-		logger.info("Deleting All existing packages for measure " + measureId);
+		logger.debug("Deleting All existing packages for measure " + measureId);
 		Session session = getSessionFactory().getCurrentSession();
         String hql = "delete from mat.model.clause.Packager p where p.measure.id=:measureId";
         Query query = session.createQuery(hql);

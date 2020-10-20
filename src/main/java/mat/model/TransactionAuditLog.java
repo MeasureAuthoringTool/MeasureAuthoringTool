@@ -20,7 +20,7 @@ public class TransactionAuditLog {
 	private String secondaryId;
 	private String activityType;
 	private String userId;
-	private Timestamp time;
+	private Timestamp time = new Timestamp(System.currentTimeMillis());
 	private String additionalInfo;
 	
 	@Id
@@ -78,7 +78,9 @@ public class TransactionAuditLog {
 	}
 	
 	public void setTime(Date created) {
-		this.time = new Timestamp(created.getTime());
+		if (created != null) {
+			this.time = new Timestamp(created.getTime());
+		}
 	}
 	
 	@Column(name = "ADDL_INFO", length = 2000)

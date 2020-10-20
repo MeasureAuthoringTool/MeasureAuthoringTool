@@ -1,5 +1,6 @@
 package mat.server.service.jobs;
 
+import lombok.extern.slf4j.Slf4j;
 import mat.model.CQLAuditLog;
 import mat.model.clause.CQLLibrary;
 import org.hibernate.Session;
@@ -25,6 +26,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class CQLLibraryTimestampUpdateJob {
 
     private static final String CQL_LIBRARY = "cqlLibrary";
@@ -40,13 +42,13 @@ public class CQLLibraryTimestampUpdateJob {
 
             @Override
             public void run() {
-                System.out.println("Job to Update Library Timestamp STARTED: " + LocalDateTime.now());
+                log.debug("Job to Update Library Timestamp STARTED: " + LocalDateTime.now());
                 final Instant start = Instant.now();
                 updateLibrariesWithNoTimestamp();
                 final Instant finish = Instant.now();
                 final long timeElapsed = Duration.between(start, finish).toMillis();
-                System.out.println("TIME ELAPSED: " + timeElapsed);
-                System.out.println("Job to Update Library Timestamp ENDED: " + LocalDateTime.now());
+                log.debug("TIME ELAPSED: " + timeElapsed);
+                log.debug("Job to Update Library Timestamp ENDED: " + LocalDateTime.now());
 
                 if (!scheduler.isShutdown()) {
                     scheduler.shutdown();
@@ -82,11 +84,11 @@ public class CQLLibraryTimestampUpdateJob {
 
             if (librariesLogList != null) {
                 updateLibraryModificationData(librariesLogList);
-                System.out.println("Updated timestamp for " + librariesLogList.size() + " libraries");
+                log.debug("Updated timestamp for " + librariesLogList.size() + " libraries");
             }
 
         } catch (final Exception e) {
-            e.printStackTrace();
+            log.error("updateLibrariesWithNoTimestamp",e);
         }
     }
 
@@ -96,7 +98,7 @@ public class CQLLibraryTimestampUpdateJob {
 
             final Transaction transaction = session.beginTransaction();
 
-            System.out.println("Update Library Timestamp TRANSACTION START");
+            log.debug("Update Library Timestamp TRANSACTION START");
 
             int count = 0;
             final int batchSize = 50;
@@ -115,10 +117,10 @@ public class CQLLibraryTimestampUpdateJob {
             }
             transaction.commit();
 
-            System.out.println("Update Library Timestamp TRANSACTION END");
+            log.debug("Update Library Timestamp TRANSACTION END");
 
         } catch (final Exception e) {
-            e.printStackTrace();
+            log.error("updateLibraryModificationData",e);
         }
 
     }

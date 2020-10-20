@@ -109,7 +109,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
     private RestTemplate restTemplate;
 
     private String addAppliedQDMInMeasureXML(String mapping, String startTag, QualityDataModelWrapper qualityDataSetDTOWrapper) {
-        log.info("addAppliedQDMInMeasureXML Method Call Start.");
+        log.debug("addAppliedQDMInMeasureXML Method Call Start.");
         String xmlString = null;
         String stream = createNewXML(mapping, qualityDataSetDTOWrapper);
         if (StringUtils.isNotBlank(stream)) {
@@ -127,9 +127,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
             final XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
             stream = xmlMarshalUtil.convertObjectToXML(mapping, qualityDataSetDTOWrapper);
         } catch (MarshalException | ValidationException | IOException | MappingException e) {
-            log.info("Exception in converting XML to object: " + e.getMessage(), e);
+            log.debug("Exception in converting XML to object: " + e.getMessage(), e);
         }
-        log.info("Exiting ManageCodeListServiceImpl.createXml()");
+        log.debug("Exiting ManageCodeListServiceImpl.createXml()");
         return stream;
     }
 
@@ -144,7 +144,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
     private boolean isDuplicate(
             MatValueSetTransferObject ValueSetTransferObject,
             boolean isVSACValueSet, boolean isSpecificOccurrence) {
-        log.info(" checkForDuplicates Method Call Start.");
+        log.debug(" checkForDuplicates Method Call Start.");
         boolean isQDSExist = false;
         boolean isExpOrVerNotEq = false;
         DataType dt = dataTypeDAO.find(ValueSetTransferObject.getDatatype());
@@ -236,7 +236,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
                 break;
             }
         }
-        log.info("checkForDuplicates Method Call End.Check resulted in :"
+        log.debug("checkForDuplicates Method Call End.Check resulted in :"
                 + (isQDSExist || isExpOrVerNotEq));
         return (isQDSExist || isExpOrVerNotEq);
     }
@@ -294,7 +294,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
     private boolean checkForDuplicates(
             MatValueSetTransferObject ValueSetTransferObject,
             boolean isVSACValueSet) {
-        log.info(" checkForDuplicates Method Call Start.");
+        log.debug(" checkForDuplicates Method Call Start.");
         boolean isQDSExist = false;
         DataType dt = dataTypeDAO.find(ValueSetTransferObject.getDatatype());
         String qdmCompareNameOrID = "";
@@ -332,7 +332,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
                 break;
             }
         }
-        log.info("checkForDuplicates Method Call End.Check resulted in :"
+        log.debug("checkForDuplicates Method Call End.Check resulted in :"
                 + isQDSExist);
         return isQDSExist;
     }
@@ -1008,7 +1008,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
         //Note: Cache is auto evicted in the Application class after a default of 30 minutes.
         Map<String, VSACCodeSystemDTO> result = new HashMap<>();
 
-        log.info("Entering getCodesSystemMappings");
+        log.debug("Entering getCodesSystemMappings");
         ResponseEntity<VSACCodeSystemDTO[]> response;
         try {
             response = restTemplate.exchange(mappingsUrl, HttpMethod.GET, null, VSACCodeSystemDTO[].class, (Object) null);
@@ -1016,7 +1016,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
                 throw new MatRuntimeException("getCodesSystemMappings returned error code " + response.getStatusCode());
             }
             Arrays.stream(response.getBody()).forEach(v -> result.put(v.getOid(),v));
-            log.info("Exiting getCodesSystemMappings " + result);
+            log.debug("Exiting getCodesSystemMappings " + result);
         } catch (RestClientResponseException e) {
             throw new MatRuntimeException(e);
         }

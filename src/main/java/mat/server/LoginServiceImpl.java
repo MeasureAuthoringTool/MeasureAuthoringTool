@@ -42,7 +42,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 
     @Override
     public LoginModel initSession(Map<String, String> harpUserInfo) throws MatException {
-        logger.info("initSession::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
+        logger.debug("initSession::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
         HttpSession session = getThreadLocalRequest().getSession();
         if (userService.isHarpUserLockedRevoked(harpUserInfo.get(HarpConstants.HARP_ID))) {
             throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
@@ -104,12 +104,12 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
     @Override
     public void switchUser(Map<String, String> harpUserInfo, String newUserId) {
         String sessionId = getThreadLocalRequest().getSession().getId();
-        logger.info("LoginnService::switchUser HARP_ID: " + harpUserInfo.get(HarpConstants.HARP_ID) + " Session ID: " + sessionId + " New User ID: " + newUserId);
+        logger.debug("LoginnService::switchUser HARP_ID: " + harpUserInfo.get(HarpConstants.HARP_ID) + " Session ID: " + sessionId + " New User ID: " + newUserId);
         loginCredentialService.switchUser(harpUserInfo, newUserId, sessionId);
     }
 
     private void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId) throws MatException {
-        logger.info("User Verified, updating user information of::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
+        logger.debug("User Verified, updating user information of::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
         HttpSession session = getThreadLocalRequest().getSession();
         loginCredentialService.saveHarpUserInfo(harpUserInfo, loginId, session.getId());
     }
@@ -126,8 +126,8 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
         String resultStr = userService.updateOnSignOut(userId, emailId, activityType);
         SecurityContextHolder.clearContext();
         getThreadLocalRequest().getSession().invalidate();
-        logger.info("User Session Invalidated at :::: " + new Date());
-        logger.info("In UserServiceImpl Signout Update " + resultStr);
+        logger.debug("User Session Invalidated at :::: " + new Date());
+        logger.debug("In UserServiceImpl Signout Update " + resultStr);
         return resultStr;
     }
 

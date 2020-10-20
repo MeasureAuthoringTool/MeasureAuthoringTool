@@ -43,7 +43,7 @@ public class CodeListServiceImpl extends SpringRemoteServiceServlet
 
     @Override
     public mat.client.codelist.service.CodeListService.ListBoxData getListBoxData() {
-        logger.info("getListBoxData");
+        logger.debug("getListBoxData");
         return getCodeListService().getListBoxData();
     }
 
@@ -87,13 +87,13 @@ public class CodeListServiceImpl extends SpringRemoteServiceServlet
 
     @Override
     public List<UnitDTO> getAllCqlUnits() {
-        logger.info("getAllCqlUnits");
+        logger.debug("getAllCqlUnits");
         return getCodeListService().getAllUnits();
     }
 
     @Override
     public Map<String, VSACCodeSystemDTO> getOidToVsacCodeSystemMap() {
-        logger.info("getOidToVsacCodeSystemMap");
+        logger.debug("getOidToVsacCodeSystemMap");
         return getCodeListService().getOidToVsacCodeSystemMap();
     }
 }

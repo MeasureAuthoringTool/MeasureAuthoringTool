@@ -68,7 +68,7 @@ public class RecentCQLActivityLogDAOImpl extends GenericDAO<RecentCQLActivityLog
 		recentCQLActivityLog.setUserId(userId);
 		recentCQLActivityLog.setTime(new Date());
 		save(recentCQLActivityLog);
-		logger.info("Inserting recent cql activity log for cql id: " + cqlId);
+		logger.debug("Inserting recent cql activity log for cql id: " + cqlId);
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class RecentCQLActivityLogDAOImpl extends GenericDAO<RecentCQLActivityLog
 	private void updateRecentCQLActivity(RecentCQLActivityLog recentCQLActivityLog) {
 		recentCQLActivityLog.setTime(new Date());
 		save(recentCQLActivityLog);
-		logger.info("Updating recent cql activity log for cql id: " + recentCQLActivityLog.getCqlId());
+		logger.debug("Updating recent cql activity log for cql id: " + recentCQLActivityLog.getCqlId());
 	}
 	
 	/**

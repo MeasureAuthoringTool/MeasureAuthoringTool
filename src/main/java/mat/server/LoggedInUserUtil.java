@@ -40,7 +40,7 @@ public class LoggedInUserUtil {
                         token = (PreAuthenticatedAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
                     }
                 } catch (Exception exc) {
-                    logger.info(exc);
+                    logger.error("getToken",exc);
                 }
             }
         }

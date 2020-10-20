@@ -566,8 +566,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) {
 		Node refNode = occurrenceMap.get(occurString);
 
-		logger.info("In generateOutboundForOccur()..refNode:" + refNode);
-		logger.info("----------Occurance map:" + occurrenceMap);
+		logger.debug("In generateOutboundForOccur()..refNode:" + refNode);
+		logger.debug("----------Occurance map:" + occurrenceMap);
 
 		if (refNode != null) {
 

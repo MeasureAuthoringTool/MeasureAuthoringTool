@@ -486,7 +486,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
                     measureShare.setOwner(currentUser);
                     user.getMeasureShares().add(measureShare);
                     currentUser.getOwnedMeasureShares().add(measureShare);
-                    logger.info("Sharing " + measureShare.getMeasure().getId() + " with " + user.getId()
+                    logger.debug("Sharing " + measureShare.getMeasure().getId() + " with " + user.getId()
                             + " at level " + sLevel.getDescription());
                     if (!first) { //first time, don't add the comma.
                         auditLogAdditionlInfo.append(", ");
@@ -499,7 +499,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
                 } else if (measureShare != null && !ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
                     recordRevokeShareEvent = true;
                     measureShareDAO.delete(measureShare.getId());
-                    logger.info("Removing Sharing " + measureShare.getMeasure().getId()
+                    logger.debug("Removing Sharing " + measureShare.getMeasure().getId()
                             + " with " + user.getId()
                             + " at level " + sLevel.getDescription());
                     if (!firstRemove) { //first time, don't add the comma.

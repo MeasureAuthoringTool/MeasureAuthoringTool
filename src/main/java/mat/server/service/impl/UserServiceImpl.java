@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String generateRandomPassword() {
-        logger.info("In generateRandomPassword().....");
+        logger.debug("In generateRandomPassword().....");
         String password = null;
         Random r = new Random(System.currentTimeMillis());
         StringBuilder pwdBuilder = new StringBuilder();
@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void activate(String userid) {
-        logger.info("In activate(String userid).....");
+        logger.debug("In activate(String userid).....");
         User user = userDAO.find(userid);
         String newPassword = generateRandomPassword();
         if (user.getPassword() == null) {
@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService {
      * @param newPassword the new password
      */
     public void notifyUserUnlocked(User user, String newPassword) {
-        logger.info("In notifyUserUnlocked(User user, String newPassword).....");
+        logger.debug("In notifyUserUnlocked(User user, String newPassword).....");
         SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
         msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT + ServerConstants.getEnvName());
         msg.setTo(user.getEmailAddress());
@@ -182,7 +182,7 @@ public class UserServiceImpl implements UserService {
         paramsMap.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
         paramsMap.put(ConstantMessages.SUPPORT_EMAIL, supportEmailAddress);
 
-        logger.info("Sending email to " + user.getEmailAddress());
+        logger.debug("Sending email to " + user.getEmailAddress());
         try {
             String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/tempPasswordTemplate.ftl"), paramsMap);
             msg.setText(text);
@@ -212,7 +212,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void setUserPassword(User user, String clearTextPassword, boolean isTemporary) {
-        logger.info("In setUserPassword(User user, String clearTextPassword, boolean isTemporary)........");
+        logger.debug("In setUserPassword(User user, String clearTextPassword, boolean isTemporary)........");
         String salt = UUID.randomUUID().toString();
         user.getPassword().setSalt(salt);
         String password = getPasswordHash(salt, clearTextPassword);
@@ -227,10 +227,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public ForgottenPasswordResult requestForgottenPassword(String loginId,
                                                             String securityQuestion, String securityAnswer, int invalidUserCounter) {
-        logger.info("In requestForgottenPassword(String loginId, String securityQuestion, String securityAnswer, int invalidUserCounter).......");
+        logger.debug("In requestForgottenPassword(String loginId, String securityQuestion, String securityAnswer, int invalidUserCounter).......");
         ForgottenPasswordResult result = new ForgottenPasswordResult();
         result.setEmailSent(false);
-        // logger.info(" requestForgottenPassword   Login Id ====" + loginId);
+        // logger.debug(" requestForgottenPassword   Login Id ====" + loginId);
         User user = null;
         try {
             user = userDAO.findByLoginId(loginId);
@@ -283,7 +283,7 @@ public class UserServiceImpl implements UserService {
     public ForgottenLoginIDResult requestForgottenLoginID(String email) {
         ForgottenLoginIDResult result = new ForgottenLoginIDResult();
         result.setEmailSent(false);
-        logger.info(" requestForgottenLoginID   email ====" + email);
+        logger.debug(" requestForgottenLoginID   email ====" + email);
         User user = null;
         boolean inValidEmail = false;
         try {
@@ -292,15 +292,15 @@ public class UserServiceImpl implements UserService {
                 user = userDAO.findByEmail(email);
             }
         } catch (ObjectNotFoundException exc) {
-            logger.info(" requestForgottenLoginID   Exception " + exc.getMessage());
+            logger.debug(" requestForgottenLoginID   Exception " + exc.getMessage());
         }
 
         if ((user == null) && inValidEmail) {
             result.setFailureReason(ForgottenLoginIDResult.EMAIL_NOT_FOUND_MSG);
-            logger.info(" requestForgottenLoginID   user not found for email ::" + email);
+            logger.debug(" requestForgottenLoginID   user not found for email ::" + email);
         } else if (!inValidEmail) {
             result.setFailureReason(ForgottenLoginIDResult.EMAIL_INVALID);
-            logger.info(" requestForgottenLoginID   Invalid email ::" + email);
+            logger.debug(" requestForgottenLoginID   Invalid email ::" + email);
         } else {
 
             Date lastSignIn = user.getSignInDate();
@@ -312,7 +312,7 @@ public class UserServiceImpl implements UserService {
             if (isAlreadySignedIn) {
                 result.setFailureReason(ForgottenLoginIDResult.USER_ALREADY_LOGGED_IN);
             } else {
-                logger.info(" requestForgottenLoginID   User ID Found and email sent successfully to email address ::" + email);
+                logger.debug(" requestForgottenLoginID   User ID Found and email sent successfully to email address ::" + email);
                 result.setEmailSent(true);
                 notifyUserOfForgottenLoginId(user);
             }
@@ -364,7 +364,7 @@ public class UserServiceImpl implements UserService {
      * @param newPassword the new password
      */
     private void sendResetPassword(String email, String newPassword) {
-        logger.info("In sendResetPassword(String email, String newPassword)........" + newPassword);
+        logger.debug("In sendResetPassword(String email, String newPassword)........" + newPassword);
         SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
         msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT + ServerConstants.getEnvName());
         msg.setTo(email);
@@ -378,7 +378,7 @@ public class UserServiceImpl implements UserService {
         try {
             String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/resetPasswordTemplate.ftl"), paramsMap);
             msg.setText(text);
-            logger.info("Sending email to " + email);
+            logger.debug("Sending email to " + email);
             mailSender.send(msg);
         } catch (MailException | IOException | TemplateException exc) {
             logger.error(exc);
@@ -442,7 +442,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveNew(User user) {
-        logger.info("In saveNew(User user)..........");
+        logger.debug("In saveNew(User user)..........");
         if (user.getPassword() == null) {
             UserPassword pwd = new UserPassword();
             user.setPassword(pwd);
@@ -475,7 +475,7 @@ public class UserServiceImpl implements UserService {
      * @param user the user
      */
     public void notifyUserOfNewAccount(User user) {
-        logger.info("In notifyUserOfNewAccount(User user)..........");
+        logger.debug("In notifyUserOfNewAccount(User user)..........");
         MimeMessage message = mailSender.createMimeMessage();
         try {
             message.setSubject(ServerConstants.NEW_ACCESS_SUBJECT + ServerConstants.getEnvName());
@@ -796,10 +796,10 @@ public class UserServiceImpl implements UserService {
         try {
             userDAO.save(user);
             transactionAuditLogDAO.save(auditLog);
-            logger.info("SignOut Successful" + signoutDate.toString());
+            logger.debug("SignOut Successful" + signoutDate.toString());
             return "SUCCESS";
         } catch (Exception e) {
-            logger.info("SignOut Unsuccessful " + "(" + signoutDate.toString() + ")" + e.getMessage());
+            logger.debug("SignOut Unsuccessful " + "(" + signoutDate.toString() + ")" + e.getMessage());
             return e.getMessage();
         }
     }

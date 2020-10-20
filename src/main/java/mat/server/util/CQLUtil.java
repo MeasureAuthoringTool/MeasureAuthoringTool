@@ -568,7 +568,7 @@ public class CQLUtil {
         CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlIncludeLibrary.getCqlLibraryId());
 
         if (cqlLibrary == null) {
-            logger.info("Could not find included library:" + cqlIncludeLibrary.getAliasName());
+            logger.debug("Could not find included library:" + cqlIncludeLibrary.getAliasName());
             return null;
         }
 

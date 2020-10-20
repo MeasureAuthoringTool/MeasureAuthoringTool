@@ -61,7 +61,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements 
         model.setLoginId(user.getLoginId());
         boolean enableFreeTextEditor = user.getUserPreference() != null && user.getUserPreference().isFreeTextEditorEnabled();
         model.setEnableFreeTextEditor(enableFreeTextEditor);
-        logger.info("Model Object for User " + user.getLoginId() + " is updated and returned with Organisation ::: " + model.getOrganization());
+        logger.debug("Model Object for User " + user.getLoginId() + " is updated and returned with Organisation ::: " + model.getOrganization());
         return model;
     }
 
@@ -101,7 +101,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements 
     @Override
     public MyAccountModel getMyAccount() throws IllegalArgumentException {
         User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
-        logger.info("Fetched User ....." + user.getLoginId());
+        logger.debug("Fetched User ....." + user.getLoginId());
         return extractModel(user);
     }
 
@@ -116,7 +116,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements 
         List<String> messages = validator.validate(model);
         UserDAO userDAO = context.getBean(UserDAO.class);
         if (messages.size() != 0) {
-            logger.info("Server-Side Validation for saveMyAccount Failed for User :: " + LoggedInUserUtil.getLoggedInUser());
+            logger.debug("Server-Side Validation for saveMyAccount Failed for User :: " + LoggedInUserUtil.getLoggedInUser());
             result.setSuccess(false);
             result.setFailureReason(SaveMyAccountResult.SERVER_SIDE_VALIDATION);
             result.setMessages(messages);
@@ -171,7 +171,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements 
      */
     @Override
     public SaveMyAccountResult saveSecurityQuestions(SecurityQuestionsModel model) {
-        logger.info("Saving security questions");
+        logger.debug("Saving security questions");
         SaveMyAccountResult result = new SaveMyAccountResult();
         model.scrubForMarkUp();
         SecurityQuestionVerifier sverifier =
@@ -179,7 +179,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements 
                         model.getQuestion2(), model.getQuestion2Answer(),
                         model.getQuestion3(), model.getQuestion3Answer());
         if (!sverifier.isValid()) {
-            logger.info("Server Side Validation Failed in saveSecurityQuestions for User:" + LoggedInUserUtil.getLoggedInUser());
+            logger.debug("Server Side Validation Failed in saveSecurityQuestions for User:" + LoggedInUserUtil.getLoggedInUser());
             result.setSuccess(false);
             result.setMessages(sverifier.getMessages());
             result.setFailureReason(SaveMyAccountResult.SERVER_SIDE_VALIDATION);
@@ -257,7 +257,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements 
         PasswordVerifier verifier = new PasswordVerifier(password, password);
 
         if (!verifier.isValid()) {
-            logger.info("Server Side Validation Failed in changePassword for User:" + LoggedInUserUtil.getLoggedInUser());
+            logger.debug("Server Side Validation Failed in changePassword for User:" + LoggedInUserUtil.getLoggedInUser());
             result.setSuccess(false);
             result.setMessages(verifier.getMessages());
             result.setFailureReason(SaveMyAccountResult.SERVER_SIDE_VALIDATION);

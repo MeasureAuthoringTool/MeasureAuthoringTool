@@ -66,7 +66,7 @@ public class RecentMSRActivityLogDAOImpl extends GenericDAO<RecentMSRActivityLog
 		recentMSRActivityLog.setUserId(userId);
 		recentMSRActivityLog.setTime(new Date());
 		save(recentMSRActivityLog);
-		logger.info("Inserting recent measure activity log for measure id: " + measureId);
+		logger.debug("Inserting recent measure activity log for measure id: " + measureId);
 	}
 	
 	/**
@@ -77,7 +77,7 @@ public class RecentMSRActivityLogDAOImpl extends GenericDAO<RecentMSRActivityLog
 	private void updateRecentMeasureActivity(RecentMSRActivityLog recentMSRActivityLog) {
 		recentMSRActivityLog.setTime(new Date());
 		save(recentMSRActivityLog);
-		logger.info("Updating recent measure activity log for measure id: " + recentMSRActivityLog.getMeasureId());
+		logger.debug("Updating recent measure activity log for measure id: " + recentMSRActivityLog.getMeasureId());
 	}
 	
 	/**

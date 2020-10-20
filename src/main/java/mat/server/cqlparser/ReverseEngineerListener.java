@@ -188,8 +188,6 @@ public class ReverseEngineerListener extends cqlBaseListener {
                     functionArgument.setArgumentType(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE);
                     functionArgument.setOtherType(type);
                 }
-
-
                 functionArguments.add(functionArgument);
             }
         }

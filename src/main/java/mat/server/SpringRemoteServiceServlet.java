@@ -20,7 +20,7 @@ public class SpringRemoteServiceServlet extends RemoteServiceServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        log.info(getClass().getSimpleName() + " init()");
+        log.debug(getClass().getSimpleName() + " init()");
         super.init(config);
         if (this.context == null) {
             this.context = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
@@ -51,7 +51,7 @@ public class SpringRemoteServiceServlet extends RemoteServiceServlet {
 
     @Override
     public void log(String msg) {
-        log.info(msg);
+        log.debug(msg);
         super.log(msg);
     }
 

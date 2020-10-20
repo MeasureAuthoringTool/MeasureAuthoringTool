@@ -213,16 +213,16 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 
     @Override
     public String findMaxOfMinVersion(String measureSetId, String version) {
-        logger.info("In MeasureDao.findMaxOfMinVersion()");
+        logger.debug("In MeasureDao.findMaxOfMinVersion()");
         String maxOfMinVersion = version;
         double minVal = 0;
         double maxVal = 0;
         if (StringUtils.isNotBlank(version)) {
             final int decimalIndex = version.indexOf('.');
             minVal = Integer.parseInt(version.substring(0, decimalIndex));
-            logger.info("Min value: " + minVal);
+            logger.debug("Min value: " + minVal);
             maxVal = minVal + 1;
-            logger.info("Max value: " + maxVal);
+            logger.debug("Max value: " + maxVal);
         }
 
         final List<Measure> measureList = getListOfVersionsForAMeasure(measureSetId);
@@ -230,22 +230,22 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         double tempVersion = 0;
 
         if (CollectionUtils.isNotEmpty(measureList)) {
-            logger.info("Finding max of min version from the Measure List. Size:" + measureList.size());
+            logger.debug("Finding max of min version from the Measure List. Size:" + measureList.size());
             for (final Measure measure : measureList) {
-                logger.info("Looping through Measures Id: " + measure.getId() + " Version: " + measure.getVersion());
+                logger.debug("Looping through Measures Id: " + measure.getId() + " Version: " + measure.getVersion());
                 if ((measure.getVersionNumber() > minVal) && (measure.getVersionNumber() < maxVal)) {
                     if (tempVersion < measure.getVersionNumber()) {
-                        logger.info(tempVersion + "<" + measure.getVersionNumber() + "="
+                        logger.debug(tempVersion + "<" + measure.getVersionNumber() + "="
                                 + (tempVersion < measure.getVersionNumber()));
                         maxOfMinVersion = measure.getVersion();
-                        logger.info("maxOfMinVersion: " + maxOfMinVersion);
+                        logger.debug("maxOfMinVersion: " + maxOfMinVersion);
                     }
                     tempVersion = measure.getVersionNumber();
-                    logger.info("tempVersion: " + tempVersion);
+                    logger.debug("tempVersion: " + tempVersion);
                 }
             }
         }
-        logger.info("Returned maxOfMinVersion: " + maxOfMinVersion);
+        logger.debug("Returned maxOfMinVersion: " + maxOfMinVersion);
         return maxOfMinVersion;
     }
 
@@ -254,7 +254,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final CriteriaBuilder cb = session.getCriteriaBuilder();
         final CriteriaQuery<Measure> query = cb.createQuery(Measure.class);
         final Root<Measure> root = query.from(Measure.class);
-        logger.info("Query Using Measure Set Id:" + measureSetId);
+        logger.debug("Query Using Measure Set Id:" + measureSetId);
         query.select(root).where(cb.and(cb.equal(root.get(MEASURE_SET).get(ID), measureSetId), cb.not(root.get(DRAFT))));
         query.orderBy(cb.asc(root.get(VERSION)));
 
@@ -446,7 +446,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         final List<Measure> measureResultList = fetchMeasureResultListForCritera(user, measureSearchModel);
         List<MeasureShareDTO> orderedDTOListFromMeasureResults = getOrderedDTOListFromMeasureResults(measureSearchModel, user, measureResultList);
         stopwatch.stop();
-        logger.info("MeasureDAOImpl::getMeasureShareInfoForUserWithFilter took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
+        logger.debug("MeasureDAOImpl::getMeasureShareInfoForUserWithFilter took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms.");
         logger.debug("MeasureDAOImpl::getMeasureShareInfoForUserWithFilter - exit");
         return orderedDTOListFromMeasureResults;
     }
@@ -475,7 +475,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         }
 
         stopwatch.stop();
-        logger.info("MeasureDAOImpl::fetchMeasureResultListForCritera took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms. Found " + measureResultList.size());
+        logger.debug("MeasureDAOImpl::fetchMeasureResultListForCritera took " + stopwatch.getTime(TimeUnit.MILLISECONDS) + "ms. Found " + measureResultList.size());
         logger.debug("MeasureDAOImpl::fetchMeasureResultListForCritera exit");
         return measureResultList;
     }
@@ -709,7 +709,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         update.where(cb.equal(root.get(ID), m.getId()));
 
         final int rowCount = session.createQuery(update).executeUpdate();
-        logger.info("Updated Private column" + rowCount);
+        logger.debug("Updated Private column" + rowCount);
     }
 
     @Override
@@ -834,7 +834,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
         update.where(cb.equal(root.get(ID), measureId));
 
         final int rowCount = session.createQuery(update).executeUpdate();
-        logger.info("Updated Private column" + rowCount);
+        logger.debug("Updated Private column" + rowCount);
     }
 
     @Override

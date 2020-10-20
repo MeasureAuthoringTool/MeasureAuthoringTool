@@ -41,19 +41,19 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 
     @Override
     public boolean isValidPassword(String loginId, String password) {
-        logger.info("LoginCredentialServiceImpl: isValidPassword start :  ");
+        logger.debug("LoginCredentialServiceImpl: isValidPassword start :  ");
         MatUserDetails userDetails = hibernateUserService.loadUserByUsername(loginId);
         if (userDetails != null) {
             String hashPassword = userService.getPasswordHash(userDetails.getUserPassword().getSalt(), password);
             if (hashPassword.equalsIgnoreCase(userDetails.getUserPassword().getPassword())) {
-                logger.info("LoginCredentialServiceImpl: isValidPassword end : password matched. ");
+                logger.debug("LoginCredentialServiceImpl: isValidPassword end : password matched. ");
                 return true;
             } else {
-                logger.info("LoginCredentialServiceImpl: isValidPassword end : password mismatched. ");
+                logger.debug("LoginCredentialServiceImpl: isValidPassword end : password mismatched. ");
                 return false;
             }
         } else {
-            logger.info("LoginCredentialServiceImpl: isValidPassword end : user detail null ");
+            logger.debug("LoginCredentialServiceImpl: isValidPassword end : user detail null ");
             return false;
         }
     }
@@ -106,7 +106,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
      * @return the login model
      */
     private LoginModel loginModelSetter(LoginModel loginmodel, MatUserDetails userDetails) {
-        logger.info("LoginCredentialServiceImpl::loginModelSetter::MatUserDetails::userId::" + userDetails.getId());
+        logger.debug("LoginCredentialServiceImpl::loginModelSetter::MatUserDetails::userId::" + userDetails.getId());
         LoginModel loginModel = loginmodel;
         loginModel.setRole(userDetails.getRoles());
         loginModel.setInitialPassword(userDetails.getUserPassword().isInitial());
@@ -130,7 +130,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
      * @param userDetails the new authentication token
      */
     private void setAuthenticationToken(MatUserDetails userDetails, Object accessToken) {
-        logger.info("Setting authentication token::" + userDetails.getId() + " " + userDetails.getAuthorities());
+        logger.debug("Setting authentication token::" + userDetails.getId() + " " + userDetails.getAuthorities());
         PreAuthenticatedAuthenticationToken auth =
                 new PreAuthenticatedAuthenticationToken(userDetails.getId(), accessToken, userDetails.getAuthorities());
         auth.setDetails(userDetails);
@@ -144,7 +144,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
         logger.debug("switchRole: " + newRole);
         if (SecurityRole.ADMIN_ROLE.equals(LoggedInUserUtil.getLoggedInUserRole())) {
             PreAuthenticatedAuthenticationToken token = LoggedInUserUtil.getToken();
-            logger.info("Updating authentication token: " + token.getName() + " with temporary role: " + newRole);
+            logger.debug("Updating authentication token: " + token.getName() + " with temporary role: " + newRole);
             PreAuthenticatedAuthenticationToken auth =
                     new PreAuthenticatedAuthenticationToken(token.getPrincipal(), token.getCredentials(), Arrays.asList(new SimpleGrantedAuthority(newRole)));
             auth.setDetails(token.getDetails());
@@ -169,9 +169,9 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
             throw new MatRuntimeException("SWITCH_USER_HAS_OTHER_HARP_ID");
         }
         updateUserDetails(harpUserInfo, newUserDetails, sessionId);
-        logger.info("Changing Session ID: " + userDetails.getSessionId() + " -> " + newUserDetails.getSessionId());
-        logger.info("Changing Login ID: " + userDetails.getLoginId() + " -> " + newUserDetails.getLoginId());
-        logger.info("Changing role: " + userDetails.getRoles() + " -> " + newUserDetails.getRoles());
+        logger.debug("Changing Session ID: " + userDetails.getSessionId() + " -> " + newUserDetails.getSessionId());
+        logger.debug("Changing Login ID: " + userDetails.getLoginId() + " -> " + newUserDetails.getLoginId());
+        logger.debug("Changing role: " + userDetails.getRoles() + " -> " + newUserDetails.getRoles());
 
         setAuthenticationToken(newUserDetails, token.getCredentials());
     }

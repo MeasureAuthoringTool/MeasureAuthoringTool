@@ -269,7 +269,7 @@ public class PackagerServiceImpl implements PackagerService {
                 }
             }
         } catch (XPathExpressionException e) {
-            logger.info("Xpath Expression is incorrect" + e);
+            logger.debug("Xpath Expression is incorrect" + e);
         }
         try {
             Collections.sort(pkgs);
@@ -289,7 +289,7 @@ public class PackagerServiceImpl implements PackagerService {
                 measureXMLDAO.save(measureXML);
             }
         } catch (Exception e) {
-            logger.info("Exception while trying to check CQLLookupTag: " + e.getMessage());
+            logger.debug("Exception while trying to check CQLLookupTag: " + e.getMessage());
         }
         return overview;
     }
@@ -392,7 +392,7 @@ public class PackagerServiceImpl implements PackagerService {
             groupNode = processor.findNode(processor.getOriginalDoc(),
                     XmlProcessor.XPATH_GROUP_SEQ_START + detail.getSequence() + XmlProcessor.XPATH_GROUP_SEQ_END);
         } catch (XPathExpressionException e) {
-            logger.info("Xpath Expression is incorrect" + e);
+            logger.debug("Xpath Expression is incorrect" + e);
         }
         if (groupNode != null) {
             Node measureGroupingNode = groupNode.getParentNode();
@@ -783,7 +783,7 @@ public class PackagerServiceImpl implements PackagerService {
             overview.setCqlQdmElements(definitionList);
             overview.setCqlSuppDataElements(supplementalDataList);
         } catch (XPathExpressionException e) {
-            logger.info("Error while getting default supplemental data elements : " + e.getMessage());
+            logger.debug("Error while getting default supplemental data elements : " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -838,14 +838,14 @@ public class PackagerServiceImpl implements PackagerService {
                 // MEASUREGROUPING
                 // node
             } catch (XPathExpressionException e) {
-                logger.info("Xpath Expression is incorrect" + e);
+                logger.debug("Xpath Expression is incorrect" + e);
             }
             if ((null != groupNode) && groupNode.hasChildNodes()) { // if Same
                 // sequence
                 // , remove
                 // and
                 // update.
-                logger.info("Removing Group with seq number" + detail.getSequence());
+                logger.debug("Removing Group with seq number" + detail.getSequence());
                 measureGroupingNode.removeChild(groupNode);
             }
             // Converts MeasurePackageDetail to measureGroupingXml through
@@ -857,13 +857,13 @@ public class PackagerServiceImpl implements PackagerService {
             Node newGroupNode = measureGrpProcessor.getOriginalDoc().getElementsByTagName("measureGrouping").item(0)
                     .getFirstChild();
             measureGroupingNode.appendChild(processor.getOriginalDoc().importNode(newGroupNode, true));
-            logger.info("new Group appended");
+            logger.debug("new Group appended");
             String xml = measureGrpProcessor.transform(processor.getOriginalDoc());
             measureXML.setMeasureXMLAsByteArray(xml);
             measureXMLDAO.save(measureXML);
         } else {
             for (String message : messages) {
-                logger.info("Server-Side Validation failed for MeasurePackageClauseValidator for Login ID: "
+                logger.debug("Server-Side Validation failed for MeasurePackageClauseValidator for Login ID: "
                         + LoggedInUserUtil.getLoggedInLoginId() + " And failure Message is :" + message);
             }
             result.setSuccess(false);
@@ -871,7 +871,7 @@ public class PackagerServiceImpl implements PackagerService {
             result.setFailureReason(MeasurePackageSaveResult.SERVER_SIDE_VALIDATION);
         }
         long time2 = System.currentTimeMillis();
-        logger.info("Time for grouping validation:" + (time2 - time1));
+        logger.debug("Time for grouping validation:" + (time2 - time1));
         return result;
     }
 

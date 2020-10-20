@@ -201,7 +201,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		userBonnieAccessInfo.setAccessToken(encryptDecryptToken.encryptKey(result.getAccessToken()));
 		userBonnieAccessInfo.setRefreshToken( encryptDecryptToken.encryptKey(result.getRefreshToken()));
 		userBonnieAccessInfoDAO.save(userBonnieAccessInfo);
-		logger.info("Done saving "+userBonnieAccessInfo.getId());
+		logger.debug("Done saving "+userBonnieAccessInfo.getId());
 	}
 
 	public BonnieUserInformationResult getBonnieUserInformationForUser(String userId)
@@ -242,7 +242,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 
 	@Override
 	public void revokeAllBonnieAccessTokens(String userId, String reason) throws BonnieServerException, Exception {
-		logger.info("Revoke All Bonnie Access Tokens issued by user " + userId + " for reason " + reason + ".");
+		logger.debug("Revoke All Bonnie Access Tokens issued by user " + userId + " for reason " + reason + ".");
 		List<UserBonnieAccessInfo> userBonnieAccessInfoList = userBonnieAccessInfoDAO.find();
 		for(UserBonnieAccessInfo userBonnieAccessInfo: userBonnieAccessInfoList) {
 			revokeBonnieAccessTokenForUser(userBonnieAccessInfo);

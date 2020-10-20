@@ -42,7 +42,7 @@ public class PreventCachingFilter implements Filter{
 		
 		if(requestURI.endsWith("/")) {
 			httpResponse.setStatus(302);
-			logger.info("Redirecting request for " + httpRequest.getRequestURI() + " to Mat in session " + httpRequest.getSession().getId());
+			logger.debug("Redirecting request for " + httpRequest.getRequestURI() + " to Mat in session " + httpRequest.getSession().getId());
 			String url = "Mat.html";
 			if(httpRequest.getQueryString() != null) {
 				url = url + "?" + httpRequest.getQueryString();
@@ -50,7 +50,7 @@ public class PreventCachingFilter implements Filter{
 			httpResponse.setHeader("Location", url);
 		}
 		else if(requestURI.contains("/Mat.html") || requestURI.contains("/Bonnie.html")) {
-			logger.info("PreventCachingFilter");
+			logger.debug("PreventCachingFilter");
 			
 			//
 			// prevent the mat.html and bonnie.html file from being cached somewhere
@@ -62,7 +62,7 @@ public class PreventCachingFilter implements Filter{
 			httpResponse.setHeader("Pragma", "no-cache");
 			httpResponse.setHeader("Cache-control", "no-cache, no-store, must-revalidate");
 			if(LoggedInUserUtil.getLoggedInUser() == null) {
-				logger.info("Redirecting request for " + httpRequest.getRequestURI() + " to Login in session " + httpRequest.getSession().getId());
+				logger.debug("Redirecting request for " + httpRequest.getRequestURI() + " to Login in session " + httpRequest.getSession().getId());
 				httpResponse.setStatus(302);
 				String url = "Login.html";
 				if(httpRequest.getQueryString() != null) {

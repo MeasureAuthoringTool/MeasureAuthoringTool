@@ -97,10 +97,10 @@ public class FhirValidationReportServlet extends HttpServlet {
         var id = request.getParameter(ID_PARAM);
 
         if (CQL_LIBRARY.equalsIgnoreCase(type)) {
-            logger.info("Generating validation report for CQL library id: " + id);
+            logger.debug("Generating validation report for CQL library id: " + id);
             return getLibraryValidationReportService();
         } else {
-            logger.info("Generating validation report for measure id: " + id);
+            logger.debug("Generating validation report for measure id: " + id);
             return getMeasureValidationReportService();
         }
     }

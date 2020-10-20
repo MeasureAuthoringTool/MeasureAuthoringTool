@@ -66,7 +66,7 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
             updatedCount++;
         }
 
-        logger.info("Expired password count: " + updatedCount);
+        logger.debug("Expired password count: " + updatedCount);
 
     }
 
@@ -87,7 +87,7 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
             }
             updatedCount++;
         }
-        logger.info("Unlocked user count: " + updatedCount);
+        logger.debug("Unlocked user count: " + updatedCount);
     }
 
 

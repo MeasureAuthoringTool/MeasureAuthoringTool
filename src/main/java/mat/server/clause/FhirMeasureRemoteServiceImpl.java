@@ -35,7 +35,7 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
 
     @Override
     public FhirConvertResultResponse convert(Result sourceMeasure) throws MatException {
-        logger.info("Converting  measureId: " + sourceMeasure.getId());
+        logger.debug("Converting  measureId: " + sourceMeasure.getId());
 
         String sessionId = getThreadLocalRequest().getSession().getId();
         VsacTicketInformation vsacTicketInformation = this.vsacApiService.getTicketGrantingTicket(sessionId);
@@ -58,7 +58,7 @@ public class FhirMeasureRemoteServiceImpl extends SpringRemoteServiceServlet imp
 
     @Override
     public CheckForConversionResult checkMeasureForConversion(Result sourceMeasure) {
-        logger.info("checkMeasureForConversion  measureId: " + sourceMeasure.getId() + " setId: " + sourceMeasure.getMeasureSetId());
+        logger.debug("checkMeasureForConversion  measureId: " + sourceMeasure.getId() + " setId: " + sourceMeasure.getMeasureSetId());
         CheckForConversionResult result = new CheckForConversionResult();
         List<Measure> draftMeasures = measureDAO.getDraftMeasuresBySet(sourceMeasure.getMeasureSetId());
         if (draftMeasures.isEmpty()) {

@@ -26,7 +26,7 @@ public class AuthorDAOImpl extends GenericDAO<Author, String> implements mat.dao
 
 	@Override
 	public List<AuthorDTO> getAllAuthors(){
-		logger.info("Getting all the rows from the Author table");
+		logger.debug("Getting all the rows from the Author table");
 		final Session session = getSessionFactory().getCurrentSession();
 		final CriteriaBuilder cb = session.getCriteriaBuilder();
 		final CriteriaQuery<AuthorDTO> query = cb.createQuery(AuthorDTO.class);

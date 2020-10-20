@@ -93,12 +93,12 @@ public class CheckUserChangePasswordLimit {
     @Scheduled(cron = "${mat.checkUserPasswordLimitDays.cron:-}")
     public void checkUserPasswordLimitDays() {
 
-        logger.info(" :: CheckUserPasswordLimitDays Method START :: ");
+        logger.debug(" :: CheckUserPasswordLimitDays Method START :: ");
 
         checkUserLoginPasswordDays(passwordwarningDayLimit, WARNING_EMAIL_FLAG);
         checkUserLoginPasswordDays(passwordexpiryDayLimit, EXPIRY_EMAIL_FLAG);
 
-        logger.info(" :: CheckUserPasswordLimitDays Method END :: ");
+        logger.debug(" :: CheckUserPasswordLimitDays Method END :: ");
     }
 
     /**
@@ -109,7 +109,7 @@ public class CheckUserChangePasswordLimit {
      */
     private void checkUserLoginPasswordDays(final long noOfDaysPasswordLimit, final String emailType) {
 
-        logger.info(" :: checkUserLoginDays Method START :: for Sending " + emailType + " Type Email");
+        logger.debug(" :: checkUserLoginDays Method START :: for Sending " + emailType + " Type Email");
         // Get all the Users
         final List<User> users = userDAO.find();
         final List<User> emailUsers = checkUsersLastPassword(noOfDaysPasswordLimit, users);
@@ -120,7 +120,7 @@ public class CheckUserChangePasswordLimit {
         for (User user : emailUsers) {
 
             // Send 45 days password limit email for all the users in the list.
-            logger.info("Sending email to " + user.getFirstName());
+            logger.debug("Sending email to " + user.getFirstName());
             simpleMailMessage.setTo(user.getEmailAddress());
 
             // Creation of the model map can be its own method.
@@ -166,13 +166,13 @@ public class CheckUserChangePasswordLimit {
                 emailAuditLogDAO.save(emailAudit);
                 content.clear();
                 model.clear();
-                logger.info("Email Sent to " + user.getFirstName());
+                logger.debug("Email Sent to " + user.getFirstName());
             } catch (IOException | TemplateException e) {
-                logger.error(e);
+                logger.error("checkUserLoginPasswordDays",e);
             }
         }
 
-        logger.info(" :: CheckUserLoginPasswordDays Method END :: ");
+        logger.debug(" :: CheckUserLoginPasswordDays Method END :: ");
 
     }
 
@@ -185,11 +185,11 @@ public class CheckUserChangePasswordLimit {
      */
     private List<User> checkUsersLastPassword(final long passwordDayLimit, final List<User> users) {
 
-        logger.info(" :: checkUsersLastPassword Method Start :: ");
+        logger.debug(" :: checkUsersLastPassword Method Start :: ");
 
         final List<User> returnUserList = new ArrayList<>();
         final Date passwordDaysAgo = getPasswordNumberOfDaysAgo((int) passwordDayLimit);
-        logger.info(passwordDayLimit + "passwordDaysAgo:" + passwordDaysAgo);
+        logger.debug(passwordDayLimit + "passwordDaysAgo:" + passwordDaysAgo);
 
         for (User user : users) {
             Date lastPasswordCreatedDate = user.getPassword().getCreatedDate();
@@ -199,15 +199,15 @@ public class CheckUserChangePasswordLimit {
             }
 
             lastPasswordCreatedDate = DateUtils.truncate(lastPasswordCreatedDate, Calendar.DATE);
-            logger.info("User:" + user.getFirstName() + "  :::: last Created Password Date :::::   " + lastPasswordCreatedDate);
+            logger.debug("User:" + user.getFirstName() + "  :::: last Created Password Date :::::   " + lastPasswordCreatedDate);
             //for User password equals 35 days
             if (passwordwarningDayLimit == passwordDayLimit) {
 
                 if (lastPasswordCreatedDate.equals(passwordDaysAgo)) {
-                    logger.info("User:" + user.getEmailAddress() + " who's last password was " + passwordDayLimit + " days ago.");
+                    logger.debug("User:" + user.getEmailAddress() + " who's last password was " + passwordDayLimit + " days ago.");
                     returnUserList.add(user);
                 } else {
-                    logger.info("User:" + user.getEmailAddress() + " who's last password was not " + passwordDayLimit + " days ago.");
+                    logger.debug("User:" + user.getEmailAddress() + " who's last password was not " + passwordDayLimit + " days ago.");
                 }
             }
 
@@ -216,7 +216,7 @@ public class CheckUserChangePasswordLimit {
 
                 if (lastPasswordCreatedDate.before((passwordDaysAgo))
                         || lastPasswordCreatedDate.equals(passwordDaysAgo)) {
-                    logger.info("User:" + user.getEmailAddress() + " who's last password was more than " + passwordDayLimit + " days ago.");
+                    logger.debug("User:" + user.getEmailAddress() + " who's last password was more than " + passwordDayLimit + " days ago.");
                     returnUserList.add(user);
                     // to maintain Password history
                     getUserService().addByUpdateUserPasswordHistory(user, true);
@@ -227,12 +227,12 @@ public class CheckUserChangePasswordLimit {
                     /*returnUserList.add(user);
                      * MatContext.get().getEventBus().fireEvent(new TemporaryPasswordLoginEvent());*/
                 } else {
-                    logger.info("User:" + user.getEmailAddress() + " who's last password was not more than " + passwordDayLimit + " days ago.");
+                    logger.debug("User:" + user.getEmailAddress() + " who's last password was not more than " + passwordDayLimit + " days ago.");
                 }
             }
 
         }
-        logger.info(" :: checkUsersLastPassword Method END :: ");
+        logger.debug(" :: checkUsersLastPassword Method END :: ");
 
         return returnUserList;
     }
@@ -246,13 +246,13 @@ public class CheckUserChangePasswordLimit {
      */
     private Date getPasswordNumberOfDaysAgo(final int noOfDaysPasswordLimit) {
 
-        logger.info(" :: getPasswordNumberOfDaysAgo Method START :: ");
+        logger.debug(" :: getPasswordNumberOfDaysAgo Method START :: ");
 
         Date numberOfDaysAgo;
         numberOfDaysAgo = DateUtils.truncate(new Date(), Calendar.DATE);
         numberOfDaysAgo = DateUtils.addDays(numberOfDaysAgo, noOfDaysPasswordLimit);
 
-        logger.info(" :: getPasswordNumberOfDaysAgo Method END :: " + numberOfDaysAgo);
+        logger.debug(" :: getPasswordNumberOfDaysAgo Method END :: " + numberOfDaysAgo);
         return numberOfDaysAgo;
     }
 
@@ -264,18 +264,18 @@ public class CheckUserChangePasswordLimit {
      * @return true, if successful
      */
     private boolean checkValidUser(final User user) {
-        logger.info(" :: checkValidUser Method START :: ");
+        logger.debug(" :: checkValidUser Method START :: ");
 
         Boolean isValidUser = true;
 
         // final Date terminationDate = user.getTerminationDate();
         final Date signInDate = user.getSignInDate();
-        logger.info("signInDate :: " + signInDate);
+        logger.debug("signInDate :: " + signInDate);
         if (signInDate == null || user.getStatus().getStatusId().equals("2")) {
             isValidUser = false;
         }
 
-        logger.info(user.getFirstName() + " :: checkValidUser Method END :: isValidUser ::: " + isValidUser);
+        logger.debug(user.getFirstName() + " :: checkValidUser Method END :: isValidUser ::: " + isValidUser);
 
         return isValidUser;
     }

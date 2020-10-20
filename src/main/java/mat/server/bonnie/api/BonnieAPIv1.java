@@ -113,7 +113,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		HttpURLConnection connection = null;
 		try {
 			connection = getInformationConnection(encryptDecryptToken.decryptKey(bearerToken), uri);
-			logger.info("GET " + connection.getURL());
+			logger.debug("GET " + connection.getURL());
 
 			String code = Integer.toString(connection.getResponseCode());
 			if (code.startsWith("2")) {
@@ -136,7 +136,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			throw new IOException();
 		} finally {
 			if (connection != null) {
-				logger.info("Disconnecting " + connection.getURL());
+				logger.debug("Disconnecting " + connection.getURL());
 				connection.disconnect();
 			}
 		}
@@ -153,7 +153,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		HttpURLConnection connection = null;
 		try {
 			connection = getCalculationInformationConnection(encryptDecryptToken.decryptKey(bearerToken), uri);
-			logger.info("GET " + connection.getURL());
+			logger.debug("GET " + connection.getURL());
 			String code = Integer.toString(connection.getResponseCode());
 			handleResponseCode(code, "Get Calculations For Measure " + hqmfSetId, hqmfSetId);
 
@@ -165,7 +165,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			throw e;
 		} finally {
 			if (connection != null) {
-				logger.info("Disconnecting " + connection.getURL());
+				logger.debug("Disconnecting " + connection.getURL());
 				connection.disconnect();
 			}
 		}
@@ -215,11 +215,11 @@ public class BonnieAPIv1 implements BonnieAPI {
 			throw new IOException();
 		} finally {
 			if (httpClient != null) {
-				logger.info("Disconnecting post /api_v1/measures httpClient");
+				logger.debug("Disconnecting post /api_v1/measures httpClient");
 				httpClient.close();
 			}
 			if (postResponse != null) {
-				logger.info("Disconnecting post /api_v1/measures postResponse");
+				logger.debug("Disconnecting post /api_v1/measures postResponse");
 				postResponse.close();
 			}
 		}
@@ -320,7 +320,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		try {
 			connection = getInformationConnection(encryptDecryptToken.decryptKey(token), GET_USER_INFORMATION_URI);
 
-			logger.info("GET " + connection.getURL());
+			logger.debug("GET " + connection.getURL());
 
 			String code = Integer.toString(connection.getResponseCode());
 			handleResponseCode(code, "Get User Information", null);
@@ -334,7 +334,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			throw new IOException();
 		} finally {
 			if (connection != null) {
-				logger.info("Disconnecting " + connection.getURL());
+				logger.debug("Disconnecting " + connection.getURL());
 				connection.disconnect();
 			}
 		}
@@ -348,7 +348,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		URLConnectionClient urlConnection = new URLConnectionClient();
 		try {
 			OAuthClient client = new OAuthClient(urlConnection);
-			logger.info("Connecting to refresh bonnie oauth");
+			logger.debug("Connecting to refresh bonnie oauth");
 			String authString = getClientId() + ":" + getClientSecret();
 			String authStringEnc = DatatypeConverter.printBase64Binary(authString.getBytes());
 
@@ -365,7 +365,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		} finally {
 			if(urlConnection != null) {
 				urlConnection.shutdown();
-				logger.info("Disconnected from refresh bonnie oauth");
+				logger.debug("Disconnected from refresh bonnie oauth");
 			}
 		}
 
@@ -434,14 +434,14 @@ public class BonnieAPIv1 implements BonnieAPI {
 		URLConnectionClient urlConnection = new URLConnectionClient();
 		try {
 			OAuthClient client = new OAuthClient(urlConnection);
-			logger.info("Connecting to refresh bonnie oauth");
+			logger.debug("Connecting to refresh bonnie oauth");
 			OAuthClientRequest request = OAuthClientRequest.tokenLocation(getBonnieBaseURL() + "/oauth/token")
 					.setClientId(getClientId()).setGrantType(GrantType.REFRESH_TOKEN)
 					.setClientSecret(getClientSecret()).setRefreshToken(encryptDecryptToken.decryptKey(userBonnieAccessInfo.getRefreshToken()))
 					.setRedirectURI(getRedirectURI()).buildQueryMessage();
 
 			OAuthJSONAccessTokenResponse token = client.accessToken(request, OAuthJSONAccessTokenResponse.class);
-			logger.info("Received Bonnie refresh tokens");
+			logger.debug("Received Bonnie refresh tokens");
 			BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(),
 					token.getExpiresIn(), token.getBody());
 			return result;
@@ -455,7 +455,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		} finally {
 			if(urlConnection != null) {
 				urlConnection.shutdown();
-				logger.info("Disconnected from refresh bonnie oauth");
+				logger.debug("Disconnected from refresh bonnie oauth");
 			}
 		}
 	}
@@ -464,14 +464,14 @@ public class BonnieAPIv1 implements BonnieAPI {
 		URLConnectionClient urlConnection = new URLConnectionClient();
 		try {
 			OAuthClient client = new OAuthClient(urlConnection);
-			logger.info("Connecting to bonnie oauth");
+			logger.debug("Connecting to bonnie oauth");
 			OAuthClientRequest request = OAuthClientRequest
 					.tokenLocation(getBonnieBaseURL() + "/oauth/token").setClientId(getClientId())
 					.setGrantType(GrantType.AUTHORIZATION_CODE).setClientSecret(getClientSecret()).setCode(code)
 					.setRedirectURI(getRedirectURI()).buildQueryMessage();
 
 			OAuthJSONAccessTokenResponse token = client.accessToken(request, OAuthJSONAccessTokenResponse.class);
-			logger.info("Received Bonnie tokens");
+			logger.debug("Received Bonnie tokens");
 			BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(),
 					token.getExpiresIn(), token.getBody());
 			return result;
@@ -481,14 +481,14 @@ public class BonnieAPIv1 implements BonnieAPI {
 		} finally {
 			if(urlConnection != null) {
 				urlConnection.shutdown();
-				logger.info("Disconnected from bonnie oauth");
+				logger.debug("Disconnected from bonnie oauth");
 			}
 		}
 	}
 
 	private void handleResponseCode(String code, String method, String hqmfSetId) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieDoesNotExistException, BonnieServerException{
 		if(code.startsWith("2")) {
-			logger.info(method + " successful");
+			logger.debug(method + " successful");
 		} else if (code.contains("401")) {
 			//401 Unauthorized
 			logger.error("401: user unauthorized - " + method);

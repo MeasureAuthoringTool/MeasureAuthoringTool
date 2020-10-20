@@ -90,12 +90,12 @@ public class CheckUserLastLoginTask {
      */
     @Scheduled(cron = "${mat.checkUserLastLogin.cron:-}")
     public void checkUserLastLogin() {
-        logger.info(" :: checkUserLastLogin Method START :: ");
+        logger.debug(" :: checkUserLastLogin Method START :: ");
 
         checkUserLoginDays(WARNING_EMAIL_FLAG);
         checkUserLoginDays(EXPIRY_EMAIL_FLAG);
 
-        logger.info(" :: checkUserLastLogin Method END :: ");
+        logger.debug(" :: checkUserLastLogin Method END :: ");
     }
 
 
@@ -107,7 +107,7 @@ public class CheckUserLastLoginTask {
      */
     private void checkUserLoginDays(final String emailType) {
 
-        logger.info(" :: checkUserLoginDays Method START :: for Sending " + emailType + " Type Email");
+        logger.debug(" :: checkUserLoginDays Method START :: for Sending " + emailType + " Type Email");
 
         // Get all the Users
         final List<User> users = userDAO.find();
@@ -120,7 +120,7 @@ public class CheckUserLastLoginTask {
         for (User user : emailUsers) {
 
             //Send email for all the users in the list.
-            logger.info("Sending email to " + user.getFirstName());
+            logger.debug("Sending email to " + user.getFirstName());
             simpleMailMessage.setTo(user.getEmailAddress());
 
             //Creation of the model map can be its own method.
@@ -171,9 +171,9 @@ public class CheckUserLastLoginTask {
 
             content.clear();
             model.clear();
-            logger.info("Email Sent to " + user.getFirstName());
+            logger.debug("Email Sent to " + user.getFirstName());
         }
-        logger.info(" :: checkUserLoginDays Method END :: ");
+        logger.debug(" :: checkUserLoginDays Method END :: ");
     }
 
     /**
@@ -186,11 +186,11 @@ public class CheckUserLastLoginTask {
      */
     private List<User> checkLastLogin(final String emailType, final List<User> users) {
 
-        logger.info(" :: checkLastLogin Method Start :: ");
+        logger.debug(" :: checkLastLogin Method Start :: ");
         final int dayLimit = emailType.equals(WARNING_EMAIL_FLAG) ? warningDayLimit : expiryDayLimit;
         final List<User> returnUserList = new ArrayList<>();
         final Date daysAgo = getNumberOfDaysAgo(dayLimit);
-        logger.info(dayLimit + "daysAgo:" + daysAgo);
+        logger.debug(dayLimit + "daysAgo:" + daysAgo);
 
         for (User user : users) {
             if (!checkValidUser(user)) {
@@ -201,25 +201,25 @@ public class CheckUserLastLoginTask {
             // MAT-6582:  If a user has never signed in, look at activation date
             if (lastSignInDate == null) {
                 Date activationDate = DateUtils.truncate(user.getActivationDate(), Calendar.DATE);
-                logger.info(USER_LOG_LABEL + user.getFirstName() + "  :::: activationDate :::::   " + activationDate);
+                logger.debug(USER_LOG_LABEL + user.getFirstName() + "  :::: activationDate :::::   " + activationDate);
                 if (isUserPastLimit(emailType, activationDate, daysAgo)) {
-                    logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who has never logged in and was activated over " + dayLimit + LOG_DAYS_AGO);
+                    logger.debug(USER_LOG_LABEL + user.getEmailAddress() + " who has never logged in and was activated over " + dayLimit + LOG_DAYS_AGO);
                     returnUserList.add(user);
                 } else {
-                    logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who has never logged in and was activated " + dayLimit + LOG_DAYS_AGO);
+                    logger.debug(USER_LOG_LABEL + user.getEmailAddress() + " who has never logged in and was activated " + dayLimit + LOG_DAYS_AGO);
                 }
             } else {
                 lastSignInDate = DateUtils.truncate(lastSignInDate, Calendar.DATE);
-                logger.info(USER_LOG_LABEL + user.getFirstName() + "  :::: lastSignInDate :::::   " + lastSignInDate);
+                logger.debug(USER_LOG_LABEL + user.getFirstName() + "  :::: lastSignInDate :::::   " + lastSignInDate);
                 if (isUserPastLimit(emailType, lastSignInDate, daysAgo)) {
                     returnUserList.add(user);
-                    logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who last logged " + dayLimit + LOG_DAYS_AGO);
+                    logger.debug(USER_LOG_LABEL + user.getEmailAddress() + " who last logged " + dayLimit + LOG_DAYS_AGO);
                 } else {
-                    logger.info(USER_LOG_LABEL + user.getEmailAddress() + " who was not last logged " + dayLimit + LOG_DAYS_AGO);
+                    logger.debug(USER_LOG_LABEL + user.getEmailAddress() + " who was not last logged " + dayLimit + LOG_DAYS_AGO);
                 }
             }
         }
-        logger.info(" :: checkLastLogin Method END :: ");
+        logger.debug(" :: checkLastLogin Method END :: ");
         return returnUserList;
     }
 
@@ -231,14 +231,14 @@ public class CheckUserLastLoginTask {
      * @return void
      */
     private void updateUserTerminationDate(final User user) {
-        logger.info(" :: updateUserTerminationDate Method START :: ");
+        logger.debug(" :: updateUserTerminationDate Method START :: ");
         user.setTerminationDate(new Date());
         Status status = new Status();
         status.setStatusId("2");
         status.setDescription("User Terminated Using Scheduler");
         user.setStatus(status);
         userDAO.save(user);
-        logger.info(" :: updateUserTerminationDate Method END :: ");
+        logger.debug(" :: updateUserTerminationDate Method END :: ");
     }
 
     private boolean isUserPastLimit(String emailType, Date start, Date limit) {
@@ -257,7 +257,7 @@ public class CheckUserLastLoginTask {
      * @return boolean.
      */
     private boolean checkValidUser(final User user) {
-        logger.info(" :: checkValidUser Method START :: ");
+        logger.debug(" :: checkValidUser Method START :: ");
 
         boolean isValidUser = true;
 
@@ -265,7 +265,7 @@ public class CheckUserLastLoginTask {
             isValidUser = false;
         }
 
-        logger.info(user.getFirstName() + " :: checkValidUser Method END :: isValidUser ::: " + isValidUser);
+        logger.debug(user.getFirstName() + " :: checkValidUser Method END :: isValidUser ::: " + isValidUser);
 
         return isValidUser;
 
@@ -279,13 +279,13 @@ public class CheckUserLastLoginTask {
      */
     private Date getNumberOfDaysAgo(final int noOfDayLimit) {
 
-        logger.info(" :: getNumberOfDaysAgo Method START :: ");
+        logger.debug(" :: getNumberOfDaysAgo Method START :: ");
 
         Date numberOfDaysAgo;
         numberOfDaysAgo = DateUtils.truncate(new Date(), Calendar.DATE);
         numberOfDaysAgo = DateUtils.addDays(numberOfDaysAgo, noOfDayLimit);
 
-        logger.info(" :: getNumberOfDaysAgo Method END :: " + numberOfDaysAgo);
+        logger.debug(" :: getNumberOfDaysAgo Method END :: " + numberOfDaysAgo);
         return numberOfDaysAgo;
     }
 

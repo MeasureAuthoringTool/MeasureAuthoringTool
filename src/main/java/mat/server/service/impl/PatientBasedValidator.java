@@ -272,7 +272,7 @@ public class PatientBasedValidator {
 
 			} else {
 				String funcArgumentReturnType = argumentList.get(0).getReturnType();
-				logger.info("funcArgumentReturnType Start ==========" + funcArgumentReturnType);
+				logger.debug("funcArgumentReturnType Start ==========" + funcArgumentReturnType);
 				// for now parser returns  positive with positive qdm data model and negative of positive for negative qdm data model for function argument return type.
 				for (CQLExpressionObject expressionObject : associatedPopExpressionTobeChecked) {
 					String returnTypeOfExpression = expressionObject.getReturnType();
@@ -283,10 +283,10 @@ public class PatientBasedValidator {
 						int lastIndex = returnTypeOfExpression.indexOf(">");
 						if(startIndex > 0 && lastIndex < returnTypeOfExpression.length()){
 							returnTypeOfExpression = returnTypeOfExpression.substring(startIndex+1, lastIndex);
-							logger.info("returnTypeOfExpression ==========" + returnTypeOfExpression);
+							logger.debug("returnTypeOfExpression ==========" + returnTypeOfExpression);
 						}
 					}
-					logger.info("funcArgumentReturnType ==========" + funcArgumentReturnType);
+					logger.debug("funcArgumentReturnType ==========" + funcArgumentReturnType);
 					if(!StringUtils.containsIgnoreCase(returnTypeOfExpression, funcArgumentReturnType)){
 						if(!expressionAlreadyEval.contains(expressionName)) {
 							List<String> generatedMessages = generateMessageList(expressionName, assoExpressionPopMap, MatContext.get().getMessageDelegate().getMEASURE_OBSERVATION_RETURN_SAME_TYPE_VALIDATION_MESSAGE());
@@ -318,7 +318,7 @@ public class PatientBasedValidator {
 		String returnType = null;
 		
 		for (CQLExpressionObject cqlExpressionObject : expressionsToBeChecked) {
-			logger.info("Return type for "+ cqlExpressionObject.getName()+" is "+ cqlExpressionObject.getReturnType());
+			logger.debug("Return type for "+ cqlExpressionObject.getName()+" is "+ cqlExpressionObject.getReturnType());
 
             String populationBasis = "";
             if (measure.getPopulationBasis() != null) {

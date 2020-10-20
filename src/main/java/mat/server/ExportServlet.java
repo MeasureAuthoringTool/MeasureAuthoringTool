@@ -112,7 +112,7 @@ public class ExportServlet extends HttpServlet {
         Measure measure = null;
         Date exportDate = null;
 
-        logger.info("FORMAT: " + format);
+        logger.debug("FORMAT: " + format);
 
         if (id != null) {
             measure = service.getById(id);
@@ -409,7 +409,7 @@ public class ExportServlet extends HttpServlet {
     private void exportSubTreeHumanReadable(HttpServletRequest req, HttpServletResponse resp, String id)
             throws Exception {
         String nodeXML = req.getParameter(XML);
-        logger.info("Export servlet received node xml:" + nodeXML + " and Measure ID:" + id);
+        logger.debug("Export servlet received node xml:" + nodeXML + " and Measure ID:" + id);
         ExportResult export = getService().getHumanReadableForNode(id, nodeXML);
         resp.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
         resp.getOutputStream().println(export.export);
@@ -530,7 +530,7 @@ public class ExportServlet extends HttpServlet {
      * @throws InCorrectUserRoleException the in correct user role exception
      */
     private String generateCSVOfActiveUserEmails() {
-        logger.info("Generating CSV of email addrs for all Active Users...");
+        logger.debug("Generating CSV of email addrs for all Active Users...");
         // Get all the active users
         List<User> allNonAdminActiveUsersList = getUserService().getAllNonAdminActiveUsers();
 
@@ -539,7 +539,7 @@ public class ExportServlet extends HttpServlet {
     }
 
     private String generateCSVOfAllUser() {
-        logger.info("Generating CSV For All Users...");
+        logger.debug("Generating CSV For All Users...");
         // Get all the active users
         List<User> allUsersList = getUserService().getAllUsers();
 
@@ -555,7 +555,7 @@ public class ExportServlet extends HttpServlet {
      * @throws XPathExpressionException
      */
     private String generateCSVOfMeasureOwnershipForActiveUser() throws XPathExpressionException {
-        logger.info("Generating CSV of Measure Ownership for all Active Non Admin Users...");
+        logger.debug("Generating CSV of Measure Ownership for all Active Non Admin Users...");
         List<MeasureOwnerReportDTO> ownerReList = getMeasureLibraryService().getMeasuresForMeasureOwner();
         // Iterate through the 'allNonAdminActiveUsersList' and generate a csv
         return createCSVOfActiveUserMeasures(ownerReList);
@@ -567,7 +567,7 @@ public class ExportServlet extends HttpServlet {
      * @return the csv string
      */
     private String generateCSVOfCQLLibraryOwnershipForActiveUser() {
-        logger.info("Generating CSV of CQL Library Ownership for all Active Non Admin Users...");
+        logger.debug("Generating CSV of CQL Library Ownership for all Active Non Admin Users...");
         List<CQLLibraryOwnerReportDTO> ownerList = getCQLLibraryService().getCQLLibrariesForOwner();
         return createCSVOfActiveUserCQLLibrary(ownerList);
 
@@ -579,7 +579,7 @@ public class ExportServlet extends HttpServlet {
      * @return the string
      */
     private String generateCSVOfActiveUserOIDs() {
-        logger.info("Generating CSV of Active User OID's...");
+        logger.debug("Generating CSV of Active User OID's...");
         // Get all the active users
         final List<Organization> activeOrganizationList = getOrganizationDAO().getActiveOrganizationForAdminCSVReport();
         final Map<String, String> activeOidsMap = new TreeMap<>();

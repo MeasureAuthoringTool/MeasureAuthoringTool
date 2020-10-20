@@ -27,7 +27,7 @@ public class UnitDAOImpl extends GenericDAO<Unit, String> implements UnitDAO {
 	
 	@Override
 	public List<UnitDTO> getAllUnits(){
-		logger.info("Getting all the rows from the Unit table");
+		logger.debug("Getting all the rows from the Unit table");
 		final Session session = getSessionFactory().getCurrentSession();
 		final CriteriaBuilder cb = session.getCriteriaBuilder();
 		final CriteriaQuery<UnitDTO> query = cb.createQuery(UnitDTO.class);

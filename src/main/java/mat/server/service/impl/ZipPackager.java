@@ -119,7 +119,7 @@ public class ZipPackager {
             if (releaseVersion.contains(".")) {
                 releaseVersion = releaseVersion.replace(".", "_");
             }
-            log.info("Release version zip " + releaseVersion);
+            log.debug("Release version zip " + releaseVersion);
             parentPath = fnu.getParentPath(seqNum + "_" + emeasureName + "_" + releaseVersion);
             emeasureXSLPath = parentPath + File.separator + "xslt" + File.separator + "eMeasure.xsl";
             emeasureXMLPath = parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + "_" + releaseVersion);
@@ -170,7 +170,7 @@ public class ZipPackager {
             if (eReleaseVersion.contains(".")) {
                 eReleaseVersion = releaseVersion.replace(".", "_");
             }
-            log.info("Release version zip " + eReleaseVersion);
+            log.debug("Release version zip " + eReleaseVersion);
             parentPath = fnu.getParentPath(emeasureName + eReleaseVersion);
             emeasureXSLPath = parentPath + File.separator + "xslt" + File.separator + "eCQM.xsl";
             emeasureXMLPath = parentPath + File.separator + FileNameUtility.getEmeasureXMLName(emeasureName + releaseVersion);

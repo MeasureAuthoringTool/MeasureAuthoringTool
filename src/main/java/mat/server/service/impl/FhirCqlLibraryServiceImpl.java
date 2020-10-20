@@ -26,7 +26,6 @@ import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.xerces.impl.dv.util.Base64;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -75,24 +74,24 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
 
     @Override
     public void pushCqlLib(String libId) {
-        logger.info("pushCqlLib: " + libId);
+        logger.debug("pushCqlLib: " + libId);
         String hapiUrl = fhirLibRemote.pushStandAlone(libId);
-        logger.info("pushCqlLib: " + hapiUrl);
+        logger.debug("pushCqlLib: " + hapiUrl);
     }
 
     @Override
     public FhirLibraryPackageResult packageCqlLib(String libId) {
         FhirLibraryPackageResult result = new FhirLibraryPackageResult();
-        logger.info("packageCqlLib: " + libId);
+        logger.debug("packageCqlLib: " + libId);
         Library lib = fhirLibRemote.packageStandAlone(libId);
 
         lib.getContent().forEach(a -> {
             if (StringUtils.equalsIgnoreCase("text/cql", a.getContentType())) {
-                result.setCql(decodeBase64(a));
+                result.setCql(new String(a.getData()));
             } else if (StringUtils.equalsIgnoreCase("application/elm+json", a.getContentType())) {
-                result.setElmJson(decodeBase64(a));
+                result.setElmJson(new String(a.getData()));
             } else if (StringUtils.equalsIgnoreCase("application/elm+xml", a.getContentType())) {
-                result.setElmXml(decodeBase64(a));
+                result.setElmXml(new String(a.getData()));
             }
         });
 
@@ -197,9 +196,5 @@ public class FhirCqlLibraryServiceImpl implements FhirCqlLibraryService {
 
         var destModel = cqlParser.parse(newCql, sourceCqlModel).getCqlModel();
         return CQLUtilityClass.getXMLFromCQLModel(destModel);
-    }
-
-    private String decodeBase64(Attachment a) {
-        return new String(a.getData(), StandardCharsets.UTF_8);
     }
 }

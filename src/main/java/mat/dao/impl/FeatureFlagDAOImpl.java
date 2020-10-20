@@ -30,7 +30,7 @@ public class FeatureFlagDAOImpl extends GenericDAO<FeatureFlag, String> implemen
     public Map<String, Boolean> findFeatureFlags() {
         final List<FeatureFlag> dataTypeList = find();
         List<FeatureFlag> featureFlags = CollectionUtils.isNotEmpty(dataTypeList) ? dataTypeList : Collections.emptyList();
-        logger.info("FeatureFlagServiceImpl::findFeatureFlags Successfully retrieved feature flags");
+        logger.debug("FeatureFlagServiceImpl::findFeatureFlags Successfully retrieved feature flags");
         return featureFlags.stream().collect(Collectors.toMap(FeatureFlag::getFlagName, FeatureFlag::isFlagOn));
     }
 

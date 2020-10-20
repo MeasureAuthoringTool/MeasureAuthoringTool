@@ -89,7 +89,7 @@ public class HumanReadableGenerator {
 
         if (subXMLProcessor.getOriginalDoc().getDocumentElement().hasChildNodes()) {
             String firstNodeName = subXMLProcessor.getOriginalDoc().getDocumentElement().getFirstChild().getNodeName();
-            log.info("firstNodeName:" + firstNodeName);
+            log.debug("firstNodeName:" + firstNodeName);
 
             if ("cqldefinition".equals(firstNodeName) || "cqlfunction".equals(firstNodeName)
                     || "cqlaggfunction".equals(firstNodeName)) {
@@ -117,7 +117,7 @@ public class HumanReadableGenerator {
                                          CQLLibraryDAO cqlLibraryDAO) {
 
         String html = "";
-        log.info("Generating human readable for ver:" + measureReleaseVersion);
+        log.debug("Generating human readable for ver:" + measureReleaseVersion);
         if (MatContext.get().isCQLMeasure(measureReleaseVersion)) {
             try {
                 XmlProcessor processor = new XmlProcessor(simpleXml);

@@ -43,13 +43,13 @@ public class ObfuscateMatUsers {
     public static void main(String args[]) throws Exception {
         Connection connection = getConnection();
         List<String> userIds = getIds(connection);
-        log.info("Found {} userIds", userIds.size());
+        log.debug("Found {} userIds", userIds.size());
 
         connection.setAutoCommit(false);
         try {
             processIds(connection, userIds);
             connection.commit();
-            log.info("Committed obfuscation changes");
+            log.debug("Committed obfuscation changes");
         } catch (Exception e) {
             connection.rollback();
             log.error("Error Changed are roll-backed");

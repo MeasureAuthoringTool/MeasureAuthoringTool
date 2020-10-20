@@ -27,7 +27,7 @@ public class StewardDAOImpl extends GenericDAO<MeasureSteward, String> implement
 	public List<StewardDTO> getAllStewardOrg(){
 		
 		List<StewardDTO> StewardDTOList = new ArrayList<StewardDTO>();
-		logger.info("Getting all the rows from the Steward table");
+		logger.debug("Getting all the rows from the Steward table");
 		Session session = getSessionFactory().getCurrentSession();
 
 		@SuppressWarnings("unchecked")

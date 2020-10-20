@@ -968,8 +968,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) {
 		Node refNode = occurrenceMap.get(occurString);
 
-		logger.info("In generateOutboundForOccur()..refNode:" + refNode);
-		logger.info("----------Occurance map:" + occurrenceMap);
+		logger.debug("In generateOutboundForOccur()..refNode:" + refNode);
+		logger.debug("----------Occurance map:" + occurrenceMap);
 
 		if (refNode != null) {
 
@@ -1875,11 +1875,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 			Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 					"/templates/AttrTemplate[text()='" + attrName + "']");
-			logger.info("----------");
-			logger.info(attributeQDMNode.getNodeName());
-			logger.info(attributeQDMNode.getAttributes());
-			logger.info(simpleXmlprocessor.transform(attributeQDMNode));
-			logger.info("----------");
+			logger.debug("----------");
+			logger.debug(attributeQDMNode.getNodeName());
+			logger.debug(attributeQDMNode.getAttributes());
+			logger.debug(simpleXmlprocessor.transform(attributeQDMNode));
+			logger.debug("----------");
 			String attributeValueSetName = attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue();
 			String attributeOID = attributeQDMNode.getAttributes().getNamedItem(OID).getNodeValue();
 			String attributeTaxonomy = attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue();
@@ -2890,11 +2890,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * type="AGE AT"...../>.
 	 */
 	private void prepHQMF(MeasureExport me) {
-		logger.info("Prepping for HQMF Clause generation..............");
+		logger.debug("Prepping for HQMF Clause generation..............");
 		prepForUUID(me);
 		prepForAGE_AT(me);
 		prepForSatisfiesAll_Any(me);
-		logger.info("Done prepping for HQMF Clause generation.");
+		logger.debug("Done prepping for HQMF Clause generation.");
 	}
 
 	private void prepForUUID(MeasureExport me) {
@@ -2945,7 +2945,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 
 	private void prepForAGE_AT(MeasureExport me) {
 		XmlProcessor xmlProcessor = me.getSimpleXMLProcessor();
-		logger.info("Prepping for HQMF Clause generation for AGE AT functionalOps.");
+		logger.debug("Prepping for HQMF Clause generation for AGE AT functionalOps.");
 
 		try {
 
@@ -2953,7 +2953,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			String xPathForBirthdate = "/measure/elementLookUp/qdm[@name='Birthdate'][@datatype='Patient Characteristic Birthdate']";
 			Node birthDateQDM = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForBirthdate);
 			if (birthDateQDM == null) {
-				logger.info(
+				logger.debug(
 						"**********   Could not find QDM for Birthdate. No changes done for AGE AT. ***************");
 				return;
 			}
@@ -2961,10 +2961,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			String xPathForAGE_AT = "/measure/subTreeLookUp//functionalOp[@type='AGE AT']";
 			Node ageAtFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
 
-			logger.info(".......found AGE AT functionalOps");
+			logger.debug(".......found AGE AT functionalOps");
 
 			while (ageAtFuncNode != null) {
-				logger.info("Changing " + ageAtFuncNode.toString() + " to relational SBS node.");
+				logger.debug("Changing " + ageAtFuncNode.toString() + " to relational SBS node.");
 				Node cloneAgeAtRelNode = ageAtFuncNode.cloneNode(true);
 
 				// hold on to the first child of Age At
@@ -2993,7 +2993,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				Node parentNode = ageAtFuncNode.getParentNode();
 				parentNode.insertBefore(newRelationalOp, ageAtFuncNode);
 				parentNode.removeChild(ageAtFuncNode);
-				logger.info("Change done.");
+				logger.debug("Change done.");
 
 				ageAtFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
 			}
@@ -3014,13 +3014,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 */
 	private void prepForSatisfiesAll_Any(MeasureExport me) {
 		XmlProcessor xmlProcessor = me.getSimpleXMLProcessor();
-		logger.info("Prepping for HQMF Clause generation for Satisfies All/Satisfies Any functionalOps.");
+		logger.debug("Prepping for HQMF Clause generation for Satisfies All/Satisfies Any functionalOps.");
 		String xPathForSatisfiesAllAny = "/measure/subTreeLookUp//functionalOp[@type='SATISFIES ALL' or @type='SATISFIES ANY']";
 		try {
 			Node satisfiesFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForSatisfiesAllAny);
-			logger.info(".......found Satisfies All/Satisfies Any functionalOps");
+			logger.debug(".......found Satisfies All/Satisfies Any functionalOps");
 			while (satisfiesFuncNode != null) {
-				logger.info("Changing functionaOp "
+				logger.debug("Changing functionaOp "
 						+ satisfiesFuncNode.getAttributes().getNamedItem("displayName").getNodeValue()
 						+ " to relationalOp node.");
 
@@ -3045,7 +3045,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				Node parentNode = satisfiesFuncNode.getParentNode();
 				parentNode.insertBefore(newSetOp, satisfiesFuncNode);
 				parentNode.removeChild(satisfiesFuncNode);
-				logger.info("Change done.");
+				logger.debug("Change done.");
 				satisfiesFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForSatisfiesAllAny);
 			}
 		} catch (XPathExpressionException e) {

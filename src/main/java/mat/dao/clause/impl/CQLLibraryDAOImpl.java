@@ -481,16 +481,16 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 
     @Override
     public String findMaxOfMinVersion(String setId, String version) {
-        logger.info("In CQLLibraryDAO.findMaxOfMinVersion()");
+        logger.debug("In CQLLibraryDAO.findMaxOfMinVersion()");
         String maxOfMinVersion = version;
         double minVal = 0;
         double maxVal = 0;
         if (StringUtils.isNotBlank(version)) {
             final int decimalIndex = version.indexOf('.');
             minVal = Integer.parseInt(version.substring(0, decimalIndex));
-            logger.info("Min value: " + minVal);
+            logger.debug("Min value: " + minVal);
             maxVal = minVal + 1;
-            logger.info("Max value: " + maxVal);
+            logger.debug("Max value: " + maxVal);
         }
 
         final List<CQLLibrary> cqlList = getListOfVersionsForALibrary(setId);
@@ -498,21 +498,21 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
         double tempVersion = 0;
 
         if (CollectionUtils.isNotEmpty(cqlList)) {
-            logger.info("Finding max of min version from the Library List. Size:" + cqlList.size());
+            logger.debug("Finding max of min version from the Library List. Size:" + cqlList.size());
             for (final CQLLibrary library : cqlList) {
-                logger.info("Looping through Lib Id: " + library.getId() + " Version: " + library.getVersion());
+                logger.debug("Looping through Lib Id: " + library.getId() + " Version: " + library.getVersion());
                 if ((library.getVersionNumber() > minVal) && (library.getVersionNumber() < maxVal)) {
                     if (tempVersion < library.getVersionNumber()) {
-                        logger.info(tempVersion + "<" + library.getVersionNumber() + "=" + (tempVersion < library.getVersionNumber()));
+                        logger.debug(tempVersion + "<" + library.getVersionNumber() + "=" + (tempVersion < library.getVersionNumber()));
                         maxOfMinVersion = library.getVersion();
-                        logger.info("maxOfMinVersion: " + maxOfMinVersion);
+                        logger.debug("maxOfMinVersion: " + maxOfMinVersion);
                     }
                     tempVersion = library.getVersionNumber();
-                    logger.info("tempVersion: " + tempVersion);
+                    logger.debug("tempVersion: " + tempVersion);
                 }
             }
         }
-        logger.info("Returned maxOfMinVersion: " + maxOfMinVersion);
+        logger.debug("Returned maxOfMinVersion: " + maxOfMinVersion);
         return maxOfMinVersion;
     }
 

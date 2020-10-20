@@ -26,7 +26,7 @@ public class MeasureScoreDAOImpl extends GenericDAO<MeasureScore, String> implem
 	public List<MeasureScoreDTO> getAllMeasureScores(){
 		
 		List<MeasureScoreDTO> scoresList = new ArrayList<MeasureScoreDTO>();
-		logger.info("Getting all the rows from the Measure Score table");
+		logger.debug("Getting all the rows from the Measure Score table");
 		Session session = getSessionFactory().getCurrentSession();
 
 		@SuppressWarnings("unchecked")

@@ -55,7 +55,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
      */
     private void checkAdminUser() throws InCorrectUserRoleException {
         String userRole = LoggedInUserUtil.getLoggedInUserRole();
-        logger.info("userRole actual:" + userRole);
+        logger.debug("userRole actual:" + userRole);
         if (!("Administrator".equalsIgnoreCase(userRole))) {
             SecurityContextHolder.clearContext();
             throw new mat.shared.InCorrectUserRoleException("Role not authorized to execute this function.");
@@ -240,7 +240,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
             results.add(result);
         }
         model.setData(results);
-        logger.info("Getting all organizations.");
+        logger.debug("Getting all organizations.");
 
         return model;
     }
@@ -260,7 +260,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
      */
     @Override
     public ManageOrganizationDetailModel getOrganization(String key) {
-        logger.info("Retrieving organization for OID " + key);
+        logger.debug("Retrieving organization for OID " + key);
         Organization organization = getOrganizationDAO().findByOid(key);
         return extractOrganizationModel(organization);
     }
@@ -277,7 +277,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
     @Override
     public ManageUsersDetailModel getUser(String key) throws InCorrectUserRoleException {
         checkAdminUser();
-        logger.info("Retrieving user " + key);
+        logger.debug("Retrieving user " + key);
         User user = userService.getById(key);
         return extractUserModel(user);
     }
@@ -307,7 +307,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
         SaveUpdateUserResult result = new SaveUpdateUserResult();
         if (messages.size() != 0) {
             for (String message : messages) {
-                logger.info("Server-Side Validation failed for SaveUpdateUserResult for Login ID: "
+                logger.debug("Server-Side Validation failed for SaveUpdateUserResult for Login ID: "
                         + model.getLoginId() + " And failure Message is :" + message);
             }
             result.setSuccess(false);
@@ -331,7 +331,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
     public ManageOrganizationSearchModel searchOrganization(String key) {
         List<Organization> searchResults = getOrganizationDAO().searchOrganization(key);
         HashMap<String, Organization> usedOrganizationsMap = userService.searchForUsedOrganizations();
-        logger.info("Organization search returned " + searchResults.size());
+        logger.debug("Organization search returned " + searchResults.size());
         ManageOrganizationSearchModel model = new ManageOrganizationSearchModel();
         List<ManageOrganizationSearchModel.Result> detailList = new ArrayList<ManageOrganizationSearchModel.Result>();
         for (Organization org : searchResults) {
@@ -344,7 +344,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
         }
         model.setData(detailList);
         model.setResultsTotal(searchResults.size());
-        logger.info("Searching Organization on " + key);
+        logger.debug("Searching Organization on " + key);
         return model;
     }
 
@@ -358,9 +358,9 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
     @Override
     public ManageUsersSearchModel searchUsers(String key) throws InCorrectUserRoleException {
         checkAdminUser();
-        logger.info("Searching users on " + key);
+        logger.debug("Searching users on " + key);
         List<User> searchResults = userService.searchForUsersByName(key);
-        logger.info("User search returned " + searchResults.size());
+        logger.debug("User search returned " + searchResults.size());
         ManageUsersSearchModel model = generateManageUsersSearchModelFromUser(key, searchResults);
 
         return model;
@@ -390,7 +390,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
     @Override
     public ManageUsersDetailModel getUserByEmail(String emailId) throws InCorrectUserRoleException {
         checkAdminUser();
-        logger.info("Retrieving user " + emailId);
+        logger.debug("Retrieving user " + emailId);
         User user = userService.findByEmailID(emailId);
         return extractUserModel(user);
     }

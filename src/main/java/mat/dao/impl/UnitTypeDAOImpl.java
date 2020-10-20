@@ -27,7 +27,7 @@ public class UnitTypeDAOImpl extends GenericDAO<UnitType, String> implements Uni
 	public List<UnitTypeDTO> getAllUnitTypes(){
 		
 		List<UnitTypeDTO> unitTypeDTOList = new ArrayList<UnitTypeDTO>();
-		logger.info("Getting all the rows from the Unit Type table");
+		logger.debug("Getting all the rows from the Unit Type table");
 		Session session = getSessionFactory().getCurrentSession();
 
 		@SuppressWarnings("unchecked")

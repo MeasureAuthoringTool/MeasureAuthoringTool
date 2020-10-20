@@ -165,7 +165,7 @@ public class ExportSimpleXML {
      */
     private static String generateExportedXML(Document measureXMLDocument, OrganizationDAO organizationDAO,
                                               MeasureDAO measureDAO, String measure_Id) {
-        logger.info("In ExportSimpleXML.generateExportedXML()");
+        logger.debug("In ExportSimpleXML.generateExportedXML()");
         try {
             return traverseXML(measureXMLDocument, organizationDAO, measureDAO, measure_Id);
         } catch (Exception e) {
@@ -187,7 +187,7 @@ public class ExportSimpleXML {
      */
     private static String generateExportedXML(Document measureXMLDocument, OrganizationDAO organizationDAO,
                                               MeasureDAO measureDAO, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel, Measure measure, MeasureTypeDAO measureTypeDao) {
-        logger.info("In ExportSimpleXML.generateExportedXML()");
+        logger.debug("In ExportSimpleXML.generateExportedXML()");
         try {
             return generateMeasureExportXML(measureXMLDocument, organizationDAO, measureDAO, cqlLibraryDAO, cqlModel, measure, measureTypeDao);
         } catch (Exception e) {
@@ -363,7 +363,7 @@ public class ExportSimpleXML {
     }
 
     private static void removeUnusedComponentMeasures(Document originalDoc) throws XPathExpressionException {
-        logger.info("Remove Unused Component Measures");
+        logger.debug("Remove Unused Component Measures");
 
         String componentMeasuresXPath = "/measure/measureDetails/componentMeasures/measure";
         NodeList componentMeasureNodeList = (NodeList) xPath.evaluate(componentMeasuresXPath, originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -377,7 +377,7 @@ public class ExportSimpleXML {
                 Node current = includedLibraryNodeList.item(i);
                 if (current.getAttributes().getNamedItem("measureId") != null) {
                     usedIncludedLibraryIds.add(UuidUtility.idToUuid(current.getAttributes().getNamedItem("measureId").getNodeValue()));
-                    logger.info("Remove Unused Componenent measure with id: " + UuidUtility.idToUuid(current.getAttributes().getNamedItem("measureId").getNodeValue()));
+                    logger.debug("Remove Unused Componenent measure with id: " + UuidUtility.idToUuid(current.getAttributes().getNamedItem("measureId").getNodeValue()));
                 }
             }
         }
@@ -390,7 +390,7 @@ public class ExportSimpleXML {
             }
         }
 
-        logger.info("Finished Removing Unused Component Measures");
+        logger.debug("Finished Removing Unused Component Measures");
     }
 
 
@@ -1196,7 +1196,7 @@ public class ExportSimpleXML {
      * @return the string
      */
     private static String transform(Node node) {
-        logger.info("In transform() method");
+        logger.debug("In transform() method");
         ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
         TransformerFactory transformerFactory = XMLUtility.getInstance().buildTransformerFactory();
         DOMSource source = new DOMSource(node);
@@ -1205,10 +1205,10 @@ public class ExportSimpleXML {
         try {
             transformerFactory.newTransformer().transform(source, result);
         } catch (TransformerException e) {
-            logger.info("Document object to ByteArray transformation failed " + e.getStackTrace());
+            logger.debug("Document object to ByteArray transformation failed " + e.getStackTrace());
             e.printStackTrace();
         }
-        logger.info("Document object to ByteArray transformation complete " + arrayOutputStream.toString());
+        logger.debug("Document object to ByteArray transformation complete " + arrayOutputStream.toString());
         return arrayOutputStream.toString();
     }
 
@@ -1561,7 +1561,7 @@ public class ExportSimpleXML {
                 usedClauseIds.add(uuid);
             }
         }
-        logger.info("usedClauseIds:" + usedClauseIds);
+        logger.debug("usedClauseIds:" + usedClauseIds);
         return usedClauseIds;
     }
 
@@ -1780,7 +1780,7 @@ public class ExportSimpleXML {
             Node elementRefNode = elementInQDMAttributesList.item(i);
             usedQDMIds.add(elementRefNode.getNodeValue());
         }
-        logger.info("usedQDMIds:" + usedQDMIds);
+        logger.debug("usedQDMIds:" + usedQDMIds);
         return usedQDMIds;
     }
 
@@ -1929,7 +1929,7 @@ public class ExportSimpleXML {
             }
             dateString = year + month + dt;
         } catch (Exception e) {
-            logger.info("Bad Start/Stop dates in Measure Details." + e.getMessage());
+            logger.debug("Bad Start/Stop dates in Measure Details." + e.getMessage());
         }
         return dateString;
     }

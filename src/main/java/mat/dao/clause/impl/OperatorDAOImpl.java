@@ -33,25 +33,25 @@ public class OperatorDAOImpl extends GenericDAO<Operator, String> implements Ope
 
 	@Override
 	public List<OperatorDTO> getLogicalOperators(){
-		logger.info("Getting all the Logical Operators from the Operator table");
+		logger.debug("Getting all the Logical Operators from the Operator table");
 		return getOperatorsListBasedOnOperatorType(LOGICAL_OPERATORS);
 	}
 
 	@Override
 	public List<OperatorDTO> getRelTimingperators(){
-		logger.info("Getting all Relative Timing Operators from the Operator table");
+		logger.debug("Getting all Relative Timing Operators from the Operator table");
 		return getOperatorsListBasedOnOperatorType(RELATIVE_TIMINGS_OPERATORS);
 	}
 
 	@Override
 	public List<OperatorDTO> getRelAssociationsOperators(){
-		logger.info("Getting all Relative Associations Operators from the Operator table");
+		logger.debug("Getting all Relative Associations Operators from the Operator table");
 		return getOperatorsListBasedOnOperatorType(RELATIVE_ASSOCIATIONS_OPERATORS);
 	}
 
 	@Override
 	public List<OperatorDTO> getAllOperators() {
-		logger.info("Getting all  Operators from the Operator table");
+		logger.debug("Getting all  Operators from the Operator table");
 		return getOperatorsListBasedOnOperatorType(null);
 	}
 

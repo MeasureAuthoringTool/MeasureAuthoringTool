@@ -37,12 +37,12 @@ public class HQMFFinalCleanUp {
 		XmlProcessor simpleProcessor = me.getSimpleXMLProcessor();
 		
 		if(hqmfProcessor == null){
-			logger.info("HQMF document is null. Aborting clean up.");
+			logger.debug("HQMF document is null. Aborting clean up.");
 			return;
 		}
 		
 		if(simpleProcessor == null){
-			logger.info("SimpleXML document is null. Aborting clean up.");
+			logger.debug("SimpleXML document is null. Aborting clean up.");
 			return;
 		}
 		
@@ -140,7 +140,7 @@ public class HQMFFinalCleanUp {
 	 */
 	private static void reverseEntryCheck(String hqmfXML) {
 		String reverseEntryCheckResults = XMLUtility.getInstance().applyXSL(hqmfXML, XMLUtility.getInstance().getXMLResource(reverseEntryCheckFile));
-		logger.info("Reverse Entry Check results: " + reverseEntryCheckResults);
+		logger.debug("Reverse Entry Check results: " + reverseEntryCheckResults);
 	}
 	
 	/**

@@ -26,7 +26,7 @@ public class UnitTypeMatrixDAOImpl extends GenericDAO<UnitMatrix, String> implem
 	public List<UnitMatrixDTO> getAllUnitMatrix(){
 		
 		List<UnitMatrixDTO> unitTypeMatrixDTOList = new ArrayList<UnitMatrixDTO>();
-		logger.info("Getting all the rows from the Unit Type Matrix table");
+		logger.debug("Getting all the rows from the Unit Type Matrix table");
 		Session session = getSessionFactory().getCurrentSession();
 
 		@SuppressWarnings("unchecked")

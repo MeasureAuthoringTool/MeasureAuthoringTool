@@ -78,7 +78,7 @@ public class VsacService {
                     int lastSlash = url.lastIndexOf('/');
                     if (lastSlash != -1) {
                         result = url.substring(lastSlash + 1);
-                        log.info("Obtained TicketGrantingTicket");
+                        log.debug("Obtained TicketGrantingTicket");
                     } else {
                         log.error("Could not / in action url " + url);
                     }
@@ -527,7 +527,7 @@ public class VsacService {
                     out.append(s);
                 }
                 result = buildBasicResponseForSuccess(out.toString());
-                log.info(result.getXmlPayLoad());
+                log.debug(result.getXmlPayLoad());
             } catch (IOException ioe) {
                 result = buildBasicResponseForFailure();
                 log.error("buildResponseResult", ioe);
@@ -592,7 +592,7 @@ public class VsacService {
                 return null;
             }
         } catch (Exception e) {
-            log.info("Vsac Rest Error", e);
+            log.debug("Vsac Rest Error", e);
             return null;
         }
     }

@@ -857,14 +857,14 @@ public class CQLServiceImpl implements CQLService {
     @Override
     public String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary)
             throws MarshalException, ValidationException, IOException, MappingException {
-        logger.info("In CQLServiceImpl.createIncludeLibraryXML");
+        logger.debug("In CQLServiceImpl.createIncludeLibraryXML");
         CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
         List<CQLIncludeLibrary> includeLibraryList = new ArrayList<>();
         includeLibraryList.add(includeLibrary);
         wrapper.setCqlIncludeLibrary(includeLibraryList);
         String includeLibraryXML = CQLLibraryWrapperMappingUtil.convertCQLIncludeLibraryWrapperToXML(wrapper);
-        logger.info("Marshalling of CQLIncludeLibrary is successful..");
-        logger.info("Exiting CQLServiceImpl.createIncludeLibraryXML()");
+        logger.debug("Marshalling of CQLIncludeLibrary is successful..");
+        logger.debug("Exiting CQLServiceImpl.createIncludeLibraryXML()");
         return includeLibraryXML;
     }
 
@@ -908,7 +908,7 @@ public class CQLServiceImpl implements CQLService {
 
     @Override
     public SaveUpdateCQLResult deleteCode(String id, boolean isMeasure, String xml, String toBeDeletedCodeId) {
-        logger.info("Start deleteCode : ");
+        logger.debug("Start deleteCode : ");
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
         XmlProcessor xmlProcessor = new XmlProcessor(xml);
         try {
@@ -936,18 +936,18 @@ public class CQLServiceImpl implements CQLService {
                 result.setCqlCodeList(getCQLCodes(id, isMeasure, result.getXml()).getCqlCodeList());
                 result.setCqlCode(cqlCode);
             } else {
-                logger.info("Unable to find the selected Code element with id in deleteCode : " + toBeDeletedCodeId);
+                logger.debug("Unable to find the selected Code element with id in deleteCode : " + toBeDeletedCodeId);
                 result.setSuccess(false);
             }
         } catch (XPathExpressionException e) {
             result.setSuccess(false);
-            logger.info("Error in method deleteCode: " + e.getMessage());
+            logger.error("Error in method deleteCode: ", e);
         } catch (MatException e) {
             result.setSuccess(false);
-            logger.info("Error in method deleteCode: " + e.getMessage());
+            logger.error("Error in method deleteCode: ", e);
         }
 
-        logger.info("END deleteCode : ");
+        logger.debug("END deleteCode : ");
 
         return result;
     }
@@ -1244,7 +1244,7 @@ public class CQLServiceImpl implements CQLService {
      * @return the CQL definitions wrapper
      */
     private CQLDefinitionsWrapper convertXmltoCQLDefinitionModel(final MeasureXmlModel xmlModel) {
-        logger.info("In CQLServiceImpl.convertXmltoCQLDefinitionModel()");
+        logger.debug("In CQLServiceImpl.convertXmltoCQLDefinitionModel()");
         CQLDefinitionsWrapper details = null;
         String xml = null;
         if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
@@ -1265,7 +1265,7 @@ public class CQLServiceImpl implements CQLService {
 
     @Override
     public String createParametersXML(CQLParameter parameter) {
-        logger.info("In CQLServiceImpl.createParametersXML");
+        logger.debug("In CQLServiceImpl.createParametersXML");
         CQLParametersWrapper wrapper = new CQLParametersWrapper();
         List<CQLParameter> paramList = new ArrayList<>();
         paramList.add(parameter);
@@ -1276,7 +1276,7 @@ public class CQLServiceImpl implements CQLService {
 
     @Override
     public String createDefinitionsXML(CQLDefinition definition) {
-        logger.info("In CQLServiceImpl.createDefinitionsXML");
+        logger.debug("In CQLServiceImpl.createDefinitionsXML");
         CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
         List<CQLDefinition> definitionList = new ArrayList<>();
         definitionList.add(definition);
@@ -1292,10 +1292,10 @@ public class CQLServiceImpl implements CQLService {
             stream = xmlMarshalUtil.convertObjectToXML(mapping, object);
 
         } catch (MarshalException | ValidationException | IOException | MappingException e) {
-            logger.info("Exception in createExpressionXML: " + e, e);
+            logger.error("Exception in createExpressionXML: ", e);
         }
 
-        logger.info("Exiting ManageCodeListServiceImpl.createXml()");
+        logger.debug("Exiting ManageCodeListServiceImpl.createXml()");
         return stream;
     }
 
@@ -1601,17 +1601,17 @@ public class CQLServiceImpl implements CQLService {
         List<String> exprList = new ArrayList<>();
 
         for (CQLDefinition cqlDefinition : cqlModel.getDefinitionList()) {
-            logger.info("name:" + cqlDefinition.getName());
+            logger.debug("name:" + cqlDefinition.getName());
             exprList.add(cqlDefinition.getName());
         }
 
         for (CQLFunctions cqlFunction : cqlModel.getCqlFunctions()) {
-            logger.info("name:" + cqlFunction.getName());
+            logger.debug("name:" + cqlFunction.getName());
             exprList.add(cqlFunction.getName());
         }
 
         for (CQLParameter cqlParameter : cqlModel.getCqlParameters()) {
-            logger.info("name:" + cqlParameter.getName());
+            logger.debug("name:" + cqlParameter.getName());
             exprList.add(cqlParameter.getName());
         }
 
@@ -1777,7 +1777,7 @@ public class CQLServiceImpl implements CQLService {
 
     @Override
     public SaveUpdateCQLResult saveCQLCodeSystem(String xml, CQLCodeSystem codeSystem) {
-        logger.info("::: CQLServiceImpl saveCQLCodeSystem Start :::");
+        logger.error("::: CQLServiceImpl saveCQLCodeSystem Start :::");
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
         CQLModel model = CQLUtilityClass.getCQLModelFromXML(xml);
 
@@ -1793,7 +1793,7 @@ public class CQLServiceImpl implements CQLService {
 
             if (model.getCodeSystemList().stream().filter(cs -> (cs.getCodeSystemName().equals(codeSystem.getCodeSystemName())
                     && cs.getCodeSystemVersion().equals(codeSystem.getCodeSystemVersion()))).count() > 0) {
-                logger.info("::: CodeSystem Already added :::");
+                logger.debug("::: CodeSystem Already added :::");
                 result.setSuccess(false);
                 return result;
             }
@@ -1806,7 +1806,7 @@ public class CQLServiceImpl implements CQLService {
         result.setSuccess(true);
         result.setXml(CQLUtilityClass.getXMLFromCQLModel(model));
 
-        logger.info("::: CQLServiceImpl saveCQLCodeSystem End :::");
+        logger.debug("::: CQLServiceImpl saveCQLCodeSystem End :::");
         return result;
     }
 
@@ -1814,11 +1814,11 @@ public class CQLServiceImpl implements CQLService {
      * Checks if is duplicate.
      *
      * @param ValueSetTransferObject the mat value set transfer object
-     * @param isVSACValueSet            the is VSAC value set
+     * @param isVSACValueSet         the is VSAC value set
      * @return true, if is duplicate
      */
     private boolean isDuplicate(CQLValueSetTransferObject ValueSetTransferObject, boolean isVSACValueSet) {
-        logger.info(" checkForDuplicates Method Call Start.");
+        logger.debug(" checkForDuplicates Method Call Start.");
         boolean isQDSExist = false;
 
         String qdmCompareName = ValueSetTransferObject.getCqlQualityDataSetDTO().getName();
@@ -1833,7 +1833,7 @@ public class CQLServiceImpl implements CQLService {
                 break;
             }
         }
-        logger.info("checkForDuplicates Method Call End.Check resulted in :" + (isQDSExist));
+        logger.debug("checkForDuplicates Method Call End.Check resulted in :" + (isQDSExist));
         return isQDSExist;
     }
 

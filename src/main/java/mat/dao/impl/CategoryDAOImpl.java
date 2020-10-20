@@ -30,7 +30,7 @@ public class CategoryDAOImpl extends GenericDAO<Category, String> implements mat
 	public List<CategoryDTO> getAllCategories(){
 		
 		List<CategoryDTO> categoryDTOList = new ArrayList<CategoryDTO>();
-		logger.info("Getting all the categories from the category table");
+		logger.debug("Getting all the categories from the category table");
 		Session session = getSessionFactory().getCurrentSession();
 
 		@SuppressWarnings({ "unchecked", "deprecation" })

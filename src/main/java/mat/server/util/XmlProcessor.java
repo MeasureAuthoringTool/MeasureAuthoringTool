@@ -138,16 +138,16 @@ public class XmlProcessor {
      * @param originalXml the original xml
      */
     public XmlProcessor(String originalXml) {
-        LOG.info("In XmlProcessor() constructor");
+        LOG.debug("In XmlProcessor() constructor");
         this.originalXml = originalXml;
         try {
             DocumentBuilderFactory documentBuilderFactory = XMLUtility.getInstance().buildDocumentBuilderFactory();
             docBuilder = documentBuilderFactory.newDocumentBuilder();
             InputSource oldXmlstream = new InputSource(new StringReader(originalXml));
             originalDoc = docBuilder.parse(oldXmlstream);
-            LOG.info("Document Object created successfully for the XML String");
+            LOG.debug("Document Object created successfully for the XML String");
         } catch (Exception e) {
-            LOG.error("Exception thrown on XmlProcessor() constructor");
+            LOG.error("Exception thrown on XmlProcessor() constructor",e);
             caughtExceptions(e);
         }
 
@@ -163,13 +163,13 @@ public class XmlProcessor {
             DocumentBuilderFactory documentBuilderFactory = XMLUtility.getInstance().buildDocumentBuilderFactory();
             docBuilder = documentBuilderFactory.newDocumentBuilder();
             originalDoc = docBuilder.parse(file);
-            LOG.info("Document Object created successfully for the XML String");
+            LOG.debug("Document Object created successfully for the XML String");
         } catch (ParserConfigurationException e) {
             LOG.error("Exception thrown on XmlProcessor() constructor", e);
         } catch (SAXException e) {
             LOG.error("Exception thrown on XmlProcessor() constructor", e);
         } catch (IOException e) {
-            LOG.info("Exception thrown on XmlProcessor() constructor", e);
+            LOG.debug("Exception thrown on XmlProcessor() constructor", e);
             caughtExceptions(e);
         }
 
@@ -187,7 +187,7 @@ public class XmlProcessor {
      */
     public String appendNode(String newElement, String nodeName,
                              String parentNode) throws SAXException, IOException {
-        LOG.info("In appendNode method with newElement ::: ");
+        LOG.debug("In appendNode method with newElement ::: ");
         if ((originalDoc == null) || (newElement == null)) {
             return "";
         }
@@ -205,13 +205,13 @@ public class XmlProcessor {
                             true));
                 }
 
-                LOG.info("Document Object created successfully for the XML String.");
+                LOG.debug("Document Object created successfully for the XML String.");
             } else {
-                LOG.info("parentNode:" + parentNode
+                LOG.debug("parentNode:" + parentNode
                         + " not found. method appendNode exiting prematurely.");
             }
         } catch (XPathExpressionException e) {
-            LOG.info("Exception thrown on appendNode method");
+            LOG.debug("Exception thrown on appendNode method");
             caughtExceptions(e);
         }
         return transform(originalDoc);
@@ -235,7 +235,7 @@ public class XmlProcessor {
      */
     public String replaceNode(String newXml, String nodeName, String parentName) {
         try {
-            LOG.info("In replaceNode() method");
+            LOG.debug("In replaceNode() method");
             InputSource newXmlstream = new InputSource(new StringReader(newXml));
             Document newDoc = docBuilder.parse(newXmlstream); // Parse the NewXml
             // which should
@@ -288,19 +288,19 @@ public class XmlProcessor {
                                 true)); // insert the new child node to the old
                         // child's Parent node,.
                     }
-                    LOG.info("Replaced old Child Node with new Child Node "
+                    LOG.debug("Replaced old Child Node with new Child Node "
                             + nodeName);
                 } else { // if the Original Document doesnt have the Node, then
                     // insert the new Node under the first child
                     Node importNode = originalDoc.importNode(newNode, true);
                     originalDoc.getFirstChild().appendChild(importNode);
-                    LOG.info("Inserted new Child Node" + nodeName);
+                    LOG.debug("Inserted new Child Node" + nodeName);
                 }
                 return transform(originalDoc);
             }
 
         } catch (Exception e) {
-            LOG.info("Exception thrown on replaceNode() method", e);
+            LOG.debug("Exception thrown on replaceNode() method", e);
             caughtExceptions(e);
         }
         return originalXml; // not replaced returnig the original Xml;
@@ -315,12 +315,12 @@ public class XmlProcessor {
      */
     public String updateNodeText(String nodeName, String nodeValue) {
         try {
-            LOG.info("In updateNodeText() method");
+            LOG.debug("In updateNodeText() method");
             InputSource xmlStream = new InputSource(new StringReader(
                     originalXml));
             Document doc = docBuilder.parse(xmlStream);
             doc.getElementsByTagName(nodeName).item(0).setTextContent(nodeValue);
-            LOG.info("update NoedText");
+            LOG.debug("update NoedText");
             return transform(doc);
         } catch (Exception e) {
             LOG.error("Exception thrown on updateNodeText() method", e);
@@ -759,7 +759,7 @@ public class XmlProcessor {
                             supplementaDataElementsElement.getNextSibling());
         }
 
-        LOG.info("Original Doc: " + originalDoc.toString());
+        LOG.debug("Original Doc: " + originalDoc.toString());
     }
 
     /**
@@ -991,7 +991,7 @@ public class XmlProcessor {
      * @return the string
      */
     public String transform(Node node, boolean isFormatted) {
-        LOG.info("In transform() method");
+        LOG.debug("In transform() method");
         Transformer tf;
         Writer out = null;
         try {
@@ -1009,7 +1009,7 @@ public class XmlProcessor {
         } catch (TransformerFactoryConfigurationError | TransformerException e) {
             LOG.error(e.getMessage(), e);
         }
-        LOG.info("Document object to ByteArray transformation complete");
+        LOG.debug("Document object to ByteArray transformation complete");
         return out.toString();
     }
 

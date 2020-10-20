@@ -13,7 +13,10 @@ public class DataTypeDTO implements IsSerializable, HasListBox{
 	
 	/** The description. */
 	private String description;
-	
+
+	public DataTypeDTO() {
+	}
+
 	/**
 	 * Gets the id.
 	 * 

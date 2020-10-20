@@ -150,7 +150,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
                                                   boolean creatingDraft,
                                                   boolean creatingFhir,
                                                   boolean isQdmToFhir) throws MatException {
-        logger.info("In MeasureCloningServiceImpl.clone() method..");
+        logger.debug("In MeasureCloningServiceImpl.clone() method..");
 
         validateMeasure(currentDetails);
 
@@ -291,7 +291,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
 
         clonedXml.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
 
-        logger.info("Final XML after cloning/draft " + clonedXml.getMeasureXMLAsString());
+        logger.debug("Final XML after cloning/draft " + clonedXml.getMeasureXMLAsString());
         measureXmlDAO.save(clonedXml);
     }
 
@@ -764,8 +764,8 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         NodeList defaultCQLDefNodeList = findDefaultDefinitions(xmlProcessor);
 
         if (defaultCQLDefNodeList != null && defaultCQLDefNodeList.getLength() == 4) {
-            logger.info("All Default definition elements present in the measure while cloning.");
-            logger.info("Check if SupplementalDataElement present in the measure while cloning.");
+            logger.debug("All Default definition elements present in the measure while cloning.");
+            logger.debug("Check if SupplementalDataElement present in the measure while cloning.");
             // This checks if SDE holds child elements ,if not then append it.
             String defaultSDE = "/measure/supplementalDataElements";
             try {
@@ -780,7 +780,7 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         }
 
         String defStr = cqlService.getSupplementalDefinitions();
-        logger.info("defStr:" + defStr);
+        logger.debug("defStr:" + defStr);
         try {
             xmlProcessor.appendNode(defStr, "definition", "/measure/cqlLookUp/definitions");
 
@@ -842,10 +842,10 @@ public class MeasureCloningServiceImpl implements MeasureCloningService {
         List<String> missingDefaultCQLParameters = xmlProcessor.checkForDefaultParameters();
 
         if (missingDefaultCQLParameters.isEmpty()) {
-            logger.info("All Default parameter elements present in the measure while cloning.");
+            logger.debug("All Default parameter elements present in the measure while cloning.");
             return;
         }
-        logger.info("While cloning, found the following Default parameter elements missing:" + missingDefaultCQLParameters);
+        logger.debug("While cloning, found the following Default parameter elements missing:" + missingDefaultCQLParameters);
         CQLParameter parameter = new CQLParameter();
 
         parameter.setId(UUID.randomUUID().toString());

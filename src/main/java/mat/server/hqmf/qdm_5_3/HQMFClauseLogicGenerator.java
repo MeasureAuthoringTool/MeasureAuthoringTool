@@ -214,14 +214,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 		 * Check the 'subTreeNodeMap' to make sure the clause isnt already generated.
 		 */
 		if (subTreeNodeMap.containsKey(subTreeUUID) && !msrObsDateTimeDiffSubTree) {
-			logger.info("HQMF for Clause " + clauseName + " is already generated. Skipping.");
+			logger.debug("HQMF for Clause " + clauseName + " is already generated. Skipping.");
 			return null;
 		}
 
 		// get the first child of the subTreeNode
 		Node firstChild = subTreeNode.getFirstChild();
 		String firstChildName = firstChild.getNodeName();
-		logger.info("Generating HQMF for clause:'" + clauseName + "' with first child named:'" + firstChildName + "'.");
+		logger.debug("Generating HQMF for clause:'" + clauseName + "' with first child named:'" + firstChildName + "'.");
 
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
 		Element dataCriteriaSectionElem = (Element) hqmfXmlProcessor.getOriginalDoc()
@@ -317,12 +317,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 		 * generated.
 		 */
 		if (subTreeNodeMap.containsKey(occSubTreeUUID)) {
-			logger.info("HQMF for Occ Clause " + clauseName + " is already generated. Skipping.");
+			logger.debug("HQMF for Occ Clause " + clauseName + " is already generated. Skipping.");
 			return;
 		}
 
 		if (!subTreeNodeMap.containsKey(qdmVariableSubTreeUUID)) {
-			logger.info("HQMF for Clause " + clauseName + " is not already generated. Skipping.");
+			logger.debug("HQMF for Clause " + clauseName + " is not already generated. Skipping.");
 			return;
 		}
 
@@ -385,11 +385,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 				+ "of_" + ext;
 		ext = StringUtils.deleteWhitespace(ext);
 		localVarName = StringUtils.deleteWhitespace(localVarName);
-		logger.info("generateOccHQMF " + "//entry/*/id[@root='" + root + "'][@extension=\"" + baseExt + "\"]");
+		logger.debug("generateOccHQMF " + "//entry/*/id[@root='" + root + "'][@extension=\"" + baseExt + "\"]");
 
 		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(),
 				"//entry/*/id[@root='" + root + "'][@extension=\"" + baseExt + "\"]");
-		logger.info("idNodeQDM == null?" + (idNodeQDM == null));
+		logger.debug("idNodeQDM == null?" + (idNodeQDM == null));
 
 		if (idNodeQDM != null) {
 			// Add code here which will create a replica of the entry elem of 'idNodeQDM'
@@ -1089,7 +1089,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				updateLocalVar(finalNode, localVarName);
 			}
 		} else {
-			logger.info("Relational Op:" + relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue()
+			logger.debug("Relational Op:" + relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue()
 					+ " does not have exactly 2 children. Skipping HQMF for it.");
 		}
 		return finalNode;

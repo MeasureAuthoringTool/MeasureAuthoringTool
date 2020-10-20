@@ -29,7 +29,7 @@ public class MeasureTypeDAOImpl extends GenericDAO<MeasureType, String> implemen
 	
 	@Override
 	public List<MeasureTypeDTO> getAllMeasureTypes(){
-		logger.info("Getting all the rows from the MEASURE_TYPES table");
+		logger.debug("Getting all the rows from the MEASURE_TYPES table");
 		final Session session = getSessionFactory().getCurrentSession();
 		final CriteriaBuilder cb = session.getCriteriaBuilder();
 		final CriteriaQuery<MeasureTypeDTO> query = cb.createQuery(MeasureTypeDTO.class);

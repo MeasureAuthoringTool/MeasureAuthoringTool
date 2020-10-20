@@ -7,7 +7,6 @@ import mat.model.clause.CQLLibraryExport;
 import mat.model.clause.MeasureExport;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.xerces.impl.dv.util.Base64;
 import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Library;
@@ -15,6 +14,7 @@ import org.hl7.fhir.r4.model.Measure;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 
 @Service
 public class ExportUtility {
@@ -87,7 +87,7 @@ public class ExportUtility {
 
     private String decodeBase64(byte[] bytes) {
         try {
-        return new String(Base64.decode(new String(bytes,"utf-8")),"utf-8");
+        return new String(Base64.getDecoder().decode(bytes),"utf-8");
         } catch (UnsupportedEncodingException u) {
             throw new MatRuntimeException(u);
         }

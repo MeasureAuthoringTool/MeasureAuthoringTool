@@ -48,4 +48,10 @@
     <source path='model'/>
     <source path='dto'/>
     <source path='vsacmodel'/>
+
+    <add-linker name="xsiframe"/>
+    <set-configuration-property name="devModeRedirectEnabled" value="true"/>
+    <set-property name="compiler.useSourceMaps" value="true"/>
+<!--    <set-configuration-property name="gwt.superdevmode" value="on" />-->
+
 </module>

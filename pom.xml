@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <start-class>com.google.gwt.dev.DevMode</start-class>
-        <gwtVersion>2.8.2</gwtVersion>
+        <gwtVersion>2.9.0</gwtVersion>
         <googleGin>2.1.2</googleGin>
         <gwtbootstrap3.version>1.0.1</gwtbootstrap3.version>
         <gwtbootstrap3.extra.version>1.0.2</gwtbootstrap3.extra.version>
@@ -610,47 +610,47 @@
                     </webResources>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>net.ltgt.gwt.maven</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <id>compile-gwt-harp-support</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <moduleName>mat.HarpSupport</moduleName>
-                            <moduleShortName>harpsupport</moduleShortName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-gwt-mat</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <moduleName>mat.Mat</moduleName>
-                            <moduleShortName>mat</moduleShortName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-gwt-bonnie</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <moduleName>mat.Bonnie</moduleName>
-                            <moduleShortName>bonnie</moduleShortName>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <sourceLevel>${gwt.sourceLevel}</sourceLevel>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>net.ltgt.gwt.maven</groupId>-->
+<!--                <artifactId>gwt-maven-plugin</artifactId>-->
+<!--                <version>1.0.0</version>-->
+<!--                <extensions>true</extensions>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>compile-gwt-harp-support</id>-->
+<!--                        <goals>-->
+<!--                            <goal>compile</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <moduleName>mat.HarpSupport</moduleName>-->
+<!--                            <moduleShortName>harpsupport</moduleShortName>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>compile-gwt-mat</id>-->
+<!--                        <goals>-->
+<!--                            <goal>compile</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <moduleName>mat.Mat</moduleName>-->
+<!--                            <moduleShortName>mat</moduleShortName>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>compile-gwt-bonnie</id>-->
+<!--                        <goals>-->
+<!--                            <goal>compile</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <moduleName>mat.Bonnie</moduleName>-->
+<!--                            <moduleShortName>bonnie</moduleShortName>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <sourceLevel>${gwt.sourceLevel}</sourceLevel>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -757,39 +757,39 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <!-- Activate for faster local compilation by
-                1. setting env variable export ENVIRONMENT=DEV
-                2. or by explicitly activating the profile in your intellij
-            -->
-            <id>gwt-profile-compile-dev</id>
-            <activation>
-                <property>
-                    <name>env.ENVIRONMENT</name>
-                    <value>DEV</value>
-                </property>
-            </activation>
-            <properties>
-                <gwt.draftCompile>true</gwt.draftCompile>
-                <gwt.localWorkers>10</gwt.localWorkers>
-                <!-- Enable for detailed compilation traces. It doesn't affect compilation time. -->
-<!--                <gwt.logLevel>TRACE</gwt.logLevel>-->
-                <gwt.optimize>0</gwt.optimize>
-                <gwt.style>DETAILED</gwt.style>
-            </properties>
-            <dependencies>
-                <!-- Override dependencies to that you can locally run GWT code server with Jetty -->
-                <dependency>
-                    <groupId>com.google.gwt</groupId>
-                    <artifactId>gwt-dev</artifactId>
-                    <version>${gwtVersion}</version>
-                    <scope>compile</scope>
-                    <exclusions>
-                        <!-- Should be empty to be merged correctly -->
-                    </exclusions>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
+<!--    <profiles>-->
+<!--        <profile>-->
+<!--            &lt;!&ndash; Activate for faster local compilation by-->
+<!--                1. setting env variable export ENVIRONMENT=DEV-->
+<!--                2. or by explicitly activating the profile in your intellij-->
+<!--            &ndash;&gt;-->
+<!--            <id>gwt-profile-compile-dev</id>-->
+<!--            <activation>-->
+<!--                <property>-->
+<!--                    <name>env.ENVIRONMENT</name>-->
+<!--                    <value>DEV</value>-->
+<!--                </property>-->
+<!--            </activation>-->
+<!--            <properties>-->
+<!--                <gwt.draftCompile>true</gwt.draftCompile>-->
+<!--                <gwt.localWorkers>10</gwt.localWorkers>-->
+<!--                &lt;!&ndash; Enable for detailed compilation traces. It doesn't affect compilation time. &ndash;&gt;-->
+<!--&lt;!&ndash;                <gwt.logLevel>TRACE</gwt.logLevel>&ndash;&gt;-->
+<!--                <gwt.optimize>0</gwt.optimize>-->
+<!--                <gwt.style>DETAILED</gwt.style>-->
+<!--            </properties>-->
+<!--            <dependencies>-->
+<!--                &lt;!&ndash; Override dependencies to that you can locally run GWT code server with Jetty &ndash;&gt;-->
+<!--                <dependency>-->
+<!--                    <groupId>com.google.gwt</groupId>-->
+<!--                    <artifactId>gwt-dev</artifactId>-->
+<!--                    <version>${gwtVersion}</version>-->
+<!--                    <scope>compile</scope>-->
+<!--                    <exclusions>-->
+<!--                        &lt;!&ndash; Should be empty to be merged correctly &ndash;&gt;-->
+<!--                    </exclusions>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--        </profile>-->
+<!--    </profiles>-->
 </project>

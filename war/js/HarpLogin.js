@@ -76,9 +76,9 @@
         oktaTermsConditionsErrorContent: "Please accept the Terms and Conditions",
         harpSignUpHeaderContent: "Don't have an account?",
         harpSignUpLinkContent: "Sign Up",
-        harpSignUpUrl: "https://harp.qualitynet.org/register/profile-info",
+        harpSignUpUrl: "https://harp.cms.gov/register/profile-info",
         harpRecoveryContent: "Having trouble logging in?",
-        harpRecoveryUrl: " https://harp.qualitynet.org/login/account-recovery",
+        harpRecoveryUrl: "https://harp.cms.gov/login/account-recovery",
         isOktaHelpContentAvailable: false,
         allowRemeberDeviceMFA: false,
         features: {

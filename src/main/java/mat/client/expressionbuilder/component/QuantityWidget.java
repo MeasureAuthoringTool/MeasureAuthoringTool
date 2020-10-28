@@ -1,18 +1,16 @@
 package mat.client.expressionbuilder.component;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Panel;
-
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+
+import java.util.Map;
+import java.util.Set;
 
 public class QuantityWidget extends Composite {
 	private static Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();

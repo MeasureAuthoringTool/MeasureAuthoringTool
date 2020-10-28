@@ -1,9 +1,9 @@
 package mat.dao;
 
-import java.util.List;
-
 import mat.dto.DataTypeDTO;
 import mat.model.DataType;
+
+import java.util.List;
 
 /**
  * The Interface DataTypeDAO.

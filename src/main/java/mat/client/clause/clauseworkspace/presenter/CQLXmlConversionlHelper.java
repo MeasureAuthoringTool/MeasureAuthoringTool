@@ -1,17 +1,5 @@
 package mat.client.clause.clauseworkspace.presenter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import mat.client.clause.clauseworkspace.model.CQLCellTreeNode;
-import mat.client.clause.clauseworkspace.model.CQLCellTreeNodeImpl;
-import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.shared.MatContext;
-import mat.shared.UUIDUtilClient;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.NamedNodeMap;
@@ -19,6 +7,16 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.Text;
 import com.google.gwt.xml.client.XMLParser;
+import mat.client.clause.clauseworkspace.model.CQLCellTreeNode;
+import mat.client.clause.clauseworkspace.model.CQLCellTreeNodeImpl;
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.shared.MatContext;
+import mat.shared.UUIDUtilClient;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class CQLXmlConversionlHelper {

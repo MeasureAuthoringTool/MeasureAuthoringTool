@@ -1,13 +1,12 @@
 package mat.client.measure;
 
-import java.util.List;
-
-import mat.client.shared.search.PagingFacade;
-import mat.model.History;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.shared.search.PagingFacade;
+import mat.model.History;
+
+import java.util.List;
 
 /**
  * The Class ManageMeasureHistoryModel.

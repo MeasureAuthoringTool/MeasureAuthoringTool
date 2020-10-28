@@ -2,7 +2,6 @@ package mat.client.cqlconstant.service;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-
 import mat.client.shared.CQLConstantContainer;
 
 /**
@@ -13,6 +12,6 @@ import mat.client.shared.CQLConstantContainer;
 @RemoteServiceRelativePath("cqlConstantService")
 public interface CQLConstantService extends RemoteService {
 	
-	CQLConstantContainer getAllCQLConstants(); 
+	CQLConstantContainer getAllCQLConstants(boolean isFhirEnabled);
 
 }

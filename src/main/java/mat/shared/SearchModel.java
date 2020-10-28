@@ -1,7 +1,6 @@
 package mat.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.client.shared.SearchWidgetWithFilter;
 
 public abstract class SearchModel implements IsSerializable {
@@ -16,9 +15,15 @@ public abstract class SearchModel implements IsSerializable {
 	protected String modifiedOwner;
 	protected String owner;
 
+	protected boolean matOnFhir;
+
+	protected ModelType modelType = ModelType.ALL;
+
 	protected VersionType versionType;
 	
 	public enum VersionType {ALL, VERSION, DRAFT}
+
+	public enum ModelType {ALL, FHIR, QDM_CQL, QDM_QDM}
 
 	public int getStartIndex() {
 		return startIndex;
@@ -26,6 +31,14 @@ public abstract class SearchModel implements IsSerializable {
 
 	public void setStartIndex(int startIndex) {
 		this.startIndex = startIndex;
+	}
+
+	public boolean isMatOnFhir() {
+		return this.matOnFhir;
+	}
+
+	public void setMatOnFhir(boolean matOnFhir) {
+		this.matOnFhir = matOnFhir;
 	}
 
 	public int getPageSize() {
@@ -91,7 +104,15 @@ public abstract class SearchModel implements IsSerializable {
 	public void setIsDraft(VersionType version) {
 		this.versionType = version;
 	}
-	
+
+	public ModelType getModelType() {
+		return modelType;
+	}
+
+	public void setModelType(ModelType modelType) {
+		this.modelType = modelType;
+	}
+
 	public void reset() {
 		searchTerm = "";
 		versionType = VersionType.ALL;

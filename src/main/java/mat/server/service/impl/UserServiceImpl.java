@@ -1,43 +1,5 @@
 package mat.server.service.impl;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import mat.client.admin.ManageUsersDetailModel;
@@ -60,6 +22,7 @@ import mat.model.UserBonnieAccessInfo;
 import mat.model.UserPassword;
 import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
+import mat.server.logging.LogFactory;
 import mat.server.model.MatUserDetails;
 import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
@@ -68,16 +31,47 @@ import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 import mat.shared.HashUtility;
 import mat.shared.PasswordVerifier;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-/**
- * The Class UserServiceImpl.
- */
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+
 @Service
 public class UserServiceImpl implements UserService {
 
-    /**
-     * The Constant logger.
-     */
     private static final Log logger = LogFactory.getLog(UserServiceImpl.class);
 
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -85,7 +79,8 @@ public class UserServiceImpl implements UserService {
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-    private static Random ID = new Random(System.currentTimeMillis());
+    private static final Random ID = new Random(System.currentTimeMillis());
+    private static final int PASSWORD_HISTORY_SIZE = 5;
 
     @Autowired
     private JavaMailSender mailSender;
@@ -105,19 +100,22 @@ public class UserServiceImpl implements UserService {
     private UserPasswordHistoryDAO userPasswordHistoryDAO;
     @Autowired
     private Configuration freemarkerConfiguration;
-
+    @Value("${mat.from.emailAddress}")
+    private String emailFromAddress;
+    @Value("${mat.accessibilitypolicy.url}")
     private String accessibilityUrl;
+    @Value("${mat.termsofuse.url}")
     private String termsOfUseUrl;
+    @Value("${mat.privacypolicy.url}")
     private String privacyPolicyUseUrl;
+    @Value("${mat.userguide.url}")
     private String userGuideUrl;
-    private final int PASSWORD_HISTORY_SIZE = 5;
+    @Value("${mat.support.emailAddress}")
+    private String supportEmailAddress;
 
-    /* (non-Javadoc)
-     * @see mat.server.service.UserService#generateRandomPassword()
-     */
     @Override
     public String generateRandomPassword() {
-        logger.info("In generateRandomPassword().....");
+        logger.debug("In generateRandomPassword().....");
         String password = null;
         Random r = new Random(System.currentTimeMillis());
         StringBuilder pwdBuilder = new StringBuilder();
@@ -144,7 +142,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void activate(String userid) {
-        logger.info("In activate(String userid).....");
+        logger.debug("In activate(String userid).....");
         User user = userDAO.find(userid);
         String newPassword = generateRandomPassword();
         if (user.getPassword() == null) {
@@ -168,7 +166,7 @@ public class UserServiceImpl implements UserService {
      * @param newPassword the new password
      */
     public void notifyUserUnlocked(User user, String newPassword) {
-        logger.info("In notifyUserUnlocked(User user, String newPassword).....");
+        logger.debug("In notifyUserUnlocked(User user, String newPassword).....");
         SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
         msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT + ServerConstants.getEnvName());
         msg.setTo(user.getEmailAddress());
@@ -182,8 +180,9 @@ public class UserServiceImpl implements UserService {
         paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
         paramsMap.put(ConstantMessages.HARPID, user.getHarpId());
         paramsMap.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
+        paramsMap.put(ConstantMessages.SUPPORT_EMAIL, supportEmailAddress);
 
-        logger.info("Sending email to " + user.getEmailAddress());
+        logger.debug("Sending email to " + user.getEmailAddress());
         try {
             String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/tempPasswordTemplate.ftl"), paramsMap);
             msg.setText(text);
@@ -211,12 +210,9 @@ public class UserServiceImpl implements UserService {
         return returnDateString;
     }
 
-    /* (non-Javadoc)
-     * @see mat.server.service.UserService#setUserPassword(mat.model.User, java.lang.String, boolean)
-     */
     @Override
     public void setUserPassword(User user, String clearTextPassword, boolean isTemporary) {
-        logger.info("In setUserPassword(User user, String clearTextPassword, boolean isTemporary)........");
+        logger.debug("In setUserPassword(User user, String clearTextPassword, boolean isTemporary)........");
         String salt = UUID.randomUUID().toString();
         user.getPassword().setSalt(salt);
         String password = getPasswordHash(salt, clearTextPassword);
@@ -228,23 +224,18 @@ public class UserServiceImpl implements UserService {
         user.getPassword().setPasswordlockCounter(0);
     }
 
-
-    /* (non-Javadoc)
-     * @see mat.server.service.UserService#requestForgottenPassword(java.lang.String, java.lang.String, java.lang.String, int)
-     */
     @Override
     public ForgottenPasswordResult requestForgottenPassword(String loginId,
                                                             String securityQuestion, String securityAnswer, int invalidUserCounter) {
-        logger.info("In requestForgottenPassword(String loginId, String securityQuestion, String securityAnswer, int invalidUserCounter).......");
+        logger.debug("In requestForgottenPassword(String loginId, String securityQuestion, String securityAnswer, int invalidUserCounter).......");
         ForgottenPasswordResult result = new ForgottenPasswordResult();
         result.setEmailSent(false);
-        //logger.info(" requestForgottenPassword   Login Id ====" + loginId);
+        // logger.debug(" requestForgottenPassword   Login Id ====" + loginId);
         User user = null;
         try {
-            //user = userDAO.findByEmail(email);
             user = userDAO.findByLoginId(loginId);
         } catch (ObjectNotFoundException exc) {
-            exc.printStackTrace();
+            logger.error(exc);
         }
 
         if (user == null) {
@@ -288,15 +279,11 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-
-    /* (non-Javadoc)
-     * @see mat.server.service.UserService#requestForgottenLoginID(java.lang.String)
-     */
     @Override
     public ForgottenLoginIDResult requestForgottenLoginID(String email) {
         ForgottenLoginIDResult result = new ForgottenLoginIDResult();
         result.setEmailSent(false);
-        logger.info(" requestForgottenLoginID   email ====" + email);
+        logger.debug(" requestForgottenLoginID   email ====" + email);
         User user = null;
         boolean inValidEmail = false;
         try {
@@ -305,15 +292,15 @@ public class UserServiceImpl implements UserService {
                 user = userDAO.findByEmail(email);
             }
         } catch (ObjectNotFoundException exc) {
-            logger.info(" requestForgottenLoginID   Exception " + exc.getMessage());
+            logger.debug(" requestForgottenLoginID   Exception " + exc.getMessage());
         }
 
         if ((user == null) && inValidEmail) {
             result.setFailureReason(ForgottenLoginIDResult.EMAIL_NOT_FOUND_MSG);
-            logger.info(" requestForgottenLoginID   user not found for email ::" + email);
+            logger.debug(" requestForgottenLoginID   user not found for email ::" + email);
         } else if (!inValidEmail) {
             result.setFailureReason(ForgottenLoginIDResult.EMAIL_INVALID);
-            logger.info(" requestForgottenLoginID   Invalid email ::" + email);
+            logger.debug(" requestForgottenLoginID   Invalid email ::" + email);
         } else {
 
             Date lastSignIn = user.getSignInDate();
@@ -325,7 +312,7 @@ public class UserServiceImpl implements UserService {
             if (isAlreadySignedIn) {
                 result.setFailureReason(ForgottenLoginIDResult.USER_ALREADY_LOGGED_IN);
             } else {
-                logger.info(" requestForgottenLoginID   User ID Found and email sent successfully to email address ::" + email);
+                logger.debug(" requestForgottenLoginID   User ID Found and email sent successfully to email address ::" + email);
                 result.setEmailSent(true);
                 notifyUserOfForgottenLoginId(user);
             }
@@ -377,30 +364,27 @@ public class UserServiceImpl implements UserService {
      * @param newPassword the new password
      */
     private void sendResetPassword(String email, String newPassword) {
-        logger.info("In sendResetPassword(String email, String newPassword)........" + newPassword);
+        logger.debug("In sendResetPassword(String email, String newPassword)........" + newPassword);
         SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
         msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT + ServerConstants.getEnvName());
         msg.setTo(email);
         String expiryDateString = getFormattedExpiryDate(new Date(), 5);
         //US 440. Re-factored to use template based framework
-        HashMap<String, Object> paramsMap = new HashMap<String, Object>();
+        HashMap<String, Object> paramsMap = new HashMap<>();
         paramsMap.put(ConstantMessages.PASSWORD_EXPIRE_DATE, expiryDateString);
         paramsMap.put(ConstantMessages.PASSWORD, newPassword);
         paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
+        paramsMap.put(ConstantMessages.SUPPORT_EMAIL, supportEmailAddress);
         try {
             String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/resetPasswordTemplate.ftl"), paramsMap);
             msg.setText(text);
-            logger.info("Sending email to " + email);
+            logger.debug("Sending email to " + email);
             mailSender.send(msg);
         } catch (MailException | IOException | TemplateException exc) {
             logger.error(exc);
         }
     }
 
-
-    /* (non-Javadoc)
-     * @see mat.server.service.UserService#searchForUsersByName(java.lang.String)
-     */
     @Override
     public List<User> searchForUsersByName(String orgId) {
         if (orgId == null) {
@@ -432,17 +416,11 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    /* (non-Javadoc)
-     * @see mat.server.service.UserService#searchForUsedOrganizations()
-     */
     @Override
     public HashMap<String, Organization> searchForUsedOrganizations() {
         return userDAO.searchAllUsedOrganizations();
     }
 
-    /* (non-Javadoc)
-     * @see mat.server.service.UserService#searchNonAdminUsers(java.lang.String, int, int)
-     */
     @Override
     public List<User> searchNonAdminUsers(String orgId, int startIndex, int numResults) {
         if (orgId == null) {
@@ -451,29 +429,20 @@ public class UserServiceImpl implements UserService {
         return userDAO.searchNonAdminUsers(orgId, startIndex - 1, numResults);
     }
 
-    /* (non-Javadoc)
-     * @see mat.server.service.UserService#findByEmailID(java.lang.String)
-     */
     @Override
     public User findByEmailID(String emailId) {
         return userDAO.findByEmail(emailId);
     }
 
-    /* (non-Javadoc)
-     * @see mat.server.service.UserService#getById(java.lang.String)
-     */
     @Override
     public User getById(String id) {
         return userDAO.find(id);
     }
 
 
-    /* (non-Javadoc)
-     * @see mat.server.service.UserService#saveNew(mat.model.User)
-     */
     @Override
     public void saveNew(User user) {
-        logger.info("In saveNew(User user)..........");
+        logger.debug("In saveNew(User user)..........");
         if (user.getPassword() == null) {
             UserPassword pwd = new UserPassword();
             user.setPassword(pwd);
@@ -506,7 +475,7 @@ public class UserServiceImpl implements UserService {
      * @param user the user
      */
     public void notifyUserOfNewAccount(User user) {
-        logger.info("In notifyUserOfNewAccount(User user)..........");
+        logger.debug("In notifyUserOfNewAccount(User user)..........");
         MimeMessage message = mailSender.createMimeMessage();
         try {
             message.setSubject(ServerConstants.NEW_ACCESS_SUBJECT + ServerConstants.getEnvName());
@@ -515,17 +484,18 @@ public class UserServiceImpl implements UserService {
             paramsMap.put(ConstantMessages.HARPID, user.getHarpId());
             paramsMap.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
             paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
+            paramsMap.put(ConstantMessages.SUPPORT_EMAIL, supportEmailAddress);
             String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/welcomeTemplate.ftl"), paramsMap);
             body.setContent(text, "text/html");
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(body);
-            message.setFrom(new InternetAddress("sb-mat-noreply-help@semanticbits.com"));
+            message.setFrom(new InternetAddress(emailFromAddress));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmailAddress()));
             message.setContent(multipart);
 
             mailSender.send(message);
         } catch (MessagingException | IOException | TemplateException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
     }
@@ -538,9 +508,10 @@ public class UserServiceImpl implements UserService {
     private void notifyUserOfForgottenLoginId(User user) {
         SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
         msg.setSubject(ServerConstants.FORGOT_LOGINID_SUBJECT + ServerConstants.getEnvName());
-        HashMap<String, Object> paramsMap = new HashMap<String, Object>();
+        HashMap<String, Object> paramsMap = new HashMap<>();
         paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
         paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
+        paramsMap.put(ConstantMessages.SUPPORT_EMAIL, supportEmailAddress);
         try {
             String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/forgotLoginIDTemplate.ftl"), paramsMap);
             msg.setTo(user.getEmailAddress());
@@ -551,21 +522,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public String getPasswordHash(String salt, String password) {
         String hashed = hash(salt + password);
         return hashed;
     }
 
-    /**
-     * Hash.
-     *
-     * @param s the s
-     * @return the string
-     */
     private String hash(String s) {
         try {
             if (s == null) {
@@ -579,17 +541,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public void saveExisting(User user) {
         userDAO.save(user);
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public boolean isAdminForUser(User admin, User user) {
         boolean isAdmin = admin.getSecurityRole().getId().equals("1");
@@ -598,17 +554,11 @@ public class UserServiceImpl implements UserService {
         return isAdmin && !isSelf;
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public void deleteUser(String userid) {
         userDAO.delete(userid);
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public SecurityQuestionOptions getSecurityQuestionOptions(String loginId) {
         User user = userDAO.findByLoginId(loginId);
@@ -626,9 +576,6 @@ public class UserServiceImpl implements UserService {
         return options;
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email) {
         User user = userDAO.findByEmail(email);
@@ -646,13 +593,10 @@ public class UserServiceImpl implements UserService {
         return options;
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) {
         SaveUpdateUserResult result = new SaveUpdateUserResult();
-        User user = null;
+        User user;
         if (model.isExistingUser()) {
             user = getById(model.getKey());
         } else {
@@ -663,24 +607,26 @@ public class UserServiceImpl implements UserService {
         if (model.isActive() && (user.getStatus() != null) && !user.getStatus().getStatusId().equals(Status.STATUS_ACTIVE)) {
             reactivatingUser = true;
         }
-        User exsitingUser = userDAO.findByEmail(model.getEmailAddress());
-        if ((exsitingUser != null) && (!(exsitingUser.getId().equals(user.getId())))) {
+        if (checkEmailNotUnique(model)) {
             result.setSuccess(false);
             result.setFailureReason(SaveUpdateUserResult.USER_EMAIL_NOT_UNIQUE);
         } else {
-            setModelFieldsOnUser(model, user);
-            if (model.isExistingUser()) {
-                if (reactivatingUser) {
-                    activate(user.getId());
-                }
-                saveExisting(user);
-            } else {
-                saveNew(user);
-            }
-            result.setSuccess(true);
+            saveValidatedUserFromModel(model, result, user, reactivatingUser);
         }
-
         return result;
+    }
+
+    private void saveValidatedUserFromModel(ManageUsersDetailModel model, SaveUpdateUserResult result, User user, boolean reactivatingUser) {
+        setModelFieldsOnUser(model, user);
+        if (model.isExistingUser()) {
+            if (reactivatingUser) {
+                activate(user.getId());
+            }
+            saveExisting(user);
+        } else {
+            saveNew(user);
+        }
+        result.setSuccess(true);
     }
 
     private boolean checkEmailNotUnique(ManageUsersDetailModel model) {
@@ -688,9 +634,10 @@ public class UserServiceImpl implements UserService {
         return existing != null && !(existing.getId().equals(model.getKey()));
     }
 
+
     @Override
     public List<String> getFooterURLs() {
-        List<String> footerUrls = new ArrayList<String>();
+        List<String> footerUrls = new ArrayList<>();
         footerUrls.add(accessibilityUrl);
         footerUrls.add(privacyPolicyUseUrl);
         footerUrls.add(termsOfUseUrl);
@@ -708,12 +655,14 @@ public class UserServiceImpl implements UserService {
         user.setPhoneNumber(model.getPhoneNumber());
         user.setStatus(getStatusObject(model.isActive()));
         user.setSecurityRole(getRole(model.getRole()));
+        user.setFhirFlag(model.isFhirAccessible());
 
         if (model.isActive()) {
             Organization organization = organizationDAO.find(Long.parseLong(model.getOrganizationId()));
             user.setOrganization(organization);
         } else if (!model.isActive()) {
-            Organization organizationRevoked = organizationDAO.find(Long.parseLong("1"));// 1 org id in db has blank organization name and oid.
+            // 1 org id in db has blank organization name and oid.
+            Organization organizationRevoked = organizationDAO.find(Long.parseLong("1"));
             user.setOrganization(organizationRevoked);
         }
 
@@ -723,7 +672,8 @@ public class UserServiceImpl implements UserService {
             user.setSignInDate(null);
             user.setSignOutDate(null);
             user.setActivationDate(new Date());
-        } else if (model.isBeingRevoked()) { // if the user is being revoked/terminated, update the termination date
+        } else if (model.isBeingRevoked()) {
+            // if the user is being revoked/terminated, update the termination date
             user.setTerminationDate(new Date());
         }
     }
@@ -754,19 +704,13 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    //US212
-    /*
-     * {@inheritDoc}
-     */
+    // US212
     @Override
     public void setUserSignInDate(String userid) {
         userDAO.setUserSignInDate(userid);
     }
 
-    //US212
-    /*
-     * {@inheritDoc}
-     */
+    // US212
     @Override
     public void setUserSignOutDate(String userid) {
         userDAO.setUserSignOutDate(userid);
@@ -805,81 +749,38 @@ public class UserServiceImpl implements UserService {
         return generatedId.toString();
     }
 
-    /**
-     * Sets the accessibility url.
-     *
-     * @param accessibilityUrl the new accessibility url
-     */
     public void setAccessibilityUrl(String accessibilityUrl) {
         this.accessibilityUrl = accessibilityUrl;
     }
 
-    /**
-     * Gets the accessibility url.
-     *
-     * @return the accessibility url
-     */
     public String getAccessibilityUrl() {
         return accessibilityUrl;
     }
 
-    /**
-     * Sets the terms of use url.
-     *
-     * @param termsOfUseUrl the new terms of use url
-     */
     public void setTermsOfUseUrl(String termsOfUseUrl) {
         this.termsOfUseUrl = termsOfUseUrl;
     }
 
-    /**
-     * Gets the terms of use url.
-     *
-     * @return the terms of use url
-     */
     public String getTermsOfUseUrl() {
         return termsOfUseUrl;
     }
 
-    /**
-     * Sets the privacy policy use url.
-     *
-     * @param privacyPolicyUseUrl the new privacy policy use url
-     */
     public void setPrivacyPolicyUseUrl(String privacyPolicyUseUrl) {
         this.privacyPolicyUseUrl = privacyPolicyUseUrl;
     }
 
-    /**
-     * Gets the privacy policy use url.
-     *
-     * @return the privacy policy use url
-     */
     public String getPrivacyPolicyUseUrl() {
         return privacyPolicyUseUrl;
     }
 
-    /**
-     * Sets the user guide url.
-     *
-     * @param userGuideUrl the new user guide url
-     */
     public void setUserGuideUrl(String userGuideUrl) {
         this.userGuideUrl = userGuideUrl;
     }
 
-    /**
-     * Gets the user guide url.
-     *
-     * @return the user guide url
-     */
     public String getUserGuideUrl() {
         return userGuideUrl;
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public String updateOnSignOut(String userId, String email, String activityType) {
         Date signoutDate = new Date();
@@ -895,25 +796,19 @@ public class UserServiceImpl implements UserService {
         try {
             userDAO.save(user);
             transactionAuditLogDAO.save(auditLog);
-            logger.info("SignOut Successful" + signoutDate.toString());
+            logger.debug("SignOut Successful" + signoutDate.toString());
             return "SUCCESS";
         } catch (Exception e) {
-            logger.info("SignOut Unsuccessful " + "(" + signoutDate.toString() + ")" + e.getMessage());
+            logger.debug("SignOut Unsuccessful " + "(" + signoutDate.toString() + ")" + e.getMessage());
             return e.getMessage();
         }
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public String getSecurityQuestion(String userLoginID) {
         return userDAO.getRandomSecurityQuestion(userLoginID);
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public List<User> getAllNonAdminActiveUsers() {
         return userDAO.getAllNonAdminActiveUsers();
@@ -942,9 +837,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    /*
-     * {@inheritDoc}
-     */
     @Override
     public boolean isLockedUser(String loginId) {
         User user = userDAO.findByLoginId(loginId);
@@ -985,8 +877,7 @@ public class UserServiceImpl implements UserService {
             passwordHistory.setCreatedDate(user.getPassword().getCreatedDate());
 
             List<UserPasswordHistory> pwdHistoryList = userPasswordHistoryDAO.getPasswordHistory(user.getId());
-            if (pwdHistoryList.
-                    size() < PASSWORD_HISTORY_SIZE) {
+            if (pwdHistoryList.size() < PASSWORD_HISTORY_SIZE) {
                 userPasswordHistoryDAO.save(passwordHistory);
             } else {
                 userPasswordHistoryDAO.addByUpdateUserPasswordHistory(user);
@@ -994,6 +885,5 @@ public class UserServiceImpl implements UserService {
         }
 
     }
-
 
 }

@@ -1,18 +1,16 @@
 package mat.server;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.stereotype.Service;
-
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.VSACApiService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /** VSACAPIServiceImpl class. **/
 @Configurable
@@ -22,6 +20,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	private static final long serialVersionUID = 1L;
 	
 	@Autowired VSACApiService vsacapi;
+
+	@Override
+	public String getSessionId() {
+		HttpServletRequest thread = getThreadLocalRequest();
+		return thread.getSession().getId();
+	}
 	
 	/**
 	 *	Method to invalidate VSAC user session by removing HTTP session Id from UMLSSessionMap.
@@ -57,9 +61,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	 *@return Boolean.
 	 * **/
 	@Override
-	public final boolean validateVsacUser(final String userName, final String password) {
+	public final boolean validateVsacUser(final String apiKey) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.vsacapi.validateVsacUser(userName, password,sessionId);
+		return this.vsacapi.validateVsacUser(apiKey,sessionId);
 	}
 
 	@Override

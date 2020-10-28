@@ -1,10 +1,8 @@
 package mat.util;
 
-import mat.server.util.UuidUtility;
-
-import org.junit.Test;
-
 import junit.framework.TestCase;
+import mat.server.util.UuidUtility;
+import org.junit.Test;
 
 public class IdToUuidTest extends TestCase {
 

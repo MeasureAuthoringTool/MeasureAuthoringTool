@@ -1,11 +1,11 @@
 package mat.client.shared;
 
-import mat.client.Enableable;
-import mat.client.shared.search.MATAnchor;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import mat.client.Enableable;
+import mat.client.shared.search.MATAnchor;
 
 /**
  * This is the class for the two buttons at the bottom of the Measure Composer tab

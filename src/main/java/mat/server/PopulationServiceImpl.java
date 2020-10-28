@@ -1,64 +1,57 @@
 package mat.server;
 
-import org.apache.commons.lang3.StringUtils;
-
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.population.service.PopulationService;
 import mat.server.service.MeasurePackageService;
 import mat.server.util.XmlProcessor;
 import mat.shared.SaveUpdateCQLResult;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class PopulationServiceImpl extends SpringRemoteServiceServlet implements PopulationService{
+@Service
+public class PopulationServiceImpl extends SpringRemoteServiceServlet implements PopulationService {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Gets the service.
-	 * 
-	 * @return the service
-	 */
-	private MeasurePackageService getService() {
-		return (MeasurePackageService) context.getBean("measurePackageService");
-	}
+    @Autowired
+    private MeasurePackageService measurePackageService;
 
-	@Override
-	public SaveUpdateCQLResult savePopulations(String measureId, String nodeName, String nodeToReplace) {
-		
-		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureId);
-		XmlProcessor xmlProcessor = new XmlProcessor(model.getXml());
+    @Override
+    public SaveUpdateCQLResult savePopulations(String measureId, String nodeName, String nodeToReplace) {
 
-		String parentNode = createParentNode(nodeName);		
-		
-		String newXml = xmlProcessor.replaceNode(nodeToReplace, nodeName, parentNode);		
-		newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
-		//Set the updated XML to the model
-		model.setXml(newXml);
-		//Persist the Modified XML
-		getService().saveMeasureXml(model);
+        MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
+        XmlProcessor xmlProcessor = new XmlProcessor(model.getXml());
 
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		
-		if (StringUtils.isNotBlank(model.getXml())) {
-			result.setXml(model.getXml());
-			result.setSetId(measureId);
-			result.setSuccess(true);
-		} else {
-			result.setSuccess(false);
-		}
+        String parentNode = createParentNode(nodeName);
 
-		return result;
-	}
+        String newXml = xmlProcessor.replaceNode(nodeToReplace, nodeName, parentNode);
+        newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
+        // Set the updated XML to the model
+        model.setXml(newXml);
+        // Persist the Modified XML
+        measurePackageService.saveMeasureXml(model);
 
-	private String createParentNode(String populationTyp) {
-		if(populationTyp.equals("measureObservations") || populationTyp.equals("strata")) {
-			return "measure";
-		} else {
-			return "populations";
-		}
-		
-	}
+        SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+
+        if (StringUtils.isNotBlank(model.getXml())) {
+            result.setXml(model.getXml());
+            result.setSetId(measureId);
+            result.setSuccess(true);
+        } else {
+            result.setSuccess(false);
+        }
+
+        return result;
+    }
+
+    private String createParentNode(String populationTyp) {
+        if (populationTyp.equals("measureObservations") || populationTyp.equals("strata")) {
+            return "measure";
+        } else {
+            return "populations";
+        }
+
+    }
 
 }

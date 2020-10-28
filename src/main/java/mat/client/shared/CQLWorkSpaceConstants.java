@@ -1,11 +1,11 @@
 package mat.client.shared;
 
+import com.google.gwt.xml.client.Node;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.xml.client.Node;
 
 public class CQLWorkSpaceConstants {
 	
@@ -19,7 +19,8 @@ public class CQLWorkSpaceConstants {
 	public static final String GENERIC_CAUTION_MSG = "Caution: Removing or invalidating a population will "
 			+ "cause any package groupings containing that population to be cleared on the Measure Packager.";
 	
-	public static String CQL_MODEL_DATA_TYPE ="QDM Datatype";
+	public static String CQL_QDM_DATA_TYPE ="QDM Datatype";
+	public static String CQL_FHIR_DATA_TYPE ="FHIR Datatype";
 	public static String CQL_OTHER_DATA_TYPE ="Others";
 	public static String CQL_TIMING_EXPRESSION ="Build CQL Timing Expression";
 	public static String CQL_PRIMARY_TIMING_WITHIN ="within";

@@ -1,21 +1,5 @@
 package mat.client.measure;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Form;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.constants.PanelType;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -38,7 +22,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
-
 import mat.client.CustomPager;
 import mat.client.Mat;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -58,6 +41,21 @@ import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.MeasureSearchModel;
 import mat.shared.SearchModel.VersionType;
 import mat.shared.StringUtility;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.PanelType;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ComponentMeasureSearch implements BaseDisplay{
 	
@@ -303,7 +301,8 @@ public class ComponentMeasureSearch implements BaseDisplay{
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				sb.appendHtmlConstant("<div id='appliedComponentContainer' tabindex=\"-1\">");
-				sb.appendHtmlConstant("<span id='appliedComponentDiv' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
+				sb.appendHtmlConstant("<span class='applied-component-div' title=\" " + SafeHtmlUtils.htmlEscape(object.getName()) +
+						"\" tabindex=\"0\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</span>");
 				sb.appendHtmlConstant("</div>");
 				return sb.toSafeHtml();
 			}
@@ -380,7 +379,8 @@ public class ComponentMeasureSearch implements BaseDisplay{
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {				
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				sb.appendHtmlConstant("<div id='container' tabindex=\"-1\">");
-				sb.appendHtmlConstant("<span id='div2' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
+				sb.appendHtmlConstant("<span class='measure-column' title=\" " + SafeHtmlUtils.htmlEscape(object.getName()) +
+						"\" tabindex=\"0\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</span>");
 				sb.appendHtmlConstant("</div>");
 				return sb.toSafeHtml();
 			}
@@ -442,12 +442,12 @@ public class ComponentMeasureSearch implements BaseDisplay{
 			@Override
 			public Boolean getValue(Result object) {
 				if(appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList()).size() > 0) {
-					chbxCell.setTitle("Click to remove " + object.getName() + " as a component measure");
+					chbxCell.setTitle("Click to remove " + SafeHtmlUtils.htmlEscape(object.getName()) + " as a component measure");
 					selectionModel.setSelected(object, true);
 					return true;
 				}
 				
-				chbxCell.setTitle("Click to add " + object.getName() + " as a component measure");
+				chbxCell.setTitle("Click to add " + SafeHtmlUtils.htmlEscape(object.getName()) + " as a component measure");
 				return false;
 			}
 		};
@@ -465,10 +465,12 @@ public class ComponentMeasureSearch implements BaseDisplay{
 								appliedComponentMeasuresList.add(object);
 							}
 							helpBlock.setColor("transparent");
-							helpBlock.setText(object.getName() + " has been selected and added to the applied component measures list");
+							helpBlock.setText(SafeHtmlUtils.htmlEscape(object.getName()) +
+									" has been selected and added to the applied component measures list");
 						} else {
 							helpBlock.setColor("transparent");
-							helpBlock.setText(object.getName() + " has been deselected and removed from the applied component measures list");
+							helpBlock.setText(SafeHtmlUtils.htmlEscape(object.getName()) +
+									" has been deselected and removed from the applied component measures list");
 							List<Result> matchingList = appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList());
 							for(Result matchingResult: matchingList) {
 								appliedComponentMeasuresList.remove(matchingResult);

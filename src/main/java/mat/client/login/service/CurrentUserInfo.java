@@ -1,11 +1,11 @@
 package mat.client.login.service;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.dto.UserPreferenceDTO;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-import mat.dto.UserPreferenceDTO;
 
 public class CurrentUserInfo implements IsSerializable {
 
@@ -23,5 +23,6 @@ public class CurrentUserInfo implements IsSerializable {
     public String organizationName;
     public List<ShortUserInfo> users = Collections.emptyList();
     public String harpId;
+    public boolean isFhirAccessible;
 
 }

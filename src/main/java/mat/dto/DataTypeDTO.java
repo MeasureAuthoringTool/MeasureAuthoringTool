@@ -1,7 +1,6 @@
 package mat.dto;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.client.codelist.HasListBox;
 
 /**
@@ -14,7 +13,10 @@ public class DataTypeDTO implements IsSerializable, HasListBox{
 	
 	/** The description. */
 	private String description;
-	
+
+	public DataTypeDTO() {
+	}
+
 	/**
 	 * Gets the id.
 	 * 

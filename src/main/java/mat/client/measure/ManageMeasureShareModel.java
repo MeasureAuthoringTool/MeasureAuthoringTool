@@ -1,8 +1,9 @@
 package mat.client.measure;
 
-import java.util.List;
-import mat.model.clause.MeasureShareDTO;
 import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.model.clause.MeasureShareDTO;
+
+import java.util.List;
 
 /**
  * The Class ManageMeasureShareModel.

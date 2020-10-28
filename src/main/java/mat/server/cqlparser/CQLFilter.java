@@ -1,12 +1,12 @@
 package mat.server.cqlparser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import cqltoelm.models.LibraryHolder;
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLModel;
+import mat.shared.CQLExpressionObject;
+import mat.shared.CQLExpressionOprandObject;
+import mat.shared.CQLObject;
 import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
-import mat.models.LibraryHolder;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ListType;
@@ -60,11 +60,10 @@ import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.ProfileInfo;
 import org.hl7.elm_modelinfo.r1.TypeInfo;
 
-import mat.model.cql.CQLIncludeLibrary;
-import mat.model.cql.CQLModel;
-import mat.shared.CQLExpressionObject;
-import mat.shared.CQLExpressionOprandObject;
-import mat.shared.CQLObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
 *
@@ -151,7 +150,7 @@ public class CQLFilter {
 	 *            the lists of populations that are included in MAT
 	 */
 	public CQLFilter(Library library, List<String> populationList,
-			Map<String, LibraryHolder> map, CQLModel cqlModel) {
+					 Map<String, LibraryHolder> map, CQLModel cqlModel) {
 
 		this.libraryHolderMapping = map;
 		this.library = library;

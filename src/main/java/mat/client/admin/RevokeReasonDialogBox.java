@@ -1,5 +1,13 @@
 package mat.client.admin;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import mat.client.shared.ConfirmationDialogBox;
+import mat.client.shared.ConfirmationObserver;
+import mat.client.shared.SpacerWidget;
 import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -10,16 +18,6 @@ import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
-
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
-
-import mat.client.shared.ConfirmationDialogBox;
-import mat.client.shared.ConfirmationObserver;
-import mat.client.shared.SpacerWidget;
 
 public class RevokeReasonDialogBox extends ConfirmationDialogBox {
 	TextArea reasonTextArea = new TextArea();

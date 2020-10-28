@@ -1,8 +1,5 @@
 package mat.client.shared;
 
-import java.util.ArrayList;
-import mat.client.clause.QDSAppliedListModel;
-import mat.model.QualityDataSetDTO;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -19,6 +16,10 @@ import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import mat.client.clause.QDSAppliedListModel;
+import mat.model.QualityDataSetDTO;
+
+import java.util.ArrayList;
 
 /**
  * The Class QDMAppliedListWidget.

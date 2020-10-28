@@ -76,9 +76,9 @@
         oktaTermsConditionsErrorContent: "Please accept the Terms and Conditions",
         harpSignUpHeaderContent: "Don't have an account?",
         harpSignUpLinkContent: "Sign Up",
-        harpSignUpUrl: "https://harp.qualitynet.org/register/profile-info",
+        harpSignUpUrl: "https://harp.cms.gov/register/profile-info",
         harpRecoveryContent: "Having trouble logging in?",
-        harpRecoveryUrl: " https://harp.qualitynet.org/login/account-recovery",
+        harpRecoveryUrl: "https://harp.cms.gov/login/account-recovery",
         isOktaHelpContentAvailable: false,
         allowRemeberDeviceMFA: false,
         features: {
@@ -130,9 +130,6 @@
               console.dir(err);
               // Sign user out of their Okta session (non-compatible with Okta Auth sdk 3.0+)
               authClient.signOut()
-                  .then(function() {
-                    console.log("successfully logged out");
-                  })
                   .fail(function(err) {
                     console.dir(err);
                   });

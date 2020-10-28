@@ -1,8 +1,8 @@
 package mat.client.expressionbuilder.model;
 
-import java.util.List;
-
 import mat.client.expressionbuilder.constant.CQLType;
+
+import java.util.List;
 
 public interface IExpressionBuilderModel {
 	public String getDisplayName();

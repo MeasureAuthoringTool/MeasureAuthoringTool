@@ -1,16 +1,17 @@
 package mat.client.codelist.service;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-
+import mat.client.codelist.HasListBox;
 import mat.dto.OperatorDTO;
 import mat.dto.UnitDTO;
-import mat.client.codelist.HasListBox;
-import mat.model.MatValueSetTransferObject;
+import mat.dto.VSACCodeSystemDTO;
 import mat.model.QualityDataSetDTO;
+import mat.model.MatValueSetTransferObject;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Interface CodeListService.
@@ -428,35 +429,37 @@ public interface CodeListService extends RemoteService {
 	/**
 	 * Save qds to measure.
 	 * 
-	 * @param matValueSetTransferObject
+	 * @param ValueSetTransferObject
 	 *            the mat value set transfer object
 	 * @return the save update code list result
 	 */
-	SaveUpdateCodeListResult saveQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject);
+	SaveUpdateCodeListResult saveQDStoMeasure(MatValueSetTransferObject ValueSetTransferObject);
 	
 	/**
 	 * Save user defined qds to measure.
 	 * 
-	 * @param matValueSetTransferObject
+	 * @param ValueSetTransferObject
 	 *            the mat value set transfer object
 	 * @return the save update code list result
 	 */
-	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject);
+	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(MatValueSetTransferObject ValueSetTransferObject);
 	
 	
 	
 	/**
 	 * Update code list to measure.
 	 * 
-	 * @param matValueSetTransferObject
+	 * @param ValueSetTransferObject
 	 *            the mat value set transfer object
 	 * @return the save update code list result
 	 */
-	SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject);
+	SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject ValueSetTransferObject);
 	
 	/**
 	 * Gets all of the cql units
 	 * @return a list of the cql unit dtos
 	 */
-	List<UnitDTO> getAllCqlUnits();	
+	List<UnitDTO> getAllCqlUnits();
+
+	Map<String, VSACCodeSystemDTO> getOidToVsacCodeSystemMap();
 }

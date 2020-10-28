@@ -1,19 +1,18 @@
 package mat.server;
 
 
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import mat.dto.UserPreferenceDTO;
 import mat.client.login.service.CurrentUserInfo;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.ShortUserInfo;
+import mat.dto.UserPreferenceDTO;
 import mat.model.User;
 import mat.model.UserPreference;
 import mat.server.model.MatUserDetails;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.stream.Collectors;
 
 
 public class SessionManagementServImpl extends SpringRemoteServiceServlet implements SessionManagementService {
@@ -43,6 +42,7 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet implem
         result.activeSessionId = user.getSessionId();
         result.organizationName = user.getOrganizationName();
         result.harpId = user.getHarpId();
+        result.isFhirAccessible = user.getFhirFlag();
         UserPreference userPreference = user.getUserPreference();
         UserPreferenceDTO userPreferenceDTO = new UserPreferenceDTO();
         if (userPreference != null) {

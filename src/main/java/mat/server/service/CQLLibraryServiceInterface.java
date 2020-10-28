@@ -1,7 +1,8 @@
 package mat.server.service;
 
-import java.util.List;
-
+import mat.client.measure.service.CheckForConversionResult;
+import mat.client.measure.service.FhirConvertResultResponse;
+import mat.client.measure.service.FhirLibraryPackageResult;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
@@ -26,102 +27,115 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 
+import java.util.List;
+
 public interface CQLLibraryServiceInterface {
-	
-	SaveCQLLibraryResult search(LibrarySearchModel librarySearchModel);
-	
-	void save(CQLLibrary cqlLibrary);
 
-	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
-	public SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject);
+    SaveCQLLibraryResult search(LibrarySearchModel librarySearchModel);
 
-	String createCQLLookUpTag(String libraryName,String version);
+    void save(CQLLibrary cqlLibrary);
 
-	XmlProcessor loadCQLXmlTemplateFile();
-	
-	public SaveUpdateCQLResult getCQLData(String id);
+    CQLLibraryDataSetObject extractCQLLibraryDataObject(CQLLibrary cqlLibrary);
 
-	public boolean isLibraryLocked(String id);
+    CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
 
-	public SaveCQLLibraryResult resetLockedDate(String currentLibraryId, String userId);
+    SaveCQLLibraryResult saveLibrary(CQLLibraryDataSetObject cqlLibraryDataSetObject);
 
-	public SaveCQLLibraryResult updateLockedDate(String currentLibraryId, String userId);
-	
-	SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId);
+    String createCQLLookUpTag(String libraryName, String version, boolean isFhir);
 
-	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
+    XmlProcessor loadCQLXmlTemplateFile(boolean isFhir);
 
-	String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath);
+    SaveUpdateCQLResult getCQLData(String id);
 
+    boolean isLibraryLocked(String id);
 
-	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
+    SaveCQLLibraryResult resetLockedDate(String currentLibraryId, String userId);
 
-	SaveCQLLibraryResult draftExistingCQLLibrary(String libraryId, String libraryName) throws MatException;
+    SaveCQLLibraryResult updateLockedDate(String currentLibraryId, String userId);
 
-	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context, String libraryComment);
+    SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId);
 
-	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
+    void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
 
-	SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
+    String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath, boolean isFhir);
 
-	SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText);
+    SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
 
-	void updateUsersShare(SaveCQLLibraryResult result);
+    SaveCQLLibraryResult draftExistingCQLLibrary(String libraryId, String libraryName) throws MatException;
 
-	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
+    SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context, String libraryComment, String description, String stewardId, boolean isExperimental);
 
-	SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj);
+    SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 
-	GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId);
+    SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
 
-	int countNumberOfAssociation(String id);
-	
-	SaveUpdateCQLResult saveCQLFile(String libraryId, String cql);
-	
-	SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
-			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable);
+    SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText, String modelType);
 
-	SaveUpdateCQLResult saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
-			List<CQLFunctions> functionsList, boolean isFormatable);
+    void updateUsersShare(SaveCQLLibraryResult result);
 
-	SaveUpdateCQLResult saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
-			List<CQLParameter> parameterList, boolean isFormatable);
+    SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
-	SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj);
+    SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj);
 
-	SaveUpdateCQLResult deleteFunction(String libraryId, CQLFunctions toBeDeletedObj);
+    GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId);
 
-	SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj);
+    int countNumberOfAssociation(String id);
 
-	SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject);
+    SaveUpdateCQLResult saveCQLFile(String libraryId, String cql);
 
-	SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId);
+    SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
+                                                 CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable);
 
-	VsacApiResult updateCQLVSACValueSets(String cqlLibraryId, String expansionId, String sessionId);
-	CQLKeywords getCQLKeywordsLists();
+    SaveUpdateCQLResult saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
+                                               List<CQLFunctions> functionsList, boolean isFormatable);
 
-	List<CQLLibraryAssociation> getAssociations(String Id);
+    SaveUpdateCQLResult saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
+                                                List<CQLParameter> parameterList, boolean isFormatable);
 
-	void transferLibraryOwnerShipToUser(List<String> list, String toEmail);
+    SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj);
 
-	List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner();
+    SaveUpdateCQLResult deleteFunction(String libraryId, CQLFunctions toBeDeletedObj);
 
-	SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject);
-	
-	SaveUpdateCQLResult saveCQLCodeListToCQLLibrary(List<CQLCode> codeList, String libraryId);
+    SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj);
 
-	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
+    SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject);
 
-	void deleteCQLLibrary(String cqllibId, String loginUserId) throws AuthenticationException;
+    SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId);
 
-	SaveUpdateCQLResult getCQLLibraryFileData(String libraryId);
+    VsacApiResult updateCQLVSACValueSets(String cqlLibraryId, String expansionId, String sessionId);
 
-	SaveCQLLibraryResult searchForReplaceLibraries(String setId);
+    CQLKeywords getCQLKeywordsLists();
 
-	SaveUpdateCQLResult getCQLDataForLoad(String id);
+    List<CQLLibraryAssociation> getAssociations(String Id);
 
-	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
-			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
-	
-	public void saveCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML);
+    void transferLibraryOwnerShipToUser(List<String> list, String toEmail);
+
+    List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner();
+
+    SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject);
+
+    SaveUpdateCQLResult saveCQLCodeListToCQLLibrary(List<CQLCode> codeList, String libraryId);
+
+    SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
+
+    void deleteCQLLibrary(String cqllibId, String loginUserId) throws AuthenticationException;
+
+    SaveUpdateCQLResult getCQLLibraryFileData(String libraryId);
+
+    SaveCQLLibraryResult searchForReplaceLibraries(String setId);
+
+    SaveUpdateCQLResult getCQLDataForLoad(String id);
+
+    CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
+                                                List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
+
+    void saveQdmCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML);
+
+    void saveFhirCQLLibraryExport(CQLLibrary cqlLibrary, FhirLibraryPackageResult fhirPackageResults);
+
+    CheckForConversionResult checkLibraryForConversion(CQLLibraryDataSetObject object);
+
+    FhirConvertResultResponse convertCqlLibrary(CQLLibraryDataSetObject object) throws MatException;
+
+    int deleteDraftFhirLibrariesBySetId(String setId);
 }

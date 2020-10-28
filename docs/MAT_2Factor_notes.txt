@@ -8,13 +8,5 @@
 	<bean id="vsacapi" class="mat.server.VSACApiServImpl">
     	<property name="defaultExpId" value="${mat.qdm.default.expansion.id}"/>
     </bean>
-    
-    <bean id="matOtpValidator" class="${2FA_AUTH_CLASS}"/>
-    
-    <bean id="matOtpValidatorService" class="mat.server.twofactorauth.TwoFactorValidationService">
-        <property name="otpValidatorInterfaceForUser" ref="matOtpValidator"/>
-    </bean>
 
 Update DPlan, Glassfish (need to test), and update MAT eclipse project.
-
-######################################################################################################################################################

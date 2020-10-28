@@ -1,9 +1,8 @@
 package mat.client.shared.datetime;
 
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 public class DateTimeHelper {
 

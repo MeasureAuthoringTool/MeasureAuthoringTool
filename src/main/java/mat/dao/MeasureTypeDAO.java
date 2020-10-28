@@ -1,9 +1,9 @@
 package mat.dao;
 
-import java.util.List;
-
 import mat.dto.MeasureTypeDTO;
 import mat.model.MeasureType;
+
+import java.util.List;
 
 /**
  * The Interface MeasureTypeDAO.

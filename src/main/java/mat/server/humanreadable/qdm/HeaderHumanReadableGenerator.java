@@ -1,7 +1,9 @@
 package mat.server.humanreadable.qdm;
 
-import javax.xml.xpath.XPathExpressionException;
-
+import mat.server.humanreadable.MATCssUtil;
+import mat.server.humanreadable.cql.HumanReadableDateUtil;
+import mat.server.util.XmlProcessor;
+import mat.shared.MatConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.DocumentType;
@@ -11,10 +13,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import mat.server.humanreadable.MATCssUtil;
-import mat.server.humanreadable.cql.HumanReadableDateUtil;
-import mat.server.util.XmlProcessor;
-import mat.shared.MatConstants;
+import javax.xml.xpath.XPathExpressionException;
 
 /**
  * This class is only used for QDM Human Readable and should not be modified. 

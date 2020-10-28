@@ -9,18 +9,25 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             /WEB-INF/applicationContext-service.xml
-            /WEB-INF/applicationContext-security.xml
             /WEB-INF/applicationContext-mail.xml
             /WEB-INF/applicationContext-task.xml
         </param-value>
     </context-param>
     <filter>
-        <filter-name>hibernateStatsFilter</filter-name>
-        <filter-class>mat.server.HibernateStatisticsFilter</filter-class>
+        <filter-name>bufferedInputFilter</filter-name>
+        <filter-class>mat.server.logging.BufferingInputFilter</filter-class>
     </filter>
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter>
+        <filter-name>requestResponseLoggingFilter</filter-name>
+        <filter-class>mat.server.logging.RequestResponseLoggingFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>hibernateStatsFilter</filter-name>
+        <filter-class>mat.server.HibernateStatisticsFilter</filter-class>
     </filter>
     <filter>
         <filter-name>hibernateFilter</filter-name>
@@ -32,10 +39,17 @@
     </filter>
 
     <filter-mapping>
+        <filter-name>bufferedInputFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
+    <filter-mapping>
+        <filter-name>requestResponseLoggingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     <filter-mapping>
         <filter-name>hibernateStatsFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -50,10 +64,12 @@
     </filter-mapping>
 
     <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+        <listener-class>
+            org.springframework.web.context.request.RequestContextListener
+        </listener-class>
     </listener>
     <listener>
-        <listener-class>mat.server.MatSessionListener</listener-class>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <listener>
         <listener-class>
@@ -67,6 +83,10 @@
     <servlet>
         <servlet-name>measureLibraryServlet</servlet-name>
         <servlet-class>mat.server.MeasureServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>featureFlagServlet</servlet-name>
+        <servlet-class>mat.server.FeatureFlagRemoteServiceImpl</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>CQLLibraryServiceImpl</servlet-name>
@@ -107,7 +127,11 @@
     </servlet>
     <servlet>
         <servlet-name>measureCloningServiceImpl</servlet-name>
-        <servlet-class>mat.server.clause.MeasureCloningServiceImpl</servlet-class>
+        <servlet-class>mat.server.clause.MeasureCloningRemoteServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>fhirMeasureRemoteServiceImpl</servlet-name>
+        <servlet-class>mat.server.clause.FhirMeasureRemoteServiceImpl</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>exportServlet</servlet-name>
@@ -116,6 +140,10 @@
     <servlet>
         <servlet-name>bulkExportServlet</servlet-name>
         <servlet-class>mat.server.BulkExportServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>fhirValidationReportServlet</servlet-name>
+        <servlet-class>mat.server.fhirvalidation.FhirValidationReportServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>auditServiceImpl</servlet-name>
@@ -146,6 +174,10 @@
         <url-pattern>/mat/bulkExport</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>fhirValidationReportServlet</servlet-name>
+        <url-pattern>/mat/validationReport</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>adminServlet</servlet-name>
         <url-pattern>/mat/admin</url-pattern>
     </servlet-mapping>
@@ -156,6 +188,10 @@
     <servlet-mapping>
         <servlet-name>measureLibraryServlet</servlet-name>
         <url-pattern>/mat/measureLibrary</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>featureFlagServlet</servlet-name>
+        <url-pattern>/mat/featureFlag</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>myAccountServlet</servlet-name>
@@ -202,6 +238,10 @@
         <url-pattern>/mat/measureCloning</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>fhirMeasureRemoteServiceImpl</servlet-name>
+        <url-pattern>/mat/fhirMeasureService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>CQLLibraryServiceImpl</servlet-name>
         <url-pattern>/mat/cqlLibrary</url-pattern>
     </servlet-mapping>
@@ -232,10 +272,10 @@
     <session-config>
         <session-timeout>15</session-timeout>
         <!-- To be Commented for Eclipse gwt dev mode on local developer's machine. Never commit the commented cookie-config tag. -->
-        <cookie-config>
+        <!-- <cookie-config>
            <http-only>true</http-only>
             <secure>true</secure>
-        </cookie-config>
+        </cookie-config> -->
     </session-config>
     <error-page>
         <error-code>403</error-code>

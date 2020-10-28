@@ -1,16 +1,12 @@
-/**
- * 
- */
 package mat.client.util;
-
-import mat.client.ImageResources;
-import mat.client.shared.MatContext;
-import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import mat.client.ImageResources;
+import mat.client.shared.MatContext;
+import mat.shared.ConstantMessages;
 
 /**
  * The Class FooterPanelBuilderUtility.
@@ -97,26 +93,7 @@ public class FooterPanelBuilderUtility {
 		}
 				);
 	}
-	
-	//	public static Anchor createFooterLink(final String text,final String styleName,final String module,final String htmlPage,final String URL){
-	//		final Anchor anchor = new Anchor(text);
-	//		anchor.setTitle(text);
-	//		anchor.getElement().setAttribute("alt", text);
-	//
-	//		anchor.addClickHandler(
-	//			new ClickHandler() {
-	//				@Override
-	//				public void onClick(final ClickEvent event) {
-	//					if(!MatContext.get().getCurrentModule().equalsIgnoreCase(module)){
-	//						MatContext.get().restartTimeoutWarning();
-	//					}
-	//				}
-	//			});
-	//
-	//		return anchor;
-	//	}
-	
-	
+
 	/** The logos html. */
 	private static String logosHTML =
 			"<div class=\"cms-address-bar\"> "+

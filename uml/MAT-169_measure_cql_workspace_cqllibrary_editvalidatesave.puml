@@ -1,0 +1,152 @@
+@startuml
+header as-is current state
+caption CQL Workspace/CQL Library Editor - Create New or Edit CQL library item
+title CQL Workspace - Open CQL Library
+
+actor User order 10
+participant "MAT GWT" as gwt order 20
+participant "MAT Server" as srv order 30
+
+
+User -> gwt: Open for edit selected or create a new measure
+gwt --> User: show Measure Composer / Measure Details
+
+User -> gwt: Navigate to Measure Composer / CQL Workspace
+gwt --> User: show CQL Workspace
+User -> gwt: Navigate to CQL Library editor
+gwt --> User: CQL Library editor
+note right gwt
+    CQL Library editor is open in read-only mode
+    if user has no permissions to edit
+    or user's profile doesn't allow free text edit
+end note
+
+'------------------------------------------------------
+newpage CQL Workspace - General information
+User -> gwt: modify "General Information" fields
+User -> gwt: save
+gwt -> srv: CQLLibraryService::saveAndModifyCQLGeneralInfo(\n\tString libraryId, \n\tString libraryValue, \n\tString libraryComment)
+alt is current CQL Library editable
+    note over srv
+        isEditable = (isOwner || isSuperUser || isSharedToEdit) && isDraft;
+    end note
+    srv -> srv: load library record from DB by libraryId
+
+    alt library name not blank and setid not blank\n and library exist in DB with specified name and setId
+        srv --> gwt: return result = {success: false, failure: DUPLICATE_LIBRARY_NAME}
+    else library name is unique
+        srv -> srv: load library xml
+        srv -> srv: cqlService::saveAndModifyCQLGeneralInfo
+        note right: see below for call details
+        group cqlService::saveAndModifyCQLGeneralInfo
+            opt library name more 500 characters
+                srv -> gwt: return result = {success: false, failure: SERVER_SIDE_VALIDATION}
+            end
+            srv -> srv: update xml with new library name
+            srv -> srv: update xml with new library comment
+        end
+        srv -> srv: update library name (record)
+        srv -> srv: update library xml
+        srv -> srv: store to DB
+    end
+    srv -> gwt: return result {success: true}
+else not editable
+    srv -> gwt: return not editable
+end
+
+'------------------------------------------------------
+newpage CQL Workspace - Includes
+opt Includes
+    note over gwt, srv
+        TBD
+    end note
+end
+
+'------------------------------------------------------
+newpage CQL Workspace - Edit or Save CQL Library
+
+note over User,gwt
+<b>Precondition:
+* A library is open for editing
+* User modified the library
+end note
+User -> gwt: click Save
+gwt -> gwt: saveCQLFile
+gwt -> srv: saveCQLFile(measureId, cql)
+srv -> srv: load previous measure's XML from DB by measureId
+srv -> srv: load previous measure from DB by measureId
+srv -> srv: previousModel = create CQLModel object from the previous measure's XML
+srv -> srv: create linter confg(\n\tprev. lib name,\n\tformatted(prev rev. number, prev. VERSION),\n\t'QDM',\n\tprev. QDM_VERSION, previousModel)
+srv -> srv: result:SaveUpdateCQLResult = cqlSevice::saveCQLFile (prev. measure's XML, cql, linter config)
+group cqlSevice::saveCQLFile
+    opt if measure is not editable return
+        srv --> gwt
+        note over gwt, srv
+            isEditable = (isOwner || isSuperUser || isSharedToEdit) && isDraft;
+        end note
+    end
+    srv -> srv: parsedResult = parse cql
+    srv -> srv: reverseEngineeredCQLLookup = marshallCQLModel
+    note left srv: re-create cql from the parsed model
+    srv -> srv: check for syntax error
+    srv -> srv: check parsed model for duplicated identifiers\n or identifier as a keyword
+    srv -> srv: check parsed result has errors
+    alt parsed result has <b>NO</b> errors
+        note over srv
+            #format cql
+            #re-construct model from formatted cql
+            #update parsedResult with xml marshalled from formatted cql model
+            #update parsedResult with cql re-constructed from formatted cql model
+        end note
+    else parsed result has errors
+        note over srv
+            Update parsedResult with xml
+            Update parsedResult with cql
+        end note
+    end
+    srv -> srv: linter = CQLUtil.lint(cql, linter config)
+    note over srv
+        Linter parses CQL syntax tree and then checks for following items:
+        * check if there are comments in no-comment zone
+        * ls line comment in correct spots
+        * has extraneous codesystem
+        * has missing codesystem
+        * number of included libraries and number of valuesets and number of codes have not changed
+        * no entered library definitions or no entered using definitions
+    end note
+    srv -> srv: validateDatatypeCombinations (\n\tcql model,\n\tvalue set data type map,\n\tcode data type map)
+    srv -> srv: create SaveUpdateCQLResult
+    note over srv
+        SaveUpdateCQLResult is created from parsed xml, cql model and
+        all errors, warnings from parsing and linter and data types validation
+    end note
+    note over srv #FFAAAA
+        <b>Remark!</b> cql / xml are parsed and marshaled back and forth multiple times.
+        It can be optimized for better performance.
+        Also, both ReverseEngineerListener and Linter use similar code and ANTLR parser.
+        There is a potential in code re-use and performance optimization.
+    end note
+end
+srv -> srv: update xml cqlLookUp with measure
+opt result.isSuccess()
+    srv -> srv: clean definitions from population groups
+    note over srv
+        need to clean definitions from populations and groupings.
+        go through all of the definitions in the previous model and check if they are in the new model
+        if the old definition is not in the new model, clean the groupings
+    end note
+    srv -> srv: clean measure observation and groups
+    note over srv
+        do the same thing for functions
+    end note
+end
+srv -> srv: save measure xml (updating the record object)
+opt result.isSuccess()
+    srv -> srv: add to cql library history
+    srv -> srv: save measure to DB
+end
+srv --> gwt: return result of SaveUpdateCQLResult
+
+footer actual on 01/27/2020
+
+@enduml

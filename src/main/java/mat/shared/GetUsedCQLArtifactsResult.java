@@ -1,13 +1,13 @@
 package mat.shared;
 
+import mat.client.shared.GenericResult;
+import mat.model.cql.CQLIncludeLibrary;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import mat.client.shared.GenericResult;
-import mat.model.cql.CQLIncludeLibrary;
 
 public class GetUsedCQLArtifactsResult extends GenericResult{
 	

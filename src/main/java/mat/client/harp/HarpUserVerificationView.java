@@ -21,7 +21,6 @@ import mat.shared.HarpConstants;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.PanelFooter;
-
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 
@@ -51,7 +50,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         mainPanel.addStyleName("centered");
 
         SimplePanel titleHolder = new SimplePanel();
-        Label titlePanel = new Label("Link your HARP and MAT accounts");
+        Label titlePanel = new Label("Link your Harp and MAT accounts");
         titleHolder.add(titlePanel);
         titleHolder.setStylePrimaryName("loginBlueTitleHolder");
         titleHolder.setWidth("100%");
@@ -61,7 +60,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         VerticalPanel bluePanel = new VerticalPanel();
         bluePanel.setStylePrimaryName("loginContentPanel");
 
-        Label instructions = new Label("Please enter the following information to verify your existing MAT account");
+        Label instructions = new Label("Please enter the following information and verify your existing MAT account");
         instructions.setStylePrimaryName("loginForgotInstructions");
         bluePanel.add(instructions);
         bluePanel.add(new SpacerWidget());
@@ -126,7 +125,7 @@ public class HarpUserVerificationView implements HarpUserVerificationPresenter.D
         newUserAnchor = new Anchor();
         newUserAnchor.setText("I do not have a MAT (Measure Authoring tool) account");
         newUserAnchor.setTitle("I do not have a MAT (Measure Authoring tool) account");
-        newUserAnchor.getElement().setAttribute("alt", "I do not have a MAT account");
+        newUserAnchor.getElement().setAttribute("alt", "I do not have MAT account");
         hPanel.add(newUserAnchor);
 
         loginPanelFooter.add(hPanel);

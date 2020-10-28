@@ -1,5 +1,34 @@
 package mat.server;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import mat.client.umls.service.VsacApiResult;
+import mat.client.umls.service.VsacTicketInformation;
+import mat.dao.DataTypeDAO;
+import mat.model.DataType;
+import mat.model.DirectReferenceCode;
+import mat.model.VSACExpansionProfileWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.logging.LogFactory;
+import mat.server.service.MeasureLibraryService;
+import mat.server.service.VSACApiService;
+import mat.server.service.impl.XMLMarshalUtil;
+import mat.server.util.UMLSSessionTicket;
+import mat.shared.CQLModelValidator;
+import mat.shared.ConstantMessages;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import mat.vsac.VsacService;
+import mat.vsacmodel.BasicResponse;
+import mat.vsacmodel.ValueSet;
+import mat.vsacmodel.ValueSetWrapper;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,96 +42,54 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vsac.VSACGroovyClient;
-import org.vsac.VSACResponseResult;
+import static mat.client.cqlworkspace.valuesets.CQLAppliedValueSetUtility.getOidFromUrl;
 
-import mat.client.umls.service.VsacApiResult;
-import mat.client.umls.service.VsacTicketInformation;
-import mat.dao.DataTypeDAO;
-import mat.model.DataType;
-import mat.model.DirectReferenceCode;
-import mat.model.MatValueSet;
-import mat.model.VSACExpansionProfileWrapper;
-import mat.model.VSACValueSetWrapper;
-import mat.model.cql.CQLQualityDataSetDTO;
-import mat.server.service.MeasureLibraryService;
-import mat.server.service.VSACApiService;
-import mat.server.service.impl.XMLMarshalUtil;
-import mat.server.util.UMLSSessionTicket;
-import mat.shared.CQLModelValidator;
-import mat.shared.ConstantMessages;
-
+@Service
 public class VSACApiServImpl implements VSACApiService{
-
 	private static final Log LOGGER = LogFactory.getLog(VSACAPIServiceImpl.class);
-
 	private static final int VSAC_TIME_OUT_FAILURE_CODE = 3;
-	
-	private String PROXY_HOST;
-	private int PROXY_PORT;
-	private String server;
-	private String service;
-	private String retieriveMultiOIDSService;
-	private String profileService;
-	private VSACGroovyClient vGroovyClient;
-	private String versionService;
+
+	@Value("${mat.qdm.default.expansion.id}")
 	private String defaultExpId;
-	private String vsacServerDRCUrl;
-	
-	@Autowired DataTypeDAO dataTypeDAO;
-	@Autowired MeasureLibraryService measureLibraryService;
-	@Autowired CQLLibraryService cqlLibraryService;
-	
-	public VSACApiServImpl(){
-		
-		PROXY_HOST = System.getProperty("https.proxyHost");
-		if(PROXY_HOST !=null) {
-			PROXY_PORT = Integer.parseInt(System.getProperty("https.proxyPort"));
-		}
-		server = System.getProperty("SERVER_TICKET_URL");
-		service = System.getProperty("SERVICE_URL");
-		retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL_NEW");
-		profileService = System.getProperty("PROFILE_SERVICE");
-		versionService = System.getProperty("VERSION_SERVICE");
-		vsacServerDRCUrl = System.getProperty("VSAC_DRC_URL");
-		
-		vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService,versionService,vsacServerDRCUrl);
-	}
-	
-	/**
-	 * Instantiates a new VSACAPI service impl.
-	 */
+
+	private JsonMapper jsonMapper = new JsonMapper();
+
+	@Autowired
+	private VsacService vsacService;
+	@Autowired
+	private DataTypeDAO dataTypeDAO;
+	@Autowired
+	private MeasureLibraryService measureLibraryService;
+	@Autowired
+	private CQLLibraryService cqlLibraryService;
 	
 	/**
 	 * Private method to Convert VSAC xml pay load into Java object through
 	 * Castor.
 	 * @param xmlPayLoad
-	 *            - String vsac pay load.
+	 *            - String mat.vsac pay load.
 	 * @return VSACValueSetWrapper.
 	 * */
-	private VSACValueSetWrapper convertXmltoValueSet(final String xmlPayLoad) {
-		LOGGER.info("Start VSACAPIServiceImpl convertXmltoValueSet");
-		VSACValueSetWrapper details = null;
+	private ValueSetWrapper convertXmltoValueSet(final String xmlPayLoad) {
+		LOGGER.debug("Start VSACAPIServiceImpl convertXmltoValueSet");
+		ValueSetWrapper details = null;
 		String xml = xmlPayLoad;
 		if (StringUtils.isNotBlank(xml)) {
-			LOGGER.info("xml To reterive RetrieveMultipleValueSetsResponse tag is not null ");
+			LOGGER.debug("xml To reterive RetrieveMultipleValueSetsResponse tag is not null ");
 		}
 		try {
 			XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
-			details = (VSACValueSetWrapper) xmlMarshalUtil.convertXMLToObject("MultiValueSetMapping.xml", xml, VSACValueSetWrapper.class);
-			LOGGER.info("unmarshalling complete..RetrieveMultipleValueSetsResponse" + details.getValueSetList().get(0).getDefinition());
+			details = (ValueSetWrapper) xmlMarshalUtil.convertXMLToObject(
+					"MultiValueSetMapping.xml",
+					xml,
+					ValueSetWrapper.class);
+			LOGGER.debug("unmarshalling complete..RetrieveMultipleValueSetsResponse" +
+					details.getValueSetList().get(0).getDefinition());
 		} catch (MarshalException | ValidationException | MappingException | IOException e) {
 			LOGGER.debug("Exception in convertXmltoValueSet:" + e);
 			e.printStackTrace();
 		}
-		LOGGER.info("End VSACAPIServiceImpl convertXmltoValueSet");
+		LOGGER.debug("End VSACAPIServiceImpl convertXmltoValueSet");
 		return details;
 	}
 	
@@ -113,54 +100,74 @@ public class VSACApiServImpl implements VSACApiService{
 	 * @return the VSAC profile wrapper
 	 */
 	private VSACExpansionProfileWrapper convertXmlToProfileList(final String xmlPayLoad){
-		LOGGER.info("Start VSACAPIServiceImpl convertXmlToProfileList");
+		LOGGER.debug("Start VSACAPIServiceImpl convertXmlToProfileList");
 		VSACExpansionProfileWrapper profileDetails = null;
 		String xml = xmlPayLoad;
 		if (StringUtils.isNotBlank(xml)) {
-			LOGGER.info("xml To reterive RetrieveVSACProfileListResponse tag is not null ");
+			LOGGER.debug("xml To reterive RetrieveVSACProfileListResponse tag is not null ");
 		}
 		
 		try {
 			XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
-			profileDetails = (VSACExpansionProfileWrapper) xmlMarshalUtil.convertXMLToObject("VSACExpIdentifierMapping.xml", xml, VSACExpansionProfileWrapper.class);
-			LOGGER.info("unmarshalling complete..RetrieveVSACProfileListResponse" + profileDetails.getExpProfileList().get(0).getName());
+			profileDetails = (VSACExpansionProfileWrapper) xmlMarshalUtil.convertXMLToObject(
+					"VSACExpIdentifierMapping.xml",
+					xml,
+					VSACExpansionProfileWrapper.class);
+			LOGGER.debug("unmarshalling complete..RetrieveVSACProfileListResponse" +
+					profileDetails.getExpProfileList().get(0).getName());
 		} catch (MarshalException | ValidationException | MappingException | IOException e) {
 			LOGGER.debug("Exception in convertXmlToProfileList:" + e);
 			e.printStackTrace();
 		}
-		LOGGER.info("End VSACAPIServiceImpl convertXmltoValueSet");
+		LOGGER.debug("End VSACAPIServiceImpl convertXmltoValueSet");
 		return profileDetails;
 	}
 	
-	private DirectReferenceCode convertXmltoDirectCodeRef(final String xmlPayLoad) {
-		LOGGER.info("Start VSACAPIServiceImpl convertXmltoValueSet");		
+	private DirectReferenceCode convertXmltoDirectCodeRef(final String jsonPayload) {
+		LOGGER.debug("Start VSACAPIServiceImpl convertXmltoValueSet");		
 		DirectReferenceCode details = null;
-		int firstIndex = xmlPayLoad.indexOf("<csCode>");
-		int lastIndex = xmlPayLoad.lastIndexOf("</csCode>");
-		
-		String xml = xmlPayLoad.substring(firstIndex, lastIndex).concat("</csCode>");
-		if (StringUtils.isNotBlank(xml)) {
-			LOGGER.info("xml To reterive csCode tag is not null ");
-		}
-		
+		//{
+		//  "data": {
+		//    "resultCount": 1,
+		//    "resultSet": [
+		//      {
+		//        "csName": "ActMood",
+		//        "csOID": "2.16.840.1.113883.5.1001",
+		//        "csVersion": "HL7V3.0_2019-12",
+		//        "code": "_ActMoodDesire",
+		//        "contentMode": "Complete",
+		//        "codeName": "desire",
+		//        "termType": "PT",
+		//        "active": "Yes",
+		//        "revision": 2098070245
+		//      }
+		//    ]
+		//  },
+		//  "message": "ok",
+		//  "status": "ok"
+		//}
+
 		try {
-			XMLMarshalUtil xmlMarshalUtil = new XMLMarshalUtil();
-			details = (DirectReferenceCode) xmlMarshalUtil.convertXMLToObject("DirectCodeReferenceMapping.xml", xml, DirectReferenceCode.class);
-			LOGGER.info("unmarshalling complete..csCode" + details.getCodeDescriptor());
-		} catch (MarshalException | ValidationException | MappingException | IOException e) {
-			LOGGER.debug("Exception in convertXmltoDirectCodeRef:" + e);
-			e.printStackTrace();
+			JsonNode node =  jsonMapper.readTree(jsonPayload).get("data").get("resultSet").elements().next();
+			details = new DirectReferenceCode();
+			details.setCode(node.get("code").asText());
+			details.setCodeDescriptor(node.get("codeName").asText());
+			details.setCodeSystemName(node.get("csName").asText());
+			details.setCodeSystemOid(node.get("csOID").asText());
+			details.setCodeSystemVersion(node.get("csVersion").asText());
+			LOGGER.debug(details);
+		} catch (Exception e) {
+			LOGGER.debug("Exception in convertXmltoDirectCodeRef:" , e);
 		}
-		LOGGER.info("End VSACAPIServiceImpl convertXmltoDirectCodeRef");
 		return details;
 	}
 	
 	
 	@Override
 	public final void inValidateVsacUser(String sessionId) {
-		LOGGER.info("Start VSACAPIServiceImpl inValidateVsacUser");
+		LOGGER.debug("Start VSACAPIServiceImpl inValidateVsacUser");
 		UMLSSessionTicket.remove(sessionId);
-		LOGGER.info("End VSACAPIServiceImpl inValidateVsacUser");
+		LOGGER.debug("End VSACAPIServiceImpl inValidateVsacUser");
 	}
 	
 	@Override
@@ -173,9 +180,9 @@ public class VSACApiServImpl implements VSACApiService{
 	 ***/
 	@Override
 	public final boolean isAlreadySignedIn(String sessionId) {
-		LOGGER.info("Start VSACAPIServiceImpl isAlreadySignedIn");
+		LOGGER.debug("Start VSACAPIServiceImpl isAlreadySignedIn");
 		VsacTicketInformation eightHourTicketForUser = UMLSSessionTicket.getTicket(sessionId);
-		LOGGER.info("End VSACAPIServiceImpl isAlreadySignedIn: ");
+		LOGGER.debug("End VSACAPIServiceImpl isAlreadySignedIn: ");
 		return eightHourTicketForUser != null;
 	}
 	
@@ -187,23 +194,27 @@ public class VSACApiServImpl implements VSACApiService{
 	@Override
 	public final VsacApiResult getAllExpIdentifierList(String sessionId) {
 		VsacApiResult result = new VsacApiResult();
-		LOGGER.info("Start VSACAPIServiceImpl getAllExpIdentifierList method :");
+		LOGGER.debug("Start VSACAPIServiceImpl getAllExpIdentifierList method :");
 		if (isAlreadySignedIn(sessionId)) {
-			String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(UMLSSessionTicket.getTicket(sessionId).getTicket());
-			VSACResponseResult vsacResponseResult = null;
+			String fiveMinuteServiceTicket = vsacService.getServiceTicket(
+					UMLSSessionTicket.getTicket(sessionId).getTicket());
+			BasicResponse vsacResponseResult = null;
 			try {
-				vsacResponseResult = vGroovyClient.getProfileList(fiveMinuteServiceTicket);
+				vsacResponseResult = vsacService.getProfileList(fiveMinuteServiceTicket);
 			} catch (Exception ex) {
-				LOGGER.info("VSACAPIServiceImpl ExpIdentifierList failed in method :: getAllProfileList");
+				LOGGER.debug("VSACAPIServiceImpl ExpIdentifierList failed in method :: getAllProfileList");
 			}
 			if ((vsacResponseResult != null) && (vsacResponseResult.getXmlPayLoad() != null)) {
-				if (vsacResponseResult.getIsFailResponse() && (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
-					LOGGER.info("Expansion Identifier List reterival failed at VSAC with Failure Reason: " + vsacResponseResult.getFailReason());
+				if (vsacResponseResult.isFailResponse() &&
+						(vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
+					LOGGER.debug("Expansion Identifier List reterival failed at VSAC with Failure Reason: " +
+							vsacResponseResult.getFailReason());
 					result.setSuccess(false);
 					result.setFailureReason(vsacResponseResult.getFailReason());
 					return result;
 				}
-				if ((vsacResponseResult.getXmlPayLoad() != null) && StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
+				if ((vsacResponseResult.getXmlPayLoad() != null) &&
+						StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
 					// Caster conversion here.
 					VSACExpansionProfileWrapper wrapper = convertXmlToProfileList(vsacResponseResult.getXmlPayLoad());
 					result.setVsacExpProfileResp(wrapper.getExpProfileList());
@@ -213,9 +224,9 @@ public class VSACApiServImpl implements VSACApiService{
 		} else {
 			result.setSuccess(false);
 			result.setFailureReason(VsacApiResult.UMLS_NOT_LOGGEDIN);
-			LOGGER.info("VSACAPIServiceImpl getAllExpIdentifierList :: UMLS Login is required");
+			LOGGER.debug("VSACAPIServiceImpl getAllExpIdentifierList :: UMLS Login is required");
 		}
-		LOGGER.info("End VSACAPIServiceImpl getAllExpIdentifierList method :");
+		LOGGER.debug("End VSACAPIServiceImpl getAllExpIdentifierList method :");
 		return result;
 	}
 	
@@ -229,9 +240,11 @@ public class VSACApiServImpl implements VSACApiService{
 	 * @return VsacApiResult - Result.
 	 */
 	@Override
-	public final VsacApiResult updateCQLVSACValueSets(List<CQLQualityDataSetDTO> appliedQDMList, String defaultExpId, String sessionId) {
+	public final VsacApiResult updateCQLVSACValueSets(List<CQLQualityDataSetDTO> appliedQDMList,
+													  String defaultExpId,
+													  String sessionId) {
 		VsacApiResult result = new VsacApiResult();
-		LOGGER.info("Start VSACAPIServiceImpl updateCQLVSACValueSets method :");
+		LOGGER.debug("Start VSACAPIServiceImpl updateCQLVSACValueSets method :");
 
 		if (isAlreadySignedIn(sessionId)) {
 			if (isCASTicketGrantingTicketValid(sessionId)) {
@@ -242,14 +255,15 @@ public class VSACApiServImpl implements VSACApiService{
 				}
 				for (CQLQualityDataSetDTO cqlQualityDataSetDTO : appliedQDMList) {
 					CQLQualityDataSetDTO toBeModifiedQDM = cqlQualityDataSetDTO;
-					LOGGER.info(" VSACAPIServiceImpl updateCQLVSACValueSets :: OID:: " + cqlQualityDataSetDTO.getOid());
+					LOGGER.debug(" VSACAPIServiceImpl updateCQLVSACValueSets :: OID:: " +
+							cqlQualityDataSetDTO.getOid());
 					// Filter out Timing Element , Expired, Birthdate, User defined QDM's and
 					// supplemental data elements.
 					if (ConstantMessages.TIMING_ELEMENT.equals(cqlQualityDataSetDTO.getDataType())
 							|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(cqlQualityDataSetDTO.getOid())
 							|| ConstantMessages.BIRTHDATE_OID.equals(cqlQualityDataSetDTO.getOid())
 							|| ConstantMessages.DEAD_OID.equals(cqlQualityDataSetDTO.getOid())) {
-						LOGGER.info("VSACAPIServiceImpl updateCQLVSACValueSets :: QDM filtered as it is of either"
+						LOGGER.debug("VSACAPIServiceImpl updateCQLVSACValueSets :: QDM filtered as it is of either"
 								+ "for following type Supplemental data or User defined or Timing Element.");
 						if (ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(cqlQualityDataSetDTO.getOid())) {
 							toBeModifiedQDM.setNotFoundInVSAC(true);
@@ -257,36 +271,45 @@ public class VSACApiServImpl implements VSACApiService{
 							modifiedQDMList.add(toBeModifiedQDM);
 							DataType qdmDataType = dataTypeDAO.findByDataTypeName(toBeModifiedQDM.getDataType());
 							if ((qdmDataType == null) 
-									|| ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(cqlQualityDataSetDTO.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(cqlQualityDataSetDTO.getDataType())) {
+									|| ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(
+											cqlQualityDataSetDTO.getDataType()) ||
+									ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(
+											cqlQualityDataSetDTO.getDataType())) {
 								toBeModifiedQDM.setDataTypeHasRemoved(true);
 							}
 						}
 						continue;
 					} else {
-						LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
-						VSACResponseResult vsacResponseResult = null;
+						BasicResponse vsacResponseResult = null;
 						try {
-							String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(UMLSSessionTicket.getTicket(sessionId).getTicket());
+							String fiveMinuteServiceTicket = vsacService.getServiceTicket(
+									UMLSSessionTicket.getTicket(sessionId).getTicket());
 								if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getRelease())) {
-									vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(
-										cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getRelease(), fiveMinuteServiceTicket);
+									vsacResponseResult = vsacService.getMultipleValueSetsResponseByOIDAndRelease(
+											getOidFromUrl(cqlQualityDataSetDTO.getOid()),
+											cqlQualityDataSetDTO.getRelease(),
+											fiveMinuteServiceTicket);
 								} else if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getVersion())) {
-									vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndVersion(
-											cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getVersion(), fiveMinuteServiceTicket);
+									vsacResponseResult = vsacService.getMultipleValueSetsResponseByOIDAndVersion(
+											getOidFromUrl(cqlQualityDataSetDTO.getOid()),
+											cqlQualityDataSetDTO.getVersion(),
+											fiveMinuteServiceTicket);
 								} else {
-									vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
-											cqlQualityDataSetDTO.getOid(), fiveMinuteServiceTicket, defaultExpId);
+									vsacResponseResult = vsacService.getMultipleValueSetsResponseByOID(
+											getOidFromUrl(cqlQualityDataSetDTO.getOid()),
+											fiveMinuteServiceTicket,
+											defaultExpId);
 								}
 								
 						} catch (Exception ex) {
-							LOGGER.info("VSACAPIServiceImpl updateCQLVSACValueSets :: Value Set reterival failed at "
+							LOGGER.debug("VSACAPIServiceImpl updateCQLVSACValueSets :: Value Set reterival failed at "
 									+ "VSAC for OID :" + cqlQualityDataSetDTO.getOid() + " with Data Type : "
 									+ cqlQualityDataSetDTO.getDataType());
 						}
 						if (vsacResponseResult != null && vsacResponseResult.getXmlPayLoad() != null) {
-							if (vsacResponseResult.getIsFailResponse()
+							if (vsacResponseResult.isFailResponse()
 									&& (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
-								LOGGER.info("Value Set reterival failed at VSAC for OID :"
+								LOGGER.debug("Value Set reterival failed at VSAC for OID :"
 										+ cqlQualityDataSetDTO.getOid() + " with Data Type : "
 										+ cqlQualityDataSetDTO.getDataType() + ". Failure Reason: "
 										+ vsacResponseResult.getFailReason());
@@ -294,25 +317,29 @@ public class VSACApiServImpl implements VSACApiService{
 								result.setFailureReason(vsacResponseResult.getFailReason());
 								return result;
 							}
-							if (vsacResponseResult.getXmlPayLoad() != null && StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
-								VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
-								MatValueSet matValueSet = wrapper.getValueSetList().get(0);
-								if (matValueSet != null) {
-									cqlQualityDataSetDTO.setName(matValueSet.getDisplayName());
-									cqlQualityDataSetDTO.setOriginalCodeListName(matValueSet.getDisplayName());
-									if(cqlQualityDataSetDTO.getSuffix() != null && !cqlQualityDataSetDTO.getSuffix().isEmpty()){
-										cqlQualityDataSetDTO.setName(matValueSet.getDisplayName()+" ("+cqlQualityDataSetDTO.getSuffix()+")");
+							if (vsacResponseResult.getXmlPayLoad() != null &&
+									StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
+								ValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
+								ValueSet ValueSet = wrapper.getValueSetList().get(0);
+								if (ValueSet != null) {
+									cqlQualityDataSetDTO.setName(ValueSet.getDisplayName());
+									cqlQualityDataSetDTO.setOriginalCodeListName(ValueSet.getDisplayName());
+									if(cqlQualityDataSetDTO.getSuffix() != null &&
+											!cqlQualityDataSetDTO.getSuffix().isEmpty()){
+										cqlQualityDataSetDTO.setName(ValueSet.getDisplayName()+
+												" ("+cqlQualityDataSetDTO.getSuffix()+")");
 									}
-									if (matValueSet.isGrouping()) {
+									if (ValueSet.isGrouping()) {
 										cqlQualityDataSetDTO.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 									} else {
-										if (matValueSet.getConceptList().getConceptList() != null) {
-											cqlQualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().getConceptList().get(0).getCodeSystemName());
+										if (ValueSet.getConceptList().getConceptList() != null) {
+											cqlQualityDataSetDTO.setTaxonomy(ValueSet.getConceptList().
+													getConceptList().get(0).getCodeSystemName());
 										} else {
 											cqlQualityDataSetDTO.setTaxonomy(StringUtils.EMPTY);
 										}
 									}
-									cqlQualityDataSetDTO.setValueSetType(matValueSet.getType());
+									cqlQualityDataSetDTO.setValueSetType(ValueSet.getType());
 									updateInMeasureXml.put(cqlQualityDataSetDTO, toBeModifiedQDM);
 									toBeModifiedQDM.setHasModifiedAtVSAC(true); // Used at Applied QDM Tab
 									//to show icons in CellTable.
@@ -337,30 +364,31 @@ public class VSACApiServImpl implements VSACApiService{
 		} else {
 			result.setSuccess(false);
 			result.setFailureReason(VsacApiResult.UMLS_NOT_LOGGEDIN);
-			LOGGER.info("VSACAPIServiceImpl updateCQLVSACValueSets :: UMLS Login is required");
+			LOGGER.debug("VSACAPIServiceImpl updateCQLVSACValueSets :: UMLS Login is required");
 		}
-		LOGGER.info("End VSACAPIServiceImpl updateCQLVSACValueSets method :");
+		LOGGER.debug("End VSACAPIServiceImpl updateCQLVSACValueSets method :");
 		return result;
 	}
 	
 	public boolean isCASTicketGrantingTicketValid(String sessionId) {
-		String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(UMLSSessionTicket.getTicket(sessionId).getTicket());
+		String fiveMinuteServiceTicket = vsacService.getServiceTicket(
+				UMLSSessionTicket.getTicket(sessionId).getTicket());
 		return StringUtils.isNotBlank(fiveMinuteServiceTicket);
 	}
 	
 	/**
 	 *Method to authenticate user at VSAC and save eightHourTicket into UMLSSessionMap for valid user.
-	 *@param userName - String.
-	 *@param password - String.
+	 *@param apiKey - String.
 	 *@return Boolean.
 	 * **/
 	@Override
-	public final boolean validateVsacUser(final String userName, final String password, String sessionId) {
-		LOGGER.info("Start VSACAPIServiceImpl validateVsacUser");
-		String eightHourTicketForUser = vGroovyClient.getTicketGrantingTicket(userName, password);
+	public final boolean validateVsacUser(final String apiKey, String sessionId) {
+		LOGGER.debug("Start VSACAPIServiceImpl validateVsacUser");
+		String eightHourTicketForUser = vsacService.getTicketGrantingTicket(apiKey);
 		VsacTicketInformation ticketInformation = new VsacTicketInformation(eightHourTicketForUser, new Date());
 		UMLSSessionTicket.put(sessionId, ticketInformation);
-		LOGGER.info("End VSACAPIServiceImpl validateVsacUser: " + " Ticket issued for 8 hours: " + eightHourTicketForUser);
+		LOGGER.debug("End VSACAPIServiceImpl validateVsacUser: " + " Ticket issued for 8 hours: " +
+				eightHourTicketForUser);
 		return eightHourTicketForUser != null;
 	}
 	
@@ -377,13 +405,13 @@ public class VSACApiServImpl implements VSACApiService{
 	}
 	
 	/**
-	 * Fetches a direct reference code from vsac
+	 * Fetches a direct reference code from mat.vsac
 	 * @param url the url to fetch
 	 * @param sessionId the user's session id
-	 * @return the result of the vsac api call
+	 * @return the result of the mat.vsac api call
 	 */
 	private VsacApiResult getCodeFromVsac(String url, String sessionId) {
-		LOGGER.info("Start VSACAPIServiceImpl getDirectReferenceCode method : url entered :" + url);
+		LOGGER.debug("Start VSACAPIServiceImpl getDirectReferenceCode method : url entered :" + url);
 		VsacApiResult result = new VsacApiResult();
 		CQLModelValidator validator = new CQLModelValidator();
 		
@@ -396,20 +424,22 @@ public class VSACApiServImpl implements VSACApiService{
 		String eightHourTicket = UMLSSessionTicket.getTicket(sessionId).getTicket();
 		if (StringUtils.isNotBlank(eightHourTicket)) {
 			if (StringUtils.isNotBlank(url)) {
-				LOGGER.info(" VSACAPIServiceImpl getDirectReferenceCode method Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
-				String fiveMinServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
+				String fiveMinServiceTicket = vsacService.getServiceTicket(eightHourTicket);
 				if (StringUtils.isNotBlank(fiveMinServiceTicket)) {
 					if(url.contains(":")){
 						String[] arg = url.split(":");
 						if(arg.length >0 && arg[1] != null) {
 							url = arg[1];
-							LOGGER.info("VSACAPIServiceImpl getDirectReferenceCode method : URL after dropping text before : is :: "+ url);
+							LOGGER.debug("VSACAPIServiceImpl getDirectReferenceCode method : " +
+									"URL after dropping text before : is :: "+ url);
 						}
 					}
-					VSACResponseResult vsacResponseResult = vGroovyClient.getDirectReferenceCode(url, fiveMinServiceTicket);	
+					BasicResponse vsacResponseResult = vsacService.getDirectReferenceCode(url, fiveMinServiceTicket);
 					
-					if(vsacResponseResult != null && vsacResponseResult.getXmlPayLoad() != null && !StringUtils.isEmpty(vsacResponseResult.getXmlPayLoad())) {
-						DirectReferenceCode referenceCode = convertXmltoDirectCodeRef(vsacResponseResult.getXmlPayLoad());
+					if(vsacResponseResult != null && vsacResponseResult.getXmlPayLoad() != null &&
+							!StringUtils.isEmpty(vsacResponseResult.getXmlPayLoad())) {
+						DirectReferenceCode referenceCode = convertXmltoDirectCodeRef(
+								vsacResponseResult.getXmlPayLoad());
 						result.setDirectReferenceCode(referenceCode);
 						result.setSuccess(true);
 					}
@@ -421,20 +451,23 @@ public class VSACApiServImpl implements VSACApiService{
 			}  else {
 				result.setSuccess(false);
 				result.setFailureReason(VsacApiResult.CODE_URL_REQUIRED);
-				LOGGER.info("URL is required");
+				LOGGER.debug("URL is required");
 			}
 		} else {
 			result.setSuccess(false);
 			result.setFailureReason(VsacApiResult.UMLS_NOT_LOGGEDIN);
-			LOGGER.info("UMLS Login is required");
+			LOGGER.debug("UMLS Login is required");
 		}
 		
-		LOGGER.info("End VSACAPIServiceImpl getDirectReferenceCode method : url entered :" + url);
+		LOGGER.debug("End VSACAPIServiceImpl getDirectReferenceCode method : url entered :" + url);
 		return result;
 	}
 	
 	@Override
-	public final VsacApiResult getMostRecentValueSetByOID(final String oid, final String release, String expansionId, String sessionId) {
+	public final VsacApiResult getMostRecentValueSetByOID(final String oid,
+														  final String release,
+														  final String expansionId,
+														  final String sessionId) {
 		Callable<VsacApiResult> getValuesetTask = new Callable<VsacApiResult>() {
 			@Override
 			public VsacApiResult call() {
@@ -460,7 +493,7 @@ public class VSACApiServImpl implements VSACApiService{
 		} catch (InterruptedException | ExecutionException e) {
 			LOGGER.error("taskExecutor:" + e.getMessage());
 		} catch (java.util.concurrent.TimeoutException e) {
-			LOGGER.info("VSACAPIServiceIMpl: Call to the VSAC API timed out." + e.getMessage());
+			LOGGER.debug("VSACAPIServiceIMpl: Call to the VSAC API timed out." + e.getMessage());
 			result.setSuccess(false);
 			result.setFailureReason(VsacApiResult.VSAC_REQUEST_TIMEOUT);
 		}
@@ -473,42 +506,46 @@ public class VSACApiServImpl implements VSACApiService{
 	 * @param oid the oid of the valueset
 	 * @param expansionId the expansion id
 	 * @param sessionId the session id 
-	 * @param timeout the timeout in seconds
 	 * @return
 	 */
-	private final VsacApiResult getMostRecentValuesetByOID(final String oid, String release, String expansionId, String sessionId) {
-		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" + oid
+	private final VsacApiResult getMostRecentValuesetByOID(final String oid,
+														   final String release,
+														   String expansionId,
+														   final String sessionId) {
+		LOGGER.debug("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" + oid
 				+ "for Expansion Identifier :" + expansionId);
 		VsacApiResult result = new VsacApiResult();
 		String eightHourTicket = UMLSSessionTicket.getTicket(sessionId).getTicket();
 		
 		if (eightHourTicket != null) {
 			if (StringUtils.isNotBlank(oid)) {
-				LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
-				
-				String fiveMinServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
+				String fiveMinServiceTicket = vsacService.getServiceTicket(eightHourTicket);
 				
 				if (StringUtils.isNotBlank(fiveMinServiceTicket)) {
-					VSACResponseResult vsacResponseResult = null;
+					BasicResponse vsacResponseResult = null;
 					
 					if (StringUtils.isNotBlank(release)){					
-						vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(oid.trim(), release, fiveMinServiceTicket);
+						vsacResponseResult = vsacService.getMultipleValueSetsResponseByOIDAndRelease(oid.trim(),
+								release,
+								fiveMinServiceTicket);
 					} else {
 						if (StringUtils.isBlank(expansionId)) {
 							expansionId = getDefaultExpId();
 						}
 						
-						vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(oid.trim(), fiveMinServiceTicket, expansionId);
+						vsacResponseResult = vsacService.getMultipleValueSetsResponseByOID(oid.trim(),
+								fiveMinServiceTicket,
+								expansionId);
 					}
 									
 					if (vsacResponseResult != null && StringUtils.isNotBlank(vsacResponseResult.getXmlPayLoad())) {
 						result.setSuccess(true);
-						VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
+						ValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
 						result.setVsacResponse(wrapper.getValueSetList());
-						LOGGER.info("Successfully converted valueset object from vsac xml payload.");
+						LOGGER.debug("Successfully converted valueset object from mat.vsac xml payload.");
 					} else {
 						result.setSuccess(false);
-						LOGGER.info("Unable to retrieve value set in VSAC.");
+						LOGGER.debug("Unable to retrieve value set in VSAC.");
 					}
 					
 				} else { 
@@ -518,20 +555,21 @@ public class VSACApiServImpl implements VSACApiService{
 			} else {
 				result.setSuccess(false);
 				result.setFailureReason(VsacApiResult.OID_REQUIRED);
-				LOGGER.info("OID is required");
+				LOGGER.debug("OID is required");
 			}
 		} else {
 			result.setSuccess(false);
 			result.setFailureReason(VsacApiResult.UMLS_NOT_LOGGEDIN);
-			LOGGER.info("UMLS Login is required");
+			LOGGER.debug("UMLS Login is required");
 		}
-		LOGGER.info("End VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :"
+		LOGGER.debug("End VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :"
 				+ oid + "for Expansion Identifier entered :" + expansionId);
 		return result;
 	}
 
 	private VsacApiResult disconnectUMLSOnServiceTicketFailure(String sessionId, VsacApiResult result) {
-		LOGGER.info("VSACApiServImpl Ticket :" + UMLSSessionTicket.getTicket(sessionId).getTicket() + " has expired");
+		LOGGER.debug("VSACApiServImpl Ticket :" + UMLSSessionTicket.getTicket(sessionId).getTicket() +
+				" has expired");
 		result.setSuccess(false);
 		result.setFailureReason(VsacApiResult.VSAC_UNAUTHORIZED_ERROR);
 		inValidateVsacUser(sessionId);
@@ -555,28 +593,20 @@ public class VSACApiServImpl implements VSACApiService{
 	public void setDefaultExpId(String defaultExpId) {
 		this.defaultExpId = defaultExpId;
 	}
-	
-	public String getVsacServerUrl() {
-		return vsacServerDRCUrl;
-	}
-
-	public void setVsacServerUrl(String vsacServerUrl) {
-		this.vsacServerDRCUrl = vsacServerUrl;
-	}
 
 	@Override
 	public VsacApiResult getVSACProgramsReleasesAndProfiles() {
 
-		LOGGER.info("Start VSACAPIServiceImpl getProgramsList method :");
+		LOGGER.debug("Start VSACAPIServiceImpl getProgramsList method :");
 		VsacApiResult result = new VsacApiResult();
 		
-		try {		
-			
-			VSACResponseResult vsacResponseResult = vGroovyClient.getAllPrograms();
-			
+		try {
+			BasicResponse vsacResponseResult = vsacService.getAllPrograms();
 			if(vsacResponseResult != null && vsacResponseResult.getPgmRels() != null) {				
-				if (vsacResponseResult.getIsFailResponse() && (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
-					LOGGER.info("Program List retrieval failed at VSAC with Failure Reason: " + vsacResponseResult.getFailReason());
+				if (vsacResponseResult.isFailResponse() &&
+						(vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
+					LOGGER.debug("Program List retrieval failed at VSAC with Failure Reason: " +
+							vsacResponseResult.getFailReason());
 					result.setSuccess(false);
 					result.setFailureReason(vsacResponseResult.getFailReason());
 					return result;
@@ -602,14 +632,13 @@ public class VSACApiServImpl implements VSACApiService{
 		}
 
 		return result;
-
 	}
 
 	private List<String> getReleasesListForProgram(String programName) {
-		LOGGER.info("Start VSACAPIServiceImpl getProgramsList method :");
-		VSACResponseResult vsacResponseResult = null;
+		LOGGER.debug("Start VSACAPIServiceImpl getProgramsList method :");
+		BasicResponse vsacResponseResult = null;
 		try {
-			vsacResponseResult = vGroovyClient.getReleasesOfProgram(programName);
+			vsacResponseResult = vsacService.getReleasesOfProgram(programName);
 		} catch (Exception e) {
 			LOGGER.error("getReleasesListForProgram: " + e.getMessage());
 		}
@@ -617,10 +646,10 @@ public class VSACApiServImpl implements VSACApiService{
 	}
 	
 	private String getLatestProfileOfProgram(String programName) {
-		LOGGER.info("Start getProfilesForProgram method :");
-		VSACResponseResult vsacResponseResult = null;
+		LOGGER.debug("Start getProfilesForProgram method :");
+		BasicResponse vsacResponseResult = null;
 		try {
-			vsacResponseResult = vGroovyClient.getLatestProfileOfProgram(programName);
+			vsacResponseResult = vsacService.getLatestProfileOfProgram(programName);
 		} catch (Exception e) {
 			LOGGER.error("getLatestProfileOfProgram: " + e.getMessage());
 		}

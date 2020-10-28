@@ -1,12 +1,5 @@
 package mat.client.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.Pull;
-import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
-
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -36,7 +29,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-
 import mat.client.CustomPager;
 import mat.client.admin.ManageUsersSearchModel.Result;
 import mat.client.shared.ContentWithHeadingWidget;
@@ -50,6 +42,12 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.Pull;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay, HasSelectionHandlers<ManageUsersSearchModel.Result> {
 	/** Cell Table Page Size. */
@@ -125,7 +123,8 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		Column<Result, SafeHtml> nameColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
-				return CellTableUtility.getColumnToolTip(object.getFirstName() + " " + object.getLastName(), "Name: " + object.getFirstName() + " " + object.getLastName());
+				return CellTableUtility.getColumnToolTip(SafeHtmlUtils.htmlEscape(object.getFirstName() + " " + object.getLastName()),
+						"Name: " + SafeHtmlUtils.htmlEscape(object.getFirstName() + " " + object.getLastName()));
 			}
 		};
 		cellTable.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));			

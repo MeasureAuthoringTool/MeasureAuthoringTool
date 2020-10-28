@@ -1,10 +1,10 @@
 package mat.client.expressionbuilder.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.ExpressionType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AttributeModel extends ExpressionBuilderModel {
 	private ExpressionBuilderModel source;

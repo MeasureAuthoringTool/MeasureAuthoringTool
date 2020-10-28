@@ -1,16 +1,15 @@
 package mat.server.hqmf.qdm;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
+import mat.server.logging.LogFactory;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathExpressionException;
 
 /**
  * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
@@ -38,12 +37,12 @@ public class HQMFFinalCleanUp {
 		XmlProcessor simpleProcessor = me.getSimpleXMLProcessor();
 		
 		if(hqmfProcessor == null){
-			logger.info("HQMF document is null. Aborting clean up.");
+			logger.debug("HQMF document is null. Aborting clean up.");
 			return;
 		}
 		
 		if(simpleProcessor == null){
-			logger.info("SimpleXML document is null. Aborting clean up.");
+			logger.debug("SimpleXML document is null. Aborting clean up.");
 			return;
 		}
 		
@@ -141,7 +140,7 @@ public class HQMFFinalCleanUp {
 	 */
 	private static void reverseEntryCheck(String hqmfXML) {
 		String reverseEntryCheckResults = XMLUtility.getInstance().applyXSL(hqmfXML, XMLUtility.getInstance().getXMLResource(reverseEntryCheckFile));
-		logger.info("Reverse Entry Check results: " + reverseEntryCheckResults);
+		logger.debug("Reverse Entry Check results: " + reverseEntryCheckResults);
 	}
 	
 	/**

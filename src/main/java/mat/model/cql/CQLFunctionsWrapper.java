@@ -1,9 +1,9 @@
 package mat.model.cql;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CQLFunctionsWrapper implements IsSerializable {
 	

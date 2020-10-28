@@ -1,12 +1,5 @@
 package mat.client.measure.measuredetails;
 
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
-
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
@@ -16,7 +9,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.buttons.CancelButton;
 import mat.client.buttons.DeleteButton;
 import mat.client.buttons.SaveButton;
@@ -34,6 +26,12 @@ import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
+
+import java.util.List;
 
 public class MeasureDetailsView {
 	private VerticalPanel mainPanel = new VerticalPanel();
@@ -132,7 +130,7 @@ public class MeasureDetailsView {
 
 	private void generateHumanReadableForMeasureDetails() {
 		messagePanel.clearAlerts();
-		MatContext.get().getMeasureService().getHumanReadableForMeasureDetails(MatContext.get().getCurrentMeasureId(), new AsyncCallback<String>() {
+		MatContext.get().getMeasureService().getHumanReadableForMeasureDetails(MatContext.get().getCurrentMeasureId(), MatContext.get().getCurrentMeasureModel(), new AsyncCallback<String>() {
 			@Override
 			public void onSuccess(String result) {
 				showHumanReadableDialogBox(result, measureDetailsModel.getGeneralInformationModel().getMeasureName());

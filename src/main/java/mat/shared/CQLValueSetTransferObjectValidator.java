@@ -1,15 +1,15 @@
 package mat.shared;
 
-import java.util.List;
-
 import mat.model.CQLValueSetTransferObject;
 import mat.model.cql.CQLQualityDataSetDTO;
+
+import java.util.List;
 
 public class CQLValueSetTransferObjectValidator {
 	public boolean isValid(CQLValueSetTransferObject object) {
 		boolean isValid = true;
-		if(object.getMatValueSet() != null){
-			if(StringUtility.isEmptyOrNull(object.getMatValueSet().getDisplayName())) {
+		if(object.getValueSet() != null){
+			if(StringUtility.isEmptyOrNull(object.getValueSet().getDisplayName())) {
 				isValid = false;
 			} 
 		} else if(object.getUserDefinedText().trim().isEmpty()){

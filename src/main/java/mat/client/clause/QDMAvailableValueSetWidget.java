@@ -1,27 +1,5 @@
 package mat.client.clause;
 
-import java.util.List;
-import java.util.ListIterator;
-import mat.client.CustomPager;
-import mat.client.codelist.HasListBox;
-import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.shared.DateBoxWithCalendar;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SecondaryButton;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.model.MatValueSet;
-import mat.shared.ConstantMessages;
-import org.apache.commons.lang3.StringUtils;
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
@@ -47,6 +25,28 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import mat.client.CustomPager;
+import mat.client.codelist.HasListBox;
+import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.shared.DateBoxWithCalendar;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.PrimaryButton;
+import mat.client.shared.SecondaryButton;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.vsacmodel.ValueSet;
+import mat.shared.ConstantMessages;
+import org.apache.commons.lang3.StringUtils;
+import org.gwtbootstrap3.client.ui.Button;
+
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * The Class QDMAvailableValueSetWidget.
@@ -71,7 +71,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 			+ "<br/> associated with this element in the Clause Workspace. </div>";
 	
 	/** The current mat value set. */
-	private MatValueSet currentMatValueSet;
+	private ValueSet currentValueSet;
 	
 	/** The data type change handler. */
 	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
@@ -104,7 +104,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	/** The disclosure panel. */
 	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without VSAC value set");
 	
-	/** The disclosure panel vsac. */
+	/** The disclosure panel mat.vsac. */
 	private DisclosurePanel disclosurePanelVSAC = new DisclosurePanel("Element with VSAC value set");
 	
 	/** Effective Date. */
@@ -204,7 +204,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	}
 	
 	/**
-	 * Builds the element with vsac value set widget.
+	 * Builds the element with mat.vsac value set widget.
 	 *
 	 * @return the widget
 	 */
@@ -341,15 +341,15 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#buildValueSetDetailsWidget(java.util.ArrayList)
 	 */
 	@Override
-	public void buildValueSetDetailsWidget(List<MatValueSet> matValueSets) {
-		if (matValueSets != null) {
-			MatValueSet matValueSet = matValueSets.get(0);
-			currentMatValueSet = matValueSet;
+	public void buildValueSetDetailsWidget(List<ValueSet> ValueSets) {
+		if (ValueSets != null) {
+			ValueSet ValueSet = ValueSets.get(0);
+			currentValueSet = ValueSet;
 			valueSetDetailsPanel.clear();
-			valueSetDetailsPanel.add(createDetailsWidget(matValueSet));
-			if (matValueSet.isGrouping()) {
+			valueSetDetailsPanel.add(createDetailsWidget(ValueSet));
+			if (ValueSet.isGrouping()) {
 				valueSetDetailsPanel.add(new SpacerWidget());
-				valueSetDetailsPanel.add(createGroupingMembersCellTable(matValueSet));
+				valueSetDetailsPanel.add(createGroupingMembersCellTable(ValueSet));
 			}
 			valueSetDetailsPanel.add(new SpacerWidget());
 			valueSetDetailsPanel.add(new SpacerWidget());
@@ -417,11 +417,11 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	/**
 	 * Creates the details widget.
 	 *
-	 * @param matValueSet
+	 * @param ValueSet
 	 *            the mat value set
 	 * @return the widget
 	 */
-	private Widget createDetailsWidget(MatValueSet matValueSet) {
+	private Widget createDetailsWidget(ValueSet ValueSet) {
 		VerticalPanel detailsPanel = new VerticalPanel();
 		detailsPanel.getElement().setId("detailsPanel_VerticalPanel");
 		detailsPanel.setWidth("100%");
@@ -445,21 +445,21 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		details.getRowFormatter().setVerticalAlign(5, HasVerticalAlignment.ALIGN_TOP);
 		
 		details.setWidget(0, 0, createHTML("Name:", "Name", null));
-		details.setWidget(1, 0, createHTML(matValueSet.getDisplayName(), "NameValue", null));
+		details.setWidget(1, 0, createHTML(ValueSet.getDisplayName(), "NameValue", null));
 		details.setWidget(0, 1, createHTML("OID:", "oid", "valueSetMarginLeft"));
-		details.setWidget(1, 1, createHTML(matValueSet.getID(), "oidValue", "valueSetMarginLeft"));
+		details.setWidget(1, 1, createHTML(ValueSet.getID(), "oidValue", "valueSetMarginLeft"));
 		details.setWidget(0, 2, createHTML("Code System:", "CodeSystem", "valueSetMarginLeft"));
-		details.setWidget(1, 2, createHTML(getCodeSystem(matValueSet), "CodeSystemValue", "valueSetMarginLeft"));
+		details.setWidget(1, 2, createHTML(getCodeSystem(ValueSet), "CodeSystemValue", "valueSetMarginLeft"));
 		details.setWidget(2, 0, createHTML("Type:", "Type", "valueSetMarginTop"));
-		details.setWidget(3, 0, createHTML(matValueSet.getType(), "TypeValue", null));
+		details.setWidget(3, 0, createHTML(ValueSet.getType(), "TypeValue", null));
 		details.setWidget(2, 1, createHTML("Version:", "Version", "valueSetMarginLeft,valueSetMarginTop"));
-		details.setWidget(3, 1, createHTML(matValueSet.getVersion(),"VersionValue", "valueSetMarginLeft"));
+		details.setWidget(3, 1, createHTML(ValueSet.getVersion(),"VersionValue", "valueSetMarginLeft"));
 		details.setWidget(2, 2, createHTML("Effective Date:", "EffectiveDate", "valueSetMarginLeft,valueSetMarginTop"));
-		details.setWidget(3, 2, createHTML(matValueSet.getRevisionDate(), "EffectiveDateValue", "valueSetMarginLeft"));
+		details.setWidget(3, 2, createHTML(ValueSet.getRevisionDate(), "EffectiveDateValue", "valueSetMarginLeft"));
 		details.setWidget(4, 0, createHTML("Steward:", "Steward", "valueSetMarginTop"));
-		details.setWidget(5, 0, createHTML(matValueSet.getSource(), "StewardValue", null));
+		details.setWidget(5, 0, createHTML(ValueSet.getSource(), "StewardValue", null));
 		details.setWidget(4, 1, createHTML("Status:", "Status", "valueSetMarginLeft,valueSetMarginTop"));
-		details.setWidget(5, 1, createHTML(matValueSet.getStatus(), "StatusValue", "valueSetMarginLeft"));
+		details.setWidget(5, 1, createHTML(ValueSet.getStatus(), "StatusValue", "valueSetMarginLeft"));
 		detailsPanel.add(details);
 		
 		return detailsPanel;
@@ -468,14 +468,14 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	/**
 	 * Creates the grouping members cell table.
 	 *
-	 * @param matValueSet
+	 * @param ValueSet
 	 *            the mat value set
 	 * @return the widget
 	 */
-	private Widget createGroupingMembersCellTable(MatValueSet matValueSet) {
-		List<MatValueSet> groupedMatValueSets = matValueSet.getGroupedValueSet();
+	private Widget createGroupingMembersCellTable(ValueSet ValueSet) {
+		List<ValueSet> groupedValueSets = ValueSet.getGroupedValueSet();
 		
-		CellTable<MatValueSet> groupingValueSetTable = new CellTable<MatValueSet>();
+		CellTable<ValueSet> groupingValueSetTable = new CellTable<ValueSet>();
 		groupingValueSetTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		groupingValueSetTable.getElement().setAttribute("tabIndex", "0");
 		groupingValueSetTable.addStyleName("valueSetMarginLeft_7px");
@@ -485,9 +485,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		
 		addColumnToTable(groupingValueSetTable);
 		
-		ListDataProvider<MatValueSet> listDataProvider = new ListDataProvider<MatValueSet>();
+		ListDataProvider<ValueSet> listDataProvider = new ListDataProvider<ValueSet>();
 		listDataProvider.refresh();
-		listDataProvider.getList().addAll(groupedMatValueSets);
+		listDataProvider.getList().addAll(groupedValueSets);
 		listDataProvider.addDataDisplay(groupingValueSetTable);
 		
 		VerticalPanel groupingPanel = new VerticalPanel();
@@ -525,27 +525,27 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	 * @param groupingValueSetTable
 	 * @param valuesetNameColumn
 	 */
-	private void addColumnToTable(CellTable<MatValueSet> groupingValueSetTable) {
+	private void addColumnToTable(CellTable<ValueSet> groupingValueSetTable) {
 		
-		TextColumn<MatValueSet> valuesetNameColumn = new TextColumn<MatValueSet>() {
+		TextColumn<ValueSet> valuesetNameColumn = new TextColumn<ValueSet>() {
 			@Override
-			public String getValue(MatValueSet object) {
+			public String getValue(ValueSet object) {
 				return object.getDisplayName();
 			}
 		};
 		groupingValueSetTable.addColumn(valuesetNameColumn, "Value Set Name");
 		
-		TextColumn<MatValueSet> oidColumn = new TextColumn<MatValueSet>() {
+		TextColumn<ValueSet> oidColumn = new TextColumn<ValueSet>() {
 			@Override
-			public String getValue(MatValueSet object) {
+			public String getValue(ValueSet object) {
 				return object.getID();
 			}
 		};
 		groupingValueSetTable.addColumn(oidColumn, "OID");
 		
-		TextColumn<MatValueSet> codeSystemColumn = new TextColumn<MatValueSet>() {
+		TextColumn<ValueSet> codeSystemColumn = new TextColumn<ValueSet>() {
 			@Override
-			public String getValue(MatValueSet object) {
+			public String getValue(ValueSet object) {
 				return object.getCodeSystemName();
 			}
 		};
@@ -609,19 +609,19 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	/**
 	 * Gets the code system.
 	 *
-	 * @param matValueSet
+	 * @param ValueSet
 	 *            the mat value set
 	 * @return the code system
 	 */
-	private String getCodeSystem(MatValueSet matValueSet) {
-		if (matValueSet.isGrouping()) {
+	private String getCodeSystem(ValueSet ValueSet) {
+		if (ValueSet.isGrouping()) {
 			String codeSystem = StringUtils.EMPTY;
-			List<MatValueSet> groupedMatValueSets = matValueSet.getGroupedValueSet();
-			if (groupedMatValueSets != null) {
-				ListIterator<MatValueSet> itr = groupedMatValueSets.listIterator();
+			List<ValueSet> groupedValueSets = ValueSet.getGroupedValueSet();
+			if (groupedValueSets != null) {
+				ListIterator<ValueSet> itr = groupedValueSets.listIterator();
 				while (itr.hasNext()) {
-					MatValueSet groupedMatValueSet = itr.next();
-					String codeSystemName = groupedMatValueSet.getCodeSystemName();
+					ValueSet groupedValueSet = itr.next();
+					String codeSystemName = groupedValueSet.getCodeSystemName();
 					if (codeSystemName != null) {
 						codeSystem += codeSystemName;
 						if (itr.hasNext() && !codeSystem.trim().isEmpty() && !codeSystemName.trim().isEmpty()) {
@@ -632,16 +632,16 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 			}
 			return codeSystem;
 		} else {
-			return matValueSet.getCodeSystemName();
+			return ValueSet.getCodeSystemName();
 		}
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getCurrentMatValueSet()
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getCurrentValueSet()
 	 */
 	@Override
-	public MatValueSet getCurrentMatValueSet() {
-		return currentMatValueSet;
+	public ValueSet getCurrentValueSet() {
+		return currentValueSet;
 	}
 	
 	/* (non-Javadoc)
@@ -878,10 +878,10 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	}
 	
 	/**
-	 * Sets the disclosure panel vsac.
+	 * Sets the disclosure panel mat.vsac.
 	 *
 	 * @param disclosurePanelVSAC
-	 *            the new disclosure panel vsac
+	 *            the new disclosure panel mat.vsac
 	 */
 	public void setDisclosurePanelVSAC(DisclosurePanel disclosurePanelVSAC) {
 		this.disclosurePanelVSAC = disclosurePanelVSAC;

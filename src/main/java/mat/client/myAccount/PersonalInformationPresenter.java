@@ -1,26 +1,13 @@
 package mat.client.myAccount;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.Input;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.TextBox;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.login.service.LoginServiceAsync;
@@ -29,6 +16,13 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.util.ClientConstants;
 import mat.shared.MyAccountModelValidator;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.TextBox;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class PersonalInformationPresenter.

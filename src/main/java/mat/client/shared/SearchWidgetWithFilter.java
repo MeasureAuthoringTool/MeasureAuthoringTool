@@ -1,9 +1,5 @@
 package mat.client.shared;
 
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -15,10 +11,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
 import mat.client.advancedsearch.AdvancedSearchPanel;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.util.MatTextBox;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 
 /**
  * SearchWidgetWithFilter.java.
@@ -29,7 +27,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	
 	private static final String LIBRARY_SEARCH_TITLE = "Search by Library Name or Owner";
 
-	private static final String MEASURE_SEARCH_TITLE = "Search by Measure Name, Owner, Abbreviated title, or eCQM Identifier";
+	private static final String MEASURE_SEARCH_TITLE = "Search by Measure Name, Owner First Name OR Owner Last Name, Abbreviated title, or eCQM Identifier";
 	
 	/**
 	 * ALL measure filter value.

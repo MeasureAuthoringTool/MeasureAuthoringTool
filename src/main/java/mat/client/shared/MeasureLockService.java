@@ -3,11 +3,10 @@
  */
 package mat.client.shared;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The Class MeasureLockService.

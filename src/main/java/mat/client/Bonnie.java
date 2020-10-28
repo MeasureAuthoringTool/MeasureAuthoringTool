@@ -4,7 +4,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.client.bonnie.BonnieService;
 import mat.client.bonnie.BonnieServiceAsync;
 import mat.client.shared.MatContext;
@@ -15,7 +14,7 @@ public class Bonnie extends MainLayout implements EntryPoint {
 
 
 	private BonnieServiceAsync bonnie = (BonnieServiceAsync) GWT.create(BonnieService.class);
-	
+
 	@Override
 	protected void initEntryPoint() {
 		String code = com.google.gwt.user.client.Window.Location.getParameter("code");
@@ -35,12 +34,12 @@ public class Bonnie extends MainLayout implements EntryPoint {
 			public void onSuccess(BonnieOAuthResult result) {
 				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
 				getBonnieDisconnectButton().getElement().focus();
-				getBonnieDisconnectButton().getElement().setAttribute("role", "alert"); 
+				getBonnieDisconnectButton().getElement().setAttribute("role", "alert");
 				getBonnieDisconnectButton().getElement().setAttribute("aria-label", "Bonnie Active. Click the Disconnect from Bonnie link to sign out of Bonnie.");
 			}
 
 		});
-		
+
 	}
 
 }

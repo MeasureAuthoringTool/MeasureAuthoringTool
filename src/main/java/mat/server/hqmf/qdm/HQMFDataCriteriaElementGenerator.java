@@ -1,15 +1,13 @@
 package mat.server.hqmf.qdm;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.xpath.XPathExpressionException;
-
+import mat.model.clause.MeasureExport;
+import mat.server.hqmf.Generator;
+import mat.server.hqmf.QDMTemplateProcessorFactory;
+import mat.server.logging.LogFactory;
+import mat.server.util.XmlProcessor;
+import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
@@ -17,11 +15,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import mat.model.clause.MeasureExport;
-import mat.server.hqmf.Generator;
-import mat.server.hqmf.QDMTemplateProcessorFactory;
-import mat.server.util.XmlProcessor;
-import mat.shared.UUIDUtilClient;
+import javax.xml.xpath.XPathExpressionException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
@@ -939,14 +937,14 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		boolean addVersionToValueTag = false;
 		if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion) || StringUtils.isBlank(valueSetVersion)) {
 			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-				valueSetVersion = "vsac:profile:"
+				valueSetVersion = "mat.vsac:profile:"
 						+ qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
 				addVersionToValueTag = true;
 			} else {
 				addVersionToValueTag = false;
 			}
 		} else {
-			valueSetVersion = "vsac:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue();
+			valueSetVersion = "mat.vsac:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 			addVersionToValueTag = true;
 		}
 		if (addVersionToValueTag) {
@@ -970,8 +968,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) {
 		Node refNode = occurrenceMap.get(occurString);
 
-		logger.info("In generateOutboundForOccur()..refNode:" + refNode);
-		logger.info("----------Occurance map:" + occurrenceMap);
+		logger.debug("In generateOutboundForOccur()..refNode:" + refNode);
+		logger.debug("----------Occurance map:" + occurrenceMap);
 
 		if (refNode != null) {
 
@@ -1096,10 +1094,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String version = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		if ("1.0".equals(version) || "1".equals(version) || StringUtils.isBlank(version)) {
 			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
+				version = "mat.vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
 			}
 		} else {
-			version = "vsac:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue();
+			version = "mat.vsac:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		}
 		return version;
 	}
@@ -1150,7 +1148,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("valueSet")
 							.setNodeValue(qdmOidValue);
 					String valueSetVersion = valueSetVersionStringValue(qdmNode);
-					if (valueSetVersion.contains("vsac")) {
+					if (valueSetVersion.contains("mat/vsacmodel")) {
 						Attr attrNode = attributedToBeChangedInNode.item(0).getOwnerDocument()
 								.createAttribute("valueSetVersion");
 						attrNode.setNodeValue(valueSetVersion);
@@ -1488,7 +1486,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
 
 						String valueSetVersion = valueSetVersionStringValue(attrNode);
-						if (valueSetVersion.contains("vsac")) {
+						if (valueSetVersion.contains("mat/vsacmodel")) {
 							Attr valuesetVersionAttr = attributedToBeChangedInNode.item(0).getOwnerDocument()
 									.createAttribute("valueSetVersion");
 							valuesetVersionAttr.setNodeValue(valueSetVersion);
@@ -1663,7 +1661,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			translationNode.setAttribute("valueSet", attrOID.getNodeValue());
 
 			String valueSetVersion = valueSetVersionStringValue(attributeQDMNode);
-			if (valueSetVersion.contains("vsac")) {
+			if (valueSetVersion.contains("mat/vsacmodel")) {
 				translationNode.setAttribute("valueSetVersion", valueSetVersion);
 			} else {
 				if (translationNode.getAttributes().getNamedItem("valueSetVersion") != null) {
@@ -1877,11 +1875,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 			Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 					"/templates/AttrTemplate[text()='" + attrName + "']");
-			logger.info("----------");
-			logger.info(attributeQDMNode.getNodeName());
-			logger.info(attributeQDMNode.getAttributes());
-			logger.info(simpleXmlprocessor.transform(attributeQDMNode));
-			logger.info("----------");
+			logger.debug("----------");
+			logger.debug(attributeQDMNode.getNodeName());
+			logger.debug(attributeQDMNode.getAttributes());
+			logger.debug(simpleXmlprocessor.transform(attributeQDMNode));
+			logger.debug("----------");
 			String attributeValueSetName = attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue();
 			String attributeOID = attributeQDMNode.getAttributes().getNamedItem(OID).getNodeValue();
 			String attributeTaxonomy = attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue();
@@ -2031,7 +2029,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
 
 							String valueSetVersion = valueSetVersionStringValue(attributeQDMNode);
-							if (valueSetVersion.contains("vsac")) {
+							if (valueSetVersion.contains("mat/vsacmodel")) {
 								Attr valuesetVersionAttr = attributedToBeChangedInNode.item(0).getOwnerDocument()
 										.createAttribute("valueSetVersion");
 								valuesetVersionAttr.setNodeValue(valueSetVersion);
@@ -2892,11 +2890,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * type="AGE AT"...../>.
 	 */
 	private void prepHQMF(MeasureExport me) {
-		logger.info("Prepping for HQMF Clause generation..............");
+		logger.debug("Prepping for HQMF Clause generation..............");
 		prepForUUID(me);
 		prepForAGE_AT(me);
 		prepForSatisfiesAll_Any(me);
-		logger.info("Done prepping for HQMF Clause generation.");
+		logger.debug("Done prepping for HQMF Clause generation.");
 	}
 
 	private void prepForUUID(MeasureExport me) {
@@ -2947,7 +2945,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 
 	private void prepForAGE_AT(MeasureExport me) {
 		XmlProcessor xmlProcessor = me.getSimpleXMLProcessor();
-		logger.info("Prepping for HQMF Clause generation for AGE AT functionalOps.");
+		logger.debug("Prepping for HQMF Clause generation for AGE AT functionalOps.");
 
 		try {
 
@@ -2955,7 +2953,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			String xPathForBirthdate = "/measure/elementLookUp/qdm[@name='Birthdate'][@datatype='Patient Characteristic Birthdate']";
 			Node birthDateQDM = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForBirthdate);
 			if (birthDateQDM == null) {
-				logger.info(
+				logger.debug(
 						"**********   Could not find QDM for Birthdate. No changes done for AGE AT. ***************");
 				return;
 			}
@@ -2963,10 +2961,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			String xPathForAGE_AT = "/measure/subTreeLookUp//functionalOp[@type='AGE AT']";
 			Node ageAtFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
 
-			logger.info(".......found AGE AT functionalOps");
+			logger.debug(".......found AGE AT functionalOps");
 
 			while (ageAtFuncNode != null) {
-				logger.info("Changing " + ageAtFuncNode.toString() + " to relational SBS node.");
+				logger.debug("Changing " + ageAtFuncNode.toString() + " to relational SBS node.");
 				Node cloneAgeAtRelNode = ageAtFuncNode.cloneNode(true);
 
 				// hold on to the first child of Age At
@@ -2995,7 +2993,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				Node parentNode = ageAtFuncNode.getParentNode();
 				parentNode.insertBefore(newRelationalOp, ageAtFuncNode);
 				parentNode.removeChild(ageAtFuncNode);
-				logger.info("Change done.");
+				logger.debug("Change done.");
 
 				ageAtFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
 			}
@@ -3016,13 +3014,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 */
 	private void prepForSatisfiesAll_Any(MeasureExport me) {
 		XmlProcessor xmlProcessor = me.getSimpleXMLProcessor();
-		logger.info("Prepping for HQMF Clause generation for Satisfies All/Satisfies Any functionalOps.");
+		logger.debug("Prepping for HQMF Clause generation for Satisfies All/Satisfies Any functionalOps.");
 		String xPathForSatisfiesAllAny = "/measure/subTreeLookUp//functionalOp[@type='SATISFIES ALL' or @type='SATISFIES ANY']";
 		try {
 			Node satisfiesFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForSatisfiesAllAny);
-			logger.info(".......found Satisfies All/Satisfies Any functionalOps");
+			logger.debug(".......found Satisfies All/Satisfies Any functionalOps");
 			while (satisfiesFuncNode != null) {
-				logger.info("Changing functionaOp "
+				logger.debug("Changing functionaOp "
 						+ satisfiesFuncNode.getAttributes().getNamedItem("displayName").getNodeValue()
 						+ " to relationalOp node.");
 
@@ -3047,7 +3045,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				Node parentNode = satisfiesFuncNode.getParentNode();
 				parentNode.insertBefore(newSetOp, satisfiesFuncNode);
 				parentNode.removeChild(satisfiesFuncNode);
-				logger.info("Change done.");
+				logger.debug("Change done.");
 				satisfiesFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForSatisfiesAllAny);
 			}
 		} catch (XPathExpressionException e) {

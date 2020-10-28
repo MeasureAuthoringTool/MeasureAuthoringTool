@@ -1,10 +1,9 @@
 package mat.shared;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.client.measure.ManageCompositeMeasureDetailModel;
+
+import java.util.List;
 
 public class CompositeMeasureValidationResult implements IsSerializable {
 

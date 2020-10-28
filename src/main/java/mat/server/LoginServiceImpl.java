@@ -1,29 +1,27 @@
 package mat.server;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginService;
 import mat.client.shared.MatException;
 import mat.dao.UserDAO;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
+import mat.server.logging.LogFactory;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
 import mat.server.util.UMLSSessionTicket;
 import mat.shared.HarpConstants;
 import mat.shared.HashUtility;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -44,7 +42,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 
     @Override
     public LoginModel initSession(Map<String, String> harpUserInfo) throws MatException {
-        logger.info("initSession::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
+        logger.debug("initSession::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
         HttpSession session = getThreadLocalRequest().getSession();
         if (userService.isHarpUserLockedRevoked(harpUserInfo.get(HarpConstants.HARP_ID))) {
             throw new MatException("MAT_ACCOUNT_REVOKED_LOCKED");
@@ -106,12 +104,12 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
     @Override
     public void switchUser(Map<String, String> harpUserInfo, String newUserId) {
         String sessionId = getThreadLocalRequest().getSession().getId();
-        logger.info("LoginnService::switchUser HARP_ID: " + harpUserInfo.get(HarpConstants.HARP_ID) + " Session ID: " + sessionId + " New User ID: " + newUserId);
+        logger.debug("LoginnService::switchUser HARP_ID: " + harpUserInfo.get(HarpConstants.HARP_ID) + " Session ID: " + sessionId + " New User ID: " + newUserId);
         loginCredentialService.switchUser(harpUserInfo, newUserId, sessionId);
     }
 
     private void saveHarpUserInfo(Map<String, String> harpUserInfo, String loginId) throws MatException {
-        logger.info("User Verified, updating user information of::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
+        logger.debug("User Verified, updating user information of::harpId::" + harpUserInfo.get(HarpConstants.HARP_ID));
         HttpSession session = getThreadLocalRequest().getSession();
         loginCredentialService.saveHarpUserInfo(harpUserInfo, loginId, session.getId());
     }
@@ -128,8 +126,8 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
         String resultStr = userService.updateOnSignOut(userId, emailId, activityType);
         SecurityContextHolder.clearContext();
         getThreadLocalRequest().getSession().invalidate();
-        logger.info("User Session Invalidated at :::: " + new Date());
-        logger.info("In UserServiceImpl Signout Update " + resultStr);
+        logger.debug("User Session Invalidated at :::: " + new Date());
+        logger.debug("In UserServiceImpl Signout Update " + resultStr);
         return resultStr;
     }
 

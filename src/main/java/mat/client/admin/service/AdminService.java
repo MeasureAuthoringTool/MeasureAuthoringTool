@@ -17,6 +17,8 @@ import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.ManageUsersSearchModel;
 import mat.shared.InCorrectUserRoleException;
 
+import java.util.List;
+
 /**
  * The Interface AdminService.
  */

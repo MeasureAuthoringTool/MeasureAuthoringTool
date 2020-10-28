@@ -16,7 +16,7 @@ public interface HarpService extends RemoteService {
 
     String getHarpClientId();
 
-    Map<String, String> getUserInfo(String accessToken);
-
     boolean validateToken(String token);
+
+    Map<String, String> getUserInfo(String accessToken);
 }

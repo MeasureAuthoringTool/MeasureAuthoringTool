@@ -3,7 +3,6 @@ package mat.client.export.measure;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.MatPresenter;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -57,7 +56,7 @@ public class ManageMeasureExportPresenter implements MatPresenter {
 		System.out.println("URL: " + url);
 
 		url += (view.isHQMF() ? "hqmf" : view.isHumanReadable() ? "humanreadable" : view.isSimpleXML() ? "simplexml" : 
-			view.isCQLLibrary() ? "cqlLibrary" : view.isELM() ? "elm" : view.isJSON() ? "json" : "zip");
+			view.isCQLLibrary() ? "cqlLibrary" : view.isELM() ? "elm" : view.isJSON() ? "json" : view.isXml() ? "xml" : "zip");
 		return url;
 	}
 
@@ -71,7 +70,6 @@ public class ManageMeasureExportPresenter implements MatPresenter {
 
 	@Override
 	public Widget getWidget() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

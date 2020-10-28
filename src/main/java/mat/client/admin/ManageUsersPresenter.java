@@ -1,18 +1,5 @@
 package mat.client.admin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.TextBox;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -20,9 +7,9 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
-import mat.dto.UserAuditLogDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
@@ -38,8 +25,21 @@ import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.MatTextBox;
+import mat.dto.UserAuditLogDTO;
 import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.TextBox;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The Class ManageUsersPresenter.
@@ -641,6 +641,7 @@ public class ManageUsersPresenter implements MatPresenter {
             detailDisplay.setShowRevokedStatus(false);
             detailDisplay.setShowAdminNotes(false);
         }
+        detailDisplay.getFhirAccessCheckBox().setValue(currentDetails.isFhirAccessible());
         detailDisplay.setUserIsActiveEditable(currentDetails.isCurrentUserCanChangeAccountStatus());
         detailDisplay.setShowUnlockOption(currentDetails.isCurrentUserCanUnlock() && currentDetails.isActive());
         detailDisplay.getRole().setValue(currentDetails.getRole());
@@ -669,6 +670,7 @@ public class ManageUsersPresenter implements MatPresenter {
         updatedDetails.setOid(detailDisplay.getOid().getValue());
         String orgId = detailDisplay.getOrganizationListBox().getValue();
         updatedDetails.setOrganizationId(orgId);
+        updatedDetails.setFhirAccessible(detailDisplay.getFhirAccessCheckBox().getValue());
         Result organization = detailDisplay.getOrganizationsMap().get(orgId);
         if (organization != null) {
             updatedDetails.setOrganization(organization.getOrgName());
@@ -927,6 +929,8 @@ public class ManageUsersPresenter implements MatPresenter {
          * @return the organization list box
          */
         ListBoxMVP getOrganizationListBox();
+
+        CheckBox getFhirAccessCheckBox();
 
         /**
          * Populate organizations.

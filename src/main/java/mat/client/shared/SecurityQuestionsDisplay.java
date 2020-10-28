@@ -1,12 +1,11 @@
 package mat.client.shared;
 
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Input;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Input;
+
+import java.util.List;
 
 public interface SecurityQuestionsDisplay {
 	

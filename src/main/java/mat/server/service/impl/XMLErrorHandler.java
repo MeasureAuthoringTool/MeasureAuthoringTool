@@ -1,10 +1,10 @@
 package mat.server.service.impl;
 
-import java.util.ArrayList;
-
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import java.util.ArrayList;
 
 /**
  * store an array of errors.

@@ -1,13 +1,12 @@
 package mat.dao.clause;
 
-import java.util.List;
-
 import mat.dao.DataTypeDAO;
 import mat.dao.IDAO;
 import mat.model.DataType;
 import mat.model.clause.QDSAttributes;
-
 import org.springframework.context.ApplicationContext;
+
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**

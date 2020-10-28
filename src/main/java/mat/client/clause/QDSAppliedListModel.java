@@ -1,8 +1,8 @@
 package mat.client.clause;
 
-import java.util.List;
-
 import mat.model.QualityDataSetDTO;
+
+import java.util.List;
 
 /**
  * The Class QDSAppliedListModel.

@@ -1,12 +1,5 @@
 package mat.server.service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import javax.xml.xpath.XPathExpressionException;
-
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
@@ -23,25 +16,23 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.ComponentMeasureTabObject;
 import mat.model.MatCodeTransferObject;
-import mat.model.MatValueSet;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.MeasureType;
 import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.clause.Measure;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
-import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
-import mat.shared.CQLValidationResult;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
@@ -49,6 +40,13 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
+import mat.vsacmodel.ValueSet;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * The Interface MeasureLibraryService.
@@ -92,7 +90,7 @@ public interface MeasureLibraryService {
 	 * 
 	 * @param userId the user id
 	 * @return the all recent measure for user */
-	ManageMeasureSearchModel getAllRecentMeasureForUser(String userId);
+	ManageMeasureSearchModel getAllRecentMeasureForUser(String userId, boolean isFhirEnabled);
 	
 	/**
 	 * Gets the applied qdm from measure xml.
@@ -105,7 +103,7 @@ public interface MeasureLibraryService {
 	 */
 	QualityDataModelWrapper getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
-	
+
 	/**
 	 * Gets the max e measure id.
 	 * 
@@ -113,14 +111,7 @@ public interface MeasureLibraryService {
 	 */
 	int getMaxEMeasureId();
 	
-	/**
-	 * Gets the measure.
-	 * 
-	 * @param key
-	 *            the key
-	 * @return the measure
-	 */
-	ManageMeasureDetailModel getMeasure(String key);
+	ManageMeasureDetailModel getMeasure(String measureId);
 	
 	ManageCompositeMeasureDetailModel getCompositeMeasure(String key);
 	
@@ -228,21 +219,8 @@ public interface MeasureLibraryService {
 	 * @param measureXmlModel
 	 *            the measure xml model
 	 */
-	void saveMeasureXml(MeasureXmlModel measureXmlModel, String measureId);
-	
-	/**
-	 * Search.
-	 * 
-	 * @param searchText
-	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param filter
-	 *            the filter
-	 * @return the manage measure search model
-	 */
+	void saveMeasureXml(final MeasureXmlModel measureXmlModel, String measureId, boolean isFhir);
+
 	ManageMeasureSearchModel search(MeasureSearchModel advancedSearchModel);
 	
 		
@@ -313,14 +291,15 @@ public interface MeasureLibraryService {
 	 * 
 	 * @param key
 	 *            the key
-	 * @param matValueSetList
+	 * @param ValueSetList
 	 *            the mat value set list
 	 * @return the validate measure result
 	 * @throws MatException
 	 *             the mat exception
 	 */
 	ValidateMeasureResult createExports(String key,
-			List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException;
+										List<ValueSet> ValueSetList,
+										boolean shouldCreateArtifacts) throws MatException;
 		
 	/**
 	 * Save measure at package.
@@ -498,14 +477,6 @@ public interface MeasureLibraryService {
 	List<MeasureOwnerReportDTO> getMeasuresForMeasureOwner() throws XPathExpressionException;
 	
 	/**
-	 * Gets the default expansion identifier.
-	 *
-	 * @param measureId the measure id
-	 * @return the default expansion identifier
-	 */
-	//String getDefaultExpansionIdentifier(String measureId);
-	
-	/**
 	 * Gets the current release version.
 	 *
 	 * @return the current release version
@@ -520,41 +491,13 @@ public interface MeasureLibraryService {
 	void setCurrentReleaseVersion(String releaseVersion);
 	
 	/**
-	 * Parses the cql.
-	 *
-	 * @param cqlBuilder the cql builder
-	 * @return the CQL model
-	 */
-	CQLModel parseCQL(String cqlBuilder);
-	
-	//Boolean saveCQLData(CQLModel cqlDataModel);
-	
-	/**
 	 * Gets the CQL data.
 	 *
 	 * @param measureId the measure id
 	 * @return the CQL data
 	 */
-	//SaveUpdateCQLResult getCQLData(String measureId,String fromTable);
-	
 	SaveUpdateCQLResult getMeasureCQLData(String measureId);
-	
-	/**
-	 * Gets the CQL file data.
-	 *
-	 * @param measureId the measure id
-	 * @return the CQL file data
-	 */
-	//SaveUpdateCQLResult getCQLFileData(String xmlString);
-	
-	/**
-	 * Validate cql.
-	 *
-	 * @param cqlModel the cql model
-	 * @return the CQL validation result
-	 */
-	CQLValidationResult validateCQL(CQLModel cqlModel);
-	
+
 	/**
 	 * Save and modify definitions.
 	 *
@@ -653,8 +596,6 @@ public interface MeasureLibraryService {
 
 	CQLQualityDataModelWrapper getDefaultCQLSDEFromMeasureXml(String measureId);
 
-	SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
-
 	CQLQualityDataModelWrapper getCQLValusets(String measureID);
 
 	SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject);
@@ -707,9 +648,11 @@ public interface MeasureLibraryService {
 
 	int generateAndSaveMaxEmeasureId(boolean isEditable, String measureId);
 
-	String getHumanReadableForMeasureDetails(String measureId);
+	String getHumanReadableForMeasureDetails(String measureId, String measureModel);
 
 	SaveUpdateCQLResult saveCQLFile(String measureId, String cql);
 	
 	boolean libraryNameExists(String libraryName, String setId);
+
+	void exportDraftCQLLibraryForMeasure(Measure measure);
 }

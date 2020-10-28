@@ -1,9 +1,5 @@
 package mat.client.admin;
 
-import java.util.List;
-
-import mat.client.shared.NameValuePair;
-
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -13,6 +9,9 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
+import mat.client.shared.NameValuePair;
+
+import java.util.List;
 
 /**
  * The Class OrganizationAutoComplete.

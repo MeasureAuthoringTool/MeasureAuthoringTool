@@ -1,15 +1,17 @@
 package mat.client.measure.measuredetails.observers;
 
-import java.util.List;
-
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.client.measure.measuredetails.views.GeneralInformationView;
 import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
+import mat.model.clause.ModelTypeHelper;
 import mat.shared.MatConstants;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
+
+import java.util.Date;
+import java.util.List;
 
 /*  */
 /**
@@ -54,6 +56,8 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 		generalInformationModel.setCalendarYear(generalMeasureInformationView.getCalenderYear().getValue());
 		generalInformationModel.setMeasureFromPeriod(generalMeasureInformationView.getMeasurePeriodFromInput().getValue());
 		generalInformationModel.setMeasureToPeriod(generalMeasureInformationView.getMeasurePeriodToInput().getValue());
+		generalInformationModel.setExperimental(generalMeasureInformationView.getExperimentalCheckbox().getValue());
+		generalInformationModel.setPopulationBasis(generalMeasureInformationView.getPopulationBasisInput().getValue());
 		return generalInformationModel;
 	}
 	
@@ -166,13 +170,21 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 	}
 
 	public void handleCalendarYearChanged() {
+        String year = DateTimeFormat.getFormat( "d-M-yyyy" ).format( new Date() ).split( "-")[2];
+        int nextCalenderYear = Integer.parseInt(year) + 1;
 		boolean calendarYearSelected = generalMeasureInformationView.getCalenderYear().getValue();
 		generalMeasureInformationView.getMeasurePeriodFromInput().setEnabled(!calendarYearSelected);
 		generalMeasureInformationView.getMeasurePeriodToInput().setEnabled(!calendarYearSelected);
 		if(calendarYearSelected) {
 			generalMeasureInformationView.getCalenderYear().setTitle("Click to select custom measurement period");
-			generalMeasureInformationView.getMeasurePeriodFromInput().setValue("");
-			generalMeasureInformationView.getMeasurePeriodToInput().setValue("");
+			if (ModelTypeHelper.isFhir(MatContext.get().getCurrentMeasureModel())) {
+                generalMeasureInformationView.getMeasurePeriodFromInput().setValue("01/01/" + nextCalenderYear);
+                generalMeasureInformationView.getMeasurePeriodToInput().setValue("12/31/" + nextCalenderYear);
+            } else {
+                generalMeasureInformationView.getMeasurePeriodFromInput().setValue("");
+                generalMeasureInformationView.getMeasurePeriodToInput().setValue("");
+            }
+
 		} else {
 			generalMeasureInformationView.getCalenderYear().setTitle("Click to select calendar year measurement period");
 		}

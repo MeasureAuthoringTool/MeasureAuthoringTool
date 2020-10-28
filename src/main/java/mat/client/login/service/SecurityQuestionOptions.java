@@ -1,10 +1,9 @@
 package mat.client.login.service;
 
-import java.util.List;
-
+import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.client.shared.NameValuePair;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.util.List;
 
 /**
  * The Class SecurityQuestionOptions.

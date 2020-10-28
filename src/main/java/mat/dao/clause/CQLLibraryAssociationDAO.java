@@ -1,9 +1,9 @@
 package mat.dao.clause;
 
-import java.util.List;
-
 import mat.dao.IDAO;
 import mat.model.cql.CQLLibraryAssociation;
+
+import java.util.List;
 
 public interface CQLLibraryAssociationDAO extends IDAO<CQLLibraryAssociation, String> {
 

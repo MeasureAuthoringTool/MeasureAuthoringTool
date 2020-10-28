@@ -1,8 +1,8 @@
 package mat.server.humanreadable.cql;
 
-import java.util.Random;
-
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Random;
 
 public class HumanReadablePopulationModel {
 	
@@ -25,7 +25,7 @@ public class HumanReadablePopulationModel {
 		this.expressionName = expressionName; 
 		this.expressionUUID = expressionUUID; 
 		this.associatedPopulationName = associatedPopulationName;
-		this.id = name.replaceAll(" ", "_") + " " +  new Random().nextInt();
+		this.id = name.replaceAll(" ", "_") + "_" + Math.abs(new Random().nextInt());
 		this.setType(type); 
 		createDisplay();
 	}

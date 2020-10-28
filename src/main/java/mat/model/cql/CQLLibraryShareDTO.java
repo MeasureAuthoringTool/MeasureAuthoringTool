@@ -1,10 +1,9 @@
 package mat.model.cql;
 
-import java.sql.Timestamp;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.model.LockedUserInfo;
+
+import java.sql.Timestamp;
 
 public class CQLLibraryShareDTO implements IsSerializable {
 	
@@ -58,14 +57,20 @@ public class CQLLibraryShareDTO implements IsSerializable {
 	
 	/** The measure set id. */
 	private String cqlLibrarySetId;
-	
-	
+
 	private boolean isDraftable;
 	
 	
 	private boolean isVersionable;
 
-	
+	private String libraryModelType;
+
+	private String releaseVersion;
+
+	private String qdmVersion;
+
+	private String fhirVersion;
+
 	/**
 	 * Gets the user id.
 	 * 
@@ -370,7 +375,37 @@ public class CQLLibraryShareDTO implements IsSerializable {
 	public void setCqlLibrarySetId(String cqlLibrarySetId) {
 		this.cqlLibrarySetId = cqlLibrarySetId;
 	}
-	
-	
-	
+
+	public String getLibraryModelType() {
+		return libraryModelType;
+	}
+
+	public void setLibraryModelType(String libraryModelType) {
+		this.libraryModelType = libraryModelType;
+	}
+
+
+	public void setReleaseVersion(String releaseVersion) {
+		this.releaseVersion = releaseVersion;
+	}
+
+	public String getReleaseVersion() {
+		return releaseVersion;
+	}
+
+	public void setQdmVersion(String qdmVersion) {
+		this.qdmVersion = qdmVersion;
+	}
+
+	public String getQdmVersion() {
+		return qdmVersion;
+	}
+
+    public String getFhirVersion() {
+        return fhirVersion;
+    }
+
+    public void setFhirVersion(String fhirVersion) {
+        this.fhirVersion = fhirVersion;
+    }
 }

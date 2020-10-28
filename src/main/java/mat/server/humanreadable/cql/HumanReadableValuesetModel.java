@@ -1,9 +1,11 @@
 package mat.server.humanreadable.cql;
 
-import java.util.Objects;
-
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Objects;
+
+@NoArgsConstructor
 public class HumanReadableValuesetModel implements HumanReadableTerminologyModel {
 	private String name;
 	private String oid;

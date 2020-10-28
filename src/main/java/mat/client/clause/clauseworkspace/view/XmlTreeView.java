@@ -1,32 +1,5 @@
 package mat.client.clause.clauseworkspace.view;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
-import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatContext;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SecondaryButton;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.WarningMessageDisplay;
-import mat.shared.ConstantMessages;
-import mat.shared.MatConstants;
-import mat.shared.UUIDUtilClient;
-
-import org.apache.commons.lang3.StringUtils;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.CheckBox;
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -84,6 +57,31 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
 import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
+import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatContext;
+import mat.client.shared.PrimaryButton;
+import mat.client.shared.SecondaryButton;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.WarningMessageDisplay;
+import mat.shared.ConstantMessages;
+import mat.shared.MatConstants;
+import mat.shared.UUIDUtilClient;
+import org.apache.commons.lang3.StringUtils;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.CheckBox;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewModel, KeyDownHandler, FocusHandler {
 

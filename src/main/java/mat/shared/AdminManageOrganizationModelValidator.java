@@ -3,10 +3,11 @@
  */
 package mat.shared;
 
-import java.util.ArrayList;
-import java.util.List;
 import mat.client.admin.ManageOrganizationDetailModel;
 import mat.client.shared.MatContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class AdminManageUserModelValidator.

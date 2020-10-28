@@ -1,11 +1,6 @@
 package mat.client.measure.service;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
@@ -19,7 +14,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.ComponentMeasureTabObject;
 import mat.model.MatCodeTransferObject;
-import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
@@ -31,7 +25,6 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
-import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
@@ -40,6 +33,11 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
+import mat.vsacmodel.ValueSet;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 
 public interface MeasureServiceAsync {
@@ -76,7 +74,7 @@ public interface MeasureServiceAsync {
 	 * @param userId the user id
 	 * @param callback the callback
 	 * @return the all recent measure for user */
-	void getAllRecentMeasureForUser(String userId, AsyncCallback<ManageMeasureSearchModel> callback);
+	void getAllRecentMeasureForUser(String userId, boolean isFhirEnabled, AsyncCallback<ManageMeasureSearchModel> callback);
 	
 	/**
 	 * Gets the applied qdm from measure xml.
@@ -232,7 +230,7 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	void saveMeasureXml(MeasureXmlModel measureXmlModel, String measureId,
+	void saveMeasureXml(MeasureXmlModel measureXmlModel, String measureId, boolean isFhir,
 			AsyncCallback<Void> callback);
 	
 	/**
@@ -324,12 +322,12 @@ public interface MeasureServiceAsync {
 	 * 
 	 * @param key
 	 *            the key
-	 * @param matValueSetList
+	 * @param ValueSetList
 	 *            the mat value set list
 	 * @param callback
 	 *            the callback
 	 */
-	void createExports(String key, List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts, AsyncCallback<ValidateMeasureResult> callback);
+	void createExports(String key, List<ValueSet> ValueSetList, boolean shouldCreateArtifacts, AsyncCallback<ValidateMeasureResult> callback);
 	
 	void validateExports(String keys,  AsyncCallback<ValidateMeasureResult> callback);
 	
@@ -531,15 +529,7 @@ public interface MeasureServiceAsync {
 	 * @return the default sde from measure xml
 	 */
 	void getDefaultCQLSDEFromMeasureXml(String measureId, AsyncCallback<CQLQualityDataModelWrapper> callback);
-	
-	/**
-	 * Parses the cql.
-	 *
-	 * @param cqlBuilder the cql builder
-	 * @param asyncCallback the async callback
-	 */
-	void parseCQL(String cqlBuilder , AsyncCallback<CQLModel> asyncCallback);
-	
+
 	void saveCQLFile(String measureId, String cql, AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 	
 	/**
@@ -563,7 +553,6 @@ public interface MeasureServiceAsync {
 	 * @param toBemodifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param parameterList the parameter list
-	 * @param isFormtable flag for if the parameter should be formatted on save
 	 * @param callback the callback
 	 */
 	void saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj, CQLParameter currentObj,
@@ -587,7 +576,6 @@ public interface MeasureServiceAsync {
 	 * @param toBeModifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param functionsList the functions list
-	 * @param isFormtable flag for if the function should be formatted on save
 	 * @param callback the callback
 	 */
 	void saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
@@ -631,8 +619,6 @@ public interface MeasureServiceAsync {
 	void getCQLKeywordsList(AsyncCallback<CQLKeywords> callback);
 	
 	void getJSONObjectFromXML(AsyncCallback<String> asyncCallback);
-
-	void parseCQLStringForError(String cqlFileString, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getCQLValusets(String measureID, AsyncCallback<CQLQualityDataModelWrapper> callback);
 	
@@ -682,7 +668,7 @@ public interface MeasureServiceAsync {
 
 	void generateAndSaveMaxEmeasureId(boolean isEditable, String measureId, AsyncCallback<Integer> asyncCallback);
 
-	void getHumanReadableForMeasureDetails(String currentMeasureId, AsyncCallback<String> asyncCallback);
+	void getHumanReadableForMeasureDetails(String currentMeasureId, String measureModel, AsyncCallback<String> asyncCallback);
 	
     void checkIfLibraryNameExists(String libraryName, String setId, AsyncCallback<Boolean> callback);
 }

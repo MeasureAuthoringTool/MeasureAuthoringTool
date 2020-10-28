@@ -1,21 +1,9 @@
 package mat.server.humanreadable.qdm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.TreeMap;
-
-import javax.xml.xpath.XPathExpressionException;
-
 import mat.server.humanreadable.MATCssUtil;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -24,6 +12,16 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.TreeMap;
 
 /**
  * This class is used for generating Human Readable documents prior to CQL. It should not be modified. 
@@ -1561,6 +1559,7 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 	 */
 	private static void generateTableOfContents(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) {
+		boolean isFhir = simpleXMLProcessor.getOriginalXml().contains("<usingModel>FHIR</usingModel>");
 		Element bodyElement = humanReadableHTMLDocument.body();
 		
 		bodyElement.append("<h2><a name=\"toc\">Table of Contents</a></h2>");
@@ -1576,7 +1575,7 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 		
 		Element dataCriteriaLI = tocULElement.appendElement(HTML_LI);
 		dataCriteriaLI
-		.append("<a href=\"#d1e647\">Data Criteria (QDM Data Elements)</a>");
+		.append("<a href=\"#d1e647\">Data Criteria (" + (isFhir ? "FHIR Data Requirements" : "QDM Data Elements") + ")</a>");
 		
 		Element supplementalCriteriaLI = tocULElement.appendElement(HTML_LI);
 		supplementalCriteriaLI
@@ -1601,10 +1600,10 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 	private static void generateDataCriteria(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor)
 					throws XPathExpressionException {
-		
+		boolean isFhir = simpleXMLProcessor.getOriginalXml().contains("<usingModel>FHIR</usingModel>");
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
-		.append("<h3><a name=\"d1e647\" href=\"#toc\">Data Criteria (QDM Data Elements)</a></h3>");
+		.append("<h3><a name=\"d1e647\" href=\"#toc\">Data Criteria (" + (isFhir ? "FHIR Data Requirements" : "QDM Data Elements") + ")</a></h3>");
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);

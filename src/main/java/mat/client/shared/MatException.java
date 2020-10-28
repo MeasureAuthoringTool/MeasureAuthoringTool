@@ -1,13 +1,7 @@
 package mat.client.shared;
 
-/**
- * The Class MatException.
- */
 public class MatException extends Exception {
 
-    /**
-     * The Constant serialVersionUID.
-     */
     private static final long serialVersionUID = 7520932982221949484L;
 
     public MatException() {

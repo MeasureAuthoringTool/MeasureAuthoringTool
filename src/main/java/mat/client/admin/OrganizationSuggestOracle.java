@@ -1,13 +1,12 @@
 package mat.client.admin;
 
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.SuggestOracle;
+import mat.client.shared.NameValuePair;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import mat.client.shared.NameValuePair;
-
-import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
-import com.google.gwt.user.client.ui.SuggestOracle;
 
 /**
  * The Class OrganizationSuggestOracle.

@@ -1,101 +1,90 @@
 package mat.client.measure;
 
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.advancedsearch.AdvancedSearchPillPanel;
 import mat.client.buttons.CustomButton;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.MeasureSearchView.AdminObserver;
 import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.measure.metadata.Grid508;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.shared.MeasureSearchModel;
+import org.gwtbootstrap3.client.ui.Button;
 
 public interface SearchDisplay extends BaseDisplay {
-	@Override
-	public Widget asWidget();
+    @Override
+    Widget asWidget();
 
-	public void buildDataTable(ManageMeasureSearchModel manageMeasureSearchModel, int filter, String searchText);
+    void buildDataTable(ManageMeasureSearchModel manageMeasureSearchModel, int filter, String searchText);
 
-	public void clearTransferCheckBoxes();
+    void clearTransferCheckBoxes();
 
-	public HasClickHandlers getClearButton();
+    HasClickHandlers getClearButton();
 
-	@Override
-	public MessageAlert getErrorMessageDisplay();
+    @Override
+    MessageAlert getErrorMessageDisplay();
 
-	public MessageAlert getErrorMessagesForTransferOS();
+    MessageAlert getErrorMessagesForTransferOS();
 
-	public HasClickHandlers getTransferButton();
+    HasClickHandlers getTransferButton();
 
-	void setAdminObserver(AdminObserver adminObserver);
+    void setAdminObserver(AdminObserver adminObserver);
 
-	public void buildCellTable(ManageMeasureSearchModel manageMeasureSearchModel, int filter, MeasureSearchModel model);
+    void buildCellTable(ManageMeasureSearchModel manageMeasureSearchModel, int filter, MeasureSearchModel model);
 
-	void buildMostRecentWidget();
+    void buildMostRecentWidget();
 
-	public void clearBulkExportCheckBoxes(Grid508 dataTable);
+    Button getCreateMeasureButton();
 
-	public HasClickHandlers getBulkExportButton();
+    Button getCreateCompositeMeasureButton();
 
-	Button getCreateMeasureButton();
-	
-	Button getCreateCompositeMeasureButton();
+    MessageAlert getErrorMeasureDeletion();
 
-	public MessageAlert getErrorMeasureDeletion();
+    MessageAlert getErrorMessageDisplayForBulkExport();
 
-	public MessageAlert getErrorMessageDisplayForBulkExport();
+    FormPanel getForm();
 
-	public Button getExportSelectedButton();
+    SearchWidgetWithFilter getMeasureSearchFilterWidget();
 
-	public FormPanel getForm();
+    MostRecentMeasureWidget getMostRecentMeasureWidget();
 
-	SearchWidgetWithFilter getMeasureSearchFilterWidget();
+    VerticalPanel getMostRecentMeasureVerticalPanel();
 
-	MostRecentMeasureWidget getMostRecentMeasureWidget();
-	
-	public VerticalPanel getMostRecentMeasureVerticalPanel();
+    MeasureSearchView getMeasureSearchView();
 
-	MeasureSearchView getMeasureSearchView();
+    HasClickHandlers getSearchButton();
 
-	public HasClickHandlers getSearchButton();
+    HasClickHandlers getAdminSearchButton();
 
-	public HasClickHandlers getAdminSearchButton();
+    HasValue<String> getSearchString();
 
-	public HasValue<String> getSearchString();
+    HasValue<String> getAdminSearchString();
 
-	public HasValue<String> getAdminSearchString();
+    int getSelectedFilter();
 
-	int getSelectedFilter();
+    HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool();
 
-	public String getSelectedOption();
+    MessageAlert getSuccessMeasureDeletion();
 
-	public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool();
+    MessageAlert getSuccessMessageDisplay();
 
-	public MessageAlert getSuccessMeasureDeletion();
+    CustomButton getZoomButton();
 
-	public MessageAlert getSuccessMessageDisplay();
+    VerticalPanel getCellTablePanel();
 
-	CustomButton getZoomButton();
+    EditConfirmationDialogBox getDraftConfirmationDialogBox();
 
-	VerticalPanel getCellTablePanel();
+    void resetMessageDisplay();
 
-	EditConfirmationDialogBox getDraftConfirmationDialogBox();
+    CustomCheckBox getCustomFilterCheckBox();
 
-	public void resetMessageDisplay();
-	
-	public CustomCheckBox getCustomFilterCheckBox();
-	
-	AdvancedSearchPillPanel getSearchPillPanel();
-	
-	public void resetDisplay();
+    AdvancedSearchPillPanel getSearchPillPanel();
+
+    void resetDisplay();
 }

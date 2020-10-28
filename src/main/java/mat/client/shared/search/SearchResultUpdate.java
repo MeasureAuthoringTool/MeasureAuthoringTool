@@ -1,9 +1,8 @@
 package mat.client.shared.search;
 
+import com.google.gwt.user.client.ui.TextBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.shared.StringUtility;
-
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * The Class SearchResultUpdate.

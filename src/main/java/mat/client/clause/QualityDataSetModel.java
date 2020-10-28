@@ -1,10 +1,9 @@
 package mat.client.clause;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.CodeList;
 import mat.model.DataType;
 import mat.model.clause.Measure;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * The Class QualityDataSetModel.

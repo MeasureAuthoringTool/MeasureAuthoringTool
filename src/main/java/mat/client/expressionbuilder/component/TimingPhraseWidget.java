@@ -1,21 +1,19 @@
 package mat.client.expressionbuilder.component;
 
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.expressionbuilder.constant.TimingOperator;
 import mat.client.expressionbuilder.model.ExpressionBuilderModel;
 import mat.client.expressionbuilder.model.QuantityModel;
 import mat.client.expressionbuilder.model.TimingOperatorModel;
 import mat.client.shared.ListBoxMVP;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+
+import java.util.List;
 
 public class TimingPhraseWidget extends Composite {
 

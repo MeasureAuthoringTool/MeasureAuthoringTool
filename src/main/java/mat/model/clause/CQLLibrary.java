@@ -1,14 +1,10 @@
 package mat.model.clause;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
+import mat.hibernate.HibernateConf;
+import mat.model.User;
+import mat.model.cql.CQLLibraryShare;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -22,301 +18,396 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.GenericGenerator;
-
-import mat.hibernate.HibernateConf;
-import mat.model.User;
-import mat.model.cql.CQLLibraryShare;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "CQL_LIBRARY")
 public class CQLLibrary {
 
-	private String id;
+    private String id;
 
-	private String name;
+    private String name;
 
-	private String measureId;
+    private String measureId;
 
-	private User ownerId;
-	
-	private String setId;
+    private User ownerId;
 
-	private String version;
+    private String setId;
 
-	private boolean draft;
+    private String version;
 
-	private Timestamp finalizedDate;
+    private boolean draft;
 
-	private String releaseVersion;
-	
-	private String revisionNumber;
-	
-	private String qdmVersion;
+    private Timestamp finalizedDate;
 
-	private User lockedUserId;
+    private String releaseVersion;
 
-	private Timestamp lockedOutDate;
-	
-	private LocalDateTime lastModifiedOn; 
-	
-	private User lastModifiedBy;
-	
-	private Set<CQLLibraryShare> shares;
+    private String revisionNumber;
 
-	private Blob cqlXML;
-	
-	private List<CQLLibraryHistory> cqlLibraryHistory;
+    private String qdmVersion;
 
-	@Id
-	@GeneratedValue(generator="uuid")
-	@GenericGenerator(name="uuid", strategy = "uuid")
-	@Column(name = "ID", unique = true, nullable = false, length = 64)
-	public String getId() {
-		return id;
-	}
+    private String fhirVersion;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    private User lockedUserId;
 
-	@Column(name = "CQL_NAME", length = 500)
-	public String getName() {
-		return name;
-	}
+    private Timestamp lockedOutDate;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    private LocalDateTime lastModifiedOn;
 
-	@Column(name = "MEASURE_ID", length = 64)
-	public String getMeasureId() {
-		return measureId;
-	}
+    private User lastModifiedBy;
 
-	public void setMeasureId(String measureId) {
-		this.measureId = measureId;
-	}
+    private Set<CQLLibraryShare> shares;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "OWNER_ID", nullable = false)
-	public User getOwnerId() {
-		return ownerId;
-	}
+    private Blob cqlXML;
 
-	public void setOwnerId(User ownerId) {
-		this.ownerId = ownerId;
-	}
+    private String libraryModelType;
 
-	@Column(name = "VERSION", precision = 6, scale = 3)
-	public String getVersion() {
-		return version;
-	}
+    private List<CQLLibraryHistory> cqlLibraryHistory;
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    private String severeErrorCql;
 
-	@Column(name = "QDM_VERSION", nullable = false, length = 45)
-	public String getQdmVersion() {
-		return qdmVersion;
-	}
+    private String stewardId;
 
-	public void setQdmVersion(String qdmVersion) {
-		this.qdmVersion = qdmVersion;
-	}
+    private String description;
 
-	@Column(name = "DRAFT")
-	public boolean isDraft() {
-		return draft;
-	}
+    private boolean isExperimental;
 
-	public void setDraft(boolean draft) {
-		this.draft = draft;
-	}
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    @Column(name = "ID", unique = true, nullable = false, length = 64)
+    public String getId() {
+        return id;
+    }
 
-	@Column(name = "FINALIZED_DATE", length = 19)
-	public Timestamp getFinalizedDate() {
-		return finalizedDate;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setFinalizedDate(Timestamp finalizedDate) {
-		this.finalizedDate = finalizedDate;
-	}
+    @Column(name = "CQL_NAME", length = 500)
+    public String getName() {
+        return name;
+    }
 
-	@Lob
-	@Column(name = "CQL_XML")
-	public Blob getCqlXML() {
-		return cqlXML;
-	}
-	
-	public void setCqlXML(Blob cqlXML) {
-		this.cqlXML = cqlXML; 
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@Transient
-	public void setCQLByteArray(byte[] cqlByteArray) {
-		this.cqlXML = Hibernate.getLobCreator(HibernateConf.getHibernateSession()).createBlob(cqlByteArray);
-	}
+    @Column(name = "MEASURE_ID", length = 64)
+    public String getMeasureId() {
+        return measureId;
+    }
 
-	@Transient
-	public byte[] getCQLByteArray() {
-		return toByteArray(cqlXML);
-	}
+    public void setMeasureId(String measureId) {
+        this.measureId = measureId;
+    }
 
-	/**
-	 * To byte array.
-	 * 
-	 * @param fromBlob
-	 *            the from blob
-	 * @return the byte[]
-	 */
-	private byte[] toByteArray(Blob fromBlob) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try {
-			return toByteArrayImpl(fromBlob, baos);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (baos != null) {
-				try {
-					baos.close();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
-		}
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "OWNER_ID", nullable = false)
+    public User getOwnerId() {
+        return ownerId;
+    }
 
-	/**
-	 * To byte array impl.
-	 * 
-	 * @param fromBlob
-	 *            the from blob
-	 * @param baos
-	 *            the baos
-	 * @return the byte[]
-	 * @throws SQLException
-	 *             the sQL exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	private byte[] toByteArrayImpl(Blob fromBlob, ByteArrayOutputStream baos) throws SQLException, IOException {
-		byte[] buf = new byte[4000];
-		InputStream is = fromBlob.getBinaryStream();
-		try {
-			for (;;) {
-				int dataSize = is.read(buf);
-				if (dataSize == -1)
-					break;
-				baos.write(buf, 0, dataSize);
-			}
-		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
-		}
-		return baos.toByteArray();
-	}
+    public void setOwnerId(User ownerId) {
+        this.ownerId = ownerId;
+    }
 
-	@Column(name = "RELEASE_VERSION", length = 45)
-	public String getReleaseVersion() {
-		return releaseVersion;
-	}
+    @Column(name = "VERSION", precision = 6, scale = 3)
+    public String getVersion() {
+        return version;
+    }
 
-	public void setReleaseVersion(String releaseVersion) {
-		this.releaseVersion = releaseVersion;
-	}
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "LOCKED_USER")
-	public User getLockedUserId() {
-		return lockedUserId;
-	}
+    @Column(name = "QDM_VERSION", nullable = true, length = 45)
+    public String getQdmVersion() {
+        return qdmVersion;
+    }
 
-	public void setLockedUserId(User lockedUserId) {
-		this.lockedUserId = lockedUserId;
-	}
+    public void setQdmVersion(String qdmVersion) {
+        this.qdmVersion = qdmVersion;
+    }
 
-	@Column(name = "LOCKED_OUT_DATE", length = 19)
-	public Timestamp getLockedOutDate() {
-		return lockedOutDate;
-	}
+    @Column(name = "DRAFT")
+    public boolean isDraft() {
+        return draft;
+    }
 
-	public void setLockedOutDate(Timestamp lockedOutDate) {
-		this.lockedOutDate = lockedOutDate;
-	}
+    public void setDraft(boolean draft) {
+        this.draft = draft;
+    }
 
-	@Column(name = "REVISION_NUMBER", length = 45)
-	public String getRevisionNumber() {
-		return revisionNumber;
-	}
+    @Column(name = "FINALIZED_DATE", length = 19)
+    public Timestamp getFinalizedDate() {
+        return finalizedDate;
+    }
 
-	public void setRevisionNumber(String revisionNumber) {
-		this.revisionNumber = revisionNumber;
-	}
+    public void setFinalizedDate(Timestamp finalizedDate) {
+        this.finalizedDate = finalizedDate;
+    }
 
-	@Transient
-	public double getVersionNumber(){
-		double versionNumber = 0;
-		if ((version != null) && !version.isEmpty()) {
-			versionNumber = Double.parseDouble(version);
-		}
-		return versionNumber;
-	}
+    @Lob
+    @Column(name = "CQL_XML")
+    public Blob getCqlXML() {
+        return cqlXML;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "cqlLibrary")
-	public Set<CQLLibraryShare> getShares() {
-		return shares;
-	}
+    public void setCqlXML(Blob cqlXML) {
+        this.cqlXML = cqlXML;
+    }
 
-	public void setShares(Set<CQLLibraryShare> shares) {
-		this.shares = shares;
-	}
+    @Transient
+    public void setCQLByteArray(byte[] cqlByteArray) {
+        this.cqlXML = Hibernate.getLobCreator(HibernateConf.getHibernateSession()).createBlob(cqlByteArray);
+    }
 
-	@Column(name = "SET_ID", nullable = false, length = 45)
-	public String getSetId() {
-		return setId;
-	}
+    @Transient
+    public byte[] getCQLByteArray() {
+        return toByteArray(cqlXML);
+    }
 
-	public void setSetId(String setId) {
-		this.setId = setId;
-	}
-	
-	@Column(name = "LAST_MODIFIED_ON", length = 19)
-	public LocalDateTime getLastModifiedOn() {
-		return lastModifiedOn;
-	}
+    /**
+     * To byte array.
+     *
+     * @param fromBlob the from blob
+     * @return the byte[]
+     */
+    private byte[] toByteArray(Blob fromBlob) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            return toByteArrayImpl(fromBlob, baos);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (baos != null) {
+                try {
+                    baos.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
 
-	public void setLastModifiedOn(LocalDateTime lastModifiedOn) {
-		this.lastModifiedOn = lastModifiedOn;
-	}
+    /**
+     * To byte array impl.
+     *
+     * @param fromBlob the from blob
+     * @param baos     the baos
+     * @return the byte[]
+     * @throws SQLException the sQL exception
+     * @throws IOException  Signals that an I/O exception has occurred.
+     */
+    private byte[] toByteArrayImpl(Blob fromBlob, ByteArrayOutputStream baos) throws SQLException, IOException {
+        byte[] buf = new byte[4000];
+        InputStream is = fromBlob.getBinaryStream();
+        try {
+            for (; ; ) {
+                int dataSize = is.read(buf);
+                if (dataSize == -1)
+                    break;
+                baos.write(buf, 0, dataSize);
+            }
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        return baos.toByteArray();
+    }
 
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "LAST_MODIFIED_BY")
-	public User getLastModifiedBy() {
-		return lastModifiedBy;
-	}
+    @Column(name = "RELEASE_VERSION", length = 45)
+    public String getReleaseVersion() {
+        return releaseVersion;
+    }
 
-	public void setLastModifiedBy(User lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
-	}
+    public void setReleaseVersion(String releaseVersion) {
+        this.releaseVersion = releaseVersion;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "cqlLibrary", cascade=CascadeType.ALL)
-	public List<CQLLibraryHistory> getCqlLibraryHistory() {
-		return cqlLibraryHistory;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "LOCKED_USER")
+    public User getLockedUserId() {
+        return lockedUserId;
+    }
 
-	public void setCqlLibraryHistory(List<CQLLibraryHistory> cqlLibraryHistory) {
-		this.cqlLibraryHistory = cqlLibraryHistory;
-	}
+    public void setLockedUserId(User lockedUserId) {
+        this.lockedUserId = lockedUserId;
+    }
 
+    @Column(name = "LOCKED_OUT_DATE", length = 19)
+    public Timestamp getLockedOutDate() {
+        return lockedOutDate;
+    }
+
+    public void setLockedOutDate(Timestamp lockedOutDate) {
+        this.lockedOutDate = lockedOutDate;
+    }
+
+    @Column(name = "REVISION_NUMBER", length = 45)
+    public String getRevisionNumber() {
+        return revisionNumber;
+    }
+
+    public void setRevisionNumber(String revisionNumber) {
+        this.revisionNumber = revisionNumber;
+    }
+
+    @Transient
+    public double getVersionNumber() {
+        double versionNumber = 0;
+        if ((version != null) && !version.isEmpty()) {
+            versionNumber = Double.parseDouble(version);
+        }
+        return versionNumber;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cqlLibrary")
+    public Set<CQLLibraryShare> getShares() {
+        return shares;
+    }
+
+    public void setShares(Set<CQLLibraryShare> shares) {
+        this.shares = shares;
+    }
+
+    @Column(name = "SET_ID", nullable = false, length = 45)
+    public String getSetId() {
+        return setId;
+    }
+
+    public void setSetId(String setId) {
+        this.setId = setId;
+    }
+
+    @Column(name = "LAST_MODIFIED_ON", length = 19)
+    public LocalDateTime getLastModifiedOn() {
+        return lastModifiedOn;
+    }
+
+    public void setLastModifiedOn(LocalDateTime lastModifiedOn) {
+        this.lastModifiedOn = lastModifiedOn;
+    }
+
+    @Column(name = "LIBRARY_MODEL", length = 10)
+    public String getLibraryModelType() {
+        return libraryModelType;
+    }
+
+    public void setLibraryModelType(String libraryModelType) {
+        this.libraryModelType = libraryModelType;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "LAST_MODIFIED_BY")
+    public User getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(User lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cqlLibrary", cascade = CascadeType.ALL)
+    public List<CQLLibraryHistory> getCqlLibraryHistory() {
+        return cqlLibraryHistory;
+    }
+
+    public void setCqlLibraryHistory(List<CQLLibraryHistory> cqlLibraryHistory) {
+        this.cqlLibraryHistory = cqlLibraryHistory;
+    }
+
+    @Transient
+    public boolean isFhirMeasure() {
+        return ModelTypeHelper.isFhir(getLibraryModelType());
+    }
+
+    @Transient
+    public boolean isFhirLibrary() {
+        return ModelTypeHelper.isFhir(getLibraryModelType());
+    }
+
+    @Transient
+    public boolean isQdmMeasure() {
+        return ModelTypeHelper.isQdm(getLibraryModelType());
+    }
+
+    @Column(name = "FHIR_VERSION", length = 45)
+    public String getFhirVersion() {
+        return fhirVersion;
+    }
+
+    public void setFhirVersion(String fhirVersion) {
+        this.fhirVersion = fhirVersion;
+    }
+
+    @Transient
+    public String getLibraryXMLAsString() {
+        String xml = "";
+        if (cqlXML != null) {
+            xml = new String(toByteArray(cqlXML));
+        }
+        return xml;
+    }
+
+    public void setLibraryXMLAsByteArray(String xml) {
+        if (null != xml) {
+            byte[] xmlByteArr = xml.getBytes();
+            this.cqlXML = Hibernate.getLobCreator(HibernateConf.getHibernateSession()).createBlob(xmlByteArr);
+        } else {
+            this.cqlXML = null;
+        }
+    }
+
+    @Column(name = "SEVERE_ERROR_CQL")
+    public String getSevereErrorCql() {
+        return severeErrorCql;
+    }
+
+    public void setSevereErrorCql(String severeErrorCql) {
+        this.severeErrorCql = severeErrorCql;
+    }
+
+    @Column(name = "LIBRARY_STEWARD_ID")
+    public String getStewardId() {
+        return stewardId;
+    }
+
+    public void setStewardId(String stewardId) {
+        this.stewardId = stewardId;
+    }
+
+    @Column(name = "DESCRIPTION")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Column(name = "EXPERIMENTAL")
+    public boolean isExperimental() {
+        return isExperimental;
+    }
+
+    public void setExperimental(boolean experimental) {
+        isExperimental = experimental;
+    }
 }

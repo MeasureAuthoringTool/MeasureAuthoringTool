@@ -1,22 +1,20 @@
 package mat.client.export.bonnie;
 
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import mat.client.bonnie.BonnieUploadCancelButtonBar;
+import mat.client.measure.BaseDisplay;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-
-import mat.client.bonnie.BonnieUploadCancelButtonBar;
-import mat.client.measure.BaseDisplay;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SpacerWidget;
 
 public class BonnieExportView implements BaseDisplay {
 	

@@ -25,69 +25,13 @@
 
 <!-- Bean Details for Email Scheduler Start -->
 
-	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
 		<property name="location" value="classpath:MAT.properties"/>
-	</bean>
-	
-	<bean id="sendEmailTask" class="mat.server.service.jobs.CheckUserLastLoginTask" >
-		<property name="userDAO" ref="userDAO"/>
-		<property name="emailAuditLogDAO" ref="emailAuditLogDAO"/>
-		<property name ="mailSender" ref="mailSender"/>
-		<property name ="simpleMailMessage" ref="userLastLoginTemplateMessage"/>
-		<property name ="warningDayLimit" value="${mat.warning.dayLimit}"/>
-		<property name ="expiryDayLimit" value="${mat.expiry.dayLimit}"/>
-		<property name="warningMailTemplate" value="${mat.warning.email.template}"/>
-		<property name="warningMailSubject" value="${mat.warning.email.subject}"/>
-		<property name="expiryMailTemplate" value="${mat.expiry.email.template}"/>
-		<property name="expiryMailSubject" value="${mat.expiry.email.subject}"/>
-	</bean>
-	
-	<!-- bean for scheduling password change warning email for 45 day limit and expiry email for 60 day limit -->
-	<bean id="sendPasswordChangeEmailTask" class="mat.server.service.jobs.CheckUserChangePasswordLimit" >
-		<property name="userDAO" ref="userDAO"/>
-		<property name="emailAuditLogDAO" ref="emailAuditLogDAO"/>
-		<property name="userService" ref="userService"/>
-		<property name ="mailSender" ref="mailSender"/>
-		<property name ="simpleMailMessage" ref="userLastLoginTemplateMessage"/>
-		<property name ="passwordwarningDayLimit" value="${mat.password.warning.dayLimit}"/>
-		<property name ="passwordexpiryDayLimit" value="${mat.password.expiry.dayLimit}"/>
-		<property name="warningMailTemplate" value="${mat.password.warning.email.template}"/>
-		<property name="warningMailSubject" value="${mat.password.warning.email.subject}"/>
-		<property name="expiryMailTemplate" value="${mat.password.expiry.email.template}"/>
-		<property name="expiryMailSubject" value="${mat.password.expiry.email.subject}"/>
 	</bean>
 	
 	<bean id="userLastLoginTemplateMessage" class="org.springframework.mail.SimpleMailMessage">
       <property name="from" value="${mat.from.emailAddress}"/>
     </bean>
-	
-    <bean id="sendEmailTaskDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
- 		<property name="targetObject" ref="sendEmailTask" />
-		<property name="targetMethod" value="checkUserLastLogin" />
- 	</bean>
- 	
- 	<!-- bean for scheduling password change warning email for 45 day limit -->
-<!-- 	<bean id="sendPasswordChangeEmailTaskDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
-<!-- 		<property name="targetObject" ref="sendPasswordChangeEmailTask" />-->
-<!--		<property name="targetMethod" value="CheckUserPasswordLimitDays" />-->
-<!-- 	</bean>-->
-	
-	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
- 		<property name="jobDetail" ref="sendEmailTaskDetail" />
-		<property name="cronExpression" value="0 0 0 * * ?" /> 
- 	</bean> 
-	
-<!--	<bean id="cronPasswordChangeEmailTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
-<!-- 		<property name="jobDetail" ref="sendPasswordChangeEmailTaskDetail" />-->
-<!--		<property name="cronExpression" value="0 30 0 * * ?" /> -->
-<!-- 	</bean> -->
 
-	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-		<property name="triggers">
-			<list>
-				<ref bean="cronTrigger" />
-<!--				 <ref bean="cronPasswordChangeEmailTrigger" /> -->
-			</list>
-		</property>
-	</bean>
+
 </beans>

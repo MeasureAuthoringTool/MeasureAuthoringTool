@@ -40,7 +40,7 @@ public class LoggedInUserUtil {
                         token = (PreAuthenticatedAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
                     }
                 } catch (Exception exc) {
-                    logger.info(exc);
+                    logger.error("getToken",exc);
                 }
             }
         }
@@ -114,7 +114,6 @@ public class LoggedInUserUtil {
         loggedInUserName = e;
     }
 
-
     public static String getLoggedUserName() {
         if (loggedInUserName != null) {
             return loggedInUserName;
@@ -128,5 +127,14 @@ public class LoggedInUserUtil {
             }
             return firstName + " " + lastName;
         }
+    }
+
+    public static String getLoggedInUserId() {
+        String result = null;
+        PreAuthenticatedAuthenticationToken token = getToken();
+        if (token != null && token.getDetails() instanceof MatUserDetails) {
+            result = ((MatUserDetails) token.getDetails()).getId();
+        }
+        return result;
     }
 }

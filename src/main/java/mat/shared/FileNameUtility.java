@@ -146,4 +146,21 @@ public class FileNameUtility {
 	public static String getELMFileName(String name) {
 		return name.replaceAll("\\W","") + "_ELM.xml";
 	}
+
+	public static String getJsonFilePath(String releaseVersion) {
+		return "-" + releaseVersion + ".json";
+	}
+
+    public static String getJsonFilePath(String measureName, String releaseVersion) {
+        return "-" + measureName + "-" + releaseVersion + ".json";
+    }
+
+    public static String getXmlFilePath(String measureName, String releaseVersion) {
+        return "-" + measureName + "-" + releaseVersion + ".xml";
+    }
+
+    public static String getHtmlFilePath(String measureName, String releaseVersion) {
+        return "-" + measureName + "-" + releaseVersion + ".html";
+    }
 }
+

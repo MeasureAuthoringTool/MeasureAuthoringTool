@@ -1,10 +1,10 @@
 package mat.client.codelist.service;
 
-import java.util.List;
-
 import mat.client.shared.GenericResult;
 import mat.model.QualityDataSetDTO;
 import mat.model.cql.CQLQualityDataSetDTO;
+
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**

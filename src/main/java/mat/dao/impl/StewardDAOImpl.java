@@ -1,19 +1,18 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import mat.dao.StewardDAO;
+import mat.dao.search.GenericDAO;
+import mat.dto.StewardDTO;
+import mat.model.MeasureSteward;
+import mat.server.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dto.StewardDTO;
-import mat.dao.StewardDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.MeasureSteward;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Repository("stewardDAO")
@@ -28,7 +27,7 @@ public class StewardDAOImpl extends GenericDAO<MeasureSteward, String> implement
 	public List<StewardDTO> getAllStewardOrg(){
 		
 		List<StewardDTO> StewardDTOList = new ArrayList<StewardDTO>();
-		logger.info("Getting all the rows from the Steward table");
+		logger.debug("Getting all the rows from the Steward table");
 		Session session = getSessionFactory().getCurrentSession();
 
 		@SuppressWarnings("unchecked")

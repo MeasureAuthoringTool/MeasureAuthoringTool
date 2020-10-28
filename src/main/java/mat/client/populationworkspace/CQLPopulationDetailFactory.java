@@ -1,6 +1,5 @@
 package mat.client.populationworkspace;
 
-import mat.client.populationworkspace.CQLPopulationDetail;
 import mat.client.populationworkspace.model.PopulationDataModel;
 import mat.client.shared.CQLWorkSpaceConstants;
 

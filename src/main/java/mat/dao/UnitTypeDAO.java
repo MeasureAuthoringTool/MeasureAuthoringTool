@@ -1,9 +1,9 @@
 package mat.dao;
 
-import java.util.List;
-
 import mat.dto.UnitTypeDTO;
 import mat.model.UnitType;
+
+import java.util.List;
 
 /**
  * DAO interface for Unit, UnitType and Matrix tables operation.

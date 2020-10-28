@@ -1,19 +1,12 @@
 package mat.shared;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.client.shared.SearchWidgetWithFilter;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-import mat.client.shared.SearchWidgetWithFilter;
-
 public class MeasureSearchModel extends SearchModel implements IsSerializable {
-
-	public static final String ONLY_MY_MEASURE = "Only My Measures";
-	public static final String VERSION_MEASURE = "Versioned Measures";
-	public static final String DRAFT_MEASURE ="Draft Measures";
-	public static final String PATIENT_BASED = "Yes, Patient-based";
-	public static final String NOT_PATIENT_BASED = "No, Not Patient-based";
 
 	private Boolean omitCompositeMeasure;
 
@@ -24,6 +17,8 @@ public class MeasureSearchModel extends SearchModel implements IsSerializable {
 	private List<String> scoringTypes;
 	
 	private PatientBasedType patientBasedType;
+
+	private boolean isMatOnFhir;
 	
 	public enum PatientBasedType {ALL, PATIENT, NOT_PATIENT}
 	
@@ -55,6 +50,13 @@ public class MeasureSearchModel extends SearchModel implements IsSerializable {
 	}
 	public void setPatientBased(PatientBasedType patientBased) {
 		patientBasedType = patientBased;
+	}
+
+	public boolean isMatOnFhir() {
+		return isMatOnFhir;
+	}
+	public void setMatOnFhir(boolean isMatOnFhir) {
+        this.isMatOnFhir = isMatOnFhir;
 	}
 
 	public List<String> getScoringTypes() {
@@ -104,5 +106,26 @@ public class MeasureSearchModel extends SearchModel implements IsSerializable {
 		scoringTypes = new ArrayList<>();
 		patientBasedType = PatientBasedType.ALL;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "MeasureSearchModel{" +
+				"omitCompositeMeasure=" + omitCompositeMeasure +
+				", qdmVersion='" + qdmVersion + '\'' +
+				", measureSetId='" + measureSetId + '\'' +
+				", cqlLibraryName='" + cqlLibraryName + '\'' +
+				", scoringTypes=" + scoringTypes +
+				", patientBasedType=" + patientBasedType +
+				", startIndex=" + startIndex +
+				", pageSize=" + pageSize +
+				", modifiedDate=" + modifiedDate +
+				", isMyMeasureSearch=" + isMyMeasureSearch +
+				", totalResults=" + totalResults +
+				", searchTerm='" + searchTerm + '\'' +
+				", modifiedOwner='" + modifiedOwner + '\'' +
+				", owner='" + owner + '\'' +
+				", modelType=" + modelType +
+				", versionType=" + versionType +
+				'}';
+	}
 }

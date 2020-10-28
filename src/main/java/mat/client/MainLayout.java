@@ -1,26 +1,5 @@
 package mat.client;
 
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.AnchorButton;
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.DropDownMenu;
-import org.gwtbootstrap3.client.ui.ListDropDown;
-import org.gwtbootstrap3.client.ui.ListItem;
-import org.gwtbootstrap3.client.ui.Navbar;
-import org.gwtbootstrap3.client.ui.NavbarCollapse;
-import org.gwtbootstrap3.client.ui.NavbarLink;
-import org.gwtbootstrap3.client.ui.NavbarNav;
-import org.gwtbootstrap3.client.ui.Progress;
-import org.gwtbootstrap3.client.ui.ProgressBar;
-import org.gwtbootstrap3.client.ui.constants.IconPosition;
-import org.gwtbootstrap3.client.ui.constants.IconSize;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
-import org.gwtbootstrap3.client.ui.constants.ProgressType;
-import org.gwtbootstrap3.client.ui.constants.Styles;
-import org.gwtbootstrap3.client.ui.constants.Toggle;
-
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -31,7 +10,6 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -44,34 +22,44 @@ import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.util.ClientConstants;
+import mat.client.util.FeatureFlagConstant;
 import mat.client.util.FooterPanelBuilderUtility;
+import mat.model.clause.ModelTypeHelper;
+import org.gwtbootstrap3.client.ui.AnchorButton;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtbootstrap3.client.ui.ListDropDown;
+import org.gwtbootstrap3.client.ui.ListItem;
+import org.gwtbootstrap3.client.ui.Navbar;
+import org.gwtbootstrap3.client.ui.NavbarCollapse;
+import org.gwtbootstrap3.client.ui.NavbarLink;
+import org.gwtbootstrap3.client.ui.NavbarNav;
+import org.gwtbootstrap3.client.ui.constants.IconPosition;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Styles;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
+
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class MainLayout {
 
+    private static final Logger logger = Logger.getLogger(MainLayout.class.getSimpleName());
     private static final int DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS = 500;
+    private static final int SPINNER_DIALOG_DELAY_MILLIS = 2000;
     private static final String HEADING = "Measure Authoring Tool";
+
+    private static final HTML SIMPLE_SPINNER = new HTML("<div class=\"spinner-loading spinner-loading-shadow\">" + ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG + "</div>");
     private static final String ORG_ROLE_SEP = " @ ";
     private static final String SWITCH_MAT_ACCOUNT = "Switch MAT account";
-    public static final int MAX_MENU_TITLE = 50;
+    private static final int MAX_MENU_TITLE = 50;
     private static ListItem signedInAsName = new ListItem();
     private static ListItem signedInAsOrg = new ListItem();
-
-
-    private static Image alertImage = new Image(ImageResources.INSTANCE.alert());
-
-    private static String alertTitle = ClientConstants.MAINLAYOUT_ALERT_TITLE;
-
-    private static Panel loadingPanel;
-
-    private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
-
     private static IndicatorButton showUMLSState;
     private static IndicatorButton showBonnieState;
-
-    protected static FocusableWidget skipListHolder;
-
-    static Progress progress = new Progress();
-    static ProgressBar bar = new ProgressBar();
+    private static FocusableWidget skipListHolder;
 
     private NavbarLink homeLink = new NavbarLink();
     private FocusPanel content;
@@ -83,20 +71,14 @@ public abstract class MainLayout {
     private FormPanel logoutForm = new FormPanel("logout");
 
     /**
-     * clear the loading panel
-     * remove css style
+     * hide spinner and
      * reset the loading queue.
      */
     private static void delegateHideLoadingMessage() {
-        MatContext.get().getLoadingQueue().poll();
+        MatContext.get().getLoadingQueue().clear();
         if (MatContext.get().getLoadingQueue().size() == 0) {
-            getLoadingPanel().clear();
-            getLoadingPanel().getElement().removeAttribute("role");
+            hideProgressSpinner();
         }
-    }
-
-    protected static Panel getLoadingPanel() {
-        return loadingPanel;
     }
 
     protected static FocusableWidget getSkipList() {
@@ -107,8 +89,6 @@ public abstract class MainLayout {
      * no arg method adds default delay to loading message hide op.
      */
     public static void hideLoadingMessage() {
-        bar.setPercent(100.00);
-        bar.setText("Loaded 100% ");
         hideLoadingMessage(DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS);
     }
 
@@ -135,30 +115,37 @@ public abstract class MainLayout {
     }
 
     public static void showLoadingMessage() {
-        getLoadingPanel().clear();
+        showLoadingMessage(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
+    }
 
-        progress.setActive(true);
-        progress.setType(ProgressType.STRIPED);
-
-        bar.setType(ProgressBarType.INFO);
-        bar.setWidth("100%");
-        bar.setPercent(50.00);
-        bar.setText("Please wait. Loaded 50%");
-
-
-        progress.add(bar);
-        progress.setId("LoadingPanel");
-        getLoadingPanel().add(progress);
-
-        getLoadingPanel().setWidth("99%");
-        getLoadingPanel().getElement().setAttribute("role", "alert");
+    public static void showLoadingMessage(String title) {
         MatContext.get().getLoadingQueue().add("node");
+        showProgressSpinner(title);
     }
 
 
     public static void showSignOutMessage() {
-        loadingWidget = new HTML(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
-        showLoadingMessage();
+        showLoadingMessage(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
+    }
+
+    private static void showProgressSpinner(String title) {
+        SIMPLE_SPINNER.setVisible(true);
+        final Timer timer = new Timer() {
+            @Override
+            public void run() {
+                if (MatContext.get().getLoadingQueue().size() != 0) {
+                    SpinnerModal.showSpinnerWithTitle(title);
+                    SIMPLE_SPINNER.setVisible(false);
+                }
+            }
+        };
+        timer.schedule(SPINNER_DIALOG_DELAY_MILLIS);
+    }
+
+
+    private static void hideProgressSpinner() {
+        SpinnerModal.hideSpinner();
+        SIMPLE_SPINNER.setVisible(false);
     }
 
     private Panel buildContentPanel() {
@@ -192,25 +179,6 @@ public abstract class MainLayout {
         return footerMainPanel;
     }
 
-
-    private Panel buildLoadingPanel() {
-        loadingPanel = new HorizontalPanel();
-        loadingPanel.setHeight("30px");
-        loadingPanel.getElement().setAttribute("id", "loadingContainer");
-        loadingPanel.getElement().setAttribute("aria-role", "loadingwidget");
-        loadingPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
-        loadingPanel.getElement().setAttribute("aria-live", "assertive");
-        loadingPanel.getElement().setAttribute("aria-atomic", "true");
-        loadingPanel.getElement().setAttribute("aria-relevant", "all");
-
-        loadingPanel.setStylePrimaryName("mainContentPanel");
-        setId(loadingPanel, "loadingContainer");
-        alertImage.setTitle(alertTitle);
-        alertImage.getElement().setAttribute("alt", alertTitle);
-        loadingWidget.setStyleName("padLeft5px");
-        return loadingPanel;
-    }
-
     private Panel buildSkipContent() {
         skipListHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Main Content"));
         Mat.removeInputBoxFromFocusPanel(skipListHolder.getElement());
@@ -220,7 +188,6 @@ public abstract class MainLayout {
     private Panel buildTopPanel() {
         final VerticalPanel topPanel = new VerticalPanel();
         topPanel.add(buildHeader());
-        topPanel.add(buildLoadingPanel());
         topPanel.setStylePrimaryName("topBanner");
         return topPanel;
     }
@@ -241,11 +208,13 @@ public abstract class MainLayout {
     }
 
     public void buildLinksPanel() {
-        showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
-        showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
+        if (!Mat.harpUserVerificationInProgress) {
+            showBonnieState = new IndicatorButton("Disconnect from Bonnie", "Sign in to Bonnie");
+            showUMLSState = new IndicatorButton("UMLS Active", "Sign in to UMLS");
 
-        linksPanel.add(showUMLSState.getPanel());
-        linksPanel.add(showBonnieState.getPanel());
+            linksPanel.add(showUMLSState.getPanel());
+            linksPanel.add(showBonnieState.getPanel());
+        }
         linksPanel.add(buildProfileMenu());
         linksPanel.setStyleName("navLinksBanner", true);
     }
@@ -287,18 +256,25 @@ public abstract class MainLayout {
         return li;
     }
 
-    public static void setSignedInName(String name) {
+    public static void setSignedInAsNameOrg() {
+        String name = MatContext.get().getLoggedInUserFirstName() + " " + MatContext.get().getLoggedInUserLastName();
         signedInAsName.setText(name);
         signedInAsName.setTitle(name);
         signedInAsName.setStyleName("labelStyling", true);
         signedInAsName.setStyleName("profileText", true);
         signedInAsName.getElement().setTabIndex(0);
+        String orgRole = MatContext.get().getLoggedInUserRole() + ORG_ROLE_SEP + MatContext.get().getCurrentUserInfo().organizationName;
+        signedInAsOrg.setText(trimTitleWithEllipses(orgRole));
+        signedInAsOrg.setTitle(orgRole);
+        signedInAsOrg.setStyleName("profileText", true);
+        signedInAsOrg.getElement().setTabIndex(0);
     }
 
     private void setAccessibilityForLinks() {
-        profile.setStyleName(Styles.DROPDOWN);
-        profile.getWidget(0).setTitle("MAT Account");
-
+        if (!Mat.harpUserVerificationInProgress) {
+            profile.setStyleName(Styles.DROPDOWN);
+            profile.getWidget(0).setTitle("MAT Account");
+        }
         signOut.setStyleName(Styles.DROPDOWN);
         signOut.getWidget(0).setTitle("Sign Out");
     }
@@ -313,7 +289,9 @@ public abstract class MainLayout {
         ddm.add(signedInAsOrg);
         addUserAccountsMenu(ddm);
         ddm.add(buildDivider());
-        ddm.add(profile);
+        if (!Mat.harpUserVerificationInProgress) {
+            ddm.add(profile);
+        }
         if (ClientConstants.ADMINISTRATOR.equals(MatContext.get().getLoggedInUserRole())) {
             ddm.add(becomeUser);
             ddm.add(becomeTopLevelUser);
@@ -422,8 +400,14 @@ public abstract class MainLayout {
     }
 
     public void setHeader(String version, NavbarLink link) {
-        setLinkTextAndTitle(HEADING + " v" + version, link);
-        link.setTitle(HEADING + " version " + version);
+        String headerText = HEADING + " v" + version;
+        String headerTitle = HEADING + " version " + version;
+        if (MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
+            headerText += " (" + ModelTypeHelper.FHIR + ")";
+            headerTitle += " (" + ModelTypeHelper.FHIR + ")";
+        }
+        setLinkTextAndTitle(headerText, link);
+        link.setTitle(headerTitle);
         link.getElement().setAttribute("role", "alert");
         link.getElement().setAttribute("aria-label", "Clicking this link will navigate you to Measure Library page.");
     }
@@ -440,10 +424,12 @@ public abstract class MainLayout {
         MatContext.get().getLoginService().getFooterURLs(new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "LoginService::getFooterURLs -> onFailure: " + caught.getMessage(), caught);
             }
 
             @Override
             public void onSuccess(List<String> result) {
+                logger.log(Level.INFO, "LoginService::getFooterURLs -> onSuccess");
                 //Set the Footer URL's on the ClientConstants for use by the app in various locations.
                 ClientConstants.ACCESSIBILITY_POLICY_URL = result.get(0);
                 ClientConstants.PRIVACYPOLICY_URL = result.get(1);
@@ -459,10 +445,6 @@ public abstract class MainLayout {
         return content;
     }
 
-    protected Widget getNavigationList() {
-        return null;
-    }
-
     protected abstract void initEntryPoint();
 
     public final void onModuleLoad() {
@@ -474,6 +456,10 @@ public abstract class MainLayout {
         final Panel contentPanel = buildContentPanel();
 
         final FlowPanel container = new FlowPanel();
+
+        SIMPLE_SPINNER.setVisible(false);
+        SIMPLE_SPINNER.getElement().setAttribute("id", "loadingSimpleSpinner");
+        container.add(SIMPLE_SPINNER);
         container.add(topBanner);
         container.add(contentPanel);
         container.add(footerPanel);
@@ -532,7 +518,7 @@ public abstract class MainLayout {
         showUMLSState.hideActive(true);
     }
 
-    //method to easily remove bonnie link from page
+    // method to easily remove bonnie link from page
     public void removeBonnieLink() {
         showBonnieState.getPanel().removeFromParent();
     }
@@ -549,18 +535,8 @@ public abstract class MainLayout {
         return signedInAsName;
     }
 
-    public static void setSignedInAsNameOrg() {
-        String name = MatContext.get().getLoggedInUserFirstName() + " " + MatContext.get().getLoggedInUserLastName();
-        signedInAsName.setText(name);
-        signedInAsName.setTitle(name);
-        signedInAsName.setStyleName("labelStyling", true);
-        signedInAsName.setStyleName("profileText", true);
-        signedInAsName.getElement().setTabIndex(0);
-        String orgRole = MatContext.get().getLoggedInUserRole() + ORG_ROLE_SEP + MatContext.get().getCurrentUserInfo().organizationName;
-        signedInAsOrg.setText(trimTitleWithEllipses(orgRole));
-        signedInAsOrg.setTitle(orgRole);
-        signedInAsOrg.setStyleName("profileText", true);
-        signedInAsOrg.getElement().setTabIndex(0);
+    public void setSignedInAsName(ListItem signedInAsName) {
+        this.signedInAsName = signedInAsName;
     }
 
     public AnchorListItem getProfile() {

@@ -1,9 +1,8 @@
 package mat.client.myAccount;
 
 
-import mat.client.MatPresenter;
-
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.MatPresenter;
 
 /**
  * The Class MyAccountPresenter.

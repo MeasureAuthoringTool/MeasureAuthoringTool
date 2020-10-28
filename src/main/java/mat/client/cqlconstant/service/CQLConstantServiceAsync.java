@@ -1,7 +1,6 @@
 package mat.client.cqlconstant.service;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import mat.client.shared.CQLConstantContainer;
 
 /**
@@ -13,6 +12,6 @@ import mat.client.shared.CQLConstantContainer;
  */
 public interface CQLConstantServiceAsync {
 	
-	public void getAllCQLConstants(AsyncCallback<CQLConstantContainer> asyncCallback);
+	public void getAllCQLConstants(boolean isFhirEnabled, AsyncCallback<CQLConstantContainer> asyncCallback);
 
 }

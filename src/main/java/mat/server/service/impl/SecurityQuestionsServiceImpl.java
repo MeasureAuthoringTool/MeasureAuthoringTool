@@ -1,18 +1,18 @@
 package mat.server.service.impl;
 
-import java.util.List;
-
 import mat.dao.SecurityQuestionsDAO;
 import mat.model.SecurityQuestions;
 import mat.server.service.SecurityQuestionsService;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
 
 
 /**
  * The Class SecurityQuestionsServiceImpl.
  */
+@Service
 public class SecurityQuestionsServiceImpl implements SecurityQuestionsService {
 
 	/** The security questions dao. */

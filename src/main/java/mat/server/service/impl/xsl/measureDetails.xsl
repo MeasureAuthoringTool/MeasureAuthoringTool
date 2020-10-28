@@ -59,6 +59,15 @@
       	</xsl:choose>
       </xsl:variable>
       <setId root="{$set-id}"/>
+      <experimental value="{$experimental}"/>
+
+       <!-- Population Basis -->
+       <text>
+           <xsl:call-template name="trim">
+               <xsl:with-param name="textString" select="populationBasis"/>
+           </xsl:call-template>
+       </text>
+
        <!-- Version -->
       <versionNumber value="{normalize-space(version)}"/>
        <!-- Measure Developer -->

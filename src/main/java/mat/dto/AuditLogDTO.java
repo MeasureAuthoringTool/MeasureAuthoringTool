@@ -1,9 +1,9 @@
 package mat.dto;
 
 
-import java.util.Date;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.Date;
 
 public class AuditLogDTO implements IsSerializable{
 

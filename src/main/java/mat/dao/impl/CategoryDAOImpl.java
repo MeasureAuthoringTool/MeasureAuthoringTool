@@ -1,18 +1,17 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import mat.dao.search.GenericDAO;
+import mat.dto.CategoryDTO;
+import mat.model.Category;
+import mat.server.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dto.CategoryDTO;
-import mat.dao.search.GenericDAO;
-import mat.model.Category;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository("categoryDAO")
 public class CategoryDAOImpl extends GenericDAO<Category, String> implements mat.dao.CategoryDAO {
@@ -31,7 +30,7 @@ public class CategoryDAOImpl extends GenericDAO<Category, String> implements mat
 	public List<CategoryDTO> getAllCategories(){
 		
 		List<CategoryDTO> categoryDTOList = new ArrayList<CategoryDTO>();
-		logger.info("Getting all the categories from the category table");
+		logger.debug("Getting all the categories from the category table");
 		Session session = getSessionFactory().getCurrentSession();
 
 		@SuppressWarnings({ "unchecked", "deprecation" })

@@ -1,30 +1,5 @@
 package mat.server.service.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
@@ -42,6 +17,7 @@ import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.server.LoggedInUserUtil;
+import mat.server.logging.LogFactory;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.PackagerService;
 import mat.server.util.XmlProcessor;
@@ -50,6 +26,28 @@ import mat.shared.ConstantMessages;
 import mat.shared.MeasurePackageClauseValidator;
 import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
 import mat.shared.packager.error.SaveSupplementalDataElementException;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class PackagerServiceImpl implements PackagerService {
@@ -91,6 +89,9 @@ public class PackagerServiceImpl implements PackagerService {
 
     @Autowired
     private CompositeMeasurePackageValidator compositeMeasurePackageValidator;
+
+    @Autowired
+    private PatientBasedValidator patientBasedValidator;
 
     /**
      * 1) Loads the MeasureXml from DB and converts into Xml Document Object 2)
@@ -268,7 +269,7 @@ public class PackagerServiceImpl implements PackagerService {
                 }
             }
         } catch (XPathExpressionException e) {
-            logger.info("Xpath Expression is incorrect" + e);
+            logger.debug("Xpath Expression is incorrect" + e);
         }
         try {
             Collections.sort(pkgs);
@@ -288,7 +289,7 @@ public class PackagerServiceImpl implements PackagerService {
                 measureXMLDAO.save(measureXML);
             }
         } catch (Exception e) {
-            logger.info("Exception while trying to check CQLLookupTag: " + e.getMessage());
+            logger.debug("Exception while trying to check CQLLookupTag: " + e.getMessage());
         }
         return overview;
     }
@@ -391,7 +392,7 @@ public class PackagerServiceImpl implements PackagerService {
             groupNode = processor.findNode(processor.getOriginalDoc(),
                     XmlProcessor.XPATH_GROUP_SEQ_START + detail.getSequence() + XmlProcessor.XPATH_GROUP_SEQ_END);
         } catch (XPathExpressionException e) {
-            logger.info("Xpath Expression is incorrect" + e);
+            logger.debug("Xpath Expression is incorrect" + e);
         }
         if (groupNode != null) {
             Node measureGroupingNode = groupNode.getParentNode();
@@ -782,7 +783,7 @@ public class PackagerServiceImpl implements PackagerService {
             overview.setCqlQdmElements(definitionList);
             overview.setCqlSuppDataElements(supplementalDataList);
         } catch (XPathExpressionException e) {
-            logger.info("Error while getting default supplemental data elements : " + e.getMessage());
+            logger.debug("Error while getting default supplemental data elements : " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -804,17 +805,17 @@ public class PackagerServiceImpl implements PackagerService {
     public MeasurePackageSaveResult save(MeasurePackageDetail detail) {
 
         long time1 = System.currentTimeMillis();
+        Measure measure = measureDAO.find(detail.getMeasureId());
 
+        //Checking if right number of groupings are added based on Measure Scoring
         MeasurePackageClauseValidator clauseValidator = new MeasurePackageClauseValidator();
-        List<String> messages = clauseValidator.isValidMeasurePackage(detail.getPackageClauses());
+        List<String> messages = clauseValidator.isValidMeasurePackage(detail.getPackageClauses(), measure.getMeasureScoring());
         MeasurePackageSaveResult result = new MeasurePackageSaveResult();
 
         if (messages.size() == 0) {
             MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
-
-            Measure measure = measureDAO.find(detail.getMeasureId());
             try {
-                messages = PatientBasedValidator.checkPatientBasedValidations(measureXML.getMeasureXMLAsString(), detail, cqlLibraryDAO, measure);
+                messages = patientBasedValidator.checkPatientBasedValidations(measureXML.getMeasureXMLAsString(), detail, cqlLibraryDAO, measure);
             } catch (XPathExpressionException e) {
                 messages.add("Unexpected error encountered while doing Group Validations. Please contact HelpDesk.");
             }
@@ -837,14 +838,14 @@ public class PackagerServiceImpl implements PackagerService {
                 // MEASUREGROUPING
                 // node
             } catch (XPathExpressionException e) {
-                logger.info("Xpath Expression is incorrect" + e);
+                logger.debug("Xpath Expression is incorrect" + e);
             }
             if ((null != groupNode) && groupNode.hasChildNodes()) { // if Same
                 // sequence
                 // , remove
                 // and
                 // update.
-                logger.info("Removing Group with seq number" + detail.getSequence());
+                logger.debug("Removing Group with seq number" + detail.getSequence());
                 measureGroupingNode.removeChild(groupNode);
             }
             // Converts MeasurePackageDetail to measureGroupingXml through
@@ -856,13 +857,13 @@ public class PackagerServiceImpl implements PackagerService {
             Node newGroupNode = measureGrpProcessor.getOriginalDoc().getElementsByTagName("measureGrouping").item(0)
                     .getFirstChild();
             measureGroupingNode.appendChild(processor.getOriginalDoc().importNode(newGroupNode, true));
-            logger.info("new Group appended");
+            logger.debug("new Group appended");
             String xml = measureGrpProcessor.transform(processor.getOriginalDoc());
             measureXML.setMeasureXMLAsByteArray(xml);
             measureXMLDAO.save(measureXML);
         } else {
             for (String message : messages) {
-                logger.info("Server-Side Validation failed for MeasurePackageClauseValidator for Login ID: "
+                logger.debug("Server-Side Validation failed for MeasurePackageClauseValidator for Login ID: "
                         + LoggedInUserUtil.getLoggedInLoginId() + " And failure Message is :" + message);
             }
             result.setSuccess(false);
@@ -870,7 +871,7 @@ public class PackagerServiceImpl implements PackagerService {
             result.setFailureReason(MeasurePackageSaveResult.SERVER_SIDE_VALIDATION);
         }
         long time2 = System.currentTimeMillis();
-        logger.info("Time for grouping validation:" + (time2 - time1));
+        logger.debug("Time for grouping validation:" + (time2 - time1));
         return result;
     }
 

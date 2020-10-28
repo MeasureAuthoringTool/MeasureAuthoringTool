@@ -1,6 +1,6 @@
 package mat.model;
 
-import static javax.persistence.GenerationType.IDENTITY;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,12 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "ORGANIZATION", uniqueConstraints = @UniqueConstraint(columnNames = "ORG_OID"))
-public class Organization implements IsSerializable{
+public class Organization implements IsSerializable, Serializable {
 	private Long id;
 	private String organizationName;
 	private String organizationOID;

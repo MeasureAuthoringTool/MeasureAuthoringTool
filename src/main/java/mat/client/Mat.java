@@ -1,26 +1,16 @@
 package mat.client;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -73,9 +63,18 @@ import mat.client.umls.ManageUmlsPresenter;
 import mat.client.umls.UmlsLoginDialogBox;
 import mat.client.umls.service.VsacTicketInformation;
 import mat.client.util.ClientConstants;
+import mat.client.util.FeatureFlagConstant;
 import mat.shared.ConstantMessages;
 import mat.shared.HarpConstants;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static mat.shared.HarpConstants.OKTA_TOKEN_STORAGE;
 
@@ -87,17 +86,15 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     private static final Logger logger = Logger.getLogger(Mat.class.getSimpleName());
     public static boolean harpUserVerificationInProgress = false;
     private final ListBoxCodeProvider listBoxCodeProvider = new ListBoxCodeProvider();
-    private final Map<String, String> harpUserInfo = new HashMap<>();
+    private Map<String, String> harpUserInfo = new HashMap<>();
     private Panel content;
     private HarpUserVerificationPresenter harpUserVerificationPresenter;
     private List<MatPresenter> presenterList;
     private MatPresenter adminPresenter;
     private MatPresenter myAccountPresenter;
-    private ClosingEvent closingEvent;
     private String currentUserRole = ClientConstants.USER_STATUS_NOT_LOGGEDIN;
     private MatTabLayoutPanel mainTabLayout;
-    private String mainTabLayoutID;
-    private ManageUmlsPresenter manageUmlsPresenter;
+    private String mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
     private MeasureComposerPresenter measureComposer;
     private ManageMeasurePresenter measureLibrary;
     private ManageCQLLibraryAdminPresenter cqlLibraryAdminPresenter;
@@ -128,7 +125,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         @Override
         public void onFailure(final Throwable caught) {
-            logger.log(Level.SEVERE, "Error in initSession. Error message: " + caught.getMessage(), caught);
+            logger.log(Level.SEVERE, "Error in getCurrentUser. Error message: " + caught.getMessage(), caught);
             logout();
         }
 
@@ -167,6 +164,13 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
                                 switchRole(ClientConstants.SUPER_USER_ROLE);
                             });
                         }
+
+                        if (!MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR)) {
+                            Map<String, Boolean> featureFlagMap = MatContext.get().getFeatureFlags();
+                            featureFlagMap.put(FeatureFlagConstant.MAT_ON_FHIR, MatContext.get().getCurrentUserInfo().isFhirAccessible);
+                            MatContext.get().setFeatureFlags(featureFlagMap);
+                        }
+
                         loadMatWidgets(isAlreadySignedIn);
                     }
                 }
@@ -177,6 +181,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             });
         }
     };
+
 
     private void switchUser(String newUserId) {
         logger.log(Level.INFO, "Switching to user: " + newUserId);
@@ -290,7 +295,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
     }
 
-
     private CqlLibraryPresenter buildCqlLibraryWidget() {
         CqlLibraryView cqlLibraryView = new CqlLibraryView();
         NewLibraryView detailView = new NewLibraryView();
@@ -310,17 +314,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         return accountPresenter;
     }
 
-    private native void closeBrowser()
-        /*-{
-            $wnd.open('', '_self');
-            $wnd.close();
-        }-*/;
-
     @Override
     protected void initEntryPoint() {
         MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
         content = getContentPanel();
-        mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
 
         getSignOut().addClickHandler(event -> logout());
 
@@ -466,7 +463,18 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     }
 
     private void initPage() {
-        showLoadingMessage();
+        MatContext.get().getFeatureFlagService().findFeatureFlags(new AsyncCallback<Map<String, Boolean>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Error in FeatureFlagService.findFeatureFlags. Error message: " + caught.getMessage(), caught);
+            }
+
+            @Override
+            public void onSuccess(Map<String, Boolean> result) {
+                logger.log(Level.INFO, "FeatureFlagService::findFeatureFlags -> onSuccess");
+                MatContext.get().setFeatureFlags(result);
+            }
+        });
         MatContext.get().setListBoxCodeProvider(listBoxCodeProvider);
 
         // Init session with current user info.
@@ -474,6 +482,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
         History.addValueChangeHandler(event -> {
             final String historyToken = event.getValue();
+
             if ((historyToken == null) || historyToken.isEmpty()) {
                 History.newItem(mainTabLayoutID + 0, false);
             } else if (!MatContext.get().isLoading()) {
@@ -535,6 +544,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
     @SuppressWarnings("unchecked")
     private void loadMatWidgets(boolean isAlreadySignedIn) {
+        logger.log(Level.INFO, "loadMatWidgets");
         MatContext.get().startUserLockUpdate();
         MatContext.get().recordTransactionEvent(null, null, "LOGIN_EVENT", null, 1);
 
@@ -628,6 +638,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             presenterList.add(myAccountPresenter);
             tabIndex = presenterList.indexOf(myAccountPresenter);
         } else {
+            logger.log(Level.INFO, "Fire LogoffEvent");
             MatContext.get().getEventBus().fireEvent(new LogoffEvent());
         }
         mainTabLayout.setHeight("100%");
@@ -670,14 +681,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
             getContentPanel().addMouseUpHandler(event -> MatContext.get().restartTimeoutWarning());
         }
 
-        MatContext.get().getEventBus().addHandler(BackToLoginPageEvent.TYPE, event -> redirectToLogin());
-
-        MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, event -> {
-            Mat.hideLoadingMessage();
-            Mat.showSignOutMessage();
-            logout();
-        });
-
         MatContext.get().getEventBus().addHandler(TimedOutEvent.TYPE, event -> {
             if (measureComposer != null) {
                 Mat.focusSkipLists("MainContent");
@@ -694,52 +697,55 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
     }
 
     private void logout(String redirectTo) {
-        //logger.log(Level.INFO, "logout " + redirectTo);
+        logger.log(Level.INFO, "logout " + redirectTo);
         // Revoke Access Token
         MatContext.get().getHarpService().revoke(MatContext.get().getAccessToken(), new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable throwable) {
-                //logger.log(Level.SEVERE, "HarpService::revoke -> onFailure:" + throwable.getMessage(), throwable);
+                logger.log(Level.SEVERE, "HarpService::revoke -> onFailure:" + throwable.getMessage(), throwable);
                 // log user out by removing their Okta browser session.
                 harpOktaLogout(redirectTo);
             }
 
             @Override
             public void onSuccess(Boolean aBoolean) {
-                //logger.log(Level.SEVERE, "HarpService::revoke -> onSuccess:" + aBoolean);
+                logger.log(Level.SEVERE, "HarpService::revoke -> onSuccess:" + aBoolean);
                 harpOktaLogout(redirectTo);
             }
         });
     }
 
     private void harpOktaLogout(String redirectTo) {
-        //logger.log(Level.INFO, "harpOktaLogout " + redirectTo);
+        logger.log(Level.INFO, "harpOktaLogout " + redirectTo);
         MatContext.get().getHarpService().getHarpUrl(new AsyncCallback<String>() {
             @Override
             public void onFailure(Throwable throwable) {
-                //logger.log(Level.SEVERE, "HarpService::getHarpUrl -> onFailure " + throwable.getMessage(), throwable);
+                logger.log(Level.SEVERE, "HarpService::getHarpUrl -> onFailure " + throwable.getMessage(), throwable);
             }
 
             @Override
             public void onSuccess(String harpUrl) {
-                //logger.log(Level.INFO, "HarpService::getHarpUrl -> onSuccess");
+                logger.log(Level.INFO, "HarpService::getHarpUrl -> onSuccess");
                 MatContext.get().getSynchronizationDelegate().setLogOffFlag();
                 harpLogout(harpUrl);
                 removeOktaTokens();
+                if (redirectTo == null) {
+                    // MAT logout operation, but don't redirect.
+                    MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
+
+                    // Redirect to Login after 1 second wait.
+                    redirectToLogin();
+                }
+                // MAT Logout operation with specified redirect.
                 MatContext.get().handleSignOut("SIGN_OUT_EVENT", redirectTo);
-                redirectToLogin();
             }
         });
     }
 
     private void removeOktaTokens() {
-        //logger.log(Level.INFO, "removeOktaTokens");
+        logger.log(Level.INFO, "removeOktaTokens");
         Storage localStorage = Storage.getLocalStorageIfSupported();
         localStorage.removeItem(OKTA_TOKEN_STORAGE);
-    }
-
-    public static void setSignedInAsName(String userFirstName, String userLastName) {
-        setSignedInName(userFirstName + " " + userLastName);
     }
 
     private void showUMLSModal(String userFirstName, boolean isAlreadySignedIn) {
@@ -760,7 +766,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        //logger.log(Level.SEVERE, "Error in BonnieService.revokeBonnieAccessTokenForUser. Error message: " + caught.getMessage(), caught);
+                        logger.log(Level.SEVERE, "Error in BonnieService.revokeBonnieAccessTokenForUser. Error message: " + caught.getMessage(), caught);
                         hideBonnieActive(false);
                     }
 
@@ -788,7 +794,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
             @Override
             public void onFailure(Throwable caught) {
-                //logger.log(Level.SEVERE, "Error in VsacapiService.getTicketGrantingToken. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in VsacapiService.getTicketGrantingToken. Error message: " + caught.getMessage(), caught);
                 hideUMLSActive(true);
                 MatContext.get().setUMLSLoggedIn(false);
             }
@@ -806,13 +812,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
             @Override
             public void onFailure(Throwable caught) {
-                //logger.log(Level.SEVERE, "Error in BonnieService.getBonnieUserInformationForUser. Error message: " + caught.getMessage(), caught);
+                logger.log(Level.SEVERE, "Error in BonnieService.getBonnieUserInformationForUser. Error message: " + caught.getMessage(), caught);
                 hideBonnieActive(true);
             }
         });
     }
 
     private void redirectToLogin() {
+        logger.log(Level.INFO, "redirectToLogin");
         hideLoadingMessage();
         /*
          * Added a timer to have a delay before redirect since
@@ -821,11 +828,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         final Timer timer = new Timer() {
             @Override
             public void run() {
+                // Let's sign out the user, so there is no lurking okta token.
                 MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
             }
         };
         timer.schedule(1000);
-
     }
 
     @Override

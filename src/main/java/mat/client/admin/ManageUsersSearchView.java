@@ -1,10 +1,5 @@
 package mat.client.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -23,7 +18,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-/*import com.google.gwt.user.client.ui.Button;*/
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -31,7 +25,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-
 import mat.client.CustomPager;
 import mat.client.admin.ManageUsersSearchModel.Result;
 import mat.client.shared.ContentWithHeadingWidget;
@@ -46,6 +39,10 @@ import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
+import org.gwtbootstrap3.client.ui.Button;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay.**/
 public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay, HasSelectionHandlers<ManageUsersSearchModel.Result> {
@@ -121,7 +118,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
 				safeHtmlBuilder.appendHtmlConstant("<a href=\"javascript:void(0);\" "
 						+ "style=\"text-decoration:none\" "
-						+ "title=\"Name: " + object.getFirstName() + " " + object.getLastName() + "\" >");
+						+ "title=\"Name: " + SafeHtmlUtils.htmlEscape(object.getFirstName() + " " + object.getLastName()) + "\" >");
 				safeHtmlBuilder.appendEscaped(object.getFirstName() + " " + object.getLastName());
 				safeHtmlBuilder.appendHtmlConstant("</a>");
 				return safeHtmlBuilder.toSafeHtml();

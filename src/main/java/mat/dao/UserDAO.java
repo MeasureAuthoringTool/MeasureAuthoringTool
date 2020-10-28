@@ -1,12 +1,12 @@
 package mat.dao;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
 import mat.model.Organization;
 import mat.model.User;
 import mat.server.model.MatUserDetails;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 public interface UserDAO extends IDAO<User, String> {
 

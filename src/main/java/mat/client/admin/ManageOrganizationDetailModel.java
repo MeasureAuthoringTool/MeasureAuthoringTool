@@ -1,7 +1,7 @@
 package mat.client.admin;
 
-import mat.model.BaseModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.model.BaseModel;
 
 /** The Class ManageUsersDetailModel. */
 public class ManageOrganizationDetailModel implements IsSerializable , BaseModel {

@@ -1,286 +1,271 @@
 package mat.client.shared;
 
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
-
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.Cell.Context;
-import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.dom.client.BrowserEvents;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.ui.Label;
-
+import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.SelectionModel;
 import mat.client.cql.CQLLibrarySearchView.Observer;
 import mat.client.util.CellTableUtility;
+import mat.client.util.FeatureFlagConstant;
+import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.model.util.MeasureDetailsUtil;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 public class CQLLibraryResultTable {
-	
-	private Observer observer;
-	
-	public CellTable<CQLLibraryDataSetObject> addColumnToTable(String Label, CellTable<CQLLibraryDataSetObject> table, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
-		Label cqlLibrarySearchHeader = new Label(Label);
-		cqlLibrarySearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
-		cqlLibrarySearchHeader.setStyleName("recentSearchHeader");
-		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
-		cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "0");
-		TableCaptionElement caption = elem.createCaption();
-		caption.appendChild(cqlLibrarySearchHeader.getElement());
+
+    private Observer observer;
+    private static final long DELAY_TIME = 300;
+    private CQLLibraryDataSetObject lastRowCLicked;
 
 
-		// CQL Library Name Column
-		Column<CQLLibraryDataSetObject, SafeHtml> cqlLibraryName = new Column<CQLLibraryDataSetObject, SafeHtml>(
-				new ClickableSafeHtmlCell()) {
-			@Override
-			public SafeHtml getValue(CQLLibraryDataSetObject object) {
-				return getCQLLibraryNameColumnToolTip(object);
-			}
-		};
-		cqlLibraryName.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, SafeHtml>() {
-			@Override
-			public void update(int index, CQLLibraryDataSetObject object, SafeHtml value) {
-				SelectionEvent.fire(fireEvent, object);
-			}
-		});
-		table.addColumn(cqlLibraryName,
-				SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>" + "CQL Library Name" + "</span>"));
+    public CellTable<CQLLibraryDataSetObject> addColumnToTable(CQLibraryGridToolbar gridToolbar, CellTable<CQLLibraryDataSetObject> table, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
+        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        table.setSelectionModel(selectionModel);
 
-		// Version Column
-		Column<CQLLibraryDataSetObject, SafeHtml> version = new Column<CQLLibraryDataSetObject, SafeHtml>(
-				new MatSafeHTMLCell()) {
-			@Override
-			public SafeHtml getValue(CQLLibraryDataSetObject object) {
-				return CellTableUtility.getColumnToolTip(object.getVersion());
-			}
-		};
-		table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
+        selectionModel.addSelectionChangeHandler(event -> {
+            CQLLibraryDataSetObject selectedItem = selectionModel.getSelectedSet().isEmpty() ? null : selectionModel.getSelectedSet().iterator().next();
+            gridToolbar.updateOnSelectionChanged(selectedItem);
+        });
+        addToolbarHandlers(gridToolbar, selectionModel, fireEvent);
 
-		ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
-		Column<CQLLibraryDataSetObject,String> draftOrVersionCol = new Column<CQLLibraryDataSetObject, String>(buttonCell) {
+        CheckboxCell selectedCell = new CheckboxCell(true, false);
+        Column<CQLLibraryDataSetObject, Boolean> selectedCol = new Column<CQLLibraryDataSetObject, Boolean>(selectedCell) {
+            @Override
+            public Boolean getValue(CQLLibraryDataSetObject object) {
+                return selectionModel.isSelected(object);
+            }
+        };
+        table.addColumn(selectedCol);
+        table.setColumnWidth(0, "45px");
 
-			@Override
-			public String getValue(CQLLibraryDataSetObject object) {
-				return object.getCqlName();
-			}
-			
-			@Override
-			public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
-				if (object.isDraftable()) {
-					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" title =\"Click to create draft\" tabindex=\"0\">");
-					sb.appendHtmlConstant("<i class=\"fa fa-pencil-square-o fa-lg\" style=\"margin-left: 15px;\"></i>");
-					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Draft</span>");
-					sb.appendHtmlConstant("</button>");
-				} else if (object.isVersionable()) {
-					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" tabindex=\"0\" title =\"Click to create version\" style=\"color: goldenrod;\" >");
-					sb.appendHtmlConstant("<i class=\"fa fa-star fa-lg\" style=\"margin-left: 15px;\"></i>");
-					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Version</span>");
-					sb.appendHtmlConstant("</button>");
-				}
-				
-			}
-			@Override
-			public void onBrowserEvent(Context context, Element elem, CQLLibraryDataSetObject object,
-					NativeEvent event) {
+        // CQL Library Name Column
+        Column<CQLLibraryDataSetObject, SafeHtml> cqlLibraryName = new Column<CQLLibraryDataSetObject, SafeHtml>(
+                new ClickableSafeHtmlCell()) {
+            @Override
+            public SafeHtml getValue(CQLLibraryDataSetObject object) {
+                return getCQLLibraryNameColumnToolTip(object);
+            }
+        };
+        table.addColumn(cqlLibraryName,
+                SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>" + "CQL Library Name" + "</span>"));
 
-				String type = event.getType();
-				if(type.equalsIgnoreCase(BrowserEvents.CLICK)){
-					if(!object.isDraftable() && !object.isVersionable()){
-						event.preventDefault();
-					} else {
-						observer.onDraftOrVersionClick(object);
-					}
-				} else {
-					if(!object.isDraftable() && !object.isVersionable()){
-						event.preventDefault();
-					}
-				}
-				
-			}
-			
-		};
-		
-		table.addColumn(draftOrVersionCol,
-				SafeHtmlUtils.fromSafeConstant("<span title='Create Version/Draft'>" + "Create Version/Draft" + "</span>"));
-				
-		
-		// History
-		Cell<String> historyButton = new MatButtonCell("Click to view history", "btn btn-link", "fa fa-clock-o fa-lg" , "History");
-		Column<CQLLibraryDataSetObject, String> historyColumn = new Column<CQLLibraryDataSetObject, String>(
-				historyButton) {
-			@Override
-			public String getValue(CQLLibraryDataSetObject object) {
-				return "";
-			}
-		};
-		historyColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, String>() {
-			@Override
-			public void update(int index, CQLLibraryDataSetObject object, String value) {
-				observer.onHistoryClicked(object);
-			}
-		});
-		table.addColumn(historyColumn,
-				SafeHtmlUtils.fromSafeConstant("<span title='History'>" + "History" + "</span>"));
-		
-		//Edit
-		Column<CQLLibraryDataSetObject, SafeHtml> editColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(
-				new ClickableSafeHtmlCell()) {
+        // Model Version Column
+        Column<CQLLibraryDataSetObject, SafeHtml> modelVersion = new Column<CQLLibraryDataSetObject, SafeHtml> (
+                new ClickableSafeHtmlCell()) {
+            @Override
+            public SafeHtml getValue(CQLLibraryDataSetObject object) {
+                return CellTableUtility.getColumnToolTip(getModelVersion(object));
+            }
+        };
+        table.addColumn(modelVersion, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Model Version" + "</span>"));
 
-			@Override
-			public SafeHtml getValue(CQLLibraryDataSetObject object) {
-				return getEditColumnToolTip(object);
-			}
-		};
-		editColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, SafeHtml>() {
-			@Override
-			public void update(int index, CQLLibraryDataSetObject object, SafeHtml value) {
-				if (object.isEditable() && !object.isLocked()) {
-					observer.onEditClicked(object);
-				}
-			}
-		});
-		table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
+        // Version Column
+        Column<CQLLibraryDataSetObject, SafeHtml> version = new Column<CQLLibraryDataSetObject, SafeHtml> (
+                new ClickableSafeHtmlCell()) {
+            @Override
+            public SafeHtml getValue(CQLLibraryDataSetObject object) {
+                return CellTableUtility.getColumnToolTip(object.getVersion());
+            }
+        };
+        table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
 
-		// Share
-		Column<CQLLibraryDataSetObject, SafeHtml> shareColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(
-				new ClickableSafeHtmlCell()) {
-			@Override
-			public SafeHtml getValue(CQLLibraryDataSetObject object) {
-				return getShareColumnToolTip(object);
-			}
-		};
-		shareColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, SafeHtml>() {
-			@Override
-			public void update(int index, CQLLibraryDataSetObject object, SafeHtml value) {
-				if (object.isSharable())
-					observer.onShareClicked(object);
-			}
-		});
-		table.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Share'>" + "Share" + "</span>"));
-		
-		//Delete Column
-				ButtonCell deleteButtonCell = new ButtonCell(ButtonType.LINK);
-				Column<CQLLibraryDataSetObject,String> deleteColumn = new Column<CQLLibraryDataSetObject, String>(deleteButtonCell) {
+        //Library Model Type
+        Column<CQLLibraryDataSetObject, SafeHtml> model = new Column<CQLLibraryDataSetObject, SafeHtml>(
+                new ClickableSafeHtmlCell()) {
+            @Override
+            public SafeHtml getValue(CQLLibraryDataSetObject object) {
+                return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.getModelTypeDisplayName(object.getLibraryModelType()));
+            }
+        };
+        table.addColumn(model, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Models" + "</span>"));
 
-					@Override
-					public String getValue(CQLLibraryDataSetObject object) {
-						return object.getCqlName();
-					}
-					
-					@Override
-					public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
-						if (object.isDeletable()) {
-							sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" title =\"Click to delete library\" tabindex=\"0\">");
-							sb.appendHtmlConstant("<i class=\"fa fa-trash fa-lg\" style=\"margin-left: 5px;\"></i>");
-							sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Delete CQL Library</span>");
-							sb.appendHtmlConstant("</button>");
-						}
-					}
-					@Override
-					public void onBrowserEvent(Context context, Element elem, CQLLibraryDataSetObject object,
-							NativeEvent event) {
-						String type = event.getType();
-						if(type.equalsIgnoreCase(BrowserEvents.CLICK)){
-							if(!object.isDeletable()){
-								event.preventDefault();
-							} else {
-								observer.onDeleteClicked(object);
-							}
-						} else {
-							if(!object.isDeletable()){
-								event.preventDefault();
-							}
-						}
-					}
-					
-				};
-				
-				table.addColumn(deleteColumn,
-						SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete" + "</span>"));
+        AtomicLong lastClickTime = new AtomicLong(System.currentTimeMillis());
 
-		return table;
-	}
-	
-	private SafeHtml getShareColumnToolTip(CQLLibraryDataSetObject object) {
+        table.addCellPreviewHandler(event -> {
+            String eventType = event.getNativeEvent().getType();
+            CQLLibraryDataSetObject obj = event.getValue();
+            event.getNativeEvent().preventDefault();
 
-		SafeHtmlBuilder sb = new SafeHtmlBuilder();
-		String title = "Shareable";
-		String cssClass = "btn btn-link";
-		String iconCss = "fa fa-share-square fa-lg";
-		if (object.isSharable()) {			
-			sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkseagreen;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Shareable</span></button>");
-		} else {			
-			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: gray;\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Shareable</span></button>");
-		}
-		
-		return sb.toSafeHtml();
-	}
+            if (BrowserEvents.CLICK.equalsIgnoreCase(eventType)) {
+                long duration = System.currentTimeMillis() - lastClickTime.get();
+                if (isDoubleClick(obj,duration)) {
+                    SelectionEvent.fire(fireEvent, obj);
+                } else {
+                    if (obj.isSelected()) {
+                        setSelected(selectionModel,obj,false);
+                    } else {
+                        if (lastRowCLicked != null && lastRowCLicked.isSelected()) {
+                            setSelected(selectionModel,lastRowCLicked,false);
+                        }
+                        setSelected(selectionModel,obj,true);
+                    }
+                }
+                lastRowCLicked = obj;
+                lastClickTime.set(System.currentTimeMillis());
+            }
+        });
 
-	private SafeHtml getEditColumnToolTip(CQLLibraryDataSetObject object){
-		SafeHtmlBuilder sb = new SafeHtmlBuilder();
-		String title;
-		String cssClass = "btn btn-link";
-		String iconCss;
-		if (object.isEditable()) {
-			if (object.isLocked()) {
-				String emailAddress = object.getLockedUserInfo().getEmailAddress();
-				title = "Library in use by " + emailAddress;
-				iconCss = "fa fa-lock fa-lg";
-			} else {
-				title = "Edit";
-				iconCss = "fa fa-pencil fa-lg";
-				
-			}
-			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
-		} else {
-			title = "Read-Only";
-			iconCss = "fa fa-newspaper-o fa-lg";
-			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
-		}
-		
-		return sb.toSafeHtml();
-	}
-	
-	private SafeHtml getCQLLibraryNameColumnToolTip(CQLLibraryDataSetObject object) {
-		SafeHtmlBuilder sb = new SafeHtmlBuilder();
-		String cssClass = "customCascadeButton";
-		if (object.isFamily()) {
-			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
-					+ "style=\"text-decoration:none\" tabindex=\"-1\">"
-					+ "<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
-			sb.appendHtmlConstant("<span id='div2' title=\" Click to open " + object.getCqlName() + "\" tabindex=\"0\">"
-					+ object.getCqlName() + "</span>");
-			sb.appendHtmlConstant("</a></div>");
-		} else {
-			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
-					+ "style=\"text-decoration:none\" tabindex=\"-1\" >");
-			sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\"" + object.getCqlName()
-					+ "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
-			sb.appendHtmlConstant("<span id='div2' title=\" Click to open " + object.getCqlName() + "\" tabindex=\"0\">"
-					+ object.getCqlName() + "</span>");
-			sb.appendHtmlConstant("</a></div>");
-		}
-		return sb.toSafeHtml();
-	}
-	
-	public Observer getObserver() {
-		return observer;
-	}
-	
-	public void setObserver(Observer observer) {
-		this.observer = observer;
-	}
+        table.addStyleName("table");
+        return table;
+    }
+
+    private void setSelected (SelectionModel model, CQLLibraryDataSetObject obj, boolean isSelected) {
+        obj.setSelected(isSelected);
+        model.setSelected(obj,isSelected);
+    }
+
+    private boolean isDoubleClick(CQLLibraryDataSetObject obj,long clickDuration) {
+        return lastRowCLicked != null &&
+                lastRowCLicked.getId() != null &&
+                lastRowCLicked.getId().equals(obj.getId()) && //same row clicked twice.
+                clickDuration <= DELAY_TIME; //was within delay time.
+    }
+
+    @VisibleForTesting
+    void addToolbarHandlers(CQLibraryGridToolbar gridToolbar, MultiSelectionModel<CQLLibraryDataSetObject> selectionModel, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
+        gridToolbar.getVersionButton().addClickHandler(event -> {
+            onDraftOrVersion(selectionModel);
+        });
+
+        gridToolbar.getHistoryButton().addClickHandler(event -> {
+            onHistory(selectionModel);
+        });
+
+        gridToolbar.getEditOrViewButton().addClickHandler(event -> {
+            onEditOrViewClicked(selectionModel, fireEvent);
+        });
+
+        gridToolbar.getShareButton().addClickHandler(event -> {
+            onShare(selectionModel);
+        });
+
+        gridToolbar.getDeleteButton().addClickHandler(event -> {
+            onDelete(selectionModel);
+        });
+
+        gridToolbar.getConvertButton().addClickHandler(event -> {
+            onConvert(selectionModel);
+        });
+    }
+
+    @VisibleForTesting
+    void onConvert(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+        selectionModel.getSelectedSet().stream()
+                .filter(cqlLib -> cqlLib.isFhirConvertible())
+                .forEach(observer::onConvertClicked);
+    }
+
+    @VisibleForTesting
+    void onDelete(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+        selectionModel.getSelectedSet().stream()
+                .filter(cqlLib -> cqlLib.isDeletable())
+                .forEach(observer::onDeleteClicked);
+    }
+
+    @VisibleForTesting
+    void onShare(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+        selectionModel.getSelectedSet().stream()
+                .filter(cqlLib -> cqlLib.isSharable())
+                .forEach(observer::onShareClicked);
+    }
+
+    @VisibleForTesting
+    void onEditOrViewClicked(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel, HasSelectionHandlers<CQLLibraryDataSetObject> fireEvent) {
+        selectionModel.getSelectedSet().stream().findFirst().ifPresent(object -> {
+            if (!object.isEditable()) {
+                SelectionEvent.fire(fireEvent, object);
+            } else if (!object.isLocked()) {
+                observer.onEditClicked(object);
+            }
+        });
+    }
+
+    @VisibleForTesting
+    void onHistory(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+        selectionModel.getSelectedSet().forEach(observer::onHistoryClicked);
+    }
+
+    @VisibleForTesting
+    void onDraftOrVersion(MultiSelectionModel<CQLLibraryDataSetObject> selectionModel) {
+        selectionModel.getSelectedSet().stream()
+                .filter(cqlLib -> cqlLib.isDraftable() || cqlLib.isVersionable())
+                .forEach(observer::onDraftOrVersionClick);
+    }
+
+    private SafeHtml getCQLLibraryNameColumnToolTip(CQLLibraryDataSetObject object) {
+        SafeHtmlBuilder sb = new SafeHtmlBuilder();
+        String cssClass = "customCascadeButton";
+        String editState = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR) ? getEditStateOfLibrary(object) : "";
+        if (object.isFamily()) {
+            sb.appendHtmlConstant("<div tabindex=\"-1\">");
+            sb.appendHtmlConstant(editState);
+            sb.appendHtmlConstant("<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
+            sb.appendHtmlConstant("<span id='div2' title=\" Double-Click to open " + object.getCqlName() + "\" tabindex=\"0\">"
+                    + object.getCqlName() + "</span>");
+            sb.appendHtmlConstant("</div>");
+        } else {
+            sb.appendHtmlConstant("<div tabindex=\"-1\">");
+            sb.appendHtmlConstant(editState);
+            sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\"" + object.getCqlName()
+                    + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
+            sb.appendHtmlConstant("<span id='div2' title=\" Double-Click to open " + object.getCqlName() + "\" tabindex=\"0\">"
+                    + object.getCqlName() + "</span>");
+            sb.appendHtmlConstant("</div>");
+        }
+        return sb.toSafeHtml();
+    }
+
+    /**
+     * This method creates icons relevant to the edit state of CQL Library
+     *
+     * @param object CQLLibraryDataSetObject
+     * @return string containing edit state icon
+     */
+    private String getEditStateOfLibrary(CQLLibraryDataSetObject object) {
+        String title;
+        String iconCss;
+        if (object.isEditable()) {
+            if (object.isLocked()) {
+                String emailAddress = object.getLockedUserInfo().getEmailAddress();
+                title = "Library in use by " + emailAddress;
+                iconCss = "fa fa-lock fa-lg";
+            } else {
+                title = "Edit";
+                iconCss = "fa fa-pencil fa-lg width-14x";
+            }
+        } else {
+            title = "Read-Only";
+            iconCss = "fa fa-eye fa-lg width-14x";
+        }
+        return "<i class=\"pull-left edit-state " + iconCss + "\" title=\"" + title + "\"></i>";
+    }
+
+    public Observer getObserver() {
+        return observer;
+    }
+
+    public void setObserver(Observer observer) {
+        this.observer = observer;
+    }
+
+    private String getModelVersion(CQLLibraryDataSetObject object) {
+        if (ModelTypeHelper.isFhir(object.getLibraryModelType()) && object.getFhirVersion() != null) {
+            return object.getFhirVersion();
+        } else if (ModelTypeHelper.isQdm(object.getLibraryModelType()) && object.getQdmVersion() != null) {
+            return object.getQdmVersion();
+        } else {
+            return " ";
+        }
+    }
 }

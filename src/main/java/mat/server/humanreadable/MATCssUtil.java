@@ -7,7 +7,7 @@ public class MATCssUtil {
 		"<style type=\"text/css\">" + " \n " +
 
 		"body {" + " \n " +
-		"color: rgb(26, 26, 26);"+ " \n " +
+		"color: rgb(0,0,0);"+ " \n " +
 		"background-color: rgb(255,255,255);"+ " \n " +
 		"font-family: Verdana, Tahoma, sans-serif;"+ " \n " +
 		"font-size: 11px;"+ " \n " +

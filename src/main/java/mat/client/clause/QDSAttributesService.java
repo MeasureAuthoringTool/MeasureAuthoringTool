@@ -1,12 +1,11 @@
 package mat.client.clause;
 
-import java.util.List;
-import java.util.Map;
-
-import mat.model.clause.QDSAttributes;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import mat.model.clause.QDSAttributes;
+
+import java.util.List;
+import java.util.Map;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -57,14 +56,14 @@ public interface QDSAttributesService extends RemoteService {
 	Map<String, List<String>>getDatatypeList(List<String> dataTypeList);
 	
 	/**
-	 * Gets the JSON object from xml.
+	 * Gets QDM Attributes modes from SimplifiedAttributePatterns.xml.
 	 *
 	 * @return the JSON object from xml
 	 */
 	String getJSONObjectFromXML();
 	
 	/**
-	 * Gets the JSON object from mode details xml.
+	 * Gets the Attributes Mode Details JSON object from mode details (ModeDetails.xml) xml.
 	 *
 	 * @return the JSON object from mode details xml
 	 */
@@ -76,5 +75,7 @@ public interface QDSAttributesService extends RemoteService {
 	 * @return the all attributes
 	 */
 	List<String> getAllAttributes();
+
+	List<String> getAllAttributesByDataTypeForFhir(String dataTypeName);
 }
 

@@ -1,14 +1,14 @@
 package mat.client.measure;
 
-import mat.client.shared.search.SearchResults;
-import mat.model.clause.MeasureShareDTO;
-import mat.model.clause.ShareLevel;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.shared.search.SearchResults;
+import mat.model.clause.MeasureShareDTO;
+import mat.model.clause.ShareLevel;
 
 /**
  * The Class UserShareInfoAdapter.

@@ -1,23 +1,21 @@
 package mat.dao.impl;
 
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
+import mat.dao.search.GenericDAO;
+import mat.dto.MeasureTypeDTO;
+import mat.model.MeasureType;
+import mat.model.clause.MeasureTypeAssociation;
+import mat.server.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dto.MeasureTypeDTO;
-import mat.dao.search.GenericDAO;
-import mat.model.MeasureType;
-import mat.model.clause.MeasureTypeAssociation;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 
 
 @Repository("measureTypeDAO")
@@ -31,7 +29,7 @@ public class MeasureTypeDAOImpl extends GenericDAO<MeasureType, String> implemen
 	
 	@Override
 	public List<MeasureTypeDTO> getAllMeasureTypes(){
-		logger.info("Getting all the rows from the MEASURE_TYPES table");
+		logger.debug("Getting all the rows from the MEASURE_TYPES table");
 		final Session session = getSessionFactory().getCurrentSession();
 		final CriteriaBuilder cb = session.getCriteriaBuilder();
 		final CriteriaQuery<MeasureTypeDTO> query = cb.createQuery(MeasureTypeDTO.class);

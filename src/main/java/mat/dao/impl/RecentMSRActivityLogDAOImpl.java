@@ -1,21 +1,19 @@
 package mat.dao.impl;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
+import mat.dao.search.GenericDAO;
+import mat.model.RecentMSRActivityLog;
+import mat.server.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dao.search.GenericDAO;
-import mat.model.RecentMSRActivityLog;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.Date;
+import java.util.List;
 
 @Repository("recentMSRActivityLogDAO")
 public class RecentMSRActivityLogDAOImpl extends GenericDAO<RecentMSRActivityLog, String> implements mat.dao.RecentMSRActivityLogDAO {
@@ -68,7 +66,7 @@ public class RecentMSRActivityLogDAOImpl extends GenericDAO<RecentMSRActivityLog
 		recentMSRActivityLog.setUserId(userId);
 		recentMSRActivityLog.setTime(new Date());
 		save(recentMSRActivityLog);
-		logger.info("Inserting recent measure activity log for measure id: " + measureId);
+		logger.debug("Inserting recent measure activity log for measure id: " + measureId);
 	}
 	
 	/**
@@ -79,7 +77,7 @@ public class RecentMSRActivityLogDAOImpl extends GenericDAO<RecentMSRActivityLog
 	private void updateRecentMeasureActivity(RecentMSRActivityLog recentMSRActivityLog) {
 		recentMSRActivityLog.setTime(new Date());
 		save(recentMSRActivityLog);
-		logger.info("Updating recent measure activity log for measure id: " + recentMSRActivityLog.getMeasureId());
+		logger.debug("Updating recent measure activity log for measure id: " + recentMSRActivityLog.getMeasureId());
 	}
 	
 	/**

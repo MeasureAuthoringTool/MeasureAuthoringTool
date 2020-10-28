@@ -1,13 +1,5 @@
 package mat.client.myAccount;
 
-import mat.client.MatPresenter;
-import mat.client.TabObserver;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatTabLayoutPanel;
-
-import java.util.LinkedList;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -16,6 +8,13 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.MatPresenter;
+import mat.client.TabObserver;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatTabLayoutPanel;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The Class MyAccountView.

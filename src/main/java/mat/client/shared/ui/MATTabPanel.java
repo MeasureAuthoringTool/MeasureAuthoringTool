@@ -16,10 +16,6 @@ package mat.client.shared.ui;
  * the License.
  */
 
-import java.util.Iterator;
-
-import mat.client.Enableable;
-
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
@@ -40,6 +36,9 @@ import com.google.gwt.user.client.ui.TabListener;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.Enableable;
+
+import java.util.Iterator;
 
 /**
  * A panel that represents a tabbed set of pages, each of which contains another

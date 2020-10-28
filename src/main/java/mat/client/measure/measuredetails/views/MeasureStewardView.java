@@ -1,10 +1,5 @@
 package mat.client.measure.measuredetails.views;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.FormLabel;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.TableCaptionElement;
@@ -21,7 +16,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.measure.measuredetails.observers.MeasureStewardDeveloperObserver;
 import mat.client.shared.ConfirmationDialogBox;
@@ -35,6 +29,10 @@ import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureStewardDeveloperModel;
+import org.gwtbootstrap3.client.ui.FormLabel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MeasureStewardView implements MeasureDetailViewInterface{
 	private final FlowPanel mainPanel = new FlowPanel();

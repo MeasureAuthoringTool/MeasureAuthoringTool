@@ -1,17 +1,15 @@
 package mat.client.populationworkspace;
 
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
-
 import mat.client.Mat;
 import mat.client.populationworkspace.model.PopulationDataModel;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.SkipListBuilder;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 /**
  * The Class CQLPopulationWorkSpaceView.

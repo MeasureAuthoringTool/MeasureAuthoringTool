@@ -1,16 +1,5 @@
 package mat.client.admin;
 
-import java.util.Date;
-import java.util.List;
-
-import mat.dto.UserAuditLogDTO;
-import mat.client.CustomPager;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatSafeHTMLCell;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.SpacerWidget;
-import mat.client.util.CellTableUtility;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
@@ -27,6 +16,16 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import mat.client.CustomPager;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatSafeHTMLCell;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.SpacerWidget;
+import mat.client.util.CellTableUtility;
+import mat.dto.UserAuditLogDTO;
+
+import java.util.Date;
+import java.util.List;
 
 
 /**

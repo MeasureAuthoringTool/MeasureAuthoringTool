@@ -1,8 +1,8 @@
 package mat.model;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -16,7 +16,7 @@ public class QualityDataModelWrapper implements IsSerializable{
 	/** The risk adj var dto list. */
 	private List<RiskAdjustmentDTO> riskAdjVarDTOList;
 	
-	/** The vsac profile. */
+	/** The mat.vsac profile. */
 	private String vsacExpIdentifier;
 	/**
 	 * Gets the quality data dto.
@@ -56,18 +56,18 @@ public class QualityDataModelWrapper implements IsSerializable{
 	}
 
 	/**
-	 * Gets the vsac profile.
+	 * Gets the mat.vsac profile.
 	 *
-	 * @return the vsac profile
+	 * @return the mat.vsac profile
 	 */
 	public String getVsacExpIdentifier() {
 		return vsacExpIdentifier;
 	}
 
 	/**
-	 * Sets the vsac identifier.
+	 * Sets the mat.vsac identifier.
 	 *
-	 * @param vsac Identifier the new vsac profile
+	 * @param vsac Identifier the new mat.vsac profile
 	 */
 	public void setVsacExpIdentifier(String vsacExpIdentifier) {
 		this.vsacExpIdentifier = vsacExpIdentifier;

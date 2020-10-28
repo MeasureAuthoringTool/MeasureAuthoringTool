@@ -1,9 +1,9 @@
 package mat.shared;
 
+import mat.client.shared.MatContext;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import mat.client.shared.MatContext;
 
 /**
  * The Class PasswordVerifier.
@@ -19,7 +19,7 @@ public class PasswordVerifier {
 	/** The Constant SPECIAL_CHARS. */
 	private static final char[] SPECIAL_CHARS = 
 		new char[] {'%', '#', '*', '+', '-', ',', ':', '=', '?', '_'};
-	
+
 	/** The contains upper. */
 	private boolean containsUpper;
 	
@@ -126,9 +126,7 @@ public class PasswordVerifier {
 	
 	/**
 	 * Checks if is password valid.
-	 * 
-	 * @param userid
-	 *            the userid
+	 *
 	 * @param pwd
 	 *            the pwd
 	 * @param confirm
@@ -140,7 +138,7 @@ public class PasswordVerifier {
 		confirmed = pwd.equals(confirm);
 		notTooLong = pwd.length() <= MAX_LENGTH;
 		notTooShort = pwd.length() >= MIN_LENGTH;
-
+		
 		containsUpper = false;
 		containsLower = false;
 		containsSpecial = false;
@@ -155,8 +153,8 @@ public class PasswordVerifier {
 			containsNumber |= Character.isDigit(c);
 		}
 		
-		return notTooLong && notTooShort  && containsUpper && containsLower && containsSpecial && containsNumber
-				&& confirmed;
+		return notTooLong && notTooShort && containsUpper && containsLower && containsSpecial && containsNumber
+                && confirmed;
 		
 		}
 

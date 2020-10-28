@@ -1,9 +1,9 @@
 package mat.client.expressionbuilder.util;
 
+import mat.client.expressionbuilder.constant.TimingOperator;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import mat.client.expressionbuilder.constant.TimingOperator;
 
 public class TimingGraphUtil {
 	

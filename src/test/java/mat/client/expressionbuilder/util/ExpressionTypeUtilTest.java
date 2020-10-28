@@ -1,12 +1,11 @@
 package mat.client.expressionbuilder.util;
 
-import static org.junit.Assert.assertEquals;
-
+import mat.client.expressionbuilder.constant.CQLType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import mat.client.expressionbuilder.constant.CQLType;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author cthondapu

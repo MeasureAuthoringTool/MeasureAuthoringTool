@@ -1,10 +1,10 @@
 package mat.dao.clause;
 
-import java.util.List;
-
-import mat.dto.OperatorDTO;
 import mat.dao.IDAO;
+import mat.dto.OperatorDTO;
 import mat.model.Operator;
+
+import java.util.List;
 
 /**
  * DAO interface for Operator.

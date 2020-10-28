@@ -1,18 +1,5 @@
 package mat.client.cqlworkspace.codes;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -43,7 +30,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-
 import mat.client.CustomPager;
 import mat.client.Mat;
 import mat.client.buttons.CancelButton;
@@ -66,8 +52,24 @@ import mat.model.MatCodeTransferObject;
 import mat.model.cql.CQLCode;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.StringUtility;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CQLCodesView {
+	private static final Logger log = Logger.getLogger(CQLCodesView.class.getSimpleName());
+
 
 	private static final int TABLE_ROW_COUNT = 10;
 
@@ -560,6 +562,7 @@ public class CQLCodesView {
 	}
 
 	public void buildCodesCellTable(List<CQLCode> codesTableList, boolean checkForEditPermission) {
+		log.log(Level.INFO,"Entering buildCodesCellTable " + codesTableList);
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
@@ -575,8 +578,12 @@ public class CQLCodesView {
 		cellTablePanel.add(codesElementsHeader);
 
 		if (codesTableList != null && !codesTableList.isEmpty()) {
+			log.log(Level.INFO,"codesTableList not empty ");
+
 			allCodes = codesTableList;
+			log.log(Level.INFO,"removeEscapedCharsFromList " + codesTableList);
 			StringUtility.removeEscapedCharsFromList(codesTableList);
+			log.log(Level.INFO,"removeEscapedCharsFromList complete");
 			codesSelectedList = new ArrayList<>();
 			table = new CellTable<>();
 			setEditable(checkForEditPermission);
@@ -619,11 +626,12 @@ public class CQLCodesView {
 			cellTablePanelBody.add(desc);
 			cellTablePanel.add(cellTablePanelBody);
 		}
+		log.log(Level.INFO,"Leaving buildCodesCellTable ");
 
 	}
 
 	private CellTable<CQLCode> addColumnToTable() {
-
+		log.log(Level.INFO,"Entering addColumnToTable ");
 		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
 			Label appliedCodesLabel = new Label("Applied Codes");
 			appliedCodesLabel.getElement().setId("searchHeader_Label");
@@ -641,6 +649,8 @@ public class CQLCodesView {
 					StringBuilder title = new StringBuilder();
 					String value = object.getDisplayName();
 
+					log.log(Level.INFO,"nameColumn value=" + value);
+
 					title.append("Descriptor : ").append(value);
 					title.append("");
 
@@ -653,6 +663,7 @@ public class CQLCodesView {
 				public SafeHtml getValue(CQLCode object) {
 					StringBuilder title = new StringBuilder();
 					String value = object.getCodeOID();
+					log.log(Level.INFO,"codeColumn value=" + value);
 					title.append("Code : ").append(value);
 					title.append("");
 					return CellTableUtility.getColumnToolTip(value, title.toString());
@@ -665,6 +676,7 @@ public class CQLCodesView {
 				public SafeHtml getValue(CQLCode object) {
 					StringBuilder title = new StringBuilder();
 					String value = object.getCodeSystemName();
+					log.log(Level.INFO,"codeSystemColumn value=" + value);
 					title.append("CodeSystem : ").append(value);
 					title.append("");
 					return CellTableUtility.getColumnToolTip(value, title.toString());
@@ -677,8 +689,10 @@ public class CQLCodesView {
 			Column<CQLCode, SafeHtml> versionColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(CQLCode object) {
+					log.log(Level.INFO,"versionColumn value=" + object.getCodeSystemVersion());
 					StringBuilder title = new StringBuilder();
 					title.append("Version : ").append(object.getCodeSystemVersion());
+
 					title.append("");
 					return CellTableUtility.getColumnToolTip(object.getCodeSystemVersion(), title.toString());
 				}
@@ -691,7 +705,7 @@ public class CQLCodesView {
 				public SafeHtml getValue(CQLCode object) {
 
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-
+					log.log(Level.INFO,"isVersionIncludedColumn value=" + object.isIsCodeSystemVersionIncluded());
 					if (object.isIsCodeSystemVersionIncluded()) {
 						sb.appendHtmlConstant("<div title=\"Version Included\" align=\"right\">");						
 						sb.appendHtmlConstant("<i class=\"fa fa-check\" aria-hidden=\"true\" style=\"color:limegreen;\"></i>");

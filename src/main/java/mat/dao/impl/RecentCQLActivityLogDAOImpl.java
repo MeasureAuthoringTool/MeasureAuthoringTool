@@ -1,22 +1,20 @@
 package mat.dao.impl;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
+import mat.dao.RecentCQLActivityLogDAO;
+import mat.dao.search.GenericDAO;
+import mat.model.RecentCQLActivityLog;
+import mat.server.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dao.RecentCQLActivityLogDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.RecentCQLActivityLog;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.Date;
+import java.util.List;
 
 @Repository("recentCQLActivityLogDAO")
 public class RecentCQLActivityLogDAOImpl extends GenericDAO<RecentCQLActivityLog, String> implements RecentCQLActivityLogDAO {
@@ -70,7 +68,7 @@ public class RecentCQLActivityLogDAOImpl extends GenericDAO<RecentCQLActivityLog
 		recentCQLActivityLog.setUserId(userId);
 		recentCQLActivityLog.setTime(new Date());
 		save(recentCQLActivityLog);
-		logger.info("Inserting recent cql activity log for cql id: " + cqlId);
+		logger.debug("Inserting recent cql activity log for cql id: " + cqlId);
 	}
 	
 	/**
@@ -81,7 +79,7 @@ public class RecentCQLActivityLogDAOImpl extends GenericDAO<RecentCQLActivityLog
 	private void updateRecentCQLActivity(RecentCQLActivityLog recentCQLActivityLog) {
 		recentCQLActivityLog.setTime(new Date());
 		save(recentCQLActivityLog);
-		logger.info("Updating recent cql activity log for cql id: " + recentCQLActivityLog.getCqlId());
+		logger.debug("Updating recent cql activity log for cql id: " + recentCQLActivityLog.getCqlId());
 	}
 	
 	/**

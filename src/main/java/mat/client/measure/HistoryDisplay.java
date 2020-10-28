@@ -1,10 +1,9 @@
 package mat.client.measure;
 
-import java.util.List;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
-
 import mat.dto.AuditLogDTO;
+
+import java.util.List;
 
 public interface HistoryDisplay extends BaseDisplay {
 	public void clearErrorMessage();

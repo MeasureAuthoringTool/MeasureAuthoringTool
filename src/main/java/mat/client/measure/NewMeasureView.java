@@ -1,11 +1,10 @@
 package mat.client.measure;
 
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormLabel;
-
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 
 public class NewMeasureView extends AbstractNewMeasureView {
 	
@@ -19,6 +18,8 @@ public class NewMeasureView extends AbstractNewMeasureView {
 		buildMeasureNameTextArea();
 		measureNameGroup.add(measureNameLabel);
 		measureNameGroup.add(measureNameTextBox);
+		//Measure mode type radios
+		addMeasureModelType();
 		
 		HorizontalPanel cqlLibraryNamePanel = buildCQLLibraryNamePanel();
 		cqlLibraryNameGroup.add(cqlLibraryNamePanel);

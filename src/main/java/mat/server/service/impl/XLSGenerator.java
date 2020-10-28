@@ -1,14 +1,14 @@
 package mat.server.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
+import mat.dao.ListObjectDAO;
+import mat.dao.clause.MeasureExportDAO;
+import mat.model.Code;
+import mat.model.CodeList;
+import mat.model.GroupedCodeList;
+import mat.model.ListObject;
+import mat.model.clause.MeasureExport;
+import mat.shared.ConstantMessages;
+import mat.shared.DateUtility;
 import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -20,18 +20,17 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Name;
+import mat.vsacmodel.MatConcept;
+import mat.vsacmodel.ValueSet;
 
-import mat.dao.ListObjectDAO;
-import mat.dao.clause.MeasureExportDAO;
-import mat.model.Code;
-import mat.model.CodeList;
-import mat.model.GroupedCodeList;
-import mat.model.ListObject;
-import mat.model.MatConcept;
-import mat.model.MatValueSet;
-import mat.model.clause.MeasureExport;
-import mat.shared.ConstantMessages;
-import mat.shared.DateUtility;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /** The Class XLSGenerator. */
 public abstract class XLSGenerator {
@@ -171,10 +170,10 @@ public abstract class XLSGenerator {
 	
 	/** Cache xls row.
 	 * 
-	 * @param lo - MatValueSet.
+	 * @param lo - ValueSet.
 	 * 
 	 *        * */
-	protected abstract void cacheXLSRow(MatValueSet lo);
+	protected abstract void cacheXLSRow(ValueSet lo);
 	
 	/** Creates the header row.
 	 * 
@@ -453,10 +452,10 @@ public abstract class XLSGenerator {
 	
 	/** Process xls row.
 	 * 
-	 * @param lo - MatValueSet.
+	 * @param lo - ValueSet.
 	 * 
 	 *        * */
-	protected final void processXLSRow(final MatValueSet lo) {
+	protected final void processXLSRow(final ValueSet lo) {
 		
 		String measureDeveloper = "";
 		measureDeveloper = lo.getSource();
@@ -489,7 +488,7 @@ public abstract class XLSGenerator {
 						valueSetLastModified, standardConcept, taxonomy,
 						taxonomyVersion, code, description }, null);
 			}
-			for (MatValueSet gcl : lo.getGroupedValueSet()) {
+			for (ValueSet gcl : lo.getGroupedValueSet()) {
 				code = gcl.getID();
 				// description = gcl.getDescription();
 				cacheRow(new String[] {measureDeveloper, oid, version, expansionProfile,

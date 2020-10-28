@@ -1,8 +1,8 @@
 package mat.client.shared;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.List;
 
 /**
  * The Class GenericResult.

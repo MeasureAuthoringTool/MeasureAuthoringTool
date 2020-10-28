@@ -1,15 +1,14 @@
 package mat.client.measure.metadata;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import mat.client.shared.search.PagingFacade;
-import mat.model.Author;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.shared.search.PagingFacade;
+import mat.model.Author;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * The Class ManageAuthorsModel.

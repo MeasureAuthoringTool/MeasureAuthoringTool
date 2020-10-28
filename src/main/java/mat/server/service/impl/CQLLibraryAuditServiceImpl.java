@@ -1,19 +1,20 @@
 package mat.server.service.impl;
 
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import mat.dto.SearchHistoryDTO;
 import mat.dao.CQLLibraryAuditLogDAO;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.dto.SearchHistoryDTO;
 import mat.model.clause.CQLLibrary;
 import mat.server.service.CQLLibraryAuditService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Service implementation for Measure Audit Service.
  */
+@Service
 public class CQLLibraryAuditServiceImpl implements CQLLibraryAuditService{
 	
 	/** The measure dao. */

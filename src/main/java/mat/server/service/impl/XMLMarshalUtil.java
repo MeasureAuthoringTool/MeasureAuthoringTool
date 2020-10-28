@@ -1,9 +1,6 @@
 package mat.server.service.impl;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.StringReader;
-
+import mat.server.util.ResourceLoader;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
@@ -14,11 +11,13 @@ import org.exolab.castor.xml.ValidationException;
 import org.exolab.castor.xml.XMLContext;
 import org.xml.sax.InputSource;
 
-import mat.server.util.ResourceLoader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
 
 public class XMLMarshalUtil {
 
-	XMLContext xmlContext = new XMLContext();
+	private XMLContext xmlContext = new XMLContext();
 
 	private Marshaller createMarshaller() {
 		return xmlContext.createMarshaller();

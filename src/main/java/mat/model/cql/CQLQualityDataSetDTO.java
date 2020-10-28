@@ -8,20 +8,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 	
 	
-	/**
-	 * The Class Comparator.
-	 */
-	public static class Comparator implements java.util.Comparator<CQLQualityDataSetDTO>, IsSerializable {
-		
-		/* (non-Javadoc)
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
-		@Override
-		public int compare(CQLQualityDataSetDTO o1, CQLQualityDataSetDTO o2) {
-			return o1.getQDMElement().compareTo(o2.getQDMElement());
-		}
-		
-	}
 	/** QDM Modified At VSAC. */
 	private boolean hasModifiedAtVSAC;
 	private boolean isUsed;
@@ -47,7 +33,8 @@ public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 	private String program; 
 	private boolean dataTypeHasRemoved;
 	private String valueSetType;
-	
+	private String isValidatedWithVsac = VsacStatus.VALID.toString();
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -176,14 +163,6 @@ public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 		this.dataTypeHasRemoved = dataTypeHasRemoved;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return codeListName + ": " + dataType + "-" + getOid();
-	}
-	
 	public int compare(CQLQualityDataSetDTO o1, CQLQualityDataSetDTO o2) {
 		return o1.getUuid().compareTo(o2.getUuid());
 	}
@@ -283,5 +262,67 @@ public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 		this.valueSetType = valueSetType;
 	}
 
+
+	public VsacStatus obtainValidatedWithVsac() {
+		if (isValidatedWithVsac == null) {
+			return null;
+		}
+		return VsacStatus.valueOf(isValidatedWithVsac);
+	}
+
+	public String getValidatedWithVsac() {
+		return isValidatedWithVsac;
+	}
+
+	public void setValidatedWithVsac(String validatedWithVsac) {
+		isValidatedWithVsac = validatedWithVsac;
+	}
+
+	public void addValidatedWithVsac(VsacStatus validatedWithVsac) {
+		isValidatedWithVsac = validatedWithVsac.toString();
+	}
+
+	public String isValidatedWithVsac() {
+		return isValidatedWithVsac;
+	}
+
+	@Override
+	public String toString() {
+		return "CQLQualityDataSetDTO{" +
+				"isValidatedWithVsac=" + isValidatedWithVsac +
+				", hasModifiedAtVSAC=" + hasModifiedAtVSAC +
+				", isUsed=" + isUsed +
+				", notFoundInVSAC=" + notFoundInVSAC +
+				", codeListName='" + codeListName + '\'' +
+				", suffix='" + suffix + '\'' +
+				", originalCodeListName='" + originalCodeListName + '\'' +
+				", codeSystemName='" + codeSystemName + '\'' +
+				", dataType='" + dataType + '\'' +
+				", id='" + id + '\'' +
+				", displayName='" + displayName + '\'' +
+				", oid='" + oid + '\'' +
+				", codeSystemOID='" + codeSystemOID + '\'' +
+				", codeIdentifier='" + codeIdentifier + '\'' +
+				", isReadOnly=" + isReadOnly +
+				", suppDataElement=" + suppDataElement +
+				", taxonomy='" + taxonomy + '\'' +
+				", type='" + type + '\'' +
+				", uuid='" + uuid + '\'' +
+				", version='" + version + '\'' +
+				", release='" + release + '\'' +
+				", program='" + program + '\'' +
+				", dataTypeHasRemoved=" + dataTypeHasRemoved +
+				", valueSetType='" + valueSetType + '\'' +
+				'}';
+	}
+
+	public static class Comparator implements java.util.Comparator<CQLQualityDataSetDTO>, IsSerializable {
+
+		@Override
+		public int compare(CQLQualityDataSetDTO o1, CQLQualityDataSetDTO o2) {
+			return o1.getQDMElement().compareTo(o2.getQDMElement());
+		}
+
+	}
 
 }

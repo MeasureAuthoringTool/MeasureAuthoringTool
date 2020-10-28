@@ -1,13 +1,13 @@
 package mat.shared.measure.measuredetails.models;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.shared.StringUtility;
+
+import java.util.List;
 
 public class GeneralInformationModel implements MeasureDetailsComponentModel, IsSerializable {
 	private String measureName;
+	private String measureModel;
 	private String finalizedDate;
 	private boolean patientBased;
 	private String guid;
@@ -21,12 +21,15 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	private boolean isCalendarYear;
 	private String measureFromPeriod;
 	private String measureToPeriod;
+	private boolean isExperimental;
+	private String populationBasis;
 
 	public GeneralInformationModel() {
 	}
 	
 	public GeneralInformationModel(GeneralInformationModel model) {
 		this.measureName = model.getMeasureName();
+		this.measureModel = model.getMeasureModel();
 		this.finalizedDate = model.getFinalizedDate();
 		this.patientBased = model.isPatientBased();
 		this.guid = model.getGuid();
@@ -40,6 +43,8 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 		this.setCalendarYear(model.isCalendarYear());
 		this.setMeasureFromPeriod(model.getMeasureFromPeriod());
 		this.setMeasureToPeriod(model.getMeasureToPeriod());
+		this.isExperimental = model.isExperimental;
+        this.populationBasis = model.populationBasis;
 	}
 
 	public int geteMeasureId() {
@@ -88,6 +93,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	public boolean equals(MeasureDetailsComponentModel model) {
 		GeneralInformationModel originalModel = (GeneralInformationModel) model;
 		return (modelValuesAreEqual(originalModel.getMeasureName(), getMeasureName()) &&
+				modelValuesAreEqual(originalModel.getMeasureModel(), getMeasureModel()) &&
 				modelValuesAreEqual(originalModel.getFinalizedDate(), getFinalizedDate()) && 
 				modelValuesAreEqual(originalModel.isPatientBased(), isPatientBased()) &&
 				modelValuesAreEqual(originalModel.getGuid(), getGuid()) &&
@@ -99,7 +105,9 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 				modelValuesAreEqual(originalModel.getEndorseByNQF(), getEndorseByNQF()) &&
 				modelValuesAreEqual(originalModel.isCalendarYear(), isCalendarYear) &&
 				modelValuesAreEqual(originalModel.getMeasureFromPeriod(), getMeasureFromPeriod()) &&
-				modelValuesAreEqual(originalModel.getMeasureToPeriod(), getMeasureToPeriod()));
+				modelValuesAreEqual(originalModel.getMeasureToPeriod(), getMeasureToPeriod()) &&
+				modelValuesAreEqual(originalModel.isExperimental(), isExperimental()) &&
+				modelValuesAreEqual(originalModel.getPopulationBasis(), getPopulationBasis()));
 	}
 	
 
@@ -118,6 +126,14 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	
 	public void setMeasureName(String measureName) {
 		this.measureName = measureName;
+	}
+
+	public String getMeasureModel() {
+		return measureModel;
+	}
+
+	public void setMeasureModel(String measureModel) {
+		this.measureModel = measureModel;
 	}
 		
 	public String getScoringMethod() {
@@ -146,6 +162,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("measureName: " + measureName);
+		sb.append("measureModel: " + measureModel);
 		sb.append(", finalizedDate: " + finalizedDate);
 		sb.append(", patientBased: " + patientBased);
 		sb.append(", guid: " + guid);
@@ -159,6 +176,8 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 		sb.append(", isCalendarYear: " + isCalendarYear);
 		sb.append(", measureFromPeriod: " + measureFromPeriod);
 		sb.append(", measureToperiod: " + measureToPeriod);
+		sb.append(", isExperimental: " + isExperimental);
+		sb.append(", populationBasis: " + populationBasis);
 		return sb.toString();
 	}
 	
@@ -198,4 +217,20 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel, Is
 	public void setMeasureToPeriod(String measToPeriod) {
 		this.measureToPeriod = StringUtility.doTrim(measToPeriod);
 	}
+
+	public boolean isExperimental() {
+		return isExperimental;
+	}
+
+	public void setExperimental(boolean experimental) {
+		isExperimental = experimental;
+	}
+
+    public String getPopulationBasis() {
+        return populationBasis;
+    }
+
+    public void setPopulationBasis(String populationBasis) {
+        this.populationBasis = populationBasis;
+    }
 }

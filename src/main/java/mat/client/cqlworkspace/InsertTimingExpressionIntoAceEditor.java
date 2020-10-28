@@ -1,7 +1,20 @@
 package mat.client.cqlworkspace;
 
-import java.util.List;
-
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.ListBox;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.buttons.CancelButton;
+import mat.client.shared.CQLWorkSpaceConstants;
+import mat.client.shared.DropDownSubMenu;
+import mat.client.shared.JSONCQLTimingExpressionUtility;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.client.shared.SpacerWidget;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
@@ -27,22 +40,7 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.ListBox;
-
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import mat.client.buttons.CancelButton;
-import mat.client.shared.CQLWorkSpaceConstants;
-import mat.client.shared.DropDownSubMenu;
-import mat.client.shared.JSONCQLTimingExpressionUtility;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.client.shared.SpacerWidget;
+import java.util.List;
 
 public class InsertTimingExpressionIntoAceEditor {
 	

@@ -1,0 +1,50 @@
+@startuml
+title Conversion
+
+actor User
+
+box MAT
+participant MAT
+participant "MAT DB"
+end box
+
+box FHIR
+participant MicroService
+participant "MicroService's MongoDB"
+participant "HAPI FHIR"
+participant VSAC
+end box
+
+User -> MAT: find and select a measure
+MAT -> "MAT DB": pull measure records
+"MAT DB" --> MAT: records
+MAT -> MAT: if measure is convertible, \nenable convert button
+MAT --> User: measure selected
+User -> MAT: convert selected measure
+MAT -> MicroService: validate\n(measureID, type=VALIDATION, format=SIMPLE)
+MicroService -> MicroService: validate
+MicroService -> VSAC: value set validation
+MicroService -> "MicroService's MongoDB": store report
+MicroService --> MAT: report
+MAT --> User: [not valid] return, redirect to show report
+MAT -> MAT: [valid] proceed with conversion
+MAT -> MAT: clone source measure \ninto new draft measure \nwith FHIR type
+MAT -> "MAT DB": persist draft FHIR measure
+"MAT DB" --> MAT: fhirMeasureId
+MAT -> MicroService: convert\n(measureId, type=CONVERSION, format=SIMPLE)
+MicroService -> MicroService: validate
+MicroService -> VSAC: value set validation
+MicroService -> "MicroService's MongoDB": store report
+MicroService -> MicroService: convert to HL7 Measure
+MicroService -> "HAPI FHIR": persist converted measure
+MicroService --> MAT: report
+MAT --> User: show converted measure\nand redirect to show report
+
+newpage User redirected to the report tab
+MAT -> User: redirect user to report tab
+User -> MAT: new tab with report (measureId)
+MAT -> MicroService: validate\n(measureID, type=VALIDATION, format=SIMPLE)
+... validation ~~long delay~~ ...
+MicroService --> MAT: report
+MAT --> User: render HTML report
+@enduml

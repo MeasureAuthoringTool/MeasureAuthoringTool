@@ -1,14 +1,13 @@
 package mat.dao.impl;
 
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import mat.dao.UserBonnieAccessInfoDAO;
 import mat.dao.UserDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.User;
 import mat.model.UserBonnieAccessInfo;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 @Repository("userBonnieAccessInfoDAO")
 public class UserBonnieAccessInfoDAOImpl extends GenericDAO<UserBonnieAccessInfo, String> implements UserBonnieAccessInfoDAO{

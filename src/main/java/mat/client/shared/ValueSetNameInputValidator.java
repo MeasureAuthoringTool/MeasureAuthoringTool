@@ -3,8 +3,8 @@ package mat.client.shared;
 import mat.model.CQLValueSetTransferObject;
 
 public class ValueSetNameInputValidator {
-	public String validate(CQLValueSetTransferObject matValueSetTransferObject){
-		String valuesetName = matValueSetTransferObject.getUserDefinedText();
+	public String validate(CQLValueSetTransferObject ValueSetTransferObject){
+		String valuesetName = ValueSetTransferObject.getUserDefinedText();
 		
 		if(valuesetName == null || valuesetName.isEmpty()) {
 			return "Value Set Name cannot be empty.";

@@ -1,15 +1,14 @@
 package mat.shared.measure.measuredetails.validate;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.google.gwt.i18n.shared.DateTimeFormat;
-
 import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.validator.measure.CommonMeasureValidator;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class GeneralInformationValidator {
 	private static final String MEASURE_PERIOD_DATES_ERROR = "The dates for Measurement Period are invalid. Please enter valid dates.";

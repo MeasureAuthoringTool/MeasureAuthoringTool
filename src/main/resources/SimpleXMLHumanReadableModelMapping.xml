@@ -45,7 +45,15 @@
 		<field name="measureSteward" type="java.lang.String">
 			<bind-xml name="steward"/>
 		</field>
-		
+
+		<field name="experimental" type="boolean">
+			<bind-xml name="experimental"/>
+		</field>
+
+        <field name="populationBasis" type="java.lang.String">
+            <bind-xml name="populationBasis"/>
+        </field>
+
 		<field name="measureDevelopers" type="java.lang.String" collection="arraylist">
 			<bind-xml name="developer" location="developers"></bind-xml>
 		</field>
@@ -110,7 +118,7 @@
 			<bind-xml name="improvementNotations"></bind-xml>
 		</field>
 		
-		<field name="references" type="java.lang.String" collection="arraylist">
+		<field name="references" type="mat.client.measure.ReferenceTextAndType" collection="arraylist">
 			<bind-xml name="reference" location="references"></bind-xml>
 		</field>
 		

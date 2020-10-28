@@ -1,0 +1,85 @@
+@startuml
+header as-is current state
+
+actor User order 10
+participant "MAT GWT" as gwt order 20
+participant "MAT Server" as srv order 30
+
+title CQL Workspace - Parameters - Save new or modified parameters
+User -> gwt: Save new or modified parameters
+gwt -> gwt: validate
+note over gwt
+    # name is a valid expression
+    # name has no special chars
+    # name has no invalid chars
+    # name length is <= 250
+end note
+opt is not valid
+    gwt -> User: show validation error ''
+    destroy gwt
+end
+gwt -> srv: MeasureService::saveAndModifyParameters (\n\tmeasureId, \n\tto be modified parameter = null,\n\tparameter, \n\tlist of parameters, \n\tis formattable: true)
+srv -> srv: MeasureLibraryService::saveAndModifyParameters (\n\tmeasureId, \n\tto be modified parameter = null,\n\tparameter, \n\tlist of parameters, \n\tis formattable: true)
+alt measure is not editable
+    srv --[#red]> gwt:  result = SaveUpdateCQLResult(success = false)
+else measure is editable
+    srv -> srv: load measure xml by measureId from the DB
+    srv -> srv: result = CqlService::saveAndModifyParameters (xml, \n\tto be modified parameter,\n\tparameter, \n\tlist of parameters, \n\tis formattable)
+    note over srv
+        CqlService::saveCQLCodes does xml processing,
+        # parses CQLModel from xml
+        # run validation for special chars
+        # run validation for duplicate identifiers
+        # run validation for comment length of invalid text
+        # add parameter to CQLModel
+        # check CQLModel doesn't have validation errors
+        # re-format parameter's CQL
+        # if there is a duplicated name then <b><color #RED> return success false
+        # return result : SaveUpdateCQLResult
+    end note
+    srv -> srv: update xml value with cqlResult xml returned from CqlService
+    srv -> srv: store xml to the DB MeasurePackageService::saveMeasureXml
+    srv --> gwt: result
+end
+alt result is success
+    gwt -> gwt: update the view with cql parameters from result::getCqlModel()::getCqlParameters()
+    gwt --> User: show success message
+else result is not success
+    gwt --[#red]> User: show validation error
+else error
+    gwt --[#red]> User: Window.alert( error message )
+end
+
+'------------------------------------------------------
+newpage CQL Workspace - Parameters - Delete parameters
+User -> gwt: Delete parameter, [confirmation == Yes]
+gwt -> srv: MeasureService::deleteParameter (\n\tmeasureId, \n\tto be modified parameter)
+srv -> srv: MeasureLibraryService::saveAndModifyParameters (\n\tmeasureId, \n\tto be modified parameter = null,\n\tparameter, \n\tlist of parameters, \n\tis formattable: true)
+alt measure is not editable
+    srv --[#red]> gwt:  result = SaveUpdateCQLResult(success = false)
+else measure is editable
+    srv -> srv: load measure xml by measureId from the DB
+    srv -> srv: result = CqlService::deleteParameter (xml, \n\tto be modified parameter,\n\tparameter, \n\tlist of parameters, \n\tis formattable)
+    note over srv
+        CqlService::saveCQLCodes does xml processing,
+        # parses CQLModel from xml
+        # remove parameter by id
+        # update xml from CQLModel
+        # return result : SaveUpdateCQLResult (updated model, updated parameters)
+    end note
+    srv -> srv: update xml value with cqlResult xml returned from CqlService
+    srv -> srv: store xml to the DB MeasurePackageService::saveMeasureXml
+    srv --> gwt: result
+end
+alt result is success
+    gwt -> gwt: update the view with cql parameters from result::getCqlModel()::getCqlParameters()
+    gwt --> User: show success message
+else result is not success
+    gwt --[#red]> User: show validation error
+else error
+    gwt --[#red]> User: Window.alert( error message )
+end
+
+footer actual on 01/22/2020
+
+@enduml

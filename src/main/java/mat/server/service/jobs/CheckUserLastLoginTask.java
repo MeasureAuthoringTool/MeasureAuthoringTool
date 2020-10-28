@@ -1,6 +1,27 @@
 package mat.server.service.jobs;
 
 
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
+import mat.dao.EmailAuditLogDAO;
+import mat.dao.UserDAO;
+import mat.model.EmailAuditLog;
+import mat.model.Status;
+import mat.model.User;
+import mat.server.logging.LogFactory;
+import mat.server.util.ServerConstants;
+import mat.shared.ConstantMessages;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,263 +30,246 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
-import mat.dao.EmailAuditLogDAO;
-import mat.dao.UserDAO;
-import mat.model.EmailAuditLog;
-import mat.model.Status;
-import mat.model.User;
-import mat.server.util.ServerConstants;
-import mat.shared.ConstantMessages;
-
-
 
 /**
  * The Class CheckUserLastLoginTask.
  */
+@Service
 public class CheckUserLastLoginTask {
 
-	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(CheckUserLastLoginTask.class);
+    private static final Log logger = LogFactory.getLog(CheckUserLastLoginTask.class);
+    private static final String USER_LOG_LABEL = "User:";
+    private static final String LOG_DAYS_AGO = " days ago.";
+    private static final String WARNING_EMAIL_FLAG = "WARNING";
+    private static final String EXPIRY_EMAIL_FLAG = "EXPIRED";
 
-	/** The user dao. */
-	private UserDAO userDAO;
+    @Autowired
+    private UserDAO userDAO;
 
-	/** The mail sender. */
-	private MailSender mailSender;
+    @Autowired
+    private MailSender mailSender;
 
-	/** The simple mail message. */
-	private SimpleMailMessage simpleMailMessage;
+    @Qualifier("userLastLoginTemplateMessage")
+    @Autowired
+    private SimpleMailMessage simpleMailMessage;
 
-	/** The warning day limit. */
-	private int warningDayLimit;
+    @Autowired
+    private EmailAuditLogDAO emailAuditLogDAO;
 
-	/** The expiry day limit. */
-	private int expiryDayLimit;
+    @Autowired
+    private Configuration freemarkerConfiguration;
 
-	/** The warning mail template. */
-	private String warningMailTemplate;
+    @Value("${mat.warning.dayLimit}")
+    private int warningDayLimit;
 
-	/** The warning mail subject. */
-	private String warningMailSubject;
+    @Value("${mat.expiry.dayLimit}")
+    private int expiryDayLimit;
 
-	/** The expiry mail template. */
-	private String expiryMailTemplate;
+    @Value("${mat.warning.email.template}")
+    private String warningMailTemplate;
 
-	/** The expiry mail subject. */
-	private String expiryMailSubject;
+    @Value("${mat.warning.email.subject}")
+    private String warningMailSubject;
 
-	private EmailAuditLogDAO emailAuditLogDAO;
+    @Value("${mat.expiry.email.template}")
+    private String expiryMailTemplate;
 
-	/** The Constant WARNING_EMAIL_FLAG. */
-	private final static String WARNING_EMAIL_FLAG = "WARNING";
+    @Value("${mat.expiry.email.subject}")
+    private String expiryMailSubject;
 
-	/** The Constant EXPIRY_EMAIL_FLAG. */
-	private final static String EXPIRY_EMAIL_FLAG = "EXPIRED";
+    @Value("${mat.support.emailAddress}")
+    private String supportEmailAddress;
 
-	@Autowired private Configuration freemarkerConfiguration;
+    /**
+     * Method to Send
+     * 1.Warning Email for Warning Day Limit -30 days.
+     * 2.Account Expiration Email for day limit -60 days and
+     * then marked user termination date to disable logging into the system.
+     *
+     * @return void
+     */
+    @Scheduled(cron = "${mat.checkUserLastLogin.cron:-}")
+    public void checkUserLastLogin() {
+        logger.debug(" :: checkUserLastLogin Method START :: ");
 
-	/**
-	 * Method to Send
-	 * 1.Warning Email for Warning Day Limit -30 days.
-	 * 2.Account Expiration Email for day limit -60 days and
-	 *  then marked user termination date to disable logging into the system.
-	 *
-	 * @return void
-	 */
-	public void checkUserLastLogin(){
-		logger.info(" :: checkUserLastLogin Method START :: ");
+        checkUserLoginDays(WARNING_EMAIL_FLAG);
+        checkUserLoginDays(EXPIRY_EMAIL_FLAG);
 
-		checkUserLoginDays(warningDayLimit,WARNING_EMAIL_FLAG);
-		checkUserLoginDays(expiryDayLimit,EXPIRY_EMAIL_FLAG);
-
-		logger.info(" :: checkUserLastLogin Method END :: ");
-	}
+        logger.debug(" :: checkUserLastLogin Method END :: ");
+    }
 
 
-	/**
-	 * Method Find List of Users with Sign_in_date = noOfDayLimit and send email based on emailType using velocityEngineUtils.
-	 *
-	 * @param noOfDayLimit type integer.
-	 * @param emailType type String.
-	 *
-	 * @return void
-	 */
-	private void checkUserLoginDays(final long noOfDayLimit, final String emailType) {
+    /**
+     * Method Find List of Users with Sign_in_date = noOfDayLimit and send email based on emailType using velocityEngineUtils.
+     *
+     * @param emailType type String.
+     * @return void
+     */
+    private void checkUserLoginDays(final String emailType) {
 
-		logger.info(" :: checkUserLoginDays Method START :: for Sending " + emailType + " Type Email");
+        logger.debug(" :: checkUserLoginDays Method START :: for Sending " + emailType + " Type Email");
 
-		//Get all the Users
-		final List<User> users = userDAO.find();
-		final List<User> emailUsers = checkLastLogin(noOfDayLimit, users);
+        // Get all the Users
+        final List<User> users = userDAO.find();
+        final List<User> emailUsers = checkLastLogin(emailType, users);
 
-		final Map<String, Object> model= new HashMap<String, Object>();
-		final Map<String, String> content= new HashMap<String, String>();
-		final String envirUrl = ServerConstants.getEnvURL();
+        final Map<String, Object> model = new HashMap<>();
+        final Map<String, String> content = new HashMap<>();
+        final String envirUrl = ServerConstants.getEnvURL();
 
-		for(User user:emailUsers){
+        for (User user : emailUsers) {
 
-			//Send email for all the users in the list.
-			logger.info("Sending email to "+user.getFirstName());
-			simpleMailMessage.setTo(user.getEmailAddress());
+            //Send email for all the users in the list.
+            logger.debug("Sending email to " + user.getFirstName());
+            simpleMailMessage.setTo(user.getEmailAddress());
 
-			//Creation of the model map can be its own method.
-			content.put("firstname", user.getFirstName());
-			content.put("lastname", user.getLastName());
+            //Creation of the model map can be its own method.
+            content.put("firstname", user.getFirstName());
+            content.put("lastname", user.getLastName());
 
-			/**
-			 * If the user is not a normal user then set the user role in the email
-			 */
-			String userRole = "";
-			if(! (user.getSecurityRole().getId().trim().equals("3")) ){
-				userRole = "("+user.getSecurityRole().getDescription()+")";
-			}
-			content.put("rolename",userRole);
+            /*
+             * If the user is not a normal user then set the user role in the email
+             */
+            String userRole = "";
+            if (!(user.getSecurityRole().getId().trim().equals("3"))) {
+                userRole = "(" + user.getSecurityRole().getDescription() + ")";
+            }
+            content.put("rolename", userRole);
 
             content.put(ConstantMessages.HARPID, user.getHarpId());
             content.put(ConstantMessages.URL, envirUrl);
             content.put(ConstantMessages.USER_EMAIL, user.getEmailAddress());
 
-			model.put("content", content);
-			String text = null;
+            model.put("content", content);
+            model.put(ConstantMessages.SUPPORT_EMAIL, supportEmailAddress);
+            String text = null;
 
-			try {
-				if(WARNING_EMAIL_FLAG.equals(emailType)){
-					text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(warningMailTemplate), model);
-					simpleMailMessage.setText(text);
-					simpleMailMessage.setSubject(warningMailSubject + ServerConstants.getEnvName());
-				}else if (EXPIRY_EMAIL_FLAG.equals(emailType)){
-					text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(expiryMailTemplate), model);
-					simpleMailMessage.setText(text);
-					simpleMailMessage.setSubject(expiryMailSubject + ServerConstants.getEnvName());
+            try {
+                if (WARNING_EMAIL_FLAG.equals(emailType)) {
+                    text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(warningMailTemplate), model);
+                    simpleMailMessage.setText(text);
+                    simpleMailMessage.setSubject(warningMailSubject + ServerConstants.getEnvName());
+                } else if (EXPIRY_EMAIL_FLAG.equals(emailType)) {
+                    text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(expiryMailTemplate), model);
+                    simpleMailMessage.setText(text);
+                    simpleMailMessage.setSubject(expiryMailSubject + ServerConstants.getEnvName());
 
-					//Update Termination Date for User.
-					updateUserTerminationDate(user);
-				}
-			} catch (IOException | TemplateException e) {
-				e.printStackTrace();
-			}
+                    // Update Termination Date for User.
+                    updateUserTerminationDate(user);
+                }
+            } catch (IOException | TemplateException e) {
+                logger.error(e);
+            }
 
-			mailSender.send(simpleMailMessage);
-			EmailAuditLog emailAudit = new EmailAuditLog();
-			emailAudit.setActivityType("User Account Termination " + emailType + " email sent.");
-			emailAudit.setTimestamp(new Date());
-			emailAudit.setLoginId(user.getLoginId());
-			emailAuditLogDAO.save(emailAudit);
+            mailSender.send(simpleMailMessage);
+            EmailAuditLog emailAudit = new EmailAuditLog();
+            emailAudit.setActivityType("User Account Termination " + emailType + " email sent.");
+            emailAudit.setTimestamp(new Date());
+            emailAudit.setLoginId(user.getLoginId());
+            emailAuditLogDAO.save(emailAudit);
 
 
-			content.clear();
-			model.clear();
-			logger.info("Email Sent to "+user.getFirstName());
-		}
-		logger.info(" :: checkUserLoginDays Method END :: ");
-	}
+            content.clear();
+            model.clear();
+            logger.debug("Email Sent to " + user.getFirstName());
+        }
+        logger.debug(" :: checkUserLoginDays Method END :: ");
+    }
 
-	/**
-	 * Method Find Sub List of Users from Users List with Sign_in_date =
-	 * noOfDayLimit.
-	 *
-	 * @param dayLimit
-	 *            the day limit
-	 * @param users
-	 *            type List.
-	 * @return List.
-	 */
-	private List<User> checkLastLogin(final long dayLimit, final List<User> users){
+    /**
+     * Method Find Sub List of Users from Users List
+     * with Sign_in_date before or equal to noOfDayLimit.
+     *
+     * @param emailType flag identifying email type.
+     * @param users     List of Users being audited for inactivity.
+     * @return List.
+     */
+    private List<User> checkLastLogin(final String emailType, final List<User> users) {
 
-		logger.info(" :: checkLastLogin Method Start :: ");
+        logger.debug(" :: checkLastLogin Method Start :: ");
+        final int dayLimit = emailType.equals(WARNING_EMAIL_FLAG) ? warningDayLimit : expiryDayLimit;
+        final List<User> returnUserList = new ArrayList<>();
+        final Date daysAgo = getNumberOfDaysAgo(dayLimit);
+        logger.debug(dayLimit + "daysAgo:" + daysAgo);
 
-		final List<User> returnUserList = new ArrayList<User>();
-		final Date daysAgo=getNumberOfDaysAgo((int)dayLimit);
-		logger.info(dayLimit + "daysAgo:" + daysAgo);
+        for (User user : users) {
+            if (!checkValidUser(user)) {
+                continue;
+            }
 
-		for(User user:users){
-			Date lastSignInDate = user.getSignInDate();
+            Date lastSignInDate = user.getSignInDate();
+            // MAT-6582:  If a user has never signed in, look at activation date
+            if (lastSignInDate == null) {
+                Date activationDate = DateUtils.truncate(user.getActivationDate(), Calendar.DATE);
+                logger.debug(USER_LOG_LABEL + user.getFirstName() + "  :::: activationDate :::::   " + activationDate);
+                if (isUserPastLimit(emailType, activationDate, daysAgo)) {
+                    logger.debug(USER_LOG_LABEL + user.getEmailAddress() + " who has never logged in and was activated over " + dayLimit + LOG_DAYS_AGO);
+                    returnUserList.add(user);
+                } else {
+                    logger.debug(USER_LOG_LABEL + user.getEmailAddress() + " who has never logged in and was activated " + dayLimit + LOG_DAYS_AGO);
+                }
+            } else {
+                lastSignInDate = DateUtils.truncate(lastSignInDate, Calendar.DATE);
+                logger.debug(USER_LOG_LABEL + user.getFirstName() + "  :::: lastSignInDate :::::   " + lastSignInDate);
+                if (isUserPastLimit(emailType, lastSignInDate, daysAgo)) {
+                    returnUserList.add(user);
+                    logger.debug(USER_LOG_LABEL + user.getEmailAddress() + " who last logged " + dayLimit + LOG_DAYS_AGO);
+                } else {
+                    logger.debug(USER_LOG_LABEL + user.getEmailAddress() + " who was not last logged " + dayLimit + LOG_DAYS_AGO);
+                }
+            }
+        }
+        logger.debug(" :: checkLastLogin Method END :: ");
+        return returnUserList;
+    }
 
-			if (!checkValidUser(user)) {
-				continue;
-			}
+    /**
+     * Method to Update Termination Date of User with no activity done in last
+     * 60 days.
+     *
+     * @param user the user
+     * @return void
+     */
+    private void updateUserTerminationDate(final User user) {
+        logger.debug(" :: updateUserTerminationDate Method START :: ");
+        user.setTerminationDate(new Date());
+        Status status = new Status();
+        status.setStatusId("2");
+        status.setDescription("User Terminated Using Scheduler");
+        user.setStatus(status);
+        userDAO.save(user);
+        logger.debug(" :: updateUserTerminationDate Method END :: ");
+    }
 
-			// MAT-6582:  If a user has never signed in, look at activation date
-			if (lastSignInDate == null) {
-				Date activationDate = user.getActivationDate();
-				activationDate = DateUtils.truncate(activationDate, Calendar.DATE);
-				logger.info("User:"+user.getFirstName()+"  :::: activationDate :::::   " + activationDate);
-				if(activationDate.equals(daysAgo)) {
-					logger.info("User:"+user.getEmailAddress()+" who has never logged in and was activated over "+ dayLimit +" days ago.");
-					returnUserList.add(user);
-				}else{
-					logger.info("User:"+user.getEmailAddress()+" who has never logged in and was activated "+ dayLimit +" days ago.");
-				}
-				continue;
-			}
+    private boolean isUserPastLimit(String emailType, Date start, Date limit) {
+        if (emailType.equals(WARNING_EMAIL_FLAG)) {
+            return start.equals(limit);
+        } else if (emailType.equals(EXPIRY_EMAIL_FLAG)) {
+            return start.before(limit) || start.equals(limit);
+        }
+        return false;
+    }
 
-			lastSignInDate = DateUtils.truncate(lastSignInDate, Calendar.DATE);
-			logger.info("User:"+user.getFirstName()+"  :::: lastSignInDate :::::   " + lastSignInDate);
-			if(lastSignInDate.equals(daysAgo)) {
-				logger.info("User:"+user.getEmailAddress()+" who last logged "+ dayLimit +" days ago.");
-				returnUserList.add(user);
-			}else{
-				logger.info("User:"+user.getEmailAddress()+" who was not last logged "+ dayLimit +" days ago.");
-			}
-		}
-		logger.info(" :: checkLastLogin Method END :: ");
-		return returnUserList;
-	}
+    /**
+     * Method to check if the User has valid ACTIVATION DATE, TERMINATION DATE.
+     *
+     * @param user the user
+     * @return boolean.
+     */
+    private boolean checkValidUser(final User user) {
+        logger.debug(" :: checkValidUser Method START :: ");
 
-	/**
-	 * Method to Update Termination Date of User with no activity done in last
-	 * 180 days.
-	 *
-	 * @param user
-	 *            the user
-	 * @return void
-	 */
+        boolean isValidUser = true;
 
-	private void updateUserTerminationDate(final User user){
+        if (user.getStatus().getStatusId().equals("2")) {
+            isValidUser = false;
+        }
 
-		logger.info(" :: updateUserTerminationDate Method START :: ");
+        logger.debug(user.getFirstName() + " :: checkValidUser Method END :: isValidUser ::: " + isValidUser);
 
-		user.setTerminationDate(new Date());
-		Status status = new Status();
-		status.setStatusId("2");
-		status.setDescription("User Terminated Using Scheduler");
-		user.setStatus(status);
-		userDAO.save(user);
-		logger.info(" :: updateUserTerminationDate Method END :: ");
+        return isValidUser;
 
-	}
-
-	/**
-	 * Method to check if the User has valid ACTIVATION DATE, TERMINATION DATE.
-	 *
-	 * @param user
-	 *            the user
-	 * @return boolean.
-	 */
-	private boolean checkValidUser(final User user) {
-		logger.info(" :: checkValidUser Method START :: ");
-
-		Boolean isValidUser = true;
-
-		if(user.getStatus().getStatusId().equals("2")){
-			isValidUser = false;
-		}
-
-		logger.info(user.getFirstName() + " :: checkValidUser Method END :: isValidUser ::: "+ isValidUser);
-
-		return isValidUser;
-
-	}
+    }
 
     /**
      * Method to find date = noOfDayLimit ago.
@@ -275,13 +279,13 @@ public class CheckUserLastLoginTask {
      */
     private Date getNumberOfDaysAgo(final int noOfDayLimit) {
 
-        logger.info(" :: getNumberOfDaysAgo Method START :: ");
+        logger.debug(" :: getNumberOfDaysAgo Method START :: ");
 
         Date numberOfDaysAgo;
         numberOfDaysAgo = DateUtils.truncate(new Date(), Calendar.DATE);
         numberOfDaysAgo = DateUtils.addDays(numberOfDaysAgo, noOfDayLimit);
 
-        logger.info(" :: getNumberOfDaysAgo Method END :: " + numberOfDaysAgo);
+        logger.debug(" :: getNumberOfDaysAgo Method END :: " + numberOfDaysAgo);
         return numberOfDaysAgo;
     }
 

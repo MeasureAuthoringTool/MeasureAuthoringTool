@@ -1,34 +1,37 @@
 package mat.client.export.measure;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
-
 import mat.client.measure.BaseDisplay;
 
 public interface ExportDisplay extends BaseDisplay {
 
-	public HasClickHandlers getCancelButton();
+	HasClickHandlers getCancelButton();
 
-	public HasClickHandlers getOpenButton();
+	HasClickHandlers getOpenButton();
 
-	public HasClickHandlers getSaveButton();
+	HasClickHandlers getSaveButton();
 
-	public boolean isHQMF();
+	boolean isHQMF();
 	
-	public boolean isHumanReadable();
+	boolean isHumanReadable();
 
-	public boolean isELM();
+	boolean isELM();
 
-	public boolean isJSON();
+	boolean isJSON();
 
 	boolean isEMeasurePackage();
 
-	public boolean isSimpleXML();
+	boolean isSimpleXML();
 
 	boolean isCQLLibrary();
 
-	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure);
+	void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure, String measureModel);
 
 	boolean isCompositeMeasurePackageRadio();
 
 	void showCompositeMeasure(boolean isComposite);
+
+	boolean isXml();
+
+	boolean isAll();
 }

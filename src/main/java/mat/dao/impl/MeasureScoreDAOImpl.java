@@ -1,18 +1,17 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import mat.dao.search.GenericDAO;
+import mat.dto.MeasureScoreDTO;
+import mat.model.MeasureScore;
+import mat.server.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dto.MeasureScoreDTO;
-import mat.dao.search.GenericDAO;
-import mat.model.MeasureScore;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Repository("measureScoreDAO")
@@ -27,7 +26,7 @@ public class MeasureScoreDAOImpl extends GenericDAO<MeasureScore, String> implem
 	public List<MeasureScoreDTO> getAllMeasureScores(){
 		
 		List<MeasureScoreDTO> scoresList = new ArrayList<MeasureScoreDTO>();
-		logger.info("Getting all the rows from the Measure Score table");
+		logger.debug("Getting all the rows from the Measure Score table");
 		Session session = getSessionFactory().getCurrentSession();
 
 		@SuppressWarnings("unchecked")

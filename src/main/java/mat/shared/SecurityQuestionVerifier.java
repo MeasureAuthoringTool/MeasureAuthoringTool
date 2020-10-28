@@ -1,13 +1,12 @@
 package mat.shared;
 
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageDelegate;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-//import java.util.logging.Logger;
-
-import mat.client.shared.MatContext;
-import mat.client.shared.MessageDelegate;
 
 /**
  * The Class SecurityQuestionVerifier.

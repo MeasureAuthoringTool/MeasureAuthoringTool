@@ -1,16 +1,18 @@
 package mat.shared.validator.measure;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.shared.MessageDelegate;
 import mat.shared.StringUtility;
-import mat.shared.validator.measure.CommonMeasureValidator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ManageMeasureModelValidator {
-	
+	private final Logger logger = Logger.getLogger("ManageMeasureModelValidator");
+
 	public List<String> validateMeasure(ManageMeasureDetailModel model){
 		List<String> message = performCommonMeasureValidation(model);
 		message.addAll(validateNQF(model));
@@ -38,9 +40,13 @@ public class ManageMeasureModelValidator {
 	
 	private List<String> performCommonMeasureValidation(ManageMeasureDetailModel model) {
 		List<String> message = new ArrayList<String>();
+		String libName = model.getCQLLibraryName();
 		CommonMeasureValidator commonMeasureValidator = new CommonMeasureValidator();
-		message.addAll(commonMeasureValidator.validateMeasureName(model.getMeasureName()));
-		message.addAll(commonMeasureValidator.validateLibraryName(model.getCQLLibraryName()));
+		message.addAll(model.isFhir() ? commonMeasureValidator.validateFhirMeasureName(model.getMeasureName()) :
+                commonMeasureValidator.validateMeasureName(model.getMeasureName()));
+		logger.log(Level.INFO,"performCommonMeasureValidation isFhir=" + model.isFhir() + " " + libName);
+		message.addAll(model.isFhir() ? commonMeasureValidator.validateFhirLibraryName(libName):
+				commonMeasureValidator.validateQDMName(libName));
 		message.addAll(commonMeasureValidator.validateECQMAbbreviation(model.getShortName()));
 		String scoring = model.getMeasScoring();
 		message.addAll(commonMeasureValidator.validateMeasureScore(scoring));

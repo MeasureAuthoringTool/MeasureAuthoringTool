@@ -1,15 +1,5 @@
 package mat.server;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import mat.client.myAccount.MyAccountModel;
 import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.myAccount.service.MyAccountService;
@@ -20,6 +10,7 @@ import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserPreference;
 import mat.model.UserSecurityQuestion;
+import mat.server.logging.LogFactory;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
 import mat.shared.HashUtility;
@@ -27,14 +18,19 @@ import mat.shared.MyAccountModelValidator;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
 import mat.shared.StringUtility;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * The server side implementation of the RPC service.
  */
 @SuppressWarnings("serial")
 @Service
-public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
-        MyAccountService {
+public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements MyAccountService {
 
     /**
      * The Constant logger.
@@ -42,6 +38,8 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
     private static final Log logger = LogFactory.getLog(MyAccountServiceImpl.class);
     @Autowired
     private UserSecurityQuestionDAO userSecurityQuestionDAO;
+    @Autowired
+    private UserService userService;
 
 
     /**
@@ -63,7 +61,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
         model.setLoginId(user.getLoginId());
         boolean enableFreeTextEditor = user.getUserPreference() != null && user.getUserPreference().isFreeTextEditorEnabled();
         model.setEnableFreeTextEditor(enableFreeTextEditor);
-        logger.info("Model Object for User " + user.getLoginId() + " is updated and returned with Organisation ::: " + model.getOrganization());
+        logger.debug("Model Object for User " + user.getLoginId() + " is updated and returned with Organisation ::: " + model.getOrganization());
         return model;
     }
 
@@ -86,14 +84,6 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
         user.setUserPreference(userPreference);
     }
 
-    /**
-     * Gets the user service.
-     *
-     * @return the user service
-     */
-    private UserService getUserService() {
-        return (UserService) context.getBean("userService");
-    }
 
     /**
      * Gets the security questions service.
@@ -101,7 +91,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
      * @return the security questions service
      */
     private SecurityQuestionsService getSecurityQuestionsService() {
-        return (SecurityQuestionsService) context.getBean("securityQuestionsService");
+        return context.getBean(SecurityQuestionsService.class);
     }
 
 
@@ -110,9 +100,8 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
      */
     @Override
     public MyAccountModel getMyAccount() throws IllegalArgumentException {
-        UserService userService = getUserService();
         User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
-        logger.info("Fetched User ....." + user.getLoginId());
+        logger.debug("Fetched User ....." + user.getLoginId());
         return extractModel(user);
     }
 
@@ -125,16 +114,15 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
         MyAccountModelValidator validator = new MyAccountModelValidator();
         model.scrubForMarkUp();
         List<String> messages = validator.validate(model);
-        UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+        UserDAO userDAO = context.getBean(UserDAO.class);
         if (messages.size() != 0) {
-            logger.info("Server-Side Validation for saveMyAccount Failed for User :: " + LoggedInUserUtil.getLoggedInUser());
+            logger.debug("Server-Side Validation for saveMyAccount Failed for User :: " + LoggedInUserUtil.getLoggedInUser());
             result.setSuccess(false);
             result.setFailureReason(SaveMyAccountResult.SERVER_SIDE_VALIDATION);
             result.setMessages(messages);
         } else {
             //If there is no validation error messages then proceed to save.
             //TODO Add database constraint for OID to be non-nullable
-            UserService userService = getUserService();
             User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
             User exsistingUser = userDAO.findByEmail(model.getEmailAddress());
             if (exsistingUser != null && (!(exsistingUser.getId().equals(user.getId())))) {
@@ -157,7 +145,6 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
      */
     @Override
     public SecurityQuestionsModel getSecurityQuestions() {
-        UserService userService = getUserService();
         User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
         System.out.println("User ID in MyAccountServiceImpl is:::" + user.getLoginId());
         List<UserSecurityQuestion> secQuestions = user.getUserSecurityQuestions();
@@ -184,7 +171,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
      */
     @Override
     public SaveMyAccountResult saveSecurityQuestions(SecurityQuestionsModel model) {
-        logger.info("Saving security questions");
+        logger.debug("Saving security questions");
         SaveMyAccountResult result = new SaveMyAccountResult();
         model.scrubForMarkUp();
         SecurityQuestionVerifier sverifier =
@@ -192,12 +179,11 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
                         model.getQuestion2(), model.getQuestion2Answer(),
                         model.getQuestion3(), model.getQuestion3Answer());
         if (!sverifier.isValid()) {
-            logger.info("Server Side Validation Failed in saveSecurityQuestions for User:" + LoggedInUserUtil.getLoggedInUser());
+            logger.debug("Server Side Validation Failed in saveSecurityQuestions for User:" + LoggedInUserUtil.getLoggedInUser());
             result.setSuccess(false);
             result.setMessages(sverifier.getMessages());
             result.setFailureReason(SaveMyAccountResult.SERVER_SIDE_VALIDATION);
         } else {
-            UserService userService = getUserService();
             User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
             List<UserSecurityQuestion> secQuestions = user.getUserSecurityQuestions();
             while (secQuestions.size() < 3) {
@@ -271,41 +257,31 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
         PasswordVerifier verifier = new PasswordVerifier(password, password);
 
         if (!verifier.isValid()) {
-            logger.info("Server Side Validation Failed in changePassword for User:" + LoggedInUserUtil.getLoggedInUser());
+            logger.debug("Server Side Validation Failed in changePassword for User:" + LoggedInUserUtil.getLoggedInUser());
             result.setSuccess(false);
             result.setMessages(verifier.getMessages());
             result.setFailureReason(SaveMyAccountResult.SERVER_SIDE_VALIDATION);
         } else {
-            UserService userService = getUserService();
             User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
             //to maintain user password History
             userService.addByUpdateUserPasswordHistory(user, false);
             userService.setUserPassword(user, password, false);
-
             userService.saveExisting(user);
-
             result.setSuccess(true);
         }
         return result;
 
     }
 
-    //US212
-    /* (non-Javadoc)
-     * @see mat.client.myAccount.service.MyAccountService#setUserSignInDate(java.lang.String)
-     */
+    // US212
     @Override
     public void setUserSignInDate(String userid) {
-        UserService userService = getUserService();
         userService.setUserSignInDate(userid);
     }
 
-    /* (non-Javadoc)
-     * @see mat.client.myAccount.service.MyAccountService#setUserSignOutDate(java.lang.String)
-     */
+
     @Override
     public void setUserSignOutDate(String userid) {
-        UserService userService = getUserService();
         userService.setUserSignOutDate(userid);
     }
 }

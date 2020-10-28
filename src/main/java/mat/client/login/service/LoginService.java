@@ -1,18 +1,13 @@
 package mat.client.login.service;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import mat.client.login.LoginModel;
 import mat.client.shared.MatException;
-import mat.model.SecurityQuestions;
-import mat.model.UserSecurityQuestion;
-import mat.shared.ForgottenLoginIDResult;
-import mat.shared.ForgottenPasswordResult;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -66,5 +61,4 @@ public interface LoginService extends RemoteService {
     String getSecurityQuestionToVerifyHarpUser(String loginId, String password) throws MatException;
 
     boolean verifyHarpUser(String securityQuestion, String securityAnswer, String loginId, Map<String, String> harpUserInfo) throws MatException;
-
 }

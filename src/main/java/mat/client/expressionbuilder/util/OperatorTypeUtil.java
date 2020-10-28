@@ -1,10 +1,10 @@
 package mat.client.expressionbuilder.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.expressionbuilder.constant.OperatorType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OperatorTypeUtil {	
 	

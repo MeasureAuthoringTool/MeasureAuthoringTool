@@ -14,10 +14,10 @@
 		<field name="libraryComment" type="java.lang.String">
 			<bind-xml name="libraryComment" node="element" />
 		</field>		
-		<field name="usingName" type="java.lang.String">
+		<field name="usingModel" type="java.lang.String">
 			<bind-xml name="usingModel" node="element" />
 		</field>
-		<field name="qdmVersion" type="java.lang.String">
+		<field name="usingModelVersion" type="java.lang.String">
 			<bind-xml name="usingModelVersion" node="element" />
 		</field>
 
@@ -41,6 +41,9 @@
 					</field>
 					<field name="codeSystemVersion" type="java.lang.String">
 						<bind-xml name="codeSystemVersion" node="attribute" />
+					</field>
+					<field name="versionUri" type="java.lang.String">
+						<bind-xml name="versionUri" node="attribute" />
 					</field>
 					<field name="valueSetOID" type="java.lang.String">
 						<bind-xml name="valueSetOID" node="attribute" />
@@ -95,6 +98,9 @@
 					<field name="valueSetType" type="java.lang.String">
 						<bind-xml name="type" node="attribute" />
 					</field>
+					<field name="validatedWithVsac" type="java.lang.String">
+						<bind-xml name="isValidatedWithVsac" node="attribute" />
+					</field>
 				</class>
 			</bind-xml>
 		</field>
@@ -136,6 +142,12 @@
 					</field>
 					<field name="isCodeSystemVersionIncluded" type="java.lang.Boolean">
 						<bind-xml name="isCodeSystemVersionIncluded" node="attribute" />
+					</field>
+					<field name="codeSystemVersionUri" type="java.lang.String">
+						<bind-xml name="codeSystemVersionUri" node="attribute" />
+					</field>
+					<field name="validatedWithVsac" type="java.lang.String">
+						<bind-xml name="isValidatedWithVsac" node="attribute" />
 					</field>
 				</class>
 			</bind-xml>

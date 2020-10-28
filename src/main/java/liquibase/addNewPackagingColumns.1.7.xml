@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet author="mat_dev_user" id="1" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="MEASURE_EXPORT" columnName="ELM_JSON"/>
+        </preConditions>
+        <dropColumn tableName="MEASURE_EXPORT" columnName="ELM_JSON"/>
+    </changeSet>
+    <changeSet author="mat_dev_user" id="2" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="MEASURE_EXPORT" columnName="FHIR_XML"/>
+        </preConditions>
+        <dropColumn tableName="MEASURE_EXPORT" columnName="FHIR_XML"/>
+    </changeSet>
+    <changeSet author="mat_dev_user" id="3" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="MEASURE_EXPORT" columnName="FHIR_LIBS_JSON"/></not>
+        </preConditions>
+        <addColumn tableName="MEASURE_EXPORT">
+            <column name="FHIR_LIBS_JSON" type="longtext"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="mat_dev_user" id="4" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="CQL_LIBRARY_EXPORT" columnName="ELM_JSON"/>
+        </preConditions>
+        <dropColumn tableName="CQL_LIBRARY_EXPORT" columnName="ELM_JSON"/>
+    </changeSet>
+    <changeSet author="mat_dev_user" id="5" context="prod">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="CQL_LIBRARY_EXPORT" columnName="FHIR_XML"/>
+        </preConditions>
+        <dropColumn tableName="CQL_LIBRARY_EXPORT" columnName="FHIR_XML"/>
+    </changeSet>
+</databaseChangeLog>

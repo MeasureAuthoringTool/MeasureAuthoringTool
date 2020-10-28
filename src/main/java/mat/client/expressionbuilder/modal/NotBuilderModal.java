@@ -1,11 +1,7 @@
 package mat.client.expressionbuilder.modal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.expressionbuilder.component.ExpressionTypeSelectorList;
 import mat.client.expressionbuilder.constant.ExpressionType;
 import mat.client.expressionbuilder.constant.OperatorType;
@@ -14,6 +10,9 @@ import mat.client.expressionbuilder.model.NotModel;
 import mat.client.expressionbuilder.observer.BuildButtonObserver;
 import mat.client.expressionbuilder.util.OperatorTypeUtil;
 import mat.client.expressionbuilder.util.QueryFinderHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NotBuilderModal extends SubExpressionBuilderModal {
 

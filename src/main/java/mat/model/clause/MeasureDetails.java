@@ -1,8 +1,6 @@
 package mat.model.clause;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.util.List;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,8 +13,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.util.List;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "MEASURE_DETAILS", uniqueConstraints = @UniqueConstraint(columnNames = "MEASURE_ID"))

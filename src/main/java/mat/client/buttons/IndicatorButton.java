@@ -1,9 +1,8 @@
 package mat.client.buttons;
 
 
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.user.client.ui.HTML;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 
 public class IndicatorButton{

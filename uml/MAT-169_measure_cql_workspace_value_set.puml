@@ -1,0 +1,75 @@
+@startuml
+header as-is current state
+
+actor User order 10
+participant "MAT GWT" as gwt order 20
+participant "MAT Server" as srv order 30
+
+title CQL Workspace - Value Set - Save Value Set
+User -> gwt: user adds a new value set \n(user defined or VSAC)
+gwt --> User: done
+User -> gwt: save
+gwt -> gwt: create value set transfer object
+gwt -> srv: MeasureService::saveCQLValuesettoMeasure (value set transfer object)
+srv -> srv: MeasureLibraryService::saveCQLValuesettoMeasure (value set transfer object)
+srv -> srv: load measure xml by measureId
+group CqlService::saveCQLValueset (xml, value set transfer object)
+    srv -> srv: create cqlModel from xml
+    note over srv
+        # validate value sets (static validations) \nfor empty display name and user defined text, \nalso user defined value set must have a name
+        # remove existing value set by id if already present
+        # validate that the name is unique
+        # update CQL model with the updated list of value sets
+        # update the result with xml and the list of value sets
+    end note
+end
+srv -> srv: update xml
+srv -> srv: save measure xml to DB
+srv -> gwt: return result {success: true}
+
+alt result is success
+    gwt -> gwt: reset value sets panel
+    gwt -> User: show success message
+    gwt -> gwt: re-load programs and releases
+    gwt -> srv: MeasureService::getCQLValusets (measureId)
+    note over gwt, srv
+        reload applied valuesets and code lists
+    end note
+    gwt --> gwt: apply reloaded valuesets and code lists
+else result is not success
+    gwt --[#red]> User: show <b><color #RED> "Value set already exists. Please add a unique suffix"
+else error
+    gwt --[#red]> gwt: clear applied value sets and disable save button
+end
+
+
+'------------------------------------------------------
+' checkAndDeleteValueSet();
+newpage CQL Workspace - Value Set - Delete
+User -> gwt: Delete value set, [confirmation == Yes]
+gwt -> srv: MeasureService::getCQLAppliedQDMFromMeasureXml (measureId)
+srv -> srv: MeasureLibraryService::getCQLAppliedQDMFromMeasureXml (measureId)
+srv -> srv: CqlService::getCQLValusets
+note over srv
+    # load xml from the DB by measureId
+    # parse CQL model
+    # return value sets and codes sorted by name
+end note
+srv --> gwt : value sets and codes sorted by name
+gwt -> gwt: clear applied value sets table
+gwt -> gwt: add values sets from the result, \nskip OID 419099009, 21112-8\nskip value sets with type == code
+gwt -> gwt: iterate over applied value sets and remove selected to be removed by UUID
+gwt -> srv: MeasureService :: deleteValueSet (value set to delete Id, measure Id)
+srv -> srv: MeasureLibraryService :: deleteValueSet (value set to delete Id, measure Id)
+srv -> srv: load xml from the DB by measureId,\nuse CqlService to parse CQL model and remove the value set from CQL model and xml
+srv --> gwt: removed
+gwt -> srv: MeasureService::getCQLValusets (measureId)
+note over gwt, srv
+    reload applied valuesets and code lists
+end note
+gwt --> gwt: apply reloaded valuesets and code lists
+gwt -> User: Show "Value Set has been removed successfully"
+
+footer actual on 01/27/2020
+
+@enduml

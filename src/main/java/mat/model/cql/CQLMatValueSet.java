@@ -1,10 +1,9 @@
 package mat.model.cql;
 
-import java.util.List;
-
+import com.google.gwt.user.client.rpc.IsSerializable;
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.util.List;
 
 /**
  * Container for holding VSAC value set.
@@ -105,8 +104,8 @@ public class CQLMatValueSet implements IsSerializable {
 	
 	/**
 	 * getCodeSystemName method returns the code system name of the first concept in this "conceptList" object.
-	 * This method is used to get code system name for "Extensional" Type MatValueSet. 
-	 * For "Grouping" Type MatValueSet, iterate through this groupedValueSet list object and call getCodeSystemName() for each object in groupedValueSet list. 
+	 * This method is used to get code system name for "Extensional" Type ValueSet.
+	 * For "Grouping" Type ValueSet, iterate through this groupedValueSet list object and call getCodeSystemName() for each object in groupedValueSet list.
 	 * @return String Code System Name.
 	 */
 	public String getCodeSystemName() {
@@ -320,7 +319,7 @@ public class CQLMatValueSet implements IsSerializable {
 
 	/**
 	 *Setter for groupedValueSet.
-	 *@param groupedValueSets - MatValueSet.
+	 *@param groupedValueSets - ValueSet.
 	 * **/
 	public final void setGroupedValueSet(final List<CQLMatValueSet> groupedValueSets) {
 		this.groupedValueSet = groupedValueSets;

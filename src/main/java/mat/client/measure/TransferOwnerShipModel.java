@@ -1,15 +1,14 @@
 package mat.client.measure;
 
-import java.util.List;
-
-import mat.client.shared.search.SearchResults;
-
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
+import mat.client.shared.search.SearchResults;
+
+import java.util.List;
 
 /**
  * The Class TransferMeasureOwnerShipModel.

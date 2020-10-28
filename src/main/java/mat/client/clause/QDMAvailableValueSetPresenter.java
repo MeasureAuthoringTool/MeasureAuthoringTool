@@ -1,11 +1,5 @@
 package mat.client.clause;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.gwtbootstrap3.client.ui.Button;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -19,7 +13,6 @@ import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.MatPresenter;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
@@ -33,10 +26,15 @@ import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.model.CodeListSearchDTO;
-import mat.model.MatValueSet;
-import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
+import mat.model.MatValueSetTransferObject;
 import mat.shared.ConstantMessages;
+import org.gwtbootstrap3.client.ui.Button;
+import mat.vsacmodel.ValueSet;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * QDMAvailableValueSetPresenter class.
@@ -57,10 +55,10 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		/**
 		 * Builds the value set details widget.
 		 *
-		 * @param matValueSets
-		 *            - ArrayList of {@link MatValueSet}
+		 * @param ValueSets
+		 *            - ArrayList of {@link ValueSet}
 		 */
-		void buildValueSetDetailsWidget(List<MatValueSet> matValueSets);
+		void buildValueSetDetailsWidget(List<ValueSet> ValueSets);
 		
 		/**
 		 * Remove all Success and failure messages.
@@ -91,9 +89,9 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		/**
 		 * Gets the current mat value set.
 		 *
-		 * @return {@link MatValueSet}
+		 * @return {@link ValueSet}
 		 */
-		MatValueSet getCurrentMatValueSet();
+		ValueSet getCurrentValueSet();
 		
 		/**
 		 * Gets the data types list box.
@@ -135,7 +133,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		DisclosurePanel getDisclosurePanel();
 		
 		/**
-		 * Gets the disclosure panel vsac.
+		 * Gets the disclosure panel mat.vsac.
 		 *
 		 * @return {@link DisclosurePanel}
 		 */
@@ -258,9 +256,9 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 */
 	private boolean busyLoading;
 	/**
-	 * MatValueSet instance.
+	 * ValueSet instance.
 	 */
-	private MatValueSet currentMatValueSet;
+	private ValueSet currentValueSet;
 	
 	/**
 	 * Measure Service instance.
@@ -375,7 +373,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		searchDisplay.getApplyToMeasureButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				currentMatValueSet = searchDisplay.getCurrentMatValueSet();
+				currentValueSet = searchDisplay.getCurrentValueSet();
 				modifyQDM(false);
 			}
 		});
@@ -554,7 +552,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 */
 	private void modifyValueSetQDM() {
 		//Normal Available QDM Flow
-		MatValueSet modifyWithDTO = currentMatValueSet;
+		ValueSet modifyWithDTO = currentValueSet;
 		searchDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getApplyToMeasureSuccessMsg().clear();
 		if ((modifyValueSetDTO != null) && (modifyWithDTO != null)) {
@@ -642,7 +640,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	}
 	
 	/**
-	 * Search value set in vsac.
+	 * Search value set in mat.vsac.
 	 *
 	 * @param oid
 	 *            - {@link String}
@@ -706,8 +704,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 * occurrences. are done in this method. This method returns modified and
 	 * ordered list of all applied QDM elements. This method also makes call to
 	 * updateMeasureXML method.
-	 * @param matValueSet
-	 *            - {@link MatValueSet}
+	 * @param ValueSet
+	 *            - {@link ValueSet}
 	 * @param codeListSearchDTO
 	 *            - {@link CodeListSearchDTO}
 	 * @param qualityDataSetDTO
@@ -719,31 +717,31 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 * @param isUSerDefined
 	 *            - {@link Boolean}
 	 */
-	private void updateAppliedQDMList(final MatValueSet matValueSet , final CodeListSearchDTO codeListSearchDTO ,
-			final QualityDataSetDTO qualityDataSetDTO, final String dataType, final Boolean isSpecificOccurrence,
-			final boolean isUSerDefined) {
+	private void updateAppliedQDMList(final ValueSet ValueSet , final CodeListSearchDTO codeListSearchDTO ,
+									  final QualityDataSetDTO qualityDataSetDTO, final String dataType, final Boolean isSpecificOccurrence,
+									  final boolean isUSerDefined) {
 		modifyQDMList(qualityDataSetDTO);
-		MatValueSetTransferObject matValueSetTransferObject = new MatValueSetTransferObject();
-		matValueSetTransferObject.setDatatype(dataType);
-		matValueSetTransferObject.setMatValueSet(matValueSet);
-		matValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);
-		matValueSetTransferObject.setQualityDataSetDTO(qualityDataSetDTO);
-		matValueSetTransferObject.setAppliedQDMList(appliedQDMList);
-		matValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
+		MatValueSetTransferObject ValueSetTransferObject = new MatValueSetTransferObject();
+		ValueSetTransferObject.setDatatype(dataType);
+		ValueSetTransferObject.setValueSet(ValueSet);
+		ValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);
+		ValueSetTransferObject.setQualityDataSetDTO(qualityDataSetDTO);
+		ValueSetTransferObject.setAppliedQDMList(appliedQDMList);
+		ValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
 		if ((searchDisplay.getDateInput().getValue() != null) && !searchDisplay.getDateInput().getValue().trim().isEmpty()) {
 			if (searchDisplay.getVersion().getValue().equals(Boolean.TRUE)) {
-				matValueSetTransferObject.setVersionDate(true);
-				matValueSetTransferObject.setEffectiveDate(false);
+				ValueSetTransferObject.setVersionDate(true);
+				ValueSetTransferObject.setEffectiveDate(false);
 			} else if (searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
-				matValueSetTransferObject.setEffectiveDate(true);
-				matValueSetTransferObject.setVersionDate(false);
+				ValueSetTransferObject.setEffectiveDate(true);
+				ValueSetTransferObject.setVersionDate(false);
 			} else {
-				matValueSetTransferObject.setEffectiveDate(false);
-				matValueSetTransferObject.setVersionDate(false);
+				ValueSetTransferObject.setEffectiveDate(false);
+				ValueSetTransferObject.setVersionDate(false);
 			}
-			matValueSetTransferObject.setQueryDate(searchDisplay.getDateInput().getValue());
+			ValueSetTransferObject.setQueryDate(searchDisplay.getDateInput().getValue());
 		}
-		MatContext.get().getCodeListService().updateCodeListToMeasure(matValueSetTransferObject,
+		MatContext.get().getCodeListService().updateCodeListToMeasure(ValueSetTransferObject,
 				new AsyncCallback<SaveUpdateCodeListResult>() {
 			@Override
 			public void onFailure(final Throwable caught) {

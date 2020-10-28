@@ -1,27 +1,12 @@
 package mat.client.admin;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.FieldSet;
-import org.gwtbootstrap3.client.ui.Form;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.Icon;
-import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.IconSize;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -30,7 +15,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import mat.dto.UserAuditLogDTO;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ContentWithHeadingWidget;
@@ -45,6 +29,22 @@ import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.dto.UserAuditLogDTO;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Class ManageUsersDetailView.
@@ -169,6 +169,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 
     private MessageAlert informationMessage = new InformationMessageAlert();
 
+    private CheckBox fhirAccessCheckBox = new CheckBox("This user has access to FHIR");
 
     /**
      * Instantiates a new manage users detail view.
@@ -390,6 +391,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
         fieldSet.add(oidGroup);
         fieldSet.add(statusGroup);
         fieldSet.add(reactivateAccountButtonGroup);
+        fieldSet.add(fhirAccessCheckBox);
 
         centerForm.add(fieldSet);
         return centerForm;
@@ -650,6 +652,10 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
         return organizationListBox;
     }
 
+    @Override
+    public CheckBox getFhirAccessCheckBox() {
+        return fhirAccessCheckBox;
+    }
     /**
      * Gets the organizations map.
      *

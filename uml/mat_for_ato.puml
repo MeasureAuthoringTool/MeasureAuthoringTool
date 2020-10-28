@@ -1,0 +1,59 @@
+@startuml
+title MAT for ATO
+
+actor actor
+
+node mat_node {
+    node tomcat {
+        frame "MAT" {
+            [MAT GWT UI]    <<UI>>
+            [MAT Servlets]  <<Servlets>>
+            [MAT Services]  <<Spring Services>>
+            [MAT DAO]  <<Spring Repo>>
+            [MAT Security]  <<Spring Security>>
+            note bottom of [MAT Security]
+                Authorization and authentication
+                cross cutting security concerns
+            end note
+        }
+    }
+
+    [mico_services] <<spring boot>>
+
+    [fhir_jpa] <<spring boot>>
+}
+
+node bonnie_node {
+    [Bonnie] <<nodejs app>>
+}
+
+
+database MAT_MySql {
+  folder mat_tables {
+  	[Measures] <<Table>>
+    [Libraries] <<Table>>
+  }
+  folder Security_tables {
+  	[Users] <<Table>>
+    [Roles] <<Table>>
+  }
+}
+
+database Bonnie_MongoDB {
+}
+
+
+actor ---> [MAT GWT UI] : search, create, delete, export, edit measures and libraries
+MAT --> Bonnie: package and update to bonnie
+[MAT GWT UI] ---> [MAT Servlets]
+[MAT Servlets] ---> [MAT Services]
+[MAT Services] ---> [MAT DAO]
+[MAT DAO] --> mat_tables
+[MAT Security] --> Security_tables
+[MAT Services] --> [mico_services]
+[mico_services] --> mat_tables
+[Bonnie] --> Bonnie_MongoDB
+[mico_services] --> [fhir_jpa]
+[mico_services] ..> VSAC
+
+@enduml

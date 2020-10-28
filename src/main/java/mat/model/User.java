@@ -1,9 +1,9 @@
 package mat.model;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import mat.model.clause.CQLLibraryHistory;
+import mat.model.clause.MeasureShare;
+import mat.model.cql.CQLLibraryShare;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,42 +20,40 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import mat.model.clause.CQLLibraryHistory;
-import mat.model.clause.MeasureShare;
-import mat.model.cql.CQLLibraryShare;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "USER", uniqueConstraints = @UniqueConstraint(columnNames = "LOGIN_ID"))
-public class User  {
+public class User {
 
-	private String id;
+    private String id;
 
-	private String firstName;
+    private String firstName;
 
-	private String middleInit;
+    private String middleInit;
 
-	private String lastName;
+    private String lastName;
 
-	private String emailAddress;
+    private String emailAddress;
 
-	private String phoneNumber;
+    private String phoneNumber;
 
-	private String title;
+    private String title;
 
-	private Date activationDate;
+    private Date activationDate;
 
-	private Date terminationDate;
+    private Date terminationDate;
 
-	private Timestamp signInDate;
+    private Timestamp signInDate;
 
-	private Timestamp signOutDate;
+    private Timestamp signOutDate;
 
-	private Timestamp lockedOutDate;
+    private Timestamp lockedOutDate;
 
-	private Organization organization;
+    private Organization organization;
 
     private UserPassword password;
 
@@ -88,6 +86,8 @@ public class User  {
     private UserPreference userPreference;
 
     private List<CQLLibraryHistory> cqlLibraryHistory;
+
+    private boolean fhirFlag;
 
 
     @Id
@@ -425,6 +425,15 @@ public class User  {
 
     public void setHarpId(String harpId) {
         this.harpId = harpId;
+    }
+
+    @Column(name = "FHIR_FLAG")
+    public boolean getFhirFlag() {
+        return fhirFlag;
+    }
+
+    public void setFhirFlag(boolean fhirFlag) {
+        this.fhirFlag = fhirFlag;
     }
 
 }

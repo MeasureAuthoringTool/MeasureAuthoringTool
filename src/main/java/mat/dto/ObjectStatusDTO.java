@@ -1,8 +1,7 @@
 package mat.dto;
 
-import mat.client.codelist.HasListBox;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.client.codelist.HasListBox;
 
 
 /**

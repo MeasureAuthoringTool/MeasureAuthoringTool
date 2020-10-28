@@ -1,10 +1,9 @@
 package mat.shared;
 
 
+import com.google.gwt.user.client.ui.HTML;
 
 import java.util.HashMap;
-
-import com.google.gwt.user.client.ui.HTML;
 
 /**
  * The Class DynamicTabBarFormatter.

@@ -1,22 +1,20 @@
 package mat.dao.clause.impl;
 
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
+import mat.dao.clause.OperatorDAO;
+import mat.dao.search.GenericDAO;
+import mat.dto.OperatorDTO;
+import mat.model.Operator;
+import mat.server.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import mat.dto.OperatorDTO;
-import mat.dao.clause.OperatorDAO;
-import mat.dao.search.GenericDAO;
-import mat.model.Operator;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 
 @Repository("operatorDAO")
 public class OperatorDAOImpl extends GenericDAO<Operator, String> implements OperatorDAO{
@@ -35,25 +33,25 @@ public class OperatorDAOImpl extends GenericDAO<Operator, String> implements Ope
 
 	@Override
 	public List<OperatorDTO> getLogicalOperators(){
-		logger.info("Getting all the Logical Operators from the Operator table");
+		logger.debug("Getting all the Logical Operators from the Operator table");
 		return getOperatorsListBasedOnOperatorType(LOGICAL_OPERATORS);
 	}
 
 	@Override
 	public List<OperatorDTO> getRelTimingperators(){
-		logger.info("Getting all Relative Timing Operators from the Operator table");
+		logger.debug("Getting all Relative Timing Operators from the Operator table");
 		return getOperatorsListBasedOnOperatorType(RELATIVE_TIMINGS_OPERATORS);
 	}
 
 	@Override
 	public List<OperatorDTO> getRelAssociationsOperators(){
-		logger.info("Getting all Relative Associations Operators from the Operator table");
+		logger.debug("Getting all Relative Associations Operators from the Operator table");
 		return getOperatorsListBasedOnOperatorType(RELATIVE_ASSOCIATIONS_OPERATORS);
 	}
 
 	@Override
 	public List<OperatorDTO> getAllOperators() {
-		logger.info("Getting all  Operators from the Operator table");
+		logger.debug("Getting all  Operators from the Operator table");
 		return getOperatorsListBasedOnOperatorType(null);
 	}
 

@@ -1,11 +1,13 @@
 package mat.model;
 
-import java.util.List;
 import com.google.gwt.user.client.rpc.IsSerializable;
+import mat.vsacmodel.ValueSet;
+
+import java.util.List;
 
 
 /**
- * The Class MatValueSetTransferObject.
+ * The Class ValueSetTransferObject.
  */
 public class MatValueSetTransferObject implements IsSerializable , BaseModel{
 	
@@ -30,7 +32,7 @@ public class MatValueSetTransferObject implements IsSerializable , BaseModel{
 	boolean isExpansionProfile;
 	
 	/** The mat value set. */
-	MatValueSet matValueSet;
+	ValueSet ValueSet;
 	
 	/** The measure id. */
 	String measureId;
@@ -74,10 +76,10 @@ public class MatValueSetTransferObject implements IsSerializable , BaseModel{
 	/**
 	 * Gets the mat value set.
 	 * 
-	 * @return the matValueSet
+	 * @return the ValueSet
 	 */
-	public MatValueSet getMatValueSet() {
-		return matValueSet;
+	public ValueSet getValueSet() {
+		return ValueSet;
 	}
 	
 	/**
@@ -186,11 +188,11 @@ public class MatValueSetTransferObject implements IsSerializable , BaseModel{
 	/**
 	 * Sets the mat value set.
 	 * 
-	 * @param matValueSet
-	 *            the matValueSet to set
+	 * @param ValueSet
+	 *            the ValueSet to set
 	 */
-	public void setMatValueSet(MatValueSet matValueSet) {
-		this.matValueSet = matValueSet;
+	public void setValueSet(ValueSet ValueSet) {
+		this.ValueSet = ValueSet;
 	}
 	
 	/**
@@ -271,11 +273,11 @@ public class MatValueSetTransferObject implements IsSerializable , BaseModel{
 				this.setUserDefinedText(noMarkupText);
 			}
 		}
-		if (this.getMatValueSet() != null) {
-			String noMarkupText = this.getMatValueSet().getDisplayName().trim().replaceAll(markupRegExp, "");
+		if (this.getValueSet() != null) {
+			String noMarkupText = this.getValueSet().getDisplayName().trim().replaceAll(markupRegExp, "");
 			System.out.println("QDM VSAC Value set name:" + noMarkupText);
-			if (this.getMatValueSet().getDisplayName().trim().length() > noMarkupText.length()) {
-				this.getMatValueSet().setDisplayName(noMarkupText);
+			if (this.getValueSet().getDisplayName().trim().length() > noMarkupText.length()) {
+				this.getValueSet().setDisplayName(noMarkupText);
 			}
 		}
 		if (this.getQualityDataSetDTO() != null) {

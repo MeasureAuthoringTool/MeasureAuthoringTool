@@ -2,9 +2,7 @@
 *.class
 
 # GWT Files in case they were optimized Remove this to check in legit changes #
-Bonnie.gwt.xml
-HarpSupport.gwt.xml
-Mat.gwt.xml
+*.gwt.xml
 
 # Package Files #
 *.war

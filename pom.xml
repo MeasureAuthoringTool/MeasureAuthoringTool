@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <start-class>com.google.gwt.dev.DevMode</start-class>
-        <gwtVersion>2.8.2</gwtVersion>
+        <gwtVersion>2.9.0</gwtVersion>
         <googleGin>2.1.2</googleGin>
         <gwtbootstrap3.version>1.0.1</gwtbootstrap3.version>
         <gwtbootstrap3.extra.version>1.0.2</gwtbootstrap3.extra.version>
@@ -35,8 +35,6 @@
         <jaxb.version>2.3.0</jaxb.version>
         <hapi-fhir-version>4.1.0</hapi-fhir-version>
 
-        <!-- JDK version -->
-        <!-- Only GWT HEAD supports sourceLevel 10 & 11. The latest released GWT supports only 1.8 sourceLevel -->
         <gwt.sourceLevel>1.8</gwt.sourceLevel>
         <java.version>11</java.version>
         <maven.compiler.release>11</maven.compiler.release>
@@ -624,6 +622,8 @@
                         <configuration>
                             <moduleName>mat.HarpSupport</moduleName>
                             <moduleShortName>harpsupport</moduleShortName>
+                            <sourceLevel>${gwt.sourceLevel}</sourceLevel>
+                            <localWorkers>10</localWorkers>
                         </configuration>
                     </execution>
                     <execution>
@@ -634,6 +634,8 @@
                         <configuration>
                             <moduleName>mat.Mat</moduleName>
                             <moduleShortName>mat</moduleShortName>
+                            <sourceLevel>${gwt.sourceLevel}</sourceLevel>
+                            <localWorkers>10</localWorkers>
                         </configuration>
                     </execution>
                     <execution>
@@ -644,12 +646,11 @@
                         <configuration>
                             <moduleName>mat.Bonnie</moduleName>
                             <moduleShortName>bonnie</moduleShortName>
+                            <sourceLevel>${gwt.sourceLevel}</sourceLevel>
+                            <localWorkers>10</localWorkers>
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <sourceLevel>${gwt.sourceLevel}</sourceLevel>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -729,43 +730,17 @@
                     <generateBackupPoms>false</generateBackupPoms>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
-
     <profiles>
         <profile>
-            <!-- Activate for faster local compilation by
-                1. setting env variable export ENVIRONMENT=DEV
-                2. or by explicitly activating the profile in your intellij
-            -->
-            <id>gwt-profile-compile-dev</id>
-            <activation>
-                <property>
-                    <name>env.ENVIRONMENT</name>
-                    <value>DEV</value>
-                </property>
-            </activation>
+            <id>local-super-dev-mode</id>
             <properties>
                 <gwt.draftCompile>true</gwt.draftCompile>
                 <gwt.localWorkers>10</gwt.localWorkers>
-                <!-- Enable for detailed compilation traces. It doesn't affect compilation time. -->
-<!--                <gwt.logLevel>TRACE</gwt.logLevel>-->
                 <gwt.optimize>0</gwt.optimize>
                 <gwt.style>DETAILED</gwt.style>
             </properties>
-            <dependencies>
-                <!-- Override dependencies to that you can locally run GWT code server with Jetty -->
-                <dependency>
-                    <groupId>com.google.gwt</groupId>
-                    <artifactId>gwt-dev</artifactId>
-                    <version>${gwtVersion}</version>
-                    <scope>compile</scope>
-                    <exclusions>
-                        <!-- Should be empty to be merged correctly -->
-                    </exclusions>
-                </dependency>
-            </dependencies>
         </profile>
     </profiles>
 </project>

@@ -1,6 +1,10 @@
 /test-classes/
 *.class
 
+# GWT Files in case they were optimized
+  Remove this to check in legit changes#
+*.gwt.xml
+
 # Package Files #
 *.war
 # gwt caches and compiled units #

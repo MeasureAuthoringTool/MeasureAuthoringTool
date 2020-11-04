@@ -31,7 +31,7 @@
         <jupiter.version>5.5.2</jupiter.version>
         <mockito.version>3.2.0</mockito.version>
         <powermock.version>2.0.4</powermock.version>
-        <jacoco.version>0.8.5</jacoco.version>
+        <jacoco.version>0.8.6</jacoco.version>
         <jaxb.version>2.3.0</jaxb.version>
         <hapi-fhir-version>4.1.0</hapi-fhir-version>
 

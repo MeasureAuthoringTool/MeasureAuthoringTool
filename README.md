@@ -110,11 +110,7 @@ are written for intellij.
 - Install the GWT intellij plugin.
 - Go to Edit Configurations ![](docs/images/EditConfig.png "Title")
 - Click the + in the top left and add a tomcat server. ![](docs/images/AddTomcatServer.png "Title")
-- Here is how I have mine setup. ![](docs/images/TomcatConfig.png "Title")
-  - Remove build and add in mvn command:
-  ```text
-  clean package -DskipTests
-   ```
+- Here is how I have mine setup. ![](docs/images/TomcatConfig.png "Titl
   - Paste in the following for VM options: Replace https://dev-980994.okta.com with your okta user you created above.
  ```text
 -DENVIRONMENT=DEV
@@ -165,7 +161,6 @@ To compile faster you can make these changes, but *DO NOT* check them in.
 ```
 
 1. Select Mat Code Server and start it up. 
-  **The MAT Tomcat server can't be running when you start the code server.**
 3. Select Mat Tomcat and start it up.     (wait until the server starts)
 4. A browser should pop up and you are off and running in super dev mode.
 5. Go to http://localhost:9876/

@@ -164,7 +164,8 @@ To compile faster you can make these changes, but *DO NOT* check them in.
 <set-property name="user.agent" value="safari"/>
 ```
 
-1. Select Mat Code Server and start it up.
+1. Select Mat Code Server and start it up. 
+  **The MAT Tomcat server can't be running when you start the code server.**
 3. Select Mat Tomcat and start it up.     (wait until the server starts)
 4. A browser should pop up and you are off and running in super dev mode.
 5. Go to http://localhost:9876/

@@ -76,7 +76,7 @@ public class MeasureDetailsView {
 		headingHTML.setHTML("<h4><b>" + currentMeasureDetail.displayName() + "</b></h4>");
 		headingHTML.getElement().setId("measureDetailsView_HeadingContent");
 		headingHTML.setTitle(currentMeasureDetail.displayName());
-		headingHTML.getElement().setTabIndex(0);
+		headingHTML.getElement().setTabIndex(-1);
 		headingPanel.add(headingHTML);
 		headingPanel.getElement().setId("measureDetailsView_HeadingPanel");
 		widgetComponentPanel.add(headingPanel);

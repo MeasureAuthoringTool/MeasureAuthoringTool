@@ -29,7 +29,7 @@ public class IndicatorButton{
 				+ inactiveText + "' tabindex=\"0\" class=\"btn btn-link\" > "
 			+ "<i class=\"fa fa-circle\" style=\"color: DarkRed;\"></i><span>"+ 
 				"  "  + inactiveText + "</span></button>");
-		hideLink.getElement().setTabIndex(0);
+		hideLink.getElement().setTabIndex(-1);
 		panel.add(hideLink);
 		panel.getElement().focus();
 		panel.setStyleName("loginSpacer");
@@ -40,7 +40,7 @@ public class IndicatorButton{
 				+ activeText + "' tabindex=\"0\" class=\"btn btn-link\" > "
 				+ "<i class=\"fa fa-circle\" style=\"color: DarkGreen;\"></i><span>"+
 				"  "+ activeText + "</span></button>");
-		showLink.getElement().setTabIndex(0);
+		showLink.getElement().setTabIndex(-1);
 		panel.add(showLink);
 		panel.getElement().focus();
 		panel.setStyleName("loginSpacer");

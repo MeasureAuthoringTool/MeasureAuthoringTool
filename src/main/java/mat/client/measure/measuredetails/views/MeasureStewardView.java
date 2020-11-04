@@ -111,7 +111,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		authorSPanel.setWidth("625px");
 		authorSPanel.setHeight("400px");
 		authorCellTable = new CellTable<>();
-		authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		final ListDataProvider<Author> sortProvider = new ListDataProvider<>();
 		authorCellTable.setRowData(currentAuthorsList);
 		if(!authorsSelectedList.isEmpty()){
@@ -151,7 +151,6 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		measureSearchHeader.getElement().setId("measureDeveloperHeader_Label");
 		measureSearchHeader.setStyleName("invisibleTableCaption");
 		final com.google.gwt.dom.client.TableElement elem = authorCellTable.getElement().cast();
-		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
 		final TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(measureSearchHeader.getElement());
 		authorSelectionModel = new MultiSelectionModel<>();
@@ -196,7 +195,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		final Column<Author, SafeHtml> measureNameColumn = new Column<Author, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Author object) {
-				return CellTableUtility.getColumnToolTip(object.getAuthorName(), " OID " + object.getOrgId());
+				return CellTableUtility.getColumnToolTip(object.getAuthorName(), " OID " + object.getOrgId(),false);
 			}
 		};
 

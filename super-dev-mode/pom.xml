@@ -10,7 +10,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>CMAT</groupId>
-    <artifactId>MAT Super Dev Tool</artifactId>
+    <artifactId>super-dev-mode</artifactId>
     <version>6.02</version>
     <packaging>war</packaging>
 
@@ -22,14 +22,14 @@
         <googleGin>2.1.2</googleGin>
         <gwtbootstrap3.version>1.0.1</gwtbootstrap3.version>
         <gwtbootstrap3.extra.version>1.0.2</gwtbootstrap3.extra.version>
-        <elemental.version>1.0.0-RC1</elemental.version>
+        <elemental.version>1.1.0</elemental.version>
         <gwt.elemento.version>0.9.6-gwt2</gwt.elemento.version>
         <cqframework.version>1.4.6</cqframework.version>
         <axis.version>1.7.9</axis.version>
         <castor.version>1.4.1</castor.version>
         <slf4j.version>1.7.30</slf4j.version>
         <jupiter.version>5.7.0</jupiter.version>
-        <mockito.version>3.2.0</mockito.version>
+        <mockito.version>3.6.0</mockito.version>
         <powermock.version>2.0.9</powermock.version>
         <jacoco.version>0.8.6</jacoco.version>
         <jaxb.version>2.3.0</jaxb.version>
@@ -43,6 +43,7 @@
 
         <project.local.repo.dir>${project.basedir}/lib</project.local.repo.dir>
     </properties>
+
 
     <repositories>
         <repository>
@@ -65,6 +66,32 @@
             <artifactId>gwt-dev</artifactId>
             <version>${gwtVersion}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-collections</artifactId>
+                    <groupId>commons-collections</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>apache-jsp</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-webapp</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-servlets</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-websocket</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-annotations</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty.aggregate</groupId>
@@ -218,7 +245,7 @@
         <dependency>
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt</artifactId>
-            <version>1.9.0</version>
+            <version>1.9.3</version>
         </dependency>
         <dependency>
             <groupId>net.sf.jtidy</groupId>
@@ -228,7 +255,7 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.17</version>
+            <version>4.1.2</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
@@ -238,7 +265,7 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.17</version>
+            <version>4.1.2</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.saxon</groupId>
@@ -393,7 +420,7 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd</artifactId>
-            <version>5.0.0</version>
+            <version>6.29.0</version>
             <type>pom</type>
             <exclusions>
                 <exclusion>
@@ -405,7 +432,7 @@
         <dependency>
             <groupId>biz.paluch.logging</groupId>
             <artifactId>logstash-gelf</artifactId>
-            <version>1.12.0</version>
+            <version>1.14.1</version>
         </dependency>
 
         <!-- Java 11 compatibility -->

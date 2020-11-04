@@ -1,5 +1,6 @@
 /test-classes/
 *.class
+*.iml
 
 # GWT Files in case they were optimized Remove this to check in legit changes #
 src/main/java/mat/Mat.gwt.xml

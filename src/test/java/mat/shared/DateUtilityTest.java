@@ -2,14 +2,16 @@ package mat.shared;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.TimeZone;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 public class DateUtilityTest {
@@ -17,6 +19,7 @@ public class DateUtilityTest {
 
     @Before
     public void setup() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         Instant instant = Instant.parse("2019-12-23T19:02:02.329Z");
         date = Date.from(instant);
     }

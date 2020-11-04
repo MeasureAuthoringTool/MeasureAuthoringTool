@@ -2252,7 +2252,7 @@ padding: 2px;
     margin-left: 4px;
     margin-top: 8px;
     width: 99%;
-	margin-left:5px important!;
+	margin-left:5px !important;
 }
 
 .measureDetailLabelStyle{

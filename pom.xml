@@ -425,7 +425,7 @@
         <dependency>
             <groupId>biz.paluch.logging</groupId>
             <artifactId>logstash-gelf</artifactId>
-            <version>1.12.0</version>
+            <version>1.14.1</version>
         </dependency>
 
         <!-- Java 11 compatibility -->

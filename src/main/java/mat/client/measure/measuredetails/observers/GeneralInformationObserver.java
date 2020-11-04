@@ -150,7 +150,6 @@ public class GeneralInformationObserver implements MeasureDetailsComponentObserv
 						generalMeasureInformationView.geteMeasureIdentifierInput().setValue(String.valueOf(eMeasureId));
 						generalMeasureInformationView.updateEmeasureId(eMeasureId);
 						generalMeasureInformationView.getGenerateEMeasureIDButton().setEnabled(false);
-						generalMeasureInformationView.geteMeasureIdentifierInput().setFocus(true);
 					}
 				}
 			});

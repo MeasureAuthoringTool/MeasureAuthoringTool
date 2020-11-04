@@ -56,7 +56,7 @@ public class RequestResponseLoggingFilter implements Filter {
             String body = "";
 
             try {
-                body = IOUtils.toString(request.getInputStream(), StandardCharsets.UTF_8);
+                body = IOUtils.toString(request.getInputStream(), "utf-8");
             } catch (IOException e) {
                 log.error("Cannot find body", e);
             }

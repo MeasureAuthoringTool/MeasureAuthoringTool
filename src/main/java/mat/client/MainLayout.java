@@ -70,6 +70,10 @@ public abstract class MainLayout {
     private AnchorListItem signOut = new AnchorListItem("Sign Out");
     private FormPanel logoutForm = new FormPanel("logout");
 
+    {
+        logoutForm.getElement().setAttribute("tab-index","-1");
+    }
+
     /**
      * hide spinner and
      * reset the loading queue.
@@ -157,6 +161,7 @@ public abstract class MainLayout {
         content.getElement().setAttribute("aria-atomic", "true");
         content.getElement().setAttribute("aria-relevant", "all");
         content.setStylePrimaryName("mainContentPanel");
+        content.setTabIndex(-1);
         setId(content, "content");
         Mat.removeInputBoxFromFocusPanel(content.getElement());
 
@@ -234,7 +239,7 @@ public abstract class MainLayout {
         ab.setDataTarget(Styles.NAVBAR_COLLAPSE);
 
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        sb.appendHtmlConstant("<span style=\"font-size:0px;\" tabindex=\"0\">Profile</span>");
+        sb.appendHtmlConstant("<span style=\"font-size:0px;\" tabindex=\"-1\">Profile</span>");
         ab.getElement().setInnerSafeHtml(sb.toSafeHtml());
 
         return ab;
@@ -416,6 +421,7 @@ public abstract class MainLayout {
         link.setText(text);
         link.setTitle(text);
         link.setTabIndex(0);
+        link.setTabIndex(-1);
         link.setId("Anchor_" + text);
         link.setColor("#337ab7");
     }

@@ -17,10 +17,10 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.InputGroup;
@@ -87,7 +87,7 @@ public class DateBoxWithCalendar extends Composite{
 	};
 
 	/** The panel. */
-	FocusPanel fPanel;
+	SimplePanel fPanel;
 	
 	/** The inv label. */
 	public Label invLabel;
@@ -208,27 +208,6 @@ public class DateBoxWithCalendar extends Composite{
 		this(false, availableDateId, MDY);
 	}
 	
-	/**
-	 * Adds the blur handler.
-	 * 
-	 * @param bHandler
-	 *            the b handler
-	 * @return the handler registration
-	 */
-	public HandlerRegistration addBlurHandler(BlurHandler bHandler) {
-		return fPanel.addBlurHandler(bHandler);
-	}
-	
-	/**
-	 * Adds the focus handler.
-	 * 
-	 * @param fHandler
-	 *            the f handler
-	 * @return the handler registration
-	 */
-	public HandlerRegistration addFocusHandler(FocusHandler fHandler) {
-		return fPanel.addFocusHandler(fHandler);
-	}
 
 	/**
 	 * Adds the key down handler.
@@ -431,7 +410,7 @@ public class DateBoxWithCalendar extends Composite{
 				}
 			}
 		});
-	    fPanel = new FocusPanel(panel);
+	    fPanel = new SimplePanel(panel);
 		initWidget(fPanel);
 	}
 
@@ -527,10 +506,12 @@ public class DateBoxWithCalendar extends Composite{
 			//dateBox.setStyleName("gwt-TextBox");
 			dateBox.setEnabled(true);
 			dateBox.setReadOnly(false);
+			dateBox.setTabIndex(0);
 		} else {
 			//dateBox.setStyleName("gwt-TextBox-readonly");
 			dateBox.setEnabled(false);
 			dateBox.setReadOnly(true);
+			dateBox.setTabIndex(-1);
 		}
 		//calendar.enableImage(enabled);
 		calendar.setEnabled(enabled);
@@ -546,6 +527,8 @@ public class DateBoxWithCalendar extends Composite{
 		this.enabled = enabled;
 		dateBox.setEnabled(enabled);
 		dateBox.setReadOnly(!enabled);
+		dateBox.setTabIndex(enabled ? 0 : -1);
+
 		//calendar.enableImage(enabled);
 		calendar.setEnabled(enabled);
 		if(label != null){
@@ -576,9 +559,8 @@ public class DateBoxWithCalendar extends Composite{
 	 *            the new focus
 	 */
 	public void setFocus(boolean focused) {
-		fPanel.setFocus(focused);
 		if(focused) {
-			dateBox.setFocus(focused);
+			dateBox.setFocus(true);
 		}
 	}
 

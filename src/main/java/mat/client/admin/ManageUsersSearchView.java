@@ -18,6 +18,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -104,13 +105,14 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	 * @return the cell table
 	 */
 	private CellTable<Result> addColumnToTable(final CellTable<Result> cellTable) {
+		cellTable.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
 		Label cellTableCaption = new Label("Manage Users");
 		cellTableCaption.getElement().setId("manageUserCellTableCaption_Label");
 		cellTableCaption.setStyleName("recentSearchHeader");
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cellTableCaption.getElement());
-		cellTableCaption.getElement().setAttribute("tabIndex", "0");
+		cellTableCaption.getElement().setAttribute("tabIndex", "-1");
 		
 		Column<Result, SafeHtml> nameColumn = new Column<Result, SafeHtml>(new ClickableSafeHtmlCell()) {
 			@Override
@@ -137,7 +139,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
-				return CellTableUtility.getColumnToolTip(object.getOrgName(), "Organization: " + object.getOrgName());
+				return CellTableUtility.getColumnToolTip(object.getOrgName(), "Organization: " + object.getOrgName(),false);
 			}
 		};
 		cellTable.addColumn(organizationColumn, SafeHtmlUtils.fromSafeConstant(
@@ -146,7 +148,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		Column<Result, SafeHtml> userRoleColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
-				return CellTableUtility.getColumnToolTip(object.getUserRole(), "User Role: " + object.getUserRole());
+				return CellTableUtility.getColumnToolTip(object.getUserRole(), "User Role: " + object.getUserRole(),false);
 			}
 		};
 		cellTable.addColumn(userRoleColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"User Role\">" + "User Role" + "</span>"));
@@ -171,7 +173,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		Column<Result, SafeHtml> statusColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
-				return CellTableUtility.getColumnToolTip(object.getStatus(), "Status: " + object.getStatus());
+				return CellTableUtility.getColumnToolTip(object.getStatus(), "Status: " + object.getStatus(),false);
 			}
 		};
 		cellTable.addColumn(statusColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Status\">" + "Status" + "</span>"));

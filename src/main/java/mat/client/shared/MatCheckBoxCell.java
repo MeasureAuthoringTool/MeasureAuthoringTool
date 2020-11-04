@@ -166,7 +166,7 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean, Boolean> {
 	@Override
 	public boolean isEditing(com.google.gwt.cell.client.Cell.Context context,
 			Element parent, Boolean value) {
-		return false;
+		return true;
 	}
 	
 	/* (non-Javadoc)
@@ -177,21 +177,21 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean, Boolean> {
 		
 		/** The Constant INPUT_CHECKED. */
 		SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant(
-				"<input type=\"checkbox\" tabindex=\"0\" title=\" " + checkBoxTitle + "\" checked/>");
+				"<input type=\"checkbox\"  title=\" " + checkBoxTitle + "\" checked/>");
 
 		/**
 		 * An html string representation of an unchecked input box.
 		 */
 		SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant(
-				"<input type=\"checkbox\" tabindex=\"0\" title=\"" + checkBoxTitle + "\" />");
+				"<input type=\"checkbox\"  title=\"" + checkBoxTitle + "\" />");
 
 		/** The Constant INPUT_UNCHECKED_DISABLED. */
 		SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant(
-				"<input type=\"checkbox\" tabindex=\"0\" disabled=\"disabled\"  title=\"" + checkBoxTitle + "\" />");
+				"<input type=\"checkbox\"  disabled=\"disabled\"  title=\"" + checkBoxTitle + "\" />");
 		
 		/** The Constant INPUT_CHECKED_DISABLED. */
 		SafeHtml INPUT_CHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant(
-				"<input type=\"checkbox\" tabindex=\"0\" disabled=\"disabled\"  title=\"" + checkBoxTitle + "\" checked/>");
+				"<input type=\"checkbox\" disabled=\"disabled\"  title=\"" + checkBoxTitle + "\" checked/>");
 		
 		Boolean viewData = getViewData(context.getKey());
 		if (viewData != null && viewData.equals(value)) {

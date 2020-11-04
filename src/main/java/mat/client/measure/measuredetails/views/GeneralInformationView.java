@@ -154,7 +154,6 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		FormLabel measurePeriodFromInputLabel = new FormLabel();
 		measurePeriodFromInputLabel.setText("Measurement Period");
 		measurePeriodFromInputLabel.getElement().setId("measurementPeriodHeader_Label");
-		measurePeriodFromInputLabel.getElement().setAttribute("tabIndex", "0");
 		measurementPeriodPanel.add(measurePeriodFromInputLabel);
 
 		HorizontalPanel calendarYearDatePanel = new HorizontalPanel();
@@ -274,6 +273,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 			nQFIDInput.setTitle(MatConstants.NOT_APPLICABLE);
 			nQFIDInput.setText("");
 			nQFIDInput.setReadOnly(true);
+			nQFIDInput.setEnabled(false);
+			nQFIDInput.setTabIndex(-1);
 		} else {
 			helpBlock.setText("You have chosen yes, the NQF number field is now enabled and required.");
 			if(!StringUtility.isEmptyOrNull(nQFIDInput.getText())) {
@@ -285,6 +286,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 				nQFIDInput.setTitle(MatConstants.ENTER_NQF_NUMBER);
 			}
 			nQFIDInput.setReadOnly(false);
+			nQFIDInput.setEnabled(true);
+			nQFIDInput.setTabIndex(0);
 		}
 	}
 
@@ -318,6 +321,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 		generateEMeasureIDButton.getElement().getStyle().setProperty("marginLeft", "5px");
 		generateEMeasureIDButton.getElement().setId("generateeMeasureIDButton_Button");
 		eMeasureIdentifierInput.setReadOnly(true);
+		eMeasureIdentifierInput.setEnabled(false);
+		eMeasureIdentifierInput.setTabIndex(-1);
 		generateEMeasureIDButton.setEnabled(true);
 		String emeasureIdMSG = "Once an eCQM Identifier (Measure Authoring Tool) has been generated it may not be modified or removed for any draft or version of a measure.";
 		generateEMeasureIDButton.setTitle(emeasureIdMSG);

@@ -111,6 +111,10 @@ are written for intellij.
 - Go to Edit Configurations ![](docs/images/EditConfig.png "Title")
 - Click the + in the top left and add a tomcat server. ![](docs/images/AddTomcatServer.png "Title")
 - Here is how I have mine setup. ![](docs/images/TomcatConfig.png "Title")
+  - Remove build and add in mvn command:
+  ```text
+  clean package -DskipTests
+   ```
   - Paste in the following for VM options: Replace https://dev-980994.okta.com with your okta user you created above.
  ```text
 -DENVIRONMENT=DEV
@@ -140,6 +144,10 @@ are written for intellij.
   - Here is how I setup my maven that skips tests. ![](docs/images/mvnBuild.png "Title")
 - Go to Edit Configurations again and click the + and pick GWT Configuration.
   - Here is how I have mine setup. ![](docs/images/gwtConfig.png "Title")
+  - Remove build and add a mvn task. Command line:
+  ```text
+  package -P local-super-dev-mode -DskipTests
+  ```
   - Dev mode params: 
   ```text
   -noserver -war /Users/carson.day/git/MeasureAuthoringTool/target/MeasureAuthoringTool
@@ -156,9 +164,8 @@ To compile faster you can make these changes, but *DO NOT* check them in.
 <set-property name="user.agent" value="safari"/>
 ```
 
-1. Select Mvn Build (notests) and run it. (wait until the build completes)
-2. Select Mat Tomcat and start it up.     (wait until the server starts)
-3. Select Mat Code Server and start it up.
+1. Select Mat Code Server and start it up.
+3. Select Mat Tomcat and start it up.     (wait until the server starts)
 4. A browser should pop up and you are off and running in super dev mode.
 5. Go to http://localhost:9876/
 6. Drag the Dev Mode On button onto your bookmark bar.

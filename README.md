@@ -140,9 +140,6 @@ are written for intellij.
   - Here is how I setup my maven that skips tests. ![](docs/images/mvnBuild.png "Title")
 - Go to Edit Configurations again and click the + and pick GWT Configuration.
   - Here is how I have mine setup. ![](docs/images/gwtConfig.png "Title")
-  - Remove build and add a mvn task. Command line:
-  ```text
-  package -P local-super-dev-mode -DskipTests
   ```
   - Dev mode params: 
   ```text

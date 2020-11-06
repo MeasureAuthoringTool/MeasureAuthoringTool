@@ -112,7 +112,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 		Label searchHeader = new Label("Select users with whom you wish to share modify access.");
 		searchHeader.getElement().setId("measureShareTableHeader_Label");
 		searchHeader.setStyleName("recentSearchHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
+		searchHeader.getElement().setAttribute("tabIndex", "-1");
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(searchHeader.getElement());

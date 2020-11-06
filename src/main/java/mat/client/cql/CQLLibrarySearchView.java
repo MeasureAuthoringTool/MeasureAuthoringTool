@@ -239,7 +239,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
                 Label gridPanelHeader = new Label(getCQLlibraryListLabel());
                 gridPanelHeader.getElement().setId("cqlLibrarySearchHeader_Label");
                 gridPanelHeader.setStyleName("recentSearchHeader");
-                gridPanelHeader.getElement().setTabIndex(0);
+                gridPanelHeader.getElement().setTabIndex(-1);
 
                 CQLibraryGridToolbar gridToolbar = CQLibraryGridToolbar.withOptionsFromFlags();
                 gridToolbar.getElement().setAttribute("id", "cqlLibrarySearchCellTable_gridToolbar");
@@ -273,7 +273,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
             Label cqlLibrarySearchHeader = new Label(getCQLlibraryListLabel());
             cqlLibrarySearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
             cqlLibrarySearchHeader.setStyleName("recentSearchHeader");
-            cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "0");
+            cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "-1");
             HTML desc = new HTML(MatContext.get().getMessageDelegate().getNoLibrarues());
             cellTablePanel.add(cqlLibrarySearchHeader);
             cellTablePanel.add(new SpacerWidget());
@@ -291,7 +291,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
         cqlLibrarySearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
         cqlLibrarySearchHeader.setStyleName("recentSearchHeader");
         com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
-        cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "0");
+        cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "-1");
         TableCaptionElement caption = elem.createCaption();
         caption.appendChild(cqlLibrarySearchHeader.getElement());
 
@@ -457,18 +457,18 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         String cssClass = "customCascadeButton";
         if (object.isFamily()) {
-            sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
-                    + "style=\"text-decoration:none\" tabindex=\"-1\">"
+            sb.appendHtmlConstant("<div id='container'><a href=\"javascript:void(0);\" "
+                    + "style=\"text-decoration:none\">"
                     + "<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
-            sb.appendHtmlConstant("<span id='div2' title=\" " + object.getCqlName() + "\" tabindex=\"0\">"
+            sb.appendHtmlConstant("<span id='div2' title=\" " + object.getCqlName() + "\">"
                     + object.getCqlName() + "</span>");
             sb.appendHtmlConstant("</a></div>");
         } else {
-            sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
-                    + "style=\"text-decoration:none\" tabindex=\"-1\" >");
+            sb.appendHtmlConstant("<div id='container'><a href=\"javascript:void(0);\" "
+                    + "style=\"text-decoration:none\">");
             sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\"" + object.getCqlName()
-                    + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
-            sb.appendHtmlConstant("<span id='div2' title=\" " + object.getCqlName() + "\" tabindex=\"0\">"
+                    + "\" class=\" " + cssClass + "\"></button>");
+            sb.appendHtmlConstant("<span id='div2' title=\" " + object.getCqlName() + "\">"
                     + object.getCqlName() + "</span>");
             sb.appendHtmlConstant("</a></div>");
         }

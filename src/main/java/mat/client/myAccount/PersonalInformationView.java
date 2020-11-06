@@ -113,6 +113,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		firstNameTextBox.setId("FirstNameTextBox");
 		firstNameTextBox.setMaxLength(100);
 		firstNameTextBox.setReadOnly(true);
+		firstNameTextBox.setEnabled(false);
 		
 		FormLabel firstNameLabel = new FormLabel();
 		firstNameLabel.setId("firstNameLabel");
@@ -128,6 +129,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		middleNameTextBox.setWidth("32px");
 		middleNameTextBox.setMaxLength(1);
 		middleNameTextBox.setReadOnly(true);
+		middleNameTextBox.setEnabled(false);
 		
 		FormLabel middleNameLabel = new FormLabel();
 		middleNameLabel.setId("MiddleNameLabel");
@@ -142,6 +144,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		lastNameTextBox.setId("LastNameTextBox");
 		lastNameTextBox.setMaxLength(100);
         lastNameTextBox.setReadOnly(true);
+		lastNameTextBox.setEnabled(false);
 		
 		FormLabel lastNameLabel = new FormLabel();
 		lastNameLabel.setId("LastNameLabel");
@@ -167,6 +170,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		title.setMaxLength(32);
 		title.setWidth("200px");
 		title.setReadOnly(true);
+		title.setEnabled(false);
 		titleGroup.add(titleLabel);
 		titleGroup.add(title);
 		
@@ -177,6 +181,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		organizationLabel.setShowRequiredIndicator(true);
 		organizationLabel.setFor("OrganizationTextBox");
 		organization.setId("OrganizationTextBox");
+		organization.setEnabled(false);
 		organization.setEnabled(false);
 		organization.setWidth("200px");
 		organization.setTitle("Organization Required");
@@ -207,6 +212,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		emailAddress.setWidth("250px");
 		emailAddress.setMaxLength(254);
 		emailAddress.setReadOnly(true);
+		emailAddress.setEnabled(false);
 		emailAddressGroup.add(emailAddressLabel);
 		emailAddressGroup.add(emailAddress);
 		
@@ -249,7 +255,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		userPreferencePanel.setType(PanelType.PRIMARY);
 		PanelHeader header = new PanelHeader();
 		header.setText("User Preferences:");
-		header.getElement().setTabIndex(0);
+		header.getElement().setTabIndex(-1);
 		
 		PanelBody body = new PanelBody();
 		body.add(freeTextEditorGroup);

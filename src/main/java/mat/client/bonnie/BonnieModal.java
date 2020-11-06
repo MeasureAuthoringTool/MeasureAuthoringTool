@@ -31,15 +31,15 @@ public class BonnieModal {
 		MatContext.get().buildBonnieLink();
 		panel.setClosable(false);
 		panel.setFade(true);
-		panel.getElement().setTabIndex(0);
+		panel.getElement().setTabIndex(-1);
 		panel.setDataBackdrop(ModalBackdrop.STATIC);
 		panel.setSize(ModalSize.MEDIUM);
 		panel.setRemoveOnHide(true);
-		modalBody.getElement().setTabIndex(0);
+		modalBody.getElement().setTabIndex(-1);
 		
 		modalBody.add(messageLabel);
 		messageLabel.setText(MESSAGE);
-		messageLabel.getElement().setTabIndex(0);
+		messageLabel.getElement().setTabIndex(-1);
 		
 		ModalFooter modalFooter = new ModalFooter(); 
 		ButtonToolBar buttonToolBar = new ButtonToolBar(); 

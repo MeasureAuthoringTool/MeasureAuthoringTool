@@ -239,7 +239,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		Label searchHeader = new Label("Search");
 		searchHeader.getElement().setId("searchHeader_Label");
 		searchHeader.setStyleName("valueSetHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
+		searchHeader.getElement().setAttribute("tabIndex", "-1");
 		searchPanel.add(searchHeader);
 		searchPanel.add(new SpacerWidget());
 		oidInput.getElement().setId("oidInput_TextBox");

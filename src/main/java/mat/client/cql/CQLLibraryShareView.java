@@ -189,7 +189,7 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 		Label cellTableHeader = new Label("Select users with whom you wish to share modify access.");
 		cellTableHeader.getElement().setId("CQLLibraryShareTableHeader_Label");
 		cellTableHeader.setStyleName("recentSearchHeader");
-		cellTableHeader.getElement().setAttribute("tabIndex", "0");
+		cellTableHeader.getElement().setAttribute("tabIndex", "-1");
 		
 		if ((data != null)
 				&& (data.size() > 0)) {

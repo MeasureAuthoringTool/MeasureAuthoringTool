@@ -64,7 +64,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
         Label measureSearchHeader = new Label("Recent Activity");
         measureSearchHeader.getElement().setId("measureSearchHeader_Label");
         measureSearchHeader.setStyleName("recentSearchHeader");
-        measureSearchHeader.getElement().setTabIndex(0);
+        measureSearchHeader.getElement().setTabIndex(-1);
 
         searchPanel.add(measureSearchHeader);
         searchPanel.add(gridToolbar);
@@ -84,7 +84,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
             Label searchHeader = new Label("Recent Activity");
             searchHeader.getElement().setId("searchHeader_Label");
             searchHeader.setStyleName("recentSearchHeader");
-            searchHeader.getElement().setAttribute("tabIndex", "0");
+            searchHeader.getElement().setAttribute("tabIndex", "-1");
             HTML desc = new HTML("<p> No Recent Activity</p>");
             searchPanel.add(searchHeader);
             searchPanel.add(new SpacerWidget());

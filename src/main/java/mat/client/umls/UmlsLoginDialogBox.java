@@ -123,7 +123,7 @@ public class UmlsLoginDialogBox implements ManageUmlsPresenter.UMLSDisplay {
         panel.setDataBackdrop(ModalBackdrop.STATIC);
         panel.setSize(ModalSize.MEDIUM);
         panel.setRemoveOnHide(true);
-        panel.getElement().setAttribute("tabindex", "0");
+        panel.getElement().setAttribute("tabindex", "-1");
 
         panel.add(buildHeaderWidgets());
 

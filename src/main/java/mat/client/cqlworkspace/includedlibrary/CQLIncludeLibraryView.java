@@ -87,7 +87,7 @@ public class CQLIncludeLibraryView {
 	private Panel cellTablePanel = new Panel();
 	private PanelBody cellTablePanelBody = new PanelBody();
 	private SimplePanel containerPanel = new SimplePanel();
-	private FocusPanel searchWidgetFocusPanel = new FocusPanel();
+	private SimplePanel searchWidgetFocusPanel = new SimplePanel();
 	private VerticalPanel searchCellTablePanel = new VerticalPanel();
 	private VerticalPanel ownerTextboxPanel = new VerticalPanel();
 	
@@ -321,10 +321,6 @@ public class CQLIncludeLibraryView {
 		return containerPanel;
 	}
 
-	public HasKeyDownHandlers getFocusPanel(){
-		return searchWidgetFocusPanel;
-	}
-	
 	public MatTextBox getAliasNameTxtArea() {
 		return aliasNameTxtBox;
 	}
@@ -365,7 +361,7 @@ public class CQLIncludeLibraryView {
 		PanelHeader searchHeader = new PanelHeader();
 		searchHeader.getElement().setId("searchHeader_Label_IncludeSection");
 		searchHeader.setStyleName("measureGroupingTableHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
+		searchHeader.getElement().setAttribute("tabIndex", "-1");
 		
 		HTML searchHeaderText = new HTML("<strong>Available Libraries</strong>");
 		searchHeader.add(searchHeaderText);

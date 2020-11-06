@@ -118,7 +118,7 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cellTableCaption.getElement());
-		cellTableCaption.getElement().setAttribute("tabIndex", "0");
+		cellTableCaption.getElement().setAttribute("tabIndex", "-1");
 		
 		Column<Result, SafeHtml> nameColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override

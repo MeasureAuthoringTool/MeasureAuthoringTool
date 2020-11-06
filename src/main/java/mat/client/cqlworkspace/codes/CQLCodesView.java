@@ -571,7 +571,7 @@ public class CQLCodesView {
 		PanelHeader codesElementsHeader = new PanelHeader();
 		codesElementsHeader.getElement().setId("searchHeader_Label");
 		codesElementsHeader.setStyleName("CqlWorkSpaceTableHeader");
-		codesElementsHeader.getElement().setAttribute("tabIndex", "0");
+		codesElementsHeader.getElement().setAttribute("tabIndex", "-1");
 
 		HTML searchHeaderText = new HTML("<strong>Applied Codes</strong>");
 		codesElementsHeader.add(searchHeaderText);
@@ -635,7 +635,7 @@ public class CQLCodesView {
 		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
 			Label appliedCodesLabel = new Label("Applied Codes");
 			appliedCodesLabel.getElement().setId("searchHeader_Label");
-			appliedCodesLabel.getElement().setAttribute("tabIndex", "0");
+			appliedCodesLabel.getElement().setAttribute("tabIndex", "-1");
 			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
 			appliedCodesLabel.setVisible(false);
@@ -786,7 +786,7 @@ public class CQLCodesView {
 			@Override
 			protected <X> void render(Context context, CQLCode object, SafeHtmlBuilder sb, HasCell<CQLCode, X> hasCell) {
 				Cell<X> cell = hasCell.getCell();
-				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
+				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"-1\">");
 				if(object != null) {
 					cell.render(context, hasCell.getValue(object), sb);
 				}
@@ -903,10 +903,10 @@ public class CQLCodesView {
 				String iconCss = "fa fa-pencil fa-lg";
 				if(isEditable){
 					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod; margin-left: -15px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+							+ title + "' class=\" " + cssClass + "\" style=\"color: darkgoldenrod; margin-left: -15px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
 				} else {
 					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black; margin-left: -15px\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
+							+ title + "' class=\" " + cssClass + "\" disabled style=\"color: black; margin-left: -15px\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
 				}
 
 				return sb.toSafeHtml();
@@ -948,7 +948,7 @@ public class CQLCodesView {
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-trash fa-lg";
 				sb.appendHtmlConstant("<button type=\"button\" title='"
-						+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");						
+						+ title + "' class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
 				return sb.toSafeHtml();
 			}
 		};

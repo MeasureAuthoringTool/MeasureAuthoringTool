@@ -33,7 +33,7 @@ public class AdvancedSearchPillPanel {
 		badgeHeader = new Label("Search Criteria");
 		badgeHeader.getElement().setId("searchHeader_Label");
 		badgeHeader.setStyleName("recentSearchHeader");
-		badgeHeader.getElement().setAttribute("tabIndex", "0");
+		badgeHeader.getElement().setAttribute("tabIndex", "-1");
 		badgeHeader.getElement().setAttribute("aria-label", "Search Criteria This panel displays the search criteria you selected for your " + forView + " search");
 
 		badgeTable.add(badgeHeader);
@@ -114,7 +114,7 @@ public class AdvancedSearchPillPanel {
 
 		if (searchModel.getTotalResults() != null) {
 			String resultsText = "(Search returned " + searchModel.getTotalResults() + " result(s))";
-			String resultsTextWithStyle = "Search Criteria&nbsp;&nbsp;<span style=\"font-size:12px;font-style: italic;\" tabindex=\"0\">" + resultsText + "</span>";
+			String resultsTextWithStyle = "Search Criteria&nbsp;&nbsp;<span style=\"font-size:12px;font-style: italic;\" >" + resultsText + "</span>";
 			badgeHeader.getElement().setInnerHTML(resultsTextWithStyle);
 		}
 		badgeTable.setVisible(true);
@@ -141,7 +141,7 @@ public class AdvancedSearchPillPanel {
 		badge.setTitle(badgeText);
 		badge.setStyleName("navPill");
 		badgePanel.add(badge);
-		badge.getElement().setTabIndex(0);
+		badge.getElement().setTabIndex(-1);
 	}
 	
 	private String getSubstringOfText(String text) {

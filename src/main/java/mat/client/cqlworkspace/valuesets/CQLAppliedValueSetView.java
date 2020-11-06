@@ -163,7 +163,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
         verticalPanel.getElement().setId("vPanel_VerticalPanel");
 
         heading.addStyleName("leftAligned");
-        heading.getElement().setTabIndex(0);
+        heading.getElement().setTabIndex(-1);
 
         verticalPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
         verticalPanel.add(new SpacerWidget());
@@ -381,7 +381,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
         PanelHeader qdmElementsHeader = new PanelHeader();
         qdmElementsHeader.getElement().setId("searchHeader_Label");
         qdmElementsHeader.setStyleName("CqlWorkSpaceTableHeader");
-        qdmElementsHeader.getElement().setAttribute("tabIndex", "0");
+        qdmElementsHeader.getElement().setAttribute("tabIndex", "-1");
 
         HTML searchHeaderText = new HTML("<strong>Applied Value Sets</strong>");
         qdmElementsHeader.add(searchHeaderText);
@@ -452,7 +452,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
         if (table.getColumnCount() != TABLE_ROW_COUNT) {
             Label searchHeader = new Label("Value Sets");
             searchHeader.getElement().setId("searchHeader_Label");
-            searchHeader.getElement().setAttribute("tabIndex", "0");
+            searchHeader.getElement().setAttribute("tabIndex", "-1");
             com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
             TableCaptionElement caption = elem.createCaption();
             searchHeader.setVisible(false);
@@ -617,7 +617,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
                                       CQLQualityDataSetDTO object, SafeHtmlBuilder sb,
                                       HasCell<CQLQualityDataSetDTO, X> hasCell) {
                 Cell<X> cell = hasCell.getCell();
-                sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
+                sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"-1\">");
                 if ((object != null)) {
                     cell.render(context, hasCell.getValue(object), sb);
                 } else {
@@ -668,10 +668,10 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
                 String iconCss = "fa fa-pencil fa-lg";
                 if (isEditable) {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+                            + title + "' class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
                 } else {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
+                            + title + "' class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
                 }
 
                 return sb.toSafeHtml();
@@ -715,7 +715,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
                 String iconCss = "fa fa-trash fa-lg";
 
                 sb.appendHtmlConstant("<button type=\"button\" title='"
-                        + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
+                        + title + "' class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
                 return sb.toSafeHtml();
             }
 

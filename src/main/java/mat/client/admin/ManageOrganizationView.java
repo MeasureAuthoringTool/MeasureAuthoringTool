@@ -107,7 +107,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cellTableCaption.getElement());
-		cellTableCaption.getElement().setAttribute("tabIndex", "0");
+		cellTableCaption.getElement().setAttribute("tabIndex", "-1");
 		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
@@ -164,11 +164,11 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		if (!object.isUsed()) {
 			title = "Delete";			
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\"" + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\"" + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
+					+ title + "' class=\"" + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\"" + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
 		} else {
 			title = "Organization in use.";			
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\"" + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\""+iconCss + "\"></i> <span style=\"font-size:0;\">Organization already in use.</span></button>");
+					+ title + "' class=\"" + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\""+iconCss + "\"></i> <span style=\"font-size:0;\">Organization already in use.</span></button>");
 		}
 		return sb.toSafeHtml();
 	}

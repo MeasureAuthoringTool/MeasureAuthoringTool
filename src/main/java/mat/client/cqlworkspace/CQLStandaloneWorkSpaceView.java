@@ -132,8 +132,6 @@ public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
         unsetEachSectionSelectedObject();
         mainFlowPanel.clear();
         mainFlowPanel.add(cqlParametersView.getView());
-        //508 Compliance for Parameter section
-        getCQLParametersView().getMainParamViewVerticalPanel().setFocus(true);
     }
 
 

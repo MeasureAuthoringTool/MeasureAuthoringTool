@@ -193,7 +193,7 @@ public class CQLLibraryHistoryView  {
 		Label searchHeader = new Label("Log Entry");
 		searchHeader.getElement().setId("historyCellTableCaption_Label");
 		searchHeader.setStyleName("recentSearchHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
+		searchHeader.getElement().setAttribute("tabIndex", "-1");
 				if((results!=null) && (results.size() > 0)){
 			cellTable = new CellTable<AuditLogDTO>();
 			ListDataProvider<AuditLogDTO> listDataProvider = new ListDataProvider<AuditLogDTO>();

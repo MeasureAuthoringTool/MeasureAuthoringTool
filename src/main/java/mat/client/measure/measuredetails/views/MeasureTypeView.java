@@ -184,7 +184,7 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
         Column<MeasureType, SafeHtml> measureNameColumn = new Column<MeasureType, SafeHtml>(new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(MeasureType object) {
-                return CellTableUtility.getColumnToolTip(object.getDescription(), false);
+                return CellTableUtility.getColumnToolTip(object.getDescription());
             }
         };
 

@@ -195,7 +195,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		final Column<Author, SafeHtml> measureNameColumn = new Column<Author, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Author object) {
-				return CellTableUtility.getColumnToolTip(object.getAuthorName(), " OID " + object.getOrgId(),false);
+				return CellTableUtility.getColumnToolTip(object.getAuthorName(), " OID " + object.getOrgId());
 			}
 		};
 

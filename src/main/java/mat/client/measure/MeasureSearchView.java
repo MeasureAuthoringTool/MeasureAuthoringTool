@@ -227,7 +227,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
                 Label measureSearchHeader = new Label(getMeasureListLabel());
                 measureSearchHeader.getElement().setId("measureSearchHeader_Label");
                 measureSearchHeader.setStyleName("recentSearchHeader");
-                measureSearchHeader.getElement().setTabIndex(0);
+                measureSearchHeader.getElement().setTabIndex(-1);
 
                 cellTablePanel.add(measureSearchHeader);
                 cellTablePanel.add(gridToolbar);
@@ -242,7 +242,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
             Label measureSearchHeader = new Label(getMeasureListLabel());
             measureSearchHeader.getElement().setId("measureSearchHeader_Label");
             measureSearchHeader.setStyleName("recentSearchHeader");
-            measureSearchHeader.getElement().setAttribute("tabIndex", "0");
+            measureSearchHeader.getElement().setAttribute("tabIndex", "-1");
             HTML desc = new HTML(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
             cellTablePanel.add(measureSearchHeader);
             cellTablePanel.add(new SpacerWidget());
@@ -273,7 +273,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
             Label searchHeader = new Label("Select Measures to Transfer Ownership.");
             searchHeader.getElement().setId("measureTransferOwnerShipCellTableCaption_Label");
             searchHeader.setStyleName("recentSearchHeader");
-            searchHeader.getElement().setAttribute("tabIndex", "0");
+            searchHeader.getElement().setAttribute("tabIndex", "-1");
             com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
             TableCaptionElement caption = elem.createCaption();
             caption.appendChild(searchHeader.getElement());

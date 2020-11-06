@@ -549,7 +549,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
             Label searchHeader = new Label("Applied QDM Elements");
             searchHeader.getElement().setId("searchHeader_Label");
             searchHeader.setStyleName("recentSearchHeader");
-            searchHeader.getElement().setAttribute("tabIndex", "0");
+            searchHeader.getElement().setAttribute("tabIndex", "-1");
             HTML desc = new HTML("<p> No Applied QDM Elements.</p>");
             cellTablePanel.add(searchHeader);
             cellTablePanel.add(new SpacerWidget());

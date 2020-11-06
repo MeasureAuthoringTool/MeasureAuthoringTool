@@ -186,6 +186,8 @@ public class CQLFunctionsView {
         returnTypeTextBox.setId("returnTypeTextArea_Id");
         returnTypeTextBox.setTitle("Return Type of CQL Expression");
         returnTypeTextBox.setReadOnly(true);
+        returnTypeTextBox.setEnabled(false);
+        returnTypeTextBox.setTabIndex(-1);
         returnTypeTextBox.setSize("550px", "32px");
 
         HorizontalPanel returnTypeHP = new HorizontalPanel();
@@ -314,7 +316,7 @@ public class CQLFunctionsView {
                     "Added Arguments List");
             tableHeader.getElement().setId("tableHeader_Label");
             tableHeader.setStyleName("CqlWorkSpaceTableHeader");
-            tableHeader.getElement().setAttribute("tabIndex", "0");
+            tableHeader.getElement().setAttribute("tabIndex", "-1");
             HTML desc = new HTML("<p> No Arguments Added.</p>");
             cellTablePanel.add(tableHeader);
             cellTablePanel.add(new SpacerWidget());
@@ -340,7 +342,7 @@ public class CQLFunctionsView {
                     "Added Arguments List");
             searchHeader.getElement().setId("searchHeader_Label");
             searchHeader.setStyleName("measureGroupingTableHeader");
-            searchHeader.getElement().setAttribute("tabIndex", "0");
+            searchHeader.getElement().setAttribute("tabIndex", "-1");
             com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
             TableCaptionElement caption = elem.createCaption();
             caption.appendChild(searchHeader.getElement());
@@ -424,7 +426,7 @@ public class CQLFunctionsView {
             protected <X> void render(Context context, CQLFunctionArgument object, SafeHtmlBuilder sb,
                                       HasCell<CQLFunctionArgument, X> hasCell) {
                 Cell<X> cell = hasCell.getCell();
-                sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
+                sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"-1\">");
                 if ((object != null)) {
                     cell.render(context, hasCell.getValue(object), sb);
                 } else {
@@ -445,11 +447,11 @@ public class CQLFunctionsView {
         if (hasImage) {
             String htmlConstant = "<html>"
                     + "<head> </head> <Body><img src =\"images/error.png\" alt=\"Arugment Name is InValid.\""
-                    + "title = \"Arugment Name is InValid.\"/>" + "<span tabIndex = \"0\" title='" + title + "'>"
+                    + "title = \"Arugment Name is InValid.\"/>" + "<span tabIndex = \"-1\" title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
         } else {
-            String htmlConstant = "<html>" + "<head> </head> <Body><span tabIndex = \"0\" title='" + title + "'>"
+            String htmlConstant = "<html>" + "<head> </head> <Body><span tabIndex = \"-1\" title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
         }
@@ -459,7 +461,7 @@ public class CQLFunctionsView {
 
         HasCell<CQLFunctionArgument, SafeHtml> hasCell = new HasCell<CQLFunctionArgument, SafeHtml>() {
 
-            ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
+            SafeHtmlCell modifyButonCell = new SafeHtmlCell();
 
             @Override
             public Cell<SafeHtml> getCell() {
@@ -487,10 +489,10 @@ public class CQLFunctionsView {
                 String iconCss = "fa fa-pencil fa-lg";
                 if (isEditable) {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+                            + title + "' class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
                 } else {
                     sb.appendHtmlConstant("<button type=\"button\" title='"
-                            + title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
+                            + title + "' class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
                 }
 
                 return sb.toSafeHtml();

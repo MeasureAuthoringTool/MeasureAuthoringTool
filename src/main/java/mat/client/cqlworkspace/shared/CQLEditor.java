@@ -28,6 +28,8 @@ public class CQLEditor extends EditorView {
     public CQLEditor(boolean isReadOnly) {
         this();
         this.setReadOnly(isReadOnly);
+        if (isReadOnly)
+            this.getElement().setTabIndex(-1);
     }
 
     public void setAnnotations(List<CQLError> cqlErrors, String prefix, AceAnnotationType annotationType) {

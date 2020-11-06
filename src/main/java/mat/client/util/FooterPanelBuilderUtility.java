@@ -103,7 +103,7 @@ public class FooterPanelBuilderUtility {
 					"{img_cms_logo}" +
 					"</a> "+
 					"</div> " +
-					"<div id=\"footer-address-text\" tabindex=\"-1\"> " +
+					"<div id=\"footer-address-text\"> " +
 					"A federal government website managed by the Centers for Medicare " +
 					"&amp; Medicaid Services <br> 7500 Security Boulevard, " +
 					"Baltimore, MD 21244" +

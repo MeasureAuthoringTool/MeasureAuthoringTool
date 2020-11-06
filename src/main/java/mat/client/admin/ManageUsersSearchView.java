@@ -139,7 +139,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
-				return CellTableUtility.getColumnToolTip(object.getOrgName(), "Organization: " + object.getOrgName(),false);
+				return CellTableUtility.getColumnToolTip(object.getOrgName(), "Organization: " + object.getOrgName());
 			}
 		};
 		cellTable.addColumn(organizationColumn, SafeHtmlUtils.fromSafeConstant(
@@ -148,7 +148,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		Column<Result, SafeHtml> userRoleColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
-				return CellTableUtility.getColumnToolTip(object.getUserRole(), "User Role: " + object.getUserRole(),false);
+				return CellTableUtility.getColumnToolTip(object.getUserRole(), "User Role: " + object.getUserRole());
 			}
 		};
 		cellTable.addColumn(userRoleColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"User Role\">" + "User Role" + "</span>"));
@@ -173,7 +173,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		Column<Result, SafeHtml> statusColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
-				return CellTableUtility.getColumnToolTip(object.getStatus(), "Status: " + object.getStatus(),false);
+				return CellTableUtility.getColumnToolTip(object.getStatus(), "Status: " + object.getStatus());
 			}
 		};
 		cellTable.addColumn(statusColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Status\">" + "Status" + "</span>"));

@@ -208,18 +208,18 @@ public class CQLLibraryResultTable {
         String cssClass = "customCascadeButton";
         String editState = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR) ? getEditStateOfLibrary(object) : "";
         if (object.isFamily()) {
-            sb.appendHtmlConstant("<div tabindex=\"-1\">");
+            sb.appendHtmlConstant("<div>");
             sb.appendHtmlConstant(editState);
-            sb.appendHtmlConstant("<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
-            sb.appendHtmlConstant("<span id='div2' title=\" Double-Click to open " + object.getCqlName() + "\" tabindex=\"0\">"
+            sb.appendHtmlConstant("<button id='div1' class='textEmptySpaces' disabled='disabled'></button>");
+            sb.appendHtmlConstant("<span id='div2' title=\" Double-Click to open " + object.getCqlName() + "\">"
                     + object.getCqlName() + "</span>");
             sb.appendHtmlConstant("</div>");
         } else {
-            sb.appendHtmlConstant("<div tabindex=\"-1\">");
+            sb.appendHtmlConstant("<div>");
             sb.appendHtmlConstant(editState);
             sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\"" + object.getCqlName()
-                    + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
-            sb.appendHtmlConstant("<span id='div2' title=\" Double-Click to open " + object.getCqlName() + "\" tabindex=\"0\">"
+                    + "\" class=\" " + cssClass + "\"></button>");
+            sb.appendHtmlConstant("<span id='div2' title=\" Double-Click to open " + object.getCqlName() + "\">"
                     + object.getCqlName() + "</span>");
             sb.appendHtmlConstant("</div>");
         }

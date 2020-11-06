@@ -86,6 +86,8 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
         libraryVersionTextBox.getElement().setAttribute(STYLE, MARGIN_STYLE);
         libraryVersionTextBox.getElement().setId("libraryVersionValue_TextBox");
         libraryVersionTextBox.setReadOnly(true);
+        libraryVersionTextBox.setEnabled(false);
+        libraryVersionTextBox.setTabIndex(-1);
 
         libraryVersionGroup.add(libraryVersionLabel);
         libraryVersionGroup.add(libraryVersionTextBox);
@@ -98,9 +100,12 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
         usingModeLabel.setWidth(PIXEL_150);
         usingModeLabel.setFor("usingModelValue_TextBox");
 
+
         usingModelTextBox.getElement().setAttribute(STYLE, MARGIN_STYLE);
         usingModelTextBox.getElement().setId("usingModelValue_TextBox");
         usingModelTextBox.setReadOnly(true);
+        usingModelTextBox.setEnabled(false);
+        usingModelTextBox.setTabIndex(-1);
 
         usingModelGroup.add(usingModeLabel);
         usingModelGroup.add(usingModelTextBox);
@@ -116,11 +121,14 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
         modelVersionTextBox.getElement().setAttribute(STYLE, "margin-left:15px;width:250px;height:32px;");
         modelVersionTextBox.getElement().setId("modelVersionValue_TextBox");
         modelVersionTextBox.setReadOnly(true);
+        modelVersionTextBox.setEnabled(false);
+        modelVersionTextBox.setTabIndex(-1);
+
 
         modelVersionGroup.add(modelVersionLabel);
         modelVersionGroup.add(modelVersionTextBox);
 
-        heading.getElement().setTabIndex(0);
+        heading.getElement().setTabIndex(-1);
 
         generalInfoTopPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 

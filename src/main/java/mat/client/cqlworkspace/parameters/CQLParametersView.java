@@ -4,10 +4,7 @@
 package mat.client.cqlworkspace.parameters;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
 import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
@@ -31,7 +28,7 @@ public class CQLParametersView {
 	private MatTextBox parameterNameTxtArea = new MatTextBox();
 	private DefinitionFunctionButtonToolBar parameterButtonBar = new DefinitionFunctionButtonToolBar(PARAMETER);
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton(PARAMETER);
-	private FocusPanel mainParamViewVerticalPanel = new FocusPanel();
+	private SimplePanel mainParamViewVerticalPanel = new SimplePanel();
 	private TextArea parameterCommentTextArea = new TextArea();
 	private FormGroup parameterNameGroup = new FormGroup();
 	private FormGroup parameterCommentGroup = new FormGroup();
@@ -167,7 +164,7 @@ public class CQLParametersView {
 		return parameterButtonBar;
 	}
 
-	public FocusPanel getView() {
+	public SimplePanel getView() {
 		mainParamViewVerticalPanel.clear();
 		resetAll();
 		buildView();
@@ -243,7 +240,7 @@ public class CQLParametersView {
 		getParamNameGroup().setValidationState(ValidationState.NONE);
 	}
 
-	public FocusPanel getMainParamViewVerticalPanel() {
+	public SimplePanel getMainParamViewVerticalPanel() {
 		return mainParamViewVerticalPanel;
 	}
 

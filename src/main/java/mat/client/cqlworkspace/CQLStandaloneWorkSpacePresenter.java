@@ -342,7 +342,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
         cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().addKeyPressHandler(event -> listBoxKeyPress(cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox(), event));
         cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().addDoubleClickHandler(event -> cqlLeftNavBarIncludesNameListBoxDoubleClickEvent(event));
         cqlWorkspaceView.getIncludeView().getSearchButton().addClickHandler(event -> includeViewSearchButtonClicked());
-        cqlWorkspaceView.getIncludeView().getFocusPanel().addKeyDownHandler(event -> includeFocusPanelKeyDown(event));
         cqlWorkspaceView.getIncludeView().getIncludesButtonBar().getSaveButton().addClickHandler(event -> includesViewSaveClicked());
         cqlWorkspaceView.getIncludeView().getDeleteButton().addClickHandler(event -> includesViewDeleteButtonClicked());
         cqlWorkspaceView.getIncludeView().getCloseButton().addClickHandler(event -> includeViewCloseButtonClicked());
@@ -983,7 +982,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                                 }
                             }
                             showSearchingBusy(false);
-                            cqlWorkspaceView.getCQLParametersView().getMainParamViewVerticalPanel().setFocus(true);
                         }
                     });
 
@@ -2162,7 +2160,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                 cqlWorkspaceView.resetMessageDisplay();
             }
         }
-        cqlWorkspaceView.getCQLParametersView().getMainParamViewVerticalPanel().setFocus(true);
     }
 
     private void parameterListBoxDoubleClickEventSuccess(final String selectedParamID, GetUsedCQLArtifactsResult result) {

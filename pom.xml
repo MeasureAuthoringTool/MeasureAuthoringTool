@@ -739,23 +739,4 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>local-super-dev-mode</id>
-            <properties>
-                <gwt.draftCompile>true</gwt.draftCompile>
-                <gwt.localWorkers>10</gwt.localWorkers>
-                <gwt.optimize>0</gwt.optimize>
-                <gwt.style>DETAILED</gwt.style>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.eclipse.jetty.aggregate</groupId>
-                    <artifactId>jetty-all</artifactId>
-                    <version>9.4.24.v20191120</version>
-                    <type>pom</type>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 </project>

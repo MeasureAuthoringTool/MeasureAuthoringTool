@@ -3,10 +3,7 @@ package mat.client.populationworkspace;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import mat.client.populationworkspace.model.PopulationClauseObject;
 import mat.client.populationworkspace.model.PopulationDataModel;
 import mat.client.populationworkspace.model.PopulationDataModel.ExpressionObject;
@@ -129,7 +126,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 
 	private void buildStratumGrid(StratificationsObject stratificationsObject, Grid stratumsGrid, int i) {
 		PopulationClauseObject populationClauseObject = stratificationsObject.getPopulationClauseObjectList().get(i);
-		FocusPanel nameFocusPanel = new FocusPanel();
+		SimplePanel nameFocusPanel = new SimplePanel();
 		FormLabel nameLabel = new FormLabel();
 		nameLabel.setText(populationClauseObject.getDisplayName());
 		nameLabel.setTitle(populationClauseObject.getDisplayName());
@@ -247,7 +244,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		Grid stratificationParentGrid = new Grid(1, 3);
 		stratificationParentGrid.getElement().setId("grid_" + stratificationsObject.getDisplayName());
 		stratificationParentGrid.getElement().setAttribute("style", "border-spacing:35px 10px;");
-		FocusPanel nameFocusPanel = new FocusPanel();
+		SimplePanel nameFocusPanel = new SimplePanel();
 		FormLabel nameLabel = new FormLabel();
 		nameLabel.setText(stratificationsObject.getDisplayName());
 		nameLabel.setTitle(stratificationsObject.getDisplayName());

@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import mat.client.populationworkspace.model.PopulationClauseObject;
 import mat.client.populationworkspace.model.PopulationDataModel;
 import mat.client.populationworkspace.model.PopulationDataModel.ExpressionObject;
@@ -88,7 +89,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		}
 
 		// set the name of the Initial Population clause.
-		FocusPanel nameFocusPanel = new FocusPanel();
+		SimplePanel nameFocusPanel = new SimplePanel();
 		FormLabel nameLabel = new FormLabel();
 		nameLabel.setText(populationClauseObject.getDisplayName());
 		nameLabel.setTitle(populationClauseObject.getDisplayName());

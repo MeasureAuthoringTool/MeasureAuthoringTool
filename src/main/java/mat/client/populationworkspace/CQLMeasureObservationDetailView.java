@@ -3,11 +3,7 @@ package mat.client.populationworkspace;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.populationworkspace.model.PopulationClauseObject;
 import mat.client.populationworkspace.model.PopulationDataModel;
@@ -65,7 +61,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
 		Grid headerGrid = new Grid(1, 2);
 
-		FocusPanel aggFuncHeaderPanel = new FocusPanel();
+		SimplePanel aggFuncHeaderPanel = new SimplePanel();
 		HTML aggFuncLabel = new HTML("<b><u>Aggregate Function</u></b>");
 		aggFuncLabel.setTitle("Aggregate Function");
 		aggFuncLabel.getElement().setAttribute("aria-label", "Aggregate Function");
@@ -77,7 +73,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		headerGrid.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
 		headerGrid.setWidget(0, 0, aggFuncHeaderPanel);
 
-		FocusPanel funcHeaderPanel = new FocusPanel();
+		SimplePanel funcHeaderPanel = new SimplePanel();
 		HTML funcLabel = new HTML("<b><u>Function</u></b>");
 		funcLabel.setTitle("Function");
 		funcLabel.getElement().setAttribute("aria-label", "Function");

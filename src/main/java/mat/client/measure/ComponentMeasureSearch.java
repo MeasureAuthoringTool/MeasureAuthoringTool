@@ -29,7 +29,6 @@ import mat.client.resource.CellTableResource;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
-import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MatTextCell;
 import mat.client.shared.MessageAlert;
@@ -37,8 +36,8 @@ import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
-import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.MeasureSearchModel;
+import mat.shared.SafeHtmlCell;
 import mat.shared.SearchModel.VersionType;
 import mat.shared.StringUtility;
 import org.gwtbootstrap3.client.ui.Button;
@@ -253,7 +252,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 		
 		availableMeasuresTable = new CellTable<ManageMeasureSearchModel.Result>(pageSize,
 				(Resources) GWT.create(CellTableResource.class));
-		availableMeasuresTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		availableMeasuresTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		availableMeasuresTable.setWidth("100%");
 		buildAvailableMeasuresTableColumns();
 		availableMeasuresPanel.add(availableMeasuresTable);
@@ -296,7 +295,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 		appliedComponentTable.setRowData(appliedComponentMeasuresList);
 		appliedComponentTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-				new ClickableSafeHtmlCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
@@ -311,7 +310,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 				+ "Measure Name" + "</span>"));
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> version = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				return CellTableUtility.getColumnToolTip(object.getVersion());
@@ -323,7 +322,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 		
 
 		Column<ManageMeasureSearchModel.Result, SafeHtml> scoringType = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				return CellTableUtility.getColumnToolTip(object.getScoringType());
@@ -374,7 +373,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 		availableMeasuresTable.setPageSize(pageSize);
 		availableMeasuresTable.setRowData(availableMeasuresList);
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-				new ClickableSafeHtmlCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {				
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
@@ -389,7 +388,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 				+ "Measure Name" + "</span>"));
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> version = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				return CellTableUtility.getColumnToolTip(object.getVersion());
@@ -401,7 +400,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 		
 
 		Column<ManageMeasureSearchModel.Result, SafeHtml> scoringType = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				return CellTableUtility.getColumnToolTip(object.getScoringType());
@@ -412,7 +411,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 						+ "</span>"));
 	
 		Column<ManageMeasureSearchModel.Result, SafeHtml> patientBasedIndicator = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				String patientBasedString = (object.isPatientBased() != null && object.isPatientBased()) ? "Yes" : "No";
@@ -423,7 +422,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 		
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> ownerName = new Column<
-				ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
+				ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				return CellTableUtility.getColumnToolTip(object.getOwnerFirstName()
@@ -490,7 +489,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 	}
 	
 	private Column<ManageMeasureSearchModel.Result, SafeHtml> buildReplaceColumnn() {
-		Cell<SafeHtml> replaceButtonCell = new ClickableSafeHtmlCell();
+		Cell<SafeHtml> replaceButtonCell = new SafeHtmlCell();
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> replaceColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(replaceButtonCell) {
 			@Override
@@ -561,7 +560,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 	}
 	
 	private Column<ManageMeasureSearchModel.Result, SafeHtml> buildDeleteColumn() {
-		Cell<SafeHtml> deleteButtonCell = new ClickableSafeHtmlCell();
+		Cell<SafeHtml> deleteButtonCell = new SafeHtmlCell();
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> deleteColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(deleteButtonCell) {
 			@Override

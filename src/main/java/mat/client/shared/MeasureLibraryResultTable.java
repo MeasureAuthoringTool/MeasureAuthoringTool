@@ -1,9 +1,7 @@
 package mat.client.shared;
 
-import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.dom.client.BrowserEvents;
-import com.google.gwt.dom.client.EventTarget;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -21,8 +19,10 @@ import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.util.CellTableUtility;
 import mat.client.util.FeatureFlagConstant;
 import mat.model.clause.ModelTypeHelper;
+import mat.shared.SafeHtmlCell;
 import mat.shared.model.util.MeasureDetailsUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -42,7 +42,9 @@ public class MeasureLibraryResultTable {
     private CellTable<ManageMeasureSearchModel.Result> table;
     private Observer observer;
 
-    public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(MeasureLibraryGridToolbar gridToolbar, CellTable<ManageMeasureSearchModel.Result> table, HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
+    public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(MeasureLibraryGridToolbar gridToolbar,
+                                                                       CellTable<ManageMeasureSearchModel.Result> table,
+                                                                       HasSelectionHandlers<ManageMeasureSearchModel.Result> fireEvent) {
         this.table = table;
         this.gridToolbar = gridToolbar;
         selectionModel = new MultiSelectionModel<>();
@@ -54,12 +56,12 @@ public class MeasureLibraryResultTable {
         addToolbarHandlers(fireEvent);
 
         Column<ManageMeasureSearchModel.Result, Boolean> checkColumn = getSelectionModelColumn();
-        table.addColumn(checkColumn);
+        table.addColumn(checkColumn,SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select" + "</span>"));
         table.setColumnWidth(checkColumn, CHECKBOX_COLUMN_WIDTH, Style.Unit.PCT);
 
         // Measure Name Column
         Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-                new MatSafeHTMLCell()) {
+                new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
                 return getMeasureNameColumnToolTip(object);
@@ -70,8 +72,8 @@ public class MeasureLibraryResultTable {
                 SafeHtmlUtils.fromSafeConstant("<span title='Measure Name Column'>" + "Measure Name" + "</span>"));
 
         // Model Version Column
-        Column<ManageMeasureSearchModel.Result, SafeHtml> modelVersion = new Column<ManageMeasureSearchModel.Result, SafeHtml> (
-                new MatSafeHTMLCell()) {
+        Column<ManageMeasureSearchModel.Result, SafeHtml> modelVersion = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+                new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
                 return CellTableUtility.getColumnToolTip(getModelVersion(object));
@@ -81,8 +83,8 @@ public class MeasureLibraryResultTable {
         table.setColumnWidth(modelVersion, VERSION_COLUMN_WIDTH, Style.Unit.PCT);
 
         // Version Column
-        Column<ManageMeasureSearchModel.Result, SafeHtml> version = new Column<ManageMeasureSearchModel.Result, SafeHtml> (
-                new MatSafeHTMLCell()) {
+        Column<ManageMeasureSearchModel.Result, SafeHtml> version = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+                new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
                 return CellTableUtility.getColumnToolTip(object.getVersion());
@@ -92,8 +94,8 @@ public class MeasureLibraryResultTable {
         table.setColumnWidth(version, VERSION_COLUMN_WIDTH, Style.Unit.PCT);
 
         // Measure Model Column
-        Column<ManageMeasureSearchModel.Result, SafeHtml> model = new Column<ManageMeasureSearchModel.Result, SafeHtml> (
-                new MatSafeHTMLCell()) {
+        Column<ManageMeasureSearchModel.Result, SafeHtml> model = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+                new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
                 return CellTableUtility.getColumnToolTip(MeasureDetailsUtil.getModelTypeDisplayName(object.getMeasureModel()));
@@ -105,21 +107,19 @@ public class MeasureLibraryResultTable {
         // Add event handler for table
         table.addCellPreviewHandler(event -> {
             String eventType = event.getNativeEvent().getType();
-            EventTarget target = event.getNativeEvent().getCurrentEventTarget();
             Result obj = event.getValue();
-            event.getNativeEvent().preventDefault();
             if (BrowserEvents.CLICK.equalsIgnoreCase(eventType)) {
                 obj.incrementClickCount();
                 if (obj.getClickCount() == 1) {
+                    selectionModel.setSelected(obj, !selectionModel.isSelected(obj));
                     singleClickTimer = new Timer() {
                         @Override
                         public void run() {
                             obj.setClickCount(0);
-                            selectionModel.setSelected(obj, !selectionModel.isSelected(obj));
                         }
                     };
                     singleClickTimer.schedule(MOUSE_CLICK_DELAY);
-                } else if (obj.getClickCount() == 2  && obj.isMeasureEditOrViewable()) {
+                } else if (obj.getClickCount() == 2 && obj.isMeasureEditOrViewable()) {
                     singleClickTimer.cancel();
                     obj.setClickCount(0);
                     SelectionEvent.fire(fireEvent, obj);
@@ -246,22 +246,22 @@ public class MeasureLibraryResultTable {
     private SafeHtml getMeasureNameColumnToolTip(ManageMeasureSearchModel.Result object) {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         String cssClass = "customCascadeButton";
-        String editState = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR) ? getEditStateOfMeasure(object) : "";
+        String editState = MatContext.get().getFeatureFlagStatus(FeatureFlagConstant.MAT_ON_FHIR) ?
+                getEditStateOfMeasure(object) : "";
         if (object.isMeasureFamily()) {
             sb.appendHtmlConstant("<div class=\"pull-left\">")
                     .appendHtmlConstant(editState)
-                    .appendHtmlConstant("<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>")
+                    .appendHtmlConstant("<button id='div1' class='textEmptySpaces' disabled tabIndex='-1'></button>")
                     .appendHtmlConstant("</div>");
         } else {
             sb.appendHtmlConstant("<div class=\"pull-left\">")
                     .appendHtmlConstant(editState)
-                    .appendHtmlConstant("<button id='div1' type=\"button\" title=\""
-                            + SafeHtmlUtils.htmlEscape(object.getName()) + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>")
+                    .appendHtmlConstant("<button id='div1' disabled tabIndex='-1' "
+                            + SafeHtmlUtils.htmlEscape(object.getName()) + "\" class=\"" + cssClass + "\"></button>")
                     .appendHtmlConstant("</div>");
 
         }
-        sb.appendHtmlConstant("<div class=\"pull-left\" title=\" Double-Click to open "
-                + SafeHtmlUtils.htmlEscape(object.getName()) + "\" tabindex=\"0\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</div>");
+        sb.appendHtmlConstant("<div class=\"pull-left\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</div>");
         return sb.toSafeHtml();
     }
 
@@ -275,15 +275,21 @@ public class MeasureLibraryResultTable {
 
 
     private Column<ManageMeasureSearchModel.Result, Boolean> getSelectionModelColumn() {
-        // Add a selection model so we can select cells.
-        Column<ManageMeasureSearchModel.Result, Boolean> checkColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(
-                new CheckboxCell(true, true)) {
-            @Override
-            public Boolean getValue(ManageMeasureSearchModel.Result object) {
-                return selectionModel.isSelected(object);
-            }
-        };
-        return checkColumn;
+        MatCheckBoxCell matCB = new MatCheckBoxCell(false, true);
+        final Column<ManageMeasureSearchModel.Result, Boolean> selectColumn = new
+                Column<ManageMeasureSearchModel.Result, Boolean>(matCB) {
+                    @Override
+                    public Boolean getValue(ManageMeasureSearchModel.Result object) {
+                        matCB.setTitle("Click checkbox to select " + object.getName());
+                        return selectionModel.isSelected(object);
+                    }
+                };
+
+        selectColumn.setFieldUpdater((index, object, value) -> {
+            selectionModel.setSelected(object, value);
+        });
+
+        return selectColumn;
     }
 
     /**

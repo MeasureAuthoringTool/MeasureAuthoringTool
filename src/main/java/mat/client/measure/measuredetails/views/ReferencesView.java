@@ -27,7 +27,7 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
-import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.SafeHtmlCell;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureReferenceType;
 import mat.shared.measure.measuredetails.models.ReferencesModel;
@@ -62,7 +62,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         measureSearchHeader.getElement().setAttribute("tabIndex", "0");
         TableCaptionElement caption = elem.createCaption();
         caption.appendChild(measureSearchHeader.getElement());
-        Column<ReferenceTextAndType, SafeHtml> descriptionColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
+        Column<ReferenceTextAndType, SafeHtml> descriptionColumn = new Column<ReferenceTextAndType, SafeHtml>(new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ReferenceTextAndType ref) {
                 String origRefText = ref.getReferenceText();
@@ -73,7 +73,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         referencesTable.addColumn(descriptionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Description\">" + "Description" + "</span>"));
 
 
-        Column<ReferenceTextAndType, SafeHtml> referenceTypeColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
+        Column<ReferenceTextAndType, SafeHtml> referenceTypeColumn = new Column<ReferenceTextAndType, SafeHtml>(new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ReferenceTextAndType ref) {
                 return CellTableUtility.getColumnToolTip(SafeHtmlUtils.htmlEscape(ref.getReferenceType().getDisplayName()));
@@ -81,7 +81,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         };
         referencesTable.addColumn(referenceTypeColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Reference Type\">" + "Reference Type" + "</span>"));
 
-        Column<ReferenceTextAndType, SafeHtml> editColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
+        Column<ReferenceTextAndType, SafeHtml> editColumn = new Column<ReferenceTextAndType, SafeHtml>(new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ReferenceTextAndType ref) {
                 return getEditColumnToolTip();
@@ -105,7 +105,7 @@ public class ReferencesView implements MeasureDetailViewInterface {
         String columnText = isReadOnly ? "View" : "Edit";
         referencesTable.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Index\">" + columnText + "</span>"));
 
-        Column<ReferenceTextAndType, SafeHtml> deleteColumn = new Column<ReferenceTextAndType, SafeHtml>(new ClickableSafeHtmlCell()) {
+        Column<ReferenceTextAndType, SafeHtml> deleteColumn = new Column<ReferenceTextAndType, SafeHtml>(new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(ReferenceTextAndType ref) {
                 return getDeleteColumnToolTip();

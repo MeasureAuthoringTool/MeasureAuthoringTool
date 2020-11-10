@@ -476,7 +476,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		List<ValueSet> groupedValueSets = ValueSet.getGroupedValueSet();
 		
 		CellTable<ValueSet> groupingValueSetTable = new CellTable<ValueSet>();
-		groupingValueSetTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		groupingValueSetTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		groupingValueSetTable.getElement().setAttribute("tabIndex", "0");
 		groupingValueSetTable.addStyleName("valueSetMarginLeft_7px");
 		groupingValueSetTable.addStyleName("valueSetMarginTop");

@@ -139,10 +139,8 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
             @Override
             public Boolean getValue(MeasureType object) {
                 if (COMPOSITE.equals(object.getAbbrName())) {
-                    chbxCell.setUsed(true);
                     chbxCell.setTitle(COMPOSITE_TOOLTIP);
                 } else {
-                    chbxCell.setUsed(!editable);
                     chbxCell.setTitle(SELECT_TOOLTIP + object.getDescription());
                 }
 

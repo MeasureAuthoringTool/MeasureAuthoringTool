@@ -161,7 +161,6 @@ public abstract class MainLayout {
         content.getElement().setAttribute("aria-atomic", "true");
         content.getElement().setAttribute("aria-relevant", "all");
         content.setStylePrimaryName("mainContentPanel");
-        content.setTabIndex(-1);
         setId(content, "content");
         Mat.removeInputBoxFromFocusPanel(content.getElement());
 
@@ -421,7 +420,6 @@ public abstract class MainLayout {
         link.setText(text);
         link.setTitle(text);
         link.setTabIndex(0);
-        link.setTabIndex(-1);
         link.setId("Anchor_" + text);
         link.setColor("#337ab7");
     }

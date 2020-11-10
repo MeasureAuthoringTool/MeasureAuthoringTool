@@ -76,7 +76,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 		privateCheck.getElement().setId("privateMeasure_CheckBox");
 		privateCheck.setTitle("Click to mark measure as private");
 		privateCheck.addValueChangeHandler(event -> {
-			if(privateCheck.isChecked()) {
+			if(privateCheck.getValue()) {
 				privateCheck.setTitle("Click to mark measure public");
 			} else {
 				privateCheck.setTitle("Click to mark measure private");

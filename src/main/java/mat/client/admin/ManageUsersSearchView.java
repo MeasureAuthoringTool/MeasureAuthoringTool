@@ -39,7 +39,6 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
-import mat.shared.ClickableSafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Button;
 
 import java.util.ArrayList;
@@ -105,7 +104,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	 * @return the cell table
 	 */
 	private CellTable<Result> addColumnToTable(final CellTable<Result> cellTable) {
-		cellTable.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
+		cellTable.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.DISABLED);
 		Label cellTableCaption = new Label("Manage Users");
 		cellTableCaption.getElement().setId("manageUserCellTableCaption_Label");
 		cellTableCaption.setStyleName("recentSearchHeader");
@@ -114,7 +113,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		caption.appendChild(cellTableCaption.getElement());
 		cellTableCaption.getElement().setAttribute("tabIndex", "-1");
 		
-		Column<Result, SafeHtml> nameColumn = new Column<Result, SafeHtml>(new ClickableSafeHtmlCell()) {
+		Column<Result, SafeHtml> nameColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
 				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();

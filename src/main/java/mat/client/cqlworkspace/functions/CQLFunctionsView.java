@@ -35,7 +35,6 @@ import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLFunctionArgument;
-import mat.shared.ClickableSafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -506,7 +505,7 @@ public class CQLFunctionsView {
 
         HasCell<CQLFunctionArgument, SafeHtml> hasCell = new HasCell<CQLFunctionArgument, SafeHtml>() {
 
-            ClickableSafeHtmlCell deleteButonCell = new ClickableSafeHtmlCell();
+            SafeHtmlCell deleteButonCell = new SafeHtmlCell();
 
             @Override
             public Cell<SafeHtml> getCell() {

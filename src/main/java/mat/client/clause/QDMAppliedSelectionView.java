@@ -502,7 +502,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
                 && (appliedListModel.getAppliedQDMs().size() > 0)) {
             table = new CellTable<QualityDataSetDTO>();
             setEditable(isEditable);
-            table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+            table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
             listDataProvider = new ListDataProvider<QualityDataSetDTO>();
             qdmSelectedList = new ArrayList<QualityDataSetDTO>();
             table.setPageSize(TABLE_ROW_COUNT);

@@ -117,6 +117,7 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         libraryVersionTextBox.getElement().setAttribute(STYLE, MARGIN_STYLE);
         libraryVersionTextBox.getElement().setId("libraryVersionValue_TextBox");
         libraryVersionTextBox.setReadOnly(true);
+        libraryVersionTextBox.setEnabled(false);
 
         libraryVersionGroup.add(libraryVersionLabel);
         libraryVersionGroup.add(libraryVersionTextBox);
@@ -132,6 +133,7 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         usingModelTextBox.getElement().setAttribute(STYLE, MARGIN_STYLE);
         usingModelTextBox.getElement().setId("usingModelValue_TextBox");
         usingModelTextBox.setReadOnly(true);
+        usingModelTextBox.setEnabled(false);
 
         usingModelGroup.add(usingModeLabel);
         usingModelGroup.add(usingModelTextBox);
@@ -147,11 +149,10 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         modelVersionTextBox.getElement().setAttribute(STYLE, "margin-left:15px;width:250px;height:32px;");
         modelVersionTextBox.getElement().setId("modelVersionValue_TextBox");
         modelVersionTextBox.setReadOnly(true);
+        modelVersionTextBox.setEnabled(false);
 
         modelVersionGroup.add(modelVersionLabel);
         modelVersionGroup.add(modelVersionTextBox);
-
-        heading.getElement().setTabIndex(0);
 
         generalInfoTopPanel.add(SharedCQLWorkspaceUtility.buildHeaderPanel(heading, inAppHelp));
 

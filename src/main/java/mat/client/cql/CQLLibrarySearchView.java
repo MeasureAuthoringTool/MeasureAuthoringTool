@@ -37,14 +37,13 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
-import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.ClientConstants;
 import mat.model.cql.CQLLibraryDataSetObject;
-import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.LibrarySearchModel;
+import mat.shared.SafeHtmlCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,7 +172,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
         cellTablePanel.setStyleName("cellTablePanel");
         if ((result != null) && (result.getCqlLibraryDataSetObjects().size() > 0)) {
             table = new CellTable<>(PAGE_SIZE, (Resources) GWT.create(CellTableResource.class));
-            table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+            table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
             selectedList = new ArrayList<>();
             availableLibrariesList = new ArrayList<>();
             availableLibrariesList.addAll(result.getCqlLibraryDataSetObjects());
@@ -297,7 +296,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 
         // CQL Library Name Column
         Column<CQLLibraryDataSetObject, SafeHtml> cqlLibraryName = new Column<CQLLibraryDataSetObject, SafeHtml>(
-                new ClickableSafeHtmlCell()) {
+                new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
                 return getCQLLibraryNameColumnToolTip(object);
@@ -309,7 +308,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 
         // Version Column
         Column<CQLLibraryDataSetObject, SafeHtml> ownerName = new Column<CQLLibraryDataSetObject, SafeHtml>(
-                new MatSafeHTMLCell()) {
+                new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
                 return CellTableUtility.getColumnToolTip(object.getOwnerFirstName() + "  " + object.getOwnerLastName(),
@@ -321,7 +320,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 
         // Finalized Date
         Column<CQLLibraryDataSetObject, SafeHtml> emailAddress = new Column<CQLLibraryDataSetObject, SafeHtml>(
-                new MatSafeHTMLCell()) {
+                new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(CQLLibraryDataSetObject object) {
                 return CellTableUtility.getColumnToolTip(object.getOwnerEmailAddress());

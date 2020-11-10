@@ -205,7 +205,7 @@ public class EditIncludedLibraryDialogBox {
 		if (tempLibraries.size() > 0) {
 			table = new CellTable<CQLLibraryDataSetObject>();
 			// setEditable(isEditable);
-			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			listDataProvider = new ListDataProvider<CQLLibraryDataSetObject>();
 			/* qdmSelectedList = new ArrayList<CQLLibraryModel>(); */
 			table.setPageSize(TABLE_ROW_COUNT);
@@ -216,7 +216,6 @@ public class EditIncludedLibraryDialogBox {
 					listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
 			selectionModel = new SingleSelectionModel<CQLLibraryDataSetObject>();
-			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			table.setSelectionModel(selectionModel);
 			table = addColumnToTable(table, sortHandler);
 			listDataProvider.addDataDisplay(table);
@@ -378,7 +377,7 @@ public class EditIncludedLibraryDialogBox {
 	private HasCell<CQLLibraryDataSetObject, Boolean> getCheckBoxCell(final boolean isUsed) {
 		HasCell<CQLLibraryDataSetObject, Boolean> hasCell = new HasCell<CQLLibraryDataSetObject, Boolean>() {
 
-			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true, isUsed);
+			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
 
 			@Override
 			public Cell<Boolean> getCell() {

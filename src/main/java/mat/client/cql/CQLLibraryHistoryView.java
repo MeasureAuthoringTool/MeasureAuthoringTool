@@ -21,11 +21,11 @@ import mat.client.CustomPager;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.dto.AuditLogDTO;
+import mat.shared.SafeHtmlCell;
 
 import java.util.Date;
 import java.util.List;
@@ -130,7 +130,7 @@ public class CQLLibraryHistoryView  {
 	private CellTable<AuditLogDTO> addColumnToTable(CellTable<AuditLogDTO> cellTable) {
 		
 		Column<AuditLogDTO, SafeHtml> userAction = new Column<AuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(AuditLogDTO object) {
 				return CellTableUtility.getColumnToolTip(object.getActivityType());
@@ -141,7 +141,7 @@ public class CQLLibraryHistoryView  {
 						+ "</span>"));
 		
 		Column<AuditLogDTO, SafeHtml> lastModifiedBy = new Column<AuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(AuditLogDTO object) {
 				return CellTableUtility.getColumnToolTip(object.getUserId());
@@ -152,7 +152,7 @@ public class CQLLibraryHistoryView  {
 						+ "</span>"));
 		
 		Column<AuditLogDTO, SafeHtml> lastModifiedDate = new Column<AuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(AuditLogDTO object) {
 				return CellTableUtility.getColumnToolTip(convertDateToString(object.getEventTs()));
@@ -163,7 +163,7 @@ public class CQLLibraryHistoryView  {
 						+ "</span>"));
 		
 		Column<AuditLogDTO, SafeHtml> additionalInfo = new Column<AuditLogDTO, SafeHtml>(
-				new MatSafeHTMLCell()) {
+				new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(AuditLogDTO object) {
 				if(object.getAdditionlInfo()!=null){
@@ -197,7 +197,7 @@ public class CQLLibraryHistoryView  {
 				if((results!=null) && (results.size() > 0)){
 			cellTable = new CellTable<AuditLogDTO>();
 			ListDataProvider<AuditLogDTO> listDataProvider = new ListDataProvider<AuditLogDTO>();
-			cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			cellTable.setRowData(results);
 			cellTable.setRowCount(results.size(), true);
 			cellTable.setPageSize(PAGE_SIZE);

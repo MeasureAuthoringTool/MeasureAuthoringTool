@@ -155,7 +155,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		caption.appendChild(measureSearchHeader.getElement());
 		authorSelectionModel = new MultiSelectionModel<>();
 		authorCellTable.setSelectionModel(authorSelectionModel);
-		final MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true, !editable);
+		final MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true);
 		final Column<Author, Boolean> selectColumn = new Column<Author, Boolean>(chbxCell) {
 			@Override
 			public Boolean getValue(Author object) {

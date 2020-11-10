@@ -50,7 +50,6 @@ import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.MatCodeTransferObject;
 import mat.model.cql.CQLCode;
-import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.StringUtility;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -587,7 +586,7 @@ public class CQLCodesView {
 			codesSelectedList = new ArrayList<>();
 			table = new CellTable<>();
 			setEditable(checkForEditPermission);
-			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			listDataProvider = new ListDataProvider<>();
 
 			table.setPageSize(TABLE_ROW_COUNT);
@@ -871,7 +870,7 @@ public class CQLCodesView {
 
 		return new HasCell<CQLCode, SafeHtml>() {
 
-			ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
+			SafeHtmlCell modifyButonCell = new SafeHtmlCell();
 
 			@Override
 			public Cell<SafeHtml> getCell() {
@@ -920,7 +919,7 @@ public class CQLCodesView {
 
 		return new HasCell<CQLCode, SafeHtml>() {
 
-			ClickableSafeHtmlCell deleteButonCell = new ClickableSafeHtmlCell();
+			SafeHtmlCell deleteButonCell = new SafeHtmlCell();
 
 			@Override
 			public Cell<SafeHtml> getCell() {

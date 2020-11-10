@@ -36,7 +36,6 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
-import mat.shared.ClickableSafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Button;
 
 import java.util.ArrayList;
@@ -108,7 +107,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cellTableCaption.getElement());
 		cellTableCaption.getElement().setAttribute("tabIndex", "-1");
-		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new ClickableSafeHtmlCell()) {
+		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
 				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
@@ -136,7 +135,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		};
 		cellTable.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
 		
-		Column<Result, SafeHtml> editColumn = new Column<Result, SafeHtml>( new ClickableSafeHtmlCell()) {
+		Column<Result, SafeHtml> editColumn = new Column<Result, SafeHtml>( new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
 				return getDeleteColumnToolTip(object);

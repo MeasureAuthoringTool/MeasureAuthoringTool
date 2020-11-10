@@ -243,7 +243,7 @@ public class TransferOwnershipView {
 	public void buildCellTable(TransferOwnerShipModel results) {
 		cellTablePanel.clear();
 		table = new CellTable<TransferOwnerShipModel.Result>();
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		ListDataProvider<TransferOwnerShipModel.Result> sortProvider = new ListDataProvider<TransferOwnerShipModel.Result>();
 		selectedUserList = new ArrayList<TransferOwnerShipModel.Result>();
 		selectedUserList.addAll(results.getData());

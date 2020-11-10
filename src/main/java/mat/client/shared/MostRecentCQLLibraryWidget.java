@@ -57,7 +57,7 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
         gridToolbar.getElement().setAttribute("id", "recentActivitySummary_gridToolbar");
 
         cellTable.setWidth("100%");
-        cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+        cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
         ListDataProvider<CQLLibraryDataSetObject> sortProvider = new ListDataProvider<>();
         cellTable.setPageSize(2);
         cellTable.redraw();

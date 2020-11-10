@@ -372,7 +372,7 @@ public class CQLIncludeLibraryView {
 		
 		if (result != null && !result.getCqlLibraryDataSetObjects().isEmpty()) {
 			table = new CellTable<>();
-			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			listDataProvider = new ListDataProvider<>();
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
@@ -381,7 +381,6 @@ public class CQLIncludeLibraryView {
 			ListHandler<CQLLibraryDataSetObject> sortHandler = new ListHandler<>(listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
 			selectionModel = new SingleSelectionModel<>();
-			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			table.setSelectionModel(selectionModel);
 			table = addColumnToTable(table, isEditable);
 			listDataProvider.addDataDisplay(table);
@@ -537,7 +536,7 @@ public class CQLIncludeLibraryView {
 	private HasCell<CQLLibraryDataSetObject, Boolean> getCheckBoxCell(final boolean isUsed){
 		return new HasCell<CQLLibraryDataSetObject, Boolean>() {
 			
-			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true, isUsed);
+			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
 			
 			@Override
 			public Cell<Boolean> getCell() {

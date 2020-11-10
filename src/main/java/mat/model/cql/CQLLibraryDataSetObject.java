@@ -41,6 +41,7 @@ public class CQLLibraryDataSetObject implements IsSerializable, BaseModel {
     private boolean isDeletable;
     private String libraryModelType;
     private boolean fhirConvertible;
+    private transient int clickCount;
 
     private List<CQLError> cqlErrors = new ArrayList<>();
 
@@ -329,4 +330,11 @@ public class CQLLibraryDataSetObject implements IsSerializable, BaseModel {
         this.fhirConvertible = fhirConvertible;
     }
 
+    public int getClickCount() {
+        return clickCount;
+    }
+
+    public void setClickCount(int clickCount) {
+        this.clickCount = clickCount;
+    }
 }

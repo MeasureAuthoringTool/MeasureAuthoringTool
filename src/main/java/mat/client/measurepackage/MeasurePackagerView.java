@@ -2,7 +2,6 @@ package mat.client.measurepackage;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -46,7 +45,7 @@ import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.model.cql.CQLDefinition;
-import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.SafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.Panel;
@@ -760,7 +759,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 	
 	private Column<MeasurePackageDetail, SafeHtml> getDeleteColumn() {
-		Cell<SafeHtml> deleteButtonCell = new ClickableSafeHtmlCell();
+		Cell<SafeHtml> deleteButtonCell = new mat.shared.SafeHtmlCell();
 		
 		Column<MeasurePackageDetail, SafeHtml> deleteColumn = new Column<MeasurePackageDetail, SafeHtml>(deleteButtonCell) {
 			@Override
@@ -787,7 +786,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 	
 	private Column<MeasurePackageDetail, SafeHtml> getEditOrViewColumn(boolean isEditable) {
-		Cell<SafeHtml> editButtonCell = new ClickableSafeHtmlCell(); 
+		Cell<SafeHtml> editButtonCell = new SafeHtmlCell();
 		Column<MeasurePackageDetail, SafeHtml> editColumn = new Column<MeasurePackageDetail, SafeHtml>(editButtonCell) {
 			@Override
 			public SafeHtml getValue(MeasurePackageDetail object) {
@@ -829,7 +828,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 			PanelBody measureGroupingTablePanelBody = new PanelBody();
 			CellTable<MeasurePackageDetail> table = new CellTable<>();
-			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			ListDataProvider<MeasurePackageDetail> sortProvider = new ListDataProvider<>();
 			List<MeasurePackageDetail> measureGroupingList = new ArrayList<>();
 			measureGroupingList.addAll(packages);

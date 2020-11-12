@@ -45,7 +45,7 @@ public class CqlComposerPresenterTest {
                 .build();
         MatContext.get().setCurrentLibraryInfo(selectedEvent);
         CqlComposerPresenter.setContentHeading();
-        Mockito.verify(heading, Mockito.times(1)).setHTML(Mockito.eq("<a class='invisible' name='CqlComposer'></a><h1>library1 v1 (QDM / QDM)</h1>"));
+        Mockito.verify(heading, Mockito.times(1)).setHTML(Mockito.eq("<span class='invisible' name='CqlComposer'></span><h1>library1 v1 (QDM / QDM)</h1>"));
     }
 
     @Test
@@ -61,6 +61,6 @@ public class CqlComposerPresenterTest {
                 .build();
         MatContext.get().setCurrentLibraryInfo(selectedEvent);
         CqlComposerPresenter.setContentHeading();
-        Mockito.verify(heading, Mockito.times(1)).setHTML(Mockito.eq("<a class='invisible' name='CqlComposer'></a><h1>library1 v1</h1>"));
+        Mockito.verify(heading, Mockito.times(1)).setHTML(Mockito.eq("<span class='invisible' name='CqlComposer'></span><h1>library1 v1</h1>"));
     }
 }

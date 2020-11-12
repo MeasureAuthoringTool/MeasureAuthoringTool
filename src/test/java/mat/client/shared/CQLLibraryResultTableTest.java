@@ -2,6 +2,7 @@ package mat.client.shared;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.model.cql.CQLLibraryDataSetObject;
@@ -24,7 +25,7 @@ public class CQLLibraryResultTableTest {
     @Test
     public void testHistoryClick() {
         CQLLibraryDataSetObject selected = new CQLLibraryDataSetObject();
-        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
         resultTable.onHistory(selectionModel);
@@ -36,7 +37,7 @@ public class CQLLibraryResultTableTest {
     public void testDeleteClickNoInteraction() {
         CQLLibraryDataSetObject selected = new CQLLibraryDataSetObject();
 
-        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
         resultTable.onDelete(selectionModel);
@@ -49,7 +50,7 @@ public class CQLLibraryResultTableTest {
         CQLLibraryDataSetObject selected = new CQLLibraryDataSetObject();
         selected.setDeletable(true);
 
-        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
         resultTable.onDelete(selectionModel);
@@ -62,7 +63,7 @@ public class CQLLibraryResultTableTest {
         CQLLibraryDataSetObject selected = new CQLLibraryDataSetObject();
         selected.setFhirConvertible(true);
 
-        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
         resultTable.onConvert(selectionModel);
@@ -74,7 +75,7 @@ public class CQLLibraryResultTableTest {
     public void testDraftOrVersionNoInteraction() {
         CQLLibraryDataSetObject selected = new CQLLibraryDataSetObject();
 
-        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
         resultTable.onDraftOrVersion(selectionModel);
@@ -87,7 +88,7 @@ public class CQLLibraryResultTableTest {
         CQLLibraryDataSetObject selected = new CQLLibraryDataSetObject();
         selected.setDraftable(true);
 
-        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
         resultTable.onDraftOrVersion(selectionModel);
@@ -100,7 +101,7 @@ public class CQLLibraryResultTableTest {
         CQLLibraryDataSetObject selected = new CQLLibraryDataSetObject();
         selected.setSharable(true);
 
-        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
         resultTable.onShare(selectionModel);
@@ -112,7 +113,7 @@ public class CQLLibraryResultTableTest {
     public void testShareClickNoInteraction() {
         CQLLibraryDataSetObject selected = new CQLLibraryDataSetObject();
 
-        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
         resultTable.onShare(selectionModel);
@@ -124,7 +125,7 @@ public class CQLLibraryResultTableTest {
     public void testEditClickNoInteraction() {
         CQLLibraryDataSetObject selected = new CQLLibraryDataSetObject();
 
-        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
         resultTable.onEditOrViewClicked(selectionModel, Mockito.mock(HasSelectionHandlers.class));
@@ -138,7 +139,7 @@ public class CQLLibraryResultTableTest {
         selected.setEditable(true);
         selected.setLocked(true);
 
-        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
         resultTable.onEditOrViewClicked(selectionModel, Mockito.mock(HasSelectionHandlers.class));
@@ -151,7 +152,7 @@ public class CQLLibraryResultTableTest {
         CQLLibraryDataSetObject selected = new CQLLibraryDataSetObject();
         selected.setEditable(true);
 
-        MultiSelectionModel<CQLLibraryDataSetObject> selectionModel = new MultiSelectionModel<>();
+        SingleSelectionModel<CQLLibraryDataSetObject> selectionModel = new SingleSelectionModel<>();
         selectionModel.setSelected(selected, true);
 
         resultTable.onEditOrViewClicked(selectionModel, Mockito.mock(HasSelectionHandlers.class));

@@ -82,7 +82,7 @@ public abstract class AbstractCQLWorkspacePresenter {
     protected static final String ERROR_SAVE_CQL_FUNCTION = "Please enter function name.";
     protected static final String ERROR_SAVE_CQL_DEFINITION = "Please enter definition name.";
     protected static final String ERROR_DUPLICATE_IDENTIFIER_NAME = "Name already exists.";
-    protected static final String NO_LIBRARIES_RETURNED = "No libraries returned.Please search again.";
+    protected static final String NO_LIBRARIES_RETURNED = "No libraries returned. Please search again.";
     protected static final String WARNING_PASTING_IN_VALUESET = "The clipboard does not contain any value sets to be pasted at this time.";
     protected static final String SUCCESSFULLY_VALUESET_PASTE = "Selected value sets have been pasted successfully.";
     protected static final String SUCCESSFULLY_PASTED_CODES_IN_MEASURE = "Selected Codes have been pasted successfully.";

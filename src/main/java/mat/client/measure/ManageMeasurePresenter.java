@@ -1722,7 +1722,6 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         Widget w = SkipListBuilder.buildSubSkipList(name);
         subSkipContentHolder.clear();
         subSkipContentHolder.add(w);
-        subSkipContentHolder.setFocus(true);
     }
 
     private void onNewMeasureButtonClick() {

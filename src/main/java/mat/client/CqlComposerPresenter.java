@@ -47,10 +47,8 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
         }
         Mat.removeInputBoxFromFocusPanel(subSkipContentHolder.getElement());
         Widget w = SkipListBuilder.buildSubSkipList(name);
-        subSkipContentHolder.setTabIndex(-1);
         subSkipContentHolder.clear();
         subSkipContentHolder.add(w);
-        subSkipContentHolder.setFocus(true);
     }
 
     /**

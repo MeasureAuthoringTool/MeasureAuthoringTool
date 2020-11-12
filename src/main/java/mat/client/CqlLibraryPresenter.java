@@ -1633,7 +1633,6 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         Widget w = SkipListBuilder.buildSubSkipList(name);
         subSkipContentHolder.clear();
         subSkipContentHolder.add(w);
-        subSkipContentHolder.setFocus(true);
     }
 
     @Override

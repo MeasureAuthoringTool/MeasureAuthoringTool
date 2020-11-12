@@ -107,7 +107,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
         Widget widget = SkipListBuilder.buildSkipList(skipstr);
         getSkipList().clear();
         getSkipList().add(widget);
-        getSkipList().setFocus(true);
     }
 
     public static native String getUserAgent() /*-{

@@ -461,7 +461,6 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		Widget w = SkipListBuilder.buildSubSkipList(name);
 		subSkipContentHolder.clear();
 		subSkipContentHolder.add(w);
-		subSkipContentHolder.setFocus(true);
 	}
 
 	@Override

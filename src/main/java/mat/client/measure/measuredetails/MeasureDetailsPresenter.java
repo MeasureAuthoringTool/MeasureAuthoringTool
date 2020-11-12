@@ -115,7 +115,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
         Widget w = SkipListBuilder.buildSubSkipList(name);
         subSkipContentHolder.clear();
         subSkipContentHolder.add(w);
-        subSkipContentHolder.setFocus(true);
     }
 
     private void getDataBaseInfomation(boolean goToComposite, boolean displaySuccessMessage) {

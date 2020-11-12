@@ -131,13 +131,13 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean, Boolean> {
 		
 		/** The Constant INPUT_CHECKED. */
 		SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant(
-				"<input type=\"checkbox\"  title=\" " + checkBoxTitle + "\" checked/>");
+				"<input type=\"checkbox\"  aria-label=\" " + checkBoxTitle + "\" checked/>");
 
 		/**
 		 * An html string representation of an unchecked input box.
 		 */
 		SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant(
-				"<input type=\"checkbox\"  title=\"" + checkBoxTitle + "\" />");
+				"<input type=\"checkbox\"  aria-label=\"" + checkBoxTitle + "\" />");
 
 
 		Boolean viewData = getViewData(context.getKey());

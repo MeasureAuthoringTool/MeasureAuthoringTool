@@ -56,7 +56,7 @@ public class MeasureLibraryResultTable {
         addToolbarHandlers(fireEvent);
 
         Column<ManageMeasureSearchModel.Result, Boolean> checkColumn = getSelectionModelColumn();
-        table.addColumn(checkColumn,SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select" + "</span>"));
+        table.addColumn(checkColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select" + "</span>"));
         table.setColumnWidth(checkColumn, CHECKBOX_COLUMN_WIDTH, Style.Unit.PCT);
 
         // Measure Name Column
@@ -280,7 +280,11 @@ public class MeasureLibraryResultTable {
                 Column<ManageMeasureSearchModel.Result, Boolean>(matCB) {
                     @Override
                     public Boolean getValue(ManageMeasureSearchModel.Result object) {
-                        matCB.setTitle("Click checkbox to select " + object.getName());
+                        boolean value = selectionModel.isSelected(object);
+                        matCB.setTitle("Select " + (value ? "checked" : "unchecked") + " " +
+                                (object.isEditable() ? "editable" : "read-only") + " row " +
+                                object.getName() + (object.isDraft() ? " Draft" : " Version") + " " +
+                                getVersionReadableText(object));
                         return selectionModel.isSelected(object);
                     }
                 };
@@ -291,6 +295,18 @@ public class MeasureLibraryResultTable {
 
         return selectColumn;
     }
+
+    public String getVersionReadableText(ManageMeasureSearchModel.Result object) {
+        if (object.getVersion() == null) {
+            return "";
+        } else {
+            return object.getVersion().
+                    replace("Version ", "").
+                    replace("Draft ", "").
+                    replace("v","");
+        }
+    }
+
 
     /**
      * This method creates icons relevant to the edit state of Measure Library

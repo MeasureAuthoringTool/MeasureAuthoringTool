@@ -628,8 +628,6 @@
                         <configuration>
                             <moduleName>mat.HarpSupport</moduleName>
                             <moduleShortName>harpsupport</moduleShortName>
-                            <sourceLevel>${gwt.sourceLevel}</sourceLevel>
-                            <localWorkers>10</localWorkers>
                         </configuration>
                     </execution>
                     <execution>
@@ -640,8 +638,6 @@
                         <configuration>
                             <moduleName>mat.Mat</moduleName>
                             <moduleShortName>mat</moduleShortName>
-                            <sourceLevel>${gwt.sourceLevel}</sourceLevel>
-                            <localWorkers>10</localWorkers>
                         </configuration>
                     </execution>
                     <execution>
@@ -652,8 +648,6 @@
                         <configuration>
                             <moduleName>mat.Bonnie</moduleName>
                             <moduleShortName>bonnie</moduleShortName>
-                            <sourceLevel>${gwt.sourceLevel}</sourceLevel>
-                            <localWorkers>10</localWorkers>
                         </configuration>
                     </execution>
                 </executions>

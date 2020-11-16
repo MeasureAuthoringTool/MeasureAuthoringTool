@@ -107,6 +107,6 @@ public class RiskAdjustmentView implements MeasureDetailViewInterface {
 
 	@Override
 	public Widget getFirstElement() {
-		return null;
+		return measureDetailsTextEditor.getTextEditor();
 	}
 }

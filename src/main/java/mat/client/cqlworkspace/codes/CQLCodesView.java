@@ -1,10 +1,6 @@
 package mat.client.cqlworkspace.codes;
 
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.CompositeCell;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.HasCell;
-import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.cell.client.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
@@ -21,13 +17,8 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import mat.client.CustomPager;
@@ -37,27 +28,18 @@ import mat.client.buttons.CodesValuesetsButtonToolBar;
 import mat.client.cqlworkspace.SharedCQLWorkspaceUtility;
 import mat.client.inapphelp.component.InAppHelp;
 import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.shared.CustomQuantityTextBox;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.SearchWidgetBootStrap;
-import mat.client.shared.SkipListBuilder;
-import mat.client.shared.SpacerWidget;
+import mat.client.shared.*;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.MatCodeTransferObject;
 import mat.model.cql.CQLCode;
+import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.StringUtility;
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.*;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import java.util.ArrayList;
@@ -870,7 +852,7 @@ public class CQLCodesView {
 
 		return new HasCell<CQLCode, SafeHtml>() {
 
-			SafeHtmlCell modifyButonCell = new SafeHtmlCell();
+			ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
 
 			@Override
 			public Cell<SafeHtml> getCell() {
@@ -919,7 +901,7 @@ public class CQLCodesView {
 
 		return new HasCell<CQLCode, SafeHtml>() {
 
-			SafeHtmlCell deleteButonCell = new SafeHtmlCell();
+			ClickableSafeHtmlCell deleteButonCell = new ClickableSafeHtmlCell();
 
 			@Override
 			public Cell<SafeHtml> getCell() {

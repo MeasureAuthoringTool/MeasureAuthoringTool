@@ -34,6 +34,7 @@ import mat.client.util.MatTextBox;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
 import mat.vsacmodel.MatConcept;
 import mat.vsacmodel.MatConceptList;
@@ -612,7 +613,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
 
         HasCell<CQLQualityDataSetDTO, SafeHtml> hasCell = new HasCell<CQLQualityDataSetDTO, SafeHtml>() {
 
-            SafeHtmlCell modifyButonCell = new SafeHtmlCell();
+            ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
 
             @Override
             public Cell<SafeHtml> getCell() {
@@ -621,14 +622,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
 
             @Override
             public FieldUpdater<CQLQualityDataSetDTO, SafeHtml> getFieldUpdater() {
-
-                return new FieldUpdater<CQLQualityDataSetDTO, SafeHtml>() {
-                    @Override
-                    public void update(int index, CQLQualityDataSetDTO object,
-                                       SafeHtml value) {
-                        if ((object != null)) {
-                            observer.onModifyClicked(object);
-                        }
+                return (index, object, value) -> {
+                    if ((object != null)) {
+                        observer.onModifyClicked(object);
                     }
                 };
             }
@@ -658,7 +654,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
 
         HasCell<CQLQualityDataSetDTO, SafeHtml> hasCell = new HasCell<CQLQualityDataSetDTO, SafeHtml>() {
 
-            SafeHtmlCell deleteButonCell = new SafeHtmlCell();
+            ClickableSafeHtmlCell deleteButonCell = new ClickableSafeHtmlCell();
 
             @Override
             public Cell<SafeHtml> getCell() {
@@ -667,15 +663,10 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
 
             @Override
             public FieldUpdater<CQLQualityDataSetDTO, SafeHtml> getFieldUpdater() {
-
-                return new FieldUpdater<CQLQualityDataSetDTO, SafeHtml>() {
-                    @Override
-                    public void update(int index, CQLQualityDataSetDTO object,
-                                       SafeHtml value) {
-                        if (object != null) {
-                            lastSelectedObject = object;
-                            observer.onDeleteClicked(object, index);
-                        }
+                return (index, object, value) -> {
+                    if (object != null) {
+                        lastSelectedObject = object;
+                        observer.onDeleteClicked(object, index);
                     }
                 };
             }

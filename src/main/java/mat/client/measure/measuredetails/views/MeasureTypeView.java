@@ -8,11 +8,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
@@ -238,8 +234,16 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 
     @Override
     public Widget getFirstElement() {
-        return measureTypeCellTable.asWidget();
+        checkFirstCheckbox();
+        return null;
     }
+
+    public static native void checkFirstCheckbox() /*-{
+       $wnd.setTimeout(function() {
+           var cb = $doc.querySelector("#MeasureTypeListCellTable input");
+           cb.focus();
+       },100);
+    }-*/;
 
     public List<MeasureType> getMeasureTypeList() {
         return measureTypeList;

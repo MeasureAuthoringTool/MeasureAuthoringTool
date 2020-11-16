@@ -123,7 +123,7 @@ public class ImprovementNotationView implements MeasureDetailViewInterface {
 
     @Override
     public Widget getFirstElement() {
-        return null;
+        return getListBox();
     }
 
     public ListBox getListBox() {

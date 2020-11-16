@@ -17,25 +17,14 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import mat.client.CustomPager;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
-import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SearchWidgetBootStrap;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.*;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
+import mat.shared.ClickableSafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Button;
 
 import java.util.ArrayList;
@@ -135,7 +124,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		};
 		cellTable.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
 		
-		Column<Result, SafeHtml> editColumn = new Column<Result, SafeHtml>( new SafeHtmlCell()) {
+		Column<Result, SafeHtml> editColumn = new Column<Result, SafeHtml>( new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
 				return getDeleteColumnToolTip(object);

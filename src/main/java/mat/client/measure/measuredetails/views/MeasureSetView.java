@@ -99,6 +99,6 @@ public class MeasureSetView implements MeasureDetailViewInterface {
 
 	@Override
 	public Widget getFirstElement() {
-		return null;
+		return measureDetailsTextEditor.getTextEditor();
 	}
 }

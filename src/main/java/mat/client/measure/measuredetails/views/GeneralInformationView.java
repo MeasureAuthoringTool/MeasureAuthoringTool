@@ -511,6 +511,9 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         measureNameInput.setText(generalInformationModel.getMeasureName());
         measureNameInput.setWidth(TEXT_BOX_WIDTH);
         measureNameInput.setMaxLength(MEASURE_NAME_MAX_LENGTH);
+        if (MatContext.get().isCurrentMeasureModelFhir()) {
+            measureNameInput.addBlurHandler(errorHandler.buildBlurHandler(measureNameInput, (s) -> getFirst(CommonMeasureValidator.validateFhirMeasureName(s))));
+        }
         measureNameInput.addBlurHandler(errorHandler.buildBlurHandler(measureNameInput,(s) -> getFirst(CommonMeasureValidator.validateMeasureName(s))));
         measureNamePanel.add(measureNameLabel);
         measureNamePanel.add(measureNameInput);
@@ -933,5 +936,9 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
 
     public ErrorHandler getErrorHandler() {
         return errorHandler;
+    }
+
+    public List<String> preSave() {
+        return getErrorHandler().validate();
     }
 }

@@ -23,7 +23,7 @@ public class CommonMeasureValidator {
 		return !value.equalsIgnoreCase("--Select--") && !value.equals("");
 	}
 	
-    private boolean hasAtleastOneLetter(String s) {
+    private static boolean hasAtleastOneLetter(String s) {
         for (int i = 0; i < s.length(); i++) {
         	char curChar = s.charAt(i);
         	if (String.valueOf(curChar).matches("[a-zA-Z]")) {
@@ -33,7 +33,7 @@ public class CommonMeasureValidator {
         return false;
     }
 
-    public List<String> validateFhirLibraryName(String libraryName) {
+    public static List<String> validateFhirLibraryName(String libraryName) {
 		CQLModelValidator validator = new CQLModelValidator();
 		List<String> errorMessages = new ArrayList<>();
 		if (StringUtility.isEmptyOrNull(libraryName)) {
@@ -44,7 +44,7 @@ public class CommonMeasureValidator {
 		return errorMessages;
 	}
     
-    public List<String> validateQDMName(String libraryName) {
+    public static List<String> validateQDMName(String libraryName) {
     	CQLModelValidator validator = new CQLModelValidator();
 		List<String> errorMessages = new ArrayList<>();
 		if (StringUtility.isEmptyOrNull(libraryName)) {
@@ -57,7 +57,7 @@ public class CommonMeasureValidator {
 		return errorMessages;
     }
 
-    public List<String> validateFhirMeasureName(String measureName) {
+    public static List<String> validateFhirMeasureName(String measureName) {
         List<String> errorMessages = validateMeasureName(measureName);
         if (measureName.contains("_")) {
             errorMessages.add(MEASURE_NAME_UNDERSCORE_ERROR);
@@ -66,7 +66,7 @@ public class CommonMeasureValidator {
         return errorMessages;
     }
     
-	public List<String> validateMeasureName(String measureName) {
+	public static List<String> validateMeasureName(String measureName) {
 		List<String> errorMessages = new ArrayList<>();
 		if (StringUtility.isEmptyOrNull(measureName)) {
 			errorMessages.add(MEASURE_NAME_REQUIRED);
@@ -79,7 +79,7 @@ public class CommonMeasureValidator {
 		return errorMessages;
 	}
 	
-	public List<String> validateECQMAbbreviation(String abbrName) {
+	public static List<String> validateECQMAbbreviation(String abbrName) {
 		List<String> errorMessages = new ArrayList<>();
 		if ((abbrName == null) || "".equals(abbrName.trim())) {
 			errorMessages.add(ECQM_ABBR_TITLE_REQUIRED_ERROR);
@@ -90,7 +90,7 @@ public class CommonMeasureValidator {
 		return errorMessages;
 	}
 
-	public List<String> validateMeasureScore(String measureScore){
+	public static List<String> validateMeasureScore(String measureScore){
 		List<String> errorMessages = new ArrayList<>();
 		if ((measureScore == null) || !isValidValue(measureScore)) {
 			errorMessages.add(MEASURE_SCORE_REQUIRED);
@@ -98,7 +98,7 @@ public class CommonMeasureValidator {
 		return errorMessages;
 	}
 
-	public List<String> validatePatientBased(String scoring, boolean patientBased) {
+	public static List<String> validatePatientBased(String scoring, boolean patientBased) {
 		List<String> errorMessages = new ArrayList<>();
 		// MAT-8602 Continous Variable measures must be patient based.
 		if ((MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(scoring) && patientBased)) {

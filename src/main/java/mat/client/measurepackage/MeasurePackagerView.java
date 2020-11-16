@@ -45,6 +45,7 @@ import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.model.cql.CQLDefinition;
+import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.SafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -759,7 +760,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 	
 	private Column<MeasurePackageDetail, SafeHtml> getDeleteColumn() {
-		Cell<SafeHtml> deleteButtonCell = new mat.shared.SafeHtmlCell();
+		Cell<SafeHtml> deleteButtonCell = new ClickableSafeHtmlCell();
 		
 		Column<MeasurePackageDetail, SafeHtml> deleteColumn = new Column<MeasurePackageDetail, SafeHtml>(deleteButtonCell) {
 			@Override
@@ -786,7 +787,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 	
 	private Column<MeasurePackageDetail, SafeHtml> getEditOrViewColumn(boolean isEditable) {
-		Cell<SafeHtml> editButtonCell = new SafeHtmlCell();
+		Cell<SafeHtml> editButtonCell = new ClickableSafeHtmlCell();
 		Column<MeasurePackageDetail, SafeHtml> editColumn = new Column<MeasurePackageDetail, SafeHtml>(editButtonCell) {
 			@Override
 			public SafeHtml getValue(MeasurePackageDetail object) {

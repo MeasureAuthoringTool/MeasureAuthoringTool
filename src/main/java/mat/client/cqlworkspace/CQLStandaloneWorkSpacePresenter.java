@@ -2255,12 +2255,14 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
                     final String selectedIncludeLibraryID = cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().getValue(selectedIndex);
                     cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedIncLibraryObjId(selectedIncludeLibraryID);
                     if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryMap().get(selectedIncludeLibraryID) != null) {
+                        Mat.showLoadingMessage();
                         MatContext.get().getCQLLibraryService().findCQLLibraryByID(
                                 cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryMap().get(selectedIncludeLibraryID).getCqlLibraryId(),
                                 new AsyncCallback<CQLLibraryDataSetObject>() {
 
                                     @Override
                                     public void onSuccess(CQLLibraryDataSetObject result) {
+                                        Mat.hideLoadingMessage();
                                         if (result != null) {
                                             currentIncludeLibrarySetId = result.getCqlSetId();
                                             currentIncludeLibraryId = result.getId();
@@ -2308,6 +2310,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
                                     @Override
                                     public void onFailure(Throwable caught) {
+                                        Mat.hideLoadingMessage();
                                         logger.log(Level.SEVERE, "Error in CQLLibraryService.findCQLLibraryByID. Error message: " + caught.getMessage(), caught);
                                         messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                                     }

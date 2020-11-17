@@ -52,6 +52,15 @@
 		} else { 
 		  top.location = self.location; 
 		}
+
+        function setFocusToFirstFocusable(id) {
+		  const elem = document.getElementById(id);
+          const firstFocusable = elem.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+          if (firstFocusable) {
+            firstFocusable.focus();
+          }
+          return false;
+	    }
 	</script>
     		
     <!-- OPTIONAL: include this if you want history support -->

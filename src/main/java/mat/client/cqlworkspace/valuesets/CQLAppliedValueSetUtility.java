@@ -232,7 +232,7 @@ public class CQLAppliedValueSetUtility {
                                       CQLQualityDataSetDTO object, SafeHtmlBuilder sb,
                                       HasCell<CQLQualityDataSetDTO, X> hasCell) {
                 Cell<X> cell = hasCell.getCell();
-                sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
+                sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"-1\">");
                 if ((object != null)) {
                     cell.render(context, hasCell.getValue(object), sb);
                 } else {

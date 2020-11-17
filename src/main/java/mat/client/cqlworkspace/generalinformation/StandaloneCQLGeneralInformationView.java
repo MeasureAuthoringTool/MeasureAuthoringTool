@@ -297,6 +297,7 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         experimentalLabel.getElement().setAttribute("for", "experimentalCheckbox");
         experimentalCheckbox.getElement().setAttribute(STYLE, "margin-left:15px;width:50px;height:32px;");
         experimentalCheckbox.getElement().setId("experimentalCheckbox");
+        experimentalCheckbox.getElement().setAttribute("aria-label","Experimental Checkbox");
         experimentalGroup.add(experimentalCheckbox);
         experimentalGroup.add(experimentalLabel);
 

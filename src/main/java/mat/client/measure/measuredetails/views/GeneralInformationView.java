@@ -472,6 +472,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         experimentalCheckbox.setEnabled(false);
         experimentalCheckbox.getElement().setAttribute("id", "experimentalCB");
         experimentalCheckbox.setValue(generalInformationModel.isExperimental());
+        experimentalCheckbox.getElement().setAttribute("aria-label","Experimental Checkbox");
 
         panel.add(experimentalLabel);
         panel.add(experimentalCheckbox);
@@ -579,7 +580,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         populationBasisLabel.setFor("populationBasisInput_ListBoxMVP");
 
         populationBasisInput.getElement().setId("measScoringInput_ListBoxMVP");
-        populationBasisInput.setTitle("Measure Scoring Required.");
+        populationBasisInput.setTitle("Population Basis Required.");
         populationBasisInput.setStyleName("form-control");
         populationBasisInput.setVisibleItemCount(1);
         populationBasisInput.setWidth("18em");

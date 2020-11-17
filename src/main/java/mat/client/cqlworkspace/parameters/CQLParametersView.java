@@ -39,7 +39,6 @@ public class CQLParametersView {
 
 	
 	public CQLParametersView() {
-		editorPanel = new CQLEditorPanel(PARAMETER, "CQL Expression Editor", true);
 		this.editorPanel.getEditor().addDomHandler(event -> editorPanel.catchTabOutKeyCommand(event, parameterButtonBar.getSaveButton()), KeyUpEvent.getType());
 		mainParamViewVerticalPanel.getElement().setId("mainParamViewVerticalPanel");
 		heading.addStyleName("leftAligned");
@@ -175,8 +174,6 @@ public class CQLParametersView {
 		editorPanel = new CQLEditorPanel(PARAMETER, "CQL Expression Editor", false);
 		getParameterAceEditor().setText("");
 		getParameterNameTxtArea().setText("");
-		getParameterAceEditor().getElement().blur();
-		
 		getViewCQLAceEditor().setText("");
 		viewCQLEditorPanel.setPanelCollapsed(true);
 	}

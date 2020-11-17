@@ -114,7 +114,7 @@ public class CQLEditorPanel extends Composite {
 	public void setHeaderText(String text) {
 		this.header.setText(text);
 		this.header.setTitle(text);
-		this.header.getElement().setTabIndex(-1);
+		this.header.getElement().setTabIndex(0);
 		this.header.getElement().setAttribute("aria-label", CQL_EDITOR_LABEL);
 	}
 	

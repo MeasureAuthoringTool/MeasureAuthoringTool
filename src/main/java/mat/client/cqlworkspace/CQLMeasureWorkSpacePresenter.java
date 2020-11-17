@@ -2384,10 +2384,12 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
                     cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedIncLibraryObjId(selectedIncludeLibraryID);
                     CQLIncludeLibrary selectedLibrary = cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryMap().get(selectedIncludeLibraryID);
                     if (selectedLibrary != null) {
+                        Mat.showLoadingMessage();
                         MatContext.get().getCQLLibraryService().findCQLLibraryByID(selectedLibrary.getCqlLibraryId(), new AsyncCallback<CQLLibraryDataSetObject>() {
 
                             @Override
                             public void onSuccess(CQLLibraryDataSetObject result) {
+                                Mat.hideLoadingMessage();
                                 if (result != null) {
                                     currentIncludeLibrarySetId = result.getCqlSetId();
                                     currentIncludeLibraryId = result.getId();
@@ -2435,6 +2437,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
                             @Override
                             public void onFailure(Throwable caught) {
+                                Mat.hideLoadingMessage();
                                 logger.log(Level.SEVERE, "Error in CQLLibraryService.findCQLLibraryByID. Error message: " + caught.getMessage(), caught);
                                 messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                             }
@@ -2517,6 +2520,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
     private void leftNavGeneralInformationClicked() {
         cqlWorkspaceView.hideAceEditorAutoCompletePopUp();
         checkIfLibraryNameExistsAndLoadGeneralInfo();
+        Document.get().getElementById("Button_InAppHelp").focus();
     }
 
     private void leftNavComponentsClicked(ClickEvent event) {

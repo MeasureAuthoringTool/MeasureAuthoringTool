@@ -71,7 +71,7 @@ public abstract class MainLayout {
     private FormPanel logoutForm = new FormPanel("logout");
 
     {
-        logoutForm.getElement().setAttribute("tab-index","-1");
+        logoutForm.getElement().setAttribute("tab-index", "-1");
     }
 
     /**
@@ -83,7 +83,14 @@ public abstract class MainLayout {
         if (MatContext.get().getLoadingQueue().size() == 0) {
             hideProgressSpinner();
         }
+        setFocusToSkipToMainContent();
     }
+
+    private static native void setFocusToSkipToMainContent() /*-{
+        $doc.getElementById("menu").focus();
+    }-*/;
+
+
 
     protected static FocusableWidget getSkipList() {
         return skipListHolder;
@@ -163,7 +170,6 @@ public abstract class MainLayout {
         content.setStylePrimaryName("mainContentPanel");
         setId(content, "content");
         Mat.removeInputBoxFromFocusPanel(content.getElement());
-
         return content;
     }
 
@@ -174,7 +180,6 @@ public abstract class MainLayout {
      * @return Panel
      */
     private Panel buildFooterPanel() {
-
         final FlowPanel footerMainPanel = new FlowPanel();
         footerMainPanel.getElement().setId("footerMainPanel_FlowPanel");
         footerMainPanel.setStylePrimaryName("footer");

@@ -572,7 +572,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
             Label searchHeader = new Label("Applied QDM Elements");
             searchHeader.getElement().setId("searchHeader_Label");
             searchHeader.setStyleName("measureGroupingTableHeader");
-            searchHeader.getElement().setAttribute("tabIndex", "0");
+            searchHeader.getElement().setAttribute("tabIndex", "-1");
             com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
             TableCaptionElement caption = elem.createCaption();
             caption.appendChild(searchHeader.getElement());
@@ -614,7 +614,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
                             + "</span>"));
 
             // OID Column
-            Column<QualityDataSetDTO, SafeHtml> oidColumn = new Column<QualityDataSetDTO, SafeHtml>(
+                Column<QualityDataSetDTO, SafeHtml> oidColumn = new Column<QualityDataSetDTO, SafeHtml>(
                     new SafeHtmlCell()) {
                 @Override
                 public SafeHtml getValue(QualityDataSetDTO object) {
@@ -1147,7 +1147,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
             String htmlConstant = "<html>"
                     + "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"QDM Updated From VSAC.\""
                     + "title = \"QDM Updated From VSAC.\"/>"
-                    + "<span tabIndex = \"0\" title='" + title + "'>"
+                    + "<span tabIndex = \"-1\" title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
                     .toSafeHtml();
@@ -1156,13 +1156,13 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
                     + "<head> </head> <Body><img src =\"images/userDefinedWarning.png\""
                     + "alt=\"Warning : QDM not available in VSAC.\""
                     + " title=\"QDM not available in VSAC.\"/>"
-                    + "<span tabIndex = \"0\" title='" + title + "'>"
+                    + "<span tabIndex = \"-1\" title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
                     .toSafeHtml();
         } else {
             String htmlConstant = "<html>"
-                    + "<head> </head> <Body><span tabIndex = \"0\" title='"
+                    + "<head> </head> <Body><span tabIndex = \"-1\" title='"
                     + title + "'>" + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
                     .toSafeHtml();
@@ -1184,7 +1184,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
             String htmlConstant = "<html>"
                     + "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"DataType is Valid.\""
                     + "title = \"DataType is Valid.\"/>"
-                    + "<span tabIndex = \"0\" title='" + title + "'>"
+                    + "<span tabIndex = \"-1\" title='" + title + "'>"
                     + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
                     .toSafeHtml();
@@ -1193,14 +1193,14 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
                     + "<head> </head> <Body><img src =\"images/userDefinedWarning.png\""
                     + "alt=\"Warning : DataType is not Valid.\""
                     + " title=\"DataType is not Valid.\"/>"
-                    + "<span tabIndex = \"0\" title='" + title
+                    + "<span tabIndex = \"-1\" title='" + title
                     + "' class='clauseWorkSpaceInvalidNode'>" + columnText
                     + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
                     .toSafeHtml();
         } else {
             String htmlConstant = "<html>"
-                    + "<head> </head> <Body><span tabIndex = \"0\" title='"
+                    + "<head> </head> <Body><span tabIndex = \"-1\" title='"
                     + title + "'>" + columnText + "</span></body>" + "</html>";
             return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
                     .toSafeHtml();

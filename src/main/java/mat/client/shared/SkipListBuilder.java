@@ -17,10 +17,9 @@ public class SkipListBuilder {
 	 * @return the widget
 	 */
 	public static Widget buildSkipList(String skipstr){
-		 HTML skipListHtml = new HTML("<ul class='skiplist'><li class='skip'><a id='menu' href='#"+skipstr+"'>Skip to Main Content</a></li></ul>");
+		 HTML skipListHtml = new HTML("<ul class='skiplist'><li class='skip'><a id='menu' href='#' onclick='setFocusToFirstFocusable(\"" + skipstr + "\")'>Skip to Main Content</a></li></ul>");
 		 return skipListHtml;
 	}
-	
 	
 	/**
 	 * Builds the embedded link.

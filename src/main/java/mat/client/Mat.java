@@ -115,7 +115,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
 
     public static void removeInputBoxFromFocusPanel(Element element) {
-        if (element.hasChildNodes() && element.getFirstChild().getNodeName().equalsIgnoreCase("input")) {// this is done for 508 issue to fix the input box in FF
+        if (element.hasChildNodes() && element.getFirstChild().getNodeName().equalsIgnoreCase("input")) {
+            // this is done for 508 issue to fix the input box in FF
             element.removeChild(element.getFirstChild());
         }
     }

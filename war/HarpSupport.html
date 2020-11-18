@@ -38,12 +38,29 @@
         top.location = self.location;
     }
 
-    function setFocusToFirstFocusable(id) {
-        const focusable = document.querySelectorAll('#' + id + ' button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-        if (focusable) {
-            focusable[0].focus();
+
+    function setFocusToFirstFocusable() {
+        const tabs = document.querySelectorAll('.gwt-TabPanelBottom > *');
+        if (tabs) {
+            for (let i = 0; i < tabs.length; i++) {
+                if (!hasInvisParent(tabs[i]) && !tabs[i].querySelector('.gwt-TabPanelBottom')) {
+                    const focusArray = tabs[i].querySelectorAll('button, a, input, select, textarea');
+                    for (let j = 0; j < focusArray.length; j++) {
+                        if (focusArray[j].ariaHidden !== 'true' && focusArray[j].tabIndex !== '-1') {
+                            focusArray[j].focus();
+                            return false;
+                        }
+                    }
+                }
+            }
         }
         return false;
+    }
+
+    function hasInvisParent(e) {
+        return !e ? false :
+            e.style.display == 'none' ? true :
+                hasInvisParent(e.parentElement)
     }
 </script>
 

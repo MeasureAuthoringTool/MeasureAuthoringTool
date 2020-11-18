@@ -5,26 +5,28 @@
 <!-- with a "Quirks Mode" doctype may lead to some -->
 <!-- differences in layout.                        -->
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="Expires" content="Sat, 01 Dec 1970 00:00:00 GMT">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta http-equiv="PRAGMA" content="NO-CACHE" >
-	<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" >
-    <meta http-equiv="X-UA-Compatible" content="IE=10" >
-    <LINK REL="SHORTCUT ICON"  href="favicon.ico">
-    <style> body { display : none;} </style> 
+    <meta http-equiv="PRAGMA" content="NO-CACHE">
+    <meta http-equiv="CACHE-CONTROL" content="NO-CACHE">
+    <meta http-equiv="X-UA-Compatible" content="IE=10">
+    <LINK REL="SHORTCUT ICON" href="favicon.ico">
+    <style> body {
+        display: none;
+    } </style>
     <!--                                                               -->
     <!-- Consider inlining CSS to reduce the number of requested files -->
     <!--                                                               -->
     <link type="text/css" rel="stylesheet" href="Mat.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-   
+
     <!--                                           -->
     <!-- Any title is fine                         -->
     <!--                                           -->
     <title>Measure Authoring Tool</title>
-    
+
     <!--                                           -->
     <!-- This script loads your compiled module.   -->
     <!-- If you add any GWT meta tags, they must   -->
@@ -32,65 +34,83 @@
     <!--                                           -->
     <script type="text/javascript" language="javascript" src="mat/mat.nocache.js"></script>
     <script src="mat/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="mat/ace/mode-cql.js" type="text/javascript" charset="utf-8"></script>    
+    <script src="mat/ace/mode-cql.js" type="text/javascript" charset="utf-8"></script>
     <script src="mat/ace/mode-java.js" type="text/javascript" charset="utf-8"></script>
     <script src="mat/ace/theme-eclipse.js" type="text/javascript" charset="utf-8"></script>
     <script src="mat/ace/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
-  </head>
+</head>
 
-  <!--                                           -->
-  <!-- The body can have arbitrary html, or      -->
-  <!-- you can leave the body empty if you want  -->
-  <!-- to create a completely dynamic UI.        -->
-  <!--                                           -->
-  <body id="main">
+<!--                                           -->
+<!-- The body can have arbitrary html, or      -->
+<!-- you can leave the body empty if you want  -->
+<!-- to create a completely dynamic UI.        -->
+<!--                                           -->
+<body id="main">
 
-    <script> 
-		if (self == top) {
-		  var theBody = document.getElementsByTagName('body')[0];
-		  theBody.style.display = "block";
-		} else { 
-		  top.location = self.location; 
-		}
+<script>
+    if (self == top) {
+        var theBody = document.getElementsByTagName('body')[0];
+        theBody.style.display = "block";
+    } else {
+        top.location = self.location;
+    }
 
-        function setFocusToFirstFocusable(id) {
-		  const elem = document.getElementById(id);
-          const firstFocusable = elem.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-          if (firstFocusable) {
-            firstFocusable.focus();
-          }
-          return false;
-	    }
-	</script>
-    		
-    <!-- OPTIONAL: include this if you want history support -->
-  <!--  <iframe src="javascript:''" id="__gwt_historyFrame" title="mat" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe> -->
-    
-    <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
-    <noscript>
-      <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+    function setFocusToFirstFocusable() {
+        const tabs = document.querySelectorAll('.gwt-TabPanelBottom > *');
+        if (tabs) {
+            for (let i = 0; i < tabs.length; i++) {
+                if (!hasInvisParent(tabs[i]) && !tabs[i].querySelector('.gwt-TabPanelBottom')) {
+                    const focusArray = tabs[i].querySelectorAll('button, a, input, select, textarea');
+                    for (let j = 0; j < focusArray.length; j++) {
+                        if (focusArray[j].ariaHidden !== 'true' && focusArray[j].tabIndex !== '-1') {
+                          focusArray[j].focus();
+                          return false;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    function hasInvisParent(e) {
+        return !e ? false :
+            e.style.display == 'none' ? true :
+                hasInvisParent(e.parentElement)
+    }
+</script>
+
+<!-- OPTIONAL: include this if you want history support -->
+<!--  <iframe src="javascript:''" id="__gwt_historyFrame" title="mat" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe> -->
+
+<!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+<noscript>
+    <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
         Your web browser must have JavaScript enabled
         in order for this application to display correctly.
-      </div>
-    </noscript>
-    <script type="text/javascript">
-          var _gaq = _gaq || [];
-          _gaq.push(['_setAccount', 'UA-31005711-1']);
-          _gaq.push(['_trackPageview']);
-         
-          (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-          })();
-    </script>
-    <div id="timeOutWarning"></div>
-    <div id="skipContent"></div>
-    <div id="mainContent" class="mainContent"></div>
-    <iframe name="logout" style="width:0;height:0;border:0; border:none;"></iframe>
-  </body>
-  <head>
-	<meta http-equiv="PRAGMA" content="NO-CACHE" >
-	<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
-  </head>
+    </div>
+</noscript>
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-31005711-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+<div id="timeOutWarning"></div>
+<div id="skipContent"></div>
+<div id="mainContent" class="mainContent"></div>
+<iframe name="logout" style="width:0;height:0;border:0; border:none;"></iframe>
+</body>
+<head>
+    <meta http-equiv="PRAGMA" content="NO-CACHE">
+    <meta http-equiv="CACHE-CONTROL" content="NO-CACHE"/>
+</head>
 </html>

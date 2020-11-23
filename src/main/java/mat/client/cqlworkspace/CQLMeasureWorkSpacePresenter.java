@@ -2222,7 +2222,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
             cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
             cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(true);
             if (getIsPageDirty()) {
-                showSearchBusyOnDoubleClick(false);
+                //showSearchBusyOnDoubleClick(false);
                 showUnsavedChangesWarning();
             } else {
                 int selectedIndex = cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().getSelectedIndex();

@@ -14,6 +14,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -1245,6 +1246,14 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setTitle(CONTINUE);
         detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setText(CONTINUE);
         detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setFocus(true);
+        if (detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().isVisible()) {
+            new Timer() {
+                @Override
+                public void run() {
+                    detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setFocus(true);
+                }
+            }.schedule(600);
+        }
     }
 
     private void createCQLLibrary() {

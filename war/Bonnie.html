@@ -54,7 +54,9 @@
               if (!hasInvisParent(tabs[i]) && !tabs[i].querySelector('.gwt-TabPanelBottom')) {
                 const focusArray = tabs[i].querySelectorAll('button, a, input, select, textarea');
                 for (let j = 0; j < focusArray.length; j++) {
-                  if (focusArray[j].ariaHidden !== 'true' && focusArray[j].tabIndex !== '-1') {
+                  if (!(focusArray[j].readonly || focusArray[j].disabled) &&
+                          focusArray[j].ariaHidden !== 'true' &&
+                          focusArray[j].tabIndex !== '-1') {
                     focusArray[j].focus();
                     return false;
                   }

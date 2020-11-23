@@ -260,7 +260,7 @@ public abstract class MainLayout {
         ListItem li = new ListItem();
         li.setText("Signed in as");
         li.setTitle("Signed in as");
-        li.getElement().setTabIndex(0);
+        li.getElement().setTabIndex(-1);
         li.setStyleName("profileText", true);
         return li;
     }
@@ -271,12 +271,12 @@ public abstract class MainLayout {
         signedInAsName.setTitle(name);
         signedInAsName.setStyleName("labelStyling", true);
         signedInAsName.setStyleName("profileText", true);
-        signedInAsName.getElement().setTabIndex(0);
+        signedInAsName.getElement().setTabIndex(-1);
         String orgRole = MatContext.get().getLoggedInUserRole() + ORG_ROLE_SEP + MatContext.get().getCurrentUserInfo().organizationName;
         signedInAsOrg.setText(trimTitleWithEllipses(orgRole));
         signedInAsOrg.setTitle(orgRole);
         signedInAsOrg.setStyleName("profileText", true);
-        signedInAsOrg.getElement().setTabIndex(0);
+        signedInAsOrg.getElement().setTabIndex(-1);
     }
 
     private void setAccessibilityForLinks() {

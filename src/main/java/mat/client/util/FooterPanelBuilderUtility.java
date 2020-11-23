@@ -98,7 +98,7 @@ public class FooterPanelBuilderUtility {
 	private static String logosHTML =
 			"<div class=\"cms-address-bar\"> "+
 					"<div id=\"footer-cms-logo-wrapper\" align=\"left\"> " +
-					"<a id=\"footer_cms_logo_link\" title=\"CMS home page\" tabindex=\"-1\" href=\"http://www.cms.gov/\" target=\"_blank\"> " +
+					"<a id=\"footer_cms_logo_link\" title=\"CMS home page\" tabindex=\"0\" href=\"http://www.cms.gov/\" target=\"_blank\"> " +
 					"<h4 style=\"font-size:0;\">CMS.gov</h4>" +
 					"{img_cms_logo}" +
 					"</a> "+
@@ -110,7 +110,7 @@ public class FooterPanelBuilderUtility {
 					"</div> "+
 					"<div id=\"footer-hhs-logo-wrapper\" align=\"right\"> " +
 					"<div id=\"footer_hhs_logo\"> " +
-					"<a id=\"footer_hhs_logo_link\" title=\"Health and Human Services home page\" tabindex=\"-1\" href=\"http://www.hhs.gov/\" target=\"_blank\"> " +
+					"<a id=\"footer_hhs_logo_link\" title=\"Health and Human Services home page\" tabindex=\"0\" href=\"http://www.hhs.gov/\" target=\"_blank\"> " +
 					"<h4 style=\"font-size:0;\">hhs.gov</h4>" +
 					"{img_hhs_logo} " +
 					"</a> "+

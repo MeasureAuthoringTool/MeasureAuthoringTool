@@ -179,7 +179,6 @@ public class ComponentMeasureSearch implements BaseDisplay{
 							availableMeasuresPanel.setWidth("99.9%");
 							availableMeasureHeader.setText("Available Measures");
 							availableMeasureHeader.setTitle("Available Measures");
-							availableMeasureHeader.getElement().setAttribute("tabIndex", "0");
 							HTML desc = new HTML("<p> No available measures. </p>");
 							availableMeasuresPanel.clear();
 							availableMeasuresPanel.add(availableMeasureHeader);
@@ -246,7 +245,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 		availableMeasuresPanel.setWidth("99.9%");
 		availableMeasureHeader.setText("Available Measures");
 		availableMeasureHeader.setTitle("Available Measures");
-		availableMeasureHeader.getElement().setAttribute("tabIndex", "0");
+		availableMeasureHeader.getElement().setAttribute("tabIndex", "-1");
 		availableMeasuresPanel.add(availableMeasureHeader);
 		availableMeasuresPanel.add(new SpacerWidget());
 		
@@ -271,7 +270,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 		appliedComponentMeasuresPanel.setType(PanelType.PRIMARY);
 		appliedComponentMeasureHeader.setText("Applied Component Measures");
 		appliedComponentMeasureHeader.setTitle("Applied Component Measures");
-		appliedComponentMeasureHeader.getElement().setAttribute("tabIndex", "0");
+		appliedComponentMeasureHeader.getElement().setAttribute("tabIndex", "-1");
 		appliedComponentMeasuresPanel.add(appliedComponentMeasureHeader);
 		appliedComponentMeasuresPanel.add(new SpacerWidget());
 		
@@ -301,7 +300,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				sb.appendHtmlConstant("<div id='appliedComponentContainer' tabindex=\"-1\">");
 				sb.appendHtmlConstant("<span class='applied-component-div' title=\" " + SafeHtmlUtils.htmlEscape(object.getName()) +
-						"\" tabindex=\"0\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</span>");
+						"\" tabindex=\"-1\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</span>");
 				sb.appendHtmlConstant("</div>");
 				return sb.toSafeHtml();
 			}
@@ -379,7 +378,7 @@ public class ComponentMeasureSearch implements BaseDisplay{
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				sb.appendHtmlConstant("<div id='container' tabindex=\"-1\">");
 				sb.appendHtmlConstant("<span class='measure-column' title=\" " + SafeHtmlUtils.htmlEscape(object.getName()) +
-						"\" tabindex=\"0\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</span>");
+						"\" tabindex=\"-1\">" + SafeHtmlUtils.htmlEscape(object.getName()) + "</span>");
 				sb.appendHtmlConstant("</div>");
 				return sb.toSafeHtml();
 			}

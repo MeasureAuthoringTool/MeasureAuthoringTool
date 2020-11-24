@@ -3,6 +3,7 @@ package mat.client.validator;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 import mat.client.shared.ListBoxMVP;
@@ -110,7 +111,6 @@ public class ErrorHandler {
 
     public BlurHandler buildBlurHandler(ValueBoxBase b, Validation v) {
         return buildBlurHandler(b, b.getElement(), v);
-
     }
 
     public BlurHandler buildBlurHandler(ValueBoxBase b, Element addErrorsAfter, Validation v) {
@@ -135,6 +135,38 @@ public class ErrorHandler {
     public void setErrors(ValueBoxBase valueBox, List<String> errors) {
         handleErrors(valueBox, valueBox.getElement(), errors);
     }
+
+    public BlurHandler buildRequiredBlurHandler(TextBox b) {
+        return buildBlurHandler(b, b.getElement(), REQUIRED_FIELD_VALIDATION);
+    }
+
+    public BlurHandler buildBlurHandler(TextBox b, Validation v) {
+        return buildBlurHandler(b, b.getElement(), v);
+    }
+
+    public BlurHandler buildBlurHandler(TextBox b, Element addErrorsAfter, Validation v) {
+        ValidationInfo validationInfo = getValidations(b);
+        validationInfo.setFieldToAddErrorMessagesAfter(addErrorsAfter);
+        validationInfo.getValidations().add(v);
+        return (blurEvent) -> validate(b);
+    }
+
+    public void setError(TextBox valueBox, Element addErrorsAfter, String error) {
+        handleErrors(valueBox, addErrorsAfter, Collections.singletonList(error));
+    }
+
+    public void setError(TextBox valueBox, String error) {
+        setError(valueBox, valueBox.getElement(), error);
+    }
+
+    public void setErrors(TextBox valueBox, String... errors) {
+        handleErrors(valueBox, valueBox.getElement(), Arrays.asList(errors));
+    }
+
+    public void setErrors(TextBox valueBox, List<String> errors) {
+        handleErrors(valueBox, valueBox.getElement(), errors);
+    }
+
 
     public void clearErrors() {
         validations.keySet().forEach((k) -> {

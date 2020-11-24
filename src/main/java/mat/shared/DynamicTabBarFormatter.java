@@ -109,7 +109,7 @@ public class DynamicTabBarFormatter {
 	 * @return the string
 	 */
 	public String selectedTitle(String title){
-		String html= "<b <label=\"\" title=\"Selected "+title+"\" aria-label=\"Selected "+title+"\">\u25ba"+title+" </b>";
+		String html= "<b <label=\"\" title=\""+title+"\" aria-label=\""+title+"\">\u25ba"+title+" </b>";
 		mockWidget = new HTML(html);
 		return mockWidget.getHTML();
 	}

@@ -17,6 +17,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -538,11 +539,19 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
     }
 
     private void showConfirmationDialog(final String message) {
-        detailDisplay.getConfirmationDialogBox().show(message);
+        Mat.hideLoadingMessage();
         detailDisplay.getConfirmationDialogBox().getYesButton().setDataDismiss(ButtonDismiss.MODAL);
         detailDisplay.getConfirmationDialogBox().getYesButton().setTitle(CONTINUE);
         detailDisplay.getConfirmationDialogBox().getYesButton().setText(CONTINUE);
-        detailDisplay.getConfirmationDialogBox().getYesButton().setFocus(true);
+        detailDisplay.getConfirmationDialogBox().show(message);
+        if (detailDisplay.getConfirmationDialogBox().getYesButton().isVisible()) {
+            new Timer() {
+                @Override
+                public void run() {
+                    detailDisplay.getConfirmationDialogBox().getYesButton().setFocus(true);
+                }
+            }.schedule(600);
+        }
     }
 
     private void detailDisplayHandlers(final DetailDisplay detailDisplay) {
@@ -817,11 +826,13 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
                 @Override
                 public void onFailure(Throwable caught) {
+                    Mat.hideLoadingMessage();
                     detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
                 }
 
                 @Override
                 public void onSuccess(SaveMeasureResult result) {
+                    Mat.hideLoadingMessage();
                     if (result.isSuccess()) {
                         displaySuccessAndRedirectToMeasure(result.getId());
                     } else {
@@ -1547,6 +1558,7 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
                         @Override
                         public void onFailure(Throwable caught) {
+                            Mat.hideLoadingMessage();
                             setSearchingBusy(false);
                             detailDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
                             MatContext.get().recordTransactionEvent(null, null, null, UNHANDLED_EXCEPTION + caught.getLocalizedMessage(), 0);
@@ -1554,10 +1566,10 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
 
                         @Override
                         public void onSuccess(ManageMeasureDetailModel result) {
+                            Mat.hideLoadingMessage();
                             setSearchingBusy(false);
                             currentDetails = result;
                             displayCloneMeasureWidget();
-                            Mat.hideLoadingMessage();
                         }
                     });
                 }

@@ -7,7 +7,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 import mat.client.shared.ListBoxMVP;
-import mat.server.Validator;
 
 import java.util.*;
 import java.util.logging.Logger;

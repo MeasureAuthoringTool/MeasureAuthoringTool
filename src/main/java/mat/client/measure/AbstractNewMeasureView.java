@@ -21,6 +21,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.VerticalFlowPanel;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.util.FeatureFlagConstant;
+import mat.client.validator.ErrorHandler;
 import mat.model.clause.ModelTypeHelper;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -57,6 +58,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
     protected HTML cautionMsgPlaceHolder = new HTML();
     protected HTML cautionPatientbasedMsgPlaceHolder = new HTML();
     EditConfirmationDialogBox confirmationDialogBox = new EditConfirmationDialogBox();
+    private ErrorHandler errorHandler = new ErrorHandler();
 
     public static final String CAUTION_LIBRARY_NAME_MSG_STR = "<div style=\"padding-left:5px;\">WARNING: Long CQL Library names may cause problems upon export with zip files and file storage. "
             + "Please keep CQL Library names concise.<br/>";
@@ -234,10 +236,9 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected FormLabel buildMeasureNameLabel() {
         FormLabel measureNameLabel = new FormLabel();
-        measureNameLabel.setText("Measure Name");
+        measureNameLabel.setText("Measure Name (*)");
         measureNameLabel.setTitle("Measure Name");
         measureNameLabel.setFor("MeasureNameTextArea");
-        measureNameLabel.setShowRequiredIndicator(true);
         measureNameLabel.setId("MeasureNameTextArea_Id");
         return measureNameLabel;
     }
@@ -249,10 +250,9 @@ public class AbstractNewMeasureView implements DetailDisplay {
      */
     protected FormLabel buildModelTypeLabel() {
         FormLabel modelLabel = new FormLabel();
-        modelLabel.setText("Model");
+        modelLabel.setText("Model (*)");
         modelLabel.setTitle("Model");
         modelLabel.setFor("measureModel");
-        modelLabel.setShowRequiredIndicator(true);
         modelLabel.setId("measureModel_Id");
         return modelLabel;
     }
@@ -306,14 +306,14 @@ public class AbstractNewMeasureView implements DetailDisplay {
         measureNameTextBox.setWidth("400px");
         measureNameTextBox.setHeight("50px");
         measureNameTextBox.setMaxLength(500);
+        measureNameTextBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(measureNameTextBox));
     }
 
     protected FormLabel buildCQLLibraryNameLabel() {
         FormLabel cqlLibraryNameLabel = new FormLabel();
-        cqlLibraryNameLabel.setText("CQL Library Name");
+        cqlLibraryNameLabel.setText("CQL Library Name (*)");
         cqlLibraryNameLabel.setTitle("CQL Library Name");
         cqlLibraryNameLabel.setFor("CqlLibraryNameTextArea");
-        cqlLibraryNameLabel.setShowRequiredIndicator(true);
         cqlLibraryNameLabel.setId("CqlLibraryNameTextArea_Id");
         return cqlLibraryNameLabel;
     }
@@ -324,6 +324,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
         cqlLibraryNameTextBox.setWidth("400px");
         cqlLibraryNameTextBox.setHeight("50px");
         cqlLibraryNameTextBox.setMaxLength(500);
+        cqlLibraryNameTextBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(cqlLibraryNameTextBox));
     }
 
     protected HorizontalPanel buildCQLLibraryNamePanel() {
@@ -340,10 +341,9 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected FormLabel buildShortNameLabel() {
         FormLabel shortNameLabel = new FormLabel();
-        shortNameLabel.setText("eCQM Abbreviated Title");
+        shortNameLabel.setText("eCQM Abbreviated Title (*)");
         shortNameLabel.setTitle("eCQM Abbreviated Title");
         shortNameLabel.setFor("ShortNameTextBox");
-        shortNameLabel.setShowRequiredIndicator(true);
         shortNameLabel.setId("ShortNameTextBox_Id");
         return shortNameLabel;
     }
@@ -353,14 +353,14 @@ public class AbstractNewMeasureView implements DetailDisplay {
         eCQMAbbreviatedTitleTextBox.setTitle("Enter eCQM Abbreviated Title Required");
         eCQMAbbreviatedTitleTextBox.setWidth("18em");
         eCQMAbbreviatedTitleTextBox.setMaxLength(32);
+        eCQMAbbreviatedTitleTextBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(eCQMAbbreviatedTitleTextBox));
     }
 
     protected FormLabel buildScoringLabel() {
         FormLabel scoringLabel = new FormLabel();
-        scoringLabel.setText("Measure Scoring");
+        scoringLabel.setText("Measure Scoring (*)");
         scoringLabel.setTitle("Measure Scoring");
         scoringLabel.setFor("MeasureScoringListBox");
-        scoringLabel.setShowRequiredIndicator(true);
         scoringLabel.setId("MeasureScoringListBox");
         return scoringLabel;
     }
@@ -371,6 +371,7 @@ public class AbstractNewMeasureView implements DetailDisplay {
         measureScoringListBox.setStyleName("form-control");
         measureScoringListBox.setVisibleItemCount(1);
         measureScoringListBox.setWidth("18em");
+        measureScoringListBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(measureScoringListBox));
     }
 
     protected HorizontalPanel buildScoringPanel() {
@@ -383,10 +384,9 @@ public class AbstractNewMeasureView implements DetailDisplay {
 
     protected FormLabel buildPatientBasedLabel() {
         FormLabel patientBasedLabel = new FormLabel();
-        patientBasedLabel.setText("Patient-based Measure");
+        patientBasedLabel.setText("Patient-based Measure (*)");
         patientBasedLabel.setTitle("Patient-based Measure");
         patientBasedLabel.setFor("PatientBasedMeasureListBox");
-        patientBasedLabel.setShowRequiredIndicator(true);
         patientBasedLabel.setId("PatientBasedMeasureListBox_Id");
         return patientBasedLabel;
     }

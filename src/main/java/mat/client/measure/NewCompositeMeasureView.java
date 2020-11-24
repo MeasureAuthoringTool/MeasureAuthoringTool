@@ -12,6 +12,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
+import mat.client.validator.ErrorHandler;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.StringUtility;
 import org.gwtbootstrap3.client.ui.FieldSet;
@@ -26,6 +27,7 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 	private ListBoxMVP compositeScoringListBox = new ListBoxMVP();
     private FormGroup compositeScoringGroup = new FormGroup();
     protected HTML compScoringMsgPlaceHolder = new HTML();
+    private ErrorHandler errorHandler = new ErrorHandler();
 	private String compScoringMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'Composite Scoring Method and/or Measure Scoring' will have the following impacts:<br/>" +
 			   "<img src='images/bullet.png'/> Populations in the Population Workspace that do not apply to the new settings will be deleted.<br/>" +
       "<img src='images/bullet.png'/> Existing Groupings in the Measure Packager will be deleted.</div>";
@@ -149,10 +151,9 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 	
 	private FormLabel buildCompositeScoringLabel() {
 		FormLabel scoringLabel = new FormLabel();
-		scoringLabel.setText("Composite Scoring Method");
+		scoringLabel.setText("Composite Scoring Method (*)");
 		scoringLabel.setTitle("Composite Scoring Method");
 		scoringLabel.setFor("CompositeScoringMethodListBox");
-		scoringLabel.setShowRequiredIndicator(true);
 		scoringLabel.setId("CompositeScoringMethodListBox");
 		return scoringLabel;
 	}
@@ -163,6 +164,7 @@ public class NewCompositeMeasureView extends AbstractNewMeasureView {
 		compositeScoringListBox.setStyleName("form-control");
 		compositeScoringListBox.setVisibleItemCount(1);
 		compositeScoringListBox.setWidth("18em");
+		compositeScoringListBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(compositeScoringListBox));
 	}
 
 	public void setCompositeScoringChoices(List<? extends HasListBox> texts) {

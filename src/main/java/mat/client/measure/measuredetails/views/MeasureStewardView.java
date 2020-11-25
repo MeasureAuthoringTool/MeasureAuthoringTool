@@ -25,6 +25,7 @@ import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
+import mat.client.validator.ErrorHandler;
 import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
@@ -52,6 +53,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 	protected ScrollPanel authorSPanel = new ScrollPanel();
 	protected ScrollPanel stewardSPanel = new ScrollPanel();
 	private FormLabel stewardTableLabel;
+	private ErrorHandler errorHandler = new ErrorHandler();
 
 	public MeasureStewardView(MeasureStewardDeveloperModel measureStewardDeveloperModel) {
 		this.originalModel = measureStewardDeveloperModel; 
@@ -74,6 +76,7 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		stewardTableLabel.setFor("stewardListBox");
 		stewardListBox.setId("stewardListBox");
 		stewardListBox.setTitle("Measure Steward List");
+		stewardListBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(stewardListBox));
 
 		moreMeasureDetailsVP.add(stewardTableLabel);
 		stewardSPanel.add(stewardListBox);
@@ -200,6 +203,8 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		};
 
 		authorCellTable.addColumn(measureNameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Measure Developers Name'>" + "Measure Developer" + "</span>"));
+
+		errorHandler.buildRequiredBlurHandler(authorCellTable);
 	}
 
 	public void updateMeasureDevelopersSelectedList(List<Author> measureDeveloperList) {
@@ -333,9 +338,17 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		this.authorsSelectedList = authorsSelectedList;
 	}
 
+	public ErrorHandler getErrorHandler() {
+		return errorHandler;
+	}
+
 	@Override
 	public Widget getFirstElement() {
 		return stewardListBox.asWidget();
 	}
 
+	@Override
+	public List<String> preSave() {
+		return errorHandler.validate();
+	}
 }

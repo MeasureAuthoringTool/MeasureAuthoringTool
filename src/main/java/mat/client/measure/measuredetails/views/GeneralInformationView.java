@@ -513,7 +513,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         measureNameInput.setWidth(TEXT_BOX_WIDTH);
         measureNameInput.setMaxLength(MEASURE_NAME_MAX_LENGTH);
         if (MatContext.get().isCurrentMeasureModelFhir()) {
-            measureNameInput.addBlurHandler(errorHandler.buildBlurHandler(measureNameInput, (s) -> getFirst(CommonMeasureValidator.validateFhirMeasureName(s))));
+            measureNameInput.addBlurHandler(errorHandler.buildBlurHandler(measureNameInput,
+                    (s) -> getFirst(CommonMeasureValidator.validateFhirMeasureName(s))));
         }
         measureNameInput.addBlurHandler(errorHandler.buildBlurHandler(measureNameInput,(s) -> getFirst(CommonMeasureValidator.validateMeasureName(s))));
         measureNamePanel.add(measureNameLabel);
@@ -530,7 +531,8 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         abbrInput.setText(generalInformationModel.geteCQMAbbreviatedTitle());
         abbrInput.setWidth(TEXT_BOX_WIDTH);
         abbrInput.setMaxLength(ECQM_ABBR_MAX_LENGTH);
-        abbrInput.addBlurHandler(errorHandler.buildBlurHandler(abbrInput, s-> getFirst(CommonMeasureValidator.validateECQMAbbreviation(s))));
+        abbrInput.addBlurHandler(errorHandler.buildBlurHandler(abbrInput,
+                s-> getFirst(CommonMeasureValidator.validateECQMAbbreviation(s))));
 
         abbreviationPanel.add(abbrInput);
         return abbreviationPanel;

@@ -11,6 +11,7 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSe
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+import mat.client.Mat;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.measure.measuredetails.observers.MeasureTypeObserver;
 import mat.client.shared.ConfirmationDialogBox;
@@ -18,6 +19,7 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.util.CellTableUtility;
+import mat.client.validator.ErrorHandler;
 import mat.model.MeasureType;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 import mat.shared.measure.measuredetails.models.MeasureTypeModel;
@@ -33,6 +35,7 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
     private MultiSelectionModel<MeasureType> measureTypeSelectionModel;
     private List<MeasureType> measureTypeList = new ArrayList<>();
     private MeasureTypeObserver observer;
+    private ErrorHandler errorHandler = new ErrorHandler();
     private static final String COMPOSITE = "COMPOSITE";
     private static final String SELECT_TOOLTIP = "Click checkbox to select ";
     private static final String COMPOSITE_TOOLTIP = "Pre-selected composite measure type. Uneditable.";
@@ -104,6 +107,9 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
         measureTypeCellTable.setWidth("620px");
         panel.add(measureTypeCellTable);
         mainPanel.add(panel);
+        if (MatContext.get().isCurrentModelTypeFhir()) {
+            errorHandler.buildRequiredBlurHandler(mainPanel);
+        }
     }
 
     private void updateMeasureTypeSelectedList(List<MeasureType> measureTypeList) {
@@ -251,5 +257,10 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
 
     public void setMeasureTypeList(List<MeasureType> measureTypeList) {
         this.measureTypeList = measureTypeList;
+    }
+
+    @Override
+    public List<String> preSave() {
+        return errorHandler.validate();
     }
 }

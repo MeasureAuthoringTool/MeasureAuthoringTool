@@ -6,8 +6,12 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.measure.measuredetails.observers.DescriptionObserver;
 import mat.client.measure.measuredetails.observers.MeasureDetailsComponentObserver;
 import mat.client.shared.ConfirmationDialogBox;
+import mat.client.shared.MatContext;
+import mat.client.validator.ErrorHandler;
 import mat.shared.measure.measuredetails.models.DescriptionModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
+
+import java.util.List;
 
 public class DescriptionView implements MeasureDetailViewInterface {
     private FlowPanel mainPanel = new FlowPanel();
@@ -15,6 +19,7 @@ public class DescriptionView implements MeasureDetailViewInterface {
     private DescriptionModel originalDescriptionModel;
     private DescriptionModel descriptionModel;
     private DescriptionObserver observer;
+    private ErrorHandler errorHandler = new ErrorHandler();
 
     public DescriptionView() {
 
@@ -44,6 +49,9 @@ public class DescriptionView implements MeasureDetailViewInterface {
         mainPanel.add(measureDetailsTextEditor);
         measureDetailsTextEditor.setTitle("Description Editor");
         measureDetailsTextEditor.setText(this.descriptionModel.getEditorText());
+        if (MatContext.get().isCurrentModelTypeFhir()) {
+            measureDetailsTextEditor.getTextEditor().addBlurHandler(errorHandler.buildRequiredBlurHandler(measureDetailsTextEditor));
+        }
         addEventHandlers();
     }
 
@@ -107,5 +115,10 @@ public class DescriptionView implements MeasureDetailViewInterface {
     @Override
     public Widget getFirstElement() {
         return measureDetailsTextEditor.getTextEditor();
+    }
+
+    @Override
+    public List<String> preSave() {
+        return errorHandler.validate();
     }
 }

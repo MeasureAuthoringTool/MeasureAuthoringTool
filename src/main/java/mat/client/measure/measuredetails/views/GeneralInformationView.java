@@ -179,7 +179,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         measurePeriodFromInput.getElement().setId("measurePeriodFromInput_DateBoxWithCalendar");
         measurePeriodFromInput.getDateBox().addBlurHandler(errorHandler.buildBlurHandler(
                 measurePeriodFromInput.getDateBox(),
-                fromPanel.getElement(),
+                fromPanel,
                 (s) -> {
                     try {
                         com.google.gwt.i18n.shared.DateTimeFormat dateFormat = com.google.gwt.i18n.shared.DateTimeFormat.getFormat("MM/dd/yyyy");
@@ -204,7 +204,7 @@ public class GeneralInformationView implements MeasureDetailViewInterface {
         measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
         measurePeriodToInput.getDateBox().addBlurHandler(errorHandler.buildBlurHandler(
                 measurePeriodToInput.getDateBox(),
-                toPanel.getElement(),
+                toPanel,
                 (s) -> {
                     try {
                         com.google.gwt.i18n.shared.DateTimeFormat dateFormat = com.google.gwt.i18n.shared.DateTimeFormat.getFormat("MM/dd/yyyy");

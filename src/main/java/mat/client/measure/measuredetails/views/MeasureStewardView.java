@@ -76,8 +76,9 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		stewardTableLabel.setFor("stewardListBox");
 		stewardListBox.setId("stewardListBox");
 		stewardListBox.setTitle("Measure Steward List");
-		stewardListBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(stewardListBox));
-
+		if (MatContext.get().isCurrentModelTypeFhir()) {
+			stewardListBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(stewardListBox));
+		}
 		moreMeasureDetailsVP.add(stewardTableLabel);
 		stewardSPanel.add(stewardListBox);
 		moreMeasureDetailsVP.add(stewardSPanel);
@@ -147,6 +148,9 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		vp.add(authorCellTable);
 		vp.setWidth("100%");
 		authorSPanel.setWidget(vp);
+		if (MatContext.get().isCurrentMeasureModelFhir()) {
+			errorHandler.buildRequiredBlurHandler(authorCellTable,authorSPanel);
+		}
 	}
 
 	private void addAuthorColumnToTable(boolean editable) {
@@ -203,8 +207,6 @@ public class MeasureStewardView implements MeasureDetailViewInterface{
 		};
 
 		authorCellTable.addColumn(measureNameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Measure Developers Name'>" + "Measure Developer" + "</span>"));
-
-		errorHandler.buildRequiredBlurHandler(authorCellTable);
 	}
 
 	public void updateMeasureDevelopersSelectedList(List<Author> measureDeveloperList) {

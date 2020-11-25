@@ -2,8 +2,12 @@ package mat.client.validator;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.SingleSelectionModel;
 import mat.client.shared.ListBoxMVP;
 
 import java.util.*;
@@ -80,42 +84,22 @@ public class ErrorHandler {
     }
 
     public BlurHandler buildRequiredBlurHandler(Widget field) {
-        return buildRequiredBlurHandler(field, field.getElement());
-    }
-
-    public BlurHandler buildRequiredBlurHandler(Widget field, Element addErrorsAfter) {
-        return buildBlurHandler(field.getElement(), addErrorsAfter,
-                field instanceof ListBoxMVP ? NOT_SELECT_VALIDATION : REQUIRED_FIELD_VALIDATION);
-    }
-
-    public BlurHandler buildBlurHandler(Widget field, Validation v) {
-        return buildBlurHandler(field.getElement(), field.getElement(), v);
-    }
-
-    public BlurHandler buildBlurHandler(Widget field, Element addErrorsAfter, Validation v) {
-        ValidationInfo validationInfo = getValidations(field.getElement());
-        validationInfo.setFieldToAddErrorMessagesAfter(addErrorsAfter);
-        validationInfo.getValidations().add(v);
-        return (blurEvent) -> validate(field.getElement());
-    }
-
-    public BlurHandler buildRequiredBlurHandler(Element field) {
         return buildRequiredBlurHandler(field, field);
     }
 
-    public BlurHandler buildRequiredBlurHandler(Element field, Element addErrorsAfter) {
-        return buildBlurHandler(field, addErrorsAfter, REQUIRED_FIELD_VALIDATION);
+    public BlurHandler buildRequiredBlurHandler(Widget field, Widget addErrorsAfter) {
+        return buildBlurHandler(field, addErrorsAfter, buildRequiredValidation(field));
     }
 
-    public BlurHandler buildBlurHandler(Element field, Validation v) {
+    public BlurHandler buildBlurHandler(Widget field, Validation v) {
         return buildBlurHandler(field, field, v);
     }
 
-    public BlurHandler buildBlurHandler(Element field, Element addErrorsAfter, Validation v) {
-        ValidationInfo validationInfo = getValidations(field);
-        validationInfo.setFieldToAddErrorMessagesAfter(addErrorsAfter);
+    public BlurHandler buildBlurHandler(Widget field, Widget addErrorsAfter, Validation v) {
+        ValidationInfo validationInfo = getValidations(field.getElement());
+        validationInfo.setFieldToAddErrorMessagesAfter(addErrorsAfter.getElement());
         validationInfo.getValidations().add(v);
-        return (blurEvent) -> validate(field);
+        return (blurEvent) -> validate(field.getElement());
     }
 
     public void setFieldError(Element field, Element addErrorsAfter, String error) {
@@ -140,6 +124,14 @@ public class ErrorHandler {
             ValidationInfo i = validations.get(k);
             clearErrors(k, i.getFieldToAddErrorMessagesAfter());
         });
+    }
+
+    public void clearErrors(Element validatedElement, Widget widgetToAddErrorsAfter) {
+        clearErrors(validatedElement, widgetToAddErrorsAfter.getElement());
+    }
+
+    public void handleErrors(Element validatedElement, Widget widgetToAddErrorsAfter, List<String> errors) {
+        handleErrors(validatedElement, widgetToAddErrorsAfter.getElement(), errors);
     }
 
     public void clearErrors(Element validatedElement, Element elementToAddErrorsAfter) {
@@ -186,5 +178,31 @@ public class ErrorHandler {
             }
         }
         return errors;
+    }
+
+    private Validation buildRequiredValidation(Widget w) {
+        if (w instanceof ListBoxMVP) {
+            return NOT_SELECT_VALIDATION;
+        } else if (w instanceof CellTable) {
+            CellTable t = (CellTable) w;
+            SelectionModel m = t.getSelectionModel();
+            if (m instanceof SingleSelectionModel) {
+                SingleSelectionModel sm = (SingleSelectionModel) m;
+                if (sm == null) {
+                    throw new RuntimeException("No selection model found.");
+                }
+                return s -> sm.getSelectedObject() == null ? REQUIRED : null;
+            } else if (m instanceof MultiSelectionModel) {
+                MultiSelectionModel mm = (MultiSelectionModel) m;
+                if (mm == null) {
+                    throw new RuntimeException("No selection model found.");
+                }
+                return s -> mm.getSelectedSet().size() == 0 ? REQUIRED : null;
+            } else {
+                throw new RuntimeException("Unknown selection model encountered.");
+            }
+        } else {
+            return REQUIRED_FIELD_VALIDATION;
+        }
     }
 }

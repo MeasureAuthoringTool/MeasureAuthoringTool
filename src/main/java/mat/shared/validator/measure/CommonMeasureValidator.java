@@ -59,7 +59,7 @@ public class CommonMeasureValidator {
 
     public static List<String> validateFhirMeasureName(String measureName) {
         List<String> errorMessages = validateMeasureName(measureName);
-        if (measureName.contains("_")) {
+        if (measureName != null && measureName.contains("_")) {
             errorMessages.add(MEASURE_NAME_UNDERSCORE_ERROR);
         }
 

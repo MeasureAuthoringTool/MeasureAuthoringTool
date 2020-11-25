@@ -3,8 +3,6 @@ package mat.client.validator;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.ValueBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 import mat.client.shared.ListBoxMVP;
 
@@ -60,14 +58,10 @@ public class ErrorHandler {
             REQUIRED :
             null;
 
-    private final Map<Widget, ValidationInfo> validations;
+    private final Map<Element, ValidationInfo> validations;
 
     public ErrorHandler() {
         validations = new HashMap<>();
-    }
-
-    public Set<Widget> getWidgets() {
-        return validations.keySet();
     }
 
     public List<String> validate() {
@@ -76,94 +70,68 @@ public class ErrorHandler {
         return errors;
     }
 
-    public ValidationInfo getValidations(Widget b) {
-        ValidationInfo result = validations.get(b);
+    public ValidationInfo getValidations(Element field) {
+        ValidationInfo result = validations.get(field);
         if (result == null) {
             result = new ValidationInfo();
-            validations.put(b, result);
+            validations.put(field, result);
         }
         return result;
     }
 
-    public BlurHandler buildRequiredBlurHandler(ListBoxMVP b) {
-        return buildBlurHandler(b, b.getElement(), NOT_SELECT_VALIDATION);
+    public BlurHandler buildRequiredBlurHandler(Widget field) {
+        return buildRequiredBlurHandler(field, field.getElement());
     }
 
-    public BlurHandler buildBlurHandler(ListBoxMVP b, Validation v) {
-        return buildBlurHandler(b, b.getElement(), v);
+    public BlurHandler buildRequiredBlurHandler(Widget field, Element addErrorsAfter) {
+        return buildBlurHandler(field.getElement(), addErrorsAfter,
+                field instanceof ListBoxMVP ? NOT_SELECT_VALIDATION : REQUIRED_FIELD_VALIDATION);
     }
 
-    public BlurHandler buildRequiredBlurHandler(ListBoxMVP b, Element addErrorsAfter, Validation v) {
-        return buildBlurHandler(b, b.getElement(), NOT_SELECT_VALIDATION);
+    public BlurHandler buildBlurHandler(Widget field, Validation v) {
+        return buildBlurHandler(field.getElement(), field.getElement(), v);
     }
 
-    public BlurHandler buildBlurHandler(ListBoxMVP b, Element addErrorsAfter, Validation v) {
-        ValidationInfo validationInfo = getValidations(b);
-        validationInfo.getValidations().add(v);
-        validationInfo.setFieldToAddErrorMessagesAfter(addErrorsAfter);
-        return (blurEvent) -> validate(b);
-    }
-
-    public BlurHandler buildRequiredBlurHandler(ValueBoxBase b) {
-        return buildBlurHandler(b, b.getElement(), REQUIRED_FIELD_VALIDATION);
-    }
-
-    public BlurHandler buildBlurHandler(ValueBoxBase b, Validation v) {
-        return buildBlurHandler(b, b.getElement(), v);
-    }
-
-    public BlurHandler buildBlurHandler(ValueBoxBase b, Element addErrorsAfter, Validation v) {
-        ValidationInfo validationInfo = getValidations(b);
+    public BlurHandler buildBlurHandler(Widget field, Element addErrorsAfter, Validation v) {
+        ValidationInfo validationInfo = getValidations(field.getElement());
         validationInfo.setFieldToAddErrorMessagesAfter(addErrorsAfter);
         validationInfo.getValidations().add(v);
-        return (blurEvent) -> validate(b);
+        return (blurEvent) -> validate(field.getElement());
     }
 
-    public void setError(ValueBoxBase valueBox, Element addErrorsAfter, String error) {
-        handleErrors(valueBox, addErrorsAfter, Collections.singletonList(error));
+    public BlurHandler buildRequiredBlurHandler(Element field) {
+        return buildRequiredBlurHandler(field, field);
     }
 
-    public void setError(ValueBoxBase valueBox, String error) {
-        setError(valueBox, valueBox.getElement(), error);
+    public BlurHandler buildRequiredBlurHandler(Element field, Element addErrorsAfter) {
+        return buildBlurHandler(field, addErrorsAfter, REQUIRED_FIELD_VALIDATION);
     }
 
-    public void setErrors(ValueBoxBase valueBox, String... errors) {
-        handleErrors(valueBox, valueBox.getElement(), Arrays.asList(errors));
+    public BlurHandler buildBlurHandler(Element field, Validation v) {
+        return buildBlurHandler(field, field, v);
     }
 
-    public void setErrors(ValueBoxBase valueBox, List<String> errors) {
-        handleErrors(valueBox, valueBox.getElement(), errors);
-    }
-
-    public BlurHandler buildRequiredBlurHandler(TextBox b) {
-        return buildBlurHandler(b, b.getElement(), REQUIRED_FIELD_VALIDATION);
-    }
-
-    public BlurHandler buildBlurHandler(TextBox b, Validation v) {
-        return buildBlurHandler(b, b.getElement(), v);
-    }
-
-    public BlurHandler buildBlurHandler(TextBox b, Element addErrorsAfter, Validation v) {
-        ValidationInfo validationInfo = getValidations(b);
+    public BlurHandler buildBlurHandler(Element field, Element addErrorsAfter, Validation v) {
+        ValidationInfo validationInfo = getValidations(field);
         validationInfo.setFieldToAddErrorMessagesAfter(addErrorsAfter);
         validationInfo.getValidations().add(v);
-        return (blurEvent) -> validate(b);
+        return (blurEvent) -> validate(field);
     }
 
-    public void setError(TextBox valueBox, Element addErrorsAfter, String error) {
-        handleErrors(valueBox, addErrorsAfter, Collections.singletonList(error));
+    public void setFieldError(Element field, Element addErrorsAfter, String error) {
+        handleErrors(field, addErrorsAfter, Collections.singletonList(error));
     }
 
-    public void setError(TextBox valueBox, String error) {
-        setError(valueBox, valueBox.getElement(), error);
+    public void setFieldError(Element field, String error) {
+        setFieldError(field, field, error);
     }
 
-    public void setErrors(TextBox valueBox, String... errors) {
-        handleErrors(valueBox, valueBox.getElement(), Arrays.asList(errors));
+    public void setFieldErrors(Element field, String... errors) {
+        handleErrors(field, field, Arrays.asList(errors));
     }
 
-    public void setErrors(TextBox valueBox, List<String> errors) {
-        handleErrors(valueBox, valueBox.getElement(), errors);
+    public void setFieldErrors(Element field, List<String> errors) {
+        handleErrors(field, field, errors);
     }
 
 
@@ -174,18 +142,18 @@ public class ErrorHandler {
         });
     }
 
-    public void clearErrors(Widget validationWidget, Element elementToAddErrorsAfter) {
-        validationWidget.getElement().getStyle().setBorderColor("");
+    public void clearErrors(Element validatedElement, Element elementToAddErrorsAfter) {
+        validatedElement.getStyle().setBorderColor("");
         while (isErrorMessage(elementToAddErrorsAfter.getNextSiblingElement())) {
             elementToAddErrorsAfter.getNextSiblingElement().removeFromParent();
         }
     }
 
-    public void handleErrors(Widget validationWidget, Element elementToAddErrorsAfter, List<String> errors) {
-        clearErrors(validationWidget, elementToAddErrorsAfter);
+    public void handleErrors(Element validatedElement, Element elementToAddErrorsAfter, List<String> errors) {
+        clearErrors(validatedElement, elementToAddErrorsAfter);
         if (errors != null && errors.size() > 0) {
             logger.info("errors=" + errors);
-            validationWidget.getElement().getStyle().setBorderColor("red");
+            validatedElement.getStyle().setBorderColor("red");
             Element html = new HTML(
                     "<i class=\"fa fa-exclamation-circle\"></i> <b>" + errors.get(0) + "</b>"
             ).getElement();
@@ -199,21 +167,11 @@ public class ErrorHandler {
         return e != null && e.hasClassName(ERROR_CLASS);
     }
 
-    private Object getValue(Widget widget) {
-        if (widget instanceof ValueBoxBase) {
-            return ((ValueBoxBase) widget).getValue();
-        } else if (widget instanceof ListBoxMVP) {
-            return ((ListBoxMVP) widget).getValue();
-        } else {
-            throw new IllegalArgumentException("Unsupported widget type: " + widget.getClass());
-        }
-    }
-
-    private List<String> validate(Widget widget) {
+    private List<String> validate(Element element) {
         List<String> errors = new ArrayList<>();
-        ValidationInfo result = validations.get(widget);
+        ValidationInfo result = validations.get(element);
         if (result.getValidations() != null) {
-            String value = getValue(widget).toString();
+            String value = element.getPropertyString("value");
             result.getValidations().forEach(v -> {
                 String errorMsg = v.validate(value);
                 if (errorMsg != null) {
@@ -222,9 +180,9 @@ public class ErrorHandler {
             });
 
             if (!errors.isEmpty()) {
-                handleErrors(widget, result.getFieldToAddErrorMessagesAfter(), errors);
+                handleErrors(element, result.getFieldToAddErrorMessagesAfter(), errors);
             } else {
-                clearErrors(widget, result.getFieldToAddErrorMessagesAfter());
+                clearErrors(element, result.getFieldToAddErrorMessagesAfter());
             }
         }
         return errors;

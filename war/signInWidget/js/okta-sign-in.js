@@ -61301,7 +61301,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
             this.render();
           }, this));
         }
-      },'.o-form-fieldset-container',{prepend: true}));
+      }),'.o-form-fieldset-container',{prepend: true});
     }
   });
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),

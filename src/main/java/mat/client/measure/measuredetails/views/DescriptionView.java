@@ -50,7 +50,7 @@ public class DescriptionView implements MeasureDetailViewInterface {
         measureDetailsTextEditor.setTitle("Description Editor");
         measureDetailsTextEditor.setText(this.descriptionModel.getEditorText());
         if (MatContext.get().isCurrentModelTypeFhir()) {
-            measureDetailsTextEditor.getTextEditor().addBlurHandler(errorHandler.buildRequiredBlurHandler(measureDetailsTextEditor));
+            measureDetailsTextEditor.getTextEditor().addBlurHandler(errorHandler.buildRequiredBlurHandler(measureDetailsTextEditor.getTextEditor()));
         }
         addEventHandlers();
     }

@@ -108,7 +108,7 @@ public class MeasureTypeView implements MeasureDetailViewInterface {
         panel.add(measureTypeCellTable);
         mainPanel.add(panel);
         if (MatContext.get().isCurrentModelTypeFhir()) {
-            errorHandler.buildRequiredBlurHandler(mainPanel);
+            errorHandler.buildRequiredBlurHandler(measureTypeCellTable,mainPanel);
         }
     }
 

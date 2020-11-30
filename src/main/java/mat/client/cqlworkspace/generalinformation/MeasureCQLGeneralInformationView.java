@@ -12,12 +12,16 @@ import mat.client.shared.MessagePanel;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import mat.shared.CQLModelValidator;
+import mat.shared.validator.measure.CommonMeasureValidator;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+
+import java.util.List;
 
 public class MeasureCQLGeneralInformationView implements CQLGeneralInformationView {
 
@@ -43,6 +47,7 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
     protected static final int CQL_LIBRARY_NAME_MAX_LENGTH = 500;
     protected TextArea comments = new TextArea();
     protected InAppHelp inAppHelp = new InAppHelp("");
+    private ErrorHandler errorHandler = new ErrorHandler();
 
 
     public MeasureCQLGeneralInformationView() {
@@ -71,6 +76,8 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
         libraryNameTextBox.getElement().setId("libraryNameValue_TextBox");
         libraryNameTextBox.setTitle("Required");
         libraryNameTextBox.setMaxLength(CQL_LIBRARY_NAME_MAX_LENGTH);
+        libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox,
+                (s) -> getFirst(CommonMeasureValidator.validateFhirLibraryName(s))));
 
         libraryNameGroup.add(libraryNameLabel);
         libraryNameGroup.add(libraryNameTextBox);
@@ -340,5 +347,9 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
             return false;
         }
         return true;
+    }
+
+    private String getFirst(List<String> list) {
+        return list != null && list.size() > 0 ? list.get(0) : null;
     }
 }

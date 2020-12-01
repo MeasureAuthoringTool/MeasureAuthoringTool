@@ -513,8 +513,12 @@ public class CQLServiceImpl implements CQLService {
     }
 
     @Override
-    public SaveUpdateCQLResult saveAndModifyParameters(String xml, CQLParameter parameterWithOriginalContent,
-                                                       CQLParameter parameterWithEdits, List<CQLParameter> parameterList, boolean isFormatable, String modelType) {
+    public SaveUpdateCQLResult saveAndModifyParameters(String xml,
+                                                       CQLParameter parameterWithOriginalContent,
+                                                       CQLParameter parameterWithEdits,
+                                                       List<CQLParameter> parameterList,
+                                                       boolean isFormatable,
+                                                       String modelType) {
         SaveUpdateCQLResult result = new SaveUpdateCQLResult();
         result.setXml(xml); // if any failure, it will use this xml, which is the original
 
@@ -574,8 +578,12 @@ public class CQLServiceImpl implements CQLService {
 
             // do some processing if the are no errors in the CQL
             if (result.getCqlErrors().isEmpty()) {
-                if (isFormatable) {
+                if (isFormatable && !ModelTypeHelper.isFhir(modelType)) {
                     parameterWithEdits.setLogic(formatParameter(parameterWithEdits));
+                } else {
+                    //Currently can't format parameters in QDM formatter. Eventually we will when we switch over to
+                    // cq1-to-elm 1.5.1
+                    parameterWithEdits.setLogic(parameterWithEdits.getLogic().trim());
                 }
             }
 

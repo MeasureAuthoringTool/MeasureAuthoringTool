@@ -1,0 +1,44 @@
+/test-classes/
+*.class
+*.iml
+
+# GWT Files in case they were optimized Remove this to check in legit changes #
+src/main/java/mat/Mat.gwt.xml
+src/main/java/mat/Bonnie.gwt.xml
+src/main/java/mat/HarpSupport.gwt.xml
+
+
+# Package Files #
+*.war
+# gwt caches and compiled units #
+gwt-unitCache/
+
+# boilerplate generated classes #
+.apt_generated/
+
+# more caches and things from deploy #
+war/WEB-INF/deploy/
+war/WEB-INF/classes/
+war/WEB-INF/lib/
+war/META-INF/
+war/login
+war/mat
+war/bonnie
+
+#compilation logs
+.gwt/
+
+# eclipse project file
+.settings/
+.classpath
+.project
+
+# Misc
+velocity.log
+war/WEB-INF/mat-persistence.xml
+/target/
+war/WEB-INF/jetty-env.xml
+/.idea/
+/MeasureAuthoringTool.iml
+
+/temp/

@@ -13,6 +13,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.MessagePanel;
+import mat.client.validator.ErrorHandler;
 import mat.model.clause.ModelTypeHelper;
 import mat.model.cql.CQLFunctionArgument;
 import mat.shared.CQLModelValidator;
@@ -47,6 +48,7 @@ public class AddFunctionArgumentDialogBox {
     private static final String MESSAGE_ARGUMENT_NAME_IS_REQUIRED = "Argument name is required.";
     private static final String MESSAGE_SELECT_QDM_DATATYPE = "Select QDM datatype.";
     private static ClickHandler handler;
+    private static ErrorHandler errorHandler = new ErrorHandler();
 
     public static void showArgumentDialogBox(final CQLFunctionArgument functionArg,
                                              final boolean isEdit,
@@ -118,6 +120,7 @@ public class AddFunctionArgumentDialogBox {
         availableDataFormLabel.setFor("listDataType");
         availableDataFormLabel.setId("availableDataFormLabel");
         listAllDataTypes.getElement().setId("listDataType");
+        listAllDataTypes.addBlurHandler(errorHandler.buildRequiredBlurHandler(listAllDataTypes));
         dataTypeFormGroup.add(availableDataFormLabel);
         dataTypeFormGroup.add(listAllDataTypes);
         final FormGroup argumentNameFormGroup = new FormGroup();
@@ -130,6 +133,7 @@ public class AddFunctionArgumentDialogBox {
         argumentNameTextArea.setWidth("290px");
         argumentNameTextArea.setHeight("38px");
         argumentNameTextArea.getElement().setId("inputArgumentName");
+        argumentNameTextArea.addBlurHandler(errorHandler.buildRequiredBlurHandler(argumentNameTextArea));
         argumentNameFormGroup.add(argumentNameFormLabel);
         argumentNameFormGroup.add(argumentNameTextArea);
         final FormGroup otherTypeFormGroup = new FormGroup();
@@ -142,6 +146,7 @@ public class AddFunctionArgumentDialogBox {
         otherTypeTextArea.setWidth("290px");
         otherTypeTextArea.setHeight("38px");
         otherTypeTextArea.setId("inputOtherType");
+        otherTypeTextArea.addBlurHandler(errorHandler.buildRequiredBlurHandler(otherTypeTextArea));
         otherTypeFormGroup.add(otherTypeFormLabel);
         otherTypeFormGroup.add(otherTypeTextArea);
 
@@ -160,6 +165,7 @@ public class AddFunctionArgumentDialogBox {
         listSelectItem.setWidth("290px");
         listSelectItem.getElement().setId("listSelectItem");
         listSelectItem.setEnabled(false);
+        listSelectItem.addBlurHandler(errorHandler.buildRequiredBlurHandler(listSelectItem));
         selectFormGroup.add(selectFormLabel);
         selectFormGroup.add(listSelectItem);
 

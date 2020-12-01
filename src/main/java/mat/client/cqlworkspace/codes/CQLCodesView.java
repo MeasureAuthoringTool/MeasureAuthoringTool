@@ -32,6 +32,7 @@ import mat.client.shared.*;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import mat.model.MatCodeTransferObject;
 import mat.model.cql.CQLCode;
 import mat.shared.ClickableSafeHtmlCell;
@@ -124,7 +125,7 @@ public class CQLCodesView {
 	HTML heading = new HTML();
 
 	private InAppHelp inAppHelp = new InAppHelp("");
-
+	private ErrorHandler errorHandler = new ErrorHandler();
 
 	public CQLCodesView() {
 		heading.addStyleName("leftAligned");
@@ -254,6 +255,7 @@ public class CQLCodesView {
 		sWidget.setSearchBoxWidth("530px");
 		sWidget.getGo().setEnabled(true);
 		sWidget.getGo().setTitle("Retrieve Code");
+		sWidget.getSearchBox().addBlurHandler(errorHandler.buildRequiredBlurHandler(sWidget.getSearchBox(), searchWidgetFormGroup));
 		searchWidgetFormGroup.add(buildFormLabel("Code URL", "codeURLInput_TextBox"));
 		searchWidgetFormGroup.add(sWidget.getSearchWidget());
 		searchWidgetFormGroup.add(new SpacerWidget());
@@ -393,7 +395,7 @@ public class CQLCodesView {
 	}
 
 	public void resetVSACCodeWidget() {
-		if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			sWidget.getSearchBox().setTitle("Enter the Code URL");
 		}
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");

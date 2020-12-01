@@ -31,6 +31,7 @@ import mat.client.inapphelp.component.InAppHelp;
 import mat.client.shared.*;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
 import mat.model.cql.CQLQualityDataSetDTO;
@@ -119,6 +120,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
     HTML heading = new HTML();
     private CodesValuesetsButtonToolBar copyPasteClearButtonToolBar = new CodesValuesetsButtonToolBar("valueset");
     private InAppHelp inAppHelp = new InAppHelp("");
+    private ErrorHandler errorHandler = new ErrorHandler();
 
     public CQLAppliedValueSetView() {
 
@@ -251,6 +253,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean> {
         searchWidgetFormGroup.add(oidLabel);
         oidInput.setWidth("595px");
         oidInput.setTitle(ENTER_OID);
+        oidInput.addBlurHandler(errorHandler.buildRequiredBlurHandler(oidInput));
         searchWidgetFormGroup.add(oidInput);
         searchWidgetFormGroup.add(new SpacerWidget());
 

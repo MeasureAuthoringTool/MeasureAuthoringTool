@@ -42,6 +42,7 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import mat.model.cql.CQLLibraryDataSetObject;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -109,6 +110,8 @@ public class CQLIncludeLibraryView {
 	HTML heading = new HTML();
 	
 	private InAppHelp inAppHelp = new InAppHelp("");
+
+	private ErrorHandler errorHandler = new ErrorHandler();
 	
 	public static interface Observer {
 		void onCheckBoxClicked(CQLLibraryDataSetObject result);
@@ -212,6 +215,7 @@ public class CQLIncludeLibraryView {
 		aliasNameTxtBox.getElement().setId("aliasNameField_IncludeSection");
 		aliasNameTxtBox.setName(ALIAS_NAME);
 		aliasNameTxtBox.setTitle("Enter Library Alias Required");
+		aliasNameTxtBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(aliasNameTxtBox));
 		return aliasLabel;
 	}
 
@@ -301,6 +305,7 @@ public class CQLIncludeLibraryView {
 		searchLibraryVP.add(new SpacerWidget());
 
 		sWidget.getSearchBox().setWidth("590px");
+		sWidget.getSearchBox().addBlurHandler(errorHandler.buildRequiredBlurHandler(sWidget.getSearchBox(), searchLibraryVP));
 		searchLibraryVP.add(sWidget.getSearchWidget());
 		searchLibraryVP.add(new SpacerWidget());
 

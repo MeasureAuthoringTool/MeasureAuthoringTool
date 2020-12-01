@@ -130,6 +130,7 @@ public class MeasureSearchView implements HasSelectionHandlers<ManageMeasureSear
     }
 
     public void buildCellTable(ManageMeasureSearchModel results, final int filter, MeasureSearchModel model) {
+        selectedRowsLabel.setText("0 Items Selected");
         cellTablePanel.clear();
         cellTablePanel.setStyleName("cellTablePanel");
         if ((results.getData() != null) && (results.getData().size() > 0)) {

@@ -76,8 +76,13 @@ public class MeasureCQLGeneralInformationView implements CQLGeneralInformationVi
         libraryNameTextBox.getElement().setId("libraryNameValue_TextBox");
         libraryNameTextBox.setTitle("Required");
         libraryNameTextBox.setMaxLength(CQL_LIBRARY_NAME_MAX_LENGTH);
-        libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox,
-                (s) -> getFirst(CommonMeasureValidator.validateFhirLibraryName(s))));
+        if (MatContext.get().isCurrentMeasureModelFhir()) {
+            libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
+                    (s) -> getFirst(CommonMeasureValidator.validateFhirLibraryName(s))));
+        } else {
+            libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
+                    (s) -> getFirst(CommonMeasureValidator.validateQDMName(s))));
+        }
 
         libraryNameGroup.add(libraryNameLabel);
         libraryNameGroup.add(libraryNameTextBox);

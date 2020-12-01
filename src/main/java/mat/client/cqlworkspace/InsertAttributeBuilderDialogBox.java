@@ -24,6 +24,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.datetime.DateTimeHelper;
 import mat.client.shared.datetime.DateTimeWidget;
+import mat.client.validator.ErrorHandler;
 import mat.model.ModeDetailModel;
 import mat.model.clause.ModelTypeHelper;
 import mat.model.clause.QDSAttributes;
@@ -119,6 +120,7 @@ public class InsertAttributeBuilderDialogBox {
     private static Modal dialogModal;
     private static ClickHandler handler;
     private static AceEditor curEditor;
+    private static ErrorHandler errorHandler = new ErrorHandler();
 
     public static void showAttributesDialogBox(final AceEditor editor, String modelType) {
 
@@ -510,6 +512,7 @@ public class InsertAttributeBuilderDialogBox {
         unitslistBox.setVisibleItemCount(1);
         unitslistBox.setStyleName(FORM_CONTROL);
         unitslistBox.getElement().setId("Units_listBox");
+        unitslistBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(unitslistBox, unitFormGroup));
 
         final Set<String> allUnits = allCqlUnits.keySet();
         for (final String unit : allUnits) {
@@ -537,6 +540,7 @@ public class InsertAttributeBuilderDialogBox {
         quantityTextBox.clear();
         quantityTextBox.setWidth("18em");
         quantityTextBox.getElement().setId("Qantity_TextBox");
+        quantityTextBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(quantityTextBox, quantityFormGroup));
 
         final FormLabel quantityLabel = new FormLabel();
         quantityLabel.setText("Quantity");
@@ -565,6 +569,7 @@ public class InsertAttributeBuilderDialogBox {
         //setting itemcount value to 1 turns listbox into a drop-down list.
         dtAttriblistBox.setVisibleItemCount(1);
         dtAttriblistBox.setStyleName(FORM_CONTROL);
+        dtAttriblistBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(dtAttriblistBox, dtFormGroup));
 
         final FormLabel attrDataTypeLabel = new FormLabel();
         attrDataTypeLabel.setText("Attributes By DataType");
@@ -593,6 +598,7 @@ public class InsertAttributeBuilderDialogBox {
         //setting itemcount value to 1 turns listbox into a drop-down list.
         attriblistBox.setVisibleItemCount(1);
         attriblistBox.setStyleName(FORM_CONTROL);
+        attriblistBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(attriblistBox, attrFormGroup));
 
         final FormLabel attributeLabel = new FormLabel();
         attributeLabel.setText("Attributes");
@@ -621,6 +627,7 @@ public class InsertAttributeBuilderDialogBox {
         modelistBox.setVisibleItemCount(1);
         modelistBox.setStyleName(FORM_CONTROL);
         modelistBox.setEnabled(false);
+        modelistBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(modelistBox, modeFormGroup));
 
         final FormLabel modeLabel = new FormLabel();
         modeLabel.setText("Mode");
@@ -649,6 +656,7 @@ public class InsertAttributeBuilderDialogBox {
         modeDetailslistBox.setVisibleItemCount(1);
         modeDetailslistBox.setStyleName(FORM_CONTROL);
         modeDetailslistBox.setEnabled(false);
+        modeDetailslistBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(modeDetailslistBox, modeDetailsFormGroup));
 
         final FormLabel modeDetailsLabel = new FormLabel();
         modeDetailsLabel.setText("Mode Details");

@@ -14,6 +14,7 @@ import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
@@ -36,6 +37,7 @@ public class CQLParametersView {
 	private InAppHelp inAppHelp = new InAppHelp("");
 	private CQLEditorPanel editorPanel = new CQLEditorPanel(PARAMETER, "CQL Expression Editor", false);
 	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("parameterViewCQL", "CQL Library Viewer", true);
+	private ErrorHandler errorHandler = new ErrorHandler();
 
 	
 	public CQLParametersView() {
@@ -137,6 +139,7 @@ public class CQLParametersView {
 		parameterNameTxtArea.getElement().setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
 		parameterNameTxtArea.setTitle("Enter Parameter Name Required");
+		parameterNameTxtArea.addBlurHandler(errorHandler.buildRequiredBlurHandler(parameterNameTxtArea));
 		
 		paramNameHPanel.add(parameterLabel);
 		paramNameHPanel.add(parameterNameTxtArea);

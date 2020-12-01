@@ -2112,7 +2112,9 @@ public class ManageMeasurePresenter implements MatPresenter, TabObserver {
         shareDisplay.getSearchWidgetBootStrap().getGo().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                displayShare(shareDisplay.getSearchWidgetBootStrap().getSearchBox().getValue(), currentShareDetails.getMeasureId());
+                if (shareDisplay.getErrorHandler().validate().isEmpty()) {
+                    displayShare(shareDisplay.getSearchWidgetBootStrap().getSearchBox().getValue(), currentShareDetails.getMeasureId());
+                }
             }
         });
 

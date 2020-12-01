@@ -32,6 +32,7 @@ import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.WarningMessageAlert;
 import mat.client.util.CellTableUtility;
+import mat.client.validator.ErrorHandler;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -59,6 +60,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 	private SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search User Name");
 
 	private FocusPanel searchWidgetFocusPanel = new FocusPanel();
+	private ErrorHandler errorHandler = new ErrorHandler();
 
 	public ManageMeasureShareView() {
 		content.setStylePrimaryName("contentPanel");
@@ -97,6 +99,8 @@ public class ManageMeasureShareView implements ShareDisplay {
 		content.add(searchWidgetFocusPanel);		
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
+		searchWidgetBootStrap.getSearchBox().addBlurHandler(errorHandler.buildRequiredBlurHandler(searchWidgetBootStrap.getSearchBox(),vp));
+
 		
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("77%");
@@ -106,6 +110,10 @@ public class ManageMeasureShareView implements ShareDisplay {
 		content.add(errorMessages);
 		content.add(warningMessages);
 		content.add(buttonBar);
+	}
+
+	public ErrorHandler getErrorHandler() {
+		return errorHandler;
 	}
 
 	private CellTable<MeasureShareDTO> addColumnToTable(final CellTable<MeasureShareDTO> cellTable) {

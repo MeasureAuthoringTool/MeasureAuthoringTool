@@ -60,6 +60,7 @@ import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.client.util.ClientConstants;
 import mat.client.util.FeatureFlagConstant;
+import mat.client.validator.ErrorHandler;
 import mat.dto.AuditLogDTO;
 import mat.dto.SearchHistoryDTO;
 import mat.model.clause.ModelTypeHelper;
@@ -448,6 +449,8 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
         FocusPanel getSearchWidgetFocusPanel();
 
         void resetMessageDisplay();
+
+        ErrorHandler getErrorHandler();
     }
 
     /**
@@ -833,7 +836,9 @@ public class CqlLibraryPresenter implements MatPresenter, TabObserver {
 
             @Override
             public void onClick(ClickEvent event) {
-                displayShareWidget();
+                if (shareDisplay.getErrorHandler().validate().isEmpty()) {
+                    displayShareWidget();
+                }
             }
         });
 

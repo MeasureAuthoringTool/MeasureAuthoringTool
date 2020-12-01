@@ -14,8 +14,10 @@ import mat.client.shared.MessagePanel;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import mat.model.MeasureSteward;
 import mat.shared.CQLModelValidator;
+import mat.shared.validator.measure.CommonMeasureValidator;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -60,6 +62,8 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
     private String stewardId;
     private String stewardValue;
 
+    private ErrorHandler errorHandler = new ErrorHandler();
+
 
     public StandaloneCQLGeneralInformationView() {
     }
@@ -81,7 +85,6 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
             buildForFhir();
         } else {
             buildForQDM();
-            ;
         }
     }
 
@@ -102,6 +105,13 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         libraryNameTextBox.getElement().setId("libraryNameValue_TextBox");
         libraryNameTextBox.setTitle("Required");
         libraryNameTextBox.setMaxLength(CQL_LIBRARY_NAME_MAX_LENGTH);
+        if (MatContext.get().isCurrentCQLLibraryModelTypeFhir()) {
+            libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
+                    (s) -> getFirst(CommonMeasureValidator.validateFhirLibraryName(s))));
+        } else {
+            libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
+                    (s) -> getFirst(CommonMeasureValidator.validateQDMName(s))));
+        }
 
         libraryNameGroup.add(libraryNameLabel);
         libraryNameGroup.add(libraryNameTextBox);
@@ -194,6 +204,13 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
         libraryNameTextBox.getElement().setId("libraryNameValue_TextBox");
         libraryNameTextBox.setTitle("Required");
         libraryNameTextBox.setMaxLength(CQL_LIBRARY_NAME_MAX_LENGTH);
+        if (MatContext.get().isCurrentCQLLibraryModelTypeFhir()) {
+            libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
+                    (s) -> getFirst(CommonMeasureValidator.validateFhirLibraryName(s))));
+        } else {
+            libraryNameTextBox.addBlurHandler(errorHandler.buildBlurHandler(libraryNameTextBox, libraryNameGroup,
+                    (s) -> getFirst(CommonMeasureValidator.validateQDMName(s))));
+        }
 
         libraryNameGroup.add(libraryNameLabel);
         libraryNameGroup.add(libraryNameTextBox);
@@ -652,5 +669,9 @@ public class StandaloneCQLGeneralInformationView implements CQLGeneralInformatio
 
     public void setStewardValue(String stewardValue) {
         this.stewardValue = stewardValue;
+    }
+
+    private String getFirst(List<String> list) {
+        return list != null && list.size() > 0 ? list.get(0) : null;
     }
 }

@@ -15,6 +15,7 @@ import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
@@ -44,6 +45,7 @@ public class CQLDefinitionsView {
 	private CQLEditorPanel editorPanel= new CQLEditorPanel(DEFINITION, "CQL Expression Editor", false);
 	private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("definitionViewCQL", "CQL Library Viewer", true);
 	private BooleanSupplier isSelectedObjectFhir;
+	private ErrorHandler errorHandler = new ErrorHandler();
 
 	public CQLDefinitionsView(BooleanSupplier isSelectedObjectFhir) {
 		this.isSelectedObjectFhir = isSelectedObjectFhir;
@@ -193,6 +195,7 @@ public class CQLDefinitionsView {
 		defineNameTxtArea.getElement().setId("defineNameField");
 		defineNameTxtArea.setName("defineName");
 		defineNameTxtArea.setTitle("Enter Definition Name Required");
+		defineNameTxtArea.addBlurHandler(errorHandler.buildRequiredBlurHandler(defineNameTxtArea));
 		
 		HorizontalPanel defineNameHPanel = new HorizontalPanel();
 		defineNameHPanel.add(defineNameLabel);

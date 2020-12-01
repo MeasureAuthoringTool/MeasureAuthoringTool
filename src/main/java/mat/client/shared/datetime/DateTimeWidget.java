@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import mat.client.expressionbuilder.constant.CQLType;
 import mat.client.shared.CustomDateTimeTextBox;
+import mat.client.validator.ErrorHandler;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
@@ -33,6 +34,10 @@ public class DateTimeWidget {
 	private FormGroup minFormGroup = new FormGroup();
 	private FormGroup secondsFormGroup = new FormGroup();
 	private FormGroup millisecFormGroup = new FormGroup();
+	private ErrorHandler errorHandler = new ErrorHandler();
+
+    private final Grid dateGrid = new Grid(2, 5);
+    private final Grid timeGrid = new Grid(2, 7);
 
 	public DateTimeWidget() {
 		super();
@@ -68,7 +73,7 @@ public class DateTimeWidget {
 	}
 
 	private Grid buildDateGrid() {
-		final Grid dateGrid = new Grid(2, 5);
+
 		dateGrid.setWidget(0, 0, buildYearLabel());
 		dateGrid.setWidget(1, 0, yearFormGroup);
 		dateGrid.setWidget(1, 1, new HTML(SPACE_SYMBOL));
@@ -81,7 +86,7 @@ public class DateTimeWidget {
 	}
 
 	private Grid buildTimeGrid() {
-		final Grid timeGrid = new Grid(2, 7);
+
 		timeGrid.setWidget(0, 0, buildHourLabel());
 		timeGrid.setWidget(1, 0, hourFormGroup);
 		timeGrid.setWidget(1, 1, new HTML(COLON_SYMBOL));
@@ -212,47 +217,61 @@ public class DateTimeWidget {
 	}
 
 	private void validateYearRange() {
-		if (!yyyyTxtBox.getText().isEmpty()){
+		if (!yyyyTxtBox.getText().isEmpty()) {
 			isDate = true;
 			yearFormGroup.setValidationState(DateTimeHelper.getValidationState(yyyyTxtBox.getText(), 0, 9999));
-		}
+		} else {
+            yyyyTxtBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(yyyyTxtBox, dateGrid));
+        }
 	}
 
 	private void validateMonthRange() {
-		if (!mmTxtBox.getText().isEmpty()){
+		if (!mmTxtBox.getText().isEmpty()) {
 			mmFormGroup.setValidationState(DateTimeHelper.getValidationState(mmTxtBox.getText(), 1, 12));
-		}
+		} else {
+            mmTxtBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(mmTxtBox, dateGrid));
+        }
 	}
 
 	private void validateDayRange() {
-		if (!ddTxtBox.getText().isEmpty()){
+		if (!ddTxtBox.getText().isEmpty()) {
 			ddFormGroup.setValidationState(DateTimeHelper.getValidationState(ddTxtBox.getText(), 1, 31));
-		}
+		} else {
+            ddTxtBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(ddTxtBox, dateGrid));
+        }
 	}
 
 	private void validateHoursRange() {
-		if (!hhTextBox.getText().isEmpty()){
+		if (!hhTextBox.getText().isEmpty()) {
 			isTime = true;
 			hourFormGroup.setValidationState(DateTimeHelper.getValidationState(hhTextBox.getText(), 1, 24));
-		}
+		} else {
+            hhTextBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(hhTextBox, timeGrid));
+        }
 	}
 
 	private void validateMinutesRange() {
-		if (!minTxtBox.getText().isEmpty()){
+		if (!minTxtBox.getText().isEmpty()) {
 			minFormGroup.setValidationState(DateTimeHelper.getValidationState(minTxtBox.getText(), 0, 59));
-		}
+		} else {
+            minTxtBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(minTxtBox, timeGrid));
+        }
 	}
 
 	private void validateSecondsRange() {
 		if (!ssTxtBox.getText().isEmpty()){
 			secondsFormGroup.setValidationState(DateTimeHelper.getValidationState(ssTxtBox.getText(), 0, 59));
-		}
+		} else {
+            ssTxtBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(ssTxtBox, timeGrid));
+        }
 	}
 
 	private void validateMillisecondsRange() {
 		if (!msTxtBox.getText().isEmpty()){
 			millisecFormGroup.setValidationState(DateTimeHelper.getValidationState(msTxtBox.getText(), 0, 999));
-		}
+		} else {
+            msTxtBox.addBlurHandler(errorHandler.buildRequiredBlurHandler(msTxtBox, timeGrid));
+        }
 	}
 
 	public boolean isValidDate() {

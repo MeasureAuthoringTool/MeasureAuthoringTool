@@ -34,6 +34,7 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
+import mat.client.validator.ErrorHandler;
 import mat.model.cql.CQLFunctionArgument;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -88,6 +89,7 @@ public class CQLFunctionsView {
     private InAppHelp inAppHelp = new InAppHelp("");
     private CQLEditorPanel editorPanel = new CQLEditorPanel(FUNCTION, "CQL Expression Editor", false);
     private CQLEditorPanel viewCQLEditorPanel = new CQLEditorPanel("functionViewCQL", "CQL Library Viewer", true);
+    private ErrorHandler errorHandler = new ErrorHandler();
 
 
     public CQLFunctionsView() {
@@ -236,6 +238,7 @@ public class CQLFunctionsView {
         funcNameTxtArea.getElement().setId("FunctionNameField");
         funcNameTxtArea.setName("FunctionName");
         funcNameTxtArea.setTitle("Enter Function Name Required");
+        funcNameTxtArea.addBlurHandler(errorHandler.buildRequiredBlurHandler(funcNameTxtArea));
 
         HorizontalPanel funcNameHPanel = new HorizontalPanel();
         funcNameHPanel.add(functionNameLabel);

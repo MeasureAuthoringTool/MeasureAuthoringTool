@@ -36,6 +36,8 @@ public interface DetailDisplay extends BaseDisplay {
 
 	public void setMeasureModelType(String name);
 
+	public void allowAllMeasureModelTypes();
+
 	void setScoringChoices(List<? extends HasListBox> texts);
 
 	public void showCautionMsg(boolean show);
